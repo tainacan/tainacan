@@ -44,6 +44,20 @@ export const fetchRoles = ({ commit }) => {
     });
 };
 
+export const fetchRole = ({ commit }, roleSlug) => {
+    return new Promise((resolve, reject) => {
+
+        axios.tainacan.get('/roles/' + roleSlug)
+            .then(res => {
+                const role = res.data
+                commit('setRole', role);
+                resolve(role);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+};
 
 // CAPABILITIES
 export const fetchCapabilities = ({ commit }, { collectionId } ) => {

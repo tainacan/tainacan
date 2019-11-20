@@ -8,6 +8,13 @@ import RolesPage from '../roles.vue';
 
 Vue.use(I18NPlugin);
 
+// Changing title of pages
+router.beforeEach((to, from, next) => {
+    document.title = to.meta.title;
+    if (next() != undefined)
+        next();
+});
+
 new Vue({
     el: '#tainacan-roles-app',
     store,

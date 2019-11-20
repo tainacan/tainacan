@@ -19,6 +19,10 @@ export const setRoles = (state, roles) => {
     state.roles = roles;
 };
 
+export const setRole = (state, role) => {
+    state.role = role;
+};
+
 // CAPABILITIES
 export const setCapabilities = (state, capabilities) => {
     state.capabilities = capabilities;

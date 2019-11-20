@@ -2,12 +2,24 @@ import Vue from 'vue';
 import VueRouter from 'vue-router'
 import qs from 'qs';
 
+import RolesList from '../roles/roles-list.vue';
+import RoleEditionForm from '../roles/role-edition-form.vue'
+
+const { __ } = wp.i18n;
+
 Vue.use(VueRouter);
 
-const rolesRoutes = [];
+const routes = [
+    { path: '/', redirect:'/roles' },
+    { path: '/roles', name: 'RolesList', component: RolesList, meta: { title: __('Tainacan Roles') } },
+    { path: '/roles/new', name: 'RoleCreationForm', component: RoleEditionForm, meta: { title: __('New Role') } },
+    { path: '/roles/:roleSlug', name: 'RoleEditionForm', component: RoleEditionForm, meta: { title: __('Editing Role') } },
+
+    { path: '*', redirect: '/'}
+];
 
 export default new VueRouter ({
-    rolesRoutes,
+    routes,
     // set custom query resolver
     parseQuery(query) {
         return qs.parse(query);
