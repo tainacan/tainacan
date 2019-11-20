@@ -43,16 +43,14 @@
                                 class="active-metadata-area"
                                 @change="handleChange"
                                 :class="{'metadata-area-receive': isDraggingFromAvailable}"
-                                :options="{ 
-                                        group: { name:'metadata', pull: false, put: true },
-                                        sort: (openedMetadatumId == '' || openedMetadatumId == undefined) && !isRepositoryLevel,
-                                        //disabled: openedMetadatumId != '' && openedMetadatumId != undefined,
-                                        handle: '.handle', 
-                                        ghostClass: 'sortable-ghost',
-                                        chosenClass: 'sortable-chosen',
-                                        filter: 'not-sortable-item', 
-                                        animation: '250'}">
-                            <div  
+                                :group="{ name:'metadata', pull: false, put: true }"
+                                :sort="(openedMetadatumId == '' || openedMetadatumId == undefined) && !isRepositoryLevel"
+                                :handle="'.handle'"
+                                ghost-class="sortable-ghost"
+                                chosen-class="sortable-chosen"
+                                filter="not-sortable-item"
+                                :animation="250">
+                            <div 
                                     class="active-metadatum-item"
                                     :class="{
                                         'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
@@ -190,11 +188,9 @@
                             <h3 class="label has-text-secondary">{{ $i18n.get('label_available_metadata_types') }}</h3>
                             <draggable 
                                     v-model="availableMetadatumList"
-                                    :options="{ 
-                                        sort: false, 
-                                        group: { name:'metadata', pull: 'clone', put: false, revertClone: true },
-                                        dragClass: 'sortable-drag'
-                                    }">
+                                    :sort="false" 
+                                    :group="{ name:'metadata', pull: 'clone', put: false, revertClone: true }"
+                                    drag-class="sortable-drag">
                                 <div 
                                         @click.prevent="addMetadatumViaButton(metadatum)"
                                         class="available-metadatum-item"
