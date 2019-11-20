@@ -28,7 +28,7 @@
                 <div
                         class="options-input"
                         v-for="(interval, index) of intervals"
-                        :key="index">
+                        :key="0 + index">
                     <b-field>
                         <b-input
                                 expanded
