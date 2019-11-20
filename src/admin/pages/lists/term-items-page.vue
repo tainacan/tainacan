@@ -1730,7 +1730,7 @@
                     color: $blue5;
                     height: 27px;
                     font-size: 1.125rem !important;
-                    height: 2rem !important;
+                    height: auto !important;
                 }
                 margin-bottom: 5px;
             }
@@ -1899,7 +1899,7 @@
                     color: $blue5;
                     height: 27px;
                     font-size: 1.125rem !important;
-                    height: 2rem !important;
+                    height: auto !important;
                 }
             }
             a {

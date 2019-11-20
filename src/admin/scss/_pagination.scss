@@ -115,6 +115,8 @@
             line-height: inherit;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            text-transform: none !important;
+            letter-spacing: normal !important;
         }
         .mdi-chevron-left::before {
             content: "arrowleft" !important;

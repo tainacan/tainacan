@@ -109,6 +109,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-size: 20px;
+    text-transform: none !important;
 }
 
 .taginput-container {
@@ -216,6 +217,8 @@
     //         -webkit-font-smoothing: antialiased;
     //         -moz-osx-font-smoothing: grayscale;
     //         content: 'calendar';
+    //         text-transform: none !important;
+    //         letter-spacing: normal !important;
     //     }
     // }
 
@@ -239,6 +242,8 @@
                 line-height: inherit;
                 -webkit-font-smoothing: antialiased;
                 -moz-osx-font-smoothing: grayscale;
+                text-transform: none !important;
+                letter-spacing: normal !important;
                 color: $secondary;
             }
 

@@ -20,8 +20,11 @@
     text-rendering: auto;
     vertical-align: middle;
     line-height: inherit;
+    text-transform: none !important;
+    letter-spacing: normal !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    
 }
 
 .tainacan-icon-pdf:before {
