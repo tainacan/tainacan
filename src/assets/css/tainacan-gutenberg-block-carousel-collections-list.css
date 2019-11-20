@@ -304,7 +304,8 @@
         display: grid;
         grid-template-columns: 33% 33% 33%;
         grid-template-rows: 50% 50%;
-        width: 100%; }
+        width: 100%;
+        box-sizing: border-box; }
         .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid .collection-items-grid img:first-of-type {
           flex-basis: 100%;
           -ms-grid-column: 1;
