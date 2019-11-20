@@ -472,23 +472,27 @@
             }
         },
         created(){
-            jQuery( document ).on( 'heartbeat-tick-list',  ( event, data ) => {
-                let updatedProcesses = data.bg_process_feedback;
+            if (jQuery && jQuery( document )) {
+                jQuery( document ).on( 'heartbeat-tick-list',  ( event, data ) => {
+                    let updatedProcesses = data.bg_process_feedback;
 
-                for (let updatedProcess of updatedProcesses) {
-                    let updatedProcessIndex = this.processes.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
-                    if (updatedProcessIndex >= 0) {
-                        this.heartBitUpdateProcess(updatedProcess);
+                    for (let updatedProcess of updatedProcesses) {
+                        let updatedProcessIndex = this.processes.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
+                        if (updatedProcessIndex >= 0) {
+                            this.heartBitUpdateProcess(updatedProcess);
+                        }
                     }
-                }
-            });
+                });
 
-            jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
-                jQuery( document ).trigger('heartbeat-tick-list', data);
-            });
+                jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
+                    jQuery( document ).trigger('heartbeat-tick-list', data);
+                });
+            }
         },
         beforeDestroy() {
-            jQuery( document ).unbind( 'heartbeat-tick-list')
+            if (jQuery && jQuery( document )) {
+                jQuery( document ).unbind( 'heartbeat-tick-list')
+            }
         }
     }
 </script>

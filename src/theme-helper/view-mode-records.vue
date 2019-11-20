@@ -169,7 +169,8 @@ export default {
                 this.$refs.masonryWrapper.children[0] != undefined && 
                 this.$refs.masonryWrapper.children[0].children[0] != undefined && 
                 this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
-                this.containerWidthDiscount = jQuery(window).width() - this.$refs.masonryWrapper.clientWidth;
+                if (jQuery && jQuery(window))
+                    this.containerWidthDiscount = jQuery(window).width() - this.$refs.masonryWrapper.clientWidth;
             }
             this.$forceUpdate();
         }, 500)
