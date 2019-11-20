@@ -366,13 +366,13 @@ class Theme_Helper {
 		);
 
 		$params = '';
-		if (isset($atts['collection-id'])) {
+		if (isset($atts['collection-id']) && $atts['collection-id'] != '') {
 			$params = "collection-id=" . $atts['collection-id'];
 		}
-		if (isset($atts['term-id'])) {
+		if (isset($atts['term-id']) && $atts['term-id'] != '') {
 			$params = "term-id=" . $atts['term-id'];
 		}
-		
+
 		$this->enqueue_scripts(true);
 
 		return "<div id='tainacan-items-page' $params ></div>";
