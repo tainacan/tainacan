@@ -3,7 +3,8 @@
             :disabled="disabled"
             :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
             :value="value"
-            @input="onInput($event)"/>
+            @input="onInput($event)"
+            @blur="onBlur"/>
 </template>
 
 <script>
@@ -16,6 +17,9 @@
         methods: {
             onInput(value) {
                 this.$emit('input', value);
+            },
+            onBlur() {
+                this.$emit('blur');
             }
         }
     }

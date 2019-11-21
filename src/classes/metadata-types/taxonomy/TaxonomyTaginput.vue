@@ -1,8 +1,9 @@
 <template>
     <div class="block">
         <b-taginput
-                :id="metadatumComponentId"
+                expanded
                 :disabled="disabled"
+                :id="metadatumComponentId"
                 size="is-small"
                 icon="magnify"
                 :allow-new="false"
@@ -19,7 +20,20 @@
                 :loading="isFetching"
                 :class="{'has-selected': selected != undefined && selected != []}"
                 autocomplete
-                @typing="autoCompleteTerm"/>
+                @typing="autoCompleteTerm">
+            <template slot-scope="props">
+                <div class="media">
+                    <div class="media-content">
+                        {{ props.option.label }}
+                    </div>
+                </div>
+            </template>
+            <template 
+                    v-if="!isFetching"
+                    slot="empty">
+                {{ $i18n.get('info_no_terms_found') }}
+            </template>
+        </b-taginput>
     </div>
 </template>
 
@@ -31,7 +45,6 @@
             return {
                 selected: [],
                 labels: [],
-                termList: [],
                 isFetching: false,
             }
         },
@@ -65,7 +78,6 @@
                 'getTerms'
             ]),
             autoCompleteTerm: _.debounce( function(value) {
-                this.termList = [];
                 this.labels = [];
                 this.isFetching = true;
 
@@ -80,17 +92,19 @@
                     search: { 
                         searchterm: value
                     },
-                    all: true
+                    all: true,
+                    order: 'asc',
+                    offset: 0,
+                    number: 12
                 }).then((res) => {
-                    this.termList = res.terms;
                     
-                    for (let term of this.termList)
+                    for (let term of res.terms)
                         this.labels.push({label: term.name, value: term.id});
 
-                    if (this.termList.length <= 0 && this.allowSelectToCreate)
+                    if (res.terms.length <= 0 && this.allowSelectToCreate)
                         this.labels.push({label: `${value} (${this.$i18n.get('select_to_create')})`, value: value})
 
-                    this.isFetching = false;
+                    this.isFetching = false;    
                 }).catch((error) => {
                     this.isFetching = false;
                     throw error;
