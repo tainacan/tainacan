@@ -177,7 +177,7 @@
                     values: this.inputs ? this.inputs : ''
                 });
             
-            }, 900),
+            }, 500),
             createInputs() {
                 if (this.metadatum.value instanceof Array)
                     this.inputs = this.metadatum.value.slice(0);
