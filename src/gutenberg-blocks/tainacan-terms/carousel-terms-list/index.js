@@ -155,7 +155,7 @@ registerBlockType('tainacan/carousel-terms-list', {
                                             ?    
                                         termItems[0].thumbnail['thumbnail'][0] 
                                             : 
-                                        `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                                        `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`)
                                     }
                                     alt={ termItems[0] && termItems[0].name ? termItems[0].name : __( 'Thumbnail', 'tainacan' ) }/>
                                 <img
@@ -168,7 +168,7 @@ registerBlockType('tainacan/carousel-terms-list', {
                                             ?    
                                         termItems[1].thumbnail['thumbnail'][0] 
                                             : 
-                                        `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                                        `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`)
                                     }
                                     alt={ termItems[1] && termItems[1].name ? termItems[1].name : __( 'Thumbnail', 'tainacan' ) }/>
                                 <img
@@ -181,13 +181,13 @@ registerBlockType('tainacan/carousel-terms-list', {
                                             ?    
                                         termItems[2].thumbnail['thumbnail'][0] 
                                             : 
-                                        `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                                        `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`)
                                     }
                                     alt={ termItems[2] && termItems[2].name ? termItems[2].name : __( 'Thumbnail', 'tainacan' ) }/>
                             </div>
                             :
                             <img
-                                src={ term.header_image ? term.header_image : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                                src={ term.header_image ? term.header_image : `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`}
                                 alt={ term.name ? term.name : __( 'Thumbnail', 'tainacan' )}/>
                         }
                         { !hideName ? <span>{ term.name ? term.name : '' }</span> : null }
@@ -447,7 +447,7 @@ registerBlockType('tainacan/carousel-terms-list', {
                         icon={(
                             <img
                                 width={148}
-                                src={ `${tainacan_plugin.base_url}/admin/images/tainacan_logo_header.svg` }
+                                src={ `${tainacan_blocks.base_url}/admin/images/tainacan_logo_header.svg` }
                                 alt="Tainacan Logo"/>
                         )}>
                         <p>
@@ -545,8 +545,8 @@ registerBlockType('tainacan/carousel-terms-list', {
                     hide-name={ '' + hideName }
                     max-terms-number={ maxTermsNumber }
                     taxonomy-id={ taxonomyId }
-                    tainacan-api-root={ tainacan_plugin.root }
-                    tainacan-base-url={ tainacan_plugin.base_url }
+                    tainacan-api-root={ tainacan_blocks.root }
+                    tainacan-base-url={ tainacan_blocks.base_url }
                     show-term-thumbnail={ '' + showTermThumbnail }
                     id={ 'wp-block-tainacan-carousel-terms-list_' + blockId }>
                         { content }

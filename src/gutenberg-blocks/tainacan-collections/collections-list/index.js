@@ -123,7 +123,7 @@ registerBlockType('tainacan/collections-list', {
                         target="_blank"
                         className={ (!showName ? 'collection-without-name' : '') + ' ' + (!showImage ? 'collection-without-image' : '') }>
                         <img
-                            src={ collection.thumbnail && collection.thumbnail[0] && collection.thumbnail[0].src ? collection.thumbnail[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                            src={ collection.thumbnail && collection.thumbnail[0] && collection.thumbnail[0].src ? collection.thumbnail[0].src : `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`}
                             alt={ collection.thumbnail && collection.thumbnail[0] ? collection.thumbnail[0].alt : collection.name }/>
                         <span>{ collection.name ? collection.name : '' }</span>
                     </a>
@@ -304,7 +304,7 @@ registerBlockType('tainacan/collections-list', {
                         icon={(
                             <img
                                 width={148}
-                                src={ `${tainacan_plugin.base_url}/admin/images/tainacan_logo_header.svg` }
+                                src={ `${tainacan_blocks.base_url}/admin/images/tainacan_logo_header.svg` }
                                 alt="Tainacan Logo"/>
                         )}>
                         <p>

@@ -376,7 +376,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                     ?    
                 item.thumbnail['thumbnail'][0] 
                     : 
-                `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`)
             )
         }
 
@@ -881,7 +881,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                         icon={(
                             <img
                                 width={148}
-                                src={ `${tainacan_plugin.base_url}/admin/images/tainacan_logo_header.svg` }
+                                src={ `${tainacan_blocks.base_url}/admin/images/tainacan_logo_header.svg` }
                                 alt="Tainacan Logo"/>
                         )}>
                         <p>
@@ -1007,8 +1007,8 @@ registerBlockType('tainacan/dynamic-items-list', {
                     grid-margin={ gridMargin }
                     max-items-number={ maxItemsNumber }
                     order={ order }
-                    tainacan-api-root={ tainacan_plugin.root }
-                    tainacan-base-url={ tainacan_plugin.base_url }
+                    tainacan-api-root={ tainacan_blocks.root }
+                    tainacan-base-url={ tainacan_blocks.base_url }
                     id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>
                         { content }
                 </div>
@@ -1140,8 +1140,8 @@ registerBlockType('tainacan/dynamic-items-list', {
                         grid-margin={ gridMargin }
                         max-items-number={ maxItemsNumber }
                         order={ order }
-                        tainacan-api-root={ tainacan_plugin.root }
-                        tainacan-base-url={ tainacan_plugin.base_url }
+                        tainacan-api-root={ tainacan_blocks.root }
+                        tainacan-base-url={ tainacan_blocks.base_url }
                         id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>
                             { content }
                     </div>

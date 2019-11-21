@@ -106,7 +106,7 @@ export default class SearchBarModal extends React.Component {
                 label: __('Repository items', 'tainacan'), 
                 name: __('Repository items', 'tainacan'), 
                 id: 'default', 
-                slug: tainacan_plugin.theme_items_list_url.split('/')[tainacan_plugin.theme_items_list_url.split('/').length - 1] 
+                slug: tainacan_blocks.theme_items_list_url.split('/')[tainacan_blocks.theme_items_list_url.split('/').length - 1] 
             };
         else {
             selectedCollection = this.state.modalCollections.find((collection) => collection.id == selectedCollectionId)
@@ -269,7 +269,7 @@ export default class SearchBarModal extends React.Component {
                                 <RadioControl
                                     className={'repository-radio-option'}
                                     selected={ this.state.temporaryCollectionId }
-                                    options={ [{ label: __('Repository items', 'tainacan'), value: 'default', slug: tainacan_plugin.theme_items_list_url.split('/')[tainacan_plugin.theme_items_list_url.split('/').length - 1] }] }
+                                    options={ [{ label: __('Repository items', 'tainacan'), value: 'default', slug: tainacan_blocks.theme_items_list_url.split('/')[tainacan_blocks.theme_items_list_url.split('/').length - 1] }] }
                                     onChange={ ( aCollectionId ) => { 
                                         this.setState({ temporaryCollectionId: aCollectionId });
                                     } } />
