@@ -170,7 +170,7 @@ registerBlockType('tainacan/search-bar', {
                                                     (alignment == 'right' ? ' is-aligned-right' : '') 
                                                 }
                                                 id="taincan-search-bar-block"
-                                                action={ tainacan_plugin.site_url + '/' + collectionSlug + '/#/' }
+                                                action={ tainacan_blocks.site_url + '/' + collectionSlug + '/#/' }
                                                 method='get'>
                                             <input 
                                                 style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
@@ -215,7 +215,7 @@ registerBlockType('tainacan/search-bar', {
                                         (alignment == 'right' ? ' is-aligned-right' : '') 
                                     }
                                     id="taincan-search-bar-block"
-                                    action={ tainacan_plugin.site_url + '/' + collectionSlug + '/#/' }
+                                    action={ tainacan_blocks.site_url + '/' + collectionSlug + '/#/' }
                                     method='get'>
                                 <input 
                                     style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
@@ -494,7 +494,7 @@ registerBlockType('tainacan/search-bar', {
                         icon={(
                             <img
                                 width={148}
-                                src={ `${tainacan_plugin.base_url}/admin/images/tainacan_logo_header.svg` }
+                                src={ `${tainacan_blocks.base_url}/admin/images/tainacan_logo_header.svg` }
                                 alt="Tainacan Logo"/>
                         )}>
                         <p>

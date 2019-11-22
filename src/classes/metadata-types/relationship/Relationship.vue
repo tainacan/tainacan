@@ -8,6 +8,7 @@
                 size="is-small"
                 icon="magnify"
                 @input="onInput"
+                @blur="onBlur"
                 :data="options"
                 :maxtags="maxtags != undefined ? maxtags : (metadatum.metadatum.multiple == 'yes' || allowNew === true ? 100 : 1)"
                 autocomplete
@@ -94,6 +95,9 @@
             onInput(newSelected) {
                 this.selected = newSelected;
                 this.$emit('input', newSelected.map((item) => item.value));
+            },
+            onBlur() {
+                this.$emit('blur');
             },
             search: _.debounce(function(query) {
                 if ( this.selected.length > 0  && this.metadatum.metadatum.multiple === 'no')

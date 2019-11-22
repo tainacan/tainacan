@@ -148,35 +148,35 @@ class REST_Controller extends \WP_REST_Controller {
 
 		return apply_filters('tainacan-api-prepare-items-args', $args, $request);
 	}
-	
+
 	public function add_support_to_tax_query_like($args) {
-		
+
 		if (!isset($args['tax_query']) || !is_array($args['tax_query'])) {
 			return $args;
 		}
-		
+
 		$new_tax_query = [];
-		
+
 		foreach ($args['tax_query'] as $index => $tax_query) {
-			
+
 			if ( isset($tax_query['operator']) && $tax_query['operator'] == 'LIKE' &&
 		 		isset($tax_query['terms']) && is_string($tax_query['terms']) ) {
-				
+
 				$terms = get_terms([
 					'taxonomy' => $tax_query['taxonomy'],
 					'fields' => 'ids',
 					'hide_empty' => isset($args['hide_empty']) ? $args['hide_empty'] : true,
 					'search' => $tax_query['terms']
 				]);
-				
+
 				$new_tax_query[] = [
 					'taxonomy' => $tax_query['taxonomy'],
 					'terms' => $terms,
 				];
-				
+
 			} elseif ( isset($tax_query['operator']) && $tax_query['operator'] == 'NOT LIKE' &&
 		 		isset($tax_query['terms']) && is_string($tax_query['terms']) ) {
-				
+
 				$terms = get_terms([
 					'taxonomy' => $tax_query['taxonomy'],
 					'fields' => 'ids',
@@ -190,18 +190,18 @@ class REST_Controller extends \WP_REST_Controller {
 						'operator' => 'NOT IN'
 					];
 				}
-				
-				
+
+
 			} else {
 				$new_tax_query[] = $tax_query;
 			}
 
 		}
-		
+
 		$args['tax_query'] = $new_tax_query;
-		
+
 		return $args;
-		
+
 	}
 
 	/**
@@ -231,7 +231,7 @@ class REST_Controller extends \WP_REST_Controller {
 						$args[ $mapped_v ][ $index1 ][ $meta_v ] = $request[ $mapped ][ $index1 ][ $meta_v ];
 					}
 				}
-				
+
 			}
 
 		} else {
@@ -262,7 +262,7 @@ class REST_Controller extends \WP_REST_Controller {
 
 		return false;
 	}
-	
+
 	/**
 	 * Return the fetch_only param
 	 *
@@ -313,10 +313,7 @@ class REST_Controller extends \WP_REST_Controller {
 
 		$query_params['authorid'] = array(
 			'description' => __("Limit result set to objects assigned to specific authors by id.", 'tainacan'),
-			'type'        => 'array',
-			'items'       => array(
-				'type'    => 'integer',
-			),
+			'type'        => 'integer',
 		);
 
 		$query_params['authorname'] = array(
@@ -591,11 +588,11 @@ class REST_Controller extends \WP_REST_Controller {
 			),
 		);
 	}
-	
+
 	function get_repository_schema( \Tainacan\Repositories\Repository $repository ) {
-		
+
 		$schema = [];
-		
+
 		$map = $repository->get_map();
 
 		foreach ($map as $mapped => $value){
@@ -604,14 +601,14 @@ class REST_Controller extends \WP_REST_Controller {
 				'type' => $value['type']
 			];
 		}
-		
+
 		return $schema;
-		
+
 	}
-	
-	
+
+
 	function get_permissions_schema() {
-		
+
 		return [
 			'current_user_can_edit' => [
 				'description' => esc_html__('Whether current user can edit this object', 'tainacan'),
@@ -624,12 +621,12 @@ class REST_Controller extends \WP_REST_Controller {
 				'context' => 'edit'
 			]
 		];
-		
+
 	}
-	
+
 	function get_base_properties_schema() {
 		return [
-			
+
 			'id' => [
 				'description'  => esc_html__( 'Unique identifier for the object.', 'tainacan' ),
 				'type'         => 'integer',
@@ -638,7 +635,7 @@ class REST_Controller extends \WP_REST_Controller {
 			]
 		];
 	}
-	
+
 }
 
 ?>

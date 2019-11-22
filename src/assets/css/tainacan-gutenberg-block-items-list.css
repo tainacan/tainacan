@@ -22,15 +22,21 @@
       position: relative;
       fill: #555758; }
 
-.components-placeholder__fieldset p {
-  font-size: 0.875rem !important;
-  margin-top: -2px;
-  fill: #555758; }
-  .components-placeholder__fieldset p svg {
-    margin-right: 1rem;
-    top: 4px;
-    position: relative;
+.components-placeholder {
+  margin-bottom: 0;
+  background: #f6f6f6; }
+  .components-placeholder .components-placeholder__label {
+    margin-bottom: 0; }
+  .components-placeholder .components-placeholder__fieldset p {
+    font-size: 0.875rem !important;
+    margin: 12px 0;
+    color: #454647;
     fill: #555758; }
+    .components-placeholder .components-placeholder__fieldset p svg {
+      margin-right: 1rem;
+      top: 4px;
+      position: relative;
+      fill: #555758; }
 
 .wp-block-tainacan-modal {
   width: 50%; }
@@ -95,8 +101,11 @@
   .wp-block-tainacan-modal .modal-checkbox-list,
   .wp-block-tainacan-modal .modal-radio-list .components-base-control__field {
     padding: 0;
+    flex-wrap: wrap;
+    display: flex;
     display: -ms-grid;
     display: grid;
+    -ms-grid-columns: 250px 250px;
     grid-template-columns: repeat(auto-fill, 250px);
     grid-gap: 0px;
     justify-content: space-evenly;
@@ -108,6 +117,9 @@
     .wp-block-tainacan-modal .modal-checkbox-list .components-base-control,
     .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-base-control {
       overflow: hidden; }
+    .wp-block-tainacan-modal .modal-checkbox-list svg.dashicon.components-checkbox-control__checked,
+    .wp-block-tainacan-modal .modal-radio-list .components-base-control__field svg.dashicon.components-checkbox-control__checked {
+      fill: black; }
     .wp-block-tainacan-modal .modal-checkbox-list .modal-checkbox-list-item,
     .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option,
     .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item,
@@ -156,7 +168,7 @@
       color: #454647; }
 
 .wp-block-tainacan-items-list {
-  margin: 2rem 0px; }
+  margin: 2rem auto; }
   .wp-block-tainacan-items-list .components-spinner {
     position: absolute;
     right: 0; }
@@ -178,8 +190,11 @@
   .wp-block-tainacan-items-list ul.items-list.items-layout-grid,
   .wp-block-tainacan-items-list ul.items-list-edit.items-layout-grid {
     padding: 0;
+    flex-wrap: wrap;
+    display: flex;
     display: -ms-grid;
     display: grid;
+    -ms-grid-columns: 220px 220px 220px 220px 220px;
     grid-template-columns: repeat(auto-fill, 220px);
     grid-gap: 0px;
     justify-content: space-evenly;

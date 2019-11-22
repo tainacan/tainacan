@@ -4,6 +4,7 @@
             :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
             :value="value"
             @input="onInput($event)"
+            @blur="onBlur"
             type="number"
             lang="en"
             :step="getStep"/>
@@ -27,6 +28,9 @@
         methods: {
             onInput(value) {
                 this.$emit('input', value);
+            },
+            onBlur() {
+                this.$emit('blur');
             }
         }
     }

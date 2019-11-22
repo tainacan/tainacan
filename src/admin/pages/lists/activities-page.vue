@@ -78,6 +78,40 @@
                         </p>
                     </b-field>
 
+                    <b-field 
+                            style="margin-left: auto"
+                            class="header-item">
+                        <div class="control has-icons-right  is-small is-clearfix">
+                            <b-autocomplete
+                                    :data="users"
+                                    :placeholder="$i18n.get('instruction_type_search_users_filter')"
+                                    keep-first
+                                    open-on-focus
+                                    @input="fetchUsersForFiltering"
+                                    @focus.once="($event) => fetchUsersForFiltering($event.target.value)"
+                                    @select="filterActivitiesByUser"
+                                    :loading="isFetchingUsers"
+                                    field="name"
+                                    icon="account">
+                                <template slot-scope="props">
+                                    <div class="media">
+                                        <div
+                                                v-if="props.option.avatar_urls && props.option.avatar_urls['24']"
+                                                class="media-left">
+                                            <img
+                                                    width="24"
+                                                    :src="props.option.avatar_urls['24']">
+                                        </div>
+                                        <div class="media-content">
+                                            {{ props.option.name }}
+                                        </div>
+                                    </div>
+                                </template>
+                            <template slot="empty">{{ $i18n.get('info_no_user_found') }}</template>
+                            </b-autocomplete>
+                        </div>
+                    </b-field>
+
                     <b-field class="header-item">
                         <div class="control has-icons-right  is-small is-clearfix">
                             <input
@@ -237,7 +271,10 @@
                 tab: '',
                 isItemLevel: false,
                 searchQuery: '',
-                searchDates: []
+                searchDates: [],
+                users: [],
+                isFetchingUsers: false,
+                userIdForFiltering: null
             }
         },
         components: {
@@ -248,7 +285,8 @@
             ...mapActions('activity', [
                 'fetchActivities',
                 'fetchCollectionActivities',
-                'fetchItemActivities'
+                'fetchItemActivities',
+                'fetchUsers'
             ]),
             ...mapGetters('activity', [
                 'getActivities'
@@ -315,10 +353,11 @@
 
                 if(this.isRepositoryLevel) {
                     this.fetchActivities({
-                        'page': this.activitiesPage,
-                        'activitiesPerPage': this.activitiesPerPage,
-                        'search': this.searchQuery,
-                        'searchDates': [dataInit, dataEnd]
+                        page: this.activitiesPage,
+                        activitiesPerPage: this.activitiesPerPage,
+                        search: this.searchQuery,
+                        searchDates: [dataInit, dataEnd],
+                        authorId: this.userIdForFiltering
                     })
                         .then((res) => {
                             this.isLoading = false;
@@ -329,11 +368,12 @@
                         });
                 } else if (!this.isRepositoryLevel && !this.isItemLevel) {
                     this.fetchCollectionActivities({
-                        'page': this.activitiesPage,
-                        'activitiesPerPage': this.activitiesPerPage,
-                        'collectionId': this.$route.params.collectionId,
-                        'search': this.searchQuery,
-                        'searchDates': [dataInit, dataEnd]
+                        page: this.activitiesPage,
+                        activitiesPerPage: this.activitiesPerPage,
+                        collectionId: this.$route.params.collectionId,
+                        search: this.searchQuery,
+                        searchDates: [dataInit, dataEnd],
+                        authorId: this.userIdForFiltering
                     })
                         .then((res) => {
                             this.isLoading = false;
@@ -344,11 +384,12 @@
                         });
                 } else {
                     this.fetchItemActivities({
-                        'page': this.activitiesPage,
-                        'activitiesPerPage': this.activitiesPerPage,
-                        'itemId': this.$route.params.itemId,
-                        'search': this.searchQuery,
-                        'searchDates': [dataInit, dataEnd]
+                        page: this.activitiesPage,
+                        activitiesPerPage: this.activitiesPerPage,
+                        itemId: this.$route.params.itemId,
+                        search: this.searchQuery,
+                        searchDates: [dataInit, dataEnd],
+                        authorId: this.userIdForFiltering
                     })
                         .then((res) => {
                             this.isLoading = false;
@@ -391,6 +432,10 @@
                 this.searchDates = null;
                 this.searchActivities();
             },
+            filterActivitiesByUser(user) {
+                this.userIdForFiltering = user != null && user.id != undefined ? user.id : null;
+                this.loadActivities();
+            },
             dateFormatter(dateObject) {
                 if (dateObject == null || dateObject.length == 0 || dateObject[0] == null || dateObject[1] == null)
                     return "";
@@ -401,7 +446,21 @@
                     moment(dateString[0], this.dateFormat).toDate(),
                     moment(dateString[1], this.dateFormat).toDate()
                 ];
-            }
+            },
+            fetchUsersForFiltering: _.debounce(function (search) {
+
+                this.isFetchingUsers = true;
+
+                this.fetchUsers({ search: search })
+                    .then((users) => {
+                        this.users = users;
+                        this.isFetchingUsers = false;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingPages = false;
+                    });
+            }, 500)
         },
         computed: {
             activities(){
@@ -486,7 +545,7 @@
             .button {
                 display: flex;
                 align-items: center;
-                border-radius: 0 !important;
+                border-radius: 0px !important;
                 height: 1.95rem !important;
             }
             

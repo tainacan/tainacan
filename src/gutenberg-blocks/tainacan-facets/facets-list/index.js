@@ -165,7 +165,7 @@ registerBlockType('tainacan/facets-list', {
                                         ?    
                                     facet.entity['header_image']
                                         : 
-                                    `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`
+                                    `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`
                                 }
                                 alt={ facet.label ? facet.label : __( 'Thumbnail', 'tainacan' ) }/>
                         : null 
@@ -181,7 +181,7 @@ registerBlockType('tainacan/facets-list', {
                                         ?    
                                     facet.entity.thumbnail['thumbnail'][0] 
                                         : 
-                                    `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                                    `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`)
                                 }
                                 alt={ facet.label ? facet.label : __( 'Thumbnail', 'tainacan' ) }/>
                         : null 
@@ -243,13 +243,13 @@ registerBlockType('tainacan/facets-list', {
                     if (metadatumType == 'Taxonomy') {
                         for (let facet of response.data.values) {
                             facetsObject.push(Object.assign({ 
-                                url: facet.entity && facet.entity.url ? facet.entity.url : tainacan_plugin.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
+                                url: facet.entity && facet.entity.url ? facet.entity.url : tainacan_blocks.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
                             }, facet));
                         }
                     } else {
                         for (let facet of response.data.values) {
                             facetsObject.push(Object.assign({ 
-                                url: tainacan_plugin.site_url + '/' + collectionSlug + '/#/?metaquery[0][key]=' + metadatumId + '&metaquery[0][value]=' + facet.value
+                                url: tainacan_blocks.site_url + '/' + collectionSlug + '/#/?metaquery[0][key]=' + metadatumId + '&metaquery[0][value]=' + facet.value
                             }, facet));
                         }
                     }
@@ -565,7 +565,7 @@ registerBlockType('tainacan/facets-list', {
                         icon={(
                             <img
                                 width={148}
-                                src={ `${tainacan_plugin.base_url}/admin/images/tainacan_logo_header.svg` }
+                                src={ `${tainacan_blocks.base_url}/admin/images/tainacan_logo_header.svg` }
                                 alt="Tainacan Logo"/>
                         )}>
                         <p>
@@ -664,9 +664,9 @@ registerBlockType('tainacan/facets-list', {
                     cloud-rate={ cloudRate }
                     grid-margin={ gridMargin }
                     max-facets-number={ maxFacetsNumber }
-                    tainacan-api-root={ tainacan_plugin.root }
-                    tainacan-base-url={ tainacan_plugin.base_url }
-                    tainacan-site-url={ tainacan_plugin.site_url }
+                    tainacan-api-root={ tainacan_blocks.root }
+                    tainacan-base-url={ tainacan_blocks.base_url }
+                    tainacan-site-url={ tainacan_blocks.site_url }
                     id={ 'wp-block-tainacan-facets-list_' + blockId }>
                         { content }
                 </div>

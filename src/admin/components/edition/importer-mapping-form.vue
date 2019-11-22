@@ -49,15 +49,15 @@
                     </template>
                     <div
                             class="source-metadatum"
-                            v-for="(source_metadatum, index) of importerSourceInfo.source_metadata"
+                            v-for="(sourceMetadatum, index) of importerSourceInfo.source_metadata"
                             :key="index">
-                        <p>{{ source_metadatum }}</p>
+                        <p>{{ sourceMetadatum }}</p>
                         <b-select
                                 v-if="collectionMetadata != undefined &&
                                     collectionMetadata.length > 0 &&
                                     !isFetchingCollectionMetadata"
-                                :value="checkCurrentSelectedCollectionMetadatum(source_metadatum)"
-                                @input="onSelectCollectionMetadata($event, source_metadatum)"
+                                :value="checkCurrentSelectedCollectionMetadatum(sourceMetadatum)"
+                                @input="onSelectCollectionMetadata($event, sourceMetadatum)"
                                 :placeholder="$i18n.get('label_select_metadatum')">
                             <option :value="undefined">
                                 {{ $i18n.get('label_select_metadatum') }}
@@ -193,6 +193,88 @@
             </div>
         </form>
 
+        <!-- Prompt to show title -->
+        <b-modal 
+                v-if="importerSourceInfo"
+                :active.sync="showTitlePromptModal"
+                :can-cancel="false"
+                :width="820"
+                scroll="keep"
+                trap-focus                
+                autofocus
+                role="dialog"
+                tabindex="-1"
+                aria-modal>
+            <form class="tainacan-modal-content tainacan-form">
+                <div class="tainacan-modal-title">
+                    <h2>{{ $i18n.get('instruction_select_title_mapping') }}</h2>
+                    <hr>
+                </div>
+                <div class="columns">
+                    <div class="column">
+                        <p style="margin: 12px 0px 24px 0px">{{ $i18n.get('info_title_mapping') }}</p>
+                        <b-field>
+                            <b-select
+                                    expanded
+                                    v-model="selectedTitle"
+                                    :placeholder="$i18n.get('label_select_metadatum')">
+                                <option
+                                        v-for="(sourceMetadatum, index) of importerSourceInfo.source_metadata"
+                                        :key="index"
+                                        :value="index">
+                                    <span class="metadatum-name">
+                                        {{ sourceMetadatum }}
+                                    </span>
+                                </option>
+                            </b-select>
+                        </b-field>
+                    </div>
+                    <div 
+                            style="text-align: right"
+                            class="column">
+                        <div 
+                                v-for="item in 4"
+                                :key="item"
+                                class="item-demo">
+                            <p>{{ selectedTitle == '' || selectedTitle == undefined ? $i18n.get('label_title') : importerSourceInfo.source_metadata[selectedTitle] }}</p>
+                            <div />
+                        </div>
+                    </div>   
+                </div>
+                <div 
+                        style="margin-top: -24px"
+                        class="field is-grouped form-submit">
+                    <div class="control">
+                        <button 
+                                class="button is-outlined" 
+                                type="button"
+                                @click="selectedTitle = ''; showTitlePromptModal = false;">
+                            {{ $i18n.get('cancel') }}
+                        </button>
+                    </div>
+                    <div 
+                            style="margin-left: auto"
+                            class="control">
+                        <button 
+                                class="button is-secondary" 
+                                type="button"
+                                @click="selectedTitle = ''; showTitlePromptModal = false; onRunImporter(true)">
+                            {{ $i18n.get('skip') }}
+                        </button>
+                    </div>
+                    <div class="control">
+                        <button 
+                                type="submit"
+                                class="button is-success"
+                                @click="onConfirmTitleSelection"
+                                :disabled="selectedTitle === '' || selectedTitle == undefined">
+                            {{ $i18n.get('apply') }}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </b-modal>
+
         <b-loading 
                 :active.sync="isLoading" 
                 :can-cancel="false"/>
@@ -229,7 +311,9 @@ export default {
             metadatum: {},
             editedMetadatum: {},
             backgroundProcess: undefined,
-            metadataSearchCancel: undefined
+            metadataSearchCancel: undefined,
+            showTitlePromptModal: false,
+            selectedTitle: undefined
         }
     },
     components: {
@@ -286,6 +370,8 @@ export default {
                         .then(importerSourceInfo => {    
                             this.importerSourceInfo = importerSourceInfo;
                             this.mappedCollection['total_items'] = this.importerSourceInfo.source_total_items;
+
+                            this.loadMetadata();
                         })
                         .catch((errors) => {
                             this.$console.log(errors);
@@ -307,25 +393,24 @@ export default {
                 isRepositoryLevel: false, 
                 isContextEdit: false 
             }).then((resp) => {
-                    resp.request
-                        .then((metadata) => {
-                            this.collectionMetadata = JSON.parse(JSON.stringify(metadata));
-                            this.isFetchingCollectionMetadata = false;
+                resp.request
+                    .then((metadata) => {
+                        this.collectionMetadata = JSON.parse(JSON.stringify(metadata));
+                        this.isFetchingCollectionMetadata = false;
 
-                            this.fetchMappingImporter({ collection: this.collectionId, sessionId: this.sessionId })
-                                .then(res => {
-                                    if( res ) {
-                                        this.mappedCollection['mapping'] = res;
-                                    }
-                                })
-                        })
-                        .catch((error) => {
-                            this.$console.error(error);
-                            this.isFetchingCollectionMetadata = false;
-                        });
-                        
-                        // Search Request Token for cancelling
-                        this.metadataSearchCancel = resp.source;
+                        this.fetchMappingImporter({ collection: this.collectionId, sessionId: this.sessionId })
+                            .then(res => {
+                                if (res)
+                                    this.mappedCollection['mapping'] = res;
+                            });
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingCollectionMetadata = false;
+                    });
+                    
+                    // Search Request Token for cancelling
+                    this.metadataSearchCancel = resp.source;
                 })
                 .catch(() => this.isFetchingCollectionMetadata = false);   
         },
@@ -339,21 +424,33 @@ export default {
                 let val = this.mappedCollection['mapping'][metadatumId];
                 const { source_metadata } = this.importerSourceInfo;
 
-                if(source_metadata && source_metadata.indexOf(val) >= 0) {
+                if (source_metadata && source_metadata.indexOf(val) >= 0)
                     return true;
-                }
             }
 
             return false;
         },
         checkCurrentSelectedCollectionMetadatum(sourceMetadatum) {
             for (let key in this.mappedCollection['mapping']) {
-                if(this.mappedCollection['mapping'][key] == sourceMetadatum)
+                if (this.mappedCollection['mapping'][key] == sourceMetadatum)
                     return key;
             }
             return undefined;
         },
-        onRunImporter() {
+        onRunImporter(skipTitleCheck) {
+
+            if (skipTitleCheck !== true) {
+                let coreTitleIndex = this.collectionMetadata.findIndex((metadatum) => metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Title');
+                if (coreTitleIndex >= 0 &&
+                    this.mappedCollection &&
+                    this.mappedCollection.mapping &&
+                    !this.mappedCollection.mapping[this.collectionMetadata[coreTitleIndex].id]
+                ) {
+                    this.showTitlePromptModal = true;
+                    return;     
+                }
+            }
+        
             this.isLoadingRun = true;
             this.updateImporterCollection({ sessionId: this.sessionId, collection: this.mappedCollection })
                 .then(updatedImporter => {    
@@ -454,6 +551,15 @@ export default {
             this.isEditingMetadatum = false;
             this.isNewMetadatumModalActive = false;
             this.selectedMetadatumType = undefined;
+        },
+        onConfirmTitleSelection(event) {
+            event.preventDefault();
+            let coreTitleIndex = this.collectionMetadata.findIndex((metadatum) => metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Title');
+            if (coreTitleIndex >= 0)
+                this.onSelectCollectionMetadata(this.collectionMetadata[coreTitleIndex].id, this.importerSourceInfo.source_metadata[this.selectedTitle])
+            
+            this.showTitlePromptModal = false;
+            this.onRunImporter();
         }
     },
     created() {
@@ -468,8 +574,7 @@ export default {
             this.importerName = importerTypes[this.importerType].name;
         });
 
-        this.loadImporter();    
-        this.loadMetadata();
+        this.loadImporter();
     },
     beforeDestroy() {
         // Cancels previous Request
@@ -552,6 +657,7 @@ export default {
 
     .source-metadatum {
         padding: 2px 0;
+        min-height: 35px;
         border-bottom: 1px solid $gray2;
         width: 100%;
         margin-bottom: 6px;
@@ -600,8 +706,27 @@ export default {
         }
     }
 
+    .item-demo {
+        display: inline-block;
+        margin: 8px 12px;
 
-
+        p {
+            max-width: 74px;
+            font-size: 0.875rem;
+            color: $gray5;
+            margin: 4px 8px;
+            text-align: left;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        div {
+            height: 90px;
+            width: 90px;
+            background-color: $gray2;
+            border-radius: 2px;
+        }
+    }
 </style>
 
 

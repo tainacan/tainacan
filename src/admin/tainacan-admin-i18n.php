@@ -84,6 +84,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'clear_radio'                                    => __( 'Clear selected radio', 'tainacan' ),
 	'undo'                                           => __( 'Undo', 'tainacan' ),
 	'delete'                                    	 => __( 'Delete', 'tainacan' ),
+	'skip'	                                    	 => __( 'Skip', 'tainacan' ),
 
 	// Wordpress Status
 	'status_publish'                                 => __( 'Publish', 'tainacan' ),
@@ -454,6 +455,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_a_metadatum'                 => __( 'Select a metadatum', 'tainacan' ),
 	'instruction_cover_page'                         => __( 'Type to search a Page to choose.', 'tainacan' ),
 	'instruction_moderators'                         => __( 'Type to search a User to add.', 'tainacan' ),
+	'instruction_type_search_users_filter'           => __( 'Type to search users to filter...', 'tainacan' ),
 	'instruction_select_a_parent_collection'         => __( 'Select a parent collection.', 'tainacan' ),
 	'instruction_select_collection_thumbnail'        => __( 'Select a thumbnail image for collection', 'tainacan' ),
 	'instruction_select_item_thumbnail'              => __( 'Select a thumbnail image for item', 'tainacan' ),
@@ -491,7 +493,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_type_value_year' 				     => __( 'Type year value', 'tainacan' ),
 	'instruction_select_the_amount_of_copies'		 => __( 'Select the amount of copies of the item that you want to create', 'tainacan'),
 	'instruction_select_a_interval'		 			 => __( 'Select an interval', 'tainacan'),
-	
+	'instruction_select_title_mapping'				 => __( 'Before runnning import, consider selecting the title source metadata', 'tainacan'),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every published item, including those visible only to editors.', 'tainacan' ),
@@ -671,6 +673,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_initial_value'                             => __( 'Initial value', 'tainacan' ),
 	'info_final_value'                               => __( 'Final value', 'tainacan' ),
 	'info_show_interval_on_tag'                      => __( 'Show applied interval on tags', 'tainacan' ),
+	'info_title_mapping'							 => __( 'The title is the most relevant metadata, that shall identify your item on lists for different view modes. Select the title source metadata first, or skip to run importer as it is.', 'taincan'),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),

@@ -85,6 +85,8 @@
                 -webkit-font-smoothing: antialiased;
                 -moz-osx-font-smoothing: grayscale;
                 transform: none !important;
+                text-transform: none !important;
+                letter-spacing: normal !important;
                 font-size: 20px;
                 margin-top: -2px;
             }

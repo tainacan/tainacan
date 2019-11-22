@@ -363,7 +363,7 @@ export default class TermsModal extends React.Component {
                                         { term.header_image ?
                                             <img
                                                 aria-hidden
-                                                src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                                                src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`}
                                                 alt={ term.header_image && term.header_image[0] ? term.header_image[0].alt : term.name }/>
                                             : null
                                         }
@@ -396,7 +396,7 @@ export default class TermsModal extends React.Component {
                                         { term.header_image ?
                                             <img
                                                 aria-hidden
-                                                src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                                                src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`}
                                                 alt={ term.header_image && term.header_image[0] ? term.header_image[0].alt : term.name }/>
                                             : null
                                         }

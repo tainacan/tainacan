@@ -1,7 +1,7 @@
 @import '../../gutenberg-blocks-style.scss';
 
 .wp-block-tainacan-carousel-items-list {
-    margin: 2rem 0px;
+    margin: 2rem auto;
 
     // Spinner
     .spinner-container {
@@ -72,14 +72,15 @@
             h3 { 
                 color: white; 
                 text-decoration: none;
-                font-size: 1.3rem;
+                font-size: 1.3em;
+                margin: 0;
                 &:hover {
                     text-decoration: none;
                 }
             }
             span.label { 
                 font-weight: normal; 
-                font-size: 1rem;
+                font-size: 0.75em;
             }
 
             &.only-collection-name {
@@ -152,7 +153,7 @@
                 text-decoration: none;
                 padding: 8px 16px;
                 display: block;
-                line-height: 1.2rem;
+                line-height: 1.2em;
             }
             a>img {
                 width: 100%;

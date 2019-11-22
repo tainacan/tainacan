@@ -530,7 +530,7 @@ export default {
                     color: $blue5;
                     height: 27px;
                     font-size: 18px !important;
-                    height: 2rem !important;
+                    height: auto !important;
                 }
             }
             a {

@@ -81,9 +81,9 @@ class Elastic_Press {
 
 		if ($item instanceof Entities\Item) {
 			$ids_meta = array_keys ($post_args['meta']);
-			\array_filter(function($n) {
+			$ids_meta = \array_filter($ids_meta, function($n) {
 				if (is_numeric($n)) return intval($n);
-			}, $ids_meta);
+			});
 
 			$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 			$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
@@ -284,8 +284,8 @@ class Elastic_Press {
 						$new_sort["post_name.raw"] = $value;
 					} elseif ($key == 'post_type') {
 						$new_sort["post_type.raw"] = $value;
-					} elseif( !in_array("long", $parts) && in_array("meta", $parts) ) {
-						$new_sort["$key.sortable"] = $value;
+					// } elseif( !in_array("long", $parts) && in_array("meta", $parts) ) {
+					// 	$new_sort["$key.sortable"] = $value;
 					} else {
 						$new_sort[$key] = $value;
 					}
