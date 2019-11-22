@@ -121,7 +121,7 @@ registerBlockType('tainacan/terms-list', {
                         target="_blank"
                         className={ (!showName ? 'term-without-name' : '') + ' ' + (!showImage ? 'term-without-image' : '') }>
                         <img
-                            src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                            src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`}
                             alt={ term.header_image && term.header_image[0] ? term.header_image[0].alt : term.name }/>
                         <span>{ term.name ? term.name : '' }</span>
                     </a>
@@ -290,7 +290,7 @@ registerBlockType('tainacan/terms-list', {
                         icon={(
                             <img
                                 width={148}
-                                src={ `${tainacan_plugin.base_url}/admin/images/tainacan_logo_header.svg` }
+                                src={ `${tainacan_blocks.base_url}/admin/images/tainacan_logo_header.svg` }
                                 alt="Tainacan Logo"/>
                         )}>
                         <p>

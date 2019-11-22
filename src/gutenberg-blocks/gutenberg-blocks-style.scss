@@ -28,16 +28,25 @@
         }
     }
 }
-.components-placeholder__fieldset p {
-    font-size: 0.875rem !important;
-    margin-top: -2px;
-    fill: #555758;
+.components-placeholder {
+    margin-bottom: 0;
+    background: #f6f6f6;
 
-    svg {
-        margin-right: 1rem; 
-        top: 4px;
-        position: relative;
+    .components-placeholder__label {
+        margin-bottom: 0;
+    }
+    .components-placeholder__fieldset p {
+        font-size: 0.875rem !important;
+        margin: 12px 0;
+        color: #454647;
         fill: #555758;
+
+        svg {
+            margin-right: 1rem; 
+            top: 4px;
+            position: relative;
+            fill: #555758;
+        }
     }
 }
 
@@ -154,6 +163,10 @@
 
         .components-base-control {
             overflow: hidden;
+        }
+
+        svg.dashicon.components-checkbox-control__checked {
+            fill: black;
         }
     
         .modal-checkbox-list-item,

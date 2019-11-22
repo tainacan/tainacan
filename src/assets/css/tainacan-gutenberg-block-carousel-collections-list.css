@@ -22,15 +22,21 @@
       position: relative;
       fill: #555758; }
 
-.components-placeholder__fieldset p {
-  font-size: 0.875rem !important;
-  margin-top: -2px;
-  fill: #555758; }
-  .components-placeholder__fieldset p svg {
-    margin-right: 1rem;
-    top: 4px;
-    position: relative;
+.components-placeholder {
+  margin-bottom: 0;
+  background: #f6f6f6; }
+  .components-placeholder .components-placeholder__label {
+    margin-bottom: 0; }
+  .components-placeholder .components-placeholder__fieldset p {
+    font-size: 0.875rem !important;
+    margin: 12px 0;
+    color: #454647;
     fill: #555758; }
+    .components-placeholder .components-placeholder__fieldset p svg {
+      margin-right: 1rem;
+      top: 4px;
+      position: relative;
+      fill: #555758; }
 
 .wp-block-tainacan-modal {
   width: 50%; }
@@ -111,6 +117,9 @@
     .wp-block-tainacan-modal .modal-checkbox-list .components-base-control,
     .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-base-control {
       overflow: hidden; }
+    .wp-block-tainacan-modal .modal-checkbox-list svg.dashicon.components-checkbox-control__checked,
+    .wp-block-tainacan-modal .modal-radio-list .components-base-control__field svg.dashicon.components-checkbox-control__checked {
+      fill: black; }
     .wp-block-tainacan-modal .modal-checkbox-list .modal-checkbox-list-item,
     .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option,
     .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item,
@@ -298,7 +307,8 @@
         display: grid;
         grid-template-columns: 33% 33% 33%;
         grid-template-rows: 50% 50%;
-        width: 100%; }
+        width: 100%;
+        box-sizing: border-box; }
         .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid .collection-items-grid img:first-of-type {
           flex-basis: 100%;
           -ms-grid-column: 1;

@@ -39,15 +39,13 @@
                         class="active-filters-area"
                         @change="handleChangeOnFilter"
                         :class="{'filters-area-receive': isDraggingFromAvailable}" 
-                        v-model="activeFilterList" 
-                        :options="{
-                            group: { name:'filters', pull: false, put: true }, 
-                            sort: (openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel, 
-                            //disabled: openedFilterId != '' && openedFilterId != undefined,
-                            handle: '.handle', 
-                            ghostClass: 'sortable-ghost',
-                            filter: 'not-sortable-item', 
-                            animation: '250'}"> 
+                        v-model="activeFilterList"
+                        :group="{ name:'filters', pull: false, put: true }"
+                        :sort="(openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel"
+                        :handle="'.handle'" 
+                        ghost-class="sortable-ghost"
+                        filter="not-sortable-item" 
+                        :animation="250"> 
                     <div  
                             class="active-filter-item" 
                             :class="{
@@ -166,11 +164,9 @@
                             @change="handleChangeOnMetadata"
                             v-if="availableMetadata.length > 0 && !isLoadingMetadatumTypes"
                             v-model="availableMetadata"
-                            :options="{ 
-                                sort: false, 
-                                group: { name:'filters', pull: !isSelectingFilterType, put: false, revertClone: true },
-                                dragClass: 'sortable-drag'
-                            }">
+                            :sort="false" 
+                            :group="{ name:'filters', pull: !isSelectingFilterType, put: false, revertClone: true }"
+                            drag-class="sortable-drag">
                         <div 
                                 class="available-metadatum-item"
                                 :class="{

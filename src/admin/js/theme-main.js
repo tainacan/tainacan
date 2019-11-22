@@ -118,7 +118,8 @@ function listen(evnt, elem, func) {
          return r;
     }
     else {
-        jQuery('head').append('<style>.tainacan-icon{ opacity: 1 !important; }</style>');
+        if (jQuery && jQuery('head'))
+            jQuery('head').append('<style>.tainacan-icon{ opacity: 1 !important; }</style>');
     }
 }
 listen("load", window, function() {

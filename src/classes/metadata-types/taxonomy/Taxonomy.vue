@@ -86,10 +86,6 @@
                     this.valueComponent = values;
                 }
             },
-            onInput($event) {
-                this.valueComponent = $event;
-                this.$emit('input', this.valueComponent);
-            },
             reload($event) {
                 if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatum.metadatum.id) {
                     this.valueComponent = $event.values;

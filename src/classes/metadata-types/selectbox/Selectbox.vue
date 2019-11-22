@@ -37,7 +37,7 @@
         methods: {
             onSelected(value) {
                 this.$emit('input', value);
-            },
+            }
         }
     }
 </script>

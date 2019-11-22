@@ -224,7 +224,7 @@ export default class CollectionsModal extends React.Component {
                                         { collection.thumbnail ?
                                             <img
                                                 aria-hidden
-                                                src={ collection.thumbnail && collection.thumbnail[0] && collection.thumbnail[0].src ? collection.thumbnail[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                                                src={ collection.thumbnail && collection.thumbnail[0] && collection.thumbnail[0].src ? collection.thumbnail[0].src : `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`}
                                                 alt={ collection.thumbnail && collection.thumbnail[0] ? collection.thumbnail[0].alt : collection.name }/>
                                             : null
                                         }
@@ -257,7 +257,7 @@ export default class CollectionsModal extends React.Component {
                                         { collection.thumbnail ?
                                             <img
                                                 aria-hidden
-                                                src={ collection.thumbnail && collection.thumbnail[0] && collection.thumbnail[0].src ? collection.thumbnail[0].src : `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`}
+                                                src={ collection.thumbnail && collection.thumbnail[0] && collection.thumbnail[0].src ? collection.thumbnail[0].src : `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`}
                                                 alt={ collection.thumbnail && collection.thumbnail[0] ? collection.thumbnail[0].alt : collection.name }/>
                                             : null
                                         }

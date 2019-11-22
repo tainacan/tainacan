@@ -174,9 +174,9 @@ export const updateTerm = ({ commit }, { taxonomyId, id, name, description, pare
 export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, order, offset, number}) => {
     
     let query = '';
-    if (order == undefined) {
+    
+    if (order == undefined)
         order = 'asc';
-    }
 
     if(fetchOnly && search && !all ){
         query = `?order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
@@ -188,9 +188,11 @@ export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, orde
         query =`?hideempty=0&order=${order}`;
     }
 
-    if (offset != undefined && number != undefined) {
-        query += '&offset=' + offset + '&number=' + number;
-    }
+    if (number != undefined)
+        query += '&number=' + number;
+    
+    if (offset != undefined)
+        query += '&offset=' + offset;
 
     return new Promise((resolve, reject) => {
         axios.tainacan.get(`/taxonomy/${taxonomyId}/terms${query}`)
