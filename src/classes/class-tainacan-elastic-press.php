@@ -48,10 +48,10 @@ class Elastic_Press {
 		add_filter( 'ep_config_mapping', [$this, 'elasticpress_config_mapping'], 10, 1 );
 		add_filter( 'ep_post_sync_args', [$this, 'ep_post_sync_args'], 10, 2 );
 
-		add_action('ep_add_query_log', function($query) { //using to DEBUG
-			error_log("DEGUG:");
-			error_log($query["args"]["body"]);
-		});
+		// add_action('ep_add_query_log', function($query) { //using to DEBUG
+		// 	error_log("DEGUG:");
+		// 	error_log($query["args"]["body"]);
+		// });
 	}
 
 	function elasticpress_config_mapping( $mapping ) {
