@@ -59,7 +59,7 @@ class Elastic_Press {
 		$array_dynamic_templates = $mapping["mappings"]["post"]["dynamic_templates"];
 		foreach ($array_dynamic_templates as $key => $dynamic_templates) {
 			if ( isset($dynamic_templates['template_meta_types'] )) {
-				$mapping["mappings"]["post"]["dynamic_templates"][$key]['template_meta_types']["mapping"]["properties"][$name_field] = ['type' => 'keyword'];
+				$mapping["mappings"]["post"]["dynamic_templates"][$key]['template_meta_types']["mapping"]["properties"][$name_field] = ['type' => 'keyword', 'normalizer' => 'lowerasciinormalizer'];
 				// $mapping["mappings"]["post"]["dynamic_templates"][$key]['template_meta_types']["mapping"]["properties"][$name_field] =
 				// 	['type' => 'nested',
 				// 	 'properties' => [
