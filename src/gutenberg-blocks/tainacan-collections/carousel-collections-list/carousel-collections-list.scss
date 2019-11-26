@@ -207,6 +207,10 @@
         }
     }
 
+    &.alignfull .swiper-button-prev, .swiper-button-next {
+        margin: 0 6px;
+    }
+
     // Carousel placeholder on editor side  ----------------------------------------------------
     .collections-list-edit-container,
     .tainacan-carousel {
