@@ -1,7 +1,7 @@
 <template>
     <b-field
             :addons="false"
-            :message="getErrorMessage"
+            :message="errorMessage"
             :type="metadatumTypeMessage">
         <span   
                 class="collapse-handle"
@@ -112,29 +112,27 @@
         },
         data(){
             return {
-                inputs: []
+                inputs: [],
+                errorMessage: ''
             }
         },
         computed: {
-            getErrorMessage() {
-                let errorMessage = '';
-                let errors = eventBus.getErrors(this.metadatum.metadatum.id);
-
-                if (errors) {
-                    for (let error of errors) { 
-                        for (let index of Object.keys(error))
-                            errorMessage += error[index] + '\n';
-                    }
-                }
-
-                return errorMessage;
-            },
             metadatumTypeMessage() {
-                return this.getErrorMessage ? 'is-danger' : ''
+                return this.errorMessage ? 'is-danger' : ''
             }
         },
         created() {
             this.createInputs();
+            eventBus.$on('updateErrorMessageOf#' + this.metadatum.metadatum.id, (errors) => {
+                let updatedErrorMessage = '';
+                if (errors && this.metadatum.metadatum.id == errors.metadatum_id && errors.errors) {
+                    for (let error of errors.errors) { 
+                        for (let index of Object.keys(error))
+                            updatedErrorMessage += error[index] + '\n';
+                    }
+                }
+                this.errorMessage = updatedErrorMessage;
+            })
         },
         methods: {
             changeValue: _.debounce(function() {
@@ -202,6 +200,9 @@
                 const array = ['tainacan-relationship','tainacan-taxonomy'];
                 return !(array.indexOf(component) >= 0 );
             }
+        },
+        beforeDestroy() {
+            eventBus.$off('updateErrorMessageOf#' + this.metadatum.metadatum.id);
         }
     }
 </script>
