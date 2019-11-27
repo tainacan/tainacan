@@ -10,7 +10,7 @@
     .tainacan-search-container {
         width: 100%;
 
-        #taincan-search-bar-block {
+        #tainacan-search-bar-block {
             height: 32px;
             max-width: 100%;
             display: flex;
@@ -34,7 +34,7 @@
                 border: 1px solid #545758;
             }
 
-            input#taincan-search-bar-block_input {
+            input#tainacan-search-bar-block_input {
                 width: 100%;
                 min-width: 28px;
                 margin: 0;
@@ -66,7 +66,7 @@
                 margin-right: 0px;
                 max-width: 100% !important;
                 
-                input#taincan-search-bar-block_input  {
+                input#tainacan-search-bar-block_input  {
                     width: 100% !important;
                 }
             } 
@@ -88,7 +88,7 @@
     }
 
     &.is-style-alternate {
-        #taincan-search-bar-block {
+        #tainacan-search-bar-block {
             width: 100%;
             display: flex;
             flex-direction: row-reverse;
@@ -107,7 +107,7 @@
             &:hover {
                 border: none;
             }
-            input#taincan-search-bar-block_input  {
+            input#tainacan-search-bar-block_input  {
                 width: 35%;
                 border-radius: 0;
                 margin-left: -52px;
@@ -123,6 +123,9 @@
                     border-color: #cbcbcb;
                     background:rgba(250, 250, 250, 1);
                     box-shadow: none;
+                }
+                &::placeholder {
+                    color: #cbcbcb;
                 }
             }
 
@@ -151,7 +154,7 @@
                 margin-right: 0px;
                 max-width: 100% !important;
 
-                input#taincan-search-bar-block_input  {
+                input#tainacan-search-bar-block_input  {
                     width: 100% !important;
                 }
             } 
@@ -160,7 +163,7 @@
         // This style has particular alignments properties.
         .search-bar-collection-header-container {
             .tainacan-search-container {
-                #taincan-search-bar-block {
+                #tainacan-search-bar-block {
                     &:focus,
                     &:active,
                     &:hover {
@@ -176,9 +179,8 @@
                         }
                     }
 
-                    input#taincan-search-bar-block_input {
+                    input#tainacan-search-bar-block_input {
                         color: white;
-                        &::placeholder { color: white; }
 
                         &:focus,
                         &:active,
@@ -201,7 +203,7 @@
     }
 
     &.is-style-stylish {
-        #taincan-search-bar-block {
+        #tainacan-search-bar-block {
             width: 100%;
             height: 53px;
             display: flex;
@@ -214,14 +216,14 @@
                 border: none;
             }
 
-            &:hover input#taincan-search-bar-block_input {
+            &:hover input#tainacan-search-bar-block_input {
                 width: 100%;
                 padding-right: 52px;
                 padding-left: 24px;
                 border-width: 0;
             }
 
-            input#taincan-search-bar-block_input {
+            input#tainacan-search-bar-block_input {
                 width: 0%;
                 min-width: 0%;
                 border-radius: 28px;
@@ -231,7 +233,7 @@
                 font-size: 1rem;
                 border-width: 0;
                 background: #f2f2f2;
-                transition: width 0.5s ease-in;
+                transition: width 0.5s ease-in, padding 0.5s ease-in;
 
                 &:focus,
                 &:active,
@@ -304,7 +306,7 @@
                 }
             }
 
-            .tainacan-search-container #taincan-search-bar-block input#taincan-search-bar-block_input {
+            .tainacan-search-container #tainacan-search-bar-block input#tainacan-search-bar-block_input {
                 background: white;
                 border-width: 3px;
                 border-style: solid;
