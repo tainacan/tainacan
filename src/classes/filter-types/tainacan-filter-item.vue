@@ -36,6 +36,7 @@
                         :is="filter.filter_type_object.component"
                         :filter="filter"
                         :query="query"
+                        :is-using-elastic-search="isUsingElasticSearch"
                         :is-repository-level="isRepositoryLevel"
                         :is-loading-items.sync="isLoadingItems"
                         @input="onInput"
@@ -63,7 +64,7 @@
         mounted() {
             if (this.isUsingElasticSearch) {
                 this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
-                    this.isLoadingOptions = isLoadingItems;
+                    this.isLoadingItems = isLoadingItems;
                 });
             }
         },

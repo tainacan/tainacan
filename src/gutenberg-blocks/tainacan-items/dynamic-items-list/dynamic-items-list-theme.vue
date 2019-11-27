@@ -440,7 +440,7 @@ export default {
             this.fetchCollectionForHeader();
        
         this.fetchItems();
-    },
+    }
 }
 </script>
 

@@ -158,7 +158,8 @@ export default {
         metadatumId: String,  
         metadatumType: String,  
         collectionId: String,  
-        collectionSlug: String,  
+        collectionSlug: String,
+        parentTermId: String,  
         showImage: Boolean,
         showItemsCount: Boolean,
         showSearchBar: Boolean,
@@ -227,7 +228,15 @@ export default {
             queryObject.offset = this.offset;
             if (this.lastTerm != undefined)
                 queryObject.last_term = this.lastTerm;
-            
+
+            // Set up parentTerm for taxonomies
+            if (this.parentTermId !== undefined && this.parentTermId !== null && this.parentTermId !== '' && this.metadatumType == 'Taxonomy')
+                queryObject.parent = this.parentTermId;
+            else {
+                delete queryObject.parent;
+                this.parentTermId = null;
+            }
+
             // Parameter fo tech entity object with image and url
             queryObject['context'] = 'extended';
 
