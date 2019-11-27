@@ -434,7 +434,7 @@ class Elastic_Press {
 								//"size" => $filter['max_options'],
 								"script" => [
 									"lang" 	=> "painless",
-									"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == 0) { return doc['$field.term_id'][i]; }}",
+									"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
 									//"source"=> "def c= [''];if(!params._source.terms.empty && params._source.$field != null){ for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 								]
 							)
@@ -561,7 +561,7 @@ class Elastic_Press {
 								"terms" => [
 									"script" => [
 										"lang"		=> "painless",
-										"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == 0) { return doc['$field.term_id'][i]; }}",
+										"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
 										//"source"	=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 									]
 								]
@@ -578,7 +578,7 @@ class Elastic_Press {
 								"terms" => array(
 									"script" => [
 										"lang" 	=> "painless",
-										"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == 0) { return doc['$field.term_id'][i]; }}",
+										"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
 										//"source"=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 									]
 								)
