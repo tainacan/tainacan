@@ -9,6 +9,14 @@
         right: 0;
     }
 
+    // For all view modes ------------------------------------------------
+    ul.terms-list li.term-list-item > button,
+    ul.terms-list li.term-list-item > button:hover {
+        display: none;
+        visibility: hidden;
+        opacity: 0;
+    }
+
     // Grid View Mode ----------------------------------------------------
     ul.terms-list.terms-layout-grid,
     ul.terms-list-edit.terms-layout-grid {

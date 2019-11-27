@@ -173,6 +173,11 @@
   .wp-block-tainacan-terms-list .components-spinner {
     position: absolute;
     right: 0; }
+  .wp-block-tainacan-terms-list ul.terms-list li.term-list-item > button,
+  .wp-block-tainacan-terms-list ul.terms-list li.term-list-item > button:hover {
+    display: none;
+    visibility: hidden;
+    opacity: 0; }
   .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid,
   .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid {
     padding: 0;

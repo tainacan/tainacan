@@ -342,6 +342,8 @@
     margin: 0 -4px; }
     .wp-block-tainacan-carousel-collections-list .swiper-button-prev svg, .wp-block-tainacan-carousel-collections-list .swiper-button-next svg {
       fill: #298596; }
+  .wp-block-tainacan-carousel-collections-list.alignfull .swiper-button-prev, .wp-block-tainacan-carousel-collections-list .swiper-button-next {
+    margin: 0 6px; }
   .wp-block-tainacan-carousel-collections-list .collections-list-edit-container,
   .wp-block-tainacan-carousel-collections-list .tainacan-carousel {
     position: relative; }

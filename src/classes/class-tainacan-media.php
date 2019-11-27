@@ -52,7 +52,7 @@ class Media {
 			return false;
 		}
 
-		$file = fopen($filename,'r');
+		$file = file_get_contents($filename);
 
 		if (false === $file) {
 			return false;
@@ -75,7 +75,7 @@ class Media {
 			return false;
 		}
 
-		return $this->insert_attachment_from_blob(fopen($filename,'r'), basename($filename), $post_id);
+		return $this->insert_attachment_from_blob(file_get_contents($filename), basename($filename), $post_id);
 
 	}
 
@@ -142,7 +142,7 @@ class Media {
 
 		do_action('tainacan-pre-insert-attachment', $blob, $filename, $post_id);
 
-		$upload = wp_upload_bits( $filename, null, '' );
+		$upload = wp_upload_bits( $filename, null, $blob );
 		if( !empty( $upload['error'] ) ) {
 			return false;
 		}

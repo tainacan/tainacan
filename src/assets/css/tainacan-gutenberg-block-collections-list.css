@@ -173,6 +173,11 @@
   .wp-block-tainacan-collections-list .components-spinner {
     position: absolute;
     right: 0; }
+  .wp-block-tainacan-collections-list ul.collections-list li.collection-list-item > button,
+  .wp-block-tainacan-collections-list ul.collections-list li.collection-list-item > button:hover {
+    display: none;
+    visibility: hidden;
+    opacity: 0; }
   .wp-block-tainacan-collections-list ul.collections-list.collections-list-without-margin,
   .wp-block-tainacan-collections-list ul.collections-list-edit.collections-list-without-margin {
     grid-template-columns: repeat(auto-fill, 185px);

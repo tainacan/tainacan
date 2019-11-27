@@ -205,6 +205,9 @@
             fill: #298596;
         }
     }
+    &.alignfull .swiper-button-prev, .swiper-button-next {
+        margin: 0 6px;
+    }
 
     // Carousel placeholder on editor side  ----------------------------------------------------
     .terms-list-edit-container,
