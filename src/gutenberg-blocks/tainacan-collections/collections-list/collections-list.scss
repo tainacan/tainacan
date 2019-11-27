@@ -9,6 +9,14 @@
         right: 0;
     }
 
+    // For all view modes ------------------------------------------------
+    ul.collections-list li.collection-list-item > button,
+    ul.collections-list li.collection-list-item > button:hover {
+        display: none;
+        visibility: hidden;
+        opacity: 0;
+    }
+
     // Grid View Mode ----------------------------------------------------
     ul.collections-list.collections-list-without-margin,
     ul.collections-list-edit.collections-list-without-margin {
