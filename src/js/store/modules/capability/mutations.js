@@ -7,12 +7,18 @@ export const addCapabilityToRole = (state, {capabilityKey, role}) => {
         updateRoles[role.slug] = role;
         Vue.set(state.capabilities[capabilityKey], 'roles', updateRoles)
     }
+
+    if (state.role && state.role.slug && state.role.slug == role)
+        Vue.set(state.role.capabilities, capabilityKey, true)
 };
 
 export const removeCapabilityFromRole = (state, {capabilityKey, role}) => {
     let updateRoles = state.capabilities[capabilityKey].roles;
     delete updateRoles[role.slug];
     Vue.set(state.capabilities[capabilityKey], 'roles', updateRoles)
+    
+    if (state.role && state.role.slug && state.role.slug == role)
+        delete state.role.capabilities[capabilityKey]
 };
 
 export const setRoles = (state, roles) => {

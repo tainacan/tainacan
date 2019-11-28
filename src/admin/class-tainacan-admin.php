@@ -55,8 +55,8 @@ class Admin {
 		$roles_cap = $dummyEntity->get_capabilities()->edit_posts;
 		$roles_page_suffix = add_submenu_page(
 			$this->menu_slug,
-			__('Roles', 'tainacan'),
-			__('Roles', 'tainacan'),
+			__('User Roles', 'tainacan'),
+			__('User Roles', 'tainacan'),
 			$roles_cap,
 			'tainacan_roles',
 			array( &$this, 'roles_page' )
