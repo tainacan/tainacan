@@ -109,7 +109,7 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 
 		wp_enqueue_script( 'tainacan-roles', $TAINACAN_BASE_URL . '/assets/roles-components.js', ['underscore', 'wp-i18n'], TAINACAN_VERSION, true );
-		
+
 		$settings = $this->get_admin_js_localization_params();
 		wp_localize_script( 'tainacan-roles', 'tainacan_plugin', $settings );
 		wp_enqueue_script('underscore');
@@ -123,7 +123,7 @@ class Admin {
 		// TODO move it to a separate file and start the Vue project
 		echo "<div id='tainacan-roles-app'></div>";
 	}
-	
+
 	function add_admin_css() {
 		global $TAINACAN_BASE_URL;
 
@@ -212,12 +212,9 @@ class Admin {
 		$user_caps = array();
 		$prefs     = array();
 		if ( $cur_user instanceof \WP_User ) {
-			if ( is_array( $cur_user->allcaps ) ) {
-				foreach ( $cur_user->allcaps as $cap => $bool ) {
-					if ( $bool === true ) {
-						$user_caps[] = $cap;
-					}
-				}
+			$tainacan_caps = \tainacan_roles()->get_repository_caps_slugs();
+			foreach ($tainacan_caps as $tcap) {
+				$user_caps[$tcap] = current_user_can( $tcap );
 			}
 			$prefs = get_user_meta( $cur_user->ID, 'tainacan_prefs', true );
 		}
