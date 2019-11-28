@@ -436,16 +436,14 @@ class REST_Roles_Controller extends REST_Controller {
 				}
 
 				// inherited roles
-				$supercaps = [];
-				if ( ( $cap == 'manage_tainacan_collection_%d' || \strpos($cap, 'tnc_col_') === 0 ) && $collection_id ) {
-					$supercaps = [
-						'manage_tainacan_collection_all',
-						'manage_tainacan_collection_' . $collection_id,
-						str_replace('%d', 'all', $cap)
-					];
-				}
-				$supercaps[] = 'manage_tainacan';
+				$supercaps = $c['supercaps'];
+
 				foreach ($supercaps as $supercap) {
+
+					if ($collection_id) {
+						$supercap = str_replace('%d', $collection_id, $supercap);
+					}
+
 					if ( array_key_exists($supercap, $role['capabilities']) ) {
 
 						$caps_return[$realcap]['roles_inherited'][$slug] = [
