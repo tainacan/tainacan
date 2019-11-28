@@ -5,7 +5,7 @@
         <br>
         <h2 class="screen-reader-text">{{ $i18n.get('Role Capabilities list') }}</h2>
         <table 
-                v-if="!isLoading"
+                v-if="!isLoadingRole"
                 class="wp-list-table widefat fixed striped capabilities">
             <thead>
                 <tr>
@@ -27,12 +27,20 @@
                             {{ $i18n.get('Name') }}
                         </a>
                     </th>
+                    <th
+                            scope="col"
+                            id="description"
+                            class="manage-column column-description">
+                        <a>
+                            {{ $i18n.get('Description') }}
+                        </a>
+                    </th>
                 </tr>
             </thead>
 
-            <tbody data-wp-lists="list:roles">
+            <tbody data-wp-lists="list:capabilities">
                 <tr
-                        v-for="(capability, index) of role.capabilities"
+                        v-for="(capability, index) of capabilities"
                         :key="index"
                         :id="'capability-' + index">
                     <th
@@ -41,20 +49,24 @@
                         <label
                                 class="screen-reader-text"
                                 :for="'capability_' + index">
-                            {{ $i18n.get('Selecionar') + ' ' + capability }}
+                            {{ $i18n.get('Selecionar') + ' ' + capability.display_name }}
                         </label>
                         <input
                             type="checkbox"
                             name="roles[]"
                             :id="'capability_'+ index"
-                            :value="index">
+                            :value="role.capabilities[index]"
+                            :checked="role.capabilities[index]">
                     </th>
                     <td 
-                            class="name column-name has-row-actions"
-                            :data-colname="$i18n.get('Role name')">
-                        <strong>
-                            <a>{{ index }}</a>
-                        </strong>
+                            class="name column-name"
+                            :data-colname="$i18n.get('Capability name')">
+                        <strong>{{ capability.display_name }}</strong>
+                    </td>
+                    <td 
+                            class="description column-descritption"
+                            :data-colname="$i18n.get('Capabilitiy description')">
+                        {{ capability.description }}
                     </td>
                 </tr>
             </tbody>
@@ -79,6 +91,14 @@
                             {{ $i18n.get('Name') }}
                         </a>
                     </th>
+                    <th
+                            scope="col"
+                            id="description"
+                            class="manage-column column-description">
+                        <a>
+                            {{ $i18n.get('Description') }}
+                        </a>
+                    </th>
                 </tr>
             </tfoot>
         </table>
@@ -91,31 +111,45 @@
     export default {
         data() {
             return {
-                isLoading: false
+                isLoadingRole: false,
+                isLoadingCapabilities: false
             }
         },
         computed: {
             role() {
                 return this.getRole()
+            },
+            capabilities() {
+                return this.getCapabilities();
             }
         },
         methods: {
             ...mapActions('capability', [
-                'fetchRole'
+                'fetchRole',
+                'fetchCapabilities'
             ]),
             ...mapGetters('capability', [
-                'getRole'
+                'getRole',
+                'getCapabilities'
             ]),
         },
         created() {
             this.roleSlug = this.$route.params.roleSlug;
 
-            this.isLoading = true;
+            this.isLoadingRole = true;
             this.fetchRole(this.roleSlug)
                 .then(() => {
-                    this.isLoading = false;
+                    this.isLoadingRole = false;
                 }).catch(() => {
-                    this.isLoading = false;
+                    this.isLoadingRole = false;
+                });
+
+            this.isLoadingCapabilities = true;
+            this.fetchCapabilities({ collectionId: undefined })
+                .then(() => {
+                    this.isLoadingCapabilities = false;
+                }).catch(() => {
+                    this.isLoadingCapabilities = false;
                 });
         }
     }

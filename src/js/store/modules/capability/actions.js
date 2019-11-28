@@ -62,7 +62,7 @@ export const fetchRole = ({ commit }, roleSlug) => {
 // CAPABILITIES
 export const fetchCapabilities = ({ commit }, { collectionId } ) => {
     return new Promise((resolve, reject) => {
-        const endpoint = collectionId != undefined ? `/collection/${collectionId}/capabilities` : `/capabilities`
+        const endpoint = collectionId != undefined ? `/collection/${collectionId}/capabilities` : `/capabilities`;
         axios.tainacan.get(endpoint)
             .then(res => {
                 let capabilities = res.data.capabilities;
