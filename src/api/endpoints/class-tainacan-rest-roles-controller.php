@@ -82,24 +82,6 @@ class REST_Roles_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_capabilities'),
 					'permission_callback' => array($this, 'get_capabilities_permissions_check'),
-					'args'                => array(
-						'filter' => array(
-							'description' => __('Filter', 'tainacan'),
-							'type' => 'enum',
-							'required' => false,
-							''
-						),
-						'add_cap' => array(
-							'description' => __('Slug of the capability to be added to the role', 'tainacan'),
-							'type' => 'string',
-							'required' => false
-						),
-						'remove_cap' => array(
-							'description' => __('Slug of the capability to be removed from the role', 'tainacan'),
-							'type' => 'string',
-							'required' => false
-						),
-					)
 				)
 		));
 	}
@@ -400,18 +382,12 @@ class REST_Roles_Controller extends REST_Controller {
 
 		$roles = \wp_roles()->roles;
 
-		$caps = \tainacan_roles()->get_all_caps();
-
 		$caps_return = [];
 
 		if ($collection_id) {
-			$col_caps = [];
-			foreach ($caps as $cap => $c) {
-				if ( \strpos($cap, 'tnc_col_') === 0 || \strpos($cap, 'manage_tainacan_collection_') === 0 ) {
-					$col_caps[$cap] = $c;
-				}
-			}
-			$caps = $col_caps;
+			$caps = \tainacan_roles()->get_collection_caps();
+		} else {
+			$caps = \tainacan_roles()->get_all_caps();
 		}
 
 		foreach ($caps as $cap => $c) {
