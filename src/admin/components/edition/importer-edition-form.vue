@@ -216,7 +216,7 @@ export default {
             'runImporter'
         ]),
         ...mapActions('collection', [
-            'fetchCollectionsForParent'
+            'fetchAllCollectionNames'
         ]),
         createImporter() {
             // Puts loading on Draft Importer creation
@@ -386,7 +386,7 @@ export default {
         loadCollections() {
             // Generates options for target collection
             this.isFetchingCollections = true;
-            this.fetchCollectionsForParent()
+            this.fetchAllCollectionNames()
                 .then((resp) => {
                     resp.request.then((collections) => {
                         this.collections = collections;

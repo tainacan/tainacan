@@ -550,7 +550,7 @@ export default {
             'updateHeaderImage',
             'fetchPages',
             'fetchPage',
-            'fetchCollectionsForParent'
+            'fetchAllCollectionNames'
         ]),
         updateSlug: _.debounce(function() {
             if(!this.form.name || this.form.name.length <= 0){
@@ -668,7 +668,7 @@ export default {
 
                 // Generates options for parent collection
                 this.isFetchingCollections = true;
-                this.fetchCollectionsForParent()
+                this.fetchAllCollectionNames()
                     .then((collections) => {
                         this.collections = collections;
                         this.isFetchingCollections = false;
@@ -848,7 +848,7 @@ export default {
 
                 // Generates options for parent collection
                 this.isFetchingCollections = true;
-                this.fetchCollectionsForParent()
+                this.fetchAllCollectionNames()
                     .then((resp) => {
                         resp.request.then((collections) => {
                             this.collections = collections;

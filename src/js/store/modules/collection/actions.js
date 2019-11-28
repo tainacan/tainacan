@@ -457,12 +457,12 @@ export const fetchPage = ({ commit }, pageId ) => {
 };
 
 // Fetch Collections for choosing Parent Collection
-export const fetchCollectionsForParent = ({ commit }) => {
+export const fetchAllCollectionNames = ({ commit }) => {
     const source = axios.CancelToken.source();
 
     return new Object({ 
         request: new Promise((resolve, reject) => {
-            axios.tainacan.get('/collections/?nopaging=1fetch_only=name,id', { cancelToken: source.token })
+            axios.tainacan.get('/collections/?nopaging=1&fetch_only=name,id', { cancelToken: source.token })
             .then(res => {
                 let collections = res.data;
                 resolve( collections );

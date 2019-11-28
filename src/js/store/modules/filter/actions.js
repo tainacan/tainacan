@@ -167,7 +167,7 @@ export const fetchRepositoryCollectionFilters = ({ dispatch, commit } ) => {
 
     return new Promise((resolve, reject) => {
 
-        dispatch('collection/fetchCollectionsForParent', { } ,{ root: true })
+        dispatch('collection/fetchAllCollectionNames', { } ,{ root: true })
             .then((resp) => {
                 resp.request
                     .then((res) => {

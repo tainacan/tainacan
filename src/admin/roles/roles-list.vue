@@ -1,11 +1,15 @@
 <template>
     <div>
         <h1 class="wp-heading-inline">{{ $route.meta.title }}</h1>
-        <a class="page-title-action">
+        <router-link
+                to="/roles/new"
+                class="page-title-action">
             {{ $i18n.get('Add new role') }}
-        </a>
+        </router-link>
         <hr class="wp-header-end">
+        
         <br>
+    
         <h2 class="screen-reader-text">{{ $i18n.get('Roles list') }}</h2>
         <table 
                 v-if="!isLoadingRoles"

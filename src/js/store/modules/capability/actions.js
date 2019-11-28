@@ -59,6 +59,21 @@ export const fetchRole = ({ commit }, roleSlug) => {
     });
 };
 
+export const updateRole = ({ commit }, role) => {
+    return new Promise((resolve, reject) => {
+
+        axios.tainacan.patch('/roles/' + role.slug, role)
+            .then(res => {
+                const role = res.data
+                commit('setRole', role);
+                resolve(role);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+};
+
 // CAPABILITIES
 export const fetchCapabilities = ({ commit }, { collectionId } ) => {
     return new Promise((resolve, reject) => {
