@@ -166,7 +166,18 @@ class REST_Collections_Controller extends REST_Controller {
 
 		        if ( $request['context'] === 'edit' ) {
 			        $item_arr['current_user_can_edit'] = $item->can_edit();
-			        $item_arr['current_user_can_delete'] = $item->can_delete();
+					$item_arr['current_user_can_delete'] = $item->can_delete();
+
+					$collection_caps = \tainacan_roles()->get_collection_caps_slugs();
+					foreach ($collection_caps as $ccap) {
+						if ( strpos($ccap, 'tnc_col_') !== 0 ) {
+							continue;
+						}
+						$cap_key = str_replace( 'tnc_col_%d_', 'current_user_can_', $ccap );
+						$cap_check = str_replace( '%d', $item->get_id(), $ccap );
+						$item_arr[$cap_key] = current_user_can( $cap_check );
+					}
+
 		        }
 
 	        } else {
