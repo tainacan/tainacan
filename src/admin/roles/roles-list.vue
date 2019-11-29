@@ -107,7 +107,15 @@
                         <br>
                         <div class="row-actions">
                             <span class="edit"><router-link :to="'/roles/' + role.slug">{{ $i18n.get('Edit') }}</router-link> | </span>
-                            <span class="delete"><a class="submitdelete">{{ $i18n.get('Delete') }}</a></span>
+                            <span 
+                                    v-if="role.slug.match('tainacan')"
+                                    class="delete">
+                                <a 
+                                        @click="removeRole(role.slug)"
+                                        class="submitdelete">
+                                    {{ $i18n.get('Delete') }}
+                                </a>
+                            </span>
                         </div>
                     </td>
                     <!-- <td
@@ -195,7 +203,8 @@
         },
         methods: {
             ...mapActions('capability', [
-                'fetchRoles'
+                'fetchRoles',
+                'deleteRole'
             ]),
             ...mapGetters('capability', [
                 'getRoles'
@@ -224,6 +233,9 @@
                     default:
                         this.relatedEntities = [];
                 }
+            },
+            removeRole(roleSlug) {
+                this.deleteRole(roleSlug);
             }
         },
         created() {

@@ -29,6 +29,13 @@ export const setRole = (state, role) => {
     state.role = role;
 };
 
+export const deleteRole = (state, role) => {
+    const existingIndex = state.roles.findIndex((aRole) => role.slug == aRole.slug);
+    if (existingIndex >= 0)
+        state.roles.splice(existingIndex, 1)
+
+};
+
 // CAPABILITIES
 export const setCapabilities = (state, capabilities) => {
     state.capabilities = capabilities;

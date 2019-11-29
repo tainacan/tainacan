@@ -74,6 +74,22 @@ export const updateRole = ({ commit }, role) => {
     });
 };
 
+
+export const deleteRole = ({ commit }, roleSlug) => {
+    return new Promise((resolve, reject) => {
+
+        axios.tainacan.delete('/roles/' + roleSlug)
+            .then(res => {
+                const role = res.data
+                commit('deleteRole', role);
+                resolve(role);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+};
+
 // CAPABILITIES
 export const fetchCapabilities = ({ commit }, { collectionId } ) => {
     return new Promise((resolve, reject) => {
