@@ -449,4 +449,97 @@ class Items extends TAINACAN_UnitTestCase {
 
 	}
 
+	function test_order_by_date_same_date() {
+
+		$date = '2019-10-10 10:10:10';
+
+		$ItemRepo = \Tainacan\Repositories\Items::get_instance();
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'teste1',
+				'description'   => 'adasdasdsa',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$item1 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'testeItem',
+				'collection' => $collection,
+				'status' => 'publish',
+				'creation_date' => $date
+			),
+			true
+		);
+		$item2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'testeItem',
+				'collection' => $collection,
+				'status' => 'publish',
+				'creation_date' => $date
+			),
+			true
+		);
+		$item3 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'testeItem',
+				'collection' => $collection,
+				'status' => 'publish',
+				'creation_date' => $date
+			),
+			true
+		);
+		$item4 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'testeItem',
+				'collection' => $collection,
+				'status' => 'publish',
+				'creation_date' => $date
+			),
+			true
+		);
+		$item5 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'testeItem',
+				'collection' => $collection,
+				'status' => 'publish',
+				'creation_date' => $date
+			),
+			true
+		);
+
+
+
+		// should always return in the same order
+		for ($i=1; $i<20; $i++) {
+			$items = $ItemRepo->fetch([], $collection, 'OBJECT');
+
+			$this->assertEquals($item5->get_id(), $items[0]->get_id());
+			$this->assertEquals($item1->get_id(), $items[4]->get_id());
+
+		}
+
+		// also when ordering by metadata
+		for ($i=1; $i<20; $i++) {
+			$items = $ItemRepo->fetch([
+				'meta_key' => 'collection_id',
+				'orderby' => 'meta_value'
+			], $collection, 'OBJECT');
+
+			$this->assertEquals($item5->get_id(), $items[0]->get_id());
+			$this->assertEquals($item1->get_id(), $items[4]->get_id());
+
+		}
+
+
+	}
+
 }

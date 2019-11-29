@@ -172,16 +172,16 @@ class Items extends Repository {
 			$collection->register_collection_item_post_type();
 		}
 
-		// register taxonomies 
+		// register taxonomies
 		if ( is_array( $taxonomies ) && sizeof( $taxonomies ) > 0 ) {
 			foreach ( $taxonomies as $taxonomy ) {
 				$taxonomy->tainacan_register_taxonomy();
 			}
 		}
-		
+
 		// register taxonomies to collections considering metadata inheritance
 		$Tainacan_Taxonomies->register_taxonomies_for_all_collections();
-		
+
 	}
 
 	public function insert( $item ) {
@@ -195,7 +195,7 @@ class Items extends Repository {
 	 * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
 	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
 	 * appropriate WP_Query argument
-	 * 
+	 *
 	 * If a number is passed to $args, it will return a \Tainacan\Entities\Item object.  But if the post is not found or
 	 * does not match the entity post type, it will return an empty array
 	 *
@@ -213,7 +213,7 @@ class Items extends Repository {
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
 		if ( is_numeric( $args ) ) {
-			
+
 			$existing_post = get_post( $args );
 			if ( $existing_post instanceof \WP_Post ) {
 				try {
@@ -285,7 +285,24 @@ class Items extends Repository {
 		$args = $this->parse_fetch_args( $args );
 
 		$args['post_type'] = $cpt;
-		
+
+		// If no orderby was passed, or if only one orderby parameter is passed
+		// we add a second criteria to order by ID and make sure items are always returned in the same order
+		// See #337
+		if ( ! isset($args['orderby']) ) {
+			$args['orderby'] = 'post_date';
+		}
+		if ( ! isset($args['order']) ) {
+			$args['order'] = 'DESC';
+		}
+		if ( is_string( $args['orderby'] ) ) {
+			$new_order = [
+				$args['orderby'] => $args['order'],
+				'ID' => 'DESC'
+			];
+			$args['orderby'] = $new_order;
+		}
+
 		$args = apply_filters( 'tainacan_fetch_args', $args, 'items' );
 
 		$wp_query = new \WP_Query( $args );
@@ -375,7 +392,7 @@ class Items extends Repository {
 
 		return $where;
 	}
-	
+
 	/**
 	 * generate a content of document to index.
 	 *
@@ -480,23 +497,23 @@ class Items extends Repository {
 	}
 
 	/**
-	 * Return if comment are open for this item (post_id) and the collection too 
-	 * 
+	 * Return if comment are open for this item (post_id) and the collection too
+	 *
 	 * @param bool $open_comment
 	 * @param integer $post_id Item id
 	 * @return bool
 	 */
 	public function hook_comments_open($open_comment, $post_id) {
 	    $item = self::get_entity_by_post($post_id);
-	    
+
 	    if($item != false && $item instanceof Entities\Item) {
     	    $collection = $item->get_collection();
     	    if( $collection->get_allow_comments() !== 'open' ) return false;
 	    }
-	    
+
 	    return $open_comment;
 	}
-	
+
 	/**
 	 * Filter to handle special permissions
 	 *
@@ -506,9 +523,9 @@ class Items extends Repository {
 	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
 
 		// Filters meta caps edit_tainacan-collection and check if user is moderator
-		
-		if ( $cap == 'read_post' && is_array( $args ) && array_key_exists( 0, $args ) ) { 
-			
+
+		if ( $cap == 'read_post' && is_array( $args ) && array_key_exists( 0, $args ) ) {
+
 			$entity = $args[0];
 
 			if ( is_numeric( $entity ) || $entity instanceof Entities\Item ) {
@@ -518,24 +535,24 @@ class Items extends Repository {
 				}
 
 				if ( $entity instanceof Entities\Item ) {
-					
+
 					$collection = $entity->get_collection();
-					
+
 					if ( $collection instanceof Entities\Collection ) {
 						$status_obj = get_post_status_object( $collection->get_status() );
 						if ( ! $status_obj->public ) {
 							$caps[] = $entity->get_capabilities()->read_private_posts;
 						}
 					}
-					
-					
+
+
 				}
 			}
 		}
 
 		return $caps;
 	}
-	
+
 	/**
 	 * Check if $user can read the item based on the colletion
 	 *
@@ -546,37 +563,37 @@ class Items extends Repository {
 	 * @throws \Exception
 	 */
 	public function can_read( Entities\Entity $entity, $user = null ) {
-		
+
 		if ( ! $entity instanceof Entities\Item) {
 			throw new InvalidArgumentException('Items::can_read() expects an Item entity as the first parameter');
 		}
-		
+
 		// can read the item looking only to the item
 		$can_read = parent::can_read($entity, $user);
-		
+
 		if ( $can_read ) {
 			$collection = $entity->get_collection();
 			$status_obj = get_post_status_object( $collection->get_status() );
-			
+
 			if ( $status_obj->public ) {
 				return $can_read;
 			}
 		}
-		
+
 		if ( is_null($user) ) {
 			$user = get_current_user_id();
 		}
-		
+
 		if ( ! $user ) {
 			return false;
 		} elseif ( is_object( $user ) ) {
 			$user = $user->ID;
 		}
-		
+
 		$entity_cap = $entity->get_capabilities();
-		
+
 		return user_can( $user, $entity_cap->read_private_posts, $entity->get_id() );
-		
+
 	}
 
 }
