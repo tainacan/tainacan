@@ -255,9 +255,6 @@ class Permissions extends TAINACAN_UnitTestCase {
 		$collection->validate();
 		$collection = $ColRepo->insert($collection);
 
-		// refresh item
-		$item = new \Tainacan\Entities\Item($item->get_id());
-
 		$this->assertFalse($item->can_read());
 
 
