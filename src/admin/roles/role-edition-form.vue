@@ -201,7 +201,8 @@
                             <td 
                                     class="name column-name"
                                     :data-colname="$i18n.get('Capability name')">
-                                <strong>{{ capability.display_name }}</strong>
+                                <!-- <strong>{{ capability.display_name }}</strong> -->
+                                <strong>{{ index.replace('%d', selectedCollection) }}</strong>
                             </td>
                             <td 
                                     class="description column-descritption"
