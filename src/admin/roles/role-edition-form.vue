@@ -68,7 +68,8 @@
                                 type="checkbox"
                                 name="roles[]"
                                 :id="'capability_'+ index"
-                                :checked="role.capabilities[index]"
+                                :disabled="capability.supercaps.length > 0 && capability.supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0"
+                                :checked="role.capabilities[index] || (capability.supercaps.length > 0 && capability.supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0)"
                                 @input="onUpdateCapability($event.target.checked, index)">
                         </th>
                         <td 
@@ -195,7 +196,8 @@
                                     type="checkbox"
                                     name="roles[]"
                                     :id="'capability_'+ index.replace('%d', selectedCollection)"
-                                    :checked="role.capabilities[index.replace('%d', selectedCollection)]"
+                                    :disabled="capability.supercaps.length > 0 && capability.supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0"
+                                    :checked="role.capabilities[index.replace('%d', selectedCollection)] || (capability.supercaps.length > 0 && capability.supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0)"
                                     @input="onUpdateCapability($event.target.checked, index.replace('%d', selectedCollection))">
                             </th>
                             <td 
