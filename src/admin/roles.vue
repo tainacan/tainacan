@@ -13,5 +13,9 @@
 </script>
 
 <style lang="scss">
-
+    #tainacan-roles-app {
+        a:hover {
+            cursor: pointer;
+        }
+    }
 </style>

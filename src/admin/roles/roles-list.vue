@@ -9,14 +9,44 @@
         <hr class="wp-header-end">
         
         <br>
-    
+        
+        <label>{{ $i18n.get('Filter list by roles with capabilities related to:') }}</label>
+        <ul 
+                class="subsubsub"
+                style="float: none;">
+            <li :class="{ 'selected-entity': currentRelatedEntity == '' }">
+                <a @click="filteByCapabilitiesRelatedTo('')">{{ $i18n.get('Any') }} </a> |
+            </li>
+            <li :class="{ 'selected-entity': currentRelatedEntity == 'repository' }">
+                <a @click="filteByCapabilitiesRelatedTo('repository')">{{ $i18n.get('Repository') }} </a> |
+            </li>
+            <li :class="{ 'selected-entity': currentRelatedEntity == 'taxonomies' }">
+                <a @click="filteByCapabilitiesRelatedTo('taxonomies')">{{ $i18n.get('Taxonomies') }} </a> |
+            </li>
+            <li :class="{ 'selected-entity': currentRelatedEntity == 'collections' }">
+                <a @click="filteByCapabilitiesRelatedTo('collections')">{{ $i18n.get('Collections') }} </a> |
+            </li>
+            <li :class="{ 'selected-entity': currentRelatedEntity == 'metadata' }">
+                <a @click="filteByCapabilitiesRelatedTo('metadata')">{{ $i18n.get('Metadata') }} </a> |
+            </li>
+            <li :class="{ 'selected-entity': currentRelatedEntity == 'filters' }">
+                <a @click="filteByCapabilitiesRelatedTo('filter')">{{ $i18n.get('Filter') }} </a> |
+            </li>
+            <li :class="{ 'selected-entity': currentRelatedEntity == 'activities' }">
+                <a @click="filteByCapabilitiesRelatedTo('activities')">{{ $i18n.get('Activities') }} </a>
+            </li>
+        </ul>
+        
+        <br>
+
         <h2 class="screen-reader-text">{{ $i18n.get('Roles list') }}</h2>
+
         <table 
                 v-if="!isLoadingRoles"
                 class="wp-list-table widefat fixed striped roles">
             <thead>
                 <tr>
-                    <td class="manage-column column-cb check-column">
+                    <!-- <td class="manage-column column-cb check-column">
                         <label
                                 class="screen-reader-text"
                                 for="cb-select-all">
@@ -25,7 +55,7 @@
                         <input
                                 id="cb-select-all"
                                 type="checkbox">
-                    </td>
+                    </td> -->
                     <th
                             scope="col"
                             id="name"
@@ -34,12 +64,12 @@
                             {{ $i18n.get('Name') }}
                         </a>
                     </th>
-                    <th
+                    <!-- <th
                             scope="col"
                             id="role"
                             class="manage-column column-slug">
                         {{ $i18n.get('Slug') }}
-                    </th>
+                    </th> -->
                     <th
                             scope="col"
                             id="capabilities-number"
@@ -54,7 +84,7 @@
                         v-for="role of roles"
                         :key="role.slug"
                         :id="role.slug">
-                    <th
+                    <!-- <th
                             scope="row"
                             class="check-column">
                         <label
@@ -67,29 +97,24 @@
                             name="roles[]"
                             :id="'role_'+ role.slug"
                             :value="role.slug">
-                    </th>
+                    </th> -->
                     <td 
                             class="name column-name has-row-actions column-primary"
                             :data-colname="$i18n.get('Role name')">
                         <strong>
-                            <a>{{ role.name }}</a>
+                            {{ role.name }}
                         </strong>
                         <br>
                         <div class="row-actions">
-                            <span class="edit"><router-link :to="'/roles/' + role.slug">{{ $i18n.get('Editar') }}</router-link> | </span>
-                            <span class="view"><a>{{ $i18n.get('Ver') }}</a></span>
+                            <span class="edit"><router-link :to="'/roles/' + role.slug">{{ $i18n.get('Edit') }}</router-link> | </span>
+                            <span class="delete"><a class="submitdelete">{{ $i18n.get('Delete') }}</a></span>
                         </div>
-                        <button
-                                type="button"
-                                class="toggle-row">
-                            <span class="screen-reader-text">{{ $i18n.get('Mostrar detalhes') }}</span>
-                        </button>
                     </td>
-                    <td
+                    <!-- <td
                             class="slug column-slug"
                             :data-colname="$i18n.get('Slug')">
                         {{ role.slug }}
-                    </td>
+                    </td> -->
                     <td
                             class="capabilities column-capabilities num"
                             :data-colname="$i18n.get('Number of capabilities')">
@@ -100,7 +125,7 @@
 
             <tfoot>
                 <tr>
-                    <td class="manage-column column-cb check-column">
+                    <!-- <td class="manage-column column-cb check-column">
                         <label
                                 class="screen-reader-text"
                                 for="cb-select-all-2">
@@ -109,7 +134,7 @@
                         <input
                                 id="cb-select-all-2"
                                 type="checkbox">
-                    </td>
+                    </td> -->
                     <th
                             scope="col"
                             id="name"
@@ -118,12 +143,12 @@
                             {{ $i18n.get('Name') }}
                         </a>
                     </th>
-                    <th
+                    <!-- <th
                             scope="col"
                             id="role"
                             class="manage-column column-slug">
                         {{ $i18n.get('Slug') }}
-                    </th>
+                    </th> -->
                     <th
                             scope="col"
                             id="capabilities-number"
@@ -144,11 +169,28 @@
         data() {
             return {
                 isLoadingRoles: false,
+                relatedEntities: [],
+                currentRelatedEntity: ''
             }
         },
         computed: {
             roles() {
-                return this.getRoles();
+                const roles = this.getRoles();
+
+                if (this.relatedEntities.length) {
+                    let filteredRoles = {};
+                    for (let [roleKey, role] of Object.entries(roles)) {
+                        for (let entity of this.relatedEntities) {
+                            const existingIndex = Object.entries(role.capabilities).findIndex((capability) => capability[1] ? capability[0].match(entity) : false)
+                            if (existingIndex >= 0) {
+                                filteredRoles[roleKey] = role;
+                                break;
+                            }
+                        }
+                    }
+                    return filteredRoles;
+                }
+                return roles;
             }
         },
         methods: {
@@ -158,6 +200,31 @@
             ...mapGetters('capability', [
                 'getRoles'
             ]),
+            filteByCapabilitiesRelatedTo(entityName) {
+                this.currentRelatedEntity = entityName;
+                switch(entityName) {
+                    case 'repository':
+                        this.relatedEntities = ['repository', 'manage-tainacan', 'manage-users', 'users'];
+                        break;
+                    case 'taxonomy':
+                        this.relatedEntities = ['taxonomy', 'taxonomies'];
+                        break;
+                    case 'collection':
+                        this.relatedEntities = ['collection', 'item'];
+                        break;
+                    case 'metadata':
+                        this.relatedEntities = ['metadata', 'metadatum'];
+                        break;
+                    case 'filter':
+                        this.relatedEntities = ['filter'];
+                        break;
+                    case 'activity':
+                        this.relatedEntities = ['log'];
+                        break;
+                    default:
+                        this.relatedEntities = [];
+                }
+            }
         },
         created() {
             this.isLoadingRoles = true;
@@ -170,3 +237,10 @@
         }
     }
 </script>
+
+<style lang="scss" scoped>
+    .selected-entity a {
+        font-weight: bold;
+        color: black;
+    }
+</style>
