@@ -19,44 +19,15 @@
         <template v-if="!isLoadingRole && !isLoadingCapabilities">
             <br>
             <h2>{{ $i18n.get('Role\'s Repository related Capabilities List') }}</h2>
-            <table class="wp-list-table widefat fixed striped capabilities">
-                <thead>
-                    <tr>
-                        <td class="manage-column column-cb check-column">
-                            <label
-                                    class="screen-reader-text"
-                                    for="cb-select-all-repository">
-                                {{ $i18n.get('Selecionar Todos') }}
-                            </label>
-                            <input
-                                    id="cb-select-all-repository"
-                                    type="checkbox">
-                        </td>
-                        <th
-                                scope="col"
-                                id="name-repository"
-                                class="manage-column column-name">
-                            <a>
-                                {{ $i18n.get('Name') }}
-                            </a>
-                        </th>
-                        <th
-                                scope="col"
-                                id="description-repository"
-                                class="manage-column column-description">
-                            <a>
-                                {{ $i18n.get('Description') }}
-                            </a>
-                        </th>
-                    </tr>
-                </thead>
+            <div class="capabilities-list">
+                
 
-                <tbody data-wp-lists="list:repository-capabilities">
-                    <tr
+                <ul>
+                    <li
                             v-for="(capability, index) of repositoryCapabilities"
                             :key="index"
                             :id="'capability-' + index">
-                        <th
+                        <span
                                 scope="row"
                                 class="check-column">
                             <label
@@ -71,51 +42,18 @@
                                 :disabled="capability.supercaps.length > 0 && capability.supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0"
                                 :checked="role.capabilities[index] || (capability.supercaps.length > 0 && capability.supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0)"
                                 @input="onUpdateCapability($event.target.checked, index)">
-                        </th>
-                        <td 
+                        </span>
+                        <span 
                                 class="name column-name"
                                 :data-colname="$i18n.get('Capability name')">
                             <strong>{{ capability.display_name }}</strong>
-                        </td>
-                        <td 
-                                class="description column-descritption"
-                                :data-colname="$i18n.get('Capabilitiy description')">
-                            {{ capability.description }}
-                        </td>
-                    </tr>
-                </tbody>
-
-                <tfoot>
-                    <tr>
-                        <td class="manage-column column-cb check-column">
-                            <label
-                                    class="screen-reader-text"
-                                    for="cb-select-all-repository-2">
-                                {{ $i18n.get('Selecionar Todos') }}
-                            </label>
-                            <input
-                                    id="cb-select-all-repository-2"
-                                    type="checkbox">
-                        </td>
-                        <th
-                                scope="col"
-                                id="name-repository"
-                                class="manage-column column-name column-primary">
-                            <a>
-                                {{ $i18n.get('Name') }}
-                            </a>
-                        </th>
-                        <th
-                                scope="col"
-                                id="description-repository"
-                                class="manage-column column-description">
-                            <a>
-                                {{ $i18n.get('Description') }}
-                            </a>
-                        </th>
-                    </tr>
-                </tfoot>
-            </table>
+                            <help-button 
+                                    :title="capability.display_name"
+                                    :message="capability.description"/>
+                        </span>
+                    </li>
+                </ul>
+            </div>
 
             <br>
 
@@ -147,44 +85,13 @@
                     <br class="clear">
                 </div>
 
-                <table class="wp-list-table widefat fixed striped capabilities">
-                    <thead>
-                        <tr>
-                            <td class="manage-column column-cb check-column">
-                                <label
-                                        class="screen-reader-text"
-                                        for="cb-select-all-collection">
-                                    {{ $i18n.get('Selecionar Todos') }}
-                                </label>
-                                <input
-                                        id="cb-select-all-collection"
-                                        type="checkbox">
-                            </td>
-                            <th
-                                    scope="col"
-                                    id="name-collection"
-                                    class="manage-column column-name">
-                                <a>
-                                    {{ $i18n.get('Name') }}
-                                </a>
-                            </th>
-                            <th
-                                    scope="col"
-                                    id="description-collection"
-                                    class="manage-column column-description">
-                                <a>
-                                    {{ $i18n.get('Description') }}
-                                </a>
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody data-wp-lists="list:collection-capabilities">
-                        <tr
+                <div class="capabilities-list">
+                    <ul>
+                        <li
                                 v-for="(capability, index) of collectionCapabilities"
                                 :key="index"
                                 :id="'capability-' + index.replace('%d', selectedCollection)">
-                            <th
+                            <span
                                     scope="row"
                                     class="check-column">
                                 <label
@@ -199,52 +106,18 @@
                                     :disabled="capability.supercaps.length > 0 && capability.supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0"
                                     :checked="role.capabilities[index.replace('%d', selectedCollection)] || (capability.supercaps.length > 0 && capability.supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0)"
                                     @input="onUpdateCapability($event.target.checked, index.replace('%d', selectedCollection))">
-                            </th>
-                            <td 
+                            </span>
+                            <span 
                                     class="name column-name"
                                     :data-colname="$i18n.get('Capability name')">
-                                <!-- <strong>{{ capability.display_name }}</strong> -->
-                                <strong>{{ index.replace('%d', selectedCollection) }}</strong>
-                            </td>
-                            <td 
-                                    class="description column-descritption"
-                                    :data-colname="$i18n.get('Capabilitiy description')">
-                                {{ capability.description }}
-                            </td>
-                        </tr>
-                    </tbody>
-
-                    <tfoot>
-                        <tr>
-                            <td class="manage-column column-cb check-column">
-                                <label
-                                        class="screen-reader-text"
-                                        for="cb-select-all-collection-2">
-                                    {{ $i18n.get('Selecionar Todos') }}
-                                </label>
-                                <input
-                                        id="cb-select-all-collection-2"
-                                        type="checkbox">
-                            </td>
-                            <th
-                                    scope="col"
-                                    id="name-collection"
-                                    class="manage-column column-name column-primary">
-                                <a>
-                                    {{ $i18n.get('Name') }}
-                                </a>
-                            </th>
-                            <th
-                                    scope="col"
-                                    id="description-collection"
-                                    class="manage-column column-description">
-                                <a>
-                                    {{ $i18n.get('Description') }}
-                                </a>
-                            </th>
-                        </tr>
-                    </tfoot>
-                </table>
+                                <strong>{{ capability.display_name }}</strong>
+                                <help-button 
+                                    :title="capability.display_name"
+                                    :message="capability.description"/>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
             </template>
         </template>
     </div>
@@ -362,3 +235,24 @@
         }
     }
 </script>
+
+<style lang="scss" scoped>
+    .capabilities-list {
+        margin: 1rem;
+        ul {
+            column-count: 4;
+            li {
+                margin-bottom: 1rem;
+            }
+            @media only screen and (max-width: 1400px) {
+                column-count: 3;
+            }
+            @media only screen and (max-width: 962px) {
+                column-count: 2;
+            }
+            @media only screen and (max-width: 568px) {
+                column-count: 1;
+            }
+        }
+    }
+</style>

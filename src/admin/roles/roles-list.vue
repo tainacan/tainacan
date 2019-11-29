@@ -60,9 +60,7 @@
                             scope="col"
                             id="name"
                             class="manage-column column-name">
-                        <a>
-                            {{ $i18n.get('Name') }}
-                        </a>
+                        {{ $i18n.get('Name') }}
                     </th>
                     <!-- <th
                             scope="col"
@@ -147,9 +145,7 @@
                             scope="col"
                             id="name"
                             class="manage-column column-name column-primary">
-                        <a>
-                            {{ $i18n.get('Name') }}
-                        </a>
+                        {{ $i18n.get('Name') }}
                     </th>
                     <!-- <th
                             scope="col"

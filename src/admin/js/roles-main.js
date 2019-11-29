@@ -5,8 +5,10 @@ import router from './roles-router';
 import { I18NPlugin } from './wp-i18n-plugin';
 
 import RolesPage from '../roles.vue';
+import HelpButton from '../roles/help-button.vue';
 
 Vue.use(I18NPlugin);
+Vue.component('help-button', HelpButton);
 
 // Changing title of pages
 router.beforeEach((to, from, next) => {
