@@ -44,6 +44,10 @@ class REST_Roles_Controller extends REST_Controller {
 						'type' => 'string',
 						'required' => true
 					),
+					'capabilities' => array(
+						'description' => __('Array of capabilities, where the keys are capability slugs and values are booleans', 'tainacan'),
+						'required' => false
+					),
 				)
 			),
 			'schema'                  => [$this, 'get_schema']
@@ -58,6 +62,17 @@ class REST_Roles_Controller extends REST_Controller {
 				'methods'             => \WP_REST_Server::EDITABLE,
 				'callback'            => array($this, 'update_item'),
 				'permission_callback' => array($this, 'update_item_permissions_check'),
+				'args'                => array(
+					'name' => array(
+						'description' => __('New role name', 'tainacan'),
+						'type' => 'string',
+						'required' => false
+					),
+					'capabilities' => array(
+						'description' => __('Array of capabilities, where the keys are capability slugs and values are booleans', 'tainacan'),
+						'required' => false
+					),
+				)
 			),
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
@@ -123,6 +138,10 @@ class REST_Roles_Controller extends REST_Controller {
 		}
 
 		$new_role = add_role($role_slug, $name);
+
+		if ( isset($request['capabilities']) && is_array($request['capabilities']) ) {
+			$this->handle_capabilities_for_role($role_slug, $request['capabilities']);
+		}
 
 		if ($new_role instanceof \WP_Role) {
 			return new \WP_REST_Response($this->_prepare_item_for_response($role_slug, $name, $new_role->capabilities, $request), 201);
@@ -218,7 +237,11 @@ class REST_Roles_Controller extends REST_Controller {
 
 		}
 
-		if ( isset($request['add_cap']) ) {
+		if ( is_array($request['capabilities']) ) {
+
+			$this->handle_capabilities_for_role($role_slug, $request['capabilities']);
+
+		} elseif ( isset($request['add_cap']) ) {
 			// validate that we only deal with tainacan capabilities
 			if ( ! in_array( \tainacan_roles()->get_cap_generic_name($request['add_cap']) , \tainacan_roles()->get_all_caps_slugs() ) ) {
 				return new \WP_REST_Response([
@@ -241,6 +264,34 @@ class REST_Roles_Controller extends REST_Controller {
 		}
 
 		return new \WP_REST_Response($this->_prepare_item_for_response($role_slug, \wp_roles()->roles[$role_slug]['name'], \wp_roles()->roles[$role_slug]['capabilities'], $request), 200);
+
+	}
+
+	private function handle_capabilities_for_role($role_slug, $newcaps) {
+
+		if ( !isset( \wp_roles()->roles[$role_slug] ) ) {
+			return false;
+		}
+
+		$role = \wp_roles()->roles[$role_slug];
+
+		foreach ($role['capabilities'] as $cap => $val) {
+			var_dump($cap);
+			if ( ! in_array( \tainacan_roles()->get_cap_generic_name($cap) , \tainacan_roles()->get_all_caps_slugs() ) ) {
+				continue;
+			}
+
+			if ( !array_key_exists($cap, $newcaps) ) {
+				\wp_roles()->remove_cap($role_slug, $cap);
+			}
+
+		}
+
+		foreach ( $newcaps as $cap => $val ) {
+			\wp_roles()->add_cap($role_slug, $cap, $val);
+		}
+
+
 
 	}
 

@@ -310,6 +310,114 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 
 	}
 
+	/**
+	 * @group xis
+	 */
+	public function test_create_get_roles_with_caps() {
+
+		$request = new \WP_REST_Request('POST', $this->namespace . '/roles');
+
+		$request->set_query_params([
+			'name' => 'New role',
+			'capabilities' => [
+				'tnc_rep_edit_collections' => true
+			]
+		]);
+
+		$create = $this->server->dispatch($request);
+//var_dump($create);
+		$this->assertEquals( 201, $create->get_status() );
+
+		$request = new \WP_REST_Request('GET', $this->namespace . '/roles');
+
+		//$request->set_query_params($name_query);
+
+		$name_response = $this->server->dispatch($request);
+		$data = $name_response->get_data();
+		$this->assertArrayHasKey('tainacan-new-role', $data);
+		$this->assertEquals('New role', $data['tainacan-new-role']['name']);
+
+		$role = $data['tainacan-new-role'];
+
+		$this->assertArrayHasKey('tnc_rep_edit_collections', $role['capabilities']);
+		$this->assertTrue($role['capabilities']['tnc_rep_edit_collections']);
+
+	}
+
+	public function test_edit_role_with_caps() {
+
+		$request = new \WP_REST_Request('POST', $this->namespace . '/roles');
+
+		$request->set_query_params([
+			'name' => 'New role',
+			'capabilities' => [
+				'tnc_rep_edit_collections' => true,
+				'tnc_rep_delete_collections' => true,
+				'tnc_rep_edit_taxonomies' => true
+			]
+		]);
+
+		$create = $this->server->dispatch($request);
+		$this->assertEquals( 201, $create->get_status() );
+
+		$request = new \WP_REST_Request('GET', $this->namespace . '/roles/tainacan-new-role');
+
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals( 200, $response->get_status() );
+
+		$data = $response->get_data();
+
+		$this->assertEquals( translate_user_role('New role'), $data['name'] );
+		$this->assertArrayHasKey('tnc_rep_edit_collections', $data['capabilities']);
+		$this->assertTrue($data['capabilities']['tnc_rep_edit_collections']);
+		$this->assertArrayHasKey('tnc_rep_delete_collections', $data['capabilities']);
+		$this->assertTrue($data['capabilities']['tnc_rep_delete_collections']);
+		$this->assertArrayHasKey('tnc_rep_edit_taxonomies', $data['capabilities']);
+		$this->assertTrue($data['capabilities']['tnc_rep_edit_taxonomies']);
+
+
+
+	 	// EDIT
+		$request = new \WP_REST_Request('PATCH', $this->namespace . '/roles/tainacan-new-role');
+
+		$request->set_query_params(
+			[
+				'name' => 'Changed name',
+				'capabilities' => [
+					'tnc_rep_edit_collections' => true,
+					'tnc_rep_delete_collections' => true,
+					'tnc_rep_edit_metadata' => true // replaced tnc_rep_edit_taxonomies by tnc_rep_edit_metadata
+				]
+			]
+		);
+
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals( 200, $response->get_status() );
+
+		$request = new \WP_REST_Request('GET', $this->namespace . '/roles/tainacan-new-role');
+
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals( 200, $response->get_status() );
+
+		$data = $response->get_data();
+
+		$this->assertEquals( translate_user_role('Changed name'), $data['name'] );
+		$this->assertArrayHasKey('tnc_rep_edit_collections', $data['capabilities']);
+		$this->assertTrue($data['capabilities']['tnc_rep_edit_collections']);
+		$this->assertArrayHasKey('tnc_rep_delete_collections', $data['capabilities']);
+		$this->assertTrue($data['capabilities']['tnc_rep_delete_collections']);
+		$this->assertArrayHasKey('tnc_rep_edit_metadata', $data['capabilities']);
+		$this->assertTrue($data['capabilities']['tnc_rep_edit_metadata']);
+
+		$this->assertArrayNotHasKey('tnc_rep_edit_taxonomies', $data['capabilities']);
+
+
+
+	}
+
 }
 
 ?>
