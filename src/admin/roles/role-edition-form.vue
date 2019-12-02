@@ -36,13 +36,13 @@
                         class="tabs-content"
                         v-if="capabilitiesTab === 'repository'"
                         id="tab-repository">
-                    <h2>{{ $i18n.get('Role\'s Repository related Capabilities List') }}</h2>
+                    <h3>{{ $i18n.get('Role\'s Repository related Capabilities List') }}</h3>
                     <div class="capabilities-list">
                         <div
                                 class="capability-group"
                                 v-for="(group, groupIndex) of groupedRepositoryCapabilities"
                                 :key="groupIndex">
-                            <h3>{{ groupIndex }}</h3>
+                            <h4>{{ groupIndex }}</h4>
                             <ul>
                                 <li
                                         v-for="(capability, index) of group"
@@ -85,7 +85,7 @@
                         v-else-if="capabilitiesTab === 'collections'"
                         id="tab-collections">
                     <template v-if="!isLoadingCollections"> 
-                        <h2>{{ $i18n.get('Role\'s Collection related Capabilities List') }}</h2>
+                        <h3>{{ $i18n.get('Role\'s Collection related Capabilities List') }}</h3>
 
                         <div class="tablenav top">
                             <div class="alignleft collection-selector">
@@ -116,7 +116,7 @@
                                     class="capability-group"
                                     v-for="(group, groupIndex) of groupedCollectionCapabilities"
                                     :key="groupIndex">
-                                <h3>{{ groupIndex }}</h3>
+                                <h4>{{ groupIndex }}</h4>
                                 <ul>
                                     <li
                                             v-for="(capability, index) of group"
@@ -163,6 +163,7 @@
                 <input 
                         type="button"
                         name="cancel"
+                        @click="$router.go(-1)"
                         id="cancel" 
                         class="button"
                         :value="$i18n.get('Cancel')">
@@ -345,6 +346,12 @@
         display: flex;
         justify-content: space-between;
         align-content: center;
+        margin: 1rem 0;
+    }
+    .tabs-content {
+        border: 1px solid #ccc;
+        border-top: none;
+        padding: 1rem 2rem;
     }
     .capabilities-list {
         padding: 1rem;
@@ -353,9 +360,12 @@
 
         .capability-group {
             break-inside: avoid;
-            h3 {
+            h4 {
                 margin-top: 0;
+                margin-bottom: 1rem;
+                font-size: 1rem;
                 font-weight: normal;
+                color: #0073aa;
             }
             ul {
                 padding-bottom: 1rem;
