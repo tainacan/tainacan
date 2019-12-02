@@ -12,7 +12,6 @@ Vue.use(VueRouter);
 const routes = [
     { path: '/', redirect:'/roles' },
     { path: '/roles', name: 'RolesList', component: RolesList, meta: { title: __('Tainacan User Roles') } },
-    { path: '/roles/new', name: 'RoleCreationForm', component: RoleEditionForm, meta: { title: __('New User Role') } },
     { path: '/roles/:roleSlug', name: 'RoleEditionForm', component: RoleEditionForm, meta: { title: __('Editing User Role') } },
 
     { path: '*', redirect: '/'}
