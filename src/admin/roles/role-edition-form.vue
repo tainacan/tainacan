@@ -20,39 +20,45 @@
             <br>
             <h2>{{ $i18n.get('Role\'s Repository related Capabilities List') }}</h2>
             <div class="capabilities-list">
-                
-
-                <ul>
-                    <li
-                            v-for="(capability, index) of repositoryCapabilities"
-                            :key="index"
-                            :id="'capability-' + index">
-                        <span
-                                scope="row"
-                                class="check-column">
-                            <label
-                                    class="screen-reader-text"
-                                    :for="'capability_' + index">
-                                {{ $i18n.get('Selecionar') + ' ' + capability.display_name }}
-                            </label>
-                            <input
-                                type="checkbox"
-                                name="roles[]"
-                                :id="'capability_'+ index"
-                                :disabled="capability.supercaps.length > 0 && capability.supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0"
-                                :checked="role.capabilities[index] || (capability.supercaps.length > 0 && capability.supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0)"
-                                @input="onUpdateCapability($event.target.checked, index)">
-                        </span>
-                        <span 
-                                class="name column-name"
-                                :data-colname="$i18n.get('Capability name')">
-                            <strong>{{ capability.display_name }}</strong>
-                            <help-button 
-                                    :title="capability.display_name"
-                                    :message="capability.description"/>
-                        </span>
-                    </li>
-                </ul>
+                <div
+                        class="capability-group"
+                        v-for="(group, groupIndex) of groupedRepositoryCapabilities"
+                        :key="groupIndex">
+                    <h3>{{ groupIndex }}</h3>
+                    <ul>
+                        <li
+                                v-for="(capability, index) of group"
+                                :key="index"
+                                :id="'capability-' + capability">
+                            <span
+                                    scope="row"
+                                    class="check-column">
+                                <label
+                                        class="screen-reader-text"
+                                        :for="'capability_' + capability">
+                                    {{ $i18n.get('Selecionar') + ' ' + repositoryCapabilities[capability].display_name }}
+                                </label>
+                                <input
+                                    type="checkbox"
+                                    name="roles[]"
+                                    :id="'capability_'+ capability"
+                                    :disabled="repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0"
+                                    :checked="role.capabilities[capability] || (repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0)"
+                                    @input="onUpdateCapability($event.target.checked, capability)">
+                            </span>
+                            <span 
+                                    class="name column-name"
+                                    :data-colname="$i18n.get('Capability name')">
+                                <strong>{{ repositoryCapabilities[capability].display_name }}</strong>
+                                <help-button 
+                                        :title="repositoryCapabilities[capability].display_name"
+                                        :message="repositoryCapabilities[capability].description"
+                                        :super-caps="repositoryCapabilities[capability].supercaps"
+                                        :capabilities="capabilities"/>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <br>
@@ -86,37 +92,45 @@
                 </div>
 
                 <div class="capabilities-list">
-                    <ul>
-                        <li
-                                v-for="(capability, index) of collectionCapabilities"
-                                :key="index"
-                                :id="'capability-' + index.replace('%d', selectedCollection)">
-                            <span
-                                    scope="row"
-                                    class="check-column">
-                                <label
-                                        class="screen-reader-text"
-                                        :for="'capability_' + index.replace('%d', selectedCollection)">
-                                    {{ $i18n.get('Selecionar') + ' ' + capability.display_name }}
-                                </label>
-                                <input
-                                    type="checkbox"
-                                    name="roles[]"
-                                    :id="'capability_'+ index.replace('%d', selectedCollection)"
-                                    :disabled="capability.supercaps.length > 0 && capability.supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0"
-                                    :checked="role.capabilities[index.replace('%d', selectedCollection)] || (capability.supercaps.length > 0 && capability.supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0)"
-                                    @input="onUpdateCapability($event.target.checked, index.replace('%d', selectedCollection))">
-                            </span>
-                            <span 
-                                    class="name column-name"
-                                    :data-colname="$i18n.get('Capability name')">
-                                <strong>{{ capability.display_name }}</strong>
-                                <help-button 
-                                    :title="capability.display_name"
-                                    :message="capability.description"/>
-                            </span>
-                        </li>
-                    </ul>
+                    <div
+                            class="capability-group"
+                            v-for="(group, groupIndex) of groupedCollectionCapabilities"
+                            :key="groupIndex">
+                        <h3>{{ groupIndex }}</h3>
+                        <ul>
+                            <li
+                                    v-for="(capability, index) of group"
+                                    :key="index"
+                                    :id="'capability-' + capability.replace('%d', selectedCollection)">
+                                <span
+                                        scope="row"
+                                        class="check-column">
+                                    <label
+                                            class="screen-reader-text"
+                                            :for="'capability_' + capability.replace('%d', selectedCollection)">
+                                        {{ $i18n.get('Selecionar') + ' ' + collectionCapabilities[capability].display_name }}
+                                    </label>
+                                    <input
+                                        type="checkbox"
+                                        name="roles[]"
+                                        :id="'capability_'+ capability.replace('%d', selectedCollection)"
+                                        :disabled="collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0"
+                                        :checked="role.capabilities[capability.replace('%d', selectedCollection)] || (collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0)"
+                                        @input="onUpdateCapability($event.target.checked, capability.replace('%d', selectedCollection))">
+                                </span>
+                                <span 
+                                        class="name column-name"
+                                        :data-colname="$i18n.get('Capability name')">
+                                    <strong>{{ collectionCapabilities[capability].display_name }}</strong>
+                                    <help-button 
+                                            :title="collectionCapabilities[capability].display_name"
+                                            :message="collectionCapabilities[capability].description"
+                                            :super-caps="collectionCapabilities[capability].supercaps"
+                                            :capabilities="capabilities"/>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </template>
         </template>
@@ -141,25 +155,31 @@
             role() {
                 return this.getRole()
             },
+            capabilities() {
+                return this.getCapabilities();
+            },
             collectionCapabilities() {
-                const capabilities = this.getCapabilities();
                 let collectionCapabilities = {}
 
-                for (let [capabilityKey, capability] of Object.entries(capabilities)) {
+                for (let [capabilityKey, capability] of Object.entries(this.capabilities)) {
                     if (capability.scope === 'collection')
                         collectionCapabilities[capabilityKey] = capability;
                 }
                 return collectionCapabilities;
             },
             repositoryCapabilities() {
-                const capabilities = this.getCapabilities();
                 let repositoryCapabilities = {}
-
-                for (let [capabilityKey, capability] of Object.entries(capabilities)) {
+                for (let [capabilityKey, capability] of Object.entries(this.capabilities)) {
                     if (capability.scope === 'repository')
                         repositoryCapabilities[capabilityKey] = capability;
                 }
                 return repositoryCapabilities;
+            },
+            groupedCollectionCapabilities() {
+                return _.groupBy(Object.keys(this.collectionCapabilities), this.getCapabilityRelatedEntity);
+            },
+            groupedRepositoryCapabilities() {
+                return _.groupBy(Object.keys(this.repositoryCapabilities), this.getCapabilityRelatedEntity);
             }
         },
         methods: {
@@ -197,6 +217,24 @@
                 else
                     this.removeCapabilityFromRole({ capabilityKey: capabilityKey, role: this.roleSlug })
             },
+            getCapabilityRelatedEntity(capabilitySlug) {
+                if (capabilitySlug.match('collection'))
+                    return this.$i18n.get('Collection')
+                else if (capabilitySlug.match('metadata') || capabilitySlug.match('metadatum'))
+                    return this.$i18n.get('Metadata')
+                else if (capabilitySlug.match('filter'))
+                    return this.$i18n.get('Filters')
+                else if (capabilitySlug.match('log'))
+                    return this.$i18n.get('Activities')
+                else if (capabilitySlug.match('taxonomy') || capabilitySlug.match('taxonomies'))
+                    return this.$i18n.get('Taxonomies')
+                else if (capabilitySlug.match('item'))
+                    return this.$i18n.get('Items')
+                else if (capabilitySlug.match('%d'))
+                    return this.$i18n.get('Collection')
+                else
+                    return this.$i18n.get('Repository')
+            }
         },
         created() {
             this.roleSlug = this.$route.params.roleSlug;
@@ -239,20 +277,33 @@
 <style lang="scss" scoped>
     .capabilities-list {
         margin: 1rem;
-        ul {
+        break-inside: avoid;
+        column-count: 5;
+
+        .capability-group {
+            break-inside: avoid;
+            h3 {
+                margin-top: 0;
+                font-weight: normal;
+            }
+            ul {
+                padding-bottom: 1rem;
+                li {
+                    margin-bottom: 1rem;
+                }
+            }
+        }
+        @media only screen and (max-width: 1600px) {
             column-count: 4;
-            li {
-                margin-bottom: 1rem;
-            }
-            @media only screen and (max-width: 1400px) {
-                column-count: 3;
-            }
-            @media only screen and (max-width: 962px) {
-                column-count: 2;
-            }
-            @media only screen and (max-width: 568px) {
-                column-count: 1;
-            }
+        }
+        @media only screen and (max-width: 1400px) {
+            column-count: 3;
+        }
+        @media only screen and (max-width: 962px) {
+            column-count: 2;
+        }
+        @media only screen and (max-width: 568px) {
+            column-count: 1;
         }
     }
 </style>

@@ -11,6 +11,9 @@
             </div>
             <div class="help-tooltip-body">
                 <p v-html="(message != undefined) ? message : ''"/>
+                <p 
+                        v-if="superCaps && superCaps.length && capabilities"
+                        v-html="'<br>' + $i18n.get('If disabled, this capability may be affected by ') + ' ' + renderSuperCapsList()" />
             </div>
         </div> 
     </span>
@@ -20,8 +23,30 @@
 export default {
     name: 'HelpButton',
     props: {
-        title: '',
-        message: ''
+        title: String,
+        message: String,
+        superCaps: Array,
+        capabilities: Array
+    },
+    methods: {
+        renderSuperCapsList() {
+            let htmlList = '';
+            const validCaps = this.superCaps.filter((superCap) => this.capabilities[superCap] && this.capabilities[superCap].display_name );
+            for (let i = 0; i < validCaps.length; i++) {
+                htmlList += `<strong>${ this.capabilities[validCaps[i]].display_name }</strong>`;
+                if (validCaps.length > 2 && i < validCaps.length - 1) {
+                    if (i < validCaps.length - 2)
+                        htmlList += ', '
+                    else
+                        htmlList += ' ' + this.$i18n.get('or') + ' ';
+                } else if (validCaps.length == 2 && i == 0) {
+                    htmlList += ' ' + this.$i18n.get('or') + ' ';
+                }
+                
+            }
+
+            return htmlList;
+        } 
     }
 }
 </script>
@@ -96,9 +121,9 @@ export default {
         &:before {
             border-color:#cbcbcb transparent transparent transparent;
             border-right-width: 12px;
-            border-top-width: 12px;
+            border-top-width: 9px;
             border-left-width: 12px;
-            bottom: -15px;
+            bottom: -12px;
         }
     }
     
