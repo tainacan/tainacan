@@ -114,8 +114,8 @@
                                         type="checkbox"
                                         name="roles[]"
                                         :id="'capability_'+ capability.replace('%d', selectedCollection)"
-                                        :disabled="collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0"
-                                        :checked="role.capabilities[capability.replace('%d', selectedCollection)] || (collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0)"
+                                        :disabled="collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap.replace('%d', selectedCollection)] == true && selectedCollection != 'all') >= 0"
+                                        :checked="role.capabilities[capability.replace('%d', selectedCollection)] || (collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0)"
                                         @input="onUpdateCapability($event.target.checked, capability.replace('%d', selectedCollection))">
                                 </span>
                                 <span 
@@ -276,7 +276,7 @@
 
 <style lang="scss" scoped>
     .capabilities-list {
-        margin: 1rem;
+        padding: 1rem;
         break-inside: avoid;
         column-count: 5;
 
