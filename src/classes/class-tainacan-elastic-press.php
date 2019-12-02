@@ -229,7 +229,7 @@ class Elastic_Press {
 							
 							if( isset($args['meta_query']) ) {
 								foreach( $args['meta_query'] as $metaquery ) {
-									if( $metaquery['key'] == $metadatum_id ){
+									if( isset($metaquery['key']) && $metaquery['key'] == $metadatum_id ){
 										$include = is_array($metaquery['value']) ? $metaquery['value'] : [$metaquery['value']];
 									}
 								}
@@ -502,7 +502,8 @@ class Elastic_Press {
 			}
 
 		}
-		$formatted_args['aggs'] = $aggs;
+		if(!empty($aggs))
+			$formatted_args['aggs'] = $aggs;
 		return $formatted_args;
 	}
 
@@ -625,7 +626,8 @@ class Elastic_Press {
 
 			$aggs[$id]['composite']['after'] = [$id => $filter['last_term'] ];
 		}
-		$formatted_args['aggs'] = $aggs;
+		if(!empty($aggs))
+			$formatted_args['aggs'] = $aggs;
 		return $formatted_args;
 	}
 
@@ -635,6 +637,10 @@ class Elastic_Press {
 	private function format_aggregations_items($aggregations) {
 		global $wpdb;
 		$formated_aggs = [];
+
+		if( empty($aggregations) )
+			return $formated_aggs;
+
 		foreach($aggregations as $key => $aggregation) {
 			$description_types = \explode(".", $key);
 			$filter_id = $description_types[0];
@@ -705,6 +711,10 @@ class Elastic_Press {
 	private function format_aggregations_facet($aggregations) {
 		global $wpdb;
 		$formated_aggs = ['values'=>[]];
+
+		if( empty($aggregations) )
+			return $formated_aggs;
+
 		foreach($aggregations as $key => $aggregation) {
 			$description_types = \explode(".", $key);
 			if($description_types[0] == 'taxonomy') {
