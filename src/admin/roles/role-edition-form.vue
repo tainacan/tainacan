@@ -5,16 +5,21 @@
         <br>
         <template v-if="!isLoadingRole">
             <div class="name-edition-box">
-                <h2 id="role-name-label">{{ $i18n.get('Role name') }}</h2>
+                <label for="role-name-input">{{ $i18n.get('Role name') + ':' }}</label>
                 <input
-                    aria-labelledby="role-name-label" 
                     type="text" 
-                    id="rolen-name-input" 
+                    id="role-name-input" 
                     name="name" 
                     v-model="role.name" 
-                    :placeholder="$i18n.get('Type here the role name...')">
+                    :placeholder="$i18n.get('Insert the role name...')">
             </div>
         </template>
+
+        <span 
+                v-if="isLoadingRole || isLoadingCapabilities"
+                class="spinner is-active"
+                style="float: none; margin: 0 auto; width: 100%; display: block;" />
+
         <template v-if="!isLoadingRole && !isLoadingCapabilities">
             <br>
             <div id="capabilities-tabs">
@@ -36,7 +41,7 @@
                         class="tabs-content"
                         v-if="capabilitiesTab === 'repository'"
                         id="tab-repository">
-                    <h3>{{ $i18n.get('Role\'s Repository related Capabilities List') }}</h3>
+                    <h3>{{ $i18n.get('Role\'s Repository Related Capabilities List') }}</h3>
                     <div class="capabilities-list">
                         <div
                                 class="capability-group"
@@ -84,8 +89,12 @@
                         class="tabs-content"
                         v-else-if="capabilitiesTab === 'collections'"
                         id="tab-collections">
+                    <span 
+                            v-if="isLoadingCollections"
+                            class="spinner is-active"
+                            style="float: none; margin: 0 auto;" />
                     <template v-if="!isLoadingCollections"> 
-                        <h3>{{ $i18n.get('Role\'s Collection related Capabilities List') }}</h3>
+                        <h3>{{ $i18n.get('Role\'s Collection Related Capabilities List') }}</h3>
 
                         <div class="tablenav top">
                             <div class="alignleft collection-selector">
@@ -169,6 +178,10 @@
                         :value="$i18n.get('Cancel')">
             </p>
             <p class="submit">
+                <span 
+                        v-if="isUpdatingRole"
+                        class="spinner is-active"
+                        style="float: none;" />
                 <input 
                         type="submit"
                         name="submit"
@@ -308,7 +321,18 @@
                     }).catch(() => {
                         this.isLoadingRole = false;
                     });
-            } else {
+            } else if (this.roleSlug === 'new' && this.$route.query.template) {
+                this.isLoadingRole = true;
+                this.fetchRole(this.$route.query.template)
+                    .then((originalRole) => {
+                        this.role = JSON.parse(JSON.stringify(originalRole));
+                        this.role.name = this.role.name + ' ' + this.$i18n.get('(Copy)');
+                        this.role.slug = undefined;
+                        this.isLoadingRole = false;
+                    }).catch(() => {
+                        this.isLoadingRole = false;
+                    });
+            }   else {
                 this.role = {
                     name: '',
                     capabilities: {}
@@ -342,13 +366,27 @@
 </script>
 
 <style lang="scss" scoped>
+    .tainacan_page_tainacan_roles #wp-body {
+        overflow-x: hidden;
+    }
     .form-submit {
         display: flex;
         justify-content: space-between;
         align-content: center;
-        margin: 1rem 0;
+        margin: 3rem 0 1rem 0;
+    }
+    .name-edition-box label {
+        margin-right: 2rem;
+        padding-bottom: 3px;
+        font-size: 1rem;
+    }
+    .nav-tab {
+        background-color: #faf9f9;
+        border-bottom-color: #faf9f9;
+        padding: 5px 24px;
     }
     .tabs-content {
+        background-color: #faf9f9;
         border: 1px solid #ccc;
         border-top: none;
         padding: 1rem 2rem;

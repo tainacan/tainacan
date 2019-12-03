@@ -1,11 +1,34 @@
 <template>
     <div>
         <h1 class="wp-heading-inline">{{ $route.meta.title }}</h1>
-        <router-link
-                to="/roles/new"
-                class="page-title-action">
-            {{ $i18n.get('Add new role') }}
-        </router-link>
+        <div class="dropdown-new-role">
+            <router-link
+                    to="/roles/new"
+                    class="page-title-action">
+                {{ $i18n.get('Add new role') }}
+            </router-link>
+            <button 
+                    @click="showDropdownMenu = !showDropdownMenu"
+                    class="button button-secondary">
+                <span class="dashicons dashicons-arrow-down-alt2" />
+            </button>
+            <div 
+                    :class="{ 'show': showDropdownMenu }"
+                    class="dropdown-menu">
+                <p class="dropdown-menu-intro">{{ $i18n.get('Create a new role based on: ') }}</p>
+                <ul>
+                    <li 
+                            v-for="role of roles"
+                            :key="role.slug"
+                            v-if="role.slug.match('tainacan')">
+                        <router-link :to="'/roles/new?template=' + role.slug">
+                            {{ role.name }}
+                        </router-link>
+                    </li>
+                    <li><router-link to="/roles/new"><em>{{ $i18n.get('Blank') }}</em></router-link></li>
+                </ul>
+            </div>
+        </div>
         <hr class="wp-header-end">
         
         <br>
@@ -174,7 +197,8 @@
             return {
                 isLoadingRoles: false,
                 relatedEntities: [],
-                currentRelatedEntity: ''
+                currentRelatedEntity: '',
+                showDropdownMenu: false
             }
         },
         computed: {
@@ -231,7 +255,10 @@
                 }
             },
             removeRole(roleSlug) {
-                this.deleteRole(roleSlug);
+                this.deleteRole(roleSlug)
+                    .then(() => {
+                        this.$forceUpdate();
+                    })
             }
         },
         created() {
@@ -247,8 +274,78 @@
 </script>
 
 <style lang="scss" scoped>
+    .dropdown-new-role {
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+
+        a:first-child {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            margin-right: -1px;
+        }
+        .button {
+            top: -3px;
+            position: relative;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            padding: 0px 6px;
+            line-height: 1rem;
+        }
+
+        .dropdown-menu {
+            display: none;
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            top: 50%;
+            left: 4px;
+            background:white;
+            border: 1px solid#ccc;
+            transition: top 0.3s ease, opacity 0.3s ease, display 0.3s ease;
+
+            &.show {
+                display: block;
+                opacity: 1;
+                visibility: visible;
+                top: calc(100% - 3px);
+            }
+
+            .dropdown-menu-intro {
+                color: #898d8f;
+                font-size: 0.75rem;
+                font-style: italic;
+                padding: 0.75rem 1rem 0 0.75rem;
+                white-space: nowrap;
+                margin: 0;
+            }
+
+            li>a {
+                display: block;
+                margin: 0;
+                padding: 0.25rem 1rem;
+                white-space: nowrap;
+                cursor: pointer;
+                text-decoration: none;
+
+                &:hover {
+                    background-color: #e6f4ff;
+                    color: #0071a1;
+                }
+            }
+        }
+    }
     .selected-entity a {
         font-weight: bold;
         color: black;
+    }
+
+    table {
+        table-layout: auto;
+    }
+
+    .column-capabilities {
+        width: 1px;
+        white-space: nowrap;
     }
 </style>

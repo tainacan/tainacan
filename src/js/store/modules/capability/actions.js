@@ -95,9 +95,9 @@ export const deleteRole = ({ commit }, roleSlug) => {
 
         axios.tainacan.delete('/roles/' + roleSlug)
             .then(res => {
-                const role = res.data
-                commit('deleteRole', role);
-                resolve(role);
+                const roleSlug = res.data
+                commit('deleteRole', roleSlug);
+                resolve(roleSlug);
             })
             .catch(error => {
                 reject(error);
