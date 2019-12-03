@@ -276,7 +276,6 @@ class REST_Roles_Controller extends REST_Controller {
 		$role = \wp_roles()->roles[$role_slug];
 
 		foreach ($role['capabilities'] as $cap => $val) {
-			var_dump($cap);
 			if ( ! in_array( \tainacan_roles()->get_cap_generic_name($cap) , \tainacan_roles()->get_all_caps_slugs() ) ) {
 				continue;
 			}
