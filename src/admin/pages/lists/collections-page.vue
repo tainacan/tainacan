@@ -5,7 +5,7 @@
                 :bread-crumb-items="[{ path: '', label: this.$i18n.get('collections') }]"/>
         <div
                 class="sub-header"
-                v-if="$userCaps.hasCapability('edit_tainacan-collections')">
+                v-if="$userCaps.hasCapability('tnc_rep_edit_collections')">
             
             <!-- New Collection button -->
             <div class="header-item">
@@ -212,7 +212,7 @@
                                 {{ $i18n.get('info_no_collections_' + statusOption.slug) }}
                             </p>
 
-                            <div v-if="$userCaps.hasCapability('edit_tainacan-collections') && status == undefined || status == ''">
+                            <div v-if="$userCaps.hasCapability('tnc_rep_edit_collections') && status == undefined || status == ''">
                                 <b-dropdown 
                                         :disabled="isLoadingMetadatumMappers"
                                         id="collection-creation-options-dropdown"

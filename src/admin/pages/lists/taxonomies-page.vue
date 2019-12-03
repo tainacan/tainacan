@@ -5,7 +5,7 @@
                     :bread-crumb-items="[{ path: '', label: this.$i18n.get('taxonomies') }]"/>
             <div 
                     class="sub-header" 
-                    v-if="$userCaps.hasCapability('edit_tainacan-taxonomies')">
+                    v-if="$userCaps.hasCapability('tnc_rep_edit_taxonomies')">
 
                 <!-- New Taxonomy Button ----  -->
                 <div class="header-item">

@@ -347,10 +347,7 @@ UserCapabilitiesPlugin.install = function (Vue, options = {}) {
     
     Vue.prototype.$userCaps = {
         hasCapability(key) {
-            for (let i = 0; i < tainacan_plugin.user_caps.length; i++)
-                if (tainacan_plugin.user_caps[i] == key)
-                    return true;
-            return false;
+            return tainacan_plugin[key];
         }
     }
 };

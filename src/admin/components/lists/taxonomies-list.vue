@@ -14,7 +14,7 @@
             <div class="field is-pulled-right">
                 <b-dropdown
                         position="is-bottom-left"
-                        v-if="$userCaps.hasCapability('delete_tainacan-taxonomies')"
+                        v-if="$userCaps.hasCapability('tnc_rep_delete_collections')"
                         :disabled="!isSelecting"
                         id="bulk-actions-dropdown"
                         aria-role="list"
