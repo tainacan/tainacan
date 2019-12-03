@@ -9,12 +9,17 @@
             </router-link>
             <button 
                     @click="showDropdownMenu = !showDropdownMenu"
-                    class="button button-secondary">
+                    class="button button-secondary"
+                    aria-haspopup="true"
+                    aria-controls="dropdown-menu"
+                    :aria-expanded="showDropdownMenu">
                 <span class="dashicons dashicons-arrow-down-alt2" />
             </button>
             <div 
                     :class="{ 'show': showDropdownMenu }"
-                    class="dropdown-menu">
+                    class="dropdown-menu"
+                    id="dropdown-menu"
+                    :aria-hidden="showDropdownMenu">
                 <p class="dropdown-menu-intro">{{ $i18n.get('Create a new role based on: ') }}</p>
                 <ul>
                     <li 
@@ -30,39 +35,55 @@
             </div>
         </div>
         <hr class="wp-header-end">
-        
-        <br>
-        
-        <label>{{ $i18n.get('Filter list by roles with capabilities related to:') }}</label>
-        <ul 
-                class="subsubsub"
-                style="float: none;">
-            <li :class="{ 'selected-entity': currentRelatedEntity == '' }">
-                <a @click="filteByCapabilitiesRelatedTo('')">{{ $i18n.get('Any') }} </a> |
-            </li>
-            <li :class="{ 'selected-entity': currentRelatedEntity == 'repository' }">
-                <a @click="filteByCapabilitiesRelatedTo('repository')">{{ $i18n.get('Repository') }} </a> |
-            </li>
-            <li :class="{ 'selected-entity': currentRelatedEntity == 'taxonomies' }">
-                <a @click="filteByCapabilitiesRelatedTo('taxonomies')">{{ $i18n.get('Taxonomies') }} </a> |
-            </li>
-            <li :class="{ 'selected-entity': currentRelatedEntity == 'collections' }">
-                <a @click="filteByCapabilitiesRelatedTo('collections')">{{ $i18n.get('Collections') }} </a> |
-            </li>
-            <li :class="{ 'selected-entity': currentRelatedEntity == 'metadata' }">
-                <a @click="filteByCapabilitiesRelatedTo('metadata')">{{ $i18n.get('Metadata') }} </a> |
-            </li>
-            <li :class="{ 'selected-entity': currentRelatedEntity == 'filters' }">
-                <a @click="filteByCapabilitiesRelatedTo('filter')">{{ $i18n.get('Filter') }} </a> |
-            </li>
-            <li :class="{ 'selected-entity': currentRelatedEntity == 'activities' }">
-                <a @click="filteByCapabilitiesRelatedTo('activities')">{{ $i18n.get('Activities') }} </a>
-            </li>
-        </ul>
-        
-        <br>
 
         <h2 class="screen-reader-text">{{ $i18n.get('Roles list') }}</h2>
+
+        <p class="search-box">
+            <label
+                    class="screen-reader-text"
+                    for="roles-search-input">
+                {{ $i18n.get('Type to search by Role Name') }}
+            </label>
+            <input
+                    type="search" 
+                    id="roles-search-input" 
+                    :placeholder="$i18n.get('Type to search by Role Name')"
+                    v-model="searchString">
+		</p>
+
+        <div class="tablenav top">
+            <div class="align-left actions">
+                <label>{{ $i18n.get('Filter list by roles with capabilities related to:') }}</label>
+                <ul 
+                        class="subsubsub"
+                        style="float: none;">
+                    <li :class="{ 'selected-entity': currentRelatedEntity == '' }">
+                        <a @click="filteByCapabilitiesRelatedTo('')">{{ $i18n.get('Any') }} </a> |
+                    </li>
+                    <li :class="{ 'selected-entity': currentRelatedEntity == 'repository' }">
+                        <a @click="filteByCapabilitiesRelatedTo('repository')">{{ $i18n.get('Repository') }} </a> |
+                    </li>
+                    <li :class="{ 'selected-entity': currentRelatedEntity == 'taxonomies' }">
+                        <a @click="filteByCapabilitiesRelatedTo('taxonomies')">{{ $i18n.get('Taxonomies') }} </a> |
+                    </li>
+                    <li :class="{ 'selected-entity': currentRelatedEntity == 'collections' }">
+                        <a @click="filteByCapabilitiesRelatedTo('collections')">{{ $i18n.get('Collections') }} </a> |
+                    </li>
+                    <li :class="{ 'selected-entity': currentRelatedEntity == 'metadata' }">
+                        <a @click="filteByCapabilitiesRelatedTo('metadata')">{{ $i18n.get('Metadata') }} </a> |
+                    </li>
+                    <li :class="{ 'selected-entity': currentRelatedEntity == 'filters' }">
+                        <a @click="filteByCapabilitiesRelatedTo('filter')">{{ $i18n.get('Filters') }} </a> |
+                    </li>
+                    <li :class="{ 'selected-entity': currentRelatedEntity == 'activities' }">
+                        <a @click="filteByCapabilitiesRelatedTo('activities')">{{ $i18n.get('Activities') }} </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="tablenav-pages one-page">
+                <span class="displaying-num">{{ Object.keys(roles).length + ' ' + $i18n.getWithNumber('item', 'items', Object.keys(roles).length) }}</span>
+            </div>
+        </div>
 
         <table 
                 v-if="!isLoadingRoles"
@@ -127,10 +148,11 @@
                         </strong>
                         <br>
                         <div class="row-actions">
-                            <span class="edit"><router-link :to="'/roles/' + role.slug">{{ $i18n.get('Edit') }}</router-link> | </span>
+                            <span class="edit"><router-link :to="'/roles/' + role.slug">{{ $i18n.get('Edit') }}</router-link></span>
                             <span 
                                     v-if="role.slug.match('tainacan')"
                                     class="delete">
+                                &nbsp;|&nbsp;
                                 <a 
                                         @click="removeRole(role.slug)"
                                         class="submitdelete">
@@ -145,7 +167,7 @@
                         {{ role.slug }}
                     </td> -->
                     <td
-                            class="capabilities column-capabilities num"
+                            class="capabilities column-capabilities num  column-primary"
                             :data-colname="$i18n.get('Number of capabilities')">
                         {{ Object.values(role.capabilities).length }}
                     </td>
@@ -185,6 +207,13 @@
                 </tr>
             </tfoot>
         </table>
+
+        <div class="tablenav bottom">
+            <div class="tablenav-pages one-page">
+                <span class="displaying-num">{{ Object.keys(roles).length + ' ' + $i18n.getWithNumber('item', 'items', Object.keys(roles).length) }}</span>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -198,12 +227,22 @@
                 isLoadingRoles: false,
                 relatedEntities: [],
                 currentRelatedEntity: '',
-                showDropdownMenu: false
+                showDropdownMenu: false,
+                searchString: ''
             }
         },
         computed: {
             roles() {
-                const roles = this.getRoles();
+                let roles = this.getRoles();
+
+                if (this.searchString) {
+                    let searchedRoles = {}
+                    for (let [roleKey, role] of Object.entries(roles)) {
+                        if (role.name.toLowerCase().match(this.searchString))
+                            searchedRoles[roleKey] = role;
+                    }
+                    roles = searchedRoles;
+                }
 
                 if (this.relatedEntities.length) {
                     let filteredRoles = {};
@@ -216,8 +255,9 @@
                             }
                         }
                     }
-                    return filteredRoles;
+                    roles = filteredRoles;
                 }
+
                 return roles;
             }
         },
@@ -274,6 +314,16 @@
 </script>
 
 <style lang="scss" scoped>
+    .tablenav {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        height: auto;
+    }
+    #roles-search-input {
+        min-width: 200px;
+        margin-bottom: -10px;
+    }
     .dropdown-new-role {
         display: inline-flex;
         align-items: center;
@@ -302,6 +352,7 @@
             left: 4px;
             background:white;
             border: 1px solid#ccc;
+            z-index: 9;
             transition: top 0.3s ease, opacity 0.3s ease, display 0.3s ease;
 
             &.show {
@@ -335,13 +386,22 @@
             }
         }
     }
-    .selected-entity a {
-        font-weight: bold;
-        color: black;
+    .selected-entity { 
+        margin-top: -4px;
+        padding: 2px 0;
+        a {
+            font-weight: bold;
+            color: black;
+        }
     }
 
     table {
         table-layout: auto;
+
+        &.widefat td,
+        &.widefat th {
+            padding: 8px 18px;
+        }
     }
 
     .column-capabilities {

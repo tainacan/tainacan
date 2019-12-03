@@ -366,8 +366,8 @@
 </script>
 
 <style lang="scss" scoped>
-    .tainacan_page_tainacan_roles #wp-body {
-        overflow-x: hidden;
+    #role-name-input {
+        min-width: 200px;
     }
     .form-submit {
         display: flex;
@@ -423,6 +423,14 @@
         }
         @media only screen and (max-width: 568px) {
             column-count: 1;
+        }
+    }
+    @media only screen and (max-width: 783px) {
+        #collection-select {
+            width: 100%;
+        }
+        .nav-tab-wrapper {
+            border-bottom: 1px solid #ccc;
         }
     }
 </style>

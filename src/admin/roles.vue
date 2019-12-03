@@ -13,6 +13,9 @@
 </script>
 
 <style lang="scss">
+    .tainacan_page_tainacan_roles #wpbody {
+        overflow-x: hidden;
+    }
     #tainacan-roles-app {
         a:hover {
             cursor: pointer;
