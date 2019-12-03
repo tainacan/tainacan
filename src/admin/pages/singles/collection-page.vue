@@ -46,7 +46,7 @@ export default {
             this.currentUserCanEdit = storedCollection.currentUserCanEdit;
         else {
             this.fetchCollectionUserCanEdit(this.collectionId).then((caps) => {
-                this.currentUserCanEdit = caps;
+                this.currentUserCanEdit = caps.current_user_can_edit;
             }).catch((error) => this.$console.error(error));
         }
     }

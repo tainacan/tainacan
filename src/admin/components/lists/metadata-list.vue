@@ -131,6 +131,7 @@
                                                 :value="metadatum.enabled"
                                                 @input="onChangeEnable($event, index)"/>
                                         <a 
+                                                v-if="metadatum.current_user_can_edit"
                                                 :style="{ visibility: 
                                                         metadatum.collection_id != collectionId
                                                         ? 'hidden' : 'visible'
@@ -148,6 +149,7 @@
                                             </span>
                                         </a>
                                         <a 
+                                                v-if="metadatum.current_user_can_delete"
                                                 :style="{ visibility: 
                                                         metadatum.collection_id != collectionId ||
                                                          metadatum.metadata_type_object.related_mapped_prop == 'title' ||
@@ -185,7 +187,9 @@
                         </draggable> 
                     </div>
                 
-                    <div class="column available-metadata-area" >
+                    <div 
+                            v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata')) || !isRepositoryLevel"
+                            class="column available-metadata-area" >
                         <div class="field">
                             <h3 class="label has-text-secondary">{{ $i18n.get('label_available_metadata_types') }}</h3>
                             <draggable 
@@ -234,7 +238,9 @@
             </b-tab-item>
 
             <!-- Mapping --------------- -->
-            <b-tab-item :label="$i18n.get('mapping')">
+            <b-tab-item 
+                    v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata') || !isRepositoryLevel)"
+                    :label="$i18n.get('mapping')">
                 <div>
                     <section 
                             v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"

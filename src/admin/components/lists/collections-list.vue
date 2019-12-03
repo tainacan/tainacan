@@ -74,17 +74,16 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="goToCollectionEditPage(contextMenuCollection)"
-                            v-if="contextMenuCollection != null">
+                            v-if="contextMenuCollection != null && (collections[contextMenuIndex] && collections[contextMenuIndex].current_user_can_edit)">
                         {{ $i18n.getFrom('collections', 'edit_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="deleteOneCollection(contextMenuCollection)"
-                            v-if="contextMenuCollection != null">
+                            v-if="contextMenuCollection != null && (collections[contextMenuIndex] && collections[contextMenuIndex].current_user_can_delete)">
                         {{ $i18n.get('label_delete_collection') }}
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
-
             <table class="tainacan-table">
                 <thead>
                     <tr>

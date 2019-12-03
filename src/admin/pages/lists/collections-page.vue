@@ -162,6 +162,7 @@
                     <li 
                             v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
                             :key="index"
+                            v-if="statusOption.slug != 'private' || (statusOption.slug == 'private' && $userCaps.hasCapability('tnc_rep_read_private_collections'))"
                             @click="onChangeTab(statusOption.slug)"
                             :class="{ 'is-active': status == statusOption.slug}"
                             :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"

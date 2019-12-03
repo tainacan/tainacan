@@ -225,7 +225,7 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, taxonomyId ) => {
     commit('clearTaxonomyFilters');
 
     return new Promise((resolve, reject) => {
-        dispatch('taxonomy/fetchTaxonomy', taxonomyId, { root: true })
+        dispatch('taxonomy/fetchTaxonomy', { taxonomyId: taxonomyId }, { root: true })
             .then((res) => {
                 let taxonomy = res.taxonomy;
                 if (taxonomy.collections_ids != undefined && taxonomy.collections_ids.length != undefined) {

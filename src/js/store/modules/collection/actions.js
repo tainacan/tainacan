@@ -227,8 +227,10 @@ export const fetchCollectionUserCanEdit = ({ commit }, id) => {
     return new Promise ((resolve, reject) => {
         axios.tainacan.get('/collections/' + id + '?context=edit&fetch_only')
         .then(res => {
-            let caps = res.data.current_user_can_edit;
-            resolve( caps );
+            resolve({
+                current_user_can_edit: res.data.current_user_can_edit,
+                current_user_can_delete: res.data.current_user_can_delete
+            });
         })
         .catch(error => {
             reject(error);

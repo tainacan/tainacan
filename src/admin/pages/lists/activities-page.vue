@@ -29,7 +29,7 @@
                         :can-cancel="false"/>
 
                 <div 
-                        v-if="tab != 'processes'"
+                        v-if="tab != 'processes' && $userCaps.hasCapability('tnc_rep_read_logs')"
                         class="sub-header">
 
                     <b-field class="header-item">
@@ -132,7 +132,7 @@
                 </div>
 
                 <activities-list
-                        v-if="tab != 'processes'"
+                        v-if="tab != 'processes' && $userCaps.hasCapability('tnc_rep_read_logs')"
                         :is-loading="isLoading"
                         :total-activities="totalActivities"
                         :page="activitiesPage"

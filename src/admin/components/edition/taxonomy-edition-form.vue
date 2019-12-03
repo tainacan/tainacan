@@ -9,9 +9,10 @@
             <b-tabs 
                     @change="onChangeTab($event)"
                     v-model="tabIndex">    
-                <b-tab-item :label="$i18n.get('taxonomy')">
+                <b-tab-item 
+                        v-if="taxonomy != null && taxonomy != undefined && taxonomy.current_user_can_edit"
+                        :label="$i18n.get('taxonomy')">
                     <form 
-                            v-if="taxonomy != null && taxonomy != undefined" 
                             class="tainacan-form" 
                             label-width="120px">
                         <div class="columns">
@@ -200,7 +201,8 @@
                     <terms-list
                             :key="shouldReloadTermsList ? 'termslistreloaded' : 'termslist'" 
                             @isEditingTermUpdate="isEditingTermUpdate"
-                            :taxonomy-id="taxonomyId"/>
+                            :taxonomy-id="taxonomyId"
+                            :current-user-can-edit-taxonomy="taxonomy ? taxonomy.current_user_can_edit : false"/>
                 </b-tab-item>
 
                 <b-loading 
@@ -474,25 +476,26 @@
                 this.pathArray = this.$route.fullPath.split("/").reverse();
                 this.taxonomyId = this.pathArray[1];
 
-                this.fetchTaxonomy(this.taxonomyId).then(res => {
-                    this.taxonomy = res.taxonomy;
+                this.fetchTaxonomy({ taxonomyId: this.taxonomyId, isContextEdit: true })
+                    .then(res => {
+                        this.taxonomy = res.taxonomy;
 
-                    // Fills hook forms with it's real values 
-                    this.$nextTick()
-                        .then(() => {
-                            this.updateExtraFormData(this.taxonomy);
-                        });
+                        // Fills hook forms with it's real values 
+                        this.$nextTick()
+                            .then(() => {
+                                this.updateExtraFormData(this.taxonomy);
+                            });
 
-                    // Fill this.form data with current data.
-                    this.form.name = this.taxonomy.name;
-                    this.form.description = this.taxonomy.description;
-                    this.form.slug = this.taxonomy.slug;
-                    this.form.status = this.taxonomy.status;
-                    this.form.allowInsert = this.taxonomy.allow_insert;
-                    this.form.enabledPostTypes = this.taxonomy.enabled_post_types;
+                        // Fill this.form data with current data.
+                        this.form.name = this.taxonomy.name;
+                        this.form.description = this.taxonomy.description;
+                        this.form.slug = this.taxonomy.slug;
+                        this.form.status = this.taxonomy.status;
+                        this.form.allowInsert = this.taxonomy.allow_insert;
+                        this.form.enabledPostTypes = this.taxonomy.enabled_post_types;
 
-                    this.isLoadingTaxonomy = false;
-                });
+                        this.isLoadingTaxonomy = false;
+                    });
             }
         }
     }

@@ -128,6 +128,7 @@
                         <li 
                                 v-for="(statusOption, index) of $statusHelper.getStatuses()"
                                 :key="index"
+                                v-if="statusOption.slug != 'private' || (statusOption.slug == 'private' && $userCaps.hasCapability('tnc_rep_read_private_taxonomies'))"
                                 @click="onChangeTab(statusOption.slug)"
                                 :class="{ 'is-active': status == statusOption.slug}"
                                 :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '', marginLeft: statusOption.slug == 'draft' ? 'auto' : '' }"

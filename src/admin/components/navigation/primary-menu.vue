@@ -124,7 +124,7 @@
                         <span class="menu-text">{{ $i18n.get('activities') }}</span>
                     </router-link>
                 </li>
-                <li>
+                <li v-if="$userCaps.hasCapability('tnc_rep_edit_users')">
                     <router-link
                             tag="a"
                             :to="this.$routerHelper.getCapabilitiesPath()"

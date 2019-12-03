@@ -116,6 +116,7 @@
                                         :value="filter.enabled" 
                                         @input="onChangeEnable($event, index)"/>
                                 <a 
+                                        v-if="filter.current_user_can_delete"
                                         :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel? 'hidden' : 'visible' }"
                                         @click.prevent="toggleFilterEdition(filter.id)">
                                     <span 
@@ -130,6 +131,7 @@
                                     </span>
                                 </a>
                                 <a 
+                                        v-if="filter.current_user_can_delete"
                                         :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel ? 'hidden' : 'visible' }"
                                         @click.prevent="removeFilter(filter)">
                                     <span
@@ -159,7 +161,9 @@
                     </div>
                 </draggable>
             </div>
-            <div class="column available-metadata-area">
+            <div 
+                    v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || !isRepositoryLevel)"
+                    class="column available-metadata-area">
                 <div class="field" >
                     <h3 class="label has-text-secondary"> {{ $i18n.get('label_available_metadata') }}</h3>
                     <draggable

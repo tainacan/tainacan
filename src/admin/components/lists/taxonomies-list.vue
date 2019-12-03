@@ -3,7 +3,9 @@
             v-if="taxonomies.length > 0 && !isLoading"
             class="table-container">
 
-        <div class="selection-control">
+        <div 
+                v-if="$userCaps.hasCapability('tnc_rep_delete_taxonomies')"
+                class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox 
@@ -14,7 +16,6 @@
             <div class="field is-pulled-right">
                 <b-dropdown
                         position="is-bottom-left"
-                        v-if="$userCaps.hasCapability('tnc_rep_delete_collections')"
                         :disabled="!isSelecting"
                         id="bulk-actions-dropdown"
                         aria-role="list"
@@ -47,7 +48,7 @@
                 <thead>
                     <tr>
                         <!-- Checking list -->
-                        <th>
+                        <th v-if="$userCaps.hasCapability('tnc_rep_delete_taxonomies')">
                             &nbsp;
                             <!-- nothing to show on header -->
                         </th>
@@ -77,6 +78,7 @@
                             v-for="(taxonomy, index) of taxonomies">
                         <!-- Checking list -->
                         <td 
+                                v-if="$userCaps.hasCapability('tnc_rep_delete_taxonomies')"
                                 :class="{ 'is-selecting': isSelecting }"
                                 class="checkbox-cell">
                             <b-checkbox 
@@ -146,6 +148,7 @@
                             <div class="actions-container">
                                 <a 
                                         id="button-edit" 
+                                        v-if="taxonomy.current_user_can_edit"
                                         :aria-label="$i18n.getFrom('taxonomies','edit_item')" 
                                         @click="onClickTaxonomy($event, taxonomy.id, index)">
                                     <span
@@ -161,6 +164,7 @@
                                 </a>
                                 <a 
                                         id="button-delete" 
+                                        v-if="taxonomy.current_user_can_delete"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneTaxonomy(taxonomy.id)">
                                     <span
