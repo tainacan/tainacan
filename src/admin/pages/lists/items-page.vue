@@ -919,7 +919,6 @@
                 hasFiltered: false,
                 isFiltersMenuCompressed: false,
                 collapseAll: true,
-                isOnTheme: false,
                 futureSearchQuery: '',
                 localDisplayedMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
@@ -941,7 +940,8 @@
         props: {
             collectionId: Number,
             defaultViewMode: String, // Used only on theme
-            enabledViewModes: Object // Used only on theme
+            enabledViewModes: Object, // Used only on theme
+            isOnTheme: Boolean
         },
         computed: {
             isSortingByCustomMetadata() {
@@ -1542,8 +1542,6 @@
             }
         },
         created() {
-
-            this.isOnTheme = (this.$route.name === null);
 
             this.isRepositoryLevel = (this.collectionId === undefined);
 
