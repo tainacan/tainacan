@@ -149,7 +149,6 @@
                     this.getOptionsValuesCancel = promise.source;  
 
                 } else {
-
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
                             if (Array.isArray(this.facetsFromItemSearch[facet]))

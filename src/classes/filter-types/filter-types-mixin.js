@@ -114,7 +114,6 @@ export const dynamicFilterTypeMixin = {
                 });
 
             } else {
- 
                 let callback = new Promise((resolve) => {
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id)

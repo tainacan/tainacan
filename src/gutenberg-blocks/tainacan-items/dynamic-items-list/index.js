@@ -132,7 +132,7 @@ registerBlockType('tainacan/dynamic-items-list', {
             type: String,
             default: ''
         },
-        mosaicItemFocalPoint: {
+        osaicItemFocalPointm: {
             type: Object,
             default: {
                 x: 0.5,
@@ -190,7 +190,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                     style={ {
                         marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '', 
                         backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'medium_large')})` : 'none',
-                        backgroundPosition: layout == 'mosaic' ? `${ mosaicItemFocalPoint.x * 100 }% ${ mosaicItemFocalPoint.y * 100 }%` : 'none'
+                        backgroundPosition: layout == 'mosaic' ? `${ (mosaicItemFocalPoint && mosaicItemFocalPoint.x ? mosaicItemFocalPoint.x : 0.5) * 100 }% ${ (mosaicItemFocalPoint && mosaicItemFocalPoint.y ? mosaicItemFocalPoint.y : 0.5) * 100 }%` : 'none'
                     }}
                 >      
                     <a 
@@ -376,7 +376,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                     ?    
                 item.thumbnail['thumbnail'][0] 
                     : 
-                `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`)
+                `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`)
             )
         }
 
@@ -416,7 +416,7 @@ registerBlockType('tainacan/dynamic-items-list', {
         }
 
         function updateMosaicItemFocalPoint(focalPoint) {
-            if (Math.abs(focalPoint.x - mosaicItemFocalPoint.x) > 0.025 || Math.abs(focalPoint.y - mosaicItemFocalPoint.y) > 0.025) {
+            if (Math.abs(focalPoint.x - (mosaicItemFocalPoint && mosaicItemFocalPoint.x ? mosaicItemFocalPoint.x : 0.5)) > 0.025 || Math.abs(focalPoint.y - (mosaicItemFocalPoint && mosaicItemFocalPoint.y ? mosaicItemFocalPoint.y : 0.5)) > 0.025) {
                 mosaicItemFocalPoint = focalPoint;
                 setAttributes({ mosaicItemFocalPoint: focalPoint });
                 setContent();
@@ -881,7 +881,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                         icon={(
                             <img
                                 width={148}
-                                src={ `${tainacan_plugin.base_url}/admin/images/tainacan_logo_header.svg` }
+                                src={ `${tainacan_blocks.base_url}/admin/images/tainacan_logo_header.svg` }
                                 alt="Tainacan Logo"/>
                         )}>
                         <p>
@@ -1000,15 +1000,15 @@ registerBlockType('tainacan/dynamic-items-list', {
                     mosaic-density={ mosaicDensity }
                     mosaic-grid-rows={ mosaicGridRows } 
                     mosaic-grid-columns={ mosaicGridColumns }
-                    mosaic-item-focal-point-x={ mosaicItemFocalPoint.x } 
-                    mosaic-item-focal-point-y={ mosaicItemFocalPoint.y } 
+                    mosaic-item-focal-point-x={ (mosaicItemFocalPoint && mosaicItemFocalPoint.x ? mosaicItemFocalPoint.x : 0.5) } 
+                    mosaic-item-focal-point-y={ (mosaicItemFocalPoint && mosaicItemFocalPoint.y ? mosaicItemFocalPoint.y : 0.5) } 
                     collection-background-color={ collectionBackgroundColor }
                     collection-text-color={ collectionTextColor }
                     grid-margin={ gridMargin }
                     max-items-number={ maxItemsNumber }
                     order={ order }
-                    tainacan-api-root={ tainacan_plugin.root }
-                    tainacan-base-url={ tainacan_plugin.base_url }
+                    tainacan-api-root={ tainacan_blocks.root }
+                    tainacan-base-url={ tainacan_blocks.base_url }
                     id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>
                         { content }
                 </div>
@@ -1140,8 +1140,8 @@ registerBlockType('tainacan/dynamic-items-list', {
                         grid-margin={ gridMargin }
                         max-items-number={ maxItemsNumber }
                         order={ order }
-                        tainacan-api-root={ tainacan_plugin.root }
-                        tainacan-base-url={ tainacan_plugin.base_url }
+                        tainacan-api-root={ tainacan_blocks.root }
+                        tainacan-base-url={ tainacan_blocks.base_url }
                         id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>
                             { content }
                     </div>

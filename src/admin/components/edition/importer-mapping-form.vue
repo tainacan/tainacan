@@ -530,17 +530,31 @@ export default {
             this.isNewMetadatumModalActive = false;
             this.selectedMetadatumType = undefined;
             
-             // Generates options for metadata listing
+             // Updates options for metadata listing
             this.isFetchingCollectionMetadata = true;
-            this.fetchMetadata({collectionId: this.collectionId, isRepositoryLevel: false, isContextEdit: false })
-            .then((metadata) => {
-                this.collectionMetadata = JSON.parse(JSON.stringify(metadata));
-                this.isFetchingCollectionMetadata = false;
-            })
-            .catch((error) => {
-                this.$console.error(error);
-                this.isFetchingCollectionMetadata = false;
-            }); 
+
+            // Cancels previous Request
+            if (this.metadataSearchCancel != undefined)
+                this.metadataSearchCancel.cancel('Metadata search Canceled.');
+
+             this.fetchMetadata({
+                collectionId: this.collectionId, 
+                isRepositoryLevel: false, 
+                isContextEdit: false 
+            }).then((resp) => {
+                resp.request
+                    .then((metadata) => {
+                        this.collectionMetadata = JSON.parse(JSON.stringify(metadata));
+                        this.isFetchingCollectionMetadata = false;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingCollectionMetadata = false;
+                    }); 
+                    // Search Request Token for cancelling
+                    this.metadataSearchCancel = resp.source;
+                })
+                .catch(() => this.isFetchingCollectionMetadata = false);   
         },
         onMetadatumEditionCanceled() {
             // Reset variables for metadatum creation

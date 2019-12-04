@@ -1447,9 +1447,11 @@
             },
             adjustSearchControlHeight: _.debounce( function() {
                 this.$nextTick(() => {
-                        if (this.$refs['search-control'] != undefined)
+                    if (this.$refs['search-control'] != undefined)
                         this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight + this.$refs['search-control'].offsetTop : 0;
-                    this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
+                    
+                    if (jQuery && jQuery(window))
+                        this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
                 });
             }, 500),
             removeEventListeners() {
@@ -1686,7 +1688,6 @@
     .filters-menu {
         position: relative;
         z-index: 10;
-        background-color: white;
         width: $filter-menu-width;
         min-width: 180px;
         min-height: 100%;
@@ -1728,7 +1729,7 @@
                     color: $blue5;
                     height: 27px;
                     font-size: 1.125rem !important;
-                    height: 2rem !important;
+                    height: auto !important;
                 }
                 margin-bottom: 5px;
             }
@@ -1897,7 +1898,7 @@
                     color: $blue5;
                     height: 27px;
                     font-size: 1.125rem !important;
-                    height: 2rem !important;
+                    height: auto !important;
                 }
             }
             a {

@@ -1,7 +1,7 @@
 <template>
     <b-field
             :addons="false"
-            :message="getErrorMessage"
+            :message="errorMessage"
             :type="metadatumTypeMessage">
         <span   
                 class="collapse-handle"
@@ -45,7 +45,8 @@
                         :is="metadatum.metadatum.metadata_type_object.component"
                         v-model="inputs[0]" 
                         :metadatum="metadatum"
-                        @input="changeValue()"/>
+                        @input="changeValue()"
+                        @blur="performValueChange()"/>
                 <template v-if="metadatum.metadatum.multiple == 'yes' && inputs.length > 1">
                     <transition-group
                             name="filter-item"
@@ -57,7 +58,8 @@
                                     :is="metadatum.metadatum.metadata_type_object.component"
                                     v-model="inputs[index]" 
                                     :metadatum="metadatum"
-                                    @input="changeValue()"/>
+                                    @input="changeValue()"
+                                    @blur="performValueChange()"/>
                             <a 
                                     v-if="index > 0" 
                                     @click="removeInput(index)"
@@ -92,7 +94,8 @@
                         :is="metadatum.metadatum.metadata_type_object.component"
                         v-model="inputs"
                         :metadatum="metadatum"
-                        @input="changeValue()"/>
+                        @input="changeValue()"
+                        @blur="performValueChange()"/>
             </div>
         </transition>
     </b-field>
@@ -109,33 +112,33 @@
         },
         data(){
             return {
-                inputs: []
+                inputs: [],
+                errorMessage: ''
             }
         },
         computed: {
-            getErrorMessage() {
-                let errorMessage = '';
-                let errors = eventBus.getErrors(this.metadatum.metadatum.id);
-
-                if (errors) {
-                    for (let error of errors) { 
-                        for (let index of Object.keys(error))
-                            errorMessage += error[index] + '\n';
-                    }
-                }
-
-                return errorMessage;
-            },
             metadatumTypeMessage() {
-                return this.getErrorMessage ? 'is-danger' : ''
+                return this.errorMessage ? 'is-danger' : ''
             }
         },
         created() {
             this.createInputs();
+            eventBus.$on('updateErrorMessageOf#' + this.metadatum.metadatum.id, (errors) => {
+                let updatedErrorMessage = '';
+                if (errors && this.metadatum.metadatum.id == errors.metadatum_id && errors.errors) {
+                    for (let error of errors.errors) { 
+                        for (let index of Object.keys(error))
+                            updatedErrorMessage += error[index] + '\n';
+                    }
+                }
+                this.errorMessage = updatedErrorMessage;
+            })
         },
         methods: {
             changeValue: _.debounce(function() {
-
+                this.performValueChange();
+            }, 800),
+            performValueChange() {
                 if (this.inputs && this.inputs.length > 0 && this.inputs[0] && this.inputs[0].value) {
                     let terms = this.inputs.map(term => term.value)
                     
@@ -150,7 +153,6 @@
 
                         if (equal.length == terms.length && this.metadatum.value.length <= equal.length)
                             return;
-
                     }
                 } else if (this.metadatum.value.constructor.name == 'Object') {
 
@@ -170,14 +172,16 @@
 
                     if (equal.length == this.inputs.length && this.metadatum.value.length <= equal.length)
                         return;
+                } else if (this.inputs && this.inputs.length == 1 && this.inputs[0] == this.metadatum.value) {
+                    return
                 }
+
                 eventBus.$emit('input', {
                     itemId: this.metadatum.item.id,
                     metadatumId: this.metadatum.metadatum.id,
                     values: this.inputs ? this.inputs : ''
                 });
-            
-            }, 900),
+            },
             createInputs() {
                 if (this.metadatum.value instanceof Array)
                     this.inputs = this.metadatum.value.slice(0);
@@ -196,6 +200,9 @@
                 const array = ['tainacan-relationship','tainacan-taxonomy'];
                 return !(array.indexOf(component) >= 0 );
             }
+        },
+        beforeDestroy() {
+            eventBus.$off('updateErrorMessageOf#' + this.metadatum.metadatum.id);
         }
     }
 </script>

@@ -39,6 +39,8 @@
         display: flex !important;
         align-items: initial;
         margin-top: -10px !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
     }  
     &.is-loading.is-small::after {
         font-size: 0.875rem;

@@ -97,6 +97,9 @@
         max-height: unset !important;
     }
 }
+.taginput.is-expanded {
+    width: 100%;
+}
 .taginput-container .mdi-magnify::before, 
 .autocomplete .mdi-magnify::before {
     content: 'search';
@@ -109,11 +112,12 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-size: 20px;
+    text-transform: none !important;
 }
 
 .taginput-container {
     padding: 0px !important;
-    background-color: white !important;
+    background-color: transparent !important;
 
     &:focus, &:active {
         border: none !important;
@@ -216,6 +220,8 @@
     //         -webkit-font-smoothing: antialiased;
     //         -moz-osx-font-smoothing: grayscale;
     //         content: 'calendar';
+    //         text-transform: none !important;
+    //         letter-spacing: normal !important;
     //     }
     // }
 
@@ -239,6 +245,8 @@
                 line-height: inherit;
                 -webkit-font-smoothing: antialiased;
                 -moz-osx-font-smoothing: grayscale;
+                text-transform: none !important;
+                letter-spacing: normal !important;
                 color: $secondary;
             }
 

@@ -163,6 +163,7 @@
                     grid-template-columns: 33% 33% 33%;
                     grid-template-rows: 50% 50%;
                     width: 100%;
+                    box-sizing: border-box;
     
                     img:first-of-type {
                         flex-basis: 100%;
@@ -204,6 +205,10 @@
         svg {
             fill: #298596;
         }
+    }
+
+    &.alignfull .swiper-button-prev, .swiper-button-next {
+        margin: 0 6px;
     }
 
     // Carousel placeholder on editor side  ----------------------------------------------------
