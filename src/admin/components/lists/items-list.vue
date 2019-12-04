@@ -28,7 +28,7 @@
                 <b-dropdown
                         :mobile-modal="true"
                         position="is-bottom-left"
-                        v-if="items.length > 0 && items[0].current_user_can_edit"
+                        v-if="items.length > 0 && collection && collection.current_user_can_edit_items"
                         :disabled="selectedItems.length <= 1"
                         id="bulk-actions-dropdown"
                         aria-role="list"
@@ -43,19 +43,19 @@
                     </button>
 
                     <b-dropdown-item
-                            v-if="$route.params.collectionId && $userCaps.hasCapability('edit_others_posts') && !isOnTrash"
+                            v-if="$route.params.collectionId && collection && collection.current_user_can_bulk_edit && !isOnTrash"
                             @click="openBulkEditionModal()"
                             aria-role="listitem">
                         {{ $i18n.get('label_bulk_edit_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            v-if="$route.params.collectionId && $userCaps.hasCapability('edit_others_posts') && !isOnTrash"
+                            v-if="$route.params.collectionId && !isOnTrash"
                             @click="sequenceEditSelectedItems()"
                             aria-role="listitem">
                         {{ $i18n.get('label_sequence_edit_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            v-if="collectionId"
+                            v-if="collectionId && collection && collection.current_user_can_delete_items"
                             @click="deleteSelectedItems()"
                             id="item-delete-selected-items"
                             aria-role="listitem">
@@ -213,7 +213,7 @@
                             </span>
                         </a>
                         <a
-                                v-if="collectionId"
+                                v-if="item.current_user_can_delete"
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
@@ -326,7 +326,7 @@
                             </span>
                         </a>
                         <a
-                                v-if="collectionId"
+                                v-if="item.current_user_can_delete"
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
@@ -425,7 +425,7 @@
                             </span>
                         </a>
                         <a
-                                v-if="collectionId"
+                                v-if="item.current_user_can_delete"
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
@@ -614,7 +614,7 @@
                             </span>
                         </a>
                         <a
-                                v-if="collectionId"
+                                v-if="item.current_user_can_delete"
                                 id="button-delete" 
                                 :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
@@ -881,7 +881,7 @@
                                     </span>
                                 </a>
                                 <a
-                                        v-if="collectionId"
+                                        v-if="item.current_user_can_delete"
                                         id="button-delete" 
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneItem(item.id)">
@@ -943,6 +943,9 @@ export default {
             setTimeout(() => this.$eventBusSearch.highlightsItem(null), 3000);
     },
     computed: {
+        collection() {
+            return this.getCollection();
+        },
         highlightedItem () {
             return this.getHighlightedItem();
         },
@@ -986,6 +989,9 @@ export default {
     methods: {
         ...mapActions('collection', [
             'deleteItem',
+        ]),
+        ...mapGetters('collection', [
+            'getCollection',
         ]),
         ...mapActions('bulkedition', [
             'createEditGroup',

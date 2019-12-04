@@ -474,7 +474,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_write_text'                         => __( 'Write Text', 'tainacan' ),
 	'instruction_search'                             => __( 'Search', 'tainacan' ),
 	'instruction_search_in_repository'               => __( 'Search in repository', 'tainacan' ),
-	'instruction_select_a_target_collection'         => __( 'Select a target collection', 'tainacan' ),
+	'instruction_select_a_target_collection'         => __( 'Select a target collection. Only collections that you are authorized to edit items are listed.', 'tainacan' ),
 	'instruction_select_a_mapper'                    => __( 'Select a mapper', 'tainacan' ),
 	'instruction_select_an_importer_type'            => __( 'Select an importer from the options below:', 'tainacan' ),
 	'instruction_drop_file_or_click_to_upload'       => __( 'Drop your source file or click here to upload.', 'tainacan' ),

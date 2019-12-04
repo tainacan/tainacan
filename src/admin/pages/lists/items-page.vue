@@ -244,7 +244,7 @@
                         </button>
 
                         <b-dropdown-item 
-                                v-if="!isRepositoryLevel"
+                                v-if="!isRepositoryLevel && collection && collection.current_user_can_edit_items"
                                 aria-role="listitem">
                             <router-link
                                     id="a-create-item"
@@ -264,7 +264,7 @@
                             </div>
                         </b-dropdown-item>
                         <b-dropdown-item 
-                                v-if="!isRepositoryLevel"
+                                v-if="!isRepositoryLevel && collection && collection.current_user_can_bulk_edit"
                                 aria-role="listitem">
                             <router-link
                                     id="a-item-add-bulk"
@@ -275,7 +275,9 @@
                                 <small class="is-small">{{ $i18n.get('info_bulk_add_items') }}</small>
                             </router-link>
                         </b-dropdown-item>
-                        <b-dropdown-item aria-role="listitem">
+                        <b-dropdown-item 
+                                v-if="collection && collection.current_user_can_edit_items"
+                                aria-role="listitem">
                             <div
                                     id="a-import-items"
                                     tag="div"
