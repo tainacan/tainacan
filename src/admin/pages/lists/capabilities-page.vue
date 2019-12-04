@@ -83,10 +83,10 @@
         computed: {
             capabilities() {
                 const capabilities = this.getCapabilities()
+  
                 if (capabilities) {
                     if (this.filteredRole) {
                         let filteredCapabilities = {};
-
                         for (let [capabilitySlug, capability] of Object.entries(capabilities)) {
                             const rolesArray = capability.roles && !Array.isArray(capability.roles) ? Object.values(capability.roles) : [];
                             const rolesInheritedArray = capability.roles_inherited && !Array.isArray(capability.roles_inherited) ? Object.values(capability.roles_inherited) : [];
@@ -99,8 +99,7 @@
                     } else {
                         return capabilities;
                     }
-                }
-                else {
+                } else {
                     return []
                 }
             },

@@ -26,7 +26,7 @@
                 <tbody v-if="!isLoading">
                     <template v-for="(capability, index) of capabilities">
                         <tr 
-                                v-if="collectionId !== undefined || capability.scope !== 'collection'"
+                                v-if="collectionId === undefined || capability.scope !== 'collection'"
                                 :key="index"
                                 :style="index == editingCapability ? 'background-color: #f2f2f2' : ''">
                             <!-- Name -->
@@ -115,7 +115,7 @@
                             </td>
                         </tr>
                         <tr 
-                                v-if="collectionId !== undefined || capability.scope !== 'collection'"
+                                v-if="collectionId !== undefined && capability.scope === 'collection'"
                                 :key="index + '-form'"
                                 class="capabilities-edit-form">
                             <transition name="form-capabilities">
