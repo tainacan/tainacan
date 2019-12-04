@@ -8,13 +8,8 @@ const state = {
     itemsListTemplate: '',
     collections: [],
     collection: null,
-    collectionName: '',
-    collectionURL: '',
     attachments: [],
-    collectionCommentStatus: '',
-    collectionAllowComments: '',
     files: [],
-    collectionTotalItems: {},
     repositoryTotalCollections: '',
 };
 

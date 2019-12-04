@@ -221,28 +221,21 @@
                 if (this.taxonomyFilters != undefined) {
                     
                     this.$set(this.taxonomyFiltersCollectionNames, 'repository-filters', this.$i18n.get('repository'));
-                    
-                    for (let taxonomyFilter of Object.keys(this.taxonomyFilters)) {
-                        if (taxonomyFilter != 'repository-filters') {
                                                     
-                            // Cancels previous collection name Request
-                            if (this.collectionNameSearchCancel != undefined)
-                                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
+                    // Cancels previous collection name Request
+                    if (this.collectionNameSearchCancel != undefined)
+                        this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
 
-                            this.fetchCollectionName(taxonomyFilter)
-                                .then((resp) => {
-                                    resp.request
-                                        .then((collectionName) => {
-                                            this.$nextTick(() => {
-                                                this.$set(this.taxonomyFiltersCollectionNames, taxonomyFilter, collectionName);
-                                            });
-                                        });
-                                        
-                                    // Search Request Token for cancelling
-                                    this.collectionNameSearchCancel = resp.source;
-                                })
-                        }
-                    }
+                    this.fetchAllCollectionNames(Object.keys(this.taxonomyFilters))
+                        .then((resp) => {
+                            resp.request
+                                .then((collections) => {
+                                    for (let collection of collections)
+                                        this.$set(this.taxonomyFiltersCollectionNames, '' + collection.id, collection.name);
+                                });
+                            // Search Request Token for cancelling
+                            this.collectionNameSearchCancel = resp.source;     
+                        });
                 }
             },
             repositoryCollectionFilters() {
@@ -250,28 +243,21 @@
                     
                     this.$set(this.repositoryCollectionNames, 'repository-filters', this.$i18n.get('repository'));
                     
-                    for (let repositoryCollectionFilter of Object.keys(this.repositoryCollectionFilters)) {
-                        if (repositoryCollectionFilter != 'repository-filters') {
-                            
-                            // Cancels previous collection name Request
-                            if (this.collectionNameSearchCancel != undefined)
-                                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
+                    // Cancels previous collection name Request
+                    if (this.collectionNameSearchCancel != undefined)
+                        this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
 
-                            this.fetchCollectionName(repositoryCollectionFilter)
-                                .then((resp) => {
-                                    resp.request
-                                        .then((collectionName) => {
-                                                this.$nextTick(() => {
-                                                    this.$set(this.repositoryCollectionNames, '' + repositoryCollectionFilter, collectionName);
-                                                });
-                                            });
-
-                                    // Search Request Token for cancelling
-                                    this.collectionNameSearchCancel = resp.source;
-                                })
-                        }
-                    }
-                }
+                    this.fetchAllCollectionNames()
+                        .then((resp) => {
+                            resp.request
+                                .then((collections) => {
+                                    for (let collection of collections)
+                                        this.$set(this.repositoryCollectionNames, '' + collection.id, collection.name);
+                                });
+                            // Search Request Token for cancelling
+                            this.collectionNameSearchCancel = resp.source;
+                        });
+                }                
             }
         },
         methods: {
@@ -279,7 +265,7 @@
                 'getPostQuery'
             ]),
             ...mapActions('collection',[
-                'fetchCollectionName'
+                'fetchAllCollectionNames'
             ]),
         },
         computed: {
@@ -287,7 +273,7 @@
                 return this.getPostQuery();
             },
             taxonomyId () {
-                let taxonomyArray = this.taxonomy.split("_");
+                const taxonomyArray = this.taxonomy.split("_");
                 return taxonomyArray[taxonomyArray.length - 1];
             }
         },

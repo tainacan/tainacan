@@ -641,7 +641,7 @@
                     </li>
                     <li 
                             v-for="(statusOption, index) of $statusHelper.getStatuses()"
-                            v-if="(isRepositoryLevel || statusOption.slug != 'private') || (statusOption.slug == 'private' && $userCaps.hasCapability('read_private_tnc_col_' + collectionId + '_items'))"
+                            v-if="(isRepositoryLevel || statusOption.slug != 'private') || (statusOption.slug == 'private' && collection && collection.current_user_can_read_private_items)"
                             :key="index"
                             @click="onChangeTab(statusOption.slug)"
                             :class="{ 'is-active': status == statusOption.slug}"
@@ -929,7 +929,6 @@
                 searchControlHeight: 0,
                 sortingMetadata: [],
                 isFilterModalActive: false,
-                collection: undefined,
                 hasAnOpenModal: false,
                 hasAnOpenAlert: true,
                 repositoryFiltersSearchCancel: undefined,
@@ -947,7 +946,7 @@
             isSortingByCustomMetadata() {
                 return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date');
             },
-            repositoryTotalItems(){
+            repositoryTotalItems() {
                 let collections = this.getCollections();
 
                 let total_items = {
@@ -984,6 +983,9 @@
             },
             metadata() {
                 return this.getMetadata();
+            },
+            collection() {
+                return this.getCollection();
             },
             searchQuery() {
                 return this.getSearchQuery();
@@ -1062,13 +1064,14 @@
             }
         },
         methods: {
-            ...mapActions('collection', [
-                'fetchCollectionTotalItems'
-            ]),
             ...mapGetters('collection', [
                 'getItems',
                 'getItemsListTemplate',
-                'getCollections'
+                'getCollections',
+                'getCollection'
+            ]),
+            ...mapActions('collection', [
+                'fetchCollectionBasics'
             ]),
             ...mapActions('metadata', [
                 'fetchMetadata'
@@ -1485,11 +1488,9 @@
                     .catch(() => this.isLoadingMetadata = false);     
             },
             updateCollectionInfo () {
-                if (this.collectionId) {
-                    this.fetchCollectionTotalItems(this.collectionId)
-                        .then((data) => {
-                            this.collection = data;
-                        })
+                // Only needed for displayting totalItems on tabs.
+                if (this.collectionId && !this.isOnTheme) {
+                    this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true });
                 }
             },
             showItemsHiddingDueSortingDialog() {

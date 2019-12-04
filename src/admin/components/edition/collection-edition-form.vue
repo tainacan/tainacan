@@ -802,6 +802,7 @@ export default {
 
             // Obtains current Collection ID from URL
             this.pathArray = this.$route.path.split("/").reverse(); 
+
             this.collectionId = this.pathArray[1];
 
             this.fetchCollection(this.collectionId).then(res => {

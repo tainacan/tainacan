@@ -472,14 +472,17 @@ export default {
             new_metadata_uri: '',
             new_metadata_slug: '',
             columnsTopY: 0,
-            metadataSearchCancel: undefined,
-            collectionNameSearchCancel: undefined  
+            metadataSearchCancel: undefined 
         }
     },
     components: {
         MetadatumEditionForm
     },
     computed: {
+        collectionName() {
+            const collection = this.getCollection;
+            return collection && collection.name ? collection.name : '';
+        },
         availableMetadatumList: {
             get() {
                 return this.getMetadatumTypes();
@@ -562,8 +565,8 @@ export default {
             'getMetadata',
             'getMetadatumMappers'
         ]),
-        ...mapActions('collection', [
-            'fetchCollectionName'
+        ...mapGetters('collection', [
+            'getCollection',
         ]),
         handleChange(event) {     
             if (event.added) {
@@ -953,35 +956,12 @@ export default {
             .catch(() => {
                 this.isLoadingMetadatumMappers = false;
             });
-
-         // Obtains collection name
-        if (!this.isRepositoryLevel) {
-
-            // Cancels previous collection name Request
-            if (this.collectionNameSearchCancel != undefined)
-                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
-
-            this.fetchCollectionName(this.collectionId)
-                .then((resp) => {
-                    resp.request
-                        .then((collectionName) => {
-                            this.collectionName = collectionName;
-                        });
-                    
-                    // Search Request Token for cancelling
-                    this.collectionNameSearchCancel = resp.source;
-                })
-        }
     },
     beforeDestroy() {
 
         // Cancels previous Request
         if (this.metadataSearchCancel != undefined)
             this.metadataSearchCancel.cancel('Metadata search Canceled.');
-        
-        // Cancels previous collection name Request
-        if (this.collectionNameSearchCancel != undefined)
-            this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
 
     }
 }

@@ -326,7 +326,6 @@ export default {
     data(){           
         return {
             collectionId: '',
-            collectionName: '',
             isRepositoryLevel: false,
             isDraggingFromAvailable: false,
             isLoadingMetadatumTypes: true,
@@ -347,8 +346,7 @@ export default {
             currentFilterTypePreview: undefined,
             columnsTopY: 0,
             filtersSearchCancel: undefined,
-            metadataSearchCancel: undefined,
-            collectionNameSearchCancel: undefined           
+            metadataSearchCancel: undefined        
         }
     },
     computed: {
@@ -359,6 +357,10 @@ export default {
             set(value) {
                 this.updateFilters(value);
             }
+        },
+        collectionName() {
+            const collection = this.getCollection;
+            return collection && collection.name ? collection.name : '';
         }
     },
     components: {
@@ -422,8 +424,8 @@ export default {
         ...mapGetters('metadata', [
             'getMetadata',
         ]),
-        ...mapActions('collection', [
-            'fetchCollectionName'
+        ...mapGetters('collection', [
+            'getCollection',
         ]),
         handleChangeOnFilter($event) {     
             if ($event.added) {
@@ -715,25 +717,6 @@ export default {
 
         // Loads Filters
         this.refreshFilters();
-
-        // Obtains collection name
-        if (!this.isRepositoryLevel) {
-
-            // Cancels previous collection name Request
-            if (this.collectionNameSearchCancel != undefined)
-                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
-
-            this.fetchCollectionName(this.collectionId)
-                .then((resp) => {
-                    resp.request
-                        .then((collectionName) => {
-                            this.collectionName = collectionName;
-                        });
-                    
-                    // Search Request Token for cancelling
-                    this.collectionNameSearchCancel = resp.source;
-                })
-        }
         
         // Sets modal callback function
         this.$refs.filterTypeModal.onCancel = () => {
@@ -749,10 +732,6 @@ export default {
         // Cancels previous metadata Request
         if (this.metadataSearchCancel != undefined)
             this.metadataSearchCancel.cancel('Metadata search Canceled.');
-        
-        // Cancels previous collection name Request
-        if (this.collectionNameSearchCancel != undefined)
-            this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
     }
 }
 </script>

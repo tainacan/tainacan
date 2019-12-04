@@ -4,10 +4,6 @@ export const setRepositoryTotalCollections = (state, repositoryTotalCollections)
     state.repositoryTotalCollections = repositoryTotalCollections;
 }
 
-export const setCollectionTotalItems = (state, collectionTotalItems) => {
-    state.collectionTotalItems = collectionTotalItems;
-}
-
 export const setItems = ( state, items ) => {
     state.items = items;
 }
@@ -49,18 +45,6 @@ export const cleanCollection = (state) => {
     state.collection = [];
 }
 
-export const setCollectionName = (state, collectionName) => {
-    state.collectionName = collectionName;
-}
-
-export const setCollectionURL = (state, collectionURL) => {
-    state.collectionURL = collectionURL;
-}
-
-export const cleanCollectionName = (state) => {
-    state.collectionName = '';
-}
-
 export const setSingleAttachment = ( state, attachment ) => {
     let index = state.attachments.findIndex(newAttachment => newAttachment.id === attachment.id);
     if ( index >= 0){
@@ -91,20 +75,4 @@ export const setAttachments = ( state, attachments ) => {
 
 export const cleanAttachments = (state) => {
     state.attachments = [];
-}
-
-export const setCollectionCommentStatus = (state, collectionCommentStatus) => {
-    state.collectionCommentStatus = collectionCommentStatus;
-}
-
-export const cleanCollectionCommentStatus = (state) => {
-    state.collectionCommentStatus = '';
-}
-
-export const setCollectionAllowComments = (state, collectionAllowComments) => {
-    state.collectionAllowComments = collectionAllowComments;
-}
-
-export const cleanCollectionAllowComments = (state) => {
-    state.collectionAllowComments = '';
 }

@@ -183,9 +183,12 @@ export const cleanItems = ({ commit }) => {
     commit('cleanItems');
 };
 
-export const fetchCollection = ({ commit }, id) => {
+export const cleanCollection = ({ commit }) => {
     commit('cleanCollection');
-    return new Promise((resolve, reject) =>{ 
+};
+
+export const fetchCollection = ({ commit, }, id) => {
+    return new Promise((resolve, reject) => { 
         axios.tainacan.get('/collections/' + id + '?context=edit')
         .then(res => {
             let collection = res.data;
@@ -198,39 +201,17 @@ export const fetchCollection = ({ commit }, id) => {
     });
 };
 
-export const fetchCollectionName = ({ commit }, id) => {
-
-    const source = axios.CancelToken.source();
-
-    return new Object({ 
-        request: new Promise((resolve, reject) => {
-            axios.tainacan.get('/collections/' + id + '?fetch_only=name', { cancelToken: source.token })
-            .then(res => {
-                let collectionName = res.data;
-                commit('setCollectionName', collectionName.name);
-                resolve( collectionName.name );
-            })
-            .catch(error => {
-                if (axios.isCancel(error)) {
-                    console.log('Request canceled: ', error.message);
-                } else {
-                    reject(error);
-                }
-            })
-        }),
-        source: source
-    });
-};
-
-export const fetchCollectionUserCanEdit = ({ commit }, id) => {
-
-    return new Promise ((resolve, reject) => {
-        axios.tainacan.get('/collections/' + id + '?context=edit&fetch_only')
+export const fetchCollectionBasics = ({ commit }, {collectionId, isContextEdit }) => {
+    return new Promise((resolve, reject) => { 
+        let endpoint = '/collections/' + collectionId + '?fetch_only=name,url,allow_comments';
+        if (isContextEdit)
+            endpoint += '&context=edit';
+        
+        axios.tainacan.get(endpoint)
         .then(res => {
-            resolve({
-                current_user_can_edit: res.data.current_user_can_edit,
-                current_user_can_delete: res.data.current_user_can_delete
-            });
+            let collection = res.data;
+            commit('setCollection', collection);
+            resolve( res.data );
         })
         .catch(error => {
             reject(error);
@@ -238,72 +219,16 @@ export const fetchCollectionUserCanEdit = ({ commit }, id) => {
     });
 };
 
-export const fetchCollectionTotalItems = ({ commit }, id) => {
-
-    return new Promise ((resolve, reject) => {
-        axios.tainacan.get('/collections/' + id + '?fetch_only=name')
-            .then(res => {
-                commit('setCollectionTotalItems', res.data);
-                resolve( res.data );
-            })
-            .catch(error => {
-                reject(error);
-            })
-    });
-};
-
-export const fetchCollectionCommentStatus = ({ commit }, id) => {
-    return new Promise((resolve, reject) =>{ 
-        axios.tainacan.get('/collections/' + id + '?fetch_only=comment_status')
+export const fetchCollectionForExposer = ({ commit }, collectionId) => {
+    return new Promise((resolve, reject) => { 
+        let endpoint = '/collections/' + collectionId + '?fetch_only=name,url';
+        axios.tainacan.get(endpoint)
         .then(res => {
-            let collectionCommentStatus = res.data;
-            commit('setCollectionCommentStatus', collectionCommentStatus.comment_status);
-            resolve( collectionCommentStatus.comment_status );
+            resolve( res.data );
         })
         .catch(error => {
             reject(error);
         })
-    });
-};
-
-export const fetchCollectionAllowComments = ({ commit }, id) => {
-    return new Promise((resolve, reject) =>{ 
-        axios.tainacan.get('/collections/' + id + '?fetch_only=allow_comments')
-        .then(res => {
-            let collectionAllowComments = res.data;
-            commit('setCollectionAllowComments', collectionAllowComments.allow_comments);
-            resolve( collectionAllowComments.allow_comments );
-        })
-        .catch(error => {
-            reject(error);
-        })
-    });
-};
-
-export const fetchCollectionNameAndURL = ({ commit }, id) => {
-    const source = axios.CancelToken.source();
-
-    return new Object({ 
-        request: new Promise ((resolve, reject) => {
-
-            axios.tainacan.get(
-                '/collections/' + id + '?fetch_only=name,url',
-                { cancelToken: source.token })
-            .then(res => {
-                let collection = res.data;
-                commit('setCollectionName', collection.name);
-                commit('setCollectionURL', collection.url);
-                resolve( collection );
-            })
-            .catch((thrown) => {
-                if (axios.isCancel(thrown)) {
-                    console.log('Request canceled: ', thrown.message);
-                } else {
-                    reject(thrown);
-                }
-            }); 
-        }),
-        source: source
     });
 };
 
@@ -458,15 +383,24 @@ export const fetchPage = ({ commit }, pageId ) => {
     });
 };
 
-// Fetch Collections for choosing Parent Collection
-export const fetchAllCollectionNames = ({ commit }) => {
+// Fetch Collections for listing repository filters, parent collection selection, importer destiny...
+export const fetchAllCollectionNames = ({ commit }, collectionsIds) => {
+
+    let endpoint = '/collections/?nopaging=1&fetch_only=name,id';
+
+    if (collectionsIds != undefined && collectionsIds.length > 0) {
+        const postin = { 'postin': collectionsIds };
+        endpoint += '&' + qs.stringify(postin);
+    }
+
     const source = axios.CancelToken.source();
 
     return new Object({ 
         request: new Promise((resolve, reject) => {
-            axios.tainacan.get('/collections/?nopaging=1&fetch_only=name,id', { cancelToken: source.token })
+            axios.tainacan.get(endpoint, { cancelToken: source.token })
             .then(res => {
-                let collections = res.data;
+                const collections = res.data;
+                commit('setCollections', collections);
                 resolve( collections );
             })
             .catch((error) => {

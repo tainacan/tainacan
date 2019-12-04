@@ -11,7 +11,7 @@
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag">{{ $i18n.get('status_' + item.status) }}</span>
                 {{ $i18n.get('title_create_item_collection') + ' ' }}
-                <span style="font-weight: 600;">{{ collectionName }}</span>
+                <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
             </h1>
             <h1 v-else>
                 <span 
@@ -386,7 +386,7 @@
                                             <span class="icon">
                                                 <i class="tainacan-icon tainacan-icon-collection"/>
                                             </span>
-                                            {{ collectionName }}
+                                            {{ collection && collection.name ? collection.name : '' }}
                                         </span>
                                     </div>
                                 </div>
@@ -432,7 +432,7 @@
                             <!-- Comment Status ------------------------ --> 
                             <div 
                                     class="column is-narrow"
-                                    v-if="collectionAllowComments == 'open'">
+                                    v-if="collection && collection.allow_comments && collection.allow_comments == 'open'">
                                 <div class="section-label">
                                     <label>{{ $i18n.get('label_comments') }}</label>
                                     <help-button 
@@ -759,15 +759,15 @@ export default {
             isTextModalActive: false,
             textLink: '',
             isUpdatingValues: false,
-            collectionName: '',
-            collectionAllowComments: '',
             entityName: 'item',
             activeTab: 0,
             isLoadingAttachments: false,
-            collectionNameSearchCancel: undefined
         }
     },
     computed: {
+        collection() {
+            return this.getCollection()
+        },
         metadatumList() {
             return JSON.parse(JSON.stringify(this.getMetadata()));
         },
@@ -843,9 +843,10 @@ export default {
             'getLastUpdated'
         ]),
         ...mapActions('collection', [
-            'fetchCollectionName',
-            'fetchCollectionAllowComments',
             'deleteItem',
+        ]),
+        ...mapGetters('collection', [
+            'getCollection',
         ]),
         ...mapActions('bulkedition', [
             'fetchItemIdInSequence',
@@ -1326,30 +1327,6 @@ export default {
             this.fetchGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
         }
 
-        // Obtains collection name
-        if (!this.isRepositoryLevel) {
-
-            // Cancels previous collection name Request
-            if (this.collectionNameSearchCancel != undefined)
-                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
-
-            this.fetchCollectionName(this.collectionId)
-                .then((resp) => {
-                    resp.request
-                        .then((collectionName) => {
-                            this.collectionName = collectionName;
-                        });
-                    
-                    // Search Request Token for cancelling
-                    this.collectionNameSearchCancel = resp.source;
-                })
-        }
-        
-        // Obtains if collection allow items comments
-        this.fetchCollectionAllowComments(this.collectionId).then((collectionAllowComments) => {
-            this.collectionAllowComments = collectionAllowComments;
-        });
-
         // Sets feedback variables
         eventBus.$on('isUpdatingValue', (status) => {
             this.isUpdatingValues = status;
@@ -1365,10 +1342,6 @@ export default {
     beforeDestroy () {
         eventBus.$off('isUpdatingValue');
         eventBus.$off('hasErrorsOnForm');
-
-        // Cancels previous collection name Request
-        if (this.collectionNameSearchCancel != undefined)
-            this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
     },
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
