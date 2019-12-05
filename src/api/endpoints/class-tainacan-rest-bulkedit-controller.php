@@ -36,7 +36,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'args'                => $this->get_create_params()
 				),
 			)
-        );
+		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)',
 			array(
 				array(
@@ -45,8 +45,8 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
 				),
 			)
-        );
-        register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/add',
+		);
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/add',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -64,8 +64,8 @@ class REST_Bulkedit_Controller extends REST_Controller {
                     ],
 				),
 			)
-        );
-        register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/trash',
+		);
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/trash',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -73,8 +73,8 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
 				),
 			)
-        );
-        register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/untrash',
+		);
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/untrash',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -82,8 +82,8 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
 				),
 			)
-        );
-        register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/delete_items',
+		);
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/delete_items',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -91,7 +91,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
 				),
 			)
-        );
+		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/set_status',
 			array(
 				array(
@@ -106,8 +106,8 @@ class REST_Bulkedit_Controller extends REST_Controller {
                     ],
 				),
 			)
-        );
-        register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/set',
+		);
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/set',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -125,8 +125,8 @@ class REST_Bulkedit_Controller extends REST_Controller {
                     ],
 				),
 			)
-        );
-        register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/remove',
+		);
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/remove',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -144,8 +144,8 @@ class REST_Bulkedit_Controller extends REST_Controller {
                     ],
 				),
 			)
-        );
-        register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/replace',
+		);
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/replace',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -167,7 +167,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
                     ],
 				),
 			)
-        );
+		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/sequence/(?P<sequence_index>[\d]+)',
 			array(
 				array(
@@ -176,10 +176,8 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
 				),
 			)
-        );
-		
-    }
-    
+		);
+	}
 
 	public function bulk_edit_permissions_check($request) {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
@@ -190,7 +188,6 @@ class REST_Bulkedit_Controller extends REST_Controller {
 
 		return false;
 	}
-
 
 	public function create_item($request) {
 		$body = json_decode($request->get_body(), true);
@@ -230,6 +227,22 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		return $rest_response;
 	}
 
+	public function set_status($request) {
+		return $this->generic_action('set_status', $request);
+	}
+
+	public function trash_items($request) {
+		return $this->generic_action('trash_items', $request);
+	}
+
+	public function untrash_items($request) {
+		return $this->generic_action('untrash_items', $request);
+	}
+
+	public function delete_items($request) {
+		return $this->generic_action('delete_items', $request);
+	}
+
 	public function add_value($request) {
 		return $this->generic_action('add_value', $request);
 	}
@@ -244,30 +257,6 @@ class REST_Bulkedit_Controller extends REST_Controller {
 
 	public function replace_value($request) {
 		return $this->generic_action('replace_value', $request, ['old_value', 'new_value']);
-	}
-
-	public function set_status($request) {
-		$body = json_decode($request->get_body(), true);
-
-		if( !isset($body['value']) ) {
-			return new \WP_REST_Response([
-				'error_message' => __('Value must be provided', 'tainacan'),
-			], 400);
-		}
-		
-		$group_id = $request['group_id'];
-		$args = ['id' => $group_id];
-		$bulk = new \Tainacan\Bulk_Edit($args);
-
-		$action = $bulk->set_status($body['value']);
-
-		if ( is_wp_error($action) ) {
-			return new \WP_REST_Response([
-				'error_message' => $action->get_error_message(),
-			], 400);
-		} else {
-			return new \WP_REST_Response($action, 200);
-		}
 	}
 
 	public function get_item($request) {
@@ -296,71 +285,28 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		return $return;
 	}
 
-	public function trash_items($request) {
-		$group_id = $request['group_id'];
-		$args = ['id' => $group_id];
-		$bulk = new \Tainacan\Bulk_Edit($args);
-		$action = $bulk->trash_items();
-
-		if ( is_wp_error($action) ) {
-			return new \WP_REST_Response([
-				'error_message' => $action->get_error_message(),
-			], 400);
-		} else {
-			return new \WP_REST_Response($action, 200);
-		}
-	}
-
-	public function untrash_items($request) {
-		$group_id = $request['group_id'];
-		$args = ['id' => $group_id];
-		$bulk = new \Tainacan\Bulk_Edit($args);
-		$action = $bulk->untrash_items();
-
-		if ( is_wp_error($action) ) {
-			return new \WP_REST_Response([
-				'error_message' => $action->get_error_message(),
-			], 400);
-		} else {
-			return new \WP_REST_Response($action, 200);
-		}
-	}
-
-	public function delete_items($request) {
-		$group_id = $request['group_id'];
-		$args = ['id' => $group_id];
-		$bulk = new \Tainacan\Bulk_Edit($args);
-		$action = $bulk->delete_items();
-
-		if ( is_wp_error($action) ) {
-			return new \WP_REST_Response([
-				'error_message' => $action->get_error_message(),
-			], 400);
-		} else {
-			return new \WP_REST_Response($action, 200);
-		}
-	}
-
 	private function generic_action($method, $request, $keys = ['value']) {
 		$body = json_decode($request->get_body(), true);
 
-		if (empty($body)) {
-			return new \WP_REST_Response([
-				'error_message' => __('Body can not be empty.', 'tainacan'),
-			], 400);
-		}
-
-		if (!isset($body['metadatum_id'])) {
-			return new \WP_REST_Response([
-				'error_message' => __('You must specify a Metadatum ID.', 'tainacan'),
-			], 400);
-		}
-
-		foreach ($keys as $key) {
-			if (!isset($body[$key])) {
+		if ( !in_array($method, ['trash_items', 'untrash_items', 'delete_items']) ) {
+			if (empty($body)) {
 				return new \WP_REST_Response([
-					'error_message' => sprintf(__('%s must be provided', 'tainacan'), $key),
+					'error_message' => __('Body can not be empty.', 'tainacan'),
 				], 400);
+			}
+
+			if ($method != 'set_status' && !isset($body['metadatum_id'])) {
+				return new \WP_REST_Response([
+					'error_message' => __('You must specify a Metadatum ID.', 'tainacan'),
+				], 400);
+			}
+
+			foreach ($keys as $key) {
+				if (!isset($body[$key])) {
+					return new \WP_REST_Response([
+						'error_message' => sprintf(__('%s must be provided', 'tainacan'), $key),
+					], 400);
+				}
 			}
 		}
 
@@ -381,29 +327,6 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		}
 
 		return new \WP_REST_Response(["bg_process_id"=>$bulk_id, "method" => $method], 200);
-
-		//$bulk_id = $request['group_id'];
-		//$args = ['id' => $bulk_id];
-		//$bulk = new \Tainacan\Bulk_Edit($args);
-
-		// $metadatum = $this->metadatum_repository->fetch($body['metadatum_id']);
-
-		// if ( $metadatum instanceof Entities\Metadatum ) {
-		// 	$value = isset($body['new_value']) ? $body['new_value'] : $body['value'];
-		// 	$old_value = isset($body['old_value']) ? $body['old_value'] : null;
-		// 	$action = $bulk->$method($metadatum, $value, $old_value);
-		// 	if ( is_wp_error($action) ) {
-		// 		return new \WP_REST_Response([
-		// 			'error_message' => $action->get_error_message(),
-		// 		], 400);
-		// 	} else {
-		// 		return new \WP_REST_Response($action, 200);
-		// 	}
-		// } else {
-		// 	return new \WP_REST_Response([
-		// 		'error_message' => __('Metadatum not found.', 'tainacan'),
-		// 	], 400);
-		// }
 	}
 
 	public function get_item_in_sequence($request) {
