@@ -42,7 +42,7 @@ export default class DynamicItemsModal extends React.Component {
          
         if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
             this.fetchCollection(this.props.existingCollectionId);
-            this.setState({ searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?readmode=true&iframemode=true' });
+            this.setState({ searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?readmode=true&iframemode=true' });
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
@@ -100,7 +100,7 @@ export default class DynamicItemsModal extends React.Component {
     selectCollection(selectedCollectionId) {
         this.setState({
             collectionId: selectedCollectionId,
-            searchURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?readmode=true&iframemode=true'
+            searchURL: tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?readmode=true&iframemode=true'
         });
 
         this.props.onSelectCollection(selectedCollectionId);

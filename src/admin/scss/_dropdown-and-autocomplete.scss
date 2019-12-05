@@ -97,6 +97,9 @@
         max-height: unset !important;
     }
 }
+.taginput.is-expanded {
+    width: 100%;
+}
 .taginput-container .mdi-magnify::before, 
 .autocomplete .mdi-magnify::before {
     content: 'search';
@@ -109,11 +112,12 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-size: 20px;
+    text-transform: none !important;
 }
 
 .taginput-container {
     padding: 0px !important;
-    background-color: white !important;
+    background-color: transparent !important;
 
     &:focus, &:active {
         border: none !important;
@@ -204,6 +208,23 @@
         }
     }
 
+    // Not working yet, as we don't have this icon.
+    // .dropdown-trigger {
+    //     span.icon>i.mdi-calendar-today::before{
+    //         display: inline-block;
+    //         font: normal normal normal 20px/1 "TainacanIcons";
+    //         font-size: inherit;
+    //         text-rendering: auto;
+    //         vertical-align: middle;
+    //         line-height: inherit;
+    //         -webkit-font-smoothing: antialiased;
+    //         -moz-osx-font-smoothing: grayscale;
+    //         content: 'calendar';
+    //         text-transform: none !important;
+    //         letter-spacing: normal !important;
+    //     }
+    // }
+
     .dropdown-menu {
         background: transparent;
         border: none;
@@ -224,6 +245,8 @@
                 line-height: inherit;
                 -webkit-font-smoothing: antialiased;
                 -moz-osx-font-smoothing: grayscale;
+                text-transform: none !important;
+                letter-spacing: normal !important;
                 color: $secondary;
             }
 

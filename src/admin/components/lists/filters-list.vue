@@ -39,15 +39,13 @@
                         class="active-filters-area"
                         @change="handleChangeOnFilter"
                         :class="{'filters-area-receive': isDraggingFromAvailable}" 
-                        v-model="activeFilterList" 
-                        :options="{
-                            group: { name:'filters', pull: false, put: true }, 
-                            sort: (openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel, 
-                            //disabled: openedFilterId != '' && openedFilterId != undefined,
-                            handle: '.handle', 
-                            ghostClass: 'sortable-ghost',
-                            filter: 'not-sortable-item', 
-                            animation: '250'}"> 
+                        v-model="activeFilterList"
+                        :group="{ name:'filters', pull: false, put: true }"
+                        :sort="(openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel"
+                        :handle="'.handle'" 
+                        ghost-class="sortable-ghost"
+                        filter="not-sortable-item" 
+                        :animation="250"> 
                     <div  
                             class="active-filter-item" 
                             :class="{
@@ -82,8 +80,8 @@
                                     :class="{ 
                                         'tainacan-icon-collections': filter.collection_id == collectionId, 
                                         'tainacan-icon-repository': filter.collection_id != collectionId,
-                                        'has-text-turquoise5': filter.enabled && filter.collection_id == collectionId, 
-                                        'has-text-blue5': filter.enabled && filter.collection_id != collectionId,
+                                        'has-text-turquoise5': filter.enabled && filter.collection_id != 'default', 
+                                        'has-text-blue5': filter.enabled && filter.collection_id == 'default',
                                         'has-text-gray3': !filter.enabled  
                                     }"
                                     class="tainacan-icon" />
@@ -166,11 +164,9 @@
                             @change="handleChangeOnMetadata"
                             v-if="availableMetadata.length > 0 && !isLoadingMetadatumTypes"
                             v-model="availableMetadata"
-                            :options="{ 
-                                sort: false, 
-                                group: { name:'filters', pull: !isSelectingFilterType, put: false, revertClone: true },
-                                dragClass: 'sortable-drag'
-                            }">
+                            :sort="false" 
+                            :group="{ name:'filters', pull: !isSelectingFilterType, put: false, revertClone: true }"
+                            drag-class="sortable-drag">
                         <div 
                                 class="available-metadatum-item"
                                 :class="{

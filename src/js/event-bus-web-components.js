@@ -34,8 +34,10 @@ export const eventBus = new Vue({
                     .then(() => {
                         this.$emit('isUpdatingValue', false);
                         let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId );
-                        if (index >= 0)
+                        if (index >= 0) {
                             this.errors.splice( index, 1);
+                        }
+                        this.$emit('updateErrorMessageOf#' + metadatumId, this.errors[index]);
                     })
                     .catch((error) => {
                         this.$emit('isUpdatingValue', false);
@@ -45,16 +47,16 @@ export const eventBus = new Vue({
                         for (let index in error)
                             messages.push(error[index]);
 
-                        if ( index >= 0)
+                        if ( index >= 0) {
                             Vue.set( this.errors, index, { metadatum_id: metadatumId, errors: messages });
-                        else
+                            this.$emit('updateErrorMessage', this.errors[index]);
+                        } else {
                             this.errors.push( { metadatum_id: metadatumId, errors: messages } );
+                            this.$emit('updateErrorMessageOf#' + metadatumId, this.errors[0]);
+                        }
+                        
                 });
             }
-        },
-        getErrors(metadatum_id) {
-            let error = this.errors.find(errorItem => errorItem.metadatum_id == metadatum_id);
-            return error ? error.errors : false
         },
         clearAllErrors() {
            this.errors = [];

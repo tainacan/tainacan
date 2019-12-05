@@ -616,10 +616,12 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('Lean Startup', $data['items'][0]['title']);
 		
 		$metadata_1 = $item1->get_metadata();
+		sort($metadata_1);
 		
 		$duplicated = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $data['items'][0]['id'] );
 		
 		$metadata_2 = $duplicated->get_metadata();
+		sort($metadata_2);
 		
 		foreach( $metadata_1 as $k => $m ) {
 			$this->assertEquals( $m->get_value(), $metadata_2[$k]->get_value() );
@@ -647,6 +649,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			$this->assertEquals('publish', $created_item['status']);
 			
 			$metadata_2 = $duplicated->get_metadata();
+			sort($metadata_2);
 			
 			foreach( $metadata_1 as $k => $m ) {
 				$this->assertEquals( $m->get_value(), $metadata_2[$k]->get_value() );

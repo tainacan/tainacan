@@ -1,16 +1,36 @@
-.input, .textarea {
+input[type="color"].input,
+input[type="date"].input,
+input[type="datetime-local"].input,
+input[type="datetime"].input,
+input[type="email"].input,
+input[type="number"].input,
+input[type="month"].input,
+input[type="password"].input,
+input[type="search"].input,
+input[type="tel"].input,
+input[type="text"].input,
+input[type="time"].input,
+input[type="url"].input,
+input[type="week"].input,
+input.input,
+.input,
+textarea.textarea, 
+.textarea {
     font-size: 0.875rem;
     border-radius: 1px !important;
     box-shadow: none !important;
     background-color: white;
     border: 1px solid $gray2;
     color: $tainacan-input-color;
-    transition: background-color 0.1s, border 0.3s;
+    transition: background-color 0.1s ease, border-color 0.3s ease;
 
     &:focus, &:active {
         box-shadow: none !important;
         background-color: white;
         border: 1px solid $gray4 !important;
+    }  
+    &:hover {
+        border: 1px solid $gray3;
     }  
     &[disabled] {
         color: $gray4 !important;
