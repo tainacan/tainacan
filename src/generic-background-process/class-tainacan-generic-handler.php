@@ -34,12 +34,12 @@ class Generic_Process_Handler {
 		return true;
 	}
 	
-	function add_to_queue(\Tainacan\process\process $process_object) {
+	function add_to_queue(\Tainacan\GenericBackgroundProcess\Generic_Process $process_object) {
 		$data = $process_object->_to_Array(true);
-		$process = $this->get_process_by_object($process_object);
+		$process = $this->get_generic_process_by_object($process_object);
 		
 		$process_name = sprintf( __('%s process', 'tainacan'), $process['name'] );
-		
+
 		$bg_process = $this->bg_process->data($data)->set_name($process_name)->save();
 		if ( is_wp_error($bg_process->dispatch()) ) {
 			return false;
@@ -63,13 +63,25 @@ class Generic_Process_Handler {
 		return null;
 	}
 
+	public function get_generic_process_by_object(\Tainacan\GenericBackgroundProcess\Generic_Process $process_object) {
+		$class_name = get_class($process_object);
+		$class_name = '\\' . $class_name;
+		$generic_process = $this->get_registered_generic_process();
+		foreach ($generic_process as $process) {
+			if ($process['class_name'] == $class_name)
+				return $process;
+		}
+		return null;
+	}
+
 	public function initialize_generic_process($slug, $id = null) {
 		$process = $this->get_generic_process($slug);
 		if ( is_array($process) && isset($process['class_name']) && class_exists($process['class_name']) ) {
-			if ($id == null)
-				return new $process['class_name']();
-			else
-				return new $process['class_name']($id);
+			$prc = new $process['class_name']();
+			if ($id != null) {
+				$prc->set_bulk_id($id);
+			}
+			return $prc;
 		}
 		return false;
 	}
