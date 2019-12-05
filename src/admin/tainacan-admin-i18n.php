@@ -688,6 +688,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_title_mapping'							 => __( 'The title is the most relevant metadata, that shall identify your item on lists for different view modes. Select the title source metadata first, or skip to run importer as it is.', 'taincan'),
 	'info_can_not_edit_collection'					 => __( 'You are not allowed to edit this collection.', 'tainacan' ),
 	'info_can_not_edit_taxonomies'					 => __( 'You are not allowed to edit taxonomies.', 'tainacan' ),
+	'info_can_not_edit_filters'					 	 => __( 'You are not allowed to edit filters.', 'tainacan' ),
+	'info_can_not_edit_metadata'				 	 => __( 'You are not allowed to edit metadata.', 'tainacan' ),
+	'info_can_not_edit_capabilities'				 => __( 'You are not allowed to edit capabilities.', 'tainacan' ),
+	'info_can_not_read_activities'				 	 => __( 'You are not allowed to read activities.', 'tainacan' ),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),

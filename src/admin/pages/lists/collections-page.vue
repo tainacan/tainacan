@@ -3,12 +3,12 @@
         <b-loading :active.sync="isLoading"/>
         <tainacan-title 
                 :bread-crumb-items="[{ path: '', label: this.$i18n.get('collections') }]"/>
-        <div
-                class="sub-header"
-                v-if="$userCaps.hasCapability('tnc_rep_edit_collections')">
+        <div class="sub-header">
             
             <!-- New Collection button -->
-            <div class="header-item">
+            <div 
+                    v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
+                    class="header-item">
                 <b-dropdown 
                         aria-role="list"
                         id="collection-creation-options-dropdown"

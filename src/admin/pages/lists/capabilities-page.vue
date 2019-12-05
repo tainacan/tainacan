@@ -31,8 +31,20 @@
                     :can-cancel="false"/>
 
             <capabilities-list
+                    v-if="$userCaps.hasCapability('tnc_rep_edit_users')"
                     :is-loading="isLoading || isFetchingRoles"
                     :capabilities="capabilities"/>
+                        
+            <template v-else>
+                <section class="section">
+                    <div class="content has-text-grey has-text-centered">
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-capability"/>
+                        </span>
+                        <p>{{ $i18n.get('info_can_not_edit_capabilities') }}</p>
+                    </div>
+                </section>
+            </template>  
             
             <!-- Empty state -->
             <div v-if="capabilities.length <= 0 && !isLoading">
@@ -61,7 +73,8 @@
                     }}
                 </div>
             </div>
-        </div>  
+
+        </div>        
     </div>
 </template>
 

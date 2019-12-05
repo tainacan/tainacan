@@ -15,6 +15,7 @@
                         class="tabs">
                     <ul>
                         <li
+                                v-if="!$userCaps.hasCapability('tnc_rep_read_logs')"
                                 @click="onChangeTab('')"
                                 :class="{ 'is-active': tab == undefined || tab == ''}"><a>{{ $i18n.get('activities') }}</a></li>
                         <li
@@ -29,7 +30,7 @@
                         :can-cancel="false"/>
 
                 <div 
-                        v-if="tab != 'processes' && $userCaps.hasCapability('tnc_rep_read_logs')"
+                        v-if="tab != 'processes'"
                         class="sub-header">
 
                     <b-field class="header-item">
@@ -138,6 +139,16 @@
                         :page="activitiesPage"
                         :activities-per-page="activitiesPerPage"
                         :activities="activities"/>
+                <template v-if="tab != 'processes' && !$userCaps.hasCapability('tnc_rep_read_logs')">
+                    <section class="section">
+                        <div class="content has-text-grey has-text-centered">
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities"/>
+                            </span>
+                            <p>{{ $i18n.get('info_can_not_read_activities') }}</p>
+                        </div>
+                    </section>
+                </template>
 
                 <processes-list
                         v-if="tab == 'processes'"
