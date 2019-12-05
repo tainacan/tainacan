@@ -181,15 +181,15 @@ class REST_Bulkedit_Controller extends REST_Controller {
     }
     
 
-    public function bulk_edit_permissions_check($request) {
-        $collection = $this->collections_repository->fetch($request['collection_id']);
+	public function bulk_edit_permissions_check($request) {
+		$collection = $this->collections_repository->fetch($request['collection_id']);
 
 		if ($collection instanceof Entities\Collection) {
-            return current_user_can($collection->get_items_capabilities()->edit_others_posts);
-        }
+			return current_user_can($collection->get_items_capabilities()->edit_others_posts);
+		}
 
-        return false;
-    }
+		return false;
+	}
 
 
 	public function create_item($request) {
@@ -364,28 +364,46 @@ class REST_Bulkedit_Controller extends REST_Controller {
 			}
 		}
 
-		$group_id = $request['group_id'];
-		$args = ['id' => $group_id];
-		$bulk = new \Tainacan\Bulk_Edit($args);
+		$bulk_id = $request['group_id'];
 
-		$metadatum = $this->metadatum_repository->fetch($body['metadatum_id']);
-
-		if ( $metadatum instanceof Entities\Metadatum ) {
-			$value = isset($body['new_value']) ? $body['new_value'] : $body['value'];
-			$old_value = isset($body['old_value']) ? $body['old_value'] : null;
-			$action = $bulk->$method($metadatum, $value, $old_value);
-			if ( is_wp_error($action) ) {
-				return new \WP_REST_Response([
-					'error_message' => $action->get_error_message(),
-				], 400);
-			} else {
-				return new \WP_REST_Response($action, 200);
-			}
-		} else {
-			return new \WP_REST_Response([
-				'error_message' => __('Metadatum not found.', 'tainacan'),
-			], 400);
+		global $Tainacan_Generic_Process_Handler;
+		$process = $Tainacan_Generic_Process_Handler->get_process_instance_by_session_id($bulk_id);
+		if ($process !== false) {
+			$bulk_edit_data = [
+				"value" 				=> isset($body['new_value']) ? $body['new_value'] : $body['value'],
+				"method" 				=> $method,
+				"old_value"			=> isset($body['old_value']) ? $body['old_value'] : null,
+				"metadatum_id" 	=> $body['metadatum_id'],
+			];
+			$process->set_bulk_edit_data($bulk_edit_data);
+			$bg_bulk = $Tainacan_Generic_Process_Handler->add_to_queue($process);
+			//$Tainacan_Generic_Process_Handler->delete_process_instance($process);
 		}
+
+		return new \WP_REST_Response(["bg_process_id"=>$bulk_id, "method" => $method], 200);
+
+		//$bulk_id = $request['group_id'];
+		//$args = ['id' => $bulk_id];
+		//$bulk = new \Tainacan\Bulk_Edit($args);
+
+		// $metadatum = $this->metadatum_repository->fetch($body['metadatum_id']);
+
+		// if ( $metadatum instanceof Entities\Metadatum ) {
+		// 	$value = isset($body['new_value']) ? $body['new_value'] : $body['value'];
+		// 	$old_value = isset($body['old_value']) ? $body['old_value'] : null;
+		// 	$action = $bulk->$method($metadatum, $value, $old_value);
+		// 	if ( is_wp_error($action) ) {
+		// 		return new \WP_REST_Response([
+		// 			'error_message' => $action->get_error_message(),
+		// 		], 400);
+		// 	} else {
+		// 		return new \WP_REST_Response($action, 200);
+		// 	}
+		// } else {
+		// 	return new \WP_REST_Response([
+		// 		'error_message' => __('Metadatum not found.', 'tainacan'),
+		// 	], 400);
+		// }
 	}
 
 	public function get_item_in_sequence($request) {
