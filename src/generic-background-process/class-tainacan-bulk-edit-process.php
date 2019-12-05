@@ -51,6 +51,7 @@ class Bulk_Edit_Process extends Generic_Process {
 	private function bulk_list_get_item() {
 		$args = [
 			'perpage' => 1,
+			'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash'),
 			'meta_query' => array(
 				array(
 					'key' => $this->meta_key,
@@ -210,6 +211,50 @@ class Bulk_Edit_Process extends Generic_Process {
 				return false;
 			}
 		}
+		return false;
+	}
+
+	private function trash_items(\Tainacan\Entities\Item $item) {
+		if ( !$this->items_repository->trash($item) ) {
+			$this->add_error_log( sprintf( __('error on send to trash, item ID: "%d"', 'tainacan'), $item->get_id() ) );
+			return false;
+		}
+		return true;
+	}
+
+	private function untrash_items(\Tainacan\Entities\Item $item) {
+		if ( !wp_untrash_post( $item->get_id() ) ) {
+			$this->add_error_log( sprintf( __('error on untrash, item ID: "%d"', 'tainacan'), $item->get_id() ) );
+			return false;
+		}
+		return true;
+	}
+
+	private function delete_items(\Tainacan\Entities\Item $item) {
+		if ( !$this->items_repository->delete($item) ) {
+			$this->add_error_log( sprintf( __('error on send to trash, item ID: "%d"', 'tainacan'), $item->get_id() ) );
+			return false;
+		}
+		return true;
+	}
+
+	private function set_status(\Tainacan\Entities\Item $item) {
+		$value = $this->bulk_edit_data['value'];
+		$possible_values = ['trash', 'draft', 'publish', 'private'];
+
+		if (!in_array($value, $possible_values)) {
+			$this->add_error_log( __( 'Invalid status', 'tainacan' ) );
+			return false;
+		}
+
+		$item->set("status", $value);
+		if($item->validate()) {
+			$this->items_repository->update($item);
+			return true;
+		}
+
+		$this->add_error_log( sprintf( __( 'Please verify, invalid value(s) to edit item ID: "%d"', 'tainacan' ), $item->get_id() ) );
+		$this->add_error_log($item->get_errors());
 		return false;
 	}
 
