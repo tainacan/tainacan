@@ -135,10 +135,9 @@ class Bulk_Edit_Process extends Generic_Process {
 			return false;
 		}
 
-		//$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum );
 		$items_metadata = $item->get_metadata();
 		
-		foreach ($items_metadata as $item_metadata){
+		foreach ($items_metadata as $item_metadata) {
 			$metadatum = $item_metadata->get_metadatum();
 			if($metadatum->get_id() == $metadatum_id) {
 				$values = is_array($item_metadata->get_value()) ? $item_metadata->get_value() : [$item_metadata->get_value()];
@@ -152,7 +151,32 @@ class Bulk_Edit_Process extends Generic_Process {
 	}
 
 	private function remove_value(\Tainacan\Entities\Item $item) {
+		$metadatum_id = $this->bulk_edit_data['metadatum_id'];
+		$metadatum = $this->metadatum_repository->fetch($metadatum_id);
+		$value = $this->bulk_edit_data['value'];
 
+		if ($metadatum->is_required()) {
+			$this->add_error_log( __( 'Unable to remove a value from a required metadatum', 'tainacan' ) );
+			return false;
+		}
+		if (!$metadatum->is_multiple()) {
+			$this->add_error_log( __( 'Unable to remove a value from a metadata if it does not accept multiple values', 'tainacan' ) );
+			return false;
+		}
+
+		$items_metadata = $item->get_metadata();
+		
+		foreach ($items_metadata as $item_metadata) {
+			$metadatum = $item_metadata->get_metadatum();
+			if($metadatum->get_id() == $metadatum_id) {
+				$values = is_array($item_metadata->get_value()) ? $item_metadata->get_value() : [$item_metadata->get_value()];
+				$pos = array_search($value, $values);
+				unset($values[$pos]);
+				$item_metadata->set_value( $values );
+				return $this->save_item_metadata($item_metadata, $item);
+			}
+		}
+		return false;
 	}
 
 	private function replace_value(\Tainacan\Entities\Item $item) {
