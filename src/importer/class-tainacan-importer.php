@@ -786,6 +786,11 @@ abstract class Importer {
 
 		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_definition['id']);
 
+		if ( $collection instanceof Entities\Collection && ! $collection->user_can('edit_items') ) {
+			$this->add_error_log( __("You don't have permission to create items in this collection.", 'tainacan') );
+			return false;
+		}
+
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
