@@ -5,11 +5,19 @@ use Tainacan\Entities;
 
 abstract class Generic_Process {
 
-	public function __construct( ) {
+	public function __construct( $attributess = array() ) {
 		$this->id = uniqid();
 		$author = get_current_user_id();
 		if($author) {
 			$this->add_transient('author', $author);
+		}
+		if (!empty($attributess)) {
+			foreach ($attributess as $attr => $value) {
+				$method = 'set_' . $attr;
+				if (method_exists($this, $method)) {
+					$this->$method($value);
+				}
+			}
 		}
 	}
 
@@ -66,12 +74,10 @@ abstract class Generic_Process {
 
 	/**
 	 * List of attributes that are saved in DB and that are used to 
-	 * reconstruct the object, this property need be overwrite in custom import/export.
+	 * reconstruct the object, this property need be overwrite.
 	 * @var array
 	 */
 	protected $array_attributes = [
-		'in_step_count',
-		'current_step',
 		'transients'
 	];
 
@@ -293,6 +299,10 @@ abstract class Generic_Process {
 		}
 
 		return $return;
+	}
+
+	public function finished() {
+		$this->add_log('finished');
 	}
 
 	/**
