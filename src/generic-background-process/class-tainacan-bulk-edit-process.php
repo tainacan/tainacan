@@ -180,7 +180,37 @@ class Bulk_Edit_Process extends Generic_Process {
 	}
 
 	private function replace_value(\Tainacan\Entities\Item $item) {
+		$metadatum_id = $this->bulk_edit_data['metadatum_id'];
+		$metadatum = $this->metadatum_repository->fetch($metadatum_id);
+		$old_value = $this->bulk_edit_data['old_value'];
+		$new_value = $this->bulk_edit_data['value'];
 
+		if ($metadatum->is_collection_key()) {
+			$this->add_error_log( __( 'Unable to set a value to a metadata set to be a collection key', 'tainacan' ) );
+			return false;
+		}
+		
+		if ($new_value == $old_value) {
+			$this->add_error_log( __( 'Old value and new value can not be the same', 'tainacan' ) );
+			return false;
+		}
+
+		$items_metadata = $item->get_metadata();
+
+		foreach ($items_metadata as $item_metadata) {
+			$metadatum = $item_metadata->get_metadatum();
+			if($metadatum->get_id() == $metadatum_id) {
+				$values = is_array($item_metadata->get_value()) ? $item_metadata->get_value() : [$item_metadata->get_value()];
+				$pos = array_search($old_value, $values);
+				if ($pos != false) {
+					$values[$pos] = $new_value;
+					$item_metadata->set_value( $values );
+					return $this->save_item_metadata($item_metadata, $item);
+				}
+				return false;
+			}
+		}
+		return false;
 	}
 
 }
