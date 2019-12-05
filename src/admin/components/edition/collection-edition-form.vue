@@ -5,7 +5,7 @@
         <tainacan-title 
                 :bread-crumb-items="[{ path: '', label: $i18n.get('collection') }]"/>
         <form 
-                v-if="collection != null && collection != undefined" 
+                v-if="collection != null && collection != undefined && ((isNewCollection && $userCaps.hasCapability('tnc_rep_edit_collections')) || (!isNewCollection && collection.current_user_can_edit))" 
                 class="tainacan-form" 
                 label-width="120px">
         
@@ -456,14 +456,14 @@
                         style="margin-left: auto;"
                         class="control">
                     <button
-                            v-if="isNewCollection"
+                            v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata')"
                             id="button-submit-goto-metadata"
                             @click.prevent="onSubmit('metadata')"
                             class="button is-secondary">{{ $i18n.get('label_save_goto_metadata') }}</button>
                 </div>
                  <div class="control">
                     <button
-                            v-if="isNewCollection"
+                            v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata')"
                             id="button-submit-goto-filter"
                             @click.prevent="onSubmit('filters')"
                             class="button is-secondary">{{ $i18n.get('label_save_goto_filter') }}</button>
@@ -477,6 +477,17 @@
             </div>
             <p class="help is-danger">{{ formErrorMessage }}</p> 
         </form>
+
+        <div v-if="!isLoading && ((isNewCollection && !$userCaps.hasCapability('tnc_rep_edit_collections')) || (!isNewCollection && collection && collection.current_user_can_edit != undefined && collection.current_user_can_edit == false))">
+            <section class="section">
+                <div class="content has-text-grey has-text-centered">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collection"/>
+                    </span>
+                    <p>{{ $i18n.get('info_can_not_edit_collection') }}</p>
+                </div>
+            </section>
+        </div>
 
         <b-loading 
                 :active.sync="isLoading" 

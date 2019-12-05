@@ -9,10 +9,9 @@
             <b-tabs 
                     @change="onChangeTab($event)"
                     v-model="tabIndex">    
-                <b-tab-item 
-                        v-if="taxonomy != null && taxonomy != undefined && taxonomy.current_user_can_edit"
-                        :label="$i18n.get('taxonomy')">
+                <b-tab-item :label="$i18n.get('taxonomy')">
                     <form 
+                            v-if="taxonomy != null && taxonomy != undefined && (($route.name == 'TaxonomyCreationForm' && $userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyEditionForm' && taxonomy.current_user_can_edit))"
                             class="tainacan-form" 
                             label-width="120px">
                         <div class="columns">
@@ -194,6 +193,18 @@
                         </div>
                         <p class="help is-danger">{{ formErrorMessage }}</p>
                     </form>
+
+                    <div v-if="!isLoading && (($route.name == 'TaxonomyCreationForm' && !$userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyCreationForm' && taxonomy.current_user_can_edit != undefined && !taxonomy.current_user_can_edit))">
+                        <section class="section">
+                            <div class="content has-text-grey has-text-centered">
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-taxonomies"/>
+                                </span>
+                                <p>{{ $i18n.get('info_can_not_edit_taxonomies') }}</p>
+                            </div>
+                        </section>
+                    </div>
+
                 </b-tab-item>
                 
                 <b-tab-item :label="$i18n.get('terms')">

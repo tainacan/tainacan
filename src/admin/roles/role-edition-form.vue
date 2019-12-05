@@ -381,7 +381,7 @@
     @keyframes appear-from-right {
         from {
             right: -100%;
-            opacity: 0;
+            opacity: 0.5;
         }
         to {
             right: 0;
@@ -397,7 +397,6 @@
     .notice {
         position: relative;
         float: right;
-        animation: appear-from-right 0.8s ease-in;
     }
     #role-name-input {
         min-width: 200px;

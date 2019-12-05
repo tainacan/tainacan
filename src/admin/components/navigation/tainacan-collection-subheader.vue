@@ -149,7 +149,7 @@
                     </router-link>
                 </li>
                 <li 
-                        v-if="$userPrefs('tnc_rep_read_logs')"
+                        v-if="$userCaps.hasCapability('tnc_rep_read_logs')"
                         :class="activeRoute == 'CollectionActivitiesPage' ? 'is-active':''"
                         class="level-item"
                         v-tooltip="{

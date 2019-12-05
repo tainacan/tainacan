@@ -686,6 +686,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_final_value'                               => __( 'Final value', 'tainacan' ),
 	'info_show_interval_on_tag'                      => __( 'Show applied interval on tags', 'tainacan' ),
 	'info_title_mapping'							 => __( 'The title is the most relevant metadata, that shall identify your item on lists for different view modes. Select the title source metadata first, or skip to run importer as it is.', 'taincan'),
+	'info_can_not_edit_collection'					 => __( 'You are not allowed to edit this collection.', 'tainacan' ),
+	'info_can_not_edit_taxonomies'					 => __( 'You are not allowed to edit taxonomies.', 'tainacan' ),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),

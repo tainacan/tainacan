@@ -2,7 +2,7 @@
     <div class="metadata-list-page">
         <b-loading :active.sync="isLoadingMetadatumTypes"/>
         <b-loading :active.sync="isLoadingMetadatumMappers"/>
-                <div 
+        <div 
                 v-if="!isRepositoryLevel"
                 class="tainacan-page-title">
             <h1>

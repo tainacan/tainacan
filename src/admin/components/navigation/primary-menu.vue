@@ -48,7 +48,7 @@
                     </router-link>
                 </li>
                 <li class="separator"/>
-                <li>
+                <li v-if="$userCaps.hasCapability('tnc_rep_edit_metadata')">
                     <router-link
                             tag="a"
                             to="/metadata"
@@ -67,7 +67,7 @@
                         <span class="menu-text">{{ $i18n.get('metadata') }}</span>
                     </router-link>
                 </li>
-                <li>
+                <li v-if="$userCaps.hasCapability('tnc_rep_edit_filters')">
                     <router-link
                             tag="a"
                             to="/filters"
