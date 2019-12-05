@@ -1,6 +1,13 @@
 <template>
     <form @submit="onSubmit">
         <h1 class="wp-heading-inline">{{ $route.meta.title }}&nbsp;<strong>{{ role.name ? role.name : '' }}</strong></h1>
+         <transition name="appear-from-right">
+            <div 
+                    v-if="showNotice"
+                    class="notice notice-success">
+                <p>{{ $i18n.get('User Role Saved') }}</p>
+            </div>
+        </transition>
         <hr class="wp-header-end">
         <br>
         <template v-if="!isLoadingRole">
@@ -9,7 +16,8 @@
                 <input
                     type="text" 
                     id="role-name-input" 
-                    name="name" 
+                    name="name"
+                    @input="showNotice = false" 
                     v-model="role.name" 
                     :placeholder="$i18n.get('Insert the role name...')">
             </div>
@@ -143,7 +151,7 @@
                                                 type="checkbox"
                                                 name="roles[]"
                                                 :id="'capability_'+ capability.replace('%d', selectedCollection)"
-                                                :disabled="collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap.replace('%d', selectedCollection)] == true && capability.replace('%d', selectedCollection) != 'manage_tainacan_collection_all') >= 0"
+                                                :disabled="collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.filter((supercap) => supercap.replace('%d', selectedCollection) != capability.replace('%d', selectedCollection)).findIndex((supercap) => role.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0"
                                                 :checked="role.capabilities[capability.replace('%d', selectedCollection)] || (collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0)"
                                                 @input="onUpdateCapability($event.target.checked, capability.replace('%d', selectedCollection))">
                                         </span>
@@ -185,9 +193,10 @@
                 <input 
                         type="submit"
                         name="submit"
-                        id="submit" 
+                        id="submit"
+                        :disabled="!role.name || showNotice" 
                         class="button button-primary"
-                        :value="$i18n.get('Save Changes')">
+                        :value="this.roleSlug === 'new' ? $i18n.get('Create Role') : $i18n.get('Save Changes')">
             </p>
         </div>
     </form>
@@ -209,7 +218,8 @@
                     name: '',
                     capabilities: {}
                 },
-                capabilitiesTab: 'repository'
+                capabilitiesTab: 'repository',
+                showNotice: false
             }
         },
         computed: {
@@ -261,6 +271,7 @@
                 'getCapabilities'
             ]),
             onUpdateCapability(value, capabilityKey) {
+                this.showNotice = false;
                 const capabilities = this.role.capabilities ? this.role.capabilities : {};
                 this.$set(capabilities, capabilityKey, value);
                 this.$set(this.role, 'capabilities', capabilities);
@@ -273,8 +284,9 @@
                     this.createRole(this.role)
                         .then((createdRole) => {
                             this.roleSlug = createdRole.slug;
+                            this.$router.push('/roles/' + this.roleSlug);
                             this.isUpdatingRole = false;
-                            this.$router.go(-1);
+                            this.showNotice = true;
                         })
                         .catch(() => {
                             this.isUpdatingRole = false;
@@ -283,7 +295,7 @@
                     this.updateRole(this.role)
                         .then(() => {
                             this.isUpdatingRole = false;
-                            this.$router.go(-1);
+                            this.showNotice = true;
                         })
                         .catch(() => {
                             this.isUpdatingRole = false;
@@ -366,6 +378,27 @@
 </script>
 
 <style lang="scss" scoped>
+    @keyframes appear-from-right {
+        from {
+            right: -100%;
+            opacity: 0;
+        }
+        to {
+            right: 0;
+            opacity: 1;
+        }
+    }
+    .appear-from-right-enter-active {
+        animation: appear-from-right 0.8s;
+    }
+    .appear-from-right-leave-active {
+        animation: appear-from-right 0.8s reverse;
+    }
+    .notice {
+        position: relative;
+        float: right;
+        animation: appear-from-right 0.8s ease-in;
+    }
     #role-name-input {
         min-width: 200px;
     }

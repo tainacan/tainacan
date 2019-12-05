@@ -909,9 +909,8 @@ export default {
                 if (errors.errors) {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){
-                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
-                        }
-                        
+                            eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                        }   
                     }
                     this.formErrorMessage = errors.error_message;
                 }

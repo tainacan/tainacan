@@ -144,11 +144,19 @@
                             class="name column-name has-row-actions column-primary"
                             :data-colname="$i18n.get('Role name')">
                         <strong>
-                            {{ role.name }}
+                            <router-link 
+                                    :to="'/roles/' + role.slug"
+                                    class="submitdelete">
+                                {{ role.name }}
+                            </router-link>
                         </strong>
                         <br>
                         <div class="row-actions">
-                            <span class="edit"><router-link :to="'/roles/' + role.slug">{{ $i18n.get('Edit') }}</router-link></span>
+                            <span class="edit">
+                                <router-link :to="'/roles/' + role.slug">
+                                    {{ $i18n.get('Edit') }}
+                                </router-link>
+                            </span>
                             <span 
                                     v-if="role.slug.match('tainacan')"
                                     class="delete">

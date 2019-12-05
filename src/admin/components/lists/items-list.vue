@@ -28,7 +28,7 @@
                 <b-dropdown
                         :mobile-modal="true"
                         position="is-bottom-left"
-                        v-if="items.length > 0 && collection && collection.current_user_can_edit_items"
+                        v-if="items.length > 0 && collection && collection.current_user_can_edit_items && collection.current_user_can_bulk_edit"
                         :disabled="selectedItems.length <= 1"
                         id="bulk-actions-dropdown"
                         aria-role="list"
@@ -43,7 +43,7 @@
                     </button>
 
                     <b-dropdown-item
-                            v-if="$route.params.collectionId && collection && collection.current_user_can_bulk_edit && !isOnTrash"
+                            v-if="$route.params.collectionId && !isOnTrash"
                             @click="openBulkEditionModal()"
                             aria-role="listitem">
                         {{ $i18n.get('label_bulk_edit_selected_items') }}

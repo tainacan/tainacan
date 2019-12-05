@@ -3,12 +3,12 @@
         <div class="repository-level-page page-container">
             <tainacan-title 
                     :bread-crumb-items="[{ path: '', label: this.$i18n.get('taxonomies') }]"/>
-            <div 
-                    class="sub-header" 
-                    v-if="$userCaps.hasCapability('tnc_rep_edit_taxonomies')">
+            <div class="sub-header">
 
                 <!-- New Taxonomy Button ----  -->
-                <div class="header-item">
+                <div 
+                        v-if="$userCaps.hasCapability('tnc_rep_edit_taxonomies')"
+                        class="header-item">
                     <router-link
                             id="button-create-taxonomy" 
                             tag="button" 

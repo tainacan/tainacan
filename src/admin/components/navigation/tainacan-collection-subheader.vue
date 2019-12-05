@@ -101,7 +101,7 @@
                     </router-link>
                 </li>
                 <li 
-                        v-if="collection && collection.current_user_can_edit"
+                        v-if="collection && collection.current_user_can_edit_metadata"
                         :class="activeRoute == 'MetadataList' ? 'is-active':''"
                         class="level-item"
                         v-tooltip="{
@@ -125,7 +125,7 @@
                     </router-link>
                 </li>
                 <li 
-                        v-if="collection && collection.current_user_can_edit"
+                        v-if="collection && collection.current_user_can_edit_filter"
                         :class="activeRoute == 'FiltersList' ? 'is-active':''" 
                         class="level-item"
                         v-tooltip="{
@@ -149,6 +149,7 @@
                     </router-link>
                 </li>
                 <li 
+                        v-if="$userPrefs('tnc_rep_read_logs')"
                         :class="activeRoute == 'CollectionActivitiesPage' ? 'is-active':''"
                         class="level-item"
                         v-tooltip="{
@@ -172,6 +173,7 @@
                     </router-link>                
                 </li>
                 <li 
+                        v-if="collection && collection.current_user_can_edit_users"
                         :class="activeRoute == 'CollectionCapabilitiesPage' ? 'is-active':''"
                         class="level-item"
                         v-tooltip="{
