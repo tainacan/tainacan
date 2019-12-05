@@ -31,7 +31,7 @@
                 mode="out-in"
                 :name="(isOnSequenceEdit && sequenceRightDirection != undefined) ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
             <form
-                    v-if="!isLoading"
+                    v-if="!isLoading && ((isCreatingNewItem && collection.current_user_can_edit_items) || (!isCreatingNewItem && item && item.current_user_can_edit && item.status != 'publish'))"
                     class="tainacan-form"
                     label-width="120px">
                 <div class="columns">
@@ -536,6 +536,19 @@
                 </div>
                 
             </form>
+
+            <!-- In case user enters this page whithout having permission -->
+            <template v-if="!isLoading && ((isCreatingNewItem && !collection.current_user_can_edit_items) || (!isCreatingNewItem && item && item.current_user_can_edit != undefined && collection.current_user_can_edit == false))">
+                <section class="section">
+                    <div class="content has-text-grey has-text-centered">
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-item"/>
+                        </span>
+                        <p>{{ $i18n.get('info_can_not_edit_item') }}</p>
+                    </div>
+                </section>
+            </template>
+
         </transition>
         <footer class="footer">
             <!-- Sequence Progress -->
@@ -572,6 +585,7 @@
                     class="form-submission-footer"
                     v-if="form.status == 'trash'">
                 <button 
+                        v-if="item && item.current_user_can_delete"
                         @click="onDeletePermanently()"
                         type="button"
                         class="button is-outlined">{{ $i18n.get('label_delete_permanently') }}</button>
@@ -580,6 +594,7 @@
                         type="button"
                         class="button is-secondary">{{ $i18n.get('label_save_as_draft') }}</button>
                 <button 
+                        v-if="collection && collection.current_user_can_publish_items"
                         @click="onSubmit(visibility)"
                         type="button"
                         class="button is-success">{{ $i18n.get('label_publish') }}</button>
@@ -598,7 +613,7 @@
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
                 <button 
-                        v-if="form.status == 'draft' && !isOnSequenceEdit"
+                        v-if="form.status == 'draft' && !isOnSequenceEdit && item && item.current_user_can_delete"
                         @click="onSubmit('trash')"
                         type="button"
                         class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
@@ -622,21 +637,35 @@
                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
                     </span>
                 </button>
-                <button 
-                        v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
-                        @click="onSubmit(visibility)"
-                        type="button"
-                        class="button is-success">{{ $i18n.get('label_publish') }}</button>
-                <button 
-                        v-else
-                        @click="onSubmit(visibility, 'next')"
-                        type="button"
-                        class="button is-success">
-                    <span>{{ $i18n.get('label_publish') }}</span>
-                    <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
-                    </span>
-                </button>
+                <template v-if="collection && collection.current_user_can_publish_items">
+                    <button 
+                            v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
+                            @click="onSubmit(visibility)"
+                            type="button"
+                            class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                    <button 
+                            v-else
+                            @click="onSubmit(visibility, 'next')"
+                            type="button"
+                            class="button is-success">
+                        <span>{{ $i18n.get('label_publish') }}</span>
+                        <span class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                        </span>
+                    </button>
+                </template>
+                <template v-else>
+                    <button 
+                            v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count < itemPosition)"
+                            @click="onNextInSequence()"
+                            type="button"
+                            class="button is-success">
+                        <span>{{ $i18n.get('label_next') }}</span>
+                        <span class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                        </span>
+                    </button>
+                </template>
                 <button 
                         v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count == itemPosition)"
                         @click="$router.push($routerHelper.getCollectionPath(form.collectionId))"
@@ -662,7 +691,7 @@
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
                 <button 
-                        v-if="!isOnSequenceEdit"
+                        v-if="!isOnSequenceEdit && item && item.current_user_can_delete"
                         @click="onSubmit('trash')"
                         type="button"
                         class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
@@ -681,23 +710,38 @@
                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
                     </span>
                 </button>
-                <button 
-                        v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
-                        :disabled="formErrorMessage != undefined && formErrorMessage != ''"
-                        @click="onSubmit(visibility)"
-                        type="button"
-                        class="button is-success">{{ $i18n.get('label_update') }}</button>
-                <button 
-                        v-else
-                        :disabled="formErrorMessage != undefined && formErrorMessage != ''"
-                        @click="onSubmit(visibility, 'next')"
-                        type="button"
-                        class="button is-success">
-                    <span>{{ $i18n.get('label_update') }}</span>
-                    <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
-                    </span>
-                </button>
+                <template v-if="collection && collection.current_user_can_publish_items">
+                    <button 
+                            v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
+                            :disabled="formErrorMessage != undefined && formErrorMessage != ''"
+                            @click="onSubmit(visibility)"
+                            type="button"
+                            class="button is-success">{{ $i18n.get('label_update') }}</button>
+                    <button 
+                            v-else
+                            :disabled="formErrorMessage != undefined && formErrorMessage != ''"
+                            @click="onSubmit(visibility, 'next')"
+                            type="button"
+                            class="button is-success">
+                        <span>{{ $i18n.get('label_update') }}</span>
+                        <span class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                        </span>
+                    </button>
+                </template>
+                <template v-else>
+                    <button 
+                            v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count < itemPosition)"
+                            :disabled="formErrorMessage != undefined && formErrorMessage != ''"
+                            @click="onNextInSequence()"
+                            type="button"
+                            class="button is-success">
+                        <span>{{ $i18n.get('label_next') }}</span>
+                        <span class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                        </span>
+                    </button>
+                </template>
                 <button 
                         v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count == itemPosition)"
                         @click="$router.push($routerHelper.getCollectionPath(form.collectionId))"

@@ -200,7 +200,7 @@
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-30px tainacan-icon-taxonomies"/>
                                 </span>
-                                <p>{{ $i18n.get('info_can_not_edit_taxonomies') }}</p>
+                                <p>{{ $i18n.get('info_can_not_edit_taxonomy') }}</p>
                             </div>
                         </section>
                     </div>
