@@ -734,4 +734,30 @@ class Collection extends Entity {
 
 	}
 
+	/**
+	 * Checks if an user have permission on any of the collections capabilities
+	 * defined in Tainacan\Roles class.
+	 * It applies to all capabilities with 'collection' scope starting with 'tnc_col_'
+	 *
+	 * Usage: use only the suffix of the capability (after tnc_col_%d_). For example, to check if user can
+	 * tnc_col_%d_read_private_items for this collection, simply call:
+	 * $collection->user_can('read_private_items');
+	 *
+	 * @param string $capability The capability to be checked.
+	 * @param int|\WP_User|null $user the user for capability check, null for the current user
+	 * @return void
+	 */
+	public function user_can($capability, $user = null) {
+		if ( \is_null($user) ) {
+			$user = wp_get_current_user();
+		}
+
+		if ( is_int($user) || $user instanceof \WP_User ) {
+			return user_can( $user, 'tnc_col_' . $this->get_id() . '_' . $capability );
+		}
+
+		return false;
+
+	}
+
 }
