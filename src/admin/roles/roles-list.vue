@@ -5,9 +5,15 @@
             <router-link
                     to="/roles/new"
                     class="page-title-action">
-                {{ $i18n.get('Add new role') }}
+                {{ $i18n.get('New role') }}
             </router-link>
             <button 
+                    v-tooltip="{
+                        content: $i18n.get('Create a role based on: '),
+                        autoHide: true,
+                        placement: 'top',
+                        classes: ['tainacan-roles-tooltip']     
+                    }"
                     @click="showDropdownMenu = !showDropdownMenu"
                     class="button button-secondary"
                     aria-haspopup="true"
@@ -15,12 +21,13 @@
                     :aria-expanded="showDropdownMenu">
                 <span class="dashicons dashicons-arrow-down-alt2" />
             </button>
+
             <div 
                     :class="{ 'show': showDropdownMenu }"
                     class="dropdown-menu"
                     id="dropdown-menu"
                     :aria-hidden="showDropdownMenu">
-                <p class="dropdown-menu-intro">{{ $i18n.get('Create a new role based on: ') }}</p>
+                <!-- <p class="dropdown-menu-intro">{{ $i18n.get('Create a new role based on: ') }}</p> -->
                 <ul>
                     <li 
                             v-for="role of roles"
@@ -53,32 +60,7 @@
 
         <div class="tablenav top">
             <div class="align-left actions">
-                <label>{{ $i18n.get('Filter list by roles with capabilities related to:') }}</label>
-                <ul 
-                        class="subsubsub"
-                        style="float: none;">
-                    <li :class="{ 'selected-entity': currentRelatedEntity == '' }">
-                        <a @click="filteByCapabilitiesRelatedTo('')">{{ $i18n.get('Any') }} </a> |
-                    </li>
-                    <li :class="{ 'selected-entity': currentRelatedEntity == 'repository' }">
-                        <a @click="filteByCapabilitiesRelatedTo('repository')">{{ $i18n.get('Repository') }} </a> |
-                    </li>
-                    <li :class="{ 'selected-entity': currentRelatedEntity == 'taxonomies' }">
-                        <a @click="filteByCapabilitiesRelatedTo('taxonomies')">{{ $i18n.get('Taxonomies') }} </a> |
-                    </li>
-                    <li :class="{ 'selected-entity': currentRelatedEntity == 'collections' }">
-                        <a @click="filteByCapabilitiesRelatedTo('collections')">{{ $i18n.get('Collections') }} </a> |
-                    </li>
-                    <li :class="{ 'selected-entity': currentRelatedEntity == 'metadata' }">
-                        <a @click="filteByCapabilitiesRelatedTo('metadata')">{{ $i18n.get('Metadata') }} </a> |
-                    </li>
-                    <li :class="{ 'selected-entity': currentRelatedEntity == 'filters' }">
-                        <a @click="filteByCapabilitiesRelatedTo('filter')">{{ $i18n.get('Filters') }} </a> |
-                    </li>
-                    <li :class="{ 'selected-entity': currentRelatedEntity == 'activities' }">
-                        <a @click="filteByCapabilitiesRelatedTo('activities')">{{ $i18n.get('Activities') }} </a>
-                    </li>
-                </ul>
+                <p>{{ $i18n.get('Create and edit roles for users') }}</p>
             </div>
             <div class="tablenav-pages one-page">
                 <span class="displaying-num">{{ Object.keys(roles).length + ' ' + $i18n.getWithNumber('item', 'items', Object.keys(roles).length) }}</span>
@@ -104,7 +86,7 @@
                             scope="col"
                             id="name"
                             class="manage-column column-name">
-                        {{ $i18n.get('Name') }}
+                        {{ $i18n.get('Role\'s Name') }}
                     </th>
                     <!-- <th
                             scope="col"
@@ -328,10 +310,13 @@
         align-items: flex-end;
         height: auto;
     }
-    #roles-search-input {
-        min-width: 200px;
-        margin-bottom: -10px;
+    .search-box {
+        margin-top: -34px;
+        #roles-search-input {
+            min-width: 300px;
+        }
     }
+
     .dropdown-new-role {
         display: inline-flex;
         align-items: center;
@@ -341,14 +326,19 @@
             border-top-right-radius: 0;
             border-bottom-right-radius: 0;
             margin-right: -1px;
+            font-weight: normal;
         }
         .button {
             top: -3px;
             position: relative;
             border-top-left-radius: 0;
             border-bottom-left-radius: 0;
+            border-top-right-radius: 2px;
+            border-bottom-right-radius: 2px;
             padding: 0px 6px;
             line-height: 1rem;
+            height: 15px;
+            font-size: 16px;
         }
 
         .dropdown-menu {
@@ -357,17 +347,48 @@
             visibility: hidden;
             position: absolute;
             top: 50%;
-            left: 4px;
+            left: calc(100% - 42px);
             background:white;
             border: 1px solid#ccc;
             z-index: 9;
             transition: top 0.3s ease, opacity 0.3s ease, display 0.3s ease;
+            text-align: center;
+
+            &:after {
+                content: "";
+                display: block;
+                position: absolute;
+                right: calc(100% - 32px);
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-color: transparent transparent #ccc transparent;
+                border-right-width: 8px;
+                border-bottom-width: 8px;
+                border-left-width: 8px;
+                top: -12px;
+            }
+            &:before {
+                content: "";
+                display: block;
+                position: absolute;
+                right: calc(100% - 32px);
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-color: transparent transparent white transparent;
+                border-right-width: 8px;
+                border-bottom-width: 8px;
+                border-left-width: 8px;
+                top: -11px;
+                z-index: 9;
+            }
 
             &.show {
                 display: block;
                 opacity: 1;
                 visibility: visible;
-                top: calc(100% - 3px);
+                top: calc(100% + 6px);
             }
 
             .dropdown-menu-intro {
@@ -378,22 +399,44 @@
                 white-space: nowrap;
                 margin: 0;
             }
-
+            ul {
+                margin: 0.5rem 0;
+            }
             li>a {
                 display: block;
                 margin: 0;
-                padding: 0.25rem 1rem;
+                padding: 0.25rem 0.75rem;
                 white-space: nowrap;
                 cursor: pointer;
+                color: #32373c;
                 text-decoration: none;
 
                 &:hover {
-                    background-color: #e6f4ff;
-                    color: #0071a1;
+                    background-color: #0073aa;;
+                    color: white;
+                }
+            }
+        }
+        @media only screen and (max-width: 782px) {
+            .button {
+                padding: 1.24rem 0.5rem;  
+                top: -1px;  
+                font-size: 1rem;
+                .dashicons {
+                    margin-top: -0.5rem;
+                }
+            }
+            .dropdown-menu {
+                left: -50%;
+
+                &::before,
+                &::after {
+                    right: 16px;
                 }
             }
         }
     }
+
     .selected-entity { 
         margin-top: -4px;
         padding: 2px 0;

@@ -1,6 +1,15 @@
 <template>
     <form @submit="onSubmit">
-        <h1 class="wp-heading-inline">{{ $route.meta.title }}&nbsp;<strong>{{ role.name ? role.name : '' }}</strong></h1>
+        <h1 
+                v-if="this.roleSlug !== 'new'"
+                class="wp-heading-inline">
+            {{ $route.meta.title }}&nbsp;<strong>{{ role.name ? role.name : '' }}</strong>
+        </h1>
+        <h1 
+                v-else
+                class="wp-heading-inline">
+            {{ $i18n.get('Add new role') }}
+        </h1>
          <transition name="appear-from-right">
             <div 
                     v-if="showNotice"
@@ -49,45 +58,48 @@
                         class="tabs-content"
                         v-if="capabilitiesTab === 'repository'"
                         id="tab-repository">
-                    <h3>{{ $i18n.get('Role\'s Repository Related Capabilities List') }}</h3>
+                    <!-- <h3>{{ $i18n.get('Role\'s Repository Related Capabilities List') }}</h3> -->
+                    <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('The capability "Manage Tainacan" may affect other capabilities related to repository and collections.') }}</p>
                     <div class="capabilities-list">
                         <div
                                 class="capability-group"
                                 v-for="(group, groupIndex) of groupedRepositoryCapabilities"
                                 :key="groupIndex">
-                            <h4>{{ groupIndex }}</h4>
+                            <h3>{{ groupIndex }}</h3>
                             <ul>
-                                <li
-                                        v-for="(capability, index) of group"
-                                        :key="index"
-                                        :id="'capability-' + capability">
-                                    <span
-                                            scope="row"
-                                            class="check-column">
-                                        <label
-                                                class="screen-reader-text"
-                                                :for="'capability_' + capability">
-                                            {{ $i18n.get('Selecionar') + ' ' + repositoryCapabilities[capability].display_name }}
-                                        </label>
-                                        <input
-                                            type="checkbox"
-                                            name="capabilities[]"
-                                            :id="'capability_'+ capability"
-                                            :disabled="repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0"
-                                            :checked="role.capabilities[capability] || (repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0)"
-                                            @input="onUpdateCapability($event.target.checked, capability)">
-                                    </span>
-                                    <span 
-                                            class="name column-name"
-                                            :data-colname="$i18n.get('Capability name')">
-                                        <strong>{{ repositoryCapabilities[capability].display_name }}</strong>
-                                        <help-button 
-                                                :title="repositoryCapabilities[capability].display_name"
-                                                :message="repositoryCapabilities[capability].description"
-                                                :super-caps="repositoryCapabilities[capability].supercaps"
-                                                :capabilities="capabilities"/>
-                                    </span>
-                                </li>
+                                <template v-for="(capability, index) of group">
+                                    <li
+                                            v-tooltip="{
+                                                content: repositoryCapabilities[capability].description,
+                                                autoHide: true,
+                                                delay: 0,
+                                                placement: 'bottom',
+                                                classes: ['tainacan-roles-tooltip']     
+                                            }"
+                                            :key="index"
+                                            :id="'capability-' + capability">
+                                        <span class="check-column">
+                                            <label
+                                                    class="screen-reader-text"
+                                                    :for="'capability_' + capability">
+                                                {{ $i18n.get('Selecionar') + ' ' + repositoryCapabilities[capability].display_name }}
+                                            </label>
+                                            <input
+                                                type="checkbox"
+                                                name="capabilities[]"
+                                                :id="'capability_'+ capability"
+                                                :disabled="repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0"
+                                                :checked="role.capabilities[capability] || (repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0)"
+                                                @input="onUpdateCapability($event.target.checked, capability)">
+                                        </span>
+                                        <span 
+                                                class="name column-name"
+                                                :data-colname="$i18n.get('Capability name')">
+                                            {{ repositoryCapabilities[capability].display_name }}
+                                        </span>
+                                    </li>
+                                    <br :key="index">
+                                </template>
                             </ul>
                         </div>
                     </div>
@@ -102,8 +114,8 @@
                             class="spinner is-active"
                             style="float: none; margin: 0 auto;" />
                     <template v-if="!isLoadingCollections"> 
-                        <h3>{{ $i18n.get('Role\'s Collection Related Capabilities List') }}</h3>
-
+                        <!-- <h3>{{ $i18n.get('Role\'s Collection Related Capabilities List') }}</h3> -->
+                        <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('Some capabilities, such as "Manage Tainacan" and any related to All Collections shall affect other Collections capabilities.') }}</p>
                         <div class="tablenav top">
                             <div class="alignleft collection-selector">
                                 <label 
@@ -133,39 +145,41 @@
                                     class="capability-group"
                                     v-for="(group, groupIndex) of groupedCollectionCapabilities"
                                     :key="groupIndex">
-                                <h4>{{ groupIndex }}</h4>
+                                <h3>{{ groupIndex }}</h3>
                                 <ul>
-                                    <li
-                                            v-for="(capability, index) of group"
-                                            :key="index"
-                                            :id="'capability-' + capability.replace('%d', selectedCollection)">
-                                        <span
-                                                scope="row"
-                                                class="check-column">
-                                            <label
-                                                    class="screen-reader-text"
-                                                    :for="'capability_' + capability.replace('%d', selectedCollection)">
-                                                {{ $i18n.get('Selecionar') + ' ' + collectionCapabilities[capability].display_name }}
-                                            </label>
-                                            <input
-                                                type="checkbox"
-                                                name="roles[]"
-                                                :id="'capability_'+ capability.replace('%d', selectedCollection)"
-                                                :disabled="collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.filter((supercap) => supercap.replace('%d', selectedCollection) != capability.replace('%d', selectedCollection)).findIndex((supercap) => role.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0"
-                                                :checked="role.capabilities[capability.replace('%d', selectedCollection)] || (collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0)"
-                                                @input="onUpdateCapability($event.target.checked, capability.replace('%d', selectedCollection))">
-                                        </span>
-                                        <span 
-                                                class="name column-name"
-                                                :data-colname="$i18n.get('Capability name')">
-                                            <strong>{{ collectionCapabilities[capability].display_name }}</strong>
-                                            <help-button 
-                                                    :title="collectionCapabilities[capability].display_name"
-                                                    :message="collectionCapabilities[capability].description"
-                                                    :super-caps="collectionCapabilities[capability].supercaps"
-                                                    :capabilities="capabilities"/>
-                                        </span>
-                                    </li>
+                                    <template v-for="(capability, index) of group">
+                                        <li
+                                                v-tooltip="{
+                                                    content: collectionCapabilities[capability].description,
+                                                    autoHide: true,
+                                                    delay: 0,
+                                                    placement: 'bottom',
+                                                    classes: ['tainacan-roles-tooltip']     
+                                                }"
+                                                :key="index"
+                                                :id="'capability-' + capability.replace('%d', selectedCollection)">
+                                            <span class="check-column">
+                                                <label
+                                                        class="screen-reader-text"
+                                                        :for="'capability_' + capability.replace('%d', selectedCollection)">
+                                                    {{ $i18n.get('Selecionar') + ' ' + collectionCapabilities[capability].display_name }}
+                                                </label>
+                                                <input
+                                                    type="checkbox"
+                                                    name="roles[]"
+                                                    :id="'capability_'+ capability.replace('%d', selectedCollection)"
+                                                    :disabled="collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.filter((supercap) => supercap.replace('%d', selectedCollection) != capability.replace('%d', selectedCollection)).findIndex((supercap) => role.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0"
+                                                    :checked="role.capabilities[capability.replace('%d', selectedCollection)] || (collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0)"
+                                                    @input="onUpdateCapability($event.target.checked, capability.replace('%d', selectedCollection))">
+                                            </span>
+                                            <span 
+                                                    class="name column-name"
+                                                    :data-colname="$i18n.get('Capability name')">
+                                                {{ collectionCapabilities[capability].display_name }}
+                                            </span>
+                                        </li>
+                                        <br :key="index">
+                                    </template>
                                 </ul>
                             </div>
                         </div>
@@ -405,7 +419,7 @@
         display: flex;
         justify-content: space-between;
         align-content: center;
-        margin: 3rem 0 1rem 0;
+        margin: 2rem 0 1rem 0;
     }
     .name-edition-box label {
         margin-right: 2rem;
@@ -423,6 +437,9 @@
         border-top: none;
         padding: 1rem 2rem;
     }
+    .dashicons-info {
+        color: #e69810;
+    }
     .capabilities-list {
         padding: 1rem;
         break-inside: avoid;
@@ -430,17 +447,18 @@
 
         .capability-group {
             break-inside: avoid;
-            h4 {
+            h3 {
                 margin-top: 0;
                 margin-bottom: 1rem;
                 font-size: 1rem;
-                font-weight: normal;
+                font-weight: bold;
                 color: #0073aa;
             }
             ul {
                 padding-bottom: 1rem;
                 li {
-                    margin-bottom: 1rem;
+                    margin: 0 0.5rem 0.5rem;
+                    display: inline-block;
                 }
             }
         }

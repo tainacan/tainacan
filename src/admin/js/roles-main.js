@@ -1,14 +1,14 @@
 import Vue from 'vue';
 import store from '../../js/store/store';
 import router from './roles-router';
+import VTooltip from 'v-tooltip';
 
 import { I18NPlugin } from './wp-i18n-plugin';
 
 import RolesPage from '../roles.vue';
-import HelpButton from '../roles/help-button.vue';
 
 Vue.use(I18NPlugin);
-Vue.component('help-button', HelpButton);
+Vue.use(VTooltip);
 
 // Changing title of pages
 router.beforeEach((to, from, next) => {
