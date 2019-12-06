@@ -117,6 +117,47 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 
 	}
 
+	public function test_edit_role_validation() {
+
+		$request = new \WP_REST_Request('POST', $this->namespace . '/roles');
+
+		$request->set_query_params(['name' => 'New role']);
+
+		$create = $this->server->dispatch($request);
+		//var_dump($create);
+		$this->assertEquals( 201, $create->get_status() );
+
+		$request = new \WP_REST_Request('PATCH', $this->namespace . '/roles/tainacan-new-role');
+
+		$request->set_query_params(
+			[
+				'name' => 'Changed name',
+				'capabilities' => [
+					'manage_options' => true
+				]
+			]
+		);
+
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals( 400, $response->get_status() );
+
+
+		$request = new \WP_REST_Request('PATCH', $this->namespace . '/roles/tainacan-new-role');
+
+		$request->set_query_params(
+			[
+				'name' => 'Changed name',
+				'add_cap' => 'manage_options'
+			]
+		);
+
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals( 400, $response->get_status() );
+
+	}
+
 	public function test_get_role() {
 		$request = new \WP_REST_Request('GET', $this->namespace . '/roles/administrator');
 

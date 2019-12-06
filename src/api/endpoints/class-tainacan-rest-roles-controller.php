@@ -46,7 +46,8 @@ class REST_Roles_Controller extends REST_Controller {
 					),
 					'capabilities' => array(
 						'description' => __('Array of capabilities, where the keys are capability slugs and values are booleans', 'tainacan'),
-						'required' => false
+						'required' => false,
+						'validate_callback' => [$this, 'validate_roles_capabilities_arg']
 					),
 				)
 			),
@@ -70,7 +71,8 @@ class REST_Roles_Controller extends REST_Controller {
 					),
 					'capabilities' => array(
 						'description' => __('Array of capabilities, where the keys are capability slugs and values are booleans', 'tainacan'),
-						'required' => false
+						'required' => false,
+						'validate_callback' => [$this, 'validate_roles_capabilities_arg']
 					),
 				)
 			),
@@ -325,6 +327,18 @@ class REST_Roles_Controller extends REST_Controller {
 
 		}
 
+		return false;
+	}
+
+	public function validate_roles_capabilities_arg($value, $request, $param) {
+		if ( is_array($value) ) {
+			foreach ($value as $cap => $val) {
+				if ( ! in_array($cap, \tainacan_roles()->get_all_caps_slugs() ) ) {
+					return false;
+				}
+			}
+			return true;
+		}
 		return false;
 	}
 
