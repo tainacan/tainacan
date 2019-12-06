@@ -11,15 +11,14 @@ class REST_Bulkedit_Controller extends REST_Controller {
 
 	public function __construct() {
 		$this->rest_base = 'bulk-edit';
-        parent::__construct();
-        add_action('init', array(&$this, 'init_objects'), 11);
-    }
-    
-    public function init_objects() {
-        $this->metadatum_repository = Repositories\Metadata::get_instance();
-        $this->collections_repository = Repositories\Collections::get_instance();
+			parent::__construct();
+			add_action('init', array(&$this, 'init_objects'), 11);
 	}
 
+	public function init_objects() {
+		$this->metadatum_repository = Repositories\Metadata::get_instance();
+		$this->collections_repository = Repositories\Collections::get_instance();
+	}
 
 	/**
 	 * 
@@ -53,15 +52,15 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'callback'            => array($this, 'add_value'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
 					'args'                => [
-                        'metadatum_id' => [
-                            'type'        => 'integer',
-                            'description' => __( 'The metadatum ID', 'tainacan' ),
-                        ],
-                        'value' => [
-                            'type'        => 'string/integer',
-                            'description' => __( 'The value to be added', 'tainacan' ),
-                        ],
-                    ],
+						'metadatum_id' => [
+							'type'        => 'integer',
+							'description' => __( 'The metadatum ID', 'tainacan' ),
+						],
+						'value' => [
+							'type'        => 'string/integer',
+							'description' => __( 'The value to be added', 'tainacan' ),
+						],
+					],
 				),
 			)
 		);
@@ -99,11 +98,11 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'callback'            => array($this, 'set_status'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
 					'args'                => [
-                        'value' => [
-                            'type'        => 'string',
-                            'description' => __( 'The new status value', 'tainacan' ),
-                        ],
-                    ],
+						'value' => [
+							'type'        => 'string',
+							'description' => __( 'The new status value', 'tainacan' ),
+						],
+					],
 				),
 			)
 		);
@@ -114,15 +113,15 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'callback'            => array($this, 'set_value'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
 					'args'                => [
-                        'metadatum_id' => [
-                            'type'        => 'integer',
-                            'description' => __( 'The metadatum ID', 'tainacan' ),
-                        ],
-                        'value' => [
-                            'type'        => 'string/integer/array',
-                            'description' => __( 'The value to be set', 'tainacan' ),
-                        ],
-                    ],
+						'metadatum_id' => [
+							'type'        => 'integer',
+							'description' => __( 'The metadatum ID', 'tainacan' ),
+						],
+						'value' => [
+							'type'        => 'string/integer/array',
+							'description' => __( 'The value to be set', 'tainacan' ),
+						],
+					],
 				),
 			)
 		);
@@ -133,15 +132,15 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'callback'            => array($this, 'remove_value'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
 					'args'                => [
-                        'metadatum_id' => [
-                            'type'        => 'integer',
-                            'description' => __( 'The metadatum ID', 'tainacan' ),
-                        ],
-                        'value' => [
-                            'type'        => 'string/integer',
-                            'description' => __( 'The value to be added', 'tainacan' ),
-                        ],
-                    ],
+						'metadatum_id' => [
+							'type'        => 'integer',
+							'description' => __( 'The metadatum ID', 'tainacan' ),
+						],
+						'value' => [
+							'type'        => 'string/integer',
+							'description' => __( 'The value to be added', 'tainacan' ),
+						],
+					],
 				),
 			)
 		);
@@ -152,19 +151,19 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'callback'            => array($this, 'replace_value'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
 					'args'                => [
-                        'metadatum_id' => [
-                            'type'        => 'integer',
-                            'description' => __( 'The metadatum ID', 'tainacan' ),
-                        ],
-                        'old_value' => [
-                            'type'        => 'string/integer',
-                            'description' => __( 'The value to search for', 'tainacan' ),
-                        ],
-                        'new_value' => [
-                            'type'        => 'string/integer',
-                            'description' => __( 'The value to be set', 'tainacan' ),
-                        ],
-                    ],
+						'metadatum_id' => [
+							'type'        => 'integer',
+							'description' => __( 'The metadatum ID', 'tainacan' ),
+						],
+						'old_value' => [
+							'type'        => 'string/integer',
+							'description' => __( 'The value to search for', 'tainacan' ),
+						],
+						'new_value' => [
+							'type'        => 'string/integer',
+							'description' => __( 'The value to be set', 'tainacan' ),
+						],
+					],
 				),
 			)
 		);
@@ -216,11 +215,10 @@ class REST_Bulkedit_Controller extends REST_Controller {
 			], 400);
 		}
 
-		$bulk = new \Tainacan\Bulk_Edit($args);
-
 		global $Tainacan_Generic_Process_Handler;
-		$process = $Tainacan_Generic_Process_Handler->initialize_generic_process('bulk_edit', $bulk->get_id());
-		$Tainacan_Generic_Process_Handler->save_process_instance($process);
+		$bulk = $Tainacan_Generic_Process_Handler->initialize_generic_process('bulk_edit');
+		$bulk->create_bulk_edit($args);
+		$Tainacan_Generic_Process_Handler->save_process_instance($bulk);
 
 		$response = $this->prepare_item_for_response($bulk, $request);
 		$rest_response = new \WP_REST_Response($response, 200);
@@ -262,8 +260,8 @@ class REST_Bulkedit_Controller extends REST_Controller {
 	public function get_item($request) {
 		$group_id = $request['group_id'];
 
-		$args = ['id' => $group_id];
-		$bulk = new \Tainacan\Bulk_Edit($args);
+		global $Tainacan_Generic_Process_Handler;
+		$bulk = $Tainacan_Generic_Process_Handler->get_process_instance_by_session_id($group_id);
 		$return = $this->prepare_item_for_response($bulk, $request);
 		
 		if (0 === $return['items_count']) {

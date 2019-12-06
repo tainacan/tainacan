@@ -5,8 +5,8 @@ use Tainacan\Entities;
 
 abstract class Generic_Process {
 
-	public function __construct( $attributess = array() ) {
-		$this->id = uniqid();
+	public function __construct( $attributess = array(), $id = null ) {
+		$this->id =  $id == null ? uniqid() : $id;
 		$author = get_current_user_id();
 		if($author) {
 			$this->add_transient('author', $author);
