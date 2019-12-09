@@ -9,7 +9,7 @@ class Bulk_Edit_Process extends Generic_Process {
 
 	public function __construct($attributes = array()) {
 		$this->array_attributes = array_merge($this->array_attributes, [
-			'id',
+			'group_id',
 			'bulk_edit_data'
 		]);
 		parent::__construct($attributes);
@@ -17,119 +17,63 @@ class Bulk_Edit_Process extends Generic_Process {
 	}
 
 	public function init_objects() {
+		$this->steps = [
+			[
+				'name' => __('Create control metadada', 'tainacan'),
+				'progress_label' => __('Generic process', 'tainacan'),
+				'callback' => 'add_control_metadata'
+			],[
+				'name' => 'Main process',
+				'progress_label' => 'Generic process',
+				'callback' => 'main_process'
+			]
+		];
 		$this->items_repository = \Tainacan\Repositories\Items::get_instance();
 		$this->metadatum_repository = \Tainacan\Repositories\Metadata::get_instance();
 		$this->item_metadata_repository = \Tainacan\Repositories\Item_Metadata::get_instance();
 	}
 
-	/**
-	 * Internally used to filter WP_Query and build the INSERT statement. 
-	 * Must be public because it is registered as a filter callback
-	 */
-	public function add_fields_to_query($fields, $wp_query) {
-		global $wpdb;
-		if ( $wp_query->get('fields') == 'ids' ) { // just to make sure we are in the right query
-			$fields .= $wpdb->prepare( ", %s, %s", $this->meta_key, $this->get_id() );
-		}
-		return $fields;
-	}
-
 	public function create_bulk_edit($params) {
-		if ( isset($params['id']) && !empty($params['id']) ) {
-			$this->id = $params['id'];
+		if ( isset($params['group_id']) && !empty($params['group_id']) ) {
+			$this->group_id = $params['group_id'];
 			return;
 		}
-
-		global $wpdb;
-
+		$this->group_id = uniqid();
 		if (isset($params['query']) && is_array($params['query'])) {
 			if (!isset($params['collection_id']) || !is_numeric($params['collection_id'])) {
 				throw new \Exception('Collection ID must be informed when creating a group via query');
 			}
-			
-			/**
-			 * Here we use the fetch method to parse the parameter and use WP_Query
-			 *
-			 * However, we add a filter so the query is not executed. We just want WP_Query to build it for us
-			 * and then we can use it to INSERT the postmeta with the bulk group ID
-			 */
-			
-			// this avoids wp_query to run the query. We just want to build the query
-			add_filter('posts_pre_query', '__return_empty_array');
-			
-			// this adds the meta key and meta value to the SELECT query so it can be used directly in the INSERT below
-			add_filter('posts_fields_request', [$this, 'add_fields_to_query'], 10, 2);
-			
-			$itemsRepo = Repositories\Items::get_instance();
-			$params['query']['fields'] = 'ids';
-			$items_query = $itemsRepo->fetch($params['query'], $params['collection_id']);
-			
-			remove_filter('posts_pre_query', '__return_empty_array');
-			remove_filter('posts_fields_request', [$this, 'add_fields_to_query']);
-			
-			$wpdb->query( "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) {$items_query->request}" );
-			
 			$bulk_params = [
-				'orderby' => isset($params['query']['orderby']) ? $params['query']['orderby'] : 'post_date',
-				'order' => isset($params['query']['order']) ? $params['query']['order'] : 'DESC'
+				'query' 	=> $params['query'],
+				'order' 	=> isset($params['query']['order']) ? $params['query']['order'] : 'DESC',
+				'orderby' => isset($params['query']['orderby']) ? $params['query']['orderby'] : 'post_date'
 			];
-			
 		} elseif (isset($params['items_ids']) && is_array($params['items_ids'])) {
 			$items_ids = array_filter($params['items_ids'], 'is_integer');
-			
-			$insert_q = '';
-			foreach ($items_ids as $item_id) {
-				$insert_q .= $wpdb->prepare( "(%d, %s, %s),", $item_id, $this->meta_key, $this->get_id() );
-			}
-			$insert_q = rtrim($insert_q, ',');
-			
-			$wpdb->query( "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) VALUES $insert_q" );
-			
 			$bulk_params = [
-				'orderby' => isset($params['options']['orderby']) ? $params['options']['orderby'] : 'post_date',
-				'order' => isset($params['options']['order']) ? $params['options']['order'] : 'DESC'
+				'items_ids' => $items_ids,
+				'order' 		=> isset($params['options']['order']) ? $params['options']['order'] : 'DESC',
+				'orderby' 	=> isset($params['options']['orderby']) ? $params['options']['orderby'] : 'post_date'
 			];
-			
 		}
-		
-		/**
-		* This is stored to be used by the get_sequence_item_by_index() method, which is used 
-		* by the sequence edit routine.
-		*
-		* For everything else, the order does not matter...
-		*/
 		$this->save_options($bulk_params);
-		
 		return;
 	}
 
 	public function save_options($value) {
-		update_option('tainacan_bulk_' . $this->get_id(), $value);
+		update_option('tainacan_bulk_' . $this->get_group_id(), $value);
 	}
 	
 	public function get_options() {
-		return get_option('tainacan_bulk_' . $this->get_id());
+		return get_option('tainacan_bulk_' . $this->get_group_id());
 	}
 
-	/**
-	* return the number of items selected in the current bulk group
-	* @return int number of items in the group
-	*/
-	public function count_posts() {
-		global $wpdb;
-		$id = $this->get_id();
-		if (!empty($id)) {
-			return (int) $wpdb->get_var( $wpdb->prepare("SELECT COUNT(post_id) FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $this->meta_key, $id) );
-		}
-		return 0;
+	public function set_group_id($group_id) {
+		$this->group_id = $group_id;
 	}
 
-	public function set_id($id) {
-		$this->id = $id;
-	}
-
-	public function get_id( ) {
-		return $this->id;
+	public function get_group_id( ) {
+		return $this->group_id;
 	}
 
 	public function get_output() {
@@ -149,6 +93,43 @@ class Bulk_Edit_Process extends Generic_Process {
 		return delete_post_meta( $item->get_id(), $meta_key, $meta_value);
 	}
 
+	public function add_control_metadata() {
+		$params = $this->get_options();
+		if (isset($params['query']) && is_array($params['query'])) {
+			$itemsRepo = \Tainacan\Repositories\Items::get_instance();
+			$count = $this->get_in_step_count();
+
+			$params['query']['fields'] = 'ids';
+			$params['query']['posts_per_page'] = 1;
+			$params['query']['offset'] = $count++;
+			$params['query']['nopaging'] = false;
+
+			$item_query = $itemsRepo->fetch($params['query'], $params['collection_id']);
+			if(!$item_query->have_posts() ) {
+				$this->add_log( __('control metadata created', 'tainacan') );
+				return false;
+			}
+
+			add_post_meta($item_query->get_posts()[0], $this->meta_key, $this->get_group_id());
+			return $count;
+		} elseif (isset($params['items_ids']) && is_array($params['items_ids'])) {
+			$items_ids = array_filter($params['items_ids'], 'is_integer');
+
+			$count = $this->get_in_step_count();
+			if( isset($items_ids[$count]) ) {
+				add_post_meta($items_ids[$count++], $this->meta_key, $this->get_group_id());
+				return $count;
+			} else {
+				$this->add_log( __('control metadata created', 'tainacan') );
+				return false;
+			}
+		}
+
+		$this->add_error_log(__('wrong parameter', 'tainacan'));
+		$this->abort();
+		return false;
+	}
+
 	private function bulk_list_get_item() {
 		$args = [
 			'perpage' => 1,
@@ -156,7 +137,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			'meta_query' => array(
 				array(
 					'key' => $this->meta_key,
-					'value' => $this->id,
+					'value' => $this->get_group_id(),
 					'compare' => '=',
 				)
 			)
@@ -184,7 +165,7 @@ class Bulk_Edit_Process extends Generic_Process {
 
 		$this->add_log( sprintf( __('bulk edit item ID: "%d"', 'tainacan'), $item->get_id() ) );
 		$this->$method($item);
-		$this->bulk_list_remove_item($item, $this->meta_key, $this->id);
+		$this->bulk_list_remove_item($item, $this->meta_key, $this->get_group_id());
 		return $item->get_id();
 
 	}

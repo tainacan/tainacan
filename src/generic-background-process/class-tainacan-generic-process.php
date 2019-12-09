@@ -5,8 +5,8 @@ use Tainacan\Entities;
 
 abstract class Generic_Process {
 
-	public function __construct( $attributess = array(), $id = null ) {
-		$this->id =  $id == null ? uniqid() : $id;
+	public function __construct( $attributess = array() ) {
+		$this->id = uniqid();
 		$author = get_current_user_id();
 		if($author) {
 			$this->add_transient('author', $author);
@@ -78,6 +78,8 @@ abstract class Generic_Process {
 	 * @var array
 	 */
 	protected $array_attributes = [
+		'in_step_count',
+		'current_step',
 		'transients'
 	];
 

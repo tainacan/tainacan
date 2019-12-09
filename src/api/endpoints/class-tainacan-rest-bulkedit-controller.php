@@ -273,12 +273,8 @@ class REST_Bulkedit_Controller extends REST_Controller {
 	}
 
 	function prepare_item_for_response($bulk_object, $request) {
-		$count = $bulk_object->count_posts();
-		$options = $bulk_object->get_options();
 		$return = [
-			'id' => $bulk_object->get_id(),
-			'items_count' => $count,
-			'options' => $options
+			'id' => $bulk_object->get_id()
 		];
 		return $return;
 	}
