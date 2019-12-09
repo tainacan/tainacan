@@ -112,7 +112,8 @@
                     :term="childTerm"
                     :index="childIndex"
                     :taxonomy-id="taxonomyId"
-                    :order="order"/>
+                    :order="order"
+                    :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"/>
         </div>
     </transition-group>
     <a 
