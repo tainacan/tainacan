@@ -164,10 +164,6 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 		$item = $this->item_repository->fetch($request['item_id']);
 
 		if(($item instanceof Entities\Item)) {
-			if('edit' === $request['context'] && !$item->can_edit()) {
-				return false;
-			}
-
 			return $item->can_read();
 		}
 

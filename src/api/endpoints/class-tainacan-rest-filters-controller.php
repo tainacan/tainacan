@@ -398,9 +398,6 @@ class REST_Filters_Controller extends REST_Controller {
 	 */
 	public function get_items_permissions_check( $request ) {
 		if(!isset($request['collection_id'])) {
-			if ( 'edit' === $request['context'] && ! $this->filter_repository->can_edit( new Entities\Filter() ) ) {
-				return false;
-			}
 
 			return true;
 		}
@@ -447,10 +444,6 @@ class REST_Filters_Controller extends REST_Controller {
 		$filter = $this->filter_repository->fetch($request['filter_id']);
 
 		if(($filter instanceof Entities\Filter)) {
-			if('edit' === $request['context'] && !$filter->can_edit()) {
-				return false;
-			}
-
 			return $filter->can_read();
 		}
 

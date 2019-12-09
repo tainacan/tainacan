@@ -358,10 +358,6 @@ class REST_Terms_Controller extends REST_Controller {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
 
 		if(($taxonomy instanceof Entities\Taxonomy)) {
-			if('edit' === $request['context'] && !$taxonomy->can_edit()) {
-				return false;
-			}
-
 			return $taxonomy->can_read();
 		}
 

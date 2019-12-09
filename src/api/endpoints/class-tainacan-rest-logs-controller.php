@@ -38,17 +38,6 @@ class REST_Logs_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'get_item_permissions_check'),
-					'args'                => array(
-						'context' => array(
-							'type'    	  => 'string',
-							'default' 	  => 'view',
-							'description' => 'The context in which the request is made.',
-							'enum'    	  => array(
-								'view',
-								'edit'
-							)
-						),
-					),
 				),
 				'schema'                  => [$this, 'get_schema']
 			)

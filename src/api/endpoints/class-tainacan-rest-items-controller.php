@@ -413,10 +413,6 @@ class REST_Items_Controller extends REST_Controller {
 		$item = $this->items_repository->fetch($request['item_id']);
 
 		if(($item instanceof Entities\Item)) {
-			if('edit' === $request['context'] && !$item->can_edit()) {
-				return false;
-			}
-
 			return $item->can_read();
 		}
 
@@ -430,10 +426,6 @@ class REST_Items_Controller extends REST_Controller {
 	 */
 	public function get_items_permissions_check( $request ) {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
-
-		if('edit' === $request['context'] && !is_user_logged_in()) {
-			return false;
-		}
 
 		if ( isset($request['taxquery']) && !$this->get_items_permissions_check_for_taxonomy($request['taxquery']) ) {
 			return false;

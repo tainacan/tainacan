@@ -220,10 +220,6 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
 
 		if(($taxonomy instanceof Entities\Taxonomy)) {
-			if('edit' === $request['context'] && !$taxonomy->can_edit()) {
-				return false;
-			}
-
 			return $taxonomy->can_read();
 		}
 
@@ -338,9 +334,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		if('edit' === $request['context'] && !is_user_logged_in()) {
-			return false;
-		}
+
 		// if(!$this->taxonomy_repository->can_read($this->taxonomy)) {
 		// 	return false;
 		// }

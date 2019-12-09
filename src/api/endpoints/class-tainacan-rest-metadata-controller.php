@@ -180,10 +180,6 @@ class REST_Metadata_Controller extends REST_Controller {
 		$metadatum = $this->metadatum_repository->fetch($request['metadatum_id']);
 
 		if ( $metadatum instanceof Entities\Metadatum ) {
-			if ( $request['context'] === 'edit' && ! $metadatum->can_edit() ) {
-				return false;
-			}
-
 			return $metadatum->can_read();
 		}
 
@@ -400,10 +396,6 @@ class REST_Metadata_Controller extends REST_Controller {
 
 
 		if(!isset($request['collection_id'])) {
-			if ( 'edit' === $request['context'] && ! $this->metadatum_repository->can_edit( new Entities\Filter() ) ) {
-				return false;
-			}
-
 			return true;
 		}
 

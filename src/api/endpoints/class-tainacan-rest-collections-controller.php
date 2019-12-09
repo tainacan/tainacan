@@ -252,10 +252,6 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_items_permissions_check($request){
-		if ( 'edit' === $request['context'] && ! current_user_can($this->collections_repository->get_capabilities()->edit_posts) ) {
-			return false;
-		}
-
 		return true;
 	}
 
@@ -270,10 +266,6 @@ class REST_Collections_Controller extends REST_Controller {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
 
 		if(($collection instanceof Entities\Collection)) {
-			if('edit' === $request['context'] && !$collection->can_edit()) {
-				return false;
-			}
-
 			return $collection->can_read();
 		}
 
