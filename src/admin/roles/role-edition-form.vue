@@ -59,7 +59,6 @@
                         v-if="capabilitiesTab === 'repository'"
                         id="tab-repository">
                     <!-- <h3>{{ $i18n.get('Role\'s Repository Related Capabilities List') }}</h3> -->
-                    <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('The capability "Manage Tainacan" may affect other capabilities related to repository and collections.') }}</p>
                     <div class="capabilities-list">
                         <div
                                 class="capability-group"
@@ -103,6 +102,7 @@
                             </ul>
                         </div>
                     </div>
+                    <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('The capability "Manage Tainacan" may affect other capabilities related to repository and collections.') }}</p>
                 </div> <!-- End of Repository Tab -->
 
                 <div 
@@ -115,7 +115,6 @@
                             style="float: none; margin: 0 auto;" />
                     <template v-if="!isLoadingCollections"> 
                         <!-- <h3>{{ $i18n.get('Role\'s Collection Related Capabilities List') }}</h3> -->
-                        <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('Some capabilities, such as "Manage Tainacan" and any related to All Collections shall affect other Collections capabilities.') }}</p>
                         <div class="tablenav top">
                             <div class="alignleft collection-selector">
                                 <label 
@@ -184,6 +183,7 @@
                             </div>
                         </div>
                     </template>
+                    <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('Some capabilities, such as "Manage Tainacan" and any related to All Collections shall affect other Collections capabilities.') }}</p>
                 </div> <!-- End of Collections Tab -->
             
             </div> <!-- End of Tabs-->
@@ -286,14 +286,13 @@
             ]),
             onUpdateCapability(value, capabilityKey) {
                 this.showNotice = false;
-                const capabilities = this.role.capabilities ? this.role.capabilities : {};
+                const capabilities = this.role.capabilities && Object.keys(this.role.capabilities).length ? this.role.capabilities : {};
                 this.$set(capabilities, capabilityKey, value);
                 this.$set(this.role, 'capabilities', capabilities);
             },
             onSubmit(event) {
                 event.preventDefault();
                 this.isUpdatingRole = true;
-
                 if (this.roleSlug === 'new') {
                     this.createRole(this.role)
                         .then((createdRole) => {
