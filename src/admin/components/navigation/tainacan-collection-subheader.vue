@@ -125,7 +125,7 @@
                     </router-link>
                 </li>
                 <li 
-                        v-if="collection && collection.current_user_can_edit_filter"
+                        v-if="collection && collection.current_user_can_edit_filters"
                         :class="activeRoute == 'FiltersList' ? 'is-active':''" 
                         class="level-item"
                         v-tooltip="{
