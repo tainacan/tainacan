@@ -17,7 +17,7 @@
                             <div class="th-wrap">{{ $i18n.get('label_user_roles') }}</div>
                         </th>
                         <!-- Actions -->
-                         <th class="actions-header">
+                        <th class="actions-header">
                             &nbsp;
                             <!-- nothing to show on header for actions cell-->
                         </th>
@@ -26,7 +26,6 @@
                 <tbody v-if="!isLoading">
                     <template v-for="(capability, index) of capabilities">
                         <tr 
-                                v-if="collectionId === undefined || capability.scope !== 'collection'"
                                 :key="index"
                                 :style="index == editingCapability ? 'background-color: #f2f2f2' : ''">
                             <!-- Name -->
@@ -115,14 +114,13 @@
                             </td>
                         </tr>
                         <tr 
-                                v-if="collectionId !== undefined && capability.scope === 'collection'"
                                 :key="index + '-form'"
                                 class="capabilities-edit-form">
                             <transition name="form-capabilities">
                                 <td 
                                         v-if="index == editingCapability"
                                         class="tainacan-form"
-                                        colspan="4">
+                                        colspan="5">
                                     <div>
                                         <template v-if="existingRoles && Object.values(existingRoles).length && capability.roles">
                                             <b-field :addons="false">
@@ -205,7 +203,6 @@
         name: 'CapabilitiesList',
         props: {
             isLoading: false,
-            collectionId: String,
             capabilities: Array,
             editingCapability: ''
         },
