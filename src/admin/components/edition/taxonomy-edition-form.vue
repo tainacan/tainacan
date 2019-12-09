@@ -337,14 +337,14 @@
                     slug: this.form.slug ? this.form.slug : '',
                     status: this.form.status,
                     allow_insert: this.form.allowInsert,
-                    enabled_post_types: this.form.enabledPostTypes
+                    enabled_post_types: this.form.enabledPostTypes,
+                    context: 'edit'
                 };
                 this.fillExtraFormData(data);
                 this.updateTaxonomy(data)
                     .then(updatedTaxonomy => {
 
                         this.taxonomy = updatedTaxonomy;
-
                         // Fills hook forms with it's real values 
                         this.updateExtraFormData(this.taxonomy);
 
@@ -359,7 +359,6 @@
                         this.isLoadingTaxonomy = false;
                         this.formErrorMessage = '';
                         this.editFormErrors = {};
-
                         // Updates saved at message
                         let now = new Date();
                         this.updatedAt = now.toLocaleString();
