@@ -168,8 +168,8 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$data = $response->get_data();
 
 		$this->assertEquals( translate_user_role('Administrator'), $data['name'] );
-		$this->assertArrayHasKey('manage_options', $data['capabilities']);
-		$this->assertTrue($data['capabilities']['manage_options']);
+		$this->assertArrayHasKey('manage_tainacan', $data['capabilities']);
+		$this->assertTrue($data['capabilities']['manage_tainacan']);
 
 	}
 

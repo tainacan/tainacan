@@ -349,6 +349,10 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @return array|mixed|\WP_Error|\WP_REST_Response
 	 */
 	public function _prepare_item_for_response( $slug, $name, $caps, $request ) {
+		$caps = array_filter($caps, function($el) {
+			return in_array($el, \tainacan_roles()->get_all_caps_slugs());
+		}, ARRAY_FILTER_USE_KEY);
+
 		$return = [
 			'slug' => $slug,
 			'name' => translate_user_role($name),
