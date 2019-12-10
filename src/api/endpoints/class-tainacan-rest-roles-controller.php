@@ -333,7 +333,7 @@ class REST_Roles_Controller extends REST_Controller {
 	public function validate_roles_capabilities_arg($value, $request, $param) {
 		if ( is_array($value) ) {
 			foreach ($value as $cap => $val) {
-				if ( ! in_array($cap, \tainacan_roles()->get_all_caps_slugs() ) ) {
+				if ( ! in_array( \tainacan_roles()->get_cap_generic_name($cap), \tainacan_roles()->get_all_caps_slugs() ) ) {
 					return false;
 				}
 			}
