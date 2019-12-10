@@ -14,6 +14,7 @@
             <hr>
         </div>
         <form
+                v-if="collection && collection.current_user_can_bulk_edit"
                 class="tainacan-form" 
                 label-width="120px">
                 
@@ -183,6 +184,18 @@
                 </div>
             </footer>
         </form>
+        <template v-if="collection && !collection.current_user_can_bulk_edit">
+            <section class="section">
+                <div class="content has-text-grey has-text-centered">
+                    <p>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collection"/>
+                        </span>
+                    </p>
+                    <p>{{ $i18n.get('info_can_not_bulk_edit_items_collection') }}</p>
+                </div>
+            </section>
+        </template>
     </div>
 </template>
 
@@ -231,6 +244,9 @@ export default {
         },
         showLoading() {
             return this.isLoadingMetadata || this.isLoadingItemMetadata;
+        },
+        collection() {
+            return this.getCollection()
         }
     },
     methods: {
@@ -243,6 +259,9 @@ export default {
         ]),
         ...mapGetters('metadata', [
             'getMetadata',
+        ]),
+        ...mapGetters('collection', [
+            'getCollection',
         ]),
         ...mapActions('bulkedition', [
             'setValueInBulk',
@@ -432,7 +451,8 @@ export default {
                             this.itemMetadata = metadata;
                             this.isLoadingItemMetadata = false;
                         });
-                });
+                })
+                .catch(() => this.isLoadingItemMetadata = false);
         }
     },
     created() {
@@ -459,7 +479,8 @@ export default {
                 this.metadatumCollapses[i] = true;
             }
             this.loadItemMetadata();
-        });
+        })
+        .catch(() => this.isLoadingMetadata = false);
 
         this.isLoadingGroupInfo = true;
         this.fetchGroup({ collectionId: this.collectionId, groupId: this.groupID })

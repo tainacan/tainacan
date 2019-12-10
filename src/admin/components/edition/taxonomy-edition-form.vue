@@ -265,20 +265,22 @@
         beforeRouteLeave( to, from, next ) {
             let formNotSaved = false;
 
-            if (this.taxonomy.name != this.form.name)
-                formNotSaved = true;
-            if (this.taxonomy.description != this.form.description)
-                formNotSaved = true;
-            if (this.taxonomy.slug != this.form.slug)
-                formNotSaved = true;
-            if (this.taxonomy.allow_insert != this.form.allowInsert)
-                formNotSaved = true;
-            if (this.taxonomy.status != this.form.status)
-                formNotSaved = true;
-            if (this.taxonomy.enabled_post_types != this.form.enabledPostTypes)
-                formNotSaved = true;
+            if (this.taxonomy) {
+                if (this.taxonomy.name != this.form.name)
+                    formNotSaved = true;
+                if (this.taxonomy.description != this.form.description)
+                    formNotSaved = true;
+                if (this.taxonomy.slug != this.form.slug)
+                    formNotSaved = true;
+                if (this.taxonomy.allow_insert != this.form.allowInsert)
+                    formNotSaved = true;
+                if (this.taxonomy.status != this.form.status)
+                    formNotSaved = true;
+                if (this.taxonomy.enabled_post_types != this.form.enabledPostTypes)
+                    formNotSaved = true;
+            }
 
-            if (formNotSaved) {
+            if (formNotSaved && this.taxonomy) {
                 this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
@@ -434,7 +436,10 @@
                         this.shouldReloadTermsList = false;
 
                     })
-                    .catch(error => this.$console.error(error));
+                    .catch((error) => {
+                        this.$console.error(error)
+                        this.isLoadingTaxonomy = false;
+                    });
             },
             clearErrors(attribute) {
                 this.editFormErrors[attribute] = undefined;
@@ -507,7 +512,8 @@
                         this.form.enabledPostTypes = this.taxonomy.enabled_post_types;
 
                         this.isLoadingTaxonomy = false;
-                    });
+                    })
+                    .catch(() => this.isLoadingTaxonomy = false);
             }
         }
     }

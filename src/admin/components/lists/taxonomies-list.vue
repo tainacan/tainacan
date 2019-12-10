@@ -65,7 +65,9 @@
                             <div class="th-wrap">{{ $i18n.get('label_collections_using') }}</div>
                         </th>
                         <!-- Actions -->
-                        <th class="actions-header">
+                        <th 
+                                v-if="taxonomies.findIndex((taxonomy) => taxonomy.current_user_can_edit || taxonomy.current_user_can_delete).length >= 0"
+                                class="actions-header">
                             &nbsp;
                             <!-- nothing to show on header for actions cell-->
                         </th>
@@ -142,6 +144,7 @@
                         </td>
                         <!-- Actions -->
                         <td 
+                                v-if="taxonomy.current_user_can_edit || taxonomy.current_user_can_delete"
                                 @click="onClickTaxonomy($event, taxonomy.id, index)"
                                 class="column-default-width"
                                 :class="{ 'actions-cell': taxonomy.current_user_can_edit || taxonomy.current_user_can_delete }" 

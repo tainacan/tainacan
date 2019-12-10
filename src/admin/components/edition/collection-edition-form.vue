@@ -483,7 +483,7 @@
                 <div class="content has-text-grey has-text-centered">
                     <p>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collection"/>
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items"/>
                         </span>
                     </p>
                     <p>{{ $i18n.get('info_can_not_edit_collection') }}</p>
@@ -694,7 +694,10 @@ export default {
                 this.isLoading = false;
                 
             })
-            .catch(error => this.$console.error(error));
+            .catch((error) => {
+                this.$console.error(error);
+                this.isLoading = false;
+            });
         },
         clearErrors(attribute) {
             this.editFormErrors[attribute] = undefined;

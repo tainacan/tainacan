@@ -31,7 +31,7 @@
                 mode="out-in"
                 :name="(isOnSequenceEdit && sequenceRightDirection != undefined) ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
             <form
-                    v-if="!isLoading && ((isCreatingNewItem && collection.current_user_can_edit_items) || (!isCreatingNewItem && item && item.current_user_can_edit && item.status != 'publish'))"
+                    v-if="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items) || (!isCreatingNewItem && item && item.current_user_can_edit && item.status != 'publish'))"
                     class="tainacan-form"
                     label-width="120px">
                 <div class="columns">
@@ -538,12 +538,12 @@
             </form>
 
             <!-- In case user enters this page whithout having permission -->
-            <template v-if="!isLoading && ((isCreatingNewItem && !collection.current_user_can_edit_items) || (!isCreatingNewItem && item && item.current_user_can_edit != undefined && collection.current_user_can_edit == false))">
+            <template v-if="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items == false) || (!isCreatingNewItem && item && item.current_user_can_edit != undefined && collection && collection.current_user_can_edit_items == false))">
                 <section class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-item"/>
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items"/>
                             </span>
                         </p>
                         <p>{{ $i18n.get('info_can_not_edit_item') }}</p>
@@ -1006,7 +1006,10 @@ export default {
                     .catch(() => this.isLoadingAttachments = false);
 
             })
-            .catch(error => this.$console.error(error));
+            .catch((error) => {
+                this.$console.error(error);
+                this.isLoading = false;
+            });
         },
         loadMetadata() {
             // Obtains Item Metadatum

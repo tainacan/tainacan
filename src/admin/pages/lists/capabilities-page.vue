@@ -40,7 +40,7 @@
                     <div class="content has-text-grey has-text-centered">
                         <p>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-capability"/>
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-user"/>
                             </span>
                         </p>
                         <p>{{ $i18n.get('info_can_not_edit_capabilities') }}</p>
@@ -49,7 +49,7 @@
             </template>  
             
             <!-- Empty state -->
-            <div v-if="capabilities.length <= 0 && !isLoading">
+            <div v-if="capabilities.length <= 0 && !isLoading && $userCaps.hasCapability('tnc_rep_edit_users')">
                 <section class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>

@@ -153,7 +153,7 @@
                 </p>
                 <p>{{ searchQuery != '' ? $i18n.get('info_no_terms_found') : $i18n.get('info_no_terms_created_on_taxonomy') }}</p>
                 <button
-                        v-if="searchQuery == ''"
+                        v-if="searchQuery == '' && currentUserCanEditTaxonomy"
                         id="button-create-term"
                         class="button is-secondary"
                         @click="addNewTerm(0)">
