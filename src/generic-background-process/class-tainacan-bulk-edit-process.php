@@ -89,12 +89,24 @@ class Bulk_Edit_Process extends Generic_Process {
 		return $this->bulk_edit_data;
 	}
 
-	private function bulk_list_remove_item($item, $meta_key, $meta_value) {
-		return delete_post_meta( $item->get_id(), $meta_key, $meta_value);
+	private function bulk_list_remove_item($item) {
+		return delete_post_meta( $item->get_id(), $this->meta_key, $this->get_group_id());
 	}
 
 	public function add_control_metadata() {
 		$params = $this->get_options();
+
+		if( !isset($params['control_metadata']) ) {
+			$params['control_metadata'] = $this->get_id();
+			$this->save_options($params);
+		} elseif ($params['control_metadata'] === true) {
+			$this->add_log( __('bulk edit control metadata has already been created', 'tainacan') );
+			return false;
+		} elseif( is_numeric($params['control_metadata']) && $params['control_metadata'] != $this->get_id() ) {
+			$this->add_log( sprintf( __( 'waiting creating bulk edit control metadata by process ID: "%d"', 'tainacan' ), $params['control_metadata'] ) );
+			return true;
+		}
+
 		if (isset($params['query']) && is_array($params['query'])) {
 			$itemsRepo = \Tainacan\Repositories\Items::get_instance();
 			$count = $this->get_in_step_count();
@@ -106,33 +118,40 @@ class Bulk_Edit_Process extends Generic_Process {
 
 			$item_query = $itemsRepo->fetch($params['query'], $params['collection_id']);
 			if(!$item_query->have_posts() ) {
-				$this->add_log( __('control metadata created', 'tainacan') );
+				$params['control_metadata'] = true;
+				$this->save_options($params);
+				$this->add_log( __('bulk edit control metadata created', 'tainacan') );
 				return false;
 			}
-
-			add_post_meta($item_query->get_posts()[0], $this->meta_key, $this->get_group_id());
+			$item_id = $item_query->get_posts()[0];
+			$this->add_log( sprintf( __( 'creating bulk edit control metadata for item: "%d"', 'tainacan' ), $item_id ) );
+			add_post_meta($item_id, $this->meta_key, $this->get_group_id());
 			return $count;
 		} elseif (isset($params['items_ids']) && is_array($params['items_ids'])) {
 			$items_ids = array_filter($params['items_ids'], 'is_integer');
 
 			$count = $this->get_in_step_count();
 			if( isset($items_ids[$count]) ) {
+				$this->add_log( sprintf( __( 'creating bulk edit control metadata for item: "%d"', 'tainacan' ), $items_ids[$count++] ) );
 				add_post_meta($items_ids[$count++], $this->meta_key, $this->get_group_id());
 				return $count;
 			} else {
-				$this->add_log( __('control metadata created', 'tainacan') );
+				$params['control_metadata'] = true;
+				$this->save_options($params);
+				$this->add_log( __('bulk edit control metadata created', 'tainacan') );
 				return false;
 			}
 		}
 
-		$this->add_error_log(__('wrong parameter', 'tainacan'));
+		$this->add_error_log(__('wrong parameter on add bulk edit control metadata', 'tainacan'));
 		$this->abort();
 		return false;
 	}
 
-	private function bulk_list_get_item() {
+	private function bulk_list_get_item($count) {
 		$args = [
 			'perpage' => 1,
+			'offset' => $count,
 			'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash'),
 			'meta_query' => array(
 				array(
@@ -157,17 +176,15 @@ class Bulk_Edit_Process extends Generic_Process {
 			$this->abort();
 			return false;
 		}
-
-		$item = $this->bulk_list_get_item();
+		$count = $this->get_in_step_count();
+		$item = $this->bulk_list_get_item($count++);
 		if($item == false) {
 			return false;
 		}
 
 		$this->add_log( sprintf( __('bulk edit item ID: "%d"', 'tainacan'), $item->get_id() ) );
 		$this->$method($item);
-		$this->bulk_list_remove_item($item, $this->meta_key, $this->get_group_id());
-		return $item->get_id();
-
+		return $count;
 	}
 
 	private function save_item_metadata(\Tainacan\Entities\Item_Metadata_Entity $item_metadata, \Tainacan\Entities\Item $item) {
