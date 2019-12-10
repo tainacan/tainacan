@@ -2,6 +2,7 @@
     <div class="columns is-fullheight">
         <section class="column is-secondary-content">
             <tainacan-collection-subheader />
+
             <router-view
                     id="collection-page-container"
                     :collection-id="collectionId" 

@@ -7,7 +7,7 @@
                 class="tainacan-page-title">
             <h1>
                 {{ $i18n.get('title_collection_metadata_edition') + ' ' }}
-                <span style="font-weight: 600;">{{ collectionName }}</span>
+                <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
             </h1>
             <a 
                     @click="$router.go(-1)"
@@ -18,7 +18,9 @@
         </div>
         <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_metadata_inheritance') }}</p>
         <br>
-        <b-tabs v-model="activeTab">    
+        <b-tabs 
+                v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata') || (!isRepositoryLevel && collection && collection.current_user_can_edit_metadata))"
+                v-model="activeTab">    
             <b-tab-item :label="$i18n.get('metadata')">
                 <div
                         :style="{ height: activeMetadatumList.length <= 0 && !isLoadingMetadata ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
@@ -434,6 +436,18 @@
                 </div>
             </b-tab-item>
         </b-tabs>
+        <section 
+                v-else
+                class="section">
+            <div class="content has-text-grey has-text-centered">
+                <p>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-metadata"/>
+                    </span>
+                </p>
+                <p>{{ $i18n.get('info_can_not_edit_metadata') }}</p>
+            </div>
+        </section>
     </div> 
 </template>
 
@@ -475,9 +489,8 @@ export default {
         MetadatumEditionForm
     },
     computed: {
-        collectionName() {
-            const collection = this.getCollection;
-            return collection && collection.name ? collection.name : '';
+        collection() {
+            return this.getCollection;
         },
         availableMetadatumList: {
             get() {
@@ -930,7 +943,7 @@ export default {
             this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('metadata') }]);
 
         this.$nextTick(() => { 
-            this.columnsTopY = this.$refs.metadataEditionPageColumns.getBoundingClientRect().top;
+            this.columnsTopY = this.$refs.metadataEditionPageColumns ? this.$refs.metadataEditionPageColumns.getBoundingClientRect().top : 0;
         });
 
         this.cleanMetadata();

@@ -6,7 +6,7 @@
                 class="tainacan-page-title">
             <h1>
                 {{ $i18n.get('title_collection_filters_edition') + ' ' }}
-                <span style="font-weight: 600;">{{ collectionName }}</span>
+                <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
             </h1>
             <a 
                     @click="$router.go(-1)"
@@ -18,6 +18,7 @@
         <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_filters_inheritance') }}</p>
         <br>
         <div
+                v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
                 :style="{ height: activeFilterList.length <= 0 && !isLoadingFilters ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
                 class="columns"
                 ref="filterEditionPageColumns">
@@ -231,6 +232,21 @@
                 </div>
             </div>
         </div>
+
+        <section 
+                v-else
+                class="section">
+            <div class="content has-text-grey has-text-centered">
+                <p>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-filters"/>
+                    </span>
+                </p>
+                <p>{{ $i18n.get('info_can_not_edit_filters') }}</p>
+            </div>
+        </section>
+
+
         <b-modal 
                 ref="filterTypeModal"
                 :width="680"
@@ -354,9 +370,8 @@ export default {
                 this.updateFilters(value);
             }
         },
-        collectionName() {
-            const collection = this.getCollection;
-            return collection && collection.name ? collection.name : '';
+        collection() {
+            return this.getCollection;
         }
     },
     components: {
@@ -686,7 +701,7 @@ export default {
             this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('filter') }]);
 
         this.$nextTick(() => { 
-            this.columnsTopY = this.$refs.filterEditionPageColumns.getBoundingClientRect().top;
+            this.columnsTopY = this.$refs.filterEditionPageColumns ? this.$refs.filterEditionPageColumns.getBoundingClientRect().top : 0;
         });
 
         this.isRepositoryLevel = this.$route.name == 'FiltersPage' ? true : false;

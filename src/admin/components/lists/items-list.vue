@@ -372,7 +372,10 @@
                     
                     <!-- Title -->
                     <div
-                            :style="{ 'padding-left': !collectionId ? '0.5rem !important' : '2.75rem' }"
+                            :style="{ 
+                                'padding-left': !collectionId ? '0.5rem !important' : '2.75rem',
+                                'margin-bottom': item.current_user_can_edit && !$route.query.iframemode ? '-26px' : '0px'
+                            }"
                             class="metadata-title">
                         <p 
                                 v-tooltip="{
@@ -543,7 +546,10 @@
                     <!-- Title -->
                     <div
                             class="metadata-title"
-                            :style="{ 'padding-left': !collectionId ? '1.5rem !important' : '2.75rem' }">
+                            :style="{
+                                'padding-left': !collectionId ? '1.5rem !important' : '2.75rem',    
+                                'margin-bottom': item.current_user_can_edit && !$route.query.iframemode ? '-27px' : '0px'
+                            }">
                         <p 
                                 v-tooltip="{
                                     delay: {
