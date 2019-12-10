@@ -148,7 +148,7 @@
             <div class="content has-text-grey has-text-centered">
                 <p>
                     <span class="icon is-medium">
-                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-terms"/>
+                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms"/>
                     </span>
                 </p>
                 <p>{{ searchQuery != '' ? $i18n.get('info_no_terms_found') : $i18n.get('info_no_terms_created_on_taxonomy') }}</p>

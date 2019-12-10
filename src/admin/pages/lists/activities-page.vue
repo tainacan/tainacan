@@ -142,9 +142,11 @@
                 <template v-if="tab != 'processes' && !$userCaps.hasCapability('tnc_rep_read_logs')">
                     <section class="section">
                         <div class="content has-text-grey has-text-centered">
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities"/>
-                            </span>
+                            <p>
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities"/>
+                                </span>
+                            </p>
                             <p>{{ $i18n.get('info_can_not_read_activities') }}</p>
                         </div>
                     </section>
@@ -164,7 +166,7 @@
                         <div class="content has-text-grey has-text-centered">
                             <p>
                                 <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-activities"/>
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities"/>
                                 </span>
                             </p>
                             <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_process') }}</p>

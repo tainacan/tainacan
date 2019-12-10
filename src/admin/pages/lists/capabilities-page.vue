@@ -38,9 +38,11 @@
             <template v-else>
                 <section class="section">
                     <div class="content has-text-grey has-text-centered">
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-capability"/>
-                        </span>
+                        <p>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-capability"/>
+                            </span>
+                        </p>
                         <p>{{ $i18n.get('info_can_not_edit_capabilities') }}</p>
                     </div>
                 </section>
@@ -50,9 +52,11 @@
             <div v-if="capabilities.length <= 0 && !isLoading">
                 <section class="section">
                     <div class="content has-text-grey has-text-centered">
-                        <span class="icon is-medium">
-                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-user"/>
-                        </span>
+                        <p>
+                            <span class="icon is-medium">
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-user"/>
+                            </span>
+                        </p>
                         <p>
                             {{ $i18n.get('info_no_capabilities_found') }}
                         </p>

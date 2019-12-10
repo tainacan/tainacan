@@ -756,7 +756,7 @@
                     <div class="content has-text-grey has-text-centered">
                         <p>
                             <span class="icon is-large">
-                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items" />
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                             </span>
                         </p>
                         <p v-if="status == undefined || status == ''">{{ hasFiltered ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')) }}</p>

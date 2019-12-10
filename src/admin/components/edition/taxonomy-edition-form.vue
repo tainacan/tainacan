@@ -4,7 +4,7 @@
             <tainacan-title 
                     :bread-crumb-items="[
                         { path: $routerHelper.getTaxonomiesPath(), label: $i18n.get('taxonomies') },
-                        { path: '', label: (taxonomy!= null && taxonomy.name != undefined) ? taxonomy.name : $i18n.get('taxonomy') }
+                        { path: '', label: (taxonomy != null && taxonomy.name != undefined) ? taxonomy.name : $i18n.get('taxonomy') }
                     ]"/>
             <b-tabs 
                     @change="onChangeTab($event)"
@@ -194,12 +194,14 @@
                         <p class="help is-danger">{{ formErrorMessage }}</p>
                     </form>
 
-                    <div v-if="!isLoading && (($route.name == 'TaxonomyCreationForm' && !$userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyCreationForm' && taxonomy.current_user_can_edit != undefined && !taxonomy.current_user_can_edit))">
+                    <div v-if="!isLoading && (($route.name == 'TaxonomyCreationForm' && !$userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyEditionForm' && taxonomy && taxonomy.current_user_can_edit != undefined && !taxonomy.current_user_can_edit))">
                         <section class="section">
                             <div class="content has-text-grey has-text-centered">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-taxonomies"/>
-                                </span>
+                                <p>
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-taxonomies"/>
+                                    </span>
+                                </p>
                                 <p>{{ $i18n.get('info_can_not_edit_taxonomy') }}</p>
                             </div>
                         </section>

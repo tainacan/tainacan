@@ -202,7 +202,7 @@
                         <div class="content has-text-grey has-text-centered">
                             <p>
                                 <span class="icon is-large">
-                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-collections" />
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collections" />
                                 </span>
                             </p>
                             <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_collection_created') }}</p>

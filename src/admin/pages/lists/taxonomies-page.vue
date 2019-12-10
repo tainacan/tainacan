@@ -165,9 +165,11 @@
                     <div v-if="taxonomies.length <= 0 && !isLoading">
                         <section class="section">
                             <div class="content has-text-grey has-text-centered">
-                                <span class="icon is-medium">
-                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-terms"/>
-                                </span>
+                                <p>
+                                    <span class="icon is-medium">
+                                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms"/>
+                                    </span>
+                                </p>
                                 <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_taxonomy_created') }}</p>
                                 <p
                                         v-for="(statusOption, index) of $statusHelper.getStatuses()"

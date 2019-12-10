@@ -159,7 +159,7 @@
                     <td
                             class="capabilities column-capabilities num  column-primary"
                             :data-colname="$i18n.get('Number of capabilities')">
-                        {{ Object.values(role.capabilities).length }}
+                        {{ Object.values(role.capabilities).filter((capability) => capability == true).length }}
                     </td>
                 </tr>
             </tbody>

@@ -143,7 +143,8 @@
                         <!-- Actions -->
                         <td 
                                 @click="onClickTaxonomy($event, taxonomy.id, index)"
-                                class="actions-cell column-default-width" 
+                                class="column-default-width"
+                                :class="{ 'actions-cell': taxonomy.current_user_can_edit || taxonomy.current_user_can_delete }" 
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
                                 <a 

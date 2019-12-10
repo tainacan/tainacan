@@ -9,9 +9,11 @@
         <template v-else>
             <section class="section">
                 <div class="content has-text-grey has-text-centered">
-                    <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-filters"/>
-                    </span>
+                    <p>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-filters"/>
+                        </span>
+                    </p>
                     <p>{{ $i18n.get('info_can_not_edit_filters') }}</p>
                 </div>
             </section>
