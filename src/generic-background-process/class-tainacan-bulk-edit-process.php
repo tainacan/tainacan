@@ -132,7 +132,7 @@ class Bulk_Edit_Process extends Generic_Process {
 
 			$count = $this->get_in_step_count();
 			if( isset($items_ids[$count]) ) {
-				$this->add_log( sprintf( __( 'creating bulk edit control metadata for item: "%d"', 'tainacan' ), $items_ids[$count++] ) );
+				$this->add_log( sprintf( __( 'creating bulk edit control metadata for item: "%d"', 'tainacan' ), $items_ids[$count] ) );
 				add_post_meta($items_ids[$count++], $this->meta_key, $this->get_group_id());
 				return $count;
 			} else {

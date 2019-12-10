@@ -262,19 +262,20 @@ class REST_Bulkedit_Controller extends REST_Controller {
 
 		global $Tainacan_Generic_Process_Handler;
 		$bulk = $Tainacan_Generic_Process_Handler->get_process_instance_by_session_id($group_id);
-		$return = $this->prepare_item_for_response($bulk, $request);
-		
-		if (0 === $return['items_count']) {
+		if ($bulk == false) {
 			return new \WP_REST_Response([
 				'error_message' => __('Group not found', 'tainacan'),
 			], 404);
 		}
+		$return = $this->prepare_item_for_response($bulk, $request);
 		return new \WP_REST_Response($return, 200);
 	}
 
 	function prepare_item_for_response($bulk_object, $request) {
+		$options = $bulk_object->get_options();
 		$return = [
-			'id' => $bulk_object->get_id()
+			'id' => $bulk_object->get_id(),
+			'options' => $options
 		];
 		return $return;
 	}
@@ -313,7 +314,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				"value" 				=> isset($body['new_value']) ? $body['new_value'] : $body['value'],
 				"method" 				=> $method,
 				"old_value"			=> isset($body['old_value']) ? $body['old_value'] : null,
-				"metadatum_id" 	=> $body['metadatum_id'],
+				"metadatum_id" 	=> isset($body['metadatum_id']) ? $body['metadatum_id'] : null,
 			];
 			$process->set_bulk_edit_data($bulk_edit_data);
 			$bg_bulk = $Tainacan_Generic_Process_Handler->add_to_queue($process);
