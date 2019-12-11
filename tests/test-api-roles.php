@@ -382,7 +382,7 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		]);
 
 		$create = $this->server->dispatch($request);
-//var_dump($create);
+
 		$this->assertEquals( 201, $create->get_status() );
 
 		$request = new \WP_REST_Request('GET', $this->namespace . '/roles');
@@ -410,7 +410,8 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 			'capabilities' => [
 				'tnc_rep_edit_collections' => true,
 				'tnc_rep_delete_collections' => true,
-				'tnc_rep_edit_taxonomies' => true
+				'tnc_rep_edit_taxonomies' => true,
+				'manage_tainacan_collection_123' => true
 			]
 		]);
 
@@ -432,6 +433,8 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertTrue($data['capabilities']['tnc_rep_delete_collections']);
 		$this->assertArrayHasKey('tnc_rep_edit_taxonomies', $data['capabilities']);
 		$this->assertTrue($data['capabilities']['tnc_rep_edit_taxonomies']);
+		$this->assertArrayHasKey('manage_tainacan_collection_123', $data['capabilities']);
+		$this->assertTrue($data['capabilities']['manage_tainacan_collection_123']);
 
 
 
@@ -444,7 +447,9 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 				'capabilities' => [
 					'tnc_rep_edit_collections' => true,
 					'tnc_rep_delete_collections' => true,
+					'tnc_col_12_edit_items' => true,
 					'tnc_rep_edit_metadata' => true // replaced tnc_rep_edit_taxonomies by tnc_rep_edit_metadata
+					// removed manage_tainacan_collection_123
 				]
 			]
 		);
@@ -468,8 +473,11 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertTrue($data['capabilities']['tnc_rep_delete_collections']);
 		$this->assertArrayHasKey('tnc_rep_edit_metadata', $data['capabilities']);
 		$this->assertTrue($data['capabilities']['tnc_rep_edit_metadata']);
+		$this->assertArrayHasKey('tnc_col_12_edit_items', $data['capabilities']);
+		$this->assertTrue($data['capabilities']['tnc_col_12_edit_items']);
 
 		$this->assertArrayNotHasKey('tnc_rep_edit_taxonomies', $data['capabilities']);
+		$this->assertArrayNotHasKey('manage_tainacan_collection_123', $data['capabilities']);
 
 
 
