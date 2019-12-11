@@ -15,7 +15,6 @@
                         class="tabs">
                     <ul>
                         <li
-                                v-if="!$userCaps.hasCapability('tnc_rep_read_logs')"
                                 @click="onChangeTab('')"
                                 :class="{ 'is-active': tab == undefined || tab == ''}"><a>{{ $i18n.get('activities') }}</a></li>
                         <li

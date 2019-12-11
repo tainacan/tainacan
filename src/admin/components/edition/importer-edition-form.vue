@@ -47,6 +47,7 @@
                                 </option>
                             </b-select>
                             <router-link
+                                    v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
                                     tag="a" 
                                     class="add-link"     
                                     :to="{ path: $routerHelper.getNewCollectionPath(), query: { fromImporter: true }}">
@@ -403,7 +404,7 @@ export default {
         },
         onSelectCollection(collectionId) {
             this.collectionId = collectionId;
-            this.mappedCollection['id'] = collectionId;    
+            this.mappedCollection['id'] = collectionId;
         }
     },
     created() {

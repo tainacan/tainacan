@@ -75,13 +75,14 @@ export const createRole = ({ commit }, role) => {
 };
 
 export const updateRole = ({ commit }, role) => {
+
     return new Promise((resolve, reject) => {
 
         axios.tainacan.patch('/roles/' + role.slug, role)
             .then(res => {
-                const role = res.data
-                commit('setRole', role);
-                resolve(role);
+                const updatedRole = res.data
+                commit('setRole', updatedRole);
+                resolve(updatedRole);
             })
             .catch(error => {
                 reject(error);

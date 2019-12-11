@@ -228,9 +228,9 @@
             },
             updateRole(role, capabilityKey, value) {
                 if (value)
-                    this.addCapabilityToRole({ capabilityKey: capabilityKey, role: role })
+                    this.addCapabilityToRole({ capabilityKey: capabilityKey.replace('%d', 'all'), role: role })
                 else 
-                    this.removeCapabilityFromRole({ capabilityKey: capabilityKey, role: role })
+                    this.removeCapabilityFromRole({ capabilityKey: capabilityKey.replace('%d', 'all'), role: role })
             },
             getCompleteRolesList(roles, rolesInherited) {
                 const rolesArray = roles && !Array.isArray(roles) ? Object.values(roles) : [];

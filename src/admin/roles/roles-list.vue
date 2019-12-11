@@ -180,7 +180,7 @@
                             scope="col"
                             id="name"
                             class="manage-column column-name column-primary">
-                        {{ $i18n.get('Name') }}
+                        {{ $i18n.get('Role\'s Name') }}
                     </th>
                     <!-- <th
                             scope="col"
@@ -199,8 +199,12 @@
         </table>
 
         <div class="tablenav bottom">
-            <div class="tablenav-pages one-page">
-                <span class="displaying-num">{{ Object.keys(roles).length + ' ' + $i18n.getWithNumber('item', 'items', Object.keys(roles).length) }}</span>
+            <div 
+                    style="margin-left: auto;"
+                    class="tablenav-pages one-page">
+                <span class="displaying-num">
+                    {{ Object.keys(roles).length + ' ' + $i18n.getWithNumber('item', 'items', Object.keys(roles).length) }}
+                </span>
             </div>
         </div>
 

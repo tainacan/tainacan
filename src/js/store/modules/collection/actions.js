@@ -386,7 +386,7 @@ export const fetchPage = ({ commit }, pageId ) => {
 // Fetch Collections for listing repository filters, parent collection selection, importer destiny...
 export const fetchAllCollectionNames = ({ commit }, collectionsIds) => {
 
-    let endpoint = '/collections/?nopaging=1&fetch_only=name,id';
+    let endpoint = '/collections/?context=edit&nopaging=1&fetch_only=name,id';
 
     if (collectionsIds != undefined && collectionsIds.length > 0) {
         const postin = { 'postin': collectionsIds };
