@@ -30,9 +30,8 @@
         <transition 
                 mode="out-in"
                 :name="(isOnSequenceEdit && sequenceRightDirection != undefined) ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
-                <!-- <pre>{{ (!isCreatingNewItem && item && item.current_user_can_edit && item.status != 'publish') ? 'opa' : 'aff' }}</pre> -->
             <form
-                    v-if="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items) || (!isCreatingNewItem && item && item.current_user_can_edit && item.status != 'publish'))"
+                    v-if="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items) || (!isCreatingNewItem && item && item.current_user_can_edit))"
                     class="tainacan-form"
                     label-width="120px">
                 <div class="columns">
