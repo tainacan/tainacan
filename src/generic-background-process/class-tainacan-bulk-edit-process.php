@@ -17,20 +17,21 @@ class Bulk_Edit_Process extends Generic_Process {
 	}
 
 	public function init_objects() {
-		$this->steps = [
-			[
-				'name' => __('Create control metadada', 'tainacan'),
-				'progress_label' => __('Generic process', 'tainacan'),
-				'callback' => 'add_control_metadata'
-			],[
-				'name' => 'Main process',
-				'progress_label' => 'Generic process',
-				'callback' => 'main_process'
-			]
-		];
 		$this->items_repository = \Tainacan\Repositories\Items::get_instance();
 		$this->metadatum_repository = \Tainacan\Repositories\Metadata::get_instance();
 		$this->item_metadata_repository = \Tainacan\Repositories\Item_Metadata::get_instance();
+		$this->steps = [
+			[
+				'name' => __('Bulk edit control metadada', 'tainacan'),
+				'progress_label' => __('Creating bulk edit control metadada', 'tainacan'),
+				'callback' => 'add_control_metadata'
+			],[
+				'name' => __('Bulk edit', 'tainacan'),
+				'progress_label' => __('Running bulk edit', 'tainacan'),
+				'callback' => 'main_process',
+				'total' => $this->get_total_items()
+			]
+		];
 	}
 
 	public function create_bulk_edit($params) {
@@ -77,7 +78,7 @@ class Bulk_Edit_Process extends Generic_Process {
 	}
 
 	public function get_output() {
-		$message = __('Bulk-edit end', 'tainacan');
+		$message = __('Bulk edit finished', 'tainacan');
 		return $message;
 	}
 
@@ -148,6 +149,22 @@ class Bulk_Edit_Process extends Generic_Process {
 		return false;
 	}
 
+	private function get_total_items() {
+		if (!$this->get_group_id()) return 0;
+		$args = [
+			'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash'),
+			'meta_query' => array(
+				array(
+					'key' => $this->meta_key,
+					'value' => $this->get_group_id(),
+					'compare' => '=',
+				)
+			)
+		];
+		$item = $this->items_repository->fetch($args, [], 'WP_Query');
+		return intval($item->found_posts);
+	}
+
 	private function bulk_list_get_item($count) {
 		$args = [
 			'perpage' => 1,
@@ -161,11 +178,13 @@ class Bulk_Edit_Process extends Generic_Process {
 				)
 			)
 		];
-		$item = $this->items_repository->fetch($args, [], 'OBJECT');
-		if (is_array($item) && !empty($item))
-			$item = $item[0];
-		if ($item instanceof \Tainacan\Entities\Item)
+		$item = $this->items_repository->fetch($args, [], 'WP_Query');
+		$this->set_current_step_total($item->found_posts);
+		if ($item->have_posts()) {
+			$item->the_post();
+			$item = new \Tainacan\Entities\Item($item->post);
 			return $item;
+		}
 		return false;
 	}
 
@@ -182,7 +201,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			return false;
 		}
 
-		$this->add_log( sprintf( __('bulk edit item ID: "%d"', 'tainacan'), $item->get_id() ) );
+		$this->add_log( sprintf( __('bulk edit has process the item ID: "%d"', 'tainacan'), $item->get_id() ) );
 		$this->$method($item);
 		return $count;
 	}
@@ -197,7 +216,11 @@ class Bulk_Edit_Process extends Generic_Process {
 			}
 		} else {
 			$this->add_error_log( sprintf( __( 'Please verify, invalid value(s) to edit item ID: "%d"', 'tainacan' ), $item->get_id() ) );
-			$this->add_error_log($item_metadata->get_errors());
+
+			$serealize_erro = (object) array('err' => array());
+			array_walk_recursive($item_metadata->get_errors(), create_function('&$v, $k, &$t', '$t->err[] = $v;'), $serealize_erro);
+			$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serealize_erro->err) );
+
 			return false;
 		}
 		return true;
@@ -353,7 +376,10 @@ class Bulk_Edit_Process extends Generic_Process {
 		}
 
 		$this->add_error_log( sprintf( __( 'Please verify, invalid value(s) to edit item ID: "%d"', 'tainacan' ), $item->get_id() ) );
-		$this->add_error_log($item->get_errors());
+		$serealize_erro = (object) array('err' => array());
+		array_walk_recursive($item->get_errors(), create_function('&$v, $k, &$t', '$t->err[] = $v;'), $serealize_erro);
+		$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serealize_erro->err) );
+
 		return false;
 	}
 
