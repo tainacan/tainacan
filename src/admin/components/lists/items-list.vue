@@ -693,7 +693,7 @@
                     <tr>
                         <!-- Checking list -->
                         <th
-                                v-if="collectionId && !$route.query.readmode && collection && collection.current_user_can_bulk_edit">
+                                v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)">
                             &nbsp;
                             <!-- nothing to show on header for checkboxes -->
                         </th>
