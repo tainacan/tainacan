@@ -118,7 +118,7 @@
                             <div class="th-wrap total-items-header">{{ $i18n.get('label_total_items') }}</div>
                         </th>
                         <th 
-                                v-if="collections.findIndex((collection) => collection.current_user_can_edit || collection.current_user_can_delete).length >= 0"
+                                v-if="collections.findIndex((collection) => collection.current_user_can_edit || collection.current_user_can_delete) >= 0"
                                 class="actions-header">
                             &nbsp;
                             <!-- nothing to show on header for actions cell-->

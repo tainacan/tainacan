@@ -66,7 +66,7 @@
                         </th>
                         <!-- Actions -->
                         <th 
-                                v-if="taxonomies.findIndex((taxonomy) => taxonomy.current_user_can_edit || taxonomy.current_user_can_delete).length >= 0"
+                                v-if="taxonomies.findIndex((taxonomy) => taxonomy.current_user_can_edit || taxonomy.current_user_can_delete) >= 0"
                                 class="actions-header">
                             &nbsp;
                             <!-- nothing to show on header for actions cell-->

@@ -716,7 +716,7 @@
                             <div class="th-wrap">{{ column.name }}</div>
                         </th>
                         <th
-                                v-if="items.findIndex((item) => item.current_user_can_edit || item.current_user_can_delete).length >= 0"
+                                v-if="items.findIndex((item) => item.current_user_can_edit || item.current_user_can_delete) >= 0"
                                 class="actions-header">
                             &nbsp;
                             <!-- nothing to show on header for actions cell-->
@@ -855,7 +855,7 @@
 
                         <!-- Actions -->
                         <td 
-                                v-if="item.current_user_can_edit && !$route.query.iframemode"
+                                v-if="(item.current_user_can_edit || item.current_user_can_delete) && !$route.query.iframemode"
                                 class="actions-cell"
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
