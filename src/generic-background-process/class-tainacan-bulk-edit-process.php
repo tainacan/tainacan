@@ -6,6 +6,7 @@ use Tainacan\Entities;
 class Bulk_Edit_Process extends Generic_Process {
 
 	private $meta_key = '_tnc_bulk';
+	private $group_id = false;
 
 	public function __construct($attributes = array()) {
 		$this->array_attributes = array_merge($this->array_attributes, [
@@ -36,10 +37,10 @@ class Bulk_Edit_Process extends Generic_Process {
 
 	public function create_bulk_edit($params) {
 		if ( isset($params['group_id']) && !empty($params['group_id']) ) {
-			$this->group_id = $params['group_id'];
+			$this->set_group_id($params['group_id']);
 			return;
 		}
-		$this->group_id = uniqid();
+		$this->set_group_id(uniqid());
 		if (isset($params['query']) && is_array($params['query'])) {
 			if (!isset($params['collection_id']) || !is_numeric($params['collection_id'])) {
 				throw new \Exception('Collection ID must be informed when creating a group via query');
