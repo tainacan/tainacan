@@ -50,6 +50,21 @@ export const fetchGroup = ({commit}, { collectionId, groupId }) => {
     });
 };
 
+export const fetchSequenceGroup = ({commit}, { collectionId, groupId }) => {
+
+    return new Promise ((resolve, reject) => {
+        axios.tainacan.get(`/collection/${collectionId}/sequence-edit/${groupId}`)
+            .then(response => {
+                commit('setGroup', response.data);
+                resolve(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+                reject(error);
+            });
+    });
+};
+
 export const setValueInBulk = ({commit}, parameters) => {
     let groupID = parameters.groupID;
     let collectionID = parameters.collectionID;
@@ -203,7 +218,7 @@ export const deleteItemsInBulk = ({commit}, parameters) => {
 export const fetchItemIdInSequence = ({commit}, { collectionId, sequenceId, itemPosition }) => {
 
     return new Promise ((resolve, reject) => {
-        axios.tainacan.get(`/collection/${collectionId}/bulk-edit/${sequenceId}/sequence/${itemPosition}`)
+        axios.tainacan.get(`/collection/${collectionId}/sequence-edit/${sequenceId}/${itemPosition}`)
             .then(response => {
                 commit('setItemIdInSequence', response.data);
                 resolve(response.data);
@@ -215,7 +230,38 @@ export const fetchItemIdInSequence = ({commit}, { collectionId, sequenceId, item
     });
 };
 
+export const createSequenceEditGroup = ({commit}, parameters) => {
+    let object = parameters.object;
+    let collectionID = parameters.collectionID;
+
+    let sequenceEditParams = null;
+
+    if(object.constructor.name === 'Array'){
+        sequenceEditParams = {
+            items_ids: object,
+        };
+
+    } else if(object.constructor.name === 'Object'){
+        sequenceEditParams = {
+            use_query: object,
+        };
+    }
+
+    return new Promise ((resolve, reject) => {
+        axios.tainacan.post(`/collection/${collectionID}/sequence-edit`, sequenceEditParams)
+            .then(response => {
+                commit('setGroup', response.data);
+                resolve(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+                reject(error);
+            });
+        });
+};
+
 // BULK ADD SPECIFIC
 export const setBulkAddItems = ({commit}, items) => {
     commit('setBulkAddItems', items);
 };
+

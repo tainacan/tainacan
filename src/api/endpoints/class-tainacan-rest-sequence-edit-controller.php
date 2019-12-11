@@ -36,15 +36,15 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 				),
 			)
 		);
-		//register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)',
-		//	array(
-		//		array(
-		//			'methods'             => \WP_REST_Server::READABLE,
-		//			'callback'            => array($this, 'get_item'),
-		//			'permission_callback' => array($this, 'sequence_edit_permissions_check'),
-		//		),
-		//	)
-		//);
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_item'),
+					'permission_callback' => array($this, 'sequence_edit_permissions_check'),
+				),
+			)
+		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/(?P<sequence_index>[\d]+)',
 			array(
 				array(
@@ -79,6 +79,7 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 
 			$args['items_ids'] = $body['items_ids'];
 			$count = sizeof($args['items_ids']);
+			$args['items_count'] = $count;
 
 		} elseif ( isset($body['use_query']) && $body['use_query'] ) {
 
@@ -97,6 +98,8 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 			$query_args['posts_per_page'] = 1;
 			$items_q = $this->items_repository->fetch( $query_args, $collection_id );
 			$count = $items_q->found_posts;
+
+			$args['items_count'] = $count;
 
 		} else {
 
@@ -118,12 +121,29 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 		return $rest_response;
 	}
 
+	public function get_item($request) {
+		$group_id = $request['group_id'];
+
+		$group = get_option('tnc_transient_' . $group_id);
+		if ( is_array($group) ) {
+
+			return new \WP_REST_Response( $group, 200 );
+
+
+		}
+
+		return new \WP_REST_Response([
+			'error_message' => __('Item not found.', 'tainacan'),
+		], 404);
+
+	}
+
+
 	public function get_item_in_sequence($request) {
 		$group_id = $request['group_id'];
 		$index = (int) $request['sequence_index'];
 
 		$group = get_option('tnc_transient_' . $group_id);
-		//ar_dump($group);
 		if ( is_array($group) ) {
 
 			if ( isset($group['items_ids']) && is_array($group['items_ids']) ) {
