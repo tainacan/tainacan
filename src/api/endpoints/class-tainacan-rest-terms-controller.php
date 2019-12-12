@@ -138,7 +138,22 @@ class REST_Terms_Controller extends REST_Controller {
         $taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
 
         if ($taxonomy instanceof Entities\Taxonomy) {
-            return $taxonomy->can_edit();
+            if ( $taxonomy->can_edit() ) {
+				return true;
+			}
+
+			$body = json_decode($request->get_body(), true);
+
+			if ( isset( $body['metadatum_id'] ) && isset( $body['item_id'] ) ) {
+				$metadatum = \tainacan_metadata()->fetch( $body['metadatum_id'] );
+				$item = \tainacan_items()->fetch( $body['item_id'] );
+				if ( $metadatum instanceof Entities\Metadatum ) {
+					$options = $metadatum->get_metadata_type_options();
+					if ( isset( $options['allow_new_terms'] ) && $options['allow_new_terms'] == 'yes' ) {
+						return $item->can_edit() && $taxonomy->get_allow_insert() == 'yes';
+					}
+				}
+			}
         }
 
         return false;
@@ -430,6 +445,20 @@ class REST_Terms_Controller extends REST_Controller {
 			}
 
 			$endpoint_args = $map;
+
+			if ($method === \WP_REST_Server::CREATABLE) {
+				$endpoint_args['metadatum_id'] = [
+					'required' => false,
+					'type' => 'integer',
+					'description' => __('If term is being created in the context of a Taxonomy metadatum, inform its ID')
+				];
+				$endpoint_args['item_id'] = [
+					'required' => false,
+					'type' => 'integer',
+					'description' => __('If term is being created in the context of a Taxonomy metadatum, inform the ID of the item being edited')
+				];
+			}
+
 		}
 
 		return $endpoint_args;
