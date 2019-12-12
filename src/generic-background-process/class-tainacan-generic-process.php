@@ -279,8 +279,8 @@ abstract class Generic_Process {
 		$current_step = $this->get_current_step();
 		$steps = $this->get_steps();
 		$current_step ++;
-		$this->set_current_step($current_step);
 		if (isset($steps[$current_step])) {
+			$this->set_current_step($current_step);
 			return $current_step;
 		}
 		return false;
