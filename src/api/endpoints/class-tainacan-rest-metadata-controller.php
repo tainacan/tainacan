@@ -284,12 +284,12 @@ class REST_Metadata_Controller extends REST_Controller {
 			$collection = $this->collection_repository->fetch( $request['collection_id'] );
 
 			if ( $collection instanceof Entities\Collection ) {
-				return current_user_can( 'tnc_col_' . $collection->get_id() . '_manage_metadata' );
+				return current_user_can( 'tnc_col_' . $collection->get_id() . '_edit_metadata' );
 			}
 
 		} else {
 
-			return current_user_can( 'tnc_rep_manage_metadata' );
+			return current_user_can( 'tnc_rep_edit_metadata' );
 
 		}
 
