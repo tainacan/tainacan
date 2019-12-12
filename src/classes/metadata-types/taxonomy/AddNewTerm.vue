@@ -182,7 +182,8 @@
                     axios.post(`/taxonomy/${this.taxonomyId}/terms?hideempty=0&order=asc`, {
                         name: this.name,
                         parent: this.parent,
-                        metadatum_id: this.metadatumId
+                        metadatum_id: this.metadatumId,
+                        item_id: this.itemId
                     })
                     .then(res => {
 
