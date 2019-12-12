@@ -694,6 +694,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_can_not_read_activities'				 	 => __( 'You are not allowed to read activities.', 'tainacan' ),
 	'info_can_not_edit_item'						 => __( 'You are not allowed to edit this item.', 'tainacan' ),
 	'info_can_not_bulk_edit_items_collection'		 => __( 'You are not allowed to bulk edit items from this collection.', 'tainacan' ),
+	'info_not_allowed_change_order_metadata'		 => __( 'You are not allowed to change metadata order since you can\'t edit the collection.', 'tainacan' ),
+	'info_not_allowed_change_order_filters'		 	 => __( 'You are not allowed to change filters order since you can\'t edit the collection.', 'tainacan' ),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),

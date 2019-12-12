@@ -46,7 +46,7 @@
                                 @change="handleChange"
                                 :class="{'metadata-area-receive': isDraggingFromAvailable}"
                                 :group="{ name:'metadata', pull: false, put: true }"
-                                :sort="(openedMetadatumId == '' || openedMetadatumId == undefined) && !isRepositoryLevel"
+                                :sort="(openedMetadatumId == '' || openedMetadatumId == undefined) && !isRepositoryLevel && collection && collection.current_user_can_edit"
                                 :handle="'.handle'"
                                 ghost-class="sortable-ghost"
                                 chosen-class="sortable-chosen"
@@ -55,7 +55,7 @@
                             <div 
                                     class="active-metadatum-item"
                                     :class="{
-                                        'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
+                                        'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || (collection && !collection.current_user_can_edit),
                                         'not-focusable-item': openedMetadatumId == metadatum.id,
                                         'disabled-metadatum': metadatum.enabled == false,
                                         'inherited-metadatum': (metadatum.collection_id != collectionId && metadatum.parent == 0) || isRepositoryLevel
@@ -66,7 +66,7 @@
                                     <span 
                                             v-if="!(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder)"
                                             v-tooltip="{
-                                                content: $i18n.get('instruction_drag_and_drop_metadatum_sort'),
+                                                content: isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || (collection && !collection.current_user_can_edit) ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
                                                 autoHide: true,
                                                 classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                 placement: 'auto-start'
