@@ -618,7 +618,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_create_filters'                            => __( 'Click or Drag and Drop Metadata here for creating a new Filter.', 'tainacan' ),
 	'info_create_metadata'                           => __( 'Click or Drag and Drop Metadata Types here for creating a new Metadata.', 'tainacan' ),
 	'info_choose_your_metadata'                      => __( 'Choose your metadata.', 'tainacan' ),
-	'info_target_collection_helper'                  => __( 'The collection where imported item will be added.', 'tainacan' ),
+	'info_target_collection_helper'                  => __( 'The collection where imported item will be added. Only those that you have permission are listed.', 'tainacan' ),
 	'info_source_file_upload'                        => __( 'The file containing the data to be imported.', 'tainacan' ),
 	'info_no_metadata_source_file'                   => __( 'No metadata was found from the source file.', 'tainacan' ),
 	'info_no_special_fields_available'               => __( 'No special field was found.', 'tainacan' ),

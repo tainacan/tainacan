@@ -42,6 +42,7 @@
                                     :placeholder="$i18n.get('instruction_select_a_target_collection')">
                                 <option
                                         v-for="collection of collections"
+                                        v-if="collection.current_user_can_edit_items"
                                         :key="collection.id"
                                         :value="collection.id">{{ collection.name }}
                                 </option>
