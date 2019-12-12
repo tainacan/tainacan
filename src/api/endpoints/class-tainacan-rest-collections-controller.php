@@ -79,6 +79,36 @@ class REST_Collections_Controller extends REST_Controller {
 	            )
             ),
 			'schema'                => [$this, 'get_schema'],
+		));
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)/metadata_order', array(
+            array(
+                'methods'             => \WP_REST_Server::EDITABLE,
+                'callback'            => array($this, 'update_metadata_order'),
+                'permission_callback' => array($this, 'update_metadata_order_permissions_check'),
+                'args'                => [
+					'metadata_order' => [
+						'description' => __( 'The order of the metadata in the collection, an array of objects with integer id and bool enabled.', 'tainacan' ),
+						'required' => true,
+						'validate_callback' => [$this, 'validate_filters_metadata_order']
+					]
+				],
+			),
+			'schema'                => [$this, 'get_schema'],
+		));
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)/filters_order', array(
+            array(
+                'methods'             => \WP_REST_Server::EDITABLE,
+                'callback'            => array($this, 'update_filters_order'),
+                'permission_callback' => array($this, 'update_filters_order_permissions_check'),
+                'args'                => [
+					'filters_order' => [
+						'description' => __( 'The order of the filters in the collection, an array of objects with integer id and bool enabled.', 'tainacan' ),
+						'required' => true,
+						'validate_callback' => [$this, 'validate_filters_metadata_order']
+					]
+				],
+			),
+			'schema'                => [$this, 'get_schema'],
         ));
     }
 
@@ -456,6 +486,157 @@ class REST_Collections_Controller extends REST_Controller {
 
 		if($collection instanceof Entities\Collection) {
 			return $collection->can_edit();
+		}
+
+		return false;
+	}
+
+	public function validate_filters_metadata_order($value, $request, $param) {
+
+		if ( is_array($value) ) {
+			foreach ($value as $val) {
+				if ( !is_array($val) ) {
+					return false;
+				}
+				if ( !isset($val['id']) || !is_numeric($val['id']) ) {
+					return false;
+				}
+				if ( !isset($val['enabled']) || !is_bool($val['enabled']) ) {
+					return false;
+				}
+
+			}
+			return true;
+		}
+		return false;
+
+	}
+
+	/**
+	 * Update a collection metadata order
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return string|\WP_Error|\WP_REST_Response
+	 */
+	public function update_metadata_order( $request ) {
+	    $collection_id = $request['collection_id'];
+
+	    $body = json_decode($request->get_body(), true);
+
+	    if( !empty($body) && isset($body['metadata_order']) ) {
+
+		    $collection = $this->collections_repository->fetch($collection_id);
+
+	    	if( $collection instanceof Entities\Collection) {
+			    $collection->set_metadata_order( $body['metadata_order'] );
+
+			    if ( $collection->validate() ) {
+				    $updated_collection = $this->collections_repository->update( $collection );
+
+				    $response = $this->prepare_item_for_response($updated_collection, $request);
+
+				    return new \WP_REST_Response( $response, 200 );
+			    }
+
+			    return new \WP_REST_Response([
+				    'error_message' => __('One or more values are invalid.', 'tainacan'),
+				    'errors'        => $prepared_collection->get_errors(),
+				    'collection'    => $this->prepare_item_for_response($prepared_collection, $request)
+			    ], 400);
+		    }
+
+		    return new \WP_REST_Response([
+		    	'error_message' => __('Collection with this ID was not found', 'tainacan' ),
+			    'collection_id' => $collection_id
+		    ], 400);
+	    }
+
+	    return new \WP_REST_Response([
+	    	'error_message' => __('The body could not be empty', 'tainacan'),
+		    'body'          => $body
+	    ], 400);
+    }
+
+
+	/**
+	 * Verify if current user has permission to update metadata order
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return bool|\WP_Error
+	 * @throws \Exception
+	 */
+	public function update_metadata_order_permissions_check( $request ) {
+		$collection = $this->collections_repository->fetch($request['collection_id']);
+
+		if($collection instanceof Entities\Collection) {
+			return $collection->user_can( 'edit_metadata' );
+		}
+
+		return false;
+	}
+
+	/**
+	 * Update a collection metadata order
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return string|\WP_Error|\WP_REST_Response
+	 */
+	public function update_filters_order( $request ) {
+	    $collection_id = $request['collection_id'];
+
+	    $body = json_decode($request->get_body(), true);
+
+	    if( !empty($body) && isset($body['filters_order']) ) {
+
+		    $collection = $this->collections_repository->fetch($collection_id);
+
+	    	if( $collection instanceof Entities\Collection) {
+			    $collection->set_filters_order( $body['filters_order'] );
+
+			    if ( $collection->validate() ) {
+				    $updated_collection = $this->collections_repository->update( $collection );
+
+				    $response = $this->prepare_item_for_response($updated_collection, $request);
+
+				    return new \WP_REST_Response( $response, 200 );
+			    }
+
+			    return new \WP_REST_Response([
+				    'error_message' => __('One or more values are invalid.', 'tainacan'),
+				    'errors'        => $prepared_collection->get_errors(),
+				    'collection'    => $this->prepare_item_for_response($prepared_collection, $request)
+			    ], 400);
+		    }
+
+		    return new \WP_REST_Response([
+		    	'error_message' => __('Collection with this ID was not found', 'tainacan' ),
+			    'collection_id' => $collection_id
+		    ], 400);
+	    }
+
+	    return new \WP_REST_Response([
+	    	'error_message' => __('The body could not be empty', 'tainacan'),
+		    'body'          => $body
+	    ], 400);
+    }
+
+
+	/**
+	 * Verify if current user has permission to update metadata order
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return bool|\WP_Error
+	 * @throws \Exception
+	 */
+	public function update_filters_order_permissions_check( $request ) {
+		$collection = $this->collections_repository->fetch($request['collection_id']);
+
+		if($collection instanceof Entities\Collection) {
+			return $collection->user_can( 'edit_filters' );
 		}
 
 		return false;
