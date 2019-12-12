@@ -13,7 +13,7 @@
          <transition name="appear-from-right">
             <div 
                     v-if="showNotice"
-                    class="notice notice-success">
+                    class="notice notice-success notice-alt">
                 <p>{{ $i18n.get('User Role Saved') }}</p>
             </div>
         </transition>
@@ -183,7 +183,8 @@
                             </div>
                         </div>
                     </template>
-                    <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('Some capabilities, such as "Manage Tainacan" and any related to All Collections shall affect other Collections capabilities.') }}</p>
+                    <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('The capability "Manage Tainacan" may affect other capabilities related to repository and collections.') }}</p>
+                    <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('Capabilities related to All Collections shall affect other Collections capabilities.') }}</p>
                 </div> <!-- End of Collections Tab -->
             
             </div> <!-- End of Tabs-->
@@ -419,6 +420,14 @@
         justify-content: space-between;
         align-content: center;
         margin: 2rem 0 1rem 0;
+
+        p {
+            margin: 0;
+            padding: 0;
+        }
+        .button {
+            padding: 2px 16px;
+        }
     }
     .name-edition-box label {
         margin-right: 2rem;

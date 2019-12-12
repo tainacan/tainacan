@@ -258,10 +258,8 @@ export const updateCollection = ({ commit }, {
         collection
     }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch('/collections/' + collection_id, collection).then( res => {
+        axios.tainacan.patch('/collections/' + collection_id + '?context=edit', collection).then( res => {
             commit('setCollection', collection);
-            commit('setCollectionName', res.data.name);
-            commit('setCollectionURL', res.data.url);
             resolve( res.data );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
@@ -274,7 +272,7 @@ export const sendCollection = ( { commit }, collection) => {
     return new Promise(( resolve, reject ) => {
         let param = collection;
         param[tainacan_plugin.exposer_mapper_param] = collection.mapper;
-        axios.tainacan.post('/collections/', param)
+        axios.tainacan.post('/collections/?context=edit', param)
             .then( res => {
                 let collection = res.data;
                 commit('setCollection', collection);
@@ -328,7 +326,7 @@ export const fetchAttachments = ({ commit }, collection_id) => {
 
 export const updateThumbnail = ({ commit }, { collectionId, thumbnailId }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch('/collections/' + collectionId, {
+        axios.tainacan.patch('/collections/' + collectionId + '?context=edit', {
             _thumbnail_id: thumbnailId
         }).then( res => {
             let collection = res.data
@@ -343,7 +341,7 @@ export const updateThumbnail = ({ commit }, { collectionId, thumbnailId }) => {
 
 export const updateHeaderImage = ({ commit }, { collectionId, headerImageId }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch('/collections/' + collectionId, {
+        axios.tainacan.patch('/collections/' + collectionId + '?context=edit', {
             header_image_id: headerImageId + ''
         }).then( res => {
             let collection = res.data

@@ -42,7 +42,7 @@
                         :class="{'filters-area-receive': isDraggingFromAvailable}" 
                         v-model="activeFilterList"
                         :group="{ name:'filters', pull: false, put: true }"
-                        :sort="(openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel && collection && collection.current_user_can_edit"
+                        :sort="(openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel"
                         :handle="'.handle'" 
                         ghost-class="sortable-ghost"
                         filter="not-sortable-item" 
@@ -50,7 +50,7 @@
                     <div  
                             class="active-filter-item" 
                             :class="{
-                                'not-sortable-item': (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || (collection && !collection.current_user_can_edit)),
+                                'not-sortable-item': (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true),
                                 'not-focusable-item': openedFilterId == filter.id, 
                                 'disabled-filter': filter.enabled == false,
                                 'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
@@ -61,7 +61,7 @@
                             <span 
                                     v-if="!(isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel)"
                                     v-tooltip="{
-                                        content: (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || (collection && !collection.current_user_can_edit)) ? $i18n.get('info_not_allowed_change_order_filters') : $i18n.get('instruction_drag_and_drop_filter_sort'),
+                                        content: (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true) ? $i18n.get('info_not_allowed_change_order_filters') : $i18n.get('instruction_drag_and_drop_filter_sort'),
                                         autoHide: true,
                                         classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                         placement: 'auto-start'
