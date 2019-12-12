@@ -490,7 +490,7 @@ export default {
     },
     computed: {
         collection() {
-            return this.getCollection;
+            return this.getCollection();
         },
         availableMetadatumList: {
             get() {

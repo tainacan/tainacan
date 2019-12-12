@@ -31,11 +31,11 @@
                     :can-cancel="false"/>
 
             <capabilities-list
-                    v-if="$userCaps.hasCapability('tnc_rep_edit_users')"
+                    v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_users')) || (!isRepositoryLevel && collection && collection.current_user_can_edit_users)"
                     :is-loading="isLoading || isFetchingRoles"
                     :capabilities="capabilities"/>
                         
-            <template v-else>
+            <template v-else-if="(isRepositoryLevel && !$userCaps.hasCapability('tnc_rep_edit_users')) || (!isRepositoryLevel && collection && !collection.current_user_can_edit_users)">
                 <section class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
@@ -136,6 +136,9 @@
                 } else {
                     return []
                 }
+            },
+            collection() {
+                return this.getCollection();
             }
         },
         components: {
@@ -148,6 +151,9 @@
             ]),
             ...mapGetters('capability', [
                 'getCapabilities'
+            ]),
+            ...mapGetters('collection', [
+                'getCollection'
             ]),
             loadCapabilities() {
                 this.isLoading = true;

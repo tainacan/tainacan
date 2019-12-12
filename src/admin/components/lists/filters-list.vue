@@ -371,7 +371,7 @@ export default {
             }
         },
         collection() {
-            return this.getCollection;
+            return this.getCollection();
         }
     },
     components: {
