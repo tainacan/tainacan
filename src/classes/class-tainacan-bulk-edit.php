@@ -1,4 +1,11 @@
 <?php
+/**
+ * This is the old Bulk Edit approach that performs SQL queries directly into the database
+ * It was disabled in favor of Bulk edit BG process approach
+ *
+ * Its is still here because there is an idea to use it via WP CLI command
+ * If we do this someday, there are also tests written in __test-bulk-edit.php file
+ */
 
 namespace Tainacan;
 use Tainacan\Repositories;
@@ -9,10 +16,10 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Bulk_Edit class handles bulk item edition
  */
-class Bulk_Edit  {
-	
+class __Bulk_Edit  {
+
 	private $meta_key = '_tnc_bulk';
-	
+
 	/**
 	 * The ID of the current bulk edition group.
 	 * @var string
@@ -49,82 +56,84 @@ class Bulk_Edit  {
 	 * @throws \Exception
 	 */
 	public function __construct($params) {
-		
+
+		throw new \Exception('This Class is currently disabled');
+
 		if (isset($params['id']) && !empty($params['id'])) {
 			$this->id = $params['id'];
 			return;
 		}
-		
+
 		global $wpdb;
-		
+
 		$id = uniqid();
 		$this->id = $id;
 
 		if (isset($params['query']) && is_array($params['query'])) {
-			
+
 			if (!isset($params['collection_id']) || !is_numeric($params['collection_id'])) {
 				throw new \Exception('Collection ID must be informed when creating a group via query');
 			}
-			
+
 			/**
 			 * Here we use the fetch method to parse the parameter and use WP_Query
 			 *
 			 * However, we add a filter so the query is not executed. We just want WP_Query to build it for us
 			 * and then we can use it to INSERT the postmeta with the bulk group ID
 			 */
-			
+
 			// this avoids wp_query to run the query. We just want to build the query
 			add_filter('posts_pre_query', '__return_empty_array');
-			
+
 			// this adds the meta key and meta value to the SELECT query so it can be used directly in the INSERT below
 			add_filter('posts_fields_request', [$this, 'add_fields_to_query'], 10, 2);
-			
+
 			$itemsRepo = Repositories\Items::get_instance();
 			$params['query']['fields'] = 'ids';
 			$items_query = $itemsRepo->fetch($params['query'], $params['collection_id']);
-			
+
 			remove_filter('posts_pre_query', '__return_empty_array');
 			remove_filter('posts_fields_request', [$this, 'add_fields_to_query']);
-			
+
 			$wpdb->query( "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) {$items_query->request}" );
-			
+
 			$bulk_params = [
 				'orderby' => isset($params['query']['orderby']) ? $params['query']['orderby'] : 'post_date',
 				'order' => isset($params['query']['order']) ? $params['query']['order'] : 'DESC'
 			];
-			
+
 		} elseif (isset($params['items_ids']) && is_array($params['items_ids'])) {
 			$items_ids = array_filter($params['items_ids'], 'is_integer');
-			
+
 			$insert_q = '';
 			foreach ($items_ids as $item_id) {
 				$insert_q .= $wpdb->prepare( "(%d, %s, %s),", $item_id, $this->meta_key, $this->get_id() );
 			}
 			$insert_q = rtrim($insert_q, ',');
-			
+
 			$wpdb->query( "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) VALUES $insert_q" );
-			
+
 			$bulk_params = [
 				'orderby' => isset($params['options']['orderby']) ? $params['options']['orderby'] : 'post_date',
 				'order' => isset($params['options']['order']) ? $params['options']['order'] : 'DESC'
 			];
-			
+
 		}
-		
+
 		/**
-		* This is stored to be used by the get_sequence_item_by_index() method, which is used 
+		* This is stored to be used by the get_sequence_item_by_index() method, which is used
 		* by the sequence edit routine.
 		*
 		* For everything else, the order does not matter...
 		*/
 		$this->save_options($bulk_params);
-		
+
 		return;
-		
+
 	}
-	
+
 	/**
-	 * Internally used to filter WP_Query and build the INSERT statement. 
+	 * Internally used to filter WP_Query and build the INSERT statement.
 	 * Must be public because it is registered as a filter callback
 	 */
 	public function add_fields_to_query($fields, $wp_query) {
@@ -134,7 +143,7 @@ class Bulk_Edit  {
 		}
 		return $fields;
 	}
-	
+
 	/**
 	 * Get the current group ID
 	 * @return string the group ID
@@ -142,7 +151,7 @@ class Bulk_Edit  {
 	public function get_id() {
 		return $this->id;
 	}
-	
+
 	/**
 	* return the number of items selected in the current bulk group
 	* @return int number of items in the group
@@ -155,19 +164,19 @@ class Bulk_Edit  {
 		}
 		return 0;
 	}
-	
+
 	/**
-	 * Gets the id of the item in a given position inside the group 
-	 * 
-	 * @param int $index THe position of the index to search for. From 1 to the length of the group 
+	 * Gets the id of the item in a given position inside the group
+	 *
+	 * @param int $index THe position of the index to search for. From 1 to the length of the group
 	 * @return int|bool Returns the ID of the item or false if the index is out of range
 	 */
 	public function get_item_id_by_index($index) {
-		
+
 		if (!is_int($index)) {
 			throw new InvalidArgumentException('get_item_id_by_index function only accepts integers. Input was: '.$index);
 		}
-		
+
 		$options = $this->get_options();
 		$query = [
 			'meta_query' => [
@@ -184,20 +193,20 @@ class Bulk_Edit  {
 			'order' => $options['order'],
 			'post_status' => 'any'
 		];
-		
+
 		$object = new \WP_Query($query);
-		
+
 		if ( $object->have_posts() && isset($object->posts) && is_array($object->posts) && isset($object->posts[0]) && is_integer($object->posts[0]) ) {
 			return $object->posts[0];
 		}
-		
+
 		return false;
 	}
-	
+
 	public function save_options($value) {
 		update_option('tainacan_bulk_' . $this->get_id(), $value);
 	}
-	
+
 	public function get_options() {
 		return get_option('tainacan_bulk_' . $this->get_id());
 	}
@@ -208,17 +217,17 @@ class Bulk_Edit  {
 		return $wpdb->prepare( "SELECT $fields FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s", $this->meta_key, $this->get_id() );
 
 	}
-	
+
 	/**
 	 * Sets the status to all items in the current group
-	 * 
+	 *
 	 */
 	public function set_status($value) {
 
 		if (!$this->get_id()) {
 			return new \WP_Error( 'no_id', __( 'Bulk Edit group not initialized', 'tainacan' ) );
 		}
-		
+
 		$possible_values = ['trash', 'draft', 'publish', 'private'];
 
 		// Specific validation
@@ -229,15 +238,15 @@ class Bulk_Edit  {
 		global $wpdb;
 
 		$select_q = $this->_build_select( 'post_id' );
-		
+
 		$query = $wpdb->prepare("UPDATE $wpdb->posts SET post_status = %s WHERE ID IN ($select_q)", $value);
-		
+
 		$run = $wpdb->query($query);
-		
+
 		if ($run) {
 			do_action('tainacan-bulk-edit-set-status', $value, $this->get_id(), $select_q, $query);
 		}
-		
+
 		return $run;
 
 	}
@@ -245,7 +254,7 @@ class Bulk_Edit  {
 	/**
 	 * Adds a value to a metadatum to all items in the current group
 	 * Must be used with a multiple metadatum
-	 * 
+	 *
 	 */
 	public function add_value(Entities\Metadatum $metadatum, $value) {
 
@@ -277,7 +286,7 @@ class Bulk_Edit  {
 
 	/**
 	 * Sets a value to a metadatum to all items in the current group.
-	 * 
+	 *
 	 * If metadatum is multiple, it will delete all values item may have for this metadatum and then add
 	 * this value
 	 */
@@ -288,7 +297,7 @@ class Bulk_Edit  {
 		}
 
 		// Specific validation
-		
+
 		if ($metadatum->is_collection_key()) {
 			return new \WP_Error( 'invalid_action', __( 'Unable to set a value to a metadata set to be a collection key', 'tainacan' ) );
 		}
@@ -313,9 +322,9 @@ class Bulk_Edit  {
 
 	/**
 	 * Removes one value from a metadatum of all items in current group
-	 * 
+	 *
 	 * Must be used with multiple metadatum that are not set as required
-	 * 
+	 *
 	 */
 	public function remove_value(Entities\Metadatum $metadatum, $value) {
 
@@ -324,7 +333,7 @@ class Bulk_Edit  {
 		}
 
 		// Specific validation
-		
+
 		if ($metadatum->is_required()) {
 			return new \WP_Error( 'invalid_action', __( 'Unable to remove a value from a required metadatum', 'tainacan' ) );
 		}
@@ -347,11 +356,11 @@ class Bulk_Edit  {
 		}
 
 		// Specific validation
-		
+
 		if ($metadatum->is_collection_key()) {
 			return new \WP_Error( 'invalid_action', __( 'Unable to set a value to a metadata set to be a collection key', 'tainacan' ) );
 		}
-		
+
 		if ($new_value == $old_value) {
 			return new \WP_Error( 'invalid_action', __( 'Old value and new value can not be the same', 'tainacan' ) );
 		}
@@ -378,7 +387,7 @@ class Bulk_Edit  {
 		global $wpdb;
 
 		$select_q = $this->_build_select( 'post_id' );
-		
+
 		$select_insert = "SELECT ID, '_wp_trash_meta_status', post_status FROM $wpdb->posts WHERE ID IN ($select_q)";
 		$select_insert_time = $wpdb->prepare("SELECT ID, '_wp_trash_meta_time', %s FROM $wpdb->posts WHERE ID IN ($select_q)", time());
 
@@ -388,7 +397,7 @@ class Bulk_Edit  {
 		$wpdb->query($query_original_status);
 		$wpdb->query($query_trash_time);
 
-		
+
 		$query = "UPDATE $wpdb->posts SET post_status = 'trash' WHERE ID IN ($select_q)";
 
 		// TODO trash comments?
@@ -442,7 +451,7 @@ class Bulk_Edit  {
 
 	/**
 	 * Adds a value to the current group of items
-	 * 
+	 *
 	 * This method adds value to the database directly, any check or validation must be done beforehand
 	 */
 	private function _add_value(Entities\Metadatum $metadatum, $value) {
@@ -461,9 +470,9 @@ class Bulk_Edit  {
 				if ( !is_array($value) ) {
 					$value = [$value];
 				}
-				
+
 				foreach ($value as $v) {
-					
+
 					$term = $taxRepo->term_exists($tax, $v, 0, true);
 					$term_id = false;
 
@@ -477,19 +486,19 @@ class Bulk_Edit  {
 						$term_id = $term->term_taxonomy_id;
 					}
 
-					
+
 
 					$insert_q = $this->_build_select( $wpdb->prepare("post_id, %d", $term_id) );
 
 					$query = "INSERT IGNORE INTO $wpdb->term_relationships (object_id, term_taxonomy_id) $insert_q";
-					
+
 					$return = $wpdb->query($query);
-					
+
 				}
-				
+
 				return $return;
 
-				
+
 
 				//TODO update term count
 
@@ -499,13 +508,13 @@ class Bulk_Edit  {
 		} else {
 
 			global $wpdb;
-			
+
 			if ( !is_array($value) ) {
 				$value = [$value];
 			}
-			
+
 			foreach ($value as $v) {
-				
+
 				$insert_q = $this->_build_select( $wpdb->prepare("post_id, %s, %s", $metadatum->get_id(), $v) );
 
 				$query = "INSERT IGNORE INTO $wpdb->postmeta (post_id, meta_key, meta_value) $insert_q";
@@ -526,11 +535,11 @@ class Bulk_Edit  {
 				}
 
 				$return = $affected;
-				
+
 			}
-			
+
 			return $return; // return last value
-			
+
 
 		}
 
@@ -538,7 +547,7 @@ class Bulk_Edit  {
 
 	/**
 	 * Removes a value from the current group of items
-	 * 
+	 *
 	 * This method removes value from the database directly, any check or validation must be done beforehand
 	 */
 	private function _remove_value(Entities\Metadatum $metadatum, $value) {
@@ -587,24 +596,24 @@ class Bulk_Edit  {
 		}
 
 	}
-	
+
 	/**
 	 * Replaces a value in the current group of items
-	 * 
+	 *
 	 * This method replaces a value from the database directly, and adds a new value to all itemsm that had the previous value
 	 *
-	 * TODO: Possible refactor: This method is almost identical to the _add_value method and calls the _remove_value at the end. So it is almost 
+	 * TODO: Possible refactor: This method is almost identical to the _add_value method and calls the _remove_value at the end. So it is almost
 	 * the same thing as calling _add_value() and _remove_value() one after another. The only difference is that it does both checks before doing anything to the DB
 	 * and a small change to the insert queries (marked below)
-	 * 
+	 *
 	 */
 	private function _replace_value(Entities\Metadatum $metadatum, $newvalue, $value) {
 		global $wpdb;
-		
+
 		if ($value == $newvalue) {
 			return new \WP_Error( 'error', __( 'New value and old value can not be the same', 'tainacan' ) );
 		}
-		
+
 		$taxRepo = Repositories\Taxonomies::get_instance();
 		$type = $metadatum->get_metadata_type_object();
 
@@ -626,10 +635,10 @@ class Bulk_Edit  {
 				if (is_WP_Error($term) || !isset($term->term_taxonomy_id)) {
 					return new \WP_Error( 'error', __( 'Term not found', 'tainacan' ) );
 				}
-				
+
 				// check new term
 				$newterm = $taxRepo->term_exists($tax, $newvalue, 0, true);
-				
+
 
 				if (false === $newterm) {
 					$newterm = wp_insert_term($newvalue, $tax->get_db_identifier());
@@ -641,21 +650,21 @@ class Bulk_Edit  {
 					$newtermid = $newterm->term_taxonomy_id;
 				}
 
-				
+
 
 				$insert_q = $this->_build_select( $wpdb->prepare("post_id, %d", $newtermid) );
-				
+
 				// only where old_value is present (this is what this method have different from the _add_value())
 				$insert_q .= $wpdb->prepare( " AND post_id IN(SELECT object_id FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d)", $term->term_taxonomy_id );
-				
+
 				$query = "INSERT IGNORE INTO $wpdb->term_relationships (object_id, term_taxonomy_id) $insert_q ";
-				
+
 				// Add
 				$wpdb->query($query);
-				
+
 				// Remove
 				return $this->_remove_value($metadatum, $value);
-				
+
 				//TODO update term count
 
 			}
@@ -665,7 +674,7 @@ class Bulk_Edit  {
 			global $wpdb;
 
 			$insert_q = $this->_build_select( $wpdb->prepare("post_id, %s, %s", $metadatum->get_id(), $newvalue) );
-			
+
 			// only where old_value is present (this is what this method have different from the _add_value())
 			$insert_q .= $wpdb->prepare( " AND post_id IN (SELECT post_ID FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s)", $metadatum->get_id(), $value );
 
@@ -680,7 +689,7 @@ class Bulk_Edit  {
 					'description' => 'post_content'
 				];
 				$column = $map_field[$field];
-				$update_q = $this->_build_select( "post_id" );				
+				$update_q = $this->_build_select( "post_id" );
 				// only where old_value is present (this is what this method have different from the _add_value())
 				$update_q .= $wpdb->prepare( " AND post_id IN (SELECT post_ID FROM $wpdb->postmeta WHERE meta_key = %s AND meta_value = %s)", $metadatum->get_id(), $value );
 
@@ -697,7 +706,7 @@ class Bulk_Edit  {
 
 	/**
 	 * Removes all values of a metadatum from the current group of items
-	 * 
+	 *
 	 * This method removes value from the database directly, any check or validation must be done beforehand
 	 */
 	private function _remove_values(Entities\Metadatum $metadatum) {
@@ -737,7 +746,7 @@ class Bulk_Edit  {
 		}
 
 	}
-	
-	
-	
+
+
+
 }

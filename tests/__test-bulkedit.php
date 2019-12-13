@@ -3,7 +3,10 @@
 namespace Tainacan\Tests;
 
 /**
- * Class TestCollections
+ * Class BulkEdit
+ *
+ * These are the tests for the old Bulk edit class that has been disabled
+ * More info in src/classes/class-tainacan-bulk-edit.php
  *
  * @package Test_Tainacan
  */
