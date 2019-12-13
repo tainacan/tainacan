@@ -46,6 +46,7 @@ class Bulk_Edit_Process extends Generic_Process {
 				throw new \Exception('Collection ID must be informed when creating a group via query');
 			}
 			$bulk_params = [
+				'collection_id' 	=> $params['collection_id'],
 				'query' 	=> $params['query'],
 				'order' 	=> isset($params['query']['order']) ? $params['query']['order'] : 'DESC',
 				'orderby' => isset($params['query']['orderby']) ? $params['query']['orderby'] : 'post_date'
@@ -65,7 +66,7 @@ class Bulk_Edit_Process extends Generic_Process {
 	public function save_options($value) {
 		update_option('tainacan_bulk_' . $this->get_group_id(), $value);
 	}
-	
+
 	public function get_options() {
 		return get_option('tainacan_bulk_' . $this->get_group_id());
 	}
@@ -260,7 +261,7 @@ class Bulk_Edit_Process extends Generic_Process {
 		}
 
 		$items_metadata = $item->get_metadata();
-		
+
 		foreach ($items_metadata as $item_metadata) {
 			$metadatum = $item_metadata->get_metadatum();
 			if($metadatum->get_id() == $metadatum_id) {
@@ -289,7 +290,7 @@ class Bulk_Edit_Process extends Generic_Process {
 		}
 
 		$items_metadata = $item->get_metadata();
-		
+
 		foreach ($items_metadata as $item_metadata) {
 			$metadatum = $item_metadata->get_metadatum();
 			if($metadatum->get_id() == $metadatum_id) {
@@ -313,7 +314,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			$this->add_error_log( __( 'Unable to set a value to a metadata set to be a collection key', 'tainacan' ) );
 			return false;
 		}
-		
+
 		if ($new_value == $old_value) {
 			$this->add_error_log( __( 'Old value and new value can not be the same', 'tainacan' ) );
 			return false;
