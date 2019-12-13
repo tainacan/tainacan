@@ -301,7 +301,7 @@
                             :disabled="dones.every((item) => item === true) === false"
                             class="button is-success"
                             type="button"
-                            @click="$eventBusSearch.loadItems(); $parent.close();">
+                            @click="$root.$emit('openProcessesPopup'); $eventBusSearch.loadItems(); $parent.close();">
                         {{ $i18n.get('finish') }}
                     </button>
                 </p>
