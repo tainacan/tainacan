@@ -76,13 +76,11 @@ export const setValueInBulk = ({commit}, parameters) => {
 
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/set`, bodyParams)
         .then(response => {
-            commit('setActionResult', response.data);
             commit('setLastUpdated');
             return response;
         })
         .catch(error => {
             console.error(error);
-            commit('setActionResult', error.response.data);
         });
 };
 
@@ -97,12 +95,10 @@ export const addValueInBulk = ({commit}, parameters) => {
 
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/add`, bodyParams)
         .then(response => {
-            commit('setActionResult', response.data);
             return response;
         })
         .catch(error => {
             console.error(error);
-            commit('setActionResult', error.response.data);
         });
 };
 
@@ -116,12 +112,8 @@ export const removeValueInBulk = ({commit}, parameters) => {
     let bodyParams = parameters.bodyParams;
 
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/remove`, bodyParams)
-        .then(response => {
-            commit('setActionResult', response.data);
-        })
         .catch(error => {
             console.error(error);
-            commit('setActionResult', error.response.data);
         });
 };
 
@@ -136,12 +128,10 @@ export const replaceValueInBulk = ({commit}, parameters) => {
 
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/replace`, bodyParams)
         .then(response => {
-            commit('setActionResult', response.data);
             return response;
         })
         .catch(error => {
             console.error(error);
-            commit('setActionResult', error.response.data);
         });
 };
 
@@ -157,13 +147,11 @@ export const setStatusInBulk = ({commit}, parameters) => {
 
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/set_status`, bodyParams)
         .then(response => {
-            commit('setActionResult', response.data);
             commit('setLastUpdated');
             return response;
         })
         .catch(error => {
             console.error(error);
-            commit('setActionResult', error.response.data);
         });
 };
 
@@ -173,13 +161,11 @@ export const trashItemsInBulk = ({commit}, parameters) => {
 
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/trash`)
         .then(response => {
-            commit('setActionResult', response.data);
             commit('setLastUpdated');
             return response;
         })
         .catch(error => {
             console.log(error);
-            commit('setActionResult', error.response.data);
         });
 };
 
@@ -189,12 +175,10 @@ export const untrashItemsInBulk = ({commit}, parameters) => {
 
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/untrash`)
         .then(response => {
-            commit('setActionResult', response.data);
             return response;
         })
         .catch(error => {
             console.log(error);
-            commit('setActionResult', error.response.data)
         });
 };
 
@@ -204,13 +188,11 @@ export const deleteItemsInBulk = ({commit}, parameters) => {
 
     return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/delete_items`)
         .then(response => {
-            commit('setActionResult', response.data);
             commit('setLastUpdated');
             return response;
         })
         .catch(error => {
             console.log(error);
-            commit('setActionResult', error.response.data);
         });
 };
 

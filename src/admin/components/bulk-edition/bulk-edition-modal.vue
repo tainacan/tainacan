@@ -157,15 +157,6 @@
                         />
                     </template>
 
-                    <!-- DISABLED FIELD -->
-                    <!--<template v-else>-->
-                        <!--<input-->
-                                <!--style="border: none !important; background-color: white !important;"-->
-                                <!--class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"-->
-                                <!--type="text"-->
-                                <!--disabled >-->
-                    <!--</template>-->
-
                     <div
                             :style="{
                               marginRight: !bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting ? '-7.4px': 0
@@ -188,7 +179,7 @@
                         </button>
 
                         <div
-                                v-if="bulkEditionProcedures[criterion].isDone && bulkEditionProcedures[criterion].actionResult >= totalItems"
+                                v-if="bulkEditionProcedures[criterion].isDone"
                                 @mouseover="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
                                 class="is-pulled-right">
                             <b-tooltip
@@ -198,62 +189,18 @@
                                     size="is-small"
                                     position="is-left"
                                     animated
-                                    multilined
-                                    :label="bulkEditionProcedures[criterion].actionResult.constructor.name !== 'Object' && bulkEditionProcedures[criterion].actionResult === 1 ? `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_item_affected')}` : `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_items_affected')}`">
+                                    :label="$i18n.get('info_bulk_edition_process_added')">
                                 <span class="icon">
                                     <i class="has-text-success tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle"/>
                                 </span>
                             </b-tooltip>
                         </div>
 
-                        <div
-                                v-if="bulkEditionProcedures[criterion].isDone && bulkEditionProcedures[criterion].actionResult < totalItems"
-                                @mouseover="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
-                                class="is-pulled-right">
-                            <b-tooltip
-                                    :active="bulkEditionProcedures[criterion].tooltipShow"
-                                    always
-                                    class="is-yellow2"
-                                    size="is-small"
-                                    position="is-left"
-                                    animated
-                                    multilined
-                                    :label="bulkEditionProcedures[criterion].actionResult.constructor.name !== 'Object' && bulkEditionProcedures[criterion].actionResult === 1 ? `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_item_affected')}` : `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_items_affected')}`">
-                                <span class="icon">
-                                    <i class="has-text-yello2 tainacan-icon tainacan-icon-20px tainacan-icon-alertcircle"/>
-                                </span>
-                            </b-tooltip>
-                        </div>
-
                         <button
                                 :disabled="!groupID"
-                                v-if="bulkEditionProcedures[criterion].isDoneWithError &&
-                                 !bulkEditionProcedures[criterion].isExecuting"
-                                @click="executeBulkEditionProcedure(criterion)"
-                                @mousedown="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
-                                @mouseup="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
-                                class="button is-white is-pulled-right">
-                            <b-tooltip
-                                    :active="bulkEditionProcedures[criterion].tooltipShow"
-                                    always
-                                    class="is-red2"
-                                    size="is-small"
-                                    position="is-bottom"
-                                    animated
-                                    multilined
-                                    :label="bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' ? (bulkEditionProcedures[criterion].actionResult.error_message ? bulkEditionProcedures[criterion].actionResult.error_message : bulkEditionProcedures[criterion].actionResult.message) : ''">
-                                <span class="icon">
-                                    <i class="has-text-danger tainacan-icon tainacan-icon-20px tainacan-icon-processerror"/>
-                                </span>
-                            </b-tooltip>
-                        </button>
-
-                        <button
-                                :disabled="!groupID"
-                                v-if="!bulkEditionProcedures[criterion].isDoneWithError &&
-                                !bulkEditionProcedures[criterion].isDone &&
-                                 !bulkEditionProcedures[criterion].isExecuting &&
-                                   bulkEditionProcedures[criterion].metadatumID &&
+                                v-if="!bulkEditionProcedures[criterion].isDone &&
+                                    !bulkEditionProcedures[criterion].isExecuting &&
+                                    bulkEditionProcedures[criterion].metadatumID &&
                                     bulkEditionProcedures[criterion].action"
                                 @click="executeBulkEditionProcedure(criterion)"
                                 class="button is-white is-pulled-right">
@@ -388,9 +335,7 @@
                 bulkEditionProcedures: {
                     1: {
                         isDone: false,
-                        isDoneWithError: false,
                         isExecuting: false,
-                        actionResult: '',
                         totalItemsEditedWithSuccess: 0,
                         tooltipShow: true,
                     }
@@ -403,8 +348,7 @@
         },
         methods: {
             ...mapGetters('bulkedition', [
-                'getGroupID',
-                'getActionResult'
+                'getGroupID'
             ]),
             ...mapActions('bulkedition', [
                 'createEditGroup',
@@ -422,22 +366,10 @@
                 'getMetadata'
             ]),
             finalizeProcedure(criterion){
-                this.$set(this.bulkEditionProcedures[criterion], 'actionResult', this.getActionResult());
 
                 let withError = false;
 
-                if(this.bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' &&
-                    (this.bulkEditionProcedures[criterion].actionResult.data &&
-                        this.bulkEditionProcedures[criterion].actionResult.data.status.toString().split('')[0] != 2) ||
-                    this.bulkEditionProcedures[criterion].actionResult.error_message) {
-
-                    withError = true;
-                } else {
-                    this.$set(this.bulkEditionProcedures[criterion], 'totalItemsEditedWithSuccess', this.actionResult);
-                }
-
-                this.$set(this.bulkEditionProcedures[criterion], 'isDone', !withError);
-                this.$set(this.bulkEditionProcedures[criterion], 'isDoneWithError', withError);
+                this.$set(this.bulkEditionProcedures[criterion], 'isDone', true);
 
                 let index = this.editionCriteria.indexOf(criterion);
 
@@ -526,9 +458,7 @@
                     this.bulkEditionProcedures = Object.assign({}, this.bulkEditionProcedures, {
                         [`${aleatoryKey}`]: {
                             isDone: false,
-                            isDoneWithError: false,
                             isExecuting: false,
-                            actionResult: '',
                             totalItemsEditedWithSuccess: 0,
                             tooltipShow: true,
                         }
@@ -606,7 +536,7 @@
     }
 
     .this-tainacan-modal-content .form-submit {
-        padding: 160px 0 0.4em 0 !important;
+        padding: 42px 0 0.4em 0 !important;
     }
 
     .no-overflow-modal-card-body {
@@ -701,6 +631,7 @@
                 border: none !important;
                 background-color: white !important;
                 min-height: auto !important;
+                line-height: 1.5rem;
             }
 
             .select {
