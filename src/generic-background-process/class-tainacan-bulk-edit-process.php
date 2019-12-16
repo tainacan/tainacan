@@ -84,7 +84,7 @@ class Bulk_Edit_Process extends Generic_Process {
 		$meta_key = $this->meta_key;
 		$url_paramenters = "metaquery[0][key]=$meta_key&metaquery[0][value][0]=$group_id&metaquery[0][compare]=IN";
 		$message = __('Bulk edit finished, view items:', 'tainacan');
-		return "$message <a href='#items?$url_paramenters'>Link</a>";
+		return "$message <a href='#/items?$url_paramenters'>Link</a>";
 	}
 
 	public function set_bulk_edit_data($bulk_edit_data = false) {
