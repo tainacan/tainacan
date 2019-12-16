@@ -420,7 +420,8 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 
 		$process = $this->new_process(
 			[
-				'items_ids' => $this->items_ids
+				'items_ids' => $this->items_ids,
+				'collection_id' => $this->collection->get_id()
 			],
 			[
 				"value" 				=> 'test',
@@ -632,7 +633,8 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 
 		$process = $this->new_process(
 			[
-				'items_ids' => $this->items_ids
+				'items_ids' => $this->items_ids,
+				'collection_id' => $this->collection->get_id()
 			],
 			[
 				"value" 				=> 'super',
@@ -682,7 +684,8 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 		// all items
 		$process = $this->new_process(
 			[
-				'items_ids' => $this->items_ids
+				'items_ids' => $this->items_ids,
+				'collection_id' => $this->collection->get_id()
 			],
 			[
 				"value" 				=> 'super',
@@ -733,7 +736,8 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 		// all items
 		$process = $this->new_process(
 			[
-				'items_ids' => $this->items_ids
+				'items_ids' => $this->items_ids,
+				'collection_id' => $this->collection->get_id()
 			],
 			[
 				"value" 				=> 'super_test',
@@ -907,6 +911,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 		$process = $this->new_process(
 			[
 				'items_ids' => $ids,
+				'collection_id' => $this->collection->get_id()
 			],
 			[
 				"value" 				=> 'draft',
@@ -941,6 +946,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 		$process = $this->new_process(
 			[
 				'items_ids' => $this->items_ids, // all
+				'collection_id' => $this->collection->get_id()
 			],
 			[
 				"value" 				=> 'test',
@@ -970,6 +976,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 		$process = $this->new_process(
 			[
 				'items_ids' => $ids,
+				'collection_id' => $this->collection->get_id()
 			],
 			[
 				"value" 				=> 'ultra',
@@ -1032,6 +1039,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 		$process = $this->new_process(
 			[
 				'items_ids' => $ids,
+				'collection_id' => $this->collection->get_id()
 			],
 			[
 				"value" 				=> 'test_title',
@@ -1107,6 +1115,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 		$process = $this->new_process(
 			[
 				'items_ids' => $ids,
+				'collection_id' => $this->collection->get_id()
 			],
 			[
 				"value" 				=> null,
@@ -1154,6 +1163,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 		$process = $this->new_process(
 			[
 				'items_ids' => $this->items_ids,
+				'collection_id' => $this->collection->get_id()
 			],
 			[
 				"value" 				=> null,
@@ -1206,6 +1216,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 		$process = $this->new_process(
 			[
 				'items_ids' => $ids,
+				'collection_id' => $this->collection->get_id()
 			],
 			[
 				"value" 				=> null,
@@ -1302,6 +1313,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 		$process = $this->new_process(
 			[
 				'items_ids' => $this->items_ids,
+				'collection_id' => $this->collection->get_id()
 			],
 			[
 				"value" 				=> 'test',
@@ -1362,6 +1374,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 		$process = $this->new_process(
 			[
 				'items_ids' => $this->items_ids,
+				'collection_id' => $this->collection->get_id()
 			],
 			[
 				"value" 				=> 'test_new_value',
