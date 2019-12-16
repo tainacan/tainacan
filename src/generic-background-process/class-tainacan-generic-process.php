@@ -331,7 +331,7 @@ abstract class Generic_Process {
 			//Move on to the next step
 			$this->set_in_step_count(0);
 			$return = $this->next_step();
-		} else if(is_numeric($result) && $result > 0) {
+		} else if(is_numeric($result) && $result >= 0) {
 			$this->set_in_step_count($result);
 			$return = $result;
 		}

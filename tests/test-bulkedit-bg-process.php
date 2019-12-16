@@ -1088,7 +1088,8 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 
 		global $wpdb;
 
-		$count = $wpdb->get_var( "SELECT COUNT(ID) FROM $wpdb->posts WHERE post_content = 'test_description'" );
+		$post_type = $this->collection->get_db_identifier();
+		$count = $wpdb->get_var( "SELECT COUNT(ID) FROM $wpdb->posts WHERE post_content = 'test_description' and post_type = '$post_type'" );
 
 		$this->assertEquals(7, $count);
 
@@ -1560,11 +1561,6 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			],
 			'posts_per_page' => 5
 		];
-
-		$bulk = new \Tainacan\Bulk_Edit([
-			'query' => $query,
-			'collection_id' => $this->collection->get_id()
-		]);
 
 		$process = $this->new_process(
 			[

@@ -114,12 +114,22 @@ class Bulk_Edit_Process extends Generic_Process {
 			$itemsRepo = \Tainacan\Repositories\Items::get_instance();
 			$count = $this->get_in_step_count();
 
-			$params['query']['fields'] = 'ids';
-			$params['query']['posts_per_page'] = 1;
-			$params['query']['offset'] = $count++;
-			$params['query']['nopaging'] = false;
+			$post_per_page = 1;
+			if ( isset($params['query']['posts_per_page']) && $params['query']['posts_per_page'] != -1 ) {
+				$post_per_page = $params['query']['posts_per_page'] - $count;
+				$params['query']['posts_per_page'] = $post_per_page;
+			}
+			if($post_per_page <= 0) {
+				return false;
+			}
 
-			$item_query = $itemsRepo->fetch($params['query'], $params['collection_id']);
+			$query = $params['query'];
+			$query['fields'] = 'ids';
+			$query['posts_per_page'] = $post_per_page;
+			$query['offset'] = $count++;
+			$query['nopaging'] = false;
+
+			$item_query = $itemsRepo->fetch($query, $params['collection_id']);
 			if(!$item_query->have_posts() ) {
 				$params['control_metadata'] = true;
 				$this->save_options($params);
@@ -204,7 +214,10 @@ class Bulk_Edit_Process extends Generic_Process {
 		}
 
 		$this->add_log( sprintf( __('bulk edit has process the item ID: "%d"', 'tainacan'), $item->get_id() ) );
-		$this->$method($item);
+		$add_steps = $this->$method($item);
+		if ( is_int($add_steps) ) {
+			$count = $count + $add_steps;
+		}
 		return $count;
 	}
 
@@ -220,7 +233,8 @@ class Bulk_Edit_Process extends Generic_Process {
 			$this->add_error_log( sprintf( __( 'Please verify, invalid value(s) to edit item ID: "%d"', 'tainacan' ), $item->get_id() ) );
 
 			$serealize_erro = (object) array('err' => array());
-			array_walk_recursive($item_metadata->get_errors(), create_function('&$v, $k, &$t', '$t->err[] = $v;'), $serealize_erro);
+			$erro = $item_metadata->get_errors();
+			array_walk_recursive($erro, function($v, $k, &$t) {$t->err[] = $v;}, $serealize_erro);
 			$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serealize_erro->err) );
 
 			return false;
@@ -235,9 +249,8 @@ class Bulk_Edit_Process extends Generic_Process {
 		$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum );
 
 		if($item_metadata->is_multiple()) {
+			$value = is_array( $value ) ? $value : [$value];
 			$item_metadata->set_value( $value );
-		} elseif(is_array($value)) {
-			$item_metadata->set_value(implode(' ', $value));
 		} else {
 			$item_metadata->set_value($value);
 		}
@@ -327,9 +340,9 @@ class Bulk_Edit_Process extends Generic_Process {
 			if($metadatum->get_id() == $metadatum_id) {
 				$values = is_array($item_metadata->get_value()) ? $item_metadata->get_value() : [$item_metadata->get_value()];
 				$pos = array_search($old_value, $values);
-				if ($pos != false) {
+				if ($pos !== false) {
 					$values[$pos] = $new_value;
-					$item_metadata->set_value( $values );
+					$item_metadata->set_value( $metadatum->is_multiple() ? $values : $values[$pos] );
 					return $this->save_item_metadata($item_metadata, $item);
 				}
 				return false;
@@ -355,11 +368,16 @@ class Bulk_Edit_Process extends Generic_Process {
 	}
 
 	private function delete_items(\Tainacan\Entities\Item $item) {
+		if ('trash' != $item->get_status() ) {
+			$this->add_error_log( sprintf( __('Items must be on trash to be deleted, item ID: "%d"', 'tainacan'), $item->get_id() ) );
+			return false;
+		}
+
 		if ( !$this->items_repository->delete($item) ) {
 			$this->add_error_log( sprintf( __('error on send to trash, item ID: "%d"', 'tainacan'), $item->get_id() ) );
 			return false;
 		}
-		return true;
+		return -1;
 	}
 
 	private function set_status(\Tainacan\Entities\Item $item) {
