@@ -193,7 +193,11 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		$args = [];
 
 		if (isset($body['items_ids']) && is_array($body['items_ids']) && !empty($body['items_ids'])) {
-			$args['items_ids'] = $body['items_ids'];
+			$collection_id = $request['collection_id'];
+			$args = [
+				'items_ids' => $body['items_ids'],
+				'collection_id' => $collection_id
+			];
 			if (isset($body['options'])) {
 				$args['options'] = $body['options'];
 			}

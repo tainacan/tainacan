@@ -40,11 +40,13 @@ class Bulk_Edit_Process extends Generic_Process {
 			$this->set_group_id($params['group_id']);
 			return;
 		}
+
+		if (!isset($params['collection_id']) || !is_numeric($params['collection_id'])) {
+			throw new \Exception('Collection ID must be informed when creating a group.');
+		}
+
 		$this->set_group_id(uniqid());
 		if (isset($params['query']) && is_array($params['query'])) {
-			if (!isset($params['collection_id']) || !is_numeric($params['collection_id'])) {
-				throw new \Exception('Collection ID must be informed when creating a group via query');
-			}
 			$bulk_params = [
 				'collection_id' 	=> $params['collection_id'],
 				'query' 	=> $params['query'],
@@ -54,6 +56,7 @@ class Bulk_Edit_Process extends Generic_Process {
 		} elseif (isset($params['items_ids']) && is_array($params['items_ids'])) {
 			$items_ids = array_filter($params['items_ids'], 'is_integer');
 			$bulk_params = [
+				'collection_id' 	=> $params['collection_id'],
 				'items_ids' => $items_ids,
 				'order' 		=> isset($params['options']['order']) ? $params['options']['order'] : 'DESC',
 				'orderby' 	=> isset($params['options']['orderby']) ? $params['options']['orderby'] : 'post_date'
@@ -80,11 +83,13 @@ class Bulk_Edit_Process extends Generic_Process {
 	}
 
 	public function get_output() {
+		$bulk_edit_options = $this->get_options();
+		$collection_id = $bulk_edit_options['collection_id'];
 		$group_id = $this->get_group_id();
 		$meta_key = $this->meta_key;
 		$url_paramenters = "metaquery[0][key]=$meta_key&metaquery[0][value][0]=$group_id&metaquery[0][compare]=IN";
 		$message = __('Bulk edit finished, view items:', 'tainacan');
-		return "$message <a href='#items?$url_paramenters'>Link</a>";
+		return "$message <a href='#/collections/$collection_id/items?$url_paramenters'>Link</a>";
 	}
 
 	public function set_bulk_edit_data($bulk_edit_data = false) {
