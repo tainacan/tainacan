@@ -573,47 +573,5 @@ class Items extends Repository {
 		return $caps;
 	}
 
-	/**
-	 * Check if $user can read the item based on the colletion
-	 *
-	 * @param Entities\Entity $entity
-	 * @param int|\WP_User|null $user default is null for the current user
-	 *
-	 * @return boolean
-	 * @throws \Exception
-	 */
-	// public function can_read( Entities\Entity $entity, $user = null ) {
-
-	// 	if ( ! $entity instanceof Entities\Item) {
-	// 		throw new InvalidArgumentException('Items::can_read() expects an Item entity as the first parameter');
-	// 	}
-
-	// 	// can read the item looking only to the item
-	// 	$can_read = parent::can_read($entity, $user);
-
-	// 	if ( $can_read ) {
-	// 		$collection = $entity->get_collection();
-	// 		$status_obj = get_post_status_object( $collection->get_status() );
-
-	// 		if ( $status_obj->public ) {
-	// 			return $can_read;
-	// 		}
-	// 	}
-
-	// 	if ( is_null($user) ) {
-	// 		$user = get_current_user_id();
-	// 	}
-
-	// 	if ( ! $user ) {
-	// 		return false;
-	// 	} elseif ( is_object( $user ) ) {
-	// 		$user = $user->ID;
-	// 	}
-
-	// 	$entity_cap = $entity->get_capabilities();
-
-	// 	return user_can( $user, $entity_cap->read_private_posts, $entity->get_id() );
-
-	// }
 
 }
