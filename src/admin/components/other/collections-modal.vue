@@ -23,6 +23,7 @@
                             class="collection-type"
                             v-for="(collection, index) in collections"
                             :key="index"
+                            v-if="collection && collection.current_user_can_edit_items"
                             @click="onSelectCollection(collection)">
                         <h4>{{ collection.name }}</h4>
                         <p>{{ collection.description.length > 200 ? (collection.description.substring(0,197) + '...') : collection.description }}</p>            

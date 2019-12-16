@@ -3,12 +3,12 @@
         <div class="repository-level-page page-container">
             <tainacan-title 
                     :bread-crumb-items="[{ path: '', label: this.$i18n.get('taxonomies') }]"/>
-            <div 
-                    class="sub-header" 
-                    v-if="$userCaps.hasCapability('edit_tainacan-taxonomies')">
+            <div class="sub-header">
 
                 <!-- New Taxonomy Button ----  -->
-                <div class="header-item">
+                <div 
+                        v-if="$userCaps.hasCapability('tnc_rep_edit_taxonomies')"
+                        class="header-item">
                     <router-link
                             id="button-create-taxonomy" 
                             tag="button" 
@@ -128,6 +128,7 @@
                         <li 
                                 v-for="(statusOption, index) of $statusHelper.getStatuses()"
                                 :key="index"
+                                v-if="statusOption.slug != 'private' || (statusOption.slug == 'private' && $userCaps.hasCapability('tnc_rep_read_private_taxonomies'))"
                                 @click="onChangeTab(statusOption.slug)"
                                 :class="{ 'is-active': status == statusOption.slug}"
                                 :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '', marginLeft: statusOption.slug == 'draft' ? 'auto' : '' }"
@@ -164,9 +165,11 @@
                     <div v-if="taxonomies.length <= 0 && !isLoading">
                         <section class="section">
                             <div class="content has-text-grey has-text-centered">
-                                <span class="icon is-medium">
-                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-terms"/>
-                                </span>
+                                <p>
+                                    <span class="icon is-medium">
+                                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms"/>
+                                    </span>
+                                </p>
                                 <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_taxonomy_created') }}</p>
                                 <p
                                         v-for="(statusOption, index) of $statusHelper.getStatuses()"
@@ -240,7 +243,7 @@
     //import moment from 'moment'
 
     export default {
-        name: 'Page',
+        name: 'TaxonomyPage',
         data(){
             return {
                 isLoading: false,

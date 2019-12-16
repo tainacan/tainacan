@@ -599,7 +599,12 @@ class CSV extends Importer {
             return false;
         }
 
-        $collection = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_definition['id']);
+		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_definition['id']);
+
+		if ( $collection instanceof Entities\Collection && ! $collection->user_can('edit_items') ) {
+			$this->add_error_log( __("You don't have permission to create items in this collection.", 'tainacan') );
+			return false;
+		}
 
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
@@ -621,6 +626,10 @@ class CSV extends Importer {
 
 		if( is_numeric($this->get_transient('item_id')) ) {
 			if ( $item instanceof Entities\Item && $item->get_id() == $this->get_transient('item_id') ) {
+				if ( ! $item->can_edit() ) {
+					$this->add_error_log("You don't have permission to edit item:" . $item->get_id() );
+					return $item;
+				}
 				$this->add_log('item will be updated ID:' . $item->get_id() );
 				$updating_item = true;
 				// When creating a new item, disable log for each metadata to speed things up

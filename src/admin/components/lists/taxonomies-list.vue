@@ -3,7 +3,9 @@
             v-if="taxonomies.length > 0 && !isLoading"
             class="table-container">
 
-        <div class="selection-control">
+        <div 
+                v-if="$userCaps.hasCapability('tnc_rep_delete_taxonomies')"
+                class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox 
@@ -14,7 +16,6 @@
             <div class="field is-pulled-right">
                 <b-dropdown
                         position="is-bottom-left"
-                        v-if="$userCaps.hasCapability('delete_tainacan-taxonomies')"
                         :disabled="!isSelecting"
                         id="bulk-actions-dropdown"
                         aria-role="list"
@@ -47,7 +48,7 @@
                 <thead>
                     <tr>
                         <!-- Checking list -->
-                        <th>
+                        <th v-if="$userCaps.hasCapability('tnc_rep_delete_taxonomies')">
                             &nbsp;
                             <!-- nothing to show on header -->
                         </th>
@@ -64,7 +65,9 @@
                             <div class="th-wrap">{{ $i18n.get('label_collections_using') }}</div>
                         </th>
                         <!-- Actions -->
-                        <th class="actions-header">
+                        <th 
+                                v-if="taxonomies.findIndex((taxonomy) => taxonomy.current_user_can_edit || taxonomy.current_user_can_delete) >= 0"
+                                class="actions-header">
                             &nbsp;
                             <!-- nothing to show on header for actions cell-->
                         </th>
@@ -77,6 +80,7 @@
                             v-for="(taxonomy, index) of taxonomies">
                         <!-- Checking list -->
                         <td 
+                                v-if="$userCaps.hasCapability('tnc_rep_delete_taxonomies')"
                                 :class="{ 'is-selecting': isSelecting }"
                                 class="checkbox-cell">
                             <b-checkbox 
@@ -140,12 +144,15 @@
                         </td>
                         <!-- Actions -->
                         <td 
+                                v-if="taxonomy.current_user_can_edit || taxonomy.current_user_can_delete"
                                 @click="onClickTaxonomy($event, taxonomy.id, index)"
-                                class="actions-cell column-default-width" 
+                                class="column-default-width"
+                                :class="{ 'actions-cell': taxonomy.current_user_can_edit || taxonomy.current_user_can_delete }" 
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
                                 <a 
                                         id="button-edit" 
+                                        v-if="taxonomy.current_user_can_edit"
                                         :aria-label="$i18n.getFrom('taxonomies','edit_item')" 
                                         @click="onClickTaxonomy($event, taxonomy.id, index)">
                                     <span
@@ -161,6 +168,7 @@
                                 </a>
                                 <a 
                                         id="button-delete" 
+                                        v-if="taxonomy.current_user_can_delete"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneTaxonomy(taxonomy.id)">
                                     <span
@@ -323,7 +331,7 @@
 
                 for (let i = 0; i < collections.length; i++) {
                     htmlList += `<a target="_blank" href=${ this.adminUrl + 'admin.php?page=tainacan_admin#' + this.$routerHelper.getCollectionPath(collections[i].id)}>${collections[i].name}</a>`;
-                    if (collections.length > 2 && i > 0 && i < collections.length - 1) {
+                    if (collections.length > 2 && i < collections.length - 1) {
                         if (i < collections.length - 2)
                             htmlList += ', '
                         else

@@ -28,7 +28,7 @@ abstract class Repository {
 	 * @var Repositories\Logs
 	 */
   protected $logs_repository;
-  
+
   private $map = [];
 
 	/**
@@ -52,7 +52,7 @@ abstract class Repository {
 	protected function __construct() {
 		add_action( 'init', array( &$this, 'register_post_type' ) );
     add_action( 'init', array( &$this, 'init_objects' ) );
-    
+
 		add_filter( 'tainacan-get-map-' . $this->get_name(), array( $this, 'get_default_properties' ) );
 	}
 
@@ -128,7 +128,7 @@ abstract class Repository {
 		$old       = '';
 
 		$diffs = [];
-		
+
 		do_action( 'tainacan-pre-insert', $obj );
 		do_action( 'tainacan-pre-insert-' . $obj->get_post_type(), $obj );
 
@@ -273,7 +273,7 @@ abstract class Repository {
 				 *
 				 * @see https://core.trac.wordpress.org/ticket/18408
 				 */
-				foreach ( $WP_Query->get_posts() as $p ) {
+				foreach ( $WP_Query->posts as $p ) {
 					$result[] = new $this->entities_type( $p->ID );
 				}
 			}
@@ -588,10 +588,10 @@ abstract class Repository {
 
 		return false;
 	}
-	
+
 	/**
 	 * Shortcut to delete($entity, false)
-	 * 
+	 *
 	 * @param Entities\Entity $entity
 	 *
 	 * @return mixed|Entity @see https://developer.wordpress.org/reference/functions/wp_delete_post/
@@ -607,24 +607,24 @@ abstract class Repository {
 	 * @return mixed|Entity @see https://developer.wordpress.org/reference/functions/wp_delete_post/
 	 */
 	public function delete( Entities\Entity $entity, $permanent = true ) {
-		
+
 		do_action( 'tainacan-pre-delete', $entity, $permanent );
 		do_action( 'tainacan-pre-delete-' . $entity->get_post_type(), $entity, $permanent );
-		
+
 		if ($permanent === true) {
 			$return = wp_delete_post( $entity->get_id(), $permanent );
 		} elseif ($permanent === false) {
 			$return = wp_trash_post( $entity->get_id() );
 		}
-		
+
 
 		if ( $return instanceof \WP_Post && $this->use_logs ) {
-			
+
 			do_action( 'tainacan-deleted', $entity, $permanent );
 			do_action( 'tainacan-deleted-' . $entity->get_post_type(), $entity, $permanent );
-			
+
 			$return = $this->get_entity_by_post($return);
-			
+
 		}
 
 		return $return;
@@ -664,7 +664,6 @@ abstract class Repository {
 		} elseif ( is_object( $user ) ) {
 			$user = $user->ID;
 		}
-		$entity     = self::get_entity_by_post( $entity );
 		$entity_cap = $entity->get_capabilities();
 
 		if ( ! isset( $entity_cap->edit_post ) ) {
@@ -701,9 +700,8 @@ abstract class Repository {
 		} elseif ( is_object( $user ) ) {
 			$user = $user->ID;
 		}
-		$entity     = self::get_entity_by_post( $entity );
 		$entity_cap = $entity->get_capabilities();
-		
+
 		if ( ! isset( $entity_cap->read ) ) {
 			if ( $entity->get_post_type() === false ) { // Allow read of not post entities
 				return true;
@@ -730,7 +728,6 @@ abstract class Repository {
 		} elseif ( is_object( $user ) ) {
 			$user = $user->ID;
 		}
-		$entity     = self::get_entity_by_post( $entity );
 		$entity_cap = $entity->get_capabilities();
 
 		if ( ! isset( $entity_cap->delete_post ) ) {
@@ -741,7 +738,7 @@ abstract class Repository {
 	}
 
 	/**
-	 * Check if $user can publish the entity
+	 * Check if $user can publish entity
 	 *
 	 * @param Entities\Entity $entity
 	 * @param int|\WP_User|null $user default is null for the current user
@@ -749,20 +746,20 @@ abstract class Repository {
 	 * @return boolean
 	 * @throws \Exception
 	 */
-	public function can_publish( $entity, $user = null ) {
+	public function can_publish(Entities\Entity $entity, $user = null) {
 		if ( is_null( $user ) ) {
 			$user = get_current_user_id();
 		} elseif ( is_object( $user ) ) {
 			$user = $user->ID;
 		}
-		$entity     = self::get_entity_by_post( $entity );
 		$entity_cap = $entity->get_capabilities();
 
-		if ( ! isset( $entity_cap->publish_posts ) ) {
+		if ( ! $user || ! isset( $entity_cap->publish_posts ) ) {
 			return false;
 		}
 
-		return user_can( $user, $entity_cap->publish_posts, $entity->get_id() );
+		return user_can( $user, $entity_cap->publish_posts );
+
 	}
 
 	/**
@@ -845,7 +842,7 @@ abstract class Repository {
 
 		return $diffs;
 	}
-	
+
 	/**
 	 * Get IDs for all children, grand children till the depth parameter is reached
 	 * @param  int|\Tainacan\Entities\Entity $id The Entity ID or object
@@ -857,17 +854,17 @@ abstract class Repository {
 		if (is_integer($id)) {
 			$object = $this->fetch($id);
 		}
-		
+
 		if ( ! $object instanceof \Tainacan\Entities\Entity) {
 			return [];
 		}
-		
+
 		global $wpdb;
 		$go_deeper = false === $depth || (is_integer($depth) && $depth > 1);
 		$new_depth = is_integer($depth) ? $depth - 1 : $depth;
-		
+
 		$children = $wpdb->get_col( $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_parent = %d AND post_type = %s", $object->get_id(), $object->get_post_type() ) );
-		
+
 		if ($go_deeper && sizeof($children) > 0) {
 			$gchildren = [];
 			foreach ($children as $child) {
@@ -877,13 +874,30 @@ abstract class Repository {
 				}
 			}
 			$children = array_merge($children, $gchildren);
-			
+
 		}
-		
+
 		return $children;
-		
+
 	}
-	
+
+	/**
+	 * Get the capabilities list for the post type of the entity
+	 *
+	 * @uses get_post_type_capabilities to get the list.
+	 *
+	 * This method is usefull for getting the capabilities of the entity post type
+	 * regardless if it has been already registered or not.
+	 *
+	 * @return object Object with all the capabilities as member variables.
+	 */
+	public function get_capabilities() {
+
+		$entity = new $this->entities_type();
+		return $entity->get_capabilities();
+
+	}
+
 }
 
 ?>

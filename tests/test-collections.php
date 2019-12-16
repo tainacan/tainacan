@@ -17,6 +17,7 @@ class Collections extends TAINACAN_UnitTestCase {
 	 * @group permissions
 	 */
 	function test_permissions () {
+		global $current_user;
 		$collection_test = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -30,7 +31,7 @@ class Collections extends TAINACAN_UnitTestCase {
 		wp_set_current_user($new_user);
 		$user_id = get_current_user_id();
 		$this->assertEquals($new_user, $user_id);
-		
+
 		$autor1 = $this->factory()->user->create(array( 'role' => 'author' ));
 		wp_set_current_user($autor1);
 		$autor1_id = get_current_user_id();
@@ -55,116 +56,31 @@ class Collections extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
+		$autor_2_user = get_userdata( $autor2 );
+		$autor_2_user->add_cap('tnc_rep_edit_collections');
+		$current_user = $autor_2_user;
 		$current_user_id = get_current_user_id();
 		$this->assertEquals($autor2, $current_user_id);
 		$this->assertFalse(current_user_can($collection_test->cap->edit_post, $collection_test->WP_Post->ID));
 		$this->assertTrue(current_user_can($collection_test2->cap->edit_post, $collection_test2->WP_Post->ID));
 		$this->assertFalse(user_can($autor2, $collection_test->cap->edit_post, $collection_test->WP_Post->ID));
-		
-        // add current user to moderators list of collection test. 
-        // Test add_moderator method and granting permissions
-        
-        $collection_test->add_moderator_id($current_user_id);
-        $collection_test->validate();
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-        
-        $collection_test = $Tainacan_Collections->insert($collection_test);
-        
-        $this->assertContains($current_user_id, $collection_test->get_moderators_ids());
-        $this->assertTrue(current_user_can($collection_test->cap->edit_post, $collection_test->WP_Post->ID));
 
-		wp_set_current_user($this->user_id);
-		$collection_test_moderator = $this->tainacan_entity_factory->create_entity(
-			'collection',
-			array(
-				'name'          	=> 'testeModerator',
-				'description'   	=> 'adasdasdsa',
-				'default_order'		=> 'DESC',
-				'moderators_ids'	=> [$autor2]
-			),
-			true
-		);
-		$this->assertEquals([$autor2], $collection_test_moderator->get_moderators_ids());
-        
-        wp_set_current_user($autor2);
-        $this->assertTrue(current_user_can($collection_test_moderator->cap->edit_post, $collection_test_moderator->WP_Post->ID));
-		$this->assertTrue($collection_test_moderator->can_edit($autor2), 'Moderators cannot edit a collection!');
-        
-        
-        // now lets test adding a moderator in a collection that already has one
-        // and then lets test remove_moderator_id method
-        
-        // first, subscriber user should not be able to edit the collection
-        $this->assertFalse(user_can($new_user, $collection_test_moderator->cap->edit_post, $collection_test_moderator->WP_Post->ID));
-        
-        // lets add him as moderator
-        $collection_test_moderator->add_moderator_id($new_user);
-        $collection_test_moderator->validate();
-        $collection_test_moderator = $Tainacan_Collections->insert($collection_test_moderator);
-        $this->assertContains($new_user, $collection_test_moderator->get_moderators_ids());
 
-        
-        // now he can edit
-        $this->assertTrue(user_can($new_user, $collection_test_moderator->cap->edit_post, $collection_test_moderator->WP_Post->ID));
-        
-        // lets remove him and check if he can no longer edit
-        $collection_test_moderator->remove_moderator_id($new_user);
-        $collection_test_moderator->validate();
-        $collection_test_moderator = $Tainacan_Collections->insert($collection_test_moderator);
-        $this->assertNotContains($new_user, $collection_test_moderator->get_moderators_ids());
-
-        
-        // now he can edit
-        $this->assertFalse(user_can($new_user, $collection_test_moderator->cap->edit_post, $collection_test_moderator->WP_Post->ID));
-        
 	}
-	
-	function test_avoid_duplicated_moderator () {
-		$collection_test = $this->tainacan_entity_factory->create_entity(
-			'collection',
-			array(
-				'name'          => 'testeCaps',
-				'description'   => 'adasdasdsa',
-				'default_order' => 'DESC'
-			),
-			true
-		);
-		$new_user = $this->factory()->user->create(array( 'role' => 'subscriber' ));
-		wp_set_current_user($new_user);
-		$user_id = get_current_user_id();
-		$this->assertEquals($new_user, $user_id);
-		
-		$autor1 = $this->factory()->user->create(array( 'role' => 'author' ));
-		wp_set_current_user($autor1);
-		$autor1_id = get_current_user_id();
-		
-		$moderators_ids = [
-			$user_id,
-			$autor1_id,
-			$user_id,
-			$autor1_id,
-		];
-		
-		$collection_test->set('moderators_ids', $moderators_ids);
-		
-		$this->assertEquals(2, sizeof( $collection_test->get_moderators_ids() ));
-		
-		
-	}
-	
+
 	function debug_meta($user = false)
 	{
 		if($user !== false) wp_set_current_user($user);
 		$data = get_userdata( get_current_user_id() );
-		
+
 		if ( is_object( $data) ) {
 			$current_user_caps = $data->allcaps;
-			
+
 			// print it to the screen
 			echo '<pre>' .print_r($data->ID, true).'\n'.print_r($data->display_name, true).'\n'. print_r( $current_user_caps, true ) . '</pre>';
 		}
 	}
-	
+
 	/**
 	 * A single example test.
 	 */
@@ -180,9 +96,9 @@ class Collections extends TAINACAN_UnitTestCase {
 		);
 
         $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-        
+
         $this->assertEquals('Tainacan\Entities\Collection', get_class($x));
-        
+
         $test = $Tainacan_Collections->fetch($x->get_id());
 
         $this->assertEquals('teste', $test->get_name());
@@ -190,7 +106,7 @@ class Collections extends TAINACAN_UnitTestCase {
         $this->assertEquals('DESC', $test->get_default_order());
         $this->assertEquals('draft', $test->get_status());
     }
-    
+
     function test_unique_slugs() {
 		$x = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -203,7 +119,7 @@ class Collections extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-        
+
         $y = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -215,9 +131,9 @@ class Collections extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-        
+
         $this->assertNotEquals($x->get_slug(), $y->get_slug());
-        
+
         // Create as draft and publish later
         $x = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -229,7 +145,7 @@ class Collections extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-        
+
         $y = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -240,9 +156,9 @@ class Collections extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-        
+
         $this->assertEquals($x->get_slug(), $y->get_slug());
-        
+
         $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
         $x->set_status('publish');
         $x->validate();
@@ -250,11 +166,11 @@ class Collections extends TAINACAN_UnitTestCase {
         $y->set_status('private'); // or publish shoud behave the same
         $y->validate();
         $y = $Tainacan_Collections->insert($y);
-        
+
         $this->assertNotEquals($x->get_slug(), $y->get_slug());
-        
+
     }
-    
+
     function test_item() {
 	    $x = $this->tainacan_entity_factory->create_entity(
 		    'collection',
@@ -282,13 +198,13 @@ class Collections extends TAINACAN_UnitTestCase {
 
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         $item = $Tainacan_Items->fetch( $i->get_id() );
-        
+
         $this->assertEquals($item->get_title(), 'item test');
         $this->assertEquals($item->get_description(), 'adasdasdsa');
         $this->assertEquals($item->get_collection_id(), $collection->get_id());
-        
+
     }
-    
+
     function test_validation() {
 	    $x = $this->tainacan_entity_factory->create_entity(
 		    'collection',
@@ -302,25 +218,25 @@ class Collections extends TAINACAN_UnitTestCase {
 
         $this->assertFalse($x->validate());
         $this->assertTrue(sizeof($x->get_errors()) > 0);
-        
+
         $x->set_default_order('ASDASD');
-        
+
         $this->assertFalse($x->validate());
         $this->assertTrue(sizeof($x->get_errors()) > 0);
-        
+
         $x->set_default_order('DESC');
         $this->assertTrue($x->validate());
         $this->assertTrue(empty($x->get_errors()));
     }
-    
+
     function test_hooks() {
     	$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
     	$this->assertTrue(has_action('init', array($Tainacan_Collections, 'register_post_type')) !== false, 'Collections Init is not registred!');
     }
-    
-	
+
+
 	function test_create_child_collection() {
-		
+
 		$x = $this->tainacan_entity_factory->create_entity(
     		'collection',
     		array(
@@ -330,7 +246,7 @@ class Collections extends TAINACAN_UnitTestCase {
     		),
     		true
     	);
-		
+
 		$col = $this->tainacan_entity_factory->create_entity(
     		'collection',
     		array(
@@ -341,17 +257,17 @@ class Collections extends TAINACAN_UnitTestCase {
     		),
     		true
     	);
-		
+
 		$Collections = \Tainacan\Repositories\Collections::get_instance();
-		
+
 		$col->set_parent($x->get_id());
 		$col->set_status('publish');
-		
+
 		$col->validate();
-		
+
 		$col = $Collections->insert($col);
-		
+
 		$this->assertEquals($x->get_id(), $col->get_parent());
-		
+
 	}
 }

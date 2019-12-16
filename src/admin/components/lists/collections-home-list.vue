@@ -2,7 +2,7 @@
     <div
             style="min-height: initial; position: relative"
             class="tainacan-cards-container">
-        <template v-if="collections.length <= 0 && !isLoading">
+        <template v-if="collections.length <= 0 && !isLoading && $userCaps.hasCapability('tnc_rep_edit_collections')">
             <ul class="new-collection-menu">
                 <li>
                     <router-link
@@ -76,6 +76,7 @@
                     :gutter="25"
                     style="width:100%;">
                 <router-link
+                        v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
                         tag="a" 
                         :to="$routerHelper.getNewCollectionPath()"
                         class="tainacan-card new-card">
@@ -170,7 +171,7 @@
                                 <!-- <span class="menu-text">{{ $i18n.get('label_settings') }}</span> -->
                             </router-link>
                         </li>
-                        <li>
+                        <li v-if="collection.current_user_can_edit_metadata">
                             <router-link  
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionMetadataPath(collection.id) }"
@@ -185,7 +186,7 @@
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
                             </router-link>
                         </li>
-                        <li>
+                        <li v-if="collection.current_user_can_edit_filters">
                             <router-link 
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionFiltersPath(collection.id) }" 
@@ -201,7 +202,7 @@
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
                             </router-link>
                         </li>
-                        <li>
+                        <li v-if="$userCaps.hasCapability('tnc_rep_read_logs')">
                             <router-link 
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionActivitiesPath(collection.id) }"

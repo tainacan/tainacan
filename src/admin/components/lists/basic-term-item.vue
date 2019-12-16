@@ -21,6 +21,7 @@
             </span>
         </span>
         <span 
+                v-if="currentUserCanEditTaxonomy"
                 class="controls" 
                 :class="{'is-disabled': isEditingTerm}">
             <a
@@ -60,7 +61,7 @@ export default {
     data(){
         return {
             isLoadingTerms: false,
-            isEditingTerm: false,
+            isEditingTerm: false
         }
     },
     props: {
@@ -68,6 +69,7 @@ export default {
         index: Number,
         taxonomyId: Number,
         order: String,
+        currentUserCanEditTaxonomy: Boolean
     },
     methods: {
         ...mapActions('taxonomy', [

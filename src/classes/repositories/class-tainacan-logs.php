@@ -164,7 +164,7 @@ class Logs extends Repository {
 			'can_export'          => true,
 			'rewrite'             => true,
 			'map_meta_cap'        => true,
-			'capability_type'     => Entities\Log::get_capability_type(),
+			'capabilities'        => (array) $this->get_capabilities(),
 			'supports'            => [
 				'title',
 				'editor',

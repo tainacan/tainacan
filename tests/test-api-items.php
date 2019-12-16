@@ -671,7 +671,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		    true
 		);
 		
-		// $metas = \Tainacan\Repositories\Metadata::get_instance()->fetch_by_collection($collection, [], 'OBJECT');
+		// $metas = \Tainacan\Repositories\Metadata::get_instance()->fetch_by_collection($collection);
 		// 
 		// foreach ($metas as $m) {
 		// 	var_dump($m->get_name());

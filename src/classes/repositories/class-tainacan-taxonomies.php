@@ -125,7 +125,7 @@ class Taxonomies extends Repository {
 			'rewrite'             => true,
 			'map_meta_cap'        => true,
 			'show_in_nav_menus'   => false,
-			'capability_type'     => Entities\Taxonomy::get_capability_type(),
+			'capabilities'        => (array) $this->get_capabilities(),
 			'supports'            => [
 				'title',
 				'editor',
@@ -206,18 +206,17 @@ class Taxonomies extends Repository {
 	 *
 	 * @param Entities\Collection $collection
 	 * @param array $args WP_Query args plus disabled_metadata
-	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
 	 *
 	 * @return array Entities\Taxonomy
 	 * @throws \Exception
 	 */
-	public function fetch_by_collection( Entities\Collection $collection, $args = [], $output = null ) {
+	public function fetch_by_collection( Entities\Collection $collection, $args = [] ) {
 		$collection_id = $collection->get_id();
 
 		$Tainacan_Metadata = Metadata::get_instance();
 		
 		// get all taxonomy metadata in this collection
-		$taxonomy_metas = $Tainacan_Metadata->fetch_by_collection($collection, ['metadata_type' => 'Tainacan\Metadata_Types\Taxonomy'], 'OBJECT');
+		$taxonomy_metas = $Tainacan_Metadata->fetch_by_collection($collection, ['metadata_type' => 'Tainacan\Metadata_Types\Taxonomy']);
 		
 		$tax_ids = [];
 		
@@ -237,7 +236,7 @@ class Taxonomies extends Repository {
 		];
 		
 		$args = array_merge($args, $newargs);
-		return $this->fetch($args, $output);
+		return $this->fetch($args, 'OBJECT');
 
 	}
 	
@@ -339,7 +338,7 @@ class Taxonomies extends Repository {
 
 		// register taxonomies to other collections considering metadata inheritance
 		foreach ( $collections as $collection ) {
-			$taxonomies = $this->fetch_by_collection($collection, ['nopaging' => true], 'OBJECT');
+			$taxonomies = $this->fetch_by_collection($collection, ['nopaging' => true]);
 			foreach ( $taxonomies as $taxonomy ) {
 				register_taxonomy_for_object_type( $taxonomy->get_db_identifier(), $collection->get_db_identifier() );
 			}
