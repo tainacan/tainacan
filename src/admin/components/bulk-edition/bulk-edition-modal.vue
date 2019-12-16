@@ -320,7 +320,7 @@
             totalItems: Array,
             objectType: String,
             selectedForBulk: Object,
-            collectionID: Number,
+            collectionID: Number
         },
         created(){
             if (this.collectionID){

@@ -259,9 +259,3 @@ export const createSequenceEditGroup = ({commit}, parameters) => {
             });
         });
 };
-
-// BULK ADD SPECIFIC
-export const setBulkAddItems = ({commit}, items) => {
-    commit('setBulkAddItems', items);
-};
-
