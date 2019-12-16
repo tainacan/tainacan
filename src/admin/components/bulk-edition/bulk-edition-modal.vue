@@ -276,6 +276,15 @@
                         </div>
                     </div>
                 </div>
+                <a 
+                        :disabled="dones.every((item) => item === true) === false"
+                        @click="addEditionCriterion()"
+                        class="has-text-right is-block add-link">
+                    <span class="icon is-small">
+                        <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                    </span>
+                    &nbsp;{{ $i18n.get('new_action') }}
+                </a>
             </div>
             <!--<pre>{{ bulkEditionProcedures }}</pre>-->
 
@@ -291,12 +300,6 @@
                     </button>
                 </p>
                 <p class="control">
-                    <button
-                            class="button is-turquoise5"
-                            :disabled="dones.every((item) => item === true) === false"
-                            @click="addEditionCriterion()">
-                            {{ $i18n.get('new_action') }}
-                    </button>
                     <button
                             :disabled="dones.every((item) => item === true) === false"
                             class="button is-success"
