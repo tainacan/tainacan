@@ -550,6 +550,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_error_deleting_taxonomy'                   => __( 'Error on deleting taxonomy', 'tainacan' ),
 	'info_error_first_value_greater'                 => __( 'First value should be lower than second value', 'tainacan' ),
 	'info_error_value_must_be_number'                => __( 'Value should be a number', 'tainacan' ),
+	'info_error_upload'							 	 => __( 'Error while uploading files.', 'tainacan' ),
 	'info_collection_deleted'                        => __( 'Collection deleted.', 'tainacan' ),
 	'info_item_deleted'                              => __( 'Item deleted.', 'tainacan' ),
 	'info_taxonomy_deleted'                          => __( 'Taxonomy deleted', 'tainacan' ),
