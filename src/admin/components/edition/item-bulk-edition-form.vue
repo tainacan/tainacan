@@ -220,7 +220,7 @@ export default {
                 // Creates draft Item
                 let data = {
                     collection_id: this.collectionId, 
-                    status: 'auto-draft', 
+                    status: 'draft', 
                     title: file.name
                 };
                 this.sendItem(data)
@@ -286,14 +286,8 @@ export default {
                 collectionID: this.collectionId
             }).then((group) => {
                 let sequenceId = group.id;
-                this.setStatusInBulk({
-                    groupID: sequenceId,
-                    collectionID: this.collectionId,
-                    bodyParams: { value: 'draft' }
-                }).then(() => {
-                    this.isCreatingSequenceEditGroup = true;
-                    this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
-                });
+                this.isCreatingSequenceEditGroup = false;
+                this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
             });
         },
         openBulkEditionModal() {
