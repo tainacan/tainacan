@@ -81,9 +81,8 @@
                 </button>
                 <button 
                         v-if="copyCount > 1 && hasCopied && newItems.length > 1"
-                        class="button is-secondary" 
-                        :class="{'is-loading': isCreatingBulkEditGroup }"
-                        @click.prevent="createBulkEditGroup()"
+                        class="button is-secondary"
+                        @click.prevent="openBulkEditionModal()"
                         type="submit">
                     {{ $i18n.get('label_bulk_edit_items') }}
                 </button>
@@ -94,6 +93,8 @@
 
 <script>
     import { mapActions } from 'vuex';
+    import BulkEditionModal from '../bulk-edition/bulk-edition-modal.vue';
+
     export default {
         name: 'ItemCopyDialog',
         props: {
@@ -112,7 +113,6 @@
                 newItems: Array,
                 copyCount: Number,
                 hasCopied: Boolean,
-                isCreatingBulkEditGroup: Boolean,
                 isCreatingSequenceEditGroup: Boolean,
             }
         },
@@ -123,8 +123,8 @@
             ]),
             ...mapActions('bulkedition', [
                 'createEditGroup',
-                'setStatusInBulk',
-                'setBulkAddItems'
+                'createSequenceEditGroup',
+                'setStatusInBulk'
             ]),
             generateCopies() {
                 this.isLoading = true;
@@ -151,7 +151,7 @@
                 let onlyItemIds = this.newItems.map(item => item.id);
 
                 this.isCreatingSequenceEditGroup = true;
-                this.createEditGroup({
+                this.createSequenceEditGroup({
                     object: onlyItemIds,
                     collectionID: this.collectionId
                 }).then((group) => {
@@ -161,29 +161,31 @@
                     this.$parent.close();
                 });
             },
-            createBulkEditGroup() {
-                // Sends to store, so we can retrieve in next page.
-                this.setBulkAddItems(this.newItems);
+            openBulkEditionModal() {
 
                 let onlyItemIds = this.newItems.map(item => item.id);
 
-                this.isCreatingBulkEditGroup = true;
-                this.createEditGroup({
-                    object: onlyItemIds,
-                    collectionID: this.collectionId
-                }).then((group) => {
-                    let groupId = group.id;
-                    this.isCreatingBulkEditGroup = false;
-                    this.$router.push({ path: this.$routerHelper.getItemMetadataBulkAddPath(this.collectionId, groupId), query: { loadCopy: true }});
-                    this.$parent.close();
+                this.$buefy.modal.open({
+                    parent: this,
+                    component: BulkEditionModal,
+                    props: {
+                        modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
+                        totalItems: onlyItemIds.length,
+                        selectedForBulk: onlyItemIds,
+                        objectType: this.$i18n.get('items'),
+                        collectionID: this.collectionId
+                    },
+                    width: 'calc(100% - 8.333333333%)',
+                    trapFocus: true
                 }); 
+
+                this.$parent.close();
             },
         },
         created() {
             this.message = this.$i18n.get('instruction_select_the_amount_of_copies');
             this.isLoading = false;
             this.hasCopied = false;
-            this.isCreatingBulkEditGroup = false;
             this.isCreatingSequenceEditGroup = false;
             this.copyCount = 1;
         },

@@ -5,11 +5,19 @@ use Tainacan\Entities;
 
 abstract class Generic_Process {
 
-	public function __construct( ) {
+	public function __construct( $attributess = array() ) {
 		$this->id = uniqid();
 		$author = get_current_user_id();
 		if($author) {
 			$this->add_transient('author', $author);
+		}
+		if (!empty($attributess)) {
+			foreach ($attributess as $attr => $value) {
+				$method = 'set_' . $attr;
+				if (method_exists($this, $method)) {
+					$this->$method($value);
+				}
+			}
 		}
 	}
 
@@ -66,7 +74,7 @@ abstract class Generic_Process {
 
 	/**
 	 * List of attributes that are saved in DB and that are used to 
-	 * reconstruct the object, this property need be overwrite in custom import/export.
+	 * reconstruct the object, this property need be overwrite.
 	 * @var array
 	 */
 	protected $array_attributes = [
@@ -271,8 +279,8 @@ abstract class Generic_Process {
 		$current_step = $this->get_current_step();
 		$steps = $this->get_steps();
 		$current_step ++;
-		$this->set_current_step($current_step);
 		if (isset($steps[$current_step])) {
+			$this->set_current_step($current_step);
 			return $current_step;
 		}
 		return false;
@@ -293,6 +301,10 @@ abstract class Generic_Process {
 		}
 
 		return $return;
+	}
+
+	public function finished() {
+		$this->add_log('finished');
 	}
 
 	/**
@@ -319,7 +331,7 @@ abstract class Generic_Process {
 			//Move on to the next step
 			$this->set_in_step_count(0);
 			$return = $this->next_step();
-		} else if(is_numeric($result) && $result > 0) {
+		} else if(is_numeric($result) && $result >= 0) {
 			$this->set_in_step_count($result);
 			$return = $result;
 		}

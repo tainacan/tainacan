@@ -22,7 +22,6 @@ import ImporterEditionForm from '../components/edition/importer-edition-form.vue
 import ImporterMappingForm from '../components/edition/importer-mapping-form.vue'
 import ItemEditionForm from '../components/edition/item-edition-form.vue'
 import ItemBulkEditionForm from '../components/edition/item-bulk-edition-form.vue'
-import ItemMetadataBulkEditionForm from '../components/edition/item-metadata-bulk-edition-form.vue'
 import TaxonomyEditionForm from '../components/edition/taxonomy-edition-form.vue'
 import ExporterEditionForm from '../components/edition/exporter-edition-form.vue'
 
@@ -53,7 +52,6 @@ const routes = [
         { path: 'items/new', name: 'CollectionItemCreatePage', component: ItemEditionForm, meta: {title: i18nGet('title_create_item_collection') } },
         { path: 'items/:itemId', name: 'ItemPage', component: ItemPage, meta: {title: i18nGet('title_item_page') } },   
         { path: 'bulk-add', name: 'CollectionItemBulkAddPage', component: ItemBulkEditionForm, meta: {title: i18nGet('title_item_bulk_add') } },
-        { path: 'bulk-add/:groupId', name: 'CollectionItemBulkAddMetadataPage', component: ItemMetadataBulkEditionForm, meta: {title: i18nGet('title_item_bulk_add') } },
         { path: 'settings', component: CollectionEditionForm,  name: 'CollectionEditionForm', meta: {title: i18nGet('title_collection_settings') } },
         { path: 'metadata', component: MetadataList, name: 'MetadataList', meta: {title: i18nGet('title_collection_metadata_edition') } },
         { path: 'filters', component: FiltersList, name: 'FiltersList', meta: {title: i18nGet('title_collection_filters_edition') } },

@@ -22,6 +22,7 @@ $rest_roles_controller    = new \Tainacan\API\EndPoints\REST_Roles_Controller();
 new \Tainacan\API\EndPoints\REST_Metadatum_Mappers_Controller();
 $rest_facets_controller         = new \Tainacan\API\EndPoints\REST_Facets_Controller();
 $rest_oaipmh_expose_controller = new \Tainacan\API\EndPoints\REST_Oaipmh_Expose_Controller();
+$rest_sequence_edit_controller = new \Tainacan\API\EndPoints\REST_Sequence_Edit_Controller();
 // Add here other endpoints imports
 
 ?>
