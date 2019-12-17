@@ -505,7 +505,7 @@ class DevInterface {
                 }
                 
                 
-                $metalist = $Tainacan_Metadata->fetch_by_collection($cpts[$post_type], [], 'OBJECT');
+                $metalist = $Tainacan_Metadata->fetch_by_collection( $cpts[$post_type] );
                 
                 foreach ($metalist as $meta) {
                     $item_meta = new \Tainacan\Entities\Item_Metadata_Entity($entity, $meta);

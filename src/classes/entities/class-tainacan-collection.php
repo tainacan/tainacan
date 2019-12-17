@@ -33,7 +33,6 @@ class Collection extends Entity {
         $cover_page_id,
         $header_image_id,
 	    $header_image,
-        $moderators_ids,
         $comment_status,
         $allow_comments;
 
@@ -145,21 +144,60 @@ class Collection extends Entity {
 	/**
 	 * Get the capabilities list for the post type of the items of this collection
 	 *
-	 * @uses get_post_type_capabilities to get the list.
-	 *
 	 * This method is usefull for getting the capabilities of the collection's items post type
 	 * regardless if it has been already registered or not.
 	 *
 	 * @return object Object with all the capabilities as member variables.
 	 */
 	function get_items_capabilities() {
-		$args = [
-			'map_meta_cap'    => true,
-			'capability_type' => $this->get_db_identifier(),
-			'capabilities'    => array()
+
+		$id = $this->get_id();
+
+		return (object) [
+			// meta
+			'edit_post' => "tnc_col_{$id}_edit_item",
+			'read_post' => "tnc_col_{$id}_read_item",
+			'delete_post' => "tnc_col_{$id}_delete_item",
+
+			// primitive
+			'edit_posts' => "tnc_col_{$id}_edit_items",
+			'edit_others_posts' => "tnc_col_{$id}_edit_others_items",
+			'publish_posts' => "tnc_col_{$id}_publish_items",
+			'read_private_posts' => "tnc_col_{$id}_read_private_items",
+			'read' => "read",
+			'delete_posts' => "tnc_col_{$id}_delete_items",
+			'delete_private_posts' => "tnc_col_{$id}_delete_items",
+			'delete_published_posts' => "tnc_col_{$id}_delete_published_items",
+			'delete_others_posts' => "tnc_col_{$id}_delete_others_items",
+			'edit_private_posts' => "tnc_col_{$id}_edit_others_items",
+			'edit_published_posts' => "tnc_col_{$id}_edit_published_items",
+			'create_posts' => "tnc_col_{$id}_edit_items"
+		];
+	}
+
+	public function get_capabilities() {
+
+		return (object) [
+			// meta
+			'edit_post' => "tnc_rep_edit_collection",
+			'read_post' => "tnc_rep_read_collection",
+			'delete_post' => "tnc_rep_delete_collection",
+
+			// primitive
+			'edit_posts' => "tnc_rep_edit_collections",
+			'edit_others_posts' => "manage_tainacan",
+			'publish_posts' => "tnc_rep_edit_collections",
+			'read_private_posts' => "tnc_rep_read_private_collections",
+			'read' => "read",
+			'delete_posts' => "tnc_rep_delete_collections",
+			'delete_private_posts' => "tnc_rep_delete_collections",
+			'delete_published_posts' => "tnc_rep_delete_collections",
+			'delete_others_posts' => "manage_tainacan",
+			'edit_private_posts' => "tnc_rep_edit_collections",
+			'edit_published_posts' => "tnc_rep_edit_collections",
+			'create_posts' => "tnc_rep_edit_collections"
 		];
 
-		return get_post_type_capabilities( (object) $args );
 	}
 
 	/**
@@ -204,7 +242,7 @@ class Collection extends Entity {
 		$sizes = get_intermediate_image_sizes();
 
         array_unshift($sizes, 'full');
-        
+
         foreach ( $sizes as $size ) {
             $thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
         }
@@ -366,7 +404,7 @@ class Collection extends Entity {
 	function get_metadata_order() {
 		return $this->get_mapped_property( 'metadata_order' );
 	}
-	
+
 	/**
 	 * Get enable cover page attribute
 	 *
@@ -375,7 +413,7 @@ class Collection extends Entity {
 	function get_enable_cover_page() {
 		return $this->get_mapped_property( 'enable_cover_page' );
 	}
-	
+
 	/**
 	 * Get Header Image ID attribute
 	 *
@@ -384,7 +422,7 @@ class Collection extends Entity {
 	function get_header_image_id() {
 		return $this->get_mapped_property( 'header_image_id' );
 	}
-	
+
 	/**
 	 * Return true if enabled cover page is set to yes
 	 *
@@ -393,7 +431,7 @@ class Collection extends Entity {
 	function is_cover_page_enabled() {
         return $this->get_enable_cover_page() === 'yes';
     }
-	
+
 	/**
 	 * Get enable cover page attribute
 	 *
@@ -410,15 +448,6 @@ class Collection extends Entity {
 	 */
 	function get_filters_order() {
 		return $this->get_mapped_property( 'filters_order' );
-	}
-
-	/**
-	 * Get collection moderators ids
-	 *
-	 * @return array
-	 */
-	function get_moderators_ids() {
-		return $this->get_mapped_property( 'moderators_ids' );
 	}
 
 	/**
@@ -445,12 +474,12 @@ class Collection extends Entity {
 	function get_metadata() {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 
-		return $Tainacan_Metadata->fetch_by_collection( $this, [], 'OBJECT' );
+		return $Tainacan_Metadata->fetch_by_collection( $this );
 	}
 
 	/**
 	 * Get the two core metadata of the collection (title and description)
-	 * 
+	 *
 	 * @return array[\Tainacan\Entities\Metadatum]
 	 */
 	function get_core_metadata() {
@@ -462,7 +491,7 @@ class Collection extends Entity {
 
 	/**
 	 * Get the Core Title Metadatum for this collection
-	 * 
+	 *
 	 * @return \Tainacan\Entities\Metadatum The Core Title Metadatum
 	 */
 	function get_core_title_metadatum() {
@@ -473,7 +502,7 @@ class Collection extends Entity {
 
 	/**
 	 * Get the Core Description Metadatum for this collection
-	 * 
+	 *
 	 * @return \Tainacan\Entities\Metadatum The Core Description Metadatum
 	 */
 	function get_core_description_metadatum() {
@@ -481,7 +510,7 @@ class Collection extends Entity {
 
 		return $repo->get_core_description_metadatum($this);
 	}
-	
+
 	/**
 	 * Checks if comments are allowed for the current Collection.
 	 * @return string "open"|"closed"
@@ -489,7 +518,7 @@ class Collection extends Entity {
 	public function get_comment_status() {
 	    return $this->get_mapped_property('comment_status');
 	}
-	
+
 	/**
 	 * Checks if comments are allowed for the current Collection Items.
 	 * @return bool
@@ -635,7 +664,7 @@ class Collection extends Entity {
 	function set_filters_order( $value ) {
 		$this->set_mapped_property( 'filters_order', $value );
 	}
-	
+
 	/**
 	 * Set enable cover page attribute
 	 *
@@ -646,7 +675,7 @@ class Collection extends Entity {
 	function set_enable_cover_page( $value ) {
 		$this->set_mapped_property( 'enable_cover_page', $value );
 	}
-	
+
 	/**
 	 * Set cover page ID
 	 *
@@ -657,7 +686,7 @@ class Collection extends Entity {
 	function set_cover_page_id( $value ) {
 		$this->set_mapped_property( 'cover_page_id', $value );
 	}
-	
+
 	/**
 	 * Set Header Image ID
 	 *
@@ -670,35 +699,14 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Set collection moderators ids
-	 *
-	 * @param [string] $value
-	 *
-	 * @return void
-	 */
-	function set_moderators_ids( $value ) {
-	    if(!is_array($value)) {
-	        if(empty($value)) {
-                $value = [];
-	        } else {
-                throw new \Exception('moderators_ids must be a array of users ids');
-	        }
-	    }
-		// make sure you never have duplicated moderators 
-		$value = array_unique($value);
-		
-		$this->set_mapped_property( 'moderators_ids', $value );
-	}
-	
-	/**
 	 * Sets if comments are allowed for the current Collection.
-	 * 
+	 *
 	 * @param $value string "open"|"closed"
 	 */
 	public function set_comment_status( $value ) {
 	    $this->set_mapped_property('comment_status', $value);
 	}
-	
+
 	/**
 	 * Sets if comments are allowed for the current Collection Items.
 	 *
@@ -707,59 +715,6 @@ class Collection extends Entity {
 	public function set_allow_comments( $value ) {
 	    $this->set_mapped_property('allow_comments', $value );
 	}
-
-	// Moderators methods
-
-	/**
-	 * Add a moderator ID to the moderators_ids list
-	 *
-	 * @param int $user_id The user ID to be added
-	 *
-	 * @return boolean Wether the ID was added or not. (if it already existed in the list it returns false)
-	 */
-	function add_moderator_id( $user_id ) {
-		if ( is_integer( $user_id ) ) {
-			$current_moderators = $this->get_moderators_ids();
-			if ( ! in_array( $user_id, $current_moderators ) ) {
-				$current_moderators[] = $user_id;
-				$this->set_moderators_ids( $current_moderators );
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Remove a moderator ID to the moderators_ids list
-	 *
-	 * @param int $user_id The user ID to be removed
-	 *
-	 * @return boolean Wether the ID was added or not. (if it did not exist in the list it returns false)
-	 */
-	function remove_moderator_id( $user_id ) {
-		if ( is_integer( $user_id ) ) {
-			$current_moderators = $this->get_moderators_ids();
-			if ( ( $key = array_search( $user_id, $current_moderators ) ) !== false ) {
-				unset( $current_moderators[ $key ] );
-				$this->set_moderators_ids( $current_moderators );
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * TODO implement the following methods to handle moderators_ids
-	 *
-	 * set_moderators
-	 * get_moderators
-	 * (the same as moderators_ids but gets and sets WP_User objects)
-	 *
-	 */
 
 	/**
 	 * Validate Collection
@@ -776,6 +731,32 @@ class Collection extends Entity {
 		}
 
 		return parent::validate();
+
+	}
+
+	/**
+	 * Checks if an user have permission on any of the collections capabilities
+	 * defined in Tainacan\Roles class.
+	 * It applies to all capabilities with 'collection' scope starting with 'tnc_col_'
+	 *
+	 * Usage: use only the suffix of the capability (after tnc_col_%d_). For example, to check if user can
+	 * tnc_col_%d_read_private_items for this collection, simply call:
+	 * $collection->user_can('read_private_items');
+	 *
+	 * @param string $capability The capability to be checked.
+	 * @param int|\WP_User|null $user the user for capability check, null for the current user
+	 * @return void
+	 */
+	public function user_can($capability, $user = null) {
+		if ( \is_null($user) ) {
+			$user = wp_get_current_user();
+		}
+
+		if ( is_int($user) || $user instanceof \WP_User ) {
+			return user_can( $user, 'tnc_col_' . $this->get_id() . '_' . $capability );
+		}
+
+		return false;
 
 	}
 

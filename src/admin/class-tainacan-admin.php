@@ -29,14 +29,11 @@ class Admin {
 	}
 
 	function add_admin_menu() {
-		$dummyEntity = new \Tainacan\Entities\Taxonomy();
-		// a capability everybody bu subscriber have.
-		// Maybe we will create a specific cap to view_admin later
-		$entity_cap = $dummyEntity->get_capabilities()->edit_posts;
+
 		$page_suffix = add_menu_page(
 			__( 'Tainacan', 'tainacan' ),
 			__( 'Tainacan', 'tainacan' ),
-			$entity_cap,
+			'read',
 			$this->menu_slug,
 			array( &$this, 'admin_page' ),
 			plugin_dir_url( __FILE__ ) . 'images/tainacan_logo_symbol.svg'
@@ -51,7 +48,17 @@ class Admin {
 			array( &$this, 'systemcheck_page' )
 		);
 
+		$roles_page_suffix = add_submenu_page(
+			$this->menu_slug,
+			__('User Roles', 'tainacan'),
+			__('User Roles', 'tainacan'),
+			'tnc_rep_edit_users',
+			'tainacan_roles',
+			array( &$this, 'roles_page' )
+		);
+
 		add_action( 'load-' . $page_suffix, array( &$this, 'load_admin_page' ) );
+		add_action( 'load-' . $roles_page_suffix, array( &$this, 'load_roles_page' ) );
 	}
 
 	function load_admin_page() {
@@ -60,6 +67,10 @@ class Admin {
 		add_action( 'admin_enqueue_scripts', array(&$this, 'add_theme_files') );
 	}
 
+	function load_roles_page() {
+		add_action( 'admin_enqueue_scripts', array( &$this, 'add_roles_css' ), 90 );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'add_roles_js' ), 90 );
+	}
 
 	function login_styles_reset( $style ) {
 		if ( strpos( $style, 'wp-admin-css' ) !== false ) {
@@ -80,6 +91,32 @@ class Admin {
 		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/fonts/tainacanicons.css', [], TAINACAN_VERSION );
 		wp_enqueue_style( 'roboto-fonts', 'https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i', [], TAINACAN_VERSION );
 		wp_enqueue_script('underscore');
+	}
+
+	function add_roles_css() {
+		global $TAINACAN_BASE_URL;
+
+		wp_enqueue_style( 'tainacan-roles-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-roles.css', [], TAINACAN_VERSION );
+	}
+
+	function add_roles_js() {
+
+		global $TAINACAN_BASE_URL;
+
+		wp_enqueue_script( 'tainacan-roles', $TAINACAN_BASE_URL . '/assets/roles-components.js', ['underscore', 'wp-i18n'], TAINACAN_VERSION, true );
+
+		$settings = $this->get_admin_js_localization_params();
+		wp_localize_script( 'tainacan-roles', 'tainacan_plugin', $settings );
+		wp_enqueue_script('underscore');
+		wp_enqueue_script('wp-i18n');
+
+		do_action('tainacan-enqueue-roles-scripts');
+	}
+
+	function roles_page() {
+		global $TAINACAN_BASE_URL;
+		// TODO move it to a separate file and start the Vue project
+		echo "<div id='tainacan-roles-app'></div>";
 	}
 
 	function add_admin_css() {
@@ -170,12 +207,9 @@ class Admin {
 		$user_caps = array();
 		$prefs     = array();
 		if ( $cur_user instanceof \WP_User ) {
-			if ( is_array( $cur_user->allcaps ) ) {
-				foreach ( $cur_user->allcaps as $cap => $bool ) {
-					if ( $bool === true ) {
-						$user_caps[] = $cap;
-					}
-				}
+			$tainacan_caps = \tainacan_roles()->get_repository_caps_slugs();
+			foreach ($tainacan_caps as $tcap) {
+				$user_caps[$tcap] = current_user_can( $tcap );
 			}
 			$prefs = get_user_meta( $cur_user->ID, 'tainacan_prefs', true );
 		}
@@ -244,9 +278,6 @@ class Admin {
 		}, $wp_post_types);
 
 		$settings['wp_post_types'] = $wp_post_types;
-
-		// add an alternative to enable select all items in all pages while we temporarly disable bulk edit for all (see #199)
-		$settings['enable_select_all_items_pages'] = defined('TAINACAN_ENABLE_SELECT_ALL_ITEMS_PAGES') ? TAINACAN_ENABLE_SELECT_ALL_ITEMS_PAGES : false;
 
 		return $settings;
 
@@ -341,6 +372,5 @@ class Admin {
 		$check = new System_Check();
 		$check->admin_page();
 	}
-
 }
 

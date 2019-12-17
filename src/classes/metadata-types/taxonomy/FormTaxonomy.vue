@@ -65,8 +65,8 @@
             </b-select>
 
         </b-field>
-
-        <b-field 
+        <b-field
+                v-if="taxonomy_id && taxonomies.length && taxonomies.find((taxonomy) => taxonomy.id == taxonomy_id).allow_insert == 'yes'" 
                 :addons="false"
                 :label="$i18n.get('label_taxonomy_allow_new_terms')">
             <b-switch

@@ -128,7 +128,7 @@ export const addTemporaryFilter = ({ commit }, filter ) => {
 
 export const updateCollectionFiltersOrder = ({ commit }, { collectionId, filtersOrder }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch('/collections/' + collectionId, {
+        axios.tainacan.patch('/collections/' + collectionId + '/filters_order?context=edit', {
             filters_order: filtersOrder
         }).then( res => {
             commit('collection/setCollection', res.data, { root: true });
@@ -167,7 +167,7 @@ export const fetchRepositoryCollectionFilters = ({ dispatch, commit } ) => {
 
     return new Promise((resolve, reject) => {
 
-        dispatch('collection/fetchCollectionsForParent', { } ,{ root: true })
+        dispatch('collection/fetchAllCollectionNames', { } ,{ root: true })
             .then((resp) => {
                 resp.request
                     .then((res) => {
@@ -225,7 +225,7 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, taxonomyId ) => {
     commit('clearTaxonomyFilters');
 
     return new Promise((resolve, reject) => {
-        dispatch('taxonomy/fetchTaxonomy', taxonomyId, { root: true })
+        dispatch('taxonomy/fetchTaxonomy', { taxonomyId: taxonomyId }, { root: true })
             .then((res) => {
                 let taxonomy = res.taxonomy;
                 if (taxonomy.collections_ids != undefined && taxonomy.collections_ids.length != undefined) {

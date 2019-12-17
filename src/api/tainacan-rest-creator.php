@@ -18,9 +18,11 @@ $rest_exporters_controller    = new \Tainacan\API\EndPoints\REST_Exporters_Contr
 $rest_background_processes_controller    = new \Tainacan\API\EndPoints\REST_Background_Processes_Controller();
 $rest_bulkedit_controller    = new \Tainacan\API\EndPoints\REST_Bulkedit_Controller();
 $rest_exposers_controller    = new \Tainacan\API\EndPoints\REST_Exposers_Controller();
+$rest_roles_controller    = new \Tainacan\API\EndPoints\REST_Roles_Controller();
 new \Tainacan\API\EndPoints\REST_Metadatum_Mappers_Controller();
 $rest_facets_controller         = new \Tainacan\API\EndPoints\REST_Facets_Controller();
 $rest_oaipmh_expose_controller = new \Tainacan\API\EndPoints\REST_Oaipmh_Expose_Controller();
+$rest_sequence_edit_controller = new \Tainacan\API\EndPoints\REST_Sequence_Edit_Controller();
 // Add here other endpoints imports
 
 ?>

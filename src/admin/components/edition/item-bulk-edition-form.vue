@@ -14,7 +14,7 @@
             <hr>
         </div>
         <form
-                v-if="!isLoading"
+                v-if="!isLoading && collection && collection.current_user_can_bulk_edit"
                 class="tainacan-form" 
                 label-width="120px">
                 
@@ -153,7 +153,7 @@
                             style="margin-left: auto;"
                             class="control">
                         <button 
-                                :disabled="!(uploadedItems.length > 0 && uploadedItems.length == amountFinished) || isCreatingBulkEditGroup"
+                                :disabled="!(uploadedItems.length > 0 && uploadedItems.length == amountFinished)"
                                 class="button is-secondary" 
                                 :class="{'is-loading': isCreatingSequenceEditGroup }"
                                 @click.prevent="sequenceEditGroup()"
@@ -161,21 +161,33 @@
                     </div>
                     <div class="control">
                         <button 
-                                :disabled="!(uploadedItems.length > 0 && uploadedItems.length == amountFinished) || isCreatingSequenceEditGroup"
+                                :disabled="!(uploadedItems.length > 0 && uploadedItems.length == amountFinished)"
                                 class="button is-secondary" 
-                                :class="{'is-loading': isCreatingBulkEditGroup }"
-                                @click.prevent="createBulkEditGroup()"
+                                @click.prevent="openBulkEditionModal()"
                                 type="submit">{{ $i18n.get('label_bulk_edit_items') }}</button>
                     </div>
                 </div>
             </footer>
         </form>
+        <template v-else-if="!isLoading && collection && !collection.current_user_can_bulk_edit">
+            <section class="section">
+                <div class="content has-text-grey has-text-centered">
+                    <p>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collection"/>
+                        </span>
+                    </p>
+                    <p>{{ $i18n.get('info_can_not_bulk_edit_items_collection') }}</p>
+                </div>
+            </section>
+        </template>
     </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
+import BulkEditionModal from '../bulk-edition/bulk-edition-modal.vue';
 
 export default {
     name: 'ItemBulkEditionForm',
@@ -183,7 +195,6 @@ export default {
         return {
             collectionId: '',
             isLoading: false,
-            isCreatingBulkEditGroup: false,
             isCreatingSequenceEditGroup: false,
             submitedFileList: [],
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
@@ -194,6 +205,9 @@ export default {
     computed: {
         uploadedFileList() {
             return this.getFiles();
+        },
+        collection() {
+            return this.getCollection()
         }
     },
     methods: {
@@ -204,6 +218,7 @@ export default {
         ]),
          ...mapGetters('collection', [
             'getFiles',
+            'getCollection'
         ]),
         ...mapActions('item', [
             'sendItem',
@@ -211,8 +226,8 @@ export default {
         ]),
         ...mapActions('bulkedition', [
             'createEditGroup',
-            'setStatusInBulk',
-            'setBulkAddItems'
+            'createSequenceEditGroup',
+            'setStatusInBulk'
         ]),
         uploadFiles() {
             
@@ -221,7 +236,7 @@ export default {
                 // Creates draft Item
                 let data = {
                     collection_id: this.collectionId, 
-                    status: 'auto-draft', 
+                    status: 'draft', 
                     title: file.name
                 };
                 this.sendItem(data)
@@ -257,12 +272,11 @@ export default {
                                     });
                             })
                             .catch((error) => {
-
                                 let index = this.uploadedItems.findIndex(existingItem => existingItem.id === item.id);
                                 if ( index >= 0)
                                     this.uploadedItems.splice(index, 1);
 
-                                item.errorMessage = error.data.message;
+                                item.errorMessage = error.data && error.data.message ? error.data.message : this.$i18n.get('info_error_upload');
                                 this.$buefy.toast.open({
                                     message: item.errorMessage + ": " + file.name,
                                     type: 'is-danger',
@@ -283,42 +297,32 @@ export default {
         sequenceEditGroup() {
             let onlyItemIds = this.uploadedItems.map(item => item.id);
             this.isCreatingSequenceEditGroup = true;
-            this.createEditGroup({
+            this.createSequenceEditGroup({
                 object: onlyItemIds,
                 collectionID: this.collectionId
             }).then((group) => {
                 let sequenceId = group.id;
-                this.setStatusInBulk({
-                    groupID: sequenceId,
-                    collectionID: this.collectionId,
-                    bodyParams: { value: 'draft' }
-                }).then(() => {
-                    this.isCreatingSequenceEditGroup = true;
-                    this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
-                });
+                this.isCreatingSequenceEditGroup = false;
+                this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
             });
         },
-        createBulkEditGroup() {
-            // Sends to store, so we can retrieve in next page.
-            this.setBulkAddItems(this.uploadedItems);
+        openBulkEditionModal() {
 
             let onlyItemIds = this.uploadedItems.map(item => item.id);
 
-            this.isCreatingBulkEditGroup = true;
-            this.createEditGroup({
-                object: onlyItemIds,
-                collectionID: this.collectionId
-            }).then((group) => {
-                let groupId = group.id;
-                this.setStatusInBulk({
-                    groupID: groupId,
-                    collectionID: this.collectionId,
-                    bodyParams: { value: 'draft' }
-                }).then(() => {
-                    this.isCreatingBulkEditGroup = false;
-                    this.$router.push(this.$routerHelper.getItemMetadataBulkAddPath(this.collectionId, groupId));
-                });
-            }); 
+            this.$buefy.modal.open({
+                parent: this,
+                component: BulkEditionModal,
+                props: {
+                    modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
+                    totalItems: onlyItemIds.length,
+                    selectedForBulk: onlyItemIds,
+                    objectType: this.$i18n.get('items'),
+                    collectionID: this.collectionId
+                },
+                width: 'calc(100% - 8.333333333%)',
+                trapFocus: true
+            });
         },
         deleteOneItem(itemId, index) {
             this.$buefy.modal.open({
@@ -347,7 +351,6 @@ export default {
         this.collectionId = this.$route.params.collectionId;
 
         this.cleanFiles();
-        this.setBulkAddItems([]);
 
         // Updates Collection BreadCrumb
         this.$root.$emit('onCollectionBreadCrumbUpdate', [

@@ -174,6 +174,9 @@
             this.$root.$on('closeAdvancedSearchShortcut', () => {
                 this.$refs.advancedSearchShortcut.toggle();
             });
+            this.$root.$on('openProcessesPopup', () => {
+                this.showProcesses = true;
+            });
         },
         beforeDestroy() {
             this.$root.$off('closeAdvancedSearchShortcut');

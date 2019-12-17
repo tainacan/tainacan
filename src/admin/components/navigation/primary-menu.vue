@@ -48,7 +48,7 @@
                     </router-link>
                 </li>
                 <li class="separator"/>
-                <li>
+                <li v-if="$userCaps.hasCapability('tnc_rep_edit_metadata')">
                     <router-link
                             tag="a"
                             to="/metadata"
@@ -67,7 +67,7 @@
                         <span class="menu-text">{{ $i18n.get('metadata') }}</span>
                     </router-link>
                 </li>
-                <li>
+                <li v-if="$userCaps.hasCapability('tnc_rep_edit_filters')">
                     <router-link
                             tag="a"
                             to="/filters"
@@ -122,6 +122,25 @@
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('activities') }}</span>
+                    </router-link>
+                </li>
+                <li v-if="$userCaps.hasCapability('tnc_rep_edit_users')">
+                    <router-link
+                            tag="a"
+                            :to="this.$routerHelper.getCapabilitiesPath()"
+                            :class="activeRoute == 'CapabilitiesPage' ? 'is-active':''">
+                        <span
+                                v-tooltip="{                                     
+                                    offset: 4,
+                                    content: isMenuCompressed ? $i18n.get('capabilities') : '',
+                                    autoHide: true,
+                                    classes: ['tooltip', 'repository-tooltip'],
+                                    placement: 'auto'
+                                }"
+                                class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-user"/>
+                        </span>
+                        <span class="menu-text">{{ $i18n.get('capabilities') }}</span>
                     </router-link>
                 </li>
                 <li>

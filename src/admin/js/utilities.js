@@ -215,6 +215,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getCollectionActivitiesPath(collectionId) {
             return '/collections/'+ collectionId + '/activities/';
         },
+        getCollectionCapabilitiesPath(collectionId) {
+            return '/collections/'+ collectionId + '/capabilities/';
+        },
         getItemsPath(query) {
             return '/items/?' + qs.stringify(query);
         },
@@ -229,6 +232,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         },
         getActivitiesPath(query) {
             return '/activities/?' + qs.stringify(query);
+        },
+        getCapabilitiesPath() {
+            return '/capabilities';
         },
         getAvailableImportersPath() {
             return '/importers';
@@ -341,10 +347,7 @@ UserCapabilitiesPlugin.install = function (Vue, options = {}) {
     
     Vue.prototype.$userCaps = {
         hasCapability(key) {
-            for (let i = 0; i < tainacan_plugin.user_caps.length; i++)
-                if (tainacan_plugin.user_caps[i] == key)
-                    return true;
-            return false;
+            return tainacan_plugin.user_caps[key];
         }
     }
 };
