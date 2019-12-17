@@ -467,7 +467,6 @@
                 color: #0073aa;
             }
             ul {
-                padding-bottom: 1rem;
                 li {
                     margin: 0 0.5rem 0.5rem;
                     display: inline-block;
