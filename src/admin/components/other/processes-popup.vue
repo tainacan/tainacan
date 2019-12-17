@@ -236,18 +236,19 @@ export default {
 
         this.showProcessesList = false;
 
-        jQuery( document ).on( 'heartbeat-tick-popup',  ( event, data ) => {
-            this.setProcesses(data.bg_process_feedback);
-        });
+        if (jQuery && jQuery( document )) {
+            jQuery( document ).on( 'heartbeat-tick-popup',  ( event, data ) => {
+                this.setProcesses(data.bg_process_feedback);
+            });
 
-        jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
-            jQuery( document ).trigger('heartbeat-tick-popup',data);
-        });
-
-
+            jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
+                jQuery( document ).trigger('heartbeat-tick-popup',data);
+            });
+        }
     },
     beforeDestroy() {
-        jQuery( document ).unbind( 'heartbeat-tick-popup')
+        if (jQuery && jQuery( document ))
+            jQuery( document ).unbind( 'heartbeat-tick-popup')
     }
 }
 </script>

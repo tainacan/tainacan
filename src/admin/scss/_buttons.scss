@@ -37,8 +37,8 @@ button.link-style:active {
     &.is-success:hover, &.is-success:focus {
         background: $success !important;
     }
-    &.is-white:hover, &.is-white:focus, &.is-outlined:hover, &.is-outlined:focus {
-        background: $white !important;
+    &.is-white, &.is-white:hover, &.is-white:focus, &.is-outlined:hover, &.is-outlined:focus {
+        background-color: transparent !important;
     }
     &:active {
         -webkit-transform: none !important;
@@ -68,7 +68,8 @@ button.link-style:active {
         background-color: white !important;
     }
     &.is-white[disabled] {
-        background-color: white !important;
+        background-color: transparent !important;
+        opacity: 0.85;
     }
 }
 .button.is-small {

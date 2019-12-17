@@ -9,6 +9,7 @@
                 v-mask="dateMask"
                 v-model="dateValue"
                 @input.native="onInput"
+                @blur="onBlur"
                 :placeholder="dateFormat.toLowerCase()" />
         <p
                 v-if="isInvalidDate && dateValue"
@@ -76,7 +77,10 @@
                 } else  {
                    this.$emit('input', [null]); 
                 }
-            }, 300)
+            }, 300),
+            onBlur() {
+                this.$emit('blur');
+            }
         }
     }
 </script>

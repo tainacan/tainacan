@@ -59,7 +59,7 @@ class Elastic_Press {
 		$array_dynamic_templates = $mapping["mappings"]["post"]["dynamic_templates"];
 		foreach ($array_dynamic_templates as $key => $dynamic_templates) {
 			if ( isset($dynamic_templates['template_meta_types'] )) {
-				$mapping["mappings"]["post"]["dynamic_templates"][$key]['template_meta_types']["mapping"]["properties"][$name_field] = ['type' => 'keyword'];
+				$mapping["mappings"]["post"]["dynamic_templates"][$key]['template_meta_types']["mapping"]["properties"][$name_field] = ['type' => 'keyword', 'normalizer' => 'lowerasciinormalizer'];
 				// $mapping["mappings"]["post"]["dynamic_templates"][$key]['template_meta_types']["mapping"]["properties"][$name_field] =
 				// 	['type' => 'nested',
 				// 	 'properties' => [
@@ -284,8 +284,8 @@ class Elastic_Press {
 						$new_sort["post_name.raw"] = $value;
 					} elseif ($key == 'post_type') {
 						$new_sort["post_type.raw"] = $value;
-					} elseif( !in_array("long", $parts) && in_array("meta", $parts) ) {
-						$new_sort["$key.sortable"] = $value;
+					// } elseif( !in_array("long", $parts) && in_array("meta", $parts) ) {
+					// 	$new_sort["$key.sortable"] = $value;
 					} else {
 						$new_sort[$key] = $value;
 					}
@@ -434,7 +434,8 @@ class Elastic_Press {
 								//"size" => $filter['max_options'],
 								"script" => [
 									"lang" 	=> "painless",
-									"source"=> "def c= [''];if(!params._source.terms.empty && params._source.$field != null){ for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
+									"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == 0) { return doc['$field.term_id'][i]; }}",
+									//"source"=> "def c= [''];if(!params._source.terms.empty && params._source.$field != null){ for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 								]
 							)
 						)
@@ -452,7 +453,8 @@ class Elastic_Press {
 								"terms"=>array(
 									"script" => [
 										"lang" 	=> "painless",
-										"source"=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if( [$terms_id_inlcude].contains(term.term_id) ) { c.add(term.term_id); }}} return c;"
+										"source" => "def c= ['']; for (int i = 0; i < doc['$field.term_id'].length; ++i) { if( [$terms_id_inlcude].contains(doc['$field.term_id'][i]) ) { c.add(doc['$field.term_id'][i]); } } return c;"
+										//"source"=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if( [$terms_id_inlcude].contains(term.term_id) ) { c.add(term.term_id); }}} return c;"
 									]
 								)
 							)
@@ -559,7 +561,8 @@ class Elastic_Press {
 								"terms" => [
 									"script" => [
 										"lang"		=> "painless",
-										"source"	=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
+										"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == 0) { return doc['$field.term_id'][i]; }}",
+										//"source"	=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 									]
 								]
 							]
@@ -575,7 +578,8 @@ class Elastic_Press {
 								"terms" => array(
 									"script" => [
 										"lang" 	=> "painless",
-										"source"=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
+										"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == 0) { return doc['$field.term_id'][i]; }}",
+										//"source"=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 									]
 								)
 							)

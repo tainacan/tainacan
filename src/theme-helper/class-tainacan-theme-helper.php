@@ -365,19 +365,25 @@ class Theme_Helper {
 			$atts
 		);
 
+		$default_view_mode = apply_filters( 'tainacan-default-view-mode-for-themes', 'masonry' );
+		$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', ['table', 'cards', 'masonry', 'slideshow'] );	
+
 		$params = '';
-		if (isset($atts['collection-id'])) {
-			$params = "collection-id=" . $atts['collection-id'];
+		if (isset($atts['collection-id']) && $atts['collection-id'] != '') {
+			$params .= "collection-id=" . $atts['collection-id'];
+			$collection = new \Tainacan\Entities\Collection($atts['collection-id']);
+			$default_view_mode = $collection->get_default_view_mode();
+			$enabled_view_modes = $collection->get_enabled_view_modes();
 		}
-		if (isset($atts['term-id'])) {
-			$params = "term-id=" . $atts['term-id'];
+		if (isset($atts['term-id']) && $atts['term-id'] != '') {
+			$params .= "term-id=" . $atts['term-id'];
 		}
-		
+
+		$params .= ' default-view-mode="' . $default_view_mode . '" ';
+		$params .= ' enabled-view-modes="' . implode(',', $enabled_view_modes) . '" ';	
+
 		$this->enqueue_scripts(true);
-
 		return "<div id='tainacan-items-page' $params ></div>";
-
-
 	}
 	
 	function get_items_list_slug() {

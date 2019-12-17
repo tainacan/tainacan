@@ -40,6 +40,10 @@
             'query.metaquery'() {
                 if (!this.isUsingElasticSearch)
                     this.loadOptions();
+            },
+            facetsFromItemSearch() {
+                if (this.isUsingElasticSearch)
+                    this.loadOptions();
             }
         },
         mounted(){           

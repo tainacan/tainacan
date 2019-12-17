@@ -3,6 +3,7 @@
 
 .block-control {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -22,15 +23,21 @@
       position: relative;
       fill: #555758; }
 
-.components-placeholder__fieldset p {
-  font-size: 0.875rem !important;
-  margin-top: -2px;
-  fill: #555758; }
-  .components-placeholder__fieldset p svg {
-    margin-right: 1rem;
-    top: 4px;
-    position: relative;
+.components-placeholder {
+  margin-bottom: 0;
+  background: #f6f6f6; }
+  .components-placeholder .components-placeholder__label {
+    margin-bottom: 0; }
+  .components-placeholder .components-placeholder__fieldset p {
+    font-size: 0.875rem !important;
+    margin: 12px 0;
+    color: #454647;
     fill: #555758; }
+    .components-placeholder .components-placeholder__fieldset p svg {
+      margin-right: 1rem;
+      top: 4px;
+      position: relative;
+      fill: #555758; }
 
 .wp-block-tainacan-modal {
   width: 50%; }
@@ -111,6 +118,9 @@
     .wp-block-tainacan-modal .modal-checkbox-list .components-base-control,
     .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-base-control {
       overflow: hidden; }
+    .wp-block-tainacan-modal .modal-checkbox-list svg.dashicon.components-checkbox-control__checked,
+    .wp-block-tainacan-modal .modal-radio-list .components-base-control__field svg.dashicon.components-checkbox-control__checked {
+      fill: black; }
     .wp-block-tainacan-modal .modal-checkbox-list .modal-checkbox-list-item,
     .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option,
     .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item,
@@ -159,10 +169,15 @@
       color: #454647; }
 
 .wp-block-tainacan-collections-list {
-  margin: 2rem 0px; }
+  margin: 2rem auto; }
   .wp-block-tainacan-collections-list .components-spinner {
     position: absolute;
     right: 0; }
+  .wp-block-tainacan-collections-list ul.collections-list li.collection-list-item > button,
+  .wp-block-tainacan-collections-list ul.collections-list li.collection-list-item > button:hover {
+    display: none;
+    visibility: hidden;
+    opacity: 0; }
   .wp-block-tainacan-collections-list ul.collections-list.collections-list-without-margin,
   .wp-block-tainacan-collections-list ul.collections-list-edit.collections-list-without-margin {
     grid-template-columns: repeat(auto-fill, 185px);

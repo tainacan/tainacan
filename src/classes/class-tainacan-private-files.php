@@ -235,6 +235,7 @@ class Private_Files {
 				$mime_type = \Tainacan\Media::get_instance()->get_mime_content_type($existing_file);
 
 				if ($item instanceof \Tainacan\Entities\Item && $item->can_read()) {
+					http_response_code(200); //header("HTTP/1.1 200 Ok");
 					//header('Content-Description: File Transfer');
 					//header('Content-Type: application/octet-stream');
 					header("Content-type: " . $mime_type);

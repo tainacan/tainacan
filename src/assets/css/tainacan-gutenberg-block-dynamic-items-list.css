@@ -3,6 +3,7 @@
 
 .block-control {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -22,15 +23,21 @@
       position: relative;
       fill: #555758; }
 
-.components-placeholder__fieldset p {
-  font-size: 0.875rem !important;
-  margin-top: -2px;
-  fill: #555758; }
-  .components-placeholder__fieldset p svg {
-    margin-right: 1rem;
-    top: 4px;
-    position: relative;
+.components-placeholder {
+  margin-bottom: 0;
+  background: #f6f6f6; }
+  .components-placeholder .components-placeholder__label {
+    margin-bottom: 0; }
+  .components-placeholder .components-placeholder__fieldset p {
+    font-size: 0.875rem !important;
+    margin: 12px 0;
+    color: #454647;
     fill: #555758; }
+    .components-placeholder .components-placeholder__fieldset p svg {
+      margin-right: 1rem;
+      top: 4px;
+      position: relative;
+      fill: #555758; }
 
 .wp-block-tainacan-modal {
   width: 50%; }
@@ -111,6 +118,9 @@
     .wp-block-tainacan-modal .modal-checkbox-list .components-base-control,
     .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-base-control {
       overflow: hidden; }
+    .wp-block-tainacan-modal .modal-checkbox-list svg.dashicon.components-checkbox-control__checked,
+    .wp-block-tainacan-modal .modal-radio-list .components-base-control__field svg.dashicon.components-checkbox-control__checked {
+      fill: black; }
     .wp-block-tainacan-modal .modal-checkbox-list .modal-checkbox-list-item,
     .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option,
     .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item,
@@ -159,7 +169,7 @@
       color: #454647; }
 
 .wp-block-tainacan-dynamic-items-list {
-  margin: 2rem 0px; }
+  margin: 2rem auto; }
   .wp-block-tainacan-dynamic-items-list .spinner-container {
     min-height: 56px;
     padding: 1rem;
@@ -167,6 +177,8 @@
     justify-content: center;
     align-items: center;
     color: #555758; }
+  .wp-block-tainacan-dynamic-items-list:hover .components-resizable-box__handle {
+    display: block; }
 @-webkit-keyframes skeleton-animation {
   0% {
     opacity: 1.0; }
@@ -224,12 +236,13 @@
       .wp-block-tainacan-dynamic-items-list .dynamic-items-collection-header .collection-name h3 {
         color: white;
         text-decoration: none;
-        font-size: 1.3rem; }
+        font-size: 1.3em;
+        margin: 0; }
         .wp-block-tainacan-dynamic-items-list .dynamic-items-collection-header .collection-name h3:hover {
           text-decoration: none; }
       .wp-block-tainacan-dynamic-items-list .dynamic-items-collection-header .collection-name span.label {
         font-weight: normal;
-        font-size: 1rem; }
+        font-size: 0.75em; }
       .wp-block-tainacan-dynamic-items-list .dynamic-items-collection-header .collection-name.only-collection-name {
         justify-content: center;
         padding: 1rem; }
@@ -337,60 +350,28 @@
         width: 100%;
         border: 1px solid #cbcbcb;
         box-shadow: none; }
-  .wp-block-tainacan-dynamic-items-list ul.items-list.items-list-without-margin,
-  .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-list-without-margin {
+  .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-list.items-list-without-margin,
+  .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list.items-list-without-margin,
+  .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid.items-list-without-margin,
+  .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid.items-list-without-margin {
     grid-template-columns: repeat(auto-fill, 185px);
     justify-content: center !important;
     grid-template-rows: auto !important;
     list-style: none; }
-    .wp-block-tainacan-dynamic-items-list ul.items-list.items-list-without-margin li,
-    .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-list-without-margin li {
+    .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-list.items-list-without-margin li,
+    .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list.items-list-without-margin li,
+    .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid.items-list-without-margin li,
+    .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid.items-list-without-margin li {
       margin-top: 0 !important;
       margin-right: 0 !important;
       margin-left: 0 !important;
       height: 185px !important; }
-      .wp-block-tainacan-dynamic-items-list ul.items-list.items-list-without-margin li img,
-      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-list-without-margin li img {
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-list.items-list-without-margin li img,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list.items-list-without-margin li img,
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid.items-list-without-margin li img,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid.items-list-without-margin li img {
         height: 185px !important;
         margin-bottom: 0px !important; }
-  .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid,
-  .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid {
-    padding: 0;
-    flex-wrap: wrap;
-    display: flex;
-    display: -ms-grid;
-    display: grid;
-    -ms-grid-columns: 220px 220px 220px 220px 220px;
-    grid-template-columns: repeat(auto-fill, 220px);
-    grid-gap: 0px;
-    justify-content: space-evenly;
-    list-style-type: none; }
-    .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item,
-    .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item {
-      position: relative;
-      display: block;
-      margin: 12px 12px 24px 12px;
-      margin-bottom: 12px;
-      width: 185px; }
-      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item a,
-      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item a {
-        color: #454647;
-        font-weight: bold;
-        line-height: normal; }
-      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item img,
-      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item img {
-        height: auto;
-        width: 185px;
-        min-width: 185px;
-        padding: 0px;
-        margin-bottom: 0.5rem; }
-      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item a.item-without-title span,
-      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item a.item-without-title span {
-        display: none; }
-      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item:hover a,
-      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item:hover a {
-        color: #454647;
-        text-decoration: none; }
   .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item {
     display: flex;
     align-items: flex-start; }
@@ -420,6 +401,45 @@
     .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item:hover button:hover {
       background-color: white !important;
       border: 1px solid #cbcbcb !important; }
+  .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid,
+  .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid {
+    padding: 0;
+    flex-wrap: wrap;
+    display: flex;
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: 220px 220px 220px 220px 220px;
+    grid-template-columns: repeat(auto-fill, 220px);
+    grid-gap: 0px;
+    justify-content: space-evenly;
+    list-style-type: none;
+    margin: 0; }
+    .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item,
+    .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item {
+      position: relative;
+      display: block;
+      margin: 12px 12px 24px 12px;
+      margin-bottom: 12px;
+      width: 185px; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item a,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item a {
+        color: #454647;
+        font-weight: bold;
+        line-height: normal; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item img,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item img {
+        height: auto;
+        width: 185px;
+        min-width: 185px;
+        padding: 0px;
+        margin-bottom: 0.5rem; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item a.item-without-title span,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item a.item-without-title span {
+        display: none; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item:hover a,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item:hover a {
+        color: #454647;
+        text-decoration: none; }
   @media only screen and (max-width: 498px) {
     .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid,
     .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid {
@@ -436,7 +456,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    list-style-type: none; }
+    list-style-type: none;
+    margin: 0; }
     .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-list li.item-list-item,
     .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list li.item-list-item {
       position: relative;
@@ -487,5 +508,389 @@
         .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list li.item-list-item {
           min-width: calc(100% - 24px);
           width: calc(100% - 24px); } }
+  .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic,
+  .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic {
+    width: auto;
+    display: flex;
+    list-style: none;
+    min-height: 280px;
+    margin: 0; }
+    .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container,
+    .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container {
+      padding: 0;
+      justify-content: stretch;
+      flex-wrap: wrap;
+      display: flex;
+      display: -ms-grid;
+      display: grid;
+      -ms-grid-columns: 150px 150px 150px;
+      grid-template-columns: repeat(3, 150px);
+      grid-auto-flow: dense;
+      width: 100%;
+      list-style-type: none; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container:not(:first-of-type),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container:not(:first-of-type) {
+        margin-left: 0 !important; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container li.item-list-item {
+        flex-grow: 1;
+        justify-self: stretch;
+        position: relative;
+        min-width: 100%;
+        background-size: cover;
+        background-position: center;
+        margin: 0; }
+        .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container li.item-list-item a,
+        .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container li.item-list-item a {
+          width: 100%;
+          height: 100%;
+          display: block;
+          color: #454647;
+          font-weight: bold;
+          line-height: normal; }
+        .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container li.item-list-item img,
+        .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container li.item-list-item img {
+          display: none; }
+        .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container li.item-list-item a span,
+        .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container li.item-list-item a span {
+          display: block;
+          position: absolute;
+          background: rgba(255, 255, 255, 0.75);
+          bottom: 0;
+          opacity: 0;
+          padding: 8px 12px;
+          word-break: break-word;
+          transition: opacity 0.5s ease; }
+        .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container li.item-list-item:hover a span,
+        .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container li.item-list-item:hover a span {
+          opacity: 1; }
+        .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container li.item-list-item a.item-without-title span,
+        .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container li.item-list-item a.item-without-title span {
+          display: none; }
+        .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container li.item-list-item:hover a,
+        .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container li.item-list-item:hover a {
+          color: #454647;
+          text-decoration: none; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--1-2x3 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--1-2x3 li.item-list-item {
+        grid-row: span 2;
+        grid-column: span 3; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--2-2x3 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--2-2x3 li.item-list-item {
+        grid-row: span 1;
+        grid-column: span 3; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-2x3 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-2x3 li.item-list-item:nth-of-type(1) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-2x3 li.item-list-item:nth-of-type(1), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-2x3 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-2x3 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-2x3 li.item-list-item:nth-of-type(3) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-2x3 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-2x3 li.item-list-item:nth-of-type(2) {
+        grid-row: span 2;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--1-3x2 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--1-3x2 li.item-list-item {
+        grid-row: span 3;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--2-3x2 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--2-3x2 li.item-list-item {
+        grid-row: span 3;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-3x2 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-3x2 li.item-list-item:nth-of-type(1) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-3x2 li.item-list-item:nth-of-type(1), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-3x2 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-3x2 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-3x2 li.item-list-item:nth-of-type(3) {
+        grid-row: span 2;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-3x2 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-3x2 li.item-list-item:nth-of-type(3) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--1-3x3 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--1-3x3 li.item-list-item {
+        grid-row: span 3;
+        grid-column: span 3; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--2-3x3 li.item-list-item:first-of-type,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--2-3x3 li.item-list-item:first-of-type {
+        grid-row: span 1;
+        grid-column: span 3; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--2-3x3 li.item-list-item:last-of-type,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--2-3x3 li.item-list-item:last-of-type {
+        grid-row: span 2;
+        grid-column: span 3; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-3x3 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-3x3 li.item-list-item:nth-of-type(1) {
+        grid-row: span 2;
+        grid-column: span 3; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-3x3 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-3x3 li.item-list-item:nth-of-type(3) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-3x3 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-3x3 li.item-list-item:nth-of-type(1) {
+        grid-row: span 2;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-3x3 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-3x3 li.item-list-item:nth-of-type(2) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-3x3 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-3x3 li.item-list-item:nth-of-type(3) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-3x3 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-3x3 li.item-list-item:nth-of-type(1) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-3x3 li.item-list-item:nth-of-type(4),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-3x3 li.item-list-item:nth-of-type(4) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-3x3 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-3x3 li.item-list-item:nth-of-type(3) {
+        grid-row: span 2;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-3x3 li.item-list-item:nth-of-type(4), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-3x3 li.item-list-item:nth-of-type(6),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-3x3 li.item-list-item:nth-of-type(4),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-3x3 li.item-list-item:nth-of-type(6) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--1-3x4 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--1-3x4 li.item-list-item {
+        grid-row: span 3;
+        grid-column: span 4; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--2-3x4 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--2-3x4 li.item-list-item {
+        grid-row: span 3;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-3x4 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-3x4 li.item-list-item:nth-of-type(1) {
+        grid-row: span 3;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-3x4 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-3x4 li.item-list-item:nth-of-type(2) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-3x4 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-3x4 li.item-list-item:nth-of-type(3) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-3x4 li.item-list-item:nth-of-type(1), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-3x4 li.item-list-item:nth-of-type(4),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-3x4 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-3x4 li.item-list-item:nth-of-type(4) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-3x4 li.item-list-item:nth-of-type(2), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-3x4 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-3x4 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-3x4 li.item-list-item:nth-of-type(3) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-3x4 li.item-list-item:nth-of-type(1), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-3x4 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-3x4 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-3x4 li.item-list-item:nth-of-type(3) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-3x4 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-3x4 li.item-list-item:nth-of-type(2) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-3x4 li.item-list-item:nth-of-type(2), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-3x4 li.item-list-item:nth-of-type(6),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-3x4 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-3x4 li.item-list-item:nth-of-type(6) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-3x4 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-3x4 li.item-list-item:nth-of-type(3) {
+        grid-row: span 2;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-3x4 li.item-list-item:nth-of-type(4),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-3x4 li.item-list-item:nth-of-type(4) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--1-4x3 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--1-4x3 li.item-list-item {
+        grid-row: span 4;
+        grid-column: span 3; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--2-4x3 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--2-4x3 li.item-list-item {
+        grid-row: span 2;
+        grid-column: span 3; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-4x3 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-4x3 li.item-list-item:nth-of-type(1) {
+        grid-row: span 2;
+        grid-column: span 3; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-4x3 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-4x3 li.item-list-item:nth-of-type(2) {
+        grid-row: span 2;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-4x3 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-4x3 li.item-list-item:nth-of-type(3) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-4x3 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-4x3 li.item-list-item:nth-of-type(1) {
+        grid-row: span 2;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-4x3 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-4x3 li.item-list-item:nth-of-type(2) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-4x3 li.item-list-item:nth-of-type(4),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-4x3 li.item-list-item:nth-of-type(4) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-4x3 li.item-list-item:nth-of-type(2), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-4x3 li.item-list-item:nth-of-type(4),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-4x3 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-4x3 li.item-list-item:nth-of-type(4) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-4x3 li.item-list-item:nth-of-type(5),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-4x3 li.item-list-item:nth-of-type(5) {
+        grid-row: span 2;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-4x3 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-4x3 li.item-list-item:nth-of-type(2) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-4x3 li.item-list-item:nth-of-type(3), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-4x3 li.item-list-item:nth-of-type(6),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-4x3 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-4x3 li.item-list-item:nth-of-type(6) {
+        grid-row: span 2;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-4x3 li.item-list-item:nth-of-type(5),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-4x3 li.item-list-item:nth-of-type(5) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--1-4x5 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--1-4x5 li.item-list-item {
+        grid-row: span 4;
+        grid-column: span 5; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--2-4x5 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--2-4x5 li.item-list-item {
+        grid-row: span 2;
+        grid-column: span 5; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-4x5 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-4x5 li.item-list-item:nth-of-type(1) {
+        grid-row: span 2;
+        grid-column: span 5; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-4x5 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-4x5 li.item-list-item:nth-of-type(2) {
+        grid-row: span 2;
+        grid-column: span 3; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-4x5 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-4x5 li.item-list-item:nth-of-type(3) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-4x5 li.item-list-item:nth-of-type(1), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-4x5 li.item-list-item:nth-of-type(4),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-4x5 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-4x5 li.item-list-item:nth-of-type(4) {
+        grid-row: span 2;
+        grid-column: span 3; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-4x5 li.item-list-item:nth-of-type(2), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-4x5 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-4x5 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-4x5 li.item-list-item:nth-of-type(3) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-4x5 li.item-list-item:nth-of-type(3), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-4x5 li.item-list-item:nth-of-type(5),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-4x5 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-4x5 li.item-list-item:nth-of-type(5) {
+        grid-row: span 2;
+        grid-column: span 3; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-4x5 li.item-list-item:nth-of-type(4),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-4x5 li.item-list-item:nth-of-type(4) {
+        grid-row: span 3;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-4x5 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-4x5 li.item-list-item:nth-of-type(1) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-4x5 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-4x5 li.item-list-item:nth-of-type(3) {
+        grid-row: span 3;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-4x5 li.item-list-item:nth-of-type(5),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-4x5 li.item-list-item:nth-of-type(5) {
+        grid-row: span 2;
+        grid-column: span 3; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-4x5 li.item-list-item:nth-of-type(6),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-4x5 li.item-list-item:nth-of-type(6) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--1-5x4 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--1-5x4 li.item-list-item {
+        grid-row: span 5;
+        grid-column: span 4; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--2-5x4 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--2-5x4 li.item-list-item {
+        grid-row: span 5;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-5x4 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-5x4 li.item-list-item:nth-of-type(1) {
+        grid-row: span 3;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-5x4 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-5x4 li.item-list-item:nth-of-type(2) {
+        grid-row: span 5;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-5x4 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-5x4 li.item-list-item:nth-of-type(3) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-5x4 li.item-list-item:nth-of-type(1), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-5x4 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-5x4 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-5x4 li.item-list-item:nth-of-type(3) {
+        grid-row: span 3;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-5x4 li.item-list-item:nth-of-type(2), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-5x4 li.item-list-item:nth-of-type(4),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-5x4 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-5x4 li.item-list-item:nth-of-type(4) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-5x4 li.item-list-item:nth-of-type(1), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-5x4 li.item-list-item:nth-of-type(3), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-5x4 li.item-list-item:nth-of-type(5),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-5x4 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-5x4 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-5x4 li.item-list-item:nth-of-type(5) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-5x4 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-5x4 li.item-list-item:nth-of-type(2) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-5x4 li.item-list-item:nth-of-type(4),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-5x4 li.item-list-item:nth-of-type(4) {
+        grid-row: span 3;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-5x4 li.item-list-item:nth-of-type(1), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-5x4 li.item-list-item:nth-of-type(5),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-5x4 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-5x4 li.item-list-item:nth-of-type(5) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-5x4 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-5x4 li.item-list-item:nth-of-type(2) {
+        grid-row: span 3;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-5x4 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-5x4 li.item-list-item:nth-of-type(3) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-5x4 li.item-list-item:nth-of-type(4), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-5x4 li.item-list-item:nth-of-type(6),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-5x4 li.item-list-item:nth-of-type(4),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-5x4 li.item-list-item:nth-of-type(6) {
+        grid-row: span 2;
+        grid-column: span 1; }
+  @media only screen and (max-width: 1024px) {
+    .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic,
+    .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic {
+      overflow-x: auto; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container {
+        min-width: 240px; } }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-dynamic-items-list.css.map */
