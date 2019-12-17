@@ -80,20 +80,17 @@
                             type="text"
                             disabled />
 
-                    <!-- Replace or Redefine in case of multiple -->
+                    <!-- Replace -->
                     <template
                             v-if="bulkEditionProcedures[criterion] &&
-                             bulkEditionProcedures[criterion].metadatumID &&
-                             (bulkEditionProcedures[criterion].action == editionActionsForMultiple.replace ||
-                             (bulkEditionProcedures[criterion].action == editionActionsForMultiple.redefine &&
-                              getMetadataByID(bulkEditionProcedures[criterion].metadatumID).multiple == 'yes'))">
+                                bulkEditionProcedures[criterion].metadatumID &&
+                                bulkEditionProcedures[criterion].action == editionActionsForMultiple.replace">
 
                         <component
                                 :forced-component-type="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
-                                 .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                    .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
                                 :allow-new="false"
-                                :allow-select-to-create="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
-                                 .metadata_type_options.allow_new_terms === 'yes'"
+                                :allow-select-to-create="false"
                                 :maxtags="1"
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
@@ -109,11 +106,18 @@
                             </small>
                         </div>
 
-                        <b-input
+                        <component
+                                :forced-component-type="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
+                                    .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                :allow-new="false"
+                                :allow-select-to-create="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
+                                    .metadata_type_options.allow_new_terms === 'yes'"
+                                :maxtags="1"
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
+                                :is="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component"
+                                :metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID)}"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
-                                type="text"
                                 @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
                         />
                     </template>
