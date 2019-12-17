@@ -16,7 +16,7 @@
 
                 <span
                         style="margin-left: 10px"
-                        v-if="enableSelectAllItemsPages == true && allItemsOnPageSelected && items.length > 1">
+                        v-if="allItemsOnPageSelected && items.length > 1">
                     <b-checkbox
                             v-model="isAllItemsSelected">
                         {{ $i18n.getWithVariables('label_select_all_%s_items', [totalItems]) }}
@@ -930,8 +930,7 @@ export default {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             cursorPosX: -1,
             cursorPosY: -1,
-            contextMenuItem: null,
-            enableSelectAllItemsPages: tainacan_plugin.enable_select_all_items_pages
+            contextMenuItem: null
         }
     },
     mixins: [ dateInter ],
