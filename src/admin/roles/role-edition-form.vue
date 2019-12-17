@@ -449,12 +449,16 @@
         color: #e69810;
     }
     .capabilities-list {
-        padding: 1rem;
-        break-inside: avoid;
-        column-count: 5;
+        padding: 1rem 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
 
         .capability-group {
+            padding: 1rem 1rem 1rem 0rem;
+            margin-right: auto;
             break-inside: avoid;
+            
             h3 {
                 margin-top: 0;
                 margin-bottom: 1rem;
@@ -467,20 +471,12 @@
                 li {
                     margin: 0 0.5rem 0.5rem;
                     display: inline-block;
+                    white-space: nowrap;
+                    .column-name {
+                        white-space: nowrap;
+                    }
                 }
             }
-        }
-        @media only screen and (max-width: 1600px) {
-            column-count: 4;
-        }
-        @media only screen and (max-width: 1400px) {
-            column-count: 3;
-        }
-        @media only screen and (max-width: 962px) {
-            column-count: 2;
-        }
-        @media only screen and (max-width: 568px) {
-            column-count: 1;
         }
     }
     @media only screen and (max-width: 783px) {
