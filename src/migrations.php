@@ -414,10 +414,6 @@ class Migrations {
 
 	}
 
-	static function init_default_roles() {
-		\tainacan_roles()->init_default_roles();
-	}
-
 	static function update_repository_rename_document_index_meta_key() {
 		global $wpdb;
 		$wpdb->query( "UPDATE $wpdb->postmeta SET meta_key = 'document_content_index' WHERE meta_key = '_document_content_index'");
@@ -426,6 +422,27 @@ class Migrations {
 	static function refresh_rewrite_rules_attachment_pages() {
 		// needed after we added the /tainacan_attachments url
 		flush_rewrite_rules(false);
+	}
+
+	static function init_new_default_roles_and_migrate_users() {
+		remove_role('tainacan-administrator');
+		remove_role('tainacan-editor');
+		remove_role('tainacan-author');
+
+		\tainacan_roles()->init_default_roles();
+
+		$q = new \WP_User_Query([
+			'role' => 'tainacan-contributor'
+		]);
+
+		$contribs = $q->get_results();
+
+		foreach ( $contribs as $contrib ) {
+			$contrib->set_role('tainacan-author');
+		}
+
+		remove_role('tainacan-contributor');
+
 	}
 
 }
