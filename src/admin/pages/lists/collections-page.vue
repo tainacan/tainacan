@@ -3,12 +3,12 @@
         <b-loading :active.sync="isLoading"/>
         <tainacan-title 
                 :bread-crumb-items="[{ path: '', label: this.$i18n.get('collections') }]"/>
-        <div
-                class="sub-header"
-                v-if="$userCaps.hasCapability('edit_tainacan-collections')">
+        <div class="sub-header">
             
             <!-- New Collection button -->
-            <div class="header-item">
+            <div 
+                    v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
+                    class="header-item">
                 <b-dropdown 
                         aria-role="list"
                         id="collection-creation-options-dropdown"
@@ -162,6 +162,7 @@
                     <li 
                             v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
                             :key="index"
+                            v-if="statusOption.slug != 'private' || (statusOption.slug == 'private' && $userCaps.hasCapability('tnc_rep_read_private_collections'))"
                             @click="onChangeTab(statusOption.slug)"
                             :class="{ 'is-active': status == statusOption.slug}"
                             :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
@@ -201,7 +202,7 @@
                         <div class="content has-text-grey has-text-centered">
                             <p>
                                 <span class="icon is-large">
-                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-collections" />
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collections" />
                                 </span>
                             </p>
                             <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_collection_created') }}</p>
@@ -212,7 +213,7 @@
                                 {{ $i18n.get('info_no_collections_' + statusOption.slug) }}
                             </p>
 
-                            <div v-if="$userCaps.hasCapability('edit_tainacan-collections') && status == undefined || status == ''">
+                            <div v-if="$userCaps.hasCapability('tnc_rep_edit_collections') && status == undefined || status == ''">
                                 <b-dropdown 
                                         :disabled="isLoadingMetadatumMappers"
                                         id="collection-creation-options-dropdown"

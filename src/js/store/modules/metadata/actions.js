@@ -136,7 +136,7 @@ export const cleanMetadata = ({commit}) => {
 
 export const updateCollectionMetadataOrder = ({ commit }, {collectionId, metadataOrder}) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch('/collections/' + collectionId, {
+        axios.tainacan.patch('/collections/' + collectionId + '/metadata_order?context=edit', {
             metadata_order: metadataOrder
         }).then(res => {
             commit('collection/setCollection', res.data, { root: true });

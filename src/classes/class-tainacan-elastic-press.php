@@ -140,7 +140,7 @@ class Elastic_Press {
 				
 				if ($col) {
 					
-					$metadata = $Tainacan_Metadata->fetch_by_collection($col, ['posts_per_page' => -1], 'OBJECT');
+					$metadata = $Tainacan_Metadata->fetch_by_collection($col, ['posts_per_page' => -1]);
 
 					foreach ($metadata as $meta) {
 						$meta_ids[] = $meta->get_id();
@@ -200,7 +200,7 @@ class Elastic_Press {
 				
 				foreach ( $args['post_type'] as $cpt ) {
 					$col = $Tainacan_Collections->fetch_by_db_identifier($cpt);
-					$_filters = $Tainacan_Filters->fetch_by_collection($col, ['posts_per_page' => -1], 'OBJECT');
+					$_filters = $Tainacan_Filters->fetch_by_collection($col, ['posts_per_page' => -1]);
 					foreach ($_filters as $filter) {
 						$include = [];
 						$filter_id = $filter->get_id();
@@ -229,7 +229,7 @@ class Elastic_Press {
 							
 							if( isset($args['meta_query']) ) {
 								foreach( $args['meta_query'] as $metaquery ) {
-									if( $metaquery['key'] == $metadatum_id ){
+									if( isset($metaquery['key']) && $metaquery['key'] == $metadatum_id ){
 										$include = is_array($metaquery['value']) ? $metaquery['value'] : [$metaquery['value']];
 									}
 								}
@@ -434,7 +434,7 @@ class Elastic_Press {
 								//"size" => $filter['max_options'],
 								"script" => [
 									"lang" 	=> "painless",
-									"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == 0) { return doc['$field.term_id'][i]; }}",
+									"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
 									//"source"=> "def c= [''];if(!params._source.terms.empty && params._source.$field != null){ for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 								]
 							)
@@ -502,7 +502,8 @@ class Elastic_Press {
 			}
 
 		}
-		$formatted_args['aggs'] = $aggs;
+		if(!empty($aggs))
+			$formatted_args['aggs'] = $aggs;
 		return $formatted_args;
 	}
 
@@ -561,7 +562,7 @@ class Elastic_Press {
 								"terms" => [
 									"script" => [
 										"lang"		=> "painless",
-										"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == 0) { return doc['$field.term_id'][i]; }}",
+										"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
 										//"source"	=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 									]
 								]
@@ -578,7 +579,7 @@ class Elastic_Press {
 								"terms" => array(
 									"script" => [
 										"lang" 	=> "painless",
-										"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == 0) { return doc['$field.term_id'][i]; }}",
+										"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
 										//"source"=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 									]
 								)
@@ -625,7 +626,8 @@ class Elastic_Press {
 
 			$aggs[$id]['composite']['after'] = [$id => $filter['last_term'] ];
 		}
-		$formatted_args['aggs'] = $aggs;
+		if(!empty($aggs))
+			$formatted_args['aggs'] = $aggs;
 		return $formatted_args;
 	}
 
@@ -635,6 +637,10 @@ class Elastic_Press {
 	private function format_aggregations_items($aggregations) {
 		global $wpdb;
 		$formated_aggs = [];
+
+		if( empty($aggregations) )
+			return $formated_aggs;
+
 		foreach($aggregations as $key => $aggregation) {
 			$description_types = \explode(".", $key);
 			$filter_id = $description_types[0];
@@ -705,6 +711,10 @@ class Elastic_Press {
 	private function format_aggregations_facet($aggregations) {
 		global $wpdb;
 		$formated_aggs = ['values'=>[]];
+
+		if( empty($aggregations) )
+			return $formated_aggs;
+
 		foreach($aggregations as $key => $aggregation) {
 			$description_types = \explode(".", $key);
 			if($description_types[0] == 'taxonomy') {

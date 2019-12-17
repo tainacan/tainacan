@@ -7,6 +7,7 @@ module.exports = {
     entry: {
         user_search: './src/admin/js/theme-main.js',
         user_admin: './src/admin/js/main.js',
+        roles: './src/admin/js/roles-main.js',
 
         gutenberg_terms_list: './src/gutenberg-blocks/tainacan-terms/terms-list/index.js',
         

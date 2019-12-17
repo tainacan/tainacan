@@ -13,6 +13,9 @@ class Items extends Repository {
 
 	private static $instance = null;
 
+	// temporary variable used to filter items query
+	private $fetching_from_collections = [];
+
 	public static function get_instance() {
 		if ( ! isset( self::$instance ) ) {
 			self::$instance = new self();
@@ -23,8 +26,6 @@ class Items extends Repository {
 
 	protected function __construct() {
 		parent::__construct();
-		add_filter( 'posts_where', array( &$this, 'title_in_posts_where' ), 10, 2 );
-		add_filter( 'posts_where', array( &$this, 'content_in_posts_where' ), 10, 2 );
 		add_filter( 'comments_open', [$this, 'hook_comments_open'], 10, 2);
 		add_action( 'tainacan-api-item-updated', array( &$this, 'hook_api_updated_item' ), 10, 2 );
 		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
@@ -172,16 +173,16 @@ class Items extends Repository {
 			$collection->register_collection_item_post_type();
 		}
 
-		// register taxonomies 
+		// register taxonomies
 		if ( is_array( $taxonomies ) && sizeof( $taxonomies ) > 0 ) {
 			foreach ( $taxonomies as $taxonomy ) {
 				$taxonomy->tainacan_register_taxonomy();
 			}
 		}
-		
+
 		// register taxonomies to collections considering metadata inheritance
 		$Tainacan_Taxonomies->register_taxonomies_for_all_collections();
-		
+
 	}
 
 	public function insert( $item ) {
@@ -195,7 +196,7 @@ class Items extends Repository {
 	 * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
 	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
 	 * appropriate WP_Query argument
-	 * 
+	 *
 	 * If a number is passed to $args, it will return a \Tainacan\Entities\Item object.  But if the post is not found or
 	 * does not match the entity post type, it will return an empty array
 	 *
@@ -213,7 +214,7 @@ class Items extends Repository {
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
 		if ( is_numeric( $args ) ) {
-			
+
 			$existing_post = get_post( $args );
 			if ( $existing_post instanceof \WP_Post ) {
 				try {
@@ -227,8 +228,20 @@ class Items extends Repository {
 
 		}
 
+		$no_collection_set = false;
+
+		/**
+		 * We can not user $collections->fetch() here because facets
+		 * filter wp_query to just return the query and not the results
+		 * See Repositories\Metadata::fetch_all_metadatum_values()
+		 *
+		 * Conceptually, it's a good idea that a fetch() method like this only
+		 * produces one WP_Query request
+		 */
 		if ( empty( $collections ) ) {
+			$no_collection_set = true;
 			$post_types = get_post_types();
+
 			$collections = array_map( function($el) use ($Tainacan_Collections) {
 				if ( $id = $Tainacan_Collections->get_id_by_db_identifier($el) ) {
 					return $id;
@@ -258,15 +271,13 @@ class Items extends Repository {
 
 		foreach ( $collections_objects as $collection ) {
 			/**
-			 * If no specific status is defined in the query, WordPress will fetch
-			 * public items and private items for users withe the correct permission.
-			 *
-			 * If a collection is private, it must have the same behavior, despite its
-			 * items are public or not.
+			 * If no specific collection was queried, we will fetch
+			 * mimick WordPress behavior and return only collections current user can read
 			 */
-			if ( ! isset( $args['post_status'] ) ) {
+			if ( $no_collection_set) {
 				$status_obj = get_post_status_object( $collection->get_status() );
 				if ( $status_obj->public || current_user_can( $collection->cap->read_private_posts ) ) {
+
 					$cpt[] = $collection->get_db_identifier();
 				}
 			} else {
@@ -275,20 +286,46 @@ class Items extends Repository {
 
 		}
 
+		$this->fetching_from_collections = $collections_objects;
 
 		if ( empty( $cpt ) ) {
 			$cpt[] = 'please-return-nothing';
 		}
 
-		//TODO: get collection order and order by options
-
 		$args = $this->parse_fetch_args( $args );
 
 		$args['post_type'] = $cpt;
-		
+
+		// If no orderby was passed, or if only one orderby parameter is passed
+		// we add a second criteria to order by ID and make sure items are always returned in the same order
+		// See #337
+		if ( ! isset($args['orderby']) ) {
+			$args['orderby'] = 'post_date';
+		}
+		if ( ! isset($args['order']) ) {
+			$args['order'] = 'DESC';
+		}
+		if ( is_string( $args['orderby'] ) ) {
+			$new_order = [
+				$args['orderby'] => $args['order'],
+				'ID' => 'DESC'
+			];
+			$args['orderby'] = $new_order;
+		}
+
 		$args = apply_filters( 'tainacan_fetch_args', $args, 'items' );
 
+		$should_filter = is_user_logged_in() && ! isset($args['post_status']) && sizeof($cpt) > 1;
+
+		if ( $should_filter ) {
+			add_filter('posts_where', [$this, '_filter_where'], 10, 2);
+		}
+
 		$wp_query = new \WP_Query( $args );
+
+		if ( $should_filter ) {
+			remove_filter('posts_where', [$this, '_filter_where']);
+		}
 
 		return $this->fetch_output( $wp_query, $output );
 	}
@@ -315,67 +352,68 @@ class Items extends Repository {
 		return $this->fetch( $args, $collections )->get_posts();
 	}
 
+	/**
+	 * When querying posts without explictly asking for a post_status, WordPress will
+	 * check current user capabilities and return posts user can read based on read_private_posts capabilities.
+	 *
+	 * However, when querying for multiple post types, WordPress does not handle a per post type permission check. It either
+	 * return only public posts or all private posts if read_private_multiple_post_types cap is present.
+	 *
+	 * This hook fixes this, modifying the where clause.
+	 *
+	 * @param string $where the wehere clause
+	 * @param \WP_Query $wp_query
+	 * @return string The modified where clause
+	 */
+	public function _filter_where($where, $wp_query) {
+		global $wpdb;
+		$clauses = [];
+		$user_id = get_current_user_id();
+
+		foreach ($this->fetching_from_collections as $collection) {
+
+			$read_private_cap = $collection->get_items_capabilities()->read_private_posts;
+
+			$clause = '(';
+
+				$clause .= "{$wpdb->posts}.post_type = '{$collection->get_db_identifier()}' AND (";
+
+					// public status
+					$public_states = get_post_stati( array( 'public' => true ) );
+					$status_clause = [];
+					foreach ( (array) $public_states as $state ) {
+						$status_clause[] = "{$wpdb->posts}.post_status = '$state'";
+					}
+					$clause .= implode(' OR ', $status_clause);
+
+					// private statuses
+					$private_states = get_post_stati( array( 'private' => true ) );
+					foreach ( (array) $private_states as $state ) {
+						$clause .= current_user_can( $read_private_cap ) ? " OR {$wpdb->posts}.post_status = '$state'" : " OR {$wpdb->posts}.post_author = $user_id AND {$wpdb->posts}.post_status = '$state'";
+					}
+
+				$clause .= ')';
+
+
+			$clause .= ')';
+
+			$clauses[] = $clause;
+
+		}
+
+		$final = '(' . implode(' OR ', $clauses) . ')';
+
+		// find post_type and post_status queries. They always come one right after another
+		$regexp = '/(' . $wpdb->posts . '\.post_type.+AND \(' . $wpdb->posts . '\.post_status.+\))/';
+
+		return \preg_replace($regexp, $final, $where);
+
+	}
+
 	public function update( $object, $new_values = null ) {
 		return $this->insert( $object );
 	}
 
-
-	/**
-	 * allow wp query filter post by array of titles
-	 *
-	 * @param $where
-	 * @param $wp_query
-	 *
-	 * @return string
-	 */
-	public function title_in_posts_where( $where, $wp_query ) {
-		global $wpdb;
-		if ( $post_title_in = $wp_query->get( 'post_title_in' ) ) {
-			if ( is_array( $post_title_in ) && isset( $post_title_in['value'] ) ) {
-				$quotes = [];
-				foreach ( $post_title_in['value'] as $title ) {
-					$quotes[] = " $wpdb->posts.post_title  LIKE  '%" . esc_sql( $wpdb->esc_like( $title ) ) . "%'";
-				}
-			}
-
-			// retrieve only posts for the specified collection and status
-			$type   = " $wpdb->posts.post_type = '" . $wp_query->get( 'post_type' )[0] . "' ";
-			$status = " ( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'private') ";
-			$where  .= ' ' . $post_title_in['relation'] . '( ( ' . implode( ' OR ', $quotes ) . ' ) AND ' .
-			           $status . ' AND  ' . $type . ' )';
-		}
-
-		return $where;
-	}
-
-	/**
-	 * allow wp query filter post by array of content
-	 *
-	 * @param $where
-	 * @param $wp_query
-	 *
-	 * @return string
-	 */
-	public function content_in_posts_where( $where, $wp_query ) {
-		global $wpdb;
-		if ( $post_content_in = $wp_query->get( 'post_content_in' ) ) {
-			if ( is_array( $post_content_in ) && isset( $post_content_in['value'] ) ) {
-				$quotes = [];
-				foreach ( $post_content_in['value'] as $title ) {
-					$quotes[] = " $wpdb->posts.post_content  LIKE  '%" . esc_sql( $wpdb->esc_like( $title ) ) . "%'";
-				}
-			}
-
-			// retrieve only posts for the specified collection and status
-			$type   = " $wpdb->posts.post_type = '" . $wp_query->get( 'post_type' )[0] . "' ";
-			$status = " ( $wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_status = 'private') ";
-			$where  .= ' ' . $post_content_in['relation'] . '( ( ' . implode( ' OR ', $quotes ) . ' ) AND ' .
-			           $status . ' AND  ' . $type . ' )';
-		}
-
-		return $where;
-	}
-	
 	/**
 	 * generate a content of document to index.
 	 *
@@ -480,23 +518,23 @@ class Items extends Repository {
 	}
 
 	/**
-	 * Return if comment are open for this item (post_id) and the collection too 
-	 * 
+	 * Return if comment are open for this item (post_id) and the collection too
+	 *
 	 * @param bool $open_comment
 	 * @param integer $post_id Item id
 	 * @return bool
 	 */
 	public function hook_comments_open($open_comment, $post_id) {
 	    $item = self::get_entity_by_post($post_id);
-	    
+
 	    if($item != false && $item instanceof Entities\Item) {
     	    $collection = $item->get_collection();
     	    if( $collection->get_allow_comments() !== 'open' ) return false;
 	    }
-	    
+
 	    return $open_comment;
 	}
-	
+
 	/**
 	 * Filter to handle special permissions
 	 *
@@ -505,10 +543,9 @@ class Items extends Repository {
 	 */
 	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
 
-		// Filters meta caps edit_tainacan-collection and check if user is moderator
-		
-		if ( $cap == 'read_post' && is_array( $args ) && array_key_exists( 0, $args ) ) { 
-			
+		// Even if the item is public, user must have read_private_posts if the collection is private
+		if ( $cap == 'read_post' && is_array( $args ) && array_key_exists( 0, $args ) ) {
+
 			$entity = $args[0];
 
 			if ( is_numeric( $entity ) || $entity instanceof Entities\Item ) {
@@ -518,65 +555,23 @@ class Items extends Repository {
 				}
 
 				if ( $entity instanceof Entities\Item ) {
-					
+
 					$collection = $entity->get_collection();
-					
+
 					if ( $collection instanceof Entities\Collection ) {
 						$status_obj = get_post_status_object( $collection->get_status() );
 						if ( ! $status_obj->public ) {
-							$caps[] = $entity->get_capabilities()->read_private_posts;
+							$caps[] = $collection->get_capabilities()->read_private_posts;
 						}
 					}
-					
-					
+
+
 				}
 			}
 		}
 
 		return $caps;
 	}
-	
-	/**
-	 * Check if $user can read the item based on the colletion
-	 *
-	 * @param Entities\Entity $entity
-	 * @param int|\WP_User|null $user default is null for the current user
-	 *
-	 * @return boolean
-	 * @throws \Exception
-	 */
-	public function can_read( Entities\Entity $entity, $user = null ) {
-		
-		if ( ! $entity instanceof Entities\Item) {
-			throw new InvalidArgumentException('Items::can_read() expects an Item entity as the first parameter');
-		}
-		
-		// can read the item looking only to the item
-		$can_read = parent::can_read($entity, $user);
-		
-		if ( $can_read ) {
-			$collection = $entity->get_collection();
-			$status_obj = get_post_status_object( $collection->get_status() );
-			
-			if ( $status_obj->public ) {
-				return $can_read;
-			}
-		}
-		
-		if ( is_null($user) ) {
-			$user = get_current_user_id();
-		}
-		
-		if ( ! $user ) {
-			return false;
-		} elseif ( is_object( $user ) ) {
-			$user = $user->ID;
-		}
-		
-		$entity_cap = $entity->get_capabilities();
-		
-		return user_can( $user, $entity_cap->read_private_posts, $entity->get_id() );
-		
-	}
+
 
 }

@@ -62,7 +62,9 @@
                             <option :value="undefined">
                                 {{ $i18n.get('label_select_metadatum') }}
                             </option>
-                            <option :value="'create_metadata' + index">
+                            <option
+                                    v-if="collection && collection.current_user_can_edit_metadata"
+                                    :value="'create_metadata' + index">
                                 {{ $i18n.get('label_create_metadatum') }}
                             </option>
                             <option
@@ -158,7 +160,7 @@
                         </div>
                     </b-modal>
                     <a
-                            v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata.length > 0"
+                            v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
                             class="is-inline is-pulled-right add-link has-text-secondary"
                             @click="createNewMetadatum()">
                         <span class="icon">
@@ -300,6 +302,7 @@ export default {
             },
             importerType: '',
             importerName: '',
+            collection: undefined,
             importerSourceInfo: null,
             collections: [],
             collectionMetadata: [],
@@ -351,6 +354,9 @@ export default {
         ]),
         ...mapGetters('bgprocess', [
             'getProcess'
+        ]),
+        ...mapActions('collection', [
+            'fetchCollectionBasics'
         ]),
         loadImporter() {
             
@@ -589,6 +595,11 @@ export default {
         });
 
         this.loadImporter();
+
+        this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
+            .then((collection) => {
+                this.collection = collection;
+            });
     },
     beforeDestroy() {
         // Cancels previous Request
