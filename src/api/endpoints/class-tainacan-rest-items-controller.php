@@ -88,6 +88,17 @@ class REST_Items_Controller extends REST_Controller {
 			)
 		);
 		register_rest_route(
+			$this->namespace, '/' . $this->rest_base . '/(?P<item_id>[\d]+)/attachments',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_item_attachments'),
+					'permission_callback' => array($this, 'get_item_attachments_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
+				)
+			)
+		);
+		register_rest_route(
 			$this->namespace, '/' . $this->rest_base,
 			array(
 				array(
@@ -281,6 +292,61 @@ class REST_Items_Controller extends REST_Controller {
 	 * @param \WP_REST_Request $request
 	 *
 	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function get_item_attachments( $request ) {
+		$item_id = $request['item_id'];
+
+		$item = $this->items_repository->fetch($item_id);
+
+		if (! $item instanceof Entities\Item) {
+			return new \WP_REST_Response([
+		    	'error_message' => __('An item with this ID was not found', 'tainacan' ),
+			    'item_id' => $item_id
+		    ], 400);
+		}
+
+		$args = $this->prepare_filters($request);
+
+		// fixed args
+		$args['post_parent'] = $item_id;
+		$args['post_type'] = 'attachment';
+		$args['post_status'] = 'any';
+		unset($args['perm']);
+
+		$posts_query  = new \WP_Query();
+		$query_result = $posts_query->query( $args );
+
+		$attachments = array();
+		foreach ( $query_result as $post ) {
+
+			$sizes = get_intermediate_image_sizes();
+			$thumbs = [];
+
+			foreach ( $sizes as $size ) {
+				$thumbs[$size] = wp_get_attachment_image_src( $post->ID, $size );
+			}
+
+			$attachments[] = [
+				'title' => get_the_title( $post ),
+				'description' => get_the_content( $post ),
+				'mime' => $post->post_mime_type,
+				'date' => $post->post_date,
+				'date_gmt' => $post->post_date_gmt,
+				'author' => $post->post_author,
+				'url' => wp_get_attachment_url( $post->ID ),
+				'thumbnails' => $thumbs
+			];
+
+
+		}
+
+		return new \WP_REST_Response(apply_filters('tainacan-rest-response', $attachments, $request), 200);
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
 	 * @throws \Exception
 	 */
 	public function get_items( $request ) {
@@ -410,6 +476,21 @@ class REST_Items_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function get_item_permissions_check( $request ) {
+		$item = $this->items_repository->fetch($request['item_id']);
+
+		if(($item instanceof Entities\Item)) {
+			return $item->can_read();
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return bool|\WP_Error
+	 */
+	public function get_item_attachments_permissions_check( $request ) {
 		$item = $this->items_repository->fetch($request['item_id']);
 
 		if(($item instanceof Entities\Item)) {
