@@ -76,6 +76,9 @@
                 if (this.isUsingElasticSearch)
                     this.loadOptions();
             },
+            'query.metaquery'() {
+                this.loadOptions();
+            },
             'query.taxquery'() {
                 this.loadOptions();
             }

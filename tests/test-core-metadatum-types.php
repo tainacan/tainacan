@@ -115,7 +115,7 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
             true
         );
 
-        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection ) ;
 
         foreach ( $metadata as $index => $metadatum ){
             if ( $metadatum->get_metadata_type_object()->get_core() && $metadatum->get_metadata_type_object()->get_related_mapped_prop() == 'title') {
@@ -150,7 +150,7 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
             true
         );
 
-        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection ) ;
 
         foreach ( $metadata as $index => $metadatum ){
             if ( $metadatum->get_metadata_type_object()->get_core() && $metadatum->get_metadata_type_object()->get_related_mapped_prop() == 'title') {

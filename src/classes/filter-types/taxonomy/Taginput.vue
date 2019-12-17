@@ -56,6 +56,9 @@
         watch: {
             'query.taxquery'() {
                 this.updateSelectedValues();
+            },
+            'query.metaquery'() {
+                this.loadOptions();
             }
         },
         mounted() {

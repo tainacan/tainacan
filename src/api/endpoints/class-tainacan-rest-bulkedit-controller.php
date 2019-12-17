@@ -178,15 +178,16 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		);
 	}
 
-	public function bulk_edit_permissions_check($request) {
-		$collection = $this->collections_repository->fetch($request['collection_id']);
+    public function bulk_edit_permissions_check($request) {
+        $collection = $this->collections_repository->fetch($request['collection_id']);
+		$bulk_cap = 'tnc_col_' . $request['collection_id'] . '_bulk_edit';
 
 		if ($collection instanceof Entities\Collection) {
-			return current_user_can($collection->get_items_capabilities()->edit_others_posts);
-		}
+            return current_user_can($bulk_cap) && current_user_can($collection->get_items_capabilities()->edit_others_posts);
+        }
 
-		return false;
-	}
+        return false;
+    }
 
 	public function create_item($request) {
 		$body = json_decode($request->get_body(), true);

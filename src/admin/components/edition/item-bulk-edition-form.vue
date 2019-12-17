@@ -14,7 +14,7 @@
             <hr>
         </div>
         <form
-                v-if="!isLoading"
+                v-if="!isLoading && collection && collection.current_user_can_bulk_edit"
                 class="tainacan-form" 
                 label-width="120px">
                 
@@ -169,6 +169,18 @@
                 </div>
             </footer>
         </form>
+        <template v-else-if="!isLoading && collection && !collection.current_user_can_bulk_edit">
+            <section class="section">
+                <div class="content has-text-grey has-text-centered">
+                    <p>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collection"/>
+                        </span>
+                    </p>
+                    <p>{{ $i18n.get('info_can_not_bulk_edit_items_collection') }}</p>
+                </div>
+            </section>
+        </template>
     </div>
 </template>
 
@@ -193,6 +205,9 @@ export default {
     computed: {
         uploadedFileList() {
             return this.getFiles();
+        },
+        collection() {
+            return this.getCollection()
         }
     },
     methods: {
@@ -203,6 +218,7 @@ export default {
         ]),
          ...mapGetters('collection', [
             'getFiles',
+            'getCollection'
         ]),
         ...mapActions('item', [
             'sendItem',

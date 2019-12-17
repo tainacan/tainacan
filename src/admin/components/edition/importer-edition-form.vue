@@ -42,11 +42,13 @@
                                     :placeholder="$i18n.get('instruction_select_a_target_collection')">
                                 <option
                                         v-for="collection of collections"
+                                        v-if="collection.current_user_can_edit_items"
                                         :key="collection.id"
                                         :value="collection.id">{{ collection.name }}
                                 </option>
                             </b-select>
                             <router-link
+                                    v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
                                     tag="a" 
                                     class="add-link"     
                                     :to="{ path: $routerHelper.getNewCollectionPath(), query: { fromImporter: true }}">
@@ -216,7 +218,7 @@ export default {
             'runImporter'
         ]),
         ...mapActions('collection', [
-            'fetchCollectionsForParent'
+            'fetchAllCollectionNames'
         ]),
         createImporter() {
             // Puts loading on Draft Importer creation
@@ -386,7 +388,7 @@ export default {
         loadCollections() {
             // Generates options for target collection
             this.isFetchingCollections = true;
-            this.fetchCollectionsForParent()
+            this.fetchAllCollectionNames()
                 .then((resp) => {
                     resp.request.then((collections) => {
                         this.collections = collections;
@@ -403,7 +405,7 @@ export default {
         },
         onSelectCollection(collectionId) {
             this.collectionId = collectionId;
-            this.mappedCollection['id'] = collectionId;    
+            this.mappedCollection['id'] = collectionId;
         }
     },
     created() {

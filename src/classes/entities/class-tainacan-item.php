@@ -706,5 +706,4 @@ class Item extends Entity {
 		$id = $this->get_id();
 		return admin_url("?page=tainacan_admin#/collections/$collection_id/items/$id/edit");
 	}
-
 }

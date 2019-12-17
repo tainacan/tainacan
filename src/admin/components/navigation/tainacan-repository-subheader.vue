@@ -4,7 +4,7 @@
             class="level secondary-page"
             :class="{'is-menu-compressed': isMenuCompressed, 'is-repository-level' : isRepositoryLevel}">
         <h1 v-if="isRepositoryLevel">{{ repositoryName }}</h1>
-        <h1 v-else>{{ $i18n.get('collection') + '' }} <span class="has-text-weight-bold">{{ collectionName }}</span></h1>
+        <h1 v-else>{{ $i18n.get('collection') + '' }} <span class="has-text-weight-bold">{{ collection && collection.name ? collection.name : '' }}</span></h1>
 
         <ul class="repository-subheader-icons">
             <li
@@ -40,9 +40,9 @@
                             classes: ['header-tooltips']
                         }">
                 <a
-                        :href="collectionURL"
+                        :href="collection && collection.url ? collection.url : ''"
                         target="_blank"
-                        v-if="!isRepositoryLevel"
+                        v-if="!isRepositoryLevel && collection && collection.url"
                         class="button"
                         id="view-collection-button">
                 <span class="icon">
@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 import AvailableExportersModal from '../other/available-exporters-modal.vue';
 
 export default {
@@ -98,28 +98,13 @@ export default {
         isRepositoryLevel: true
     },
     computed: {
-        collectionName() {
-            return this.getCollectionName();
-        },
-        collectionURL() {
-            return this.getCollectionURL();
-        }
-    },
-    watch: {
-        '$route'  (to, from) {
-            if (!this.isRepositoryLevel && from.path != undefined && to.path != from.path) {
-                this.collectionId = this.$route.params.collectionId;
-                this.fetchCollectionNameAndURL(this.collectionId);
-            }
+        collection() {
+            return this.getCollection();
         }
     },
     methods: {
-        ...mapActions('collection', [
-            'fetchCollectionNameAndURL'
-        ]),
         ...mapGetters('collection', [
-            'getCollectionName',
-            'getCollectionURL'
+            'getCollection'
         ]),
         openAvailableExportersModal(){
 

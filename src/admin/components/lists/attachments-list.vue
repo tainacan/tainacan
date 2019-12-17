@@ -40,9 +40,11 @@
             <div v-if="(totalAttachments <= 0 || !totalAttachments) && !isLoading">
                 <section class="section">
                     <div class="content has-text-grey has-text-centered">
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-attachments"/>
-                        </span>
+                        <p>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-attachments"/>
+                            </span>
+                        </p>
                         <p>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
                     </div>
                 </section>

@@ -34,6 +34,9 @@
         watch: {
             'query.metaquery'() {
                 this.updateSelectedValues();
+            },
+            'query.taxquery'() {
+                this.updateSelectedValues();
             }
         },
         methods: {

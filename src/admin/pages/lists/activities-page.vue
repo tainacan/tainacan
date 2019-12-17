@@ -132,12 +132,24 @@
                 </div>
 
                 <activities-list
-                        v-if="tab != 'processes'"
+                        v-if="tab != 'processes' && $userCaps.hasCapability('tnc_rep_read_logs')"
                         :is-loading="isLoading"
                         :total-activities="totalActivities"
                         :page="activitiesPage"
                         :activities-per-page="activitiesPerPage"
                         :activities="activities"/>
+                <template v-if="tab != 'processes' && !$userCaps.hasCapability('tnc_rep_read_logs')">
+                    <section class="section">
+                        <div class="content has-text-grey has-text-centered">
+                            <p>
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities"/>
+                                </span>
+                            </p>
+                            <p>{{ $i18n.get('info_can_not_read_activities') }}</p>
+                        </div>
+                    </section>
+                </template>
 
                 <processes-list
                         v-if="tab == 'processes'"
@@ -153,7 +165,7 @@
                         <div class="content has-text-grey has-text-centered">
                             <p>
                                 <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-activities"/>
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities"/>
                                 </span>
                             </p>
                             <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_process') }}</p>

@@ -3,7 +3,7 @@
 
         <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
         <div
-                v-if="collectionId"
+                v-if="collectionId && collection && collection.current_user_can_edit_items && collection.current_user_can_bulk_edit"
                 class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
@@ -28,7 +28,7 @@
                 <b-dropdown
                         :mobile-modal="true"
                         position="is-bottom-left"
-                        v-if="items.length > 0 && items[0].current_user_can_edit"
+                        v-if="items.length > 0"
                         :disabled="selectedItems.length <= 1"
                         id="bulk-actions-dropdown"
                         aria-role="list"
@@ -43,19 +43,19 @@
                     </button>
 
                     <b-dropdown-item
-                            v-if="$route.params.collectionId && $userCaps.hasCapability('edit_others_posts') && !isOnTrash"
+                            v-if="$route.params.collectionId && !isOnTrash"
                             @click="openBulkEditionModal()"
                             aria-role="listitem">
                         {{ $i18n.get('label_bulk_edit_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            v-if="$route.params.collectionId && $userCaps.hasCapability('edit_others_posts') && !isOnTrash"
+                            v-if="$route.params.collectionId && !isOnTrash"
                             @click="sequenceEditSelectedItems()"
                             aria-role="listitem">
                         {{ $i18n.get('label_sequence_edit_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            v-if="collectionId"
+                            v-if="collectionId && collection && collection.current_user_can_delete_items"
                             @click="deleteSelectedItems()"
                             id="item-delete-selected-items"
                             aria-role="listitem">
@@ -136,7 +136,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !$route.query.readmode"
+                            v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="grid-item-checkbox">
                         <b-checkbox
@@ -147,7 +147,7 @@
 
                     <!-- Title -->
                     <div
-                            :style="{ 'padding-left': !collectionId ? '0.5rem !important' : '2.75rem' }"
+                            :style="{ 'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0.5rem !important' : '2.75rem' }"
                             class="metadata-title">
                         <p
                                 v-tooltip="{
@@ -213,9 +213,9 @@
                             </span>
                         </a>
                         <a
-                                v-if="collectionId"
-                                id="button-delete"
-                                :aria-label="$i18n.get('label_button_delete')"
+                                v-if="item.current_user_can_delete"
+                                id="button-delete" 
+                                :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
                             <span
                                     v-tooltip="{
@@ -253,7 +253,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !$route.query.readmode"
+                            v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="masonry-item-checkbox">
                         <label
@@ -271,7 +271,7 @@
                     <!-- Title -->
                     <div
                             :style="{
-                                'padding-left': !collectionId ? '0 !important' : '1rem'
+                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0 !important' : '1rem'
                             }"
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)"
@@ -326,9 +326,9 @@
                             </span>
                         </a>
                         <a
-                                v-if="collectionId"
-                                id="button-delete"
-                                :aria-label="$i18n.get('label_button_delete')"
+                                v-if="item.current_user_can_delete"
+                                id="button-delete" 
+                                :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
                             <span
                                     v-tooltip="{
@@ -361,7 +361,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !$route.query.readmode"
+                            v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="card-checkbox">
                         <b-checkbox
@@ -372,7 +372,10 @@
 
                     <!-- Title -->
                     <div
-                            :style="{ 'padding-left': !collectionId ? '0.5rem !important' : '2.75rem' }"
+                            :style="{ 
+                                'padding-left': !collectionId || $route.query.readmode || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) ? '0.5rem !important' : '2.75rem',
+                                'margin-bottom': item.current_user_can_edit && !$route.query.iframemode ? '-26px' : '0px'
+                            }"
                             class="metadata-title">
                         <p
                                 v-tooltip="{
@@ -425,9 +428,9 @@
                             </span>
                         </a>
                         <a
-                                v-if="collectionId"
-                                id="button-delete"
-                                :aria-label="$i18n.get('label_button_delete')"
+                                v-if="item.current_user_can_delete"
+                                id="button-delete" 
+                                :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
                             <span
                                     v-tooltip="{
@@ -525,7 +528,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !$route.query.readmode"
+                            v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="record-checkbox">
                         <label
@@ -543,8 +546,11 @@
                     <!-- Title -->
                     <div
                             class="metadata-title"
-                            :style="{ 'padding-left': !collectionId ? '1.5rem !important' : '2.75rem' }">
-                        <p
+                            :style="{
+                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '1.5rem !important' : '2.75rem',    
+                                'margin-bottom': item.current_user_can_edit || $route.query.iframemode ? '-27px' : '0px'
+                            }">
+                        <p 
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
@@ -614,9 +620,9 @@
                             </span>
                         </a>
                         <a
-                                v-if="collectionId"
-                                id="button-delete"
-                                :aria-label="$i18n.get('label_button_delete')"
+                                v-if="item.current_user_can_delete"
+                                id="button-delete" 
+                                :aria-label="$i18n.get('label_button_delete')" 
                                 @click.prevent.stop="deleteOneItem(item.id)">
                             <span
                                     v-tooltip="{
@@ -687,7 +693,7 @@
                     <tr>
                         <!-- Checking list -->
                         <th
-                                v-if="collectionId && !$route.query.readmode">
+                                v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)">
                             &nbsp;
                             <!-- nothing to show on header for checkboxes -->
                         </th>
@@ -709,7 +715,9 @@
                                 }">
                             <div class="th-wrap">{{ column.name }}</div>
                         </th>
-                        <th class="actions-header">
+                        <th
+                                v-if="items.findIndex((item) => item.current_user_can_edit || item.current_user_can_delete) >= 0"
+                                class="actions-header">
                             &nbsp;
                             <!-- nothing to show on header for actions cell-->
                         </th>
@@ -726,7 +734,7 @@
                         <!-- Checking list -->
                         <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                         <td
-                                v-if="collectionId && !$route.query.readmode"
+                                v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)"
                                 :class="{ 'is-selecting': isSelectingItems }"
                                 class="checkbox-cell">
                             <b-checkbox
@@ -846,8 +854,8 @@
                         </td>
 
                         <!-- Actions -->
-                        <td
-                                v-if="item.current_user_can_edit && !$route.query.iframemode"
+                        <td 
+                                v-if="(item.current_user_can_edit || item.current_user_can_delete) && !$route.query.iframemode"
                                 class="actions-cell"
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
@@ -881,9 +889,9 @@
                                     </span>
                                 </a>
                                 <a
-                                        v-if="collectionId"
-                                        id="button-delete"
-                                        :aria-label="$i18n.get('label_button_delete')"
+                                        v-if="item.current_user_can_delete"
+                                        id="button-delete" 
+                                        :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneItem(item.id)">
                                     <span
                                             v-tooltip="{
@@ -943,6 +951,9 @@ export default {
             setTimeout(() => this.$eventBusSearch.highlightsItem(null), 3000);
     },
     computed: {
+        collection() {
+            return this.getCollection();
+        },
         highlightedItem () {
             return this.getHighlightedItem();
         },
@@ -986,6 +997,9 @@ export default {
     methods: {
         ...mapActions('collection', [
             'deleteItem',
+        ]),
+        ...mapGetters('collection', [
+            'getCollection',
         ]),
         ...mapActions('bulkedition', [
             'createEditGroup',
