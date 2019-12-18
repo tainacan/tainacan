@@ -182,6 +182,21 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				),
 			)
 		);
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/comments',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'set_comments'),
+					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+					'args'                => [
+						'value' => [
+							'type'        => 'string',
+							'description' => __( 'The new coments status (open or close)', 'tainacan' ),
+						],
+					],
+				),
+			)
+		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/sequence/(?P<sequence_index>[\d]+)',
 			array(
 				array(
