@@ -13,7 +13,7 @@
                 <div
                         v-if="file.media_type == 'image'" 
                         class="image"
-                        :style="{ 'background-image': 'url(' + file.thumbnails['tainacan-medium'] ? file.thumbnails['tainacan-medium'][0] : file.thumbnails['medium'][0] + ')' }"/>
+                        :style="{ 'background-image': 'url(' + (file.thumbnails['tainacan-medium'] ? file.thumbnails['tainacan-medium'][0] : file.thumbnails['medium'][0]) + ')' }"/>
                 <div
                         :style="{ 'background-color': '#f2f2f2' }"
                         v-else 
@@ -25,7 +25,7 @@
                     </span>
                 </div>
             </div>
-        </figure> 
+        </figure>
     
         <!-- Preview Modal ----------------- -->
         <template v-if="modalOnClick">
@@ -47,7 +47,7 @@
                     </div>
                     <div    
                             class="is-flex rendered-content"
-                            v-html="file.description" />
+                            v-html="file.description ? file.description : `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + file.url + `'/>`" />
                     <iframe
                             style="width: 100%; min-height: 50vh;"    
                             v-if="file.url != undefined && file.url != undefined && file.mime_type != undefined && file.mime_type == 'application/pdf'"
