@@ -318,6 +318,7 @@ class REST_Items_Controller extends REST_Controller {
 		$query_result = $posts_query->query( $args );
 
 		$attachments = array();
+		global $post; // makes the apply_filters('the_content') below work as expected
 		foreach ( $query_result as $post ) {
 
 			$sizes = get_intermediate_image_sizes();
@@ -330,16 +331,16 @@ class REST_Items_Controller extends REST_Controller {
 			$attachments[] = [
 				'id' => $post->ID,
 				'title' => get_the_title( $post ),
-				'description' => get_the_content( $post ),
+				'description' => apply_filters( 'the_content', $post->post_content ),
 				'mime_type' => $post->post_mime_type,
 				'date' => $post->post_date,
 				'date_gmt' => $post->post_date_gmt,
 				'author' => $post->post_author,
 				'url' => wp_get_attachment_url( $post->ID ),
 				'media_type' => wp_attachment_is_image( $post->ID ) ? 'image' : 'file',
+				'alt_text' => get_post_meta( $post->ID, '_wp_attachment_image_alt', true ),
 				'thumbnails' => $thumbs
 			];
-
 		}
 
 		$total_items  = $posts_query->found_posts;
@@ -932,6 +933,10 @@ class REST_Items_Controller extends REST_Controller {
 				'description' => esc_html__('The attachment Media type', 'tainacan'),
 				'type' => 'string',
 				'enum' => [ 'image', 'file' ]
+			],
+			'alt_text' => [
+				'description' => esc_html__('The attachment Alt text', 'tainacan'),
+				'type' => 'string'
 			],
 			'thumbnails' => [
 				'description' => esc_html__('The attachment thumbnails', 'tainacan'),
