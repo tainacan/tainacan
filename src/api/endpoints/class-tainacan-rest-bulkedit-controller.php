@@ -167,6 +167,21 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				),
 			)
 		);
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/clear',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'clear_value'),
+					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+					'args'                => [
+						'metadatum_id' => [
+							'type'        => 'integer',
+							'description' => __( 'The metadatum ID', 'tainacan' ),
+						]
+					],
+				),
+			)
+		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/sequence/(?P<sequence_index>[\d]+)',
 			array(
 				array(
@@ -252,6 +267,10 @@ class REST_Bulkedit_Controller extends REST_Controller {
 
 	public function set_value($request) {
 		return $this->generic_action('set_value', $request);
+	}
+
+	public function clear_value($request) {
+		return $this->generic_action('clear_value', $request, []);
 	}
 
 	public function remove_value($request) {

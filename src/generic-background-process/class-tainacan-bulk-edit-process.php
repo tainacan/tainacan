@@ -245,6 +245,13 @@ class Bulk_Edit_Process extends Generic_Process {
 		return true;
 	}
 
+	private function clear_value(\Tainacan\Entities\Item $item) {
+		$metadatum = $this->metadatum_repository->fetch($this->bulk_edit_data['metadatum_id']);
+		$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum );
+		$item_metadata->set_value("");
+		return $this->save_item_metadata($item_metadata, $item);
+	}
+
 	private function set_value(\Tainacan\Entities\Item $item) {
 		$metadatum = $this->metadatum_repository->fetch($this->bulk_edit_data['metadatum_id']);
 		$value = $this->bulk_edit_data['value'];
