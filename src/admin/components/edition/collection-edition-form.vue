@@ -51,9 +51,10 @@
                                     :size="178"
                                     :file="{ 
                                         media_type: 'image', 
-                                        guid: { rendered: collection.thumbnail['tainacan-medium'] ? collection.thumbnail['tainacan-medium'][0] : collection.thumbnail.medium[0] },
-                                        title: { rendered: $i18n.get('label_thumbnail')},
-                                        description: { rendered: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + collection.thumbnail.full[0] + `'/>` }}"/>
+                                        thumbnails: { 'tainacan-medium': [ collection.thumbnail['tainacan-medium'] ? collection.thumbnail['tainacan-medium'][0] : collection.thumbnail.medium[0] ] },
+                                        title: $i18n.get('label_thumbnail'),
+                                        description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + collection.thumbnail.full[0] + `'/>` 
+                                    }"/>
                           <figure 
                                     v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail['tainacan-medium'] == undefined || collection.thumbnail['tainacan-medium'] == false))"
                                     class="image">

@@ -79,7 +79,8 @@ export default {
                 font-size: 0.875rem !important;
                 font-weight: normal !important;
                 white-space: normal !important;
-                overflow: visible;
+                overflow: visible !important;
+                max-height: 100% !important;
             }
         }
 

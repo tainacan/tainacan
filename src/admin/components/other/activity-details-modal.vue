@@ -71,8 +71,8 @@
                                                 :modal-on-click="false"
                                                 :show-name="true"
                                                 :file="{ 
-                                                    title: { rendered: attachment.title },
-                                                    guid: { rendered: attachment.url }, 
+                                                    title: attachment.title ,
+                                                    thumbnails: { 'tainacan-medium': [ attachment.url ] },
                                                     mime_type: attachment.mime_type,
                                                     media_type: attachment.mime_type.includes('image') ? 'image' : 'other'
                                                 }"/>
@@ -180,8 +180,8 @@
                                                 :modal-on-click="false"
                                                 :show-name="true"
                                                 :file="{ 
-                                                    title: { rendered: attachment.title },
-                                                    guid: { rendered: attachment.url }, 
+                                                    title: attachment.title,
+                                                    thumbnails: { 'tainacan-medium': [ attachment.url ] },
                                                     mime_type: attachment.mime_type,
                                                     media_type: attachment.mime_type.includes('image') ? 'image' : 'other'
                                                 }"/>
@@ -291,8 +291,8 @@
                                         :modal-on-click="false"
                                         :show-name="true"
                                         :file="{ 
-                                            title: { rendered: activity.old_value.title },
-                                            guid: { rendered: activity.old_value.url }, 
+                                            title: activity.old_value.title,
+                                            thumbnails: { 'tainacan-medium': [ activity.old_value.url ] },
                                             mime_type: activity.old_value.mime_type,
                                             media_type: activity.old_value.mime_type.includes('image') ? 'image' : 'other'
                                         }"/>
@@ -433,8 +433,8 @@
                                         :modal-on-click="false"
                                         :show-name="true"
                                         :file="{ 
-                                            title: { rendered: activity.new_value.title },
-                                            guid: { rendered: activity.new_value.url }, 
+                                            title: activity.new_value.title,
+                                            thumbnails: { 'tainacan-medium': [ activity.new_value.url ] },
                                             mime_type: activity.new_value.mime_type,
                                             media_type: activity.new_value.mime_type.includes('image') ? 'image' : 'other'
                                         }"/>

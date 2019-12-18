@@ -64,8 +64,11 @@ export default {
 	thumbnailControl: wp.customize.CroppedImageControl.extend({
 
 		initFrame: function() {
-			
-			var MyCustomizeImageCropper = wp.media.controller.Cropper.extend({
+
+			var l10n = _wpMediaViewsL10n;
+
+			// Same of WordPress wp.media.controller.CustomizeImageCropper, but without `wp_customize: on`
+			var customImageCropper = wp.media.controller.Cropper.extend({
 
 				doCrop: function( attachment ) {
 					var cropDetails = attachment.get( 'cropDetails' ),
@@ -92,8 +95,6 @@ export default {
 					});
 				}
 			});
-
-			var l10n = _wpMediaViewsL10n;
 
 			wp.media.view.settings.post = {
 				id: null
@@ -127,7 +128,7 @@ export default {
 						suggestedHeight: this.params.height,
 						uploadedTo: this.params.relatedPostId
 					}),
-					new MyCustomizeImageCropper({
+					new customImageCropper({
 						imgSelectOptions: this.calculateImageSelectOptions,
 						control: this
 					})
@@ -153,7 +154,36 @@ export default {
 		
 		initFrame: function() {
 
-			var l10n = _wpMediaViewsL10n;			
+			var l10n = _wpMediaViewsL10n;	
+			
+			// Same of WordPress wp.media.controller.CustomizeImageCropper, but without `wp_customize: on`
+			var customImageCropper = wp.media.controller.Cropper.extend({
+
+				doCrop: function( attachment ) {
+					var cropDetails = attachment.get( 'cropDetails' ),
+						control = this.get( 'control' ),
+						ratio = cropDetails.width / cropDetails.height;
+			
+					// Use crop measurements when flexible in both directions.
+					if ( control.params.flex_width && control.params.flex_height ) {
+						cropDetails.dst_width  = cropDetails.width;
+						cropDetails.dst_height = cropDetails.height;
+			
+					// Constrain flexible side based on image ratio and size of the fixed side.
+					} else {
+						cropDetails.dst_width  = control.params.flex_width  ? control.params.height * ratio : control.params.width;
+						cropDetails.dst_height = control.params.flex_height ? control.params.width  / ratio : control.params.height;
+					}
+			
+					return wp.ajax.post( 'crop-image', {
+						wp_customize: 'off',
+						nonce: attachment.get( 'nonces' ).edit,
+						id: attachment.get( 'id' ),
+						context: control.id,
+						cropDetails: cropDetails
+					});
+				}
+			});
 
 			wp.media.view.settings.post = {
                 id: null
@@ -196,7 +226,7 @@ export default {
 						suggestedWidth: this.params.width,
 						suggestedHeight: this.params.height
 					}),
-					new wp.media.controller.CustomizeImageCropper({
+					new customImageCropper({
 						imgSelectOptions: this.calculateImageSelectOptions,
 						control: this
 					})
