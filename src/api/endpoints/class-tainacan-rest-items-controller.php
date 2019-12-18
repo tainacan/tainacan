@@ -95,7 +95,8 @@ class REST_Items_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_item_attachments'),
 					'permission_callback' => array($this, 'get_item_attachments_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
-				)
+				),
+				'schema' => [$this, 'get_attachments_schema'],
 			)
 		);
 		register_rest_route(
@@ -327,20 +328,30 @@ class REST_Items_Controller extends REST_Controller {
 			}
 
 			$attachments[] = [
+				'id' => $post->ID,
 				'title' => get_the_title( $post ),
 				'description' => get_the_content( $post ),
-				'mime' => $post->post_mime_type,
+				'mime_type' => $post->post_mime_type,
 				'date' => $post->post_date,
 				'date_gmt' => $post->post_date_gmt,
 				'author' => $post->post_author,
 				'url' => wp_get_attachment_url( $post->ID ),
+				'media_type' => wp_attachment_is_image( $post->ID ) ? 'image' : 'file',
 				'thumbnails' => $thumbs
 			];
 
-
 		}
 
-		return new \WP_REST_Response(apply_filters('tainacan-rest-response', $attachments, $request), 200);
+		$total_items  = $posts_query->found_posts;
+		$max_pages = ceil($total_items / (int) $posts_query->query_vars['posts_per_page']);
+
+		$rest_response = new \WP_REST_Response(apply_filters('tainacan-rest-response', $attachments, $request), 200);
+
+		$rest_response->header('X-WP-Total', (int) $total_items);
+		$rest_response->header('X-WP-TotalPages', (int) $max_pages);
+		$rest_response->header('X-WP-ItemsPerPage', (int) $posts_query->query_vars['posts_per_page']);
+
+		return $rest_response;
 	}
 
 	/**
@@ -879,6 +890,62 @@ class REST_Items_Controller extends REST_Controller {
 		);
 
 		return $query_params;
+	}
+
+	function get_attachments_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'collection',
+			'type' => 'object'
+		];
+
+		$schema = [
+			'title' => [
+				'description' => esc_html__('The attachment title', 'tainacan'),
+				'type' => 'string'
+			],
+			'description' => [
+				'description' => esc_html__('The attachment description', 'tainacan'),
+				'type' => 'string'
+			],
+			'mime_type' => [
+				'description' => esc_html__('The attachment MIME type', 'tainacan'),
+				'type' => 'string'
+			],
+			'date' => [
+				'description' => esc_html__('The attachment creation date', 'tainacan'),
+				'type' => 'string'
+			],
+			'date_gmt' => [
+				'description' => esc_html__('The attachment creation date in GMT', 'tainacan'),
+				'type' => 'string'
+			],
+			'author' => [
+				'description' => esc_html__('The ID of the user who uploaded the attachment', 'tainacan'),
+				'type' => 'string'
+			],
+			'url' => [
+				'description' => esc_html__('The URL to the attachment file', 'tainacan'),
+				'type' => 'string'
+			],
+			'media_type' => [
+				'description' => esc_html__('The attachment Media type', 'tainacan'),
+				'type' => 'string',
+				'enum' => [ 'image', 'file' ]
+			],
+			'thumbnails' => [
+				'description' => esc_html__('The attachment thumbnails', 'tainacan'),
+				'type' => 'array'
+			],
+		];
+
+		$schema['properties'] = array_merge(
+			parent::get_base_properties_schema(),
+			$schema
+		);
+
+		return $schema;
+
 	}
 }
 
