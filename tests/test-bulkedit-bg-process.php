@@ -1701,5 +1701,74 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 
 	}
 
+	/**
+	 * @group varied
+	 */
+	function test_set_coments() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		
+		$query = [
+			'meta_query' => [
+				[
+					'key' => $this->metadatum->get_id(),
+					'value' => 'even'
+				]
+			],
+			'posts_per_page' => -1
+		];
+
+		// add test to 20 items
+		$process = $this->new_process(
+			[
+				'query' => $query,
+				'collection_id' => $this->collection->get_id()
+			],
+			[
+				"value" 				=> 'open', //closed
+				"method" 				=> 'set_comments',
+				"old_value"			=> null,
+				"metadatum_id" 	=> null,
+			]
+		);
+		$this->assertInternalType('int', $this->run_process($process));
+
+
+		$query = [
+			'meta_query' => [
+				[
+					'key' => $this->metadatum->get_id(),
+					'value' => 'odd'
+				]
+			],
+			'posts_per_page' => -1
+		];
+
+		// add test to 20 items
+		$process = $this->new_process(
+			[
+				'query' => $query,
+				'collection_id' => $this->collection->get_id()
+			],
+			[
+				"value" 				=> 'closed',
+				"method" 				=> 'set_comments',
+				"old_value"			=> null,
+				"metadatum_id" 	=> null,
+			]
+		);
+		$this->assertInternalType('int', $this->run_process($process));
+
+		$items = $Tainacan_Items->fetch([
+			'comment_status' => 'closed',
+			'posts_per_page' => -1
+		]);
+		$this->assertEquals(20, $items->found_posts);
+
+		$items = $Tainacan_Items->fetch([
+			'comment_status' => 'open',
+			'posts_per_page' => -1
+		]);
+		$this->assertEquals(20, $items->found_posts);
+	}
 
 }
