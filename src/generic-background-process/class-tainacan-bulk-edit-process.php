@@ -413,4 +413,26 @@ class Bulk_Edit_Process extends Generic_Process {
 		return false;
 	}
 
+	private function set_comments( \Tainacan\Entities\Item $item) {
+		$value = $this->bulk_edit_data['value'];
+
+		if ( ! in_array( $value, array( 'open', 'closed' ) ) ) {
+			$this->add_error_log( __( "the status of comments must be 'open' or 'closed'", 'tainacan' ) );
+			return false;
+		}
+
+		$item->set_comment_status($value);
+		if($item->validate()) {
+			$this->items_repository->update($item);
+			return true;
+		}
+
+		$this->add_error_log( sprintf( __( 'Please verify, invalid value(s) to edit item ID: "%d"', 'tainacan' ), $item->get_id() ) );
+		$serealize_erro = (object) array('err' => array());
+		array_walk_recursive($item->get_errors(), create_function('&$v, $k, &$t', '$t->err[] = $v;'), $serealize_erro);
+		$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serealize_erro->err) );
+
+		return false;
+}
+
 }

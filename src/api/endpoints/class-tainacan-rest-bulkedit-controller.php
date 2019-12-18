@@ -281,6 +281,10 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		return $this->generic_action('replace_value', $request, ['old_value', 'new_value']);
 	}
 
+	public function set_comments($request) {
+		return $this->generic_action('set_comments', $request, []);
+	}
+
 	public function get_item($request) {
 		$group_id = $request['group_id'];
 
@@ -314,7 +318,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				], 400);
 			}
 
-			if ($method != 'set_status' && !isset($body['metadatum_id'])) {
+			if ( !in_array($method, ['set_status', 'set_comments']) && !isset($body['metadatum_id'])) {
 				return new \WP_REST_Response([
 					'error_message' => __('You must specify a Metadatum ID.', 'tainacan'),
 				], 400);
