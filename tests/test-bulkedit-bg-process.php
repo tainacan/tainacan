@@ -601,6 +601,53 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 	}
 
 	/**
+	 * @group clear
+	 */
+	function test_clear() {
+
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		$ids = array_slice($this->items_ids, 2, 17);
+
+		$process = $this->new_process(
+			[
+				'items_ids' => $ids,
+				'collection_id' => $this->collection->get_id()
+			],
+			[
+				"value" 				=> null,
+				"method" 				=> 'clear_value',
+				"old_value"			=> null,
+				"metadatum_id" 	=> $this->metadatum->get_id(),
+			]
+		);
+
+		$items = $Tainacan_Items->fetch([
+			'meta_query' => [
+				[
+					'key' => $this->metadatum->get_id(),
+					'value' => ''
+				]
+			],
+			'posts_per_page' => -1
+		]);
+		$this->assertEquals(0, $items->found_posts);
+
+		$this->assertInternalType('int', $this->run_process($process));
+
+		$items = $Tainacan_Items->fetch([
+			'meta_query' => [
+				[
+					'key' => $this->metadatum->get_id(),
+					'value' => ''
+				]
+			],
+			'posts_per_page' => -1
+		]);
+		$this->assertEquals(count($ids), $items->found_posts);
+
+	}
+
+	/**
 	 * @group replace
 	 */
 	function test_replace_only_when_search_is_present_tax() {
