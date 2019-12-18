@@ -94,7 +94,7 @@ class REST_Items_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item_attachments'),
 					'permission_callback' => array($this, 'get_item_attachments_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
+					'args'                => $this->get_wp_query_params(),
 				),
 				'schema' => [$this, 'get_attachments_schema'],
 			)

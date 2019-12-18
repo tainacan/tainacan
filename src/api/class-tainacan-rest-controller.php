@@ -91,7 +91,7 @@ class REST_Controller extends \WP_REST_Controller {
 			'nopaging'     => 'nopaging',
 			'metatype'     => 'meta_type',
 			'hierarchical' => 'hierarchical',
-			'exclude'      => 'exclude',
+			'exclude'      => 'post__not_in',
 			'excludetree'  => 'exclude_tree',
 			'include'      => 'include'
 		];
@@ -371,6 +371,14 @@ class REST_Controller extends \WP_REST_Controller {
 		$query_params['paged'] = array(
 			'description' => __("The results page to be return.", 'tainacan'),
 			'type'        => 'integer',
+		);
+
+		$query_params['exclude'] = array(
+			'description' => __("Ensure result set excludes specific IDs.", 'tainacan'),
+			'type'        => 'array',
+			'items' => [
+				'type' => 'integer'
+			]
 		);
 
 		return $query_params;
