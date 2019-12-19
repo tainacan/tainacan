@@ -454,6 +454,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_user_roles'							 	 => __( 'User roles', 'tainacan' ),
 	'label_associated_roles'					 	 => __( 'Associated roles', 'tainacan' ),
 	'label_inherited_roles'						 	 => __( 'Inherited roles', 'tainacan' ),
+	'label_editing_capabilitiy'					 	 => __( 'Editing capabilitiy', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

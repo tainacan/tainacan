@@ -85,7 +85,6 @@ export default {
     },
     methods: {
         getIconForMimeType(mimeType) {
-
             
             if (mimeType) {
                 const type = mimeType.split('/');

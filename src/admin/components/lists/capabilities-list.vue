@@ -25,9 +25,7 @@
                 </thead>
                 <tbody v-if="!isLoading">
                     <template v-for="(capability, index) of capabilities">
-                        <tr 
-                                :key="index"
-                                :style="index == editingCapability ? 'background-color: #f2f2f2' : ''">
+                        <tr :key="index">
                             <!-- Name -->
                             <td
                                     class="column-default-width column-main-content"
@@ -92,13 +90,11 @@
                             <td  
                                     class="actions-cell column-default-width" 
                                     :label="$i18n.get('label_actions')">
-                                <div 
-                                        class="actions-container"
-                                        :style="index == editingCapability ? 'background-color: #dbdbdb' : ''">
+                                <div class="actions-container">
                                     <a 
                                             id="button-edit" 
                                             :aria-label="$i18n.get('edit')" 
-                                            @click="toggleEditForm(index)">                      
+                                            @click="openCapabilitiyEditModal(index)">                      
                                         <span 
                                                 v-tooltip="{
                                                     content: $i18n.get('edit'),
@@ -113,76 +109,6 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr 
-                                :key="index + '-form'"
-                                class="capabilities-edit-form">
-                            <transition name="form-capabilities">
-                                <td 
-                                        v-if="index == editingCapability"
-                                        class="tainacan-form"
-                                        colspan="5">
-                                    <div>
-                                        <template v-if="existingRoles && Object.values(existingRoles).length && capability.roles">
-                                            <b-field :addons="false">
-                                                <label class="label is-inline-block">
-                                                    {{ $i18n.get('label_inherited_roles') }}
-                                                    <help-button
-                                                            :title="$i18n.get('label_inherited_roles')"
-                                                            :message="$i18n.get('info_inherited_roles')"/>
-                                                </label>
-                                                <div class="roles-list">
-                                                    <b-checkbox
-                                                            v-if="capability.roles_inherited[role.slug]"
-                                                            v-for="(role, roleIndex) of existingRoles"
-                                                            :key="roleIndex"
-                                                            size="is-small"
-                                                            :value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
-                                                            name="roles_inherited"
-                                                            disabled>
-                                                        {{ role.name }}
-                                                    </b-checkbox>
-                                                </div>
-                                            </b-field>
-                                        </template>
-                                        <p 
-                                                v-else
-                                                class="is-italic has-text-gray">
-                                            {{ $i18n.get('info_no_role_associated_capability') }}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <template v-if="existingRoles && Object.values(existingRoles).length && capability.roles">
-                                            <b-field :addons="false">
-                                                <label class="label is-inline-block">
-                                                    {{ $i18n.get('label_associated_roles') }}
-                                                    <help-button
-                                                            :title="$i18n.get('label_associated_roles')"
-                                                            :message="$i18n.get('info_associated_roles')"/>
-                                                </label>
-                                                <div class="roles-list">
-                                                    <b-checkbox
-                                                            v-if="!capability.roles_inherited[role.slug]"
-                                                            v-for="(role, roleIndex) of existingRoles"
-                                                            :key="roleIndex"
-                                                            size="is-small"
-                                                            :value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
-                                                            @input="($event) => updateRole(role.slug, index, $event)"
-                                                            name="roles">
-                                                        {{ role.name }}
-                                                    </b-checkbox>
-                                                </div>
-                                            </b-field>
-                                        </template>
-                                        <p 
-                                                v-else
-                                                class="is-italic has-text-gray">
-                                            {{ $i18n.get('info_no_role_associated_capability') }}
-                                        </p>
-                                    </div>
-                                    
-                                </td>
-                            </transition>
-                        </tr>
                     </template>
                 </tbody>
             </table>
@@ -191,7 +117,7 @@
 </template>
 
 <script>
-    import { mapActions } from 'vuex';
+    import CapabilityEditionModal from '../other/capability-edition-modal.vue';
 
     // Auxiliary component for avoinding multiple calls to getCompleteRolesList
     const CompleteRolesList = {
@@ -203,34 +129,22 @@
         name: 'CapabilitiesList',
         props: {
             isLoading: false,
-            capabilities: Array,
-            editingCapability: ''
+            capabilities: Array
         },
         components: {
             CompleteRolesList
         },
-        data() {
-            return {
-                existingRoles: []
-            }
-        },
         methods: {
-            ...mapActions('capability', [
-                'fetchRoles',
-                'addCapabilityToRole',
-                'removeCapabilityFromRole'
-            ]),
-            toggleEditForm(capabilityKey) {
-                if (this.editingCapability == capabilityKey)
-                    this.editingCapability = ''    
-                else
-                    this.editingCapability = capabilityKey;
-            },
-            updateRole(role, capabilityKey, value) {
-                if (value)
-                    this.addCapabilityToRole({ capabilityKey: capabilityKey.replace('%d', 'all'), role: role })
-                else 
-                    this.removeCapabilityFromRole({ capabilityKey: capabilityKey.replace('%d', 'all'), role: role })
+            openCapabilitiyEditModal(capabilityKey) {
+                this.$buefy.modal.open({
+                    parent: this,
+                    component: CapabilityEditionModal,
+                    props: {
+                        capability: this.capabilities[capabilityKey],
+                        capabilityKey: capabilityKey
+                    },
+                    trapFocus: true
+                });
             },
             getCompleteRolesList(roles, rolesInherited) {
                 const rolesArray = roles && !Array.isArray(roles) ? Object.values(roles) : [];
@@ -256,9 +170,7 @@
                     return '<span class=is-italic>' + this.$i18n.get('info_no_associated_role') + '</span>';
             }
         },
-        created() {
-            this.fetchRoles().then(roles => this.existingRoles = roles);
-        }
+
     }
 </script>
 
@@ -266,47 +178,6 @@
 
 .table-container .table-wrapper table.tainacan-table tbody tr {
     cursor: default;
-    
-    &.capabilities-edit-form td {
-        min-height: 120px;
-        padding: 12px 24px;
-        background-color: #f6f6f6;
-        vertical-align: top;
-
-        &>div {
-            display: table-cell;
-            padding: 12px 24px;
-
-            &:last-of-type {
-                border-left: 1px solid #cbcbcb;
-            }
-        }
-        .roles-list {
-            column-count: 3;
-            break-inside: avoid;
-
-            label {
-                margin-left: 12px;
-            }
-        }
-        @media screen and (max-width: 1280px) {
-            .roles-list {
-                column-count: 2;
-            }
-        }
-        @media screen and (max-width: 1024px) {
-            .roles-list {
-                column-count: 1;
-            }
-            &>div:last-of-type {
-                border-left: 0px solid #cbcbcb;
-                border-top: 0px solid #cbcbcb;
-            }
-        }
-    }
-    &.capabilities-edit-form:hover {
-        background-color: #f6f6f6 !important;
-    }
 }
 
 </style>
