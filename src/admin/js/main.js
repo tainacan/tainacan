@@ -52,7 +52,7 @@ import store from '../../js/store/store'
 import router from './router'
 import eventBusSearch from '../../js/event-bus-search';
 import termsListBus from './terms-list-bus.js';
-import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin, StatusHelperPlugin } from './utilities';
+import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin, StatusHelperPlugin, CommentsStatusHelperPlugin } from './utilities';
 
 // Configure and Register Plugins
 Vue.use(Buefy, {
@@ -67,6 +67,7 @@ Vue.use(UserCapabilitiesPlugin);
 Vue.use(StatusHelperPlugin);
 Vue.use(ConsolePlugin, {visual: false});
 Vue.use(VueTheMask);
+Vue.use(CommentsStatusHelperPlugin);
 
 /* Metadata */
 Vue.component('tainacan-text', Text);

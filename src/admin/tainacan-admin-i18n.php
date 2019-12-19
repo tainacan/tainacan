@@ -87,6 +87,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'delete'                                    	 => __( 'Delete', 'tainacan' ),
 	'skip'	                                    	 => __( 'Skip', 'tainacan' ),
 
+	// Wordpress CommentsStatus
+	'comments_status_open'                           => __( 'Open', 'tainacan' ),
+	'comments_status_closed'                         => __( 'Closed', 'tainacan' ),
+
 	// Wordpress Status
 	'status_publish'                                 => __( 'Publish', 'tainacan' ),
 	'status_public'                                  => __( 'Public', 'tainacan' ),
@@ -456,6 +460,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_image_upload_box'                   => __( 'Drop an image here or click to upload.', 'tainacan' ),
 	'instruction_select_a_status'                    => __( 'Select a status:', 'tainacan' ),
 	'instruction_select_a_status2'                   => __( 'Select a status', 'tainacan' ),
+	'instruction_select_a_comments_status'           => __( 'Select a comments status', 'tainacan' ),
 	'instruction_click_to_select_a_filter_type'      => __( 'Click to select a filter type:', 'tainacan' ),
 	'instruction_select_a_parent_term'               => __( 'Select a parent term:', 'tainacan' ),
 	'instruction_select_a_metadatum'                 => __( 'Select a metadatum', 'tainacan' ),

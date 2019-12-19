@@ -43,6 +43,12 @@
                                     value="status">
                                 {{ $i18n.get('label_status') }}
                             </option>
+                            <option
+                                    :key="index"
+                                    v-if="index === Object.keys(metadata).length-1"
+                                    value="comments">
+                                {{ $i18n.get('label_allow_comments') }}
+                            </option>
                         </template>
                     </b-select>
 
@@ -134,6 +140,24 @@
                                 @input="addToBulkEditionProcedures($event, 'newValue', criterion)">
                             <option
                                     v-for="(statusOption, index) of $statusHelper.getStatuses().filter(option => { return option.value != 'trash' })"
+                                    :key="index"
+                                    :value="statusOption.slug">
+                                {{ statusOption.name }}
+                            </option>
+                        </b-select>
+                    </template>
+
+                    <template
+                            v-else-if="bulkEditionProcedures[criterion] &&
+                             bulkEditionProcedures[criterion].metadatumID == 'comments'">
+                        <b-select
+                                :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': bulkEditionProcedures[criterion].isDone}"
+                                :disabled="bulkEditionProcedures[criterion].isDone"
+                                class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
+                                :placeholder="$i18n.get('instruction_select_a_comments_status')"
+                                @input="addToBulkEditionProcedures($event, 'newValue', criterion)">
+                            <option
+                                    v-for="(statusOption, index) of $commentsStatusHelper.getStatuses()"
                                     :key="index"
                                     :value="statusOption.slug">
                                 {{ statusOption.name }}
@@ -361,6 +385,7 @@
                 'replaceValueInBulk',
                 'redefineValueInBulk',
                 'setStatusInBulk',
+                'setCommentStatusInBulk',
                 'removeValueInBulk'
             ]),
             ...mapActions('metadata', [
@@ -389,6 +414,14 @@
 
                     if(procedure.metadatumID === 'status'){
                         this.setStatusInBulk({
+                            collectionID: this.collectionID,
+                            groupID: this.groupID,
+                            bodyParams: { value: procedure.newValue }
+                        }).then(() => {
+                            this.finalizeProcedure(criterion);
+                        });
+                    } if(procedure.metadatumID === 'comments'){
+                        this.setCommentStatusInBulk({
                             collectionID: this.collectionID,
                             groupID: this.groupID,
                             bodyParams: { value: procedure.newValue }

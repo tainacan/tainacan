@@ -412,3 +412,20 @@ StatusHelperPlugin.install = function (Vue, options = {}) {
     }
 
 };
+
+
+// COMMENTS STATUS PLUGIN - 
+export const CommentsStatusHelperPlugin = {};
+CommentsStatusHelperPlugin.install = function (Vue, options = {}) {
+    
+    Vue.prototype.$commentsStatusHelper = {
+        statuses: [
+            { name: tainacan_plugin.i18n['comments_status_open'], slug: 'open' },
+            { name: tainacan_plugin.i18n['comments_status_closed'], slug: 'closed' }
+        ],
+        getStatuses() {
+            return  this.statuses;
+        }
+    }
+
+};
