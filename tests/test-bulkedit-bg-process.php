@@ -1725,7 +1725,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			],
 			[
 				"value" 				=> 'open', //closed
-				"method" 				=> 'set_comments',
+				"method" 				=> 'set_comment_status',
 				"old_value"			=> null,
 				"metadatum_id" 	=> null,
 			]
@@ -1751,7 +1751,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			],
 			[
 				"value" 				=> 'closed',
-				"method" 				=> 'set_comments',
+				"method" 				=> 'set_comment_status',
 				"old_value"			=> null,
 				"metadatum_id" 	=> null,
 			]

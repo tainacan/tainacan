@@ -413,7 +413,7 @@ class Bulk_Edit_Process extends Generic_Process {
 		return false;
 	}
 
-	private function set_comments( \Tainacan\Entities\Item $item) {
+	private function set_comment_status( \Tainacan\Entities\Item $item) {
 		$value = $this->bulk_edit_data['value'];
 
 		if ( ! in_array( $value, array( 'open', 'closed' ) ) ) {

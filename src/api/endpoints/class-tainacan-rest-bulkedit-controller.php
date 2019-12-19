@@ -182,11 +182,11 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				),
 			)
 		);
-		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/comments',
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/set_comment_status',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
-					'callback'            => array($this, 'set_comments'),
+					'callback'            => array($this, 'set_comment_status'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
 					'args'                => [
 						'value' => [
@@ -296,8 +296,8 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		return $this->generic_action('replace_value', $request, ['old_value', 'new_value']);
 	}
 
-	public function set_comments($request) {
-		return $this->generic_action('set_comments', $request, []);
+	public function set_comment_status($request) {
+		return $this->generic_action('set_comment_status', $request, []);
 	}
 
 	public function get_item($request) {
@@ -333,7 +333,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				], 400);
 			}
 
-			if ( !in_array($method, ['set_status', 'set_comments']) && !isset($body['metadatum_id'])) {
+			if ( !in_array($method, ['set_status', 'set_comment_status']) && !isset($body['metadatum_id'])) {
 				return new \WP_REST_Response([
 					'error_message' => __('You must specify a Metadatum ID.', 'tainacan'),
 				], 400);
