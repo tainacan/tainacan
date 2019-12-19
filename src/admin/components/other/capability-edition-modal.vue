@@ -40,8 +40,10 @@
                 <b-field :addons="false">
                     <label class="label is-inline-block">
                         {{ $i18n.get('label_inherited_roles') }}
+                        <help-button
+                                :title="$i18n.get('label_inherited_roles')"
+                                :message="$i18n.get('info_inherited_roles')"/>
                     </label>
-                    <p>{{ $i18n.get('info_inherited_roles') }}</p>
                     <br>
                     <div class="roles-list">
                         <b-checkbox
@@ -121,16 +123,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+    @import "../../scss/_variables.scss";
+
     .capabilities-edit-form {
         min-height: 120px;
         vertical-align: top;
         display: flex;
+        align-items: flex-end;
 
         &>div {
             padding: 12px 24px;
 
             &:last-of-type {
-                border-left: 1px solid #cbcbcb;
+                background-color: $yellow1;
+                color: $yellow2;
+
+                .label ,
+                .control-label,
+                .check {
+                    color: $yellow2;
+                }
             }
         }
         .roles-list {
@@ -144,10 +156,6 @@ export default {
         @media screen and (max-width: 1024px) {
             .roles-list {
                 column-count: 1;
-            }
-            &>div:last-of-type {
-                border-left: 0px solid #cbcbcb;
-                border-top: 0px solid #cbcbcb;
             }
         }
     }
