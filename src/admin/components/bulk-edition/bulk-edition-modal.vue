@@ -61,22 +61,12 @@
                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                             :placeholder="$i18n.get('instruction_select_a_action')"
                             @input="addToBulkEditionProcedures($event, 'action', criterion)">
-                        <template v-if="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).multiple == 'yes'">
-                            <option
-                                    v-for="(edtAct, key) in editionActionsForMultiple"
-                                    :value="edtAct"
-                                    :key="key">
-                                {{ edtAct }}
-                            </option>
-                        </template>
-                        <template v-else>
-                            <option
-                                    v-for="(edtAct, key) in editionActionsForNotMultiple"
-                                    :value="edtAct"
-                                    :key="key">
-                                {{ edtAct }}
-                            </option>
-                        </template>
+                        <option
+                                v-for="(edtAct, key) in getValidEditionActions(bulkEditionProcedures[criterion].metadatumID)"
+                                :value="edtAct"
+                                :key="key">
+                            {{ edtAct }}
+                        </option>
                     </b-select>
 
                     <!-- DISABLED FIELD -->
@@ -168,7 +158,8 @@
                     <template
                             v-else-if="bulkEditionProcedures[criterion] &&
                              bulkEditionProcedures[criterion].metadatumID &&
-                             bulkEditionProcedures[criterion].action">
+                             bulkEditionProcedures[criterion].action &&
+                             bulkEditionProcedures[criterion].action != editionActionsForMultiple.clear">
                         <component
                                 :forced-component-type="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
                                  .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
@@ -261,7 +252,6 @@
                     &nbsp;{{ $i18n.get('new_action') }}
                 </a>
             </div>
-            <!--<pre>{{ bulkEditionProcedures }}</pre>-->
 
             <footer class="field is-grouped form-submit">
                 <p class="control">
@@ -354,11 +344,13 @@
                 editionActionsForMultiple: {
                     add: this.$i18n.get('add_value'),
                     redefine: this.$i18n.get('set_new_value'),
-                    remove: this.$i18n.get('remove_value'),
-                    replace: this.$i18n.get('replace_value')
+                    replace: this.$i18n.get('replace_value'),
+                    remove: this.$i18n.get('remove_a_value'),
+                    clear: this.$i18n.get('clear_values')
                 },
                 editionActionsForNotMultiple: {
-                    redefine: this.$i18n.get('set_new_value')
+                    redefine: this.$i18n.get('set_new_value'),
+                    clear: this.$i18n.get('clear_values')
                 },
                 bulkEditionProcedures: {
                     1: {
@@ -381,6 +373,7 @@
             ...mapActions('bulkedition', [
                 'createEditGroup',
                 'setValueInBulk',
+                'clearValuesInBulk',
                 'addValueInBulk',
                 'replaceValueInBulk',
                 'redefineValueInBulk',
@@ -409,10 +402,10 @@
             executeBulkEditionProcedure(criterion){
                 let procedure = this.bulkEditionProcedures[criterion];
 
-                if(procedure.action === this.editionActionsForMultiple.redefine){
+                if (procedure.action === this.editionActionsForMultiple.redefine) {
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
 
-                    if(procedure.metadatumID === 'status'){
+                    if (procedure.metadatumID === 'status'){
                         this.setStatusInBulk({
                             collectionID: this.collectionID,
                             groupID: this.groupID,
@@ -440,7 +433,7 @@
                             this.finalizeProcedure(criterion);
                         });
                     }
-                } else if(procedure.action === this.editionActionsForMultiple.add){
+                } else if (procedure.action === this.editionActionsForMultiple.add) {
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
 
                     this.addValueInBulk({
@@ -453,7 +446,7 @@
                     }).then(() => {
                         this.finalizeProcedure(criterion);
                     });
-                } else if(procedure.action === this.editionActionsForMultiple.replace){
+                } else if (procedure.action === this.editionActionsForMultiple.replace) {
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
 
                     this.replaceValueInBulk({
@@ -467,7 +460,7 @@
                     }).then(() => {
                         this.finalizeProcedure(criterion);
                     });
-                } else if(procedure.action === this.editionActionsForMultiple.remove){
+                } else if (procedure.action === this.editionActionsForMultiple.remove) {
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
 
                     this.removeValueInBulk({
@@ -476,6 +469,18 @@
                         bodyParams: {
                             metadatum_id: procedure.metadatumID,
                             value: procedure.newValue,
+                        }
+                    }).then(() => {
+                        this.finalizeProcedure(criterion);
+                    });
+                } else if (procedure.action === this.editionActionsForMultiple.clear) {
+                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+
+                    this.clearValuesInBulk({
+                        collectionID: this.collectionID,
+                        groupID: this.groupID,
+                        bodyParams: {
+                            metadatum_id: procedure.metadatumID
                         }
                     }).then(() => {
                         this.finalizeProcedure(criterion);
@@ -517,6 +522,17 @@
                     this.dones.splice(criterionIndex, 1)
                 }
             },
+            getValidEditionActions(metadatumID) {
+                const isMultiple = this.getMetadataByID(metadatumID).multiple == 'yes';
+                let validEditionActions = {};
+
+                for (let [actionKey, action] of Object.entries(isMultiple ? this.editionActionsForMultiple : this.editionActionsForNotMultiple)) {
+                    if ((metadatumID != 'status' && metadatumID != 'comments') || actionKey != 'clear')
+                        validEditionActions[actionKey] = action;
+                }
+
+                return validEditionActions;
+            },
             getMetadataByID(id){
                 let found = this.metadata.find((element) => {
                     return element.id == id;
@@ -525,19 +541,10 @@
                 return found ? found : {};
             },
             addToBulkEditionProcedures(value, key, criterion){
-
-                if(Array.isArray(value)){
+                if (Array.isArray(value))
                     value = value[0];
-                }
 
                 this.$set(this.bulkEditionProcedures[criterion], `${key}`, value);
-                
-                if (key == 'metadatumID') {
-                    if (this.getMetadataByID(this.bulkEditionProcedures[criterion].metadatumID).multiple != 'yes') {
-                        let value = Object.values(this.editionActionsForNotMultiple)[0];
-                        this.addToBulkEditionProcedures(value, 'action', criterion);
-                    }
-                }
             }
         },
         beforeDestroy() {

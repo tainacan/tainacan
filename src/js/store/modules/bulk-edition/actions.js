@@ -117,6 +117,21 @@ export const removeValueInBulk = ({commit}, parameters) => {
         });
 };
 
+export const clearValuesInBulk = ({commit}, parameters) => {
+    let groupID = parameters.groupID;
+    let collectionID = parameters.collectionID;
+
+    /**
+     * @var bodyParams { metadatum_id, new_value } Object
+     * */
+    let bodyParams = parameters.bodyParams;
+
+    return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/clear`, bodyParams)
+        .catch(error => {
+            console.error(error);
+        });
+};
+
 export const replaceValueInBulk = ({commit}, parameters) => {
     let groupID = parameters.groupID;
     let collectionID = parameters.collectionID;
