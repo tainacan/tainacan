@@ -1,6 +1,8 @@
 <template>
     <span class="help-wrapper">
-        <a class="help-button has-text-secondary">
+        <a 
+                :class="forcedColor ? 'has-text-' + forcedColor : 'has-text-secondary'"
+                class="help-button">
             <span class="icon is-small">
                 <i class="tainacan-icon tainacan-icon-help" />
             </span>
@@ -21,7 +23,8 @@ export default {
     name: 'HelpButton',
     props: {
         title: '',
-        message: ''
+        message: '',
+        forcedColor: ''
     }
 }
 </script>
@@ -53,7 +56,7 @@ export default {
         border: none;
         display: block;
         border-radius: 5px;
-        min-width: 250px;
+        min-width: 280px;
         max-width: 100%;
         transition: margin-bottom 0.2s ease, opacity 0.3s ease;
         position: absolute;
