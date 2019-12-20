@@ -191,7 +191,27 @@
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionCapabilitiesPath(collection.id) : '' }"
                             :aria-label="$i18n.get('label_collection_capabilities')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-user"/>
+                            <svg
+                                    xmlns:dc="http://purl.org/dc/elements/1.1/"
+                                    xmlns:cc="http://creativecommons.org/ns#"
+                                    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                                    xmlns:svg="http://www.w3.org/2000/svg"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    version="1.1"
+                                    viewBox="0 0 833 750"
+                                    data-name="Camada 1"
+                                    id="Camada_1">
+                                <defs
+                                        id="defs11" />
+                                <path
+                                        id="path4"
+                                        transform="translate(-83.5 -125)"
+                                        d="M812.38,125H187.62A103.77,103.77,0,0,0,83.5,229.12V770.88A104.1,104.1,0,0,0,187.62,875H812.38A104,104,0,0,0,916.5,771V229.12A104.12,104.12,0,0,0,812.38,125ZM833.5,792h-666V209h666Z" />
+                                <path
+                                        id="path6"
+                                        transform="translate(-83.5 -125)"
+                                        d="M377.5,626a126,126,0,0,0,118.82-84H583.5v83h84V542h83V459H496.67A126,126,0,1,0,377.5,626Zm0-168a42,42,0,1,1-42,42A42,42,0,0,1,377.5,458Z" />
+                            </svg>
                         </span>
                         <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
                     </router-link>                
@@ -349,7 +369,7 @@ export default {
             width: 100%;
         }
 
-        li{
+        li {
             margin-right: 0px;
             transition: background-color 0.2s ease;
             // transition: max-width 0.4s ease-in , width 0.4s ease-in ;
@@ -365,6 +385,9 @@ export default {
                     color: white;
                     text-decoration: none;
                 }
+                svg {
+                    fill: white !important;
+                }
             }
             &:hover:not(.is-active) {
                 // max-width: 100%;
@@ -374,6 +397,9 @@ export default {
                     background-color: transparent;
                     text-decoration: none; 
                     color: $turquoise5;
+                }
+                svg {
+                    fill: $turquoise5;
                 }
                 // .menu-text {
                 //     opacity: 1.0;
@@ -404,6 +430,12 @@ export default {
                 padding: 0;
                 i {
                     font-size: 18px !important;
+                }
+                svg {
+                    position: relative;
+                    top: 1px;
+                    height: 18px;
+                    fill: #555758;
                 }
             }
             .menu-text {
