@@ -306,7 +306,7 @@ import { mapActions, mapGetters } from 'vuex';
 import axios from '../js/axios/axios.js';
 import 'swiper/dist/css/swiper.css';
 import { swiper, swiperSlide } from 'vue-awesome-swiper';
-import CircularCounter from '../front/components/other/circular-counter.vue';
+import CircularCounter from '../front/admin/components/other/circular-counter.vue';
  
 export default {
     name: 'ViewModeSlideshow',
@@ -663,7 +663,7 @@ export default {
     $page-small-side-padding: 25px;
     $page-side-padding: 4.166666667%; 
 
-    @import "../../src/front/scss/_view-mode-slideshow.scss";
+    @import "../../src/front/admin/scss/_view-mode-slideshow.scss";
 
     .is-fullscreen .table-wrapper {
         overflow: hidden !important;

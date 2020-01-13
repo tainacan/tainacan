@@ -34,7 +34,7 @@
 </template>
 
 <script>
-    import { dateInter } from "../../../front/js/mixins";
+    import { dateInter } from "../../../front/admin/js/mixins";
     import moment from 'moment';
 
     export default {

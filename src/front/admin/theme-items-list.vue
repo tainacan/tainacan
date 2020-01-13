@@ -39,32 +39,32 @@ export default {
     @import "./scss/theme-basics.sass";
 
     // Buefy imports
-    @import "../../node_modules/buefy/src/scss/utils/_all.scss";
-    @import "../../node_modules/buefy/src/scss/components/_datepicker.scss";
-    @import "../../node_modules/buefy/src/scss/components/_checkbox.scss";
-    @import "../../node_modules/buefy/src/scss/components/_radio.scss";
-    @import "../../node_modules/buefy/src/scss/components/_tag.scss";
-    @import "../../node_modules/buefy/src/scss/components/_loading.scss";
-    @import "../../node_modules/buefy/src/scss/components/_dropdown.scss";
-    @import "../../node_modules/buefy/src/scss/components/_modal.scss";
-    @import "../../node_modules/buefy/src/scss/components/_notices.scss";
-    @import "../../node_modules/buefy/src/scss/components/_numberinput.scss";
+    @import "../../../node_modules/buefy/src/scss/utils/_all.scss";
+    @import "../../../node_modules/buefy/src/scss/components/_datepicker.scss";
+    @import "../../../node_modules/buefy/src/scss/components/_checkbox.scss";
+    @import "../../../node_modules/buefy/src/scss/components/_radio.scss";
+    @import "../../../node_modules/buefy/src/scss/components/_tag.scss";
+    @import "../../../node_modules/buefy/src/scss/components/_loading.scss";
+    @import "../../../node_modules/buefy/src/scss/components/_dropdown.scss";
+    @import "../../../node_modules/buefy/src/scss/components/_modal.scss";
+    @import "../../../node_modules/buefy/src/scss/components/_notices.scss";
+    @import "../../../node_modules/buefy/src/scss/components/_numberinput.scss";
 
     // Tainacan imports
-    @import "../front/scss/_tables.scss";
-    @import "../front/scss/_modals.scss";
-    @import "../front/scss/_buttons.scss"; 
-    @import "../front/scss/_inputs.scss";
-    @import "../front/scss/_checkboxes.scss";
-    @import "../front/scss/_pagination.scss";
-    @import "../front/scss/_tags.scss";
-    @import "../front/scss/_notices.scss";
-    @import "../front/scss/_tabs.scss";
-    @import "../front/scss/_selects.scss";
-    @import "../front/scss/_dropdown-and-autocomplete.scss";
-    @import "../front/scss/_tooltips.scss";
-    @import "../front/scss/_tainacan-form.scss";
-    @import "../front/scss/_filters-menu-modal.scss";
+    @import "./scss/_tables.scss";
+    @import "./scss/_modals.scss";
+    @import "./scss/_buttons.scss"; 
+    @import "./scss/_inputs.scss";
+    @import "./scss/_checkboxes.scss";
+    @import "./scss/_pagination.scss";
+    @import "./scss/_tags.scss";
+    @import "./scss/_notices.scss";
+    @import "./scss/_tabs.scss";
+    @import "./scss/_selects.scss";
+    @import "./scss/_dropdown-and-autocomplete.scss";
+    @import "./scss/_tooltips.scss";
+    @import "./scss/_tainacan-form.scss";
+    @import "./scss/_filters-menu-modal.scss";
 
     .theme-items-list {
         position: relative;

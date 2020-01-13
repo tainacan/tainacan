@@ -5,31 +5,31 @@ import VTooltip from 'v-tooltip';
 import VueMasonry from 'vue-masonry-css';
 
 // Custom elements
-import FilterNumeric from '../../classes/filter-types/numeric/Numeric.vue';
-import FilterDate from '../../classes/filter-types/date/Date.vue';
-import FilterSelectbox from '../../classes/filter-types/selectbox/Selectbox.vue';
-import FilterAutocomplete from '../../classes/filter-types/autocomplete/Autocomplete.vue';
-import FilterCheckbox from '../../classes/filter-types/checkbox/Checkbox.vue';
-import FilterTaginput from '../../classes/filter-types/taginput/Taginput.vue';
-import FilterTaxonomyCheckbox from '../../classes/filter-types/taxonomy/Checkbox.vue';
-import FilterTaxonomyTaginput from '../../classes/filter-types/taxonomy/Taginput.vue';
-import FilterDateInterval from '../../classes/filter-types/date-interval/DateInterval.vue';
-import FilterNumericInterval from '../../classes/filter-types/numeric-interval/NumericInterval.vue';
-import FilterNumericListInterval from '../../classes/filter-types/numeric-list-interval/NumericListInterval.vue';
+import FilterNumeric from '../../../classes/filter-types/numeric/Numeric.vue';
+import FilterDate from '../../../classes/filter-types/date/Date.vue';
+import FilterSelectbox from '../../../classes/filter-types/selectbox/Selectbox.vue';
+import FilterAutocomplete from '../../../classes/filter-types/autocomplete/Autocomplete.vue';
+import FilterCheckbox from '../../../classes/filter-types/checkbox/Checkbox.vue';
+import FilterTaginput from '../../../classes/filter-types/taginput/Taginput.vue';
+import FilterTaxonomyCheckbox from '../../../classes/filter-types/taxonomy/Checkbox.vue';
+import FilterTaxonomyTaginput from '../../../classes/filter-types/taxonomy/Taginput.vue';
+import FilterDateInterval from '../../../classes/filter-types/date-interval/DateInterval.vue';
+import FilterNumericInterval from '../../../classes/filter-types/numeric-interval/NumericInterval.vue';
+import FilterNumericListInterval from '../../../classes/filter-types/numeric-list-interval/NumericListInterval.vue';
 
-import TaincanFiltersList from '../../classes/filter-types/tainacan-filter-item.vue';
+import TaincanFiltersList from '../../../classes/filter-types/tainacan-filter-item.vue';
 import ItemsPage from '../pages/lists/items-page.vue';
 import TermItemsPage from '../pages/lists/term-items-page.vue';
-import ViewModeTable from '../../theme-helper/view-mode-table.vue';
-import ViewModeCards from '../../theme-helper/view-mode-cards.vue';
-import ViewModeRecords from '../../theme-helper/view-mode-records.vue';
-import ViewModeMasonry from '../../theme-helper/view-mode-masonry.vue';
-import ViewModeSlideshow from '../../theme-helper/view-mode-slideshow.vue';
+import ViewModeTable from '../../../theme-helper/view-mode-table.vue';
+import ViewModeCards from '../../../theme-helper/view-mode-cards.vue';
+import ViewModeRecords from '../../../theme-helper/view-mode-records.vue';
+import ViewModeMasonry from '../../../theme-helper/view-mode-masonry.vue';
+import ViewModeSlideshow from '../../../theme-helper/view-mode-slideshow.vue';
 
 // Remaining imports
-import store from '../../js/store/store'
+import store from '../../../js/store/store'
 import routerTheme from './theme-router.js'
-import eventBusSearch from '../../js/event-bus-search';
+import eventBusSearch from '../../../js/event-bus-search';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin } from './utilities';
 
 // Configure and Register Plugins

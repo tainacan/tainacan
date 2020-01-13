@@ -762,7 +762,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { eventBus } from '../../../js/event-bus-web-components.js'
+import { eventBus } from '../../../../js/event-bus-web-components.js'
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
 import DocumentItem from '../other/document-item.vue';

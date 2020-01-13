@@ -164,7 +164,7 @@ export default {
         display: grid;
     }
 
-    @import "../../src/front/scss/_view-mode-cards.scss";
+    @import "../../src/front/admin/scss/_view-mode-cards.scss";
 
     .tainacan-cards-container .tainacan-card .metadata-title {
         padding: 0.6rem 0.75rem;

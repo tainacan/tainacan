@@ -277,8 +277,8 @@
 
 <script>
     import qs from 'qs';
-    import { tainacan as axios, isCancel } from '../../../js/axios/axios';
-    import {  dynamicFilterTypeMixin } from '../../../classes/filter-types/filter-types-mixin';
+    import { tainacan as axios, isCancel } from '../../../../js/axios/axios';
+    import { dynamicFilterTypeMixin } from '../../../../classes/filter-types/filter-types-mixin';
 
     export default {
         name: 'CheckboxFilterModal',

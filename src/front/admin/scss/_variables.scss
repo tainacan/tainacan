@@ -1,6 +1,6 @@
 // Import Bulma's core and variables
-@import "../../../node_modules/bulma/sass/utilities/initial-variables";
-@import "../../../node_modules/bulma/sass/utilities/functions";
+@import "../../../../node_modules/bulma/sass/utilities/initial-variables";
+@import "../../../../node_modules/bulma/sass/utilities/functions";
 
 // NEW TAINACAN CUSTOM COLORS ------------------
 // Blue, used mainly for repository
@@ -70,7 +70,7 @@ $warning-invert: findColorInvert($warning);
 $gray: $gray4;
 $gray-invert: findColorInvert($gray4);
 
-@import "../../../node_modules/bulma/sass/utilities/derived-variables.sass";
+@import "../../../../node_modules/bulma/sass/utilities/derived-variables.sass";
 
 // Setup $colors to use as bulma classes
 $colors: (

@@ -919,7 +919,7 @@ import { mapActions, mapGetters } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
 import ItemCopyDialog from '../other/item-copy-dialog.vue';
 import BulkEditionModal from '../bulk-edition/bulk-edition-modal.vue';
-import { dateInter } from "../../../front/js/mixins";
+import { dateInter } from "../../js/mixins";
 
 export default {
     name: 'ItemsList',

@@ -264,7 +264,7 @@
 <script>
     import ActivitiesList from "../../components/lists/activities-list.vue";
     import ProcessesList from "../../components/lists/processes-list.vue";
-    import { dateInter } from "../../../front/js/mixins";
+    import { dateInter } from "../../js/mixins";
     import { mapActions, mapGetters } from 'vuex';
     import moment from 'moment'
 

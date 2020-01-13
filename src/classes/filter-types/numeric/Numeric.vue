@@ -70,7 +70,7 @@
 </template>
 
 <script>
-    import { wpAjax } from '../../../front/js/mixins';
+    import { wpAjax } from '../../../front/admin/js/mixins';
     import { filterTypeMixin } from '../filter-types-mixin';
 
     export default {

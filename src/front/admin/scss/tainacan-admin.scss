@@ -1,13 +1,13 @@
 // TAINACAN ICON FONT
-@import "../../assets/css/fonts/tainacanicons.css";
+@import "../../../assets/css/fonts/tainacanicons.css";
 
 // Tainacan custom colors and bulma's core
 @import "./_variables.scss";
 
 // Import Bulma and Buefy styles
-@import "../../assets/css/fonts/materialdesignicons.css";
-@import "../../../node_modules/bulma/bulma.sass";
-@import "../../../node_modules/buefy/src/scss/buefy.scss";
+@import "../../../assets/css/fonts/materialdesignicons.css";
+@import "../../../../node_modules/bulma/bulma.sass";
+@import "../../../../node_modules/buefy/src/scss/buefy.scss";
 
 // Import Tainacan custom styles
 @import "../scss/_tainacan-form.scss";
