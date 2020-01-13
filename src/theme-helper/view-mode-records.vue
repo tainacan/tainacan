@@ -206,7 +206,7 @@ export default {
     $gray4: #555758;
     $gray5: #454647; 
 
-    @import "../../src/admin/scss/_view-mode-records.scss";
+    @import "../../src/front/scss/_view-mode-records.scss";
 
     .tainacan-records-container .tainacan-record .metadata-title {
         padding: 0.6rem 0.75rem;

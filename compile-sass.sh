@@ -11,9 +11,9 @@ echo "Compilando Sass..."
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-1 src/scss/tainacan-embeds.scss:src/assets/css/tainacan-embeds.css
 
-sass -E 'UTF-8' --cache-location .tmp/sass-cache-2 src/admin/scss/tainacan-admin.scss:src/assets/css/tainacan-admin.css
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-2 src/front/scss/tainacan-admin.scss:src/assets/css/tainacan-admin.css
 
-sass -E 'UTF-8' --cache-location .tmp/sass-cache-3 src/admin/scss/tainacan-roles.scss:src/assets/css/tainacan-roles.css
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-3 src/front/scss/tainacan-roles.scss:src/assets/css/tainacan-roles.css
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-4 src/gutenberg-blocks/tainacan-collections/collections-list/collections-list.scss:src/assets/css/tainacan-gutenberg-block-collections-list.css
 

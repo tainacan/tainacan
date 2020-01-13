@@ -5,9 +5,9 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 
 module.exports = {
     entry: {
-        search: './src/admin/js/theme-main.js',
-        admin: './src/admin/js/main.js',
-        roles: './src/admin/js/roles-main.js',
+        search: './src/front/js/theme-main.js',
+        admin: './src/front/js/main.js',
+        roles: './src/front/js/roles-main.js',
 
         gutenberg_terms_list: './src/gutenberg-blocks/tainacan-terms/terms-list/index.js',
         
@@ -83,7 +83,7 @@ module.exports = {
                     {
                         loader: 'sass-loader',
                         options: {
-                            includePaths: [path.resolve(__dirname, './src/admin/scss/_variables.scss')]
+                            includePaths: [path.resolve(__dirname, './src/front/scss/_variables.scss')]
                         }
                     },
                 ],

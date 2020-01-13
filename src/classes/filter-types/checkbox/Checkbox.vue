@@ -41,7 +41,7 @@
 <script>
     import { isCancel } from '../../../js/axios/axios';
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
-    import CheckboxRadioModal from '../../../admin/components/other/checkbox-radio-modal.vue';
+    import CheckboxRadioModal from '../../../front/components/other/checkbox-radio-modal.vue';
 
     export default {
         mixins: [filterTypeMixin, dynamicFilterTypeMixin],

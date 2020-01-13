@@ -51,20 +51,20 @@ export default {
     @import "../../node_modules/buefy/src/scss/components/_numberinput.scss";
 
     // Tainacan imports
-    @import "../admin/scss/_tables.scss";
-    @import "../admin/scss/_modals.scss";
-    @import "../admin/scss/_buttons.scss"; 
-    @import "../admin/scss/_inputs.scss";
-    @import "../admin/scss/_checkboxes.scss";
-    @import "../admin/scss/_pagination.scss";
-    @import "../admin/scss/_tags.scss";
-    @import "../admin/scss/_notices.scss";
-    @import "../admin/scss/_tabs.scss";
-    @import "../admin/scss/_selects.scss";
-    @import "../admin/scss/_dropdown-and-autocomplete.scss";
-    @import "../admin/scss/_tooltips.scss";
-    @import "../admin/scss/_tainacan-form.scss";
-    @import "../admin/scss/_filters-menu-modal.scss";
+    @import "../front/scss/_tables.scss";
+    @import "../front/scss/_modals.scss";
+    @import "../front/scss/_buttons.scss"; 
+    @import "../front/scss/_inputs.scss";
+    @import "../front/scss/_checkboxes.scss";
+    @import "../front/scss/_pagination.scss";
+    @import "../front/scss/_tags.scss";
+    @import "../front/scss/_notices.scss";
+    @import "../front/scss/_tabs.scss";
+    @import "../front/scss/_selects.scss";
+    @import "../front/scss/_dropdown-and-autocomplete.scss";
+    @import "../front/scss/_tooltips.scss";
+    @import "../front/scss/_tainacan-form.scss";
+    @import "../front/scss/_filters-menu-modal.scss";
 
     .theme-items-list {
         position: relative;

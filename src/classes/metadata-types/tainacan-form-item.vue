@@ -209,7 +209,7 @@
 
 <style lang="scss" scoped>
 
-    @import '../../admin/scss/_variables.scss'; 
+    @import '../../front/scss/_variables.scss'; 
 
     .multiple-inputs {
         display: flex;

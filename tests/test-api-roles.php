@@ -175,7 +175,7 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 	}
 
 	public function test_get_role() {
-		$request = new \WP_REST_Request('GET', $this->namespace . '/roles/administrator');
+		$request = new \WP_REST_Request('GET', $this->namespace . '/roles/frontistrator');
 
 		$response = $this->server->dispatch($request);
 

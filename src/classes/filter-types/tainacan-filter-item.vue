@@ -90,7 +90,7 @@
 </script>
 
 <style lang="scss">
-    @import "../../../src/admin/scss/_variables.scss";
+    @import "../../../src/front/scss/_variables.scss";
 
     .filter-item-forms {
 

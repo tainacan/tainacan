@@ -184,7 +184,7 @@ export default {
     $gray3: #dcdcdc;
     $gray4: #555758;
 
-    @import "../../src/admin/scss/_view-mode-masonry.scss";
+    @import "../../src/front/scss/_view-mode-masonry.scss";
 
     .tainacan-masonry-container .tainacan-masonry-item .metadata-title {
         margin: 0px 6px;
