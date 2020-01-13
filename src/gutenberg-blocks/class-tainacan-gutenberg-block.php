@@ -46,7 +46,7 @@ function tainacan_blocks_register_tainacan_terms_list(){
 
 	wp_register_script(
 		'terms-list',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_terms_list-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_terms_list.js',
 		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor', 'underscore')
 	);
 
@@ -69,13 +69,13 @@ function tainacan_blocks_register_tainacan_facets_list(){
 
 	wp_enqueue_script(
 		'facets-list-theme',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_facets_list_theme-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_facets_list_theme.js',
 		array('wp-components')
 	);
 
 	wp_register_script(
 		'facets-list',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_facets_list-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_facets_list.js',
 		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
 	);
 
@@ -99,7 +99,7 @@ function tainacan_blocks_register_tainacan_items_list(){
 
 	wp_register_script(
 		'items-list',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_items_list-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_items_list.js',
 		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
 	);
 
@@ -122,13 +122,13 @@ function tainacan_blocks_register_tainacan_dynamic_items_list(){
 
 	wp_enqueue_script(
 		'dynamic-items-list-theme',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_dynamic_items_list_theme-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_dynamic_items_list_theme.js',
 		array('wp-components')
 	);
 
 	wp_register_script(
 		'dynamic-items-list',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_dynamic_items_list-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_dynamic_items_list.js',
 		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
 	);
 
@@ -152,13 +152,13 @@ function tainacan_blocks_register_tainacan_carousel_items_list(){
 
 	wp_enqueue_script(
 		'carousel-items-list-theme',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_carousel_items_list_theme-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_carousel_items_list_theme.js',
 		array('wp-components')
 	);
 
 	wp_register_script(
 		'carousel-items-list',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_carousel_items_list-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_carousel_items_list.js',
 		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
 	);
 
@@ -182,13 +182,13 @@ function tainacan_blocks_register_tainacan_carousel_terms_list(){
 
 	wp_enqueue_script(
 		'carousel-terms-list-theme',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_carousel_terms_list_theme-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_carousel_terms_list_theme.js',
 		array('wp-components')
 	);
 
 	wp_register_script(
 		'carousel-terms-list',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_carousel_terms_list-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_carousel_terms_list.js',
 		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
 	);
 
@@ -212,13 +212,13 @@ function tainacan_blocks_register_tainacan_search_bar(){
 
 	wp_enqueue_script(
 		'search-bar-theme-script',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_search_bar_script-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_search_bar_script.js',
 		array('wp-components')
 	);
 
 	wp_register_script(
 		'search-bar',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_search_bar-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_search_bar.js',
 		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
 	);
 
@@ -241,7 +241,7 @@ function tainacan_blocks_register_tainacan_collections_list(){
 
 	wp_register_script(
 		'collections-list',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_collections_list-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_collections_list.js',
 		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
 	);
 
@@ -264,13 +264,13 @@ function tainacan_blocks_register_tainacan_carousel_collections_list(){
 
 	wp_enqueue_script(
 		'carousel-collections-list-theme',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_carousel_collections_list_theme-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_carousel_collections_list_theme.js',
 		array('wp-components')
 	);
 
 	wp_register_script(
 		'carousel-collections-list',
-		$TAINACAN_BASE_URL . '/assets/gutenberg_carousel_collections_list-components.js',
+		$TAINACAN_BASE_URL . '/assets/gutenberg_carousel_collections_list.js',
 		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
 	);
 

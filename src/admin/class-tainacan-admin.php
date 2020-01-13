@@ -103,7 +103,7 @@ class Admin {
 
 		global $TAINACAN_BASE_URL;
 
-		wp_enqueue_script( 'tainacan-roles', $TAINACAN_BASE_URL . '/assets/roles-components.js', ['underscore', 'wp-i18n'], TAINACAN_VERSION, true );
+		wp_enqueue_script( 'tainacan-roles', $TAINACAN_BASE_URL . '/assets/roles.js', ['underscore', 'wp-i18n'], TAINACAN_VERSION, true );
 
 		$settings = $this->get_admin_js_localization_params();
 		wp_localize_script( 'tainacan-roles', 'tainacan_plugin', $settings );
@@ -163,11 +163,11 @@ class Admin {
 	function add_admin_js() {
 		global $TAINACAN_BASE_URL;
 
-		wp_enqueue_script( 'tainacan-user-admin', $TAINACAN_BASE_URL . '/assets/user_admin-components.js', ['underscore', 'media-editor', 'media-views', 'customize-controls'], TAINACAN_VERSION, true );
+		wp_enqueue_script( 'tainacan-admin', $TAINACAN_BASE_URL . '/assets/admin.js', ['underscore', 'media-editor', 'media-views', 'customize-controls'], TAINACAN_VERSION, true );
 
 		$settings = $this->get_admin_js_localization_params();
 
-		wp_localize_script( 'tainacan-user-admin', 'tainacan_plugin', $settings );
+		wp_localize_script( 'tainacan-admin', 'tainacan_plugin', $settings );
 		wp_enqueue_media();
 		wp_enqueue_script('underscore');
 		wp_enqueue_script('jcrop');
