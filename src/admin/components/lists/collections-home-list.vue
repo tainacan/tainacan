@@ -257,7 +257,7 @@ export default {
     name: 'CollectionsHomeList',
     data(){
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png'
         }
     },
     props: {

@@ -176,7 +176,7 @@ registerBlockType('tainacan/carousel-items-list', {
                                     ?    
                                 item.thumbnail['thumbnail'][0] 
                                     : 
-                                `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`)
+                                `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
                             }
                             alt={ item.title ? item.title : __( 'Thumbnail', 'tainacan' ) }/>
                         { !hideTitle ? <span>{ item.title ? item.title : '' }</span> : null }
@@ -607,7 +607,7 @@ registerBlockType('tainacan/carousel-items-list', {
                         icon={(
                             <img
                                 width={148}
-                                src={ `${tainacan_blocks.base_url}/admin/images/tainacan_logo_header.svg` }
+                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
                                 alt="Tainacan Logo"/>
                         )}>
                         <p>

@@ -332,7 +332,7 @@
                 itemId: Number,
                 isLoading: false,
                 open: true,
-                thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+                thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
                 urls_open: false,
                 activeTab: 0,
                 isLoadingAttachments: false

@@ -105,7 +105,7 @@ export default {
     },
     data () {
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             itemColumnWidth: Number,
             containerWidthDiscount: Number,
             masonryCols: {default: 7, 1919: 6, 1407: 5, 1215: 4, 1023: 3, 767: 2, 343: 1}

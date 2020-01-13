@@ -176,7 +176,7 @@ registerBlockType('tainacan/facets-list', {
                                         ?    
                                     facet.entity['header_image']
                                         : 
-                                    `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`
+                                    `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`
                                 }
                                 alt={ facet.label ? facet.label : __( 'Thumbnail', 'tainacan' ) }/>
                         : null 
@@ -192,7 +192,7 @@ registerBlockType('tainacan/facets-list', {
                                         ?    
                                     facet.entity.thumbnail['thumbnail'][0] 
                                         : 
-                                    `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`)
+                                    `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
                                 }
                                 alt={ facet.label ? facet.label : __( 'Thumbnail', 'tainacan' ) }/>
                         : null 
@@ -628,7 +628,7 @@ registerBlockType('tainacan/facets-list', {
                         icon={(
                             <img
                                 width={148}
-                                src={ `${tainacan_blocks.base_url}/admin/images/tainacan_logo_header.svg` }
+                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
                                 alt="Tainacan Logo"/>
                         )}>
                         <p>

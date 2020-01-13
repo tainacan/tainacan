@@ -150,7 +150,7 @@ registerBlockType('tainacan/carousel-collections-list', {
                                             ?    
                                         collectionItems[0].thumbnail['thumbnail'][0] 
                                             : 
-                                        `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`)
+                                        `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
                                     }
                                     alt={ collectionItems[0] && collectionItems[0].name ? collectionItems[0].name : __( 'Thumbnail', 'tainacan' ) }/>
                                 <img
@@ -163,7 +163,7 @@ registerBlockType('tainacan/carousel-collections-list', {
                                             ?    
                                         collectionItems[1].thumbnail['thumbnail'][0] 
                                             : 
-                                        `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`)
+                                        `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
                                     }
                                     alt={ collectionItems[1] && collectionItems[1].name ? collectionItems[1].name : __( 'Thumbnail', 'tainacan' ) }/>
                                 <img
@@ -176,7 +176,7 @@ registerBlockType('tainacan/carousel-collections-list', {
                                             ?    
                                         collectionItems[2].thumbnail['thumbnail'][0] 
                                             : 
-                                        `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`)
+                                        `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
                                     }
                                     alt={ collectionItems[2] && collectionItems[2].name ? collectionItems[2].name : __( 'Thumbnail', 'tainacan' ) }/>
                             </div>
@@ -191,7 +191,7 @@ registerBlockType('tainacan/carousel-collections-list', {
                                         ?    
                                     collection.thumbnail['thumbnail'][0] 
                                         : 
-                                    `${tainacan_blocks.base_url}/admin/images/placeholder_square.png`)
+                                    `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
                                 }
                                 alt={ collection.name ? collection.name : __( 'Thumbnail', 'tainacan' ) }/>
                         }
@@ -446,7 +446,7 @@ registerBlockType('tainacan/carousel-collections-list', {
                         icon={(
                             <img
                                 width={148}
-                                src={ `${tainacan_blocks.base_url}/admin/images/tainacan_logo_header.svg` }
+                                src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
                                 alt="Tainacan Logo"/>
                         )}>
                         <p>

@@ -36,7 +36,7 @@ class Admin {
 			'read',
 			$this->menu_slug,
 			array( &$this, 'admin_page' ),
-			plugin_dir_url( __FILE__ ) . 'images/tainacan_logo_symbol.svg'
+			plugin_dir_url( __FILE__ ) . '../assets/images/tainacan_logo_symbol.svg'
 		);
 
 		add_submenu_page(

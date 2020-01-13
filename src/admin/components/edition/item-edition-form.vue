@@ -797,7 +797,7 @@ export default {
             },
             thumbnail: {},
             formErrorMessage: '',
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             thumbnailMediaFrame: undefined,
             attachmentMediaFrame: undefined,
             fileMediaFrame: undefined,

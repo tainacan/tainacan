@@ -133,7 +133,7 @@
         name: 'TainacanHeader',
         data() {
             return {
-                logoHeader: tainacan_plugin.base_url + '/admin/images/tainacan_logo_header.svg',
+                logoHeader: tainacan_plugin.base_url + '/assets/images/tainacan_logo_header.svg',
                 wordpressAdmin: window.location.origin + window.location.pathname.replace('admin.php', ''),
                 searchQuery: '',
                 futureSearchQuery: '',

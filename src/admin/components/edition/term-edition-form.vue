@@ -223,7 +223,7 @@
         data() {
             return {
                 formErrors: {},
-                headerPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+                headerPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
                 headerImageMediaFrame: undefined,
                 isFetchingParentTerms: false,
                 parentTerms: [],

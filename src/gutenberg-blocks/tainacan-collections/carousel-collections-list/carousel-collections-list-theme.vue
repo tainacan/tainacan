@@ -28,7 +28,7 @@
                                         ?    
                                     collection.thumbnail['thumbnail'][0] 
                                         : 
-                                    `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
+                                    `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
                                 "
                                 :alt="collection.name ? collection.name : $root.__('Thumbnail', 'tainacan')">
                             <span v-if="!hideName">{{ collection.name ? collection.name : '' }}</span>
@@ -49,7 +49,7 @@
                                             ?    
                                         collectionItems[collection.id][0].thumbnail['thumbnail'][0] 
                                             : 
-                                        `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
+                                        `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
                                     "
                                     :alt="collectionItems[collection.id][0] && collectionItems[collection.id][0].name ? collectionItems[collection.id][0].name : $root.__( 'Thumbnail', 'tainacan' ) ">
                                 <img
@@ -62,7 +62,7 @@
                                             ?    
                                         collectionItems[collection.id][1].thumbnail['thumbnail'][0] 
                                             : 
-                                        `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
+                                        `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
                                     "
                                     :alt="collectionItems[collection.id][1] && collectionItems[collection.id][1].name ? collectionItems[collection.id][1].name : $root.__( 'Thumbnail', 'tainacan' ) ">
                                 <img
@@ -75,7 +75,7 @@
                                             ?    
                                         collectionItems[collection.id][2].thumbnail['thumbnail'][0] 
                                             : 
-                                        `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
+                                        `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
                                     "
                                     :alt="collectionItems[collection.id][2] && collectionItems[collection.id][2].name ? collectionItems[collection.id][2].name : $root.__( 'Thumbnail', 'tainacan' ) ">
                             </div>

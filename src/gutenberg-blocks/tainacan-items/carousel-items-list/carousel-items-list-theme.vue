@@ -77,7 +77,7 @@
                                         ?    
                                     item.thumbnail['thumbnail'][0] 
                                         : 
-                                    `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
+                                    `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
                                 "
                                 :alt="item.title ? item.title : $root.__('Thumbnail', 'tainacan')">
                             <span v-if="!hideTitle">{{ item.title ? item.title : '' }}</span>

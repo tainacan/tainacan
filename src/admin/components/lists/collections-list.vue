@@ -316,7 +316,7 @@ export default {
             selectedCollections: [],
             allCollectionsOnPageSelected: false,
             isSelectingCollections: false,
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             cursorPosX: -1,
             cursorPosY: -1,
             contextMenuIndex: null,

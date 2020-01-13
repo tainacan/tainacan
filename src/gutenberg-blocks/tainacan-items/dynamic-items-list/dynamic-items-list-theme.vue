@@ -419,7 +419,7 @@ export default {
                     ?    
                 item.thumbnail['large'][0] 
                     : 
-                `${this.tainacanBaseUrl}/admin/images/placeholder_square.png`)
+                `${this.tainacanBaseUrl}/assets/images/placeholder_square.png`)
             )
         },
         mosaicPartition(items) {

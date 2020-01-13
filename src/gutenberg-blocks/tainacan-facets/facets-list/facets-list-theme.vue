@@ -74,7 +74,7 @@
                                     ?    
                                 facet.entity['header_image']
                                     : 
-                                `${tainacanBaseUrl}/admin/images/placeholder_square.png`
+                                `${tainacanBaseUrl}/assets/images/placeholder_square.png`
                             "
                             :alt="facet.title ? facet.title : $root.__('Thumbnail', 'tainacan')">
                         <img
@@ -88,7 +88,7 @@
                                     ?    
                                 facet.entity.thumbnail['thumbnail'][0] 
                                     : 
-                                `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
+                                `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
                             "
                             :alt="facet.title ? facet.title : $root.__('Thumbnail', 'tainacan')">
                         <span>{{ facet.label ? facet.label : '' }}</span>

@@ -366,7 +366,7 @@ export default {
                     1600: { slidesPerView: 16 }
                 }
             },
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png'
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png'
         }
     },
     computed: {

@@ -619,7 +619,7 @@
                 infoEmpty: `[ ${this.$i18n.get('info_empty').toLowerCase()} ]`,
                 dateFormat: '',
                 activityCreationDate: '',
-                placeholderSquareImage: `${tainacan_plugin.base_url}/admin/images/placeholder_square.png`,
+                placeholderSquareImage: `${tainacan_plugin.base_url}/assets/images/placeholder_square.png`,
                 isLoadingActivity: false,
                 adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#', 
             }

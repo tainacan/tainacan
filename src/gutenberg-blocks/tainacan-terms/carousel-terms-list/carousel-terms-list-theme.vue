@@ -19,7 +19,7 @@
                                 :href="term.url"
                                 target="_blank">
                             <img
-                                :src="term.header_image ? term.header_image : `${tainacanBaseUrl}/admin/images/placeholder_square.png`"
+                                :src="term.header_image ? term.header_image : `${tainacanBaseUrl}/assets/images/placeholder_square.png`"
                                 :alt="term.name ? term.name : $root.__('Thumbnail', 'tainacan')" >
                             <span v-if="!hideName">{{ term.name ? term.name : '' }}</span>
                         </a>
@@ -39,7 +39,7 @@
                                             ?    
                                         termItems[term.id][0].thumbnail['thumbnail'][0] 
                                             : 
-                                        `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
+                                        `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
                                     "
                                     :alt="termItems[term.id][0] && termItems[term.id][0].name ? termItems[term.id][0].name : $root.__( 'Thumbnail', 'tainacan' ) ">
                                 <img
@@ -52,7 +52,7 @@
                                             ?    
                                         termItems[term.id][1].thumbnail['thumbnail'][0] 
                                             : 
-                                        `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
+                                        `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
                                     "
                                     :alt="termItems[term.id][1] && termItems[term.id][1].name ? termItems[term.id][1].name : $root.__( 'Thumbnail', 'tainacan' ) ">
                                 <img
@@ -65,7 +65,7 @@
                                             ?    
                                         termItems[term.id][2].thumbnail['thumbnail'][0] 
                                             : 
-                                        `${tainacanBaseUrl}/admin/images/placeholder_square.png`)
+                                        `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
                                     "
                                     :alt="termItems[term.id][2] && termItems[term.id][2].name ? termItems[term.id][2].name : $root.__( 'Thumbnail', 'tainacan' ) ">
                             </div>
