@@ -1,4 +1,4 @@
-import tainacan from '../../api-client/axios.js';
+import tainacan from '../../axios/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 

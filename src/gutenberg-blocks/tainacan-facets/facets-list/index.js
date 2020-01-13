@@ -8,7 +8,7 @@ const { InspectorControls, BlockControls } = wp.editor;
 
 import MetadataModal from './metadata-modal.js';
 import ParentTermModal from './parent-term-modal.js';
-import tainacan from '../../api-client/axios.js';
+import tainacan from '../../axios/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 
