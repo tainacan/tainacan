@@ -177,9 +177,6 @@ class Admin {
 
 	}
 
-	/**
-	 * Also used by DevInterface
-	 */
 	function get_admin_js_localization_params() {
 		global $TAINACAN_BASE_URL, $TAINACAN_API_MAX_ITEMS_PER_PAGE;
 

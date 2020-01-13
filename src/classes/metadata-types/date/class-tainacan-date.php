@@ -6,7 +6,6 @@ use Tainacan\Entities\Item_Metadata_Entity;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-use Tainacan\Helpers;
 /**
  * Class TainacanMetadatumType
  */

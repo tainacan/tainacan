@@ -26,11 +26,6 @@ require_once('migrations.php');
 function tnc_enable_dev_wp_interface() {
     return defined('TNC_ENABLE_DEV_WP_INTERFACE') && true === TNC_ENABLE_DEV_WP_INTERFACE ? true : false;
 }
-if ( tnc_enable_dev_wp_interface() ) {
-	require_once('dev-interface/class-tainacan-dev-interface.php');
-	require_once('dev-interface/class-tainacan-helpers-html.php');
-	$Tainacan_Dev_interface = \Tainacan\DevInterface\DevInterface::get_instance();
-}
 
 function tainacan_load_plugin_textdomain() {
     load_plugin_textdomain( 'tainacan', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
