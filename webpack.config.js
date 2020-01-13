@@ -7,31 +7,31 @@ module.exports = {
     entry: {
         search: './src/front/js/theme-main.js',
         admin: './src/front/js/main.js',
-        roles: './src/front/js/roles-main.js',
+        roles: './src/front/roles/js/roles-main.js',
 
-        gutenberg_terms_list: './src/gutenberg-blocks/tainacan-terms/terms-list/index.js',
+        gutenberg_terms_list: './src/front/gutenberg-blocks/tainacan-terms/terms-list/index.js',
         
-        gutenberg_items_list: './src/gutenberg-blocks/tainacan-items/items-list/index.js',
+        gutenberg_items_list: './src/front/gutenberg-blocks/tainacan-items/items-list/index.js',
         
-        gutenberg_dynamic_items_list: './src/gutenberg-blocks/tainacan-items/dynamic-items-list/index.js',
-        gutenberg_dynamic_items_list_theme: './src/gutenberg-blocks/tainacan-items/dynamic-items-list/dynamic-items-list-theme.js',
+        gutenberg_dynamic_items_list: './src/front/gutenberg-blocks/tainacan-items/dynamic-items-list/index.js',
+        gutenberg_dynamic_items_list_theme: './src/front/gutenberg-blocks/tainacan-items/dynamic-items-list/dynamic-items-list-theme.js',
         
-        gutenberg_carousel_items_list: './src/gutenberg-blocks/tainacan-items/carousel-items-list/index.js',
-        gutenberg_carousel_items_list_theme: './src/gutenberg-blocks/tainacan-items/carousel-items-list/carousel-items-list-theme.js',
+        gutenberg_carousel_items_list: './src/front/gutenberg-blocks/tainacan-items/carousel-items-list/index.js',
+        gutenberg_carousel_items_list_theme: './src/front/gutenberg-blocks/tainacan-items/carousel-items-list/carousel-items-list-theme.js',
         
-        gutenberg_search_bar: './src/gutenberg-blocks/tainacan-items/search-bar/index.js',
-        gutenberg_search_bar_script: './src/gutenberg-blocks/tainacan-items/search-bar/search-bar-theme-script.js',
+        gutenberg_search_bar: './src/front/gutenberg-blocks/tainacan-items/search-bar/index.js',
+        gutenberg_search_bar_script: './src/front/gutenberg-blocks/tainacan-items/search-bar/search-bar-theme-script.js',
         
-        gutenberg_collections_list: './src/gutenberg-blocks/tainacan-collections/collections-list/index.js',
+        gutenberg_collections_list: './src/front/gutenberg-blocks/tainacan-collections/collections-list/index.js',
         
-        gutenberg_carousel_collections_list: './src/gutenberg-blocks/tainacan-collections/carousel-collections-list/index.js',
-        gutenberg_carousel_collections_list_theme: './src/gutenberg-blocks/tainacan-collections/carousel-collections-list/carousel-collections-list-theme.js',
+        gutenberg_carousel_collections_list: './src/front/gutenberg-blocks/tainacan-collections/carousel-collections-list/index.js',
+        gutenberg_carousel_collections_list_theme: './src/front/gutenberg-blocks/tainacan-collections/carousel-collections-list/carousel-collections-list-theme.js',
         
-        gutenberg_facets_list: './src/gutenberg-blocks/tainacan-facets/facets-list/index.js',
-        gutenberg_facets_list_theme: './src/gutenberg-blocks/tainacan-facets/facets-list/facets-list-theme.js',
+        gutenberg_facets_list: './src/front/gutenberg-blocks/tainacan-facets/facets-list/index.js',
+        gutenberg_facets_list_theme: './src/front/gutenberg-blocks/tainacan-facets/facets-list/facets-list-theme.js',
                 
-        gutenberg_carousel_terms_list: './src/gutenberg-blocks/tainacan-terms/carousel-terms-list/index.js',
-        gutenberg_carousel_terms_list_theme: './src/gutenberg-blocks/tainacan-terms/carousel-terms-list/carousel-terms-list-theme.js'
+        gutenberg_carousel_terms_list: './src/front/gutenberg-blocks/tainacan-terms/carousel-terms-list/index.js',
+        gutenberg_carousel_terms_list_theme: './src/front/gutenberg-blocks/tainacan-terms/carousel-terms-list/carousel-terms-list-theme.js'
 
     },
     output: {

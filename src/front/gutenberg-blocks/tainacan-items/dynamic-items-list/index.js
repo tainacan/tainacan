@@ -7,7 +7,7 @@ const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Bu
 const { InspectorControls, BlockControls } = wp.editor;
 
 import DynamicItemsModal from './dynamic-items-modal.js';
-import tainacan from '../../axios/axios.js';
+import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 

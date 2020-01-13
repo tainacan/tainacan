@@ -1,4 +1,4 @@
-import tainacan from '../../axios/axios.js';
+import tainacan from '../../js/axios.js';
 import axios from 'axios';
 
 const { __ } = wp.i18n;
@@ -46,12 +46,13 @@ export default class CollectionsModal extends React.Component {
     }
 
     selectTemporaryCollection(collection) {
-        let existingCollectionIndex = this.state.temporarySelectedCollections.findIndex((existingCollection) => existingCollection.id == collection.id);
+        let existingCollectionIndex = this.state.temporarySelectedCollections.findIndex((existingCollection) => (existingCollection.id == 'collection-id-' + collection.id) || (existingCollection.id == collection.id));
 
         if (existingCollectionIndex < 0) {
+            let collectionId = isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id;
             let aTemporarySelectedCollections = this.state.temporarySelectedCollections;
             aTemporarySelectedCollections.push({
-                id: collection.id,
+                id: collectionId,
                 name: collection.name,
                 url: collection.url,
                 thumbnail: collection.thumbnail
@@ -62,7 +63,7 @@ export default class CollectionsModal extends React.Component {
 
     removeTemporaryCollectionOfId(collectionId) {
 
-        let existingCollectionIndex = this.state.temporarySelectedCollections.findIndex((existingCollection) => existingCollection.id == collectionId);
+        let existingCollectionIndex = this.state.temporarySelectedCollections.findIndex((existingCollection) => ((existingCollection.id == 'collection-id-' + collectionId) || (existingCollection.id == collectionId)));
 
         if (existingCollectionIndex >= 0) {
             let aTemporarySelectedCollections = this.state.temporarySelectedCollections;
@@ -77,7 +78,7 @@ export default class CollectionsModal extends React.Component {
     }
 
     isTemporaryCollectionSelected(collectionId) {
-        return this.state.temporarySelectedCollections.findIndex(collection => collection.id == collectionId) >= 0;
+        return this.state.temporarySelectedCollections.findIndex(collection => (collection.id == collectionId) || (collection.id == 'collection-id-' + collectionId)) >= 0;
     }
 
     toggleSelectTemporaryCollection(collection, isChecked) {
@@ -200,6 +201,7 @@ export default class CollectionsModal extends React.Component {
                 <div>
                     <div className="modal-search-area">
                         <TextControl 
+                                placeholder={ __('Search by collection\'s name', 'tainacan') } 
                                 label={__('Search for a collection', 'tainacan')}
                                 value={ this.state.searchCollectionName }
                                 onInput={(value) => {

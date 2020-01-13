@@ -6,13 +6,13 @@ const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl
 
 const { InspectorControls } = wp.editor;
 
-import TermsModal from '../terms-list/terms-modal.js';
-import tainacan from '../../axios/axios.js';
+import CarouselCollectionsModal from './carousel-collections-modal.js';
+import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 
-registerBlockType('tainacan/carousel-terms-list', {
-    title: __('Tainacan Terms Carousel', 'tainacan'),
+registerBlockType('tainacan/carousel-collections-list', {
+    title: __('Tainacan Collections Carousel', 'tainacan'),
     icon:
         <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -21,18 +21,18 @@ registerBlockType('tainacan/carousel-terms-list', {
                 width="24px">
             <path
                 fill="#298596"
-                d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
+                d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
         </svg>,
     category: 'tainacan-blocks',
-    keywords: [ __( 'terms', 'tainacan' ), __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ),  __( 'taxonomy', 'tainacan' ) ],
-    description: __('List terms on a Carousel, showing their thumbnails or a preview of items.', 'tainacan'),
+    keywords: [ __( 'collections', 'tainacan' ), __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ) ],
+    description: __('List collections on a Carousel, using search or collection selection.', 'tainacan'),
     attributes: {
         content: {
             type: 'array',
             source: 'children',
             selector: 'div'
         },
-        terms: {
+        collections: {
             type: Array,
             default: []
         },
@@ -40,7 +40,7 @@ registerBlockType('tainacan/carousel-terms-list', {
             type: Boolean,
             default: false
         },
-        selectedTerms: {
+        selectedCollections: {
             type: Array,
             default: []
         },
@@ -48,7 +48,7 @@ registerBlockType('tainacan/carousel-terms-list', {
             type: String,
             default: undefined
         },
-        maxTermsNumber: {
+        maxCollectionsNumber: {
             type: Number,
             value: undefined
         },
@@ -56,7 +56,7 @@ registerBlockType('tainacan/carousel-terms-list', {
             type: Boolean,
             value: false
         },
-        isLoadingTerm: {
+        isLoadingCollection: {
             type: Boolean,
             value: false
         },
@@ -80,11 +80,11 @@ registerBlockType('tainacan/carousel-terms-list', {
             type: Boolean,
             value: true
         },
-        showTermThumbnail: {
+        showCollectionThumbnail: {
             type: Boolean,
             value: false
         },
-        term: {
+        collection: {
             type: Object,
             value: undefined
         },
@@ -92,17 +92,13 @@ registerBlockType('tainacan/carousel-terms-list', {
             type: String,
             default: undefined
         },
-        termBackgroundColor: {
+        collectionBackgroundColor: {
             type: String,
             default: "#454647"
         },
-        termTextColor: {
+        collectionTextColor: {
             type: String,
             default: "#ffffff"
-        },
-        taxonomyId: {
-            type: String,
-            default: undefined
         }
     },
     supports: {
@@ -112,85 +108,94 @@ registerBlockType('tainacan/carousel-terms-list', {
     },
     edit({ attributes, setAttributes, className, isSelected, clientId }){
         let {
-            terms, 
+            collections, 
             content, 
             isModalOpen,
             itemsRequestSource,
-            selectedTerms,
+            selectedCollections,
             isLoading,
             arrowsPosition,
             autoPlay,
             autoPlaySpeed,
             loopSlides,
             hideName,
-            showTermThumbnail,
-            taxonomyId
+            showCollectionThumbnail
         } = attributes;
 
         // Obtains block's client id to render it on save function
         setAttributes({ blockId: clientId });
         
-        function prepareItem(term, termItems) {
+        function prepareItem(collection, collectionItems) {
             return (
                 <li 
-                    key={ term.id }
-                    className={ 'term-list-item ' + (!showTermThumbnail ? 'term-list-item-grid' : '')}>   
+                    key={ collection.id }
+                    className={ 'collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid' : '')}>   
                     <IconButton
-                        onClick={ () => removeItemOfId(term.id) }
+                        onClick={ () => removeItemOfId(collection.id) }
                         icon="no-alt"
                         label={__('Remove', 'tainacan')}/>
                     <a 
-                        id={ isNaN(term.id) ? term.id : 'term-id-' + term.id }
-                        href={ term.url } 
+                        id={ isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id }
+                        href={ collection.url } 
                         target="_blank">
-                        { !showTermThumbnail ? 
-                            <div class="term-items-grid">
+                        { !showCollectionThumbnail ? 
+                            <div class="collection-items-grid">
                                 <img 
                                     src={ 
-                                        termItems[0] && termItems[0].thumbnail && termItems[0].thumbnail['tainacan-medium'][0] && termItems[0].thumbnail['tainacan-medium'][0] 
+                                        collectionItems[0] && collectionItems[0].thumbnail && collectionItems[0].thumbnail['tainacan-medium'][0] && collectionItems[0].thumbnail['tainacan-medium'][0] 
                                             ?
-                                        termItems[0].thumbnail['tainacan-medium'][0] 
+                                        collectionItems[0].thumbnail['tainacan-medium'][0] 
                                             :
-                                        (termItems[0] && termItems[0].thumbnail && termItems[0].thumbnail['thumbnail'][0] && termItems[0].thumbnail['thumbnail'][0]
+                                        (collectionItems[0] && collectionItems[0].thumbnail && collectionItems[0].thumbnail['thumbnail'][0] && collectionItems[0].thumbnail['thumbnail'][0]
                                             ?    
-                                        termItems[0].thumbnail['thumbnail'][0] 
+                                        collectionItems[0].thumbnail['thumbnail'][0] 
                                             : 
                                         `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
                                     }
-                                    alt={ termItems[0] && termItems[0].name ? termItems[0].name : __( 'Thumbnail', 'tainacan' ) }/>
+                                    alt={ collectionItems[0] && collectionItems[0].name ? collectionItems[0].name : __( 'Thumbnail', 'tainacan' ) }/>
                                 <img
                                     src={ 
-                                        termItems[1] && termItems[1].thumbnail && termItems[1].thumbnail['tainacan-medium'][0] && termItems[1].thumbnail['tainacan-medium'][0] 
+                                        collectionItems[1] && collectionItems[1].thumbnail && collectionItems[1].thumbnail['tainacan-medium'][0] && collectionItems[1].thumbnail['tainacan-medium'][0] 
                                             ?
-                                        termItems[1].thumbnail['tainacan-medium'][0] 
+                                        collectionItems[1].thumbnail['tainacan-medium'][0] 
                                             :
-                                        (termItems[1] && termItems[1].thumbnail && termItems[1].thumbnail['thumbnail'][0] && termItems[1].thumbnail['thumbnail'][0]
+                                        (collectionItems[1] && collectionItems[1].thumbnail && collectionItems[1].thumbnail['thumbnail'][0] && collectionItems[1].thumbnail['thumbnail'][0]
                                             ?    
-                                        termItems[1].thumbnail['thumbnail'][0] 
+                                        collectionItems[1].thumbnail['thumbnail'][0] 
                                             : 
                                         `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
                                     }
-                                    alt={ termItems[1] && termItems[1].name ? termItems[1].name : __( 'Thumbnail', 'tainacan' ) }/>
+                                    alt={ collectionItems[1] && collectionItems[1].name ? collectionItems[1].name : __( 'Thumbnail', 'tainacan' ) }/>
                                 <img
                                     src={ 
-                                        termItems[2] && termItems[2].thumbnail && termItems[2].thumbnail['tainacan-medium'][0] && termItems[2].thumbnail['tainacan-medium'][0] 
+                                        collectionItems[2] && collectionItems[2].thumbnail && collectionItems[2].thumbnail['tainacan-medium'][0] && collectionItems[2].thumbnail['tainacan-medium'][0] 
                                             ?
-                                        termItems[2].thumbnail['tainacan-medium'][0] 
+                                        collectionItems[2].thumbnail['tainacan-medium'][0] 
                                             :
-                                        (termItems[2] && termItems[2].thumbnail && termItems[2].thumbnail['thumbnail'][0] && termItems[2].thumbnail['thumbnail'][0]
+                                        (collectionItems[2] && collectionItems[2].thumbnail && collectionItems[2].thumbnail['thumbnail'][0] && collectionItems[2].thumbnail['thumbnail'][0]
                                             ?    
-                                        termItems[2].thumbnail['thumbnail'][0] 
+                                        collectionItems[2].thumbnail['thumbnail'][0] 
                                             : 
                                         `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
                                     }
-                                    alt={ termItems[2] && termItems[2].name ? termItems[2].name : __( 'Thumbnail', 'tainacan' ) }/>
+                                    alt={ collectionItems[2] && collectionItems[2].name ? collectionItems[2].name : __( 'Thumbnail', 'tainacan' ) }/>
                             </div>
                             :
                             <img
-                                src={ term.header_image ? term.header_image : `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`}
-                                alt={ term.name ? term.name : __( 'Thumbnail', 'tainacan' )}/>
+                                src={ 
+                                    collection.thumbnail && collection.thumbnail['tainacan-medium'][0] && collection.thumbnail['tainacan-medium'][0] 
+                                        ?
+                                    collection.thumbnail['tainacan-medium'][0] 
+                                        :
+                                    (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
+                                        ?    
+                                    collection.thumbnail['thumbnail'][0] 
+                                        : 
+                                    `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
+                                }
+                                alt={ collection.name ? collection.name : __( 'Thumbnail', 'tainacan' ) }/>
                         }
-                        { !hideName ? <span>{ term.name ? term.name : '' }</span> : null }
+                        { !hideName ? <span>{ collection.name ? collection.name : '' }</span> : null }
                     </a>
                 </li>
             );
@@ -204,42 +209,42 @@ registerBlockType('tainacan/carousel-terms-list', {
             });
 
             if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
-                itemsRequestSource.cancel('Previous terms search canceled.');
+                itemsRequestSource.cancel('Previous collections search canceled.');
 
             itemsRequestSource = axios.CancelToken.source();
 
-            terms = [];
+            collections = [];
 
-            let endpoint = '/taxonomy/' + taxonomyId + '/terms/?'+ qs.stringify({ hideempty: 0, include: selectedTerms }) + '&fetch_only=id,name,url,header_image';
+            let endpoint = '/collections?'+ qs.stringify({ postin: selectedCollections, perpage: selectedCollections.length }) + '&fetch_only=name,url,thumbnail';
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
 
-                    if (showTermThumbnail) {
-                        for (let term of response.data) { 
-                            terms.push(prepareItem(term));
+                    if (showCollectionThumbnail) {
+                        for (let collection of response.data) { 
+                            collections.push(prepareItem(collection));
                         }
                         setAttributes({
                             content: <div></div>,
-                            terms: terms,
+                            collections: collections,
                             isLoading: false,
                             itemsRequestSource: itemsRequestSource
                         });
                     } else {
                         let promises = [];
-                        for (let term of response.data) {  
+                        for (let collection of response.data) {  
                             promises.push(
-                                tainacan.get('/items/?perpage=3&fetch_only=name,url,thumbnail&taxquery[0][taxonomy]=tnc_tax_' + taxonomyId + '&taxquery[0][terms][0]=' + term.id + '&taxquery[0][compare]=IN')
-                                    .then(response => { return({ term: term, termItems: response.data.items }) })
+                                tainacan.get('/collection/' + collection.id + '/items?perpage=3&fetch_only=name,url,thumbnail')
+                                    .then(response => { return({ collection: collection, collectionItems: response.data.items }) })
                                     .catch((error) => console.log(error))
                             );                      
                         }
                         axios.all(promises).then((results) => {
                             for (let result of results) {
-                                terms.push(prepareItem(result.term, result.termItems));
+                                collections.push(prepareItem(result.collection, result.collectionItems));
                             }
                             setAttributes({
                                 content: <div></div>,
-                                terms: terms,
+                                collections: collections,
                                 isLoading: false,
                                 itemsRequestSource: itemsRequestSource
                             });
@@ -257,17 +262,17 @@ registerBlockType('tainacan/carousel-terms-list', {
 
         function removeItemOfId(itemId) {
 
-            let existingItemIndex = terms.findIndex((existingItem) => existingItem.key == itemId);
+            let existingItemIndex = collections.findIndex((existingItem) => existingItem.key == itemId);
             if (existingItemIndex >= 0)
-                terms.splice(existingItemIndex, 1);
+                collections.splice(existingItemIndex, 1);
 
-            let existingSelectedItemIndex = selectedTerms.findIndex((existingSelectedItem) => existingSelectedItem == itemId);
+            let existingSelectedItemIndex = selectedCollections.findIndex((existingSelectedItem) => existingSelectedItem == itemId);
             if (existingSelectedItemIndex >= 0)
-                selectedTerms.splice(existingSelectedItemIndex, 1);
+                selectedCollections.splice(existingSelectedItemIndex, 1);
         
             setAttributes({ 
-                selectedTerms: selectedTerms,
-                terms: terms,
+                selectedCollections: selectedCollections,
+                collections: collections,
                 content: <div></div> 
             });
         }
@@ -288,28 +293,28 @@ registerBlockType('tainacan/carousel-terms-list', {
                             >
                             <div>
                                 {/* <ToggleControl
-                                            label={__('Show term\'s thumbnail', 'tainacan')}
-                                            help={ !showTermThumbnail ? __('Toggle to show items grid instead of term\'s thumbnail', 'tainacan') : __('Do not show term\'s thumbnail instead of items grid', 'tainacan')}
-                                            checked={ showTermThumbnail ? showTermThumbnail : false }
+                                            label={__('Show collection\'s thumbnail', 'tainacan')}
+                                            help={ !showCollectionThumbnail ? __('Toggle to show items grid instead of collection\'s thumbnail', 'tainacan') : __('Do not show collection\'s thumbnail instead of items grid', 'tainacan')}
+                                            checked={ showCollectionThumbnail ? showCollectionThumbnail : false }
                                             onChange={ ( isChecked ) => {
-                                                    showTermThumbnail = isChecked;
-                                                    setAttributes({ showTermThumbnail: showTermThumbnail });
+                                                    showCollectionThumbnail = isChecked;
+                                                    setAttributes({ showCollectionThumbnail: showCollectionThumbnail });
                                                     setContent();
                                                 } 
                                             }
                                         /> */}
                                 <BaseControl
-                                        id="term-carousel-view-modes"
-                                        label={ __('Term layout', 'tainacan')}>
-                                    <div className="term-carousel-view-modes">
+                                        id="collection-carousel-view-modes"
+                                        label={ __('Collection layout', 'tainacan')}>
+                                    <div className="collection-carousel-view-modes">
                                         <button
                                                 onClick={ () => {
-                                                        showTermThumbnail = false;
-                                                        setAttributes({ showTermThumbnail: showTermThumbnail });
+                                                        showCollectionThumbnail = false;
+                                                        setAttributes({ showCollectionThumbnail: showCollectionThumbnail });
                                                         setContent();    
                                                     }
                                                 }
-                                                className={'term-carousel-view-mode-grid' + (showTermThumbnail ? '' : ' is-active')}>
+                                                className={'collection-carousel-view-mode-grid' + (showCollectionThumbnail ? '' : ' is-active')}>
                                             <div>
                                                 <div />
                                             <div />
@@ -319,12 +324,12 @@ registerBlockType('tainacan/carousel-terms-list', {
                                         </button>
                                         <button
                                                 onClick={ () => {
-                                                        showTermThumbnail = true;
-                                                        setAttributes({ showTermThumbnail: showTermThumbnail });
+                                                        showCollectionThumbnail = true;
+                                                        setAttributes({ showCollectionThumbnail: showCollectionThumbnail });
                                                         setContent();    
                                                     }
                                                 }
-                                                className={'term-carousel-view-mode-thumbnail' + (showTermThumbnail ? ' is-active' : '')}>
+                                                className={'collection-carousel-view-mode-thumbnail' + (showCollectionThumbnail ? ' is-active' : '')}>
                                             <div />
                                             <label>{ __('Thumbnail', 'tainacan') }</label>
                                         </button>    
@@ -332,7 +337,7 @@ registerBlockType('tainacan/carousel-terms-list', {
                                 </BaseControl>
                                 <ToggleControl
                                         label={__('Hide name', 'tainacan')}
-                                        help={ !hideName ? __('Toggle to hide term\'s name', 'tainacan') : __('Do not hide term\'s name', 'tainacan')}
+                                        help={ !hideName ? __('Toggle to hide collection\'s name', 'tainacan') : __('Do not hide collection\'s name', 'tainacan')}
                                         checked={ hideName }
                                         onChange={ ( isChecked ) => {
                                                 hideName = isChecked;
@@ -353,7 +358,7 @@ registerBlockType('tainacan/carousel-terms-list', {
                                     />
                                 <ToggleControl
                                         label={__('Auto play', 'tainacan')}
-                                        help={ !autoPlay ? __('Toggle to automatically slide to next term', 'tainacan') : __('Do not automatically slide to next term', 'tainacan')}
+                                        help={ !autoPlay ? __('Toggle to automatically slide to next collection', 'tainacan') : __('Do not automatically slide to next collection', 'tainacan')}
                                         checked={ autoPlay }
                                         onChange={ ( isChecked ) => {
                                                 autoPlay = isChecked;
@@ -397,27 +402,21 @@ registerBlockType('tainacan/carousel-terms-list', {
                     (
                     <div>
                         { isModalOpen ? 
-                                <TermsModal
-                                    replaceTermId={ false } // The Terms modal adds `term-id-` string to terms ids. Here we dont' need it
-                                    existingTaxonomyId={ taxonomyId } 
-                                    selectedTermsObject={ selectedTerms } 
-                                    onSelectTaxonomy={ (selectedTaxonomyId) => {
-                                        taxonomyId = selectedTaxonomyId;
-                                        setAttributes({ taxonomyId: taxonomyId });
-                                    }}
-                                    onApplySelection={ (aSelectionOfTerms) =>{
-                                        selectedTerms = selectedTerms.concat(aSelectionOfTerms.map((term) => { return term.id; }));
-                                        setAttributes({
-                                            selectedTerms: selectedTerms,
-                                            isModalOpen: false
-                                        });
-                                        setContent();
-                                    }}
-                                    onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
-                                : null
+                            <CarouselCollectionsModal
+                                selectedCollectionsObject={ selectedCollections }
+                                onApplySelection={ (aSelectionOfCollections) => {
+                                    selectedCollections = selectedCollections.concat(aSelectionOfCollections.map((collection) => { return collection.id; })); 
+                                    setAttributes({
+                                        selectedCollections: selectedCollections,
+                                        isModalOpen: false
+                                    });
+                                    setContent();
+                                }}
+                                onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
+                            : null
                         }
                         
-                        { terms.length ? (
+                        { collections.length ? (
                             <div className="block-control">
                                 <p>
                                     <svg
@@ -425,15 +424,15 @@ registerBlockType('tainacan/carousel-terms-list', {
                                             viewBox="0 0 24 24"
                                             height="24px"
                                             width="24px">
-                                        <path d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
+                                        <path d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
                                     </svg>
-                                    {__('List terms on a Carousel', 'tainacan')}
+                                    {__('List collections on a Carousel', 'tainacan')}
                                 </p>
                                 <Button
                                     isPrimary
                                     type="submit"
                                     onClick={ () => openCarouselModal() }>
-                                    {__('Add more terms', 'tainacan')}
+                                    {__('Add more collections', 'tainacan')}
                                 </Button> 
                             </div>
                             ): null
@@ -442,7 +441,7 @@ registerBlockType('tainacan/carousel-terms-list', {
                     ) : null
                 }
 
-                { !terms.length && !isLoading ? (
+                { !collections.length && !isLoading ? (
                     <Placeholder
                         icon={(
                             <img
@@ -456,15 +455,15 @@ registerBlockType('tainacan/carousel-terms-list', {
                                     viewBox="0 0 24 24"
                                     height="24px"
                                     width="24px">
-                                <path d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
+                                <path d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
                             </svg>
-                            {__('List terms on a Carousel, showing their thumbnails or a preview of items.', 'tainacan')}
+                            {__('List collections on a Carousel, showing their thumbnails or a preview of items.', 'tainacan')}
                         </p>
                         <Button
                             isPrimary
                             type="submit"
                             onClick={ () => openCarouselModal() }>
-                            {__('Select Terms', 'tainacan')}
+                            {__('Select Collections', 'tainacan')}
                         </Button>   
                     </Placeholder>
                     ) : null
@@ -475,13 +474,13 @@ registerBlockType('tainacan/carousel-terms-list', {
                         <Spinner />
                     </div> :
                     <div>
-                        { isSelected && terms.length ? 
+                        { isSelected && collections.length ? 
                             <div class="preview-warning">{__('Warning: this is just a demonstration. To see the carousel in action, either preview or publish your post.', 'tainacan')}</div>
                             : null
                         }
-                        {  terms.length ? ( 
+                        {  collections.length ? ( 
                             <div
-                                    className={'terms-list-edit-container ' + (arrowsPosition ? 'has-arrows-' + arrowsPosition : '')}>
+                                    className={'collections-list-edit-container ' + (arrowsPosition ? 'has-arrows-' + arrowsPosition : '')}>
                                 <button 
                                         class="swiper-button-prev" 
                                         slot="button-prev"
@@ -496,8 +495,8 @@ registerBlockType('tainacan/carousel-terms-list', {
                                                 fill="none"/>                         
                                     </svg>
                                 </button>
-                                <ul className={'terms-list-edit'}>
-                                    { terms }
+                                <ul className={'collections-list-edit'}>
+                                    { collections }
                                 </ul>
                                 <button 
                                         class="swiper-button-next" 
@@ -525,30 +524,28 @@ registerBlockType('tainacan/carousel-terms-list', {
         const {
             content, 
             blockId,
-            selectedTerms,
+            selectedCollections,
             arrowsPosition,
-            maxTermsNumber,
+            maxCollectionsNumber,
             autoPlay,
             autoPlaySpeed,
             loopSlides,
             hideName,
-            showTermThumbnail,
-            taxonomyId
+            showCollectionThumbnail
         } = attributes;
         return <div 
                     className={ className }
-                    selected-terms={ JSON.stringify(selectedTerms) }
+                    selected-collections={ JSON.stringify(selectedCollections) }
                     arrows-position={ arrowsPosition }
                     auto-play={ '' + autoPlay }
                     auto-play-speed={ autoPlaySpeed }
                     loop-slides={ '' + loopSlides }
                     hide-name={ '' + hideName }
-                    max-terms-number={ maxTermsNumber }
-                    taxonomy-id={ taxonomyId }
+                    max-collections-number={ maxCollectionsNumber }
                     tainacan-api-root={ tainacan_blocks.root }
                     tainacan-base-url={ tainacan_blocks.base_url }
-                    show-term-thumbnail={ '' + showTermThumbnail }
-                    id={ 'wp-block-tainacan-carousel-terms-list_' + blockId }>
+                    show-collection-thumbnail={ '' + showCollectionThumbnail }
+                    id={ 'wp-block-tainacan-carousel-collections-list_' + blockId }>
                         { content }
                 </div>
     }

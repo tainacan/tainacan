@@ -1,28 +1,23 @@
-import tainacan from '../../axios/axios.js';
+import tainacan from '../../js/axios.js';
 import axios from 'axios';
-import qs from 'qs';
 
 const { __ } = wp.i18n;
 
-const { TextControl, Button, Modal, SelectControl, RadioControl, Spinner } = wp.components;
+const { TextControl, Button, Modal, RadioControl, Spinner } = wp.components;
 
-export default class ItemsModal extends React.Component {
+export default class DynamicItemsModal extends React.Component {
     constructor(props) {
         super(props);
 
         // Initialize state
         this.state = {
             collectionsPerPage: 24,
-            items: [],
-            isLoadingItems: false,
-            itemsRequestSource: undefined,
             collectionId: undefined,  
             collectionName: '', 
             isLoadingCollections: false, 
             modalCollections: [],
             totalModalCollections: 0, 
             collectionPage: 1,
-            collectionOrderBy: 'date-desc',
             temporaryCollectionId: '',
             searchCollectionName: '',
             collections: [],
@@ -31,87 +26,27 @@ export default class ItemsModal extends React.Component {
         };
         
         // Bind events
-        this.fetchItems = this.fetchItems.bind(this);
-        this.applySelectedItems = this.applySelectedItems.bind(this);
         this.resetCollections = this.resetCollections.bind(this);
         this.selectCollection = this.selectCollection.bind(this);
         this.fetchCollections = this.fetchCollections.bind(this);
         this.fetchModalCollections = this.fetchModalCollections.bind(this);
         this.fetchCollection = this.fetchCollection.bind(this);
+        this.applySelectedSearchURL = this.applySelectedSearchURL.bind(this);
     }
 
     componentWillMount() {
         
         this.setState({ 
-            collectionId: this.props.existingCollectionId,
+            collectionId: this.props.existingCollectionId
         });
-
+         
         if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
             this.fetchCollection(this.props.existingCollectionId);
-            this.setState({ 
-                searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?iframemode=true' });
+            this.setState({ searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?readmode=true&iframemode=true' });
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
         }
-    }
-
-    // ITEMS RELATED --------------------------------------------------
-    applySelectedItems() {
-        let iframe = document.getElementById("itemsFrame");
-        if (iframe) {
-            let params = new URLSearchParams(iframe.contentWindow.location.search);
-            let selectedItems = params.getAll('selecteditems');
-            params.delete('selecteditems')
-            this.fetchItems(selectedItems);
-        }
-    }
-
-    cancelSelection() {
-
-        this.setState({
-            modalCollections: []
-        });
-
-        this.props.onCancelSelection();
-    }
-
-    fetchItems(selectedItems) {
-
-        this.setState({ isLoadingItems: true });
-
-        if (this.state.itemsRequestSource != undefined)
-            this.state.itemsRequestSource.cancel('Previous items search canceled.');
-
-        let anItemsRequestSource = axios.CancelToken.source();
-
-        let endpoint = '/collection/' + this.state.collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&fetch_only=title,url,thumbnail';
-        
-        tainacan.get(endpoint, { cancelToken: anItemsRequestSource.token })
-            .then(response => {
-                
-                let someItems = response.data.items.map((item) => ({ 
-                    title: item.title, 
-                    id: isNaN(item.id) ? item.id : 'item-id-' + item.id,
-                    url: item.url,
-                    thumbnail: [{
-                        src: item.thumbnail['tainacan-medium'] != undefined ? item.thumbnail['tainacan-medium'][0] : item.thumbnail['medium'][0],
-                        alt: item.title
-                    }]
-                }));
-
-                this.setState({ 
-                    isLoadingItems: false, 
-                    items: someItems
-                });
-
-                this.props.onApplySelection(someItems);
-                
-                return someItems;
-            })
-            .catch(error => {
-                console.log('Error trying to fetch items: ' + error);
-            });
     }
 
     // COLLECTIONS RELATED --------------------------------------------------
@@ -121,16 +56,7 @@ export default class ItemsModal extends React.Component {
         if (this.state.collectionPage <= 1)
             someModalCollections = [];
 
-        let endpoint = '/collections/?perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionPage;
-
-        if (this.state.collectionOrderBy == 'date')
-            endpoint += '&orderby=date&order=asc';
-        else if (this.state.collectionOrderBy == 'date-desc')
-            endpoint += '&orderby=date&order=desc';
-        else if (this.state.collectionOrderBy == 'title')
-            endpoint += '&orderby=title&order=asc';
-        else if (this.state.collectionOrderBy == 'title-desc')
-            endpoint += '&orderby=title&order=desc';
+        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionPage;
 
         this.setState({ 
             isLoadingCollections: true,
@@ -174,9 +100,9 @@ export default class ItemsModal extends React.Component {
     selectCollection(selectedCollectionId) {
         this.setState({
             collectionId: selectedCollectionId,
-            searchURL: tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?iframemode=true'
+            searchURL: tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?readmode=true&iframemode=true'
         });
-        
+
         this.props.onSelectCollection(selectedCollectionId);
         this.fetchCollection(selectedCollectionId);
     }
@@ -195,18 +121,9 @@ export default class ItemsModal extends React.Component {
             items: []
         });
 
-        let endpoint = '/collections/?perpage=' + this.state.collectionsPerPage;
+        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage;
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
-        
-        if (this.state.collectionOrderBy == 'date')
-            endpoint += '&orderby=date&order=asc';
-        else if (this.state.collectionOrderBy == 'date-desc')
-            endpoint += '&orderby=date&order=desc';
-        else if (this.state.collectionOrderBy == 'title')
-            endpoint += '&orderby=title&order=asc';
-        else if (this.state.collectionOrderBy == 'title-desc')
-            endpoint += '&orderby=title&order=desc';
 
         tainacan.get(endpoint, { cancelToken: aCollectionRequestSource.token })
             .then(response => {
@@ -224,6 +141,10 @@ export default class ItemsModal extends React.Component {
             });
     }
 
+    applySelectedSearchURL() {    
+        this.props.onApplySearchURL(document.getElementById("itemsFrame").contentWindow.location.href);
+    }
+
     resetCollections() {
 
         this.setState({
@@ -234,32 +155,40 @@ export default class ItemsModal extends React.Component {
         this.fetchModalCollections(); 
     }
 
+    cancelSelection() {
+
+        this.setState({
+            modalCollections: []
+        });
+
+        this.props.onCancelSelection();
+    }
+
     render() {
         return this.state.collectionId != null && this.state.collectionId != undefined ? (
-        // Items modal
+            // Items modal
         <Modal
-            className="wp-block-tainacan-modal dynamic-modal"
-            title={ __('Select items to add on block', 'tainacan', 'tainacan')}
-            onRequestClose={ () => this.cancelSelection() }
-            contentLabel={ __('Select items that will be added on block', 'tainacan', 'tainacan')}>
-            <iframe
-                    id="itemsFrame"
-                    src={ this.state.searchURL } />
-            <div className="modal-footer-area">
-                <Button 
-                    isDefault
-                    onClick={ () => { this.resetCollections() }}>
-                    {__('Switch collection', 'tainacan')}
-                </Button>
-                <Button
-                    style={{ marginLeft: 'auto' }} 
-                    isPrimary
-                    onClick={ () => this.applySelectedItems() }>
-                    {__('Add the selected items', 'tainacan')}
-                </Button>
-            </div>
-        </Modal>     
-        ) : (
+                className="wp-block-tainacan-modal dynamic-modal"
+                title={__('Configure the items search to be used on block', 'tainacan')}
+                onRequestClose={ () => this.cancelSelection() }
+                contentLabel={__('Configure your items search to be shown on block', 'tainacan')}>
+                <iframe
+                        id="itemsFrame"
+                        src={ this.state.searchURL } />
+                <div className="modal-footer-area">
+                    <Button 
+                        isDefault
+                        onClick={ () => { this.resetCollections() }}>
+                        {__('Switch collection', 'tainacan')}
+                    </Button>
+                    <Button 
+                        isPrimary
+                        onClick={ () => this.applySelectedSearchURL() }>
+                        {__('Use this search', 'tainacan')}
+                    </Button>
+                </div>
+        </Modal>
+    ) : (
         // Collections modal
         <Modal
                 className="wp-block-tainacan-modal"
@@ -269,7 +198,6 @@ export default class ItemsModal extends React.Component {
                 <div>
                     <div className="modal-search-area">
                         <TextControl 
-                                placeholder={ __('Search by collection\'s name', 'tainacan') }
                                 label={__('Search for a collection', 'tainacan')}
                                 value={ this.state.searchCollectionName }
                                 onChange={(value) => {
@@ -277,28 +205,6 @@ export default class ItemsModal extends React.Component {
                                         searchCollectionName: value
                                     });
                                     _.debounce(this.fetchCollections(value), 300);
-                                }}/>
-                        <SelectControl
-                                label={__('Order by', 'tainacan')}
-                                value={ this.state.collectionOrderBy }
-                                options={ [
-                                    { label: __('Latest', 'tainacan'), value: 'date-desc' },
-                                    { label: __('Oldest', 'tainacan'), value: 'date' },
-                                    { label: __('Name (A-Z)', 'tainacan'), value: 'title' },
-                                    { label: __('Name (Z-A)', 'tainacan'), value: 'title-desc' }
-                                ] }
-                                onChange={ ( aCollectionOrderBy ) => { 
-                                    this.state.collectionOrderBy = aCollectionOrderBy;
-                                    this.state.collectionPage = 1;
-                                    this.setState({ 
-                                        collectionOrderBy: this.state.collectionOrderBy,
-                                        collectionPage: this.state.collectionPage 
-                                    });
-                                    if (this.state.searchCollectionName && this.state.searchCollectionName != '') {
-                                        this.fetchCollections(this.state.searchCollectionName);
-                                    } else {
-                                        this.fetchModalCollections();
-                                    }
                                 }}/>
                     </div>
                     {(
@@ -360,7 +266,7 @@ export default class ItemsModal extends React.Component {
                                 }
                             </div>
                         </div>
-                    ) : this.state.isLoadingCollections ? <div class="spinner-container"><Spinner /></div> :
+                    ) : this.state.isLoadingCollections ? <Spinner/> :
                     <div className="modal-loadmore-section">
                         <p>{ __('Sorry, no collection found.', 'tainacan') }</p>
                     </div>
@@ -371,17 +277,12 @@ export default class ItemsModal extends React.Component {
                         onClick={ () => { this.cancelSelection() }}>
                         {__('Cancel', 'tainacan')}
                     </Button>
-                    <Button 
+                    <Button
                         isPrimary
                         disabled={ this.state.temporaryCollectionId == undefined || this.state.temporaryCollectionId == null || this.state.temporaryCollectionId == ''}
-                        onClick={ () => this.selectCollection(this.state.temporaryCollectionId) }>
-                        {__('Select items', 'tainacan')}
+                        onClick={ () => { this.selectCollection(this.state.temporaryCollectionId);  } }>
+                        {__('Configure search', 'tainacan')}
                     </Button>
-                    {
-                        this.state.isLoadingItems ? (
-                            <Spinner />
-                        ) : null
-                    }
                 </div>
             </div>
         </Modal> 

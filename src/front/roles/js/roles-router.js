@@ -2,8 +2,8 @@ import Vue from 'vue';
 import VueRouter from 'vue-router'
 import qs from 'qs';
 
-import RolesList from '../roles/roles-list.vue';
-import RoleEditionForm from '../roles/role-edition-form.vue'
+import RolesList from '../pages/roles-list.vue';
+import RoleEditionForm from '../pages/role-edition-form.vue'
 
 const { __ } = wp.i18n;
 

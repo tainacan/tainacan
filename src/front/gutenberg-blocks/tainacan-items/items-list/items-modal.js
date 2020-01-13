@@ -1,62 +1,117 @@
-import tainacan from '../../axios/axios.js';
+import tainacan from '../../js/axios.js';
 import axios from 'axios';
+import qs from 'qs';
 
 const { __ } = wp.i18n;
 
-const { TextControl, Button, Modal, RadioControl, SelectControl, Spinner } = wp.components;
+const { TextControl, Button, Modal, SelectControl, RadioControl, Spinner } = wp.components;
 
-export default class MetadataModal extends React.Component {
+export default class ItemsModal extends React.Component {
     constructor(props) {
         super(props);
 
         // Initialize state
         this.state = {
             collectionsPerPage: 24,
-            collectionId: undefined,
-            collectionSlug: undefined,
+            items: [],
+            isLoadingItems: false,
+            itemsRequestSource: undefined,
+            collectionId: undefined,  
+            collectionName: '', 
             isLoadingCollections: false, 
             modalCollections: [],
             totalModalCollections: 0, 
             collectionPage: 1,
+            collectionOrderBy: 'date-desc',
             temporaryCollectionId: '',
             searchCollectionName: '',
-            collectionOrderBy: 'date-desc',
-            metadatumId: undefined,  
-            metadatumType: undefined,  
-            isLoadingMetadata: false, 
-            modalMetadata: [],
-            temporaryMetadatumId: '',
             collections: [],
             collectionsRequestSource: undefined,
-            metadataRequestSource: undefined
+            searchURL: '',
         };
         
         // Bind events
+        this.fetchItems = this.fetchItems.bind(this);
+        this.applySelectedItems = this.applySelectedItems.bind(this);
         this.resetCollections = this.resetCollections.bind(this);
         this.selectCollection = this.selectCollection.bind(this);
         this.fetchCollections = this.fetchCollections.bind(this);
         this.fetchModalCollections = this.fetchModalCollections.bind(this);
-        this.selectMetadatum = this.selectMetadatum.bind(this);
-        this.fetchModalMetadata = this.fetchModalMetadata.bind(this);
-        this.getMetadatumType = this.getMetadatumType.bind(this);
+        this.fetchCollection = this.fetchCollection.bind(this);
     }
 
     componentWillMount() {
         
         this.setState({ 
             collectionId: this.props.existingCollectionId,
-            collectionSlug: this.props.existingCollectionSlug
         });
+
         if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
-            this.fetchModalMetadata(this.props.existingCollectionId);
+            this.fetchCollection(this.props.existingCollectionId);
             this.setState({ 
-                metadatumId: this.props.existingMetadatumId ? this.props.existingMetadatumId : undefined, 
-                metadatumType: this.props.existingMetadatumType ? this.props.existingMetadatumType : undefined 
-            });
+                searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?iframemode=true' });
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
         }
+    }
+
+    // ITEMS RELATED --------------------------------------------------
+    applySelectedItems() {
+        let iframe = document.getElementById("itemsFrame");
+        if (iframe) {
+            let params = new URLSearchParams(iframe.contentWindow.location.search);
+            let selectedItems = params.getAll('selecteditems');
+            params.delete('selecteditems')
+            this.fetchItems(selectedItems);
+        }
+    }
+
+    cancelSelection() {
+
+        this.setState({
+            modalCollections: []
+        });
+
+        this.props.onCancelSelection();
+    }
+
+    fetchItems(selectedItems) {
+
+        this.setState({ isLoadingItems: true });
+
+        if (this.state.itemsRequestSource != undefined)
+            this.state.itemsRequestSource.cancel('Previous items search canceled.');
+
+        let anItemsRequestSource = axios.CancelToken.source();
+
+        let endpoint = '/collection/' + this.state.collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&fetch_only=title,url,thumbnail';
+        
+        tainacan.get(endpoint, { cancelToken: anItemsRequestSource.token })
+            .then(response => {
+                
+                let someItems = response.data.items.map((item) => ({ 
+                    title: item.title, 
+                    id: isNaN(item.id) ? item.id : 'item-id-' + item.id,
+                    url: item.url,
+                    thumbnail: [{
+                        src: item.thumbnail['tainacan-medium'] != undefined ? item.thumbnail['tainacan-medium'][0] : item.thumbnail['medium'][0],
+                        alt: item.title
+                    }]
+                }));
+
+                this.setState({ 
+                    isLoadingItems: false, 
+                    items: someItems
+                });
+
+                this.props.onApplySelection(someItems);
+                
+                return someItems;
+            })
+            .catch(error => {
+                console.log('Error trying to fetch items: ' + error);
+            });
     }
 
     // COLLECTIONS RELATED --------------------------------------------------
@@ -87,12 +142,10 @@ export default class MetadataModal extends React.Component {
             .then(response => {
 
                 let otherModalCollections = this.state.modalCollections;
-
                 for (let collection of response.data) {
                     otherModalCollections.push({ 
                         name: collection.name, 
-                        id: collection.id,
-                        slug: collection.slug
+                        id: collection.id
                     });
                 }
 
@@ -109,24 +162,23 @@ export default class MetadataModal extends React.Component {
             });
     }
 
+    fetchCollection(collectionId) {
+        tainacan.get('/collections/' + collectionId)
+            .then((response) => {
+                this.setState({ collectionName: response.data.name });
+            }).catch(error => {
+                console.log('Error trying to fetch collection: ' + error);
+            });
+    }
+
     selectCollection(selectedCollectionId) {
-
-        let selectedCollection;
-        if (selectedCollectionId == 'default')
-            selectedCollection = { label: __('Repository items', 'tainacan'), id: 'default', slug: tainacan_blocks.theme_items_list_url.split('/')[tainacan_blocks.theme_items_list_url.split('/').length - 1] };
-        else {
-            selectedCollection = this.state.modalCollections.find((collection) => collection.id == selectedCollectionId)
-            if (selectedCollection == undefined)
-                selectedCollection = this.state.collections.find((collection) => collection.id == selectedCollectionId)
-        }
-
         this.setState({
-            collectionId: selectedCollection.id,
-            collectionSlug: selectedCollection.slug      
+            collectionId: selectedCollectionId,
+            searchURL: tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?iframemode=true'
         });
-
-        this.props.onSelectCollection(selectedCollection);
-        this.fetchModalMetadata(selectedCollection.id);
+        
+        this.props.onSelectCollection(selectedCollectionId);
+        this.fetchCollection(selectedCollectionId);
     }
 
     fetchCollections(name) {
@@ -140,13 +192,13 @@ export default class MetadataModal extends React.Component {
             collectionsRequestSource: aCollectionRequestSource,
             isLoadingCollections: true, 
             collections: [],
-            metadata: []
+            items: []
         });
 
         let endpoint = '/collections/?perpage=' + this.state.collectionsPerPage;
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
-
+        
         if (this.state.collectionOrderBy == 'date')
             endpoint += '&orderby=date&order=asc';
         else if (this.state.collectionOrderBy == 'date-desc')
@@ -158,7 +210,7 @@ export default class MetadataModal extends React.Component {
 
         tainacan.get(endpoint, { cancelToken: aCollectionRequestSource.token })
             .then(response => {
-                let someCollections = response.data.map((collection) => ({ name: collection.name, id: collection.id + '', slug: collection.slug }));
+                let someCollections = response.data.map((collection) => ({ name: collection.name, id: collection.id + '' }));
 
                 this.setState({ 
                     isLoadingCollections: false, 
@@ -182,143 +234,43 @@ export default class MetadataModal extends React.Component {
         this.fetchModalCollections(); 
     }
 
-    cancelSelection() {
-
-        this.setState({
-            modalCollections: []
-        });
-
-        this.props.onCancelSelection();
-    }
-
-    // FACETS RELATED --------------------------------------------------
-    fetchModalMetadata(selectedCollectionId) {
-
-        let someModalMetadata = [];
-        let endpoint = selectedCollectionId != 'default' ? '/collection/' + selectedCollectionId + '/metadata/?nopaging=1' : '/metadata/?nopaging=1';
-
-        this.setState({ 
-            isLoadingMetadata: true,
-            modalMetadata: someModalMetadata
-        });
-
-        tainacan.get(endpoint)
-            .then(response => {
-
-                let otherModalMetadata = this.state.modalMetadata;
-
-                for (let metadatum of response.data) {
-                    otherModalMetadata.push({ 
-                        name: metadatum.name, 
-                        id: metadatum.id,
-                        type: this.getMetadatumType(metadatum)
-                    });
-                }
-
-                this.setState({ 
-                    isLoadingMetadata: false, 
-                    modalMetadata: otherModalMetadata
-                });
-            
-                return otherModalMetadata;
-            })
-            .catch(error => {
-                console.log('Error trying to fetch metadata: ' + error);
-            });
-    }
-
-    getMetadatumType(metadatum) {
-        let metadatumType = metadatum.metadata_type_object ? metadatum.metadata_type_object.component : false;
-
-        if (metadatumType) {
-            switch(metadatumType) {
-                case 'tainacan-text':           return __('Text', 'tainacan');
-                case 'tainacan-textarea':       return __('Text area', 'tainacan');
-                case 'tainacan-date':           return __('Date', 'tainacan');
-                case 'tainacan-numeric':        return __('Numeric', 'tainacan');
-                case 'tainacan-selectbox':      return __('Select box', 'tainacan');
-                case 'tainacan-relationship':   return __('Relationship', 'tainacan');
-                case 'tainacan-taxonomy':       return __('Taxonomy', 'tainacan');
-                case 'tainacan-compound':       return __('Compound', 'tainacan');
-                default:                        return false;
-            }
-        } else {
-            return metadatumType;
-        }
-    }
-
-    selectMetadatum(selectedMetadatum) {
-        this.setState({
-            metadatumId: selectedMetadatum.id,
-            metadatumType: selectedMetadatum.type
-        });
-        this.props.onSelectMetadatum({ 
-            metadatumId: selectedMetadatum.id,
-            metadatumType: selectedMetadatum.type
-        });
-    }
-
-
     render() {
         return this.state.collectionId != null && this.state.collectionId != undefined ? (
-            // Metadata modal
-            <Modal
-                className="wp-block-tainacan-modal"
-                title={__('Select a metadatum to show it\'s facets on block', 'tainacan')}
-                onRequestClose={ () => this.cancelSelection() }
-                contentLabel={__('Select metadatum', 'tainacan')}>
-                {(
-                    this.state.modalMetadata.length > 0 ? 
-                    (   
-                        <div>
-                            <div className="modal-radio-list">
-                                <RadioControl
-                                    selected={ this.state.temporaryMetadatumId }
-                                    options={
-                                        this.state.modalMetadata.map((metadatum) => {
-                                            return { label: metadatum.name + ' (' + metadatum.type + ')', value: '' + metadatum.id }
-                                        })
-                                    }
-                                    onChange={ ( aMetadatumId ) => { 
-                                        this.setState({ 
-                                            temporaryMetadatumId: aMetadatumId
-                                        });
-                                    } } />                          
-                            </div>
-                            <br/>
-                        </div>
-                    ) : this.state.isLoadingMetadata ? <Spinner/> :
-                        <div className="modal-loadmore-section">
-                            <p>{ __('Sorry, no metadatum found.', 'tainacan') }</p>
-                        </div>
-                )
-            }
+        // Items modal
+        <Modal
+            className="wp-block-tainacan-modal dynamic-modal"
+            title={ __('Select items to add on block', 'tainacan', 'tainacan')}
+            onRequestClose={ () => this.cancelSelection() }
+            contentLabel={ __('Select items that will be added on block', 'tainacan', 'tainacan')}>
+            <iframe
+                    id="itemsFrame"
+                    src={ this.state.searchURL } />
             <div className="modal-footer-area">
                 <Button 
                     isDefault
-                    onClick={ () => { this.resetCollections(); }}>
+                    onClick={ () => { this.resetCollections() }}>
                     {__('Switch collection', 'tainacan')}
                 </Button>
                 <Button
+                    style={{ marginLeft: 'auto' }} 
                     isPrimary
-                    disabled={ this.state.temporaryMetadatumId == undefined || this.state.temporaryMetadatumId == null || this.state.temporaryMetadatumId == ''}
-                    onClick={ () => { this.selectMetadatum(this.state.modalMetadata.find((metadatatum) => metadatatum.id == this.state.temporaryMetadatumId));  } }>
-                    {__('Finish', 'tainacan')}
+                    onClick={ () => this.applySelectedItems() }>
+                    {__('Add the selected items', 'tainacan')}
                 </Button>
             </div>
-        </Modal> 
+        </Modal>     
         ) : (
         // Collections modal
         <Modal
                 className="wp-block-tainacan-modal"
-                title={__('Select a collection to fetch metadata from', 'tainacan')}
+                title={__('Select a collection to fetch items from', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
-                contentLabel={__('Select collection', 'tainacan')}>
+                contentLabel={__('Select items', 'tainacan')}>
                 <div>
                     <div className="modal-search-area">
                         <TextControl 
-                                label={__('Search for a collection', 'tainacan')} 
                                 placeholder={ __('Search by collection\'s name', 'tainacan') }
+                                label={__('Search for a collection', 'tainacan')}
                                 value={ this.state.searchCollectionName }
                                 onChange={(value) => {
                                     this.setState({ 
@@ -355,12 +307,12 @@ export default class MetadataModal extends React.Component {
                         (
                             <div>
                                 <div className="modal-radio-list">
-                                    {  
+                                    {
                                     <RadioControl
                                         selected={ this.state.temporaryCollectionId }
                                         options={
                                             this.state.collections.map((collection) => {
-                                                return { label: collection.name, value: '' + collection.id, slug: collection.slug }
+                                                return { label: collection.name, value: '' + collection.id }
                                             })
                                         }
                                         onChange={ ( aCollectionId ) => { 
@@ -368,7 +320,6 @@ export default class MetadataModal extends React.Component {
                                         } } />
                                     }                                      
                                 </div>
-                                <br/>
                             </div>
                         ) :
                         this.state.isLoadingCollections ? (
@@ -382,27 +333,18 @@ export default class MetadataModal extends React.Component {
                     (   
                         <div>
                             <div className="modal-radio-list">
-                                
-                                <p class="modal-radio-area-label">{__('Repository', 'tainacan')}</p>
-                                <RadioControl
-                                    className={'repository-radio-option'}
-                                    selected={ this.state.temporaryCollectionId }
-                                    options={ [{ label: __('Repository items', 'tainacan'), value: 'default', slug: tainacan_blocks.theme_items_list_url.split('/')[tainacan_blocks.theme_items_list_url.split('/').length - 1] }] }
-                                    onChange={ ( aCollectionId ) => { 
-                                        this.setState({ temporaryCollectionId: aCollectionId });
-                                    } } />
-                                <hr/>
-                                <p class="modal-radio-area-label">{__('Collections', 'tainacan')}</p>
+                                {
                                 <RadioControl
                                     selected={ this.state.temporaryCollectionId }
                                     options={
                                         this.state.modalCollections.map((collection) => {
-                                            return { label: collection.name, value: '' + collection.id, slug: collection.slug }
+                                            return { label: collection.name, value: '' + collection.id }
                                         })
                                     }
                                     onChange={ ( aCollectionId ) => { 
                                         this.setState({ temporaryCollectionId: aCollectionId });
-                                    } } />                          
+                                    } } />
+                                }                                     
                             </div>
                             <div className="modal-loadmore-section">
                                 <p>{ __('Showing', 'tainacan') + " " + this.state.modalCollections.length + " " + __('of', 'tainacan') + " " + this.state.totalModalCollections + " " + __('collections', 'tainacan') + "."}</p>
@@ -418,7 +360,7 @@ export default class MetadataModal extends React.Component {
                                 }
                             </div>
                         </div>
-                    ) : this.state.isLoadingCollections ? <Spinner/> :
+                    ) : this.state.isLoadingCollections ? <div class="spinner-container"><Spinner /></div> :
                     <div className="modal-loadmore-section">
                         <p>{ __('Sorry, no collection found.', 'tainacan') }</p>
                     </div>
@@ -429,12 +371,17 @@ export default class MetadataModal extends React.Component {
                         onClick={ () => { this.cancelSelection() }}>
                         {__('Cancel', 'tainacan')}
                     </Button>
-                    <Button
+                    <Button 
                         isPrimary
-                        disabled={ this.state.temporaryCollectionId == undefined || this.state.temporaryCollectionId == null || this.state.temporaryCollectionId == '' && (this.state.searchCollectionName != '' ? this.state.collections.find((collection) => collection.id == this.state.temporaryCollectionId) : this.state.modalCollections.find((collection) => collection.id == this.state.temporaryCollectionId)) != undefined}
-                        onClick={ () => { this.selectCollection(this.state.temporaryCollectionId) } }>
-                        {__('Select metadatum', 'tainacan')}
+                        disabled={ this.state.temporaryCollectionId == undefined || this.state.temporaryCollectionId == null || this.state.temporaryCollectionId == ''}
+                        onClick={ () => this.selectCollection(this.state.temporaryCollectionId) }>
+                        {__('Select items', 'tainacan')}
                     </Button>
+                    {
+                        this.state.isLoadingItems ? (
+                            <Spinner />
+                        ) : null
+                    }
                 </div>
             </div>
         </Modal> 

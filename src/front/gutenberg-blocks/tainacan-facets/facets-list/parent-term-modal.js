@@ -1,4 +1,4 @@
-import tainacan from '../../axios/axios.js';
+import tainacan from '../../js/axios.js';
 import axios from 'axios';
 
 const { __ } = wp.i18n;
