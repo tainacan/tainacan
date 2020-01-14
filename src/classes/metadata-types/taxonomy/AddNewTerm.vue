@@ -93,7 +93,7 @@
     </div>
 </template>
 <script>
-    import { tainacan as axios } from '../../../front/admin/js/axios'
+    import { tainacan as axios } from '../../../views/admin/js/axios'
     import { mapActions } from 'vuex';
 
     export default {

@@ -73,9 +73,9 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../front/admin/js/axios';
+    import { tainacan as axios } from '../../../views/admin/js/axios';
     import qs from 'qs';
-    import CheckboxRadioModal from '../../../front/admin/components/modals/checkbox-radio-modal.vue'
+    import CheckboxRadioModal from '../../../views/admin/components/modals/checkbox-radio-modal.vue'
 
     export default {
         created() {

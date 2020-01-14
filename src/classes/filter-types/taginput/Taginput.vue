@@ -44,7 +44,7 @@
 </template>
 
 <script>
-    import { tainacan as axios, isCancel } from '../../../front/admin/js/axios';
+    import { tainacan as axios, isCancel } from '../../../views/admin/js/axios';
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
     import qs from 'qs';
 

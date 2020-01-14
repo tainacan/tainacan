@@ -47,9 +47,9 @@
 
 <script>
     import qs from 'qs';
-    import { tainacan as axios, CancelToken, isCancel } from '../../../front/admin/js/axios';
+    import { tainacan as axios, CancelToken, isCancel } from '../../../views/admin/js/axios';
     import { mapGetters } from 'vuex';
-    import CheckboxRadioModal from '../../../front/admin/components/modals/checkbox-radio-modal.vue';
+    import CheckboxRadioModal from '../../../views/admin/components/modals/checkbox-radio-modal.vue';
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
     
     export default {

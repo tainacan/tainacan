@@ -43,7 +43,7 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../front/admin/js/axios';
+    import { tainacan as axios } from '../../../views/admin/js/axios';
     import qs from 'qs';
 
     export default {

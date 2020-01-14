@@ -38,7 +38,7 @@
 
 <script>
     import qs from 'qs';
-    import { tainacan as axios } from '../../../front/admin/js/axios';
+    import { tainacan as axios } from '../../../views/admin/js/axios';
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
     
     export default {

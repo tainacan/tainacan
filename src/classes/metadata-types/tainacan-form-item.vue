@@ -102,7 +102,7 @@
 </template>
 
 <script>
-    import { eventBusItemMetadata } from '../../front/admin/js/event-bus-item-metadata'
+    import { eventBusItemMetadata } from '../../views/admin/js/event-bus-item-metadata'
 
     export default {
         name: 'TainacanFormItem',
@@ -209,7 +209,7 @@
 
 <style lang="scss" scoped>
 
-    @import '../../front/admin/scss/_variables.scss'; 
+    @import '../../views/admin/scss/_variables.scss'; 
 
     .multiple-inputs {
         display: flex;

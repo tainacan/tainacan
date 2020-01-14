@@ -111,7 +111,7 @@
 </template>
 
 <script>
-    import { wpAjax, dateInter } from "../../../front/admin/js/mixins";
+    import { wpAjax, dateInter } from "../../../views/admin/js/mixins";
     import { filterTypeMixin } from '../filter-types-mixin';
     import moment from 'moment';
 
