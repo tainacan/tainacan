@@ -52,12 +52,13 @@ module.exports = {
             },
             {
                 test: /\.vue$/,
+                exclude: /node_modules/,
                 loader: 'vue-loader'
             },
             {
                 test: /\.js$/,
+                exclude: /node_modules/,
                 loader: 'babel-loader',
-                exclude: /node_modules/
             },
             {
                 test: /\.(png|jpg|jpeg|gif|eot|ttf|otf|woff|woff2|svg|svgz)(\?.+)?$/,
@@ -73,6 +74,7 @@ module.exports = {
             },
             {
                 test: /\.s[ac]ss$/,
+                exclude: /node_modules/,
                 use: [
                     {
                         loader: 'style-loader',

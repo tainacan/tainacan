@@ -18,7 +18,7 @@ last-package-build.md5
 src/views/admin/scss/.sass-cache
 src/assets/css/tainacan-admin.css
 src/assets/css/tainacan-admin.css.map
-src/assets/report.html
+src/assets/js/report.html
 .vscode
 src/pdf-viewer/pdfjs-dist
 report.txt
