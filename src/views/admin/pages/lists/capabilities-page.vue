@@ -88,6 +88,9 @@
 
     export default {
         name: 'CapabilitiesPage',
+        components: {
+            CapabilitiesList
+        },
         data() {
             return {
                 isRepositoryLevel: false,
@@ -141,8 +144,12 @@
                 return this.getCollection();
             }
         },
-        components: {
-            CapabilitiesList
+        mounted() {
+            this.loadCapabilities();
+            this.fetchRolesForFiltering();
+        },
+        created() {
+            this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
         },
         methods: {
             ...mapActions('capability', [
@@ -179,13 +186,6 @@
                         this.isFetchingRoles = false;
                     });
             }
-        },
-        mounted() {
-            this.loadCapabilities();
-            this.fetchRolesForFiltering();
-        },
-        created() {
-            this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
         }
     }
 </script>

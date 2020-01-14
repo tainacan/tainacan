@@ -68,6 +68,10 @@
                 });
             }
         },
+        beforeDestroy() {
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$off('isLoadingItems');
+        },
         methods: {
             onInput(inputEvent) {
                 this.$eventBusSearch.$emit('input', inputEvent);
@@ -81,10 +85,6 @@
                     metadatumId: this.filter.metadatum_id
                 });
             }
-        },    
-        beforeDestroy() {
-            if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems');
         }
     }
 </script>

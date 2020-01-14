@@ -335,6 +335,9 @@ import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'FiltersList',
+    components: {
+        FilterEditionForm
+    },
     data(){           
         return {
             collectionId: '',
@@ -374,9 +377,6 @@ export default {
             return this.getCollection();
         }
     },
-    components: {
-        FilterEditionForm
-    },
     watch: {
         '$route.query': {
             handler(newQuery) {
@@ -413,6 +413,55 @@ export default {
         } else {
             next()
         }  
+    },
+    mounted() {
+
+        if (!this.isRepositoryLevel)
+            this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('filter') }]);
+
+        this.$nextTick(() => { 
+            this.columnsTopY = this.$refs.filterEditionPageColumns ? this.$refs.filterEditionPageColumns.getBoundingClientRect().top : 0;
+        });
+
+        this.isRepositoryLevel = this.$route.name == 'FiltersPage' ? true : false;
+        if (this.isRepositoryLevel)
+            this.collectionId = 'default';
+        else
+            this.collectionId = this.$route.params.collectionId;
+
+        this.isLoadingFilters = true;
+        this.isLoadingFilterTypes = true;
+
+        this.fetchFilterTypes()
+            .then((filterTypes) => {
+                this.isLoadingFilterTypes = false;
+                this.filterTypes = filterTypes;
+            })
+            .catch(() => {
+                this.isLoadingFilterTypes = false;
+            });        
+
+        // Cancels previous Request
+        if (this.filtersSearchCancel != undefined)
+            this.filtersSearchCancel.cancel('Filters search Canceled.');
+
+        // Loads Filters
+        this.refreshFilters();
+        
+        // Sets modal callback function
+        this.$refs.filterTypeModal.onCancel = () => {
+            this.onCancelFilterTypeSelection();
+        }
+        
+    },
+    beforeDestroy() {
+        // Cancels previous filters Request
+        if (this.filtersSearchCancel != undefined)
+            this.filtersSearchCancel.cancel('Metadata search Canceled.');
+        
+        // Cancels previous metadata Request
+        if (this.metadataSearchCancel != undefined)
+            this.metadataSearchCancel.cancel('Metadata search Canceled.');
     },
     methods: {
         ...mapActions('filter', [
@@ -694,55 +743,6 @@ export default {
             })
             .catch(() => this.isLoadingFilters = false);
         }
-    },
-    mounted() {
-
-        if (!this.isRepositoryLevel)
-            this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('filter') }]);
-
-        this.$nextTick(() => { 
-            this.columnsTopY = this.$refs.filterEditionPageColumns ? this.$refs.filterEditionPageColumns.getBoundingClientRect().top : 0;
-        });
-
-        this.isRepositoryLevel = this.$route.name == 'FiltersPage' ? true : false;
-        if (this.isRepositoryLevel)
-            this.collectionId = 'default';
-        else
-            this.collectionId = this.$route.params.collectionId;
-
-        this.isLoadingFilters = true;
-        this.isLoadingFilterTypes = true;
-
-        this.fetchFilterTypes()
-            .then((filterTypes) => {
-                this.isLoadingFilterTypes = false;
-                this.filterTypes = filterTypes;
-            })
-            .catch(() => {
-                this.isLoadingFilterTypes = false;
-            });        
-
-        // Cancels previous Request
-        if (this.filtersSearchCancel != undefined)
-            this.filtersSearchCancel.cancel('Filters search Canceled.');
-
-        // Loads Filters
-        this.refreshFilters();
-        
-        // Sets modal callback function
-        this.$refs.filterTypeModal.onCancel = () => {
-            this.onCancelFilterTypeSelection();
-        }
-        
-    },
-    beforeDestroy() {
-        // Cancels previous filters Request
-        if (this.filtersSearchCancel != undefined)
-            this.filtersSearchCancel.cancel('Metadata search Canceled.');
-        
-        // Cancels previous metadata Request
-        if (this.metadataSearchCancel != undefined)
-            this.metadataSearchCancel.cancel('Metadata search Canceled.');
     }
 }
 </script>

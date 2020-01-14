@@ -97,6 +97,12 @@
     import { mapActions } from 'vuex';
 
     export default {
+        props: {
+            metadatum: [Number,String],
+            taxonomyId: [Number,String],
+            value: [ Array, Boolean, Number ],
+            componentType: ''
+        },
         data(){
             return {
                 name: '',
@@ -113,11 +119,8 @@
                 formErrors: {}
             }
         },
-        props: {
-            metadatum: [Number,String],
-            taxonomyId: [Number,String],
-            value: [ Array, Boolean, Number ],
-            componentType: ''
+        mounted() {
+            this.hasParent = this.parent != undefined && this.parent > 0;
         },
         methods: {
             ...mapActions('taxonomy', [
@@ -225,9 +228,6 @@
                 }
 
             }
-        },
-        mounted() {
-            this.hasParent = this.parent != undefined && this.parent > 0;
         }
     }
 </script>

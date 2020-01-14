@@ -17,6 +17,9 @@ import { mapActions } from 'vuex';
 
 export default {
     name: 'CollectionPage',
+    components: {
+        TainacanCollectionSubheader
+    },
     data(){
         return {
             collectionId: Number
@@ -31,14 +34,6 @@ export default {
             }
         }
     },
-    components: {
-        TainacanCollectionSubheader
-    },
-    methods: {
-        ...mapActions('collection', [
-            'fetchCollectionBasics'
-        ])
-    },
     created(){
         this.collectionId = this.$route.params.collectionId;
         
@@ -47,6 +42,11 @@ export default {
         // Loads to store basic collection info such as name, url, current_user_can_edit... etc.
         this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
             .catch((error) => this.$console.error(error));
+    },
+    methods: {
+        ...mapActions('collection', [
+            'fetchCollectionBasics'
+        ])
     }
 }
 </script>

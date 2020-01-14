@@ -210,6 +210,18 @@ export default {
             return this.getCollection()
         }
     },
+    created() {
+        // Obtains collection ID
+        this.collectionId = this.$route.params.collectionId;
+
+        this.cleanFiles();
+
+        // Updates Collection BreadCrumb
+        this.$root.$emit('onCollectionBreadCrumbUpdate', [
+            { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
+            { path: '', label: this.$i18n.get('add_items_bulk') }
+        ]);
+    },
     methods: {
         ...mapActions('collection', [
             'sendFile',
@@ -345,20 +357,7 @@ export default {
                 trapFocus: true
             });
         },
-    },
-    created() {
-        // Obtains collection ID
-        this.collectionId = this.$route.params.collectionId;
-
-        this.cleanFiles();
-
-        // Updates Collection BreadCrumb
-        this.$root.$emit('onCollectionBreadCrumbUpdate', [
-            { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
-            { path: '', label: this.$i18n.get('add_items_bulk') }
-        ]);
     }
-   
 }
 </script>
 

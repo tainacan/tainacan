@@ -133,6 +133,16 @@ import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'RecursiveTermItem',
+    components: {
+        RecursiveTermItem,
+    },
+    props: {
+        term: Object,
+        index: Number,
+        taxonomyId: Number,
+        order: String,
+        currentUserCanEditTaxonomy: Boolean
+    },
     data(){
         return {
             isLoadingTerms: false,
@@ -144,15 +154,18 @@ export default {
             totalTerms: 0
         }
     },
-    props: {
-        term: Object,
-        index: Number,
-        taxonomyId: Number,
-        order: String,
-        currentUserCanEditTaxonomy: Boolean
+
+    created() { 
+        this.$root.$on('onChildTermDeleted', this.eventOnChildTermDeleted);
+        this.$termsListBus.$on('editTerm', this.eventOnEditTerm);
+        this.$termsListBus.$on('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$termsListBus.$on('termEditionCanceled', this.eventOnTermEditionCanceled);        
     },
-    components: {
-        RecursiveTermItem,
+    beforeDestroy() { 
+        this.$root.$off('onChildTermDeleted', this.eventOnChildTermDeleted);
+        this.$termsListBus.$off('editTerm', this.eventOnEditTerm);
+        this.$termsListBus.$off('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$termsListBus.$off('termEditionCanceled', this.eventOnTermEditionCanceled);        
     },
     methods: {
         ...mapActions('taxonomy', [
@@ -305,18 +318,6 @@ export default {
             this.isEditingTerm = false;
             this.term.opened = false;
         }
-    },
-    created() { 
-        this.$root.$on('onChildTermDeleted', this.eventOnChildTermDeleted);
-        this.$termsListBus.$on('editTerm', this.eventOnEditTerm);
-        this.$termsListBus.$on('termEditionSaved', this.eventOnTermEditionSaved);
-        this.$termsListBus.$on('termEditionCanceled', this.eventOnTermEditionCanceled);        
-    },
-    beforeDestroy() { 
-        this.$root.$off('onChildTermDeleted', this.eventOnChildTermDeleted);
-        this.$termsListBus.$off('editTerm', this.eventOnEditTerm);
-        this.$termsListBus.$off('termEditionSaved', this.eventOnTermEditionSaved);
-        this.$termsListBus.$off('termEditionCanceled', this.eventOnTermEditionCanceled);        
     }
 }
 </script>

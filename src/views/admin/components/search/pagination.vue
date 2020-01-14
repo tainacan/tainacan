@@ -115,6 +115,9 @@ import { mapGetters } from 'vuex';
 
 export default {
     name: 'Pagination',
+    props: {
+        isSortingByCustomMetadata: Boolean
+    },
     data() {
         return {
             maxItemsPerPage: tainacan_plugin.api_max_items_per_page
@@ -133,9 +136,6 @@ export default {
         totalPages(){
             return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
         }
-    },
-    props: {
-        isSortingByCustomMetadata: Boolean
     },
     watch: {
         page( value ){

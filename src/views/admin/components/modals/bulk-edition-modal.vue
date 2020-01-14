@@ -290,6 +290,44 @@
             selectedForBulk: Object,
             collectionID: Number
         },
+        data() {
+            return {
+                statuses: {
+                    draft: 'draft',
+                    publish: 'publish',
+                    private: 'private'
+                },
+                editionCriteria: [1],
+                editionActionsForMultiple: {
+                    add: this.$i18n.get('add_value'),
+                    redefine: this.$i18n.get('set_new_value'),
+                    replace: this.$i18n.get('replace_value'),
+                    remove: this.$i18n.get('remove_a_value'),
+                    clear: this.$i18n.get('clear_values')
+                },
+                editionActionsForNotMultiple: {
+                    redefine: this.$i18n.get('set_new_value'),
+                    clear: this.$i18n.get('clear_values')
+                },
+                bulkEditionProcedures: {
+                    1: {
+                        isDone: false,
+                        isExecuting: false,
+                        totalItemsEditedWithSuccess: 0,
+                        tooltipShow: true,
+                    }
+                },
+                groupID: null,
+                dones: [false],
+                metadataIsLoading: false,
+                metadataSearchCancel: undefined
+            }
+        },
+        computed: {
+            metadata() {
+                return this.getMetadata();
+            }
+        },
         created(){
             if (this.collectionID){
                 this.metadataIsLoading = true;
@@ -328,43 +366,11 @@
             if (this.$refs.bulkEditionModal)
                 this.$refs.bulkEditionModal.focus();
         },
-        computed: {
-            metadata() {
-                return this.getMetadata();
-            }
-        },
-        data() {
-            return {
-                statuses: {
-                    draft: 'draft',
-                    publish: 'publish',
-                    private: 'private'
-                },
-                editionCriteria: [1],
-                editionActionsForMultiple: {
-                    add: this.$i18n.get('add_value'),
-                    redefine: this.$i18n.get('set_new_value'),
-                    replace: this.$i18n.get('replace_value'),
-                    remove: this.$i18n.get('remove_a_value'),
-                    clear: this.$i18n.get('clear_values')
-                },
-                editionActionsForNotMultiple: {
-                    redefine: this.$i18n.get('set_new_value'),
-                    clear: this.$i18n.get('clear_values')
-                },
-                bulkEditionProcedures: {
-                    1: {
-                        isDone: false,
-                        isExecuting: false,
-                        totalItemsEditedWithSuccess: 0,
-                        tooltipShow: true,
-                    }
-                },
-                groupID: null,
-                dones: [false],
-                metadataIsLoading: false,
-                metadataSearchCancel: undefined
-            }
+        beforeDestroy() {
+            // Cancels previous Request
+            if (this.metadataSearchCancel != undefined)
+                this.metadataSearchCancel.cancel('Metadata search Canceled.');
+
         },
         methods: {
             ...mapGetters('bulkedition', [
@@ -546,12 +552,6 @@
 
                 this.$set(this.bulkEditionProcedures[criterion], `${key}`, value);
             }
-        },
-        beforeDestroy() {
-            // Cancels previous Request
-            if (this.metadataSearchCancel != undefined)
-                this.metadataSearchCancel.cancel('Metadata search Canceled.');
-
         }
     }
 </script>

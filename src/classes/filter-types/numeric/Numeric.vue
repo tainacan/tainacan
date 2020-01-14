@@ -78,9 +78,6 @@
             wpAjax,
             filterTypeMixin
         ],
-        mounted() {
-            this.updateSelectedValues();
-        },
         data(){
             return {
                 value: null,
@@ -108,6 +105,9 @@
             'query.taxquery'() {
                 this.updateSelectedValues();
             }
+        },
+        mounted() {
+            this.updateSelectedValues();
         },
         methods: {
             updateSelectedValues(){

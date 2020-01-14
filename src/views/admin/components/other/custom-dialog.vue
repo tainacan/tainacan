@@ -85,14 +85,14 @@
                 neverShowAgain: false
             }
         },
+        mounted() {
+            if (this.$refs.customDialog)
+                this.$refs.customDialog.focus();
+        },
         methods: {
             changeNeverShowMessageAgain($event) {
                 this.$userPrefs.set('neverShow' + this.messageKeyForUserPrefs + 'Dialog', $event);
             }
-        },
-        mounted() {
-            if (this.$refs.customDialog)
-                this.$refs.customDialog.focus();
         }
     }
 </script>

@@ -458,6 +458,9 @@ import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'MetadataList',
+    components: {
+        MetadatumEditionForm
+    },
     data(){           
         return {
             collectionId: '',
@@ -484,9 +487,6 @@ export default {
             columnsTopY: 0,
             metadataSearchCancel: undefined 
         }
-    },
-    components: {
-        MetadatumEditionForm
     },
     computed: {
         collection() {
@@ -555,6 +555,42 @@ export default {
         } else {
             next()
         }  
+    },
+    mounted() {
+
+        if (!this.isRepositoryLevel)
+            this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('metadata') }]);
+
+        this.$nextTick(() => { 
+            this.columnsTopY = this.$refs.metadataEditionPageColumns ? this.$refs.metadataEditionPageColumns.getBoundingClientRect().top : 0;
+        });
+
+        this.cleanMetadata();
+        this.isLoadingMetadatumTypes = true;
+        this.isLoadingMetadata = true;
+
+        this.fetchMetadatumTypes()
+            .then(() => {
+                this.isLoadingMetadatumTypes = false;
+            })
+            .catch(() => {
+                this.isLoadingMetadatumTypes = false;
+            });
+        this.refreshMetadata();
+        this.fetchMetadatumMappers()
+            .then(() => {
+                this.isLoadingMetadatumMappers = false;
+            })
+            .catch(() => {
+                this.isLoadingMetadatumMappers = false;
+            });
+    },
+    beforeDestroy() {
+
+        // Cancels previous Request
+        if (this.metadataSearchCancel != undefined)
+            this.metadataSearchCancel.cancel('Metadata search Canceled.');
+
     },
     methods: {
         ...mapActions('metadata', [
@@ -936,42 +972,6 @@ export default {
                         </div>
                     </div>`;
         }
-    },
-    mounted() {
-
-        if (!this.isRepositoryLevel)
-            this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('metadata') }]);
-
-        this.$nextTick(() => { 
-            this.columnsTopY = this.$refs.metadataEditionPageColumns ? this.$refs.metadataEditionPageColumns.getBoundingClientRect().top : 0;
-        });
-
-        this.cleanMetadata();
-        this.isLoadingMetadatumTypes = true;
-        this.isLoadingMetadata = true;
-
-        this.fetchMetadatumTypes()
-            .then(() => {
-                this.isLoadingMetadatumTypes = false;
-            })
-            .catch(() => {
-                this.isLoadingMetadatumTypes = false;
-            });
-        this.refreshMetadata();
-        this.fetchMetadatumMappers()
-            .then(() => {
-                this.isLoadingMetadatumMappers = false;
-            })
-            .catch(() => {
-                this.isLoadingMetadatumMappers = false;
-            });
-    },
-    beforeDestroy() {
-
-        // Cancels previous Request
-        if (this.metadataSearchCancel != undefined)
-            this.metadataSearchCancel.cancel('Metadata search Canceled.');
-
     }
 }
 </script>

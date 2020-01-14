@@ -80,6 +80,14 @@ export default {
         itemsPerPage: Number,
         isFiltersMenuCompressed: Boolean
     },
+    data () {
+        return {
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
+            itemColumnWidth: Number,
+            containerWidthDiscount: Number,
+            masonryCols: {default: 7, 1919: 6, 1407: 5, 1215: 4, 1023: 3, 767: 2, 343: 1}
+        }
+    },
     watch: {
         isFiltersMenuCompressed() {
             if (this.$refs.masonryWrapper != undefined && 
@@ -103,13 +111,22 @@ export default {
             this.masonryCols = obj;
         }
     },
-    data () {
-        return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
-            itemColumnWidth: Number,
-            containerWidthDiscount: Number,
-            masonryCols: {default: 7, 1919: 6, 1407: 5, 1215: 4, 1023: 3, 767: 2, 343: 1}
-        }
+    mounted() {
+
+        if (this.$refs.masonryWrapper != undefined && 
+            this.$refs.masonryWrapper.children[0] != undefined && 
+            this.$refs.masonryWrapper.children[0].children[0] != undefined && 
+            this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
+                this.itemColumnWidth = this.$refs.masonryWrapper.children[0].children[0].clientWidth;
+                this.recalculateItemsHeight();
+            } else
+                this.itemColumnWidth = 202;
+    },
+    created() {
+        window.addEventListener('resize', this.recalculateItemsHeight);  
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.recalculateItemsHeight);
     },
     methods: {
         ...mapGetters('search', [
@@ -154,23 +171,6 @@ export default {
             }
             this.$forceUpdate();
         }, 500)
-    },
-    mounted() {
-
-        if (this.$refs.masonryWrapper != undefined && 
-            this.$refs.masonryWrapper.children[0] != undefined && 
-            this.$refs.masonryWrapper.children[0].children[0] != undefined && 
-            this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
-                this.itemColumnWidth = this.$refs.masonryWrapper.children[0].children[0].clientWidth;
-                this.recalculateItemsHeight();
-            } else
-                this.itemColumnWidth = 202;
-    },
-    created() {
-        window.addEventListener('resize', this.recalculateItemsHeight);  
-    },
-    beforeDestroy() {
-        window.removeEventListener('resize', this.recalculateItemsHeight);
     }
 }
 </script>

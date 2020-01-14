@@ -71,17 +71,17 @@
 <script>
 export default {
     name: 'FileItem',
-    data() {
-        return {
-            isPreviewModalActive: false
-        }
-    },
     props: {
         file: Object,
         size: 112,
         showName: false,
         isSelected: false,
         modalOnClick: true
+    },
+    data() {
+        return {
+            isPreviewModalActive: false
+        }
     },
     methods: {
         getIconForMimeType(mimeType) {

@@ -116,6 +116,17 @@
                 isCreatingSequenceEditGroup: Boolean,
             }
         },
+        created() {
+            this.message = this.$i18n.get('instruction_select_the_amount_of_copies');
+            this.isLoading = false;
+            this.hasCopied = false;
+            this.isCreatingSequenceEditGroup = false;
+            this.copyCount = 1;
+        },
+        mounted() {
+            if (this.$refs.itemCopyDialog)
+            this.$refs.itemCopyDialog.focus();
+        },
         methods: {
             ...mapActions('item', [
                 'fetchItem',
@@ -181,17 +192,6 @@
 
                 this.$parent.close();
             },
-        },
-        created() {
-            this.message = this.$i18n.get('instruction_select_the_amount_of_copies');
-            this.isLoading = false;
-            this.hasCopied = false;
-            this.isCreatingSequenceEditGroup = false;
-            this.copyCount = 1;
-        },
-        mounted() {
-            if (this.$refs.itemCopyDialog)
-            this.$refs.itemCopyDialog.focus();
         }
     }
 </script>

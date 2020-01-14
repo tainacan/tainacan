@@ -134,6 +134,16 @@
 
     export default {
         name: 'ActivitiesList',
+        components: {
+            ThreeStateToggleButton
+        },
+        props: {
+            isLoading: false,
+            totalActivities: 0,
+            page: 1,
+            activitiesPerPage: 12,
+            activities: Array
+        },
         data() {
             return {
                 selectedActivities: [],
@@ -143,13 +153,6 @@
                     no_3tgbtn: (a) => this.notApproveActivity(a)
                 }
             }
-        },
-        props: {
-            isLoading: false,
-            totalActivities: 0,
-            page: 1,
-            activitiesPerPage: 12,
-            activities: Array
         },
         methods: {
             ...mapActions('activity', [
@@ -183,9 +186,6 @@
                     trapFocus: true
                 });
             },
-        },
-        components: {
-            ThreeStateToggleButton
         }
     }
 </script>

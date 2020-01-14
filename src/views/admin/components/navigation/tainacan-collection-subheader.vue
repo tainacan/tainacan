@@ -254,14 +254,6 @@ export default {
             }
         }
     },
-    methods: {
-        ...mapGetters('collection', [
-            'getCollection'
-        ]),
-        collectionBreadCrumbUpdate(breadCrumbItems) {
-            this.childrenBreadCrumbItems = breadCrumbItems;
-        }
-    },
     created() {
         this.activeRoute = this.$route.name;
 
@@ -271,6 +263,14 @@ export default {
     },
     beforeDestroy() {
         this.$root.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
+    },
+    methods: {
+        ...mapGetters('collection', [
+            'getCollection'
+        ]),
+        collectionBreadCrumbUpdate(breadCrumbItems) {
+            this.childrenBreadCrumbItems = breadCrumbItems;
+        }
     }
 }
 </script>

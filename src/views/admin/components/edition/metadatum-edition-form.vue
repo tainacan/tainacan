@@ -255,6 +255,14 @@
     export default {
         name: 'MetadatumEditionForm',
         mixins: [ formHooks ],
+        props: {
+            index: '',
+            editedMetadatum: Object,
+            originalMetadatum: Object,
+            isRepositoryLevel: false,
+            collectionId: '',
+            isOnModal: false
+        },
         data() {
             return {
                 editForm: {},
@@ -264,14 +272,6 @@
                 closedByForm: false,
                 entityName: 'metadatum'
             }
-        },
-        props: {
-            index: '',
-            editedMetadatum: Object,
-            originalMetadatum: Object,
-            isRepositoryLevel: false,
-            collectionId: '',
-            isOnModal: false
         },
         created() {
 

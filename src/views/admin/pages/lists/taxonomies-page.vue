@@ -244,6 +244,9 @@
 
     export default {
         name: 'TaxonomyPage',
+        components: {
+            TaxonomiesList
+        },
         data(){
             return {
                 isLoading: false,
@@ -260,8 +263,41 @@
                 ]
             }
         },
-        components: {
-            TaxonomiesList
+        computed: {
+            taxonomies(){
+                return this.get();
+            },
+            repositoryTotalTaxonomies(){
+                return this.getRepositoryTotalTaxonomies();
+            }
+        },
+        created() {
+            this.taxonomiesPerPage = this.$userPrefs.get('taxonomies_per_page');
+        },
+        mounted(){
+            if (this.taxonomiesPerPage != this.$userPrefs.get('taxonomies_per_page'))
+                this.taxonomiesPerPage = this.$userPrefs.get('taxonomies_per_page');
+            if (!this.taxonomiesPerPage) {
+                this.taxonomiesPerPage = 12;
+                this.$userPrefs.set('taxonomies_per_page', 12);
+            }
+
+            if (this.order != this.$userPrefs.get('taxonomies_order'))
+                this.order = this.$userPrefs.get('taxonomies_order');
+            if (!this.order) {
+                this.order = 'asc';
+                this.$userPrefs.set('taxonomies_order', 'asc');
+            }
+
+
+            if (this.orderBy != this.$userPrefs.get('taxonomies_order_by'))
+                this.orderBy = this.$userPrefs.get('taxonomies_order_by');
+            if (!this.orderBy) {
+                this.orderBy = 'title';
+                this.$userPrefs.set('taxonomies_order_by', 'title');
+            }
+            
+            this.load();
         },
         methods: {
             ...mapActions('taxonomy', [
@@ -347,42 +383,6 @@
                 this.page = 1;
                 this.load();
             }
-        },
-        computed: {
-            taxonomies(){
-                return this.get();
-            },
-            repositoryTotalTaxonomies(){
-                return this.getRepositoryTotalTaxonomies();
-            }
-        },
-        created() {
-            this.taxonomiesPerPage = this.$userPrefs.get('taxonomies_per_page');
-        },
-        mounted(){
-            if (this.taxonomiesPerPage != this.$userPrefs.get('taxonomies_per_page'))
-                this.taxonomiesPerPage = this.$userPrefs.get('taxonomies_per_page');
-            if (!this.taxonomiesPerPage) {
-                this.taxonomiesPerPage = 12;
-                this.$userPrefs.set('taxonomies_per_page', 12);
-            }
-
-            if (this.order != this.$userPrefs.get('taxonomies_order'))
-                this.order = this.$userPrefs.get('taxonomies_order');
-            if (!this.order) {
-                this.order = 'asc';
-                this.$userPrefs.set('taxonomies_order', 'asc');
-            }
-
-
-            if (this.orderBy != this.$userPrefs.get('taxonomies_order_by'))
-                this.orderBy = this.$userPrefs.get('taxonomies_order_by');
-            if (!this.orderBy) {
-                this.orderBy = 'title';
-                this.$userPrefs.set('taxonomies_order_by', 'title');
-            }
-            
-            this.load();
         }
     }
 </script>

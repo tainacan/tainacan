@@ -54,17 +54,6 @@
                 default: 'neutral_3tgbtn'
             },
         },
-        methods: {
-            yes_3tgbtn() {
-                this.parent.$emit(this.eventsName[0], this.otherProp);
-            },
-            no_3tgbtn() {
-                this.parent.$emit(this.eventsName[1], this.otherProp);
-            },
-            neutral_3tgbtn() {
-                this.parent.$emit(this.eventsName[2], this.otherProp);
-            }
-        },
         data() {
             return {
                 eventsName: ['yes_3tgbtn', 'no_3tgbtn', 'neutral_3tgbtn'],
@@ -86,6 +75,17 @@
                         );
                     }
                 }
+            }
+        },
+        methods: {
+            yes_3tgbtn() {
+                this.parent.$emit(this.eventsName[0], this.otherProp);
+            },
+            no_3tgbtn() {
+                this.parent.$emit(this.eventsName[1], this.otherProp);
+            },
+            neutral_3tgbtn() {
+                this.parent.$emit(this.eventsName[2], this.otherProp);
             }
         }
     }

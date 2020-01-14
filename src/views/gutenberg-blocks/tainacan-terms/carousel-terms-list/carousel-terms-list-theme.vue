@@ -171,6 +171,25 @@ import { swiper, swiperSlide } from 'vue-awesome-swiper';
 
 export default {
     name: "CarouselTermsListTheme",
+    components: {
+        swiper,
+        swiperSlide
+    },
+    props: {
+        blockId: String,
+        selectedTerms: Array,
+        maxTermsNumber: Number,
+        arrowsPosition: String,
+        autoPlay: false,
+        autoPlaySpeed: Number,
+        loopSlides: Boolean,
+        hideName: Boolean,
+        showTermThumbnail: Boolean,
+        tainacanApiRoot: String,
+        tainacanBaseUrl: String,
+        className: String,
+        taxonomyId: String
+    },
     data() {
         return {
             terms: [],
@@ -211,24 +230,9 @@ export default {
             errorMessage: 'No terms found.'
         }
     },
-    components: {
-        swiper,
-        swiperSlide
-    },
-    props: {
-        blockId: String,
-        selectedTerms: Array,
-        maxTermsNumber: Number,
-        arrowsPosition: String,
-        autoPlay: false,
-        autoPlaySpeed: Number,
-        loopSlides: Boolean,
-        hideName: Boolean,
-        showTermThumbnail: Boolean,
-        tainacanApiRoot: String,
-        tainacanBaseUrl: String,
-        className: String,
-        taxonomyId: String
+    created() {
+        this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
+        this.fetchTerms();
     },
     methods: {
         fetchTerms() {
@@ -278,11 +282,7 @@ export default {
                 });
             
         },
-    },
-    created() {
-        this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
-        this.fetchTerms();
-    },
+    }
 }
 </script>
 

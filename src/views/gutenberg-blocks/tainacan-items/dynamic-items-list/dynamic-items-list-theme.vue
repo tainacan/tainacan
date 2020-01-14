@@ -270,22 +270,6 @@ import debounce from 'lodash/debounce.js';
 
 export default {
     name: "DynamicItemsListTheme",
-    data() {
-        return {
-            items: [],
-            collection: undefined,
-            itemsRequestSource: undefined,
-            searchString: '',
-            isLoading: false,
-            isLoadingCollection: false,
-            localMaxItemsNumber: undefined,
-            localOrder: undefined,
-            tainacanAxios: undefined,
-            paged: undefined,
-            totalItems: 0,
-            errorMessage: 'No items found.'
-        }
-    },
     props: {
         collectionId: String,  
         showImage: Boolean,
@@ -309,6 +293,31 @@ export default {
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
         className: String
+    },    
+    data() {
+        return {
+            items: [],
+            collection: undefined,
+            itemsRequestSource: undefined,
+            searchString: '',
+            isLoading: false,
+            isLoadingCollection: false,
+            localMaxItemsNumber: undefined,
+            localOrder: undefined,
+            tainacanAxios: undefined,
+            paged: undefined,
+            totalItems: 0,
+            errorMessage: 'No items found.'
+        }
+    },
+    created() {
+        this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
+        this.localOrder = this.order;
+  
+        if (this.showCollectionHeader)
+            this.fetchCollectionForHeader();
+       
+        this.fetchItems();
     },
     methods: {
         applySearchString: debounce(function(event) { 
@@ -431,15 +440,6 @@ export default {
             });
             return _.values(partition);
         }
-    },
-    created() {
-        this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
-        this.localOrder = this.order;
-  
-        if (this.showCollectionHeader)
-            this.fetchCollectionForHeader();
-       
-        this.fetchItems();
     }
 }
 </script>

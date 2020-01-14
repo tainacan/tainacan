@@ -34,6 +34,9 @@
 <script>
 export default {
     name: 'TainacanTitle',
+    props: {
+        breadCrumbItems: Array
+    },
     data() {
         return {
             isRepositoryLevel: true,
@@ -41,9 +44,6 @@ export default {
             activeRouteName: '',
             breadCrumbItem: {}
         }
-    },
-    props: {
-        breadCrumbItems: Array
     },
     watch: {
         '$route' (to, from) {

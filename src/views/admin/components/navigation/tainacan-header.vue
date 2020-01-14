@@ -131,6 +131,10 @@
 
     export default {
         name: 'TainacanHeader',
+        components: {
+            AdvancedSearch,
+            ProcessesPopup
+        },
         data() {
             return {
                 logoHeader: tainacan_plugin.base_url + '/assets/images/tainacan_logo_header.svg',
@@ -141,9 +145,16 @@
                 hasNewProcess: false
             }
         },
-        components: {
-            AdvancedSearch,
-            ProcessesPopup
+        created(){
+            this.$root.$on('closeAdvancedSearchShortcut', () => {
+                this.$refs.advancedSearchShortcut.toggle();
+            });
+            this.$root.$on('openProcessesPopup', () => {
+                this.showProcesses = true;
+            });
+        },
+        beforeDestroy() {
+            this.$root.$off('closeAdvancedSearchShortcut');
         },
         methods: {
             // toItemsPage() {
@@ -169,17 +180,6 @@
 
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             },
-        },
-        created(){
-            this.$root.$on('closeAdvancedSearchShortcut', () => {
-                this.$refs.advancedSearchShortcut.toggle();
-            });
-            this.$root.$on('openProcessesPopup', () => {
-                this.showProcesses = true;
-            });
-        },
-        beforeDestroy() {
-            this.$root.$off('closeAdvancedSearchShortcut');
         }
     }
 </script>

@@ -29,9 +29,6 @@
                 selectedInterval: ''
             }
         },
-        mounted() {
-            this.updateSelectedValues();
-        },
         watch: {
             'query.metaquery'() {
                 this.updateSelectedValues();
@@ -39,6 +36,9 @@
             'query.taxquery'() {
                 this.updateSelectedValues();
             }
+        },        
+        mounted() {
+            this.updateSelectedValues();
         },
         methods: {
             changeInterval() {

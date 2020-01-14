@@ -100,6 +100,17 @@
                 isValid: true,
             }
         },
+        created() {
+            this.intervals = 
+                this.value && this.value.intervals && this.value.intervals.length > 0 ? 
+                    this.value.intervals : 
+                    [{
+                        label: '',
+                        to: null,
+                        from: null
+                    }];
+            this.showIntervalOnTag = this.value && this.value.showIntervalOnTag != undefined ? this.value.showIntervalOnTag : true;
+        },
         methods: {
             onUpdate: _.debounce( function(interval, validade) {
                 if (validade != undefined && validade == true && 
@@ -153,17 +164,6 @@
                     });
                 }
             }
-        },
-        created() {
-            this.intervals = 
-                this.value && this.value.intervals && this.value.intervals.length > 0 ? 
-                    this.value.intervals : 
-                    [{
-                        label: '',
-                        to: null,
-                        from: null
-                    }];
-            this.showIntervalOnTag = this.value && this.value.showIntervalOnTag != undefined ? this.value.showIntervalOnTag : true;
         }
     }
 </script>

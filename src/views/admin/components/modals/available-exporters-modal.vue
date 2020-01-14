@@ -65,15 +65,6 @@
                 isLoading: false
             }
         },
-        methods: {
-            ...mapActions('exporter', [
-                'fetchAvailableExporters'
-            ]),
-            onSelectExporter(exporterType) {
-                this.$router.push({ path: this.$routerHelper.getExporterEditionPath(exporterType.slug), query: { sourceCollection: this.sourceCollection } });
-                this.$parent.close();
-            }
-        },
         mounted() {
             this.isLoading = true;
             this.fetchAvailableExporters()
@@ -87,6 +78,15 @@
 
             if (this.$refs.availableExportersModal)
                 this.$refs.availableExportersModal.focus();
+        },
+        methods: {
+            ...mapActions('exporter', [
+                'fetchAvailableExporters'
+            ]),
+            onSelectExporter(exporterType) {
+                this.$router.push({ path: this.$routerHelper.getExporterEditionPath(exporterType.slug), query: { sourceCollection: this.sourceCollection } });
+                this.$parent.close();
+            }
         }
     }
 </script>

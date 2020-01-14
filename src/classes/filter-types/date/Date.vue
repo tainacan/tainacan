@@ -121,21 +121,10 @@
             dateInter,
             filterTypeMixin
         ],
-        mounted() {
-            this.updateSelectedValues();
-        },
         data(){
             return {
                 value: null,
                 comparator: '=', // =, !=, >, >=, <, <=
-            }
-        },
-        watch: {
-            'query.metaquery'() {
-                this.updateSelectedValues();
-            },
-            'query.taxquery'() {
-                this.updateSelectedValues();
             }
         },
         computed: {
@@ -153,6 +142,17 @@
                     default: return '';
                 }
             }
+        },
+        watch: {
+            'query.metaquery'() {
+                this.updateSelectedValues();
+            },
+            'query.taxquery'() {
+                this.updateSelectedValues();
+            }
+        },
+        mounted() {
+            this.updateSelectedValues();
         },
         methods: {
             updateSelectedValues(){

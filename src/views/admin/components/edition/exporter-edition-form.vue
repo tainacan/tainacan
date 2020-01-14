@@ -116,7 +116,7 @@
 
     export default {
         name: "ExporterEditionForm",
-        data(){
+        data() {
             return {
                 exporterType: '',
                 exporterName: '',
@@ -131,6 +131,39 @@
                 formErrorMessage: '',
                 isLoading: false,
             }
+        },
+        created() {
+            this.selectedCollection = this.$route.query.sourceCollection;
+
+            this.exporterType = this.$route.params.exporterSlug;
+
+            this.isLoading = true;
+            this.createExporterSession(this.exporterType)
+                .then(exporterSession => {
+                    this.exporterSession = exporterSession ? exporterSession : {};
+                    this.selectedMapping = this.exporterSession.mapping_selected;
+                    
+                    this.isLoading = false;
+                });
+
+            this.isFetchingCollections = true;
+
+            this.fetchCollections({ page: 1, collectionsPerPage: -1})
+                .then(response => {
+                    this.collections = response.collections;
+                    this.isFetchingCollections = false;
+                })
+                .catch(error => {
+                    this.isFetchingCollections = false;
+                    this.$console.error(error);
+                });
+
+
+            // Set exporter's name
+            this.fetchAvailableExporters().then((exporterTypes) => {
+            if (exporterTypes[this.exporterType]) 
+                    this.exporterName = exporterTypes[this.exporterType].name;
+            });
         },
         methods: {
             ...mapActions('exporter', [
@@ -197,39 +230,6 @@
                     !this.formErrorMessage
                 );
             }
-        },
-        created(){
-            this.selectedCollection = this.$route.query.sourceCollection;
-
-            this.exporterType = this.$route.params.exporterSlug;
-
-            this.isLoading = true;
-            this.createExporterSession(this.exporterType)
-                .then(exporterSession => {
-                    this.exporterSession = exporterSession ? exporterSession : {};
-                    this.selectedMapping = this.exporterSession.mapping_selected;
-                    
-                    this.isLoading = false;
-                });
-
-            this.isFetchingCollections = true;
-
-            this.fetchCollections({ page: 1, collectionsPerPage: -1})
-                .then(response => {
-                    this.collections = response.collections;
-                    this.isFetchingCollections = false;
-                })
-                .catch(error => {
-                    this.isFetchingCollections = false;
-                    this.$console.error(error);
-                });
-
-
-        // Set exporter's name
-        this.fetchAvailableExporters().then((exporterTypes) => {
-           if (exporterTypes[this.exporterType]) 
-                this.exporterName = exporterTypes[this.exporterType].name;
-            });
         }
     }
 </script>

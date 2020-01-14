@@ -310,6 +310,11 @@ import CircularCounter from './circular-counter.vue';
  
 export default {
     name: 'ViewModeSlideshow',
+    components: {
+        swiper,
+        swiperSlide,
+        CircularCounter
+    },
     props: {
         collectionId: Number,
         displayedMetadata: Array,
@@ -319,11 +324,6 @@ export default {
         hideControls: true,
         isSwiping: false
     },  
-    components: {
-        swiper,
-        swiperSlide,
-        CircularCounter
-    },
     data () {
         return {
             slideItems: [],
@@ -488,6 +488,26 @@ export default {
             }
         }
     },
+    mounted() {
+        this.minPage = this.page;
+        this.maxPage = this.page;
+
+        if (this.$refs.mySwiper.swiper != undefined) {
+            this.$refs.mySwiper.swiper.initialSlide = this.slideIndex;
+        }
+
+        // Adds clipped class to root html
+        document.documentElement.scrollTo(0,0);
+        document.documentElement.classList.add('is-clipped');
+    },
+    beforeDestroy() {
+        clearInterval(this.intervalId);
+        if (this.$refs.mySwiper.swiper)
+            this.$refs.mySwiper.swiper.destroy();
+
+        // Remove clipped class from root html
+        document.documentElement.classList.remove('is-clipped');
+    },
     methods: {
         ...mapActions('item', [
             'fetchItem',
@@ -626,26 +646,6 @@ export default {
         closeSlideViewMode() {
             this.$parent.onChangeViewMode(this.$parent.defaultViewMode);
         }
-    },
-    mounted() {
-        this.minPage = this.page;
-        this.maxPage = this.page;
-
-        if (this.$refs.mySwiper.swiper != undefined) {
-            this.$refs.mySwiper.swiper.initialSlide = this.slideIndex;
-        }
-
-        // Adds clipped class to root html
-        document.documentElement.scrollTo(0,0);
-        document.documentElement.classList.add('is-clipped');
-    },
-    beforeDestroy() {
-        clearInterval(this.intervalId);
-        if (this.$refs.mySwiper.swiper)
-            this.$refs.mySwiper.swiper.destroy();
-
-        // Remove clipped class from root html
-        document.documentElement.classList.remove('is-clipped');
     }
 }
 </script>

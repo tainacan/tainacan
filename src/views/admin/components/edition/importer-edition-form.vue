@@ -204,6 +204,26 @@ export default {
             backgroundProcess: undefined
         }
     },
+    created() {
+        this.importerType = this.$route.params.importerSlug;
+        this.collectionId = this.$route.query.targetCollection;
+        this.sessionId = this.$route.params.sessionId;
+
+        if (this.collectionId != undefined) {
+            this.onSelectCollection(this.collectionId);
+        }
+
+        // Set importer's name
+        this.fetchAvailableImporters().then((importerTypes) => {
+           if (importerTypes[this.importerType]) 
+            this.importerName = importerTypes[this.importerType].name;
+        });
+
+        if (this.sessionId != undefined)
+            this.loadImporter();
+        else
+            this.createImporter();    
+    },
     methods: {
         ...mapActions('importer', [
             'fetchAvailableImporters',
@@ -407,28 +427,7 @@ export default {
             this.collectionId = collectionId;
             this.mappedCollection['id'] = collectionId;
         }
-    },
-    created() {
-        this.importerType = this.$route.params.importerSlug;
-        this.collectionId = this.$route.query.targetCollection;
-        this.sessionId = this.$route.params.sessionId;
-
-        if (this.collectionId != undefined) {
-            this.onSelectCollection(this.collectionId);
-        }
-
-        // Set importer's name
-        this.fetchAvailableImporters().then((importerTypes) => {
-           if (importerTypes[this.importerType]) 
-            this.importerName = importerTypes[this.importerType].name;
-        });
-
-        if (this.sessionId != undefined)
-            this.loadImporter();
-        else
-            this.createImporter();    
     }
-
 }
 </script>
 

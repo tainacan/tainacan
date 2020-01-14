@@ -39,9 +39,10 @@
 
     export default {
         mixins: [ dateInter ],
-        created(){
-            if (this.value)
-                this.dateValue = this.parseDateToNavigatorLanguage(this.value);
+        props: {
+            metadatum: Object,
+            value: [String, Number, Array],
+            disabled: false,
         },
         data() {
             return {
@@ -49,10 +50,9 @@
                 isInvalidDate: false,
             }
         },
-        props: {
-            metadatum: Object,
-            value: [String, Number, Array],
-            disabled: false,
+        created(){
+            if (this.value)
+                this.dateValue = this.parseDateToNavigatorLanguage(this.value);
         },
         methods: {
             onInput: _.debounce(function ($event) {

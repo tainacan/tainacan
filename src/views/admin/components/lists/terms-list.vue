@@ -181,6 +181,15 @@ import t from 't';
 
 export default {
     name: 'TermsList',
+    components: {
+        RecursiveTermItem,
+        BasicTermItem,
+        TermEditionForm
+    },
+    props: {
+        taxonomyId: String,
+        currentUserCanEditTaxonomy: Boolean
+    },
     data(){
         return {
             isLoadingTerms: false,
@@ -195,10 +204,6 @@ export default {
             offset: 0,
             totalTerms: 0
         }
-    },
-    props: {
-        taxonomyId: String,
-        currentUserCanEditTaxonomy: Boolean
     },
     computed: {
         termsList() {
@@ -224,10 +229,24 @@ export default {
             this.$emit('isEditingTermUpdate', value);
         }
     },
-    components: {
-        RecursiveTermItem,
-        BasicTermItem,
-        TermEditionForm
+    created() {
+        if (this.taxonomyId != undefined && this.taxonomyId !== String) {
+            this.loadTerms(0);
+        }
+        this.$root.$on('onChildTermDeleted', this.eventOnChildTermDeleted);
+        this.$termsListBus.$on('editTerm', this.eventOnEditTerm);
+        this.$termsListBus.$on('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$termsListBus.$on('termEditionCanceled', this.eventOnTermEditionCanceled);
+        this.$termsListBus.$on('addNewChildTerm', this.addNewTerm);
+        this.$termsListBus.$on('deleteBasicTermItem', this.deleteBasicTerm);
+    },
+    beforeDestroy() {
+        this.$root.$off('onChildTermDeleted', this.eventOnChildTermDeleted);
+        this.$termsListBus.$off('editTerm', this.eventOnEditTerm);
+        this.$termsListBus.$off('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$termsListBus.$off('termEditionCanceled', this.eventOnTermEditionCanceled);
+        this.$termsListBus.$off('addNewChildTerm', this.addNewTerm);
+        this.$termsListBus.$off('deleteBasicTermItem', this.deleteBasicTerm);
     },
     methods: {
         ...mapActions('taxonomy', [
@@ -450,27 +469,7 @@ export default {
             this.isEditingTerm = false;
             this.editTerm = null;
         }
-    },
-    created() {
-        if (this.taxonomyId != undefined && this.taxonomyId !== String) {
-            this.loadTerms(0);
-        }
-        this.$root.$on('onChildTermDeleted', this.eventOnChildTermDeleted);
-        this.$termsListBus.$on('editTerm', this.eventOnEditTerm);
-        this.$termsListBus.$on('termEditionSaved', this.eventOnTermEditionSaved);
-        this.$termsListBus.$on('termEditionCanceled', this.eventOnTermEditionCanceled);
-        this.$termsListBus.$on('addNewChildTerm', this.addNewTerm);
-        this.$termsListBus.$on('deleteBasicTermItem', this.deleteBasicTerm);
-    },
-    beforeDestroy() {
-        this.$root.$off('onChildTermDeleted', this.eventOnChildTermDeleted);
-        this.$termsListBus.$off('editTerm', this.eventOnEditTerm);
-        this.$termsListBus.$off('termEditionSaved', this.eventOnTermEditionSaved);
-        this.$termsListBus.$off('termEditionCanceled', this.eventOnTermEditionCanceled);
-        this.$termsListBus.$off('addNewChildTerm', this.addNewTerm);
-        this.$termsListBus.$off('deleteBasicTermItem', this.deleteBasicTerm);
-    }
-    
+    }    
 }
 </script>
 

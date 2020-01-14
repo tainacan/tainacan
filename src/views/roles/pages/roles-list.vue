@@ -255,6 +255,15 @@
                 return roles;
             }
         },
+        created() {
+            this.isLoadingRoles = true;
+            this.fetchRoles()
+                .then(() => {
+                    this.isLoadingRoles = false;
+                }).catch(() => {
+                    this.isLoadingRoles = false;
+                });
+        },
         methods: {
             ...mapActions('capability', [
                 'fetchRoles',
@@ -294,15 +303,6 @@
                         this.$forceUpdate();
                     })
             }
-        },
-        created() {
-            this.isLoadingRoles = true;
-            this.fetchRoles()
-                .then(() => {
-                    this.isLoadingRoles = false;
-                }).catch(() => {
-                    this.isLoadingRoles = false;
-                });
         }
     }
 </script>

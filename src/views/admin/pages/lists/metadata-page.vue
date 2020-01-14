@@ -12,12 +12,12 @@ import MetadataList from '../../components/lists/metadata-list.vue';
 
 export default {
     name: 'MetadataPage',
+    components: {
+        MetadataList
+    },
     data(){
         return {
         }
-    },
-    components: {
-        MetadataList
     }
 }
 </script>

@@ -12,12 +12,12 @@ import FiltersList from '../../components/lists/filters-list.vue';
 
 export default {
     name: 'FiltersPage',
+    components: {
+        FiltersList
+    },
     data(){
         return {
         }
-    },
-    components: {
-        FiltersList
     }
 }
 </script>

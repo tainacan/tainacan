@@ -86,16 +86,16 @@ import AvailableExportersModal from '../modals/available-exporters-modal.vue';
 
 export default {
     name: 'TainacanRepositorySubheader',
+    props: {
+        isMenuCompressed: false,
+        isRepositoryLevel: true
+    },
     data() {
         return {
             repositoryName: tainacan_plugin.repository_name,
             repositoryURL: tainacan_plugin.theme_collection_list_url,
             collectionId: ''
         }
-    },
-    props: {
-        isMenuCompressed: false,
-        isRepositoryLevel: true
     },
     computed: {
         collection() {

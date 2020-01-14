@@ -87,6 +87,9 @@
                 showEditStepOptions: false
             }
         },
+        created() {
+            this.step = this.value && this.value.step ? this.value.step : 1;
+        },
         methods: {
             onUpdate() {
                 this.$emit('input', { 
@@ -94,9 +97,6 @@
                 });
             },
             
-        },
-        created() {
-            this.step = this.value && this.value.step ? this.value.step : 1;
         }
     }
 </script>

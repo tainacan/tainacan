@@ -255,15 +255,15 @@
 <script>
 export default {
     name: 'CollectionsHomeList',
-    data(){
-        return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png'
-        }
-    },
     props: {
         isLoading: false,
         collections: Array,
         collectionsTotal: Number
+    },
+    data(){
+        return {
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png'
+        }
     }
 }
 </script>

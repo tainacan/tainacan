@@ -311,6 +311,14 @@ import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'CollectionsList',
+    props: {
+        isLoading: false,
+        totalCollections: 0,
+        page: 1,
+        collectionsPerPage: 12,
+        collections: Array,
+        isOnTrash: false
+    },
     data(){
         return {
             selectedCollections: [],
@@ -322,14 +330,6 @@ export default {
             contextMenuIndex: null,
             contextMenuCollection: null
         }
-    },
-    props: {
-        isLoading: false,
-        totalCollections: 0,
-        page: 1,
-        collectionsPerPage: 12,
-        collections: Array,
-        isOnTrash: false
     },
     watch: {
         collections() {

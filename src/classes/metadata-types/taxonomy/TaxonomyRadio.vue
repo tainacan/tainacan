@@ -78,14 +78,11 @@
     import CheckboxRadioModal from '../../../views/admin/components/modals/checkbox-radio-modal.vue'
 
     export default {
-        created() {
-            this.getTermsFromTaxonomy();
-            this.$parent.$on('update-taxonomy-inputs', ($event) => {
-                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatum.id) {
-                    this.offset = 0;
-                    this.getTermsFromTaxonomy();
-                }
-            });
+        props: {
+            value: [ Number, String, Array ],
+            disabled: false,
+            taxonomyId: Number,
+            metadatum: Object
         },
         data() {
             return {
@@ -99,22 +96,28 @@
                 totalTerms: 0
             }
         },
+        computed: {
+            isShowingAllTerms() {
+                return this.terms.length >= this.totalTerms;
+            }
+        },
         watch: {
             value( val ){
                 this.checked = val;
                 this.fetchSelectedLabels();
             }
         },
-        computed: {
-            isShowingAllTerms() {
-                return this.terms.length >= this.totalTerms;
-            }
+        created() {
+            this.getTermsFromTaxonomy();
+            this.$parent.$on('update-taxonomy-inputs', ($event) => {
+                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatum.id) {
+                    this.offset = 0;
+                    this.getTermsFromTaxonomy();
+                }
+            });
         },
-        props: {
-            value: [ Number, String, Array ],
-            disabled: false,
-            taxonomyId: Number,
-            metadatum: Object
+        mounted() {
+            this.fetchSelectedLabels();
         },
         methods: {
             clearInput() {
@@ -216,9 +219,6 @@
                     trapFocus: true
                 });
             }
-        },
-        mounted() {
-            this.fetchSelectedLabels();
         }
     }
 </script>

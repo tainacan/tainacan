@@ -134,6 +134,9 @@
                 this.errorMessage = updatedErrorMessage;
             })
         },
+        beforeDestroy() {
+            eventBusItemMetadata.$off('updateErrorMessageOf#' + this.metadatum.metadatum.id);
+        },
         methods: {
             changeValue: _.debounce(function() {
                 this.performValueChange();
@@ -200,9 +203,6 @@
                 const array = ['tainacan-relationship','tainacan-taxonomy'];
                 return !(array.indexOf(component) >= 0 );
             }
-        },
-        beforeDestroy() {
-            eventBusItemMetadata.$off('updateErrorMessageOf#' + this.metadatum.metadatum.id);
         }
     }
 </script>

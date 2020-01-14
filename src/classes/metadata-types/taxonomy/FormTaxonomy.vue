@@ -92,38 +92,18 @@
             metadatum: [ String, Object ],
             errors: [ String, Object, Array ]
         },
-        created(){
-            this.fetchTaxonomies();
-
-            this.single_types['tainacan-taxonomy-radio'] = 'Radio';
-            this.multiple_types['tainacan-taxonomy-tag-input'] = 'Tag Input';
-            this.multiple_types['tainacan-taxonomy-checkbox'] = 'Checkbox';
-
-            if (this.value) {
-
-                this.taxonomy_id = this.value.taxonomy_id;
-                this.allow_new_terms = ( this.value.allow_new_terms ) ? this.value.allow_new_terms : 'no';
-                
-                if (this.metadatum && this.metadatum.multiple === 'no') {
-                    let types = Object.keys( this.single_types );
-                    let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
-                    this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-taxonomy-radio' );
-                } else {
-                    let types = Object.keys( this.multiple_types );
-                    let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
-                    this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-taxonomy-checkbox' );
-                }
-            }
-
-            this.isReady = true;
-        },
-        watch: {
-            input_type:{
-                handler(val, oldValue) {
-                    if (val != oldValue) {
-                        this.emitValues();
-                    }
-                }
+        data(){
+            return {
+                isReady: false,
+                taxonomies: [],
+                taxonomy_id: '',
+                loading: true,
+                allow_new_terms: 'yes',
+                input_type: 'tainacan-taxonomy-radio',
+                multiple_types: {},
+                single_types: {},
+                taxonomyType:'',
+                taxonomyMessage: ''
             }
         },
         computed: {
@@ -160,19 +140,39 @@
                 return true;
             }
         },
-        data(){
-            return {
-                isReady: false,
-                taxonomies: [],
-                taxonomy_id: '',
-                loading: true,
-                allow_new_terms: 'yes',
-                input_type: 'tainacan-taxonomy-radio',
-                multiple_types: {},
-                single_types: {},
-                taxonomyType:'',
-                taxonomyMessage: ''
+        watch: {
+            input_type:{
+                handler(val, oldValue) {
+                    if (val != oldValue) {
+                        this.emitValues();
+                    }
+                }
             }
+        },
+        created(){
+            this.fetchTaxonomies();
+
+            this.single_types['tainacan-taxonomy-radio'] = 'Radio';
+            this.multiple_types['tainacan-taxonomy-tag-input'] = 'Tag Input';
+            this.multiple_types['tainacan-taxonomy-checkbox'] = 'Checkbox';
+
+            if (this.value) {
+
+                this.taxonomy_id = this.value.taxonomy_id;
+                this.allow_new_terms = ( this.value.allow_new_terms ) ? this.value.allow_new_terms : 'no';
+                
+                if (this.metadatum && this.metadatum.multiple === 'no') {
+                    let types = Object.keys( this.single_types );
+                    let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
+                    this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-taxonomy-radio' );
+                } else {
+                    let types = Object.keys( this.multiple_types );
+                    let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
+                    this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-taxonomy-checkbox' );
+                }
+            }
+
+            this.isReady = true;
         },
         methods: {
             setInputType( input ){

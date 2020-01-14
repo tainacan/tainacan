@@ -320,6 +320,9 @@ import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'CollectionsPage',
+    components: {
+        CollectionsList
+    },
     data(){
         return {
             isLoading: false,
@@ -337,9 +340,6 @@ export default {
             ]
         }
     },
-    components: {
-        CollectionsList
-    },
     computed: {
         metadatum_mappers: {
             get() {
@@ -352,6 +352,42 @@ export default {
         repositoryTotalCollections(){
             return this.getRepositoryTotalCollections();
         }
+    },
+    created() {
+        this.collectionsPerPage = this.$userPrefs.get('collections_per_page');
+        this.isLoadingMetadatumTypes = true;
+        this.fetchMetadatumMappers()
+            .then(() => {
+                this.isLoadingMetadatumMappers = false;
+            })
+            .catch(() => {
+                this.isLoadingMetadatumMappers = false;
+            });
+    }, 
+    mounted(){
+        if (this.collectionsPerPage != this.$userPrefs.get('collections_per_page'))
+            this.collectionsPerPage = this.$userPrefs.get('collections_per_page');
+        if (!this.collectionsPerPage) {
+            this.collectionsPerPage = 12;
+            this.$userPrefs.set('collections_per_page', 12);
+        }
+
+        if (this.order != this.$userPrefs.get('collections_order'))
+            this.order = this.$userPrefs.get('collections_order');
+        if (!this.order) {
+            this.order = 'asc';
+            this.$userPrefs.set('collections_order', 'asc');
+        }
+
+
+        if (this.orderBy != this.$userPrefs.get('collections_order_by'))
+            this.orderBy = this.$userPrefs.get('collections_order_by');
+        if (!this.orderBy) {
+            this.orderBy = 'date';
+            this.$userPrefs.set('collections_order_by', 'date');
+        }
+
+        this.loadCollections();
     },
     methods: {
          ...mapActions('collection', [
@@ -454,42 +490,6 @@ export default {
             this.page = 1;
             this.loadCollections();
         },
-    },
-    created() {
-        this.collectionsPerPage = this.$userPrefs.get('collections_per_page');
-        this.isLoadingMetadatumTypes = true;
-        this.fetchMetadatumMappers()
-            .then(() => {
-                this.isLoadingMetadatumMappers = false;
-            })
-            .catch(() => {
-                this.isLoadingMetadatumMappers = false;
-            });
-    }, 
-    mounted(){
-        if (this.collectionsPerPage != this.$userPrefs.get('collections_per_page'))
-            this.collectionsPerPage = this.$userPrefs.get('collections_per_page');
-        if (!this.collectionsPerPage) {
-            this.collectionsPerPage = 12;
-            this.$userPrefs.set('collections_per_page', 12);
-        }
-
-        if (this.order != this.$userPrefs.get('collections_order'))
-            this.order = this.$userPrefs.get('collections_order');
-        if (!this.order) {
-            this.order = 'asc';
-            this.$userPrefs.set('collections_order', 'asc');
-        }
-
-
-        if (this.orderBy != this.$userPrefs.get('collections_order_by'))
-            this.orderBy = this.$userPrefs.get('collections_order_by');
-        if (!this.orderBy) {
-            this.orderBy = 'date';
-            this.$userPrefs.set('collections_order_by', 'date');
-        }
-
-        this.loadCollections();
     }
 }
 </script>

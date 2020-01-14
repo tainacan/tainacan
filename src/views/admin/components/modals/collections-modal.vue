@@ -65,15 +65,6 @@ export default {
             isLoading: false
         }
     },
-    methods: {
-        ...mapActions('collection', [
-            'fetchCollections'
-        ]),
-        onSelectCollection(collection) {
-            this.$router.push(this.$routerHelper.getNewItemPath(collection.id));
-            this.$parent.close();
-        }
-    },
     mounted() {
         this.isLoading = true;
         this.fetchCollections({ 
@@ -91,6 +82,15 @@ export default {
 
         if (this.$refs.collectionsModal)
             this.$refs.collectionsModal.focus();
+    },
+    methods: {
+        ...mapActions('collection', [
+            'fetchCollections'
+        ]),
+        onSelectCollection(collection) {
+            this.$router.push(this.$routerHelper.getNewItemPath(collection.id));
+            this.$parent.close();
+        }
     }
 }
 </script>

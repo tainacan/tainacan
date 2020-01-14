@@ -127,12 +127,12 @@
     }
     export default {
         name: 'CapabilitiesList',
+        components: {
+            CompleteRolesList
+        },
         props: {
             isLoading: false,
             capabilities: Array
-        },
-        components: {
-            CompleteRolesList
         },
         methods: {
             openCapabilitiyEditModal(capabilityKey) {

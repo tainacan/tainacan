@@ -95,6 +95,12 @@
         },
         mounted(){
             this.loadOptions();
+        },
+        beforeDestroy() {
+            
+            // Cancels previous Request
+            if (this.getOptionsValuesCancel != undefined)
+                this.getOptionsValuesCancel.cancel('Facet search Canceled.');
         }, 
         methods: {
             ...mapGetters('search', [
@@ -298,12 +304,6 @@
             updatesIsLoading(isLoadingOptions) {
                 this.isLoadingOptions = isLoadingOptions;
             }
-        },
-        beforeDestroy() {
-            
-            // Cancels previous Request
-            if (this.getOptionsValuesCancel != undefined)
-                this.getOptionsValuesCancel.cancel('Facet search Canceled.');
         }
     }
 </script>

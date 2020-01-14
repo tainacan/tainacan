@@ -37,11 +37,6 @@
                 options: []
             }
         },
-        created(){
-            if( this.value ) {
-                this.options = ( this.value.options ) ? this.value.options.split('\n') : [];
-            }
-        },
         computed: {
             setError(){
                 if( this.errors && this.errors.options !== '' ){
@@ -50,6 +45,11 @@
                     this.setErrorsAttributes( '', '' )
                 }
                 return true;
+            }
+        },
+        created(){
+            if( this.value ) {
+                this.options = ( this.value.options ) ? this.value.options.split('\n') : [];
             }
         },
         methods: {

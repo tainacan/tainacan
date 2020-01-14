@@ -227,6 +227,37 @@
             isDoSearch: false,
             collectionId: ''
         },
+        data() {
+            return {
+                metaqueryOperatorsForInterval: {
+                    '=': this.$i18n.get('is_equal_to'),
+                    '!=': this.$i18n.get('is_not_equal_to'),
+                    '>': this.$i18n.get('greater_than'),
+                    '<': this.$i18n.get('less_than'),
+                    '>=': this.$i18n.get('greater_than_or_equal_to'),
+                    '<=': this.$i18n.get('less_than_or_equal_to'),
+                },
+                metaqueryOperatorsRegular: {
+                    '=': this.$i18n.get('is_equal_to'),
+                    '!=': this.$i18n.get('is_not_equal_to'),
+                    'LIKE': this.$i18n.get('contains'),
+                    'NOT LIKE': this.$i18n.get('not_contains'),
+                },
+                taxqueryOperators: {
+                    'LIKE': this.$i18n.get('contains'),
+                    'NOT LIKE': this.$i18n.get('not_contains')
+                },
+                searchCriteria: [1],
+                advancedSearchQuery: {
+                    advancedSearch: true,
+                    metaquery: {},
+                    taxquery: {}
+                },
+                metadataIsLoading: false,
+                metadata: [],
+                metadataSearchCancel: undefined
+            }
+        },
         watch: {
           isDoSearch(){
               this.searchAdvanced();
@@ -339,36 +370,13 @@
                 }
             }
         },
-        data() {
-            return {
-                metaqueryOperatorsForInterval: {
-                    '=': this.$i18n.get('is_equal_to'),
-                    '!=': this.$i18n.get('is_not_equal_to'),
-                    '>': this.$i18n.get('greater_than'),
-                    '<': this.$i18n.get('less_than'),
-                    '>=': this.$i18n.get('greater_than_or_equal_to'),
-                    '<=': this.$i18n.get('less_than_or_equal_to'),
-                },
-                metaqueryOperatorsRegular: {
-                    '=': this.$i18n.get('is_equal_to'),
-                    '!=': this.$i18n.get('is_not_equal_to'),
-                    'LIKE': this.$i18n.get('contains'),
-                    'NOT LIKE': this.$i18n.get('not_contains'),
-                },
-                taxqueryOperators: {
-                    'LIKE': this.$i18n.get('contains'),
-                    'NOT LIKE': this.$i18n.get('not_contains')
-                },
-                searchCriteria: [1],
-                advancedSearchQuery: {
-                    advancedSearch: true,
-                    metaquery: {},
-                    taxquery: {}
-                },
-                metadataIsLoading: false,
-                metadata: [],
-                metadataSearchCancel: undefined
-            }
+        beforeDestroy() {
+            this.$root.$off('metadatumUpdated');
+
+            // Cancels previous Request
+            if (this.metadataSearchCancel != undefined)
+                this.metadataSearchCancel.cancel('Metadata search Canceled.');
+
         },
         methods: {
             ...mapActions('metadata', [
@@ -579,14 +587,6 @@
                     }
                 }
             },
-        },
-        beforeDestroy() {
-            this.$root.$off('metadatumUpdated');
-
-            // Cancels previous Request
-            if (this.metadataSearchCancel != undefined)
-                this.metadataSearchCancel.cancel('Metadata search Canceled.');
-
         }
     }
 </script>

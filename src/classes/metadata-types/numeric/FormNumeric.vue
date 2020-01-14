@@ -81,13 +81,13 @@
                 showEditStepOptions: false
             }
         },
+        created() {
+            this.step = this.value && this.value.step ? this.value.step : 0.01;
+        },
         methods: {
             onUpdateStep(value) {
                 this.$emit('input', { step: value });
             }
-        },
-        created() {
-            this.step = this.value && this.value.step ? this.value.step : 0.01;
         }
     }
 </script>

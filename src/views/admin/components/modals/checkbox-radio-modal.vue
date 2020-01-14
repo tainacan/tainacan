@@ -354,6 +354,11 @@
             if (this.$refs.checkboxRadioModal)
                 this.$refs.checkboxRadioModal.focus()
         },
+        beforeDestroy() {
+            // Cancels previous Request
+            if (this.getOptionsValuesCancel != undefined)
+                this.getOptionsValuesCancel.cancel('Get options request canceled.');
+        },
         methods: {
             shouldShowMoreButton(key) {
                 return this.totalRemaining[key].remaining === true || (this.finderColumns[key].children.length < this.totalRemaining[key].remaining);
@@ -709,11 +714,6 @@
 
                 this.$emit('appliedCheckBoxModal');
             }
-        },
-        beforeDestroy() {
-            // Cancels previous Request
-            if (this.getOptionsValuesCancel != undefined)
-                this.getOptionsValuesCancel.cancel('Get options request canceled.');
         }
     }
 </script>

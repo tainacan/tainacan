@@ -220,6 +220,10 @@
     export default {
         name: 'TermEditionForm',
         mixins: [ formHooks ],
+        props: {
+            editForm: Object,
+            taxonomyId: ''
+        },
         data() {
             return {
                 formErrors: {},
@@ -236,9 +240,34 @@
                 isLoading: false,
             }
         },
-        props: {
-            editForm: Object,
-            taxonomyId: ''
+        mounted() {
+
+            // Fills hook forms with it's real values 
+            this.$nextTick()
+                .then(() => {
+                    this.updateExtraFormData(this.editForm);
+                });
+
+            this.showCheckboxesWarning = false;
+            this.hasParent = this.editForm.parent != undefined && this.editForm.parent > 0;
+            this.initialParentId = this.editForm.parent;
+            this.initializeMediaFrames();
+
+            if (this.hasParent) {
+                this.isFetchingParentTerms = true;
+                this.showCheckboxesWarning = false;
+                this.fetchParentName({ taxonomyId: this.taxonomyId, parentId: this.editForm.parent })
+                    .then((parentName) => {
+                        this.parentTermName = parentName;
+                        this.isFetchingParentTerms = false;
+                        this.showCheckboxesWarning = false;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingParentTerms = false;
+                        this.showCheckboxesWarning = false;
+                    });
+            }
         },
         methods: {
             ...mapActions('taxonomy', [
@@ -388,35 +417,6 @@
                 this.selectedParentTerm = selectedParentTerm;
                 this.parentTermName = selectedParentTerm.name;
                 this.showCheckboxesWarning = true;
-            }
-        },
-        mounted() {
-
-            // Fills hook forms with it's real values 
-            this.$nextTick()
-                .then(() => {
-                    this.updateExtraFormData(this.editForm);
-                });
-
-            this.showCheckboxesWarning = false;
-            this.hasParent = this.editForm.parent != undefined && this.editForm.parent > 0;
-            this.initialParentId = this.editForm.parent;
-            this.initializeMediaFrames();
-
-            if (this.hasParent) {
-                this.isFetchingParentTerms = true;
-                this.showCheckboxesWarning = false;
-                this.fetchParentName({ taxonomyId: this.taxonomyId, parentId: this.editForm.parent })
-                    .then((parentName) => {
-                        this.parentTermName = parentName;
-                        this.isFetchingParentTerms = false;
-                        this.showCheckboxesWarning = false;
-                    })
-                    .catch((error) => {
-                        this.$console.error(error);
-                        this.isFetchingParentTerms = false;
-                        this.showCheckboxesWarning = false;
-                    });
             }
         }
     }

@@ -164,11 +164,6 @@ export default {
             dateFormat: ''
         }
     },
-    watch: {
-        bgProcesses(newBG) {
-            this.hasAnyProcessExecuting = newBG.some((element) => element.done <= 0);
-        }
-    },
     computed: {
         getAllProcesses(){
             if (this.updatedProcesses.length !== 0) {
@@ -182,6 +177,43 @@ export default {
 
             return this.bgProcesses;
         }
+    },
+    watch: {
+        bgProcesses(newBG) {
+            this.hasAnyProcessExecuting = newBG.some((element) => element.done <= 0);
+        }
+    },
+    created() {
+        let locale = navigator.language;
+
+        moment.locale(locale);
+
+        let localeData = moment.localeData();
+        this.dateFormat = localeData.longDateFormat('lll');
+
+        this.fetchProcesses({
+            page: 1,
+            processesPerPage: 12,
+            shouldUpdateStore: false
+        }).then((response) => {
+            this.bgProcesses = JSON.parse(JSON.stringify(response.processes));
+        });
+
+        this.showProcessesList = false;
+
+        if (jQuery && jQuery( document )) {
+            jQuery( document ).on( 'heartbeat-tick-popup',  ( event, data ) => {
+                this.setProcesses(data.bg_process_feedback);
+            });
+
+            jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
+                jQuery( document ).trigger('heartbeat-tick-popup',data);
+            });
+        }
+    },
+    beforeDestroy() {
+        if (jQuery && jQuery( document ))
+            jQuery( document ).unbind( 'heartbeat-tick-popup')
     },
     methods: {
         ...mapActions('bgprocess', [
@@ -217,38 +249,6 @@ export default {
         setProcesses(processes) {
             this.updatedProcesses = processes;
         }
-    },
-    created() {
-        let locale = navigator.language;
-
-        moment.locale(locale);
-
-        let localeData = moment.localeData();
-        this.dateFormat = localeData.longDateFormat('lll');
-
-        this.fetchProcesses({
-            page: 1,
-            processesPerPage: 12,
-            shouldUpdateStore: false
-        }).then((response) => {
-            this.bgProcesses = JSON.parse(JSON.stringify(response.processes));
-        });
-
-        this.showProcessesList = false;
-
-        if (jQuery && jQuery( document )) {
-            jQuery( document ).on( 'heartbeat-tick-popup',  ( event, data ) => {
-                this.setProcesses(data.bg_process_feedback);
-            });
-
-            jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
-                jQuery( document ).trigger('heartbeat-tick-popup',data);
-            });
-        }
-    },
-    beforeDestroy() {
-        if (jQuery && jQuery( document ))
-            jQuery( document ).unbind( 'heartbeat-tick-popup')
     }
 }
 </script>

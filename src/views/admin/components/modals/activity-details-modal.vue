@@ -611,6 +611,9 @@
 
     export default {
         name: "ActivityDetailsModal",
+        components: {
+            FileItem
+        },
         props: {
             activityId: String
         },
@@ -622,15 +625,6 @@
                 placeholderSquareImage: `${tainacan_plugin.base_url}/assets/images/placeholder_square.png`,
                 isLoadingActivity: false,
                 adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#', 
-            }
-        },
-        components: {
-            FileItem
-        },
-        watch: {
-            '$route' (to, from) {
-                if (to !== from)
-                    this.$parent.close();
             }
         },
         computed: {
@@ -668,6 +662,12 @@
                                 <a href="${ this.adminFullURL + this.$routerHelper.getItemEditPath(this.activity.object.collection_id, this.activity.item.id) }">${ this.activity.item.title }</a>
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-20px tainacan-icon-items"/></span>`;
                 }
+            }
+        },
+        watch: {
+            '$route' (to, from) {
+                if (to !== from)
+                    this.$parent.close();
             }
         },
         created() {

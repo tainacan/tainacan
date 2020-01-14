@@ -268,6 +268,59 @@
                 return _.groupBy(Object.keys(this.repositoryCapabilities), this.getCapabilityRelatedEntity);
             }
         },
+        created() {
+            this.roleSlug = this.$route.params.roleSlug;
+
+            if (this.roleSlug !== 'new') {
+                this.isLoadingRole = true;
+                this.fetchRole(this.roleSlug)
+                    .then((originalRole) => {
+                        this.role = JSON.parse(JSON.stringify(originalRole));
+                        this.isLoadingRole = false;
+                    }).catch(() => {
+                        this.isLoadingRole = false;
+                    });
+            } else if (this.roleSlug === 'new' && this.$route.query.template) {
+                this.isLoadingRole = true;
+                this.fetchRole(this.$route.query.template)
+                    .then((originalRole) => {
+                        this.role = JSON.parse(JSON.stringify(originalRole));
+                        this.role.name = this.role.name + ' ' + this.$i18n.get('(Copy)');
+                        this.role.slug = undefined;
+                        this.isLoadingRole = false;
+                    }).catch(() => {
+                        this.isLoadingRole = false;
+                    });
+            }   else {
+                this.role = {
+                    name: '',
+                    capabilities: {}
+                }
+            }
+
+            this.isLoadingCapabilities = true;
+            this.fetchCapabilities({ collectionId: undefined })
+                .then(() => {
+                    this.isLoadingCapabilities = false;
+                }).catch(() => {
+                    this.isLoadingCapabilities = false;
+                });
+
+            this.isLoadingCollections = true;
+            this.fetchAllCollectionNames()
+                .then((resp) => {
+                    resp.request
+                        .then((collections) => {
+                            this.collections = collections;
+                            this.isLoadingCollections = false;
+                        }).catch(() => {
+                            this.isLoadingCollections = false;
+                        });
+                })
+                .catch(() => {
+                    this.isLoadingCollections = false;
+                }); 
+        },
         methods: {
             ...mapActions('collection', [
                 'fetchAllCollectionNames'
@@ -334,59 +387,6 @@
                 else
                     return this.$i18n.get('Repository')
             }
-        },
-        created() {
-            this.roleSlug = this.$route.params.roleSlug;
-
-            if (this.roleSlug !== 'new') {
-                this.isLoadingRole = true;
-                this.fetchRole(this.roleSlug)
-                    .then((originalRole) => {
-                        this.role = JSON.parse(JSON.stringify(originalRole));
-                        this.isLoadingRole = false;
-                    }).catch(() => {
-                        this.isLoadingRole = false;
-                    });
-            } else if (this.roleSlug === 'new' && this.$route.query.template) {
-                this.isLoadingRole = true;
-                this.fetchRole(this.$route.query.template)
-                    .then((originalRole) => {
-                        this.role = JSON.parse(JSON.stringify(originalRole));
-                        this.role.name = this.role.name + ' ' + this.$i18n.get('(Copy)');
-                        this.role.slug = undefined;
-                        this.isLoadingRole = false;
-                    }).catch(() => {
-                        this.isLoadingRole = false;
-                    });
-            }   else {
-                this.role = {
-                    name: '',
-                    capabilities: {}
-                }
-            }
-
-            this.isLoadingCapabilities = true;
-            this.fetchCapabilities({ collectionId: undefined })
-                .then(() => {
-                    this.isLoadingCapabilities = false;
-                }).catch(() => {
-                    this.isLoadingCapabilities = false;
-                });
-
-            this.isLoadingCollections = true;
-            this.fetchAllCollectionNames()
-                .then((resp) => {
-                    resp.request
-                        .then((collections) => {
-                            this.collections = collections;
-                            this.isLoadingCollections = false;
-                        }).catch(() => {
-                            this.isLoadingCollections = false;
-                        });
-                })
-                .catch(() => {
-                    this.isLoadingCollections = false;
-                }); 
         }
     }
 </script>

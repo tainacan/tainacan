@@ -25,22 +25,19 @@
     import AddNewTerm from  './AddNewTerm.vue'
 
     export default {
-        created(){
-            const metadata_type_options = this.metadatum.metadatum.metadata_type_options;
-
-            this.taxonomyId = metadata_type_options.taxonomy_id;
-            this.taxonomy = metadata_type_options.taxonomy;
-
-            if (metadata_type_options && metadata_type_options.allow_new_terms && this.metadatum.item) 
-                this.allowNew = metadata_type_options.allow_new_terms == 'yes';
-
-            this.getTermsId();
-        },
         components: {
             TainacanTaxonomyRadio,
             TainacanTaxonomyCheckbox,
             TainacanTaxonomyTagInput,
             AddNewTerm
+        },
+        props: {
+            metadatum: Object,
+            value: [ Number, String, Array, Object ],
+            disabled: false,
+            forcedComponentType: '',
+            maxtags: '',
+            allowSelectToCreate: false,
         },
         data(){
             return {
@@ -50,19 +47,6 @@
                 terms:[],
                 allowNew: false
             }
-        },
-        watch: {
-            valueComponent( val ){
-                this.$emit('input', val);
-            }
-        },
-        props: {
-            metadatum: Object,
-            value: [ Number, String, Array, Object ],
-            disabled: false,
-            forcedComponentType: '',
-            maxtags: '',
-            allowSelectToCreate: false,
         },
         computed: {
             getComponent() {
@@ -74,6 +58,22 @@
                         )
                     return this.metadatum.metadatum.metadata_type_options.input_type;
             }
+        },
+        watch: {
+            valueComponent( val ){
+                this.$emit('input', val);
+            }
+        },
+        created(){
+            const metadata_type_options = this.metadatum.metadatum.metadata_type_options;
+
+            this.taxonomyId = metadata_type_options.taxonomy_id;
+            this.taxonomy = metadata_type_options.taxonomy;
+
+            if (metadata_type_options && metadata_type_options.allow_new_terms && this.metadatum.item) 
+                this.allowNew = metadata_type_options.allow_new_terms == 'yes';
+
+            this.getTermsId();
         },
         methods: {
             getTermsId() {

@@ -52,6 +52,17 @@
             query: Object,
             open: false,
         },
+        data(){
+            return {
+                inputs: [],
+                collectionsIdsToFilter: []
+            }
+        },
+        computed: {
+            collections(){
+                return this.getCollections();
+            },
+        },
         created(){
             this.fetchCollections({
                     page: 1, 
@@ -70,17 +81,6 @@
 
                 this.applyFilter();
             }
-        },
-        data(){
-            return {
-                inputs: [],
-                collectionsIdsToFilter: []
-            }
-        },
-        computed: {
-            collections(){
-                return this.getCollections();
-            },
         },
         methods: {
             ...mapActions('search', [

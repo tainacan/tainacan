@@ -17,7 +17,6 @@ module.exports = {
         'no-undef': 'warn',
         'vue/html-indent': 'off',
         'vue/attributes-order': 'off',
-        'vue/order-in-components': 'off',
         'vue/no-confusing-v-for-v-if': 'off',
         'vue/require-default-prop': 'off', // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/require-default-prop.md
     },

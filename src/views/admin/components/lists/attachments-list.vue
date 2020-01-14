@@ -104,16 +104,16 @@
         components: {
             FileItem
         },
+        props: {
+            item: Object,
+            isLoading: Boolean,
+            isEditable: Boolean,
+        },
         data() {
             return {
                 attachmentsPage: 1,
                 attachmentsPerPage: 24
             }
-        },
-        props: {
-            item: Object,
-            isLoading: Boolean,
-            isEditable: Boolean,
         },
         computed: {
             attachments() {
@@ -122,6 +122,10 @@
             totalAttachments() {
                 return this.getTotalAttachments();
             }
+        },
+        created() {
+            // Get attachments
+            this.loadAttachments();
         },
         methods: {
             ...mapActions('item', [
@@ -177,10 +181,6 @@
             onDeleteAttachment(attachment) {
                 this.$emit('onDeleteAttachment', attachment);
             }
-        },
-        created() {
-            // Get attachments
-            this.loadAttachments();
         }
     }
 </script>

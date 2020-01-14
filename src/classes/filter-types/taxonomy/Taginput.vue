@@ -43,6 +43,23 @@
     
     export default {
         mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
+        data(){
+            return {
+                results:'',
+                selected:[],
+                options: [],
+                taxonomy: '',
+                taxonomyId: ''
+            }
+        },
+        watch: {
+            'query.taxquery'() {
+                this.updateSelectedValues();
+            },
+            'query.metaquery'() {
+                this.loadOptions();
+            }
+        },
         created() {
             if (this.filter.metadatum && 
                 this.filter.metadatum.metadata_type_object && 
@@ -53,25 +70,8 @@
                     this.taxonomy = this.filter.metadatum.metadata_type_object.options.taxonomy;
                 }
         },
-        watch: {
-            'query.taxquery'() {
-                this.updateSelectedValues();
-            },
-            'query.metaquery'() {
-                this.loadOptions();
-            }
-        },
         mounted() {
             this.updateSelectedValues();
-        },
-        data(){
-            return {
-                results:'',
-                selected:[],
-                options: [],
-                taxonomy: '',
-                taxonomyId: ''
-            }
         },
         methods: {
             search: _.debounce( function(query) {

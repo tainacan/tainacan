@@ -46,7 +46,25 @@
     import { tainacan as axios } from '../../../views/admin/js/axios';
     import qs from 'qs';
 
-    export default {
+    export default {       
+        props: {
+            metadatum: Object,
+            maxtags: undefined,
+            disabled: false,
+            allowNew: true,
+        },
+        data() {
+            return {
+                results:'',
+                selected:[],
+                options: [],
+                isLoading: false,
+                collectionId: '',
+                inputValue: null,
+                queryObject: {},
+                itemsFound: []
+            }
+        },
         created() {
             this.collectionId = ( this.metadatum && this.metadatum.metadatum.metadata_type_options && this.metadatum.metadatum.metadata_type_options.collection_id ) ? this.metadatum.metadatum.metadata_type_options.collection_id : '';
             if (this.metadatum.value && (Array.isArray( this.metadatum.value ) ? this.metadatum.value.length > 0 : true )) {
@@ -67,24 +85,6 @@
                         this.$console.log(error);
                     });
             }
-        },
-        data() {
-            return {
-                results:'',
-                selected:[],
-                options: [],
-                isLoading: false,
-                collectionId: '',
-                inputValue: null,
-                queryObject: {},
-                itemsFound: []
-            }
-        },
-        props: {
-            metadatum: Object,
-            maxtags: undefined,
-            disabled: false,
-            allowNew: true,
         },
         methods: {
             setResults(option){

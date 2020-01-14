@@ -270,6 +270,10 @@
 
     export default {
         name: 'ActivitiesPage',
+        components: {
+            ActivitiesList,
+            ProcessesList,
+        },
         mixins: [ dateInter ],
         data(){
             return {
@@ -289,9 +293,53 @@
                 userIdForFiltering: null
             }
         },
-        components: {
-            ActivitiesList,
-            ProcessesList,
+        computed: {
+            activities(){
+                let activitiesList = this.getActivities();
+
+                for (let activity of activitiesList)
+                    activity['by'] = this.$i18n.get('info_by') +
+                        activity['user_name'] + '<br>' + this.$i18n.get('info_date') +
+                        moment(activity['log_date'], 'YYYY-MM-DD h:mm:ss').format('DD/MM/YYYY, hh:mm:ss');
+
+                return activitiesList;
+            },
+            processes(){
+                return this.getProcesses();
+            }
+        },
+        created() {
+            this.activitiesPerPage = this.$userPrefs.get('activities_per_page');
+            this.processesPerPage = this.$userPrefs.get('processes_per_page');
+            this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
+            this.isItemLevel = (!this.isRepositoryLevel && this.$route.params.itemId);
+        },
+        mounted(){
+            if (!this.isRepositoryLevel)
+                this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('activities') }]);
+
+            if (this.$route.query.tab == 'processes' && this.isRepositoryLevel)
+                this.tab = 'processes';
+
+            if (this.tab != 'processes') {
+                if (this.activitiesPerPage != this.$userPrefs.get('activities_per_page'))
+                    this.activitiesPerPage = this.$userPrefs.get('activities_per_page');
+
+                if (!this.activitiesPerPage) {
+                    this.activitiesPerPage = 12;
+                    this.$userPrefs.set('activities_per_page', 12);
+                }
+                this.loadActivities();
+            } else {
+                if (this.processesPerPage != this.$userPrefs.get('processes_per_page'))
+                    this.processesPerPage = this.$userPrefs.get('processes_per_page');
+
+                if (!this.processesPerPage) {
+                    this.processesPerPage = 12;
+                    this.$userPrefs.set('processes_per_page', 12);
+                }
+                this.loadProcesses();
+            }
         },
         methods: {
             ...mapActions('activity', [
@@ -473,54 +521,6 @@
                         this.isFetchingPages = false;
                     });
             }, 500)
-        },
-        computed: {
-            activities(){
-                let activitiesList = this.getActivities();
-
-                for (let activity of activitiesList)
-                    activity['by'] = this.$i18n.get('info_by') +
-                        activity['user_name'] + '<br>' + this.$i18n.get('info_date') +
-                        moment(activity['log_date'], 'YYYY-MM-DD h:mm:ss').format('DD/MM/YYYY, hh:mm:ss');
-
-                return activitiesList;
-            },
-            processes(){
-                return this.getProcesses();
-            }
-        },
-        created() {
-            this.activitiesPerPage = this.$userPrefs.get('activities_per_page');
-            this.processesPerPage = this.$userPrefs.get('processes_per_page');
-            this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
-            this.isItemLevel = (!this.isRepositoryLevel && this.$route.params.itemId);
-        },
-        mounted(){
-            if (!this.isRepositoryLevel)
-                this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('activities') }]);
-
-            if (this.$route.query.tab == 'processes' && this.isRepositoryLevel)
-                this.tab = 'processes';
-
-            if (this.tab != 'processes') {
-                if (this.activitiesPerPage != this.$userPrefs.get('activities_per_page'))
-                    this.activitiesPerPage = this.$userPrefs.get('activities_per_page');
-
-                if (!this.activitiesPerPage) {
-                    this.activitiesPerPage = 12;
-                    this.$userPrefs.set('activities_per_page', 12);
-                }
-                this.loadActivities();
-            } else {
-                if (this.processesPerPage != this.$userPrefs.get('processes_per_page'))
-                    this.processesPerPage = this.$userPrefs.get('processes_per_page');
-
-                if (!this.processesPerPage) {
-                    this.processesPerPage = 12;
-                    this.$userPrefs.set('processes_per_page', 12);
-                }
-                this.loadProcesses();
-            }
         }
     }
 </script>

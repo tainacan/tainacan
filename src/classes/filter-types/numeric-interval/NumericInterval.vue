@@ -28,9 +28,6 @@
                 valueEnd: null
             }
         },
-        mounted() {
-            this.updateSelectedValues();
-        },
         watch: {
             'query.metaquery'() {
                 this.updateSelectedValues();
@@ -38,6 +35,9 @@
             'query.taxquery'() {
                 this.updateSelectedValues();
             }
+        },
+        mounted() {
+            this.updateSelectedValues();
         },
         methods: {
             // only validate if the first value is higher than first

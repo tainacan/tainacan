@@ -138,22 +138,6 @@ import debounce from 'lodash/debounce.js';
 
 export default {
     name: "FacetsListTheme",
-    data() {
-        return {
-            facets: [],
-            collection: undefined,
-            facetsRequestSource: undefined,
-            searchString: '',
-            isLoading: false,
-            isLoadingCollection: false,
-            localMaxFacetsNumber: undefined,
-            localOrder: undefined,
-            tainacanAxios: undefined,
-            offset: undefined,
-            totalFacets: 0,
-            lastTerm: undefined
-        }
-    },
     props: {
         metadatumId: String,  
         metadatumType: String,  
@@ -172,6 +156,27 @@ export default {
         tainacanBaseUrl: String,
         tainacanSiteUrl: String,
         className: String
+    },
+    data() {
+        return {
+            facets: [],
+            collection: undefined,
+            facetsRequestSource: undefined,
+            searchString: '',
+            isLoading: false,
+            isLoadingCollection: false,
+            localMaxFacetsNumber: undefined,
+            localOrder: undefined,
+            tainacanAxios: undefined,
+            offset: undefined,
+            totalFacets: 0,
+            lastTerm: undefined
+        }
+    },
+    created() {
+        this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
+        this.offset = 0;
+        this.fetchFacets();
     },
     methods: {
         applySearchString: debounce(function(event) { 
@@ -283,12 +288,7 @@ export default {
                 default: return '54px';
             }
         }
-    },
-    created() {
-        this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
-        this.offset = 0;
-        this.fetchFacets();
-    },
+    }
 }
 </script>
 

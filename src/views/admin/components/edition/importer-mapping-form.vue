@@ -289,6 +289,9 @@ import MetadatumEditionForm from './../edition/metadatum-edition-form.vue';
 
 export default {
     name: 'ImporterEditionForm',
+    components: {
+        MetadatumEditionForm
+    },
     data(){
         return {
             importerId: Number,
@@ -319,13 +322,34 @@ export default {
             selectedTitle: undefined
         }
     },
-    components: {
-        MetadatumEditionForm
-    },
     computed: {
         metadatumTypes() {
             return this.getMetadatumTypes();
         }
+    },
+    created() {
+        this.importerType = this.$route.params.importerType;
+        this.sessionId = this.$route.params.sessionId;
+        this.collectionId = this.$route.params.collectionId;
+        this.mappedCollection['id'] = this.collectionId;
+
+        // Set importer's name
+        this.fetchAvailableImporters().then((importerTypes) => {
+           if (importerTypes[this.importerType]) 
+            this.importerName = importerTypes[this.importerType].name;
+        });
+
+        this.loadImporter();
+
+        this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
+            .then((collection) => {
+                this.collection = collection;
+            });
+    },
+    beforeDestroy() {
+        // Cancels previous Request
+        if (this.metadataSearchCancel != undefined)
+            this.metadataSearchCancel.cancel('Metadata search Canceled.');
     },
     methods: {
         ...mapActions('importer', [
@@ -581,32 +605,7 @@ export default {
             this.showTitlePromptModal = false;
             this.onRunImporter();
         }
-    },
-    created() {
-        this.importerType = this.$route.params.importerType;
-        this.sessionId = this.$route.params.sessionId;
-        this.collectionId = this.$route.params.collectionId;
-        this.mappedCollection['id'] = this.collectionId;
-
-        // Set importer's name
-        this.fetchAvailableImporters().then((importerTypes) => {
-           if (importerTypes[this.importerType]) 
-            this.importerName = importerTypes[this.importerType].name;
-        });
-
-        this.loadImporter();
-
-        this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
-            .then((collection) => {
-                this.collection = collection;
-            });
-    },
-    beforeDestroy() {
-        // Cancels previous Request
-        if (this.metadataSearchCancel != undefined)
-            this.metadataSearchCancel.cancel('Metadata search Canceled.');
     }
-
 }
 </script>
 

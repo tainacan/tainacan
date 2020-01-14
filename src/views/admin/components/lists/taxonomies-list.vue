@@ -199,14 +199,6 @@
 
     export default {
         name: 'List',
-        data() {
-            return {
-                selected: [],
-                allOnPageSelected: false,
-                isSelecting: false,
-                adminUrl: tainacan_plugin.admin_url
-            }
-        },
         props: {
             isLoading: false,
             total: 0,
@@ -214,6 +206,14 @@
             taxonomiesPerPage: 12,
             taxonomies: Array,
             isOnTrash: false
+        },
+        data() {
+            return {
+                selected: [],
+                allOnPageSelected: false,
+                isSelecting: false,
+                adminUrl: tainacan_plugin.admin_url
+            }
         },
         watch: {
             taxonomies() {

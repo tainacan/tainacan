@@ -181,6 +181,24 @@ import { swiper, swiperSlide } from 'vue-awesome-swiper';
 
 export default {
     name: "CarouselCollectionsListTheme",
+    components: {
+        swiper,
+        swiperSlide
+    },
+    props: {
+        blockId: String,
+        selectedCollections: Array,
+        maxCollectionsNumber: Number,
+        arrowsPosition: String,
+        autoPlay: false,
+        autoPlaySpeed: Number,
+        loopSlides: Boolean,
+        hideName: Boolean,
+        showCollectionThumbnail: Boolean,
+        tainacanApiRoot: String,
+        tainacanBaseUrl: String,
+        className: String
+    },
     data() {
         return {
             collections: [],
@@ -221,23 +239,9 @@ export default {
             errorMessage: 'No collections found.'
         }
     },
-    components: {
-        swiper,
-        swiperSlide
-    },
-    props: {
-        blockId: String,
-        selectedCollections: Array,
-        maxCollectionsNumber: Number,
-        arrowsPosition: String,
-        autoPlay: false,
-        autoPlaySpeed: Number,
-        loopSlides: Boolean,
-        hideName: Boolean,
-        showCollectionThumbnail: Boolean,
-        tainacanApiRoot: String,
-        tainacanBaseUrl: String,
-        className: String
+    created() {
+        this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
+        this.fetchCollections();
     },
     methods: {
         fetchCollections() {
@@ -288,11 +292,7 @@ export default {
                 });
             
         },
-    },
-    created() {
-        this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
-        this.fetchCollections();
-    },
+    }
 }
 </script>
 

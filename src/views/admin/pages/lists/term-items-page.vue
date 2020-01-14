@@ -878,6 +878,22 @@
 
     export default {
         name: 'ItemsPage',
+        components: {
+            ItemsList,
+            FiltersTagsList,
+            FiltersItemsList,
+            Pagination,
+            AdvancedSearch,
+            ExposersModal
+        },
+        props: {
+            collectionId: Number,
+            termId: Number,
+            taxonomy: String,
+            defaultViewMode: String, // Used only on theme
+            enabledViewModes: Object, // Used only on theme
+            isOnTheme: Boolean
+        },
         data() {
             return {
                 isRepositoryLevel: false,
@@ -905,14 +921,6 @@
                 filtersSearchCancel: undefined,
                 metadataSearchCancel: undefined
             }
-        },
-        props: {
-            collectionId: Number,
-            termId: Number,
-            taxonomy: String,
-            defaultViewMode: String, // Used only on theme
-            enabledViewModes: Object, // Used only on theme
-            isOnTheme: Boolean
         },
         computed: {
             isSortingByCustomMetadata() {
@@ -978,14 +986,6 @@
                 }
             }
         },
-        components: {
-            ItemsList,
-            FiltersTagsList,
-            FiltersItemsList,
-            Pagination,
-            AdvancedSearch,
-            ExposersModal
-        },
         watch: {
             displayedMetadata() {
                 this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
@@ -1010,6 +1010,117 @@
                     }, 800);
                 }
             }
+        },
+        created() {
+
+            this.isRepositoryLevel = (this.collectionId === undefined);
+
+            if (this.collectionId != undefined)
+                this.$eventBusSearch.setCollectionId(this.collectionId);
+
+            if (this.termId != undefined && this.termId != null)
+                this.$eventBusSearch.setTerm(this.termId, this.taxonomy);
+            
+            this.$eventBusSearch.updateStoreFromURL();
+
+            this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
+                this.isLoadingItems = isLoadingItems;
+            });
+
+            this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
+                this.adjustSearchControlHeight();
+                this.hasFiltered = hasFiltered;
+            });
+
+            this.$eventBusSearch.$on('advancedSearchResults', advancedSearchResults => {
+                this.advancedSearchResults = advancedSearchResults;
+            });
+
+            this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', (to) => {
+                /* This condition is to prevent an incorrect fetch by filter or metadata when we come from items
+                 * at collection level to items page at repository level
+                 */
+
+                if (this.isOnTheme || this.collectionId == to.params.collectionId) {
+                    this.prepareMetadata();
+                    this.prepareFilters();
+                }
+            });
+
+            if(this.$route.query && this.$route.query.advancedSearch) {
+                this.openAdvancedSearch = this.$route.query.advancedSearch;
+            }
+
+            this.$root.$on('openAdvancedSearch', (openAdvancedSearch) => {
+                this.openAdvancedSearch = openAdvancedSearch;
+            });
+
+        },
+        mounted() {
+            
+            this.prepareFilters();
+            this.prepareMetadata();
+            this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
+
+            // Setting initial view mode on Theme
+            if (this.isOnTheme) {
+                let prefsViewMode = !this.isRepositoryLevel ? 'view_mode_' + this.collectionId : 'view_mode';
+                if (this.$userPrefs.get(prefsViewMode) == undefined)
+                    this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
+                else {
+                    let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
+                    if (existingViewModeIndex >= 0)
+                        this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
+                    else   
+                        this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
+                }
+                
+                // For view modes such as slides, we force pagination to request only 12 per page
+                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
+                if (existingViewModeIndex >= 0) {
+                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
+                        this.$eventBusSearch.setItemsPerPage(12);
+                    }
+                }
+
+            } else {
+                let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
+                if (this.$userPrefs.get(prefsAdminViewMode) == undefined)
+                    this.$eventBusSearch.setInitialAdminViewMode('table');
+                else {
+                    let existingViewMode = this.$userPrefs.get(prefsAdminViewMode);
+                    if (existingViewMode == 'cards' || 
+                        existingViewMode == 'table' || 
+                        existingViewMode == 'records' || 
+                        existingViewMode == 'grid' || 
+                        existingViewMode == 'masonry')
+                        this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
+                    else
+                        this.$eventBusSearch.setInitialAdminViewMode('table');
+                }
+            }
+
+            this.showItemsHiddingDueSortingDialog();
+
+            // Watches window resize to adjust filter's top position and compression on mobile 
+            this.adjustSearchControlHeight();
+            window.addEventListener('resize', this.adjustSearchControlHeight);
+        },
+        beforeDestroy() {
+            this.removeEventListeners();
+
+            // Cancels previous Metadata Request
+            if (this.metadataSearchCancel != undefined)
+                this.metadataSearchCancel.cancel('Metadata search Canceled.');
+     
+            // Cancels previous Filters Request
+            if (this.filtersSearchCancel != undefined)
+                this.filtersSearchCancel.cancel('Filters search Canceled.');
+     
+            // Cancels previous Items Request
+            if (this.$eventBusSearch.searchCancel != undefined)
+                this.$eventBusSearch.searchCancel.cancel('Item search Canceled.');
+
         },
         methods: {
             ...mapGetters('collection', [
@@ -1468,117 +1579,6 @@
                 this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
 
             },
-        },
-        created() {
-
-            this.isRepositoryLevel = (this.collectionId === undefined);
-
-            if (this.collectionId != undefined)
-                this.$eventBusSearch.setCollectionId(this.collectionId);
-
-            if (this.termId != undefined && this.termId != null)
-                this.$eventBusSearch.setTerm(this.termId, this.taxonomy);
-            
-            this.$eventBusSearch.updateStoreFromURL();
-
-            this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
-                this.isLoadingItems = isLoadingItems;
-            });
-
-            this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
-                this.adjustSearchControlHeight();
-                this.hasFiltered = hasFiltered;
-            });
-
-            this.$eventBusSearch.$on('advancedSearchResults', advancedSearchResults => {
-                this.advancedSearchResults = advancedSearchResults;
-            });
-
-            this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', (to) => {
-                /* This condition is to prevent an incorrect fetch by filter or metadata when we come from items
-                 * at collection level to items page at repository level
-                 */
-
-                if (this.isOnTheme || this.collectionId == to.params.collectionId) {
-                    this.prepareMetadata();
-                    this.prepareFilters();
-                }
-            });
-
-            if(this.$route.query && this.$route.query.advancedSearch) {
-                this.openAdvancedSearch = this.$route.query.advancedSearch;
-            }
-
-            this.$root.$on('openAdvancedSearch', (openAdvancedSearch) => {
-                this.openAdvancedSearch = openAdvancedSearch;
-            });
-
-        },
-        mounted() {
-            
-            this.prepareFilters();
-            this.prepareMetadata();
-            this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
-
-            // Setting initial view mode on Theme
-            if (this.isOnTheme) {
-                let prefsViewMode = !this.isRepositoryLevel ? 'view_mode_' + this.collectionId : 'view_mode';
-                if (this.$userPrefs.get(prefsViewMode) == undefined)
-                    this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
-                else {
-                    let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
-                    if (existingViewModeIndex >= 0)
-                        this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
-                    else   
-                        this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
-                }
-                
-                // For view modes such as slides, we force pagination to request only 12 per page
-                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
-                if (existingViewModeIndex >= 0) {
-                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
-                        this.$eventBusSearch.setItemsPerPage(12);
-                    }
-                }
-
-            } else {
-                let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
-                if (this.$userPrefs.get(prefsAdminViewMode) == undefined)
-                    this.$eventBusSearch.setInitialAdminViewMode('table');
-                else {
-                    let existingViewMode = this.$userPrefs.get(prefsAdminViewMode);
-                    if (existingViewMode == 'cards' || 
-                        existingViewMode == 'table' || 
-                        existingViewMode == 'records' || 
-                        existingViewMode == 'grid' || 
-                        existingViewMode == 'masonry')
-                        this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
-                    else
-                        this.$eventBusSearch.setInitialAdminViewMode('table');
-                }
-            }
-
-            this.showItemsHiddingDueSortingDialog();
-
-            // Watches window resize to adjust filter's top position and compression on mobile 
-            this.adjustSearchControlHeight();
-            window.addEventListener('resize', this.adjustSearchControlHeight);
-        },
-        beforeDestroy() {
-            this.removeEventListeners();
-
-            // Cancels previous Metadata Request
-            if (this.metadataSearchCancel != undefined)
-                this.metadataSearchCancel.cancel('Metadata search Canceled.');
-     
-            // Cancels previous Filters Request
-            if (this.filtersSearchCancel != undefined)
-                this.filtersSearchCancel.cancel('Filters search Canceled.');
-     
-            // Cancels previous Items Request
-            if (this.$eventBusSearch.searchCancel != undefined)
-                this.$eventBusSearch.searchCancel.cancel('Item search Canceled.');
-
         }
     }
 </script>

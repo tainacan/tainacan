@@ -108,15 +108,15 @@ export default {
         isLoading: false,
         isFiltersMenuCompressed: Boolean
     },
-    computed: {
-        amountOfDisplayedMetadata() {
-            return this.displayedMetadata.filter((metadata) => metadata.display).length;
-        }
-    },
     data () {
         return {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             masonryCols: {default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}
+        }
+    },
+    computed: {
+        amountOfDisplayedMetadata() {
+            return this.displayedMetadata.filter((metadata) => metadata.display).length;
         }
     },
     watch: {
@@ -140,6 +140,23 @@ export default {
             obj[400] = 1;
             this.masonryCols = obj;
         }
+    },
+    mounted() {
+
+        if (this.$refs.masonryWrapper != undefined && 
+            this.$refs.masonryWrapper.children[0] != undefined && 
+            this.$refs.masonryWrapper.children[0].children[0] != undefined && 
+            this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
+                this.itemColumnWidth = this.$refs.masonryWrapper.children[0].children[0].clientWidth;
+                this.recalculateContainerWidth();
+            } else
+                this.itemColumnWidth = 202;
+    },
+    created() {
+        window.addEventListener('resize', this.recalculateContainerWidth);  
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.recalculateContainerWidth);
     },
     methods: {
         goToItemPage(item) {
@@ -174,23 +191,6 @@ export default {
             }
             this.$forceUpdate();
         }, 500)
-    },
-    mounted() {
-
-        if (this.$refs.masonryWrapper != undefined && 
-            this.$refs.masonryWrapper.children[0] != undefined && 
-            this.$refs.masonryWrapper.children[0].children[0] != undefined && 
-            this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
-                this.itemColumnWidth = this.$refs.masonryWrapper.children[0].children[0].clientWidth;
-                this.recalculateContainerWidth();
-            } else
-                this.itemColumnWidth = 202;
-    },
-    created() {
-        window.addEventListener('resize', this.recalculateContainerWidth);  
-    },
-    beforeDestroy() {
-        window.removeEventListener('resize', this.recalculateContainerWidth);
     }
 }
 </script>

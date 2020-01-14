@@ -51,6 +51,11 @@
 
     export default { 
         name: "AdminPage",
+        components: {
+            PrimaryMenu,
+            TainacanHeader,
+            TainacanRepositorySubheader
+        },
         data(){
             return {
                 isMenuCompressed: false,
@@ -58,10 +63,12 @@
                 activeRoute: '/collections'
             }
         },
-        components: {
-            PrimaryMenu,
-            TainacanHeader,
-            TainacanRepositorySubheader
+        watch: {
+            '$route' (to) {
+                this.isMenuCompressed = (to.params.collectionId != undefined);
+                this.activeRoute = to.name;
+                this.isRepositoryLevel = this.$route.params.collectionId == undefined;
+            }
         },
         created() {
             this.$statusHelper.loadStatuses(); 
@@ -69,13 +76,6 @@
             this.isMenuCompressed = (this.$route.params.collectionId != undefined);
             this.activeRoute = this.$route.name;
             this.isRepositoryLevel = this.$route.params.collectionId == undefined;
-        },
-        watch: {
-            '$route' (to) {
-                this.isMenuCompressed = (to.params.collectionId != undefined);
-                this.activeRoute = to.name;
-                this.isRepositoryLevel = this.$route.params.collectionId == undefined;
-            }
         }
     }
 </script>

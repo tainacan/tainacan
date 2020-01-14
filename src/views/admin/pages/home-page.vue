@@ -156,6 +156,9 @@ import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'HomePage',
+    components: {
+        CollectionsHomeList
+    },
     data(){
         return {
             isLoadingCollections: false,
@@ -163,13 +166,13 @@ export default {
             themeCollectionListURL: tainacan_plugin.theme_collection_list_url,
         }
     },
-    components: {
-        CollectionsHomeList
-    },
     computed: {
         collections() {
             return this.getCollections(); 
         }
+    },
+    mounted(){
+        this.loadCollections();
     },
     methods: {
          ...mapActions('collection', [
@@ -191,9 +194,6 @@ export default {
                     this.isLoadingCollections = false;
                 });
         }
-    },
-    mounted(){
-        this.loadCollections();
     }
 }
 </script>

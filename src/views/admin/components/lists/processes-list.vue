@@ -306,6 +306,13 @@
 
     export default {
         name: 'List',
+        props: {
+            isLoading: false,
+            total: 0,
+            page: 1,
+            processesPerPage: 12,
+            processes: Array
+        },
         data() {
             return {
                 selected: [],
@@ -315,13 +322,6 @@
                 highlightedProcess: '',
                 dateFormat: ''
             }
-        },
-        props: {
-            isLoading: false,
-            total: 0,
-            page: 1,
-            processesPerPage: 12,
-            processes: Array
         },
         watch: {
             processes() {
@@ -345,6 +345,41 @@
                 }
                 this.allOnPageSelected = allSelected;
                 this.isSelecting = isSelecting;
+            }
+        },
+        mounted() {
+            let locale = navigator.language;
+
+            moment.locale(locale);
+
+            let localeData = moment.localeData();
+            this.dateFormat = localeData.longDateFormat('lll');
+
+            if (this.$route.query.highlight) {
+                this.highlightedProcess = this.$route.query.highlight;
+            }
+        },
+        created(){
+            if (jQuery && jQuery( document )) {
+                jQuery( document ).on( 'heartbeat-tick-list',  ( event, data ) => {
+                    let updatedProcesses = data.bg_process_feedback;
+
+                    for (let updatedProcess of updatedProcesses) {
+                        let updatedProcessIndex = this.processes.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
+                        if (updatedProcessIndex >= 0) {
+                            this.heartBitUpdateProcess(updatedProcess);
+                        }
+                    }
+                });
+
+                jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
+                    jQuery( document ).trigger('heartbeat-tick-list', data);
+                });
+            }
+        },
+        beforeDestroy() {
+            if (jQuery && jQuery( document )) {
+                jQuery( document ).unbind( 'heartbeat-tick-list')
             }
         },
         methods: {
@@ -457,41 +492,6 @@
                     },
                     trapFocus: true
                 });
-            }
-        },
-        mounted() {
-            let locale = navigator.language;
-
-            moment.locale(locale);
-
-            let localeData = moment.localeData();
-            this.dateFormat = localeData.longDateFormat('lll');
-
-            if (this.$route.query.highlight) {
-                this.highlightedProcess = this.$route.query.highlight;
-            }
-        },
-        created(){
-            if (jQuery && jQuery( document )) {
-                jQuery( document ).on( 'heartbeat-tick-list',  ( event, data ) => {
-                    let updatedProcesses = data.bg_process_feedback;
-
-                    for (let updatedProcess of updatedProcesses) {
-                        let updatedProcessIndex = this.processes.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
-                        if (updatedProcessIndex >= 0) {
-                            this.heartBitUpdateProcess(updatedProcess);
-                        }
-                    }
-                });
-
-                jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
-                    jQuery( document ).trigger('heartbeat-tick-list', data);
-                });
-            }
-        },
-        beforeDestroy() {
-            if (jQuery && jQuery( document )) {
-                jQuery( document ).unbind( 'heartbeat-tick-list')
             }
         }
     }

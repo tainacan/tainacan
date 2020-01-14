@@ -58,18 +58,28 @@ import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'RecursiveTermItem',
-    data(){
-        return {
-            isLoadingTerms: false,
-            isEditingTerm: false
-        }
-    },
     props: {
         term: Object,
         index: Number,
         taxonomyId: Number,
         order: String,
         currentUserCanEditTaxonomy: Boolean
+    },
+    data(){
+        return {
+            isLoadingTerms: false,
+            isEditingTerm: false
+        }
+    },
+    created() {
+        this.$termsListBus.$on('editTerm', this.eventOnEditTerm);
+        this.$termsListBus.$on('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$termsListBus.$on('termEditionCanceled', this.eventOnTermEditionCanceled);        
+    },
+    beforeDestroy() {
+        this.$termsListBus.$off('editTerm', this.eventOnEditTerm);
+        this.$termsListBus.$off('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$termsListBus.$off('termEditionCanceled', this.eventOnTermEditionCanceled);                
     },
     methods: {
         ...mapActions('taxonomy', [
@@ -129,16 +139,6 @@ export default {
             this.isEditingTerm = false;
             this.term.opened = false;
         }
-    },
-    created() {
-        this.$termsListBus.$on('editTerm', this.eventOnEditTerm);
-        this.$termsListBus.$on('termEditionSaved', this.eventOnTermEditionSaved);
-        this.$termsListBus.$on('termEditionCanceled', this.eventOnTermEditionCanceled);        
-    },
-    beforeDestroy() {
-        this.$termsListBus.$off('editTerm', this.eventOnEditTerm);
-        this.$termsListBus.$off('termEditionSaved', this.eventOnTermEditionSaved);
-        this.$termsListBus.$off('termEditionCanceled', this.eventOnTermEditionCanceled);                
     }
 }
 </script>

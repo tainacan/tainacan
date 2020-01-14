@@ -923,16 +923,6 @@ import { dateInter } from "../../js/mixins";
 
 export default {
     name: 'ItemsList',
-    data(){
-        return {
-            isAllItemsSelected: false,
-            queryAllItemsSelected: {},
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
-            cursorPosX: -1,
-            cursorPosY: -1,
-            contextMenuItem: null
-        }
-    },
     mixins: [ dateInter ],
     props: {
         collectionId: undefined,
@@ -943,11 +933,15 @@ export default {
         totalItems: Number,
         viewMode: 'card'
     },
-    mounted() {
-        this.cleanSelectedItems();
-
-        if (this.highlightsItem)
-            setTimeout(() => this.$eventBusSearch.highlightsItem(null), 3000);
+    data(){
+        return {
+            isAllItemsSelected: false,
+            queryAllItemsSelected: {},
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
+            cursorPosX: -1,
+            cursorPosY: -1,
+            contextMenuItem: null
+        }
     },
     computed: {
         collection() {
@@ -992,6 +986,12 @@ export default {
             if (!value)
                 this.queryAllItemsSelected = {};
         }
+    },
+    mounted() {
+        this.cleanSelectedItems();
+
+        if (this.highlightsItem)
+            setTimeout(() => this.$eventBusSearch.highlightsItem(null), 3000);
     },
     methods: {
         ...mapActions('collection', [

@@ -234,6 +234,9 @@
 
     export default {
         name: 'TaxonomyEditionForm',
+        components: {
+            TermsList
+        },
         mixins: [ wpAjax, formHooks ],
         data(){
             return {
@@ -258,9 +261,6 @@
                 updatedAt: undefined,
                 shouldReloadTermsList: false
             }
-        },
-        components: {
-            TermsList
         },
         beforeRouteLeave( to, from, next ) {
             let formNotSaved = false;
@@ -311,6 +311,44 @@
             } else {
                 next();
             }  
+        },
+        mounted(){
+  
+            if (this.$route.query.tab == 'terms')
+                this.tabIndex = 1;
+
+            if (this.$route.name == "TaxonomyCreationForm") {
+                this.createNewTaxonomy();
+            } else if (this.$route.name == "TaxonomyEditionForm") {
+
+                this.isLoadingTaxonomy = true;
+
+                // Obtains current taxonomy ID from URL
+                this.pathArray = this.$route.fullPath.split("/").reverse();
+                this.taxonomyId = this.pathArray[1];
+
+                this.fetchTaxonomy({ taxonomyId: this.taxonomyId, isContextEdit: true })
+                    .then(res => {
+                        this.taxonomy = res.taxonomy;
+
+                        // Fills hook forms with it's real values 
+                        this.$nextTick()
+                            .then(() => {
+                                this.updateExtraFormData(this.taxonomy);
+                            });
+
+                        // Fill this.form data with current data.
+                        this.form.name = this.taxonomy.name;
+                        this.form.description = this.taxonomy.description;
+                        this.form.slug = this.taxonomy.slug;
+                        this.form.status = this.taxonomy.status;
+                        this.form.allowInsert = this.taxonomy.allow_insert;
+                        this.form.enabledPostTypes = this.taxonomy.enabled_post_types;
+
+                        this.isLoadingTaxonomy = false;
+                    })
+                    .catch(() => this.isLoadingTaxonomy = false);
+            }
         },
         methods: {
             ...mapActions('taxonomy', [
@@ -476,44 +514,6 @@
                 this.shouldReloadTermsList = true;
 
                 this.createNewTaxonomy();
-            }
-        },
-        mounted(){
-  
-            if (this.$route.query.tab == 'terms')
-                this.tabIndex = 1;
-
-            if (this.$route.name == "TaxonomyCreationForm") {
-                this.createNewTaxonomy();
-            } else if (this.$route.name == "TaxonomyEditionForm") {
-
-                this.isLoadingTaxonomy = true;
-
-                // Obtains current taxonomy ID from URL
-                this.pathArray = this.$route.fullPath.split("/").reverse();
-                this.taxonomyId = this.pathArray[1];
-
-                this.fetchTaxonomy({ taxonomyId: this.taxonomyId, isContextEdit: true })
-                    .then(res => {
-                        this.taxonomy = res.taxonomy;
-
-                        // Fills hook forms with it's real values 
-                        this.$nextTick()
-                            .then(() => {
-                                this.updateExtraFormData(this.taxonomy);
-                            });
-
-                        // Fill this.form data with current data.
-                        this.form.name = this.taxonomy.name;
-                        this.form.description = this.taxonomy.description;
-                        this.form.slug = this.taxonomy.slug;
-                        this.form.status = this.taxonomy.status;
-                        this.form.allowInsert = this.taxonomy.allow_insert;
-                        this.form.enabledPostTypes = this.taxonomy.enabled_post_types;
-
-                        this.isLoadingTaxonomy = false;
-                    })
-                    .catch(() => this.isLoadingTaxonomy = false);
             }
         }
     }

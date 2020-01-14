@@ -195,6 +195,11 @@ import { formHooks } from "../../js/mixins";
 export default {
     name: 'FilterEditionForm',
     mixins: [ formHooks ],
+    props: {
+        index: '',
+        editedFilter: Object,
+        originalFilter: Object,
+    },
     data(){
         return {
             editForm: {},
@@ -206,11 +211,7 @@ export default {
             entityName: 'filter'
         }
     }, 
-    props: {
-        index: '',
-        editedFilter: Object,
-        originalFilter: Object,
-    },
+
     created() {
 
         this.editForm = this.editedFilter;

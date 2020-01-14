@@ -67,15 +67,6 @@ export default {
             isLoading: false
         }
     },
-    methods: {
-        ...mapActions('importer', [
-            'fetchAvailableImporters'
-        ]),
-        onSelectImporter(importerType) {
-            this.$router.push({ path: this.$routerHelper.getImporterEditionPath(importerType.slug), query: { targetCollection: this.targetCollection } });
-            this.$parent.close();
-        }
-    },
     mounted() {
         this.isLoading = true;
         this.fetchAvailableImporters()
@@ -89,6 +80,15 @@ export default {
 
         if (this.$refs.availableImportersModal)
             this.$refs.availableImportersModal.focus();
+    },
+    methods: {
+        ...mapActions('importer', [
+            'fetchAvailableImporters'
+        ]),
+        onSelectImporter(importerType) {
+            this.$router.push({ path: this.$routerHelper.getImporterEditionPath(importerType.slug), query: { targetCollection: this.targetCollection } });
+            this.$parent.close();
+        }
     }
 }
 </script>

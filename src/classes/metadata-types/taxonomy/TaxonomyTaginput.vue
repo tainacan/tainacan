@@ -41,6 +41,15 @@
     import { mapActions, mapGetters } from 'vuex';
 
     export default {
+        props: {
+            metadatumComponentId: '',
+            value: [ Number, String, Array ],
+            allowNew: true,
+            taxonomyId: Number,
+            disabled: false,
+            allowSelectToCreate: false,
+            maxtags: '',
+        },
         data(){
             return {
                 selected: [],
@@ -55,15 +64,6 @@
                   this.selected[0].label = this.selected[0].label.split('(')[0];
               }
           }
-        },
-        props: {
-            metadatumComponentId: '',
-            value: [ Number, String, Array ],
-            allowNew: true,
-            taxonomyId: Number,
-            disabled: false,
-            allowSelectToCreate: false,
-            maxtags: '',
         },
         created(){
             if (this.value && this.value.length > 0){

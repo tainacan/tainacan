@@ -186,6 +186,30 @@ import { swiper, swiperSlide } from 'vue-awesome-swiper';
 
 export default {
     name: "CarouselItemsListTheme",
+    components: {
+        swiper,
+        swiperSlide
+    },
+    props: {
+        blockId: String,
+        collectionId: String,  
+        searchURL: String,
+        selectedItems: Array,
+        loadStrategy: String,
+        maxItemsNumber: Number,
+        arrowsPosition: String,
+        autoPlay: false,
+        autoPlaySpeed: Number,
+        loopSlides: Boolean,
+        hideTitle: Boolean,
+        showCollectionHeader: Boolean,
+        showCollectionLabel: Boolean,
+        collectionBackgroundColor: String,
+        collectionTextColor: String,
+        tainacanApiRoot: String,
+        tainacanBaseUrl: String,
+        className: String
+    },
     data() {
         return {
             items: [],
@@ -225,29 +249,13 @@ export default {
             errorMessage: 'No items found.'
         }
     },
-    components: {
-        swiper,
-        swiperSlide
-    },
-    props: {
-        blockId: String,
-        collectionId: String,  
-        searchURL: String,
-        selectedItems: Array,
-        loadStrategy: String,
-        maxItemsNumber: Number,
-        arrowsPosition: String,
-        autoPlay: false,
-        autoPlaySpeed: Number,
-        loopSlides: Boolean,
-        hideTitle: Boolean,
-        showCollectionHeader: Boolean,
-        showCollectionLabel: Boolean,
-        collectionBackgroundColor: String,
-        collectionTextColor: String,
-        tainacanApiRoot: String,
-        tainacanBaseUrl: String,
-        className: String
+    created() {
+        this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
+  
+        if (this.showCollectionHeader)
+            this.fetchCollectionForHeader();
+
+        this.fetchItems();
     },
     methods: {
         fetchItems() {
@@ -339,15 +347,7 @@ export default {
                     });
             }
         }
-    },
-    created() {
-        this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
-  
-        if (this.showCollectionHeader)
-            this.fetchCollectionForHeader();
-
-        this.fetchItems();
-    },
+    }
 }
 </script>
 

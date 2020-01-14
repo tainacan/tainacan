@@ -772,6 +772,11 @@ import { formHooks } from '../../js/mixins';
 
 export default {
     name: 'ItemEditionForm',
+    components: {
+        FileItem,
+        DocumentItem,
+        AttachmentsList
+    },
     mixins: [ formHooks ],
     data(){
         return {
@@ -831,11 +836,6 @@ export default {
             return this.getTotalAttachments();
         }
     },
-    components: {
-        FileItem,
-        DocumentItem,
-        AttachmentsList
-    },
     watch: {
         '$route.params.itemPosition'(newItemPosition, oldItemPosition) {
             if (oldItemPosition == undefined || oldItemPosition == newItemPosition)
@@ -865,6 +865,89 @@ export default {
 
             // Obtains current Sequence Group Info
             this.fetchSequenceGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
+        }
+    },
+    created(){
+        // Obtains collection ID
+        this.cleanMetadata();
+        eventBusItemMetadata.clearAllErrors();
+        this.formErrorMessage = '';
+        this.collectionId = this.$route.params.collectionId;
+        this.form.collectionId = this.collectionId;
+
+        // CREATING NEW SINGLE ITEM
+        if (this.$route.fullPath.split("/").pop() == "new") {
+            this.isCreatingNewItem = true;
+            this.createNewItem();
+
+        // EDITING EXISTING ITEM
+        } else if (this.$route.fullPath.split("/").pop() == "edit") {
+            this.isLoading = true;
+
+            // Obtains current Item ID from URL
+            this.itemId = this.$route.params.itemId;
+            this.loadExistingItem();
+
+        // EDITING EXISTING SEQUENCE
+        } else if (this.$route.params.collectionId != undefined && this.$route.params.sequenceId != undefined){
+            this.isLoading = true;
+
+            this.sequenceId = this.$route.params.sequenceId;
+            let savedItemPosition = (this.$userPrefs.get('sequence_' + this.sequenceId + '_position') != undefined ? Number(this.$userPrefs.get('sequence_' + this.sequenceId + '_position')) : 1);
+            this.itemPosition = this.$route.params.itemPosition != undefined ? Number(this.$route.params.itemPosition) : savedItemPosition;
+
+            this.isOnSequenceEdit = true;
+
+            // Saves current itemPosition to user prefs
+            this.$userPrefs.set('sequence_' + this.sequenceId + '_position', this.itemPosition);
+
+            // Obtains current Item ID from Sequence
+            this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.sequenceId, itemPosition: this.itemPosition  })
+                .then(() => {
+                    this.itemId = this.itemIdInSequence;
+                    this.loadExistingItem();
+                })
+                .catch(() => {
+                    this.isLoading = false;
+                });
+
+            // Obtains current Sequence Group Info
+            this.fetchSequenceGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
+        }
+
+        // Sets feedback variables
+        eventBusItemMetadata.$on('isUpdatingValue', (status) => {
+            this.isUpdatingValues = status;
+        });
+        eventBusItemMetadata.$on('hasErrorsOnForm', (hasErrors) => {
+            if (hasErrors)
+                this.formErrorMessage = this.$i18n.get('info_errors_in_form');
+            else
+                this.formErrorMessage = '';
+        });
+        this.cleanLastUpdated();
+    },
+    beforeDestroy () {
+        eventBusItemMetadata.$off('isUpdatingValue');
+        eventBusItemMetadata.$off('hasErrorsOnForm');
+    },
+    beforeRouteLeave ( to, from, next ) {
+        if (this.item.status == 'auto-draft') {
+            this.$buefy.modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_item_not_saved'),
+                    onConfirm: () => {
+                        next();
+                    },
+                },
+                trapFocus: true
+            });
+        } else {
+            next()
         }
     },
     methods: {
@@ -1327,89 +1410,6 @@ export default {
                 path: this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.sequenceId, this.itemPosition - 1),
                 query: { collapses: this.metadataCollapses }
             });
-        }
-    },
-    created(){
-        // Obtains collection ID
-        this.cleanMetadata();
-        eventBusItemMetadata.clearAllErrors();
-        this.formErrorMessage = '';
-        this.collectionId = this.$route.params.collectionId;
-        this.form.collectionId = this.collectionId;
-
-        // CREATING NEW SINGLE ITEM
-        if (this.$route.fullPath.split("/").pop() == "new") {
-            this.isCreatingNewItem = true;
-            this.createNewItem();
-
-        // EDITING EXISTING ITEM
-        } else if (this.$route.fullPath.split("/").pop() == "edit") {
-            this.isLoading = true;
-
-            // Obtains current Item ID from URL
-            this.itemId = this.$route.params.itemId;
-            this.loadExistingItem();
-
-        // EDITING EXISTING SEQUENCE
-        } else if (this.$route.params.collectionId != undefined && this.$route.params.sequenceId != undefined){
-            this.isLoading = true;
-
-            this.sequenceId = this.$route.params.sequenceId;
-            let savedItemPosition = (this.$userPrefs.get('sequence_' + this.sequenceId + '_position') != undefined ? Number(this.$userPrefs.get('sequence_' + this.sequenceId + '_position')) : 1);
-            this.itemPosition = this.$route.params.itemPosition != undefined ? Number(this.$route.params.itemPosition) : savedItemPosition;
-
-            this.isOnSequenceEdit = true;
-
-            // Saves current itemPosition to user prefs
-            this.$userPrefs.set('sequence_' + this.sequenceId + '_position', this.itemPosition);
-
-            // Obtains current Item ID from Sequence
-            this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.sequenceId, itemPosition: this.itemPosition  })
-                .then(() => {
-                    this.itemId = this.itemIdInSequence;
-                    this.loadExistingItem();
-                })
-                .catch(() => {
-                    this.isLoading = false;
-                });
-
-            // Obtains current Sequence Group Info
-            this.fetchSequenceGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
-        }
-
-        // Sets feedback variables
-        eventBusItemMetadata.$on('isUpdatingValue', (status) => {
-            this.isUpdatingValues = status;
-        });
-        eventBusItemMetadata.$on('hasErrorsOnForm', (hasErrors) => {
-            if (hasErrors)
-                this.formErrorMessage = this.$i18n.get('info_errors_in_form');
-            else
-                this.formErrorMessage = '';
-        });
-        this.cleanLastUpdated();
-    },
-    beforeDestroy () {
-        eventBusItemMetadata.$off('isUpdatingValue');
-        eventBusItemMetadata.$off('hasErrorsOnForm');
-    },
-    beforeRouteLeave ( to, from, next ) {
-        if (this.item.status == 'auto-draft') {
-            this.$buefy.modal.open({
-                parent: this,
-                component: CustomDialog,
-                props: {
-                    icon: 'alert',
-                    title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_item_not_saved'),
-                    onConfirm: () => {
-                        next();
-                    },
-                },
-                trapFocus: true
-            });
-        } else {
-            next()
         }
     }
 }

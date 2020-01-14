@@ -318,7 +318,6 @@
 
     export default {
         name: 'ItemPage',
-        mixins: [formHooks],
         components: {
             FileItem,
             DocumentItem,
@@ -326,6 +325,7 @@
             ExposersModal,
             AttachmentsList
         },
+        mixins: [formHooks],
         data() {
             return {
                 collectionId: Number,
@@ -354,6 +354,29 @@
             totalAttachments() {
                 return this.getTotalAttachments();
             }
+        },
+        created() {
+            // Obtains item and collection ID
+            this.collectionId = this.$route.params.collectionId;
+            this.itemId = this.$route.params.itemId;
+
+            // Puts loading on Item Loading
+            this.isLoading = true;
+
+            // Obtains Item
+            this.fetchItem({ 
+                itemId: this.itemId,
+                contextEdit: true,    
+                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html'       
+            })
+            .then((item) => {
+                this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                    {path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items')},
+                    {path: '', label: item.title}
+                ]);
+                this.loadMetadata();
+            });
+
         },
         methods: {
             ...mapActions('item', [
@@ -388,29 +411,6 @@
                     trapFocus: true
                 });
             }
-        },
-        created() {
-            // Obtains item and collection ID
-            this.collectionId = this.$route.params.collectionId;
-            this.itemId = this.$route.params.itemId;
-
-            // Puts loading on Item Loading
-            this.isLoading = true;
-
-            // Obtains Item
-            this.fetchItem({ 
-                itemId: this.itemId,
-                contextEdit: true,    
-                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html'       
-            })
-            .then((item) => {
-                this.$root.$emit('onCollectionBreadCrumbUpdate', [
-                    {path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items')},
-                    {path: '', label: item.title}
-                ]);
-                this.loadMetadata();
-            });
-
         }
     }
 </script>

@@ -201,12 +201,8 @@
     import CollectionsFilter from '../other/collection-filter.vue';
 
     export default {
-        data() {
-            return {
-                taxonomyFiltersCollectionNames: {},
-                repositoryCollectionNames: {},
-                collectionNameSearchCancel: undefined
-            }
+        components: {
+            CollectionsFilter
         },
         props: {
             filters: Array,
@@ -215,6 +211,22 @@
             taxonomyFilters: Object,
             taxonomy: String,
             repositoryCollectionFilters: Object
+        },
+        data() {
+            return {
+                taxonomyFiltersCollectionNames: {},
+                repositoryCollectionNames: {},
+                collectionNameSearchCancel: undefined
+            }
+        },
+        computed: {
+            getQuery() {
+                return this.getPostQuery();
+            },
+            taxonomyId () {
+                const taxonomyArray = this.taxonomy.split("_");
+                return taxonomyArray[taxonomyArray.length - 1];
+            }
         },
         watch: {
             taxonomyFilters() {
@@ -260,6 +272,11 @@
                 }                
             }
         },
+        beforeDestroy() {
+            // Cancels previous collection name Request
+            if (this.collectionNameSearchCancel != undefined)
+                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
+        },
         methods: {
             ...mapGetters('search',[
                 'getPostQuery'
@@ -267,23 +284,6 @@
             ...mapActions('collection',[
                 'fetchAllCollectionNames'
             ]),
-        },
-        computed: {
-            getQuery() {
-                return this.getPostQuery();
-            },
-            taxonomyId () {
-                const taxonomyArray = this.taxonomy.split("_");
-                return taxonomyArray[taxonomyArray.length - 1];
-            }
-        },
-        components: {
-            CollectionsFilter
-        },
-        beforeDestroy() {
-            // Cancels previous collection name Request
-            if (this.collectionNameSearchCancel != undefined)
-                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
         }
     }
 </script>

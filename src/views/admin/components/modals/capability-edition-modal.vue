@@ -89,15 +89,22 @@ import { mapActions } from 'vuex';
 
 export default {
     name: 'CapabilityEditionModal',
+    props: {
+        capability: Object,
+        capabilityKey: String
+    },
     data() {
         return {
             existingRoles: [],
             isLoading: false
         }
     },
-    props: {
-        capability: Object,
-        capabilityKey: String
+    created() {
+        this.isLoading = true;
+        this.fetchRoles().then((roles) => {
+            this.existingRoles = roles;
+            this.isLoading = false;
+        });
     },
     methods: {
         ...mapActions('capability', [
@@ -111,13 +118,6 @@ export default {
             else 
                 this.removeCapabilityFromRole({ capabilityKey: this.capabilityKey.replace('%d', 'all'), role: role })
         }
-    },
-    created() {
-        this.isLoading = true;
-        this.fetchRoles().then((roles) => {
-            this.existingRoles = roles;
-            this.isLoading = false;
-        });
     }
 }
 </script>

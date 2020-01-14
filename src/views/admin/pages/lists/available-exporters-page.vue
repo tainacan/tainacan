@@ -34,14 +34,6 @@
                 isLoading: false
             }
         },
-        methods: {
-            ...mapActions('exporter', [
-                'fetchAvailableExporters'
-            ]),
-            onSelectExporter(exporterType) {
-                this.$router.push(this.$routerHelper.getExporterEditionPath(exporterType.slug));
-            }
-        },
         created() {
             this.isLoading = true;
             this.fetchAvailableExporters()
@@ -52,8 +44,15 @@
                     this.$console.log(error);
                     this.isLoading = false;
             });
+        },
+        methods: {
+            ...mapActions('exporter', [
+                'fetchAvailableExporters'
+            ]),
+            onSelectExporter(exporterType) {
+                this.$router.push(this.$routerHelper.getExporterEditionPath(exporterType.slug));
+            }
         }
-
     }
 </script>
 

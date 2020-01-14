@@ -506,6 +506,9 @@ import { wpAjax, formHooks } from '../../js/mixins';
 
 export default {
     name: 'CollectionEditionForm',
+    components: {
+        FileItem
+    },
     mixins: [ wpAjax, formHooks ],
     data(){
         return {
@@ -551,8 +554,96 @@ export default {
             entityName: 'collection'
         }
     },
-    components: {
-        FileItem
+    mounted(){
+
+        this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('settings') }]);
+
+        if (this.$route.query.fromImporter != undefined) 
+            this.fromImporter = this.$route.query.fromImporter;
+
+        if (this.$route.path.split("/").pop() == "new") {
+            this.createNewCollection();
+            this.isNewCollection = true;
+        } else if (this.$route.path.split("/").pop() == "settings") {
+
+            this.isLoading = true;
+
+            // Obtains current Collection ID from URL
+            this.pathArray = this.$route.path.split("/").reverse(); 
+
+            this.collectionId = this.pathArray[1];
+
+            this.fetchCollection(this.collectionId).then(res => {
+                this.collection = res;
+
+                // Initializes Media Frames now that collectonId exists
+                this.initializeMediaFrames();
+                this.$nextTick()
+                    .then(() => {
+                        // Fills hook forms with it's real values 
+                        this.updateExtraFormData(this.collection);
+                    });
+               
+  
+                // Fill this.form data with current data.
+                this.form.name = this.collection.name;
+                this.form.description = this.collection.description;
+                this.form.slug = this.collection.slug;
+                this.form.status = this.collection.status;
+                this.form.enable_cover_page = this.collection.enable_cover_page;
+                this.form.cover_page_id = this.collection.cover_page_id;
+                this.form.parent = this.collection.parent;
+                this.form.default_view_mode = this.collection.default_view_mode;
+                this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes.reduce((result, viewMode) => { typeof viewMode == 'string' ? result.push(viewMode) : null; return result }, [])));
+                this.form.allow_comments = this.collection.allow_comments;
+
+                // Generates CoverPage from current cover_page_id info
+                if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
+                    
+                    this.isFetchingPages = true;
+                    
+                    this.fetchPage(this.form.cover_page_id)
+                    .then((page) => {
+                        this.coverPage = page;
+                        this.coverPageTitle = this.coverPage.title.rendered;
+                        this.coverPageEditPath = tainacan_plugin.admin_url + '/post.php?post=' + page.id + '&action=edit';
+                        this.isFetchingPages = false;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingPages = false;
+                    }); 
+                }
+
+                // Generates options for parent collection
+                this.isFetchingCollections = true;
+                this.fetchAllCollectionNames()
+                    .then((resp) => {
+                        resp.request.then((collections) => {
+                            this.collections = collections;
+                            this.isFetchingCollections = false;
+                        })
+                        .catch((error) => {
+                            this.$console.error(error);
+                            this.isFetchingCollections = false;
+                        }); 
+                    })
+                    .catch(() => {
+                        this.isFetchingCollections = false;
+                    }); 
+
+                this.isLoading = false; 
+            });
+        } else {
+            var tmppath = this.$route.fullPath.split("/");
+            var mapper = tmppath.pop();
+            if(tmppath.pop() == 'new') {
+                this.isNewCollection = true;
+                this.isMapped = true;
+                this.mapper = mapper;
+                this.createNewCollection();
+            }
+        }
     },
     methods: {
         ...mapActions('collection', [
@@ -801,97 +892,6 @@ export default {
                     }
                 }
             );
-        }
-    },
-    mounted(){
-
-        this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('settings') }]);
-
-        if (this.$route.query.fromImporter != undefined) 
-            this.fromImporter = this.$route.query.fromImporter;
-
-        if (this.$route.path.split("/").pop() == "new") {
-            this.createNewCollection();
-            this.isNewCollection = true;
-        } else if (this.$route.path.split("/").pop() == "settings") {
-
-            this.isLoading = true;
-
-            // Obtains current Collection ID from URL
-            this.pathArray = this.$route.path.split("/").reverse(); 
-
-            this.collectionId = this.pathArray[1];
-
-            this.fetchCollection(this.collectionId).then(res => {
-                this.collection = res;
-
-                // Initializes Media Frames now that collectonId exists
-                this.initializeMediaFrames();
-                this.$nextTick()
-                    .then(() => {
-                        // Fills hook forms with it's real values 
-                        this.updateExtraFormData(this.collection);
-                    });
-               
-  
-                // Fill this.form data with current data.
-                this.form.name = this.collection.name;
-                this.form.description = this.collection.description;
-                this.form.slug = this.collection.slug;
-                this.form.status = this.collection.status;
-                this.form.enable_cover_page = this.collection.enable_cover_page;
-                this.form.cover_page_id = this.collection.cover_page_id;
-                this.form.parent = this.collection.parent;
-                this.form.default_view_mode = this.collection.default_view_mode;
-                this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes.reduce((result, viewMode) => { typeof viewMode == 'string' ? result.push(viewMode) : null; return result }, [])));
-                this.form.allow_comments = this.collection.allow_comments;
-
-                // Generates CoverPage from current cover_page_id info
-                if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
-                    
-                    this.isFetchingPages = true;
-                    
-                    this.fetchPage(this.form.cover_page_id)
-                    .then((page) => {
-                        this.coverPage = page;
-                        this.coverPageTitle = this.coverPage.title.rendered;
-                        this.coverPageEditPath = tainacan_plugin.admin_url + '/post.php?post=' + page.id + '&action=edit';
-                        this.isFetchingPages = false;
-                    })
-                    .catch((error) => {
-                        this.$console.error(error);
-                        this.isFetchingPages = false;
-                    }); 
-                }
-
-                // Generates options for parent collection
-                this.isFetchingCollections = true;
-                this.fetchAllCollectionNames()
-                    .then((resp) => {
-                        resp.request.then((collections) => {
-                            this.collections = collections;
-                            this.isFetchingCollections = false;
-                        })
-                        .catch((error) => {
-                            this.$console.error(error);
-                            this.isFetchingCollections = false;
-                        }); 
-                    })
-                    .catch(() => {
-                        this.isFetchingCollections = false;
-                    }); 
-
-                this.isLoading = false; 
-            });
-        } else {
-            var tmppath = this.$route.fullPath.split("/");
-            var mapper = tmppath.pop();
-            if(tmppath.pop() == 'new') {
-                this.isNewCollection = true;
-                this.isMapped = true;
-                this.mapper = mapper;
-                this.createNewCollection();
-            }
         }
     }
 }

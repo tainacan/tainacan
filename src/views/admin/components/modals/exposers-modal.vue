@@ -243,12 +243,6 @@ import qs from 'qs';
 
 export default {
     name: 'ExposersModal',
-    props: {
-        collectionId: Number,
-        totalItems: Number,
-        itemId: Number,
-        itemURL: String
-    },
     directives: {
         focus: {
             inserted(el) {
@@ -258,6 +252,12 @@ export default {
                     el.setSelectionRange(0,el.value.length)
             }
         }
+    },
+    props: {
+        collectionId: Number,
+        totalItems: Number,
+        itemId: Number,
+        itemURL: String
     },
     data(){
         return {
@@ -319,6 +319,28 @@ export default {
             }
             return exposers;
         }
+    },
+    mounted() {
+        this.isLoading = true;
+        this.fetchAvailableExposers()
+            .then(() => {
+                this.isLoading = false;
+            }).catch((error) => {
+                this.$console.log(error);
+                this.isLoading = false;
+            });
+
+        if (this.collectionId != undefined) {
+            this.fetchCollectionForExposer(this.collectionId)
+                .then((collection) => this.collectionURL = collection.url);
+        } else    
+            this.collectionURL = tainacan_plugin.theme_items_list_url;
+
+        if (this.itemId)
+            this.shouldRespectFetchOnly = false;
+
+        if (this.$refs.exposersModal)
+            this.$refs.exposersModal.focus()
     },
     methods: {
         ...mapActions('exposer', [
@@ -443,28 +465,6 @@ export default {
                 return 0;
             return ( this.maxItemsPerPage * ( page - 1 ) + 1)
         },
-    },
-    mounted() {
-        this.isLoading = true;
-        this.fetchAvailableExposers()
-            .then(() => {
-                this.isLoading = false;
-            }).catch((error) => {
-                this.$console.log(error);
-                this.isLoading = false;
-            });
-
-        if (this.collectionId != undefined) {
-            this.fetchCollectionForExposer(this.collectionId)
-                .then((collection) => this.collectionURL = collection.url);
-        } else    
-            this.collectionURL = tainacan_plugin.theme_items_list_url;
-
-        if (this.itemId)
-            this.shouldRespectFetchOnly = false;
-
-        if (this.$refs.exposersModal)
-            this.$refs.exposersModal.focus()
     }
 }
 </script>

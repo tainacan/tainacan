@@ -34,14 +34,6 @@ export default {
             isLoading: false
         }
     },
-    methods: {
-        ...mapActions('importer', [
-            'fetchAvailableImporters'
-        ]),
-        onSelectImporter(importerType) {
-            this.$router.push(this.$routerHelper.getImporterEditionPath(importerType.slug));
-        }
-    },
     created() {
         this.isLoading = true;
         this.fetchAvailableImporters()
@@ -52,8 +44,15 @@ export default {
             this.$console.log(error);
             this.isLoading = false;
         });
+    },
+    methods: {
+        ...mapActions('importer', [
+            'fetchAvailableImporters'
+        ]),
+        onSelectImporter(importerType) {
+            this.$router.push(this.$routerHelper.getImporterEditionPath(importerType.slug));
+        }
     }
-
 }
 </script>
 

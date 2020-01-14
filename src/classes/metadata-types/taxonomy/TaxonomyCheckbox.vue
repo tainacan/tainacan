@@ -69,17 +69,12 @@
     import CheckboxRadioModal from '../../../views/admin/components/modals/checkbox-radio-modal.vue'
 
     export default {
-        created() {
-            if (this.value && this.value.length > 0)
-                this.checked = this.value;
-
-            this.getTermsFromTaxonomy();
-            this.$parent.$on('update-taxonomy-inputs', ($event) => {
-                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatum.id) {
-                    this.offset = 0;
-                    this.getTermsFromTaxonomy();
-                }
-            });
+        
+        props: {
+            value: [ Number, String, Array ],
+            disabled: false,
+            taxonomyId: Number,
+            metadatum: Object
         },
         data() {
             return {
@@ -93,22 +88,31 @@
                 totalTerms: 0
             }
         },
+        computed: {
+            isShowingAllTerms() {
+                return this.terms.length >= this.totalTerms;
+            }
+        },
         watch: {
             value(val){
                 this.checked = val;
                 this.fetchSelectedLabels();
             }
         },
-        computed: {
-            isShowingAllTerms() {
-                return this.terms.length >= this.totalTerms;
-            }
+        created() {
+            if (this.value && this.value.length > 0)
+                this.checked = this.value;
+
+            this.getTermsFromTaxonomy();
+            this.$parent.$on('update-taxonomy-inputs', ($event) => {
+                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatum.id) {
+                    this.offset = 0;
+                    this.getTermsFromTaxonomy();
+                }
+            });
         },
-        props: {
-            value: [ Number, String, Array ],
-            disabled: false,
-            taxonomyId: Number,
-            metadatum: Object
+        mounted() {
+            this.fetchSelectedLabels();
         },
         methods: {
             onChecked() {
@@ -206,9 +210,6 @@
                     trapFocus: true
                 });
             }
-        },
-        mounted() {
-            this.fetchSelectedLabels();
         }
     }
 </script>

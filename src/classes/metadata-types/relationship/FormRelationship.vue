@@ -106,6 +106,16 @@
                 collectionMessage: ''
             }
         },
+        computed: {
+            setError(){
+                if( this.errors && this.errors.collection_id !== '' ){
+                    this.setErrorsAttributes( 'is-danger', this.errors.collection_id );
+                } else {
+                    this.setErrorsAttributes( '', '' );
+                }
+                return true;
+            },
+        },
         watch:{
             collection( value ){
                 this.collection = value;
@@ -138,16 +148,6 @@
            } else if( this.value ) {
                this.modelRepeated = this.value.repeated;
            }
-        },
-        computed: {
-            setError(){
-                if( this.errors && this.errors.collection_id !== '' ){
-                    this.setErrorsAttributes( 'is-danger', this.errors.collection_id );
-                } else {
-                    this.setErrorsAttributes( '', '' );
-                }
-                return true;
-            },
         },
         methods:{
             setErrorsAttributes( type, message ){
