@@ -192,8 +192,8 @@
             <div v-show="!advancedSearchResults">
                 <div class="field is-grouped is-pulled-right">
                     <p
-                            v-if="Object.keys(this.advancedSearchQuery.taxquery).length > 0 ||
-                             Object.keys(this.advancedSearchQuery.metaquery).length > 0"
+                            v-if="Object.keys(advancedSearchQuery.taxquery).length > 0 ||
+                             Object.keys(advancedSearchQuery.metaquery).length > 0"
                             class="control">
                         <button
                                 @click="clearSearch"

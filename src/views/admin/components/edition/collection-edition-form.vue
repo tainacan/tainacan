@@ -37,7 +37,7 @@
                         <form
                             class="form-hook-region" 
                             id="form-collection-begin-left"
-                            v-html="this.formHooks['collection']['begin-left'].join('')"/>
+                            v-html="formHooks['collection']['begin-left'].join('')"/>
                     </template>
 
                     <!-- Thumbnail -------------------------------- --> 

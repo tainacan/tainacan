@@ -225,7 +225,7 @@
                             </span>
                             <circular-counter 
                                     v-if="isPlaying"
-                                    :time="this.slideTimeout/1000" />
+                                    :time="slideTimeout/1000" />
                         </button>
                     </section>
                     <swiper 

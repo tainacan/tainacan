@@ -1,7 +1,7 @@
 <template>
     <form @submit="onSubmit">
         <h1 
-                v-if="this.roleSlug !== 'new'"
+                v-if="roleSlug !== 'new'"
                 class="wp-heading-inline">
             {{ $route.meta.title }}&nbsp;<strong>{{ role.name ? role.name : '' }}</strong>
         </h1>
@@ -211,7 +211,7 @@
                         id="submit"
                         :disabled="!role.name || showNotice" 
                         class="button button-primary"
-                        :value="this.roleSlug === 'new' ? $i18n.get('Create Role') : $i18n.get('Save Changes')">
+                        :value="roleSlug === 'new' ? $i18n.get('Create Role') : $i18n.get('Save Changes')">
             </p>
         </div>
     </form>
