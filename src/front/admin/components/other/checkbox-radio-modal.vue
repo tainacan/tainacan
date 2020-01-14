@@ -277,7 +277,7 @@
 
 <script>
     import qs from 'qs';
-    import { tainacan as axios, isCancel } from '../../../../js/axios/axios';
+    import { tainacan as axios, isCancel } from '../../js/axios';
     import { dynamicFilterTypeMixin } from '../../../../classes/filter-types/filter-types-mixin';
 
     export default {

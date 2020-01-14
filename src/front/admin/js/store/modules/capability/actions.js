@@ -1,4 +1,4 @@
-import axios from '../../../axios/axios'
+import axios from '../../../axios'
 
 // ROLES
 export const addCapabilityToRole = ({ commit }, { capabilityKey, role }) => {

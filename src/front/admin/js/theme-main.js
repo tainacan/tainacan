@@ -27,9 +27,9 @@ import ViewModeMasonry from '../../../theme-helper/view-mode-masonry.vue';
 import ViewModeSlideshow from '../../../theme-helper/view-mode-slideshow.vue';
 
 // Remaining imports
-import store from '../../../js/store/store'
+import store from './store/store'
 import routerTheme from './theme-router.js'
-import eventBusSearch from '../../../js/event-bus-search';
+import eventBusSearch from './event-bus-search';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin } from './utilities';
 
 // Configure and Register Plugins

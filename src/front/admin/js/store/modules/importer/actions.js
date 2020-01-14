@@ -1,4 +1,4 @@
-import axios from '../../../axios/axios';
+import axios from '../../../axios';
 
 // IMPORTER ----------------------------------------------------
 export const fetchAvailableImporters = ({ commit }) => {

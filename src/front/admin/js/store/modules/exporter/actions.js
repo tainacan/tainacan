@@ -1,4 +1,4 @@
-import { tainacan } from '../../../axios/axios.js';
+import { tainacan } from '../../../axios';
 
 export const fetchAvailableExporters = () => {
 

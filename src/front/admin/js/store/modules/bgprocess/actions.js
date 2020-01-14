@@ -1,4 +1,4 @@
-import axios from '../../../axios/axios';
+import axios from '../../../axios';
 
 // Actions related to background processes
 export const fetchProcesses = ({ commit }, {page, processesPerPage, shouldUpdateStore}) => {

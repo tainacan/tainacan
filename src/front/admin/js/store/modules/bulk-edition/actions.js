@@ -1,4 +1,4 @@
-import axios from '../../../axios/axios';
+import axios from '../../../axios';
 
 export const createEditGroup = ({commit}, parameters) => {
     let object = parameters.object;

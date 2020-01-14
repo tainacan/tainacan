@@ -102,7 +102,7 @@
 </template>
 
 <script>
-    import { eventBus } from '../../js/event-bus-web-components'
+    import { eventBus } from '../../front/admin/js/event-bus-web-components'
 
     export default {
         name: 'TainacanFormItem',

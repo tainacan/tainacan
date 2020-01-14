@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import store from '../../../js/store/store';
+import store from '../../admin/js/store/store';
 import router from './roles-router';
 import VTooltip from 'v-tooltip';
 

@@ -1,4 +1,4 @@
-import axios from '../../../axios/axios';
+import axios from '../../../axios';
 
 export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isContextEdit, includeDisabled, isAdvancedSearch}) => {
 

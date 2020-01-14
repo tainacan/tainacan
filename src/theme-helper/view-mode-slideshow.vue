@@ -303,7 +303,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import axios from '../js/axios/axios.js';
+import axios from '../front/admin/js/axios';
 import 'swiper/dist/css/swiper.css';
 import { swiper, swiperSlide } from 'vue-awesome-swiper';
 import CircularCounter from '../front/admin/components/other/circular-counter.vue';

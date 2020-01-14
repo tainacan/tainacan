@@ -80,7 +80,7 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios/axios';
+    import { tainacan as axios } from '../../../front/admin/js/axios';
 
     export default {
         props: {

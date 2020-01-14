@@ -25,7 +25,7 @@
 </template>
 
 <script>
-    import { isCancel } from '../../../js/axios/axios';
+    import { isCancel } from '../../../front/admin/js/axios';
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../filter-types-mixin';
 
     export default {

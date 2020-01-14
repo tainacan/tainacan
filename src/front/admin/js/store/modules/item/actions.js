@@ -1,4 +1,4 @@
-import axios from '../../../axios/axios';
+import axios from '../../../axios';
 
 // Actions related to Item's metadatum
 export const sendMetadatum = ( { commit }, { item_id, metadatum_id, values }) => {

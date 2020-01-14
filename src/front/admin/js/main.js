@@ -48,9 +48,9 @@ import TainacanFiltersList from '../../../classes/filter-types/tainacan-filter-i
 import AdminPage from '../admin.vue'
 import HelpButton from '../components/other/help-button.vue';
 import TainacanTitle from '../components/navigation/tainacan-title.vue';
-import store from '../../../js/store/store'
+import store from './store/store'
 import router from './router'
-import eventBusSearch from '../../../js/event-bus-search';
+import eventBusSearch from './event-bus-search';
 import termsListBus from './terms-list-bus.js';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin, StatusHelperPlugin, CommentsStatusHelperPlugin } from './utilities';
 
