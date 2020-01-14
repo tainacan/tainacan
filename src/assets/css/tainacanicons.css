@@ -2,12 +2,12 @@
     font-family: "TainacanIcons";
     src: url("../fonts/TainacanIcons.eot");
     src: url("../fonts/TainacanIcons.eot#iefix") format("embedded-opentype"), 
-            url("../fonts/TainacanIcons.woff2") format("woff2"), 
-            url("../fonts/TainacanIcons.otf") format("otf"), 
-            url("../fonts/TainacanIcons.woff") format("woff"), 
-            url("../fonts/TainacanIcons.ttf") format("truetype"), 
-            url("../fonts/TainacanIcons.svg") format("svg");
-    font-weight: normal;
+         url("../fonts/TainacanIcons.woff2") format("woff2"), 
+         url("../fonts/TainacanIcons.otf") format("otf"), 
+         url("../fonts/TainacanIcons.woff") format("woff"), 
+         url("../fonts/TainacanIcons.ttf") format("truetype"), 
+         url("../fonts/TainacanIcons.svg") format("svg");
+font-weight: normal;
     font-style: normal;
     text-rendering: optimizeLegibility;
 }

@@ -87,8 +87,8 @@ class Admin {
 	function add_theme_files() {
 		global $TAINACAN_BASE_URL;
 
-		// wp_enqueue_style( 'style', $TAINACAN_BASE_URL . '/assets/css/fonts/materialdesignicons.css' );
-		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/fonts/tainacanicons.css', [], TAINACAN_VERSION );
+		// wp_enqueue_style( 'style', $TAINACAN_BASE_URL . '/assets/css/materialdesignicons.css' );
+		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/tainacanicons.css', [], TAINACAN_VERSION );
 		wp_enqueue_style( 'roboto-fonts', 'https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i', [], TAINACAN_VERSION );
 		wp_enqueue_script('underscore');
 	}
@@ -103,7 +103,7 @@ class Admin {
 
 		global $TAINACAN_BASE_URL;
 
-		wp_enqueue_script( 'tainacan-roles', $TAINACAN_BASE_URL . '/assets/roles.js', ['underscore', 'wp-i18n'], TAINACAN_VERSION, true );
+		wp_enqueue_script( 'tainacan-roles', $TAINACAN_BASE_URL . '/assets/js/roles.js', ['underscore', 'wp-i18n'], TAINACAN_VERSION, true );
 
 		$settings = $this->get_admin_js_localization_params();
 		wp_localize_script( 'tainacan-roles', 'tainacan_plugin', $settings );
@@ -163,7 +163,7 @@ class Admin {
 	function add_admin_js() {
 		global $TAINACAN_BASE_URL;
 
-		wp_enqueue_script( 'tainacan-admin', $TAINACAN_BASE_URL . '/assets/admin.js', ['underscore', 'media-editor', 'media-views', 'customize-controls'], TAINACAN_VERSION, true );
+		wp_enqueue_script( 'tainacan-admin', $TAINACAN_BASE_URL . '/assets/js/admin.js', ['underscore', 'media-editor', 'media-views', 'customize-controls'], TAINACAN_VERSION, true );
 
 		$settings = $this->get_admin_js_localization_params();
 

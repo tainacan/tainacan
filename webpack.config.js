@@ -35,8 +35,8 @@ module.exports = {
 
     },
     output: {
-        path: path.resolve(__dirname, './src/assets/'),
-        publicPath: './src/assets/',
+        path: path.resolve(__dirname, './src/assets/js/'),
+        publicPath: './src/assets/js/',
         filename: '[name].js'
     },
     module: {
