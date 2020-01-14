@@ -1,5 +1,4 @@
 <template>
-
     <div 
             :class="{
                 'repository-level-page': isRepositoryLevel,
@@ -211,6 +210,13 @@
                     ref="search-control"
                     v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen) && ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                     class="search-control">
+                
+                <h3 
+                        id="search-control-landmark"
+                        class="sr-only">
+                    {{ $i18n.get('label_sort_visualization') }}
+                </h3>
+
                 <!-- <b-loading
                         :is-full-page="false"
                         :active.sync="isLoadingMetadata"/> -->
@@ -681,7 +687,6 @@
                     <div
                             v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)"
                             v-html="registeredViewModes[viewMode].skeleton_template"/>
-
                 </div>  
                 
                <!-- Alert if custom metada is being used for sorting -->
@@ -791,7 +796,6 @@
                 role="region"
                 aria-labelledby="filters-label-landmark-modal"
                 id="filters-mobile-modal"
-                ref="filters-mobile-modal"
                 class="tainacan-form is-hidden-tablet"                
                 :active.sync="isFilterModalActive"
                 :width="736"
@@ -800,11 +804,12 @@
                 aria-modal
                 aria-role="dialog">
             <div
+                    ref="filters-mobile-modal"
+                    class="modal-inner-content"
                     autofocus="true"
                     tabindex="-1"
-                    role="dialog"
                     aria-modal
-                    class="modal-inner-content">
+                    role="dialog">
                 <h3 
                         id="filters-label-landmark-modal"
                         class="has-text-weight-semibold">

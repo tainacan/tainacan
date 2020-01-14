@@ -25,7 +25,6 @@
                 class="is-hidden-mobile"
                 id="filter-menu-compress-button"
                 :aria-label="isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-
                 :style="{ top: !isOnTheme ? (isRepositoryLevel ? '172px' : '120px') : '76px' }"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <span class="icon">
@@ -42,7 +41,6 @@
                 class="is-hidden-tablet"
                 id="filter-menu-compress-button-mobile"
                 :aria-label="isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-
                 :style="{ top: !isOnTheme ? (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') : (searchControlHeight - 25) + 'px' }"
                 @click="isFilterModalActive = !isFilterModalActive">
             <span class="icon">
@@ -54,7 +52,6 @@
         </button>
 
         <!-- Sidebar with search and filters -->
-        <!-- <transition name="filters-menu"> -->
         <aside
                 :aria-busy="isLoadingFilters"
                 id="filters-desktop-aside"
@@ -147,7 +144,6 @@
             </section>
 
         </aside>
-        <!-- </transition> -->
 
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
         <div 
@@ -177,8 +173,8 @@
                         </div>
                         <hr>
                     </div>
-
                 </div>
+                
                 <advanced-search
                         :collection-id="collectionId"
                         :is-repository-level="isRepositoryLevel"

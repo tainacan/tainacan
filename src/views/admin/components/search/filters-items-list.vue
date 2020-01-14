@@ -29,15 +29,16 @@
                         <div class="control has-icons-right is-loading is-clearfix" />
                     </span>
                 </div>
-                <tainacan-filter-item
-                        v-show="!isMenuCompressed"        
-                        :query="getQuery"
-                        v-for="(filter, filterIndex) in taxonomyFilter"
-                        :key="filterIndex"
-                        :filter="filter"
-                        :open="collapsed"
-                        v-if="taxonomyFilter.length > 0"
-                        :is-repository-level="key == 'repository-filters'"/>
+                <template v-if="taxonomyFilter.length > 0">
+                    <tainacan-filter-item
+                            v-show="!isMenuCompressed"        
+                            :query="getQuery"
+                            v-for="(filter, filterIndex) in taxonomyFilter"
+                            :key="filterIndex"
+                            :filter="filter"
+                            :open="collapsed"
+                            :is-repository-level="key == 'repository-filters'"/>
+                </template>
                 <!-- <p   
                         class="has-text-gray is-size-7"
                         v-if="taxonomyFilter.length <= 0">
@@ -73,15 +74,16 @@
                         <div class="control has-icons-right is-loading is-clearfix" />
                     </span>
                 </div>
-                <tainacan-filter-item
-                        v-show="!isMenuCompressed"        
-                        :query="getQuery"
-                        v-for="(filter, filterIndex) in taxonomyFilter"
-                        :key="filterIndex"
-                        :filter="filter"
-                        :open="collapsed"
-                        v-if="taxonomyFilter.length > 0"
-                        :is-repository-level="key == 'repository-filters'"/>
+                <template v-if="taxonomyFilter.length > 0">
+                    <tainacan-filter-item
+                            v-show="!isMenuCompressed"        
+                            :query="getQuery"
+                            v-for="(filter, filterIndex) in taxonomyFilter"
+                            :key="filterIndex"
+                            :filter="filter"
+                            :open="collapsed"
+                            :is-repository-level="key == 'repository-filters'"/>
+                </template>
                 <!-- <p   
                         class="has-text-gray is-size-7"
                         v-if="taxonomyFilter.length <= 0">
@@ -122,15 +124,16 @@
                         <div class="control has-icons-right is-loading is-clearfix" />
                     </span>
                 </div>
-                <tainacan-filter-item
-                        v-show="!isMenuCompressed"        
-                        :query="getQuery"
-                        v-for="(filter, filterIndex) in repositoryCollectionFilter"
-                        :key="filterIndex"
-                        :filter="filter"
-                        :open="collapsed"
-                        v-if="repositoryCollectionFilter.length > 0"
-                        :is-repository-level="key == 'repository-filters'"/>
+                <template v-if="repositoryCollectionFilter.length > 0">
+                    <tainacan-filter-item
+                            v-show="!isMenuCompressed"        
+                            :query="getQuery"
+                            v-for="(filter, filterIndex) in repositoryCollectionFilter"
+                            :key="filterIndex"
+                            :filter="filter"
+                            :open="collapsed"
+                            :is-repository-level="key == 'repository-filters'"/>
+                </template>
                 <!-- <p   
                         class="has-text-gray is-size-7"
                         v-if="taxonomyFilter.length <= 0">
@@ -166,15 +169,16 @@
                         <div class="control has-icons-right is-loading is-clearfix" />
                     </span>
                 </div>
-                <tainacan-filter-item
-                        v-show="!isMenuCompressed"        
-                        :query="getQuery"
-                        v-for="(filter, filterIndex) in repositoryCollectionFilter"
-                        :key="filterIndex"
-                        :filter="filter"
-                        :open="collapsed"
-                        v-if="repositoryCollectionFilter.length > 0"
-                        :is-repository-level="key == 'repository-filters'"/>
+                <template v-if="repositoryCollectionFilter.length > 0">
+                    <tainacan-filter-item
+                            v-show="!isMenuCompressed"        
+                            :query="getQuery"
+                            v-for="(filter, filterIndex) in repositoryCollectionFilter"
+                            :key="filterIndex"
+                            :filter="filter"
+                            :open="collapsed"
+                            :is-repository-level="key == 'repository-filters'"/>
+                </template>
                 <!-- <p   
                         class="has-text-gray is-size-7"
                         v-if="taxonomyFilter.length <= 0">
