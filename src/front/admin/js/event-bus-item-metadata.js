@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import store from './store/store'
 
-export const eventBus = new Vue({
+export const eventBusItemMetadata = new Vue({
     store,
     data: {
         errors : []

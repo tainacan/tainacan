@@ -198,7 +198,7 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex';
-    import CollectionsFilter from '../repository/collection-filter/collection-filter.vue';
+    import CollectionsFilter from '../other/collection-filter.vue';
 
     export default {
         data() {

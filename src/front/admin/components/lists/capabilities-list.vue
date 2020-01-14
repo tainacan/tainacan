@@ -117,7 +117,7 @@
 </template>
 
 <script>
-    import CapabilityEditionModal from '../other/capability-edition-modal.vue';
+    import CapabilityEditionModal from '../modals/capability-edition-modal.vue';
 
     // Auxiliary component for avoinding multiple calls to getCompleteRolesList
     const CompleteRolesList = {

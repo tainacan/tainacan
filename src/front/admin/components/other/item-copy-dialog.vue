@@ -93,7 +93,7 @@
 
 <script>
     import { mapActions } from 'vuex';
-    import BulkEditionModal from '../bulk-edition/bulk-edition-modal.vue';
+    import BulkEditionModal from '../modals/bulk-edition-modal.vue';
 
     export default {
         name: 'ItemCopyDialog',

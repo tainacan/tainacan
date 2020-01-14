@@ -82,7 +82,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import AvailableExportersModal from '../other/available-exporters-modal.vue';
+import AvailableExportersModal from '../modals/available-exporters-modal.vue';
 
 export default {
     name: 'TainacanRepositorySubheader',

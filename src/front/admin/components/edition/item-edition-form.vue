@@ -762,7 +762,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { eventBus } from '../../js/event-bus-web-components';
+import { eventBusItemMetadata } from '../../js/event-bus-item-metadata';
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
 import DocumentItem from '../other/document-item.vue';
@@ -848,7 +848,7 @@ export default {
 
             // Clear form variables
             this.cleanMetadata();
-            eventBus.clearAllErrors();
+            eventBusItemMetadata.clearAllErrors();
             this.formErrorMessage = '';
 
             this.isLoading = true;
@@ -957,7 +957,7 @@ export default {
                 if (errors.errors) {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){
-                            eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                            eventBusItemMetadata.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                         }   
                     }
                     this.formErrorMessage = errors.error_message;
@@ -1055,7 +1055,7 @@ export default {
             .catch((errors) => {
                 for (let error of errors.errors) {
                     for (let metadatum of Object.keys(error)){
-                       eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                       eventBusItemMetadata.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                     }
                 }
                 this.formErrorMessage = errors.error_message;
@@ -1087,7 +1087,7 @@ export default {
                 .catch((errors) => {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){
-                            eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                            eventBusItemMetadata.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                         }
                     }
                     this.formErrorMessage = errors.error_message;
@@ -1118,7 +1118,7 @@ export default {
             .catch((errors) => {
                 for (let error of errors.errors) {
                     for (let metadatum of Object.keys(error)){
-                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                        eventBusItemMetadata.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                     }
                 }
                 this.formErrorMessage = errors.error_message;
@@ -1185,7 +1185,7 @@ export default {
                         .catch((errors) => {
                             for (let error of errors.errors) {
                                 for (let metadatum of Object.keys(error)){
-                                    eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                                    eventBusItemMetadata.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                                 }
                             }
                             this.formErrorMessage = errors.error_message;
@@ -1332,7 +1332,7 @@ export default {
     created(){
         // Obtains collection ID
         this.cleanMetadata();
-        eventBus.clearAllErrors();
+        eventBusItemMetadata.clearAllErrors();
         this.formErrorMessage = '';
         this.collectionId = this.$route.params.collectionId;
         this.form.collectionId = this.collectionId;
@@ -1378,10 +1378,10 @@ export default {
         }
 
         // Sets feedback variables
-        eventBus.$on('isUpdatingValue', (status) => {
+        eventBusItemMetadata.$on('isUpdatingValue', (status) => {
             this.isUpdatingValues = status;
         });
-        eventBus.$on('hasErrorsOnForm', (hasErrors) => {
+        eventBusItemMetadata.$on('hasErrorsOnForm', (hasErrors) => {
             if (hasErrors)
                 this.formErrorMessage = this.$i18n.get('info_errors_in_form');
             else
@@ -1390,8 +1390,8 @@ export default {
         this.cleanLastUpdated();
     },
     beforeDestroy () {
-        eventBus.$off('isUpdatingValue');
-        eventBus.$off('hasErrorsOnForm');
+        eventBusItemMetadata.$off('isUpdatingValue');
+        eventBusItemMetadata.$off('hasErrorsOnForm');
     },
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {

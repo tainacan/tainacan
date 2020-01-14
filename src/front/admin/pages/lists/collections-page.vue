@@ -315,7 +315,7 @@
 
 <script>
 import CollectionsList from '../../components/lists/collections-list.vue';
-import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
+import AvailableImportersModal from '../../components/modals/available-importers-modal.vue';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {

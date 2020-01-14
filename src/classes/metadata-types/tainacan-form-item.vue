@@ -102,7 +102,7 @@
 </template>
 
 <script>
-    import { eventBus } from '../../front/admin/js/event-bus-web-components'
+    import { eventBusItemMetadata } from '../../front/admin/js/event-bus-item-metadata'
 
     export default {
         name: 'TainacanFormItem',
@@ -123,7 +123,7 @@
         },
         created() {
             this.createInputs();
-            eventBus.$on('updateErrorMessageOf#' + this.metadatum.metadatum.id, (errors) => {
+            eventBusItemMetadata.$on('updateErrorMessageOf#' + this.metadatum.metadatum.id, (errors) => {
                 let updatedErrorMessage = '';
                 if (errors && this.metadatum.metadatum.id == errors.metadatum_id && errors.errors) {
                     for (let error of errors.errors) { 
@@ -176,7 +176,7 @@
                     return
                 }
 
-                eventBus.$emit('input', {
+                eventBusItemMetadata.$emit('input', {
                     itemId: this.metadatum.item.id,
                     metadatumId: this.metadatum.metadatum.id,
                     values: this.inputs ? this.inputs : ''
@@ -202,7 +202,7 @@
             }
         },
         beforeDestroy() {
-            eventBus.$off('updateErrorMessageOf#' + this.metadatum.metadatum.id);
+            eventBusItemMetadata.$off('updateErrorMessageOf#' + this.metadatum.metadatum.id);
         }
     }
 </script>

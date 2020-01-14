@@ -129,7 +129,7 @@
 <script>
     import { mapActions } from 'vuex';
 
-    import ActivityDetailsModal from '../other/activity-details-modal.vue';
+    import ActivityDetailsModal from '../modals/activity-details-modal.vue';
     import ThreeStateToggleButton from '../other/three-state-toggle-button.vue';
 
     export default {

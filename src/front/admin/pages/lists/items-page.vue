@@ -901,10 +901,10 @@
     import FiltersTagsList from '../../components/search/filters-tags-list.vue';
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import Pagination from '../../components/search/pagination.vue'
-    import AdvancedSearch from '../../components/advanced-search/advanced-search.vue';
-    import AvailableImportersModal from '../../components/other/available-importers-modal.vue';
-    import ExposersModal from '../../components/other/exposers-modal.vue';
-    import CollectionsModal from '../../components/other/collections-modal.vue';
+    import AdvancedSearch from '../../components/search/advanced-search.vue';
+    import AvailableImportersModal from '../../components/modals/available-importers-modal.vue';
+    import ExposersModal from '../../components/modals/exposers-modal.vue';
+    import CollectionsModal from '../../components/modals/collections-modal.vue';
     import CustomDialog from '../../components/other/custom-dialog.vue';
     import { mapActions, mapGetters } from 'vuex';
 

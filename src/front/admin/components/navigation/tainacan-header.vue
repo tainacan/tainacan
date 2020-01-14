@@ -126,7 +126,7 @@
 </template>
 
 <script>
-    import AdvancedSearch from '../advanced-search/advanced-search.vue';
+    import AdvancedSearch from '../search/advanced-search.vue';
     import ProcessesPopup from '../other/processes-popup.vue';
 
     export default {

@@ -313,7 +313,7 @@
     import DocumentItem from '../../components/other/document-item.vue';
     import {formHooks} from '../../js/mixins';
     import ActivitiesPage from '../lists/activities-page.vue';
-    import ExposersModal from '../../components/other/exposers-modal.vue';
+    import ExposersModal from '../../components/modals/exposers-modal.vue';
     import AttachmentsList from '../../components/lists/attachments-list.vue';
 
     export default {
