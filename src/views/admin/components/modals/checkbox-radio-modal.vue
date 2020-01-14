@@ -562,7 +562,7 @@
             },
             removeHighlightNotSelectedLevels(){
                 for(let el of this.hierarchicalPath){
-                    if(!!this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`][0]) {
+                    if(this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`][0]) {
                         let htmlEl = this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`][0].$el;
 
                         htmlEl.classList.remove('tainacan-li-checkbox-last-active');
