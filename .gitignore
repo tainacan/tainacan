@@ -20,8 +20,6 @@ src/views/admin/scss/.sass-cache
 src/assets/css/tainacan-admin.css
 src/assets/css/tainacan-admin.css.map
 src/assets/report.html
-cypress/videos
-cypress/screenshots
 .vscode
 src/pdf-viewer/pdfjs-dist
 report.txt
