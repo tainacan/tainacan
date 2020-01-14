@@ -18,19 +18,19 @@ import FilterNumericInterval from '../../../classes/filter-types/numeric-interva
 import FilterNumericListInterval from '../../../classes/filter-types/numeric-list-interval/NumericListInterval.vue';
 
 import TaincanFiltersList from '../../../classes/filter-types/tainacan-filter-item.vue';
-import ItemsPage from '../pages/lists/items-page.vue';
-import TermItemsPage from '../pages/lists/term-items-page.vue';
-import ViewModeTable from '../../../theme-helper/view-mode-table.vue';
-import ViewModeCards from '../../../theme-helper/view-mode-cards.vue';
-import ViewModeRecords from '../../../theme-helper/view-mode-records.vue';
-import ViewModeMasonry from '../../../theme-helper/view-mode-masonry.vue';
-import ViewModeSlideshow from '../../../theme-helper/view-mode-slideshow.vue';
+import ItemsPage from '../../admin/pages/lists/items-page.vue';
+import TermItemsPage from '../../admin/pages/lists/term-items-page.vue';
+import ViewModeTable from '../components/view-mode-table.vue';
+import ViewModeCards from '../components/view-mode-cards.vue';
+import ViewModeRecords from '../components/view-mode-records.vue';
+import ViewModeMasonry from '../components/view-mode-masonry.vue';
+import ViewModeSlideshow from '../components/view-mode-slideshow.vue';
 
 // Remaining imports
-import store from './store/store'
+import store from '../../admin/js/store/store'
 import routerTheme from './theme-router.js'
-import eventBusSearch from './event-bus-search';
-import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin } from './utilities';
+import eventBusSearch from '../../admin/js/event-bus-search';
+import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin } from '../../admin/js/utilities';
 
 // Configure and Register Plugins
 Vue.use(Buefy, {

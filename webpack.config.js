@@ -5,8 +5,8 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 
 module.exports = {
     entry: {
-        search: './src/views/admin/js/theme-main.js',
         admin: './src/views/admin/js/main.js',
+        theme_search: './src/views/theme-search/js/theme-main.js',
         roles: './src/views/roles/js/roles-main.js',
 
         gutenberg_terms_list: './src/views/gutenberg-blocks/tainacan-terms/terms-list/index.js',
