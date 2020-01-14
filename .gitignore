@@ -1,7 +1,6 @@
 build-config.cfg
 src/style.css
 src/style.css.map
-src/scss/.sass-cache
 tests/bootstrap-config.php
 .idea
 .buildpath
