@@ -11,38 +11,38 @@ import draggable from 'vuedraggable';
 import VueTheMask from 'vue-the-mask';
 
 // Custom elements
-import Text from '../../../classes/metadata-types/text/Text.vue';
-import Textarea from '../../../classes/metadata-types/textarea/Textarea.vue';
-import Selectbox from '../../../classes/metadata-types/selectbox/Selectbox.vue';
-import Numeric from '../../../classes/metadata-types/numeric/Numeric.vue';
-import Date from '../../../classes/metadata-types/date/Date.vue';
-import Relationship from '../../../classes/metadata-types/relationship/Relationship.vue';
-import Taxonomy from '../../../classes/metadata-types/taxonomy/Taxonomy.vue';
+import Text from '../components/metadata-types/text/Text.vue';
+import Textarea from '../components/metadata-types/textarea/Textarea.vue';
+import Selectbox from '../components/metadata-types/selectbox/Selectbox.vue';
+import Numeric from '../components/metadata-types/numeric/Numeric.vue';
+import Date from '../components/metadata-types/date/Date.vue';
+import Relationship from '../components/metadata-types/relationship/Relationship.vue';
+import Taxonomy from '../components/metadata-types/taxonomy/Taxonomy.vue';
 
-import FormRelationship from '../../../classes/metadata-types/relationship/FormRelationship.vue';
-import FormTaxonomy from '../../../classes/metadata-types/taxonomy/FormTaxonomy.vue';
-import FormSelectbox from '../../../classes/metadata-types/selectbox/FormSelectbox.vue';
-import FormNumeric from '../../../classes/metadata-types/numeric/FormNumeric.vue';
+import FormRelationship from '../components/metadata-types/relationship/FormRelationship.vue';
+import FormTaxonomy from '../components/metadata-types/taxonomy/FormTaxonomy.vue';
+import FormSelectbox from '../components/metadata-types/selectbox/FormSelectbox.vue';
+import FormNumeric from '../components/metadata-types/numeric/FormNumeric.vue';
 
-import FilterNumeric from '../../../classes/filter-types/numeric/Numeric.vue';
-import FilterDate from '../../../classes/filter-types/date/Date.vue';
-import FilterSelectbox from '../../../classes/filter-types/selectbox/Selectbox.vue';
-import FilterAutocomplete from '../../../classes/filter-types/autocomplete/Autocomplete.vue';
-import FilterCheckbox from '../../../classes/filter-types/checkbox/Checkbox.vue';
-import FilterTaginput from '../../../classes/filter-types/taginput/Taginput.vue';
-import FilterNumericInterval from '../../../classes/filter-types/numeric-interval/NumericInterval.vue';
-import FilterDateInterval from '../../../classes/filter-types/date-interval/DateInterval.vue';
-import FilterNumericListInterval from '../../../classes/filter-types/numeric-list-interval/NumericListInterval.vue';
-import FilterTaxonomyCheckbox from '../../../classes/filter-types/taxonomy/Checkbox.vue';
-import FilterTaxonomyTaginput from '../../../classes/filter-types/taxonomy/Taginput.vue';
+import FilterNumeric from '../components/filter-types/numeric/Numeric.vue';
+import FilterDate from '../components/filter-types/date/Date.vue';
+import FilterSelectbox from '../components/filter-types/selectbox/Selectbox.vue';
+import FilterAutocomplete from '../components/filter-types/autocomplete/Autocomplete.vue';
+import FilterCheckbox from '../components/filter-types/checkbox/Checkbox.vue';
+import FilterTaginput from '../components/filter-types/taginput/Taginput.vue';
+import FilterNumericInterval from '../components/filter-types/numeric-interval/NumericInterval.vue';
+import FilterDateInterval from '../components/filter-types/date-interval/DateInterval.vue';
+import FilterNumericListInterval from '../components/filter-types/numeric-list-interval/NumericListInterval.vue';
+import FilterTaxonomyCheckbox from '../components/filter-types/taxonomy/Checkbox.vue';
+import FilterTaxonomyTaginput from '../components/filter-types/taxonomy/Taginput.vue';
 
-import FormFilterNumeric from '../../../classes/filter-types/numeric/FormNumeric.vue';
-import FormFilterNumericInterval from '../../../classes/filter-types/numeric-interval/FormNumericInterval.vue';
-import FormFilterNumericListInterval from '../../../classes/filter-types/numeric-list-interval/FormNumericListInterval.vue';
+import FormFilterNumeric from '../components/filter-types/numeric/FormNumeric.vue';
+import FormFilterNumericInterval from '../components/filter-types/numeric-interval/FormNumericInterval.vue';
+import FormFilterNumericListInterval from '../components/filter-types/numeric-list-interval/FormNumericListInterval.vue';
 // import FormDate from '../../../classes/filter-types/date/FormDate.vue';
 
-import TainacanFormItem from '../../../classes/metadata-types/tainacan-form-item.vue';
-import TainacanFiltersList from '../../../classes/filter-types/tainacan-filter-item.vue';
+import TainacanFormItem from '../components/metadata-types/tainacan-form-item.vue';
+import TainacanFiltersList from '../components/filter-types/tainacan-filter-item.vue';
 
 // Remaining imports
 import AdminPage from '../admin.vue'
@@ -51,7 +51,7 @@ import TainacanTitle from '../components/navigation/tainacan-title.vue';
 import store from './store/store'
 import router from './router'
 import eventBusSearch from './event-bus-search';
-import termsListBus from './terms-list-bus.js';
+import eventBusTermsList from './event-bus-terms-list.js';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin, StatusHelperPlugin, CommentsStatusHelperPlugin } from './utilities';
 
 // Configure and Register Plugins
@@ -110,7 +110,7 @@ Vue.component('help-button', HelpButton);
 Vue.component('draggable', draggable);
 Vue.component('tainacan-title', TainacanTitle);
 
-Vue.use(termsListBus, {});
+Vue.use(eventBusTermsList, {});
 Vue.use(eventBusSearch, { store: store, router: router});
 
 // Changing title of pages

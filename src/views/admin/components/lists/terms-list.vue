@@ -234,19 +234,19 @@ export default {
             this.loadTerms(0);
         }
         this.$root.$on('onChildTermDeleted', this.eventOnChildTermDeleted);
-        this.$termsListBus.$on('editTerm', this.eventOnEditTerm);
-        this.$termsListBus.$on('termEditionSaved', this.eventOnTermEditionSaved);
-        this.$termsListBus.$on('termEditionCanceled', this.eventOnTermEditionCanceled);
-        this.$termsListBus.$on('addNewChildTerm', this.addNewTerm);
-        this.$termsListBus.$on('deleteBasicTermItem', this.deleteBasicTerm);
+        this.$eventBusTermsList.$on('editTerm', this.eventOnEditTerm);
+        this.$eventBusTermsList.$on('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$eventBusTermsList.$on('termEditionCanceled', this.eventOnTermEditionCanceled);
+        this.$eventBusTermsList.$on('addNewChildTerm', this.addNewTerm);
+        this.$eventBusTermsList.$on('deleteBasicTermItem', this.deleteBasicTerm);
     },
     beforeDestroy() {
         this.$root.$off('onChildTermDeleted', this.eventOnChildTermDeleted);
-        this.$termsListBus.$off('editTerm', this.eventOnEditTerm);
-        this.$termsListBus.$off('termEditionSaved', this.eventOnTermEditionSaved);
-        this.$termsListBus.$off('termEditionCanceled', this.eventOnTermEditionCanceled);
-        this.$termsListBus.$off('addNewChildTerm', this.addNewTerm);
-        this.$termsListBus.$off('deleteBasicTermItem', this.deleteBasicTerm);
+        this.$eventBusTermsList.$off('editTerm', this.eventOnEditTerm);
+        this.$eventBusTermsList.$off('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$eventBusTermsList.$off('termEditionCanceled', this.eventOnTermEditionCanceled);
+        this.$eventBusTermsList.$off('addNewChildTerm', this.addNewTerm);
+        this.$eventBusTermsList.$off('deleteBasicTermItem', this.deleteBasicTerm);
     },
     methods: {
         ...mapActions('taxonomy', [
@@ -290,10 +290,10 @@ export default {
                     }
                 }
             }
-            this.$termsListBus.onEditTerm(newTerm);
+            this.$eventBusTermsList.onEditTerm(newTerm);
         },
         onTermEditionFinished($event) {
-            this.$termsListBus.onTermEditionSaved($event);
+            this.$eventBusTermsList.onTermEditionSaved($event);
 
             for (let i = 0; i < this.termsList.length; i++) {
                 if (this.termsList[i].id == $event.term.id) {
@@ -373,7 +373,7 @@ export default {
                     }
                 }
             }
-            this.$termsListBus.onTermEditionCanceled(term);
+            this.$eventBusTermsList.onTermEditionCanceled(term);
         },
         loadTerms(parentId) {
 

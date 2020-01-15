@@ -157,15 +157,15 @@ export default {
 
     created() { 
         this.$root.$on('onChildTermDeleted', this.eventOnChildTermDeleted);
-        this.$termsListBus.$on('editTerm', this.eventOnEditTerm);
-        this.$termsListBus.$on('termEditionSaved', this.eventOnTermEditionSaved);
-        this.$termsListBus.$on('termEditionCanceled', this.eventOnTermEditionCanceled);        
+        this.$eventBusTermsList.$on('editTerm', this.eventOnEditTerm);
+        this.$eventBusTermsList.$on('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$eventBusTermsList.$on('termEditionCanceled', this.eventOnTermEditionCanceled);        
     },
     beforeDestroy() { 
         this.$root.$off('onChildTermDeleted', this.eventOnChildTermDeleted);
-        this.$termsListBus.$off('editTerm', this.eventOnEditTerm);
-        this.$termsListBus.$off('termEditionSaved', this.eventOnTermEditionSaved);
-        this.$termsListBus.$off('termEditionCanceled', this.eventOnTermEditionCanceled);        
+        this.$eventBusTermsList.$off('editTerm', this.eventOnEditTerm);
+        this.$eventBusTermsList.$off('termEditionSaved', this.eventOnTermEditionSaved);
+        this.$eventBusTermsList.$off('termEditionCanceled', this.eventOnTermEditionCanceled);        
     },
     methods: {
         ...mapActions('taxonomy', [
@@ -180,7 +180,7 @@ export default {
         },
         addNewChildTerm() {
             this.showChildren = true;
-            this.$termsListBus.onAddNewChildTerm(this.term.id);
+            this.$eventBusTermsList.onAddNewChildTerm(this.term.id);
         },       
         toggleShowChildren() {
             if (!this.isLoadingTerms && (this.term.children == undefined || this.term.children.length <= 0)) {
@@ -219,7 +219,7 @@ export default {
                     
             this.term.opened = !this.term.opened;
             
-            this.$termsListBus.onEditTerm(this.term);
+            this.$eventBusTermsList.onEditTerm(this.term);
         
         },
         tryToRemoveTerm() {

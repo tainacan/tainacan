@@ -5,19 +5,19 @@ import VTooltip from 'v-tooltip';
 import VueMasonry from 'vue-masonry-css';
 
 // Custom elements
-import FilterNumeric from '../../../classes/filter-types/numeric/Numeric.vue';
-import FilterDate from '../../../classes/filter-types/date/Date.vue';
-import FilterSelectbox from '../../../classes/filter-types/selectbox/Selectbox.vue';
-import FilterAutocomplete from '../../../classes/filter-types/autocomplete/Autocomplete.vue';
-import FilterCheckbox from '../../../classes/filter-types/checkbox/Checkbox.vue';
-import FilterTaginput from '../../../classes/filter-types/taginput/Taginput.vue';
-import FilterTaxonomyCheckbox from '../../../classes/filter-types/taxonomy/Checkbox.vue';
-import FilterTaxonomyTaginput from '../../../classes/filter-types/taxonomy/Taginput.vue';
-import FilterDateInterval from '../../../classes/filter-types/date-interval/DateInterval.vue';
-import FilterNumericInterval from '../../../classes/filter-types/numeric-interval/NumericInterval.vue';
-import FilterNumericListInterval from '../../../classes/filter-types/numeric-list-interval/NumericListInterval.vue';
+import FilterNumeric from '../../admin/components/filter-types/numeric/Numeric.vue';
+import FilterDate from '../../admin/components/filter-types/date/Date.vue';
+import FilterSelectbox from '../../admin/components/filter-types/selectbox/Selectbox.vue';
+import FilterAutocomplete from '../../admin/components/filter-types/autocomplete/Autocomplete.vue';
+import FilterCheckbox from '../../admin/components/filter-types/checkbox/Checkbox.vue';
+import FilterTaginput from '../../admin/components/filter-types/taginput/Taginput.vue';
+import FilterTaxonomyCheckbox from '../../admin/components/filter-types/taxonomy/Checkbox.vue';
+import FilterTaxonomyTaginput from '../../admin/components/filter-types/taxonomy/Taginput.vue';
+import FilterDateInterval from '../../admin/components/filter-types/date-interval/DateInterval.vue';
+import FilterNumericInterval from '../../admin/components/filter-types/numeric-interval/NumericInterval.vue';
+import FilterNumericListInterval from '../../admin/components/filter-types/numeric-list-interval/NumericListInterval.vue';
 
-import TaincanFiltersList from '../../../classes/filter-types/tainacan-filter-item.vue';
+import TaincanFiltersList from '../../admin/components/filter-types/tainacan-filter-item.vue';
 import ItemsPage from '../../admin/pages/lists/items-page.vue';
 import TermItemsPage from '../../admin/pages/lists/term-items-page.vue';
 import ViewModeTable from '../components/view-mode-table.vue';
