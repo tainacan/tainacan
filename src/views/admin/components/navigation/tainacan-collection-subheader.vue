@@ -72,7 +72,7 @@
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-items"/>
                         </span>
-                        <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
+                        <span class="menu-text">{{ $i18n.get('items') }}</span>
                     </router-link>
                 </li>
                 <li 
@@ -97,7 +97,7 @@
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-settings"/>
                         </span>
                     
-                    <!-- <span class="menu-text">{{ $i18n.get('label_settings') }}</span> -->
+                    <span class="menu-text">{{ $i18n.get('label_settings') }}</span>
                     </router-link>
                 </li>
                 <li 
@@ -121,7 +121,7 @@
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/>
                         </span>
-                    <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
+                    <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                     </router-link>
                 </li>
                 <li 
@@ -145,7 +145,7 @@
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/>
                         </span>
-                    <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
+                    <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
                 </li>
                 <li 
@@ -169,7 +169,7 @@
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
                         </span>
-                        <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
+                        <span class="menu-text">{{ $i18n.get('activities') }}</span>
                     </router-link>                
                 </li>
                 <li 
@@ -213,7 +213,7 @@
                                         d="M377.5,626a126,126,0,0,0,118.82-84H583.5v83h84V542h83V459H496.67A126,126,0,1,0,377.5,626Zm0-168a42,42,0,1,1-42,42A42,42,0,0,1,377.5,458Z" />
                             </svg>
                         </span>
-                        <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
+                        <span class="menu-text">{{ $i18n.get('capabilities') }}</span>
                     </router-link>                
                 </li>
             
@@ -433,13 +433,13 @@ export default {
                 }
                 svg {
                     position: relative;
-                    top: 1px;
-                    height: 18px;
+                    top: 2px;
+                    height: 16px;
                     fill: #555758;
                 }
             }
             .menu-text {
-                margin-left: 8px;
+                margin-left: 2px;
                 font-size: 14px;
                 display: inline-flex;
                 // width: 0px;
