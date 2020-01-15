@@ -2,7 +2,7 @@
     <div class="extra-margin">
 
         <!-- TERM ITEMS PAGE FILTERS -->
-        <template v-if="taxonomyFilters != undefined">
+        <template v-if="taxonomy && taxonomyFilters">
             <div 
                     v-if="key == 'repository-filters'"
                     :key="index"
@@ -96,7 +96,7 @@
         </template>
 
         <!-- REPOSITORY ITEMS PAGE FILTERS -->
-        <template v-else-if="isRepositoryLevel && taxonomyFilters == undefined">
+        <template v-else-if="isRepositoryLevel && !taxonomy">
             <collections-filter
                     :open="collapsed"
                     :query="getQuery"/>
@@ -247,8 +247,10 @@
                     // Cancels previous collection name Request
                     if (this.collectionNameSearchCancel != undefined)
                         this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
+                    const collectionIds = JSON.parse(JSON.stringify(Object.keys(this.taxonomyFilters)));
+                    delete collectionIds['repository-filters'];
 
-                    this.fetchAllCollectionNames(Object.keys(this.taxonomyFilters))
+                    this.fetchAllCollectionNames(collectionIds)
                         .then((resp) => {
                             resp.request
                                 .then((collections) => {

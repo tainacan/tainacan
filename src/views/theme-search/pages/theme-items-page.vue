@@ -976,9 +976,9 @@
                     this.filtersSearchCancel.cancel('Filters search Canceled.');
 
                 this.isLoadingFilters = true;
-
+            
                 // Normal filter loading, only collection ones
-                if (this.taxonomy == undefined) {
+                if (!this.taxonomy) {
                     this.fetchFilters({
                         collectionId: this.collectionId,
                         isRepositoryLevel: this.isRepositoryLevel,

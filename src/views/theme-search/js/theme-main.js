@@ -19,6 +19,7 @@ import FilterNumericListInterval from '../../admin/components/filter-types/numer
 
 import TaincanFiltersList from '../../admin/components/filter-types/tainacan-filter-item.vue';
 import ThemeItemsPage from '../pages/theme-items-page.vue';
+import ThemeSearch from '../theme-search.vue';
 
 // View Modes
 import ViewModeTable from '../components/view-mode-table.vue';
@@ -60,6 +61,7 @@ Vue.component('tainacan-filter-numeric-list-interval', FilterNumericListInterval
 
 /* Main page component */
 Vue.component('theme-items-page', ThemeItemsPage);
+Vue.component('theme-search', ThemeSearch);
 
 // Oficial view modes
 Vue.component('view-mode-table', ViewModeTable);
@@ -100,7 +102,7 @@ export const ThemeItemsListing =  new Vue({
             this.taxonomy = this.$el.attributes['taxonomy'].value;
 
     },
-    render: h => h(ThemeItemsPage)
+    render: h => h(ThemeSearch)
 });
 
 // Display Icons only once everything is loaded

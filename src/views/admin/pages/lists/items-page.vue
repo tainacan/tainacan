@@ -213,6 +213,7 @@
                 <!-- <b-loading
                         :is-full-page="false"
                         :active.sync="isLoadingMetadata"/> -->
+
                 <!-- Item Creation Dropdown, only on Admin -->
                 <div 
                         class="search-control-item"
@@ -280,9 +281,7 @@
                 </div>
 
                 <!-- Displayed Metadata Dropdown -->
-                <div    
-                        v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].dynamic_metadata)"
-                        class="search-control-item">
+                <div class="search-control-item">
                     <b-dropdown
                             v-tooltip="{
                                 delay: {
