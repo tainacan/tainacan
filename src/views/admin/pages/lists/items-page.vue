@@ -1,9 +1,6 @@
 <template>
     <div 
-            :class="{
-                    'repository-level-page': isRepositoryLevel,
-                    'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
-            }"
+            :class="{ 'repository-level-page': isRepositoryLevel }"
             aria-live="polite">
 
         <!-- SEARCH AND FILTERS --------------------- -->
@@ -21,11 +18,11 @@
                     placement: 'auto-start',
                     classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
                 }"  
-                v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+                v-if="!openAdvancedSearch"
                 class="is-hidden-mobile"
                 id="filter-menu-compress-button"
                 :aria-label="isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-                :style="{ top: !isOnTheme ? (isRepositoryLevel ? '172px' : '120px') : '76px' }"
+                :style="{ top: (isRepositoryLevel ? '172px' : '120px') }"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <span class="icon">
                 <i 
@@ -37,11 +34,11 @@
         <button 
                 aria-controls="filters-mobile-modal"
                 :aria-expanded="!isFiltersMenuCompressed"
-                v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+                v-if="!openAdvancedSearch"
                 class="is-hidden-tablet"
                 id="filter-menu-compress-button-mobile"
                 :aria-label="isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-                :style="{ top: !isOnTheme ? (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') : (searchControlHeight - 25) + 'px' }"
+                :style="{ top: (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') + 'px' }"
                 @click="isFilterModalActive = !isFilterModalActive">
             <span class="icon">
                 <i 
@@ -58,9 +55,7 @@
                 role="region"
                 aria-labelledby="filters-label-landmark"
                 :style="{ top: searchControlHeight + 'px' }"
-                v-show="!isFiltersMenuCompressed && 
-                        !openAdvancedSearch && 
-                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+                v-show="!isFiltersMenuCompressed && !openAdvancedSearch"
                 class="filters-menu tainacan-form is-hidden-mobile">
             <!-- <b-loading
                     :is-full-page="false"
@@ -133,7 +128,6 @@
                     </p>
                     <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
                     <router-link
-                            v-if="!isOnTheme"
                             id="button-create-filter"
                             :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
                             tag="button"
@@ -149,7 +143,7 @@
         <div 
                 id="items-list-area"
                 class="items-list-area"
-                :class="{ 'spaced-to-right': !isFiltersMenuCompressed && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)}">
+                :class="{ 'spaced-to-right': !isFiltersMenuCompressed && !openAdvancedSearch }">
 
             <!-- ADVANCED SEARCH -->
             <div
@@ -207,7 +201,7 @@
                     aria-labelledby="search-control-landmark"
                     role="region"
                     ref="search-control"
-                    v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen) && ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
+                    v-if="((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                     class="search-control">
 
                 <h3 
@@ -222,8 +216,7 @@
                 <!-- Item Creation Dropdown, only on Admin -->
                 <div 
                         class="search-control-item"
-                        v-if="!isOnTheme && 
-                              !$route.query.iframemode &&
+                        v-if="!$route.query.iframemode &&
                               !openAdvancedSearch &&
                               collection && 
                               collection.current_user_can_edit_items">
@@ -288,7 +281,7 @@
 
                 <!-- Displayed Metadata Dropdown -->
                 <div    
-                        v-if="!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].dynamic_metadata)"
+                        v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].dynamic_metadata)"
                         class="search-control-item">
                     <b-dropdown
                             v-tooltip="{
@@ -422,52 +415,7 @@
                     </b-field>
                 </div>
 
-                <!-- View Modes Dropdown -->
-                <div 
-                        v-if="isOnTheme"
-                        class="search-control-item">
-                    <b-field>
-                        <label class="label is-hidden-mobile">{{ $i18n.get('label_visualization') + ':&nbsp; ' }}</label>
-                        <b-dropdown
-                                @change="onChangeViewMode($event)"
-                                :mobile-modal="true"
-                                position="is-bottom-left"
-                                :aria-label="$i18n.get('label_view_mode')"
-                                aria-role="list"
-                                trap-focus>
-                            <button 
-                                    :aria-label="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization')"
-                                    class="button is-white" 
-                                    slot="trigger">
-                                <span 
-                                        class="gray-icon view-mode-icon"
-                                        v-if="registeredViewModes[viewMode] != undefined"
-                                        v-html="registeredViewModes[viewMode].icon"/>
-                                    <span class="is-hidden-touch">&nbsp;&nbsp;&nbsp;{{ registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization') }}</span>
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
-                                </span>
-                            </button>
-                            <b-dropdown-item 
-                                    aria-controls="items-list-results"
-                                    role="button"
-                                    :class="{ 'is-active': viewModeOption == viewMode }"
-                                    v-for="(viewModeOption, index) of enabledViewModes"
-                                    :key="index"
-                                    :value="viewModeOption"
-                                    v-if="registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false"
-                                    aria-role="listitem">
-                                <span 
-                                        class="gray-icon"
-                                        v-html="registeredViewModes[viewModeOption].icon"/>
-                                <span>{{ registeredViewModes[viewModeOption].label }}</span>
-                            </b-dropdown-item>
-                        </b-dropdown>
-                    </b-field>
-                </div>
-                <div
-                        v-if="!isOnTheme"
-                        class="search-control-item">
+                <div class="search-control-item">
                     <b-field>
                         <label class="label is-hidden-mobile">{{ $i18n.get('label_visualization') + ':' }}</label>
                         <b-dropdown
@@ -555,25 +503,6 @@
                         </b-dropdown>
                     </b-field>
                 </div>
-
-                <!-- Theme Full Screen mode, it's just a special view mode -->
-                <div 
-                        v-if="isOnTheme"
-                        class="search-control-item">
-                    <button 
-                            class="button is-white"
-                            :aria-label="$i18n.get('label_slideshow')"
-                            @click="onChangeViewMode(viewModeOption)"
-                            v-for="(viewModeOption, index) of enabledViewModes"
-                            :key="index"
-                            :value="viewModeOption"
-                            v-if="registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true ">
-                        <span 
-                                class="gray-icon view-mode-icon"
-                                v-html="registeredViewModes[viewModeOption].icon"/>
-                        <span class="is-hidden-touch">{{ registeredViewModes[viewModeOption].label }}</span>
-                    </button>
-                </div>
  
                 <!-- Exposers or alternative links modal button -->
                 <div 
@@ -620,58 +549,15 @@
             </div>
             
             <!-- STATUS TABS, only on Admin -------- -->
-            <div 
-                    v-if="!isOnTheme && !openAdvancedSearch"
-                    class="tabs">
-                <ul>               
-                    <li 
-                            @click="onChangeTab('')"
-                            :class="{ 'is-active': status == undefined || status == ''}"
-                            v-tooltip="{
-                                content: $i18n.get('info_items_tab_all'),
-                                autoHide: true,
-                                placement: 'auto',
-                            }">
-                        <a :style="{ fontWeight: 'bold', color: '#454647 !important', lineHeight: '1.5rem' }">
-                            {{ $i18n.get('label_all_published_items') }}
-                            <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish)})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish })` : '' }}</span>
-                        </a>
-                    </li>
-                    <li 
-                            v-for="(statusOption, index) of $statusHelper.getStatuses()"
-                            v-if="(isRepositoryLevel || statusOption.slug != 'private') || (statusOption.slug == 'private' && collection && collection.current_user_can_read_private_items)"
-                            :key="index"
-                            @click="onChangeTab(statusOption.slug)"
-                            :class="{ 'is-active': status == statusOption.slug}"
-                            :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '', marginLeft: statusOption.slug == 'draft' ? 'auto' : '' }"
-                            v-tooltip="{
-                                content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('items')]),
-                                autoHide: true,
-                                placement: 'auto',
-                            }">
-                        <a>
-                            <span 
-                                    v-if="$statusHelper.hasIcon(statusOption.slug)"
-                                    class="icon has-text-gray">
-                                <i 
-                                        class="tainacan-icon tainacan-icon-18px"
-                                        :class="$statusHelper.getIcon(statusOption.slug)"
-                                        />
-                            </span>
-                            {{ statusOption.name }}
-                            <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items[statusOption.slug]})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems[statusOption.slug] })` : '' }}</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+            <items-status-tabs 
+                    v-if="!openAdvancedSearch"
+                    :is-repository-level="isRepositoryLevel"/>
 
             <!-- FILTERS TAG LIST-->
             <filters-tags-list 
                     class="filter-tags-list"
                     :filters="filters"
-                    v-if="hasFiltered && 
-                        !openAdvancedSearch &&
-                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
+                    v-if="hasFiltered && !openAdvancedSearch" />
 
             
             <!-- ITEMS LISTING RESULTS ------------------------- -->
@@ -690,7 +576,7 @@
 
                 <div 
                         v-show="(showLoading && 
-                                !(registeredViewModes[viewMode] != undefined && (registeredViewModes[viewMode].full_screen == true || registeredViewModes[viewMode].implements_skeleton == true)))"
+                                !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].implements_skeleton == true))"
                         class="loading-container">
 
                     <!--  Default loading, to be used view modes without any skeleton-->
@@ -735,8 +621,7 @@
 
                 <!-- Admin View Modes-->
                 <items-list
-                        v-if="!isOnTheme && 
-                              !showLoading &&
+                        v-if="!showLoading &&
                               totalItems > 0 &&
                               ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                         :collection-id="collectionId"
@@ -747,32 +632,10 @@
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"
                         @updateIsLoading="newIsLoading => isLoadingItems = newIsLoading"/>
-                
-                <!-- Theme View Modes -->
-                <div 
-                        v-if="isOnTheme &&
-                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch) &&
-                              !isLoadingItems &&
-                              registeredViewModes[viewMode] != undefined &&
-                              registeredViewModes[viewMode].type == 'template'"
-                        v-html="itemsListTemplate"/>
-                        
-                <component
-                        v-if="isOnTheme && 
-                              registeredViewModes[viewMode] != undefined &&
-                              registeredViewModes[viewMode].type == 'component' &&
-                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
-                        :collection-id="collectionId"
-                        :displayed-metadata="displayedMetadata"
-                        :items="items"
-                        :is-filters-menu-compressed="isFiltersMenuCompressed || openAdvancedSearch "
-                        :total-items="totalItems"
-                        :is-loading="showLoading"
-                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>
 
                 <!-- Empty Placeholder (only used in Admin) -->
                 <section
-                        v-if="!isOnTheme && !isLoadingItems && totalItems == 0"
+                        v-if="!isLoadingItems && totalItems == 0"
                         class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
@@ -809,9 +672,7 @@
                 <!-- Pagination -->
                 <pagination
                         :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
-                        v-if="totalItems > 0 &&
-                         (!isOnTheme || (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
-                          (advancedSearchResults || !openAdvancedSearch)"/>
+                        v-if="totalItems > 0 && (advancedSearchResults || !openAdvancedSearch)"/>
             </div>
         </div>
        
@@ -842,8 +703,8 @@
                         aria-controls="filters-items-list"
                         :aria-expanded="!collapseAll"
                         v-if="!isLoadingFilters &&
-                        ((filters.length >= 0 &&
-                        isRepositoryLevel) || filters.length > 0)"
+                            ((filters.length >= 0 &&
+                            isRepositoryLevel) || filters.length > 0)"
                         class="link-style collapse-all"
                         @click="collapseAll = !collapseAll">
                     {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
@@ -878,7 +739,7 @@
                         </p>
                         <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
                         <router-link
-                                v-if="!isOnTheme && !$route.query.iframemode"
+                                v-if="!$route.query.iframemode"
                                 id="button-create-filter"
                                 :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
                                 tag="button"
@@ -896,6 +757,7 @@
     import ItemsList from '../../components/lists/items-list.vue';
     import FiltersTagsList from '../../components/search/filters-tags-list.vue';
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
+    import ItemsStatusTabs from '../../components/other/items-status-tabs.vue';
     import Pagination from '../../components/search/pagination.vue'
     import AdvancedSearch from '../../components/search/advanced-search.vue';
     import AvailableImportersModal from '../../components/modals/available-importers-modal.vue';
@@ -910,15 +772,13 @@
             ItemsList,
             FiltersTagsList,
             FiltersItemsList,
+            ItemsStatusTabs,
             Pagination,
             AdvancedSearch,
             ExposersModal
         },
         props: {
-            collectionId: Number,
-            defaultViewMode: String, // Used only on theme
-            enabledViewModes: Object, // Used only on theme
-            isOnTheme: Boolean
+            collectionId: Number
         },
         data() {
             return {
@@ -952,25 +812,6 @@
             isSortingByCustomMetadata() {
                 return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date');
             },
-            repositoryTotalItems() {
-                let collections = this.getCollections();
-
-                let total_items = {
-                    trash: 0,
-                    publish: 0,
-                    draft: 0,
-                    private: 0
-                };
-
-                for(let collection of collections){
-                    total_items.trash += Number(collection.total_items.trash);
-                    total_items.draft += Number(collection.total_items.draft);
-                    total_items.publish += Number(collection.total_items.publish);
-                    total_items.private += Number(collection.total_items.private);
-                }
-
-                return total_items;
-            },
             items() {
                 return this.getItems();
             },
@@ -998,9 +839,6 @@
             },
             status() {
                 return this.getStatus();
-            },
-            viewMode() {
-                return this.getViewMode();
             },
             adminViewMode() {
                 return this.getAdminViewMode();
@@ -1085,7 +923,7 @@
                 /* This condition is to prevent an incorrect fetch by filter or metadata when we coming from items
                  * at collection level to items page at repository level
                  */
-                if (this.isOnTheme || this.collectionId == to.params.collectionId || to.query.fromBreadcrumb) {
+                if (this.collectionId == to.params.collectionId || to.query.fromBreadcrumb) {
                     this.prepareMetadata();
                     this.prepareFilters();
                 }
@@ -1106,46 +944,24 @@
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
 
             // Updates Collection Header Breadcrumb
-            if (!this.isOnTheme)
-                this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('items') }]);
+            this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('items') }]);
 
-            // Setting initial view mode on Theme
-            if (this.isOnTheme) {
-                let prefsViewMode = !this.isRepositoryLevel ? 'view_mode_' + this.collectionId : 'view_mode';
-                if (this.$userPrefs.get(prefsViewMode) == undefined)
-                    this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
-                else {
-                    let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
-                    if (existingViewModeIndex >= 0)
-                        this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
-                    else   
-                        this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
-                }
-
-                // For view modes such as slides, we force pagination to request only 12 per page
-                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
-                if (existingViewModeIndex >= 0) {
-                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
-                        this.$eventBusSearch.setItemsPerPage(12);
-                    }
-                }
-                
-            } else {
-                let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
-                if (this.$userPrefs.get(prefsAdminViewMode) == undefined)
+            // Setting initial view mode
+            let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
+            if (this.$userPrefs.get(prefsAdminViewMode) == undefined)
+                this.$eventBusSearch.setInitialAdminViewMode('table');
+            else {
+                let existingViewMode = this.$userPrefs.get(prefsAdminViewMode);
+                if (existingViewMode == 'cards' || 
+                    existingViewMode == 'table' || 
+                    existingViewMode == 'records' || 
+                    existingViewMode == 'grid' || 
+                    existingViewMode == 'masonry')
+                    this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
+                else
                     this.$eventBusSearch.setInitialAdminViewMode('table');
-                else {
-                    let existingViewMode = this.$userPrefs.get(prefsAdminViewMode);
-                    if (existingViewMode == 'cards' || 
-                        existingViewMode == 'table' || 
-                        existingViewMode == 'records' || 
-                        existingViewMode == 'grid' || 
-                        existingViewMode == 'masonry')
-                        this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
-                    else
-                        this.$eventBusSearch.setInitialAdminViewMode('table');
-                }
             }
+            
 
             this.showItemsHiddingDueSortingDialog();
 
@@ -1177,7 +993,6 @@
             ...mapGetters('collection', [
                 'getItems',
                 'getItemsListTemplate',
-                'getCollections',
                 'getCollection'
             ]),
             ...mapActions('collection', [
@@ -1203,27 +1018,20 @@
                 'getOrderBy',
                 'getOrderByName',
                 'getOrder',
-                'getViewMode',
                 'getTotalItems',
                 'getAdminViewMode',
                 'getMetaKey'
             ]),
             onSwipeFiltersMenu($event) {
-                if (this.registeredViewModes[this.viewMode] == undefined || 
-                    (this.registeredViewModes[this.viewMode] != undefined && 
-                        (this.registeredViewModes[this.viewMode].full_screen == false || 
-                        this.registeredViewModes[this.viewMode].full_screen == undefined)
-                    )
-                   ) {
-                    let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
 
-                    if ($event.offsetDirection == 4 && screenWidth <= 768) {
-                        if (!this.isFilterModalActive)
-                            this.isFilterModalActive = true;
-                    } else if ($event.offsetDirection == 2 && screenWidth <= 768) {
-                        if (this.isFilterModalActive)
-                            this.isFilterModalActive = false;
-                    }
+                let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
+
+                if ($event.offsetDirection == 4 && screenWidth <= 768) {
+                    if (!this.isFilterModalActive)
+                        this.isFilterModalActive = true;
+                } else if ($event.offsetDirection == 2 && screenWidth <= 768) {
+                    if (this.isFilterModalActive)
+                        this.isFilterModalActive = false;
                 }
             },
             onOpenImportersModal() {
@@ -1267,28 +1075,6 @@
             },
             onChangeOrder() {
                 this.order == 'DESC' ? this.$eventBusSearch.setOrder('ASC') : this.$eventBusSearch.setOrder('DESC');
-            },
-            onChangeTab(status) {
-                this.$eventBusSearch.setStatus(status);
-            },
-            onChangeViewMode(viewMode) {
-                // We need to load metadata again as fetch_only might change from view mode
-                this.prepareMetadata();
-                this.$eventBusSearch.setViewMode(viewMode);
-
-                // For view modes such as slides, we force pagination to request only 12 per page
-                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(aViewMode => aViewMode == viewMode);
-                if (existingViewModeIndex >= 0) {
-                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
-                        this.$eventBusSearch.setItemsPerPage(12);
-                    }
-                }
-
-                // Updates searchControlHeight before in case we need to adjust filters position on mobile
-                setTimeout(() => {
-                    if (this.$refs['search-control'] != undefined)
-                        this.searchControlHeight = this.$refs['search-control'].clientHeight;
-                }, 500);
             },
             onChangeAdminViewMode(adminViewMode) {
                  // We need to load metadata again as fetch_only might change from view mode
@@ -1340,7 +1126,7 @@
                 this.fetchFilters({
                     collectionId: this.collectionId,
                     isRepositoryLevel: this.isRepositoryLevel,
-                    isContextEdit: !this.isOnTheme,
+                    isContextEdit: true,
                     includeDisabled: false,
                 })
                     .then((resp) => {
@@ -1389,12 +1175,7 @@
                                 this.sortingMetadata = [];
 
                                 // Decides if custom meta will be loaded with item.
-                                let shouldLoadMeta = true;
-                                
-                                if (this.isOnTheme)
-                                    shouldLoadMeta = this.registeredViewModes[this.viewMode].dynamic_metadata;
-                                else
-                                    shouldLoadMeta  = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == undefined;
+                                let shouldLoadMeta = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == undefined;
                                 
                                 if (shouldLoadMeta) {
                                     
@@ -1470,9 +1251,9 @@
                                                     collection_id: metadatum.collection_id,
                                                     multiple: metadatum.multiple,
                                             });
-                                            if (display) {
+
+                                            if (display)
                                                 fetchOnlyMetadatumIds.push(metadatum.id);
-                                            }
                                             
                                             if (
                                                 metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
@@ -1489,25 +1270,22 @@
                                     let authorNameMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[2] != null) : true;
 
                                     // Creation date and author name should appear only on admin.
-                                    if (!this.isOnTheme) {
-                                    
-                                        metadata.push({
-                                            name: this.$i18n.get('label_creation_date'),
-                                            metadatum: 'row_creation',
-                                            metadata_type: undefined,
-                                            slug: 'creation_date',
-                                            id: undefined,
-                                            display: creationDateMetadatumDisplay
-                                        });
-                                        metadata.push({
-                                            name: this.$i18n.get('label_created_by'),
-                                            metadatum: 'row_author',
-                                            metadata_type: undefined,
-                                            slug: 'author_name',
-                                            id: undefined,
-                                            display: authorNameMetadatumDisplay
-                                        });
-                                    }
+                                    metadata.push({
+                                        name: this.$i18n.get('label_creation_date'),
+                                        metadatum: 'row_creation',
+                                        metadata_type: undefined,
+                                        slug: 'creation_date',
+                                        id: undefined,
+                                        display: creationDateMetadatumDisplay
+                                    });
+                                    metadata.push({
+                                        name: this.$i18n.get('label_created_by'),
+                                        metadatum: 'row_author',
+                                        metadata_type: undefined,
+                                        slug: 'author_name',
+                                        id: undefined,
+                                        display: authorNameMetadatumDisplay
+                                    });
                                     
                                     this.$eventBusSearch.addFetchOnly(
                                         (thumbnailMetadatumDisplay ? 'thumbnail' : null) +','+
@@ -1599,9 +1377,8 @@
             },
             updateCollectionInfo () {
                 // Only needed for displayting totalItems on tabs.
-                if (this.collectionId && !this.isOnTheme) {
+                if (this.collectionId)
                     this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true });
-                }
             },
             showItemsHiddingDueSortingDialog() {
 
@@ -1660,33 +1437,6 @@
 <style lang="scss" scoped>
 
     @import '../../scss/_variables.scss';
-
-    @keyframes open-full-screen {
-        from {
-            opacity: 0;
-            transform: scale(0.6);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1.0);
-        }
-    }
-
-    .is-fullscreen {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        height: 100%;
-        width: 100vw;
-        height: 100vh;
-        z-index: 999999999;
-        background-color: black;
-        transition: background-color 0.3s ease, width 0.3s ease, height 0.3s ease;
-        animation: open-full-screen 0.4s ease;
-    }
 
     .collapse-all {
         display: inline-flex;

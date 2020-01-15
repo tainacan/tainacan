@@ -1,5 +1,7 @@
 <template>
     <div class="extra-margin">
+
+        <!-- TERM ITEMS PAGE FILTERS -->
         <template v-if="taxonomyFilters != undefined">
             <div 
                     v-if="key == 'repository-filters'"
@@ -92,6 +94,8 @@
                 <hr v-if="taxonomyFilter.length > 0">
             </div>
         </template>
+
+        <!-- REPOSITORY ITEMS PAGE FILTERS -->
         <template v-else-if="isRepositoryLevel && taxonomyFilters == undefined">
             <collections-filter
                     :open="collapsed"
@@ -187,6 +191,8 @@
                 <hr v-if="repositoryCollectionFilters.length > 0">
             </div>
         </template>
+
+        <!-- COLLECTION ITEMS PAGE FILTERS -->
         <template v-else>
             <tainacan-filter-item
                     v-show="!isMenuCompressed"        

@@ -1,21 +1,14 @@
 <template>
 <div>
-    <items-page
-            v-if="$root.termId == undefined || $root.termId == ''"
-            class="theme-items-list"
-            :enabled-view-modes="$root.enabledViewModes" 
-            :default-view-mode="$root.defaultViewMode"
-            :collection-id="$root.collectionId"
-            :is-on-theme="true" />
-    <term-items-page
+    <theme-items-page
             v-if="$root.termId != undefined && $root.termId != ''"
             class="theme-items-list"
-            :taxonomy="$root.taxonomy"
+            :taxonomy="$root.taxonomy ? $root.taxonomy : null"
             :custom-filters="$root.customFilters"
             :collection-id="$root.collectionId"
             :enabled-view-modes="$root.enabledViewModes" 
             :default-view-mode="$root.defaultViewMode"
-            :term-id="$root.termId"
+            :term-id="$root.termId ? $root.termId : null"
             :is-on-theme="true" />
 </div>
 </template>
@@ -24,7 +17,6 @@
 export default {
     name: "ThemeItemsList",
     created() {
-        this.$statusHelper.loadStatuses();
         this.$userPrefs.init(); 
     }
 }
@@ -33,10 +25,10 @@ export default {
 <style lang="scss">
 
     // TAINACAN Variables
-    @import "../admin/scss/_variables.scss";
+    @import "../../admin/scss/_variables.scss";
 
     // Bulma imports
-    @import "./scss/theme-basics.sass";
+    @import "../scss/theme-basics.sass";
 
     // Buefy imports
     @import "../../../node_modules/buefy/src/scss/utils/_all.scss";
@@ -51,20 +43,20 @@ export default {
     @import "../../../node_modules/buefy/src/scss/components/_numberinput.scss";
 
     // Tainacan imports
-    @import "../admin/scss/_tables.scss";
-    @import "../admin/scss/_modals.scss";
-    @import "../admin/scss/_buttons.scss"; 
-    @import "../admin/scss/_inputs.scss";
-    @import "../admin/scss/_checkboxes.scss";
-    @import "../admin/scss/_pagination.scss";
-    @import "../admin/scss/_tags.scss";
-    @import "../admin/scss/_notices.scss";
-    @import "../admin/scss/_tabs.scss";
-    @import "../admin/scss/_selects.scss";
-    @import "../admin/scss/_dropdown-and-autocomplete.scss";
-    @import "../admin/scss/_tooltips.scss";
-    @import "../admin/scss/_tainacan-form.scss";
-    @import "../admin/scss/_filters-menu-modal.scss";
+    @import "../../admin/scss/_tables.scss";
+    @import "../../admin/scss/_modals.scss";
+    @import "../../admin/scss/_buttons.scss"; 
+    @import "../../admin/scss/_inputs.scss";
+    @import "../../admin/scss/_checkboxes.scss";
+    @import "../../admin/scss/_pagination.scss";
+    @import "../../admin/scss/_tags.scss";
+    @import "../../admin/scss/_notices.scss";
+    @import "../../admin/scss/_tabs.scss";
+    @import "../../admin/scss/_selects.scss";
+    @import "../../admin/scss/_dropdown-and-autocomplete.scss";
+    @import "../../admin/scss/_tooltips.scss";
+    @import "../../admin/scss/_tainacan-form.scss";
+    @import "../../admin/scss/_filters-menu-modal.scss";
 
     .theme-items-list {
         position: relative;

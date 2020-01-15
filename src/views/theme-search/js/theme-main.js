@@ -4,7 +4,7 @@ import Buefy from 'buefy';
 import VTooltip from 'v-tooltip';
 import VueMasonry from 'vue-masonry-css';
 
-// Custom elements
+// Filters
 import FilterNumeric from '../../admin/components/filter-types/numeric/Numeric.vue';
 import FilterDate from '../../admin/components/filter-types/date/Date.vue';
 import FilterSelectbox from '../../admin/components/filter-types/selectbox/Selectbox.vue';
@@ -18,8 +18,9 @@ import FilterNumericInterval from '../../admin/components/filter-types/numeric-i
 import FilterNumericListInterval from '../../admin/components/filter-types/numeric-list-interval/NumericListInterval.vue';
 
 import TaincanFiltersList from '../../admin/components/filter-types/tainacan-filter-item.vue';
-import ItemsPage from '../../admin/pages/lists/items-page.vue';
-import TermItemsPage from '../../admin/pages/lists/term-items-page.vue';
+import ThemeItemsPage from '../pages/theme-items-page.vue';
+
+// View Modes
 import ViewModeTable from '../components/view-mode-table.vue';
 import ViewModeCards from '../components/view-mode-cards.vue';
 import ViewModeRecords from '../components/view-mode-records.vue';
@@ -27,10 +28,10 @@ import ViewModeMasonry from '../components/view-mode-masonry.vue';
 import ViewModeSlideshow from '../components/view-mode-slideshow.vue';
 
 // Remaining imports
-import store from '../../admin/js/store/store'
-import routerTheme from './theme-router.js'
+import store from '../../admin/js/store/store';
+import routerTheme from './theme-router.js';
 import eventBusSearch from '../../admin/js/event-bus-search';
-import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin } from '../../admin/js/utilities';
+import { I18NPlugin, UserPrefsPlugin, ConsolePlugin } from '../../admin/js/utilities';
 
 // Configure and Register Plugins
 Vue.use(Buefy, {
@@ -40,8 +41,6 @@ Vue.use(VTooltip);
 Vue.use(VueMasonry);
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
-Vue.use(RouterHelperPlugin);
-Vue.use(StatusHelperPlugin);
 Vue.use(ConsolePlugin, {visual: false});
 
 Vue.component('tainacan-filter-item', TaincanFiltersList);
@@ -59,9 +58,8 @@ Vue.component('tainacan-filter-date-interval', FilterDateInterval);
 Vue.component('tainacan-filter-numeric-interval', FilterNumericInterval);
 Vue.component('tainacan-filter-numeric-list-interval', FilterNumericListInterval);
 
-/* Others */
-Vue.component('items-page', ItemsPage);
-Vue.component('term-items-page', TermItemsPage);
+/* Main page component */
+Vue.component('theme-items-page', ThemeItemsPage);
 
 // Oficial view modes
 Vue.component('view-mode-table', ViewModeTable);
@@ -71,9 +69,6 @@ Vue.component('view-mode-masonry', ViewModeMasonry);
 Vue.component('view-mode-slideshow', ViewModeSlideshow);
 
 Vue.use(eventBusSearch, { store: store, router: routerTheme});
-
-// THEME ITEMS LIST (COLLECTIONS)
-import ThemeItemsList from '../theme-items-list.vue';
 
 export const ThemeItemsListing =  new Vue({
     el: '#tainacan-items-page',
@@ -87,7 +82,6 @@ export const ThemeItemsListing =  new Vue({
         enabledViewModes: {},
         customFilters: []
     },
-    render: h => h(ThemeItemsList),
     beforeMount () {
 
         this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
@@ -105,8 +99,8 @@ export const ThemeItemsListing =  new Vue({
         if (this.$el.attributes['taxonomy'] != undefined)
             this.taxonomy = this.$el.attributes['taxonomy'].value;
 
-    }
-
+    },
+    render: h => h(ThemeItemsPage)
 });
 
 // Display Icons only once everything is loaded

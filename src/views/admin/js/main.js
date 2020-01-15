@@ -10,7 +10,7 @@ import VueMasonry from 'vue-masonry-css';
 import draggable from 'vuedraggable';
 import VueTheMask from 'vue-the-mask';
 
-// Custom elements
+// Metadata Types
 import Text from '../components/metadata-types/text/Text.vue';
 import Textarea from '../components/metadata-types/textarea/Textarea.vue';
 import Selectbox from '../components/metadata-types/selectbox/Selectbox.vue';
