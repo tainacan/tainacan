@@ -1,7 +1,7 @@
 <template>
     <div class="tainacan-page-title">
     
-        <h1>{{ pageTitle }} <span class="is-italic has-text-weight-semibold">{{ isRepositoryLevel ? '' : entityName }}</span></h1>
+        <h1>{{ pageTitle }} <span class="is-italic has-text-weight-semibold">{{ !isRepositoryLevel && collection && collection.name ? collection.name : '' }}</span></h1>
         <a 
                 @click="$router.go(-1)"
                 class="back-link has-text-secondary">
@@ -10,7 +10,7 @@
         <hr>
 
         <nav 
-                v-show="isRepositoryLevel"
+                v-if="isRepositoryLevel"
                 class="breadcrumbs">
             <router-link 
                     tag="a" 
@@ -27,11 +27,39 @@
                         v-else>{{ breadCrumbItem.label }}</span>
             </template>   
         </nav>
+        <nav 
+                v-else
+                class="breadcrumbs">
+            <router-link 
+                    tag="a" 
+                    :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link>
+            &nbsp;>&nbsp; 
+            <router-link 
+                    tag="a" 
+                    :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('collections') }}</router-link>
+            &nbsp;>&nbsp; 
+            <router-link 
+                    tag="a" 
+                    :to="{ path: collectionBreadCrumbItem.url, query: { fromBreadcrumb: true }}">{{ collectionBreadCrumbItem.name }}</router-link> 
+            <template v-for="(childBreadCrumbItem, index) of childrenBreadCrumbItems">
+                <span :key="index">&nbsp;>&nbsp;</span>
+                <router-link    
+                        :key="index"
+                        v-if="childBreadCrumbItem.path != ''"
+                        tag="a"
+                        :to="childBreadCrumbItem.path">{{ childBreadCrumbItem.label }}</router-link>
+                <span 
+                        :key="index"
+                        v-else>{{ childBreadCrumbItem.label }}</span>
+            </template>
+        </nav>
 
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
     name: 'TainacanTitle',
     props: {
@@ -42,7 +70,19 @@ export default {
             isRepositoryLevel: true,
             pageTitle: '',
             activeRouteName: '',
-            breadCrumbItem: {}
+            breadCrumbItem: {},
+            childrenBreadCrumbItems: []
+        }
+    },
+    computed: {
+        collection() {
+            return this.getCollection();
+        },
+         collectionBreadCrumbItem() {
+            return { 
+                url: this.collection && this.collection.id ? this.$routerHelper.getCollectionPath(this.collection.id) : '',
+                name: this.collection && this.collection.name ? this.collection.name : ''
+            };
         }
     },
     watch: {
@@ -57,8 +97,22 @@ export default {
     },
     created() {
         this.isRepositoryLevel = (this.$route.params.collectionId == undefined);
+
         document.title = this.$route.meta.title;
         this.pageTitle = document.title;
+
+        this.$root.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
+    },
+    beforeDestroy() {
+        this.$root.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
+    },
+    methods: {
+        ...mapGetters('collection', [
+            'getCollection'
+        ]),
+        collectionBreadCrumbUpdate(breadCrumbItems) {
+            this.childrenBreadCrumbItems = breadCrumbItems;
+        }
     }
 }
 </script>

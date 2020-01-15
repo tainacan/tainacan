@@ -23,32 +23,6 @@
                         </span>
                     </button>
                 </div>
-                <div class="level-item">
-                    <nav class="breadcrumbs">
-                        <router-link 
-                                tag="a" 
-                                :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link>
-                        &nbsp;>&nbsp; 
-                        <router-link 
-                                tag="a" 
-                                :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('collections') }}</router-link>
-                        &nbsp;>&nbsp; 
-                        <router-link 
-                                tag="a" 
-                                :to="{ path: collectionBreadCrumbItem.url, query: { fromBreadcrumb: true }}">{{ collectionBreadCrumbItem.name }}</router-link> 
-                        <template v-for="(childBreadCrumbItem, index) of childrenBreadCrumbItems">
-                            <span :key="index">&nbsp;>&nbsp;</span>
-                            <router-link    
-                                    :key="index"
-                                    v-if="childBreadCrumbItem.path != ''"
-                                    tag="a"
-                                    :to="childBreadCrumbItem.path">{{ childBreadCrumbItem.label }}</router-link>
-                            <span 
-                                    :key="index"
-                                    v-else>{{ childBreadCrumbItem.label }}</span>
-                        </template>
-                    </nav>
-                </div>
             </div>
     
             <ul class="menu-list level-right">
@@ -232,18 +206,11 @@ export default {
             activeRoute: 'ItemsList',
             pageTitle: '',
             activeRouteName: '',
-            childrenBreadCrumbItems: []
         }
     },
     computed: {
         collection() {
             return this.getCollection();
-        },
-        collectionBreadCrumbItem() {
-            return { 
-                url: this.collection && this.collection.id ? this.$routerHelper.getCollectionPath(this.collection.id) : '',
-                name: this.collection && this.collection.name ? this.collection.name : ''
-            };
         }
     },
     watch: {
@@ -257,20 +224,12 @@ export default {
     created() {
         this.activeRoute = this.$route.name;
 
-        this.pageTitle = this.$route.meta.title;
-
-        this.$root.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
-    },
-    beforeDestroy() {
-        this.$root.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
+        this.pageTitle = this.$route.meta.title;   
     },
     methods: {
         ...mapGetters('collection', [
             'getCollection'
-        ]),
-        collectionBreadCrumbUpdate(breadCrumbItems) {
-            this.childrenBreadCrumbItems = breadCrumbItems;
-        }
+        ])
     }
 }
 </script>

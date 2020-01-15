@@ -272,7 +272,7 @@
             ...mapGetters('capability', [
                 'getRoles'
             ]),
-            filteByCapabilitiesRelatedTo(entityName) {
+            filterByCapabilitiesRelatedTo(entityName) {
                 this.currentRelatedEntity = entityName;
                 switch(entityName) {
                     case 'repository':

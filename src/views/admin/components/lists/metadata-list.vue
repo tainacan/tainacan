@@ -2,20 +2,8 @@
     <div class="metadata-list-page">
         <b-loading :active.sync="isLoadingMetadatumTypes"/>
         <b-loading :active.sync="isLoadingMetadatumMappers"/>
-        <div 
-                v-if="!isRepositoryLevel"
-                class="tainacan-page-title">
-            <h1>
-                {{ $i18n.get('title_collection_metadata_edition') + ' ' }}
-                <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
-            </h1>
-            <a 
-                    @click="$router.go(-1)"
-                    class="back-link has-text-secondary">
-                {{ $i18n.get('back') }}
-            </a>
-            <hr>
-        </div>
+        <tainacan-title 
+                    :bread-crumb-items="[{ path: '', label: this.$i18n.get('metadata') }]"/>
         <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_metadata_inheritance') }}</p>
         <br>
         <b-tabs 
