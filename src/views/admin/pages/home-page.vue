@@ -15,11 +15,11 @@
                 <h1>{{ $i18n.get('repository') + ' ' }}<span class="has-text-weight-semibold">{{ repositoryName }}</span></h1>
                 <a
                         target="_blank"
-                        :href="themeCollectionListURL">
+                        :href="themeItemsListURL">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
                     </span>
-                    <span class="menu-text">{{ $i18n.get('label_view_on_theme') }}</span>
+                    <span class="menu-text">{{ $i18n.get('label_view_items_on_theme') }}</span>
                 </a>
             </div>
             <nav>
@@ -122,6 +122,15 @@
                     </router-link>
                 </div>
                 <h1>{{ $i18n.get('label_recent_collections') }}</h1>
+                <a
+                        target="_blank"
+                        :href="themeCollectionListURL"
+                        style="position: relative">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                    </span>
+                    <span class="menu-text">{{ $i18n.get('label_view_collections_on_theme') }}</span>
+                </a>
             </div>
             <collections-home-list
                     :is-loading="isLoadingCollections"
@@ -164,6 +173,7 @@ export default {
             isLoadingCollections: false,
             repositoryName: tainacan_plugin.repository_name,
             themeCollectionListURL: tainacan_plugin.theme_collection_list_url,
+            themeItemsListURL: tainacan_plugin.theme_items_list_url,
         }
     },
     computed: {

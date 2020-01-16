@@ -8,11 +8,29 @@
         <aside class="menu">
 
             <ul class="menu-list">
-                <li class="repository-label"><span>{{ $i18n.get('repository') }}</span></li>
+                <li class="repository-label">
+                    <router-link
+                            tag="a"
+                            :to="$routerHelper.getCollectionsPath()">
+                        <span v-if="!isMenuCompressed">{{ $i18n.get('repository') }}</span>
+                        <span
+                                v-if="isMenuCompressed"
+                                v-tooltip="{                                     
+                                    offset: 4,
+                                    content: isMenuCompressed ? $i18n.get('repository') : '',
+                                    autoHide: true,
+                                    classes: ['tooltip', 'repository-tooltip'],
+                                    placement: 'auto'
+                                }"
+                                class="icon">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-repository"/>
+                        </span>
+                    </router-link>
+                </li>
                 <li>
                     <router-link
                             tag="a"
-                            to="/collections"
+                            :to="$routerHelper.getCollectionsPath()"
                             :class="activeRoute == 'CollectionsPage' || $route.params.collectionId != undefined ? 'is-active':''">
                         <span
                                 v-tooltip="{                                     
@@ -31,7 +49,7 @@
                 <li>
                     <router-link
                             tag="a"
-                            to="/items"
+                            :to="$routerHelper.getItemsPath()"
                             :class="activeRoute == 'ItemsPage' ? 'is-active':''">
                         <span
                                 v-tooltip="{                                     
@@ -242,6 +260,7 @@ export default {
             padding-top: 0px;
         }
         .repository-label {
+            max-height: 42px;
             background-color: $blue5;
             font-weight: bold;
             font-size: 16px;
@@ -253,6 +272,15 @@ export default {
             visibility: visible;
             transition: opacity 0.2s linear, visibility 0.2s linear;
             -webkit-transition: opacity 0.2s linear, visibility 0.2s linear;
+
+            a {
+                padding: 0;
+                margin: 0;
+                line-height: normal;
+                &:hover {
+                    background: transparent !important;
+                }
+            }
         }
         .separator {
             height: 2px;
@@ -265,7 +293,7 @@ export default {
                 color: white;
                 white-space: nowrap;
                 overflow: hidden;
-                padding: 9px 15px;
+                padding: 8px 15px;
                 line-height: 1.5em;
                 border-radius: 0px;
                 -webkit-transition: padding 0.2s linear, background-color 0.3s ease; /* Safari */
@@ -310,9 +338,12 @@ export default {
 
         &.is-compressed {
             max-width: 50px;
-            .menu-text, .repository-label>span {
+            .menu-text {
                 visibility: hidden;
                 opacity: 0;
+            }
+            .repository-label {
+                padding: 9px;
             }
         }
 

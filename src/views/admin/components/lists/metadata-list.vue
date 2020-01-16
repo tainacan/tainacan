@@ -2,10 +2,7 @@
     <div class="metadata-list-page">
         <b-loading :active.sync="isLoadingMetadatumTypes"/>
         <b-loading :active.sync="isLoadingMetadatumMappers"/>
-        <tainacan-title 
-                    :bread-crumb-items="[{ path: '', label: this.$i18n.get('metadata') }]"/>
-        <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_metadata_inheritance') }}</p>
-        <br>
+
         <b-tabs 
                 v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata') || (!isRepositoryLevel && collection && collection.current_user_can_edit_metadata))"
                 v-model="activeTab">    
@@ -449,10 +446,12 @@ export default {
     components: {
         MetadatumEditionForm
     },
+    props: {
+        isRepositoryLevel: Boolean
+    },
     data(){           
         return {
             collectionId: '',
-            isRepositoryLevel: false,
             isDraggingFromAvailable: false,
             isLoadingMetadatumMappers: true,
             mapper: '',
@@ -911,8 +910,6 @@ export default {
             if (this.metadataSearchCancel != undefined)
                 this.metadataSearchCancel.cancel('Metadata search Canceled.');
 
-            this.isRepositoryLevel = this.$route.name == 'MetadataPage' ? true : false;
-            
             if (this.isRepositoryLevel)
                 this.collectionId = 'default';
             else
@@ -970,7 +967,6 @@ export default {
 
     .metadata-list-page {
         padding-bottom: 0;
-        height: calc(100% - 42px + 26px);
 
         .tainacan-page-title {
             margin-bottom: 35px;
