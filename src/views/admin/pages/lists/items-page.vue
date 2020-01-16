@@ -3,6 +3,9 @@
             :class="{ 'repository-level-page': isRepositoryLevel }"
             aria-live="polite">
 
+        <tainacan-title 
+                :bread-crumb-items="[{ path: '', label: this.$i18n.get('items') }]"/>
+
         <!-- SEARCH AND FILTERS --------------------- -->
         <!-- Filter menu compress button -->
         <button
@@ -22,7 +25,7 @@
                 class="is-hidden-mobile"
                 id="filter-menu-compress-button"
                 :aria-label="isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-                :style="{ top: (isRepositoryLevel ? '172px' : '120px') }"
+                :style="{ top: (isRepositoryLevel ? '278px' : '226px') }"
                 @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
             <span class="icon">
                 <i 
@@ -1437,6 +1440,11 @@
 
     @import '../../scss/_variables.scss';
 
+    .tainacan-page-title {
+        padding: 25px $page-side-padding;
+        margin: 0;
+    }
+
     .collapse-all {
         display: inline-flex;
         align-items: center;
@@ -1803,7 +1811,6 @@
 
     .items-list-area {
         margin-left: 0;
-        height: 100%;
         overflow: auto;
         position: relative;
     }

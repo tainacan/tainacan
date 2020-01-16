@@ -152,7 +152,7 @@ export default {
 
     // Tainacan Header
     #tainacan-repository-subheader {
-        background-color: $turquoise5;
+        background-color: $turquoise6;
         height: 42px;
         max-height: 42px;
         width: 100%;

@@ -31,7 +31,7 @@
                         class="level-item"
                         v-tooltip="{
                             delay: {
-                                show: 300,
+                                show: 500,
                                 hide: 100,
                             },
                             content: $i18n.get('items'),
@@ -55,7 +55,7 @@
                         class="level-item"
                         v-tooltip="{
                             delay: {
-                                show: 300,
+                                show: 500,
                                 hide: 100,
                             },
                             content: $i18n.get('label_settings'),
@@ -80,7 +80,7 @@
                         class="level-item"
                         v-tooltip="{
                             delay: {
-                                show: 300,
+                                show: 500,
                                 hide: 100,
                             },
                             content: $i18n.getFrom('metadata', 'name'),
@@ -104,7 +104,7 @@
                         class="level-item"
                         v-tooltip="{
                             delay: {
-                                show: 300,
+                                show: 500,
                                 hide: 100,
                             },
                             content: $i18n.getFrom('filters', 'name'),
@@ -128,7 +128,7 @@
                         class="level-item"
                         v-tooltip="{
                             delay: {
-                                show: 300,
+                                show: 500,
                                 hide: 100,
                             },
                             content: $i18n.get('activities'),
@@ -152,7 +152,7 @@
                         class="level-item"
                         v-tooltip="{
                             delay: {
-                                show: 300,
+                                show: 500,
                                 hide: 100,
                             },
                             content: $i18n.get('capabilities'),
@@ -252,7 +252,7 @@ export default {
     
     // Tainacan Header
     #tainacan-subheader {
-        background-color: $gray1;
+        background-color: $turquoise5;
         height: $subheader-height;
         max-height: $subheader-height;
         width: 100%;
@@ -267,14 +267,12 @@ export default {
         z-index: 9;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        
         transition: padding 0.3s, height 0.3s;
 
         h1 {
             font-size: 18px;
             font-weight: 500;
-            color: $blue5;
+            color: white;
             line-height: 22px;
             margin-bottom: 12px; 
             max-width: 450px;
@@ -289,8 +287,7 @@ export default {
             height: 42px;
             width: $page-side-padding;
             min-width: $page-side-padding;
-            background-color: $gray1;
-            color: $turquoise4;
+            color: white;
             display: flex;
 
             button, 
@@ -298,34 +295,15 @@ export default {
             button:focus, 
             button:active {
                 width: 100%;
-                color: $turquoise4;
+                color: white;
                 background-color: transparent !important;
                 border: none;
                 height: 42px !important;
                 .icon {
                     margin-top: -2px;
-                    font-size: 24px;
+                    font-size: 22px;
                 }
             }
-        }
-
-        .breadcrumbs {
-            font-size: 12px;
-            line-height: 12px;
-            color: #1d1d1d;
-            a {
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-                max-width: 115px;
-                margin: 0 0.1rem;
-                display: inline-block;
-                vertical-align: bottom;
-            }
-        }
-
-        .level {
-            width: 100%;
         }
 
         li {
@@ -349,31 +327,18 @@ export default {
                 }
             }
             &:hover:not(.is-active) {
-                // max-width: 100%;
-                // transition: max-width 0.4s ease-out  0.2s, width 0.4s ease-out  0.2s;
-                // -webkit-transition: max-width 0.4s ease-out  0.2s, width 0.4s ease-out  0.2s;
+                background-color: $turquoise4;
+
                 a {
                     background-color: transparent;
                     text-decoration: none; 
-                    color: $turquoise5;
                 }
-                svg {
-                    fill: $turquoise5;
-                }
-                // .menu-text {
-                //     opacity: 1.0;
-                //     width: 100%;
-                //     right: 0%;
-                //     visibility: visible;
-                //     transition: opacity 0.4s ease-out 0.2s, visibility 0.4s ease-out  0.2s, width 0.4s ease-out  0.2s, right 0.4s ease-out  0.2s;
-                //     -webkit-transition: opacity 0.4s ease-out  0.2s , visibility 0.4s ease-out  0.2s, width 0.4s ease-out  0.2s, right 0.4s ease-out  0.2s;
-                // }
             }
             a {
-                color: $gray4;
+                color: white;
                 text-align: center;
                 white-space: nowrap;
-                padding: 9px;
+                padding: 9px 11px;
                 min-width: 50px;
                 line-height: 22px;
                 border-radius: 0px;
@@ -393,8 +358,9 @@ export default {
                 svg {
                     position: relative;
                     top: 2px;
+                    margin-bottom: 2px;
                     height: 16px;
-                    fill: #555758;
+                    fill: white;
                 }
             }
             .menu-text {

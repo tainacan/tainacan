@@ -14,6 +14,7 @@ $blue4: #284472;
 $blue4-invert: findColorInvert($blue4);
 $blue5: #01295c;
 $blue5-invert: findColorInvert($blue5);
+
 // Turquoise, used mainly for collection level
 $turquoise1: #e6f6f8;
 $turquoise1-invert: findColorInvert($turquoise1);
@@ -25,18 +26,23 @@ $turquoise4: #4ea2ad;
 $turquoise4-invert: findColorInvert($turquoise4);
 $turquoise5: #298596;
 $turquoise5-invert: findColorInvert($turquoise5);
+$turquoise6: #226f7d;
+$turquoise6-invert: findColorInvert($turquoise6);
+
 // Gray, used mostyl for information
 $gray0: #f6f6f6;
+$gray0-invert: findColorInvert($gray0);
 $gray1: #f2f2f2;
 $gray1-invert: findColorInvert($gray1);
 $gray2: #dbdbdb;
 $gray2-invert: findColorInvert($gray2);
 $gray3: #cbcbcb;
 $gray3-invert: findColorInvert($gray3);
-$gray4: #555758;//#555758;
+$gray4: #555758;
 $gray4-invert: findColorInvert($gray4);
 $gray5: #454647;
 $gray5-invert: findColorInvert($gray5);
+
 // Red, used for error messages
 $red1: #eadadc;
 $red1-invert: findColorInvert($red1);
@@ -52,9 +58,9 @@ $yellow1: #fcebd9;
 $yellow1-invert: findColorInvert($yellow1);
 $yellow2: #e69810;
 $yellow2-invert: findColorInvert($yellow2);
+
 // Text, no quite black
 $tainacan-input-color: #1d1d1d;
-
 
 // Maps some of bulma's colors to custom variables
 $primary: $turquoise3;
