@@ -11,6 +11,7 @@ src/vendor
 node_modules
 npm-debug.log
 src/assets/js/*.js
+src/assets/*.js
 last-js-build.md5
 last-sass-build.md5
 last-composer-build.md5
@@ -19,11 +20,14 @@ src/views/admin/scss/.sass-cache
 src/assets/css/tainacan-admin.css
 src/assets/css/tainacan-admin.css.map
 src/assets/js/report.html
+src/assets/report.html
 .vscode
 src/pdf-viewer/pdfjs-dist
 report.txt
 .tmp
 demosaved.csv
+src/assets/css/tainacan-embeds.css
+src/assets/css/tainacan-embeds.css.map
 .DS_Store
 src/.DS_Store
 src/assets/css/tainacan-gutenberg-block-dynamic-items-list.css

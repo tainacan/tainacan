@@ -3,13 +3,30 @@ namespace Tainacan\Exporter;
 use Tainacan;
 use Tainacan\Entities;
 
-abstract class CommunImportExport {
+abstract class Exporter {
 
-	public function __construct( ) {
+	public function __construct($attributess = array()) {
 		$this->id = uniqid();
 		$author = get_current_user_id();
 		if($author) {
 			$this->add_transient('author', $author);
+		}
+
+		$this->array_attributes = array_merge($this->array_attributes, [
+			'mapping_selected', 
+			'current_collection_item', 
+			'current_collection',
+			'output_files',
+			'send_email'
+		]);
+
+		if (!empty($attributess)) {
+			foreach ($attributess as $attr => $value) {
+				$method = 'set_' . $attr;
+				if (method_exists($this, $method)) {
+					$this->$method($value);
+				}
+			}
 		}
 	}
 
@@ -49,9 +66,17 @@ abstract class CommunImportExport {
 	 */
 	protected $steps = [
 		[
+			'name' => 'Begin Exporter',
+			'progress_label' => 'Begin Exporter Process',
+			'callback' => 'begin_exporter'
+		],[
 			'name' => 'Process Items',
 			'progress_label' => 'Process Items',
 			'callback' => 'process_collections'
+		],[
+			'name' => 'End Exporter',
+			'progress_label' => 'End Exporter Process',
+			'callback' => 'end_exporter'
 		]
 	];
 
@@ -78,6 +103,63 @@ abstract class CommunImportExport {
 	 * @var array
 	 */
 	protected $collections = [];
+
+	private $output_files = [];
+
+	private $mapping_accept = [
+		'any'  => true,
+		'list' => false
+	];
+
+	private $send_email = null;
+
+	protected $mapping_list = [];
+
+	public $mapping_selected = "";
+
+	protected $accept_no_mapping = true;
+
+	/**
+	 * Transients is used to store temporary data to be used accross multiple requests
+	 *
+	 * Add and remove transient data using add_transient() and delete_transient() methods
+	 *
+	 * Transitens can be strings, numbers or arrays. Avoid storing objects.
+	 * 
+	 * @var array
+	 */
+	protected $transients = [];
+
+	/**
+	 * Wether to abort importer/exporter execution.
+	 * @var bool
+	 */
+	protected $abort = false;
+
+	protected $current_step = 0;
+
+	protected $in_step_count = 0;
+
+	protected $current_collection = 0;
+
+	protected $current_collection_item = 0;
+
+	protected $log = [];
+
+	protected $error_log = [];
+
+	/**
+	 * List of attributes that are saved in DB and that are used to 
+	 * reconstruct the object, this property need be overwrite in custom import/export.
+	 * @var array
+	 */
+	protected $array_attributes = [
+		'in_step_count',
+		'current_step',
+		'transients',
+		'options',
+		'collections',
+	];
 
 	public function add_collection(array $collection) {
 		if (isset($collection['id'])) {
@@ -130,45 +212,6 @@ abstract class CommunImportExport {
 		}
 		return false;
 	}
-
-	/**
-	 * Transients is used to store temporary data to be used accross multiple requests
-	 *
-	 * Add and remove transient data using add_transient() and delete_transient() methods
-	 *
-	 * Transitens can be strings, numbers or arrays. Avoid storing objects.
-	 * 
-	 * @var array
-	 */
-	protected $transients = [];
-
-	/**
-	 * Wether to abort importer/exporter execution.
-	 * @var bool
-	 */
-	protected $abort = false;
-
-	protected $current_step = 0;
-	protected $in_step_count = 0;
-
-	protected $current_collection = 0;
-	protected $current_collection_item = 0;
-
-	protected $log = [];
-	protected $error_log = [];
-
-	/**
-	 * List of attributes that are saved in DB and that are used to 
-	 * reconstruct the object, this property need be overwrite in custom import/export.
-	 * @var array
-	 */
-	protected $array_attributes = [
-		'in_step_count',
-		'current_step',
-		'transients',
-		'options',
-		'collections',
-	];
 
 	/**
 	 * @return string
@@ -470,60 +513,6 @@ abstract class CommunImportExport {
 		return false;
 	}
 
-	// Abstract methods
-	abstract public function _to_Array($short = false);
-
-}
-
-////////////////////////////////////
-class Exporter extends CommunImportExport {
-	
-	private $output_files = [];
-	private $mapping_accept = [
-		'any'  => true,
-		'list' => false
-	];
-	private $send_email = null;
-	protected $mapping_list = [];
-	public $mapping_selected = "";
-	protected $accept_no_mapping = true;
-
-	protected $steps = [
-		[
-			'name' => 'Begin Exporter',
-			'progress_label' => 'Begin Exporter Process',
-			'callback' => 'begin_exporter'
-		],[
-			'name' => 'Process Items',
-			'progress_label' => 'Process Items',
-			'callback' => 'process_collections'
-		],[
-			'name' => 'End Exporter',
-			'progress_label' => 'End Exporter Process',
-			'callback' => 'end_exporter'
-		]
-	];
-
-	public function __construct($attributess = array()) {
-		$this->array_attributes = array_merge($this->array_attributes, [
-			'mapping_selected', 
-			'current_collection_item', 
-			'current_collection',
-			'output_files',
-			'send_email'
-		]);
-		parent::__construct();
-
-		if (!empty($attributess)) {
-			foreach ($attributess as $attr => $value) {
-				$method = 'set_' . $attr;
-				if (method_exists($this, $method)) {
-					$this->$method($value);
-				}
-			}
-		}
-	}
-
 	public function _to_Array($short = false) {
 		$return = ['id' => $this->get_id()];
 		foreach ($this->array_attributes as $attr) {
@@ -546,13 +535,6 @@ class Exporter extends CommunImportExport {
 		return $return;
 	}
 
-	public function add_collection(array $collection) {
-		// if (!isset($collection['total_items'])) {
-		// 	$collection['total_items'] = 10;
-		// }
-		parent::add_collection($collection); 
-	}
-	
 	/**
 	* Gets the current mapper object, if one was chosen by the user, false Otherwise
 	*/
@@ -593,9 +575,7 @@ class Exporter extends CommunImportExport {
 		return $this->next_item();
 	}
 
-	public function process_item( $item, $metadata ) {
-		
-	}
+	abstract public function process_item( $item, $metadata );
 
 	private function process_header($current_collection_item, $collection_definition) {
 		if ($current_collection_item == 0) {
