@@ -354,6 +354,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_view_all_collections'                     => __( 'View all Collections', 'tainacan' ),
 	'label_view_repository'                     	 => __( 'View Repository', 'tainacan' ),
 	'label_view_on_theme'                            => __( 'View on Theme', 'tainacan' ),
+	'label_view_items_on_theme'                      => __( 'View all Items on Theme', 'tainacan' ),
+	'label_view_collections_on_theme'                => __( 'View all Collections on Theme', 'tainacan' ),
 	'label_create_collection'                        => __( 'Create Collection', 'tainacan' ),
 	'label_hide_metadata'                            => __( 'Hide metadata', 'tainacan' ),
 	'label_show_metadata'                            => __( 'Show metadata', 'tainacan' ),
