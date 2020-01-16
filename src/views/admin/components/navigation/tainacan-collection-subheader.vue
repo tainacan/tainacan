@@ -76,7 +76,7 @@
                 </li>
                 <li 
                         v-if="collection && collection.current_user_can_edit_metadata"
-                        :class="activeRoute == 'MetadataList' ? 'is-active':''"
+                        :class="activeRoute == 'CollectionMetadataPage' ? 'is-active':''"
                         class="level-item"
                         v-tooltip="{
                             delay: {
@@ -100,7 +100,7 @@
                 </li>
                 <li 
                         v-if="collection && collection.current_user_can_edit_filters"
-                        :class="activeRoute == 'FiltersList' ? 'is-active':''" 
+                        :class="activeRoute == 'CollectionFiltersPage' ? 'is-active':''" 
                         class="level-item"
                         v-tooltip="{
                             delay: {

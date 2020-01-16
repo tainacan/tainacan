@@ -1,10 +1,7 @@
 <template>
     <div class="filters-list-page">
         <b-loading :active.sync="isLoadingMetadatumTypes"/>
-        <tainacan-title 
-                    :bread-crumb-items="[{ path: '', label: this.$i18n.get('filters') }]"/>
-        <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_filters_inheritance') }}</p>
-        <br>
+        
         <div
                 v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
                 :style="{ height: activeFilterList.length <= 0 && !isLoadingFilters ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
@@ -326,10 +323,12 @@ export default {
     components: {
         FilterEditionForm
     },
+    props: {
+        isRepositoryLevel: Boolean
+    },
     data(){           
         return {
             collectionId: '',
-            isRepositoryLevel: false,
             isDraggingFromAvailable: false,
             isLoadingMetadatumTypes: true,
             isLoadingFilters: false,
@@ -411,7 +410,6 @@ export default {
             this.columnsTopY = this.$refs.filterEditionPageColumns ? this.$refs.filterEditionPageColumns.getBoundingClientRect().top : 0;
         });
 
-        this.isRepositoryLevel = this.$route.name == 'FiltersPage' ? true : false;
         if (this.isRepositoryLevel)
             this.collectionId = 'default';
         else
