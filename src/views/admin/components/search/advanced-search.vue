@@ -157,7 +157,7 @@
             <!-- Tags -->
             <div
                     v-show="advancedSearchResults"
-                    class="field column is-12">
+                    class="column is-12">
                 <b-field 
                         grouped
                         group-multiline>

@@ -3,8 +3,28 @@
             :class="{ 'repository-level-page': isRepositoryLevel }"
             aria-live="polite">
 
-        <tainacan-title 
+        <tainacan-title
+                v-if="!openAdvancedSearch" 
                 :bread-crumb-items="[{ path: '', label: this.$i18n.get('items') }]"/>
+        <div 
+                v-else
+                class="tnc-advanced-search-close"> 
+            <div class="advanced-search-criteria-title">
+                <div class="is-flex">
+                    <h1>{{ $i18n.get('info_search_criteria') }}</h1>
+                    <div
+                            :style="{'margin-bottom': 'auto'}"
+                            class="field is-grouped">
+                        <a 
+                                class="back-link"
+                                @click="openAdvancedSearch = false">
+                            {{ $i18n.get('back') }}
+                        </a>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
 
         <!-- SEARCH AND FILTERS --------------------- -->
         <!-- Filter menu compress button -->
@@ -153,24 +173,6 @@
                     id="advanced-search-container"
                     role="search"
                     v-if="openAdvancedSearch">
-
-                <div class="tnc-advanced-search-close"> 
-                    <div class="advanced-search-criteria-title">
-                        <div class="is-flex">
-                            <h1>{{ $i18n.get('info_search_criteria') }}</h1>
-                            <div
-                                    :style="{'margin-bottom': 'auto'}"
-                                    class="field is-grouped">
-                                <a 
-                                        class="back-link"
-                                        @click="openAdvancedSearch = false">
-                                    {{ $i18n.get('back') }}
-                                </a>
-                            </div>
-                        </div>
-                        <hr>
-                    </div>
-                </div>
                 
                 <advanced-search
                         :collection-id="collectionId"
@@ -1513,7 +1515,7 @@
     }
 
     .tnc-advanced-search-close {
-        padding-top: 47px;
+        padding-top: 25px;
         padding-right: $page-side-padding;
         padding-left: $page-side-padding;
 
@@ -1532,7 +1534,8 @@
         width: $filter-menu-width;
         min-width: 180px;
         min-height: 100%;
-        height: 100%;
+        height: auto;
+        max-height: 100vh;
         padding: $page-small-side-padding;
         float: left;
         overflow-y: auto;

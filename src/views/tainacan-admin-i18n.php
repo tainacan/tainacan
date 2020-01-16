@@ -105,13 +105,13 @@ return apply_filters( 'tainacan-admin-i18n', [
 
 	// Page Titles (used mainly on Router)
 	'title_repository_collections_page'              => __( 'Repository Collections', 'tainacan' ),
-	'title_items_page'                               => __( 'Items', 'tainacan' ),
+	'title_items_page'                               => __( 'All items from all collections', 'tainacan' ),
 	'title_repository_metadata_page'                 => __( 'Repository Metadata', 'tainacan' ),
 	'title_repository_filters_page'                  => __( 'Repository Filters', 'tainacan' ),
 	'title_taxonomies_page'                          => __( 'Taxonomies', 'tainacan' ),
 	'title_terms_page'                               => __( 'Terms', 'tainacan' ),
 	'title_repository_activities_page'               => __( 'Repository Activities', 'tainacan' ),
-	'title_collection_page'                          => __( 'Collection', 'tainacan' ),
+	'title_collection_page'                          => __( 'Items from Collection', 'tainacan' ),
 	'title_item_page'                                => __( 'Item', 'tainacan' ),
 	'title_metadatum_page'                           => __( 'Metadata', 'tainacan' ),
 	'title_collection_activities'                    => __( 'Collection Activities', 'tainacan' ),
