@@ -108,57 +108,10 @@
                     class="link-style is-size-7 is-pulled-right is-hidden-mobile">
                 {{ $i18n.get('advanced_search') }}
             </button>
-            
-            <h3 
-                    id="filters-label-landmark"
-                    class="has-text-weight-semibold">
-                {{ $i18n.get('filters') }}
-            </h3>
-            <button
-                    v-if="!isLoadingFilters &&
-                    ((filters.length >= 0 &&
-                    isRepositoryLevel) || filters.length > 0)"
-                    class="link-style collapse-all"
-                    @click="collapseAll = !collapseAll">
-                {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                <span class="icon">
-                    <i 
-                            :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                            class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
-                </span>
-            </button>
-
-            <br>
-            <br>
 
             <filters-items-list
-                    v-if="!isLoadingFilters &&
-                        ((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
-                    :filters="filters"
-                    :repository-collection-filters="repositoryCollectionFilters"
-                    :collapsed="collapseAll"
+                    :collection-id="collectionId"
                     :is-repository-level="isRepositoryLevel"/>
-
-            <section
-                    v-if="!isLoadingFilters &&
-                        !((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
-                    class="is-grouped-centered section">
-                <div class="content has-text-gray has-text-centered">
-                    <p>
-                        <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters" />
-                        </span>
-                    </p>
-                    <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
-                    <router-link
-                            id="button-create-filter"
-                            :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
-                            tag="button"
-                            class="button is-secondary is-centered">
-                        {{ $i18n.getFrom('filters', 'new_item') }}
-                    </router-link>
-                </div>
-            </section>
 
         </aside>
 
@@ -682,7 +635,7 @@
        
         <b-modal
                 role="region"
-                aria-labelledby="filters-label-landmark-modal"
+                aria-labelledby="filters-label-landmark"
                 id="filters-mobile-modal"
                 class="tainacan-form is-hidden-tablet"                
                 :active.sync="isFilterModalActive"
@@ -698,60 +651,12 @@
                     tabindex="-1"
                     aria-modal
                     role="dialog">
-                <h3 
-                        id="filters-label-landmark-modal"
-                        class="has-text-weight-semibold">
-                    {{ $i18n.get('filters') }}
-                </h3>
-                <button
-                        aria-controls="filters-items-list"
-                        :aria-expanded="!collapseAll"
-                        v-if="!isLoadingFilters &&
-                            ((filters.length >= 0 &&
-                            isRepositoryLevel) || filters.length > 0)"
-                        class="link-style collapse-all"
-                        @click="collapseAll = !collapseAll">
-                    {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                    <span class="icon">
-                        <i 
-                                :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                                class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
-                    </span>
-                </button>
-
-                <br>
-                <br>
 
                 <filters-items-list
+                        :collection-id="collectionId"
                         id="filters-items-list"
-                        v-if="!isLoadingFilters &&
-                            ((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
-                        :filters="filters"
-                        :collapsed="collapseAll"
-                        :repository-collection-filters="repositoryCollectionFilters"
                         :is-repository-level="isRepositoryLevel"/>
 
-                <section
-                        v-if="!isLoadingFilters &&
-                            !((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
-                        class="is-grouped-centered section">
-                    <div class="content has-text-gray has-text-centered">
-                        <p>
-                            <span class="icon is-large">
-                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters" />
-                            </span>
-                        </p>
-                        <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
-                        <router-link
-                                v-if="!$route.query.iframemode"
-                                id="button-create-filter"
-                                :to="isRepositoryLevel ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
-                                tag="button"
-                                class="button is-secondary is-centered">
-                            {{ $i18n.getFrom('filters', 'new_item') }}
-                        </router-link>
-                    </div>
-                </section>
             </div>
         </b-modal>
     </div>
@@ -790,11 +695,9 @@
                 displayedMetadata: [],
                 prefDisplayedMetadata: [],
                 isLoadingItems: false,
-                isLoadingFilters: false,
                 isLoadingMetadata: false,
                 hasFiltered: false,
                 isFiltersMenuCompressed: false,
-                collapseAll: true,
                 futureSearchQuery: '',
                 localDisplayedMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
@@ -807,8 +710,6 @@
                 isFilterModalActive: false,
                 hasAnOpenModal: false,
                 hasAnOpenAlert: true,
-                repositoryFiltersSearchCancel: undefined,
-                filtersSearchCancel: undefined,
                 metadataSearchCancel: undefined
             }
         },
@@ -825,12 +726,6 @@
             totalItems() {
                 this.updateCollectionInfo();
                 return this.getTotalItems();
-            },
-            filters() {
-                return this.getFilters();
-            },
-            repositoryCollectionFilters() {
-                return this.getRepositoryCollectionFilters();
             },
             metadata() {
                 return this.getMetadata();
@@ -929,7 +824,6 @@
                  */
                 if (this.collectionId == to.params.collectionId || to.query.fromBreadcrumb) {
                     this.prepareMetadata();
-                    this.prepareFilters();
                 }
             });
 
@@ -943,7 +837,7 @@
 
         },
         mounted() {
-            this.prepareFilters();
+            
             this.prepareMetadata();
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
 
@@ -979,18 +873,10 @@
             // Cancels previous Metadata Request
             if (this.metadataSearchCancel != undefined)
                 this.metadataSearchCancel.cancel('Metadata search Canceled.');
-     
-            // Cancels previous Filters Request
-            if (this.filtersSearchCancel != undefined)
-                this.filtersSearchCancel.cancel('Filters search Canceled.');
-     
+
             // Cancels previous Items Request
             if (this.$eventBusSearch.searchCancel != undefined)
                 this.$eventBusSearch.searchCancel.cancel('Item search Canceled.');
-
-            // Cancels previous Repository Filters Request
-            if (this.repositoryFiltersSearchCancel != undefined)
-                this.repositoryFiltersSearchCancel.cancel('Repository Collection Filters search Canceled.');
 
         },
         methods: {
@@ -1445,12 +1331,6 @@
     .tainacan-page-title {
         padding: 25px $page-side-padding;
         margin: 0;
-    }
-
-    .collapse-all {
-        display: inline-flex;
-        align-items: center;
-        font-size: 0.75rem !important;
     }
 
     .advanced-search-criteria-title {

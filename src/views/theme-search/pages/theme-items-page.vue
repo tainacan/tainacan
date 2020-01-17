@@ -53,7 +53,6 @@
 
         <!-- Sidebar with search and filters -->
         <aside
-                :aria-busy="isLoadingFilters"
                 id="filters-desktop-aside"
                 role="region"
                 aria-labelledby="filters-label-landmark"
@@ -62,9 +61,6 @@
                         !openAdvancedSearch && 
                         !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="filters-menu tainacan-form is-hidden-mobile">
-            <!-- <b-loading
-                    :is-full-page="false"
-                    :active.sync="isLoadingFilters"/> -->
 
             <div class="search-area is-hidden-mobile">
                 <div class="control has-icons-right  is-small is-clearfix">
@@ -91,51 +87,10 @@
                 {{ $i18n.get('advanced_search') }}
             </button> -->
 
-            <h3 
-                    id="filters-label-landmark"
-                    class="has-text-weight-semibold">
-                {{ $i18n.get('filters') }}
-            </h3>
-            <button
-                    v-if="!isLoadingFilters &&
-                        ((filters.length >= 0 &&
-                        isRepositoryLevel) || filters.length > 0)"
-                    class="link-style collapse-all"
-                    @click="collapseAll = !collapseAll">
-                {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                <span class="icon">
-                    <i 
-                            :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                            class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
-                </span>
-            </button>
-
-            <br>
-            <br>
-
             <filters-items-list
-                    v-if="!isLoadingFilters &&
-                        ((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
-                    :filters="filters"
-                    :taxonomy-filters="taxonomyFilters"
-                    :repository-collection-filters="repositoryCollectionFilters"
                     :taxonomy="taxonomy"
-                    :collapsed="collapseAll"
+                    :collection-id="collectionId"
                     :is-repository-level="isRepositoryLevel"/>
-
-            <section
-                    v-if="!isLoadingFilters &&
-                        !((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
-                    class="is-grouped-centered section">
-                <div class="content has-text-gray has-text-centered">
-                    <p>
-                        <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters" />
-                        </span>
-                    </p>
-                    <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
-                </div>
-            </section>
 
         </aside>
         
@@ -551,7 +506,7 @@
        
         <b-modal
                 role="region"
-                aria-labelledby="filters-label-landmark-modal"
+                aria-labelledby="filters-label-landmark"
                 id="filters-mobile-modal"
                 class="tainacan-form is-hidden-tablet"                
                 :active.sync="isFilterModalActive"
@@ -567,53 +522,13 @@
                     tabindex="-1"
                     aria-modal
                     role="dialog">
-                <h3 
-                        id="filters-label-landmark-modal"
-                        class="has-text-weight-semibold">
-                    {{ $i18n.get('filters') }}
-                </h3>
-                <button
-                        aria-controls="filters-items-list"
-                        :aria-expanded="!collapseAll"
-                        v-if="!isLoadingFilters &&
-                            ((filters.length >= 0 &&
-                            isRepositoryLevel) || filters.length > 0)"
-                        class="link-style collapse-all"
-                        @click="collapseAll = !collapseAll">
-                    {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                    <span class="icon">
-                        <i 
-                                :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                                class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
-                    </span>
-                </button>
-
-                <br>
-                <br>
 
                 <filters-items-list
                         id="filters-items-list"
-                        v-if="!isLoadingFilters &&
-                            ((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
-                        :filters="filters"
-                        :taxonomy-filters="taxonomyFilters"
                         :taxonomy="taxonomy"
-                        :collapsed="collapseAll"
+                        :collection-id="collectionId"
                         :is-repository-level="isRepositoryLevel"/>
 
-                <section
-                        v-if="!isLoadingFilters &&
-                            !((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
-                        class="is-grouped-centered section">
-                    <div class="content has-text-gray has-text-centered">
-                        <p>
-                            <span class="icon is-large">
-                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters" />
-                            </span>
-                        </p>
-                        <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
-                    </div>
-                </section>
             </div>
         </b-modal>
     </div>
@@ -650,11 +565,9 @@
                 displayedMetadata: [],
                 prefDisplayedMetadata: [],
                 isLoadingItems: false,
-                isLoadingFilters: false,
                 isLoadingMetadata: false,
                 hasFiltered: false,
                 isFiltersMenuCompressed: false,
-                collapseAll: true,
                 futureSearchQuery: '',
                 localDisplayedMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
@@ -667,9 +580,7 @@
                 isFilterModalActive: false,
                 customFilters: [],
                 hasAnOpenModal: false,
-                hasAnOpenAlert: true,
-                repositoryFiltersSearchCancel: undefined,
-                filtersSearchCancel: undefined,
+                hasAnOpenAlert: true,                
                 metadataSearchCancel: undefined
             }
         },
@@ -685,15 +596,6 @@
             },
             totalItems() {
                 return this.getTotalItems();
-            },
-            filters() {
-                return this.getFilters();
-            },
-            repositoryCollectionFilters() {
-                return this.getRepositoryCollectionFilters();
-            },
-            taxonomyFilters() {
-                return this.getTaxonomyFilters();
             },
             metadata() {
                 return this.getMetadata();
@@ -789,7 +691,6 @@
                  * at collection level to items page at repository level
                  */
                 this.prepareMetadata();
-                this.prepareFilters();
             });
 
             if(this.$route.query && this.$route.query.advancedSearch) {
@@ -803,7 +704,6 @@
         },
         mounted() {
             
-            this.prepareFilters();
             this.prepareMetadata();
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
 
@@ -840,17 +740,10 @@
             if (this.metadataSearchCancel != undefined)
                 this.metadataSearchCancel.cancel('Metadata search Canceled.');
      
-            // Cancels previous Filters Request
-            if (this.filtersSearchCancel != undefined)
-                this.filtersSearchCancel.cancel('Filters search Canceled.');
-     
             // Cancels previous Items Request
             if (this.$eventBusSearch.searchCancel != undefined)
                 this.$eventBusSearch.searchCancel.cancel('Item search Canceled.');
 
-            // Cancels previous Repository Filters Request
-            if (this.repositoryFiltersSearchCancel != undefined)
-                this.repositoryFiltersSearchCancel.cancel('Repository Collection Filters search Canceled.');
 
         },
         methods: {
@@ -863,16 +756,6 @@
             ]),
             ...mapGetters('metadata', [
                 'getMetadata'
-            ]),
-            ...mapActions('filter', [
-                'fetchFilters',
-                'fetchTaxonomyFilters',
-                'fetchRepositoryCollectionFilters'
-            ]),
-            ...mapGetters('filter', [
-                'getFilters',
-                'getTaxonomyFilters',
-                'getRepositoryCollectionFilters'
             ]),
             ...mapGetters('search', [
                 'getSearchQuery',
@@ -968,53 +851,6 @@
 
                 // Closes dropdown
                 this.$refs.displayedMetadataDropdown.toggle();
-            },
-            prepareFilters() {
-                
-                // Cancels previous Request
-                if (this.filtersSearchCancel != undefined)
-                    this.filtersSearchCancel.cancel('Filters search Canceled.');
-
-                this.isLoadingFilters = true;
-            
-                // Normal filter loading, only collection ones
-                if (!this.taxonomy) {
-                    this.fetchFilters({
-                        collectionId: this.collectionId,
-                        isRepositoryLevel: this.isRepositoryLevel,
-                        isContextEdit: false,
-                        includeDisabled: false,
-                    })
-                        .then((resp) => {
-                            resp.request
-                                .then(() => this.isLoadingFilters = false)
-                                .catch(() => this.isLoadingFilters = false);
-
-                            // Search Request Token for cancelling
-                            this.filtersSearchCancel = resp.source;
-                        })
-                        .catch(() => this.isLoadingFilters = false);
-                
-                // Custom filter loading, get's from collections that have items with that taxonomy
-                } else {
-                    let taxonomyId = this.taxonomy.split("_");
-                    this.fetchTaxonomyFilters(taxonomyId[taxonomyId.length - 1])
-                        .catch(() => this.isLoadingFilters = false);
-                        
-                }
-
-                // On repository level we also fetch collection filters
-                if (this.isRepositoryLevel) {
-                    
-                    // Cancels previous Request
-                    if (this.repositoryFiltersSearchCancel != undefined)
-                        this.repositoryFiltersSearchCancel.cancel('Repository Collection Filters search Canceled.');
-
-                    this.fetchRepositoryCollectionFilters()
-                        .then((source) => {
-                            this.repositoryFiltersSearchCancel = source;
-                        });
-                }
             },
             prepareMetadata() {
             
@@ -1291,12 +1127,6 @@
         background-color: black;
         transition: background-color 0.3s ease, width 0.3s ease, height 0.3s ease;
         animation: open-full-screen 0.4s ease;
-    }
-
-    .collapse-all {
-        display: inline-flex;
-        align-items: center;
-        font-size: 0.75rem !important;
     }
 
     .advanced-search-criteria-title {
