@@ -1,5 +1,10 @@
 <template>
     <div>
+
+        <b-loading
+                :is-full-page="false"
+                :active.sync="isLoadingFilters"/>
+
         <h3 
                 id="filters-label-landmark"
                 class="has-text-weight-semibold">
@@ -437,6 +442,18 @@
 </script>
 
 <style scoped>
+
+    h3 {
+        font-size: 100%;
+        margin-top: 48px;
+    }
+
+    @media screen and (max-width: 768px) {
+
+        h3 {
+            margin-top: 0 !important;
+        }
+    }
 
     .collapse-all {
         display: inline-flex;

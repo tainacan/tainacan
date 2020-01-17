@@ -52,13 +52,14 @@ fi
 ### END npm build ###
 
 ## Fetch PDF.js
-if [ ! -d "src/pdf-viewer/pdfjs-dist" ]; then
-  echo "Fething PDF.js"
-  mkdir -p src/pdf-viewer/pdfjs-dist
-  wget https://github.com/mozilla/pdf.js/releases/download/v1.9.426/pdfjs-1.9.426-dist.zip
-  unzip pdfjs-1.9.426-dist.zip -d src/pdf-viewer/pdfjs-dist/
-  rm pdfjs-1.9.426-dist.zip
-fi
+## Commented as we have a modified version of its code.
+# if [ ! -d "src/pdf-viewer/pdfjs-dist" ]; then
+#   echo "Fething PDF.js"
+#   mkdir -p src/pdf-viewer/pdfjs-dist
+#   wget https://github.com/mozilla/pdf.js/releases/download/v1.9.426/pdfjs-1.9.426-dist.zip
+#   unzip pdfjs-1.9.426-dist.zip -d src/pdf-viewer/pdfjs-dist/
+#   rm pdfjs-1.9.426-dist.zip
+# fi
 
 
 echo "Updating files in $wp_plugin_dir"

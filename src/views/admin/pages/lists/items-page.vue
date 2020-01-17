@@ -1435,10 +1435,6 @@
             top: 0px !important;
         }
 
-        h3 {
-            font-size: 100%;
-            margin-top: 48px;
-        }
 
         .search-area {
             display: flex;
