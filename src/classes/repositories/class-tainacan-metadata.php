@@ -1080,7 +1080,10 @@ class Metadata extends Repository {
 						SELECT DISTINCT t.term_id, t.name, tt.parent, coalesce(tr.term_taxonomy_id, 0) as have_items
 						FROM
 						$wpdb->terms t INNER JOIN $wpdb->term_taxonomy tt ON t.term_id = tt.term_id
-						LEFT JOIN $wpdb->term_relationships tr ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tr.object_id IN ($items_query)
+						LEFT JOIN (
+							SELECT DISTINCT term_taxonomy_id FROM $wpdb->term_relationships 
+								INNER JOIN ($items_query) as posts ON $wpdb->term_relationships.object_id = posts.ID
+						) as tr ON tt.term_taxonomy_id = tr.term_taxonomy_id
 						WHERE tt.taxonomy = %s ORDER BY t.name ASC", $taxonomy_slug
 					);
 
