@@ -1,36 +1,36 @@
 <?php
 
-const TAINACAN_ENTITIES_DIR 	   = __DIR__ . '/entities/';
-const TAINACAN_METADATA_TYPES_DIR  = __DIR__ . '/metadata-types/';
-const TAINACAN_FILTER_TYPES_DIR = __DIR__ . '/filter-types/';
-const TAINACAN_REPOSITORIES_DIR = __DIR__ . '/repositories/';
-const TAINACAN_TRAITS_DIR 	   = __DIR__ . '/traits/';
-const TAINACAN_VENDOR_DIR 	   = __DIR__ . '/../vendor/';
-const TAINACAN_TAPI_DIR          = __DIR__ . '/../api/';
-const TAINACAN_ENDPOINTS_DIR    = __DIR__ . '/../api/endpoints/';
-const TAINACAN_IMPORTER_DIR      = __DIR__ . '/../importer/';
-const TAINACAN_EXPORTER_DIR     = __DIR__ . '/../exporter/';
-const TAINACAN_EXPOSERS_DIR		= __DIR__ . '/../exposers/';
-const TAINACAN_MAPPERS_DIR		= __DIR__ . '/../mappers/';
-const TAINACAN_OAIPMH_DIR		= __DIR__ . '/../oaipmh-expose/';
-const TAINACAN_CLI_DIR		= __DIR__ . '/../cli/';
+const TAINACAN_CLI_DIR                    = __DIR__ . '/../cli/';
+const TAINACAN_TAPI_DIR                   = __DIR__ . '/../api/';
+const TAINACAN_OAIPMH_DIR                 = __DIR__ . '/../oaipmh-expose/';
+const TAINACAN_TRAITS_DIR                 = __DIR__ . '/traits/';
+const TAINACAN_VENDOR_DIR                 = __DIR__ . '/../vendor/';
+const TAINACAN_MAPPERS_DIR                = __DIR__ . '/../mappers/';
+const TAINACAN_ENTITIES_DIR               = __DIR__ . '/entities/';
+const TAINACAN_IMPORTER_DIR               = __DIR__ . '/../importer/';
+const TAINACAN_EXPORTER_DIR               = __DIR__ . '/../exporter/';
+const TAINACAN_EXPOSERS_DIR               = __DIR__ . '/../exposers/';
+const TAINACAN_ENDPOINTS_DIR              = __DIR__ . '/../api/endpoints/';
+const TAINACAN_FILTER_TYPES_DIR           = __DIR__ . '/../views/admin/components/filter-types/';
+const TAINACAN_REPOSITORIES_DIR           = __DIR__ . '/repositories/';
+const TAINACAN_METADATA_TYPES_DIR         = __DIR__ . '/../views/admin/components/metadata-types/';
 const TAINACAN_GENERIC_BACKGROUND_PROCESS = __DIR__ . '/../generic-background-process/';
 
 const DIRS = [
-    TAINACAN_CLASSES_DIR,
-    TAINACAN_ENTITIES_DIR,
-    TAINACAN_METADATA_TYPES_DIR,
-    TAINACAN_FILTER_TYPES_DIR,
-    TAINACAN_REPOSITORIES_DIR,
-    TAINACAN_TRAITS_DIR,
-	TAINACAN_TAPI_DIR,
-	TAINACAN_ENDPOINTS_DIR,
-    TAINACAN_IMPORTER_DIR,
-    TAINACAN_EXPORTER_DIR,
-	TAINACAN_EXPOSERS_DIR,
-	TAINACAN_MAPPERS_DIR,
-    TAINACAN_OAIPMH_DIR,
 	TAINACAN_CLI_DIR,
+	TAINACAN_TAPI_DIR,
+	TAINACAN_OAIPMH_DIR,
+	TAINACAN_TRAITS_DIR,
+	TAINACAN_CLASSES_DIR,
+	TAINACAN_MAPPERS_DIR,
+	TAINACAN_ENTITIES_DIR,
+	TAINACAN_IMPORTER_DIR,
+	TAINACAN_EXPORTER_DIR,
+	TAINACAN_EXPOSERS_DIR,
+	TAINACAN_ENDPOINTS_DIR,
+	TAINACAN_FILTER_TYPES_DIR,
+	TAINACAN_REPOSITORIES_DIR,
+	TAINACAN_METADATA_TYPES_DIR,
 	TAINACAN_GENERIC_BACKGROUND_PROCESS
 ];
 
@@ -94,7 +94,11 @@ function tainacan_autoload($class_name){
             if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
 		} else if( isset( $class_path[1] ) && substr($class_path[1], 0, 3) === 'Cli' ){
 			$dir = TAINACAN_CLI_DIR;
-		}  else if($sliced) {
+		} else if( isset( $class_path[1] ) && $class_path[1] === 'Metadata_Types' ) {
+			$dir = TAINACAN_METADATA_TYPES_DIR;
+		} else if( isset( $class_path[1] ) && $class_path[1] === 'Filter_Types' ) {
+			$dir = TAINACAN_FILTER_TYPES_DIR;
+		} else if($sliced) {
 			$lower     = $sliced[0];
 			$sliced[0] = strtolower( $lower );
 
