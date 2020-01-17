@@ -1,20 +1,20 @@
 <?php
 
-const TAINACAN_CLI_DIR                    = __DIR__ . '/../cli/';
-const TAINACAN_TAPI_DIR                   = __DIR__ . '/../api/';
-const TAINACAN_OAIPMH_DIR                 = __DIR__ . '/../oaipmh-expose/';
+const TAINACAN_CLI_DIR                    = __DIR__ . '/cli/';
+const TAINACAN_TAPI_DIR                   = __DIR__ . '/api/';
+const TAINACAN_OAIPMH_DIR                 = __DIR__ . '/oaipmh/';
 const TAINACAN_TRAITS_DIR                 = __DIR__ . '/traits/';
 const TAINACAN_VENDOR_DIR                 = __DIR__ . '/../vendor/';
-const TAINACAN_MAPPERS_DIR                = __DIR__ . '/../mappers/';
+const TAINACAN_MAPPERS_DIR                = __DIR__ . '/mappers/';
 const TAINACAN_ENTITIES_DIR               = __DIR__ . '/entities/';
-const TAINACAN_IMPORTER_DIR               = __DIR__ . '/../importer/';
-const TAINACAN_EXPORTER_DIR               = __DIR__ . '/../exporter/';
-const TAINACAN_EXPOSERS_DIR               = __DIR__ . '/../exposers/';
+const TAINACAN_IMPORTER_DIR               = __DIR__ . '/background-processes/importer/';
+const TAINACAN_EXPORTER_DIR               = __DIR__ . '/background-processes/exporter/';
+const TAINACAN_EXPOSERS_DIR               = __DIR__ . '/exposers/';
 const TAINACAN_ENDPOINTS_DIR              = __DIR__ . '/../api/endpoints/';
 const TAINACAN_FILTER_TYPES_DIR           = __DIR__ . '/../views/admin/components/filter-types/';
 const TAINACAN_REPOSITORIES_DIR           = __DIR__ . '/repositories/';
 const TAINACAN_METADATA_TYPES_DIR         = __DIR__ . '/../views/admin/components/metadata-types/';
-const TAINACAN_GENERIC_BACKGROUND_PROCESS = __DIR__ . '/../generic-background-process/';
+const TAINACAN_GENERIC_BACKGROUND_PROCESS = __DIR__ . '/background-processes/generic-background-process/';
 
 const DIRS = [
 	TAINACAN_CLI_DIR,
@@ -38,13 +38,15 @@ require_once('libs/wp-async-request.php');
 require_once('libs/wp-background-process.php');
 require_once('class-tainacan-background-process.php');
 require_once('tainacan-utils.php');
-require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-bg-importer.php');
 
 require_once(TAINACAN_VENDOR_DIR . 'autoload.php');
-require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-importer.php');
-require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-importer-handler.php');
+
 require_once(TAINACAN_EXPOSERS_DIR . 'class-tainacan-exposers-handler.php');
 require_once(TAINACAN_MAPPERS_DIR . 'class-tainacan-mappers-handler.php');
+
+require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-bg-importer.php');
+require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-importer.php');
+require_once(TAINACAN_IMPORTER_DIR . 'class-tainacan-importer-handler.php');
 
 require_once(TAINACAN_EXPORTER_DIR . 'class-tainacan-bg-exporter.php');
 require_once(TAINACAN_EXPORTER_DIR . 'class-tainacan-export-handler.php');
@@ -55,7 +57,7 @@ require_once(TAINACAN_GENERIC_BACKGROUND_PROCESS . 'class-tainacan-generic-handl
 
 spl_autoload_register('tainacan_autoload');
 
-function tainacan_autoload($class_name){
+function tainacan_autoload($class_name) {
 	$class_path = explode('\\', $class_name);
 	$class_name = end($class_path);
 
@@ -177,8 +179,8 @@ require_once(__DIR__ . '/../views/class-tainacan-admin-hooks.php');
 require_once(__DIR__ . '/../views/admin-hooks-functions.php');
 $Tainacan_Admin_Hooks = \Tainacan\Admin_Hooks::get_instance();
 
-require_once(__DIR__ . '/../theme-helper/class-tainacan-theme-helper.php');
-require_once(__DIR__ . '/../theme-helper/template-tags.php');
+require_once(__DIR__ . '/theme-helper/class-tainacan-theme-helper.php');
+require_once(__DIR__ . '/theme-helper/template-tags.php');
 $Tainacan_Theme_Helper = \Tainacan\Theme_Helper::get_instance();
 
 require_once(__DIR__ . '/../views/gutenberg-blocks/class-tainacan-gutenberg-block.php');
