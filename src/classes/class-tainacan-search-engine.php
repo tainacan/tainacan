@@ -45,7 +45,7 @@ class Search_Engine {
 
 		add_filter( 'posts_join', array( &$this, 'relationships_join' ) );
 
-	//add_filter( 'posts_where', array( &$this, 'search_attachments' ) );
+		//add_filter( 'posts_where', array( &$this, 'search_attachments' ) );
 
 		add_filter( 'posts_join', array( &$this, 'search_authors_join' ) );
 		
@@ -138,22 +138,30 @@ class Search_Engine {
 
 		global $wpdb;
 
-		$searchQuery = $this->search_default();
+		$search_query_fields = array();
+		$search_query_fields = array_merge($search_query_fields, $this->search_default());
+		$search_query_fields = array_merge($search_query_fields, $this->build_search_categories());
+		$search_query_fields = array_merge($search_query_fields, $this->build_search_metadata());
+		$search_query_fields = array_merge($search_query_fields, $this->build_search_relationships());
+		$search_query_fields = array_merge($search_query_fields, $this->search_authors());
 
-		$searchQuery .= $this->build_search_categories();
-
-		$searchQuery .= $this->build_search_metadata();
-
-		$searchQuery .= $this->build_search_relationships();
-
-		$searchQuery .= $this->search_authors();
+		$searchQuery = '(';
+		$seperator = '';
+		$not_exact = empty($this->query_instance->query_vars['exact']);
+		$terms = $this->get_search_terms();
+		$fields = implode(", ' || ', ", $search_query_fields);
+		foreach ( $terms as $term ) {
+			$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
+			$searchQuery .= "{$seperator}CONCAT( $fields ) LIKE $esc_term";
+			$seperator = ' AND ';
+		}
+		$searchQuery .= ')';
 
 
 		if ( $searchQuery != '' && $searchQuery != '()' ) {
 			// lets use _OUR_ query instead of WP's, as we have posts already included in our query as well(assuming it's not empty which we check for)
 			$where = " AND ((" . $searchQuery . ")) ";
 		}
-
 		return $where;
 	}
 
@@ -162,29 +170,7 @@ class Search_Engine {
 	// avoid issue with multiple terms
 	function search_default() {
 		global $wpdb;
-		$not_exact = empty($this->query_instance->query_vars['exact']);
-		$search_sql_query = '';
-		$seperator = '';
-		$terms = $this->get_search_terms();
-
-		// if it's not a sentance add other terms
-		$search_sql_query .= '(';
-
-		foreach ( $terms as $term ) {
-			$search_sql_query .= $seperator;
-
-			$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
-
-			$like_title = "($wpdb->posts.post_title LIKE $esc_term)";
-			$like_post = "($wpdb->posts.post_content LIKE $esc_term)";
-
-			$search_sql_query .= "($like_title OR $like_post)";
-
-			$seperator = ' AND ';
-		}
-
-		$search_sql_query .= ')';
-		return $search_sql_query;
+		return ["$wpdb->posts.post_title", "$wpdb->posts.post_content"];
 	}
 
 
@@ -220,140 +206,28 @@ class Search_Engine {
 
 	// Build the author search
 	function search_authors() {
-		global $wpdb;
-		$s = $this->query_instance->query_vars['s'];
-		$search_terms = $this->get_search_terms();
-		$exact = ( isset( $this->query_instance->query_vars['exact'] ) && $this->query_instance->query_vars['exact'] ) ? true : false;
-		$search = '';
-		$searchand = '';
-
-		if ( !empty( $search_terms ) ) {
-			// Building search query
-			foreach ( $search_terms as $term ) {
-				$term = $wpdb->prepare("%s", $exact ? $term : "%$term%");
-                $search .= "{$searchand}(u.display_name LIKE $term)";
-				$searchand = ' OR ';
-			}
-			$sentence_term = $wpdb->prepare("%s", $s);
-			if ( count( $search_terms ) > 1 && $search_terms[0] != $sentence_term ) {
-                $search .= " OR (u.display_name LIKE $sentence_term)";
-			}
-
-			if ( !empty( $search ) )
-				$search = " OR ({$search}) ";
-
-		}
-
-		return $search;
+		return ["u.display_name"];
 	}
 	
 	function build_search_relationships(){
 		
 		if ( empty( $this->relationships ) ) {
-			return '';
+			return [];
 		}
-		
-		global $wpdb;
-		$s = $this->query_instance->query_vars['s'];
-		$search_terms = $this->get_search_terms();
-		$exact = ( isset( $this->query_instance->query_vars['exact'] ) && $this->query_instance->query_vars['exact'] ) ? true : false;
-		$search = '';
-
-		if ( !empty( $search_terms ) ) {
-			// Building search query
-			$searchand = '';
-			foreach ( $search_terms as $term ) {
-				$term = $wpdb->prepare("%s", $exact ? $term : "%$term%");
-                $search .= "{$searchand}(p2.post_title LIKE $term)";
-				$searchand = ' AND ';
-			}
-			$sentence_term = $wpdb->prepare("%s", $s);
-			if ( count( $search_terms ) > 1 && $search_terms[0] != $sentence_term ) {
-                $search = "($search) OR (p2.post_title LIKE $sentence_term)";
-			}
-
-			if ( !empty( $search ) )
-				$search = " OR ({$search}) ";
-
-		}
-		return $search;
+		return ['p2.post_title'];
 	}
 
 	// create the search meta data query
 	function build_search_metadata() {
-		global $wpdb;
-		$s = $this->query_instance->query_vars['s'];
-		$search_terms = $this->get_search_terms();
-		$exact = ( isset( $this->query_instance->query_vars['exact'] ) && $this->query_instance->query_vars['exact'] ) ? true : false;
-		$search = '';
-
-		if ( !empty( $search_terms ) ) {
-			// Building search query
-			$searchand = '';
-			foreach ( $search_terms as $term ) {
-				$term = $wpdb->prepare("%s", $exact ? $term : "%$term%");
-                $search .= "{$searchand}(m.meta_value LIKE $term)";
-				$searchand = ' AND ';
-			}
-			$sentence_term = $wpdb->prepare("%s", $s);
-			if ( count( $search_terms ) > 1 && $search_terms[0] != $sentence_term ) {
-				$search = "($search) OR (m.meta_value LIKE $sentence_term)";
-			}
-
-			if ( !empty( $search ) )
-				$search = " OR ({$search}) ";
-
-		}
-		return $search;
+		return ["m.meta_value"];
 	}
 
 	// create the search categories query
 	function build_search_categories() {
-		global $wpdb;
-		$vars = $this->query_instance->query_vars;
-
 		if (empty($this->taxonomies)) {
-			return '';
+			return [];
 		}
-
-		$s = $vars['s'];
-		$search_terms = $this->get_search_terms();
-		$exact = isset( $vars['exact'] ) ? $vars['exact'] : '';
-		$search = '';
-
-		if ( !empty( $search_terms ) ) {
-			// Building search query for categories slug.
-			$searchand = '';
-			$searchSlug = '';
-			foreach ( $search_terms as $term ) {
-				$term = $wpdb->prepare("%s", $exact ? $term : "%". $term . "%");
-				$searchSlug .= "{$searchand}(tter.name LIKE $term)";
-				$searchand = ' AND ';
-			}
-
-			$term = $wpdb->prepare("%s", $exact ? $term : "%". $s . "%");
-			if ( count( $search_terms ) > 1 && $search_terms[0] != $s ) {
-				$searchSlug = "($searchSlug) OR (tter.name LIKE $term)";
-			}
-			if ( !empty( $searchSlug ) )
-				$search = " OR ({$searchSlug}) ";
-
-			// Building search query for categories description.
-			$searchand = '';
-			$searchDesc = '';
-			foreach ( $search_terms as $term ) {
-                $term = $wpdb->prepare("%s", $exact ? $term : "%$term%");
-				$searchDesc .= "{$searchand}(ttax.description LIKE $term)";
-				$searchand = ' AND ';
-			}
-			$sentence_term = $wpdb->prepare("%s", $s);
-			if ( count( $search_terms ) > 1 && $search_terms[0] != $sentence_term ) {
-				$searchDesc = "($searchDesc) OR (ttax.description LIKE $sentence_term)";
-			}
-			if ( !empty( $searchDesc ) )
-				$search = $search." OR ({$searchDesc}) ";
-		}
-		return $search;
+		return ["tter.name", "ttax.description"];
 	}
 
 
