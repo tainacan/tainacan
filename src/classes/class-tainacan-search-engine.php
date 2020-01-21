@@ -21,38 +21,38 @@ class Search_Engine {
 	var $logging = false;
 	var $options;
 	var $ajax_request;
-    private $query_instance;
-    
-    private $taxonomies = [];
+	private $query_instance;
+
+	private $taxonomies = [];
 	private $relationships = [];
-    private $is_tainacan_search = false;
+	private $is_tainacan_search = false;
 	private $is_inner_query = false;
 
 	function __construct($ajax_query=false) {
 		$this->ajax_request = $ajax_query ? true : false;
 		$this->options = [];
 
-        if (!defined('TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE') || TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE !== true) {
-            $this->search_hooks();
-        }
+		if (!defined('TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE') || TAINACAN_DISABLE_DEFAULT_SEARCH_ENGINE !== true) {
+			$this->search_hooks();
+		}
 	}
 
 	function search_hooks() {
 
-        add_filter( 'posts_join', array( &$this, 'terms_join' ) );
-		
+		add_filter( 'posts_join', array( &$this, 'terms_join' ) );
+
 		add_filter( 'posts_join', array( &$this, 'search_metadata_join' ) );
-		
+
 		add_filter( 'posts_join', array( &$this, 'relationships_join' ) );
 
-        //add_filter( 'posts_where', array( &$this, 'search_attachments' ) );
+	//add_filter( 'posts_where', array( &$this, 'search_attachments' ) );
 
-        add_filter( 'posts_join', array( &$this, 'search_authors_join' ) );
+		add_filter( 'posts_join', array( &$this, 'search_authors_join' ) );
 		
 		add_filter( 'posts_search', array( &$this, 'search_where' ), 10, 2 );
 
-        add_filter( 'posts_request', array( &$this, 'distinct' ) );
-        
+		add_filter( 'posts_request', array( &$this, 'distinct' ) );
+
 		//add_filter( 'posts_request', array( &$this, 'log_query' ), 10, 2 );
 	}
 
@@ -82,88 +82,85 @@ class Search_Engine {
 		}
 
 		return $search_terms;
-    }
-    
-    function init_tainacan_search_vars() {
+	}
+
+	function init_tainacan_search_vars() {
 
 		if (!$this->query_instance->is_search() || empty($this->query_instance->query_vars['s']) ) {
-            $this->is_tainacan_search = false;
-            return;
-        }
-        
-        $post_types = $this->query_instance->get('post_type');
+			$this->is_tainacan_search = false;
+			return;
+		}
 
-        $taxonomies = [];
+		$post_types = $this->query_instance->get('post_type');
+
+		$taxonomies = [];
 		$relationships = [];
 
-        if (!$post_types || empty($post_types) || !is_array($post_types)) {
-            $this->is_tainacan_search = false;
-        } else {
-            foreach ($post_types as $pt) {
+		if (!$post_types || empty($post_types) || !is_array($post_types)) {
+			$this->is_tainacan_search = false;
+		} else {
+			foreach ($post_types as $pt) {
 				$pattern = '/^' . \Tainacan\Entities\Collection::$db_identifier_prefix . '(\d+)' . \Tainacan\Entities\Collection::$db_identifier_sufix . '$/';
 				if ( preg_match_all($pattern, $pt, $matches) ) {
-                    $taxonomies = array_merge( $taxonomies, get_object_taxonomies($pt) );
+					$taxonomies = array_merge( $taxonomies, get_object_taxonomies($pt) );
 					if (isset($matches[1][0])) {
 						$this->is_inner_query = true;
 						$relationships = array_merge( $relationships, \Tainacan\Repositories\Metadata::get_instance()->fetch_ids_by_collection( (int) $matches[1][0], ['metadata_type' => 'Tainacan\Metadata_Types\Relationship'] ) );
 						$this->is_inner_query = false;
 					}
 					$this->is_tainacan_search = true;
-                } else {
-                    $this->is_tainacan_search = false;
-                    break;
-                }
-            }
-        }
-        if ( $this->is_tainacan_search ) {
-            $taxonomies = array_unique($taxonomies);
+				} else {
+					$this->is_tainacan_search = false;
+					break;
+				}
+			}
+		}
+		if ( $this->is_tainacan_search ) {
+			$taxonomies = array_unique($taxonomies);
 			$relationships = array_unique($relationships);
-            $this->taxonomies = $taxonomies;
+			$this->taxonomies = $taxonomies;
 			$this->relationships = $relationships;
-			
-        }
-
-    }
+		}
+	}
 
 	// add where clause to the search query
 	function search_where( $where, $wp_query ) {
-        
-        if ($this->is_inner_query) {
+
+		if ($this->is_inner_query) {
 			return $where;
 		}
-		
-		$this->query_instance = &$wp_query;
 
-        $this->init_tainacan_search_vars();
-        
-        if ( !$this->is_tainacan_search && !$this->ajax_request)
+		$this->query_instance = &$wp_query;
+		$this->init_tainacan_search_vars();
+
+		if ( !$this->is_tainacan_search && !$this->ajax_request)
 			return $where;
 
 		global $wpdb;
 
-        $searchQuery = $this->search_default();
+		$searchQuery = $this->search_default();
 
-        $searchQuery .= $this->build_search_categories();
+		$searchQuery .= $this->build_search_categories();
 
 		$searchQuery .= $this->build_search_metadata();
-		
+
 		$searchQuery .= $this->build_search_relationships();
 
 		$searchQuery .= $this->search_authors();
-		
+
 
 		if ( $searchQuery != '' && $searchQuery != '()' ) {
-            // lets use _OUR_ query instead of WP's, as we have posts already included in our query as well(assuming it's not empty which we check for)
+			// lets use _OUR_ query instead of WP's, as we have posts already included in our query as well(assuming it's not empty which we check for)
 			$where = " AND ((" . $searchQuery . ")) ";
 		}
 
 		return $where;
-    }
-    
+	}
+
 	// search for terms in default locations like title and content
 	// replacing the old search terms seems to be the best way to
 	// avoid issue with multiple terms
-	function search_default(){
+	function search_default() {
 		global $wpdb;
 		$not_exact = empty($this->query_instance->query_vars['exact']);
 		$search_sql_query = '';
@@ -300,7 +297,7 @@ class Search_Engine {
 			}
 			$sentence_term = $wpdb->prepare("%s", $s);
 			if ( count( $search_terms ) > 1 && $search_terms[0] != $sentence_term ) {
-                $search = "($search) OR (m.meta_value LIKE $sentence_term)";
+				$search = "($search) OR (m.meta_value LIKE $sentence_term)";
 			}
 
 			if ( !empty( $search ) )
@@ -386,8 +383,7 @@ class Search_Engine {
 		global $wpdb;
 
 		if ( $this->is_tainacan_search ) {
-
-            $join .= " LEFT JOIN $wpdb->postmeta AS m ON ($wpdb->posts.ID = m.post_id) ";
+			$join .= " LEFT JOIN $wpdb->postmeta AS m ON ($wpdb->posts.ID = m.post_id) ";
 		}
 		return $join;
 	}
@@ -403,7 +399,7 @@ class Search_Engine {
 
 		if ( $this->is_tainacan_search && !empty( $this->relationships ) ) {
 
-            $relationships = implode(',', $this->relationships);
+			$relationships = implode(',', $this->relationships);
 			$join .= " LEFT JOIN $wpdb->posts AS p2 ON (m.meta_value = p2.ID AND m.meta_key IN ($relationships)) ";
 		}
 		return $join;
@@ -420,9 +416,9 @@ class Search_Engine {
 
 		if ( $this->is_tainacan_search && !empty( $this->taxonomies ) ) {
 
-            foreach ( $this->taxonomies as $taxonomy ) {
-                $on[] = "ttax.taxonomy = '" . addslashes( $taxonomy )."'";
-            }
+			foreach ( $this->taxonomies as $taxonomy ) {
+				$on[] = "ttax.taxonomy = '" . addslashes( $taxonomy )."'";
+			}
 			// build our final string
 			$on = ' ( ' . implode( ' OR ', $on ) . ' ) ';
 			$join .= " LEFT JOIN $wpdb->term_relationships AS trel ON ($wpdb->posts.ID = trel.object_id) LEFT JOIN $wpdb->term_taxonomy AS ttax ON ( " . $on . " AND trel.term_taxonomy_id = ttax.term_taxonomy_id) LEFT JOIN $wpdb->terms AS tter ON (ttax.term_id = tter.term_id) ";
