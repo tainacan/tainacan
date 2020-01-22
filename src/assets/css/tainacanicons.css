@@ -1,0 +1,555 @@
+@font-face {
+    font-family: "TainacanIcons";
+    src: url("../fonts/TainacanIcons.eot");
+    src: url("../fonts/TainacanIcons.eot#iefix") format("embedded-opentype"), 
+         url("../fonts/TainacanIcons.woff2") format("woff2"), 
+         url("../fonts/TainacanIcons.otf") format("otf"), 
+         url("../fonts/TainacanIcons.woff") format("woff"), 
+         url("../fonts/TainacanIcons.ttf") format("truetype"), 
+         url("../fonts/TainacanIcons.svg") format("svg");
+font-weight: normal;
+    font-style: normal;
+    text-rendering: optimizeLegibility;
+}
+
+.tainacan-icon:before,
+.tainacan-icon-set {
+    display: inline-block;
+    font: normal normal normal 20px/1 "TainacanIcons";
+    font-size: inherit;
+    text-rendering: auto;
+    vertical-align: middle;
+    line-height: inherit;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+}
+
+.tainacan-icon-pdf:before {
+    content: "pdf";
+}
+.tainacan-icon-arrowleft:before {
+    content: "arrowleft";
+}
+.tainacan-icon-arrowup:before {
+    content: "arrowup";
+}
+.tainacan-icon-arrowright:before {
+    content: "arrowright";
+}
+.tainacan-icon-arrowdown:before {
+    content: "arrowdown";
+}
+.tainacan-icon-home:before {
+    content: "home";
+}
+.tainacan-icon-image:before {
+    content: "image";
+}
+.tainacan-icon-star:before {
+    content: "star";
+}
+.tainacan-icon-cancel:before {
+    content: "cancel";
+}
+.tainacan-icon-heartfill:before {
+    content: "heartfill";
+}
+.tainacan-icon-heartoutline:before {
+    content: "heartoutline";
+}
+.tainacan-icon-openurl:before {
+    content: "openurl";
+}
+.tainacan-icon-attachments:before {
+    content: "attachments";
+}
+.tainacan-icon-wordpress:before {
+    content: "wordpress";
+}
+.tainacan-icon-activities:before {
+    content: "activities";
+}
+.tainacan-icon-add:before {
+    content: "add";
+}
+.tainacan-icon-addcollection:before {
+    content: "addcollection";
+}
+.tainacan-icon-alert:before {
+    content: "alert";
+}
+.tainacan-icon-alertcircle:before {
+    content: "alertcircle";
+}
+.tainacan-icon-approved:before {
+    content: "approved";
+}
+.tainacan-icon-approvedcircle:before {
+    content: "approvedcircle";
+}
+.tainacan-icon-audio:before {
+    content: "audio";
+}
+.tainacan-icon-video:before {
+    content: "video";
+}
+.tainacan-icon-close:before {
+    content: "close";
+}
+.tainacan-icon-collection:before {
+    content: "collection";
+}
+.tainacan-icon-collections:before {
+    content: "collections";
+}
+.tainacan-icon-delete:before {
+    content: "delete";
+}
+.tainacan-icon-deleteforever:before {
+    content: "deleteforever";
+}
+.tainacan-icon-download:before {
+    content: "download";
+}
+.tainacan-icon-download:before {
+    content: "download";
+}
+.tainacan-icon-draft:before {
+    content: "draft";
+}
+.tainacan-icon-edit:before {
+    content: "edit";
+}
+.tainacan-icon-export:before {
+    content: "export";
+}
+.tainacan-icon-filters:before {
+    content: "filters";
+}
+.tainacan-icon-finish:before {
+    content: "finish";
+}
+.tainacan-icon-gallery:before {
+    content: "gallery";
+}
+.tainacan-icon-help:before {
+    content: "help";
+}
+.tainacan-icon-importers:before {
+    content: "importers";
+}
+.tainacan-icon-items:before {
+    content: "items";
+}
+.tainacan-icon-menu:before {
+    content: "menu";
+}
+.tainacan-icon-metadata:before {
+    content: "metadata";
+}
+.tainacan-icon-plus:before {
+    content: "plus";
+}
+.tainacan-icon-minus:before {
+    content: "minus";
+}
+.tainacan-icon-showmore:before {
+    content: "showmore";
+}
+.tainacan-icon-next:before {
+    content: "next";
+}
+.tainacan-icon-drag:before {
+    content: "drag";
+}
+.tainacan-icon-notifications:before {
+    content: "notifications";
+}
+.tainacan-icon-nextlevel:before {
+    content: "nextlevel";
+}
+.tainacan-icon-waiting:before {
+    content: "waiting";
+}
+.tainacan-icon-pause:before {
+    content: "pause";
+}
+.tainacan-icon-play:before {
+    content: "play";
+}
+.tainacan-icon-stop:before {
+    content: "stop";
+}
+.tainacan-icon-pausefill:before {
+    content: "pausefill";
+}
+.tainacan-icon-playfill:before {
+    content: "playfill";
+}
+.tainacan-icon-pointer:before {
+    content: "pointer";
+}
+.tainacan-icon-previous:before {
+    content: "previous";
+}
+.tainacan-icon-private:before {
+    content: "private";
+}
+.tainacan-icon-processerror:before {
+    content: "processerror";
+}
+.tainacan-icon-processes:before {
+    content: "processes";
+}
+.tainacan-icon-public:before {
+    content: "public";
+}
+.tainacan-icon-repository:before {
+    content: "repository";
+}
+.tainacan-icon-repproved:before {
+    content: "repproved";
+}
+.tainacan-icon-repprovedcircle:before {
+    content: "repprovedcircle";
+}
+.tainacan-icon-search:before {
+    content: "search";
+}
+.tainacan-icon-see:before {
+    content: "see";
+}
+.tainacan-icon-settings:before {
+    content: "settings";
+}
+.tainacan-icon-share:before {
+    content: "share";
+}
+.tainacan-icon-sortascending:before {
+    content: "sortascending";
+}
+.tainacan-icon-sortdescending:before {
+    content: "sortdescending";
+}
+.tainacan-icon-taxonomies:before {
+    content: "taxonomies";
+}
+.tainacan-icon-terms:before {
+    content: "terms";
+}
+.tainacan-icon-text:before {
+    content: "text";
+}
+.tainacan-icon-tour:before {
+    content: "tour";
+}
+.tainacan-icon-undo:before {
+    content: "undo";
+}
+.tainacan-icon-updating:before {
+    content: "updating";
+}
+.tainacan-icon-upload:before {
+    content: "upload";
+}
+.tainacan-icon-url:before {
+    content: "url";
+}
+.tainacan-icon-user:before {
+    content: "user";
+}
+.tainacan-icon-viewcards:before {
+    content: "viewcards";
+}
+.tainacan-icon-viewgallery:before {
+    content: "viewgallery";
+}
+.tainacan-icon-viewmasonry:before {
+    content: "viewmasonry";
+}
+.tainacan-icon-viewminiature:before {
+    content: "viewminiature";
+}
+.tainacan-icon-viewrecords:before {
+    content: "viewrecords";
+}
+.tainacan-icon-viewtable:before {
+    content: "viewtable";
+}
+.tainacan-icon-facebook:before {
+    content: "facebook";
+}
+.tainacan-icon-twitter:before {
+    content: "twitter";
+}
+.tainacan-icon-youtube:before {
+    content: "facebook";
+}
+.tainacan-icon-slidercol:before {
+    content: "slidercol";
+}
+.tainacan-icon-slideritems:before {
+    content: "slideritems";
+}
+.tainacan-icon-sliderterms:before {
+    content: "sliderterms";
+}
+.tainacan-icon-dincol:before {
+    content: "dincol";
+}
+.tainacan-icon-dinitems:before {
+    content: "dinitems";
+}
+.tainacan-icon-dinterms:before {
+    content: "dinterms";
+}
+
+.tainacan-icon-18px.tainacan-icon-set, 
+.tainacan-icon-18px.tainacan-icon:before {
+    font-size: 18px;
+}
+
+.tainacan-icon-20px.tainacan-icon-set, 
+.tainacan-icon-20px.tainacan-icon:before {
+    font-size: 20px;
+}
+
+.tainacan-icon-30px.tainacan-icon-set, 
+.tainacan-icon-30px.tainacan-icon:before {
+    font-size: 30px;
+}
+
+.tainacan-icon-36px.tainacan-icon-set, 
+.tainacan-icon-36px.tainacan-icon:before {
+    font-size: 36px;
+}
+
+.tainacan-icon-48px.tainacan-icon-set, 
+.tainacan-icon-48px.tainacan-icon:before {
+    font-size: 48px;
+}
+
+.tainacan-icon-dark:before {
+    color: rgba(0, 0, 0, 0.54);
+}
+.tainacan-icon-dark.tainacan-icon-inactive:before {
+    color: rgba(0, 0, 0, 0.26);
+}
+
+.tainacan-icon-light:before {
+    color: white;
+}
+.tainacan-icon-light.tainacan-icon-inactive:before {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.tainacan-icon-rotate-45 {
+/*
+// Not included in production
+&.tainacan-icon-flip-h:before {
+    -webkit-transform: scaleX(-1) rotate(45deg);
+    transform: scaleX(-1) rotate(45deg);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
+&.tainacan-icon-flip-v:before {
+    -webkit-transform: scaleY(-1) rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: scaleY(-1) rotate(45deg);
+    filter: FlipV;
+    -ms-filter: "FlipV";
+}
+*/
+}
+.tainacan-icon-rotate-45:before {
+-webkit-transform: rotate(45deg);
+-ms-transform: rotate(45deg);
+transform: rotate(45deg);
+}
+
+.tainacan-icon-rotate-90 {
+/*
+// Not included in production
+&.tainacan-icon-flip-h:before {
+    -webkit-transform: scaleX(-1) rotate(90deg);
+    transform: scaleX(-1) rotate(90deg);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
+&.tainacan-icon-flip-v:before {
+    -webkit-transform: scaleY(-1) rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: scaleY(-1) rotate(90deg);
+    filter: FlipV;
+    -ms-filter: "FlipV";
+}
+*/
+}
+.tainacan-icon-rotate-90:before {
+-webkit-transform: rotate(90deg);
+-ms-transform: rotate(90deg);
+transform: rotate(90deg);
+}
+
+.tainacan-icon-rotate-135 {
+/*
+// Not included in production
+&.tainacan-icon-flip-h:before {
+    -webkit-transform: scaleX(-1) rotate(135deg);
+    transform: scaleX(-1) rotate(135deg);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
+&.tainacan-icon-flip-v:before {
+    -webkit-transform: scaleY(-1) rotate(135deg);
+    -ms-transform: rotate(135deg);
+    transform: scaleY(-1) rotate(135deg);
+    filter: FlipV;
+    -ms-filter: "FlipV";
+}
+*/
+}
+.tainacan-icon-rotate-135:before {
+-webkit-transform: rotate(135deg);
+-ms-transform: rotate(135deg);
+transform: rotate(135deg);
+}
+
+.tainacan-icon-rotate-180 {
+/*
+// Not included in production
+&.tainacan-icon-flip-h:before {
+    -webkit-transform: scaleX(-1) rotate(180deg);
+    transform: scaleX(-1) rotate(180deg);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
+&.tainacan-icon-flip-v:before {
+    -webkit-transform: scaleY(-1) rotate(180deg);
+    -ms-transform: rotate(180deg);
+    transform: scaleY(-1) rotate(180deg);
+    filter: FlipV;
+    -ms-filter: "FlipV";
+}
+*/
+}
+.tainacan-icon-rotate-180:before {
+-webkit-transform: rotate(180deg);
+-ms-transform: rotate(180deg);
+transform: rotate(180deg);
+}
+
+.tainacan-icon-rotate-225 {
+/*
+// Not included in production
+&.tainacan-icon-flip-h:before {
+    -webkit-transform: scaleX(-1) rotate(225deg);
+    transform: scaleX(-1) rotate(225deg);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
+&.tainacan-icon-flip-v:before {
+    -webkit-transform: scaleY(-1) rotate(225deg);
+    -ms-transform: rotate(225deg);
+    transform: scaleY(-1) rotate(225deg);
+    filter: FlipV;
+    -ms-filter: "FlipV";
+}
+*/
+}
+.tainacan-icon-rotate-225:before {
+-webkit-transform: rotate(225deg);
+-ms-transform: rotate(225deg);
+transform: rotate(225deg);
+}
+
+.tainacan-icon-rotate-270 {
+/*
+// Not included in production
+&.tainacan-icon-flip-h:before {
+    -webkit-transform: scaleX(-1) rotate(270deg);
+    transform: scaleX(-1) rotate(270deg);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
+&.tainacan-icon-flip-v:before {
+    -webkit-transform: scaleY(-1) rotate(270deg);
+    -ms-transform: rotate(270deg);
+    transform: scaleY(-1) rotate(270deg);
+    filter: FlipV;
+    -ms-filter: "FlipV";
+}
+*/
+}
+.tainacan-icon-rotate-270:before {
+-webkit-transform: rotate(270deg);
+-ms-transform: rotate(270deg);
+transform: rotate(270deg);
+}
+
+.tainacan-icon-rotate-315 {
+/*
+// Not included in production
+&.tainacan-icon-flip-h:before {
+    -webkit-transform: scaleX(-1) rotate(315deg);
+    transform: scaleX(-1) rotate(315deg);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
+&.tainacan-icon-flip-v:before {
+    -webkit-transform: scaleY(-1) rotate(315deg);
+    -ms-transform: rotate(315deg);
+    transform: scaleY(-1) rotate(315deg);
+    filter: FlipV;
+    -ms-filter: "FlipV";
+}
+*/
+}
+.tainacan-icon-rotate-315:before {
+-webkit-transform: rotate(315deg);
+-ms-transform: rotate(315deg);
+transform: rotate(315deg);
+}
+
+.tainacan-icon-flip-h:before {
+-webkit-transform: scaleX(-1);
+transform: scaleX(-1);
+filter: FlipH;
+-ms-filter: "FlipH";
+}
+
+.tainacan-icon-flip-v:before {
+-webkit-transform: scaleY(-1);
+transform: scaleY(-1);
+filter: FlipV;
+-ms-filter: "FlipV";
+}
+
+.tainacan-icon-spin:before {
+-webkit-animation: mdi-spin 2s infinite linear;
+animation: mdi-spin 2s infinite linear;
+}
+
+@-webkit-keyframes mdi-spin {
+0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+}
+100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+}
+}
+@keyframes mdi-spin {
+0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+}
+100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+}
+}

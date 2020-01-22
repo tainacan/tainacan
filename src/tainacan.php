@@ -15,7 +15,7 @@ const TAINACAN_VERSION = '0.14.2';
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 $TAINACAN_BASE_URL = plugins_url('', __FILE__);
 const TAINACAN_BASE_DIR     = __DIR__;
-const TAINACAN_API_DIR     = __DIR__ . '/api/';
+const TAINACAN_API_DIR     = __DIR__ . '/classes/api/';
 const TAINACAN_CLASSES_DIR = __DIR__ . '/classes/';
 $TAINACAN_API_MAX_ITEMS_PER_PAGE = defined('TAINACAN_API_MAX_ITEMS_PER_PAGE') ? TAINACAN_API_MAX_ITEMS_PER_PAGE : 96;
 require_once(TAINACAN_CLASSES_DIR . 'tainacan-creator.php');
@@ -25,11 +25,6 @@ require_once('migrations.php');
 // DEV Interface, used for debugging
 function tnc_enable_dev_wp_interface() {
     return defined('TNC_ENABLE_DEV_WP_INTERFACE') && true === TNC_ENABLE_DEV_WP_INTERFACE ? true : false;
-}
-if ( tnc_enable_dev_wp_interface() ) {
-	require_once('dev-interface/class-tainacan-dev-interface.php');
-	require_once('dev-interface/class-tainacan-helpers-html.php');
-	$Tainacan_Dev_interface = \Tainacan\DevInterface\DevInterface::get_instance();
 }
 
 function tainacan_load_plugin_textdomain() {

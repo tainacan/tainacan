@@ -1,0 +1,166 @@
+// TAINACAN ICON FONT
+@import "../../../assets/css/tainacanicons.css";
+
+// Tainacan custom colors and bulma's core
+@import "./_variables.scss";
+
+// Import Bulma and Buefy styles
+@import "../../../assets/css/materialdesignicons.css";
+@import "../../../../node_modules/bulma/bulma.sass";
+@import "../../../../node_modules/buefy/src/scss/buefy.scss";
+
+// Import Tainacan custom styles
+@import "../scss/_tainacan-form.scss";
+@import "../scss/_buttons.scss";
+@import "../scss/_selects.scss";
+@import "../scss/_inputs.scss";
+@import "../scss/_checkboxes.scss";
+@import "../scss/_upload.scss";
+@import "../scss/_radios.scss";
+@import "../scss/_switches.scss";
+@import "../scss/_dropdown-and-autocomplete.scss";
+@import "../scss/_tabs.scss";
+@import "../scss/_tables.scss";
+@import "../scss/_tooltips.scss";
+@import "../scss/_pagination.scss";
+@import "../scss/_modals.scss";
+@import "../scss/_tags.scss";
+@import "../scss/_notices.scss";
+@import "../scss/_filters-menu-modal.scss";
+@import "../scss/_repository-level-overrides.scss";
+@import "../scss/_iframe_read_mode_overrides.scss";
+
+// Clears wordpress content
+html {
+    overflow-y: hidden;
+}
+body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, body.tainacan-admin-page #wp-auth-check-wrap {
+    display: none;
+}
+#tainacan-admin-app {
+    background: #ffffff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    z-index: 999999;
+    overflow-y: auto;
+    margin: 0px !important; 
+    font-family: $family-sans-serif;
+}
+
+// Scrollbars
+#tainacan-admin-app * {
+    // For Firefox
+    scrollbar-color: $gray3 transparent;
+    scrollbar-width: thin;
+
+    // For Chromium and related
+    &::-webkit-scrollbar {
+        width: 0.4rem;
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: $gray3;
+    }
+}
+
+// Tainacan Loading
+.tainacan-icon {
+    opacity: 0; // Will make it 1 once window.load is done; 
+}
+.loading-overlay {
+    z-index: 9999999999;
+}
+.loading-overlay .loading-icon::after {
+    background-image: url('../../assets/images/tainacan_loading.gif');
+    border: none;
+    border-radius: 0;
+    animation: none;
+    height: 46px;
+    width: 46px;
+    background-size: initial;
+}
+.loading-overlay.is-full-page .loading-icon::after {
+    height: 46px;
+    width: 46px;
+    background-size: initial;
+    top: calc(50% - 25px);
+    left: calc(50% - 25px);
+}
+
+// Link (hover is the same color as secondary
+a:hover {
+    color: $secondary;
+    text-decoration: underline;
+}
+.add-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem; 
+    margin: 3px 0 6px 0;
+    &.disabled {
+        pointer-events: none;
+        cursor: default;
+        color: $gray2 !important;
+
+        .icon {
+            color: $gray2 !important;
+        }
+    }
+    .tainacan-icon::before {
+        font-size: 0.875rem;
+    }
+}
+
+// Generic page container
+.page-container {
+    padding: $page-top-padding $page-side-padding;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+// Used for pages with collection subheader
+.page-container-small {
+    height: calc(100% - 42px);
+    overflow-y: auto;
+    transition: height 0.6s;
+}
+// Used for pages with subheader in mobile
+.page-container-narrow{
+    padding: $page-small-top-padding $page-small-side-padding;
+    
+    @media screen and (max-width: 769px) {
+        padding: $page-mobile-top-padding $page-mobile-side-padding;
+    }
+}
+
+// Metadata type textarea has different separators in different spots on interface
+.multivalue-separator {
+    color: $gray3;
+    margin: 0 8px;    
+}
+.hierarchy-separator {
+    color: $gray3;
+}
+.metadata-type-textarea {
+    .multivalue-separator {
+        display: block;
+        max-height: 1px;
+        width: 35px;
+        background: $gray3;
+        content: none;
+        color: transparent;
+        margin: 1rem auto;
+    }
+}
+
+// Buefy notices (toast, snackbar...)
+.notices {
+    z-index: 99999999999999 !important;
+}
+
+audio, video {
+    width: 100%;
+}

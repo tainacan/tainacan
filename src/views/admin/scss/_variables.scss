@@ -1,0 +1,717 @@
+// Import Bulma's core and variables
+@import "../../../../node_modules/bulma/sass/utilities/initial-variables";
+@import "../../../../node_modules/bulma/sass/utilities/functions";
+
+// NEW TAINACAN CUSTOM COLORS ------------------
+// Blue, used mainly for repository
+$blue1: #e6f4ff;
+$blue1-invert: findColorInvert($blue1);
+$blue2: #cce3f2;
+$blue2-invert: findColorInvert($blue2);
+$blue3: #44638e;
+$blue3-invert: findColorInvert($blue3);
+$blue4: #284472;
+$blue4-invert: findColorInvert($blue4);
+$blue5: #01295c;
+$blue5-invert: findColorInvert($blue5);
+
+// Turquoise, used mainly for collection level
+$turquoise1: #e6f6f8;
+$turquoise1-invert: findColorInvert($turquoise1);
+$turquoise2: #d9eced;
+$turquoise2-invert: findColorInvert($turquoise2);
+$turquoise3: #76c6cc;
+$turquoise3-invert: findColorInvert($turquoise3);
+$turquoise4: #4ea2ad;
+$turquoise4-invert: findColorInvert($turquoise4);
+$turquoise5: #298596;
+$turquoise5-invert: findColorInvert($turquoise5);
+$turquoise6: #226f7d;
+$turquoise6-invert: findColorInvert($turquoise6);
+
+// Gray, used mostyl for information
+$gray0: #f6f6f6;
+$gray0-invert: findColorInvert($gray0);
+$gray1: #f2f2f2;
+$gray1-invert: findColorInvert($gray1);
+$gray2: #dbdbdb;
+$gray2-invert: findColorInvert($gray2);
+$gray3: #cbcbcb;
+$gray3-invert: findColorInvert($gray3);
+$gray4: #555758;
+$gray4-invert: findColorInvert($gray4);
+$gray5: #454647;
+$gray5-invert: findColorInvert($gray5);
+
+// Red, used for error messages
+$red1: #eadadc;
+$red1-invert: findColorInvert($red1);
+$red2: #a23939;
+$red2-invert: findColorInvert($red2);
+// Green, used for success buttons
+$green1: #daece6;
+$green1-invert: findColorInvert($green1);
+$green2: #25a189;
+$green2-invert: findColorInvert($green2);
+// Warning, used for warning messages
+$yellow1: #fcebd9;
+$yellow1-invert: findColorInvert($yellow1);
+$yellow2: #e69810;
+$yellow2-invert: findColorInvert($yellow2);
+
+// Text, no quite black
+$tainacan-input-color: #1d1d1d;
+
+// Maps some of bulma's colors to custom variables
+$primary: $turquoise3;
+$primary-invert: findColorInvert($turquoise3);
+$secondary: $turquoise5;
+$secondary-invert: findColorInvert($turquoise5);
+$success: $green2;
+$success-invert: findColorInvert($success);
+$danger: $red2; 
+$danger-invert: findColorInvert($danger);
+$warning: $yellow2;
+$warning-invert: findColorInvert($warning);
+$gray: $gray4;
+$gray-invert: findColorInvert($gray4);
+
+@import "../../../../node_modules/bulma/sass/utilities/derived-variables.sass";
+
+// Setup $colors to use as bulma classes
+$colors: (
+    "white": ($white, $black),
+    "black": ($black, $white),
+    "light": ($light, $light-invert),
+    "dark": ($dark, $dark-invert),
+    "primary": ($turquoise3, $turquoise3-invert),
+    "secondary": ($turquoise5, $turquoise5-invert),
+    "info": ($info, $info-invert),
+    "success": ($success, $success-invert),
+    "warning": ($warning, $warning-invert),
+    "danger": ($danger, $danger-invert)
+);
+$addColors: ( 
+    "gray": ($gray4, $gray-invert),
+    "blue1": ($blue1, $blue1-invert),
+    "blue2": ($blue2, $blue2-invert),
+    "blue3": ($blue3, $blue3-invert),
+    "blue4": ($blue4, $blue4-invert),
+    "blue5": ($blue5, $blue5-invert),
+    "turquoise1": ($turquoise1, $turquoise1-invert),
+    "turquoise2": ($turquoise2, $turquoise2-invert),
+    "turquoise3": ($turquoise3, $turquoise3-invert),
+    "turquoise4": ($turquoise4, $turquoise4-invert),
+    "turquoise5": ($turquoise5, $turquoise5-invert),
+    "gray1": ($gray1, $gray1-invert),
+    "gray2": ($gray2, $gray2-invert),
+    "gray3": ($gray3, $gray3-invert),
+    "gray4": ($gray4, $gray4-invert),
+    "gray5": ($gray5, $gray5-invert),
+    "red1": ($red1, $red1-invert),
+    "red2": ($red2, $red2-invert),
+    "green1": ($green1, $green1-invert),
+    "green2": ($green2, $green2-invert),
+    "yellow1": ($yellow1, $yellow1-invert),
+    "yellow2": ($yellow2, $yellow2-invert)
+);
+$colors: map-merge($colors, $addColors);
+
+// Bulma Variables
+$size-small: 0.85em; // 0.75em on Bulma.
+$dropdown-mobile-breakpoint: $tablet;
+
+// Tainacan Header and side menus
+$header-height: 52px;
+$subheader-height: 42px;
+$side-menu-width: 160px;
+$filter-menu-width: 16.666666667%;
+$filter-menu-width-theme: 20.833333333%;
+$page-height: calc(100vh - 94px);
+
+// Overall Pages padding:
+$page-side-padding: 4.166666667%;//82px;
+$table-side-padding: 4.166666667%;
+$page-top-padding: 25px;
+$page-small-side-padding: 25px;
+$page-small-top-padding: 25px;
+
+$page-mobile-side-padding: 1em;
+$page-mobile-top-padding: 1em;
+
+// Links
+$link: $secondary;
+$link-invert: $secondary;
+$link-focus-border: $secondary; 
+
+// Placeholder
+$text-light: $gray4;
+
+// Table
+$table-head-cell-color: $gray4;
+$table-head-cell-border-width: 0 0 1px !important;
+$table-row-active-color: #e5e5e5;
+$table-foot-cell-color: $gray4;
+$table-foot-cell-border-width: 1px 0 0 !important;
+$table-cell-padding: 1.0em 0.75em;
+
+// Roboto font
+$family-sans-serif: 'Roboto', 'Source Sans', 'Helvetica', sans-serif;
+ 
+// Bulma's modal (needs to be greather than tainacan-admin-app)
+$modal-z: 9999999;
+
+// Grid mixin for display: grid compatibility
+@mixin display-grid {
+    flex-wrap: wrap;
+    display: flex;
+    display: -ms-grid;
+    display: grid;
+}
+
+// A copy of bootstrap's screen reader only class to be used for accessibility.
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}
+
+// Animations for Slide Menu
+@keyframes slide-menu-in {
+    from {
+        -ms-transform: translate(-100%, 0); /* IE 9 */
+        -webkit-transform: translate(-100%, 0); /* Safari */
+        transform: translate(-100%, 0);
+    }
+    to {
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes slide-menu-out {
+    from {
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        -ms-transform: translate(-100%, 0); /* IE 9 */
+        -webkit-transform: translate(-100%, 0); /* Safari */
+        transform: translate(-100%, 0);
+    }
+}
+
+@keyframes appear {
+    from {
+        opacity: 0.0;
+        visibility: hidden;
+    }
+    to {
+        opacity: 1.0;
+        visibility: visible;
+    }
+}
+
+@keyframes disappear {
+    from {
+        opacity: 0.3;
+        visibility: visible;
+    }
+    to {
+        opacity: 0.0;
+        visibility: hidden;
+    }
+}
+
+.slide-menu-enter-active {
+    animation-name: slide-menu-in;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-out;   
+    
+    .modal-background {
+        animation-name: appear;
+        animation-duration: 0.6s;
+        animation-timing-function: ease-out;
+    } 
+}
+.slide-menu-leave-active {
+    animation-name: slide-menu-out;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in;    
+
+    .modal-background {
+        opacity: 0.0;
+        animation-name: disappear;
+        animation-duration: 0.2s;
+        animation-timing-function: ease-in;
+    } 
+}
+
+// Animations for background processes popup and url copy popup
+@keyframes appear-from-top {
+    from { 
+        top: 24px;
+        opacity: 0; 
+    }
+    to { 
+        top: 48px;
+        opacity: 1; 
+    }
+}
+@keyframes expand {
+    from { 
+        max-height: 0; 
+    }
+    to { 
+        max-height: 222px; 
+    }
+}
+
+// Animations for Item Appear in Items List
+@keyframes item-appear {
+    from {
+        opacity: 0;
+        visibility: hidden;
+        transform: translate(0, 12px);
+    }
+    to {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(0, 0px);
+    }
+}
+
+// Filter Item Collapse 
+@keyframes filter-item-in {
+    from {
+        opacity: 0;
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+        -ms-transform: translate(0%, -30%); /* IE 9 */
+        -webkit-transform: translate(0%, -30%); /* Safari */
+        transform: translate(0%, -30%);
+    }
+    to {
+        height: 35px;
+        max-height: 35px;
+        min-height: 35px;
+        opacity: 1;        
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes filter-item-out {
+    from {
+        height: 35px;
+        max-height: 35px;
+        min-height: 35px;
+        opacity: 1;
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+        opacity: 0;
+        -ms-transform: translate(0%, -30%); /* IE 9 */
+        -webkit-transform: translate(0%, -30%); /* Safari */
+        transform: translate(0%, -30%);
+    }
+}
+
+.filter-item-enter-active {
+    overflow: hidden;
+    animation-name: filter-item-in;
+    animation-duration: 0.1s;
+    animation-timing-function: ease;   
+}
+.filter-item-leave-active {   
+    overflow: hidden; 
+    animation-name: filter-item-out;
+    animation-duration: 0.1s;
+    animation-timing-function: ease;   
+}
+
+// Filter and Metadata Form Collapse 
+@keyframes form-collapse-in {
+    from {
+        opacity: 0;
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+        // -ms-transform: translate(0%, -30%); /* IE 9 */
+        // -webkit-transform: translate(0%, -30%); /* Safari */
+        // transform: translate(0%, -30%);
+    }
+    to {
+        height: 300px;
+        max-height: 300px;
+        min-height: 300px;
+        opacity: 1;        
+        // -ms-transform: translate(0, 0); /* IE 9 */
+        // -webkit-transform: translate(0, 0); /* Safari */
+        // transform: translate(0, 0);
+    }
+}
+
+@keyframes form-collapse-out {
+    from {
+        height: 300px;
+        max-height: 300px;
+        min-height: 300px;
+        //opacity: 1;
+        // -ms-transform: translate(0, 0); /* IE 9 */
+        // -webkit-transform: translate(0, 0); /* Safari */
+        // transform: translate(0, 0);
+    }
+    to {
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+       //opacity: 0;
+        // -ms-transform: translate(0%, -30%); /* IE 9 */
+        // -webkit-transform: translate(0%, -30%); /* Safari */
+        // transform: translate(0%, -30%);
+    }
+}
+
+.form-collapse-enter-active {
+    overflow: hidden;
+    animation-name: form-collapse-in;
+    animation-duration: 0.2s;
+    animation-timing-function: ease;   
+}
+.form-collapse-leave-active {
+    overflow: hidden;
+    animation-name: form-collapse-out;
+    animation-duration: 0.15s;
+    animation-timing-function: ease;   
+}
+
+// Capababilities Form Collapse 
+@keyframes form-capabilities-in {
+    from {
+        opacity: 0;
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+        // -ms-transform: translate(0%, -30%); /* IE 9 */
+        // -webkit-transform: translate(0%, -30%); /* Safari */
+        // transform: translate(0%, -30%);
+    }
+    to {
+        height: 120px;
+        max-height: 120px;
+        min-height: 120px;
+        opacity: 1;        
+        // -ms-transform: translate(0, 0); /* IE 9 */
+        // -webkit-transform: translate(0, 0); /* Safari */
+        // transform: translate(0, 0);
+    }
+}
+
+@keyframes form-capabilities-out {
+    from {
+        height: 120px;
+        max-height: 120px;
+        min-height: 120px;
+        //opacity: 1;
+        // -ms-transform: translate(0, 0); /* IE 9 */
+        // -webkit-transform: translate(0, 0); /* Safari */
+        // transform: translate(0, 0);
+    }
+    to {
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+       //opacity: 0;
+        // -ms-transform: translate(0%, -30%); /* IE 9 */
+        // -webkit-transform: translate(0%, -30%); /* Safari */
+        // transform: translate(0%, -30%);
+    }
+}
+
+.form-capabilities-enter-active {
+    overflow: hidden;
+    animation-name: form-capabilities-in;
+    animation-duration: 0.2s;
+    animation-timing-function: ease;   
+}
+.form-capabilities-leave-active {
+    overflow: hidden;
+    animation-name: form-capabilities-out;
+    animation-duration: 0.15s;
+    animation-timing-function: ease;   
+}
+
+// Filters menu 
+@keyframes filters-menu-in {
+    from {
+        opacity: 0;
+        width: 0px;
+        max-width: 0px;
+        min-width: 0px;
+        -ms-transform: translate(-30%, 0%); /* IE 9 */
+        -webkit-transform: translate(-30%, 0%); /* Safari */
+        transform: translate(-30%, 0%);
+    }
+    to {
+        height: 180px;
+        max-width: 180px;
+        min-width: 180px;
+        opacity: 1;        
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes filters-menu-out {
+    from {
+        width: 180px;
+        max-width: 180px;
+        min-width: 180px;
+        opacity: 1;
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        width: 0px;
+        max-width: 0px;
+        min-width: 0px;
+        opacity: 0;
+        -ms-transform: translate(-30%, 0%); /* IE 9 */
+        -webkit-transform: translate(-30%, 0%); /* Safari */
+        transform: translate(-30%, 0%);
+    }
+}
+
+.filters-menu-enter-active {
+    animation-name: filters-menu-in;
+    animation-duration: 0.2s;
+    animation-timing-function: ease;   
+}
+.filters-menu-leave-active {
+    animation-name: filters-menu-out;
+    animation-duration: 0.2s;
+    animation-timing-function: ease;   
+}
+
+// Slide
+@keyframes slide-left-in {
+    from {
+        opacity: 0;
+        -ms-transform: translate(-5%, 0%) scale(0.95); /* IE 9 */
+        -webkit-transform: translate(-5%, 0%) scale(0.95); /* Safari */
+        transform: translate(-5%, 0%) scale(0.95);
+    }
+    to {
+        opacity: 1;        
+        -ms-transform: translate(0, 0) scale(1); /* IE 9 */
+        -webkit-transform: translate(0, 0) scale(1); /* Safari */
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+@keyframes slide-left-out {
+    from {
+        opacity: 1;
+        -ms-transform: translate(0, 0) scale(1); /* IE 9 */
+        -webkit-transform: translate(0, 0) scale(1); /* Safari */
+        transform: translate(0, 0) scale(1);
+    }
+    to {
+        opacity: 0;
+        -ms-transform: translate(10%, 0%) scale(0.95); /* IE 9 */
+        -webkit-transform: translate(10%, 0%) scale(0.95); /* Safari */
+        transform: translate(10%, 0%) scale(0.95);
+    }
+}
+
+.slide-left-enter-active {
+    animation-name: slide-left-in;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;   
+}
+.slide-left-leave-active {
+    animation-name: slide-left-out;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;   
+}
+
+@keyframes slide-right-in {
+    from {
+        opacity: 0;
+        -ms-transform: translate(10%, 0%) scale(0.95); /* IE 9 */
+        -webkit-transform: translate(10%, 0%) scale(0.95); /* Safari */
+        transform: translate(10%, 0%) scale(0.95);
+    }
+    to {
+        opacity: 1;        
+        -ms-transform: translate(0, 0) scale(1); /* IE 9 */
+        -webkit-transform: translate(0, 0) scale(1); /* Safari */
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+@keyframes slide-right-out {
+    from {
+        opacity: 1;
+        -ms-transform: translate(0, 0) scale(1); /* IE 9 */
+        -webkit-transform: translate(0, 0) scale(1); /* Safari */
+        transform: translate(0, 0) scale(1);
+    }
+    to {
+        opacity: 0;
+        -ms-transform: translate(-5%, 0%) scale(0.95); /* IE 9 */
+        -webkit-transform: translate(-5%, 0%) scale(0.95); /* Safari */
+        transform: translate(-5%, 0%) scale(0.95);
+    }
+}
+
+.slide-right-enter-active {
+    animation-name: slide-right-in;
+    animation-duration: 0.3s;
+    animation-timing-function: ease;   
+}
+.slide-right-leave-active {
+    animation-name: slide-right-out;
+    animation-duration: 0.3s;
+    animation-timing-function: ease;   
+}
+
+// Sequence page
+
+// Slide
+@keyframes page-left-in {
+    from {
+        opacity: 0;
+        -ms-transform: translate(-5%, 0%); /* IE 9 */
+        -webkit-transform: translate(-5%, 0%); /* Safari */
+        transform: translate(-5%, 0%);
+    }
+    to {
+        opacity: 1;        
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes page-left-out {
+    from {
+        opacity: 1;
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        opacity: 0;
+        -ms-transform: translate(10%, 0%); /* IE 9 */
+        -webkit-transform: translate(10%, 0%); /* Safari */
+        transform: translate(10%, 0%);
+    }
+}
+
+.page-left-enter-active {
+    animation-name: page-left-in;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;   
+}
+.page-left-leave-active {
+    animation-name: page-left-out;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;   
+}
+
+@keyframes page-right-in {
+    from {
+        opacity: 0;
+        -ms-transform: translate(10%, 0%); /* IE 9 */
+        -webkit-transform: translate(10%, 0%); /* Safari */
+        transform: translate(10%, 0%);
+    }
+    to {
+        opacity: 1;        
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes page-right-out {
+    from {
+        opacity: 1;
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        opacity: 0;
+        -ms-transform: translate(-5%, 0%); /* IE 9 */
+        -webkit-transform: translate(-5%, 0%); /* Safari */
+        transform: translate(-5%, 0%);
+    }
+}
+
+.page-right-enter-active {
+    animation-name: page-right-in;
+    animation-duration: 0.3s;
+    animation-timing-function: ease;   
+}
+.page-right-leave-active {
+    animation-name: page-right-out;
+    animation-duration: 0.3s;
+    animation-timing-function: ease;   
+}
+
+// SKELETON GRADIENT ANIMATIONS
+@-webkit-keyframes skeleton-animation {
+    0%{opacity: 1.0}
+    50%{opacity: 0.2}
+    100%{opacity: 1.0}
+}
+@-moz-keyframes skeleton-animation {
+    0%{opacity: 1.0}
+    50%{opacity: 0.2}
+    100%{opacity: 1.0}
+}
+@-o-keyframes skeleton-animation {
+    0%{opacity: 1.0}
+    50%{opacity: 0.2}
+    100%{opacity: 1.0}
+}
+@keyframes skeleton-animation {
+    0%{opacity: 1.0}
+    50%{opacity: 0.2}
+    100%{opacity: 1.0}
+}
+
+// .skeleton:nth-child(even) {
+//     background: linear-gradient(105deg, #f0f0f0, #fbfbfb, #eeeeee);
+// }
+// .skeleton:nth-child(odd) {
+//     background: linear-gradient(235deg, #f0f0f0, #fbfbfb, #eeeeee);   
+// }
+.skeleton {
+    border-radius: 2px;
+    background: $gray1;
+
+    -webkit-animation: skeleton-animation 1.8s ease infinite;
+    -moz-animation: skeleton-animation 1.8s ease infinite;
+    -o-animation: skeleton-animation 1.8s ease infinite;
+    animation: skeleton-animation 1.8s ease infinite;
+}
