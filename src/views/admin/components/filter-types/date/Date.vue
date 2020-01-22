@@ -74,6 +74,7 @@
                 v-model="value"
                 @input="emit()"
                 editable
+                :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
                 :date-parser="(date) => dateParser(date)"
                 size="is-small"

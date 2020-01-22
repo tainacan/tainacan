@@ -38,6 +38,7 @@
                                 :placeholder="$i18n.get('instruction_filter_activities_date')"
                                 v-model="searchDates"
                                 range
+                                :trap-focus="false"
                                 @input="searchActivities()"
                                 :date-formatter="(date) => dateFormatter(date)"
                                 :date-parser="(date) => dateParser(date)"

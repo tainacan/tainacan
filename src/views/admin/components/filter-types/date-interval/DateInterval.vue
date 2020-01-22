@@ -8,6 +8,7 @@
                 @focus="isTouched = true"
                 @input="validadeValues()"
                 editable
+                :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
                 :date-parser="(date) => dateParser(date)"
                 icon="calendar-today"
@@ -30,6 +31,7 @@
                 @input="validadeValues()"
                 @focus="isTouched = true"
                 editable
+                :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
                 :date-parser="(date) => dateParser(date)"
                 icon="calendar-today"
