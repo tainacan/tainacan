@@ -259,7 +259,7 @@ class Admin {
 		    $class = new $filter_type;
 			$settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
 			if ($class->get_script() != '') {
-				$msg = wp_add_inline_script('tainacan-admin', $class->get_script());
+				$msg = wp_add_inline_script('tainacan-admin', $class->get_script(), 'before');
 			}
 		}
 
