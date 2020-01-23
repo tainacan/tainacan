@@ -254,10 +254,13 @@ class Admin {
 		}
 
 		$filter_types = $Tainacan_Filters->fetch_filter_types();
-
+		
 		foreach ( $filter_types as $index => $filter_type){
 		    $class = new $filter_type;
-            $settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
+			$settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
+			if ($class->get_script() != '') {
+				$msg = wp_add_inline_script('tainacan-admin', $class->get_script());
+			}
 		}
 
 		$settings['form_hooks'] = Admin_Hooks::get_instance()->get_registered_hooks();

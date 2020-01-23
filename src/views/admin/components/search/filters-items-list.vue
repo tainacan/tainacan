@@ -410,7 +410,7 @@
                             resp.request
                                 .then(() => this.isLoadingFilters = false)
                                 .catch(() => this.isLoadingFilters = false);
-
+    
                             // Search Request Token for cancelling
                             this.filtersSearchCancel = resp.source;
                         })

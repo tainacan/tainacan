@@ -37,6 +37,18 @@ abstract class Filter_Type {
     private $component;
 
     /**
+     * The content of the html template used by this filter type
+     * @var string
+     */
+    private $template = '';
+
+    /**
+     * The content of the js script associated to the template used by this filter type
+     * @var string
+     */
+    private $script = '';
+
+    /**
      * The name of the web component used by the Form
      * @var bool | string
      */
@@ -125,6 +137,7 @@ abstract class Filter_Type {
         $attributes['className']        = get_class($this);
         $attributes['name']             = $this->get_name();
         $attributes['component']        = $this->get_component();
+        $attributes['template']         = $this->get_template();
         $attributes['options']          = $this->get_options();
         $attributes['supported_types']  = $this->get_supported_types();
         $attributes['preview_template'] = $this->get_preview_template();
@@ -176,6 +189,20 @@ abstract class Filter_Type {
 	 */
 	public function set_component( $component ) {
 		$this->component = $component;
+    }
+    
+    /**
+	 * @param string $template
+	 */
+	public function set_template( $template ) {
+		$this->template= $template;
+	}
+        
+    /**
+	 * @param string $script
+	 */
+	public function set_script( $script ) {
+		$this->script= $script;
 	}
 
     /**
@@ -220,6 +247,20 @@ abstract class Filter_Type {
      */
     public function get_form_component() {
         return $this->form_component;
+    }
+
+    /**
+     * @return string 
+     */
+    public function get_template() {
+        return $this->template;
+    }
+
+    /**
+     * @return string 
+     */
+    public function get_script() {
+        return $this->script;
     }
 
     /**

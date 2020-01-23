@@ -32,7 +32,18 @@
                 <span class="collapse-label">{{ filter.name }}</span>
             </button>
             <div :id="'filter-input-id-' + filter.id">
+                <div
+                        v-if="filter.filter_type_object.template"
+                        v-html="filter.filter_type_object.template"
+                        :filter="JSON.stringify(filter)"
+                        :query="JSON.stringify(query)"
+                        :is-using-elastic-search="isUsingElasticSearch"
+                        :is-repository-level="isRepositoryLevel"
+                        :is-loading-items.sync="isLoadingItems"
+                        @input="onInput"
+                        @sendValuesToTags="onSendValuesToTags"/>
                 <component
+                        v-else
                         :is="filter.filter_type_object.component"
                         :filter="filter"
                         :query="query"
