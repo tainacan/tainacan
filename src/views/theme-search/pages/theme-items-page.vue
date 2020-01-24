@@ -739,24 +739,6 @@
                 'getTotalItems',
                 'getMetaKey'
             ]),
-            onSwipeFiltersMenu($event) {
-                if (this.registeredViewModes[this.viewMode] == undefined || 
-                    (this.registeredViewModes[this.viewMode] != undefined && 
-                        (this.registeredViewModes[this.viewMode].full_screen == false || 
-                        this.registeredViewModes[this.viewMode].full_screen == undefined)
-                    )
-                   ) {
-                    let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
-
-                    if ($event.offsetDirection == 4 && screenWidth <= 768) {
-                        if (!this.isFilterModalActive)
-                            this.isFilterModalActive = true;
-                    } else if ($event.offsetDirection == 2 && screenWidth <= 768) {
-                        if (this.isFilterModalActive)
-                            this.isFilterModalActive = false;
-                    }
-                }
-            },
             openExposersModal() {
                 this.$buefy.modal.open({
                     parent: this,

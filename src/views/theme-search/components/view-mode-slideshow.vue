@@ -321,8 +321,7 @@ export default {
         items: Array,
         isLoading: Boolean,
         totalItems: Number,
-        hideControls: true,
-        isSwiping: false
+        hideControls: true
     },  
     data () {
         return {
@@ -526,19 +525,7 @@ export default {
             this.maxPage = JSON.parse(JSON.stringify(this.getPage() > this.maxPage ? this.getPage() : this.maxPage));
         },
         onHideControls() {
-            if (this.isSwiping == undefined || this.isSwiping == false)
-                this.hideControls = !this.hideControls;
-        },
-        onSwipeFiltersMenu($event) {
-            this.isSwiping = true;
-            if ($event.offsetDirection == 2) {
-                this.nextSlide();
-            } else if ($event.offsetDirection == 4) {
-                this.prevSlide();
-            }
-            setTimeout(() => {
-                this.isSwiping = false;
-            }, 500);
+            this.hideControls = !this.hideControls;
         },
         onSlideChange() {
 

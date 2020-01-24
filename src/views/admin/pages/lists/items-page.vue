@@ -883,18 +883,6 @@
                 'getAdminViewMode',
                 'getMetaKey'
             ]),
-            onSwipeFiltersMenu($event) {
-
-                let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
-
-                if ($event.offsetDirection == 4 && screenWidth <= 768) {
-                    if (!this.isFilterModalActive)
-                        this.isFilterModalActive = true;
-                } else if ($event.offsetDirection == 2 && screenWidth <= 768) {
-                    if (this.isFilterModalActive)
-                        this.isFilterModalActive = false;
-                }
-            },
             onOpenImportersModal() {
                 this.$buefy.modal.open({
                     parent: this,
