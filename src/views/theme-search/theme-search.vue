@@ -57,7 +57,6 @@ export default {
 
     .theme-items-list {
         position: relative;
-        display: flex;
         -webkit-overflow-scrolling: touch;
 
         .tainacan-icon {
@@ -122,28 +121,7 @@ export default {
                 margin-bottom: 0px;
             }
         }
-
-        .filters-menu {
-            // height: auto;
-            position: absolute !important;
-            min-width: $filter-menu-width-theme;
-            border-right: 0;
-            padding: 25px 2.0833333% 25px 4.1666667%;
-
-            @media screen and (min-width: 769px) and (max-width: 1023px) {
-                min-width: 25% !important;
-            }
-
-            .columns {
-                display: flex;
-            }
-
-            .taginput-container {
-                .control.has-icons-left .icon {
-                    top: 5px;
-                }
-            }
-        }
+        
         .metadata-alert {
             display: flex;
             justify-content: space-between;
@@ -172,75 +150,6 @@ export default {
                     font-weight: bold;
                     border: none;
                     cursor: pointer;
-                }
-            }
-        }
-        .search-control {   
-            justify-content: flex-start !important;
-
-            @media screen and (min-width: 769px) {
-                margin-bottom: $page-small-top-padding !important;
-                
-                .search-control-item {
-                    margin-right: $page-side-padding !important;
-                }
-            }
-            @media screen and (max-width: 768px) {
-                justify-content: space-between !important;
-            }
-            .search-control-item:first-child>div {
-                margin-left: -8.3333333%;
-            }
-
-            .gray-icon, .gray-icon .icon {
-                color: $gray4 !important;
-                i::before {
-                    font-size: 1.3125rem;
-                }
-            }
-            .dropdown-item {
-                padding: 0.25rem 1.35rem 0.25rem 0.25rem;
-            }
-            .view-mode-icon {
-                margin-right: 0px !important;
-                margin-top: -4px;
-                margin-left: 4px;
-                width: 1.25rem;
-
-                &.icon i::before, .gray-icon i::before {
-                    font-size: 1.1875px !important;
-                }
-            }
-        }
-
-        #items-list-area {
-            width: 100%;
-            overflow-y: hidden;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            margin-left: 0;
-            &.spaced-to-right {
-                margin-left:  $filter-menu-width-theme;
-
-                @media screen and (min-width: 769px) and (max-width: 1023px) {
-                    margin-left: 25% !important;
-                }
-            }
-
-            // Metadata type textarea has different separators in different spots on interface
-            .multivalue-separator {
-                color: $gray3;
-                margin: 0 8px;    
-            }
-            .metadata-type-textarea {
-                .multivalue-separator {
-                    display: block;
-                    max-height: 1px;
-                    width: 35px;
-                    background: $gray3;
-                    content: none;
-                    color: transparent;
-                    margin: 1rem auto;
                 }
             }
         }
