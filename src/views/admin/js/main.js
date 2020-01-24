@@ -134,9 +134,14 @@ function listen(evnt, elem, func) {
     else if (elem.attachEvent) { // IE DOM
          var r = elem.attachEvent("on"+evnt, func);
          return r;
-    }
-    else {
-        jQuery('head').append('<style>.tainacan-icon{ opacity: 1 !important; }</style>');
+    } else if (document.head) {
+        var iconHideStyle = document.createElement("style");
+        iconHideStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }'; 
+        document.head.appendChild(iconHideStyle);
+    } else {
+        var iconHideStyle = document.createElement("style");
+        iconHideStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }'; 
+        document.getElementsByTagName("head")[0].appendChild(iconHideStyle);
     }
 }
 listen("load", window, function() {

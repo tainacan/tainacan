@@ -358,28 +358,14 @@
             if (this.$route.query.highlight) {
                 this.highlightedProcess = this.$route.query.highlight;
             }
-        },
-        created(){
+
             if (jQuery && jQuery( document )) {
-                jQuery( document ).on( 'heartbeat-tick-list',  ( event, data ) => {
-                    let updatedProcesses = data.bg_process_feedback;
-
-                    for (let updatedProcess of updatedProcesses) {
-                        let updatedProcessIndex = this.processes.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
-                        if (updatedProcessIndex >= 0) {
-                            this.heartBitUpdateProcess(updatedProcess);
-                        }
-                    }
-                });
-
-                jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
-                    jQuery( document ).trigger('heartbeat-tick-list', data);
-                });
+                jQuery( document ).on( 'heartbeat-tick', this.onHeartBitTickList);
             }
         },
         beforeDestroy() {
             if (jQuery && jQuery( document )) {
-                jQuery( document ).unbind( 'heartbeat-tick-list')
+                jQuery( document ).unbind( 'heartbeat-tick', this.onHeartBitTickList)
             }
         },
         methods: {
@@ -492,6 +478,16 @@
                     },
                     trapFocus: true
                 });
+            },
+            onHeartBitTickList(event, data) {
+                let updatedProcesses = data.bg_process_feedback;
+
+                for (let updatedProcess of updatedProcesses) {
+                    let updatedProcessIndex = this.processes.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
+                    if (updatedProcessIndex >= 0) {
+                        this.heartBitUpdateProcess(updatedProcess);
+                    }
+                }
             }
         }
     }

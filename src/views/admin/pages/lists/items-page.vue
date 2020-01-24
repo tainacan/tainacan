@@ -1225,8 +1225,8 @@
                     if (this.$refs['search-control'] != undefined)
                         this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight + this.$refs['search-control'].offsetTop : 0;
                     
-                    if (jQuery && jQuery(window))
-                        this.isFiltersMenuCompressed = jQuery(window).width() <= 768;
+                    if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
+                        this.isFiltersMenuCompressed = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
                 });
             }, 500),
             removeEventListeners() {

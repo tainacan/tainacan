@@ -200,20 +200,15 @@ export default {
         });
 
         this.showProcessesList = false;
-
+        
         if (jQuery && jQuery( document )) {
-            jQuery( document ).on( 'heartbeat-tick-popup',  ( event, data ) => {
-                this.setProcesses(data.bg_process_feedback);
-            });
-
-            jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
-                jQuery( document ).trigger('heartbeat-tick-popup',data);
-            });
+            jQuery( document ).on( 'heartbeat-tick', this.onHeartBitTickPopup);
         }
     },
     beforeDestroy() {
-        if (jQuery && jQuery( document ))
-            jQuery( document ).unbind( 'heartbeat-tick-popup')
+        if (jQuery && jQuery( document )) {
+            jQuery( document ).unbind( 'heartbeat-tick', this.onHeartBitTickPopup)
+        }
     },
     methods: {
         ...mapActions('bgprocess', [
@@ -248,6 +243,9 @@ export default {
         },
         setProcesses(processes) {
             this.updatedProcesses = processes;
+        },
+        onHeartBitTickPopup(event, data) {
+            this.setProcesses(data.bg_process_feedback);
         }
     }
 }

@@ -94,8 +94,8 @@ export default {
                 this.$refs.masonryWrapper.children[0] != undefined && 
                 this.$refs.masonryWrapper.children[0].children[0] != undefined && 
                 this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
-                if (jQuery && jQuery(window))
-                    this.containerWidthDiscount = jQuery(window).width() - this.$refs.masonryWrapper.clientWidth;
+                if ((window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth))
+                    this.containerWidthDiscount = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) - this.$refs.masonryWrapper.clientWidth;
             }
             this.$forceUpdate();
         },
@@ -167,7 +167,7 @@ export default {
                 this.$refs.masonryWrapper.children[0] != undefined && 
                 this.$refs.masonryWrapper.children[0].children[0] != undefined && 
                 this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
-                this.containerWidthDiscount = jQuery(window).width() - this.$refs.masonryWrapper.clientWidth;
+                this.containerWidthDiscount = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) - this.$refs.masonryWrapper.clientWidth;
             }
             this.$forceUpdate();
         }, 500)
