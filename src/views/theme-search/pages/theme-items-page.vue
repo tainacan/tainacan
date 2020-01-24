@@ -53,18 +53,17 @@
         </button>
 
         <!-- SEARCH CONTROL ------------------------- -->
+        <h3 
+                id="search-control-landmark"
+                class="sr-only">
+            {{ $i18n.get('label_sort_visualization') }}
+        </h3>
         <div
                 :aria-label="$i18n.get('label_sort_visualization')"
                 role="region"
                 ref="search-control"
                 v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen) && ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                 class="search-control">
-            
-            <h3 
-                    id="search-control-landmark"
-                    class="sr-only">
-                {{ $i18n.get('label_sort_visualization') }}
-            </h3>
 
             <!-- <b-loading
                     :is-full-page="false"
@@ -1261,32 +1260,23 @@
     }
 
     .search-control {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between !important;
         min-height: $subheader-height;
         height: auto;
-        position: relative;
         padding-top: $page-small-top-padding;
         padding-bottom: 20px;
         padding-left: $page-side-padding;
         padding-right: $page-side-padding;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between !important;
 
-        @media screen and (min-width: 769px) {
-            margin-bottom: 0 !important;
-            
-            .search-control-item {
-                margin-right: 0 !important;
-            }
-        }
-        .search-control-item:first-child>div {
-            margin-left: -8.3333333%;
-        }
-
-        .gray-icon, .gray-icon .icon {
+        .gray-icon, 
+        .gray-icon .icon {
             color: $gray4 !important;
             i::before {
                 font-size: 1.3125rem;
+                color: $gray4 !important;
             }
         }
         .dropdown-item {
@@ -1298,131 +1288,140 @@
             margin-left: 4px;
             width: 1.25rem;
 
-            &.icon i::before, .gray-icon i::before {
+            &.icon i::before, 
+            .gray-icon i::before {
                 font-size: 1.1875px !important;
             }
         }
-    }
 
-    .search-control-item {
-        display: inline-block;
-        margin-bottom: 12px;
-        margin-right: auto;
-        padding-right: 10px;
-
-        &:last-child {
+        .search-control-item {
+            display: inline-block;
+            margin-bottom: 12px;
             margin-right: auto;
-        }
-
-        .label {
-            font-size: 0.875rem;
-            font-weight: normal;
-            margin-top: 3px;
-            margin-bottom: 2px;
-            cursor: default;
-        }
-
-        .button {
-            display: flex;
-            align-items: center;
-        }
-        
-        .field {
-            align-items: center;
-        }
-
-        .gray-icon, .gray-icon .icon {
-            color: $gray4 !important;
             padding-right: 10px;
-        }
-        .gray-icon .icon i::before, 
-        .gray-icon i::before {
-            font-size: 1.3125rem !important;
-            max-width: 26px;
-        }
-        
-        .view-mode-icon {
-            margin-right: 3px !important;
-            margin-top: -4px;
-            margin-left: 6px !important;
-            width: 1.25rem;
-        }
 
-        .search-area {
-            position: relative;
-            display: flex;
-            align-items: center;
-            width: 100%;
+            @media screen and (max-width: 769px) {            
+                margin-right: 0;
+                padding-right: 0;
+            }
 
-            .control {
+            &:last-child {
+                margin-right: auto;
+            }
+
+            .label {
+                font-size: 0.875rem;
+                font-weight: normal;
+                margin-top: 3px;
+                margin-bottom: 2px;
+                cursor: default;
+            }
+
+            .button {
+                display: flex;
+                align-items: center;
+            }
+            
+            .field {
+                align-items: center;
+            }
+
+            .gray-icon, .gray-icon .icon {
+                color: $gray4 !important;
+                padding-right: 10px;
+            }
+            .gray-icon .icon i::before, 
+            .gray-icon i::before {
+                font-size: 1.3125rem !important;
+                max-width: 26px;
+            }
+            
+            .view-mode-icon {
+                margin-right: 3px !important;
+                margin-top: -4px;
+                margin-left: 6px !important;
+                width: 1.25rem;
+            }
+
+            .search-area {
+                position: relative;
+                display: flex;
+                align-items: center;
                 width: 100%;
-                .icon {
-                    pointer-events: all;
-                    cursor: pointer;
-                    color: $blue5;
-                    height: 27px;
-                    font-size: 1.125rem !important;
-                    height: auto !important;
-                }
-                margin: -2px 0 5px 0;
-            }
-            .is-pulled-right {
-                position: absolute;
-                right: 0;
-                top: 100%;
-            }
-        }
 
-        .dropdown-menu {
-            display: block;
-
-            div.dropdown-content {
-                padding: 0;
-
-                .metadata-options-container {
-                    max-height: 288px;
-                    overflow: auto;
-                }
-                .dropdown-item {
-                    padding: 0.25rem 1.0rem 0.25rem 0.75rem;
-                }
-                .dropdown-item span{
-                    vertical-align: middle;
-                }      
-                .dropdown-item-apply {
+                .control {
                     width: 100%;
-                    border-top: 1px solid #efefef;
-                    padding: 8px 12px; 
-                    text-align: right;
+                    .icon {
+                        pointer-events: all;
+                        cursor: pointer;
+                        color: $blue5;
+                        height: 27px;
+                        font-size: 1.125rem !important;
+                        height: auto !important;
+                    }
+                    margin: -2px 0 5px 0;
                 }
-                .dropdown-item-apply .button {
-                    width: 100%;
+                .is-pulled-right {
+                    position: absolute;
+                    right: 0;
+                    top: 100%;
+                }
+                .input {
+                    border: 1px solid $gray2;
                 }
             }
-        }
 
-        .search-area {
-            display: flex;
-            align-items: center;
-            width: 100%;
+            .dropdown-menu {
+                display: block;
 
-            .input {
-                border: 1px solid $gray2;
+                div.dropdown-content {
+                    padding: 0;
+
+                    .metadata-options-container {
+                        max-height: 288px;
+                        overflow: auto;
+                    }
+                    .dropdown-item {
+                        padding: 0.25rem 1.0rem 0.25rem 0.75rem;
+                    }
+                    .dropdown-item span{
+                        vertical-align: middle;
+                    }      
+                    .dropdown-item-apply {
+                        width: 100%;
+                        border-top: 1px solid #efefef;
+                        padding: 8px 12px; 
+                        text-align: right;
+                    }
+                    .dropdown-item-apply .button {
+                        width: 100%;
+                    }
+                }
             }
-            .control {
+
+            .search-area {
+                display: flex;
+                align-items: center;
                 width: 100%;
-                .icon {
-                    pointer-events: all;
-                    cursor: pointer;
-                    color: $blue5;
-                    height: 27px;
-                    font-size: 1.125rem !important;
-                    height: auto !important;
+
+                .input {
+                    border: 1px solid $gray2;
                 }
-            }
-            a {
-                margin-left: 12px;
-                white-space: nowrap; 
+                .control {
+                    width: 100%;
+                    .icon {
+                        pointer-events: all;
+                        cursor: pointer;
+                        color: $blue5;
+                        height: 27px;
+                        font-size: 1.125rem !important;
+                        height: auto !important;
+                    }
+                }
+                a {
+                    margin-left: 12px;
+                    white-space: nowrap; 
+                }
             }
         }
 

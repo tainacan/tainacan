@@ -73,9 +73,8 @@
 
     .filter-tags-list {
         width: 100%;
-        padding: 0 $page-side-padding 1.5rem $page-side-padding;
+        padding: 1rem $page-side-padding 1rem $page-side-padding;
         font-size: 0.75rem;
-        margin-bottom: -0.375rem;
 
         @media only screen and (max-width: 768px) { 
             padding-top: 1rem;

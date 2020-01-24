@@ -38,8 +38,12 @@
             "filters items";
             
         .filters-menu {
-            padding-top: 0;
-        }
+			padding-top: 12px;
+		}
+		.search-control .search-control-item .search-area {
+			min-width: 13.75%;
+			min-width: 13.75vw;
+		}
 	}
 
 	@media screen and (max-width: 768px) {
@@ -47,7 +51,14 @@
 			grid-template-areas:
 				"filters filters"
 				"filters filters"
-                "tags tags";
+				"tags tags";
+		}
+		.search-control .search-control-item:first-child {
+			min-width: 100%;
+			
+			.is-pulled-right {
+				position: relative;
+			}
 		}
 	}
 }
