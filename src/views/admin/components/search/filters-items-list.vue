@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <aside :aria-busy="isLoadingFilters">
 
         <b-loading
                 :is-full-page="false"
@@ -258,7 +258,7 @@
                 </router-link>
             </div>
         </section>
-    </div>    
+    </aside>    
 </template> 
 
 <script>
@@ -272,11 +272,11 @@
         props: {
             collectionId: String,
             isRepositoryLevel: Boolean,
-            taxonomy: String,
-            isLoadingFilters: false,
+            taxonomy: String
         },
         data() {
             return {
+                isLoadingFilters: false,
                 collapseAll: false,
                 taxonomyFiltersCollectionNames: {},
                 repositoryCollectionNames: {},

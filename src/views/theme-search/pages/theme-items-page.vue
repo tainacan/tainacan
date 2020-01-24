@@ -310,8 +310,8 @@
             </div>
         </div>
 
-        <!-- Sidebar with search and filters -->
-        <aside
+        <!-- SIDEBAR WITH FILTERS -->
+        <filters-items-list
                 id="filters-desktop-aside"
                 role="region"
                 aria-labelledby="filters-label-landmark"
@@ -319,14 +319,11 @@
                 v-show="!isFiltersMenuCompressed && 
                         !openAdvancedSearch && 
                         !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
-                class="filters-menu tainacan-form is-hidden-mobile">
+                class="filters-menu tainacan-form is-hidden-mobile"
+                :taxonomy="taxonomy"
+                :collection-id="collectionId"
+                :is-repository-level="isRepositoryLevel"/>
 
-            <filters-items-list
-                    :taxonomy="taxonomy"
-                    :collection-id="collectionId"
-                    :is-repository-level="isRepositoryLevel"/>
-
-        </aside>
 
         <!-- FILTERS TAG LIST-->
         <filters-tags-list 
@@ -589,7 +586,7 @@
                 return this.getOrder();
             },
             showLoading() {
-                return this.isLoadingItems || this.isLoadingFilters || this.isLoadingMetadata;
+                return this.isLoadingItems || this.isLoadingMetadata;
             },
             metaKey() {
                 return this.getMetaKey();
