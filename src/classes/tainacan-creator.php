@@ -158,6 +158,7 @@ $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyCheckbox'
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Date_Interval');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric_Interval');
 $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric_List_Interval');
+do_action('tainacan-register-filter-type', $Tainacan_Filters);
 
 $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
 
