@@ -57,7 +57,7 @@
                 this.updateSelectedValues();
             },
             'query.metaquery'() {
-                this.loadOptions();
+                this.updateSelectedValues();
             }
         },
         created() {

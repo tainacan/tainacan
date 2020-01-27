@@ -742,7 +742,6 @@
             });
 
             this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
-                this.adjustSearchControlHeight();
                 this.hasFiltered = hasFiltered;
             });
 
@@ -796,8 +795,8 @@
             this.showItemsHiddingDueSortingDialog();
 
             // Watches window resize to adjust filter's top position and compression on mobile 
-            this.adjustSearchControlHeight();
-            window.addEventListener('resize', this.adjustSearchControlHeight);
+            this.hideFiltersOnMobile();
+            window.addEventListener('resize', this.hideFiltersOnMobile);
         },
         beforeDestroy() {
             this.removeEventListeners();
@@ -1175,7 +1174,7 @@
                         trapFocus: true
                     });
             },
-            adjustSearchControlHeight: _.debounce( function() {
+            hideFiltersOnMobile: _.debounce( function() {
                 this.$nextTick(() => {
  
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
@@ -1196,7 +1195,7 @@
                 // Component
                 this.$off();
                 // Window
-                window.removeEventListener('resize', this.adjustSearchControlHeight);
+                window.removeEventListener('resize', this.hideFiltersOnMobile);
                 // $root
                 this.$root.$off('openAdvancedSearch');
                 // $eventBusSearch
@@ -1294,7 +1293,6 @@
     }
 
     .filters-menu {
-        z-index: 10;
         width: $filter-menu-width;
         min-width: 180px;
         min-height: 100%;
