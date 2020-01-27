@@ -1,4 +1,7 @@
 /* Basic */
+html.is-filters-menu-clipped {
+	overflow: auto !important;
+}
 .theme-items-list {
 	min-width: 100%;
 	width: 100%;
@@ -35,10 +38,15 @@
 		grid-template-areas:
 			"control control"
 			"filters tags"
-            "filters items";
-            
-        .filters-menu {
+			"filters items";
+			
+		.filters-menu {
 			padding-top: 12px;
+
+			.modal-background,
+			.modal-close {
+				display: none;
+			}
 		}
 		.search-control .search-control-item .search-area {
 			min-width: 13.75%;
@@ -52,8 +60,21 @@
 				"filters filters"
 				"filters filters"
 				"tags tags";
+
+			#filter-menu-compress-button {
+				display: none;
+			}
+
+			.filters-menu {
+				padding-top: 0;
+
+				.modal-background,
+				.modal-close {
+					display: block;
+				}
+			}
 		}
-		.search-control .search-control-item {
+		.search-control .search-control-item:first-child {
 			min-width: 100%;
 			
 			.is-pulled-right {

@@ -2,7 +2,7 @@
     <div 
             :class="{ 
                 'repository-level-page': isRepositoryLevel,
-                'is-filters-menu-open': !isFiltersMenuCompressed && !openAdvancedSearch
+                'is-filters-menu-open': isFiltersModalActive && !openAdvancedSearch
             }"
             aria-live="polite">
 
@@ -30,51 +30,6 @@
             </div>
         </div>
 
-        <!-- SEARCH AND FILTERS --------------------- -->
-        <!-- Filter menu compress button -->
-        <button
-                aria-controls="filters-desktop-aside"
-                :aria-expanded="!isFiltersMenuCompressed"
-                v-tooltip="{
-                    delay: {
-                        show: 500,
-                        hide: 300,
-                    },
-                    content: isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
-                    autoHide: false,
-                    placement: 'auto-start',
-                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
-                }"  
-                v-if="!openAdvancedSearch"
-                class="is-hidden-mobile"
-                id="filter-menu-compress-button"
-                :aria-label="isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-                :style="{ top: (isRepositoryLevel ? '278px' : '226px') }"
-                @click="isFiltersMenuCompressed = !isFiltersMenuCompressed">
-            <span class="icon">
-                <i 
-                        :class="{ 'tainacan-icon-arrowleft' : !isFiltersMenuCompressed, 'tainacan-icon-arrowright' : isFiltersMenuCompressed }"
-                        class="tainacan-icon tainacan-icon-20px"/>
-            </span>
-        </button>
-        <!-- Filters mobile modal button -->
-        <button 
-                aria-controls="filters-mobile-modal"
-                :aria-expanded="!isFiltersMenuCompressed"
-                v-if="!openAdvancedSearch"
-                class="is-hidden-tablet"
-                id="filter-menu-compress-button-mobile"
-                :aria-label="isFiltersMenuCompressed ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-                :style="{ top: (isRepositoryLevel ? (searchControlHeight + 100) : (searchControlHeight + 70) + 'px') + 'px' }"
-                @click="isFilterModalActive = !isFilterModalActive">
-            <span class="icon">
-                <i 
-                        :class="{ 'tainacan-icon-arrowleft' : !isFiltersMenuCompressed, 'tainacan-icon-arrowright' : isFiltersMenuCompressed }"
-                        class="tainacan-icon tainacan-icon-20px"/>
-            </span>
-            <span class="text">{{ $i18n.get('filters') }}</span>
-        </button>
-
         <!-- SEARCH CONTROL ------------------------- -->
         <h3 
                 id="search-control-landmark"
@@ -91,7 +46,31 @@
             <!-- <b-loading
                     :is-full-page="false"
                     :active.sync="isLoadingMetadata"/> -->
-            
+                        <!-- Button for hiding filters -->
+            <button 
+                    aria-controls="filters-modal"
+                    :aria-expanded="isFiltersModalActive"
+                    v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+                    id="filter-menu-compress-button"
+                    :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
+                    @click="isFiltersModalActive = !isFiltersModalActive"
+                    v-tooltip="{
+                        delay: {
+                            show: 500,
+                            hide: 300,
+                        },
+                        content: !isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
+                        autoHide: false,
+                        placement: 'auto-start',
+                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                    }">
+                <span class="icon">
+                    <i 
+                            :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
+                            class="tainacan-icon tainacan-icon-20px"/>
+                </span>
+                <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
+            </button>
 
             <!-- Text simple search -->
             <div class="search-control-item">
@@ -427,22 +406,33 @@
 
         </div>
 
-        <!-- SIDEBAR WITH FILTERS -->
-        <filters-items-list
-                id="filters-desktop-aside"
+         <!-- SIDEBAR WITH FILTERS -->
+        <b-modal
                 role="region"
                 aria-labelledby="filters-label-landmark"
-                :style="{ top: searchControlHeight + 'px' }"
-                v-show="!isFiltersMenuCompressed && !openAdvancedSearch"
-                class="filters-menu tainacan-form is-hidden-mobile"
-                :collection-id="collectionId"
-                :is-repository-level="isRepositoryLevel"/>
+                id="filters-modal"     
+                ref="filters-modal"       
+                :active.sync="isFiltersModalActive"
+                :width="736"
+                animation="slide-menu"
+                trap-focus
+                aria-modal
+                aria-role="dialog"
+                custom-class="tainacan-form filters-menu">
+            <filters-items-list
+                    autofocus="true"
+                    tabindex="-1"
+                    aria-modal
+                    role="dialog"
+                    id="filters-items-list"
+                    :collection-id="collectionId"
+                    :is-repository-level="isRepositoryLevel"/>
+        </b-modal>
 
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
         <div 
                 id="items-list-area"
-                class="items-list-area"
-                :class="{ 'spaced-to-right': !isFiltersMenuCompressed && !openAdvancedSearch }">
+                class="items-list-area">
 
             <!-- ADVANCED SEARCH -->
             <div
@@ -603,33 +593,6 @@
                         v-if="totalItems > 0 && (advancedSearchResults || !openAdvancedSearch)"/>
             </div>
         </div>
-       
-        <b-modal
-                role="region"
-                aria-labelledby="filters-label-landmark"
-                id="filters-mobile-modal"
-                class="tainacan-form is-hidden-tablet"                
-                :active.sync="isFilterModalActive"
-                :width="736"
-                animation="slide-menu"
-                trap-focus
-                aria-modal
-                aria-role="dialog">
-            <div 
-                    ref="filters-mobile-modal"
-                    class="modal-inner-content"
-                    autofocus="true"
-                    tabindex="-1"
-                    aria-modal
-                    role="dialog">
-
-                <filters-items-list
-                        :collection-id="collectionId"
-                        id="filters-items-list"
-                        :is-repository-level="isRepositoryLevel"/>
-
-            </div>
-        </b-modal>
     </div>
 </template>
 
@@ -668,7 +631,6 @@
                 isLoadingItems: false,
                 isLoadingMetadata: false,
                 hasFiltered: false,
-                isFiltersMenuCompressed: false,
                 futureSearchQuery: '',
                 localDisplayedMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
@@ -676,9 +638,8 @@
                 openFormAdvancedSearch: false,
                 advancedSearchResults: false,
                 isDoSearch: false,
-                searchControlHeight: 0,
                 sortingMetadata: [],
-                isFilterModalActive: false,
+                isFiltersModalActive: false,
                 hasAnOpenModal: false,
                 hasAnOpenAlert: true,
                 metadataSearchCancel: undefined
@@ -760,11 +721,11 @@
                 if (this.isSortingByCustomMetadata)
                     this.hasAnOpenAlert = true;
             },
-            isFilterModalActive() {
-                if (this.isFilterModalActive) {
+            isFiltersModalActive() {
+                if (this.isFiltersModalActive) {
                     setTimeout(() => {
-                        if (this.$refs['filters-mobile-modal'])
-                            this.$refs['filters-mobile-modal'].focus();
+                        if (this.$refs['filters-modal'] && this.$refs['filters-modal'].focus)
+                            this.$refs['filters-modal'].focus();
                     }, 800);
                 }
             }
@@ -929,12 +890,6 @@
                  // We need to load metadata again as fetch_only might change from view mode
                 this.prepareMetadata();
                 this.$eventBusSearch.setAdminViewMode(adminViewMode);
-
-                // Updates searchControlHeight before in case we need to adjust filters position on mobile
-                setTimeout(() => {
-                    if (this.$refs['search-control'] != undefined)
-                        this.searchControlHeight = this.$refs['search-control'].clientHeight;
-                }, 500);
             },
             onChangeDisplayedMetadata() {
                 let fetchOnlyMetadatumIds = [];
@@ -1222,11 +1177,19 @@
             },
             adjustSearchControlHeight: _.debounce( function() {
                 this.$nextTick(() => {
-                    if (this.$refs['search-control'] != undefined)
-                        this.searchControlHeight = this.$refs['search-control'] ? this.$refs['search-control'].clientHeight + this.$refs['search-control'].offsetTop : 0;
-                    
-                    if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
-                        this.isFiltersMenuCompressed = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
+ 
+                    if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
+                        const isMobile = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) > 768;
+                        
+                        if (isMobile) {
+                            this.isFiltersModalActive = true;
+                            document.documentElement.classList.add('is-filters-menu-clipped');
+                        } else {
+                            this.isFiltersModalActive = false;
+                            document.documentElement.classList.remove('is-filters-menu-clipped');
+                        }
+                        
+                    }
                 });
             }, 500),
             removeEventListeners() {
@@ -1331,7 +1294,6 @@
     }
 
     .filters-menu {
-        position: relative;
         z-index: 10;
         width: $filter-menu-width;
         min-width: 180px;
@@ -1347,14 +1309,16 @@
 
         @media screen and (max-width: 768px) {
             width: 100%;
-            padding: $page-small-side-padding !important;
+            padding: 0;
             
-            h3 {
-                margin-top: 0 !important;
+            #filters-items-list {
+                padding: $page-small-side-padding;
             }
         }
         @media screen and (min-width: 769px) {
-            top: 0px !important;
+            top: 1px !important;
+            position: relative;
+            position: sticky;
         }
 
         .label {
@@ -1368,11 +1332,10 @@
         }
 
     }
-    #filter-menu-compress-button,
-    #filter-menu-compress-button-mobile {
+    #filter-menu-compress-button {
         position: absolute;
         z-index: 99;
-        top: 120px;
+        bottom: 0px;
         left: 0;
         max-width: 23px;
         height: 26px;
@@ -1410,15 +1373,7 @@
             }
         }
     }
-
-    .spaced-to-right {
-        margin-left: $filter-menu-width;
-
-        @media screen and (max-width: 768px) {
-            margin-left: 0px !important;
-        }
-    }
-
+        
     .search-control {
         min-height: $subheader-height;
         height: auto;
@@ -1441,7 +1396,7 @@
                 margin-right: 0;
                 padding-right: 0;
 
-                &:first-child {
+                &:first-of-type {
                     min-width: 100%;
 
                     .search-area {
@@ -1618,7 +1573,8 @@
 
     .items-list-area {
         margin-left: 0;
-        overflow: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
         position: relative;
     }
 

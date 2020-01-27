@@ -33,7 +33,7 @@
             </button>
             <div :id="'filter-input-id-' + filter.id">
                 <component
-                        :is="filter.filter_type_object.component"
+                        :is="filter.filter_type_object ? filter.filter_type_object.component : null"
                         :filter="filter"
                         :query="query"
                         :is-using-elastic-search="isUsingElasticSearch"

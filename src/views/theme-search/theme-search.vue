@@ -54,6 +54,7 @@ export default {
     @import "../admin/scss/_tooltips.scss";
     @import "../admin/scss/_tainacan-form.scss";
     @import "../admin/scss/_filters-menu-modal.scss";
+    @import "./scss/_layout.scss";
 
     .theme-items-list {
         position: relative;
@@ -121,7 +122,7 @@ export default {
                 margin-bottom: 0px;
             }
         }
-        
+    
         .metadata-alert {
             display: flex;
             justify-content: space-between;

@@ -350,6 +350,8 @@
             }
         },
         mounted() {
+            this.prepareFilters();
+
             this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', () => {
                 /* This condition is to prevent an incorrect fetch by filter or metadata when we come from items
                  * at collection level to items page at repository level
@@ -391,7 +393,6 @@
                 'getRepositoryCollectionFilters'
             ]),
             prepareFilters() {
-                
                 // Cancels previous Request
                 if (this.filtersSearchCancel != undefined)
                     this.filtersSearchCancel.cancel('Filters search Canceled.');
@@ -453,7 +454,7 @@
         font-size: 0.75rem !important;
     }
     .extra-margin {
-        margin-bottom: 40px;
+        margin-bottom: 64px;
     }
     .collection-name {
         color: #454647;
