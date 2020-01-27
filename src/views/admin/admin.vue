@@ -151,5 +151,14 @@
         }
     }
 
+    @media screen and (min-width: 769px) {
+        .filters-menu {
+            .modal-background,
+            .modal-close {
+                display: none;
+            }
+        }
+    }
+
 </style>
 

@@ -1,7 +1,7 @@
 <template>
 <div>
     <theme-items-page
-            class="theme-items-list"
+            class="theme-items-list alternative"
             :enabled-view-modes="$root.enabledViewModes" 
             :default-view-mode="$root.defaultViewMode"
             :collection-id="$root.collectionId"

@@ -275,9 +275,7 @@
             </div>
 
             <!-- Exposers or alternative links modal button -->
-            <div
-                    v-if="!$route.query.iframemode"
-                    class="search-control-item">
+            <div class="search-control-item">
                 <button 
                         class="button is-white"
                         :aria-label="$i18n.get('label_view_as')"

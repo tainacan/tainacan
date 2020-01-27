@@ -8,10 +8,10 @@
 
         <!-- PAGE TITLE --------------------- -->
         <tainacan-title
-                v-if="!openAdvancedSearch" 
+                v-if="!$route.query.iframemode && !$route.query.readmode && !openAdvancedSearch" 
                 :bread-crumb-items="[{ path: '', label: this.$i18n.get('items') }]"/>
         <div 
-                v-else
+                v-else-if="openAdvancedSearch"
                 class="tnc-advanced-search-close"> 
             <div class="advanced-search-criteria-title">
                 <div class="is-flex">
