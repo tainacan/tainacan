@@ -186,37 +186,39 @@
                             {{ $i18n.get('label_ascending') }}
                         </b-dropdown-item>
                     </b-dropdown>
-                    <span
-                            class="label"
-                            style="padding-left: 2px;">
-                        {{ $i18n.get('info_by_inner') }}
-                    </span>
-                    <b-dropdown
-                            :mobile-modal="true"
-                            @input="onChangeOrderBy($event)"
-                            aria-role="list"
-                            trap-focus>
-                        <button
-                                :aria-label="$i18n.get('label_sorting')"
-                                class="button is-white"
-                                slot="trigger">
-                            <span>{{ orderByName }}</span>
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
-                            </span>
-                        </button>
-                        <b-dropdown-item
-                                aria-controls="items-list-results"
-                                role="button"
-                                :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
-                                v-for="metadatum of sortingMetadata"
-                                v-if="metadatum != undefined"
-                                :value="metadatum"
-                                :key="metadatum.slug"
-                                aria-role="listitem">
-                            {{ metadatum.name }}
-                        </b-dropdown-item>
-                    </b-dropdown>
+                    <template v-if="!hideSortByButton">
+                        <span
+                                class="label"
+                                style="padding-left: 2px;">
+                            {{ $i18n.get('info_by_inner') }}
+                        </span>
+                        <b-dropdown
+                                :mobile-modal="true"
+                                @input="onChangeOrderBy($event)"
+                                aria-role="list"
+                                trap-focus>
+                            <button
+                                    :aria-label="$i18n.get('label_sorting')"
+                                    class="button is-white"
+                                    slot="trigger">
+                                <span>{{ orderByName }}</span>
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                                </span>
+                            </button>
+                            <b-dropdown-item
+                                    aria-controls="items-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
+                                    v-for="metadatum of sortingMetadata"
+                                    v-if="metadatum != undefined"
+                                    :value="metadatum"
+                                    :key="metadatum.slug"
+                                    aria-role="listitem">
+                                {{ metadatum.name }}
+                            </b-dropdown-item>
+                        </b-dropdown>
+                    </template>
                 </b-field>
             </div>
 
@@ -586,8 +588,7 @@
                     return this.getOrderByName();
                 } else {
                     for (let metadatum of this.sortingMetadata) {
-                 
-                    if (
+                        if (
                             ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug == 'creation_date' && (!metadatum.metadata_type_object || !metadatum.metadata_type_object.core)) && this.orderBy == 'date') ||
                             ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date' && (metadatum.metadata_type_object != undefined && metadatum.metadata_type_object.core)) && this.orderBy == metadatum.metadata_type_object.related_mapped_prop) ||
                             ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date' && (!metadatum.metadata_type_object || !metadatum.metadata_type_object.core)) && this.orderBy == metadatum.slug) ||
@@ -596,6 +597,7 @@
                             return metadatum.name;
                     }
                 }
+                return '';
             }
         },
         watch: {
@@ -878,16 +880,16 @@
                                             }
 
                                             metadata.push({
-                                                    name: metadatum.name,
-                                                    metadatum: metadatum.description,
-                                                    slug: metadatum.slug,
-                                                    metadata_type: metadatum.metadata_type,
-                                                    metadata_type_object: metadatum.metadata_type_object,
-                                                    metadata_type_options: metadatum.metadata_type_options,
-                                                    id: metadatum.id,
-                                                    display: display,
-                                                    collection_id: metadatum.collection_id,
-                                                    multiple: metadatum.multiple,
+                                                name: metadatum.name,
+                                                metadatum: metadatum.description,
+                                                slug: metadatum.slug,
+                                                metadata_type: metadatum.metadata_type,
+                                                metadata_type_object: metadatum.metadata_type_object,
+                                                metadata_type_options: metadatum.metadata_type_options,
+                                                id: metadatum.id,
+                                                display: display,
+                                                collection_id: metadatum.collection_id,
+                                                multiple: metadatum.multiple,
                                             });
 
                                             if (display)
