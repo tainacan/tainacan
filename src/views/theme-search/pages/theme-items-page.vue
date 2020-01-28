@@ -1,7 +1,7 @@
 <template>
     <div 
             :class="{
-                'is-filters-menu-open': isFiltersModalActive && !openAdvancedSearch,
+                'is-filters-menu-open': !hideFilters && isFiltersModalActive && !openAdvancedSearch,
                 'repository-level-page': isRepositoryLevel,
                 'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
             }"
@@ -28,7 +28,7 @@
             <button 
                     aria-controls="filters-modal"
                     :aria-expanded="isFiltersModalActive"
-                    v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+                    v-if="!hideFilters && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                     id="filter-menu-compress-button"
                     :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                     @click="isFiltersModalActive = !isFiltersModalActive"
@@ -301,6 +301,7 @@
 
         <!-- SIDEBAR WITH FILTERS -->
         <b-modal
+                v-if="!hideFilters"
                 role="region"
                 aria-labelledby="filters-label-landmark"
                 id="filters-modal"     
@@ -330,9 +331,9 @@
 
             <!-- FILTERS TAG LIST-->
             <filters-tags-list
-                    class="filter-tags-list" 
-                    :filters="filters"
-                    v-if="hasFiltered && 
+                    class="filter-tags-list"
+                    v-if="!hideFilters &&
+                        hasFiltered && 
                         !openAdvancedSearch &&
                         !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
 
@@ -367,7 +368,7 @@
                         :open-form-advanced-search="openFormAdvancedSearch"
                         :is-do-search="isDoSearch"/>
 
-                <div class="advanced-searh-form-submit">
+                <div class="advanced-search-form-submit">
                     <p
                             v-if="advancedSearchResults"
                             class="control">
@@ -461,7 +462,7 @@
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata" 
                         :items="items"
-                        :is-filters-menu-compressed="!isFiltersModalActive"
+                        :is-filters-menu-compressed="!hideFilters && !isFiltersModalActive"
                         :total-items="totalItems"
                         :is-loading="showLoading"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
@@ -497,11 +498,25 @@
             ExposersModal
         },
         props: {
+            // Source settings
             collectionId: Number,
             termId: Number,
             taxonomy: String,
+            // View Mode settings
             defaultViewMode: String,
-            enabledViewModes: Object
+            enabledViewModes: Object,
+            // Hidding elements
+            hideFilters: false,
+            hideHideFiltersButton: false,
+            hideTextualSearch: false,
+            hideAdvancedSearch: false,
+            hideSortByButton: false,
+            hideItemsPerPageButton: false,
+            hideGoToPageButton: false,
+            // Other Tweaks
+            startWithFiltersHidden: false,
+            showInlineViewModeOptions: false,
+            showFullscreenWithViewModes: false
         },
         data() {
             return {
@@ -520,7 +535,6 @@
                 isDoSearch: false,
                 sortingMetadata: [],
                 isFiltersModalActive: false,
-                customFilters: [],
                 hasAnOpenModal: false,
                 hasAnOpenAlert: true,                
                 metadataSearchCancel: undefined
@@ -634,7 +648,7 @@
                 this.prepareMetadata();
             });
 
-            if(this.$route.query && this.$route.query.advancedSearch) {
+            if (this.$route.query && this.$route.query.advancedSearch) {
                 this.openAdvancedSearch = this.$route.query.advancedSearch;
             }
 
@@ -670,9 +684,11 @@
 
             this.showItemsHiddingDueSortingDialog();
 
-            // Watches window resize to adjust filter's top position and compression on mobile 
-            this.hideFiltersOnMobile();
-            window.addEventListener('resize', this.hideFiltersOnMobile);
+            // Watches window resize to adjust filter's top position and compression on mobile
+            if (!this.hideFilters) { 
+                this.hideFiltersOnMobile();
+                window.addEventListener('resize', this.hideFiltersOnMobile);
+            }
         },
         beforeDestroy() {
             this.removeEventListeners();
@@ -992,16 +1008,15 @@
                 this.$nextTick(() => {
  
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
-                        const isMobile = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) > 768;
+                        const isMobile = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
                         
                         if (isMobile) {
-                            this.isFiltersModalActive = true;
-                            document.documentElement.classList.add('is-filters-menu-clipped');
-                        } else {
                             this.isFiltersModalActive = false;
                             document.documentElement.classList.remove('is-filters-menu-clipped');
+                        } else {
+                            this.isFiltersModalActive = true;
+                            document.documentElement.classList.add('is-filters-menu-clipped');
                         }
-                        
                     }
                 });
             }, 500),
@@ -1009,7 +1024,8 @@
                 // Component
                 this.$off();
                 // Window
-                window.removeEventListener('resize', this.hideFiltersOnMobile);
+                if (!this.hideFilters)
+                    window.removeEventListener('resize', this.hideFiltersOnMobile);
                 // $root
                 this.$root.$off('openAdvancedSearch');
                 // $eventBusSearch
@@ -1107,6 +1123,16 @@
             height: 1px;
             background-color: $secondary;
         }
+    }
+
+    .advanced-search-form-submit {
+        display: flex;
+        justify-content: flex-end;
+        padding-right: $page-side-padding;
+        padding-left: $page-side-padding;
+        margin-bottom: 1rem;
+
+        p { margin-left: 0.75rem; }
     }
 
     .tnc-advanced-search-close {

@@ -82,12 +82,28 @@ export const ThemeItemsListing =  new Vue({
         collectionId: '',
         defaultViewMode: '',
         enabledViewModes: {},
-        customFilters: []
+        startWithFiltersHidden: false,
+        hideFilters: false,
+        hideHideFiltersButton: false,
+        hideTextualSearch: false,
+        hideAdvancedSearch: false,
+        hideSortByButton: false,
+        hideItemsPerPageButton: false,
+        hideGoToPageButton: false,
+        showInlineViewModeOptions: false,
+        showFullscreenWithViewModes: false
     },
     beforeMount () {
 
-        this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
+        // Collection or Term source settings
+        if (this.$el.attributes['collection-id'] != undefined)
+            this.collectionId = this.$el.attributes['collection-id'].value;
+        if (this.$el.attributes['term-id'] != undefined)
+            this.termId = this.$el.attributes['term-id'].value;
+        if (this.$el.attributes['taxonomy'] != undefined)
+            this.taxonomy = this.$el.attributes['taxonomy'].value;
 
+        // View Mode settings
         if (this.$el.attributes['default-view-mode'] != undefined)
             this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
         else
@@ -96,11 +112,29 @@ export const ThemeItemsListing =  new Vue({
         if (this.$el.attributes['enabled-view-modes'] != undefined)
             this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
 
-        if (this.$el.attributes['term-id'] != undefined)
-            this.termId = this.$el.attributes['term-id'].value;
-        if (this.$el.attributes['taxonomy'] != undefined)
-            this.taxonomy = this.$el.attributes['taxonomy'].value;
+        // Options related to hidding elements
+        if (this.$el.attributes['start-with-filters-hidden'] != undefined)
+            this.startWithFiltersHidden = this.$el.attributes['start-with-filters-hidden'].value;
+        if (this.$el.attributes['hide-filters'] != undefined)
+            this.hideFilters = this.$el.attributes['hide-filters'].value;
+        if (this.$el.attributes['hide-hide-filters-button'] != undefined)
+            this.hideHideFiltersButton = this.$el.attributes['hide-hide-filters-button'].value;
+        if (this.$el.attributes['hide-textual-search'] != undefined)
+            this.hideTextualSearch = this.$el.attributes['hide-textual-search'].value;
+        if (this.$el.attributes['hide-advanced-search'] != undefined)
+            this.hideAdvancedSearch = this.$el.attributes['hide-advanced-search'].value;
+        if (this.$el.attributes['hide-sort-by-button'] != undefined)
+            this.hideSortByButton = this.$el.attributes['hide-sort-by-button'].value;
+        if (this.$el.attributes['hide-items-per-page-button'] != undefined)
+            this.hideItemsPerPageButton = this.$el.attributes['hide-items-per-page-button'].value;
+        if (this.$el.attributes['hide-go-to-page-button'] != undefined)
+            this.hideGoToPageButton = this.$el.attributes['hide-go-to-page-button'].value;
 
+        // Other Tweaks
+        if (this.$el.attributes['show-inline-view-mode-options'] != undefined)
+            this.showInlineViewModeOptions = this.$el.attributes['show-inline-view-mode-options'].value;
+        if (this.$el.attributes['show-fullscreen-with-view-modes'] != undefined)
+            this.showFullscreenWithViewModes = this.$el.attributes['show-fullscreen-with-view-modes'].value;
     },
     render: h => h(ThemeSearch)
 });

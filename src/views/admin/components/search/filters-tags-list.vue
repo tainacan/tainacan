@@ -25,9 +25,6 @@
 
     export default {
         name: 'FiltersTagsList',
-        props: {
-            filters: Array
-        },
         computed: {
             filterTags() {
                 let tags = this.getFilterTags();

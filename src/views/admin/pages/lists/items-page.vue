@@ -1188,16 +1188,15 @@
                 this.$nextTick(() => {
  
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
-                        const isMobile = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) > 768;
+                        const isMobile = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
                         
                         if (isMobile) {
-                            this.isFiltersModalActive = true;
-                            document.documentElement.classList.add('is-filters-menu-clipped');
-                        } else {
                             this.isFiltersModalActive = false;
                             document.documentElement.classList.remove('is-filters-menu-clipped');
+                        } else {
+                            this.isFiltersModalActive = true;
+                            document.documentElement.classList.add('is-filters-menu-clipped');
                         }
-                        
                     }
                 });
             }, 500),

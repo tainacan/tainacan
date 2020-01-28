@@ -1,13 +1,22 @@
 <template>
-<div>
     <theme-items-page
             class="theme-items-list"
-            :enabled-view-modes="$root.enabledViewModes" 
-            :default-view-mode="$root.defaultViewMode"
             :collection-id="$root.collectionId"
             :term-id="$root.termId ? $root.termId : null" 
-            :taxonomy="$root.taxonomy ? $root.taxonomy : null"/>
-</div>
+            :taxonomy="$root.taxonomy ? $root.taxonomy : null"
+            :enabled-view-modes="$root.enabledViewModes" 
+            :default-view-mode="$root.defaultViewMode"
+            :hide-filters="$root.hideFilters ? $root.hideFilters : false"
+            :hide-hide-filters-button="$root.hideHideFiltersButton ? $root.hideHideFiltersButton : false"
+            :hide-textual-search="$root.hideTextualSearch ? $root.hideTextualSearch : false"
+            :hide-advanced-search-link="$root.hideAdvancedSearch ? $root.hideAdvancedSearch : false"
+            :hide-sort-by-button="$root.hideSortByButton ? $root.hideSortByButton : false"
+            :hide-items-per-page-button="$root.hideItemsPerPageButton ? $root.hideItemsPerPageButton : false"
+            :hide-go-to-page-button="$root.hideGoToPageButton ? $root.hideGoToPageButton : false"
+            :start-with-filters-hidden="$root.startWithFiltersHidden ? $root.startWithFiltersHidden : false"
+            :show-inline-view-mode-options="$root.showInlineViewModeOptions ? $root.showInlineViewModeOptions : false"
+            :show-fullscreen-with-view-modes="$root.showFullscreenWithViewModes ? $root.showFullscreenWithViewModes : false"
+        />
 </template>
 
 <script>
