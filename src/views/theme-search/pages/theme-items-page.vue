@@ -323,19 +323,18 @@
                     :is-repository-level="isRepositoryLevel"/>
         </b-modal>
 
-
-        <!-- FILTERS TAG LIST-->
-        <filters-tags-list 
-                class="filter-tags-list"
-                :filters="filters"
-                v-if="hasFiltered && 
-                    !openAdvancedSearch &&
-                    !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
-        
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
         <div 
                 id="items-list-area"
                 class="items-list-area">
+
+            <!-- FILTERS TAG LIST-->
+            <filters-tags-list
+                    class="filter-tags-list" 
+                    :filters="filters"
+                    v-if="hasFiltered && 
+                        !openAdvancedSearch &&
+                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
 
             <!-- ADVANCED SEARCH -->
             <div 

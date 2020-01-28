@@ -17,10 +17,6 @@ html.is-filters-menu-clipped {
 .search-control {
 	grid-area: control;
 }
-.filter-tags-list {
-	grid-area: tags;
-	align-self: flex-start;
-}
 .items-list-area {
 	grid-area: items;
 	min-height: 100%;
@@ -30,11 +26,10 @@ html.is-filters-menu-clipped {
 .theme-items-list:not(.is-fullscreen) {
 	-ms-grid-columns: 20% 80%;
 	grid-template-columns: 20% 80%;
-	-ms-grid-rows: auto auto auto;
-	grid-template-rows: auto auto auto;
+	-ms-grid-rows: auto auto;
+	grid-template-rows: auto auto;
 	grid-template-areas:
 		"control control"
-		"tags tags"
 		"items items";
 	
 	@supports not(display: grid) {
@@ -50,7 +45,6 @@ html.is-filters-menu-clipped {
 	&.is-filters-menu-open {
 		grid-template-areas:
 			"control control"
-			"filters tags"
 			"filters items";
 			
 		.filters-menu {
@@ -71,8 +65,7 @@ html.is-filters-menu-clipped {
 		&.is-filters-menu-open {
 			grid-template-areas:
 				"filters filters"
-				"filters filters"
-				"tags tags";
+				"filters filters";
 
 			@supports not(display: grid) {
 				.filters-menu {
@@ -111,11 +104,10 @@ html.is-filters-menu-clipped {
 .theme-items-list.taina:not(.is-fullscreen) {
 	-ms-grid-rows: 100%;
 	grid-template-columns: 100%;
-	-ms-grid-rows: auto auto auto auto;
-	grid-template-rows: auto auto auto auto;
+	-ms-grid-rows: auto auto auto;
+	grid-template-rows: auto auto auto;
 	grid-template-areas:
 		"control"
-		"tags"
 		"items"
 		"items";	
 
@@ -123,8 +115,7 @@ html.is-filters-menu-clipped {
 		grid-template-areas:
 			"filters"
 			"filters"
-			"filters"
-			"tags";
+			"filters";
 	}
 
 	@media screen and (max-width: 768px) {
@@ -132,8 +123,7 @@ html.is-filters-menu-clipped {
 			grid-template-areas:
 			"filters"
 			"filters"
-			"filters"
-			"tags";
+			"filters";
 		}
 	}
 }
@@ -142,11 +132,10 @@ html.is-filters-menu-clipped {
 .theme-items-list.alternative:not(.is-fullscreen) {
 	-ms-grid-rows: 100%;
 	grid-template-columns: 100%;
-	-ms-grid-rows: auto auto auto auto;
-	grid-template-rows: auto auto auto auto;
+	-ms-grid-rows: auto auto auto;
+	grid-template-rows: auto auto auto;
 	grid-template-areas:
 		"control"
-		"tags"
 		"items"
 		"items";	
 
@@ -154,7 +143,6 @@ html.is-filters-menu-clipped {
 		grid-template-areas:
 			"control"
 			"filters"
-			"items"
 			"items";	
 	}
 
@@ -163,7 +151,6 @@ html.is-filters-menu-clipped {
 			grid-template-areas:
 				"control"
 				"filters"
-				"items"
 				"items";	
 		}
 	}
