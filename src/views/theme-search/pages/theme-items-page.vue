@@ -75,6 +75,7 @@
                             </span>
                     </div>
                     <a
+                            v-if="!hideAdvancedSearch"
                             @click="openAdvancedSearch = !openAdvancedSearch"
                             class="is-size-7 has-text-secondary is-pulled-right">
                         {{ $i18n.get('advanced_search') }}
@@ -344,7 +345,7 @@
             <div 
                     id="advanced-search-container"
                     role="search"
-                    v-if="openAdvancedSearch">
+                    v-if="openAdvancedSearch && !hideAdvancedSearch">
 
                 <div class="tnc-advanced-search-close"> 
                     <div class="advanced-search-criteria-title">
@@ -639,10 +640,20 @@
             this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
                 this.hasFiltered = hasFiltered;
             });
+            
+            if (!this.hideAdvancedSearch) {
+                this.$eventBusSearch.$on('advancedSearchResults', advancedSearchResults => {
+                    this.advancedSearchResults = advancedSearchResults;
+                });
 
-            this.$eventBusSearch.$on('advancedSearchResults', advancedSearchResults => {
-                this.advancedSearchResults = advancedSearchResults;
-            });
+                if (this.$route.query && this.$route.query.advancedSearch) {
+                    this.openAdvancedSearch = this.$route.query.advancedSearch;
+                }
+
+                this.$root.$on('openAdvancedSearch', (openAdvancedSearch) => {
+                    this.openAdvancedSearch = openAdvancedSearch;
+                });
+            }
 
             this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', () => {
                 /* This condition is to prevent an incorrect fetch by filter or metadata when we come from items
@@ -650,15 +661,6 @@
                  */
                 this.prepareMetadata();
             });
-
-            if (this.$route.query && this.$route.query.advancedSearch) {
-                this.openAdvancedSearch = this.$route.query.advancedSearch;
-            }
-
-            this.$root.$on('openAdvancedSearch', (openAdvancedSearch) => {
-                this.openAdvancedSearch = openAdvancedSearch;
-            });
-
         },
         mounted() {
             
@@ -1030,11 +1032,13 @@
                 if (!this.hideFilters)
                     window.removeEventListener('resize', this.hideFiltersOnMobile);
                 // $root
-                this.$root.$off('openAdvancedSearch');
+                if (!this.hideAdvancedSearch)
+                    this.$root.$off('openAdvancedSearch');
                 // $eventBusSearch
                 this.$eventBusSearch.$off('isLoadingItems');
                 this.$eventBusSearch.$off('hasFiltered');
-                this.$eventBusSearch.$off('advancedSearchResults');
+                if (!this.hideAdvancedSearch)
+                    this.$eventBusSearch.$off('advancedSearchResults');
                 this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
 
             },

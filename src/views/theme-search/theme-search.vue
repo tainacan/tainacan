@@ -9,7 +9,7 @@
             :hide-filters="$root.hideFilters ? $root.hideFilters : false"
             :hide-hide-filters-button="$root.hideHideFiltersButton ? $root.hideHideFiltersButton : false"
             :hide-search="$root.hideSearch ? $root.hideSearch : false"
-            :hide-advanced-search-link="$root.hideAdvancedSearch ? $root.hideAdvancedSearch : false"
+            :hide-advanced-search="$root.hideAdvancedSearch ? $root.hideAdvancedSearch : false"
             :hide-sort-by-button="$root.hideSortByButton ? $root.hideSortByButton : false"
             :hide-items-per-page-button="$root.hideItemsPerPageButton ? $root.hideItemsPerPageButton : false"
             :hide-go-to-page-button="$root.hideGoToPageButton ? $root.hideGoToPageButton : false"
