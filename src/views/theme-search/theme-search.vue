@@ -95,6 +95,18 @@ export default {
         .autocomplete .dropdown-trigger .button .icon {
             align-items: center;
         }
+        .dropdown.is-inline .dropdown-content {
+            display: flex;
+            border: none;
+
+            .dropdown-item {
+                padding: 0.125rem 0.5rem !important;
+
+                .gray-icon {
+                    padding: 0;
+                }
+            }
+        }
         .b-radio.radio {
 
             input[type="radio"] + .check {

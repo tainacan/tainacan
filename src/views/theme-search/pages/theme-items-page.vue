@@ -232,11 +232,12 @@
                     </label>
                     <label 
                             class="label is-hidden-widescreen"
-                            style="margin-right: -10px;">
+                            :style="{ marginRight: showInlineViewModeOptions ? '' : '-10px'}">
                         {{ $i18n.get('label_view_on') + ':&nbsp; ' }}
                     </label>
                     <b-dropdown
                             @change="onChangeViewMode($event)"
+                            :inline="showInlineViewModeOptions"
                             :mobile-modal="true"
                             position="is-bottom-left"
                             :aria-label="$i18n.get('label_view_mode')"
@@ -265,9 +266,24 @@
                                 v-if="showFullscreenWithViewModes || (registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false)"
                                 aria-role="listitem">
                             <span 
+                                    v-if="!showInlineViewModeOptions"
                                     class="gray-icon"
                                     v-html="registeredViewModes[viewModeOption].icon"/>
-                            <span>{{ registeredViewModes[viewModeOption].label }}</span>
+                            <span 
+                                    v-else 
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: registeredViewModes[viewModeOption].label,
+                                        autoHide: false,
+                                        placement: 'auto-start',
+                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                                    }"
+                                    class="gray-icon"
+                                    v-html="registeredViewModes[viewModeOption].icon"/>
+                            <span v-if="!showInlineViewModeOptions">{{ registeredViewModes[viewModeOption].label }}</span>
                         </b-dropdown-item>
                     </b-dropdown>
                 </b-field>
