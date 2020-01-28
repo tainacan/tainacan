@@ -164,9 +164,12 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 		global $TAINACAN_EXTRA_FILTER_SCRIPTS;
 
+		do_action('tainacan-register-filter-type');
 		$deps = ['underscore', 'media-editor', 'media-views', 'customize-controls'];
-		foreach($TAINACAN_EXTRA_FILTER_SCRIPTS as $dep) {
-			$deps[] = $dep;
+		if ( !empty($TAINACAN_EXTRA_FILTER_SCRIPTS) ) {
+			foreach($TAINACAN_EXTRA_FILTER_SCRIPTS as $dep) {
+				$deps[] = $dep;
+			}
 		}
 
 		wp_enqueue_script( 'tainacan-admin', $TAINACAN_BASE_URL . '/assets/js/admin.js', $deps, TAINACAN_VERSION, true );
