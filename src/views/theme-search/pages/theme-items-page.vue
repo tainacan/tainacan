@@ -475,8 +475,10 @@
                 <pagination
                         :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
                         v-if="totalItems > 0 &&
-                         ((registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
-                          (advancedSearchResults || !openAdvancedSearch)"/>
+                            ((registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
+                            (advancedSearchResults || !openAdvancedSearch)"
+                        :hide-items-per-page-button="hideItemsPerPageButton"
+                        :hide-go-to-page-button="hideGoToPageButton"/>
             </div>
         </div>
        
