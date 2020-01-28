@@ -104,7 +104,8 @@
                             :aria-label="$i18n.get('label_displayed_metadata')"
                             class="button is-white"
                             slot="trigger">
-                        <span>{{ $i18n.get('label_displayed_metadata') }}</span>
+                        <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
+                        <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
                         </span>
@@ -137,7 +138,7 @@
             <!-- Change OrderBy Select and Order Button-->
             <div class="search-control-item">
                 <b-field>
-                    <label class="label">{{ $i18n.get('label_sorting_direction') }}</label>
+                    <label class="label">{{ $i18n.get('label_sort') }}</label>
                     <b-dropdown
                             :mobile-modal="true"
                             @input="onChangeOrder()"
@@ -183,7 +184,7 @@
                     </b-dropdown>
                     <span
                             class="label"
-                            style="padding-left: 0.65rem;">
+                            style="padding-left: 2px;">
                         {{ $i18n.get('info_by_inner') }}
                     </span>
                     <b-dropdown
@@ -218,7 +219,16 @@
             <!-- View Modes Dropdown -->
             <div class="search-control-item">
                 <b-field>
-                    <label class="label is-hidden-mobile">{{ $i18n.get('label_visualization') + ':&nbsp; ' }}</label>
+                    <label 
+                            class="label is-hidden-touch is-hidden-desktop-only"
+                            style="margin-right: -10px;">
+                        {{ $i18n.get('label_visualization') + ':&nbsp; ' }}
+                    </label>
+                    <label 
+                            class="label is-hidden-widescreen"
+                            style="margin-right: -10px;">
+                        {{ $i18n.get('label_view_on') + ':&nbsp; ' }}
+                    </label>
                     <b-dropdown
                             @change="onChangeViewMode($event)"
                             :mobile-modal="true"
@@ -270,7 +280,7 @@
                     <span 
                             class="gray-icon view-mode-icon"
                             v-html="registeredViewModes[viewModeOption].icon"/>
-                    <span class="is-hidden-touch">{{ registeredViewModes[viewModeOption].label }}</span>
+                    <span class="is-hidden-tablet-only">{{ registeredViewModes[viewModeOption].label }}</span>
                 </button>
             </div>
 
@@ -284,7 +294,7 @@
                     <span class="gray-icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
                     </span>
-                    <span class="is-hidden-touch">{{ $i18n.get('label_view_as') }}</span>
+                    <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_view_as') }}</span>
                 </button>
             </div>
         </div>
@@ -1224,7 +1234,7 @@
         }
         .view-mode-icon {
             margin-right: 0px !important;
-            margin-top: -4px;
+            margin-top: -2px;
             margin-left: 4px;
             width: 1.25rem;
 
@@ -1246,6 +1256,10 @@
 
                  &:first-of-type {
                     min-width: 100%;
+
+                    .search-area {
+                        max-width: 100% !important;
+                    }
                 }
             }
 
@@ -1280,41 +1294,6 @@
                 max-width: 26px;
             }
             
-            .view-mode-icon {
-                margin-right: 3px !important;
-                margin-top: -4px;
-                margin-left: 6px !important;
-                width: 1.25rem;
-            }
-
-            .search-area {
-                position: relative;
-                display: flex;
-                align-items: center;
-                width: 100%;
-
-                .control {
-                    width: 100%;
-                    .icon {
-                        pointer-events: all;
-                        cursor: pointer;
-                        color: $blue5;
-                        height: 27px;
-                        font-size: 1.125rem !important;
-                        height: auto !important;
-                    }
-                    margin: -2px 0 5px 0;
-                }
-                .is-pulled-right {
-                    position: absolute;
-                    right: 0;
-                    top: 100%;
-                }
-                .input {
-                    border: 1px solid $gray2;
-                }
-            }
-
             .dropdown-menu {
                 display: block;
 
@@ -1344,13 +1323,12 @@
             }
 
             .search-area {
+                position: relative;
                 display: flex;
                 align-items: center;
                 width: 100%;
+                max-width: 16.66667vw;
 
-                .input {
-                    border: 1px solid $gray2;
-                }
                 .control {
                     width: 100%;
                     .icon {
@@ -1361,11 +1339,20 @@
                         font-size: 1.125rem !important;
                         height: auto !important;
                     }
+                    margin: -2px 0 5px 0;
+                }
+                .is-pulled-right {
+                    position: absolute;
+                    right: 0;
+                    top: 100%;
+                }
+                .input {
+                    border: 1px solid $gray2;
                 }
                 a {
                     margin-left: 12px;
                     white-space: nowrap; 
-                }
+                } 
             }
         }
 

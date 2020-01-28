@@ -188,7 +188,8 @@
                             :aria-label="$i18n.get('label_displayed_metadata')"
                             class="button is-white"
                             slot="trigger">
-                        <span>{{ $i18n.get('label_displayed_metadata') }}</span>
+                        <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
+                        <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
                         </span>
@@ -301,7 +302,16 @@
 
             <div class="search-control-item">
                 <b-field>
-                    <label class="label is-hidden-mobile">{{ $i18n.get('label_visualization') + ':' }}</label>
+                    <label 
+                            class="label is-hidden-touch is-hidden-desktop-only"
+                            style="margin-right: -10px;">
+                        {{ $i18n.get('label_visualization') + ':&nbsp; ' }}
+                    </label>
+                    <label 
+                            class="label is-hidden-widescreen is-hidden-mobile"
+                            style="margin-right: -10px;">
+                        {{ $i18n.get('label_view_on') + ':&nbsp; ' }}
+                    </label>
                     <b-dropdown
                             @change="onChangeAdminViewMode($event)"
                             :mobile-modal="true"
@@ -400,7 +410,7 @@
                     <span class="gray-icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
                     </span>
-                    <span class="is-hidden-touch">{{ $i18n.get('label_view_as') }}</span>
+                    <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_view_as') }}</span>
                 </button>
             </div>
 
@@ -1436,9 +1446,9 @@
             }
             
             .view-mode-icon {
-                margin-right: 3px !important;
-                margin-top: -4px;
-                margin-left: 6px !important;
+                margin-right: 0px !important;
+                margin-top: -2px;
+                margin-left: 4px !important;
                 width: 1.25rem;
             }
 
@@ -1475,6 +1485,7 @@
                 display: flex;
                 align-items: center;
                 width: 100%;
+                min-width: 120px;
                 max-width: calc(16.66667vw - 60px);
                 padding-right: 15px;
 
