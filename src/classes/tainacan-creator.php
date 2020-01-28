@@ -145,6 +145,7 @@ $Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Taxonomy');
 
 //$Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 $Filter_Type_Helper = \Tainacan\Filter_Types\Filter_Type_Helper::get_instance();
+do_action('tainacan-register-filter-type', 'register-type');
 
 //register filter type
 // $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric');

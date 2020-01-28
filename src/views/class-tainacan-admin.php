@@ -164,7 +164,7 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 		global $TAINACAN_EXTRA_FILTER_SCRIPTS;
 
-		do_action('tainacan-register-filter-type');
+		do_action('tainacan-register-filter-type', 'register-script');
 		$deps = ['underscore', 'media-editor', 'media-views', 'customize-controls'];
 		if ( !empty($TAINACAN_EXTRA_FILTER_SCRIPTS) ) {
 			foreach($TAINACAN_EXTRA_FILTER_SCRIPTS as $dep) {

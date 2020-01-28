@@ -51,21 +51,26 @@ class Filter_Type_Helper {
 	 * @param string $class a class name of the filter type
 	 * @param array|string $args
 	 */
-	public function register_filter_type($handle, $class_name, $script_path, $args = []) {
+	public function register_filter_type($handle, $class_name, $script_path, $type='register-type', $args = []) {
 		global $TAINACAN_EXTRA_FILTER_SCRIPTS;
 
-		if ( ! in_array( $handle, $this->registered_filter_type ) ) {
+		if($type == 'register-type') {
 			$this->Tainacan_Filters->register_filter_type($class_name);
+			return;
+		}
 
-			$TAINACAN_EXTRA_FILTER_SCRIPTS[] = $handle;
-			wp_enqueue_script($handle, $script_path);
+		if($type == 'register-script') {
+			if ( ! in_array( $handle, $this->registered_filter_type ) ) {
+				$TAINACAN_EXTRA_FILTER_SCRIPTS[] = $handle;
+				wp_enqueue_script($handle, $script_path);
 
-			$this->registered_filter_type[$handle] = [
-				'handle' => $handle,
-				'class_name' => $class_name,
-				'script_path' => $script_path, 
-				'args' => $args
-			];
+				$this->registered_filter_type[$handle] = [
+					'handle' => $handle,
+					'class_name' => $class_name,
+					'script_path' => $script_path, 
+					'args' => $args
+				];
+			}
 		}
 	}
 
