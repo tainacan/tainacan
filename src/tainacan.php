@@ -32,6 +32,7 @@ function tainacan_load_plugin_textdomain() {
 }
 add_action( 'plugins_loaded', 'tainacan_load_plugin_textdomain' );
 
+do_action('tainacan-register-filter-type');
 add_action( 'after_setup_theme', function() {
 	add_image_size( 'tainacan-small', 40, 40, true );
 	add_image_size( 'tainacan-medium', 275, 275, true );
