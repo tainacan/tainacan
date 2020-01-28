@@ -162,8 +162,15 @@ class Admin {
 
 	function add_admin_js() {
 		global $TAINACAN_BASE_URL;
+		global $TAINACAN_EXTRA_FILTER_SCRIPTS;
 
-		wp_enqueue_script( 'tainacan-admin', $TAINACAN_BASE_URL . '/assets/js/admin.js', ['underscore', 'media-editor', 'media-views', 'customize-controls'], TAINACAN_VERSION, true );
+		do_action('tainacan-register-filter-type');
+		$deps = ['underscore', 'media-editor', 'media-views', 'customize-controls'];
+		foreach($TAINACAN_EXTRA_FILTER_SCRIPTS as $dep) {
+			$deps[] = $dep;
+		}
+
+		wp_enqueue_script( 'tainacan-admin', $TAINACAN_BASE_URL . '/assets/js/admin.js', $deps, TAINACAN_VERSION, true );
 
 		$settings = $this->get_admin_js_localization_params();
 
@@ -256,11 +263,8 @@ class Admin {
 		$filter_types = $Tainacan_Filters->fetch_filter_types();
 		
 		foreach ( $filter_types as $index => $filter_type){
-		    $class = new $filter_type;
+			$class = new $filter_type;
 			$settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
-			if ($class->get_script() != '') {
-				wp_add_inline_script('tainacan-admin', $class->get_script(), 'before');
-			}
 		}
 
 		$settings['form_hooks'] = Admin_Hooks::get_instance()->get_registered_hooks();
