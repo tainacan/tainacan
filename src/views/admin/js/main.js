@@ -100,11 +100,11 @@ Vue.component('tainacan-filter-numeric-list-interval', FilterNumericListInterval
 Vue.component('tainacan-filter-date-interval', FilterDateInterval);
 
 /* Registers Extra Filter Components passed to the TainacanExtraFilter  */
-var TainacanExtraFilters = TainacanExtraFilters;
-if (TainacanExtraFilters != undefined) {
+if (typeof TainacanExtraFilters != "undefined") {
     for (let [extraFilter, extraFilterObject] of Object.entries(TainacanExtraFilters))
         Vue.component(extraFilter, extraFilterObject);
 }
+
 
 /* Filter Metadata Option forms */
 Vue.component('tainacan-filter-form-numeric', FormFilterNumeric);
