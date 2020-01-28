@@ -262,7 +262,7 @@
                                 v-for="(viewModeOption, index) of enabledViewModes"
                                 :key="index"
                                 :value="viewModeOption"
-                                v-if="registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false"
+                                v-if="showFullscreenWithViewModes || (registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false)"
                                 aria-role="listitem">
                             <span 
                                     class="gray-icon"
@@ -282,7 +282,7 @@
                         v-for="(viewModeOption, index) of enabledViewModes"
                         :key="index"
                         :value="viewModeOption"
-                        v-if="registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true ">
+                        v-if="!showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true ">
                     <span 
                             class="gray-icon view-mode-icon"
                             v-html="registeredViewModes[viewModeOption].icon"/>
