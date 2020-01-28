@@ -52,7 +52,9 @@
             </button>
 
             <!-- Text simple search -->
-            <div class="search-control-item">
+            <div 
+                    v-if="!hideSearch"
+                    class="search-control-item">
                 <div 
                         role="search" 
                         class="search-area">
@@ -509,7 +511,7 @@
             // Hidding elements
             hideFilters: false,
             hideHideFiltersButton: false,
-            hideTextualSearch: false,
+            hideSearch: false,
             hideAdvancedSearch: false,
             hideSortByButton: false,
             hideItemsPerPageButton: false,

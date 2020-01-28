@@ -8,7 +8,7 @@
             :default-view-mode="$root.defaultViewMode"
             :hide-filters="$root.hideFilters ? $root.hideFilters : false"
             :hide-hide-filters-button="$root.hideHideFiltersButton ? $root.hideHideFiltersButton : false"
-            :hide-textual-search="$root.hideTextualSearch ? $root.hideTextualSearch : false"
+            :hide-search="$root.hideSearch ? $root.hideSearch : false"
             :hide-advanced-search-link="$root.hideAdvancedSearch ? $root.hideAdvancedSearch : false"
             :hide-sort-by-button="$root.hideSortByButton ? $root.hideSortByButton : false"
             :hide-items-per-page-button="$root.hideItemsPerPageButton ? $root.hideItemsPerPageButton : false"
