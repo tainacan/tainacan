@@ -28,6 +28,7 @@
             <button 
                     aria-controls="filters-modal"
                     :aria-expanded="isFiltersModalActive"
+                    :class="hideHideFiltersButton ? 'is-hidden-tablet' : ''"
                     v-if="!hideFilters && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                     id="filter-menu-compress-button"
                     :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
