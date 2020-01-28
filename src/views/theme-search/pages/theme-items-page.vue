@@ -710,7 +710,6 @@
             if (this.$eventBusSearch.searchCancel != undefined)
                 this.$eventBusSearch.searchCancel.cancel('Item search Canceled.');
 
-
         },
         methods: {
             ...mapGetters('collection', [
@@ -1019,7 +1018,7 @@
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
                         const isMobile = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
                         
-                        if (isMobile) {
+                        if (isMobile || this.startWithFiltersHidden) {
                             this.isFiltersModalActive = false;
                             document.documentElement.classList.remove('is-filters-menu-clipped');
                         } else {
