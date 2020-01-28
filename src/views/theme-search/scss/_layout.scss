@@ -27,7 +27,7 @@ html.is-filters-menu-clipped {
 }
 
 /* Deafult layout - Sidebar */
-.theme-items-list {
+.theme-items-list:not(.is-fullscreen) {
 	-ms-grid-columns: 20% 80%;
 	grid-template-columns: 20% 80%;
 	-ms-grid-rows: auto auto auto;
@@ -108,7 +108,7 @@ html.is-filters-menu-clipped {
 }
 
 /* Taina layout - Filters Modal */
-.theme-items-list.taina {
+.theme-items-list.taina:not(.is-fullscreen) {
 	-ms-grid-rows: 100%;
 	grid-template-columns: 100%;
 	-ms-grid-rows: auto auto auto auto;
@@ -139,7 +139,7 @@ html.is-filters-menu-clipped {
 }
 
 /* Alternative Layout - Horizontal*/
-.theme-items-list.alternative {
+.theme-items-list.alternative:not(.is-fullscreen) {
 	-ms-grid-rows: 100%;
 	grid-template-columns: 100%;
 	-ms-grid-rows: auto auto auto auto;

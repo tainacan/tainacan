@@ -1,7 +1,7 @@
 <template>
     <div 
             :class="{
-                'is-filters-menu-open': isFiltersModalActive && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen),
+                'is-filters-menu-open': isFiltersModalActive && !openAdvancedSearch,
                 'repository-level-page': isRepositoryLevel,
                 'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
             }"
@@ -1053,6 +1053,10 @@
         background-color: black;
         transition: background-color 0.3s ease, width 0.3s ease, height 0.3s ease;
         animation: open-full-screen 0.4s ease;
+
+        .filters-menu {
+            display: none;
+        }
     }
 
     .advanced-search-criteria-title {
