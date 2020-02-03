@@ -667,6 +667,53 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(true, empty($data['value']));
 	}
 
+	public function test_visibility_the_metadatum_from_in_collection(){
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Statement',
+				'description' => 'No Statement'
+			),
+			true
+		);
+
+		$metadatumA = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'        => 'Data',
+				'description' => 'Descreve valor do campo data.',
+				'collection'  => $collection,
+				'status'      => 'publish',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+			), true
+		);
+
+		$metadatumB = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'        => 'Data',
+				'description' => 'Descreve valor do campo data.',
+				'collection'  => $collection,
+				'status'      => 'private',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+			), true
+		);
+
+		wp_logout();
+		wp_set_current_user(0);
+
+		$requestA = new \WP_REST_Request('GET', $this->namespace . '/metadata/' . $metadatumA->get_id());
+		$requestB = new \WP_REST_Request('GET', $this->namespace . '/metadata/' . $metadatumB->get_id());
+
+		$response = $this->server->dispatch($requestA);
+		$status = $response->status;
+		$this->assertEquals(200, $status);
+		
+		$response = $this->server->dispatch($requestB);
+		$status = $response->status;
+		$this->assertEquals(401, $status);
+	}
+
 }
 
 ?>
