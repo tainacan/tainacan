@@ -264,6 +264,16 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 		$items = $search_response->get_data()['items'];
 
 		$this->assertCount(2, $items);
+
+		$search_items = new \WP_REST_Request('GET', $this->namespace . '/items');
+		$search_query = ['search' => 'infinito dure'];
+		$search_items->set_query_params($search_query);
+		$search_response = $this->server->dispatch($search_items);
+		$items = $search_response->get_data()['items'];
+
+		$this->assertCount(1, $items);
+
+		
 	}
 }
 
