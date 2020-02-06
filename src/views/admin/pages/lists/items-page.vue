@@ -1226,6 +1226,10 @@
         margin: 0;
     }
 
+    .repository-level-page {
+        overflow-y: auto;
+    }
+
     .advanced-search-criteria-title {
         margin-bottom: 40px;
 
@@ -1306,7 +1310,8 @@
         min-width: 180px;
         min-height: 100%;
         height: auto;
-        max-height: 100vh;
+        max-height: calc(100% - 94px);
+        max-height: calc(100vh - 94px);
         padding: $page-small-side-padding;
         float: left;
         overflow-y: auto;

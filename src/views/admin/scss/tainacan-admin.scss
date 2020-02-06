@@ -72,6 +72,7 @@ body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, bod
 }
 .loading-overlay {
     z-index: 9999999999;
+    min-height: auto !important;
 }
 .loading-overlay .loading-icon::after {
     background-image: url('../../assets/images/tainacan_loading.gif');

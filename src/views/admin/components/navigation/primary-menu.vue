@@ -250,7 +250,7 @@ export default {
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear;
         max-width: $side-menu-width;
-        z-index: 99;
+        z-index: 101;
 
         a:hover {
             text-decoration: none;
