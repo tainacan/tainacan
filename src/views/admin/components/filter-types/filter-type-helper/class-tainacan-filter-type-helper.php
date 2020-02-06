@@ -42,6 +42,11 @@ class Filter_Type_Helper {
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyTaginput');
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyCheckbox');
 		$this->Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric_List_Interval');
+		do_action('tainacan-register-filter-type', $this);
+	}
+
+	public function register_filter_type_compoment() {
+		wp_enqueue_script($this->handle, $this->script_path);
 	}
 
 	/**
@@ -51,27 +56,25 @@ class Filter_Type_Helper {
 	 * @param string $class a class name of the filter type
 	 * @param array|string $args
 	 */
-	public function register_filter_type($handle, $class_name, $script_path, $type='register-type', $args = []) {
+	public function register_filter_type($handle, $class_name, $script_path, $args = []) {
 		global $TAINACAN_EXTRA_FILTER_SCRIPTS;
 
-		if($type == 'register-type') {
-			$this->Tainacan_Filters->register_filter_type($class_name);
-			return;
+		$this->handle = $handle; 
+		$this->script_path = $script_path;
+
+		$this->Tainacan_Filters->register_filter_type($class_name);
+		if ( ! in_array( $handle, $this->registered_filter_type ) ) {
+			$TAINACAN_EXTRA_FILTER_SCRIPTS[] = $handle;
+			add_action( 'admin_enqueue_scripts', array( &$this, 'register_filter_type_compoment' ), 80 );
+
+			$this->registered_filter_type[$handle] = [
+				'handle' => $handle,
+				'class_name' => $class_name,
+				'script_path' => $script_path, 
+				'args' => $args
+			];
 		}
 
-		if($type == 'register-script') {
-			if ( ! in_array( $handle, $this->registered_filter_type ) ) {
-				$TAINACAN_EXTRA_FILTER_SCRIPTS[] = $handle;
-				wp_enqueue_script($handle, $script_path);
-
-				$this->registered_filter_type[$handle] = [
-					'handle' => $handle,
-					'class_name' => $class_name,
-					'script_path' => $script_path, 
-					'args' => $args
-				];
-			}
-		}
 	}
 
 	/**

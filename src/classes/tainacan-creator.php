@@ -143,24 +143,7 @@ $Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Relationship
 $Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Taxonomy');
 //$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Compound');
 
-//$Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 $Filter_Type_Helper = \Tainacan\Filter_Types\Filter_Type_Helper::get_instance();
-do_action('tainacan-register-filter-type', 'register-type');
-
-//register filter type
-// $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric');
-// $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Date');
-// $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Selectbox');
-// $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Autocomplete');
-// $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Taginput');
-// $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Checkbox');
-// $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyTaginput');
-// $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyCheckbox');
-// $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Date_Interval');
-// $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric_Interval');
-// $Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric_List_Interval');
-//do_action('tainacan-register-filter-type', $Tainacan_Filters);
-
 
 $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
 
