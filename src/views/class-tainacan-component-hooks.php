@@ -29,7 +29,7 @@ class Component_Hooks {
 	}
 
 	private function init() {
-		do_action('tainacan-register-js-component', $this);
+		do_action('tainacan-register-vuejs-component', $this);
 	}
 
 	public function register_component() {
@@ -37,13 +37,13 @@ class Component_Hooks {
 	}
 
 	/**
-	 * Register a new component
+	 * Register a new vuejs component
 	 * 
 	 * @param string $handle name of the component. Should be unique.
 	 * @param string $script_path path of file component
 	 * @param array|string $args
 	 */
-	public function register_js_component($handle, $script_path, $args = []) {
+	public function register_vuejs_component($handle, $script_path, $args = []) {
 		global $TAINACAN_EXTRA_SCRIPTS;
 
 		$this->handle = $handle; 

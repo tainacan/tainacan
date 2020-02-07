@@ -69,6 +69,13 @@ Vue.use(ConsolePlugin, {visual: false});
 Vue.use(VueTheMask);
 Vue.use(CommentsStatusHelperPlugin);
 
+
+/* Registers Extra Vue Components passed to the TainacanExtraVueComponents  */
+if (typeof TainacanExtraVueComponents != "undefined") {
+    for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(TainacanExtraVueComponents))
+        Vue.component(extraVueComponentName, extraVueComponentObject);
+}
+
 /* Metadata */
 Vue.component('tainacan-text', Text);
 Vue.component('tainacan-textarea', Textarea);
@@ -98,13 +105,6 @@ Vue.component('tainacan-filter-taxonomy-taginput', FilterTaxonomyTaginput);
 Vue.component('tainacan-filter-numeric-interval', FilterNumericInterval);
 Vue.component('tainacan-filter-numeric-list-interval', FilterNumericListInterval);
 Vue.component('tainacan-filter-date-interval', FilterDateInterval);
-
-/* Registers Extra Filter Components passed to the TainacanExtraFilter  */
-if (typeof TainacanExtraFilters != "undefined") {
-    for (let [extraFilter, extraFilterObject] of Object.entries(TainacanExtraFilters))
-        Vue.component(extraFilter, extraFilterObject);
-}
-
 
 /* Filter Metadata Option forms */
 Vue.component('tainacan-filter-form-numeric', FormFilterNumeric);
