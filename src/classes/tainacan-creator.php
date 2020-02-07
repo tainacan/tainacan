@@ -131,7 +131,7 @@ $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
 $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
-$Metadata_Type_Helper = \Tainacan\Filter_Types\Metadata_Type_Helper::get_instance();
+$Metadata_Type_Helper = \Tainacan\Metadata_Types\Metadata_Type_Helper::get_instance();
 
 $Filter_Type_Helper = \Tainacan\Filter_Types\Filter_Type_Helper::get_instance();
 

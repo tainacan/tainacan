@@ -1,9 +1,5 @@
 <?php
 
-
-
-<?php
-
 namespace Tainacan;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
@@ -83,7 +79,7 @@ class Component_Hooks {
 	 * 
 	 * @return array|false The component definition or false if it is not found
 	 */
-	public function get_registered_component($handle) {
+	public function get_component($handle) {
 		return isset($this->registered_component[$handle]) ? $this->registered_component[$handle] : false;
 	}
 
