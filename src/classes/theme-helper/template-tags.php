@@ -194,6 +194,7 @@ function tainacan_the_collection_description() {
 	 * 	   @type bool 	$hide-items-per-page-button			Hides the button for selecting amount of items loaded per page
 	 * 	   @type bool 	$hide-go-to-page-button				Hides the button for skiping to a specific page
 	 * 	   @type bool 	$start-with-filters-hidden			Loads the filters list hidden from start
+	 * 	   @type bool 	$filters-as-modal					Display the filters as a modal instead of a collapsable region on desktop
 	 * 	   @type bool 	$show-inline-view-mode-options		Display view modes as inline icon buttons instead of the dropdown
 	 * 	   @type bool 	$show-fullscreen-with-view-modes	Lists fullscreen viewmodes alongside with other view modes istead of separatelly
  * @return string  The HTML div to be used for rendering the items list vue component

@@ -1192,10 +1192,9 @@
                         
                         if (isMobile) {
                             this.isFiltersModalActive = false;
-                            document.documentElement.classList.remove('is-filters-menu-clipped');
                         } else {
                             this.isFiltersModalActive = true;
-                            document.documentElement.classList.add('is-filters-menu-clipped');
+                            document.documentElement.classList.remove('is-clipped');
                         }
                     }
                 });

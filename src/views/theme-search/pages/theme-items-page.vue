@@ -334,7 +334,7 @@
                 trap-focus
                 aria-modal
                 aria-role="dialog"
-                custom-class="tainacan-form filters-menu">
+                :custom-class="'tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')">
             <filters-items-list
                     autofocus="true"
                     tabindex="-1"
@@ -539,6 +539,7 @@
             hideGoToPageButton: false,
             // Other Tweaks
             startWithFiltersHidden: false,
+            filtersAsModal: false,
             showInlineViewModeOptions: false,
             showFullscreenWithViewModes: false
         },
@@ -710,7 +711,7 @@
             this.showItemsHiddingDueSortingDialog();
 
             // Watches window resize to adjust filter's top position and compression on mobile
-            if (!this.hideFilters) { 
+            if (!this.hideFilters) {                 
                 this.hideFiltersOnMobile();
                 window.addEventListener('resize', this.hideFiltersOnMobile);
             }
@@ -1036,10 +1037,12 @@
                         
                         if (isMobile || this.startWithFiltersHidden) {
                             this.isFiltersModalActive = false;
-                            document.documentElement.classList.remove('is-filters-menu-clipped');
                         } else {
                             this.isFiltersModalActive = true;
-                            document.documentElement.classList.add('is-filters-menu-clipped');
+                        }
+
+                        if (!this.filtersAsModal && this.isFiltersModalActive && !this.isMobile) {
+                            document.documentElement.classList.remove('is-clipped');
                         }
                     }
                 });
@@ -1175,14 +1178,11 @@
         padding: 0;
     }
 
-    .filters-menu {
+    .filters-menu:not(.filters-menu-modal) {
         width: 100%;
         min-width: 180px;
         min-height: 100%;
         height: 100%;
-        border-right: 0;
-        padding: 24px 2.0833333% 24px 4.1666667%;
-        padding: 24px 2.0833333vw 24px 4.1666667vw;
         overflow-y: auto;
         overflow-x: hidden;
         visibility: visible;
@@ -1201,7 +1201,13 @@
             position: relative;
             padding-top: 0;
         }
+    }
 
+    .filters-menu {
+        border-right: 0;
+        padding: 24px 2.0833333% 24px 4.1666667%;
+        padding: 24px 2.0833333vw 24px 4.1666667vw;
+        
         .columns {
             display: flex;
         }

@@ -82,7 +82,6 @@ export const ThemeItemsListing =  new Vue({
         collectionId: '',
         defaultViewMode: '',
         enabledViewModes: {},
-        startWithFiltersHidden: false,
         hideFilters: false,
         hideHideFiltersButton: false,
         hideSearch: false,
@@ -90,6 +89,8 @@ export const ThemeItemsListing =  new Vue({
         hideSortByButton: false,
         hideItemsPerPageButton: false,
         hideGoToPageButton: false,
+        startWithFiltersHidden: false,
+        filtersAsModal: false,
         showInlineViewModeOptions: false,
         showFullscreenWithViewModes: false
     },
@@ -113,8 +114,6 @@ export const ThemeItemsListing =  new Vue({
             this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
 
         // Options related to hidding elements
-        if (this.$el.attributes['start-with-filters-hidden'] != undefined)
-            this.startWithFiltersHidden = this.$el.attributes['start-with-filters-hidden'].value;
         if (this.$el.attributes['hide-filters'] != undefined)
             this.hideFilters = this.$el.attributes['hide-filters'].value;
         if (this.$el.attributes['hide-hide-filters-button'] != undefined)
@@ -131,6 +130,10 @@ export const ThemeItemsListing =  new Vue({
             this.hideGoToPageButton = this.$el.attributes['hide-go-to-page-button'].value;
 
         // Other Tweaks
+        if (this.$el.attributes['start-with-filters-hidden'] != undefined)
+            this.startWithFiltersHidden = this.$el.attributes['start-with-filters-hidden'].value;
+        if (this.$el.attributes['filters-as-modal'] != undefined)
+            this.filtersAsModal = this.$el.attributes['filtersAsModal'].value;
         if (this.$el.attributes['show-inline-view-mode-options'] != undefined)
             this.showInlineViewModeOptions = this.$el.attributes['show-inline-view-mode-options'].value;
         if (this.$el.attributes['show-fullscreen-with-view-modes'] != undefined)
