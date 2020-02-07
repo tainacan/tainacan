@@ -35,7 +35,43 @@
     -ms-flex-align: start;
     align-items: flex-start;
 }
+.search-control {
+	-webkit-flex: 0 1 100%;
+    -ms-flex: 0 1 100%;
+    flex: 0 1 100%;
+}
+.filters-menu:not(.filters-menu-modal) {
+	width: 100%;
+	min-width: 180px;
+	min-height: 100%;
+	height: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+	visibility: visible;
+	display: block;
+
+	@media screen and (max-width: 768px) {
+		width: 100%;
+		padding: 0;
+
+		#filters-items-list {
+			padding: $page-small-side-padding;
+		}
+	}
+	@media screen and (min-width: 769px) {
+		-webkit-flex: 0 1 20%;
+		-ms-flex: 0 1 20%;
+		flex: 0 1 20%;
+		top: 0px !important;
+		position: relative;
+		padding-top: 0;
+	}
+}
+
 .items-list-area {
+	-webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
 	min-height: 100%;
 }
 

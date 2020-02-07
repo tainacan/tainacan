@@ -562,7 +562,8 @@
                 isFiltersModalActive: false,
                 hasAnOpenModal: false,
                 hasAnOpenAlert: true,                
-                metadataSearchCancel: undefined
+                metadataSearchCancel: undefined,
+                isMobile: false
             }
         },
         computed: {
@@ -639,6 +640,9 @@
                         if (this.$refs['filters-modal'] && this.$refs['filters-modal'].focus)
                             this.$refs['filters-modal'].focus();
                     }, 800);
+
+                    if (!this.filtersAsModal && !this.isMobile && document.documentElement)
+                        document.documentElement.classList.remove('is-clipped');
                 }
             }
         },
@@ -1033,17 +1037,12 @@
                 this.$nextTick(() => {
  
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
-                        const isMobile = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
+                        this.isMobile = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
                         
-                        if (isMobile || this.startWithFiltersHidden) {
+                        if (this.isMobile || this.startWithFiltersHidden)
                             this.isFiltersModalActive = false;
-                        } else {
+                        else
                             this.isFiltersModalActive = true;
-                        }
-
-                        if (!this.filtersAsModal && this.isFiltersModalActive && !this.isMobile) {
-                            document.documentElement.classList.remove('is-clipped');
-                        }
                     }
                 });
             }, 500),
@@ -1177,32 +1176,7 @@
     .page-container {
         padding: 0;
     }
-
-    .filters-menu:not(.filters-menu-modal) {
-        width: 100%;
-        min-width: 180px;
-        min-height: 100%;
-        height: 100%;
-        overflow-y: auto;
-        overflow-x: hidden;
-        visibility: visible;
-        display: block;
-
-        @media screen and (max-width: 768px) {
-            width: 100%;
-            padding: 0;
-
-            #filters-items-list {
-                padding: $page-small-side-padding;
-            }
-        }
-        @media screen and (min-width: 769px) {
-            top: 0px !important;
-            position: relative;
-            padding-top: 0;
-        }
-    }
-
+    
     .filters-menu {
         border-right: 0;
         padding: 24px 2.0833333% 24px 4.1666667%;
@@ -1434,7 +1408,6 @@
 
     #items-list-area {
         position: relative;
-        width: 100%;
         height: 100%;
         overflow-y: hidden;
         overflow-x: hidden;
