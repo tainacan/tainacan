@@ -156,6 +156,9 @@ require_once(__DIR__ . '/../views/class-tainacan-admin-hooks.php');
 require_once(__DIR__ . '/../views/admin-hooks-functions.php');
 $Tainacan_Admin_Hooks = \Tainacan\Admin_Hooks::get_instance();
 
+require_once(__DIR__ . '/../views/class-tainacan-component-hooks.php');
+$Tainacan_Component_Hooks = \Tainacan\Component_Hooks::get_instance();
+
 require_once(__DIR__ . '/theme-helper/class-tainacan-theme-helper.php');
 require_once(__DIR__ . '/theme-helper/template-tags.php');
 $Tainacan_Theme_Helper = \Tainacan\Theme_Helper::get_instance();
