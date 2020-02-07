@@ -57,14 +57,16 @@ class Filter_Type_Helper {
 	 * @param array|string $args
 	 */
 	public function register_filter_type($handle, $class_name, $script_path, $args = []) {
-		global $TAINACAN_EXTRA_FILTER_SCRIPTS;
+		global $TAINACAN_EXTRA_SCRIPTS;
 
 		$this->handle = $handle; 
 		$this->script_path = $script_path;
 
 		$this->Tainacan_Filters->register_filter_type($class_name);
 		if ( ! in_array( $handle, $this->registered_filter_type ) ) {
-			$TAINACAN_EXTRA_FILTER_SCRIPTS[] = $handle;
+			$TAINACAN_EXTRA_SCRIPTS[] = $handle;
+			// the priority should see less than on function 
+			// `load_admin_page()` of class `Admin` in file /src/views/class-tainacan-admin.php
 			add_action( 'admin_enqueue_scripts', array( &$this, 'register_filter_type_compoment' ), 80 );
 
 			$this->registered_filter_type[$handle] = [

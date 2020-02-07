@@ -131,17 +131,7 @@ $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
 $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
-$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
-
-//register metadatum types
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Text');
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Textarea');
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Date');
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Numeric');
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Selectbox');
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Relationship');
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Taxonomy');
-//$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Compound');
+$Metadata_Type_Helper = \Tainacan\Filter_Types\Metadata_Type_Helper::get_instance();
 
 $Filter_Type_Helper = \Tainacan\Filter_Types\Filter_Type_Helper::get_instance();
 

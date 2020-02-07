@@ -162,11 +162,11 @@ class Admin {
 
 	function add_admin_js() {
 		global $TAINACAN_BASE_URL;
-		global $TAINACAN_EXTRA_FILTER_SCRIPTS;
+		global $TAINACAN_EXTRA_SCRIPTS;
 
 		$deps = ['underscore', 'media-editor', 'media-views', 'customize-controls'];
-		if ( !empty($TAINACAN_EXTRA_FILTER_SCRIPTS) ) {
-			foreach($TAINACAN_EXTRA_FILTER_SCRIPTS as $dep) {
+		if ( !empty($TAINACAN_EXTRA_SCRIPTS) ) {
+			foreach($TAINACAN_EXTRA_SCRIPTS as $dep) {
 				$deps[] = $dep;
 			}
 		}
