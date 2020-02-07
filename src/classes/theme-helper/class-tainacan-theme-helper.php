@@ -361,28 +361,36 @@ class Theme_Helper {
 			array(
 				'collection-id' => '',
 				'term-id' => '',
+				'taxonomy' => '',
 			),
 			$atts
 		);
 
+		// Loads info related to view modes
 		$default_view_mode = apply_filters( 'tainacan-default-view-mode-for-themes', 'masonry' );
 		$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', ['table', 'cards', 'masonry', 'slideshow'] );	
 
 		$params = '';
+
+		// If is a collection page
 		if (isset($atts['collection-id']) && $atts['collection-id'] != '') {
 			$params .= "collection-id=" . $atts['collection-id'];
 			$collection = new \Tainacan\Entities\Collection($atts['collection-id']);
 			$default_view_mode = $collection->get_default_view_mode();
 			$enabled_view_modes = $collection->get_enabled_view_modes();
 		}
-		if (isset($atts['term-id']) && $atts['term-id'] != '') {
+
+		// If is a tainacan taxonomy
+		if (isset($atts['term-id']) && $atts['term-id'] != '' && isset($atts['taxonomy']) && $atts['taxonomy'] != '' ) {
 			$params .= "term-id=" . $atts['term-id'];
+			$params .= ' "taxonomy="' . $atts['taxonomy'];
 		}
 
 		$params .= ' default-view-mode="' . $default_view_mode . '" ';
 		$params .= ' enabled-view-modes="' . implode(',', $enabled_view_modes) . '" ';	
 
 		$this->enqueue_scripts(true);
+
 		return "<div id='tainacan-items-page' $params ></div>";
 	}
 	
