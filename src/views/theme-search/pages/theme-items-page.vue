@@ -639,10 +639,11 @@
                     setTimeout(() => {
                         if (this.$refs['filters-modal'] && this.$refs['filters-modal'].focus)
                             this.$refs['filters-modal'].focus();
+                            
+                        if (!this.filtersAsModal && !this.isMobile && document.documentElement)
+                            document.documentElement.classList.remove('is-clipped');
                     }, 800);
-
-                    if (!this.filtersAsModal && !this.isMobile && document.documentElement)
-                        document.documentElement.classList.remove('is-clipped');
+                    
                 }
             }
         },
