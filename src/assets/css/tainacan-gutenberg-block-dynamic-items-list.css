@@ -29,7 +29,7 @@
   .components-placeholder .components-placeholder__label {
     margin-bottom: 0; }
   .components-placeholder .components-placeholder__fieldset p {
-    font-size: 0.875em !important;
+    font-size: 1em !important;
     margin: 12px 0;
     color: #454647;
     fill: #555758; }
@@ -91,7 +91,7 @@
       .wp-block-tainacan-modal .modal-search-area .components-base-control label.components-base-control__label {
         font-weight: 500;
         color: #454647;
-        font-size: 0.875em;
+        font-size: 1em;
         text-align: center; }
       .wp-block-tainacan-modal .modal-search-area .components-base-control input.components-text-control__input {
         padding: 5px 8px;
