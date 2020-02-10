@@ -19,10 +19,10 @@
                     isRepositoryLevel) || filters.length > 0)"
                 class="link-style collapse-all"
                 @click="collapseAll = !collapseAll">
-            {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+            {{ !collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
             <span class="icon">
                 <i 
-                        :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                        :class="{ 'tainacan-icon-arrowdown' : !collapseAll, 'tainacan-icon-arrowright' : collapseAll }"
                         class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
             </span>
         </button>
