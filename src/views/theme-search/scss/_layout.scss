@@ -40,10 +40,24 @@
     -ms-flex: 0 1 100%;
     flex: 0 1 100%;
 }
-.filters-menu:not(.filters-menu-modal) {
+.filters-menu.filters-menu-modal {
+	z-index: 999999 !important;
+	background: white;
 	width: 100%;
+
+	@media screen and (max-width: 768px) {
+		.modal-content { 
+            margin-right: 0px !important;
+		}
+	}
+}
+.filters-menu:not(.filters-menu-modal) {
+	z-index: 99999;
+	float: left;
+	max-width: 20%;
 	min-width: 180px;
 	min-height: 100%;
+	width: auto;
 	height: auto;
 	overflow-y: auto;
 	overflow-x: hidden;
@@ -51,8 +65,12 @@
 	display: block;
 
 	@media screen and (max-width: 768px) {
-		width: 100%;
 		padding: 0;
+
+		.modal-content { 
+			width: 88%; 
+			width: 88vw;
+		}
 
 		#filters-items-list {
 			padding: $page-small-side-padding;
@@ -65,35 +83,32 @@
 		top: 0px !important;
 		position: relative;
 		padding-top: 0;
+
+		.modal-close {
+			display: none;
+		}
 	}
 }
 
 .items-list-area {
-	-webkit-flex: 1 1 auto;
-    -ms-flex: 1 1 auto;
-    flex: 1 1 auto;
+	-webkit-flex: 0 1 auto;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
 	min-height: 100%;
 }
 
 /* Default layout - Sidebar */
 .theme-items-list:not(.is-fullscreen) {
-		
-	.filters-menu {
-		z-index: 99999;
-		float: left;
-		max-width: 20%;
-	}
-	.items-list-area {
-		width: 80%;
-	}
 	
 	&.is-filters-menu-open {
-			
+		
+		.items-list-area {
+			width: 80%;
+		}
 		.filters-menu {
 			padding-top: 12px;
 
-			.modal-background,
-			.modal-close {
+			.modal-background {
 				display: none;
 			}
 		}
@@ -136,8 +151,3 @@
 		}
 	}
 }
-
-/* Taina layout - Filters Modal */
-
-
-/* Alternative Layout - Horizontal*/

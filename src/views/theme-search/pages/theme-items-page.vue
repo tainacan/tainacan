@@ -690,7 +690,6 @@
             });
         },
         mounted() {
-            
             this.prepareMetadata();
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
 
@@ -1181,8 +1180,6 @@
     
     .filters-menu {
         border-right: 0;
-        padding: 24px 2.0833333% 24px 4.1666667%;
-        padding: 24px 2.0833333vw 24px 4.1666667vw;
         
         .columns {
             display: flex;

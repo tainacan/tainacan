@@ -176,6 +176,8 @@ export default {
                 }
             }
         }
-
+    }
+    .loading-overlay {
+        min-height: auto !important;
     }
 </style>

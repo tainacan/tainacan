@@ -1311,7 +1311,6 @@
         height: auto;
         max-height: calc(100% - 94px);
         max-height: calc(100vh - 94px);
-        padding: $page-small-side-padding;
         float: left;
         overflow-y: auto;
         overflow-x: hidden;
