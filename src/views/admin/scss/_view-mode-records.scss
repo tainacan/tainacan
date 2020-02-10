@@ -128,12 +128,13 @@
             .list-metadata {
                 padding: 25px;
                 flex: 1;
-                font-size: 0.6875em;
+                font-size: 1em;
                 color: $gray4;
                 overflow: hidden;
                 width: 100%;
             
                 .metadata-label {
+                    margin: 0 0 0.5em 0;
                     font-size: 0.75em;
                     font-weight: 700;
                     color: $gray4;

@@ -123,14 +123,14 @@
         border: none !important;
     }
     .autocomplete .icon {
-        height: 2.2em !important;
+        height: 2.5em !important;
         .mdi-magnify::before {
             margin-top: -3px;
         }
     }
     .input { 
         margin-bottom: 0px !important; 
-        height: 2.25em !important;
+        height: 2.5em !important;
         text-overflow: ellipsis;
     }
     .input.has-selected, .input:focus, .input:active {

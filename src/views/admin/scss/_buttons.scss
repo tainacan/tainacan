@@ -5,6 +5,7 @@ button.link-style:active {
     outline: none;
     cursor: pointer;
     font-size: inherit;
+    text-transform: inherit;
     color: $secondary;
     padding: 0;
     margin: 0;
@@ -18,6 +19,7 @@ button.link-style:active {
 .button {
     border-radius: 6px !important;
     font-weight: normal;
+    text-transform: inherit;
     padding: 2px 13px !important;
     margin-top: 0px !important;
     margin-bottom: 0px !important;

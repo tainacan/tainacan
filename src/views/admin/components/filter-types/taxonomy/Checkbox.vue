@@ -14,7 +14,7 @@
                 v-if="!isLoadingOptions"
                 :key="index"
                 :value="index"
-                class="control">
+                class="metadatum">
             <label 
                     v-if="!option.isChild"
                     class="b-checkbox checkbox is-small">

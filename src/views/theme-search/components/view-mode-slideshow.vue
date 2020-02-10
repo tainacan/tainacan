@@ -60,7 +60,8 @@
             
             <a
                     v-if="!isLoadingItem && Object.keys(item.metadata).length > 0"
-                    class="collapse-all is-size-7"
+                    style="font-size: 0.75em;"
+                    class="collapse-all"
                     @click="collapseAll = !collapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                 <span class="icon">

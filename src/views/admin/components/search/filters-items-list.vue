@@ -75,7 +75,8 @@
                                 :is-repository-level="key == 'repository-filters'"/>
                     </template>
                     <!-- <p   
-                            class="has-text-gray is-size-7"
+                            class="has-text-gray"
+                            style="font-size: 0.75em;"
                             v-if="taxonomyFilter.length <= 0">
                         {{ $i18n.get('info_there_is_no_filter') }}    
                     </p> -->
@@ -120,7 +121,8 @@
                                 :is-repository-level="key == 'repository-filters'"/>
                     </template>
                     <!-- <p   
-                            class="has-text-gray is-size-7"
+                            class="has-text-gray"
+                            style="font-size: 0.75em;"
                             v-if="taxonomyFilter.length <= 0">
                         {{ $i18n.get('info_there_is_no_filter') }}    
                     </p> -->
@@ -172,7 +174,8 @@
                                 :is-repository-level="key == 'repository-filters'"/>
                     </template>
                     <!-- <p   
-                            class="has-text-gray is-size-7"
+                            class="has-text-gray"
+                            style="font-size: 0.75em;"
                             v-if="taxonomyFilter.length <= 0">
                         {{ $i18n.get('info_there_is_no_filter') }}    
                     </p> -->
@@ -217,7 +220,8 @@
                                 :is-repository-level="key == 'repository-filters'"/>
                     </template>
                     <!-- <p   
-                            class="has-text-gray is-size-7"
+                            class="has-text-gray"
+                            style="font-size: 0.75em;"
                             v-if="taxonomyFilter.length <= 0">
                         {{ $i18n.get('info_there_is_no_filter') }}    
                     </p> -->

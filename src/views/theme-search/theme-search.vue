@@ -67,8 +67,18 @@ export default {
     @import "./scss/_layout.scss";
 
     .theme-items-list {
+        font-size: 1em;
         position: relative;
         -webkit-overflow-scrolling: touch;
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            margin: 0;
+        }
 
         .tainacan-icon {
             opacity: 0; // Will make it 1 once window.load is done; 

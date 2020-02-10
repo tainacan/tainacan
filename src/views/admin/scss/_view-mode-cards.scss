@@ -123,7 +123,7 @@
             padding: 0.6em 5em 0.5em 2.75em;
             margin-bottom: -26px;
             min-height: 40px;
-            font-size: 0.875em !important; 
+            font-size: 1em !important; 
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
@@ -153,12 +153,13 @@
             .list-metadata {
                 padding: 0.75em 1.375em;
                 flex: 1;
+                font-size: 1em;
                 width: 100%;
                 height: 170px;
                 color: $gray4;
 
                 p.metadata-description {
-                    font-size: 0.6875em !important;
+                    font-size: 0.75em !important;
                     overflow: hidden;
                     margin-bottom: 1em;
                     max-height: 152px;

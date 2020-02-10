@@ -1,3 +1,7 @@
+input.input,
+.input,
+textarea.textarea, 
+.textarea,
 input[type="color"].input,
 input[type="date"].input,
 input[type="datetime-local"].input,
@@ -11,17 +15,15 @@ input[type="tel"].input,
 input[type="text"].input,
 input[type="time"].input,
 input[type="url"].input,
-input[type="week"].input,
-input.input,
-.input,
-textarea.textarea, 
-.textarea {
+input[type="week"].input {
     font-size: 0.875em;
     border-radius: 1px !important;
     box-shadow: none !important;
     background-color: white;
     border: 1px solid $gray2;
     color: $tainacan-input-color;
+    padding-top: calc(0.375em - 1px);
+    padding-bottom: calc(0.375em - 1px);
     transition: background-color 0.1s ease, border-color 0.3s ease;
 
     &:focus, &:active {
@@ -46,5 +48,7 @@ textarea.textarea,
     &::-moz-placeholder,
     &::-webkit-input-placeholder {
         color: $gray4 !important;
+        line-height: 0;
+        font-size: 0.875em;
     }
 }

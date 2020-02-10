@@ -116,7 +116,4 @@
     .field {
         margin-bottom: 0.125em !important;
     }
-    p.is-size-7 {
-        margin-bottom: 0.125em !important;
-    }
 </style>

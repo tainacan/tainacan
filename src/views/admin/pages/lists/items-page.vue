@@ -95,7 +95,8 @@
                     </div>
                     <a
                             @click="openAdvancedSearch = !openAdvancedSearch"
-                            class="is-size-7 has-text-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
+                            style="font-size: 0.75em;"
+                            class="has-text-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
                 </div>
             </div>
 

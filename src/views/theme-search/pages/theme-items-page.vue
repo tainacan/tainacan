@@ -77,7 +77,8 @@
                     <a
                             v-if="!hideAdvancedSearch"
                             @click="openAdvancedSearch = !openAdvancedSearch"
-                            class="is-size-7 has-text-secondary is-pulled-right">
+                            style="font-size: 0.75em;"
+                            class="has-text-secondary is-pulled-right">
                         {{ $i18n.get('advanced_search') }}
                     </a>
                 </div>
@@ -1279,7 +1280,9 @@
                 font-size: 1.1875px !important;
             }
         }
-
+        .control {
+            font-size: 1em;
+        }
         .search-control-item {
             display: inline-block;
             margin-bottom: 12px;
@@ -1372,7 +1375,7 @@
                         cursor: pointer;
                         color: $blue5;
                         height: 27px;
-                        font-size: 1.125em !important;
+                        font-size: 1.25em !important;
                         height: auto !important;
                     }
                     margin: -2px 0 5px 0;

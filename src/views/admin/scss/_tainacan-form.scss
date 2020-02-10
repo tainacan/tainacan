@@ -3,6 +3,9 @@
     color: $tainacan-input-color;
     width: 100%;
 
+    .control {
+        font-size: 1em;
+    }
     .form-submit {
         justify-content: space-between !important;
         padding: 12px 0px ;
@@ -25,6 +28,7 @@
     }
     .label { 
         font-weight: bold;
+        text-transform: inherit;
         font-size: 0.875em; 
         display: inline-block;
         white-space: nowrap;
