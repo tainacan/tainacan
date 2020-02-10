@@ -55,7 +55,7 @@
 	z-index: 99999;
 	float: left;
 	max-width: 20%;
-	min-width: 180px;
+	min-width: 154px;
 	min-height: 100%;
 	width: auto;
 	height: auto;
@@ -91,9 +91,9 @@
 }
 
 .items-list-area {
-	-webkit-flex: 0 1 auto;
-    -ms-flex: 0 1 auto;
-    flex: 0 1 auto;
+	-webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
 	min-height: 100%;
 }
 

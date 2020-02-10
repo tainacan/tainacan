@@ -723,8 +723,10 @@
                 if (newValue == false){
                     this.$eventBusSearch.$emit('closeAdvancedSearch');
                     this.advancedSearchResults = false;
+                    this.isFiltersModalActive = true;
                 } else {
                     this.$eventBusSearch.clearAllFilters();
+                    this.isFiltersModalActive = false;
                 }
             },
             orderByName() {
