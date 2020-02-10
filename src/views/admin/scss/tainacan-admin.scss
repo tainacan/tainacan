@@ -59,7 +59,7 @@ body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, bod
 
     // For Chromium and related
     &::-webkit-scrollbar {
-        width: 0.4rem;
+        width: 0.4em;
     }
     &::-webkit-scrollbar-thumb {
         background-color: $gray3;
@@ -99,7 +99,7 @@ a:hover {
 .add-link {
     display: inline-flex;
     align-items: center;
-    font-size: 0.75rem; 
+    font-size: 1em; 
     margin: 3px 0 6px 0;
     &.disabled {
         pointer-events: none;
@@ -111,7 +111,7 @@ a:hover {
         }
     }
     .tainacan-icon::before {
-        font-size: 0.875rem;
+        font-size: 0.875em;
     }
 }
 
@@ -153,7 +153,7 @@ a:hover {
         background: $gray3;
         content: none;
         color: transparent;
-        margin: 1rem auto;
+        margin: 1em auto;
     }
 }
 

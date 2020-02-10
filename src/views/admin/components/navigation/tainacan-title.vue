@@ -155,7 +155,7 @@ export default {
                 white-space: nowrap;
                 overflow: hidden;
                 max-width: 75%;
-                margin: 0 0.1rem;
+                margin: 0 0.1em;
                 display: inline-block;
                 vertical-align: bottom;
             }

@@ -21,14 +21,14 @@
         }
     }
     &>.control.has-icons-left .icon {
-        height: 2.125rem;
-        width: 2.125rem;
+        height: 2.125em;
+        width: 2.125em;
     }
     .dropdown-menu {
         padding: 0px;
         margin-top: 0;
         border-radius: 0px;
-        min-width: 6rem;
+        min-width: 6em;
         border: none;
         z-index: 99;
         
@@ -43,13 +43,13 @@
             .dropdown-item {
                 display: block;
                 text-decoration: none;
-                padding: 0.375rem 1rem;
-                font-size: 0.8125rem;
+                padding: 0.375em 1em;
+                font-size: 0.825em;
                 color: $tainacan-input-color !important;
                 transition: background-color 0.3s ease;
 
                 label { margin-bottom: 0; }
-                &.control { font-size: 0.8125rem !important; }
+                &.control { font-size: 0.8125em !important; }
                 .b-checkbox { width: 100% };
                 &:hover { background-color: $gray2; }
                 .is-small { color: $gray4; }
@@ -59,7 +59,7 @@
                     align-items: center;
                 
                     .media-left {
-                        margin-right: 0.5rem;
+                        margin-right: 0.5em;
                     }
                     .media-content {
                         display: flex;
@@ -84,7 +84,7 @@
             .dropdown-menu {
                 border-radius: 4px;
                 .dropdown-item {
-                    padding: 0.75rem !important;
+                    padding: 0.75em !important;
                 }
             }  
         }
@@ -130,7 +130,7 @@
     }
     .input { 
         margin-bottom: 0px !important; 
-        height: 1.85rem !important;
+        height: 2.25em !important;
         text-overflow: ellipsis;
     }
     .input.has-selected, .input:focus, .input:active {
@@ -138,7 +138,7 @@
         border: 1px solid $gray2 !important;
     }
     .tags {
-        margin:  0.17rem 0.25rem 0.08rem 0.25rem !important;
+        margin:  0.17em 0.25em 0.08em 0.25em !important;
         display: inline-flex;
     }
     .tag {
@@ -170,7 +170,7 @@
     border-style: solid;
     background-color: white;
     display: flex;
-    font-size: 0.75rem;
+    font-size: 0.75em;
 
     .tags {
         margin: 4px 6px 0px 6px;
@@ -278,7 +278,7 @@
         
         .datepicker-cell {
             border: none !important;
-            padding: 0.5rem 0.75rem;
+            padding: 0.5em 0.75em;
 
             &.is-selectable.is-first-hovered,
             &.is-selectable.is-last-hovered {
@@ -301,9 +301,9 @@
             width: auto;
 
             .datepicker-cell {
-                height: 2rem;
+                height: 2em;
                 width: 50%;
-                padding: 0.3rem 0.25rem !important;
+                padding: 0.3em 0.25em !important;
                 text-overflow: ellipsis;
                 overflow: hidden;
                 display: block;
@@ -314,15 +314,15 @@
     @media screen and (min-width: 768px) {
 
         .datepicker-header {
-            margin-bottom: 0.5rem;
-            padding-top: 0.15rem;
-            padding-bottom: 0.5rem;
+            margin-bottom: 0.5em;
+            padding-top: 0.15em;
+            padding-bottom: 0.5em;
             
             .pagination {
                 flex-wrap: wrap;
             
                 .pagination-list {
-                    margin-bottom: 0.5rem;
+                    margin-bottom: 0.5em;
 
                     .field.has-addons {
                         width: 100% !important;
@@ -337,7 +337,7 @@
                     margin: 0;
                     height: 24px;
                     padding: 0;
-                    font-size: 0.75rem; 
+                    font-size: 0.75em; 
                     order: 3;
                 }
 
@@ -345,13 +345,13 @@
                     margin: 0;
                     height: 24px;
                     padding: 0;
-                    font-size: 0.75rem;
+                    font-size: 0.75em;
                 }
             }
         }
 
         .dropdown-item {
-            padding: 0.8rem !important;
+            padding: 0.8em !important;
         }
 
         .dropdown-menu {

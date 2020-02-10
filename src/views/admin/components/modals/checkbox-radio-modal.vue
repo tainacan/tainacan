@@ -27,7 +27,6 @@
 
             <b-tabs
                     v-if="!isSearching"
-                    size="is-small"
                     animated
                     @input="fetchSelectedLabels()"
                     v-model="activeTab">
@@ -54,7 +53,7 @@
                                     class="tainacan-li-checkbox-list"
                                     v-for="(option, key) in options"
                                     :key="key">
-                                <label class="b-checkbox checkbox is-small">
+                                <label class="b-checkbox checkbox">
                                     <input 
                                             v-model="selected"
                                             :value="option.value"
@@ -101,7 +100,7 @@
                                     :key="index">
                                 <label 
                                         v-if="isCheckbox"
-                                        class="b-checkbox checkbox is-small">
+                                        class="b-checkbox checkbox">
                                     <input 
                                             v-model="selected"
                                             :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
@@ -784,7 +783,7 @@
         cursor: pointer;
         border: 1px solid $gray1;
         margin-top: 10px;
-        margin-bottom: -0.2rem;
+        margin-bottom: -0.2em;
 
         &:hover {
             background-color: $blue1;
@@ -813,7 +812,7 @@
 
         .b-checkbox, .b-radio {
             max-width: 81%;
-            margin-left: 0.7rem;
+            margin-left: 0.7em;
             margin-bottom: 0;
             height: 24px;
         }
@@ -828,7 +827,7 @@
         flex-grow: 0;
         flex-shrink: 1;
         max-width: calc(50% - 8.3333333%);
-        padding-left: 0.5rem;
+        padding-left: 0.5em;
 
         .b-checkbox, .b-radio {
             margin-right: 10px;
@@ -862,7 +861,7 @@
         overflow-y: auto;
         list-style: none;
         margin: 0;
-        padding: 0rem;
+        padding: 0em;
     }
 
     ul {
@@ -875,7 +874,7 @@
     }
 
     .tainacan-li-checkbox-modal:first-child {
-        margin-top: 0.7rem;
+        margin-top: 0.7em;
     }
 
     .field:not(:last-child) {
@@ -893,7 +892,7 @@
             color: $blue5;
             cursor: pointer;
             height: 27px;
-            font-size: 1.125rem;
+            font-size: 1.125em;
             width: 30px !important;
             position: absolute;
             right: 0;
@@ -960,7 +959,7 @@
     }
 
     .tainacan-li-no-children {
-        padding: 3rem 1.5rem 3rem 0.5rem;
+        padding: 3em 1.5em 3em 0.5em;
     }
 
     .tainacan-li-checkbox-last-active {
@@ -985,8 +984,8 @@
 
     .warning-no-more-terms {
         color: $gray4;
-        font-size: 0.75rem;
-        padding: 0.5rem;
+        font-size: 0.75em;
+        padding: 0.5em;
         text-align: center;
     }
 

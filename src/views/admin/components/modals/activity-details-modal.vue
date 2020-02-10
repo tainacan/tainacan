@@ -739,7 +739,7 @@
         min-height: 500px;
         
         p {
-            font-size: 0.875rem;
+            font-size: 0.875em;
         }
     }
 
@@ -763,7 +763,7 @@
         border: 1px solid $gray3;
 
         &>div {
-            margin: 0.5rem;
+            margin: 0.5em;
         }
     }
 
@@ -775,11 +775,11 @@
     }
 
     p.is-capitalized {
-        margin-bottom: 0.125rem;
+        margin-bottom: 0.125em;
     }
     .tainacan-p-break {
         word-break: break-word;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.5em;
     }
 
     .tainacan-figure {

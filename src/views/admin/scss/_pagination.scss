@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    font-size: 0.85em !important;
+    font-size: 1em !important;
     font-weight: normal !important;
     border-top: 1px solid $gray3;
     padding-top: 0;
@@ -10,8 +10,8 @@
     margin-left: $page-side-padding;
     margin-right: $page-side-padding;
     margin-bottom: 12px;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
     color: $gray4;
 
     @media screen and (max-width: 768px) {
@@ -19,11 +19,11 @@
     }
 
     .shown-items { 
-        // flex-grow: 1; 
+        font-size: 0.875em; 
     }
 
     .go-to-page .dropdown-menu {
-        min-width: 3.5rem;
+        min-width: 3.5em;
 
         .dropdown-content{
             max-height: 160px;
@@ -34,7 +34,7 @@
     
     .items-per-page { 
         flex-grow: 1;
-        margin-top: 0.5rem;
+        margin-top: 0.5em;
 
         @media screen and (max-width: 768px) {
             flex-grow: 2;
@@ -49,10 +49,10 @@
         .field-label {
             flex-grow: 5;
             margin-right: 0.5em;
-            padding-top: 0.3rem;
+            padding-top: 0.3em;
 
             .label {
-                font-size: 0.85rem !important;
+                font-size: 0.85em !important;
                 font-weight: normal !important;
                 margin-bottom: 0;
                 color: $gray4;
@@ -60,7 +60,7 @@
         }
         .select {
             select {
-                font-size: 0.85rem;
+                font-size: 0.85em;
                 border: none !important;
             } 
         }
@@ -81,7 +81,7 @@
         }
 
         &.is-small {
-            font-size: 0.85rem;
+            font-size: 0.85em;
         }
 
         a[disabled="disabled"] {

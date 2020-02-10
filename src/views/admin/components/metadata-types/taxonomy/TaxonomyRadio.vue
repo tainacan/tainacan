@@ -225,13 +225,13 @@
 
 <style lang="scss" scoped>
     .selected-tags {
-        margin-top: 0.75rem;
-        font-size: 0.75rem;
+        margin-top: 0.75em;
+        font-size: 0.75em;
         position: relative;
     }
     .selected-tags .is-loading {
-        margin-left: 2rem;
-        margin-top: -0.4rem;
+        margin-left: 2em;
+        margin-top: -0.4em;
     }
     .selected-tags .is-loading::after {
         border: 2px solid #555758 !important;
@@ -250,6 +250,6 @@
     .view-all {
         color: #898d8f;
         margin-bottom: 20px;
-        font-size: 0.75rem;
+        font-size: 0.75em;
     }
 </style>

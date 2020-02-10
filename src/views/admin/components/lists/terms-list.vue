@@ -38,7 +38,7 @@
                         :class="{ 'is-active': order == 'desc' }"
                         :value="'desc'"
                         aria-role="listitem"
-                        style="padding-bottom: 0.45rem">
+                        style="padding-bottom: 0.45em">
                     <span class="icon is-small gray-icon">
                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
                     </span>
@@ -50,7 +50,7 @@
                         :class="{ 'is-active': order == 'asc' }"
                         :value="'asc'"
                         aria-role="listitem"
-                        style="padding-bottom: 0.45rem">
+                        style="padding-bottom: 0.45em">
                     <span class="icon is-small gray-icon">
                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
                     </span>
@@ -491,7 +491,7 @@ export default {
             margin-left: auto;
 
             .label {
-                font-size: 0.875rem;
+                font-size: 0.875em;
                 font-weight: normal;
                 margin-top: 3px;
                 margin-bottom: 2px;
@@ -513,7 +513,7 @@ export default {
             }
             .gray-icon .icon i::before, 
             .gray-icon i::before {
-                font-size: 1.3125rem !important;
+                font-size: 1.3125em !important;
                 max-width: 26px;
             }
         }
@@ -578,9 +578,9 @@ export default {
     }
 
     .view-more-terms-level-0 {
-        font-size: 0.875rem;
+        font-size: 0.875em;
         margin: 0;
-        padding: 0.5rem 0 0.5rem 1.75rem;
+        padding: 0.5em 0 0.5em 1.75em;
         display: flex;
         border-top: 1px solid #f2f2f2;
     }

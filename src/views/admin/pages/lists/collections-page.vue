@@ -84,7 +84,7 @@
                             :class="{ 'is-active': order == 'desc' }"
                             :value="'desc'"
                             aria-role="listitem"
-                            style="padding-bottom: 0.45rem">
+                            style="padding-bottom: 0.45em">
                         <span class="icon is-small gray-icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
                         </span>
@@ -96,7 +96,7 @@
                             :class="{ 'is-active': order == 'asc' }"
                             :value="'asc'"
                             aria-role="listitem"
-                            style="padding-bottom: 0.45rem">
+                            style="padding-bottom: 0.45em">
                         <span class="icon is-small gray-icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
                         </span>
@@ -105,7 +105,7 @@
                 </b-dropdown>
                 <span
                         class="label"
-                        style="padding-left: 0.65rem;">
+                        style="padding-left: 0.65em;">
                     {{ $i18n.get('info_by_inner') }}
                 </span>
                 <b-select
@@ -154,7 +154,7 @@
                                 autoHide: true,
                                 placement: 'auto',
                             }">
-                        <a :style="{ fontWeight: 'bold', color: '#454647 !important', lineHeight: '1.5rem' }">
+                        <a :style="{ fontWeight: 'bold', color: '#454647 !important', lineHeight: '1.5em' }">
                             {{ `${$i18n.get('label_all_collections')}` }}
                             <span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${Number(repositoryTotalCollections.private) + Number(repositoryTotalCollections.publish)})` : '' }`}` }}</span>
                         </a>
@@ -521,7 +521,7 @@ export default {
             }
 
             .label {
-                font-size: 0.875rem;
+                font-size: 0.875em;
                 font-weight: normal;
                 margin-top: 3px;
                 margin-bottom: 2px;
@@ -533,7 +533,7 @@ export default {
                     display: flex;
                     align-items: center;
                     border-radius: 0 !important;
-                    height: 1.95rem !important;
+                    height: 1.95em !important;
                 }
             }
             
@@ -547,7 +547,7 @@ export default {
             }
             .gray-icon .icon i::before, 
             .gray-icon i::before {
-                font-size: 1.3125rem !important;
+                font-size: 1.3125em !important;
                 max-width: 26px;
             }
 
@@ -557,7 +557,7 @@ export default {
                 color: $blue5;
                 height: 27px;
                 font-size: 18px !important;
-                height: 1.75rem !important;
+                height: 1.75em !important;
             }
         }
 

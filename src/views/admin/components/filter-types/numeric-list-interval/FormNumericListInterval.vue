@@ -178,11 +178,11 @@
 
         .field:first-child {
             width: 100%;
-            margin-top: 1rem;
+            margin-top: 1em;
             margin-bottom: -1px;
         }
         .field.has-addons {
-            margin-bottom: 0.125rem;
+            margin-bottom: 0.125em;
             width: 100%;
             display: flex;
             flex-wrap: wrap;

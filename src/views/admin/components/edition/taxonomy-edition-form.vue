@@ -533,7 +533,7 @@
         margin-bottom: 76px;
     }
     .tainacan-form .column {
-        padding: 1rem 4.1666667%;
+        padding: 1em 4.1666667%;
     }
     .tainacan-form .column:last-of-type {
         padding-left: 0;
@@ -542,7 +542,7 @@
         align-items: center;
     }
     .updated-at {
-        margin: 0 1rem 0 auto;
+        margin: 0 1em 0 auto;
         color: #555758;
         font-style: italic;
     }

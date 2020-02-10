@@ -28,7 +28,7 @@
         .grid-item-checkbox {
             position: absolute;
             margin-top: 9px;
-            margin-left: 1rem;
+            margin-left: 1em;
         }
         .actions-area {
             position: relative;
@@ -95,12 +95,12 @@
         .metadata-title {
             flex-shrink: 0;
             margin: 6px;
-            padding: 6px 1rem;
+            padding: 6px 1em;
             min-height: 30px;
             cursor: pointer;
 
             p { 
-                font-size: 0.875rem; 
+                font-size: 0.875em; 
                 text-overflow: ellipsis;
                 white-space: nowrap; 
                 overflow: hidden;

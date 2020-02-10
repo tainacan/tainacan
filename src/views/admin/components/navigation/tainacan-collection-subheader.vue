@@ -242,7 +242,7 @@ export default {
         color: turquoise5;
         text-shadow: none;
         background-color: $turquoise2;
-        font-size: 0.75rem;
+        font-size: 0.75em;
         font-weight: 400;
         padding: 10px 14px;
     }
@@ -388,7 +388,7 @@ export default {
             .level-left {
                 margin-left: 0px !important;
                 display: flex;
-                padding: 0 1rem;
+                padding: 0 1em;
                 .level-item {
                     display: inline-flex;
                 }

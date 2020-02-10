@@ -213,7 +213,7 @@
 
     .multiple-inputs {
         display: flex;
-        margin: 0.75rem 0;
+        margin: 0.75em 0;
         flex-direction: column;
         justify-content: space-between;
     }
@@ -223,18 +223,18 @@
         padding: 10px 25px;
 
         .label {
-            font-size: 0.875rem;
+            font-size: 0.875em;
             font-weight: 500;
             margin-left: 15px;
             margin-bottom: 0;
-            margin-top: 0.15rem;
+            margin-top: 0.15em;
             max-width: 50%;
         }
         .metadata-type {
-            font-size: 0.8125rem;
+            font-size: 0.8125em;
             font-weight: 400;
             color: $gray3;
-            top: -0.4em;
+            top: -0.1em;
             position: relative;
         }
         .help-wrapper {
@@ -244,7 +244,7 @@
             cursor: pointer;
             position: relative;
             margin-left: -42px;
-            bottom: 0.1rem;
+            bottom: 0.1em;
             white-space: nowrap;
         }
     }

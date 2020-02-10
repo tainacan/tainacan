@@ -37,7 +37,7 @@ export default {
     }
 
     a.help-button .icon {
-        i, i::before { font-size: 0.875rem !important }
+        i, i::before { font-size: 0.875em !important }
     }
 
     .help-wrapper:hover .help-tooltip {
@@ -64,19 +64,19 @@ export default {
         opacity: 0;
 
         .help-tooltip-header {
-            padding: 0.8rem 0.8rem 0rem 0.8rem;
+            padding: 0.8em 0.8em 0em 0.8em;
 
             h5 {
-                font-size: 0.875rem;
+                font-size: 0.875em;
                 font-weight: bold;
             }
         }
 
         .help-tooltip-body {
-            padding: 0.5em 1.0rem 1.0rem 1.0rem;
+            padding: 0.5em 1.0em 1.0em 1.0em;
 
             p {
-                font-size: 0.875rem !important;
+                font-size: 0.875em !important;
                 font-weight: normal !important;
                 white-space: normal !important;
                 overflow: visible !important;

@@ -29,7 +29,7 @@
         .masonry-item-checkbox {
             position: absolute;
             margin-top: 8px;
-            margin-left: 1rem;
+            margin-left: 1em;
         }
         .actions-area {
             position: relative;
@@ -103,12 +103,12 @@
         .metadata-title {
             flex-shrink: 0;
             margin: 0px 6px 0px 24px;
-            padding: 10px 1rem;
+            padding: 10px 1em;
             min-height: 41px;
             cursor: pointer;
 
             p { 
-                font-size: 0.875rem !important;
+                font-size: 0.875em !important;
                 color: black !important; 
                 text-align: left !important;
                 margin-bottom: 0 !important;

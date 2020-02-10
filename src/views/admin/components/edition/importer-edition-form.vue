@@ -473,7 +473,7 @@ export default {
         display: inline;
     }
     .drop-inner{
-        padding: 1rem 3rem;
+        padding: 1em 3em;
     }
 
     .mapping-header-label {
@@ -498,7 +498,7 @@ export default {
     .selected-source-file {
         border: 1px solid $gray2;
         padding: 2px 10px;
-        font-size: .75rem;
+        font-size: .75em;
         display: flex;
         justify-content: space-between;
         align-items: center;

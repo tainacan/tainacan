@@ -101,7 +101,7 @@ export default {
             border: none;
 
             .dropdown-item {
-                padding: 0.125rem 0.5rem !important;
+                padding: 0.125em 0.5em !important;
 
                 .gray-icon {
                     padding: 0;
@@ -134,7 +134,7 @@ export default {
 
         }
         .collapse-all {
-            font-size: 0.75rem;
+            font-size: 0.75em;
         }
         .collapse .collapse-trigger {
             display: inline;
@@ -175,6 +175,9 @@ export default {
                     cursor: pointer;
                 }
             }
+        }
+        .b-checkbox.checkbox.is-small {
+            font-size: 1em;
         }
     }
     .loading-overlay {

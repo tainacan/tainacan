@@ -445,9 +445,9 @@
     }
 
     form#termEditForm {
-        padding: 1.7rem 0 1.5rem 1.5rem;
+        padding: 1.7em 0 1.5em 1.5em;
         border-left: 1px solid $gray2;
-        margin-left: 0.75rem;
+        margin-left: 0.75em;
         position: relative;
         animation-name: enter;
         animation-duration: 0.5s;
@@ -538,7 +538,7 @@
         .checkboxes-warning {
             color: $gray5;
             font-style: italic;
-            padding: 0.2rem 0.75rem;
+            padding: 0.2em 0.75em;
         }
     }
 

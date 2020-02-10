@@ -311,8 +311,8 @@
 <style lang="scss" scoped>
 
     .view-all-button {
-        font-size: 0.75rem;
-        padding: 0.1rem 1rem;
+        font-size: 0.75em;
+        padding: 0.1em 1em;
     }
 
     .is-loading:after {
@@ -322,8 +322,8 @@
     }
 
     .no-options-placeholder {
-        margin-left: 0.5rem;
-        font-size: 0.75rem;
+        margin-left: 0.5em;
+        font-size: 0.75em;
         color: #555758;
     }
 

@@ -941,21 +941,21 @@ export default {
         }
     }
     .header-field {  
-        padding-top: 1.5rem;
+        padding-top: 1.5em;
 
         .image-placeholder {
             position: absolute;
             left: 10%;
             right: 10%;
             top: 35%;
-            font-size: 2.0rem;
+            font-size: 2.0em;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: $gray4;
             
             @media screen and (max-width: 1024px) {
-                font-size: 1.2rem;
+                font-size: 1.2em;
             }
             
         }
@@ -966,7 +966,7 @@ export default {
         }
     }
     .thumbnail-field {  
-        padding: 1.5rem;
+        padding: 1.5em;
         // margin-top: 16px;
         // margin-bottom: 38px;
 
@@ -982,7 +982,7 @@ export default {
             position: absolute;
             margin-left: 45px;
             margin-right: 45px;
-            font-size: 0.8rem;
+            font-size: 0.8em;
             font-weight: bold;
             z-index: 99;
             text-align: center;
@@ -1003,7 +1003,7 @@ export default {
     .selected-cover-page {
         border: 1px solid $gray2;
         padding: 8px;
-        font-size: .75rem;
+        font-size: .75em;
         .span { vertical-align: middle;}
 
         .selected-cover-page-control {

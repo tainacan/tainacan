@@ -22,7 +22,7 @@
     .tooltip-inner {
         background: $turquoise1;
         color: $gray5;
-        font-size: 0.6875rem;
+        font-size: 0.6875em;
         border-radius: 5px;
         padding: 10px 14px;
         max-width: 280px;
@@ -134,7 +134,7 @@
             font-weight: 600;
             color: $turquoise4;
             width: 100%;
-            font-size: 1rem;
+            font-size: 1em;
             margin-bottom: 6px;
             margin-left: -18px;
         }
@@ -164,9 +164,9 @@
             }
         }
         .add-new-term {
-            font-size: 0.75rem;
+            font-size: 0.75em;
             text-decoration: underline;
-            margin: 0.875rem 1.5rem;
+            margin: 0.875em 1.5em;
         }
     }
 
@@ -186,7 +186,7 @@
             background: $gray4;
             content: none;
             color: transparent;
-            margin: 1rem auto;
+            margin: 1em auto;
         }
     }
 }

@@ -114,7 +114,7 @@
             margin-right: 0px;
         }
         .column {
-            padding: 0.75rem 1px 0.75rem 0 !important;
+            padding: 0.75em 1px 0.75em 0 !important;
         }
 
         .collapse {
@@ -132,12 +132,12 @@
 
         .label {
             font-weight: normal !important;
-            font-size: 0.875rem;
+            font-size: 0.875em;
             width: 100%;
         }
 
         .taginput-container {
-            font-size: 0.875rem;
+            font-size: 0.875em;
             border-radius: 1px !important;
             box-shadow: none !important;
             transition: background-color 0.1s;
@@ -199,11 +199,14 @@
         
         .b-checkbox.checkbox  {
             font-weight: normal;
-            font-size: 0.75rem;
+            font-size: 1em;
             margin-right: 2px;
         }
 
         .datepicker {
+            .dropdown-menu {
+                left: -18px;
+            }
             @media screen and (min-width: 768px) {
 
                 .datepicker-header {
@@ -219,18 +222,18 @@
 
                             select {
                                 padding-left: 1px !important;
-                                font-size: 0.75rem !important;
+                                font-size: 0.875em !important;
                                 height: 24px !important;
                                 min-width: 100% !important;
                             }
                             &:not(.is-loading)::after {
-                                margin-top: -13px !important;
+                                margin-top: -10px !important;
                             }
                         }
                     }
                 }
                 .datepicker-cell {
-                    padding: 0.15rem 0.175rem !important;
+                    padding: 0.15em 0.175em !important;
                 }
             }
         }

@@ -59,7 +59,7 @@
 
         .card-checkbox {
             position: absolute;
-            margin-left: 1.0rem;
+            margin-left: 1.0em;
             margin-top: 7px;
         }
         .actions-area {
@@ -120,10 +120,10 @@
         }
         .metadata-title {
             flex-shrink: 0;
-            padding: 0.6rem 5rem 0.5rem 2.75rem;
+            padding: 0.6em 5em 0.5em 2.75em;
             margin-bottom: -26px;
             min-height: 40px;
-            font-size: 0.875rem !important; 
+            font-size: 0.875em !important; 
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
@@ -132,7 +132,7 @@
 
             p {
                 color: black !important;
-                font-size: 0.875rem !important; 
+                font-size: 0.875em !important; 
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
@@ -151,21 +151,21 @@
             margin: 0 !important;
 
             .list-metadata {
-                padding: 0.75rem 1.375rem;
+                padding: 0.75em 1.375em;
                 flex: 1;
                 width: 100%;
                 height: 170px;
                 color: $gray4;
 
                 p.metadata-description {
-                    font-size: 0.6875rem !important;
+                    font-size: 0.6875em !important;
                     overflow: hidden;
-                    margin-bottom: 1rem;
+                    margin-bottom: 1em;
                     max-height: 152px;
                 }
 
                 .metadata-author-creation {
-                    font-size: 0.6875rem !important;
+                    font-size: 0.6875em !important;
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     overflow: hidden;

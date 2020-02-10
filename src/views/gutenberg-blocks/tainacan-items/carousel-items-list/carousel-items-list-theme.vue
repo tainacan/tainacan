@@ -14,7 +14,7 @@
                         :style="{
                             backgroundColor: collectionBackgroundColor ? collectionBackgroundColor : '', 
                             paddingRight: collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? '' : '20px',
-                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1rem' : '',
+                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1em' : '',
                             width: collection && collection.header_image ? '' : '100%'
                         }"
                         :class="
@@ -55,7 +55,7 @@
                         :options="swiperOptions"
                         ref="myItemSwiper"
                         :style="{
-                            marginTop: showCollectionHeader ? '1.35rem' : '0px'
+                            marginTop: showCollectionHeader ? '1.35em' : '0px'
                         }">
                     <swiper-slide 
                             role="listitem"
@@ -129,7 +129,7 @@
                         :options="swiperOptions"
                         ref="myItemSwiperSkeleton"
                         :style="{
-                            marginTop: showCollectionHeader ? '1.35rem' : '0px'
+                            marginTop: showCollectionHeader ? '1.35em' : '0px'
                         }">
                     <swiper-slide 
                             role="listitem"

@@ -5,7 +5,7 @@
     justify-content: center;
 }
 .wp-block-tainacan-search-bar {
-    margin: 2rem auto;
+    margin: 2em auto;
 
     .tainacan-search-container {
         width: 100%;
@@ -39,7 +39,7 @@
                 min-width: 28px;
                 margin: 0;
                 border: none;
-                padding: 4px 0.75rem;
+                padding: 4px 0.75em;
                 text-overflow: ellipsis;
             }
             button {
@@ -50,8 +50,8 @@
                 box-shadow: none;
                 border-radius: 0;
                 background: white;
-                padding: 4px 1rem;
-                font-size: 1rem;
+                padding: 4px 1em;
+                font-size: 1em;
 
                 .icon {
                     height: 28px;                    
@@ -130,8 +130,8 @@
             }
 
             button {
-                margin-right: 0.75rem;
-                padding: 0 0.35rem;
+                margin-right: 0.75em;
+                padding: 0 0.35em;
                 min-height: 28px;
                 z-index: 2;
                 border: none;
@@ -230,7 +230,7 @@
                 margin-right: -56px;
                 padding-right: 27px;
                 padding-left: 26px;
-                font-size: 1rem;
+                font-size: 1em;
                 border-width: 0;
                 background: #f2f2f2;
                 transition: width 0.5s ease-in, padding 0.5s ease-in;
@@ -246,8 +246,8 @@
             }
 
             button {
-                margin-left: 0.75rem;
-                padding: 0 0.35rem;
+                margin-left: 0.75em;
+                padding: 0 0.35em;
                 min-height: 28px;
                 z-index: 2;
                 border: none;
@@ -298,7 +298,7 @@
 
             &.is-aligned-left {
                 .tainacan-search-container {
-                    width: calc(100% - 1rem - 26px);
+                    width: calc(100% - 1em - 26px);
                     top: calc(-50% + 26px);
                     left: calc(4.1667% + 26px);
                     left: calc(4.1667vw + 26px);
@@ -353,8 +353,8 @@
         flex-wrap: wrap;
         align-items: center;
         flex-grow: 2;
-        padding: 0.5rem 4.1667%;
-        padding: 0.5rem 4.1667vw;
+        padding: 0.5em 4.1667%;
+        padding: 0.5em 4.1667vw;
         text-align: center;
         text-decoration: none !important;
 
@@ -384,8 +384,8 @@
             h3 { 
                 margin: 0 auto;
                 text-decoration: none;
-                font-size: 1.3rem;
-                line-height: 1.5rem;
+                font-size: 1.3em;
+                line-height: 1.5em;
                 text-overflow: ellipsis;
                 color: inherit;
                 &:hover {
@@ -397,13 +397,13 @@
                 display: block;
                 margin-top: -8px;
                 font-weight: normal; 
-                font-size: 1rem;
+                font-size: 1em;
             }
         }
 
         @media only screen and (max-width: 1024px) { 
             .search-bar-collection-header-title { 
-                margin-bottom: 1rem; 
+                margin-bottom: 1em; 
             }
         }
     }

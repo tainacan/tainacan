@@ -191,7 +191,7 @@
     .repository-header-tooltips .tooltip-inner {
         color: white;
         background-color: $blue3;
-        font-size: 0.75rem;
+        font-size: 0.75em;
         font-weight: 400;
         padding: 10px 14px;
     }
@@ -221,7 +221,7 @@
                 width: 50px;
                 height: $header-height;
                 background-color: $gray1;
-                padding-bottom: 0.4rem;
+                padding-bottom: 0.4em;
                 transition: background-color 0.2s ease;
 
                 &:hover {
@@ -268,7 +268,7 @@
                         transition: width linear 0.15s;
                         -webkit-transition: width linear 0.15s;
                         width: 220px;
-                        font-size: 0.75rem;
+                        font-size: 0.75em;
                     }
                     .search-header:focus, .search-header:active {
                         width: 372px !important;

@@ -445,23 +445,23 @@
 <style scoped>
 
     h3 {
-        font-size: 1rem;
+        font-size: 1em;
     }
 
     .collapse-all {
         display: inline-flex;
         align-items: center;
-        font-size: 0.75rem !important;
+        font-size: 0.75em !important;
     }
     .extra-margin {
         margin-bottom: 64px;
     }
     .collection-name {
         color: #454647;
-        font-size: 0.875rem;
+        font-size: 0.875em;
         font-weight: 500;
-        margin-bottom: 0.875rem;
-        margin-top: 1rem;
+        margin-bottom: 0.875em;
+        margin-top: 1em;
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;

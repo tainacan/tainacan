@@ -236,9 +236,10 @@
     .add-new-term {
         margin-top: 15px;
         margin-bottom: 25px;
-        font-size: 0.75rem;
+        font-size: 0.75em;
     }
     .add-new-term-form {
+        font-size: 1.35em;
         padding: 14px 24px 12px 24px;
         margin-top: 12px; 
         margin-bottom: -12px;

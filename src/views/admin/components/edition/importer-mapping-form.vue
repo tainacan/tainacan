@@ -694,7 +694,7 @@ export default {
         display: inline;
     }
     .drop-inner{
-        padding: 1rem 3rem;
+        padding: 1em 3em;
     }
 
     .mapping-header-label {
@@ -736,7 +736,7 @@ export default {
 
         p {
             max-width: 74px;
-            font-size: 0.875rem;
+            font-size: 0.875em;
             color: $gray5;
             margin: 4px 8px;
             text-align: left;

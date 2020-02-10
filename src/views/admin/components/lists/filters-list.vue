@@ -797,9 +797,9 @@ export default {
 
         .active-filters-area {
             font-size: 14px;
-            margin-right: 0.8rem;
-            margin-left: -0.8rem;
-            padding-right: 3rem;
+            margin-right: 0.8em;
+            margin-left: -0.8em;
+            padding-right: 3em;
             min-height: 330px;
 
             @media screen and (max-width: 769px) {
@@ -869,7 +869,7 @@ export default {
                     font-style: italic;
                     font-weight: bold;
                     color: $danger;
-                    margin-left: 0.5rem;
+                    margin-left: 0.5em;
                 }
                 .controls { 
                     position: absolute;
@@ -955,7 +955,7 @@ export default {
             margin: 0;
             max-width: 500px;
             min-width: 20.8333333%;
-            font-size: 0.875rem;
+            font-size: 0.875em;
 
             @media screen and (max-width: 769px) {
                 max-width: 100%;
@@ -970,13 +970,13 @@ export default {
             }
 
             h3 {
-                margin: 0.2rem 0rem 1rem 0rem;
+                margin: 0.2em 0em 1em 0em;
                 font-weight: 500;
             }
 
             .available-metadatum-item {
-                padding: 0.6rem;
-                margin: 4px 4px 4px 1.2rem;
+                padding: 0.6em;
+                margin: 4px 4px 4px 1.2em;
                 background-color: white;
                 cursor: pointer;
                 left: 0;
@@ -1151,7 +1151,7 @@ export default {
                     font-weight: 600;
                     color: $gray4;
                     width: 100%;
-                    font-size: 1rem;
+                    font-size: 1em;
                     margin-left: -16px;
                 }
                 
@@ -1186,9 +1186,9 @@ export default {
                     }
                 }
                 .add-new-term {
-                    font-size: 0.75rem;
+                    font-size: 0.75em;
                     text-decoration: underline;
-                    margin: 0.875rem 1.5rem;
+                    margin: 0.875em 1.5em;
                 }
 
                 .numeric-filter-container,
@@ -1200,12 +1200,12 @@ export default {
                         width: auto;
 
                         .dropdown-trigger button {
-                            padding: 0 0.5rem !important;
+                            padding: 0 0.5em !important;
                             height: 30px !important;
 
                             i:not(.tainacan-icon-arrowdown) {
                                 margin-top: -3px;
-                                font-size: 1.5rem;
+                                font-size: 1.5em;
                                 font-style: normal;
                                 color: #555758;
                             }

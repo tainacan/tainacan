@@ -14,7 +14,7 @@
                         :style="{
                             backgroundColor: collectionBackgroundColor ? collectionBackgroundColor : '', 
                             paddingRight: collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? '' : '20px',
-                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1rem' : '',
+                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1em' : '',
                             width: collection && collection.header_image ? '' : '100%'
                         }"
                         :class="
@@ -152,7 +152,7 @@
                     v-if="layout !== 'mosaic'"
                     :style="{
                         gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
-                        marginTop: showSearchBar || showCollectionHeader ? '1.34rem' : '0px'
+                        marginTop: showSearchBar || showCollectionHeader ? '1.34em' : '0px'
                     }"
                     class="items-list"
                     :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
@@ -190,7 +190,7 @@
                     v-if="items.length > 0 && layout !== 'mosaic'"
                     :style="{
                         gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
-                        marginTop: showSearchBar || showCollectionHeader ? '1.35rem' : '0px'
+                        marginTop: showSearchBar || showCollectionHeader ? '1.35em' : '0px'
                     }"
                     class="items-list"
                     :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
@@ -383,7 +383,7 @@ export default {
             else
                 this.paged = 1;
 
-            // Remove unecessary queries
+            // emove unecessary queries
             delete queryObject.readmode;
             delete queryObject.iframemode;
             delete queryObject.admin_view_mode;

@@ -22,7 +22,7 @@
         </section>
         <div
                 v-else
-                :style="advancedSearchResults ? { 'padding-top': '0' } : { 'padding-top': '1.25rem' }"
+                :style="advancedSearchResults ? { 'padding-top': '0' } : { 'padding-top': '1.25em' }"
                 :class="{ 'padding-in-header': isHeader, 'padding-regular': !isHeader }"
                 class="tnc-advanced-search-container">
 
@@ -143,7 +143,7 @@
                     class="field column is-12">
                 <a
                         @click="addSearchCriteria"
-                        style="font-size: 0.75rem;">
+                        style="font-size: 0.75em;">
                     <span class="icon is-small">
                         <i class="has-text-secondary tainacan-icon tainacan-icon-add"/>
                     </span>
@@ -600,7 +600,7 @@
     }
 
     .padding-in-header {
-        padding: 1.5rem;
+        padding: 1.5em;
     }
 
     .padding-regular {
@@ -611,7 +611,7 @@
     .tnc-advanced-search-container {
 
         .column {
-            padding: 0 0.5rem 0.75rem !important;
+            padding: 0 0.5em 0.75em !important;
         }
 
         .control {
@@ -685,7 +685,7 @@
             margin-bottom: 0;
         }
         .field.is-grouped .field + .field {
-            margin-left: 0.25rem;
+            margin-left: 0.25em;
         }
 
         .autocomplete {
@@ -699,7 +699,7 @@
             }
         }
         .dropdown-item {
-            padding: 0.375rem 1.5rem !important;
+            padding: 0.375em 1.5em !important;
         }
         .dropdown-item:hover {
             background-color: unset !important;
@@ -719,15 +719,15 @@
 
         .advanced-search-text {
             margin: 0 12px;
-            font-size: 0.75rem;
+            font-size: 0.75em;
             color: $gray5;
         }
 
         .advanced-search-text-di {
-            font-size: 0.875rem;
+            font-size: 1em;
             font-weight: 500;
             color: $gray5;
-            margin-top: 3px;
+            margin-top: 5px;
         }
 
         .advanced-search-hr {

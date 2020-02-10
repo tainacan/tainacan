@@ -340,7 +340,7 @@
             border-top-right-radius: 2px;
             border-bottom-right-radius: 2px;
             padding: 0px 6px;
-            line-height: 1rem;
+            line-height: 1em;
             height: 15px;
             font-size: 16px;
         }
@@ -397,19 +397,19 @@
 
             .dropdown-menu-intro {
                 color: #898d8f;
-                font-size: 0.75rem;
+                font-size: 0.75em;
                 font-style: italic;
-                padding: 0.75rem 1rem 0 0.75rem;
+                padding: 0.75em 1em 0 0.75em;
                 white-space: nowrap;
                 margin: 0;
             }
             ul {
-                margin: 0.5rem 0;
+                margin: 0.5em 0;
             }
             li>a {
                 display: block;
                 margin: 0;
-                padding: 0.25rem 0.75rem;
+                padding: 0.25em 0.75em;
                 white-space: nowrap;
                 cursor: pointer;
                 color: #32373c;
@@ -423,11 +423,11 @@
         }
         @media only screen and (max-width: 782px) {
             .button {
-                padding: 1.24rem 0.5rem;  
+                padding: 1.24em 0.5em;  
                 top: -1px;  
-                font-size: 1rem;
+                font-size: 1em;
                 .dashicons {
-                    margin-top: -0.5rem;
+                    margin-top: -0.5em;
                 }
             }
             .dropdown-menu {

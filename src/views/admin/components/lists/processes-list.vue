@@ -546,13 +546,13 @@
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            padding: 0.5rem 0.75rem;
+            padding: 0.5em 0.75em;
 
             &:hover {
                 background-color: $gray1;
             }
             &>span:not(:first-of-type) {
-                margin: 0 0.75rem;
+                margin: 0 0.75em;
                 color: $gray4;
                 white-space: nowrap;
                 text-overflow: ellipsis;
@@ -572,7 +572,7 @@
             .process-title {
                 p {
                     color: black !important;
-                    font-size: 0.875rem !important;
+                    font-size: 0.875em !important;
                 }
                 width: 20.833333%;
                 margin-right: $page-side-padding !important;
@@ -595,7 +595,7 @@
                 align-items: center;
                 display: flex;
                 justify-content: flex-end;
-                padding: 0 0.5rem;
+                padding: 0 0.5em;
 
                 .tainacan-icon-openurl {
                     font-size: 20px;
@@ -611,10 +611,10 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            padding: 0.5rem 1.25rem 1rem 1.25rem;
+            padding: 0.5em 1.25em 1em 1.25em;
 
             &>span {
-                margin: 0 0.75rem;
+                margin: 0 0.75em;
                 color: $gray4;
 
                 .has-text-weight-bold {
@@ -623,15 +623,15 @@
             }
 
             .process-output {
-                margin-left: 1.75rem !important;
+                margin-left: 1.75em !important;
                 margin-right: $page-side-padding !important;
                 width: 20.83%;
 
                 ul {
                     column-count: 2;
-                    column-gap: 4rem;
+                    column-gap: 4em;
                     column-rule: none;
-                    padding: 0 0.75rem;
+                    padding: 0 0.75em;
                 }
             }
 
@@ -640,7 +640,7 @@
                 align-items: center;
 
                 .icon {
-                    margin: 0 0.5rem;
+                    margin: 0 0.5em;
                 } 
             }
 

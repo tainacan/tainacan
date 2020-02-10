@@ -168,7 +168,7 @@ export default {
         figcaption {
             background-color: white;
             padding: 8px 15px;
-            font-size: 9px;
+            font-size: 0.75em;
             width: 100%;
             text-overflow: ellipsis;
             overflow: hidden;

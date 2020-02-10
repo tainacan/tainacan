@@ -92,8 +92,8 @@
                 max-width: 80px;
                 p {
                     color: $gray4;
-                    font-size: 0.6875rem;
-                    line-height: 1.03125rem;
+                    font-size: 0.6875em;
+                    line-height: 1.03125em;
                 }
             }
             .column-default-width {
@@ -101,8 +101,8 @@
                 max-width: 160px;
                 p {
                     color: $gray4;
-                    font-size: 0.6875rem;
-                    line-height: 1.03125rem;
+                    font-size: 0.6875em;
+                    line-height: 1.03125em;
                 }
             }
             .column-medium-width {
@@ -110,8 +110,8 @@
                 max-width: 200px;
                 p {
                     color: $gray4;
-                    font-size: 0.6875rem;
-                    line-height: 1.03125rem;
+                    font-size: 0.6875em;
+                    line-height: 1.03125em;
                 }
             }
             .column-large-width {
@@ -119,15 +119,15 @@
                 max-width: 240px;
                 p {
                     color: $gray4;
-                    font-size: 0.6875rem;
-                    line-height: 1.03125rem;
+                    font-size: 0.6875em;
+                    line-height: 1.03125em;
                 }
             }
             .column-main-content {
                 min-width: 120px !important;
                 max-width: 240px !important;
                 p { 
-                    font-size: 0.875rem !important;
+                    font-size: 0.875em !important;
                     color: $tainacan-input-color !important;
                     margin: 0px !important; 
                 }
@@ -150,7 +150,7 @@
                 vertical-align: bottom;
     
                 .th-wrap {
-                    font-size: 0.75rem !important;
+                    font-size: 0.75em !important;
                     color: $gray4;
                     font-weight: normal !important;
                     text-overflow: ellipsis;
@@ -176,7 +176,7 @@
                         max-height: 60px;
                         padding: 10px;
                         vertical-align: middle;
-                        line-height: 0.75rem;
+                        line-height: 0.75em;
                         border: none !important;
 
                         &.thumbnail-cell .skeleton {
@@ -191,12 +191,12 @@
                         }
 
                         p { 
-                            font-size: 0.875rem;
+                            font-size: 0.875em;
                             margin: 0px; 
                             text-overflow: ellipsis;
                             overflow: hidden;
                             white-space: nowrap;
-                            max-height: 1.125rem;
+                            max-height: 1.125em;
                         }
                         a:hover {
                             text-decoration: none !important;
@@ -232,7 +232,7 @@
     
                         a {
                             margin: auto;
-                            font-size: 1.125rem !important;
+                            font-size: 1.125em !important;
                         }
     
                     }

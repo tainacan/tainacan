@@ -426,7 +426,7 @@
             margin-bottom: 110px;
 
             .field:not(:last-child) {
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.5em;
             }
         }
 
@@ -454,9 +454,9 @@
             .status-tag {
                 color: white;
                 background: $turquoise5;
-                padding: 0.15rem 0.5rem;
-                font-size: 0.75rem;
-                margin: 0 1rem 0 0;
+                padding: 0.15em 0.5em;
+                font-size: 0.75em;
+                margin: 0 1em 0 0;
                 font-weight: 600;
                 position: relative;
                 top: -2px;
@@ -497,7 +497,7 @@
                 justify-content: space-between;
 
                 .column {
-                    padding: 1rem 12px 0 12px;
+                    padding: 1em 12px 0 12px;
                 }
             }
             .field { 
@@ -581,7 +581,7 @@
 
     .section-status {
         padding-bottom: 16px;
-        font-size: 0.75rem;
+        font-size: 0.75em;
 
         .field {
             border-bottom: none;
@@ -621,7 +621,7 @@
             position: absolute;
             margin-left: 45px;
             margin-right: 45px;
-            font-size: 0.8rem;
+            font-size: 0.8em;
             font-weight: bold;
             z-index: 99;
             text-align: center;

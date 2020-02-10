@@ -488,17 +488,17 @@ export default {
     .exposer-types-container {
 
         .exposer-item-link {
-            padding-left: 0rem;
+            padding-left: 0em;
             p {
-                padding-left: 0.5rem;
+                padding-left: 0.5em;
             }
         }
         
         p {
-            font-size: 0.875rem;
+            font-size: 1em;
             color: $gray5;
-            padding: 0rem 1.25rem;
-            margin-top: 0.75rem;
+            padding: 0em 1.25em;
+            margin-top: 0.75em;
             margin-bottom: 0;
         }
 
@@ -513,17 +513,18 @@ export default {
                 cursor: pointer;
                 max-width: 50%;
                 flex-grow: 1;
+                font-size: 1em;
                 transition: border 0.3s ease;
 
                 h4 {
-                    font-size: 1rem;
+                    font-size: 1em;
                     font-weight: 500;
-                    padding: 0rem 0.5rem;
+                    padding: 0em 0.5em;
                 }
                 p {
-                    font-size: 0.75rem;
+                    font-size: 0.75em;
                     color: $gray5;
-                    padding: 0rem 0.5rem;
+                    padding: 0em 0.5em;
                     margin-bottom: 0;
                 }
 
@@ -539,7 +540,7 @@ export default {
         .exposer-item {
         
             &:first-child {
-                margin-top: 0.75rem;
+                margin-top: 0.75em;
             }
             &:last-child {
                 border-bottom: none;
@@ -551,20 +552,20 @@ export default {
             .collapse-handle {
                 cursor: pointer;
                 .label {
-                    margin: 3px 0.75rem 0 0;
+                    margin: 3px 0.75em 0 0;
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     overflow: hidden;
                 }
                 .has-text-gray {
-                    font-size: 0.75rem;
+                    font-size: 0.75em;
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     overflow: hidden;
                 }
             }
             p {
-                padding: 0.5rem 0.75rem;
+                padding: 0.5em 0.75em;
             }
 
             // .exposer-item-links-list {
@@ -588,19 +589,20 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-left: 0.125rem;
+        padding-left: 0.125em;
         height: 42px;
 
         &:first-of-type {
-            margin-top: 0.5rem;
+            margin-top: 0.5em;
         }
         &>span {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.875rem;
+            padding: 0.5em 0.75em;
+            font-size: 1em;
 
             p { 
                 margin: 0; 
-                padding: 0rem 0.75rem;
+                padding: 0em 0.75em;
+                font-size: 0.875em;
             }
         }
         &:hover {
@@ -616,7 +618,7 @@ export default {
 
             a {
                 cursor: pointer;
-                margin: 0 0.5rem;
+                margin: 0 0.5em;
                 color: $secondary;
                 position: relative;
             }
@@ -625,7 +627,7 @@ export default {
                 animation-duration: 0.3s;
                 position: absolute;
                 background: $gray1;
-                padding: 0.5rem 0.875rem 0.75rem 0.875rem;
+                padding: 0.5em 0.875em 0.75em 0.875em;
                 border-radius: 4px;
                 top: 44px;
                 right: 12px;
@@ -636,7 +638,7 @@ export default {
                     top: 6px;
                     right: 4px;
                 }
-                p { padding: 0 0 0.5rem 0; }
+                p { padding: 0 0 0.5em 0; }
                 input {
                     background-color: white;
                     border: 1px solid $gray2;

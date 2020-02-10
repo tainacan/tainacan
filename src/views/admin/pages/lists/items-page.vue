@@ -247,7 +247,7 @@
                                 :class="{ 'is-active': order == 'DESC' }"
                                 :value="'DESC'"
                                 aria-role="listitem"
-                                style="padding-bottom: 0.45rem">
+                                style="padding-bottom: 0.45em">
                             <span class="icon is-small gray-icon">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
                             </span>
@@ -259,7 +259,7 @@
                                 :class="{ 'is-active': order == 'ASC' }"
                                 :value="'ASC'"
                                 aria-role="listitem"
-                                style="padding-bottom: 0.45rem">
+                                style="padding-bottom: 0.45em">
                             <span class="icon is-small gray-icon">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
                             </span>
@@ -268,7 +268,7 @@
                     </b-dropdown>
                     <span
                             class="label"
-                            style="padding-left: 0.65rem;">
+                            style="padding-left: 0.65em;">
                         {{ $i18n.get('info_by_inner') }}
                     </span>
                     <b-dropdown
@@ -1285,9 +1285,9 @@
         justify-content: flex-end;
         padding-right: $page-side-padding;
         padding-left: $page-side-padding;
-        margin-bottom: 1rem;
+        margin-bottom: 1em;
 
-        p { margin-left: 0.75rem; }
+        p { margin-left: 0.75em; }
     }
 
     .tnc-advanced-search-close {
@@ -1296,7 +1296,7 @@
         padding-left: $page-side-padding;
 
         .column {
-            padding: 0 0.3rem 0.3rem !important;
+            padding: 0 0.3em 0.3em !important;
         }
     }
 
@@ -1332,7 +1332,7 @@
         }
 
         .label {
-            font-size: 0.75rem;
+            font-size: 0.75em;
             font-weight: normal;
         }
 
@@ -1421,7 +1421,7 @@
             }
 
             .label {
-                font-size: 0.875rem;
+                font-size: 0.875em;
                 font-weight: normal;
                 margin-top: 3px;
                 margin-bottom: 2px;
@@ -1443,7 +1443,7 @@
             }
             .gray-icon .icon i::before, 
             .gray-icon i::before {
-                font-size: 1.3125rem !important;
+                font-size: 1.3125em !important;
                 max-width: 26px;
             }
             
@@ -1451,7 +1451,7 @@
                 margin-right: 0px !important;
                 margin-top: -2px;
                 margin-left: 4px !important;
-                width: 1.25rem;
+                width: 1.25em;
             }
 
             .dropdown-menu {
@@ -1465,7 +1465,7 @@
                         overflow: auto;
                     }
                     .dropdown-item {
-                        padding: 0.25rem 1.0rem 0.25rem 0.75rem; 
+                        padding: 0.25em 1.0em 0.25em 0.75em; 
                     }
                     .dropdown-item span{
                         vertical-align: middle;
@@ -1498,7 +1498,7 @@
                         cursor: pointer;
                         color: $blue5;
                         height: 27px;
-                        font-size: 1.125rem !important;
+                        font-size: 1.125em !important;
                         height: auto !important;
                     }
                     margin-bottom: 5px;

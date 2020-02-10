@@ -548,7 +548,7 @@
             }
 
             .label {
-                font-size: 0.875rem;
+                font-size: 0.875em;
                 font-weight: normal;
                 margin-top: 3px;
                 margin-bottom: 2px;
@@ -559,7 +559,7 @@
                 display: flex;
                 align-items: center;
                 border-radius: 0px !important;
-                height: 1.95rem !important;
+                height: 1.95em !important;
             }
             
             .field {
@@ -572,7 +572,7 @@
             }
             .gray-icon .icon i::before, 
             .gray-icon i::before {
-                font-size: 1.3125rem !important;
+                font-size: 1.3125em !important;
                 max-width: 26px;
             }
 
@@ -582,7 +582,7 @@
                 color: $blue5;
                 height: 27px;
                 font-size: 18px !important;
-                height: 1.75rem !important;
+                height: 1.75em !important;
             }
         }
 

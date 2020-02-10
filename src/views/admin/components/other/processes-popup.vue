@@ -294,7 +294,7 @@ export default {
         border-radius: 5px;
         animation-name: appear-from-top;
         animation-duration: 0.3s;
-        font-size: 0.75rem;
+        font-size: 0.75em;
 
         .popup-header, .popup-footer {
             display: flex;
@@ -317,7 +317,7 @@ export default {
             min-height: 29px;
             .footer-title { 
                 margin-right: auto;
-                font-size: 0.625rem;
+                font-size: 0.875em;
             }
         }
 
@@ -334,7 +334,7 @@ export default {
                 background-color: white !important;
                 padding: 6px 12px 12px 12px;
                 color: $gray4;
-                font-size: 0.625rem;
+                font-size: 0.875em;
                 a { float: right; }
             }
 
@@ -395,7 +395,7 @@ export default {
                 text-overflow: ellipsis;
                 overflow: hidden;
                 max-width: calc(100% - 40px);
-                font-size: 0.625rem;
+                font-size: 0.825em;
                 color: $gray4;
                 animation-name: expand;
                 animation-duration: 0.3s;

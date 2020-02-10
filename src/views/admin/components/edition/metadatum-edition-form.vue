@@ -391,7 +391,7 @@
     @import "../../scss/_variables.scss";
 
     form#metadatumEditForm.inCollapse {
-        padding: 1.5rem $page-side-padding 0.5rem $page-side-padding;
+        padding: 1.5em $page-side-padding 0.5em $page-side-padding;
         border-top: 1px solid $gray2;
         border-bottom: 1px solid $gray2;
         margin-top: 1.0em;
@@ -404,9 +404,9 @@
         -webkit-column-gap: 0;
         -webkit-column-rule: none;
         column-count: 2;
-        column-gap: 4rem;
+        column-gap: 4em;
         column-rule: none;
-        padding-bottom: 1.5rem;
+        padding-bottom: 1.5em;
 
         &>.field, &>section {
             -webkit-column-break-inside: avoid;

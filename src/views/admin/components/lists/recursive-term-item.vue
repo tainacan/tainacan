@@ -328,7 +328,7 @@ export default {
     // Term Item
     .term-item {
         font-size: 14px;
-        padding: 0 0 0 1.75rem;
+        padding: 0 0 0 1.75em;
         min-height: 40px;
         display: flex; 
         position: relative;
@@ -380,14 +380,14 @@ export default {
         .label-details {
             font-weight: normal;
             color: $gray3;
-            margin-left: 1rem;
+            margin-left: 1em;
             margin-right: auto;
         }
         .children-counter {
-            margin-left: 1rem;
+            margin-left: 1em;
             margin-right: auto;
             color: $gray4;
-            padding-right: 1rem;
+            padding-right: 1em;
             white-space: nowrap;
             overflow: hidden;
         }
@@ -402,12 +402,12 @@ export default {
             display: flex;
             justify-content: space-between;
             background-color: $gray2;
-            padding: 0.5rem 0.875rem;
+            padding: 0.5em 0.875em;
 
             a {
                 display: flex;
                 align-items: center;
-                margin: 0 0.375rem;
+                margin: 0 0.375em;
                 .icon {
                     bottom: 1px;   
                     position: relative;
@@ -452,9 +452,9 @@ export default {
         }
     }
     .view-more-terms {
-        font-size: 0.875rem;
-        margin: 0 0 0 1.75rem !important;
-        padding: 0.5rem 0 0.5rem 1.75rem;
+        font-size: 0.875em;
+        margin: 0 0 0 1.75em !important;
+        padding: 0.5em 0 0.5em 1.75em;
         display: flex;
         border-top: 1px solid #f2f2f2;
     }

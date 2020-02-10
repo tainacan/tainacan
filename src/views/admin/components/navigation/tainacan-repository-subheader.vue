@@ -131,7 +131,7 @@ export default {
         color: white;
         text-shadow: 1px 1px $turquoise4;
         background-color: $turquoise3;
-        font-size: 0.75rem;
+        font-size: 0.75em;
         font-weight: 400;
         padding: 10px 14px;
     }
@@ -142,7 +142,7 @@ export default {
     .repository-header-tooltips .tooltip-inner {
         color: white;
         background-color: $blue3;
-        font-size: 0.75rem;
+        font-size: 0.75em;
         font-weight: 400;
         padding: 10px 14px;
     }
@@ -175,7 +175,7 @@ export default {
             background-color: $blue5;
             padding-right: $page-side-padding;
 
-            .repository-subheader-icons { margin-right: -1rem !important; }
+            .repository-subheader-icons { margin-right: -1em !important; }
         }
 
         &.is-menu-compressed {     
@@ -183,9 +183,9 @@ export default {
         }
 
         h1 {
-            font-size: 1.125rem;
+            font-size: 1.125em;
             color: white;
-            line-height: 1.4rem;
+            line-height: 1.4em;
             max-width: 100%;
             text-overflow: ellipsis;
             white-space: nowrap;

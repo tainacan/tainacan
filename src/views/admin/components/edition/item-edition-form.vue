@@ -406,7 +406,7 @@
                                 </div>
                                 <div class="section-status">
                                     <div
-                                            style="display: flex; flex-direction: column;"
+                                            style="display: flex; flex-direction: column; font-size: 1rem;"
                                             class="field has-addons">
                                         <b-radio
                                                 v-model="visibility"
@@ -1426,7 +1426,7 @@ export default {
             margin-bottom: 110px;
 
             .field:not(:last-child) {
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.5em;
             }
         }
 
@@ -1454,9 +1454,9 @@ export default {
             .status-tag {
                 color: white;
                 background: $turquoise5;
-                padding: 0.15rem 0.5rem;
-                font-size: 0.75rem;
-                margin: 0 1rem 0 0;
+                padding: 0.15em 0.5em;
+                font-size: 0.75em;
+                margin: 0 1em 0 0;
                 font-weight: 600;
                 position: relative;
                 top: -2px;
@@ -1496,7 +1496,7 @@ export default {
                 justify-content: space-between;
 
                 .column {
-                    padding: 1rem 12px 0 12px;
+                    padding: 1em 12px 0 12px;
                 }
             }
 
@@ -1561,7 +1561,7 @@ export default {
     }
     .section-status {
         padding-bottom: 16px;
-        font-size: 0.75rem;
+        font-size: 0.75em;
 
         .field {
             padding: 10px 0 14px 0px !important;
@@ -1622,7 +1622,7 @@ export default {
             position: absolute;
             margin-left: 45px;
             margin-right: 45px;
-            font-size: 0.8rem;
+            font-size: 0.8em;
             font-weight: bold;
             z-index: 99;
             text-align: center;

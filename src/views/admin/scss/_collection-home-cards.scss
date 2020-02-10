@@ -35,8 +35,8 @@
     .tainacan-card {
         background-color: $gray1;
         padding: 0px;
-        margin-top: 0.75rem;
-        margin-bottom: 1.6rem;
+        margin-top: 0.75em;
+        margin-bottom: 1.6em;
         flex-basis: 0;
         min-height: 135px;
         cursor: pointer;
@@ -117,14 +117,14 @@
             }
             .metadata-title {
                 overflow: hidden;
-                padding: 0.5rem 0.875rem;
+                padding: 0.5em 0.875em;
                 flex-basis: calc(100% - 96px);
                 
                 p {
                     color: black !important;
-                    font-size: 0.875rem !important; 
+                    font-size: 0.875em !important; 
                     margin-bottom: 0;
-                    line-height: 1.125rem;
+                    line-height: 1.125em;
                 }
             }
             &:hover .metadata-title {

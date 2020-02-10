@@ -149,7 +149,7 @@ export default {
     // Term Item
     .term-item {
         font-size: 14px;
-        padding: 0 0 0 1.75rem;
+        padding: 0 0 0 1.75em;
         min-height: 40px;
         display: flex; 
         position: relative;
@@ -201,12 +201,12 @@ export default {
             display: flex;
             justify-content: space-between;
             background-color: $gray2;
-            padding: 0.5rem 0.875rem;
+            padding: 0.5em 0.875em;
 
             a {
                 display: flex;
                 align-items: center;
-                margin: 0 0.375rem;
+                margin: 0 0.375em;
                 .icon {
                     bottom: 1px;   
                     position: relative;
@@ -252,9 +252,9 @@ export default {
         }
     }
     .view-more-terms {
-        font-size: 0.875rem;
-        margin: 0 0 0 1.75rem !important;
-        padding: 0.5rem 0 0.5rem 1.75rem;
+        font-size: 0.875em;
+        margin: 0 0 0 1.75em !important;
+        padding: 0.5em 0 0.5em 1.75em;
         display: flex;
         border-top: 1px solid #f2f2f2;
     }

@@ -31,7 +31,7 @@
     align-items: flex-end;
 
     h1, h2 {
-        font-size: 1.25rem;
+        font-size: 1.25em;
         font-weight: normal;
         font-weight: 500;
         color: $gray5;
@@ -146,8 +146,8 @@
                 display: inline-flex !important;
                 cursor: pointer;
                 height: 30px !important;
-                line-height: 1.25rem !important;
-                font-size: 0.875rem !important;
+                line-height: 1.25em !important;
+                font-size: 0.875em !important;
             }
             .button.is-success {
                 border: none;
@@ -176,8 +176,9 @@
     background-color: white;
     z-index: 99999999999 !important;
 
-    .media-toolbar button{
-        margin-top: 1rem !important
+    .media-toolbar button.button:not(.is-small):not(.is-medium):not(.is-large){
+        margin-top: 1em !important;
+        font-size: 0.875rem !important;
     }
 }
 // .media-modal {

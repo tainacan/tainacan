@@ -675,7 +675,7 @@
                 border: none !important;
                 background-color: white !important;
                 min-height: auto !important;
-                line-height: 1.5rem;
+                line-height: 1.5em;
             }
 
             .select {

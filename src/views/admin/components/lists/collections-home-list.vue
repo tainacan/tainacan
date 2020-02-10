@@ -275,21 +275,21 @@ export default {
 
     .new-collection-menu {
         display: flex;
-        width: calc(100% + 1.25rem);
+        width: calc(100% + 1.25em);
         justify-content: space-between;
         flex-wrap: nowrap;
-        margin: 0 -0.75rem;
+        margin: 0 -0.75em;
 
         @media screen and (max-width: 768px) {
             flex-wrap: wrap;
         }
 
         li {
-            padding: 0.75rem;
+            padding: 0.75em;
             display: flex;
             background-color: $gray1;
             flex-grow: 1;
-            margin: 0.75rem;
+            margin: 0.75em;
             height: 120px;
             min-width: 140px; 
             text-align: center;

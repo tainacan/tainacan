@@ -10,7 +10,7 @@
         border: none;
         border-radius: 1px !important;
         font-weight: normal;
-        font-size: 0.875rem !important;
+        font-size: 0.875em !important;
         min-height: 30px !important;
         height: 30px !important;
         padding: 2px 25px 2px 15px!important;
@@ -43,6 +43,6 @@
         letter-spacing: normal !important;
     }  
     &.is-loading.is-small::after {
-        font-size: 0.875rem;
+        font-size: 0.875em;
     }     
 }

@@ -36,16 +36,14 @@
     }
 
     &.is-small {
-        font-size: 0.5rem;
-
         input[type="checkbox"] + .check {
             border: 1.5px solid $gray4;
-            width: 2.55em;
-            height: 1.7em;
+            width: 2.35em;
+            height: 1.45em;
 
             &::before {
-                width: 1.0em;
-                height: 1.0em;
+                width: 0.875em;
+                height: 0.875em;
             }
         }
         input[type="checkbox"]:checked + .check {
@@ -54,6 +52,9 @@
             &::before {
                 transform: translate3d(84%, 0, 0);
             }
+        }
+        .control-label {
+            font-size: 1.195em;
         }
     }
 }

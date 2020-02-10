@@ -25,7 +25,7 @@
 
             @media screen and (min-width: 769px) {
                 #filters-modal {
-                    padding-left: 3rem;
+                    padding-left: 3em;
                 }
             }
         }
@@ -47,7 +47,7 @@
         }
         .tainacan-card {
             &:hover { background-color: transparent !important; cursor: default; }
-            .metadata-title { padding-left: 1.5rem !important; margin-bottom: 0; }
+            .metadata-title { padding-left: 1.5em !important; margin-bottom: 0; }
             &:hover .metadata-title { background-color: transparent !important }
         }
         .tainacan-grid-item {
@@ -57,7 +57,7 @@
         }
         .tainacan-record {
             &:hover .media { background-color: $gray0 !important; cursor: default; }
-            .metadata-title { padding-left: 1.5rem !important; margin-bottom: -0.75rem; }
+            .metadata-title { padding-left: 1.5em !important; margin-bottom: -0.75em; }
             &:hover .metadata-title { background-color: $gray0 !important; cursor: default; }
         }
         .tainacan-masonry-item {

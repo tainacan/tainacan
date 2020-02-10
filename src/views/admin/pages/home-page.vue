@@ -253,15 +253,15 @@ export default {
 
             .home-section-header {
                 width: 100%;
-                margin-top: 1rem;
-                margin-bottom: 0.5rem;
+                margin-top: 1em;
+                margin-bottom: 0.5em;
                 display: flex;
                 align-items: center;
                 height: 52px;
 
                 .home-section-icon {
                     background-color: white;
-                    padding: 0.75rem;
+                    padding: 0.75em;
                     height: 52px;
                     width: 52px;
                     font-size: 30px;
@@ -278,9 +278,9 @@ export default {
 
                 h1 {
                     color: $gray5;
-                    font-size: 1.375rem;
+                    font-size: 1.375em;
                     font-weight: normal;
-                    padding: 0.75rem 1.375rem;
+                    padding: 0.75em 1.375em;
                     margin-right: auto;
                     overflow: hidden;
                     text-overflow: ellipsis;
@@ -288,12 +288,12 @@ export default {
                 }
 
                 a {
-                    margin-right: 2rem;
+                    margin-right: 2em;
                     display: inline-flex;
                     text-overflow: ellipsis;
                     white-space: nowrap;
 
-                    .menu-text { margin-left: 0.5rem;}
+                    .menu-text { margin-left: 0.5em;}
                 }
 
                 &.repository-section-header {
@@ -341,7 +341,7 @@ export default {
                     width: calc(20% - 20px);
                 }
 
-                .menu-text { margin-left: 0.5rem;}
+                .menu-text { margin-left: 0.5em;}
                 &:hover {
                     background-color: $gray2;
                 }
@@ -350,17 +350,17 @@ export default {
 
         .repository-menu-list {
             display: flex;
-            width: calc(100% + 1.25rem);
+            width: calc(100% + 1.25em);
             justify-content: space-between;
             flex-wrap: wrap;
-            margin: 0 -0.75rem;
+            margin: 0 -0.75em;
 
             li {
-                padding: 1rem;
+                padding: 1em;
                 display: flex;
                 background-color: $gray1;
                 flex-grow: 1;
-                margin: 0.75rem;
+                margin: 0.75em;
                 height: 120px; 
                 min-width: 13%;
                 flex-basis: 13%;

@@ -147,7 +147,7 @@
 
                     <!-- Title -->
                     <div
-                            :style="{ 'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0.5rem !important' : '2.75rem' }"
+                            :style="{ 'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0.5em !important' : '2.75em' }"
                             class="metadata-title">
                         <p
                                 v-tooltip="{
@@ -271,7 +271,7 @@
                     <!-- Title -->
                     <div
                             :style="{
-                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0 !important' : '1rem'
+                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0 !important' : '1em'
                             }"
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)"
@@ -373,7 +373,7 @@
                     <!-- Title -->
                     <div
                             :style="{ 
-                                'padding-left': !collectionId || $route.query.readmode || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) ? '0.5rem !important' : '2.75rem',
+                                'padding-left': !collectionId || $route.query.readmode || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) ? '0.5em !important' : '2.75em',
                                 'margin-bottom': item.current_user_can_edit && !$route.query.iframemode ? '-26px' : '0px'
                             }"
                             class="metadata-title">
@@ -547,7 +547,7 @@
                     <div
                             class="metadata-title"
                             :style="{
-                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '1.5rem !important' : '2.75rem',    
+                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '1.5em !important' : '2.75em',    
                                 'margin-bottom': item.current_user_can_edit || $route.query.iframemode ? '-27px' : '0px'
                             }">
                         <p 
@@ -1303,7 +1303,7 @@ export default {
 
         .select-all {
             color: $gray4;
-            font-size: 0.875rem;
+            font-size: 0.875em;
             margin-right: auto;
 
             &:hover {

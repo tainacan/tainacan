@@ -401,13 +401,13 @@ export default {
         }
         .source-file-upload {
             width: 100%;
-            padding: 0.75rem $page-side-padding;
+            padding: 0.75em $page-side-padding;
             @include display-grid;
         }
         .document-list {
             display: inline-block;
             width: 100%;
-            padding: 1rem 8.333333%;
+            padding: 1em 8.333333%;
 
             .document-item {
                 display: flex;
@@ -415,14 +415,14 @@ export default {
                 width: 100%;
                 justify-content: space-between;
                 align-items: center;
-                padding: 0.5rem 0.75rem;
+                padding: 0.5em 0.75em;
                 position: relative;
                 cursor: default;
 
                 .document-thumb {
                     max-height: 42px;
                     max-width: 42px;
-                    margin-right: 1rem;
+                    margin-right: 1em;
                 }
 
                 .document-name {
@@ -476,11 +476,11 @@ export default {
             .sequence-progress-info {
                 display: flex;
                 justify-content: space-between;
-                margin-bottom: 0.25rem;
+                margin-bottom: 0.25em;
 
                 .i::before {
                     font-size: 18px;
-                    margin-left: 0.5rem;
+                    margin-left: 0.5em;
                 }
             }
             .sequence-progress {
@@ -488,7 +488,7 @@ export default {
                 background: $turquoise5;
                 width: 0%;
                 transition: width 0.2s;
-                margin-bottom: 1rem;
+                margin-bottom: 1em;
             }
             .sequence-progress-background {
                 height: 5px;
@@ -497,7 +497,7 @@ export default {
                 top: -21px;
                 z-index: -1;
                 position: relative;
-                margin-bottom: 1rem;
+                margin-bottom: 1em;
             }        
         }
 
