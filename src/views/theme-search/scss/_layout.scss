@@ -44,7 +44,7 @@
 	width: 100%;
 	min-width: 180px;
 	min-height: 100%;
-	height: 100%;
+	height: auto;
 	overflow-y: auto;
 	overflow-x: hidden;
 	visibility: visible;
@@ -79,6 +79,7 @@
 .theme-items-list:not(.is-fullscreen) {
 		
 	.filters-menu {
+		z-index: 99999;
 		float: left;
 		max-width: 20%;
 	}

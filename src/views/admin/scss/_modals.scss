@@ -12,6 +12,10 @@
         max-height: 95vh;
     }
 }
+.modal.is-full-screen > .animation-content, 
+.modal.is-full-screen > .animation-content > .modal-card {
+    background-color: transparent;
+}
 .modal .modal-close {
     z-index: 99999;
     @media only screen and (max-width: 768px) {

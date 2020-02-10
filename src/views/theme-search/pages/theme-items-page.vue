@@ -334,6 +334,7 @@
                 trap-focus
                 aria-modal
                 aria-role="dialog"
+                full-screen
                 :custom-class="'tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')">
             <filters-items-list
                     autofocus="true"
