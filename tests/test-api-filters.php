@@ -594,6 +594,77 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 
 	}
 
+	public function test_visibility_the_filter_from_in_collection(){
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Statement',
+				'description' => 'No Statement'
+			),
+			true
+		);
+
+		$metadatumA = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'        => 'Data',
+				'description' => 'Descreve valor do campo data.',
+				'collection'  => $collection,
+				'status'      => 'publish',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+			), true
+		);
+
+		$metadatumB = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'        => 'Data',
+				'description' => 'Descreve valor do campo data.',
+				'collection'  => $collection,
+				'status'      => 'private',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+			), true
+		);
+
+		$filterA = $this->tainacan_entity_factory->create_entity(
+			'filter',
+			array(
+				'name'   => 'test',
+				'status' => 'publish',
+				'collection' => $collection,
+				'metadatum' => $metadatumA,
+				'filter_type'  => 'Tainacan\Filter_Types\Autocomplete',
+			),
+			true
+		);
+
+		$filterB = $this->tainacan_entity_factory->create_entity(
+			'filter',
+			array(
+				'name'   => 'test',
+				'status' => 'private',
+				'collection' => $collection,
+				'metadatum' => $metadatumA,
+				'filter_type'  => 'Tainacan\Filter_Types\Autocomplete',
+			),
+			true
+		);
+
+		wp_logout();
+		wp_set_current_user(0);
+
+		$requestA = new \WP_REST_Request('GET', $this->namespace . '/filters/' . $filterA->get_id());
+		$requestB = new \WP_REST_Request('GET', $this->namespace . '/filters/' . $filterB->get_id());
+
+		$response = $this->server->dispatch($requestA);
+		$status = $response->status;
+		$this->assertEquals(200, $status);
+
+		$response = $this->server->dispatch($requestB);
+		$status = $response->status;
+		$this->assertEquals(401, $status);
+	}
+
 }
 
 ?>
