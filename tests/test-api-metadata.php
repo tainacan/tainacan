@@ -770,6 +770,81 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertNotEquals($metadatumB->get_id(), $data[2]['id']);
 	}
 
+	/**
+	 * @group leo
+	 */
+	public function test_private_meta_ids_not_in_metadata_order(){
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Statement',
+				'description' => 'No Statement',
+				'status'      => 'publish',
+			),
+			true
+		);
+
+		$metadatumA = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'        => 'Data',
+				'description' => 'Descreve valor do campo data.',
+				'collection'  => $collection,
+				'status'      => 'publish',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+			), true
+		);
+
+		$metadatumB = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'        => 'Data',
+				'description' => 'Descreve valor do campo data.',
+				'collection'  => $collection,
+				'status'      => 'private',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+			), true
+		);
+
+		$order = array();
+
+		$metas = $collection->get_metadata();
+
+		foreach ( $metas as $m ) {
+			$order[] = [
+				'id' => $m->get_id(),
+				'enabled' => true,
+			];
+		}
+
+		$collection->set_metadata_order($order);
+		$collection->validate();
+		\tainacan_collections()->insert($collection);
+
+
+
+		$request = new \WP_REST_Request('GET', $this->namespace . '/collections/' . $collection->get_id());
+
+		$response = $this->server->dispatch($request);
+		$data = $response->get_data();
+
+		$this->assertEquals(4, count($data['metadata_order']));
+
+		wp_logout();
+		wp_set_current_user(0);
+
+		$request = new \WP_REST_Request('GET', $this->namespace . '/collections/' . $collection->get_id());
+
+		$response = $this->server->dispatch($request);
+		$data = $response->get_data();
+
+		$this->assertEquals(3, count($data['metadata_order']));
+		$this->assertNotEquals($metadatumB->get_id(), $data['metadata_order'][0]['id']);
+		$this->assertNotEquals($metadatumB->get_id(), $data['metadata_order'][1]['id']);
+		$this->assertNotEquals($metadatumB->get_id(), $data['metadata_order'][2]['id']);
+
+	}
+
 
 }
 
