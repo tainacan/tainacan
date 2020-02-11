@@ -478,6 +478,22 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * Get collection filters.
+	 *
+	 * Returns an array of \Entity\Filter objects, representing all the filters of the collection.
+	 *
+	 * @see \Tainacan\Repositories\Filters->fetch()
+	 *
+	 * @return [\Tainacan\Entities\Filter] array
+	 * @throws \Exception
+	 */
+	function get_filters() {
+		$Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
+
+		return $Tainacan_Filters->fetch_by_collection( $this );
+	}
+
+	/**
 	 * Get the two core metadata of the collection (title and description)
 	 *
 	 * @return array[\Tainacan\Entities\Metadatum]
