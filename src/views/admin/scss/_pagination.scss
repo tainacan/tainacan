@@ -18,6 +18,10 @@
         flex-wrap: wrap;
     }
 
+    .control {
+        font-size: 1em;
+    }
+
     .shown-items { 
         font-size: 0.875em; 
     }
@@ -67,7 +71,7 @@
     }
 
     .pagination { 
-        // flex-grow: 1; 
+        font-size: 1em;
 
         &.is-small {
             top: -3px;
@@ -78,6 +82,9 @@
         ul {
             margin-bottom: 0px;
             padding: 0px;
+            li {
+                margin: 0.5em 0 0 0.2em;
+            }
         }
 
         &.is-small {

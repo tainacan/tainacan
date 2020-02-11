@@ -520,6 +520,7 @@ export default {
                     font-size: 1em;
                     font-weight: 500;
                     padding: 0em 0.5em;
+                    margin: 0;
                 }
                 p {
                     font-size: 0.75em;
