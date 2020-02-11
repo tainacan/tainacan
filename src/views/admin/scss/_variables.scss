@@ -29,7 +29,7 @@ $turquoise5-invert: findColorInvert($turquoise5);
 $turquoise6: #226f7d;
 $turquoise6-invert: findColorInvert($turquoise6);
 
-// Gray, used mostyl for information
+// Gray, used mostly for information
 $gray0: #f6f6f6;
 $gray0-invert: findColorInvert($gray0);
 $gray1: #f2f2f2;
@@ -61,6 +61,7 @@ $yellow2-invert: findColorInvert($yellow2);
 
 // Text, no quite black
 $tainacan-input-color: #1d1d1d;
+$tainacan-input-color-invert: findColorInvert($tainacan-input-color);
 
 // Maps some of bulma's colors to custom variables
 $primary: $turquoise3;

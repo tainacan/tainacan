@@ -30,6 +30,86 @@
 @import "../scss/_repository-level-overrides.scss";
 @import "../scss/_iframe_read_mode_overrides.scss";
 
+// Declares css custom var using sass as fallback
+// CSS Variables
+:root {
+    // NEW TAINACAN CUSTOM COLORS ------------------
+    // Blue, used mainly for repository
+    --tainacan-blue1: #{$blue1};
+    --tainacan-blue1-invert: #{$blue1-invert};
+    --tainacan-blue2: #{$blue2};
+    --tainacan-blue2-invert: #{$blue2-invert};
+    --tainacan-blue3: #{$blue3};
+    --tainacan-blue3-invert: #{$blue3-invert};
+    --tainacan-blue4: #{$blue4};
+    --tainacan-blue4-invert: #{$blue4-invert};
+    --tainacan-blue5: #{$blue5};
+    --tainacan-blue5-invert: #{$blue5-invert};
+
+    // Turquoise, used mainly for collection level
+    --tainacan-turquoise1: #{$turquoise1};
+    --tainacan-turquoise1-invert: #{$turquoise1-invert};
+    --tainacan-turquoise2: #{$turquoise2};
+    --tainacan-turquoise2-invert: #{$turquoise2-invert};
+    --tainacan-turquoise3: #{$turquoise3};
+    --tainacan-turquoise3-invert: #{$turquoise3-invert};
+    --tainacan-turquoise4: #{$turquoise4};
+    --tainacan-turquoise4-invert: #{$turquoise4-invert};
+    --tainacan-turquoise5: #{$turquoise5};
+    --tainacan-turquoise5-invert: #{$turquoise5-invert};
+    --tainacan-turquoise6: #{$turquoise6};
+    --tainacan-turquoise6-invert: #{$turquoise6-invert};
+
+    // Gray, used mostly for information
+    --tainacan-gray0: #{$gray0};
+    --tainacan-gray0-invert: #{$gray0-invert};
+    --tainacan-gray1: #{$gray1};
+    --tainacan-gray1-invert: #{$gray1-invert};
+    --tainacan-gray2: #{$gray2};
+    --tainacan-gray2-invert: #{$gray2-invert};
+    --tainacan-gray3: #{$gray3};
+    --tainacan-gray3-invert: #{$gray3-invert};
+    --tainacan-gray4: #{$gray4};
+    --tainacan-gray4-invert: #{$gray4-invert};
+    --tainacan-gray5: #{$gray5};
+    --tainacan-gray5-invert: #{$gray5-invert};
+
+    // Red, used for error messages
+    --tainacan-red1: #{$red1};
+    --tainacan-red1-invert: #{$red1-invert};
+    --tainacan-red2: #{$red2};
+    --tainacan-red2-invert: #{$red2-invert};
+    // Green, used for success buttons
+    --tainacan-green1: #{$green1};
+    --tainacan-green1-invert: #{$green1-invert};
+    --tainacan-green2: #{$green2};
+    --tainacan-green2-invert: #{$green2-invert};
+    // Warning, used for warning messages
+    --tainacan-yellow1: #{$yellow1};
+    --tainacan-yellow1-invert: #{$yellow1-invert};
+    --tainacan-yellow2: #{$yellow2};
+    --tainacan-yellow2-invert: #{$yellow2-invert};
+
+    // Text, no quite black
+    --tainacan-input-color: #{$tainacan-input-color};
+    --tainacan-input-color-invert: #{$tainacan-input-color-invert};
+
+    // Maps some of bulma's colors to custom variables
+    --tainacan-primary: #{$primary};
+    --tainacan-primary-invert: #{$primary-invert};
+    --tainacan-secondary: #{$secondary};
+    --tainacan-secondary-invert: #{$secondary-invert};
+    --tainacan-success: #{$success};
+    --tainacan-success-invert: #{$success-invert};
+    --tainacan-danger: #{$danger}; 
+    --tainacan-danger-invert: #{$danger-invert};
+    --tainacan-warning: #{$warning};
+    --tainacan-warning-invert: #{$warning-invert};
+    --tainacan-gray: #{$gray};
+    --tainacan-gray-invert: #{$gray-invert};
+
+}
+
 // Clears wordpress content
 html {
     overflow-y: hidden;

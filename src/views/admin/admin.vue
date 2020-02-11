@@ -139,7 +139,7 @@
         height: 25px;
         width: 25px;
         border: none;
-        background-color: $blue5;
+        background-color: var(--blue5);
         color: white;
         padding: 0px;
         border-top-right-radius: 2px;
