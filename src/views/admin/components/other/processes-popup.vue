@@ -255,9 +255,9 @@ export default {
     @import "../../scss/_variables.scss";
 
     .control.is-loading::after {
-        border: 2px solid $success;
-        border-right-color: $gray2;
-        border-top-color: $gray2;
+        border: 2px solid var(--tainacan-success);
+        border-right-color: var(--tainacan-gray2);
+        border-top-color: var(--tainacan-gray2);
     }
     .processes-popup-backdrop {
         position: absolute;
@@ -285,7 +285,7 @@ export default {
     }
 
     .processes-popup{
-        background-color: $blue2;
+        background-color: var(--tainacan-blue2);
         width: 320px;
         max-width: 100%;
         position: absolute;
@@ -299,7 +299,7 @@ export default {
         .popup-header, .popup-footer {
             display: flex;
             align-items: center;
-            color: $blue5;
+            color: var(--tainacan-blue5);
             .header-title, .footer-title {
                 margin-right: auto;
             }
@@ -322,7 +322,7 @@ export default {
         }
 
         .popup-list {
-            background-color: white;
+            background-color: var(--tainacan-white);
             color: black;
             overflow-y: auto;
             overflow-x: hidden;
@@ -331,15 +331,15 @@ export default {
             animation-duration: 0.3s;
 
             .popup-list-subheader {
-                background-color: white !important;
+                background-color: var(--tainacan-white) !important;
                 padding: 6px 12px 12px 12px;
-                color: $gray4;
+                color: var(--tainacan-gray4);
                 font-size: 0.875em;
                 a { float: right; }
             }
 
             li:hover {
-                background-color: $gray0;
+                background-color: var(--tainacan-gray0);
 
                 .action-icon{
                     visibility: visible;
@@ -350,7 +350,7 @@ export default {
                     /*display: none;*/
                 /*}*/
                 .process-item>.process-title .tainacan-arrowleft, .process-item>.process-title .tainacan-arrowright {
-                    color: $gray3 !important;
+                    color: var(--tainacan-gray3) !important;
                 }
             }
 
@@ -375,7 +375,7 @@ export default {
                     }
                     
                     .tainacan-arrowleft, .tainacan-arrowright {
-                        color: $turquoise2;
+                        color: var(--tainacan-turquoise2);
                     }
                 }
                 .action-icon {
@@ -396,7 +396,7 @@ export default {
                 overflow: hidden;
                 max-width: calc(100% - 40px);
                 font-size: 0.825em;
-                color: $gray4;
+                color: var(--tainacan-gray4);
                 animation-name: expand;
                 animation-duration: 0.3s;
             }
@@ -415,7 +415,7 @@ export default {
             width: 0;
             height: 0;
             border-style: solid;
-            border-color: transparent transparent $blue2 transparent;
+            border-color: transparent transparent var(--tainacan-blue2) transparent;
             border-right-width: 8px;
             border-bottom-width: 8px;
             border-left-width: 8px;
@@ -425,7 +425,7 @@ export default {
         .separator {
             margin: 0px 10px;
             height: 1px;
-            background-color: $secondary; 
+            background-color: var(--tainacan-secondary); 
         }
     }
 

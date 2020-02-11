@@ -128,31 +128,31 @@ export default {
     @import "../../scss/_variables.scss";
     
     .header-tooltips .tooltip-inner {
-        color: white;
-        text-shadow: 1px 1px $turquoise4;
-        background-color: $turquoise3;
+        color: var(--tainacan-white);
+        text-shadow: 1px 1px var(--tainacan-turquoise4);
+        background-color: var(--tainacan-turquoise3);
         font-size: 0.75em;
         font-weight: 400;
         padding: 10px 14px;
     }
     .header-tooltips .tooltip-arrow {
-        border-color: $turquoise3;
+        border-color: var(--tainacan-turquoise3);
     }
 
     .repository-header-tooltips .tooltip-inner {
-        color: white;
-        background-color: $blue3;
+        color: var(--tainacan-white);
+        background-color: var(--tainacan-blue3);
         font-size: 0.75em;
         font-weight: 400;
         padding: 10px 14px;
     }
     .repository-header-tooltips .tooltip-arrow {
-        border-color: $blue3;
+        border-color: var(--tainacan-blue3);
     }
 
     // Tainacan Header
     #tainacan-repository-subheader {
-        background-color: $turquoise6;
+        background-color: var(--tainacan-turquoise6);
         height: 42px;
         max-height: 42px;
         width: 100%;
@@ -172,7 +172,7 @@ export default {
         transition: padding-left 0.2s linear, background-color 0.2s linear;
 
         &.is-repository-level {
-            background-color: $blue5;
+            background-color: var(--tainacan-blue5);
             padding-right: $page-side-padding;
 
             .repository-subheader-icons { margin-right: -1em !important; }
@@ -184,7 +184,7 @@ export default {
 
         h1 {
             font-size: 1.125em;
-            color: white;
+            color: var(--tainacan-white);
             line-height: 1.4em;
             max-width: 100%;
             text-overflow: ellipsis;
@@ -205,7 +205,7 @@ export default {
                 border-radius: 0px !important;
                 height: 42px !important;
                 background-color: transparent;
-                color: white;
+                color: var(--tainacan-white);
                 width: 48px;
             }
         }

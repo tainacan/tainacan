@@ -162,13 +162,13 @@ export default {
         width: 100%;
 
         &:first-child:hover {
-            background-color: $gray1 !important;
+            background-color: var(--tainacan-gray1) !important;
             .controls {
                 visibility: visible;
                 opacity: 1.0;
             }
             &::before {
-                border-color: transparent transparent transparent $gray2 !important;
+                border-color: transparent transparent transparent var(--tainacan-gray2) !important;
             }
         }
 
@@ -182,25 +182,25 @@ export default {
             max-width: 73%; 
 
             &.is-danger {
-                color: $danger !important;
+                color: var(--tainacan-danger) !important;
             }
         }
         .label-details {
             font-weight: normal;
-            color: $gray3;
+            color: var(--tainacan-gray3);
             margin-right: auto;
         }
         .not-saved {
             font-style: italic;
             font-weight: bold;
-            color: $danger;
+            color: var(--tainacan-danger);
         }
         .controls { 
             visibility: hidden;
             opacity: 0.0;
             display: flex;
             justify-content: space-between;
-            background-color: $gray2;
+            background-color: var(--tainacan-gray2);
             padding: 0.5em 0.875em;
 
             a {
@@ -215,14 +215,14 @@ export default {
             }            
         }
         .controls.is-disabled a {
-            color: $gray4 !important;
+            color: var(--tainacan-gray4) !important;
             cursor: not-allowed !important;
             user-select: none;
         }
 
         &.opened-term:first-child {
             cursor: default;
-            background-color: $blue1;
+            background-color: var(--tainacan-blue1);
 
             &:before {
                 content: '';
@@ -233,14 +233,14 @@ export default {
                 width: 0;
                 height: 0;
                 border-style: solid;
-                border-color: transparent transparent transparent $blue1;
+                border-color: transparent transparent transparent var(--tainacan-blue1);
                 border-left-width: 24px;
                 border-top-width: 20px;
                 border-bottom-width: 20px;
                 top: 0;
             }
             &:hover:before {
-                border-color: transparent transparent transparent $gray1;
+                border-color: transparent transparent transparent var(--tainacan-gray1);
             }
         }
 
@@ -256,6 +256,6 @@ export default {
         margin: 0 0 0 1.75em !important;
         padding: 0.5em 0 0.5em 1.75em;
         display: flex;
-        border-top: 1px solid #f2f2f2;
+        border-top: 1px solid var(--tainacan-gray1);
     }
 </style>

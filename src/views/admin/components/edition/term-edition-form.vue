@@ -446,7 +446,7 @@
 
     form#termEditForm {
         padding: 1.7em 0 1.5em 1.5em;
-        border-left: 1px solid $gray2;
+        border-left: 1px solid var(--tainacan-gray2);
         margin-left: 0.75em;
         position: relative;
         animation-name: enter;
@@ -461,7 +461,7 @@
             h2 {
                 font-size: 20px;
                 font-weight: 500;
-                color: $blue5;
+                color: var(--tainacan-blue5);
                 display: inline-block;
                 margin-right: auto;
             }
@@ -469,7 +469,7 @@
                 margin: 3px 0px 4px 0px; 
                 width: 100%;
                 height: 1px;
-                background-color: $secondary;
+                background-color: var(--tainacan-secondary);
             }
         }
 
@@ -505,7 +505,7 @@
                 font-weight: bold;
                 z-index: 99;
                 text-align: center;
-                color: $gray4;
+                color: var(--tainacan-gray4);
             }
             #button-delete-header,
             #button-edit-header {
@@ -520,7 +520,7 @@
                 margin-left: 10px !important;
                 
                 .icon {
-                    color: white !important;
+                    color: var(--tainacan-white) !important;
                     display: inherit;
                     padding: 0;
                     margin: 0;
@@ -536,7 +536,7 @@
             }
         }
         .checkboxes-warning {
-            color: $gray5;
+            color: var(--tainacan-gray5);
             font-style: italic;
             padding: 0.2em 0.75em;
         }

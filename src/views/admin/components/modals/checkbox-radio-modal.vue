@@ -722,7 +722,7 @@
     @import "../../scss/variables.scss";
 
     .breadcrumb {
-        background-color: white !important;
+        background-color: var(--tainacan-white) !important;
 
         li + li::before {
             content: ">" !important;
@@ -769,7 +769,7 @@
     // In theme, the bootstrap removes the style of <a> without href
     a {
         cursor: pointer;
-        color: $turquoise5;
+        color: var(--tainacan-turquoise5);
     }
 
     .tainacan-form {
@@ -781,12 +781,12 @@
         display: flex;
         justify-content: center;
         cursor: pointer;
-        border: 1px solid $gray1;
+        border: 1px solid var(--tainacan-gray1);
         margin-top: 10px;
         margin-bottom: -0.2em;
 
         &:hover {
-            background-color: $blue1;
+            background-color: var(--tainacan-blue1);
         }
     }
 
@@ -801,7 +801,7 @@
         }
 
         &:hover {
-            background-color: $gray1;
+            background-color: var(--tainacan-gray1);
         }
     }
 
@@ -818,7 +818,7 @@
         }
 
         &:hover {
-            background-color: $gray1;
+            background-color: var(--tainacan-gray1);
         }
 
     }
@@ -834,13 +834,13 @@
         }
 
         &:hover {
-            background-color: $gray1;
+            background-color: var(--tainacan-gray1);
         }
     }
 
     .tainacan-finder-columns-container {
-        background-color: white;
-        border: solid 1px $gray1;
+        background-color: var(--tainacan-white);
+        border: solid 1px var(--tainacan-gray1);
         display: flex;
         overflow: auto;
         padding: 0 !important;
@@ -853,7 +853,7 @@
     }
 
     .tainacan-finder-column {
-        border-right: solid 1px $gray1;
+        border-right: solid 1px var(--tainacan-gray1);
         max-height: 400px;
         max-width: 25%;
         min-height: inherit;
@@ -889,7 +889,7 @@
 
         .icon {
             pointer-events: all;
-            color: $blue5;
+            color: var(--tainacan-blue5);
             cursor: pointer;
             height: 27px;
             font-size: 1.125em;
@@ -912,10 +912,10 @@
         height: 253px;
         align-items: center;
         display: flex;
-        background-color: $gray1;
+        background-color: var(--tainacan-gray1);
 
         &:hover {
-            background-color: $blue1;
+            background-color: var(--tainacan-blue1);
         }
     }
 
@@ -963,11 +963,11 @@
     }
 
     .tainacan-li-checkbox-last-active {
-        background-color: $turquoise1;
+        background-color: var(--tainacan-turquoise1);
     }
 
     .tainacan-li-checkbox-parent-active {
-        background-color: $turquoise1;
+        background-color: var(--tainacan-turquoise1);
     }
 
     .b-checkbox .control-label {
@@ -983,7 +983,7 @@
     }
 
     .warning-no-more-terms {
-        color: $gray4;
+        color: var(--tainacan-gray4);
         font-size: 0.75em;
         padding: 0.5em;
         text-align: center;

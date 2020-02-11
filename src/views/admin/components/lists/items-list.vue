@@ -1297,17 +1297,17 @@ export default {
     .selection-control {
 
         padding: 6px 0px 0px 12px;
-        background: white;
+        background: var(--tainacan-white);
         height: 40px;
         display: flex;
 
         .select-all {
-            color: $gray4;
+            color: var(--tainacan-gray4);
             font-size: 0.875em;
             margin-right: auto;
 
             &:hover {
-                color: $gray4;
+                color: var(--tainacan-gray4);
             }
         }
     }

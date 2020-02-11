@@ -567,7 +567,7 @@
             }
 
             .gray-icon, .gray-icon .icon {
-                color: $gray4 !important;
+                color: var(--tainacan-gray4) !important;
                 padding-right: 10px;
             }
             .gray-icon .icon i::before, 
@@ -579,7 +579,7 @@
             .icon {
                 pointer-events: all;
                 cursor: pointer;
-                color: $blue5;
+                color: var(--tainacan-blue5);
                 height: 27px;
                 font-size: 18px !important;
                 height: 1.75em !important;

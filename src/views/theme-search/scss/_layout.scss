@@ -42,7 +42,7 @@
 }
 .filters-menu.filters-menu-modal {
 	z-index: 999999 !important;
-	background: white;
+	background: var(--tainacan-white);
 	width: 100%;
 
 	@media screen and (max-width: 768px) {
@@ -54,7 +54,7 @@
 .filters-menu:not(.filters-menu-modal) {
 	z-index: 99999;
 	float: left;
-	max-width: 20%;
+	max-width: var(--tainacan-filter-menu-width-theme);
 	min-width: 154px;
 	min-height: 100%;
 	width: auto;
@@ -77,9 +77,9 @@
 		}
 	}
 	@media screen and (min-width: 769px) {
-		-webkit-flex: 0 1 20%;
-		-ms-flex: 0 1 20%;
-		flex: 0 1 20%;
+		-webkit-flex: 0 1 var(--tainacan-filter-menu-width-theme);
+		-ms-flex: 0 1 var(--tainacan-filter-menu-width-theme);
+		flex: 0 1 var(--tainacan-filter-menu-width-theme);
 		top: 0px !important;
 		position: relative;
 		padding-top: 0;
@@ -103,7 +103,7 @@
 	&.is-filters-menu-open {
 		
 		.items-list-area {
-			width: 80%;
+			width: calc(100% - var(--tainacan-filter-menu-width-theme));
 		}
 		.filters-menu {
 			padding-top: 12px;

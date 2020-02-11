@@ -500,14 +500,14 @@
     .selection-control {
         
         padding: 6px 0px 0px 12px;
-        background: white;
+        background: var(--tainacan-white);
         height: 40px;
 
         .select-all {
-            color: $gray4;
+            color: var(--tainacan-gray4);
             font-size: 14px;
             &:hover {
-                color: $gray4;
+                color: var(--tainacan-gray4);
             }
         }
     }
@@ -520,7 +520,7 @@
 
     @keyframes highlight {
         from {
-            background-color: $blue1; 
+            background-color: var(--tainacan-blue1); 
         }
         to {
             background-color: $white; 
@@ -538,7 +538,7 @@
 
     .processes-list-item {
         &.opened-process {
-            background-color: $gray0;
+            background-color: var(--tainacan-gray0);
         }
 
         &>.process-handler {
@@ -549,17 +549,17 @@
             padding: 0.5em 0.75em;
 
             &:hover {
-                background-color: $gray1;
+                background-color: var(--tainacan-gray1);
             }
             &>span:not(:first-of-type) {
                 margin: 0 0.75em;
-                color: $gray4;
+                color: var(--tainacan-gray4);
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
 
                 .has-text-weight-bold {
-                    color: $gray5 !important;
+                    color: var(--tainacan-gray5) !important;
                 }
 
                 p {
@@ -615,10 +615,10 @@
 
             &>span {
                 margin: 0 0.75em;
-                color: $gray4;
+                color: var(--tainacan-gray4);
 
                 .has-text-weight-bold {
-                    color: $gray5 !important;
+                    color: var(--tainacan-gray5) !important;
                 }
             }
 

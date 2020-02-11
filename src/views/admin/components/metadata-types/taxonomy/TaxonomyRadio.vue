@@ -234,9 +234,9 @@
         margin-top: -0.4em;
     }
     .selected-tags .is-loading::after {
-        border: 2px solid #555758 !important;
-        border-right-color: #dbdbdb !important;
-        border-top-color: #dbdbdb !important;
+        border: 2px solid var(--tainacan-gray4) !important;
+        border-right-color: var(--tainacan-gray2) !important;
+        border-top-color: var(--tainacan-gray2) !important;
     } 
     .metadata-taxonomy-list {
         column-count: 2;
@@ -248,7 +248,7 @@
         }
     }
     .view-all {
-        color: #898d8f;
+        color: var(--tainacan-gray3);
         margin-bottom: 20px;
         font-size: 0.75em;
     }

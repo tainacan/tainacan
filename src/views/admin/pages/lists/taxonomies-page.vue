@@ -120,7 +120,7 @@
                                     autoHide: true,
                                     placement: 'auto',
                                 }">
-                            <a :style="{ fontWeight: 'bold', color: '#454647 !important', lineHeight: '1.5em' }">
+                            <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important', lineHeight: '1.5em' }">
                                 {{ `${$i18n.get('label_all_taxonomies')}` }}
                                 <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish)})` : '' }}</span>
                             </a>
@@ -434,7 +434,7 @@
             }
 
             .gray-icon, .gray-icon .icon {
-                color: $gray4 !important;
+                color: var(--tainacan-gray4) !important;
                 padding-right: 10px;
             }
             .gray-icon .icon i::before, 
@@ -446,7 +446,7 @@
             .icon {
                 pointer-events: all;
                 cursor: pointer;
-                color: $blue5;
+                color: var(--tainacan-blue5);
                 height: 27px;
                 font-size: 18px !important;
                 height: 1.75em !important;

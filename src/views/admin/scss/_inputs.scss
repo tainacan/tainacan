@@ -19,27 +19,27 @@ input[type="week"].input {
     font-size: 0.875em;
     border-radius: 1px !important;
     box-shadow: none !important;
-    background-color: white;
-    border: 1px solid $gray2;
-    color: $tainacan-input-color;
+    background-color: var(--tainacan-white);
+    border: 1px solid var(--tainacan-gray2);
+    color: var(--tainacan-input-color);
     padding-top: calc(0.375em - 1px);
     padding-bottom: calc(0.375em - 1px);
     transition: background-color 0.1s ease, border-color 0.3s ease;
 
     &:focus, &:active {
         box-shadow: none !important;
-        background-color: white;
-        border: 1px solid $gray4 !important;
+        background-color: var(--tainacan-white);
+        border: 1px solid var(--tainacan-gray4) !important;
     }  
     &:hover {
-        border: 1px solid $gray3;
+        border: 1px solid var(--tainacan-gray3);
     }  
     &[disabled] {
-        color: $gray4 !important;
-        background-color: $gray2 !important;
+        color: var(--tainacan-gray4) !important;
+        background-color: var(--tainacan-gray2) !important;
     }
     &.readonly, &[readonly] {
-        background-color: white !important;
+        background-color: var(--tainacan-white) !important;
     }
     &::placeholder,
     &::-ms-input-placeholder,
@@ -47,7 +47,7 @@ input[type="week"].input {
     &:-moz-placeholder,
     &::-moz-placeholder,
     &::-webkit-input-placeholder {
-        color: $gray4 !important;
+        color: var(--tainacan-gray4) !important;
         line-height: 0;
         font-size: 0.875em;
     }

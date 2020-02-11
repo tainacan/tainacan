@@ -4,7 +4,7 @@
 
 .upload-draggable:hover.is-primary, 
 .upload .upload-draggable.is-hovered.is-primary {
-    border-color: $turquoise5 !important;
-    background: $turquoise4 !important;
-    color: white !important;
+    border-color: var(--tainacan-turquoise5) !important;
+    background: var(--tainacan-turquoise4) !important;
+    color: var(--tainacan-white) !important;
 }

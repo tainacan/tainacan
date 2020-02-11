@@ -180,15 +180,15 @@
     }
 
     .is-loading:after {
-        border: 2px solid white !important;
-        border-top-color: #dbdbdb !important;
-        border-right-color: #dbdbdb !important;
+        border: 2px solid var(--tainacan-background-color) !important;
+        border-top-color: var(--tainacan-gray2) !important;
+        border-right-color: var(--tainacan-gray2) !important;
     }
 
     .no-options-placeholder {
         margin-left: 0.5em;
         font-size: 0.75em;
-        color: #555758;
+        color: var(--tainacan-gray4);
     }
 
     .b-checkbox .control-label {

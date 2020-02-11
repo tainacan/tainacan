@@ -9,7 +9,7 @@
     animation-duration: 0.5s;
 
     .selected-grid-item {
-        background-color: $turquoise1;
+        background-color: var(--tainacan-turquoise1);
     }
 
     .tainacan-grid-item {
@@ -22,7 +22,7 @@
         transition: background-color 0.2s ease;
 
         &:hover {
-            background-color: $gray2;
+            background-color: var(--tainacan-gray2);
         }
 
         .grid-item-checkbox {
@@ -42,7 +42,7 @@
             opacity: 0;
             padding: 3px 8px;
             margin-top: 0px;
-            background-color: $gray2;
+            background-color: var(--tainacan-gray2);
             transition: visibility 0.2s ease, opacity 0.2s ease, height 0.2s ease, margin-top 0.2s ease;
 
             a {
@@ -56,7 +56,7 @@
             opacity: 1.0;
             height: 32px;
             margin-top: -30px;
-            background-color: $gray2 !important;
+            background-color: var(--tainacan-gray2) !important;
 
             a {
                 opacity: 1;
@@ -78,7 +78,7 @@
                 height: 255px;
                 position: absolute;
                 z-index: -1;
-                background-color: #e0e0e0;
+                background-color: var(--tainacan-skeleton-color);
                 bottom: 0;
             }
             

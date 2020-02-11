@@ -22,17 +22,17 @@
     .modal-close {
         top: 32px;
         right: calc(8.3333333% + 28px);
-        background-color: white;
+        background-color: var(--tainacan-white);
 
         &::before, &::after {
-            background-color: $secondary;
+            background-color: var(--tainacan-secondary);
         }
     }
 
     @media screen and (max-width: 768px) {
 
         .modal-content {
-            background-color: white;
+            background-color: var(--tainacan-white);
             margin: 0 12% 0 0;
             margin: 0 12vw 0 0;
             padding: $page-small-side-padding;

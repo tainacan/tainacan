@@ -79,7 +79,7 @@ export default {
         }
 
         figcaption {
-            background-color: $gray2;
+            background-color: var(--tainacan-gray2);
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
             padding: 8px 15px;

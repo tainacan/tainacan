@@ -154,11 +154,11 @@
             &.is-focusable:focus  {
                 border: none !important;
                 input:active, input:focus {
-                    border: 1px solid $gray4 !important;
+                    border: 1px solid var(--tainacan-gray4) !important;
                 }
             }    
             input{
-                border: 1px solid $gray2 !important;
+                border: 1px solid var(--tainacan-gray2) !important;
             }
             .control.has-icons-left .icon {
                 top: 3px !important;

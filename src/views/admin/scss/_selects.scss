@@ -16,16 +16,16 @@
         padding: 2px 25px 2px 15px!important;
         margin-top: 0px !important;
         margin-bottom: 0px !important;
-        color: $tainacan-input-color;
+        color: var(--tainacan-input-color);
         option:checked, option:hover {
-            background: $gray2 !important;
+            background: var(--tainacan-gray2) !important;
         }
         &:focus, &:active {
             box-shadow: none !important;
             text-decoration: none !important;
         }
         &[disabled=disabled] {
-            background: $gray1 !important;
+            background: var(--tainacan-gray1) !important;
         }
     }
     &:not(.is-loading)::after {
@@ -35,7 +35,7 @@
         transform: none !important;
         margin-top: -15px !important;
         right: 15px !important;
-        color: $secondary !important;
+        color: var(--tainacan-secondary) !important;
         display: flex !important;
         align-items: initial;
         margin-top: -10px !important;

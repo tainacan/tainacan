@@ -48,8 +48,8 @@ export default {
     }
     .help-tooltip {
         z-index: 99999999999999999999;
-        color: $turquoise5;
-        background-color: $turquoise2;
+        color: var(--tainacan-turquoise5);
+        background-color: var(--tainacan-turquoise2);
         border: none;
         display: block;
         border-radius: 5px;
@@ -94,7 +94,7 @@ export default {
             border-style: solid;
         }
         &:before {
-            border-color: $turquoise2 transparent transparent transparent;
+            border-color: var(--tainacan-turquoise2) transparent transparent transparent;
             border-right-width: 15px;
             border-top-width: 12px;
             border-left-width: 15px;

@@ -4,7 +4,7 @@
             border: none;
             align-items: center;
             .icon {
-                color: $secondary;
+                color: var(--tainacan-secondary);
                 align-items: center;
             }
             .gray-icon {
@@ -38,22 +38,22 @@
             max-height: 240px;
             overflow-y: auto;
             box-shadow: none;
-            border: 1px solid $gray3;
+            border: 1px solid var(--tainacan-gray3);
 
             .dropdown-item {
                 display: block;
                 text-decoration: none;
                 padding: 0.375em 1em;
                 font-size: 0.825em;
-                color: $tainacan-input-color !important;
+                color: var(--tainacan-input-color) !important;
                 transition: background-color 0.3s ease;
 
                 label { margin-bottom: 0; }
                 &.control { font-size: 0.8125em !important; }
                 .b-checkbox { width: 100% };
-                &:hover { background-color: $gray2; }
-                .is-small { color: $gray4; }
-                &.is-active { background-color: $turquoise2; }
+                &:hover { background-color: var(--tainacan-gray2); }
+                .is-small { color: var(--tainacan-gray4); }
+                &.is-active { background-color: var(--tainacan-turquoise2); }
 
                 .media {
                     align-items: center;
@@ -134,20 +134,20 @@
         text-overflow: ellipsis;
     }
     .input.has-selected, .input:focus, .input:active {
-        background-color: white;
-        border: 1px solid $gray2 !important;
+        background-color: var(--tainacan-white);
+        border: 1px solid var(--tainacan-gray2) !important;
     }
     .tags {
         margin:  0.17em 0.25em 0.08em 0.25em !important;
         display: inline-flex;
     }
     .tag {
-        background: white;
+        background: var(--tainacan-white);
         padding-right: 0;
         padding-left: 0.6em;
 
         &.is-delete {
-            color: $gray4;
+            color: var(--tainacan-gray4);
             &::after {
                 height: 47% !important;
                 width: 1px !important;
@@ -157,7 +157,7 @@
                 height: 1px !important;
             } 
             &:hover, &:focus {
-                background-color: white;
+                background-color: var(--tainacan-white);
                 color: black;
             }
         }
@@ -165,10 +165,10 @@
 }
 .selected-list-box {
     padding: 4px 6px 0px 6px;
-    border-color: $gray2;
+    border-color: var(--tainacan-gray2);
     border-width: 0px 1px 1px 1px;
     border-style: solid;
-    background-color: white;
+    background-color: var(--tainacan-white);
     display: flex;
     font-size: 0.75em;
 
@@ -176,12 +176,12 @@
         margin: 4px 6px 0px 6px;
     }
     .tag {
-        background: white;
+        background: var(--tainacan-white);
         padding-right: 0;
         padding-left: 0.5em;
 
         &.is-delete {
-            color: $gray4;
+            color: var(--tainacan-gray4);
             &::after {
                 height: 30% !important;
                 width: 1px !important;
@@ -191,7 +191,7 @@
                 height: 1px !important;
             } 
             &:hover, &:focus {
-                background-color: white;
+                background-color: var(--tainacan-white);
                 color: black;
             }
         }
@@ -231,7 +231,7 @@
         border: none;
         
         .dropdown-item {
-            background-color: white !important;
+            background-color: var(--tainacan-white) !important;
         }
     }
 
@@ -248,7 +248,7 @@
                 -moz-osx-font-smoothing: grayscale;
                 text-transform: none !important;
                 letter-spacing: normal !important;
-                color: $secondary;
+                color: var(--tainacan-secondary);
             }
 
             .pagination-previous {
@@ -282,18 +282,18 @@
 
             &.is-selectable.is-first-hovered,
             &.is-selectable.is-last-hovered {
-                color: $gray4 !important;
-                background-color: $gray3 !important;
+                color: var(--tainacan-gray4) !important;
+                background-color: var(--tainacan-gray3) !important;
             }
             &.is-today,
             &.is-today:hover {
-                color: $gray4 !important;
-                background-color: $turquoise1;
+                color: var(--tainacan-gray4) !important;
+                background-color: var(--tainacan-turquoise1);
             }
             &.is-selected,
             &.is-selected:hover {
-                color: white !important;
-                background-color: $turquoise5 !important;
+                color: var(--tainacan-white) !important;
+                background-color: var(--tainacan-turquoise5) !important;
             }
         }
 

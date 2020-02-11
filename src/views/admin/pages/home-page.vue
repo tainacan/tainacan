@@ -214,7 +214,7 @@ export default {
 
     .home-page {
         margin-top: $header-height;
-        background-color: white;
+        background-color: var(--tainacan-white);
         height: calc(100% - 52px);
         padding: 25px 8.333333333% !important;
         width: 100vw;
@@ -233,8 +233,8 @@ export default {
             }
 
             .section-connector {
-                border-left: 1px solid $gray2;
-                border-bottom: 1px solid $gray2;
+                border-left: 1px solid var(--tainacan-gray2);
+                border-bottom: 1px solid var(--tainacan-gray2);
                 position: absolute;
                 width: 42px;
                 height: 100%;
@@ -242,8 +242,8 @@ export default {
                 left: 26px;
             }
             .collection-section-connector {
-                border-left: 1px solid $gray2;
-                border-bottom: 1px solid $gray2;
+                border-left: 1px solid var(--tainacan-gray2);
+                border-bottom: 1px solid var(--tainacan-gray2);
                 position: absolute;
                 width: calc(100% + 26px);
                 height: 100%;
@@ -260,7 +260,7 @@ export default {
                 height: 52px;
 
                 .home-section-icon {
-                    background-color: white;
+                    background-color: var(--tainacan-white);
                     padding: 0.75em;
                     height: 52px;
                     width: 52px;
@@ -277,7 +277,7 @@ export default {
                 }
 
                 h1 {
-                    color: $gray5;
+                    color: var(--tainacan-gray5);
                     font-size: 1.375em;
                     font-weight: normal;
                     padding: 0.75em 1.375em;
@@ -297,23 +297,23 @@ export default {
                 }
 
                 &.repository-section-header {
-                    border-bottom: 1px solid $blue5;
+                    border-bottom: 1px solid var(--tainacan-blue5);
                     a {
-                        color: $blue5;
+                        color: var(--tainacan-blue5);
                     }
                     .home-section-icon {
-                        background-color: $blue5;
-                        color: white;
+                        background-color: var(--tainacan-blue5);
+                        color: var(--tainacan-white);
                     }
                 }
                 &.collections-section-header {
-                    border-bottom: 1px solid $turquoise5;
+                    border-bottom: 1px solid var(--tainacan-turquoise5);
                     a {
-                        color: $turquoise5;
+                        color: var(--tainacan-turquoise5);
                     }
                     .home-section-icon {
-                        background-color: $turquoise5;
-                        color: white;
+                        background-color: var(--tainacan-turquoise5);
+                        color: var(--tainacan-white);
                     }
                 }
             }
@@ -322,8 +322,8 @@ export default {
                 display: inline-flex;
                 text-overflow: ellipsis;
                 white-space: nowrap;
-                background: $gray1;
-                color: $turquoise5;
+                background: var(--tainacan-gray1);
+                color: var(--tainacan-turquoise5);
                 float: right;
                 width: calc(100% - 20px);
                 transition: background-color 0.3s ease;
@@ -343,7 +343,7 @@ export default {
 
                 .menu-text { margin-left: 0.5em;}
                 &:hover {
-                    background-color: $gray2;
+                    background-color: var(--tainacan-gray2);
                 }
             }
         }
@@ -358,7 +358,7 @@ export default {
             li {
                 padding: 1em;
                 display: flex;
-                background-color: $gray1;
+                background-color: var(--tainacan-gray1);
                 flex-grow: 1;
                 margin: 0.75em;
                 height: 120px; 
@@ -385,12 +385,12 @@ export default {
                 }
 
                 &:hover {
-                    background-color: $gray2;
+                    background-color: var(--tainacan-gray2);
                 }
 
                 a { 
                     width: 100%;
-                    color: $blue5; 
+                    color: var(--tainacan-blue5); 
                     display: flex;
                     flex-wrap: wrap;
                     flex-direction: column;

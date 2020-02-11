@@ -131,7 +131,7 @@ export default {
         h1, h2 {
             font-size: 20px;
             font-weight: 500;
-            color: $gray5;
+            color: var(--tainacan-gray5);
             display: inline-block;
             width: 80%;
             flex-shrink: 1;
@@ -144,7 +144,7 @@ export default {
         hr{
             margin: 3px 0px 4px 0px; 
             height: 1px;
-            background-color: $secondary;
+            background-color: var(--tainacan-secondary);
             width: 100%;
         }
         .breadcrumbs {

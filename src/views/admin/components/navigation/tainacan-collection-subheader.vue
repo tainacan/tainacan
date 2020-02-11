@@ -241,18 +241,18 @@ export default {
     .header-tooltips .tooltip-inner {
         color: turquoise5;
         text-shadow: none;
-        background-color: $turquoise2;
+        background-color: var(--tainacan-turquoise2);
         font-size: 0.75em;
         font-weight: 400;
         padding: 10px 14px;
     }
     .header-tooltips .tooltip-arrow {
-        border-color: $turquoise2;
+        border-color: var(--tainacan-turquoise2);
     }
     
     // Tainacan Header
     #tainacan-subheader {
-        background-color: $turquoise5;
+        background-color: var(--tainacan-turquoise5);
         height: $subheader-height;
         max-height: $subheader-height;
         width: 100%;
@@ -272,7 +272,7 @@ export default {
         h1 {
             font-size: 18px;
             font-weight: 500;
-            color: white;
+            color: var(--tainacan-white);
             line-height: 22px;
             margin-bottom: 12px; 
             max-width: 450px;
@@ -287,7 +287,7 @@ export default {
             height: 42px;
             width: $page-side-padding;
             min-width: $page-side-padding;
-            color: white;
+            color: var(--tainacan-white);
             display: flex;
 
             button, 
@@ -295,7 +295,7 @@ export default {
             button:focus, 
             button:active {
                 width: 100%;
-                color: white;
+                color: var(--tainacan-white);
                 background-color: transparent !important;
                 border: none;
                 height: 42px !important;
@@ -315,19 +315,19 @@ export default {
             // max-width: 50px;
 
             &.is-active {
-                background-color: $turquoise4;
+                background-color: var(--tainacan-turquoise4);
                 a { 
-                    background-color: $turquoise4;
+                    background-color: var(--tainacan-turquoise4);
                     transition: color 0.2s ease;
-                    color: white;
+                    color: var(--tainacan-white);
                     text-decoration: none;
                 }
                 svg {
-                    fill: white !important;
+                    fill: var(--tainacan-white) !important;
                 }
             }
             &:hover:not(.is-active) {
-                background-color: $turquoise4;
+                background-color: var(--tainacan-turquoise4);
 
                 a {
                     background-color: transparent;
@@ -335,7 +335,7 @@ export default {
                 }
             }
             a {
-                color: white;
+                color: var(--tainacan-white);
                 text-align: center;
                 white-space: nowrap;
                 padding: 9px 11px;
@@ -360,7 +360,7 @@ export default {
                     top: 2px;
                     margin-bottom: 2px;
                     height: 16px;
-                    fill: white;
+                    fill: var(--tainacan-white);
                 }
             }
             .menu-text {
@@ -418,11 +418,11 @@ export default {
             z-index: 99;
         }
         .tooltip.is-primary::after {
-            background-color: $turquoise1;
-            color: $turquoise5;
+            background-color: var(--tainacan-turquoise1);
+            color: var(--tainacan-turquoise5);
         }
         .tooltip.is-primary::before {
-            border-bottom-color: $turquoise1;
+            border-bottom-color: var(--tainacan-turquoise1);
         }
 
     }

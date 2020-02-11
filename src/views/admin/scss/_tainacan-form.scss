@@ -1,6 +1,6 @@
 // Input components used in forms are gray in Tainacan
 .tainacan-form {
-    color: $tainacan-input-color;
+    color: var(--tainacan-input-color);
     width: 100%;
 
     .control {
@@ -40,17 +40,17 @@
         cursor: default;
     }
     .required-metadatum-asterisk {
-        color: $gray5;
+        color: var(--tainacan-gray5);
         position: relative;
         top: -3px;
         
         &.is-danger {
-            color: $danger;
+            color: var(--tainacan-danger);
         }
     }
     .input, .textarea { 
         &.is-danger {
-          background-color: $red1;  
+          background-color: var(--tainacan-red1);  
         }
     }
     .b-numberinput {
@@ -73,9 +73,9 @@
         button.is-primary:hover,
         button.is-primary:focus,
         button.is-primary:active {
-            border: 1px solid $gray2;
-            background-color: $gray1 !important;
-            color: $secondary !important;
+            border: 1px solid var(--tainacan-gray2);
+            background-color: var(--tainacan-gray1) !important;
+            color: var(--tainacan-secondary) !important;
             padding: 0 0.6em !important;
             border-radius: 0 !important;
 
@@ -120,11 +120,11 @@
         width: 100%;
         
         &.is-danger {
-            border-color: $danger;
+            border-color: var(--tainacan-danger);
         }   
     }
     .control-label { // The value part in checkbox, radio and switches
-        color: $tainacan-input-color;
+        color: var(--tainacan-input-color);
         padding-left: 0.8em;
         font-size: 0.75em;
         text-overflow: ellipsis;
@@ -134,14 +134,14 @@
     .select {
         
         select {
-            color: $tainacan-input-color;
-            background-color: white !important;
-            border: 1px solid $gray2 !important;
+            color: var(--tainacan-input-color);
+            background-color: var(--tainacan-white) !important;
+            border: 1px solid var(--tainacan-gray2) !important;
             &:focus>option:checked, &:focus>option:hover {
-                background-color: $turquoise1 !important;
+                background-color: var(--tainacan-turquoise1) !important;
             }
             &[disabled=disabled] {
-                border: 1px solid $gray1 !important;
+                border: 1px solid var(--tainacan-gray1) !important;
             }
         } 
     }
@@ -154,7 +154,7 @@
         .button {
             justify-content: space-between;
             width: 100%;
-            border: 1px solid $gray2 !important;
+            border: 1px solid var(--tainacan-gray2) !important;
             border-radius: 0 !important;
             padding: 2px 14px 2px 18px !important
         }
@@ -170,10 +170,10 @@
         }
     }
     .upload-draggable {
-        color: $gray4;
+        color: var(--tainacan-gray4);
         transition: color 0.2s background-color 0.2s;
         border-radius: 0 !important;
-        border-color: $gray2;
+        border-color: var(--tainacan-gray2);
         padding: 1.25em;
     }
     .autocomplete {
@@ -186,18 +186,18 @@
     }
 
     .form-hook-region {
-        background-color: $gray1;
+        background-color: var(--tainacan-gray1);
         padding: 1em 1.875em 2em 1.875em;
 
         h4 {
             font-weight: 600;
-            color: $turquoise5;
+            color: var(--tainacan-turquoise5);
             margin-bottom: 6px;
         }
         hr {
             margin-top: 8px;
             height: 1px;
-            background-color: $turquoise5;
+            background-color: var(--tainacan-turquoise5);
         }
     }
 }

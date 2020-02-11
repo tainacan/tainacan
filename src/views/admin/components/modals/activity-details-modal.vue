@@ -760,7 +760,7 @@
         overflow-y: auto;
         overflow-x: hidden;
         height: 200px;
-        border: 1px solid $gray3;
+        border: 1px solid var(--tainacan-gray3);
 
         &>div {
             margin: 0.5em;

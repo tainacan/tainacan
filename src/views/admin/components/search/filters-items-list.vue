@@ -461,7 +461,7 @@
         margin-bottom: 64px;
     }
     .collection-name {
-        color: #454647;
+        color: var(--tainacan-gray5);
         font-size: 0.875em;
         font-weight: 500;
         margin-bottom: 0.875em;
@@ -473,8 +473,8 @@
     }
     .is-loading:after {
         border: 2px solid white !important;
-        border-top-color: #dbdbdb !important;
-        border-right-color: #dbdbdb !important;
+        border-top-color: var(--tainacan-gray2) !important;
+        border-right-color: var(--tainacan-gray2) !important;
     }
 
 </style>

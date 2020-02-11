@@ -637,13 +637,13 @@
             .input[disabled], .taginput [disabled].taginput-container.is-focusable, .textarea[disabled] {
                 color: black !important;
                 border: none !important;
-                background-color: white !important;
+                background-color: var(--tainacan-white) !important;
             }
 
             .taginput-container {
                 .tags {
                     color: black !important;
-                    background-color: white !important;
+                    background-color: var(--tainacan-white) !important;
                     border: none !important;
 
                     .tag.is-delete {
@@ -655,7 +655,7 @@
                     }
 
                     &:hover, .tag {
-                        background-color: white !important;
+                        background-color: var(--tainacan-white) !important;
                     }
                 }
 
@@ -667,13 +667,13 @@
             input {
                 color: black !important;
                 border: none !important;
-                background-color: white !important;
+                background-color: var(--tainacan-white) !important;
             }
 
             textarea {
                 color: black !important;
                 border: none !important;
-                background-color: white !important;
+                background-color: var(--tainacan-white) !important;
                 min-height: auto !important;
                 line-height: 1.5em;
             }
@@ -710,14 +710,14 @@
             flex-direction: row-reverse;
 
             .icon.has-text-gray4:hover {
-                color: $gray5 !important;
+                color: var(--tainacan-gray5) !important;
             }
         }
     }
 
     .tainacan-add-edition-criterion-button {
         font-size: 12px;
-        color: $turquoise5;
+        color: var(--tainacan-turquoise5);
     }
 
     .tainacan-add-edition-criterion-button-disabled {

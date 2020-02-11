@@ -1441,7 +1441,7 @@ export default {
             h1, h2 {
                 font-size: 20px;
                 font-weight: 500;
-                color: $gray5;
+                color: var(--tainacan-gray5);
                 display: inline-block;
                 width: 80%;
                 flex-shrink: 1;
@@ -1452,8 +1452,8 @@ export default {
                 max-width: 80%;
             }
             .status-tag {
-                color: white;
-                background: $turquoise5;
+                color: var(--tainacan-white);
+                background: var(--tainacan-turquoise5);
                 padding: 0.15em 0.5em;
                 font-size: 0.75em;
                 margin: 0 1em 0 0;
@@ -1469,7 +1469,7 @@ export default {
             hr{
                 margin: 3px 0px 4px 0px;
                 height: 1px;
-                background-color: $secondary;
+                background-color: var(--tainacan-secondary);
                 width: 100%;
             }
         }
@@ -1519,7 +1519,7 @@ export default {
         label {
             font-size: 16px !important;
             font-weight: 500 !important;
-            color: $gray5 !important;
+            color: var(--tainacan-gray5) !important;
             line-height: 1.2em;
         }
     }
@@ -1532,7 +1532,7 @@ export default {
     }
 
     .section-box {
-        background-color: white;
+        background-color: var(--tainacan-background-color);
         padding: 0 $page-side-padding 0 0;
         margin-top: 14px;
         margin-bottom: 32px;
@@ -1547,15 +1547,15 @@ export default {
                     height: 72px;
                     width: 72px;
                     border: none;
-                    background-color: $gray2;
-                    color: $secondary;
+                    background-color: var(--tainacan-gray2);
+                    color: var(--tainacan-secondary);
                     margin-bottom: 6px;
                     &:hover {
-                        background-color: $turquoise2;
+                        background-color: var(--tainacan-turquoise2);
                         cursor: pointer;
                     }
                 }
-                p { color: $secondary; }
+                p { color: var(--tainacan-secondary); }
             }
         }
     }
@@ -1572,7 +1572,7 @@ export default {
             }
             .icon  {
                 font-size: 18px !important;
-                color: $gray3;
+                color: var(--tainacan-gray3);
             }
         }
     }
@@ -1626,7 +1626,7 @@ export default {
             font-weight: bold;
             z-index: 99;
             text-align: center;
-            color: $gray4;
+            color: var(--tainacan-gray4);
             top: 70px;
             max-width: 90px;
         }
@@ -1643,7 +1643,7 @@ export default {
         position: absolute;
         bottom: 0;
         z-index: 999999;
-        background-color: $gray1;
+        background-color: var(--tainacan-gray1);
         width: 100%;
         height: 65px;
         display: flex;
@@ -1658,12 +1658,12 @@ export default {
         }
 
         @keyframes blink {
-            from { color: $blue5; }
-            to { color: $gray4; }
+            from { color: var(--tainacan-blue5); }
+            to { color: var(--tainacan-gray4); }
         }
 
         .update-warning {
-            color: $blue5;
+            color: var(--tainacan-blue5);
             animation-name: blink;
             animation-duration: 0.5s;
             animation-delay: 0.5s;
@@ -1672,7 +1672,7 @@ export default {
         }
 
         .update-info-section {
-            color: $gray4;
+            color: var(--tainacan-gray4);
             margin-right: auto;
         }
 
@@ -1685,7 +1685,7 @@ export default {
 
         .sequence-progress {
             height: 5px;
-            background: $turquoise5;
+            background: var(--tainacan-turquoise5);
             width: 0%;
             position: absolute;
             top: 0;
@@ -1694,7 +1694,7 @@ export default {
         }
         .sequence-progress-background {
             height: 5px;
-            background: $gray3;
+            background: var(--tainacan-gray3);
             width: 100%;
             position: absolute;
             top: 0;
@@ -1703,7 +1703,7 @@ export default {
 
         .sequence-button {
             background-color: transparent;
-            color: $turquoise5;
+            color: var(--tainacan-turquoise5);
             border: none;
         }
     }

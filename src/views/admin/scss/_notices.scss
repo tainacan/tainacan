@@ -7,16 +7,20 @@
         box-shadow: none;
 
         &.is-dark {
-            background-color: $gray2;
-            color: $gray4;
+            background-color: var(--tainacan-gray2);
+            color: var(--tainacan-gray4);
         }
         &.is-warning {
-            background-color: #e7dede;
-            color: $danger;
+            background-color: var(--tainacan-yellow1);
+            color: var(--tainacan-warning);
+        }
+        &.is-danger {
+            background-color: var(--tainacan-red1);
+            color: var(--tainacan-danger);
         }
         &.is-success {
-            background-color: #d6feed;
-            color: $success;
+            background-color: var(--tainacan-green1);
+            color: var(--tainacan-success);
         }
     }
 }

@@ -18,7 +18,7 @@
         }
     }
     li.is-active a {
-        border-bottom-color: $turquoise5;
+        border-bottom-color: var(--tainacan-turquoise5);
         color: black !important;
     }
     .icon:first-child {

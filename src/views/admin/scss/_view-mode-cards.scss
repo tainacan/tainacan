@@ -16,9 +16,9 @@
     }
 
     .selected-card {
-        background-color: $turquoise1;
+        background-color: var(--tainacan-turquoise1);
         .metadata-title {
-            background-color: $turquoise2;
+            background-color: var(--tainacan-turquoise2);
         }
     }
     .tainacan-card {
@@ -54,7 +54,7 @@
         }
 
         &:hover {
-            background-color: $gray1 !important;
+            background-color: var(--tainacan-gray1) !important;
         }
 
         .card-checkbox {
@@ -91,7 +91,7 @@
 
         .card-line {
             height: 1px;
-            background-color: $gray2;
+            background-color: var(--tainacan-gray2);
             margin-left: -44px;
             margin-right: -44px;
             opacity: 0;
@@ -116,7 +116,7 @@
             height: 170px;
             position: absolute;
             z-index: -1;
-            background-color: #e0e0e0;
+            background-color: var(--tainacan-skeleton-color);
         }
         .metadata-title {
             flex-shrink: 0;
@@ -141,7 +141,7 @@
             }
         }
         &:hover .metadata-title {
-            background-color: $gray2 !important;
+            background-color: var(--tainacan-gray2) !important;
             p { text-decoration: none !important; }
         }
 
@@ -156,7 +156,7 @@
                 font-size: 1em;
                 width: 100%;
                 height: 170px;
-                color: $gray4;
+                color: var(--tainacan-gray4);
 
                 p.metadata-description {
                     font-size: 0.75em !important;

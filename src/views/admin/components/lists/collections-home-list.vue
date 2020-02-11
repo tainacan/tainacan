@@ -287,7 +287,7 @@ export default {
         li {
             padding: 0.75em;
             display: flex;
-            background-color: $gray1;
+            background-color: var(--tainacan-gray1);
             flex-grow: 1;
             margin: 0.75em;
             height: 120px;
@@ -300,7 +300,7 @@ export default {
 
             a { 
                 width: 100%;
-                color: $turquoise5; 
+                color: var(--tainacan-turquoise5); 
                 display: flex;
                 flex-wrap: wrap;
                 flex-direction: column;

@@ -314,8 +314,8 @@ export default {
 
     form#filterEditForm {
         padding: 1.5em $page-side-padding 0.5em $page-side-padding;
-        border-top: 1px solid $gray2;
-        border-bottom: 1px solid $gray2;
+        border-top: 1px solid var(--tainacan-gray2);
+        border-bottom: 1px solid var(--tainacan-gray2);
         margin-top: 1.0em;
 
         .options-columns {

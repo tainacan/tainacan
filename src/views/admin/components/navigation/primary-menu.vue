@@ -245,7 +245,7 @@ export default {
     @import "../../scss/_variables.scss";
 
     #primary-menu {
-        background-color: $blue4;
+        background-color: var(--tainacan-blue4);
         padding: 52px 0px 0px 0px;
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear;
@@ -261,11 +261,11 @@ export default {
         }
         .repository-label {
             max-height: 42px;
-            background-color: $blue5;
+            background-color: var(--tainacan-blue5);
             font-weight: bold;
             font-size: 16px;
             text-transform: uppercase;
-            color: white;
+            color: var(--tainacan-white);
             padding: 11px;
             text-align: center;
             opacity: 1;
@@ -290,7 +290,7 @@ export default {
         }
         li {
             a { 
-                color: white;
+                color: var(--tainacan-white);
                 white-space: nowrap;
                 overflow: hidden;
                 padding: 8px 15px;
@@ -312,11 +312,11 @@ export default {
                 top: 3px;
                 height: 18px;
                 width: 18px;
-                fill: white;
+                fill: var(--tainacan-white);
             }
 
             a:hover, a.is-active {
-                background-color: $blue3;
+                background-color: var(--tainacan-blue3);
             }
             a:focus {
                 box-shadow: none;

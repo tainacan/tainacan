@@ -382,7 +382,7 @@ export default {
             h1, h2 {
                 font-size: 20px;
                 font-weight: 500;
-                color: $gray5;
+                color: var(--tainacan-gray5);
                 display: inline-block;
                 flex-shrink: 1;
                 flex-grow: 1;
@@ -395,7 +395,7 @@ export default {
             hr{
                 margin: 3px 0px 4px 0px; 
                 height: 1px;
-                background-color: $secondary;
+                background-color: var(--tainacan-secondary);
                 width: 100%;
             }
         }
@@ -445,7 +445,7 @@ export default {
                 .document-actions {
                     position: absolute;
                     right: 0;
-                    background: $gray2;
+                    background: var(--tainacan-gray2);
                     height: 100%;
                     display: none;
                     justify-content: center;
@@ -459,7 +459,7 @@ export default {
                 }
 
                 &:hover {
-                    background-color: $gray1;
+                    background-color: var(--tainacan-gray1);
 
                     .document-actions {
                         display: flex;
@@ -485,14 +485,14 @@ export default {
             }
             .sequence-progress {
                 height: 5px;
-                background: $turquoise5;
+                background: var(--tainacan-turquoise5);
                 width: 0%;
                 transition: width 0.2s;
                 margin-bottom: 1em;
             }
             .sequence-progress-background {
                 height: 5px;
-                background: $gray3;
+                background: var(--tainacan-gray3);
                 width: 100%;
                 top: -21px;
                 z-index: -1;
@@ -506,7 +506,7 @@ export default {
             position: absolute;
             bottom: 0;
             z-index: 999999;
-            background-color: $gray1;
+            background-color: var(--tainacan-gray1);
             width: 100%;
             height: 65px;
             display: flex;

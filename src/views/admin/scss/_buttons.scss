@@ -6,7 +6,7 @@ button.link-style:active {
     cursor: pointer;
     font-size: inherit;
     text-transform: inherit;
-    color: $secondary;
+    color: var(--tainacan-secondary);
     padding: 0;
     margin: 0;
     font-weight: normal;
@@ -27,17 +27,20 @@ button.link-style:active {
     box-shadow: none !important;
     display: inline-flex !important;
     cursor: pointer;
-    background-color: white;
+    background-color: var(--tainacan-white);
     text-shadow: none !important;
 
-    &.is-secondary:hover, &.is-secondary:focus {
-        background: $secondary !important;
+    &.is-secondary, &.is-secondary:hover, &.is-secondary:focus {
+        background: var(--tainacan-secondary) !important;
+        color: var(--tainacan-white) !important;
     }
-    &.is-primary:hover, &.is-primary:focus {
-        background: $turquoise3 !important;
+    &.is-primary, &:hover, &.is-primary:focus {
+        background: var(--tainacan-turquoise3) !important;
+        color: var(--tainacan-white) !important;
     }
-    &.is-success:hover, &.is-success:focus {
-        background: $success !important;
+    &.is-success, &.is-success:hover, &.is-success:focus {
+        background: var(--tainacan-success) !important;
+        color: var(--tainacan-white) !important;
     }
     &.is-white, &.is-white:hover, &.is-white:focus, &.is-outlined:hover, &.is-outlined:focus {
         background-color: transparent !important;
@@ -47,12 +50,12 @@ button.link-style:active {
         transform: none !important;
     }
     &.is-outlined {
-        color: $turquoise5;
-        background-color: white !important;
-        border-color: $gray4 !important;
+        color: var(--tainacan-turquoise5);
+        background-color: var(--tainacan-white) !important;
+        border-color: var(--tainacan-gray4) !important;
     }
     &.is-outlined:hover {
-        color: $turquoise5 !important;
+        color: var(--tainacan-turquoise5) !important;
     }
     &:focus {
         outline: 0px;
@@ -60,14 +63,14 @@ button.link-style:active {
     &[disabled], &:hover[disabled] {
         border: none !important;
         cursor: not-allowed !important;
-        color: $gray4 !important;
-        background-color: $gray2 !important;
+        color: var(--tainacan-gray4) !important;
+        background-color: var(--tainacan-gray2) !important;
         text-shadow: none !important;
     }
     &.is-outlined[disabled], &.is-outlined:hover[disabled] {
-        border: 1px solid $gray2 !important;
-        color: $gray4 !important;
-        background-color: white !important;
+        border: 1px solid var(--tainacan-gray2) !important;
+        color: var(--tainacan-gray4) !important;
+        background-color: var(--tainacan-white) !important;
     }
     &.is-white[disabled] {
         background-color: transparent !important;

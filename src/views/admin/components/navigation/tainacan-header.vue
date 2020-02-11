@@ -189,19 +189,19 @@
     @import "../../scss/_variables.scss";
 
     .repository-header-tooltips .tooltip-inner {
-        color: white;
-        background-color: $blue3;
+        color: var(--tainacan-white);
+        background-color: var(--tainacan-blue3);
         font-size: 0.75em;
         font-weight: 400;
         padding: 10px 14px;
     }
     .repository-header-tooltips .tooltip-arrow {
-        border-color: $blue3;
+        border-color: var(--tainacan-blue3);
     }
 
     // Tainacan Header
     #tainacan-header {
-        background-color: white;
+        background-color: var(--tainacan-white);
         height: $header-height;
         max-height: $header-height;
         width: 100%;
@@ -211,7 +211,7 @@
         right: 0;
         position: absolute;
         z-index: 999;
-        color: $blue5;
+        color: var(--tainacan-blue5);
 
         .level-left {
             margin-left: -12px;
@@ -220,12 +220,12 @@
                 font-size: 24px;
                 width: 50px;
                 height: $header-height;
-                background-color: $gray1;
+                background-color: var(--tainacan-gray1);
                 padding-bottom: 0.4em;
                 transition: background-color 0.2s ease;
 
                 &:hover {
-                    background-color: $gray2;
+                    background-color: var(--tainacan-gray2);
                 }
             }
             .logo-area {
@@ -247,10 +247,10 @@
             padding-right: 14px;
 
             .button, a {
-                color: $blue5 !important;
+                color: var(--tainacan-blue5) !important;
             }
             .button:hover, .button:active, .button:focus {
-                background-color: white !important;
+                background-color: var(--tainacan-white) !important;
             }
 
             .tainacan-icon-wordpress {
@@ -263,7 +263,7 @@
                 margin-right: 28px;
                 .control {
                     .search-header {
-                        border: 1px solid $gray2;
+                        border: 1px solid var(--tainacan-gray2);
                         height: 28px;
                         transition: width linear 0.15s;
                         -webkit-transition: width linear 0.15s;
@@ -275,7 +275,7 @@
                     }
                     .icon:not(.add-i) {
                         pointer-events: all;
-                        color: $blue5;
+                        color: var(--tainacan-blue5);
                         cursor: pointer;
                         height: 27px;
                         font-size: 18px;

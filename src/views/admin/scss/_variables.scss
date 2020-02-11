@@ -63,6 +63,10 @@ $yellow2-invert: findColorInvert($yellow2);
 $tainacan-input-color: #1d1d1d;
 $tainacan-input-color-invert: findColorInvert($tainacan-input-color);
 
+// Skeleton colors
+$skeleton-color: #eeeeee;
+$skeleton-color-invert: findColorInvert(#eeeeee);
+
 // Maps some of bulma's colors to custom variables
 $primary: $turquoise3;
 $primary-invert: findColorInvert($turquoise3);
@@ -76,6 +80,14 @@ $warning: $yellow2;
 $warning-invert: findColorInvert($warning);
 $gray: $gray4;
 $gray-invert: findColorInvert($gray4);
+$white: white;
+$white-invert: findColorInvert($white);
+$black: black;
+$black-invert: findColorInvert($black);
+
+// Background, black and white
+$foreground-color: $black;
+$background-color: $white;
 
 @import "../../../../node_modules/bulma/sass/utilities/derived-variables.sass";
 
@@ -127,7 +139,7 @@ $header-height: 52px;
 $subheader-height: 42px;
 $side-menu-width: 160px;
 $filter-menu-width: 16.666666667%;
-$filter-menu-width-theme: 20.833333333%;
+$filter-menu-width-theme: 20%;
 $page-height: calc(100vh - 94px);
 
 // Overall Pages padding:
@@ -146,18 +158,19 @@ $link-invert: $secondary;
 $link-focus-border: $secondary; 
 
 // Placeholder
-$text-light: $gray4;
+$text-light: var(--tainacan-gray4);
 
 // Table
-$table-head-cell-color: $gray4;
+$table-head-cell-color: var(--tainacan-gray4);
 $table-head-cell-border-width: 0 0 1px !important;
 $table-row-active-color: #e5e5e5;
-$table-foot-cell-color: $gray4;
+$table-foot-cell-color: var(--tainacan-gray4);
 $table-foot-cell-border-width: 1px 0 0 !important;
 $table-cell-padding: 1.0em 0.75em;
 
 // Roboto font
 $family-sans-serif: 'Roboto', 'Source Sans', 'Helvetica', sans-serif;
+$base-font-size: 1em;
  
 // Bulma's modal (needs to be greather than tainacan-admin-app)
 $modal-z: 9999999;
@@ -709,7 +722,7 @@ $modal-z: 9999999;
 // }
 .skeleton {
     border-radius: 2px;
-    background: $gray1;
+    background: var(--tainacan-skeleton-color);
 
     -webkit-animation: skeleton-animation 1.8s ease infinite;
     -moz-animation: skeleton-animation 1.8s ease infinite;

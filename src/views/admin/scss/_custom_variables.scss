@@ -1,0 +1,164 @@
+// Declares css custom var using sass as fallback
+// CSS Variables
+:root {
+    // NEW TAINACAN CUSTOM COLORS ------------------
+    // Blue, used mainly for repository
+    --tainacan-blue1: #{$blue1};
+    --tainacan-blue1-invert: #{$blue1-invert};
+    --tainacan-blue2: #{$blue2};
+    --tainacan-blue2-invert: #{$blue2-invert};
+    --tainacan-blue3: #{$blue3};
+    --tainacan-blue3-invert: #{$blue3-invert};
+    --tainacan-blue4: #{$blue4};
+    --tainacan-blue4-invert: #{$blue4-invert};
+    --tainacan-blue5: #{$blue5};
+    --tainacan-blue5-invert: #{$blue5-invert};
+
+    // Turquoise, used mainly for collection level
+    --tainacan-turquoise1: #{$turquoise1};
+    --tainacan-turquoise1-invert: #{$turquoise1-invert};
+    --tainacan-turquoise2: #{$turquoise2};
+    --tainacan-turquoise2-invert: #{$turquoise2-invert};
+    --tainacan-turquoise3: #{$turquoise3};
+    --tainacan-turquoise3-invert: #{$turquoise3-invert};
+    --tainacan-turquoise4: #{$turquoise4};
+    --tainacan-turquoise4-invert: #{$turquoise4-invert};
+    --tainacan-turquoise5: #{$turquoise5};
+    --tainacan-turquoise5-invert: #{$turquoise5-invert};
+    --tainacan-turquoise6: #{$turquoise6};
+    --tainacan-turquoise6-invert: #{$turquoise6-invert};
+
+    // Gray, used mostly for information
+    --tainacan-gray0: #{$gray0};
+    --tainacan-gray0-invert: #{$gray0-invert};
+    --tainacan-gray1: #{$gray1};
+    --tainacan-gray1-invert: $gray1-invert;
+    --tainacan-gray2: #{$gray2};
+    --tainacan-gray2-invert: #{$gray2-invert};
+    --tainacan-gray3: #{$gray3};
+    --tainacan-gray3-invert: #{$gray3-invert};
+    --tainacan-gray4: #{$gray4};
+    --tainacan-gray4-invert: #{$gray4-invert};
+    --tainacan-gray5: #{$gray5};
+    --tainacan-gray5-invert: #{$gray5-invert};
+
+    // Red, used for error messages
+    --tainacan-red1: #{$red1};
+    --tainacan-red1-invert: #{$red1-invert};
+    --tainacan-red2: #{$red2};
+    --tainacan-red2-invert: #{$red2-invert};
+    // Green, used for success buttons
+    --tainacan-green1: #{$green1};
+    --tainacan-green1-invert: #{$green1-invert};
+    --tainacan-green2: #{$green2};
+    --tainacan-green2-invert: #{$green2-invert};
+    // Warning, used for warning messages
+    --tainacan-yellow1: #{$yellow1};
+    --tainacan-yellow1-invert: #{$yellow1-invert};
+    --tainacan-yellow2: #{$yellow2};
+    --tainacan-yellow2-invert: #{$yellow2-invert};
+
+    // Text, no quite black
+    --tainacan-input-color: #{$tainacan-input-color};
+    --tainacan-input-color-invert: #{$tainacan-input-color-invert};
+
+    // Skeleton color
+    --tainacan-skeleton-color: #{$skeleton-color};
+
+    // Derived colors
+    --tainacan-primary: var(--tainacan-turquoise3);
+    --tainacan-primary-invert: var(--tainacan-turquoise3-invert);
+    --tainacan-secondary: var(--tainacan-turquoise5);
+    --tainacan-secondary-invert: var(--tainacan-turquoise5-invert);
+    --tainacan-success: var(--tainacan-green2);
+    --tainacan-success-invert: var(--tainacan-green2-invert);
+    --tainacan-danger: var(--tainacan-red2); 
+    --tainacan-danger-invert: var(--tainacan-red2-invert);
+    --tainacan-warning: var(--tainacan-yellow2);
+    --tainacan-warning-invert: var(--tainacan-yellow2-invert);
+    --tainacan-gray: var(--tainacan-gray4);
+    --tainacan-gray-invert: var(--tainacan-gray4-invert);
+    --tainacan-black: #{$black};
+    --tainacan-white: #{$white};
+
+    // Background, black and white
+    --tainacan-foreground-color: var(--tainacan-black);
+    --tainacan-background-color: var(--tainacan-white);
+
+    // Font size
+    --tainacan-base-font-size: #{$base-font-size};
+
+    // Filter Menu
+    --tainacan-filter-menu-width-theme: #{$filter-menu-width-theme};
+}
+
+// Some Bulma classes will work with SASS but not with CSS variables
+.has-text-primary, 
+.has-text-primary:hover, 
+.has-text-primary:focus,
+.has-text-secondary, 
+.has-text-secondary:hover, 
+.has-text-secondary:focus {
+    color: var(--tainacan-secondary) !important;
+}
+.has-text-turquoise5, 
+.has-text-turquoise5:hover, 
+.has-text-turquoise5:focus {
+    color: var(--tainacan-turquoise5) !important;
+}
+.has-text-blue5, 
+.has-text-blue5:hover, 
+.has-text-blue5:focus {
+    color: var(--tainacan-blue5) !important;
+}
+.has-text-blue4, 
+.has-text-blue4:hover, 
+.has-text-blue4:focus {
+    color: var(--tainacan-blue4) !important;
+}
+.has-text-gray, 
+.has-text-gray:hover, 
+.has-text-gray:focus {
+    color: var(--tainacan-gray) !important;
+}
+.has-text-gray3, 
+.has-text-gray3:hover, 
+.has-text-gray3:focus {
+    color: var(--tainacan-gray3) !important;
+}
+.has-text-gray4, 
+.has-text-gray4:hover, 
+.has-text-gray4:focus {
+    color: var(--tainacan-gray4) !important;
+}
+.has-text-gray5, 
+.has-text-gray5:hover, 
+.has-text-gray5:focus {
+    color: var(--tainacan-gray4) !important;
+}
+.has-text-danger, 
+.has-text-danger:hover, 
+.has-text-danger:focus {
+    color: var(--tainacan-danger) !important;
+}
+.has-text-success, 
+.has-text-success:hover, 
+.has-text-success:focus {
+    color: var(--tainacan-success) !important;
+}
+.is-success, 
+.is-success:hover, 
+.is-success:focus {
+    background-color: var(--tainacan-success) !important;
+    color: var(--tainacan-white) !important;
+}
+.is-white, 
+.is-white:hover, 
+.is-white:focus {
+    background-color: var(--tainacan-white) !important;
+    color: var(--tainacan-black) !important;
+}
+
+a {
+    color: var(--tainacan-secondary);
+}

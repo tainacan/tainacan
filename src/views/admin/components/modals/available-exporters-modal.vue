@@ -98,7 +98,7 @@
     .exporter-types-container {
 
         .exporter-type {
-            border-bottom: 1px solid $gray2;
+            border-bottom: 1px solid var(--tainacan-gray2);
             padding: 15px 8.3333333%;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -110,7 +110,7 @@
                 border-bottom: none;
             }
             &:hover {
-                background-color: $gray2;
+                background-color: var(--tainacan-gray2);
             }
         }
     }

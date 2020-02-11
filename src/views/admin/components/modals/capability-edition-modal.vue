@@ -135,13 +135,13 @@ export default {
             padding: 12px 24px;
 
             &:last-of-type {
-                background-color: $yellow1;
-                color: $yellow2;
+                background-color: var(--tainacan-yellow)1;
+                color: var(--tainacan-yellow)2;
 
                 .label ,
                 .control-label,
                 .check {
-                    color: $yellow2;
+                    color: var(--tainacan-yellow)2;
                 }
             }
         }

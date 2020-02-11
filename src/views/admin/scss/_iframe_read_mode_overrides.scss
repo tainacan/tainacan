@@ -56,9 +56,9 @@
             .metadata-title { margin-left: 6px !important; padding-left: 6px !important; }
         }
         .tainacan-record {
-            &:hover .media { background-color: $gray0 !important; cursor: default; }
+            &:hover .media { background-color: var(--tainacan-gray0) !important; cursor: default; }
             .metadata-title { padding-left: 1.5em !important; margin-bottom: -0.75em; }
-            &:hover .metadata-title { background-color: $gray0 !important; cursor: default; }
+            &:hover .metadata-title { background-color: var(--tainacan-gray0) !important; cursor: default; }
         }
         .tainacan-masonry-item {
             &:hover { background-color: transparent; cursor: default; }

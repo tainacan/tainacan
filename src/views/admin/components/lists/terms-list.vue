@@ -508,7 +508,7 @@ export default {
             }
 
             .gray-icon, .gray-icon .icon {
-                color: $gray4 !important;
+                color: var(--tainacan-gray4) !important;
                 padding-right: 10px;
             }
             .gray-icon .icon i::before, 
@@ -523,14 +523,14 @@ export default {
             align-items: center;
 
             .input {
-                border: 1px solid $gray2;
+                border: 1px solid var(--tainacan-gray2);
             }
             .control {
                 width: 100%;
                 .icon {
                     pointer-events: all;
                     cursor: pointer;
-                    color: $blue5;
+                    color: var(--tainacan-blue5);
                     height: 27px;
                     font-size: 18px !important;
                     height: auto !important;
@@ -544,18 +544,18 @@ export default {
     }
 
     .parent-term>div>.term-item:first-child:hover {
-        background-color: $gray1 !important;
+        background-color: var(--tainacan-gray1) !important;
         .controls {
             visibility: visible;
             opacity: 1.0;
         }
         &::before {
-            border-color: transparent transparent transparent $gray2 !important;
+            border-color: transparent transparent transparent var(--tainacan-gray2) !important;
         }
     }
     .parent-term>div>.opened-term.term-item:first-child {
         cursor: default;
-        background-color: $gray1 !important;
+        background-color: var(--tainacan-gray1) !important;
 
         &:before {
             content: '';
@@ -566,14 +566,14 @@ export default {
             width: 0;
             height: 0;
             border-style: solid;
-            border-color: transparent transparent transparent $gray1;
+            border-color: transparent transparent transparent var(--tainacan-gray1);
             border-left-width: 24px;
             border-top-width: 20px;
             border-bottom-width: 20px;
             top: 0;
         }
         &:hover:before {
-            border-color: transparent transparent transparent $gray1;
+            border-color: transparent transparent transparent var(--tainacan-gray1);
         }
     }
 
@@ -582,7 +582,7 @@ export default {
         margin: 0;
         padding: 0.5em 0 0.5em 1.75em;
         display: flex;
-        border-top: 1px solid #f2f2f2;
+        border-top: 1px solid var(--tainacan-gray1);
     }
 
     .edit-forms-list {

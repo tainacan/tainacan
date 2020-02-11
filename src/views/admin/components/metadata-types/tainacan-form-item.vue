@@ -219,7 +219,7 @@
     }
 
     .field {
-        border-bottom: 1px solid $gray2;
+        border-bottom: 1px solid var(--tainacan-gray2);
         padding: 10px 25px;
 
         .label {
@@ -233,7 +233,7 @@
         .metadata-type {
             font-size: 0.8125em;
             font-weight: 400;
-            color: $gray3;
+            color: var(--tainacan-gray3);
             top: -0.1em;
             position: relative;
         }

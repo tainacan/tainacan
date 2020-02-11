@@ -204,7 +204,7 @@
 
             .file-item-control {
                 position: absolute;
-                background-color: #f2f2f2;
+                background-color: var(--tainacan-gray1);
                 width: 112px;
                 margin: 6px 0;
                 bottom: 0px;

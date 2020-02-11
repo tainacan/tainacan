@@ -10,17 +10,17 @@
     animation-duration: 0.5s;
 
     .selected-record {
-        background-color: $turquoise1;
+        background-color: var(--tainacan-turquoise1);
         .metadata-title {
-            background-color: $turquoise2;
+            background-color: var(--tainacan-turquoise2);
         }
         .media {
-            background-color: $turquoise1;
+            background-color: var(--tainacan-turquoise1);
         }
     }
 
     .tainacan-record {
-        background-color: #f6f6f6;
+        background-color: var(--tainacan-gray0);
         padding: 0px;
         flex-basis: 0;
         margin: 0 auto 30px auto;
@@ -33,7 +33,7 @@
         transition: background-color 0.2s ease;
 
         &:hover {
-            background-color: $gray1 !important;
+            background-color: var(--tainacan-gray1) !important;
         }
 
         .record-checkbox {
@@ -71,7 +71,7 @@
 
         .record-line {
             height: 1px;
-            background-color: $gray2;
+            background-color: var(--tainacan-gray2);
             margin-left: -44px;
             margin-right: -44px;
             opacity: 0;
@@ -114,10 +114,10 @@
             }
         }
         &:hover .metadata-title {
-            background-color: $gray2 !important;
+            background-color: var(--tainacan-gray2) !important;
         }
         &:hover .media {
-            background-color: $gray1 !important;
+            background-color: var(--tainacan-gray1) !important;
         }
 
         .media {
@@ -129,7 +129,7 @@
                 padding: 25px;
                 flex: 1;
                 font-size: 1em;
-                color: $gray4;
+                color: var(--tainacan-gray4);
                 overflow: hidden;
                 width: 100%;
             
@@ -137,13 +137,13 @@
                     margin: 0 0 0.5em 0;
                     font-size: 0.75em;
                     font-weight: 700;
-                    color: $gray4;
+                    color: var(--tainacan-gray4);
                 }
 
                 .metadata-value {
                     font-size: 0.75em;
                     margin-bottom: 1em;
-                    color: $gray4;
+                    color: var(--tainacan-gray4);
                 }
 
                 & span:last-of-type>.metadata-value {

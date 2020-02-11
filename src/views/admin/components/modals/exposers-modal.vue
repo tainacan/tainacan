@@ -480,7 +480,7 @@ export default {
             margin-bottom: 0;
         }
         .back-link {
-            color: $secondary;
+            color: var(--tainacan-secondary);
             cursor: pointer;
         }
     }
@@ -496,7 +496,7 @@ export default {
         
         p {
             font-size: 1em;
-            color: $gray5;
+            color: var(--tainacan-gray5);
             padding: 0em 1.25em;
             margin-top: 0.75em;
             margin-bottom: 0;
@@ -507,7 +507,7 @@ export default {
             flex-wrap: wrap;
         
             .exposer-type {
-                border: 1px solid $gray2;
+                border: 1px solid var(--tainacan-gray2);
                 padding: 15px;
                 margin: 24px 12px;
                 cursor: pointer;
@@ -523,13 +523,13 @@ export default {
                 }
                 p {
                     font-size: 0.75em;
-                    color: $gray5;
+                    color: var(--tainacan-gray5);
                     padding: 0em 0.5em;
                     margin-bottom: 0;
                 }
 
                 &:hover {
-                    border: 1px solid $gray3;
+                    border: 1px solid var(--tainacan-gray3);
                 }
             }
         }
@@ -547,7 +547,7 @@ export default {
             }
             .collapse-handler:hover {
                 cursor: pointer;
-                background-color: $gray1;
+                background-color: var(--tainacan-gray1);
             }
             .collapse-handle {
                 cursor: pointer;
@@ -606,9 +606,9 @@ export default {
             }
         }
         &:hover {
-            background-color: $gray1;
+            background-color: var(--tainacan-gray1);
             .exposer-item-actions {
-                background-color: $gray2;
+                background-color: var(--tainacan-gray2);
             }
         }
         .exposer-item-actions {
@@ -619,14 +619,14 @@ export default {
             a {
                 cursor: pointer;
                 margin: 0 0.5em;
-                color: $secondary;
+                color: var(--tainacan-secondary);
                 position: relative;
             }
             .exposer-copy-popup {
                 animation-name: appear-from-top;
                 animation-duration: 0.3s;
                 position: absolute;
-                background: $gray1;
+                background: var(--tainacan-gray1);
                 padding: 0.5em 0.875em 0.75em 0.875em;
                 border-radius: 4px;
                 top: 44px;
@@ -640,8 +640,8 @@ export default {
                 }
                 p { padding: 0 0 0.5em 0; }
                 input {
-                    background-color: white;
-                    border: 1px solid $gray2;
+                    background-color: var(--tainacan-white);
+                    border: 1px solid var(--tainacan-gray2);
                     border-radius: 0;
                     padding: 2px 8px;
                 }
@@ -653,7 +653,7 @@ export default {
                     width: 0;
                     height: 0;
                     border-style: solid;
-                    border-color: transparent transparent $gray1 transparent;
+                    border-color: transparent transparent var(--tainacan-gray1) transparent;
                     border-right-width: 14px;
                     border-bottom-width: 16px;
                     border-left-width: 14px;

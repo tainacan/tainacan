@@ -14,7 +14,7 @@
                     class="modal-custom-icon">
                 <span class="icon is-large">
                     <i 
-                            :style="{ color: icon == 'alert' ? '#a23939' : ( icon == 'approved' ? '#25a189' : 'inherit' ) }"
+                            :style="{ color: icon == 'alert' ? 'var(--tainacan-red2)' : ( icon == 'approved' ? '#25a189' : 'inherit' ) }"
                             :class="'tainacan-icon-' + icon"
                             class="tainacan-icon"/>
                 </span>

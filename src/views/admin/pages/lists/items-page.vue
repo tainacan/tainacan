@@ -1238,7 +1238,7 @@
         h1, h2 {
             font-size: 20px;
             font-weight: 500;
-            color: $gray5;
+            color: var(--tainacan-gray5);
             display: inline-block;
             margin-bottom: 0;
         }
@@ -1252,8 +1252,9 @@
         }
         hr{
             margin: 3px 0px 4px 0px; 
-            height: 1px;
-            background-color: $secondary;
+            height: 2px;
+            background-color: var(--tainacan-secondary);
+            border: none;
         }
     }
 
@@ -1264,7 +1265,7 @@
         h1, h2 {
             font-size: 20px;
             font-weight: 500;
-            color: $gray5;
+            color: var(--tainacan-gray5);
             display: inline-block;
             margin-bottom: 0;
         }
@@ -1279,7 +1280,7 @@
         hr{
             margin: 3px 0px 4px 0px; 
             height: 1px;
-            background-color: $secondary;
+            background-color: var(--tainacan-secondary);
         }
     }
 
@@ -1354,8 +1355,8 @@
         height: 26px;
         width: 23px;
         border: none;
-        background-color: $turquoise1;
-        color: $turquoise5;
+        background-color: var(--tainacan-turquoise1);
+        color: var(--tainacan-turquoise5);
         padding: 0;
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
@@ -1441,7 +1442,7 @@
             }
 
             .gray-icon, .gray-icon .icon {
-                color: $gray4 !important;
+                color: var(--tainacan-gray4) !important;
                 padding-right: 10px;
             }
             .gray-icon .icon i::before, 
@@ -1475,7 +1476,7 @@
                     }      
                     .dropdown-item-apply {
                         width: 100%;
-                        border-top: 1px solid #efefef;
+                        border-top: 1px solid var(--tainacan-skeleton-color);
                         padding: 8px 12px;
                         text-align: right;
                     }
@@ -1499,7 +1500,7 @@
                     .icon {
                         pointer-events: all;
                         cursor: pointer;
-                        color: $blue5;
+                        color: var(--tainacan-blue5);
                         height: 27px;
                         font-size: 1.125em !important;
                         height: auto !important;
@@ -1512,7 +1513,7 @@
                     top: 100%;
                 }
                 .input {
-                    border: 1px solid $gray2;
+                    border: 1px solid var(--tainacan-gray2);
                     min-height: 30px !important;
                 }
                 a {
@@ -1560,8 +1561,8 @@
         margin: 6px $page-side-padding;
         border-radius: 3px;
         padding: 4px 12px;
-        color: $yellow2;
-        background: $yellow1;
+        color: var(--tainacan-yellow)2;
+        background: var(--tainacan-yellow)1;
         animation-name: appear;
         animation-duration: 0.5s;
 
@@ -1577,7 +1578,7 @@
             .button:active,
             .button:focus {
                 background: none;
-                color:$yellow2;
+                color:var(--tainacan-yellow)2;
                 font-weight: bold;
                 border: none;
                 cursor: pointer;

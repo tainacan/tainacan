@@ -147,14 +147,6 @@ export default {
 </script>
 
 <style  lang="scss" scoped>
-    $turquoise1: #e6f6f8;
-    $turquoise2: #d1e6e6;
-    $tainacan-input-color: #1d1d1d;
-    $gray1: #f2f2f2;
-    $gray2: #e5e5e5;
-    $gray3: #dcdcdc;
-    $gray4: #555758;
-    $gray5: #454647; 
 
     // Grid mixin for display: grid compatibility
     @mixin display-grid {

@@ -15,7 +15,7 @@
                         class="image"
                         :style="{ 'background-image': 'url(' + (file.thumbnails['tainacan-medium'] ? file.thumbnails['tainacan-medium'][0] : file.thumbnails['medium'][0]) + ')' }"/>
                 <div
-                        :style="{ 'background-color': '#f2f2f2' }"
+                        :style="{ 'background-color': 'var(--tainacan-gray1)' }"
                         v-else 
                         class="file-placeholder">
                     <span class="icon is-large">
@@ -131,7 +131,7 @@ export default {
         }
         &:hover {
             figcaption {
-                background-color: $gray1;
+                background-color: var(--tainacan-gray1);
             }
         }
         .image-wrapper {
@@ -166,7 +166,7 @@ export default {
         }
 
         figcaption {
-            background-color: white;
+            background-color: var(--tainacan-white);
             padding: 8px 15px;
             font-size: 0.75em;
             width: 100%;

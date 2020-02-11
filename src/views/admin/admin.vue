@@ -139,8 +139,8 @@
         height: 25px;
         width: 25px;
         border: none;
-        background-color: var(--blue5);
-        color: white;
+        background-color: var(--tainacan-blue5);
+        color: var(--tainacan-white);
         padding: 0px;
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;

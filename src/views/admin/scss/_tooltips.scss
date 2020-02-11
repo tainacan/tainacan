@@ -2,13 +2,22 @@
 // Tooltips:
 .b-tooltip::after {
     box-shadow: none;
+    &.is-primary {
+        background: var(--tainacan-turquoise1);
+    }
+}
+.b-tooltip::before {
+    box-shadow: none;
+    &.is-primary {
+        background: var(--tainacan-turquoise1);
+    }
 }
 .repository-tooltip {
     .tooltip-inner {
-        background: $blue1 !important;
+        background: var(--tainacan-blue1) !important;
     }
     .tooltip-arrow {
-        border-color: $blue1 !important;
+        border-color: var(--tainacan-blue1) !important;
     }
 }
 .tooltip {
@@ -20,8 +29,8 @@
     }
 
     .tooltip-inner {
-        background: $turquoise1;
-        color: $gray5;
+        background: var(--tainacan-turquoise1);
+        color: var(--tainacan-gray5);
         font-size: 0.6875em;
         border-radius: 5px;
         padding: 10px 14px;
@@ -35,7 +44,7 @@
         border-style: solid;
         position: absolute;
         margin: 5px;
-        border-color: $turquoise1;
+        border-color: var(--tainacan-turquoise1);
         z-index: 1;
     }
     &[x-placement^="top"] {
@@ -113,12 +122,12 @@
             border-left-color: transparent !important;
             border-right-color: transparent !important;
             border-bottom-color: transparent !important;
-            border-top-color: $turquoise1 !important;
+            border-top-color: var(--tainacan-turquoise1) !important;
             top: initial !important;
             bottom: -5px !important;
     }
     .metadata-type-preview {
-        background: $turquoise1;
+        background: var(--tainacan-turquoise1);
         padding: 0px 8px;
         border-radius: 3px;
         width: 200px;
@@ -132,7 +141,7 @@
 
         .metadata-type-label {
             font-weight: 600;
-            color: $turquoise4;
+            color: var(--tainacan-turquoise4);
             width: 100%;
             font-size: 1em;
             margin-bottom: 6px;
@@ -160,7 +169,7 @@
         .field {
             width: 100%;
             .label { 
-                color: $gray4;
+                color: var(--tainacan-gray4);
             }
         }
         .add-new-term {
@@ -172,18 +181,18 @@
 
     // Metadata type textarea has different separators in different spots on interface
     & .multivalue-separator {
-        color: $gray4;
+        color: var(--tainacan-gray4);
         margin: 0 8px;    
     }
     & .hierarchy-separator {
-        color: $gray4;
+        color: var(--tainacan-gray4);
     }
     &.metadata-type-textarea {
         .multivalue-separator {
             display: block;
             max-height: 1px;
             width: 35px;
-            background: $gray4;
+            background: var(--tainacan-gray4);
             content: none;
             color: transparent;
             margin: 1em auto;

@@ -65,9 +65,11 @@ export default {
     @import "../admin/scss/_tainacan-form.scss";
     @import "../admin/scss/_filters-menu-modal.scss";
     @import "./scss/_layout.scss";
+    @import "../admin/scss/_custom_variables.scss";
 
     .theme-items-list {
-        font-size: 1em;
+        background: var(--tainacan-background-color);
+        font-size: var(--tainacan-base-font-size);
         position: relative;
         -webkit-overflow-scrolling: touch;
 
@@ -84,10 +86,10 @@ export default {
             opacity: 0; // Will make it 1 once window.load is done; 
         }
 
-        a, a:not([href]){ color: $secondary }
+        a, a:not([href]){ color: var(--tainacan-secondary) }
         a:hover, a:hover:not([href]) {
             cursor: pointer;
-            color: $secondary;
+            color: var(--tainacan-secondary);
             text-decoration: underline;
         }
         ul {
@@ -123,7 +125,7 @@ export default {
             input[type="radio"] + .check {
                 width: 13px !important;
                 height: 13px !important;
-                border: 1px solid $gray4 !important;    
+                border: 1px solid var(--tainacan-gray4) !important;    
             }
             input[type="radio"] + .check::before {
                 background: black !important;
@@ -136,7 +138,7 @@ export default {
                 box-shadow: none !important;
             }
             input[type="radio"]:checked + .check {
-                border-color: $gray4 !important;
+                border-color: var(--tainacan-gray4) !important;
             }
             &:focus input[type="radio"]:checked + .check {
                 box-shadow: none !important;
@@ -162,8 +164,8 @@ export default {
             margin: 6px $page-side-padding;
             border-radius: 3px;
             padding: 4px 12px;
-            color: $yellow2;
-            background: $yellow1;
+            color: var(--tainacan-yellow)2;
+            background: var(--tainacan-yellow)1;
             animation-name: appear;
             animation-duration: 0.5s;
 
@@ -179,7 +181,7 @@ export default {
                 .button:active,
                 .button:focus {
                     background: none;
-                    color:$yellow2;
+                    color:var(--tainacan-yellow)2;
                     font-weight: bold;
                     border: none;
                     cursor: pointer;

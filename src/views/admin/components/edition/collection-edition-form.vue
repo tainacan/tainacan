@@ -914,7 +914,7 @@ export default {
     .section-label {
         font-size: 16px !important;
         font-weight: 500 !important;
-        color: $blue5 !important;
+        color: var(--tainacan-blue5) !important;
         line-height: 1.2em;
     }
 
@@ -937,7 +937,7 @@ export default {
             margin: 0;
             margin-top: -2px;
             font-size: 18px;
-            color: white !important;
+            color: var(--tainacan-white) !important;
         }
     }
     .header-field {  
@@ -952,7 +952,7 @@ export default {
             font-weight: bold;
             z-index: 99;
             text-align: center;
-            color: $gray4;
+            color: var(--tainacan-gray4);
             
             @media screen and (max-width: 1024px) {
                 font-size: 1.2em;
@@ -986,7 +986,7 @@ export default {
             font-weight: bold;
             z-index: 99;
             text-align: center;
-            color: $gray4;
+            color: var(--tainacan-gray4);
             top: 70px;
             max-width: 90px;
         }
@@ -1001,7 +1001,7 @@ export default {
         top: -1px;
     }
     .selected-cover-page {
-        border: 1px solid $gray2;
+        border: 1px solid var(--tainacan-gray2);
         padding: 8px;
         font-size: .75em;
         .span { vertical-align: middle;}
@@ -1017,7 +1017,7 @@ export default {
             pointer-events: none;
             cursor: not-allowed;
            
-           .icon { color: $gray2; }
+           .icon { color: var(--tainacan-gray2); }
         }
     }
     .status-radios {
