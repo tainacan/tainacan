@@ -27,7 +27,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			)
 		);
-        
+
 		$request = new \WP_REST_Request(
 			'POST',
 			$this->namespace . '/collection/' . $collection->get_id() . '/metadata'
@@ -280,7 +280,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 
 		#### UPDATE METADATUM IN COLLECTION ####
-        
+
 		$values = json_encode([
 			'name'        => 'Dia/Mês/Ano',
 			'description' => 'Continua descrevendo o dado do campo.'
@@ -296,7 +296,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 
 		$data = $response->get_data();
-        
+
 		$this->assertEquals($metadatum->get_id(), $data['id']);
 		$this->assertEquals('Dia/Mês/Ano', $data['name']);
 
@@ -304,7 +304,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$metav = get_post_meta($item->get_id(), $data['id'], true);
 
 		$this->assertEquals('19/01/2018', $metav);
-        
+
 	}
 
 	public function test_trash_metadatum_in_collection(){
@@ -405,9 +405,9 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals($metadatum->get_id(), $data['id']);
 		$this->assertEquals('No name', $data['name']);
 	}
-	
+
 	public function test_return_metadata_type_options_in_get_item() {
-		
+
 		$collection1 = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -416,7 +416,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$collection2 = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -425,9 +425,9 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$core1 = $collection1->get_core_title_metadatum();
-		
+
 		$meta_relationship = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -443,7 +443,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$request = new \WP_REST_Request(
 			'GET',
 			$this->namespace . '/metadata/' . $meta_relationship->get_id()
@@ -458,11 +458,11 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('yes', $data['metadata_type_options']['repeated']);
 		$this->assertEquals($collection1->get_id(), $data['metadata_type_options']['collection_id']);
 		$this->assertEquals($core1->get_id(), $data['metadata_type_options']['search']);
-		
+
 	}
-	
+
 	public function test_return_metadata_type_options_in_get_items() {
-		
+
 		$collection1 = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -471,7 +471,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$collection2 = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -480,9 +480,9 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$core1 = $collection1->get_core_title_metadatum();
-		
+
 		$meta_relationship = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -498,7 +498,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$request = new \WP_REST_Request(
 			'GET',
 			$this->namespace . '/collection/' . $collection2->get_id() . '/metadata'
@@ -507,7 +507,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 
 		$data = $response->get_data();
-		
+
 		//var_dump($data, $this->namespace . '/collection/' . $collection2->get_id() . '/metadata/');
 		foreach ($data as $d) {
 			if ($d['id'] == $meta_relationship->get_id()) {
@@ -515,17 +515,17 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 				break;
 			}
 		}
-		
+
 		$this->assertEquals($meta_relationship->get_id(), $meta['id']);
 		$this->assertEquals('relationship', $meta['name']);
 		$this->assertEquals('yes', $meta['metadata_type_options']['repeated']);
 		$this->assertEquals($collection1->get_id(), $meta['metadata_type_options']['collection_id']);
 		$this->assertEquals($core1->get_id(), $meta['metadata_type_options']['search']);
-		
+
 	}
-	
+
 	public function test_return_metadata_type_options_in_get_item_default_option() {
-		
+
 		$collection1 = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -534,7 +534,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$tax = $this->tainacan_entity_factory->create_entity(
 			'taxonomy',
 			array(
@@ -544,7 +544,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$meta = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -558,7 +558,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$request = new \WP_REST_Request(
 			'GET',
 			$this->namespace . '/metadata/' . $meta->get_id()
@@ -572,7 +572,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('tax', $data['name']);
 		$this->assertEquals($tax->get_id(), $data['metadata_type_options']['taxonomy_id']);
 		$this->assertEquals('no', $data['metadata_type_options']['allow_new_terms']);
-		
+
 	}
 
 	public function test_update_taxonomy_metadata() {
@@ -586,7 +586,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$tax = $this->tainacan_entity_factory->create_entity(
 			'taxonomy',
 			array(
@@ -616,7 +616,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$metadatum = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -645,7 +645,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$itemMeta1->set_value('Rock');
 		$itemMeta1->validate();
 		$Tainacan_Item_Metadata->insert($itemMeta1);
-		
+
 		$request = new \WP_REST_Request(
 			'GET',
 			$this->namespace . '/item/' . $i1->get_id() . '/metadata/' . $metadatum->get_id()
@@ -708,7 +708,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($requestA);
 		$status = $response->status;
 		$this->assertEquals(200, $status);
-		
+
 		$response = $this->server->dispatch($requestB);
 		$status = $response->status;
 		$this->assertEquals(401, $status);
@@ -770,9 +770,6 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertNotEquals($metadatumB->get_id(), $data[2]['id']);
 	}
 
-	/**
-	 * @group leo
-	 */
 	public function test_private_meta_ids_not_in_metadata_order(){
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',

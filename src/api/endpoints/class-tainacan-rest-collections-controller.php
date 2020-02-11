@@ -263,7 +263,7 @@ class REST_Collections_Controller extends REST_Controller {
 					function($m) {
 						return $m->get_id();
 					},
-					$metadata,
+					$metadata
 				);
 				$item_arr['metadata_order'] = \array_values( \array_filter(
 					$item_arr['metadata_order'],
@@ -282,7 +282,7 @@ class REST_Collections_Controller extends REST_Controller {
 					function($f) {
 						return $f->get_id();
 					},
-					$filters,
+					$filters
 				);
 				$item_arr['filters_order'] = \array_values( \array_filter(
 					$item_arr['filters_order'],

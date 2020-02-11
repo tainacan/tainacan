@@ -744,9 +744,6 @@ class TAINACAN_REST_Terms_Controller extends TAINACAN_UnitApiTestCase {
 
 	}
 
-	/**
-	 * @group leo
-	 */
 	public function test_private_filter_ids_not_in_filter_order(){
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
