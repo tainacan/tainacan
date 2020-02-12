@@ -210,6 +210,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			$this->abort();
 			return false;
 		}
+		$this->add_transient('total_process', ($this->get_transient('total_process') === null ? 0 : $this->get_transient('total_process') + 1));
 		$count = $this->get_in_step_count();
 		$item = $this->bulk_list_get_item($count++);
 		if($item == false) {
@@ -222,6 +223,12 @@ class Bulk_Edit_Process extends Generic_Process {
 			$count = $count + $add_steps;
 		}
 		return $count;
+	}
+
+	public function finished() {
+		$total = $this->get_transient('total_process') == null ? 0 : $this->get_transient('total_process');
+		$this->add_log('finished');
+		$this->add_log( sprintf( __('total items processed: %d', 'tainacan'), $total ) );
 	}
 
 	private function save_item_metadata(\Tainacan\Entities\Item_Metadata_Entity $item_metadata, \Tainacan\Entities\Item $item) {

@@ -255,6 +255,44 @@ class REST_Collections_Controller extends REST_Controller {
 				$item_arr['total_items']['private'] = $total_items->private;
 			}
 
+			// Clear private metadata from metadata_order
+			if ( is_array( $item_arr['metadata_order'] ) && ! current_user_can( 'tnc_col_' . $item->get_id() . '_read_private_metadata' ) ) {
+
+				$metadata = $item->get_metadata();
+				$meta_ids = array_map(
+					function($m) {
+						return $m->get_id();
+					},
+					$metadata
+				);
+				$item_arr['metadata_order'] = \array_values( \array_filter(
+					$item_arr['metadata_order'],
+					function($el) use ($meta_ids) {
+						return in_array($el['id'], $meta_ids);
+					}
+				) );
+
+			}
+
+			// Clear private filters from filters_order
+			if ( is_array( $item_arr['filters_order'] ) && ! current_user_can( 'tnc_col_' . $item->get_id() . '_read_private_filters' ) ) {
+
+				$filters = $item->get_filters();
+				$filters_ids = array_map(
+					function($f) {
+						return $f->get_id();
+					},
+					$filters
+				);
+				$item_arr['filters_order'] = \array_values( \array_filter(
+					$item_arr['filters_order'],
+					function($el) use ($filters_ids) {
+						return in_array($el['id'], $filters_ids);
+					}
+				) );
+
+			}
+
 			/**
 			 * Use this filter to add additional post_meta to the api response
 			 * Use the $request object to get the context of the request and other variables

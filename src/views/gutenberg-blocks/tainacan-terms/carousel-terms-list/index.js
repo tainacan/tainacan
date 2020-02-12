@@ -210,7 +210,7 @@ registerBlockType('tainacan/carousel-terms-list', {
 
             terms = [];
 
-            let endpoint = '/taxonomy/' + taxonomyId + '/terms/?'+ qs.stringify({ hideempty: 0, include: selectedTerms }) + '&fetch_only=id,name,url,header_image';
+            let endpoint = '/taxonomy/' + taxonomyId + '/terms/?'+ qs.stringify({ hideempty: 0, include: selectedTerms }) + '&order=asc&fetch_only=id,name,url,header_image';
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
 

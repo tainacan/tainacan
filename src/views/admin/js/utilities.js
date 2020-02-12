@@ -360,7 +360,7 @@ StatusHelperPlugin.install = function (Vue, options = {}) {
     Vue.prototype.$statusHelper = {
         statuses: [
             { name: tainacan_plugin.i18n['status_publish'], slug: 'publish' },
-            // { name: tainacan_plugin.i18n['status_private'], slug: 'private' },
+            { name: tainacan_plugin.i18n['status_private'], slug: 'private' },
             { name: tainacan_plugin.i18n['status_draft'], slug: 'draft' },
             { name: tainacan_plugin.i18n['status_trash'], slug: 'trash' }
         ],
@@ -388,14 +388,15 @@ StatusHelperPlugin.install = function (Vue, options = {}) {
                         if (loadedStatus['publish'] != undefined)
                             this.statuses.push(loadedStatus['publish']);
                         
-                        if (loadedStatus['private'] != undefined)
-                            this.statuses.push(loadedStatus['private']);
-                        
                         this.statuses.concat(Object.values(loadedStatus).filter((status) => {
                             return !['publish','private', 'draft', 'trash'].includes(status.slug); 
                         }));
 
-                        // We always show draft and trash
+                        // We always show private, draft and trash
+                        this.statuses.push({
+                            name: tainacan_plugin.i18n['status_private'],
+                            slug: 'private'
+                        });
                         this.statuses.push({
                             name: tainacan_plugin.i18n['status_draft'],
                             slug: 'draft'

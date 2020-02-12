@@ -774,14 +774,20 @@ export default {
                 // Generates options for parent collection
                 this.isFetchingCollections = true;
                 this.fetchAllCollectionNames()
-                    .then((collections) => {
-                        this.collections = collections;
-                        this.isFetchingCollections = false;
+                    .then((resp) => {
+                        resp.request.then((collections) => {
+                            this.collections = collections;
+                            this.isFetchingCollections = false;
+                        })
+                        .catch((error) => {
+                            this.$console.error(error);
+                            this.isFetchingCollections = false;
+                        });
                     })
-                .catch((error) => {
-                    this.$console.error(error);
-                    this.isFetchingCollections = false;
-                }); 
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingCollections = false;
+                    });
 
                 this.isLoading = false;
                 
