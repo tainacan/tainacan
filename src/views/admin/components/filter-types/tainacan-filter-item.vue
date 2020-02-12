@@ -137,11 +137,9 @@
         }
 
         .taginput-container {
-            font-size: 0.875em;
             border-radius: 1px !important;
             box-shadow: none !important;
             transition: background-color 0.1s;
-            height: 2.25em !important;
         }
 
         .taginput-container {
