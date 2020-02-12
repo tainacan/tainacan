@@ -330,16 +330,14 @@
                 :active.sync="isFiltersModalActive"
                 :width="736"
                 animation="slide-menu"
-                trap-focus
-                aria-modal
-                aria-role="dialog"
+                :trap-focus="filtersAsModal"
                 full-screen
                 :custom-class="'tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')">
             <filters-items-list
-                    autofocus="true"
-                    tabindex="-1"
-                    aria-modal
-                    role="dialog"
+                    :autofocus="filtersAsModal"
+                    :tabindex="filtersAsModal ? -1 : 0"
+                    :aria-modal="filtersAsModal"
+                    :role="filtersAsModal ? 'dialog' : ''"
                     id="filters-items-list"
                     :taxonomy="taxonomy"
                     :collection-id="collectionId"
@@ -639,7 +637,7 @@
             isFiltersModalActive() {
                 if (this.isFiltersModalActive) {
                     setTimeout(() => {
-                        if (this.$refs['filters-modal'] && this.$refs['filters-modal'].focus)
+                        if (this.filtersAsModal && this.$refs['filters-modal'] && this.$refs['filters-modal'].focus)
                             this.$refs['filters-modal'].focus();
                             
                         if (!this.filtersAsModal && !this.isMobile && document.documentElement)
