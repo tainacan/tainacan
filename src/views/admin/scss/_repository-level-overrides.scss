@@ -44,8 +44,8 @@
     .button[disabled]:not(.is-white), .button:hover[disabled]:not(.is-white) {
         border: none !important;
         cursor: not-allowed !important;
-        color: var(--tainacan-gray4) !important;
-        background-color: var(--tainacan-gray2) !important;
+        color: var(--tainacan-info-color) !important;
+        background-color: var(--tainacan-input-border-color) !important;
     }
     .button.is-outlined {
         color: var(--tainacan-blue5) !important;
@@ -70,7 +70,7 @@
         color: var(--tainacan-blue3) !important;
 
         option:checked, option:hover {
-            background-color: var(--tainacan-gray2) !important;
+            background-color: var(--tainacan-input-border-color) !important;
         }
     }
     .tainacan-table {

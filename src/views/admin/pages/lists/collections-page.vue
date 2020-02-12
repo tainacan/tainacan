@@ -543,7 +543,7 @@ export default {
 
             .gray-icon,
             .gray-icon .icon {
-                color: var(--tainacan-gray4) !important;
+                color: var(--tainacan-info-color) !important;
                 padding-right: 10px;
                 height: 1.125em !important;
             }

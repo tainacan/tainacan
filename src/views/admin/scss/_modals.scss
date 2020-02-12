@@ -34,7 +34,7 @@
         font-size: 1.25em;
         font-weight: normal;
         font-weight: 500;
-        color: var(--tainacan-gray5);
+        color: var(--tainacan-heading-color);
         display: inline-block;
         width: 90%;
         margin-right: auto;
@@ -56,7 +56,7 @@
 }
 .tainacan-modal-content {
     border-radius: 0px;
-    background-color: var(--tainacan-white);
+    background-color: var(--tainacan-background-color);
     padding: 40px $page-side-padding;
     padding: 40px 4.166666667vw;
     position: relative;
@@ -125,7 +125,7 @@
         }
         .modal-card-head {
             h1 { 
-                color: var(--tainacan-gray5); 
+                color: var(--tainacan-heading-color); 
             }
             font-weight: normal;
             padding: 0;

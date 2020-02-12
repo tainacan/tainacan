@@ -505,7 +505,7 @@
                 font-weight: bold;
                 z-index: 99;
                 text-align: center;
-                color: var(--tainacan-gray4);
+                color: var(--tainacan-info-color);
             }
             #button-delete-header,
             #button-edit-header {

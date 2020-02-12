@@ -20,7 +20,7 @@ input[type="week"].input {
     border-radius: 1px !important;
     box-shadow: none !important;
     background-color: var(--tainacan-input-background-color);
-    border: 1px solid var(--tainacan-gray2);
+    border: 1px solid var(--tainacan-input-border-color);
     color: var(--tainacan-input-color);
     padding-top: calc(0.375em - 1px);
     padding-bottom: calc(0.375em - 1px);
@@ -35,26 +35,26 @@ input[type="week"].input {
         border: 1px solid var(--tainacan-gray3);
     }  
     &[disabled] {
-        color: var(--tainacan-gray4) !important;
-        background-color: var(--tainacan-gray2) !important;
+        color: var(--tainacan-info-color) !important;
+        background-color: var(--tainacan-input-border-color) !important;
     }
     &.readonly, &[readonly] {
         background-color: var(--tainacan-white) !important;
     }
     &::placeholder {
         font-size: 0.875em;
-        color: var(--tainacan-gray4) !important;
+        color: var(--tainacan-info-color) !important;
     }
     &::-ms-input-placeholder {
         font-size: 0.875em;
-        color: var(--tainacan-gray4) !important;
+        color: var(--tainacan-info-color) !important;
     }
     &::-moz-placeholder {
         font-size: 0.875em;
-        color: var(--tainacan-gray4) !important;
+        color: var(--tainacan-info-color) !important;
     }
     &::-webkit-input-placeholder {
         font-size: 0.875em;
-        color: var(--tainacan-gray4) !important;
+        color: var(--tainacan-info-color) !important;
     }
 }

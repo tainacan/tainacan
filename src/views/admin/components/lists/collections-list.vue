@@ -496,10 +496,10 @@ export default {
         height: 40px;
 
         .select-all {
-            color: var(--tainacan-gray4);
+            color: var(--tainacan-info-color);
             font-size: 14px;
             &:hover {
-                color: var(--tainacan-gray4);
+                color: var(--tainacan-info-color);
             }
         }
     }

@@ -507,7 +507,7 @@ export default {
             flex-wrap: wrap;
         
             .exposer-type {
-                border: 1px solid var(--tainacan-gray2);
+                border: 1px solid var(--tainacan-input-border-color);
                 padding: 15px;
                 margin: 24px 12px;
                 cursor: pointer;
@@ -517,6 +517,7 @@ export default {
                 transition: border 0.3s ease;
 
                 h4 {
+                    color: var(--tainacan-heading-color);
                     font-size: 1em;
                     font-weight: 500;
                     padding: 0em 0.5em;
@@ -553,6 +554,7 @@ export default {
             .collapse-handle {
                 cursor: pointer;
                 .label {
+                    color: var(--tainacan-label-color);
                     margin: 3px 0.75em 0 0;
                     text-overflow: ellipsis;
                     white-space: nowrap;

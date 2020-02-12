@@ -18,7 +18,7 @@
         margin-bottom: 0px !important;
         color: var(--tainacan-input-color);
         option:checked, option:hover {
-            background: var(--tainacan-gray2) !important;
+            background: var(--tainacan-input-border-color) !important;
         }
         &:focus, &:active {
             box-shadow: none !important;

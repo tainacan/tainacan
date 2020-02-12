@@ -31,7 +31,7 @@
         font-weight: bold;
         text-transform: inherit;
         font-size: 0.875em; 
-        color: var(--tainacan-gray5);
+        color: var(--tainacan-label-color);
         display: inline-block;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -42,7 +42,7 @@
         cursor: default;
     }
     .required-metadatum-asterisk {
-        color: var(--tainacan-gray5);
+        color: var(--tainacan-label-color);
         position: relative;
         top: -3px;
         
@@ -75,7 +75,7 @@
         button.is-primary:hover,
         button.is-primary:focus,
         button.is-primary:active {
-            border: 1px solid var(--tainacan-gray2);
+            border: 1px solid var(--tainacan-input-border-color);
             background-color: var(--tainacan-gray1) !important;
             color: var(--tainacan-secondary) !important;
             padding: 0 0.6em !important;
@@ -137,7 +137,7 @@
         select {
             color: var(--tainacan-input-color);
             background-color: var(--tainacan-input-background-color) !important;
-            border: 1px solid var(--tainacan-gray2) !important;
+            border: 1px solid var(--tainacan-input-border-color) !important;
             &:focus>option:checked, &:focus>option:hover {
                 background-color: var(--tainacan-turquoise1) !important;
             }
@@ -155,7 +155,7 @@
         .button {
             justify-content: space-between;
             width: 100%;
-            border: 1px solid var(--tainacan-gray2) !important;
+            border: 1px solid var(--tainacan-input-border-color) !important;
             border-radius: 0 !important;
             padding: 2px 14px 2px 18px !important
         }
@@ -171,10 +171,10 @@
         }
     }
     .upload-draggable {
-        color: var(--tainacan-gray4);
+        color: var(--tainacan-info-color);
         transition: color 0.2s background-color 0.2s;
         border-radius: 0 !important;
-        border-color: var(--tainacan-gray2);
+        border-color: var(--tainacan-input-border-color);
         padding: 1.25em;
     }
     .autocomplete {

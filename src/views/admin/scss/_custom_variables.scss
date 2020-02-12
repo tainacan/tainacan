@@ -38,23 +38,29 @@
     --tainacan-black: #{$black};
     --tainacan-white: #{$white};
 
-    // Text, no quite black
-    --tainacan-input-color: #{$tainacan-input-color};
+    // Form and Text styling
+    --tainacan-input-color: #{$tainacan-input-color}; // Not quite black
     --tainacan-input-background-color: var(--tainacan-white);
+    --tainacan-input-border-color: var(--tainacan-gray2); // Some input borders disabled state colors
+    --tainacan-label-color: var(--tainacan-gray5);
+    --tainacan-info-color: var(--tainacan-gray4);
+    --tainacan-heading-color: var(--tainacan-black);
 
     // Skeleton color
     --tainacan-skeleton-color: #{$skeleton-color};
 
+    // Items
+    --tainacan-item-hover-background-color: var(--tainacan-gray1);
+    --tainacan-item-heading-hover-background-color: var(--tainacan-gray2);
+
     // Derived colors
-    --tainacan-primary: var(--tainacan-turquoise3);
-    --tainacan-secondary: var(--tainacan-turquoise5);
+    --tainacan-primary: var(--tainacan-turquoise2); // Tooltips and selected dropwdown items background
+    --tainacan-secondary: var(--tainacan-turquoise5); // Link, accent color!
     --tainacan-success: var(--tainacan-green2);
     --tainacan-danger: var(--tainacan-red2); 
     --tainacan-warning: var(--tainacan-yellow2);
-    --tainacan-gray: var(--tainacan-gray4);
 
     // Background
-    --tainacan-foreground-color: var(--tainacan-black);
     --tainacan-background-color: var(--tainacan-white);
 
     // Font size
@@ -91,7 +97,7 @@
 .has-text-gray, 
 .has-text-gray:hover, 
 .has-text-gray:focus {
-    color: var(--tainacan-gray) !important;
+    color: var(--tainacan-info-color) !important;
 }
 .has-text-gray3, 
 .has-text-gray3:hover, 

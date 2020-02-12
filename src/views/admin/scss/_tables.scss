@@ -43,6 +43,7 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
+            border-color: transparent;
 
             &.is-narrow {
                 tbody td {
@@ -79,7 +80,7 @@
             }
             // Only to be used in case we can implement Column resizing
             // th:not(:last-child) {
-            //     border-right: 1px solid var(--tainacan-gray2) !important;
+            //     border-right: 1px solid var(--tainacan-item-heading-hover-background-color) !important;
             // }
     
             .thumbnail-cell {
@@ -91,7 +92,7 @@
                 min-width: 80px;
                 max-width: 80px;
                 p {
-                    color: var(--tainacan-gray4);
+                    color: var(--tainacan-info-color);
                     font-size: 0.6875em;
                     line-height: 1.03125em;
                 }
@@ -100,7 +101,7 @@
                 min-width: 80px;
                 max-width: 160px;
                 p {
-                    color: var(--tainacan-gray4);
+                    color: var(--tainacan-info-color);
                     font-size: 0.6875em;
                     line-height: 1.03125em;
                 }
@@ -109,7 +110,7 @@
                 min-width: 120px;
                 max-width: 200px;
                 p {
-                    color: var(--tainacan-gray4);
+                    color: var(--tainacan-info-color);
                     font-size: 0.6875em;
                     line-height: 1.03125em;
                 }
@@ -118,7 +119,7 @@
                 min-width: 120px;
                 max-width: 240px;
                 p {
-                    color: var(--tainacan-gray4);
+                    color: var(--tainacan-info-color);
                     font-size: 0.6875em;
                     line-height: 1.03125em;
                 }
@@ -142,8 +143,9 @@
             th {
                 position: sticky;
                 position: -webkit-sticky;
-                background-color: var(--tainacan-white);
-                border-bottom: 1px solid var(--tainacan-gray2);
+                background-color: var(--tainacan-background-color);
+                border: 0px solid transparent;
+                border-bottom: 1px solid var(--tainacan-input-border-color);
                 top: 0px;
                 z-index: 9;
                 padding: 10px;
@@ -151,7 +153,7 @@
     
                 .th-wrap {
                     font-size: 0.75em !important;
-                    color: var(--tainacan-gray4);
+                    color: var(--tainacan-info-color);
                     font-weight: normal !important;
                     text-overflow: ellipsis;
                     overflow-x: hidden;
@@ -238,21 +240,21 @@
                     }
     
                     &:hover {
-                        background-color: var(--tainacan-gray1) !important;
+                        background-color: var(--tainacan-item-hover-background-color) !important;
                         cursor: pointer;
     
                         .checkbox-cell {
                             position: sticky !important;
                             position: -webkit-sticky !important;
-                            background-color: var(--tainacan-gray2);
+                            background-color: var(--tainacan-item-heading-hover-background-color);
                             
                             .checkbox { 
-                                background-color: var(--tainacan-gray2) !important; 
+                                background-color: var(--tainacan-item-heading-hover-background-color) !important; 
                             }
                         }
                         .actions-cell {
                             .actions-container {
-                                background: var(--tainacan-gray2) !important;
+                                background: var(--tainacan-item-heading-hover-background-color) !important;
                             }
                         }
     

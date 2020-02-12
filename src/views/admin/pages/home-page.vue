@@ -277,7 +277,7 @@ export default {
                 }
 
                 h1 {
-                    color: var(--tainacan-gray5);
+                    color: var(--tainacan-heading-color);
                     font-size: 1.375em;
                     font-weight: normal;
                     padding: 0.75em 1.375em;

@@ -710,7 +710,7 @@
             flex-direction: row-reverse;
 
             .icon.has-text-gray4:hover {
-                color: var(--tainacan-gray5) !important;
+                color: var(--tainacan-heading-color) !important;
             }
         }
     }

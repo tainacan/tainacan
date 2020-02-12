@@ -333,7 +333,7 @@ export default {
             .popup-list-subheader {
                 background-color: var(--tainacan-white) !important;
                 padding: 6px 12px 12px 12px;
-                color: var(--tainacan-gray4);
+                color: var(--tainacan-info-color);
                 font-size: 0.875em;
                 a { float: right; }
             }
@@ -396,7 +396,7 @@ export default {
                 overflow: hidden;
                 max-width: calc(100% - 40px);
                 font-size: 0.825em;
-                color: var(--tainacan-gray4);
+                color: var(--tainacan-info-color);
                 animation-name: expand;
                 animation-duration: 0.3s;
             }

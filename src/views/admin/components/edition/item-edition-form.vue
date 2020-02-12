@@ -1441,7 +1441,7 @@ export default {
             h1, h2 {
                 font-size: 20px;
                 font-weight: 500;
-                color: var(--tainacan-gray5);
+                color: var(--tainacan-heading-color);
                 display: inline-block;
                 width: 80%;
                 flex-shrink: 1;
@@ -1626,7 +1626,7 @@ export default {
             font-weight: bold;
             z-index: 99;
             text-align: center;
-            color: var(--tainacan-gray4);
+            color: var(--tainacan-info-color);
             top: 70px;
             max-width: 90px;
         }
@@ -1659,7 +1659,7 @@ export default {
 
         @keyframes blink {
             from { color: var(--tainacan-blue5); }
-            to { color: var(--tainacan-gray4); }
+            to { color: var(--tainacan-info-color); }
         }
 
         .update-warning {
@@ -1672,7 +1672,7 @@ export default {
         }
 
         .update-info-section {
-            color: var(--tainacan-gray4);
+            color: var(--tainacan-info-color);
             margin-right: auto;
         }
 

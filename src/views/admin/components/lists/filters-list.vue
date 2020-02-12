@@ -750,7 +750,7 @@ export default {
             h1, h2 {
                 font-size: 20px;
                 font-weight: 500;
-                color: var(--tainacan-gray5);
+                color: var(--tainacan-heading-color);
                 display: inline-block;
                 width: 80%;
                 flex-shrink: 1;
@@ -1149,7 +1149,7 @@ export default {
 
                 .filter-type-label {
                     font-weight: 600;
-                    color: var(--tainacan-gray4);
+                    color: var(--tainacan-info-color);
                     width: 100%;
                     font-size: 1em;
                     margin-left: -16px;
@@ -1181,7 +1181,7 @@ export default {
                     width: 100%;
                     margin: 6px;
                     .label { 
-                        color: var(--tainacan-gray5);
+                        color: var(--tainacan-label-color);
                         font-weight: normal;
                     }
                 }
@@ -1207,7 +1207,7 @@ export default {
                                 margin-top: -3px;
                                 font-size: 1.5em;
                                 font-style: normal;
-                                color: var(--tainacan-gray4);
+                                color: var(--tainacan-info-color);
                             }
                         }
                         .dropdown-menu {

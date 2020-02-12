@@ -38,8 +38,8 @@
             max-height: 240px;
             overflow-y: auto;
             box-shadow: none;
-            background-color: var(--tainacan-background);
-            border: 1px solid var(--tainacan-gray3);
+            background-color: var(--tainacan-background-color);
+            border: 1px solid var(--tainacan-input-border-color);
 
             .dropdown-item {
                 display: block;
@@ -52,9 +52,9 @@
                 label { margin-bottom: 0; }
                 &.control { font-size: 0.8125em !important; }
                 .b-checkbox { width: 100% };
-                &:hover { background-color: var(--tainacan-gray2); }
-                .is-small { color: var(--tainacan-gray4); }
-                &.is-active { background-color: var(--tainacan-turquoise2); }
+                &:hover { background-color: var(--tainacan-input-border-color); }
+                .is-small { color: var(--tainacan-info-color); }
+                &.is-active { background-color: var(--tainacan-primary); }
 
                 .media {
                     align-items: center;
@@ -137,7 +137,7 @@
     }
     .input.has-selected, .input:focus, .input:active {
         background-color: var(--tainacan-input-background-color);
-        border: 1px solid var(--tainacan-gray2) !important;
+        border: 1px solid var(--tainacan-input-border-color) !important;
     }
     .tags {
         margin:  0.17em 0.25em 0.08em 0.25em !important;
@@ -149,7 +149,7 @@
         padding-left: 0.6em;
 
         &.is-delete {
-            color: var(--tainacan-gray4);
+            color: var(--tainacan-info-color);
             &::after {
                 height: 47% !important;
                 width: 1px !important;
@@ -167,7 +167,7 @@
 }
 .selected-list-box {
     padding: 4px 6px 0px 6px;
-    border-color: var(--tainacan-gray2);
+    border-color: var(--tainacan-input-border-color);
     border-width: 0px 1px 1px 1px;
     border-style: solid;
     background-color: var(--tainacan-white);
@@ -183,7 +183,7 @@
         padding-left: 0.5em;
 
         &.is-delete {
-            color: var(--tainacan-gray4);
+            color: var(--tainacan-info-color);
             &::after {
                 height: 30% !important;
                 width: 1px !important;
@@ -284,12 +284,12 @@
 
             &.is-selectable.is-first-hovered,
             &.is-selectable.is-last-hovered {
-                color: var(--tainacan-gray4) !important;
+                color: var(--tainacan-info-color) !important;
                 background-color: var(--tainacan-gray3) !important;
             }
             &.is-today,
             &.is-today:hover {
-                color: var(--tainacan-gray4) !important;
+                color: var(--tainacan-info-color) !important;
                 background-color: var(--tainacan-turquoise1);
             }
             &.is-selected,

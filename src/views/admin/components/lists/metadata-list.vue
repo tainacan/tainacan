@@ -978,7 +978,7 @@ export default {
             h1, h2 {
                 font-size: 20px;
                 font-weight: 500;
-                color: var(--tainacan-gray5);
+                color: var(--tainacan-heading-color);
                 display: inline-block;
                 width: 80%;
                 flex-shrink: 1;

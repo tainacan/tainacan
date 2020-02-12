@@ -386,7 +386,7 @@ export default {
         .children-counter {
             margin-left: 1em;
             margin-right: auto;
-            color: var(--tainacan-gray4);
+            color: var(--tainacan-info-color);
             padding-right: 1em;
             white-space: nowrap;
             overflow: hidden;
@@ -416,7 +416,7 @@ export default {
             }            
         }
         .controls.is-disabled a, .children-dropdown i.is-disabled {
-            color: var(--tainacan-gray4) !important;
+            color: var(--tainacan-info-color) !important;
             cursor: not-allowed !important;
             user-select: none;
         }

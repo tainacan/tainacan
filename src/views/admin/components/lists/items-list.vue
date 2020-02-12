@@ -1302,12 +1302,12 @@ export default {
         display: flex;
 
         .select-all {
-            color: var(--tainacan-gray4);
+            color: var(--tainacan-info-color);
             font-size: 0.875em;
             margin-right: auto;
 
             &:hover {
-                color: var(--tainacan-gray4);
+                color: var(--tainacan-info-color);
             }
         }
     }

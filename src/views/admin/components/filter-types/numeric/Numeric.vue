@@ -182,7 +182,7 @@
                     margin-top: -3px;
                     font-size: 1.25em;
                     font-style: normal;
-                    color: var(--tainacan-gray4);
+                    color: var(--tainacan-info-color);
                 }
             }
         }

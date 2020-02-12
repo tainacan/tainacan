@@ -215,7 +215,7 @@ export default {
             }            
         }
         .controls.is-disabled a {
-            color: var(--tainacan-gray4) !important;
+            color: var(--tainacan-info-color) !important;
             cursor: not-allowed !important;
             user-select: none;
         }

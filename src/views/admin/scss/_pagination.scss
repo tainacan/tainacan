@@ -12,7 +12,7 @@
     margin-bottom: 12px;
     padding-left: 0.75em;
     padding-right: 0.75em;
-    color: var(--tainacan-gray4);
+    color: var(--tainacan-info-color);
 
     @media screen and (max-width: 768px) {
         flex-wrap: wrap;
@@ -63,7 +63,7 @@
                 font-size: 0.85em !important;
                 font-weight: normal !important;
                 margin-bottom: 0;
-                color: var(--tainacan-gray4);
+                color: var(--tainacan-info-color);
             }
         }
         .select {
@@ -97,7 +97,7 @@
         }
 
         a[disabled="disabled"] {
-            color: var(--tainacan-gray4);
+            color: var(--tainacan-info-color);
         }
         .pagination-list {
             flex-wrap: nowrap;
@@ -112,11 +112,11 @@
             box-shadow: none;
         }
         .pagination-link.is-current {
-            color: var(--tainacan-gray4) !important;
+            color: var(--tainacan-info-color) !important;
         }
         .pagination-link::after:not(:last-child) {
             content: ',';
-            color: var(--tainacan-gray4);
+            color: var(--tainacan-info-color);
         }
         .mdi::before {
             display: inline-block;

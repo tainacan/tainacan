@@ -22,7 +22,7 @@
         transition: background-color 0.2s ease;
 
         &:hover {
-            background-color: var(--tainacan-gray2);
+            background-color: var(--tainacan-item-heading-hover-background-color);
         }
 
         .grid-item-checkbox {
@@ -42,7 +42,7 @@
             opacity: 0;
             padding: 3px 8px;
             margin-top: 0px;
-            background-color: var(--tainacan-gray2);
+            background-color: var(--tainacan-item-heading-hover-background-color);
             transition: visibility 0.2s ease, opacity 0.2s ease, height 0.2s ease, margin-top 0.2s ease;
 
             a {
@@ -56,7 +56,7 @@
             opacity: 1.0;
             height: 32px;
             margin-top: -30px;
-            background-color: var(--tainacan-gray2) !important;
+            background-color: var(--tainacan-item-heading-hover-background-color) !important;
 
             a {
                 opacity: 1;
@@ -105,7 +105,7 @@
                 white-space: nowrap; 
                 overflow: hidden;
                 text-align: left;
-                color: var(--tainacan-black);
+                color: var(--tainacan-heading-color);
             }
         } 
     

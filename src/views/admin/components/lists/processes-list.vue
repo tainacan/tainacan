@@ -504,10 +504,10 @@
         height: 40px;
 
         .select-all {
-            color: var(--tainacan-gray4);
+            color: var(--tainacan-info-color);
             font-size: 14px;
             &:hover {
-                color: var(--tainacan-gray4);
+                color: var(--tainacan-info-color);
             }
         }
     }
@@ -553,7 +553,7 @@
             }
             &>span:not(:first-of-type) {
                 margin: 0 0.75em;
-                color: var(--tainacan-gray4);
+                color: var(--tainacan-info-color);
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
@@ -615,7 +615,7 @@
 
             &>span {
                 margin: 0 0.75em;
-                color: var(--tainacan-gray4);
+                color: var(--tainacan-info-color);
 
                 .has-text-weight-bold {
                     color: var(--tainacan-gray5) !important;

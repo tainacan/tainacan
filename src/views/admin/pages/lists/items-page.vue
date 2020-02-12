@@ -1236,7 +1236,7 @@
         h1, h2 {
             font-size: 20px;
             font-weight: 500;
-            color: var(--tainacan-gray5);
+            color: var(--tainacan-heading-color);
             display: inline-block;
             margin-bottom: 0;
         }
@@ -1263,7 +1263,7 @@
         h1, h2 {
             font-size: 20px;
             font-weight: 500;
-            color: var(--tainacan-gray5);
+            color: var(--tainacan-heading-color);
             display: inline-block;
             margin-bottom: 0;
         }
@@ -1353,8 +1353,8 @@
         height: 26px;
         width: 23px;
         border: none;
-        background-color: var(--tainacan-turquoise1);
-        color: var(--tainacan-turquoise5);
+        background-color: var(--tainacan-primary);
+        color: var(--tainacan-secondary);
         padding: 0;
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
@@ -1423,7 +1423,7 @@
             }
 
             .label {
-                color: var(--tainacan-gray5);
+                color: var(--tainacan-label-color);
                 font-size: 0.875em;
                 font-weight: normal;
                 margin-top: 3px;
@@ -1442,13 +1442,13 @@
 
             .gray-icon, 
             .gray-icon .icon {
-                color: var(--tainacan-gray4) !important;
+                color: var(--tainacan-info-color) !important;
                 padding-right: 10px;
             }
             .gray-icon .icon i::before, 
             .gray-icon i::before {
                 font-size: 1.3125em !important;
-                color: var(--tainacan-gray4) !important;
+                color: var(--tainacan-info-color) !important;
                 max-width: 26px;
             }
             
@@ -1501,7 +1501,7 @@
                     .icon {
                         pointer-events: all;
                         cursor: pointer;
-                        color: var(--tainacan-blue5);
+                        color: var(--tainacan-label-color);
                         height: 27px;
                         font-size: 1.125em !important;
                         height: auto !important;
@@ -1514,7 +1514,7 @@
                     top: 100%;
                 }
                 .input {
-                    border: 1px solid var(--tainacan-gray2);
+                    border: 1px solid var(--tainacan-input-border-color);
                     min-height: 30px !important;
                 }
                 a {

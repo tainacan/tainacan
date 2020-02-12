@@ -983,7 +983,7 @@
     }
 
     .warning-no-more-terms {
-        color: var(--tainacan-gray4);
+        color: var(--tainacan-info-color);
         font-size: 0.75em;
         padding: 0.5em;
         text-align: center;

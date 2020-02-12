@@ -68,8 +68,8 @@ $skeleton-color: #eeeeee;
 $skeleton-color-invert: findColorInvert(#eeeeee);
 
 // Maps some of bulma's colors to custom variables
-$primary: $turquoise3;
-$primary-invert: findColorInvert($turquoise3);
+$primary: $turquoise2;
+$primary-invert: findColorInvert($turquoise2);
 $secondary: $turquoise5;
 $secondary-invert: findColorInvert($turquoise5);
 $success: $green2;
@@ -158,13 +158,13 @@ $link-invert: $secondary;
 $link-focus-border: $secondary; 
 
 // Placeholder
-$text-light: var(--tainacan-gray4);
+$text-light: var(--tainacan-info-color);
 
 // Table
-$table-head-cell-color: var(--tainacan-gray4);
+$table-head-cell-color: var(--tainacan-info-color);
 $table-head-cell-border-width: 0 0 1px !important;
 $table-row-active-color: #e5e5e5;
-$table-foot-cell-color: var(--tainacan-gray4);
+$table-foot-cell-color: var(--tainacan-info-color);
 $table-foot-cell-border-width: 1px 0 0 !important;
 $table-cell-padding: 1.0em 0.75em;
 

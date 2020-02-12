@@ -958,7 +958,7 @@ export default {
             font-weight: bold;
             z-index: 99;
             text-align: center;
-            color: var(--tainacan-gray4);
+            color: var(--tainacan-info-color);
             
             @media screen and (max-width: 1024px) {
                 font-size: 1.2em;
@@ -992,7 +992,7 @@ export default {
             font-weight: bold;
             z-index: 99;
             text-align: center;
-            color: var(--tainacan-gray4);
+            color: var(--tainacan-info-color);
             top: 70px;
             max-width: 90px;
         }

@@ -543,7 +543,7 @@
     }
     .updated-at {
         margin: 0 1em 0 auto;
-        color: var(--tainacan-gray4);
+        color: var(--tainacan-info-color);
         font-style: italic;
     }
 </style>

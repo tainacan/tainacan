@@ -324,7 +324,7 @@
     .no-options-placeholder {
         margin-left: 0.5em;
         font-size: 0.75em;
-        color: var(--tainacan-gray4);
+        color: var(--tainacan-info-color);
     }
 
     .b-checkbox .control-label {

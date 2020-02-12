@@ -450,6 +450,7 @@
 
     h3 {
         font-size: 1em;
+        color: var(--tainacan-heading-color);
     }
 
     .collapse-all {
@@ -461,7 +462,7 @@
         margin-bottom: 64px;
     }
     .collection-name {
-        color: var(--tainacan-gray5);
+        color: var(--tainacan-heading-color);
         font-size: 0.875em;
         font-weight: 500;
         margin-bottom: 0.875em;

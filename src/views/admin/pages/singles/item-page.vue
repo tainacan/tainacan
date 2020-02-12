@@ -441,7 +441,7 @@
             h1, h2 {
                 font-size: 20px;
                 font-weight: 500;
-                color: var(--tainacan-gray5);
+                color: var(--tainacan-heading-color);
                 display: inline-block;
                 width: 80%;
                 flex-shrink: 1;
@@ -625,7 +625,7 @@
             font-weight: bold;
             z-index: 99;
             text-align: center;
-            color: var(--tainacan-gray4);
+            color: var(--tainacan-info-color);
             top: 70px;
             max-width: 90px;
         }

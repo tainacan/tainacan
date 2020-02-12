@@ -23,7 +23,7 @@
         transition: background-color 0.2s ease;
 
         &:hover {
-            background-color: var(--tainacan-gray2);
+            background-color: var(--tainacan-item-heading-hover-background-color);
         }
 
         .masonry-item-checkbox {
@@ -44,7 +44,7 @@
             padding: 2px 8px;
             transition: visibility 0.2s, opacity 0.2s;
             margin-top: 0px;
-            background-color: var(--tainacan-gray2);
+            background-color: var(--tainacan-item-heading-hover-background-color);
             transition: visibility 0.2s ease, opacity 0.2s ease, height 0.2s ease, margin-top 0.2s ease;
 
             a {
@@ -58,7 +58,7 @@
             opacity: 1.0;
             height: 32px;
             margin-top: -30px;
-            background-color: var(--tainacan-gray2) !important;
+            background-color: var(--tainacan-item-heading-hover-background-color) !important;
 
             a {
                 opacity: 1;
@@ -109,7 +109,7 @@
 
             p { 
                 font-size: 0.875em !important;
-                color: var(--tainacan-black) !important; 
+                color: var(--tainacan-heading-color) !important; 
                 text-align: left !important;
                 margin-bottom: 0 !important;
                 word-break: break-word;

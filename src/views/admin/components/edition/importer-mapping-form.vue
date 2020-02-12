@@ -698,7 +698,7 @@ export default {
     }
 
     .mapping-header-label {
-        color: var(--tainacan-gray4);
+        color: var(--tainacan-info-color);
         margin: 12px 0 6px 0;
     }
 
