@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Buefy from 'buefy';
 import VTooltip from 'v-tooltip';
 import VueMasonry from 'vue-masonry-css';
+import cssVars from 'css-vars-ponyfill';
 
 // Filters
 import FilterNumeric from '../../admin/components/filter-types/numeric/Numeric.vue';
@@ -140,6 +141,11 @@ export const ThemeItemsListing =  new Vue({
             this.showFullscreenWithViewModes = this.$el.attributes['show-fullscreen-with-view-modes'].value;
     },
     render: h => h(ThemeSearch)
+});
+
+// Initialize Ponyfill for Custom CSS properties
+cssVars({
+// Options...
 });
 
 // Display Icons only once everything is loaded

@@ -9,6 +9,7 @@ import VTooltip from 'v-tooltip';
 import VueMasonry from 'vue-masonry-css';
 import draggable from 'vuedraggable';
 import VueTheMask from 'vue-the-mask';
+import cssVars from 'css-vars-ponyfill';
 
 // Metadata Types
 import Text from '../components/metadata-types/text/Text.vue';
@@ -149,4 +150,9 @@ listen("load", window, function() {
     iconsStyle.setAttribute('type', 'text/css');
     iconsStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }';
     document.head.appendChild(iconsStyle);
+});
+
+// Initialize Ponyfill for Custom CSS properties
+cssVars({
+// Options...
 });
