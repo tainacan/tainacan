@@ -215,6 +215,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getCollectionActivitiesPath(collectionId) {
             return '/collections/'+ collectionId + '/activities/';
         },
+        getCollectionCapabilitiesPath(collectionId) {
+            return '/collections/'+ collectionId + '/capabilities/';
+        },
         getItemsPath(query) {
             return '/items/?' + qs.stringify(query);
         },
@@ -229,6 +232,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         },
         getActivitiesPath(query) {
             return '/activities/?' + qs.stringify(query);
+        },
+        getCapabilitiesPath() {
+            return '/capabilities';
         },
         getAvailableImportersPath() {
             return '/importers';
@@ -341,10 +347,7 @@ UserCapabilitiesPlugin.install = function (Vue, options = {}) {
     
     Vue.prototype.$userCaps = {
         hasCapability(key) {
-            for (let i = 0; i < tainacan_plugin.user_caps.length; i++)
-                if (tainacan_plugin.user_caps[i] == key)
-                    return true;
-            return false;
+            return tainacan_plugin.user_caps[key];
         }
     }
 };
@@ -357,7 +360,7 @@ StatusHelperPlugin.install = function (Vue, options = {}) {
     Vue.prototype.$statusHelper = {
         statuses: [
             { name: tainacan_plugin.i18n['status_publish'], slug: 'publish' },
-            // { name: tainacan_plugin.i18n['status_private'], slug: 'private' },
+            { name: tainacan_plugin.i18n['status_private'], slug: 'private' },
             { name: tainacan_plugin.i18n['status_draft'], slug: 'draft' },
             { name: tainacan_plugin.i18n['status_trash'], slug: 'trash' }
         ],
@@ -385,14 +388,15 @@ StatusHelperPlugin.install = function (Vue, options = {}) {
                         if (loadedStatus['publish'] != undefined)
                             this.statuses.push(loadedStatus['publish']);
                         
-                        if (loadedStatus['private'] != undefined)
-                            this.statuses.push(loadedStatus['private']);
-                        
                         this.statuses.concat(Object.values(loadedStatus).filter((status) => {
                             return !['publish','private', 'draft', 'trash'].includes(status.slug); 
                         }));
 
-                        // We always show draft and trash
+                        // We always show private, draft and trash
+                        this.statuses.push({
+                            name: tainacan_plugin.i18n['status_private'],
+                            slug: 'private'
+                        });
                         this.statuses.push({
                             name: tainacan_plugin.i18n['status_draft'],
                             slug: 'draft'
@@ -405,6 +409,23 @@ StatusHelperPlugin.install = function (Vue, options = {}) {
                     .catch(error => {
                         console.error( error );
                     });
+        }
+    }
+
+};
+
+
+// COMMENTS STATUS PLUGIN - 
+export const CommentsStatusHelperPlugin = {};
+CommentsStatusHelperPlugin.install = function (Vue, options = {}) {
+    
+    Vue.prototype.$commentsStatusHelper = {
+        statuses: [
+            { name: tainacan_plugin.i18n['comments_status_open'], slug: 'open' },
+            { name: tainacan_plugin.i18n['comments_status_closed'], slug: 'closed' }
+        ],
+        getStatuses() {
+            return  this.statuses;
         }
     }
 

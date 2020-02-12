@@ -219,13 +219,13 @@ export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId,
     commit('cleanAttachments');
     commit('setTotalAttachments', null);
 
-    let endpoint = '/media/?parent=' + itemId + '&per_page=' + attachmentsPerPage + '&page=' + page;
+    let endpoint = '/items/' + itemId + '/attachments?perpage=' + attachmentsPerPage + '&paged=' + page;
 
     if (documentId)
         endpoint += '&exclude=' + documentId;
 
     return new Promise((resolve, reject) => {
-        axios.wp.get(endpoint)
+        axios.tainacan.get(endpoint)
         .then(res => {
             let attachments = res.data;
             let total =  res.headers['x-wp-total'];

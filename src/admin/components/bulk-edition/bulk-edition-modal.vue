@@ -43,6 +43,12 @@
                                     value="status">
                                 {{ $i18n.get('label_status') }}
                             </option>
+                            <option
+                                    :key="index"
+                                    v-if="index === Object.keys(metadata).length-1"
+                                    value="comments">
+                                {{ $i18n.get('label_allow_comments') }}
+                            </option>
                         </template>
                     </b-select>
 
@@ -55,22 +61,12 @@
                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                             :placeholder="$i18n.get('instruction_select_a_action')"
                             @input="addToBulkEditionProcedures($event, 'action', criterion)">
-                        <template v-if="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).multiple == 'yes'">
-                            <option
-                                    v-for="(edtAct, key) in editionActionsForMultiple"
-                                    :value="edtAct"
-                                    :key="key">
-                                {{ edtAct }}
-                            </option>
-                        </template>
-                        <template v-else>
-                            <option
-                                    v-for="(edtAct, key) in editionActionsForNotMultiple"
-                                    :value="edtAct"
-                                    :key="key">
-                                {{ edtAct }}
-                            </option>
-                        </template>
+                        <option
+                                v-for="(edtAct, key) in getValidEditionActions(bulkEditionProcedures[criterion].metadatumID)"
+                                :value="edtAct"
+                                :key="key">
+                            {{ edtAct }}
+                        </option>
                     </b-select>
 
                     <!-- DISABLED FIELD -->
@@ -80,20 +76,17 @@
                             type="text"
                             disabled />
 
-                    <!-- Replace or Redefine in case of multiple -->
+                    <!-- Replace -->
                     <template
                             v-if="bulkEditionProcedures[criterion] &&
-                             bulkEditionProcedures[criterion].metadatumID &&
-                             (bulkEditionProcedures[criterion].action == editionActionsForMultiple.replace ||
-                             (bulkEditionProcedures[criterion].action == editionActionsForMultiple.redefine &&
-                              getMetadataByID(bulkEditionProcedures[criterion].metadatumID).multiple == 'yes'))">
+                                bulkEditionProcedures[criterion].metadatumID &&
+                                bulkEditionProcedures[criterion].action == editionActionsForMultiple.replace">
 
                         <component
                                 :forced-component-type="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
-                                 .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                    .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
                                 :allow-new="false"
-                                :allow-select-to-create="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
-                                 .metadata_type_options.allow_new_terms === 'yes'"
+                                :allow-select-to-create="false"
                                 :maxtags="1"
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
@@ -109,11 +102,18 @@
                             </small>
                         </div>
 
-                        <b-input
+                        <component
+                                :forced-component-type="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
+                                    .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                :allow-new="false"
+                                :allow-select-to-create="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
+                                    .metadata_type_options.allow_new_terms === 'yes'"
+                                :maxtags="1"
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
+                                :is="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component"
+                                :metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID)}"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
-                                type="text"
                                 @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
                         />
                     </template>
@@ -139,8 +139,27 @@
 
                     <template
                             v-else-if="bulkEditionProcedures[criterion] &&
+                             bulkEditionProcedures[criterion].metadatumID == 'comments'">
+                        <b-select
+                                :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': bulkEditionProcedures[criterion].isDone}"
+                                :disabled="bulkEditionProcedures[criterion].isDone"
+                                class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
+                                :placeholder="$i18n.get('instruction_select_a_comments_status')"
+                                @input="addToBulkEditionProcedures($event, 'newValue', criterion)">
+                            <option
+                                    v-for="(statusOption, index) of $commentsStatusHelper.getStatuses()"
+                                    :key="index"
+                                    :value="statusOption.slug">
+                                {{ statusOption.name }}
+                            </option>
+                        </b-select>
+                    </template>
+
+                    <template
+                            v-else-if="bulkEditionProcedures[criterion] &&
                              bulkEditionProcedures[criterion].metadatumID &&
-                             bulkEditionProcedures[criterion].action">
+                             bulkEditionProcedures[criterion].action &&
+                             bulkEditionProcedures[criterion].action != editionActionsForMultiple.clear">
                         <component
                                 :forced-component-type="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
                                  .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
@@ -156,15 +175,6 @@
                                 @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
                         />
                     </template>
-
-                    <!-- DISABLED FIELD -->
-                    <!--<template v-else>-->
-                        <!--<input-->
-                                <!--style="border: none !important; background-color: white !important;"-->
-                                <!--class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"-->
-                                <!--type="text"-->
-                                <!--disabled >-->
-                    <!--</template>-->
 
                     <div
                             :style="{
@@ -188,7 +198,7 @@
                         </button>
 
                         <div
-                                v-if="bulkEditionProcedures[criterion].isDone && bulkEditionProcedures[criterion].actionResult >= totalItems"
+                                v-if="bulkEditionProcedures[criterion].isDone"
                                 @mouseover="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
                                 class="is-pulled-right">
                             <b-tooltip
@@ -198,62 +208,18 @@
                                     size="is-small"
                                     position="is-left"
                                     animated
-                                    multilined
-                                    :label="bulkEditionProcedures[criterion].actionResult.constructor.name !== 'Object' && bulkEditionProcedures[criterion].actionResult === 1 ? `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_item_affected')}` : `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_items_affected')}`">
+                                    :label="$i18n.get('info_bulk_edition_process_added')">
                                 <span class="icon">
                                     <i class="has-text-success tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle"/>
                                 </span>
                             </b-tooltip>
                         </div>
 
-                        <div
-                                v-if="bulkEditionProcedures[criterion].isDone && bulkEditionProcedures[criterion].actionResult < totalItems"
-                                @mouseover="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
-                                class="is-pulled-right">
-                            <b-tooltip
-                                    :active="bulkEditionProcedures[criterion].tooltipShow"
-                                    always
-                                    class="is-yellow2"
-                                    size="is-small"
-                                    position="is-left"
-                                    animated
-                                    multilined
-                                    :label="bulkEditionProcedures[criterion].actionResult.constructor.name !== 'Object' && bulkEditionProcedures[criterion].actionResult === 1 ? `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_item_affected')}` : `${bulkEditionProcedures[criterion].actionResult} ${$i18n.get('info_items_affected')}`">
-                                <span class="icon">
-                                    <i class="has-text-yello2 tainacan-icon tainacan-icon-20px tainacan-icon-alertcircle"/>
-                                </span>
-                            </b-tooltip>
-                        </div>
-
                         <button
                                 :disabled="!groupID"
-                                v-if="bulkEditionProcedures[criterion].isDoneWithError &&
-                                 !bulkEditionProcedures[criterion].isExecuting"
-                                @click="executeBulkEditionProcedure(criterion)"
-                                @mousedown="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
-                                @mouseup="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
-                                class="button is-white is-pulled-right">
-                            <b-tooltip
-                                    :active="bulkEditionProcedures[criterion].tooltipShow"
-                                    always
-                                    class="is-red2"
-                                    size="is-small"
-                                    position="is-bottom"
-                                    animated
-                                    multilined
-                                    :label="bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' ? (bulkEditionProcedures[criterion].actionResult.error_message ? bulkEditionProcedures[criterion].actionResult.error_message : bulkEditionProcedures[criterion].actionResult.message) : ''">
-                                <span class="icon">
-                                    <i class="has-text-danger tainacan-icon tainacan-icon-20px tainacan-icon-processerror"/>
-                                </span>
-                            </b-tooltip>
-                        </button>
-
-                        <button
-                                :disabled="!groupID"
-                                v-if="!bulkEditionProcedures[criterion].isDoneWithError &&
-                                !bulkEditionProcedures[criterion].isDone &&
-                                 !bulkEditionProcedures[criterion].isExecuting &&
-                                   bulkEditionProcedures[criterion].metadatumID &&
+                                v-if="!bulkEditionProcedures[criterion].isDone &&
+                                    !bulkEditionProcedures[criterion].isExecuting &&
+                                    bulkEditionProcedures[criterion].metadatumID &&
                                     bulkEditionProcedures[criterion].action"
                                 @click="executeBulkEditionProcedure(criterion)"
                                 class="button is-white is-pulled-right">
@@ -276,8 +242,16 @@
                         </div>
                     </div>
                 </div>
+                <a 
+                        :disabled="dones.every((item) => item === true) === false"
+                        @click="addEditionCriterion()"
+                        class="has-text-right is-block add-link">
+                    <span class="icon is-small">
+                        <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                    </span>
+                    &nbsp;{{ $i18n.get('new_action') }}
+                </a>
             </div>
-            <!--<pre>{{ bulkEditionProcedures }}</pre>-->
 
             <footer class="field is-grouped form-submit">
                 <p class="control">
@@ -292,16 +266,10 @@
                 </p>
                 <p class="control">
                     <button
-                            class="button is-turquoise5"
-                            :disabled="dones.every((item) => item === true) === false"
-                            @click="addEditionCriterion()">
-                            {{ $i18n.get('new_action') }}
-                    </button>
-                    <button
                             :disabled="dones.every((item) => item === true) === false"
                             class="button is-success"
                             type="button"
-                            @click="$eventBusSearch.loadItems(); $parent.close();">
+                            @click="$root.$emit('openProcessesPopup'); $eventBusSearch.loadItems(); $parent.close();">
                         {{ $i18n.get('finish') }}
                     </button>
                 </p>
@@ -320,7 +288,7 @@
             totalItems: Array,
             objectType: String,
             selectedForBulk: Object,
-            collectionID: Number,
+            collectionID: Number
         },
         created(){
             if (this.collectionID){
@@ -376,18 +344,18 @@
                 editionActionsForMultiple: {
                     add: this.$i18n.get('add_value'),
                     redefine: this.$i18n.get('set_new_value'),
-                    remove: this.$i18n.get('remove_value'),
-                    replace: this.$i18n.get('replace_value')
+                    replace: this.$i18n.get('replace_value'),
+                    remove: this.$i18n.get('remove_a_value'),
+                    clear: this.$i18n.get('clear_values')
                 },
                 editionActionsForNotMultiple: {
-                    redefine: this.$i18n.get('set_new_value')
+                    redefine: this.$i18n.get('set_new_value'),
+                    clear: this.$i18n.get('clear_values')
                 },
                 bulkEditionProcedures: {
                     1: {
                         isDone: false,
-                        isDoneWithError: false,
                         isExecuting: false,
-                        actionResult: '',
                         totalItemsEditedWithSuccess: 0,
                         tooltipShow: true,
                     }
@@ -400,16 +368,17 @@
         },
         methods: {
             ...mapGetters('bulkedition', [
-                'getGroupID',
-                'getActionResult'
+                'getGroupID'
             ]),
             ...mapActions('bulkedition', [
                 'createEditGroup',
                 'setValueInBulk',
+                'clearValuesInBulk',
                 'addValueInBulk',
                 'replaceValueInBulk',
                 'redefineValueInBulk',
                 'setStatusInBulk',
+                'setCommentStatusInBulk',
                 'removeValueInBulk'
             ]),
             ...mapActions('metadata', [
@@ -419,22 +388,10 @@
                 'getMetadata'
             ]),
             finalizeProcedure(criterion){
-                this.$set(this.bulkEditionProcedures[criterion], 'actionResult', this.getActionResult());
 
                 let withError = false;
 
-                if(this.bulkEditionProcedures[criterion].actionResult.constructor.name === 'Object' &&
-                    (this.bulkEditionProcedures[criterion].actionResult.data &&
-                        this.bulkEditionProcedures[criterion].actionResult.data.status.toString().split('')[0] != 2) ||
-                    this.bulkEditionProcedures[criterion].actionResult.error_message) {
-
-                    withError = true;
-                } else {
-                    this.$set(this.bulkEditionProcedures[criterion], 'totalItemsEditedWithSuccess', this.actionResult);
-                }
-
-                this.$set(this.bulkEditionProcedures[criterion], 'isDone', !withError);
-                this.$set(this.bulkEditionProcedures[criterion], 'isDoneWithError', withError);
+                this.$set(this.bulkEditionProcedures[criterion], 'isDone', true);
 
                 let index = this.editionCriteria.indexOf(criterion);
 
@@ -445,11 +402,19 @@
             executeBulkEditionProcedure(criterion){
                 let procedure = this.bulkEditionProcedures[criterion];
 
-                if(procedure.action === this.editionActionsForMultiple.redefine){
+                if (procedure.action === this.editionActionsForMultiple.redefine) {
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
 
-                    if(procedure.metadatumID === 'status'){
+                    if (procedure.metadatumID === 'status'){
                         this.setStatusInBulk({
+                            collectionID: this.collectionID,
+                            groupID: this.groupID,
+                            bodyParams: { value: procedure.newValue }
+                        }).then(() => {
+                            this.finalizeProcedure(criterion);
+                        });
+                    } if(procedure.metadatumID === 'comments'){
+                        this.setCommentStatusInBulk({
                             collectionID: this.collectionID,
                             groupID: this.groupID,
                             bodyParams: { value: procedure.newValue }
@@ -468,7 +433,7 @@
                             this.finalizeProcedure(criterion);
                         });
                     }
-                } else if(procedure.action === this.editionActionsForMultiple.add){
+                } else if (procedure.action === this.editionActionsForMultiple.add) {
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
 
                     this.addValueInBulk({
@@ -481,7 +446,7 @@
                     }).then(() => {
                         this.finalizeProcedure(criterion);
                     });
-                } else if(procedure.action === this.editionActionsForMultiple.replace){
+                } else if (procedure.action === this.editionActionsForMultiple.replace) {
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
 
                     this.replaceValueInBulk({
@@ -495,7 +460,7 @@
                     }).then(() => {
                         this.finalizeProcedure(criterion);
                     });
-                } else if(procedure.action === this.editionActionsForMultiple.remove){
+                } else if (procedure.action === this.editionActionsForMultiple.remove) {
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
 
                     this.removeValueInBulk({
@@ -504,6 +469,18 @@
                         bodyParams: {
                             metadatum_id: procedure.metadatumID,
                             value: procedure.newValue,
+                        }
+                    }).then(() => {
+                        this.finalizeProcedure(criterion);
+                    });
+                } else if (procedure.action === this.editionActionsForMultiple.clear) {
+                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+
+                    this.clearValuesInBulk({
+                        collectionID: this.collectionID,
+                        groupID: this.groupID,
+                        bodyParams: {
+                            metadatum_id: procedure.metadatumID
                         }
                     }).then(() => {
                         this.finalizeProcedure(criterion);
@@ -523,9 +500,7 @@
                     this.bulkEditionProcedures = Object.assign({}, this.bulkEditionProcedures, {
                         [`${aleatoryKey}`]: {
                             isDone: false,
-                            isDoneWithError: false,
                             isExecuting: false,
-                            actionResult: '',
                             totalItemsEditedWithSuccess: 0,
                             tooltipShow: true,
                         }
@@ -547,6 +522,17 @@
                     this.dones.splice(criterionIndex, 1)
                 }
             },
+            getValidEditionActions(metadatumID) {
+                const isMultiple = this.getMetadataByID(metadatumID).multiple == 'yes';
+                let validEditionActions = {};
+
+                for (let [actionKey, action] of Object.entries(isMultiple ? this.editionActionsForMultiple : this.editionActionsForNotMultiple)) {
+                    if ((metadatumID != 'status' && metadatumID != 'comments') || actionKey != 'clear')
+                        validEditionActions[actionKey] = action;
+                }
+
+                return validEditionActions;
+            },
             getMetadataByID(id){
                 let found = this.metadata.find((element) => {
                     return element.id == id;
@@ -555,19 +541,10 @@
                 return found ? found : {};
             },
             addToBulkEditionProcedures(value, key, criterion){
-
-                if(Array.isArray(value)){
+                if (Array.isArray(value))
                     value = value[0];
-                }
 
                 this.$set(this.bulkEditionProcedures[criterion], `${key}`, value);
-                
-                if (key == 'metadatumID') {
-                    if (this.getMetadataByID(this.bulkEditionProcedures[criterion].metadatumID).multiple != 'yes') {
-                        let value = Object.values(this.editionActionsForNotMultiple)[0];
-                        this.addToBulkEditionProcedures(value, 'action', criterion);
-                    }
-                }
             }
         },
         beforeDestroy() {
@@ -603,7 +580,7 @@
     }
 
     .this-tainacan-modal-content .form-submit {
-        padding: 160px 0 0.4em 0 !important;
+        padding: 42px 0 0.4em 0 !important;
     }
 
     .no-overflow-modal-card-body {
@@ -698,6 +675,7 @@
                 border: none !important;
                 background-color: white !important;
                 min-height: auto !important;
+                line-height: 1.5rem;
             }
 
             .select {

@@ -1,6 +1,6 @@
 <?php
 
-/** 
+/**
  * @author: MediaLab-UFG(Vinicius Nunes).
  * Term Importer
  *
@@ -36,7 +36,7 @@ class Term_Importer extends Importer {
 			'new_taxonomy' => ''
 		]);
 	}
-	
+
 	public function options_form() {
 		ob_start();
 		?>
@@ -55,7 +55,7 @@ class Term_Importer extends Importer {
 						<div class="help-tooltip-body">
 							<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
 						</div>
-					</div> 
+					</div>
 				</span>
 				<div class="control is-clearfix">
 					<input class="input" type="text" name="delimiter" value="<?php echo $this->get_option('delimiter'); ?>">
@@ -78,7 +78,7 @@ class Term_Importer extends Importer {
 							<p><?php _e('Inform the taxonomy you want to import the terms to.', 'tainacan'); ?></p>
 							<p><?php _e('Select an existing taxonomy or create a new one on the fly.', 'tainacan'); ?></p>
 						</div>
-					</div> 
+					</div>
 				</span>
 				<div class="control is-clearfix">
 					<div class="select">
@@ -94,25 +94,25 @@ class Term_Importer extends Importer {
 							}
 						?>
 						</select>
-						
+
 					</div>
-					
+
 					<input class="input new_taxonomy" type="text" name="new_taxonomy" value="<?php echo $this->get_option('new_taxonomy'); ?>" placeholder="<?php _e('New taxonomy name', 'tainacan'); ?>" >
-					
+
 				</div>
 
 			</div>
-			
+
 		<?php
 		return ob_get_clean();
 	}
-	
+
 	public function process_item($index, $collection_definition) {
 	 	return true;
 	}
 
 	public function create_terms( ) {
-		
+
 		if (($handle = fopen($this->tmp_file, "r")) !== false) {
 			$file = $handle;
 			$this->set_current_step_total( filesize($this->tmp_file) );
@@ -126,7 +126,14 @@ class Term_Importer extends Importer {
 		$position 	= $this->get_transient('position')     == null ? 0: $this->get_transient('position');
 		$last_term 	= $this->get_transient('last_term')    == null ? 0: $this->get_transient('last_term');
 		$id_taxonomy= $this->get_transient('new_taxonomy');
-		
+
+		$taxonomy = \tainacan_taxonomies()->fetch( (int) $id_taxonomy );
+		if ( $taxonomy instanceof Entities\Taxonomy && ! $taxonomy->can_edit() ) {
+			$this->add_error_log("You don't have permission to add terms to this taxonomy");
+			$this->abort();
+			return false;
+		}
+
 		$position_file = $this->get_in_step_count();
 		fseek($file, $position_file);
 		if (($values =  fgetcsv($file, 0, $this->get_option('delimiter'), '"')) !== FALSE) {
@@ -144,16 +151,16 @@ class Term_Importer extends Importer {
 				$this->abort();
 				return false;
 			}
-			
+
 			$term = new \Tainacan\Entities\Term();
 			$term->set_name($values[$position]);
 			$term->set_description($values[$position+1]);
 			$term->set_taxonomy($id_taxonomy);
-			
+
 			$term_repo = \Tainacan\Repositories\Terms::get_instance();
 			if(end($parent))
 				$term->set_parent(end($parent));
-		
+
 			if ($term->validate()) {
 				$term_insert = $term_repo->insert($term);
 				$last_term = $term_insert->get_id();
@@ -179,19 +186,22 @@ class Term_Importer extends Importer {
 			$this->add_transient('new_taxonomy',  $this->get_option('select_taxonomy'));
 			return false;
 		}
-		
+
 		if ( $this->get_option('select_taxonomy') == '' && $this->get_option('new_taxonomy') == '' ) {
 			$this->abort();
 			$this->add_error_log('No taxonomy selected');
 			return false;
 		}
-		
+
 		$tax1 = new Entities\Taxonomy();
 		$tax1->set_name($this->get_option('new_taxonomy'));
 		$tax1->set_allow_insert('yes');
 		$tax1->set_status('publish');
-		
-		if ($tax1->validate()) {
+
+		if ( ! $tax1->get_capabilities()->edit_posts ) {
+			$this->add_error_log('Error creating taxonomy. Permission denied');
+			$this->abort();
+		} elseif ($tax1->validate()) {
 			$tax_repo = \Tainacan\Repositories\Taxonomies::get_instance();
 			$tax1 = $tax_repo->insert($tax1);
 			$name = $tax1->get_name();

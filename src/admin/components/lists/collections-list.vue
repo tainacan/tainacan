@@ -2,7 +2,9 @@
     <div 
             v-if="collections.length > 0 && !isLoading"
             class="table-container">
-        <div class="selection-control">
+        <div 
+                v-if="$userCaps.hasCapability('tnc_rep_delete_collections')"
+                class="selection-control">
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox 
@@ -13,7 +15,6 @@
             <div class="field is-pulled-right">
                 <b-dropdown
                         position="is-bottom-left"
-                        v-if="$userCaps.hasCapability('delete_tainacan-collections')"
                         :disabled="!isSelectingCollections"
                         id="bulk-actions-dropdown"
                         aria-role="list"
@@ -74,22 +75,21 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="goToCollectionEditPage(contextMenuCollection)"
-                            v-if="contextMenuCollection != null">
+                            v-if="contextMenuCollection != null && (collections[contextMenuIndex] && collections[contextMenuIndex].current_user_can_edit)">
                         {{ $i18n.getFrom('collections', 'edit_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="deleteOneCollection(contextMenuCollection)"
-                            v-if="contextMenuCollection != null">
+                            v-if="contextMenuCollection != null && (collections[contextMenuIndex] && collections[contextMenuIndex].current_user_can_delete)">
                         {{ $i18n.get('label_delete_collection') }}
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
-
             <table class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Checking list -->
-                        <th>
+                        <th v-if="$userCaps.hasCapability('tnc_rep_delete_collections')">
                             &nbsp;
                             <!-- nothing to show on header -->
                         </th>
@@ -117,7 +117,9 @@
                         <th v-if="!isOnTrash">
                             <div class="th-wrap total-items-header">{{ $i18n.get('label_total_items') }}</div>
                         </th>
-                        <th class="actions-header">
+                        <th 
+                                v-if="collections.findIndex((collection) => collection.current_user_can_edit || collection.current_user_can_delete) >= 0"
+                                class="actions-header">
                             &nbsp;
                             <!-- nothing to show on header for actions cell-->
                         </th>
@@ -130,6 +132,7 @@
                             v-for="(collection, index) of collections">
                         <!-- Checking list -->
                         <td 
+                                v-if="$userCaps.hasCapability('tnc_rep_delete_collections')"
                                 :class="{ 'is-selecting': isSelectingCollections }"
                                 class="checkbox-cell">
                             <b-checkbox 
@@ -253,8 +256,10 @@
                         </td>
                         <!-- Actions -->
                         <td  
+                                v-if="collection.current_user_can_edit || collection.current_user_can_delete"
                                 @click="onClickCollection($event, collection.id, index)"
-                                class="actions-cell column-default-width" 
+                                class="column-default-width"
+                                :class="{ 'actions-cell': collection.current_user_can_edit || collection.current_user_can_delete }"  
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
                                 <a 

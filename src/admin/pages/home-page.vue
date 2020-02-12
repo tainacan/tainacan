@@ -44,7 +44,7 @@
                             <span class="menu-text">{{ $i18n.get('label_all_published_items') }}</span>
                         </router-link>
                     </li> -->
-                    <li>
+                    <li v-if="$userCaps.hasCapability('tnc_rep_edit_metadata')">
                         <router-link
                                 tag="a"
                                 to="/metadata">
@@ -54,7 +54,7 @@
                             <span class="menu-text">{{ $i18n.get('title_repository_metadata_page' ) }}</span>
                         </router-link>
                     </li>
-                    <li>
+                    <li v-if="$userCaps.hasCapability('tnc_rep_edit_filters')">
                         <router-link
                                 tag="a"
                                 to="/filters">

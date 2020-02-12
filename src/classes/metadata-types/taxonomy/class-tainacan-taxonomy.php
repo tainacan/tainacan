@@ -18,7 +18,7 @@ class Taxonomy extends Metadata_Type {
         parent::__construct();
         $this->set_primitive_type('term');
         $this->set_repository( \Tainacan\Repositories\Terms::get_instance() );
-        
+
         $this->set_default_options([
             'allow_new_terms' => 'no'
         ]);
@@ -30,44 +30,44 @@ class Taxonomy extends Metadata_Type {
 		$this->set_preview_template('
 			<div>
 				<div>
-					<p class="has-text-gray">'. __('Selected terms') . ': </p> 
+					<p class="has-text-gray">'. __('Selected terms') . ': </p>
 					<div class="field selected-tags is-grouped-multiline is-grouped">
 						<div>
 							<div class="tags has-addons">
-								<span class="tag"><span>'. __('Term') . ' 2</span></span> 
+								<span class="tag"><span>'. __('Term') . ' 2</span></span>
 								<a class="tag is-delete"></a>
 							</div>
 						</div>
 						<div>
 							<div class="tags has-addons">
-								<span class="tag"><span>'. __('Term') . ' 3</span></span> 
+								<span class="tag"><span>'. __('Term') . ' 3</span></span>
 								<a class="tag is-delete"></a>
 							</div>
 						</div>
-					</div> 
+					</div>
 					<div>
 						<label class="b-checkbox checkbox" border="" style="padding-left: 8px;">
 							<input type="checkbox" value="option1">
 							<span class="check"></span>
 							<span class="control-label">'. __('Term') . ' 1</span>
-						</label> 
+						</label>
 						<br>
 					</div>
 					<div>
 						<label class="b-checkbox checkbox" border="" style="padding-left: 8px;">
 							<input type="checkbox" checked value="option2">
-							<span class="check"></span> 
+							<span class="check"></span>
 							<span class="control-label">'. __('Term') . ' 2</span>
-						</label> 
+						</label>
 					</div>
 					<div>
 						<label class="b-checkbox checkbox" border="" style="padding-left: 8px;">
 							<input type="checkbox" checked value="option3">
-							<span class="check"></span> 
+							<span class="check"></span>
 							<span class="control-label">'. __('Term') . ' 3</span>
-						</label> 
+						</label>
 					</div>
-				</div> 
+				</div>
 				<a class="add-new-term">'. __('View all') . '</a>
 			</div>
 		');
@@ -100,25 +100,25 @@ class Taxonomy extends Metadata_Type {
 
     public function render( $itemMetadata ){
         $options = ( isset( $this->get_options()['options'] ) ) ? $this->get_options()['options'] : '';
-        return '<tainacan-selectbox    
+        return '<tainacan-selectbox
                                        options="' . $options . '"
-                                       metadatum_id ="'.$itemMetadata->get_metadatum()->get_id().'" 
-                                       item_id="'.$itemMetadata->get_item()->get_id().'"    
+                                       metadatum_id ="'.$itemMetadata->get_metadatum()->get_id().'"
+                                       item_id="'.$itemMetadata->get_item()->get_id().'"
                                        value=\''.json_encode( $itemMetadata->get_value() ).'\'
                                        name="'.$itemMetadata->get_metadatum()->get_name().'"></tainacan-selectbox>';
     }
-	
+
 	public function validate_options( Metadatum $metadatum) {
-		
+
 		if ( !in_array($metadatum->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
             return true;
-		
+
 		if (empty($this->get_option('taxonomy_id')))
 			return ['taxonomy_id' => __('Please select a taxonomy', 'tainacan')];
-		
+
 		$Tainacan_Metadata = Metadata::get_instance();
-		
-		// Check taxonomy visibility 
+
+		// Check taxonomy visibility
 		$status = get_post_status( $this->get_option('taxonomy_id') );
 		$post_status_obj = get_post_status_object($status);
 		if ( ! $post_status_obj->public ) {
@@ -127,12 +127,21 @@ class Taxonomy extends Metadata_Type {
 				return ['taxonomy_id' => __('This metadatum can not be public because chosen taxonomy is not.', 'tainacan')];
 			}
 		}
-		
+
+		if ( $this->get_option('allow_new_terms') == 'yes' ) {
+			$taxonomy = \tainacan_taxonomies()->fetch( (int) $this->get_option('taxonomy_id') );
+			if ( $taxonomy instanceof \Tainacan\Entities\Taxonomy ) {
+				if ( $taxonomy->get_allow_insert() != 'yes' ) {
+					return ['allow_new_terms' => __('This metadatum can not allow new terms to be created because the chosen taxonomy does not allow it.', 'tainacan')];
+				}
+			}
+		}
+
 		$taxonomy_metadata = $Tainacan_Metadata->fetch([
 			'collection_id' => $metadatum->get_collection_id(),
 			'metadata_type' => 'Tainacan\\Metadata_Types\\Taxonomy'
 		], 'OBJECT');
-		
+
 		$taxonomy_metadata = array_map(function ($metadatum_map) {
 			$fto = $metadatum_map->get_metadata_type_object();
 			return [ $metadatum_map->get_id() => $fto->get_option('taxonomy_id') ];
@@ -146,9 +155,9 @@ class Taxonomy extends Metadata_Type {
                 }
 		    }
         }
-		
+
 		return true;
-		
+
 	}
 
 	/**
@@ -159,28 +168,28 @@ class Taxonomy extends Metadata_Type {
 	 * @return bool Valid or not
 	 */
     public function validate( Item_Metadata_Entity $item_metadata) {
-        
+
         $item = $item_metadata->get_item();
 
         if ( !in_array($item->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
             return true;
 
 		$valid = true;
-        
+
         if ('no' === $this->get_option('allow_new_terms') || false === $this->get_option('allow_new_terms')) { //support legacy bug when it was saved as false
 			$terms = $item_metadata->get_value();
-			
+
 			if (false === $terms)
 				return true;
-			
+
 			if (!is_array($terms))
 				$terms = array($terms);
-			
+
 			foreach ($terms as $term) {
 				if (is_object($term) && $term instanceof \Tainacan\Entities\Term) {
 					$term = $term->get_id();
 				}
-				
+
 				// TODO term_exists is not fully reliable. Use $terms_repository->term_exists. see issue #159
 				if (!term_exists($term)) {
 					$valid = false;
@@ -188,115 +197,115 @@ class Taxonomy extends Metadata_Type {
 					break;
 				}
 			}
-			
+
 		}
-		
+
 		return $valid;
-        
+
     }
-	
+
 	/**
 	 * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as an html string
-	 * @param  Item_Metadata_Entity $item_metadata 
+	 * @param  Item_Metadata_Entity $item_metadata
 	 * @return string The HTML representation of the value, containing one or multiple terms, separated by comma, linked to term page
 	 */
 	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
-		
+
 		$value = $item_metadata->get_value();
-		
+
 		$return = '';
-		
+
 		if ( $item_metadata->is_multiple() ) {
-			
+
 			$count = 1;
 			$total = sizeof($value);
 			$prefix = $item_metadata->get_multivalue_prefix();
 			$suffix = $item_metadata->get_multivalue_suffix();
 			$separator = $item_metadata->get_multivalue_separator();
-			
+
 			foreach ( $value as $term ) {
-				
+
 				$count ++;
-				
+
 				if ( is_integer($term) ) {
 					$term = \Tainacan\Repositories\Terms::get_instance()->fetch($term, $this->get_option('taxonomy_id'));
 				}
-				
+
 				if ( $term instanceof \Tainacan\Entities\Term ) {
 					$return .= $prefix;
-					
+
 					$return .= $this->get_term_hierarchy_html($term);
-					
+
 					$return .= $suffix;
-					
+
 					if ( $count <= $total ) {
 						$return .= $separator;
 					}
-					
+
 				}
 
 			}
-			
+
 		} else {
-			
+
 			if ( $value instanceof \Tainacan\Entities\Term ) {
 				$return .= $this->get_term_hierarchy_html($value);
 			}
-			
+
 		}
-		
+
 		return $return;
-		
+
 	}
-	
+
 	private function get_term_hierarchy_html( \Tainacan\Entities\Term $term ) {
-		
+
 		$terms = [];
-		
+
 		$terms[] = $term->_toHtml();
-		
+
 		while ($term->get_parent() > 0) {
 			$term = \Tainacan\Repositories\Terms::get_instance()->fetch( (int) $term->get_parent(), $term->get_taxonomy() );
 			$terms[] = $term->_toHtml();
 		}
-		
+
 		$terms = \array_reverse($terms);
-		
+
 		$glue = apply_filters('tainacan-terms-hierarchy-html-separator', '<span class="hierarchy-separator"> > </span>');
-		
+
 		return \implode($glue, $terms);
-		
+
 	}
-	
+
 	public function _toArray() {
-		
+
 		$array = parent::_toArray();
-		
+
 		if ( isset($array['options']['taxonomy_id']) ) {
 			$array['options']['taxonomy'] = \Tainacan\Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( $array['options']['taxonomy_id'] );
 		}
-		
+
 		return $array;
-		
+
 	}
-	
+
 	/**
-	 * Get related taxonomy object 
+	 * Get related taxonomy object
 	 * @return \Tainacan\Entities\Taxonomy|false The Taxonomy object or false
 	 */
 	public function get_taxonomy() {
-		
+
 		$taxonomy_id = $this->get_option('taxonomy_id');
-		
+
 		if ( is_numeric($taxonomy_id) ) {
 			$taxonomy = \Tainacan\Repositories\Taxonomies::get_instance()->fetch( (int) $taxonomy_id );
 			if ( $taxonomy instanceof \Tainacan\Entities\Taxonomy ) {
 				return $taxonomy;
 			}
 		}
-		
+
 		return false;
-		
+
 	}
-	
+
 }

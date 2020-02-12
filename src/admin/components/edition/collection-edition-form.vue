@@ -5,7 +5,7 @@
         <tainacan-title 
                 :bread-crumb-items="[{ path: '', label: $i18n.get('collection') }]"/>
         <form 
-                v-if="collection != null && collection != undefined" 
+                v-if="collection != null && collection != undefined && ((isNewCollection && $userCaps.hasCapability('tnc_rep_edit_collections')) || (!isNewCollection && collection.current_user_can_edit))" 
                 class="tainacan-form" 
                 label-width="120px">
         
@@ -51,9 +51,10 @@
                                     :size="178"
                                     :file="{ 
                                         media_type: 'image', 
-                                        guid: { rendered: collection.thumbnail['tainacan-medium'] ? collection.thumbnail['tainacan-medium'][0] : collection.thumbnail.medium[0] },
-                                        title: { rendered: $i18n.get('label_thumbnail')},
-                                        description: { rendered: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + collection.thumbnail.full[0] + `'/>` }}"/>
+                                        thumbnails: { 'tainacan-medium': [ collection.thumbnail['tainacan-medium'] ? collection.thumbnail['tainacan-medium'][0] : collection.thumbnail.medium[0] ] },
+                                        title: $i18n.get('label_thumbnail'),
+                                        description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + collection.thumbnail.full[0] + `'/>` 
+                                    }"/>
                           <figure 
                                     v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail['tainacan-medium'] == undefined || collection.thumbnail['tainacan-medium'] == false))"
                                     class="image">
@@ -256,6 +257,7 @@
                             </option>
                         </b-select>
                     </b-field>
+
                     <!-- Comment Status ------------------------ --> 
                     <b-field
                             :addons="false" 
@@ -411,49 +413,6 @@
                         </b-select>
                     </b-field>
 
-                     <!-- Moderators List -------------------------------- --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_moderators')"
-                            :type="editFormErrors['moderators'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['moderators'] != undefined ? editFormErrors['moderators'] : ''">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'moderators_ids')" 
-                                :message="$i18n.getHelperMessage('collections', 'moderators_ids')"/>
-                        <b-autocomplete
-                                id="tainacan-text-moderators-input"
-                                :placeholder="$i18n.get('instruction_moderators')"
-                                :data="users"
-                                @select="onAddModerator($event)"
-                                :loading="isFetchingModerators"
-                                @input="fecthModerators($event)"
-                                @focus="clearErrors('moderators')">
-                            <template slot-scope="props">
-                                {{ props.option.name }}
-                            </template>
-                            <template slot="empty">{{ $i18n.get('info_no_user_found') }}</template>
-                        </b-autocomplete>
-                        <ul
-                                class="selected-list-box"
-                                v-if="moderators != undefined && moderators.length > 0">
-                            <li
-                                    :key="index"
-                                    v-for="(moderator, index) of moderators">
-                                <b-tag
-                                        attached
-                                        closable
-                                        @close="removeModerator(index)">
-                                   {{ moderator.name }}
-                                </b-tag>
-                            </li>
-                        </ul>
-                        <div 
-                                class="moderators-empty-list"
-                                v-else>
-                            {{ $i18n.get('info_no_moderator_on_collection') }}
-                        </div>
-                    </b-field>
-
                     <!-- Slug -------------------------------- --> 
                     <b-field
                             :addons="false" 
@@ -498,14 +457,14 @@
                         style="margin-left: auto;"
                         class="control">
                     <button
-                            v-if="isNewCollection"
+                            v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata')"
                             id="button-submit-goto-metadata"
                             @click.prevent="onSubmit('metadata')"
                             class="button is-secondary">{{ $i18n.get('label_save_goto_metadata') }}</button>
                 </div>
                  <div class="control">
                     <button
-                            v-if="isNewCollection"
+                            v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata')"
                             id="button-submit-goto-filter"
                             @click.prevent="onSubmit('filters')"
                             class="button is-secondary">{{ $i18n.get('label_save_goto_filter') }}</button>
@@ -519,6 +478,19 @@
             </div>
             <p class="help is-danger">{{ formErrorMessage }}</p> 
         </form>
+
+        <div v-if="!isLoading && ((isNewCollection && !$userCaps.hasCapability('tnc_rep_edit_collections')) || (!isNewCollection && collection && collection.current_user_can_edit != undefined && collection.current_user_can_edit == false))">
+            <section class="section">
+                <div class="content has-text-grey has-text-centered">
+                    <p>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items"/>
+                        </span>
+                    </p>
+                    <p>{{ $i18n.get('info_can_not_edit_collection') }}</p>
+                </div>
+            </section>
+        </div>
 
         <b-loading 
                 :active.sync="isLoading" 
@@ -549,7 +521,6 @@ export default {
                 thumbnail: '',
                 header_image: '',
                 files:[],
-                moderators_ids: [],
                 enabled_view_modes: [],
                 default_view_mode: [],
                 allow_comments: ''
@@ -568,9 +539,6 @@ export default {
             mapper: false,
             thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
             headerPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_rectangle.png',
-            isFetchingModerators: false,
-            users: [],
-            moderators: [],
             collections: [],
             isFetchingCollections: true,
             thumbnailMediaFrame: undefined,
@@ -596,8 +564,7 @@ export default {
             'updateHeaderImage',
             'fetchPages',
             'fetchPage',
-            'fetchUsers',
-            'fetchCollectionsForParent'
+            'fetchAllCollectionNames'
         ]),
         updateSlug: _.debounce(function() {
             if(!this.form.name || this.form.name.length <= 0){
@@ -623,9 +590,6 @@ export default {
         onSubmit(goTo) {
            
             this.isLoading = true;
-            this.form.moderators_ids = [];
-            for (let moderator of this.moderators)
-                this.form.moderators_ids.push(moderator.id);
 
             let data = { 
                 collection_id: this.collectionId, 
@@ -635,7 +599,6 @@ export default {
                 cover_page_id: this.form.cover_page_id,
                 slug: this.form.slug, 
                 status: this.form.status,
-                moderators_ids: this.form.moderators_ids,
                 parent: this.form.parent,
                 enabled_view_modes: this.form.enabled_view_modes,
                 default_view_mode: this.form.default_view_mode,
@@ -712,7 +675,6 @@ export default {
                 this.form.parent = this.collection.parent;
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = [];
-                this.moderators = [];
                 this.form.allow_comments = this.collection.allow_comments;
 
                 // Pre-fill status with publish to incentivate it
@@ -720,20 +682,29 @@ export default {
 
                 // Generates options for parent collection
                 this.isFetchingCollections = true;
-                this.fetchCollectionsForParent()
-                    .then((collections) => {
-                        this.collections = collections;
-                        this.isFetchingCollections = false;
+                this.fetchAllCollectionNames()
+                    .then((resp) => {
+                        resp.request.then((collections) => {
+                            this.collections = collections;
+                            this.isFetchingCollections = false;
+                        })
+                        .catch((error) => {
+                            this.$console.error(error);
+                            this.isFetchingCollections = false;
+                        });
                     })
-                .catch((error) => {
-                    this.$console.error(error);
-                    this.isFetchingCollections = false;
-                }); 
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingCollections = false;
+                    });
 
                 this.isLoading = false;
                 
             })
-            .catch(error => this.$console.error(error));
+            .catch((error) => {
+                this.$console.error(error);
+                this.isLoading = false;
+            });
         },
         clearErrors(attribute) {
             this.editFormErrors[attribute] = undefined;
@@ -773,30 +744,6 @@ export default {
             this.coverPage = selectedPage;
             this.coverPageTitle = this.coverPage.title.rendered;
             this.coverPageEditPath = tainacan_plugin.admin_url + 'post.php?post=' + selectedPage.id + '&action=edit';
-        },
-        fecthModerators(search) {
-            this.isFetchingModerators = true;
-
-            let exceptions = [];
-            for (let user of this.moderators)
-                exceptions.push(parseInt(user.id));
-            exceptions.push(this.collection.author_id);
-
-            this.fetchUsers({ search: search, exceptions: exceptions})
-                .then((users) => {
-                    this.users = users;
-                    this.isFetchingModerators = false;
-                })
-                .catch((error) => {
-                    this.$console.error(error);
-                    this.isFetchingPages = false;
-                });
-        },
-        onAddModerator(user) { 
-            this.moderators.push({'id': user.id, 'name': user.name}); 
-        },
-        removeModerator(moderatorIndex) { 
-            this.moderators.splice(moderatorIndex, 1);
         },
         removeCoverPage() {
             this.coverPage = {};
@@ -878,6 +825,7 @@ export default {
 
             // Obtains current Collection ID from URL
             this.pathArray = this.$route.path.split("/").reverse(); 
+
             this.collectionId = this.pathArray[1];
 
             this.fetchCollection(this.collectionId).then(res => {
@@ -902,7 +850,6 @@ export default {
                 this.form.parent = this.collection.parent;
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes.reduce((result, viewMode) => { typeof viewMode == 'string' ? result.push(viewMode) : null; return result }, [])));
-                this.moderators = JSON.parse(JSON.stringify(this.collection.moderators));
                 this.form.allow_comments = this.collection.allow_comments;
 
                 // Generates CoverPage from current cover_page_id info
@@ -925,7 +872,7 @@ export default {
 
                 // Generates options for parent collection
                 this.isFetchingCollections = true;
-                this.fetchCollectionsForParent()
+                this.fetchAllCollectionNames()
                     .then((resp) => {
                         resp.request.then((collections) => {
                             this.collections = collections;
@@ -1086,10 +1033,6 @@ export default {
             display: flex;
             align-items: center;
         }
-    }
-    .moderators-empty-list { 
-        color: $gray4;
-        font-size: 0.85rem;
     }
 
 </style>

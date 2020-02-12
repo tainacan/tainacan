@@ -100,7 +100,7 @@ class Item extends Entity {
 		];
 
 		$attachments = get_posts( $attachments_query );
-		
+
 		return apply_filters("tainacan-item-get-attachments", $attachments, $exclude, $this);
 
 	}
@@ -123,11 +123,11 @@ class Item extends Entity {
      * @return array
      */
     function get_thumbnail() {
-        
+
         $sizes = get_intermediate_image_sizes();
 
         array_unshift($sizes, 'full');
-        
+
         foreach ( $sizes as $size ) {
             $thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
         }
@@ -226,7 +226,7 @@ class Item extends Entity {
 	function get_description() {
 		return $this->get_mapped_property( 'description' );
 	}
-	
+
 	/**
 	 * Return the item document type
 	 *
@@ -235,7 +235,7 @@ class Item extends Entity {
 	function get_document_type() {
 		return $this->get_mapped_property( 'document_type' );
 	}
-	
+
 	/**
 	 * Return the item document
 	 *
@@ -263,7 +263,7 @@ class Item extends Entity {
 	public function get_capabilities() {
 		return $this->get_collection()->get_items_capabilities();
 	}
-	
+
 	/**
 	 * Checks if comments are allowed for the current Collection.
 	 * @return string "open"|"closed"
@@ -295,6 +295,17 @@ class Item extends Entity {
 	}
 
 	/**
+	 * Define the creation date
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_creation_date( $value ) {
+		$this->set_mapped_property( 'creation_date', $value );
+	}
+
+	/**
 	 * Define the parent ID
 	 *
 	 * @param [integer] $value
@@ -315,7 +326,7 @@ class Item extends Entity {
 	function set_document_type( $value ) {
 		$this->set_mapped_property( 'document_type', $value );
 	}
-	
+
 	/**
 	 * Define the document
 	 *
@@ -326,7 +337,7 @@ class Item extends Entity {
 	function set_document( $value ) {
 		$this->set_mapped_property( 'document', $value );
 	}
-	
+
 	/**
 	 * Define the description
 	 *
@@ -363,7 +374,7 @@ class Item extends Entity {
 			$this->cap = $item_collection->get_items_capabilities();
 		}
 	}
-	
+
 	/**
 	 * Sets if comments are allowed for the current Item.
 	 *
@@ -397,7 +408,7 @@ class Item extends Entity {
 		$arrayItemMetadata = $this->get_metadata();
 		if ( $arrayItemMetadata ) {
 			foreach ( $arrayItemMetadata as $itemMetadata ) {
-				
+
 				// skip validation for Compound Metadata
 				if ( $itemMetadata->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' ) {
 					continue;
@@ -435,29 +446,29 @@ class Item extends Entity {
 
 		return parent::validate();
 	}
-	
-	
+
+
 	public function _toHtml() {
-		
+
 		$return = '';
 		$id = $this->get_id();
-		
+
 		if ( $id ) {
-			
+
 			$link = get_permalink( (int) $id );
-			
+
 			if (is_string($link)) {
-				
+
 				$return = "<a data-linkto='item' data-id='$id' href='$link'>";
 				$return.= $this->get_title();
 				$return .= "</a>";
-				
+
 			}
-			
+
 		}
 
 		return $return;
-		
+
 	}
 
 	/**
@@ -470,25 +481,25 @@ class Item extends Entity {
 	 *
 	 * @param array|string $args {
 	 *     Optional. Array or string of arguments.
-	 * 
+	 *
 	 * 	   @type mixed		 $metadata					Metadatum object, ID or slug to retrieve only one metadatum. empty returns all metadata
-	 * 
+	 *
 	 *     @type array		 $metadata__in				Array of metadata IDs or Slugs to be retrieved. Default none
-	 * 
+	 *
 	 *     @type array		 $metadata__not_in			Array of metadata IDs (slugs not accepted) to excluded. Default none
-	 * 
+	 *
 	 *     @type bool		 $exclude_title				Exclude the Core Title Metadata from result. Default false
-	 * 
+	 *
 	 *     @type bool		 $exclude_description		Exclude the Core Description Metadata from result. Default false
-	 * 
+	 *
 	 *     @type bool		 $exclude_core				Exclude Core Metadata (title and description) from result. Default false
-	 * 
+	 *
 	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
 	 *                                                  Default: true
 	 *     @type string      $before                    String to be added before each metadata block
 	 *                                                  Default '<div class="metadata-type-$type">' where $type is the metadata type slug
 	 *     @type string      $after		                String to be added after each metadata block
-	 *                                                  Default '</div>'	 
+	 *                                                  Default '</div>'
 	 *     @type string      $before_title              String to be added before each metadata title
 	 *                                                  Default '<h3>'
 	 *     @type string      $after_title               String to be added after each metadata title
@@ -503,12 +514,12 @@ class Item extends Entity {
 	 * @throws \Exception
 	 */
 	public function get_metadata_as_html($args = array()) {
-		
+
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
-		
+
 		$return = '';
-		
+
 		$defaults = array(
 			'metadata' => null,
 			'metadata__in' => null,
@@ -527,9 +538,9 @@ class Item extends Entity {
 		$args = wp_parse_args($args, $defaults);
 
 		if (!is_null($args['metadata'])) {
-			
+
 			$metadatum_object = null;
-			
+
 			if ( $metadatum instanceof \Tainacan\Entities\Metadatum ) {
 				$metadatum_object = $metadatum;
 			} elseif ( is_int($metadatum) ) {
@@ -540,10 +551,10 @@ class Item extends Entity {
 					$metadatum_object = $metadatum[0];
 				}
 			}
-			
+
 			if ( $metadatum_object instanceof \Tainacan\Entities\Metadatum ) {
 
-				if ( is_array($args['metadata__not_in']) 
+				if ( is_array($args['metadata__not_in'])
 					&& (
 						in_array($metadatum_object->get_slug(), $args['metadata__not_in']) ||
 						in_array($metadatum_object->get_id(), $args['metadata__not_in'])
@@ -551,23 +562,23 @@ class Item extends Entity {
 				) {
 					return $return;
 				}
-				
+
 				$mto = $metadatum_object->get_metadata_type_object();
 				$before = str_replace('$type', $mto->get_slug(), $args['before']);
 				$return .= $before;
-				
+
 				$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($this, $metadatum_object);
 				if ($item_meta->has_value() || !$args['hide_empty']) {
 					$return .= $args['before_title'] . $metadatum_object->get_name() . $args['after_title'];
 					$return .= $args['before_value'] . $item_meta->get_value_as_html() . $args['after_value'];
 				}
-				
+
 				$return .= $args['after'];
-				
+
 			}
-			
+
 			return $return;
-			
+
 		}
 
 
@@ -604,13 +615,13 @@ class Item extends Entity {
 			$query_args['post__name_in'] = $post__name_in;
 		}
 
-		
+
 		$metadata = $this->get_metadata($query_args);
-		
+
 		foreach ( $metadata as $item_meta ) {
 
 			$fto = $item_meta->get_metadatum()->get_metadata_type_object();
-			
+
 			$before = str_replace('$type', $fto->get_slug(), $args['before']);
 			$return .= $before;
 
@@ -628,21 +639,21 @@ class Item extends Entity {
 				$return .= $args['before_title'] . $item_meta->get_metadatum()->get_name() . $args['after_title'];
 				$return .= $args['before_value'] . $item_meta->get_value_as_html() . $args['after_value'];
 			}
-			
+
 			$return .= $args['after'];
-			
+
 		}
-		
+
 		return $return;
-		
+
 	}
-	
+
 	public function get_document_as_html($img_size = 'large') {
-		
+
 		$type = $this->get_document_type();
-		
+
 		$output = '';
-		
+
 		if ( $type == 'url' ) {
 			global $wp_embed;
 			$_embed = $wp_embed->autoembed($this->get_document());
@@ -653,47 +664,46 @@ class Item extends Entity {
 		} elseif ( $type == 'text' ) {
 			$output .= $this->get_document();
 		} elseif ( $type == 'attachment' ) {
-			
+
 			if ( wp_attachment_is_image($this->get_document()) ) {
-				
+
 				$img = wp_get_attachment_image($this->get_document(), $img_size);
 				$img_full = wp_get_attachment_url($this->get_document());
-				
+
 				$image_attributes = wp_get_attachment_image_src( $this->get_document(), $img_size );
                 $img = "<img style='max-width: 100%;' src='" . $image_attributes[0] . "' />";
 
 				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $img_full, $img);
-				
+
 			} else {
-				
+
 				global $wp_embed;
-				
+
 				$url = wp_get_attachment_url($this->get_document());
-				
+
 				$embed = $wp_embed->autoembed($url);
-				
+
 				if ( $embed == $url ) {
 					$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
 				} else {
 					$output .= $embed;
 				}
-				
-				
+
+
 			}
-			
+
 		}
-		
+
 		return apply_filters("tainacan-item-get-document-as-html", $output, $img_size, $this);
-		
+
 	}
-	
+
 	/**
-	* Gets the url to the edit page for this item 
+	* Gets the url to the edit page for this item
 	*/
 	public function get_edit_url() {
 		$collection_id = $this->get_collection_id();
 		$id = $this->get_id();
 		return admin_url("?page=tainacan_admin#/collections/$collection_id/items/$id/edit");
 	}
-	
 }

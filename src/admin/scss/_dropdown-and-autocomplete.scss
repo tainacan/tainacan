@@ -97,6 +97,9 @@
         max-height: unset !important;
     }
 }
+.taginput.is-expanded {
+    width: 100%;
+}
 .taginput-container .mdi-magnify::before, 
 .autocomplete .mdi-magnify::before {
     content: 'search';
@@ -136,6 +139,7 @@
     }
     .tags {
         margin:  0.17rem 0.25rem 0.08rem 0.25rem !important;
+        display: inline-flex;
     }
     .tag {
         background: white;

@@ -6,14 +6,14 @@
                 @click="modalOnClick? isPreviewModalActive = true : null">
             <figcaption 
                     :style="{ 'max-width': size != undefined ? size + 'px' : '112px' }"
-                    v-if="showName && file.title != undefined">{{ file.title.rendered }}</figcaption>
+                    v-if="showName && file.title != undefined">{{ file.title }}</figcaption>
             <div 
                     :style="{ 'width': size != undefined ? size + 'px' : '112px', 'height': size != undefined ? size + 'px' : '112px' }"
                     class="image-wrapper">
                 <div
                         v-if="file.media_type == 'image'" 
                         class="image"
-                        :style="{ 'background-image': 'url(' + file.guid.rendered + ')' }"/>
+                        :style="{ 'background-image': 'url(' + (file.thumbnails['tainacan-medium'] ? file.thumbnails['tainacan-medium'][0] : file.thumbnails['medium'][0]) + ')' }"/>
                 <div
                         :style="{ 'background-color': '#f2f2f2' }"
                         v-else 
@@ -25,7 +25,7 @@
                     </span>
                 </div>
             </div>
-        </figure> 
+        </figure>
     
         <!-- Preview Modal ----------------- -->
         <template v-if="modalOnClick">
@@ -43,15 +43,15 @@
                         aria-modal
                         class="tainacan-modal-content">
                     <div class="tainacan-modal-title">
-                        <h2 v-if="file.title != undefined">{{ file.title.rendered }}</h2>
+                        <h2 v-if="file.title != undefined">{{ file.title }}</h2>
                     </div>
                     <div    
                             class="is-flex rendered-content"
-                            v-html="file.description.rendered" />
+                            v-html="file.description ? file.description : `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + file.url + `'/>`" />
                     <iframe
                             style="width: 100%; min-height: 50vh;"    
-                            v-if="file.guid != undefined && file.guid.rendered != undefined && file.mime_type != undefined && file.mime_type == 'application/pdf'"
-                            :src="file.guid.rendered" />
+                            v-if="file.url != undefined && file.url != undefined && file.mime_type != undefined && file.mime_type == 'application/pdf'"
+                            :src="file.url" />
                     <div class="field is-grouped form-submit">
                         <div class="control">
                             <button
@@ -85,27 +85,32 @@ export default {
     },
     methods: {
         getIconForMimeType(mimeType) {
-
-            let type = mimeType.split('/');
-            if (type[0] == 'application' && type[1] != undefined){
-                switch (type[1]) {
-                    case 'pdf':
-                        return 'pdf';
-                    default:
-                        return 'attachments';
+            
+            if (mimeType) {
+                const type = mimeType.split('/');
+                if (type[0] == 'application' && type[1] != undefined){
+                    switch (type[1]) {
+                        case 'pdf':
+                            return 'pdf';
+                        default:
+                            return 'attachments';
+                    }
+                } else {
+                    switch (type[0]) {
+                        case 'video':
+                            return 'video';
+                        case 'audio':
+                            return 'audio';
+                        case 'text':
+                            return 'text';
+                        default:
+                            return 'attachments';
+                    }
                 }
             } else {
-                switch (type[0]) {
-                    case 'video':
-                        return 'video';
-                    case 'audio':
-                        return 'audio';
-                    case 'text':
-                        return 'text';
-                    default:
-                        return 'attachments';
-                }
+                return 'attatchments'
             }
+            
         }
     }
 }

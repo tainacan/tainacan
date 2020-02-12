@@ -64,6 +64,10 @@
                 if (!this.isUsingElasticSearch)
                     this.loadOptions();
             },
+            'query.taxquery'() {
+                if (!this.isUsingElasticSearch)
+                    this.loadOptions();
+            },
             facetsFromItemSearch() {
                 if (this.isUsingElasticSearch)
                     this.loadOptions();

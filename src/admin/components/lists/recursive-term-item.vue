@@ -49,7 +49,8 @@
                 v-if="term.total_children > 0">
             <span>{{ term.total_children + ' ' + $i18n.get('label_children_terms') }}</span>
         </span>
-        <span 
+        <span   
+                v-if="currentUserCanEditTaxonomy"
                 class="controls" 
                 :class="{'is-disabled': isEditingTerm}">
             <a @click="addNewChildTerm(term, index)">
@@ -111,7 +112,8 @@
                     :term="childTerm"
                     :index="childIndex"
                     :taxonomy-id="taxonomyId"
-                    :order="order"/>
+                    :order="order"
+                    :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"/>
         </div>
     </transition-group>
     <a 
@@ -147,6 +149,7 @@ export default {
         index: Number,
         taxonomyId: Number,
         order: String,
+        currentUserCanEditTaxonomy: Boolean
     },
     components: {
         RecursiveTermItem,

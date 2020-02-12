@@ -55,6 +55,31 @@ class Log extends Entity {
 		return apply_filters('tainacan-log-to-array', $array_log, $this);
 	}
 
+	public function get_capabilities() {
+
+		return (object) [
+			// meta
+			'edit_post' => "tnc_rep_edit_logs",
+			'read_post' => "tnc_rep_read_log",
+			'delete_post' => "tnc_rep_edit_logs",
+			
+			// primitive
+			'edit_posts' => "do_not_allow",
+			'edit_others_posts' => "do_not_allow",
+			'publish_posts' => "do_not_allow",
+			'read_private_posts' => "do_not_allow",
+			'read' => "tnc_rep_read_logs",
+			'delete_posts' => "do_not_allow",
+			'delete_private_posts' => "do_not_allow",
+			'delete_published_posts' => "do_not_allow",
+			'delete_others_posts' => "do_not_allow",
+			'edit_private_posts' => "do_not_allow",
+			'edit_published_posts' => "do_not_allow",
+			'create_posts' => "do_not_allow"
+		];
+		
+	}
+
 
 	/**
 	 * @param $collection_id

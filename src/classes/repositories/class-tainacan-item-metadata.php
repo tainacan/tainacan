@@ -229,7 +229,7 @@ class Item_Metadata extends Repository {
 				return [];
 			}
 
-			$meta_list = $Tainacan_Metadata->fetch_by_collection( $collection, $args, 'OBJECT' );
+			$meta_list = $Tainacan_Metadata->fetch_by_collection( $collection, $args );
 
 			$return = [];
 

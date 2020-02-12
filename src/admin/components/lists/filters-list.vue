@@ -6,7 +6,7 @@
                 class="tainacan-page-title">
             <h1>
                 {{ $i18n.get('title_collection_filters_edition') + ' ' }}
-                <span style="font-weight: 600;">{{ collectionName }}</span>
+                <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
             </h1>
             <a 
                     @click="$router.go(-1)"
@@ -18,6 +18,7 @@
         <p v-if="isRepositoryLevel">{{ $i18n.get('info_repository_filters_inheritance') }}</p>
         <br>
         <div
+                v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
                 :style="{ height: activeFilterList.length <= 0 && !isLoadingFilters ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
                 class="columns"
                 ref="filterEditionPageColumns">
@@ -49,7 +50,7 @@
                     <div  
                             class="active-filter-item" 
                             :class="{
-                                'not-sortable-item': (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel),
+                                'not-sortable-item': (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true),
                                 'not-focusable-item': openedFilterId == filter.id, 
                                 'disabled-filter': filter.enabled == false,
                                 'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
@@ -60,7 +61,7 @@
                             <span 
                                     v-if="!(isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel)"
                                     v-tooltip="{
-                                        content: $i18n.get('instruction_drag_and_drop_filter_sort'),
+                                        content: (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true) ? $i18n.get('info_not_allowed_change_order_filters') : $i18n.get('instruction_drag_and_drop_filter_sort'),
                                         autoHide: true,
                                         classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                         placement: 'auto-start'
@@ -114,6 +115,7 @@
                                         :value="filter.enabled" 
                                         @input="onChangeEnable($event, index)"/>
                                 <a 
+                                        v-if="filter.current_user_can_delete"
                                         :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel? 'hidden' : 'visible' }"
                                         @click.prevent="toggleFilterEdition(filter.id)">
                                     <span 
@@ -128,6 +130,7 @@
                                     </span>
                                 </a>
                                 <a 
+                                        v-if="filter.current_user_can_delete"
                                         :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel ? 'hidden' : 'visible' }"
                                         @click.prevent="removeFilter(filter)">
                                     <span
@@ -157,7 +160,9 @@
                     </div>
                 </draggable>
             </div>
-            <div class="column available-metadata-area">
+            <div 
+                    v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || !isRepositoryLevel)"
+                    class="column available-metadata-area">
                 <div class="field" >
                     <h3 class="label has-text-secondary"> {{ $i18n.get('label_available_metadata') }}</h3>
                     <draggable
@@ -227,6 +232,21 @@
                 </div>
             </div>
         </div>
+
+        <section 
+                v-else
+                class="section">
+            <div class="content has-text-grey has-text-centered">
+                <p>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-filters"/>
+                    </span>
+                </p>
+                <p>{{ $i18n.get('info_can_not_edit_filters') }}</p>
+            </div>
+        </section>
+
+
         <b-modal 
                 ref="filterTypeModal"
                 :width="680"
@@ -318,7 +338,6 @@ export default {
     data(){           
         return {
             collectionId: '',
-            collectionName: '',
             isRepositoryLevel: false,
             isDraggingFromAvailable: false,
             isLoadingMetadatumTypes: true,
@@ -339,8 +358,7 @@ export default {
             currentFilterTypePreview: undefined,
             columnsTopY: 0,
             filtersSearchCancel: undefined,
-            metadataSearchCancel: undefined,
-            collectionNameSearchCancel: undefined           
+            metadataSearchCancel: undefined        
         }
     },
     computed: {
@@ -351,6 +369,9 @@ export default {
             set(value) {
                 this.updateFilters(value);
             }
+        },
+        collection() {
+            return this.getCollection();
         }
     },
     components: {
@@ -414,8 +435,8 @@ export default {
         ...mapGetters('metadata', [
             'getMetadata',
         ]),
-        ...mapActions('collection', [
-            'fetchCollectionName'
+        ...mapGetters('collection', [
+            'getCollection',
         ]),
         handleChangeOnFilter($event) {     
             if ($event.added) {
@@ -680,7 +701,7 @@ export default {
             this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('filter') }]);
 
         this.$nextTick(() => { 
-            this.columnsTopY = this.$refs.filterEditionPageColumns.getBoundingClientRect().top;
+            this.columnsTopY = this.$refs.filterEditionPageColumns ? this.$refs.filterEditionPageColumns.getBoundingClientRect().top : 0;
         });
 
         this.isRepositoryLevel = this.$route.name == 'FiltersPage' ? true : false;
@@ -707,25 +728,6 @@ export default {
 
         // Loads Filters
         this.refreshFilters();
-
-        // Obtains collection name
-        if (!this.isRepositoryLevel) {
-
-            // Cancels previous collection name Request
-            if (this.collectionNameSearchCancel != undefined)
-                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
-
-            this.fetchCollectionName(this.collectionId)
-                .then((resp) => {
-                    resp.request
-                        .then((collectionName) => {
-                            this.collectionName = collectionName;
-                        });
-                    
-                    // Search Request Token for cancelling
-                    this.collectionNameSearchCancel = resp.source;
-                })
-        }
         
         // Sets modal callback function
         this.$refs.filterTypeModal.onCancel = () => {
@@ -741,10 +743,6 @@ export default {
         // Cancels previous metadata Request
         if (this.metadataSearchCancel != undefined)
             this.metadataSearchCancel.cancel('Metadata search Canceled.');
-        
-        // Cancels previous collection name Request
-        if (this.collectionNameSearchCancel != undefined)
-            this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
     }
 }
 </script>

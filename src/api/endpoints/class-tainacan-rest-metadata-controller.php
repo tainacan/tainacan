@@ -113,7 +113,7 @@ class REST_Metadata_Controller extends REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item'),
-					'permission'          => array($this, 'get_item_permissions_check'),
+					'permission_callback' => array($this, 'get_item_permissions_check'),
 					'args'                => array(
 						'context' => array(
 							'type'    	  => 'string',
@@ -159,7 +159,7 @@ class REST_Metadata_Controller extends REST_Controller {
 		}
 
 		$result = $this->metadatum_repository->fetch($metadatum_id, 'OBJECT');
-		
+
 		if (! $result instanceof Entities\Metadatum) {
 			return new \WP_REST_Response([
 				'error_message' => __('Metadata with this ID was not found', 'tainacan'),
@@ -177,28 +177,10 @@ class REST_Metadata_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_item_permissions_check( $request ) {
-		$collection_id = isset($request['collection_id']) ? $request['collection_id'] : false;
+		$metadatum = $this->metadatum_repository->fetch($request['metadatum_id']);
 
-		if($collection_id) {
-			$collection = $this->collection_repository->fetch( $collection_id );
-
-			if ( $collection instanceof Entities\Collection ) {
-				if ( $request['context'] === 'edit' && ! $collection->can_read() ) {
-					return false;
-				}
-
-				return true;
-			}
-		} elseif($request['metadatum_id']) {
-			$metadatum = $this->metadatum_repository->fetch($request['metadatum_id']);
-
-			if ( $metadatum instanceof Entities\Metadatum ) {
-				if ( $request['context'] === 'edit' && ! $metadatum->can_read() ) {
-					return false;
-				}
-
-				return true;
-			}
+		if ( $metadatum instanceof Entities\Metadatum ) {
+			return $metadatum->can_read();
 		}
 
 		return false;
@@ -297,11 +279,22 @@ class REST_Metadata_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-		if(isset($request['collection_id'])) {
-			return $this->collection_repository->can_edit( new Entities\Collection() );
+
+		if( isset($request['collection_id']) ) {
+			$collection = $this->collection_repository->fetch( $request['collection_id'] );
+
+			if ( $collection instanceof Entities\Collection ) {
+				return $collection->user_can( 'edit_metadata' );
+			}
+
+		} else {
+
+			return current_user_can( 'tnc_rep_edit_metadata' );
+
 		}
 
-		return $this->metadatum_repository->can_edit(new Entities\Metadatum());
+		return false;
+
 	}
 
 	/**
@@ -313,7 +306,7 @@ class REST_Metadata_Controller extends REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
 			$item_arr = $item->_toArray();
-			
+
 			$item_arr['metadata_type_object'] = $item->get_metadata_type_object()->_toArray();
 
 			if(isset($item_arr['metadata_type_options']) && isset($item_arr['metadata_type_options']['taxonomy_id'])){
@@ -322,7 +315,7 @@ class REST_Metadata_Controller extends REST_Controller {
 				//$item_arr['metadata_type_options']['taxonomy'] = $taxonomy->get_db_identifier();
 				$item_arr['metadata_type_options']['taxonomy'] = $taxonomy;
 			}
-			
+
 			if($request['context'] === 'edit'){
 				$item_arr['current_user_can_edit'] = $item->can_edit();
 				$item_arr['current_user_can_delete'] = $item->can_delete();
@@ -337,7 +330,7 @@ class REST_Metadata_Controller extends REST_Controller {
 			 * Use this filter to add additional post_meta to the api response
 			 * Use the $request object to get the context of the request and other variables
 			 * For example, id context is edit, you may want to add your meta or not.
-			 * 
+			 *
 			 * Also take care to do any permissions verification before exposing the data
 			 */
 			$extra_metadata = apply_filters('tainacan-api-response-metadatum-meta', [], $request);
@@ -345,7 +338,7 @@ class REST_Metadata_Controller extends REST_Controller {
 			foreach ($extra_metadata as $extra_meta) {
 				$item_arr[$extra_meta] = get_post_meta($item_arr['id'], $extra_meta, true);
 			}
-			
+
 			return $item_arr;
 		}
 
@@ -363,14 +356,14 @@ class REST_Metadata_Controller extends REST_Controller {
 			$collection_id = $request['collection_id'];
 
 			$args = $this->prepare_filters( $request );
-			
+
 			if ($request['include_disabled'] === 'true') {
 				$args['include_disabled'] = true;
 			}
 
 			$collection = new Entities\Collection( $collection_id );
 
-			$result = $this->metadatum_repository->fetch_by_collection( $collection, $args, 'OBJECT' );
+			$result = $this->metadatum_repository->fetch_by_collection( $collection, $args );
 		} else {
 			$args = [
 				'meta_query' => [
@@ -400,19 +393,16 @@ class REST_Metadata_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_items_permissions_check( $request ) {
-		
-		if(!isset($request['collection_id'])) {
-			if ( 'edit' === $request['context'] && ! $this->metadatum_repository->can_edit( new Entities\Metadatum() ) ) {
-				return false;
-			}
 
+
+		if(!isset($request['collection_id'])) {
 			return true;
 		}
 
 		$collection = $this->collection_repository->fetch($request['collection_id']);
 
 		if($collection instanceof Entities\Collection){
-			if ( 'edit' === $request['context'] && ! $collection->can_read() ) {
+			if ( ! $collection->can_read() ) {
 				return false;
 			}
 
@@ -420,6 +410,7 @@ class REST_Metadata_Controller extends REST_Controller {
 		}
 
 		return false;
+
 	}
 
 	/**
@@ -429,16 +420,16 @@ class REST_Metadata_Controller extends REST_Controller {
 	 */
 	public function delete_item( $request ) {
 		$metadatum_id = $request['metadatum_id'];
-		
+
 		$metadatum = $this->metadatum_repository->fetch($metadatum_id);
-		
+
 		if (! $metadatum instanceof Entities\Metadatum) {
 			return new \WP_REST_Response([
 				'error_message' => __('Metadata with this ID was not found', 'tainacan'),
 				'item_id' => $item_id
 			], 400);
 		}
-		
+
 		$metadatum_trashed = $this->metadatum_repository->trash($metadatum);
 
 		$prepared = $this->prepare_item_for_response($metadatum_trashed, $request);
@@ -453,15 +444,14 @@ class REST_Metadata_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function delete_item_permissions_check( $request ) {
-		if (isset($request['collection_id'])) {
-			$collection = $this->collection_repository->fetch($request['collection_id']);
+		$metadatum = $this->metadatum_repository->fetch($request['metadatum_id']);
 
-			if ($collection instanceof Entities\Collection) {
-				return $collection->can_delete();
-			}
+		if ($metadatum instanceof Entities\Metadatum) {
+			return $metadatum->can_delete();
 		}
 
-		return $this->metadatum_repository->can_edit(new Entities\Metadatum());
+		return false;
+
 	}
 
 	/**
@@ -541,16 +531,13 @@ class REST_Metadata_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function update_item_permissions_check( $request ) {
-		if(isset($request['collection_id'])) {
-            $collection = $this->collection_repository->fetch($request['collection_id']);
+		$metadatum = $this->metadatum_repository->fetch($request['metadatum_id']);
 
-            if ($collection instanceof Entities\Collection) {
-				return $collection->can_edit();
-			}
+		if ($metadatum instanceof Entities\Metadatum) {
+			return $metadatum->can_edit();
+		}
 
-        }
-
-        return $this->metadatum_repository->can_edit(new Entities\Metadatum());
+		return false;
 	}
 
 	/**
@@ -583,7 +570,7 @@ class REST_Metadata_Controller extends REST_Controller {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
 			$endpoint_args = array_merge(
-                $endpoint_args, 
+                $endpoint_args,
                 parent::get_wp_query_params()
             );
 		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
@@ -610,14 +597,14 @@ class REST_Metadata_Controller extends REST_Controller {
 			'title' => 'metadatum',
 			'type' => 'object'
 		];
-		
+
 		$main_schema = parent::get_repository_schema( $this->metadatum_repository );
 		$permissions_schema = parent::get_permissions_schema();
-		
+
 		// $item_metadata_scheme = parent::get_repository_schema( $this->item_metadata_repository );
 		// $item_scheme = parent::get_repository_schema( $this->item_repository );
 		// $collection_scheme = parent::get_repository_schema( $this->collection_repository );
-		
+
 		$schema['properties'] = array_merge(
 			parent::get_base_properties_schema(),
 			$main_schema,
@@ -626,7 +613,7 @@ class REST_Metadata_Controller extends REST_Controller {
 			// $item_scheme,
 			// $collection_scheme
 		);
-		
+
 		return $schema;
 	}
 }

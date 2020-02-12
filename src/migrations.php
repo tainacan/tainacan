@@ -105,11 +105,6 @@ class Migrations {
 
 	}
 
-	static function init_capabilites() {
-		$Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
-		$Tainacan_Capabilities->init();
-	}
-
 	static function tainacan_migrate_post_type_field_to_metadatum(){
 		global $wpdb;
 
@@ -427,6 +422,27 @@ class Migrations {
 	static function refresh_rewrite_rules_attachment_pages() {
 		// needed after we added the /tainacan_attachments url
 		flush_rewrite_rules(false);
+	}
+
+	static function init_new_default_roles_and_migrate_users() {
+		remove_role('tainacan-administrator');
+		remove_role('tainacan-editor');
+		remove_role('tainacan-author');
+
+		\tainacan_roles()->init_default_roles();
+
+		$q = new \WP_User_Query([
+			'role' => 'tainacan-contributor'
+		]);
+
+		$contribs = $q->get_results();
+
+		foreach ( $contribs as $contrib ) {
+			$contrib->set_role('tainacan-author');
+		}
+
+		remove_role('tainacan-contributor');
+
 	}
 
 }

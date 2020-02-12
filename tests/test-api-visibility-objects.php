@@ -9,57 +9,20 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 
 
 	/*
-		setup initail:
+		initial setup:
 			create taxonomy_public
 				create term-a-public
 				create term-b-public
 			create taxonomy_private
 				create term-a-private
 				create term-b-private
-			
+
 			create collection
 				create a metadata-public (taxonomy_public)
 				create a metadata-private (taxonomy_private)
 				create item-a
 				create item-b
 
-		first-test:
-			user not logged
-				get terms of taxonomy_public = 200
-				get terms of taxonomy_private = 401
-				get terms on context=edit of taxonomy_public = 401
-				get terms on context=edit of taxonomy_private = 401
-
-		second-test:
-			user logged
-				get terms of taxonomy_public = 200
-				get terms of taxonomy_private = 200
-				get terms on context=edit of taxonomy_public = 200
-				get terms on context=edit of taxonomy_private = 200
-
-		third-test:
-			user not logged
-				get taxonomies = 200 - 1 taxonomy
-				get taxonomies on context=edit of taxonomy_public = 401
-
-		fourth-test:
-			user logged
-				get taxonomies = 200 - 2 taxonomies
-				get taxonomies on context=edit = 200 - 2 taxonomies
-
-		fifth-test:
-			user logged
-				get items filter by taxonomy_public = 200
-				get items filter by taxonomy_private = 200
-				get items on context=edit filter by taxonomy_public = 200
-				get items on context=edit filter by taxonomy_private = 200
-
-		fifth-test:
-			user not logged
-				get items filter by taxonomy_public = 200
-				get items filter by taxonomy_private = 401
-				get items on context=edit filter by taxonomy_public = 401
-				get items on context=edit filter by taxonomy_private = 401
 	*/
 
 	public $collection;
@@ -195,7 +158,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 
 		wp_set_post_terms($item_a->get_id(), [$term_a_public->get_id(), $term_b_public->get_id()], $taxonomy_public->get_db_identifier());
 		wp_set_post_terms($item_b->get_id(), [$term_a_private->get_id(), $term_b_private->get_id()], $taxonomy_private->get_db_identifier());
-		
+
 	}
 
 	public function test_get_terms_of_taxonomy_logged() {
@@ -275,7 +238,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request_public_edit);
 		$status = $response->status;
 		$data = $response->get_data();
-		$this->assertEquals(401, $status);
+		$this->assertEquals(200, $status);
 
 		//tax private - context=edit:
 		$request_private_edit = new \WP_REST_Request(
@@ -289,7 +252,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 	}
 
 	public function test_get_taxonomies_logged() {
-		
+
 		$request_public = new \WP_REST_Request(
 			'GET', $this->namespace . '/taxonomies'
 		);
@@ -299,7 +262,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(200, $status);
 		$this->assertEquals(2, sizeof($data));
 
-		
+
 		$request_public_edit = new \WP_REST_Request(
 			'GET', $this->namespace . '/taxonomies'
 		);
@@ -324,14 +287,6 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(200, $status);
 		$this->assertEquals(1, sizeof($data));
 
-		$request_public_edit = new \WP_REST_Request(
-			'GET', $this->namespace . '/taxonomies'
-		);
-		$request_public_edit->set_query_params(['context' => 'edit']);
-		$response = $this->server->dispatch($request_public_edit);
-		$status = $response->status;
-		$data = $response->get_data();
-		$this->assertEquals(401, $status);
 	}
 
 	public function test_get_items_logged() {
@@ -426,7 +381,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request_public_edit);
 		$status = $response->status;
 		$data = $response->get_data();
-		$this->assertEquals(401, $status);
+		$this->assertEquals(200, $status);
 
 		//tax private:
 		$request_private = new \WP_REST_Request(
@@ -456,6 +411,7 @@ class TAINACAN_REST_Visibilility_Controller extends TAINACAN_UnitApiTestCase {
 		$data = $response->get_data();
 		$this->assertEquals(401, $status);
 	}
+
 }
 
 ?>

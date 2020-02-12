@@ -23,16 +23,16 @@ class REST_Filters_Controller extends REST_Controller {
 		parent::__construct();
 		add_action('init', array(&$this, 'init_objects'), 11);
 	}
-	
+
 	/**
 	 * Initialize objects after post_type register
 	 */
 	public function init_objects() {
 		$this->collection = new Entities\Collection();
 		$this->collection_repository = Repositories\Collections::get_instance();
-		
+
 		$this->metadatum_repository = Repositories\Metadata::get_instance();
-		
+
 		$this->filter_repository = Repositories\Filters::get_instance();
 	}
 
@@ -199,24 +199,20 @@ class REST_Filters_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-		if(isset($request['collection_id']) && isset($request['metadatum_id'])) {
-			$metadata   = $this->metadatum_repository->fetch( $request['metadatum_id'] );
-			$collection = $this->collection_repository->fetch( $request['collection_id'] );
-
-			if ( ( $metadata instanceof Entities\Metadatum ) && ( $collection instanceof Entities\Collection ) ) {
-				return $this->filter_repository->can_edit( new Entities\Filter() ) && $metadata->can_edit() && $collection->can_edit();
-			}
-
-		} elseif (isset($request['collection_id'])){
+		if( isset($request['collection_id']) ) {
 			$collection = $this->collection_repository->fetch( $request['collection_id'] );
 
 			if ( $collection instanceof Entities\Collection ) {
-				return $collection->can_edit();
+				return current_user_can( 'tnc_col_' . $collection->get_id() . '_manage_filters' );
 			}
+
+		} else {
+
+			return current_user_can( 'tnc_rep_manage_filters' );
 
 		}
 
-		return $this->filter_repository->can_edit(new Entities\Metadatum());
+		return false;
 	}
 
 	/**
@@ -226,7 +222,7 @@ class REST_Filters_Controller extends REST_Controller {
 	 */
 	public function delete_item( $request ) {
 		$permanently = $request['permanently'];
-		
+
 		$filter = $this->filter_repository->fetch($request['filter_id']);
 
 		if (! $filter instanceof Entities\Filter) {
@@ -346,7 +342,7 @@ class REST_Filters_Controller extends REST_Controller {
 			 * Use this filter to add additional post_meta to the api response
 			 * Use the $request object to get the context of the request and other variables
 			 * For example, id context is edit, you may want to add your meta or not.
-			 * 
+			 *
 			 * Also take care to do any permissions verification before exposing the data
 			 */
 			$extra_metadata = apply_filters('tainacan-api-response-filter-meta', [], $request);
@@ -354,7 +350,7 @@ class REST_Filters_Controller extends REST_Controller {
 			foreach ($extra_metadata as $extra_meta) {
 				$item_arr[$extra_meta] = get_post_meta($item_arr['id'], $extra_meta, true);
 			}
-			
+
 			return $item_arr;
 		}
 
@@ -384,7 +380,7 @@ class REST_Filters_Controller extends REST_Controller {
 			$filters = $this->filter_repository->fetch( $args, 'OBJECT' );
 		} else {
 			$collection = $this->collection_repository->fetch($request['collection_id']);
-			$filters = $this->filter_repository->fetch_by_collection($collection, $args, 'OBJECT');
+			$filters = $this->filter_repository->fetch_by_collection($collection, $args);
 		}
 
 		$response = [];
@@ -402,9 +398,6 @@ class REST_Filters_Controller extends REST_Controller {
 	 */
 	public function get_items_permissions_check( $request ) {
 		if(!isset($request['collection_id'])) {
-			if ( 'edit' === $request['context'] && ! $this->filter_repository->can_edit( new Entities\Filter() ) ) {
-				return false;
-			}
 
 			return true;
 		}
@@ -412,7 +405,7 @@ class REST_Filters_Controller extends REST_Controller {
 		$collection = $this->collection_repository->fetch($request['collection_id']);
 
 		if($collection instanceof Entities\Collection){
-			if ( 'edit' === $request['context'] && ! $collection->can_read() ) {
+			if ( ! $collection->can_read() ) {
 				return false;
 			}
 
@@ -431,14 +424,14 @@ class REST_Filters_Controller extends REST_Controller {
 		$filter_id = $request['filter_id'];
 
 		$filter = $this->filter_repository->fetch($filter_id);
-		
+
 		if(! $filter instanceof Entities\Filter) {
 			return new \WP_REST_Response([
 		    	'error_message' => __('A filter with this ID was not found', 'tainacan' ),
 			    'filter_id' => $filter_id
 		    ], 400);
 		}
-		
+
 		return new \WP_REST_Response($this->prepare_item_for_response($filter, $request), 200);
 	}
 
@@ -451,11 +444,7 @@ class REST_Filters_Controller extends REST_Controller {
 		$filter = $this->filter_repository->fetch($request['filter_id']);
 
 		if(($filter instanceof Entities\Filter)) {
-			if('edit' === $request['context'] && !$filter->can_read()) {
-				return false;
-			}
-
-			return true;
+			return $filter->can_read();
 		}
 
 		return false;
@@ -470,7 +459,7 @@ class REST_Filters_Controller extends REST_Controller {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
 			$endpoint_args = array_merge(
-                $endpoint_args, 
+                $endpoint_args,
                 parent::get_wp_query_params()
             );
 		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
@@ -504,7 +493,7 @@ class REST_Filters_Controller extends REST_Controller {
 		);
 
 		$query_params = array_merge(
-			$query_params, 
+			$query_params,
 			parent::get_wp_query_params(),
 			parent::get_meta_queries_params()
 		);
@@ -518,10 +507,10 @@ class REST_Filters_Controller extends REST_Controller {
 			'title' => 'filter',
 			'type' => 'object'
 		];
-		
+
 		$main_schema = parent::get_repository_schema( $this->filter_repository );
 		$permissions_schema = parent::get_permissions_schema();
-			
+
 		// $collection_scheme = parent::get_repository_schema( $this->collection_repository );
 		// $metadatum_scheme = parent::get_repository_schema( $this->metadatum_repository );
 
@@ -532,9 +521,9 @@ class REST_Filters_Controller extends REST_Controller {
 			// $collection_scheme,
 			// $metadatum_scheme
 		);
-		
+
 		return $schema;
-		
+
 	}
 }
 ?>

@@ -80,9 +80,10 @@
                                     :size="178"
                                     :file="{
                                 media_type: 'image',
-                                guid: { rendered: item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] },
-                                title: { rendered: $i18n.get('label_thumbnail')},
-                                description: { rendered: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + item.thumbnail.full[0] + `'/>` }}"/>
+                                thumbnails: { 'tainacan-medium': [ item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] ] },
+                                title: $i18n.get('label_thumbnail'),
+                                description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + item.thumbnail.full[0] + `'/>` 
+                            }"/>
                             <figure
                                     v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
                                     class="image">
@@ -134,7 +135,7 @@
                                         <span class="icon">
                                             <i class="tainacan-icon tainacan-icon-collection"/>
                                         </span>
-                                        {{ collectionName }}
+                                        {{ collection && collection.name ? collection.name : '' }}
                                     </span>
                                 </div>
                             </div>
@@ -164,7 +165,7 @@
 
                         <!-- Comment Status ------------------------ -->
                         <div
-                                v-if="collectionAllowComments == 'open'"
+                                v-if="collection && collection.allow_comments && collection.allow_comments == 'open'"
                                 class="column is-narrow">
                             <div class="section-label">
                                 <label>{{ $i18n.get('label_comments') }}</label>
@@ -331,16 +332,16 @@
                 itemId: Number,
                 isLoading: false,
                 open: true,
-                collectionName: '',
                 thumbPlaceholderPath: tainacan_plugin.base_url + '/admin/images/placeholder_square.png',
                 urls_open: false,
-                collectionAllowComments: '',
                 activeTab: 0,
-                isLoadingAttachments: false,
-                collectionNameSearchCancel: undefined
+                isLoadingAttachments: false
             }
         },
         computed: {
+            collection() {
+                return this.getCollection();
+            },
             item() {
                 // Fills hook forms with it's real values 
                 this.updateExtraFormData(this.getItem());
@@ -359,14 +360,13 @@
                 'fetchItem',
                 'fetchMetadata',
             ]),
-            ...mapActions('collection', [
-                'fetchCollectionName',
-                'fetchCollectionAllowComments'
-            ]),
             ...mapGetters('item', [
                 'getItem',
                 'getMetadata',
                 'getTotalAttachments'
+            ]),
+            ...mapGetters('collection', [
+                'getCollection'
             ]),
             loadMetadata() {
                 // Obtains Item Metadatum
@@ -411,34 +411,6 @@
                 this.loadMetadata();
             });
 
-            // Obtains collection name
-            if (!this.isRepositoryLevel) {
-
-                // Cancels previous collection name Request
-                if (this.collectionNameSearchCancel != undefined)
-                    this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
-
-                this.fetchCollectionName(this.collectionId)
-                    .then((resp) => {
-                        resp.request
-                            .then((collectionName) => {
-                                this.collectionName = collectionName;
-                            });
-                        
-                        // Search Request Token for cancelling
-                        this.collectionNameSearchCancel = resp.source;
-                    })
-            }
-
-            // Obtains collection Comment Status
-            this.fetchCollectionAllowComments(this.collectionId).then((collectionAllowComments) => {
-                this.collectionAllowComments = collectionAllowComments;
-            });
-        },
-        beforeDestroy() {
-            // Cancels previous collection name Request
-            if (this.collectionNameSearchCancel != undefined)
-                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
         }
     }
 </script>

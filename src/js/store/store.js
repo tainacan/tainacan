@@ -13,6 +13,7 @@ import bgprocess from './modules/bgprocess';
 import bulkedition from './modules/bulk-edition';
 import exporter from './modules/exporter';
 import exposer from './modules/exposer';
+import capability from './modules/capability';
 
 Vue.use(Vuex);
 
@@ -37,6 +38,7 @@ export default new Vuex.Store({
         bgprocess,
         bulkedition,
         exporter,
-        exposer
+        exposer,
+        capability
     }
 })

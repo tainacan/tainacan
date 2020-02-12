@@ -127,7 +127,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 
 		return new \WP_REST_Response(apply_filters('tainacan-rest-response', $prepared_item, $request), 200);
 	}
-	
+
 	/**
 	 * @param \WP_REST_Request $request
 	 *
@@ -136,13 +136,13 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	public function get_item_metadatum_value( $request ) {
 		$item_id = $request['item_id'];
 		$metadatum_id = $request['metadatum_id'];
-		
+
 		$item = $this->item_repository->fetch($item_id);
-		
+
 		$items_metadata = $item->get_metadata();
-		
+
 		$prepared_item = '';
-		
+
 		foreach ($items_metadata as $item_metadata){
 			$metadatum = $item_metadata->get_metadatum();
 			if($metadatum->get_id() == $metadatum_id) {
@@ -150,7 +150,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 				$prepared_item['metadatum']['metadata_type_object'] = $metadatum->get_metadata_type_object()->_toArray();
 			}
 		}
-		
+
 		return new \WP_REST_Response(apply_filters('tainacan-rest-response', $prepared_item, $request), 200);
 	}
 
@@ -164,11 +164,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 		$item = $this->item_repository->fetch($request['item_id']);
 
 		if(($item instanceof Entities\Item)) {
-			if('edit' === $request['context'] && !$item->can_read()) {
-				return false;
-			}
-
-			return true;
+			return $item->can_read();
 		}
 
 		return false;
@@ -243,15 +239,15 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	public function update_item_permissions_check( $request ) {
 		if (isset($request['item_id'])) {
 			$item = $this->item_repository->fetch($request['item_id']);
+			$metadatum = $this->metadatum_repository->fetch( $request['metadatum_id'] );
 
-			if ($item instanceof Entities\Item) {
-				if($item->can_edit()) {
-					return $item->can_edit();
+			if ( $item instanceof Entities\Item && $metadatum instanceof Entities\Metadatum ) {
+				if( $item->can_edit() && $metadatum->can_read() ) {
+					return true;
 				}
 				else {
-					$metadatum_id = $request['metadatum_id'];
-					$metadatum = $this->metadatum_repository->fetch( $metadatum_id );
-					return 'publish' === $metadatum->get_status() && $metadatum->get_accept_suggestion();
+					// not yet implemented
+					// return 'publish' === $metadatum->get_status() && $metadatum->get_accept_suggestion();
 				}
 			}
 

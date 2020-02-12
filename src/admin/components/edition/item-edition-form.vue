@@ -7,42 +7,42 @@
 
         <div class="tainacan-page-title">
             <h1 v-if="isCreatingNewItem">
-                <span 
+                <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag">{{ $i18n.get('status_' + item.status) }}</span>
                 {{ $i18n.get('title_create_item_collection') + ' ' }}
-                <span style="font-weight: 600;">{{ collectionName }}</span>
+                <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
             </h1>
             <h1 v-else>
-                <span 
+                <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag">{{ $i18n.get('status_' + item.status) }}</span>
                 {{ $i18n.get('title_edit_item') + ' ' }}
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>
-            <a 
+            <a
                     @click="$router.go(-1)"
                     class="back-link has-text-secondary">
                 {{ $i18n.get('back') }}
             </a>
             <hr>
         </div>
-        <transition 
+        <transition
                 mode="out-in"
                 :name="(isOnSequenceEdit && sequenceRightDirection != undefined) ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
             <form
-                    v-if="!isLoading"
+                    v-if="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items) || (!isCreatingNewItem && item && item.current_user_can_edit))"
                     class="tainacan-form"
                     label-width="120px">
                 <div class="columns">
                     <div class="column is-5">
 
                         <!-- Hook for extra Form options -->
-                        <template 
-                                v-if="formHooks != undefined && 
+                        <template
+                                v-if="formHooks != undefined &&
                                     formHooks['item'] != undefined &&
-                                    formHooks['item']['begin-left'] != undefined">  
-                            <form 
+                                    formHooks['item']['begin-left'] != undefined">
+                            <form
                                 id="form-item-begin-left"
                                 class="form-hook-region"
                                 v-html="formHooks['item']['begin-left'].join('')"/>
@@ -71,7 +71,7 @@
                                                 id="button-edit-document"
                                                 :aria-label="$i18n.get('label_button_edit_document')"
                                                 @click.prevent="setFileDocument($event)">
-                                            <span 
+                                            <span
                                                     v-tooltip="{
                                                         content: $i18n.get('edit'),
                                                         autoHide: true,
@@ -87,7 +87,7 @@
                                                 id="button-delete-document"
                                                 :aria-label="$i18n.get('label_button_delete_document')"
                                                 @click.prevent="removeDocument()">
-                                            <span 
+                                            <span
                                                     v-tooltip="{
                                                         content: $i18n.get('delete'),
                                                         autoHide: true,
@@ -107,7 +107,7 @@
                                                 :aria-label="$i18n.get('label_button_edit_document')"
                                                 id="button-edit-document"
                                                 @click.prevent="setTextDocument()">
-                                            <span 
+                                            <span
                                                     v-tooltip="{
                                                         content: $i18n.get('edit'),
                                                         autoHide: true,
@@ -123,7 +123,7 @@
                                                 :aria-label="$i18n.get('label_button_delete_document')"
                                                 id="button-delete-document"
                                                 @click.prevent="removeDocument()">
-                                            <span 
+                                            <span
                                                     v-tooltip="{
                                                         content: $i18n.get('delete'),
                                                         autoHide: true,
@@ -144,7 +144,7 @@
                                                 :aria-label="$i18n.get('label_button_edit_document')"
                                                 id="button-edit-document"
                                                 @click.prevent="setURLDocument()">
-                                            <span 
+                                            <span
                                                     v-tooltip="{
                                                         content: $i18n.get('edit'),
                                                         autoHide: true,
@@ -175,7 +175,7 @@
                             </div>
                             <ul v-else>
                                 <li>
-                                    <button 
+                                    <button
                                             type="button"
                                             @click.prevent="setFileDocument($event)">
                                         <span class="icon">
@@ -185,7 +185,7 @@
                                     <p>{{ $i18n.get('label_file') }}</p>
                                 </li>
                                 <li>
-                                    <button 
+                                    <button
                                             type="button"
                                             @click.prevent="setTextDocument()">
                                         <span class="icon">
@@ -195,7 +195,7 @@
                                     <p>{{ $i18n.get('label_text') }}</p>
                                 </li>
                                 <li>
-                                    <button 
+                                    <button
                                             type="button"
                                             @click.prevent="setURLDocument()">
                                         <span class="icon">
@@ -252,7 +252,7 @@
                                 :active.sync="isURLModalActive"
                                 :width="640"
                                 scroll="keep"
-                                trap-focus   
+                                trap-focus
                                 role="dialog"
                                 tabindex="-1"
                                 aria-modal
@@ -291,7 +291,7 @@
                                     :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
                                     :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
 
-                        </div>                    
+                        </div>
                         <div class="section-box section-thumbnail">
                             <div class="thumbnail-field">
                                 <file-item
@@ -299,12 +299,13 @@
                                         :show-name="false"
                                         :modal-on-click="false"
                                         :size="178"
-                                        :file="{ 
-                                            media_type: 'image', 
-                                            guid: { rendered: item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] },
-                                            title: { rendered: $i18n.get('label_thumbnail')},
-                                            description: { rendered: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + item.thumbnail.full[0] + `'/>` }}"/>
-                                <figure 
+                                        :file="{
+                                            media_type: 'image',
+                                            thumbnails: { 'tainacan-medium': [ item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] ] },
+                                            title: $i18n.get('label_thumbnail'),
+                                            description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + item.thumbnail.full[0] + `'/>` 
+                                        }"/>
+                                <figure
                                         v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
                                         class="image">
                                     <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
@@ -318,7 +319,7 @@
                                             id="button-edit-thumbnail"
                                             :aria-label="$i18n.get('label_button_edit_thumb')"
                                             @click.prevent="thumbnailMediaFrame.openFrame($event)">
-                                        <span 
+                                        <span
                                                 v-tooltip="{
                                                     content: $i18n.get('edit'),
                                                     autoHide: true,
@@ -334,7 +335,7 @@
                                             class="button is-rounded is-secondary"
                                             :aria-label="$i18n.get('label_button_delete_thumb')"
                                             @click="deleteThumbnail()">
-                                    <span 
+                                    <span
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
                                                 autoHide: true,
@@ -349,25 +350,25 @@
                         </div>
 
                         <!-- Hook for extra Form options -->
-                        <template 
-                                v-if="formHooks != undefined && 
+                        <template
+                                v-if="formHooks != undefined &&
                                     formHooks['item'] != undefined &&
-                                    formHooks['item']['end-left'] != undefined">  
-                            <form 
+                                    formHooks['item']['end-left'] != undefined">
+                            <form
                                 id="form-item-end-left"
                                 class="form-hook-region"
                                 v-html="formHooks['item']['end-left'].join('')"/>
                         </template>
 
-                    </div> 
+                    </div>
                     <div class="column is-7">
 
                         <!-- Hook for extra Form options -->
-                        <template 
-                                v-if="formHooks != undefined && 
+                        <template
+                                v-if="formHooks != undefined &&
                                     formHooks['item'] != undefined &&
-                                    formHooks['item']['begin-right'] != undefined">  
-                            <form 
+                                    formHooks['item']['begin-right'] != undefined">
+                            <form
                                 id="form-item-begin-right"
                                 class="form-hook-region"
                                 v-html="formHooks['item']['begin-right'].join('')"/>
@@ -386,7 +387,7 @@
                                             <span class="icon">
                                                 <i class="tainacan-icon tainacan-icon-collection"/>
                                             </span>
-                                            {{ collectionName }}
+                                            {{ collection && collection.name ? collection.name : '' }}
                                         </span>
                                     </div>
                                 </div>
@@ -429,22 +430,22 @@
                                 </div>
                             </div>
 
-                            <!-- Comment Status ------------------------ --> 
-                            <div 
+                            <!-- Comment Status ------------------------ -->
+                            <div
                                     class="column is-narrow"
-                                    v-if="collectionAllowComments == 'open'">
+                                    v-if="collection && collection.allow_comments && collection.allow_comments == 'open'">
                                 <div class="section-label">
                                     <label>{{ $i18n.get('label_comments') }}</label>
-                                    <help-button 
-                                                :title="$i18n.getHelperTitle('items', 'comment_status')" 
+                                    <help-button
+                                                :title="$i18n.getHelperTitle('items', 'comment_status')"
                                                 :message="$i18n.getHelperMessage('items', 'comment_status')"/>
                                 </div>
                                 <div class="section-status">
                                     <div class="field has-addons">
                                         <b-switch
-                                                id="tainacan-checkbox-comment-status" 
+                                                id="tainacan-checkbox-comment-status"
                                                 size="is-small"
-                                                true-value="open" 
+                                                true-value="open"
                                                 false-value="closed"
                                                 v-model="form.comment_status">
                                             {{ $i18n.get('label_allow_comments') }}
@@ -454,7 +455,7 @@
                             </div>
 
                         </div>
-                        
+
                         <b-tabs v-model="activeTab">
 
                             <!-- Metadata from Collection-------------------------------- -->
@@ -465,13 +466,13 @@
                                     </span>
                                     <span>{{ $i18n.get('metadata') }}</span>
                                 </template>
-             
+
                                 <a
                                         class="collapse-all"
                                         @click="toggleCollapseAll()">
                                     {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                                     <span class="icon">
-                                        <i 
+                                        <i
                                                 :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
                                                 class="tainacan-icon tainacan-icon-20px"/>
                                     </span>
@@ -484,11 +485,11 @@
                                         @changeCollapse="onChangeCollapse($event, index)"/>
 
                                 <!-- Hook for extra Form options -->
-                                <template 
-                                        v-if="formHooks != undefined && 
+                                <template
+                                        v-if="formHooks != undefined &&
                                             formHooks['item'] != undefined &&
-                                            formHooks['item']['end-right'] != undefined">  
-                                    <form 
+                                            formHooks['item']['end-right'] != undefined">
+                                    <form
                                         id="form-item-end-right"
                                         class="form-hook-region"
                                         v-html="formHooks['item']['end-right'].join('')"/>
@@ -510,7 +511,7 @@
                                         </span>
                                     </span>
                                 </template>
-      
+
                                 <div v-if="item != undefined && item.id != undefined">
                                     <br>
                                     <button
@@ -527,38 +528,53 @@
                                             :is-editable="true"
                                             :is-loading.sync="isLoadingAttachments"
                                             @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"
-                                            @onDeleteAttachment="deleteAttachment($event)"/>    
+                                            @onDeleteAttachment="deleteAttachment($event)"/>
                                 </div>
                             </b-tab-item>
 
                         </b-tabs>
                     </div>
                 </div>
-                
+
             </form>
+
+            <!-- In case user enters this page whithout having permission -->
+            <template v-if="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items == false) || (!isCreatingNewItem && item && item.current_user_can_edit != undefined && collection && collection.current_user_can_edit_items == false))">
+                <section class="section">
+                    <div class="content has-text-grey has-text-centered">
+                        <p>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items"/>
+                            </span>
+                        </p>
+                        <p>{{ $i18n.get('info_can_not_edit_item') }}</p>
+                    </div>
+                </section>
+            </template>
+
         </transition>
         <footer class="footer">
             <!-- Sequence Progress -->
-            <div 
+            <div
                     v-if="isOnSequenceEdit"
                     class="sequence-progress-background"/>
-            <div 
+            <div
                     v-if="isOnSequenceEdit && itemPosition != undefined && group != null && group.items_count != undefined"
                     :style="{ width: (itemPosition/group.items_count)*100 + '%' }"
                     class="sequence-progress"/>
-            
-            <!-- Last Updated Info --> 
+
+            <!-- Last Updated Info -->
             <div class="update-info-section">
-                <p 
+                <p
                         class="has-text-gray5"
                         v-if="isOnSequenceEdit">
                     {{ $i18n.get('label_sequence_editing_item') + " " + itemPosition + " " + $i18n.get('info_of') + " " + ((group != null && group.items_count != undefined) ? group.items_count : '') + "." }}
-                </p>       
+                </p>
                 <p v-if="!isUpdatingValues">
                     {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
                     <span class="help is-danger">{{ formErrorMessage }}</span>
-                </p>     
-                <p 
+                </p>
+                <p
                         class="update-warning"
                         v-if="isUpdatingValues">
                     <span class="icon">
@@ -566,53 +582,55 @@
                     </span>
                     {{ $i18n.get('info_updating_metadata_values') }}
                     <span class="help is-danger">{{ formErrorMessage }}</span>
-                </p> 
-            </div>  
-            <div 
+                </p>
+            </div>
+            <div
                     class="form-submission-footer"
                     v-if="form.status == 'trash'">
                 <button 
+                        v-if="item && item.current_user_can_delete"
                         @click="onDeletePermanently()"
                         type="button"
                         class="button is-outlined">{{ $i18n.get('label_delete_permanently') }}</button>
-                <button 
+                <button
                         @click="onSubmit('draft')"
                         type="button"
                         class="button is-secondary">{{ $i18n.get('label_save_as_draft') }}</button>
                 <button 
+                        v-if="collection && collection.current_user_can_publish_items"
                         @click="onSubmit(visibility)"
                         type="button"
                         class="button is-success">{{ $i18n.get('label_publish') }}</button>
             </div>
-            <div 
+            <div
                     class="form-submission-footer"
                     v-if="form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined">
-                <button 
+                <button
                         v-if="isOnSequenceEdit && itemPosition > 1"
                         @click="onPrevInSequence()"
                         type="button"
-                        class="button sequence-button">                    
+                        class="button sequence-button">
                     <span class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-previous"/>
                     </span>
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
                 <button 
-                        v-if="form.status == 'draft' && !isOnSequenceEdit"
+                        v-if="form.status == 'draft' && !isOnSequenceEdit && item && item.current_user_can_delete"
                         @click="onSubmit('trash')"
                         type="button"
                         class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
-                <button 
+                <button
                         v-if="form.status == 'auto-draft'"
                         @click="onDiscard()"
                         type="button"
                         class="button is-outlined">{{ $i18n.get('label_discard') }}</button>
-                <button 
+                <button
                         v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
                         @click="onSubmit('draft')"
                         type="button"
                         class="button is-secondary">{{ form.status == 'draft' ? $i18n.get('label_update') : $i18n.get('label_save_as_draft') }}</button>
-                <button 
+                <button
                         v-else
                         @click="onSubmit('draft'); onNextInSequence();"
                         type="button"
@@ -622,21 +640,35 @@
                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
                     </span>
                 </button>
-                <button 
-                        v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
-                        @click="onSubmit(visibility)"
-                        type="button"
-                        class="button is-success">{{ $i18n.get('label_publish') }}</button>
-                <button 
-                        v-else
-                        @click="onSubmit(visibility, 'next')"
-                        type="button"
-                        class="button is-success">
-                    <span>{{ $i18n.get('label_publish') }}</span>
-                    <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
-                    </span>
-                </button>
+                <template v-if="collection && collection.current_user_can_publish_items">
+                    <button 
+                            v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
+                            @click="onSubmit(visibility)"
+                            type="button"
+                            class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                    <button 
+                            v-else
+                            @click="onSubmit(visibility, 'next')"
+                            type="button"
+                            class="button is-success">
+                        <span>{{ $i18n.get('label_publish') }}</span>
+                        <span class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                        </span>
+                    </button>
+                </template>
+                <template v-else>
+                    <button 
+                            v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count < itemPosition)"
+                            @click="onNextInSequence()"
+                            type="button"
+                            class="button is-success">
+                        <span>{{ $i18n.get('label_next') }}</span>
+                        <span class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                        </span>
+                    </button>
+                </template>
                 <button 
                         v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count == itemPosition)"
                         @click="$router.push($routerHelper.getCollectionPath(form.collectionId))"
@@ -648,10 +680,10 @@
                     <span>{{ $i18n.get('finish') }}</span>
                 </button>
             </div>
-            <div 
+            <div
                     class="form-submission-footer"
                     v-if="form.status == 'publish' || form.status == 'private'">
-                <button 
+                <button
                         v-if="isOnSequenceEdit && itemPosition > 1"
                         @click="onPrevInSequence()"
                         type="button"
@@ -662,16 +694,16 @@
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
                 <button 
-                        v-if="!isOnSequenceEdit"
+                        v-if="!isOnSequenceEdit && item && item.current_user_can_delete"
                         @click="onSubmit('trash')"
                         type="button"
                         class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
-                <button 
+                <button
                         v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
                         @click="onSubmit('draft')"
                         type="button"
                         class="button is-secondary">{{ isOnSequenceEdit ? $i18n.get('label_save_as_draft') : $i18n.get('label_return_to_draft') }}</button>
-                <button 
+                <button
                         v-else
                         @click="onSubmit('draft', 'next')"
                         type="button"
@@ -681,23 +713,38 @@
                         <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
                     </span>
                 </button>
-                <button 
-                        v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
-                        :disabled="formErrorMessage != undefined && formErrorMessage != ''"
-                        @click="onSubmit(visibility)"
-                        type="button"
-                        class="button is-success">{{ $i18n.get('label_update') }}</button>
-                <button 
-                        v-else
-                        :disabled="formErrorMessage != undefined && formErrorMessage != ''"
-                        @click="onSubmit(visibility, 'next')"
-                        type="button"
-                        class="button is-success">
-                    <span>{{ $i18n.get('label_update') }}</span>
-                    <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
-                    </span>
-                </button>
+                <template v-if="collection && collection.current_user_can_publish_items">
+                    <button 
+                            v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
+                            :disabled="formErrorMessage != undefined && formErrorMessage != ''"
+                            @click="onSubmit(visibility)"
+                            type="button"
+                            class="button is-success">{{ $i18n.get('label_update') }}</button>
+                    <button 
+                            v-else
+                            :disabled="formErrorMessage != undefined && formErrorMessage != ''"
+                            @click="onSubmit(visibility, 'next')"
+                            type="button"
+                            class="button is-success">
+                        <span>{{ $i18n.get('label_update') }}</span>
+                        <span class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                        </span>
+                    </button>
+                </template>
+                <template v-else>
+                    <button 
+                            v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count < itemPosition)"
+                            :disabled="formErrorMessage != undefined && formErrorMessage != ''"
+                            @click="onNextInSequence()"
+                            type="button"
+                            class="button is-success">
+                        <span>{{ $i18n.get('label_next') }}</span>
+                        <span class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                        </span>
+                    </button>
+                </template>
                 <button 
                         v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count == itemPosition)"
                         @click="$router.push($routerHelper.getCollectionPath(form.collectionId))"
@@ -759,15 +806,15 @@ export default {
             isTextModalActive: false,
             textLink: '',
             isUpdatingValues: false,
-            collectionName: '',
-            collectionAllowComments: '',
             entityName: 'item',
             activeTab: 0,
             isLoadingAttachments: false,
-            collectionNameSearchCancel: undefined
         }
     },
     computed: {
+        collection() {
+            return this.getCollection()
+        },
         metadatumList() {
             return JSON.parse(JSON.stringify(this.getMetadata()));
         },
@@ -792,8 +839,8 @@ export default {
     watch: {
         '$route.params.itemPosition'(newItemPosition, oldItemPosition) {
             if (oldItemPosition == undefined || oldItemPosition == newItemPosition)
-                this.sequenceRightDirection = undefined;     
-            
+                this.sequenceRightDirection = undefined;
+
             this.itemPosition = Number(newItemPosition);
 
             // Saves current itemPosition to user prefs
@@ -803,7 +850,7 @@ export default {
             this.cleanMetadata();
             eventBus.clearAllErrors();
             this.formErrorMessage = '';
-            
+
             this.isLoading = true;
 
             // Obtains current Item ID from Sequence
@@ -815,9 +862,9 @@ export default {
                 .catch(() => {
                     this.isLoading = false;
                 });
-            
+
             // Obtains current Sequence Group Info
-            this.fetchGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
+            this.fetchSequenceGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
         }
     },
     methods: {
@@ -843,13 +890,15 @@ export default {
             'getLastUpdated'
         ]),
         ...mapActions('collection', [
-            'fetchCollectionName',
-            'fetchCollectionAllowComments',
             'deleteItem',
+        ]),
+        ...mapGetters('collection', [
+            'getCollection',
         ]),
         ...mapActions('bulkedition', [
             'fetchItemIdInSequence',
-            'fetchGroup'
+            'fetchGroup',
+			'fetchSequenceGroup'
         ]),
         ...mapGetters('bulkedition', [
             'getItemIdInSequence',
@@ -858,7 +907,7 @@ export default {
         onSubmit(status, sequenceDirection) {
             // Puts loading on Item edition
             this.isLoading = true;
-            this.sequenceRightDirection = undefined; 
+            this.sequenceRightDirection = undefined;
 
             let previousStatus = this.form.status;
             this.form.status = status;
@@ -873,12 +922,12 @@ export default {
                 promise = this.deleteItem({ itemId: this.itemId, isPermanently: false });
             else
                 promise = this.updateItem(data);
-            
+
             promise.then(updatedItem => {
 
                 this.item = updatedItem;
 
-                // Fills hook forms with it's real values 
+                // Fills hook forms with it's real values
                 this.updateExtraFormData(this.item);
 
                 // Fill this.form data with current data.
@@ -889,7 +938,7 @@ export default {
 
                 this.isLoading = false;
 
-                if (!this.isOnSequenceEdit) {                    
+                if (!this.isOnSequenceEdit) {
                     if (this.form.status != 'trash') {
                         if (previousStatus == 'auto-draft')
                             this.$router.push({ path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), query: { recent: true } });
@@ -908,9 +957,8 @@ export default {
                 if (errors.errors) {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){
-                        eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
-                        }
-                        
+                            eventBus.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                        }   
                     }
                     this.formErrorMessage = errors.error_message;
                 }
@@ -960,7 +1008,10 @@ export default {
                     .catch(() => this.isLoadingAttachments = false);
 
             })
-            .catch(error => this.$console.error(error));
+            .catch((error) => {
+                this.$console.error(error);
+                this.isLoading = false;
+            });
         },
         loadMetadata() {
             // Obtains Item Metadatum
@@ -1053,10 +1104,10 @@ export default {
             this.urlLink = '';
             this.form.document_type = 'empty';
             this.form.document = '';
-            this.updateItemDocument({ 
-                item_id: this.itemId, 
-                document: this.form.document, 
-                document_type: this.form.document_type 
+            this.updateItemDocument({
+                item_id: this.itemId,
+                document: this.form.document,
+                document_type: this.form.document_type
             })
             .then(() => {
                 this.isLoadingAttachments = true;
@@ -1092,9 +1143,9 @@ export default {
                     message: this.$i18n.get('info_warning_attachment_delete'),
                     onConfirm: () => {
                         this.deletePermanentlyAttachment(attachment.id)
-                            .then(() => { 
+                            .then(() => {
                                 this.isLoadingAttachments = true;
-                                
+
                                 this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
                                     .then(() => this.isLoadingAttachments = false)
                                     .catch(() => this.isLoadingAttachments = false);
@@ -1104,7 +1155,7 @@ export default {
                             });
                     }
                 },
-                trapFocus: true 
+                trapFocus: true
             });
 
         },
@@ -1208,10 +1259,10 @@ export default {
             // Initializes Media Frames now that itemId exists
             this.initializeMediaFrames();
 
-            this.fetchItem({ 
-                itemId: this.itemId, 
-                contextEdit: true, 
-                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html' 
+            this.fetchItem({
+                itemId: this.itemId,
+                contextEdit: true,
+                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html'
             })
             .then(res => {
                 this.item = res;
@@ -1225,7 +1276,7 @@ export default {
                     this.$root.$emit('onCollectionBreadCrumbUpdate', [
                         { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
                         { path: '', label: this.$i18n.get('sequence') },
-                        { path: '', label: this.item.title },   
+                        { path: '', label: this.item.title },
                         { path: '', label: this.$i18n.get('edit') }
                     ]);
                 } else {
@@ -1236,18 +1287,18 @@ export default {
                     ]);
                 }
 
-                // Fills hook forms with it's real values 
+                // Fills hook forms with it's real values
                 this.$nextTick()
                     .then(() => {
                         this.updateExtraFormData(this.item);
                     });
-                    
+
                 // Fill this.form data with current data.
                 this.form.status = this.item.status;
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
-                
+
                 if (this.form.document_type != undefined && this.form.document_type == 'url')
                     this.urlLink = this.form.document;
                 if (this.form.document_type != undefined && this.form.document_type == 'text')
@@ -1264,14 +1315,14 @@ export default {
             this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
         },
         onNextInSequence() {
-            this.sequenceRightDirection = true; 
-            this.$router.push({ 
-                path: this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.sequenceId, this.itemPosition + 1), 
+            this.sequenceRightDirection = true;
+            this.$router.push({
+                path: this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.sequenceId, this.itemPosition + 1),
                 query: { collapses: this.metadataCollapses }
             });
         },
         onPrevInSequence() {
-            this.sequenceRightDirection = false; 
+            this.sequenceRightDirection = false;
             this.$router.push({
                 path: this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.sequenceId, this.itemPosition - 1),
                 query: { collapses: this.metadataCollapses }
@@ -1304,7 +1355,7 @@ export default {
             this.isLoading = true;
 
             this.sequenceId = this.$route.params.sequenceId;
-            let savedItemPosition = (this.$userPrefs.get('sequence_' + this.sequenceId + '_position') != undefined ? Number(this.$userPrefs.get('sequence_' + this.sequenceId + '_position')) : 1);            
+            let savedItemPosition = (this.$userPrefs.get('sequence_' + this.sequenceId + '_position') != undefined ? Number(this.$userPrefs.get('sequence_' + this.sequenceId + '_position')) : 1);
             this.itemPosition = this.$route.params.itemPosition != undefined ? Number(this.$route.params.itemPosition) : savedItemPosition;
 
             this.isOnSequenceEdit = true;
@@ -1321,34 +1372,10 @@ export default {
                 .catch(() => {
                     this.isLoading = false;
                 });
-            
+
             // Obtains current Sequence Group Info
-            this.fetchGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
+            this.fetchSequenceGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
         }
-
-        // Obtains collection name
-        if (!this.isRepositoryLevel) {
-
-            // Cancels previous collection name Request
-            if (this.collectionNameSearchCancel != undefined)
-                this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
-
-            this.fetchCollectionName(this.collectionId)
-                .then((resp) => {
-                    resp.request
-                        .then((collectionName) => {
-                            this.collectionName = collectionName;
-                        });
-                    
-                    // Search Request Token for cancelling
-                    this.collectionNameSearchCancel = resp.source;
-                })
-        }
-        
-        // Obtains if collection allow items comments
-        this.fetchCollectionAllowComments(this.collectionId).then((collectionAllowComments) => {
-            this.collectionAllowComments = collectionAllowComments;
-        });
 
         // Sets feedback variables
         eventBus.$on('isUpdatingValue', (status) => {
@@ -1357,7 +1384,7 @@ export default {
         eventBus.$on('hasErrorsOnForm', (hasErrors) => {
             if (hasErrors)
                 this.formErrorMessage = this.$i18n.get('info_errors_in_form');
-            else 
+            else
                 this.formErrorMessage = '';
         });
         this.cleanLastUpdated();
@@ -1365,10 +1392,6 @@ export default {
     beforeDestroy () {
         eventBus.$off('isUpdatingValue');
         eventBus.$off('hasErrorsOnForm');
-
-        // Cancels previous collection name Request
-        if (this.collectionNameSearchCancel != undefined)
-            this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
     },
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
@@ -1384,10 +1407,10 @@ export default {
                     },
                 },
                 trapFocus: true
-            });  
+            });
         } else {
             next()
-        }  
+        }
     }
 }
 </script>
@@ -1444,7 +1467,7 @@ export default {
                 margin-top: 5px;
             }
             hr{
-                margin: 3px 0px 4px 0px; 
+                margin: 3px 0px 4px 0px;
                 height: 1px;
                 background-color: $secondary;
                 width: 100%;
@@ -1503,8 +1526,8 @@ export default {
 
     .collapse-all {
         font-size: 12px;
-        .icon { 
-            vertical-align: bottom; 
+        .icon {
+            vertical-align: bottom;
         }
     }
 
@@ -1537,9 +1560,9 @@ export default {
         }
     }
     .section-status {
-        padding-bottom: 16px; 
-        font-size: 0.75rem; 
-        
+        padding-bottom: 16px;
+        font-size: 0.75rem;
+
         .field {
             padding: 10px 0 14px 0px !important;
 
@@ -1548,13 +1571,13 @@ export default {
                 margin-left: 0;
             }
             .icon  {
-                font-size: 18px !important; 
+                font-size: 18px !important;
                 color: $gray3;
             }
         }
     }
 
-    .document-field {  
+    .document-field {
         .document-buttons-row {
             text-align: right;
             top: -21px;
@@ -1562,9 +1585,9 @@ export default {
         }
     }
 
-    #button-edit-thumbnail, 
+    #button-edit-thumbnail,
     #button-edit-document,
-    #button-delete-thumbnail, 
+    #button-delete-thumbnail,
     #button-delete-document {
 
         border-radius: 100px !important;
@@ -1575,7 +1598,7 @@ export default {
         padding: 0 !important;
         z-index: 99;
         margin-left: 12px !important;
-        
+
         .icon {
             display: inherit;
             padding: 0;
@@ -1607,7 +1630,7 @@ export default {
             top: 70px;
             max-width: 90px;
         }
-    
+
         .thumbnail-buttons-row {
             position: relative;
             left: 90px;
@@ -1627,7 +1650,7 @@ export default {
         justify-content: flex-end;
         align-items: center;
 
-        .form-submission-footer {    
+        .form-submission-footer {
             .button {
                 margin-left: 16px;
                 margin-right: 6px;

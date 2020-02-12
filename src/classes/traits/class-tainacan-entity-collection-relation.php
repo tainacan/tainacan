@@ -15,21 +15,19 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 trait Entity_Collection_Relation {
 
 	/**
-	 * 
+	 *
 	 * @return int collection item ID
 	 */
     public function get_collection_id() {
         return $this->get_mapped_property('collection_id');
     }
-    
+
     /**
      * Return Collection from relation
      * @return Entities\Collection|NULL Return Collection or null on errors
      */
     public function get_collection() {
-    	if (isset($this->collection) && $this->collection instanceof Entities\Collection)
-            return $this->collection;
-        
+
         if (is_numeric($this->get_collection_id())) {
             $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
@@ -39,19 +37,19 @@ trait Entity_Collection_Relation {
                 return $this->collection;
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * Set collection ID
      * @param int $value
      */
     public function set_collection_id($value) {
         $this->collection = null;
-        $this->set_mapped_property('collection_id', $value);  
+        $this->set_mapped_property('collection_id', $value);
     }
-    
+
     /**
      * set collection object and id
      * @param Entities\Collection $collection

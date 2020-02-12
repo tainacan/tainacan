@@ -4,6 +4,7 @@
             v-if="(termsList.length > 0 || searchQuery != '') && !isLoadingTerms"
             class="terms-list-header">
         <button
+                v-if="currentUserCanEditTaxonomy"
                 class="button is-secondary"
                 type="button"
                 @click="addNewTerm(0)"
@@ -96,7 +97,8 @@
                         :term="term"
                         :index="index"
                         :taxonomy-id="taxonomyId"
-                        :order="order"/>
+                        :order="order"
+                        :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"/>
             </div>
             <a 
                     class="view-more-terms-level-0"
@@ -117,7 +119,8 @@
                         :term="term"
                         :index="index"
                         :taxonomy-id="taxonomyId"
-                        :order="order"/>
+                        :order="order" 
+                        :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"/>
             </div>
             <a 
                     class="view-more-terms-level-0"
@@ -145,12 +148,12 @@
             <div class="content has-text-grey has-text-centered">
                 <p>
                     <span class="icon is-medium">
-                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-terms"/>
+                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms"/>
                     </span>
                 </p>
                 <p>{{ searchQuery != '' ? $i18n.get('info_no_terms_found') : $i18n.get('info_no_terms_created_on_taxonomy') }}</p>
                 <button
-                        v-if="searchQuery == ''"
+                        v-if="searchQuery == '' && currentUserCanEditTaxonomy"
                         id="button-create-term"
                         class="button is-secondary"
                         @click="addNewTerm(0)">
@@ -195,6 +198,7 @@ export default {
     },
     props: {
         taxonomyId: String,
+        currentUserCanEditTaxonomy: Boolean
     },
     computed: {
         termsList() {

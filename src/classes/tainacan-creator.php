@@ -14,6 +14,7 @@ const TAINACAN_EXPOSERS_DIR		= __DIR__ . '/../exposers/';
 const TAINACAN_MAPPERS_DIR		= __DIR__ . '/../mappers/';
 const TAINACAN_OAIPMH_DIR		= __DIR__ . '/../oaipmh-expose/';
 const TAINACAN_CLI_DIR		= __DIR__ . '/../cli/';
+const TAINACAN_GENERIC_BACKGROUND_PROCESS = __DIR__ . '/../generic-background-process/';
 
 const DIRS = [
     TAINACAN_CLASSES_DIR,
@@ -29,7 +30,8 @@ const DIRS = [
 	TAINACAN_EXPOSERS_DIR,
 	TAINACAN_MAPPERS_DIR,
     TAINACAN_OAIPMH_DIR,
-	TAINACAN_CLI_DIR
+	TAINACAN_CLI_DIR,
+	TAINACAN_GENERIC_BACKGROUND_PROCESS
 ];
 
 require_once('libs/wp-async-request.php');
@@ -46,6 +48,10 @@ require_once(TAINACAN_MAPPERS_DIR . 'class-tainacan-mappers-handler.php');
 
 require_once(TAINACAN_EXPORTER_DIR . 'class-tainacan-bg-exporter.php');
 require_once(TAINACAN_EXPORTER_DIR . 'class-tainacan-export-handler.php');
+
+require_once(TAINACAN_GENERIC_BACKGROUND_PROCESS . 'class-tainacan-bg-generic.php');
+require_once(TAINACAN_GENERIC_BACKGROUND_PROCESS . 'class-tainacan-generic-process.php');
+require_once(TAINACAN_GENERIC_BACKGROUND_PROCESS . 'class-tainacan-generic-handler.php');
 
 spl_autoload_register('tainacan_autoload');
 
@@ -70,6 +76,8 @@ function tainacan_autoload($class_name){
 			if (file_exists("$dir$dir_import/")) {
 				$dir .= "$dir_import/";
 			}
+		} else if( isset( $class_path[1] ) && $class_path[1] === 'GenericBackgroundProcess' ) {
+			$dir = TAINACAN_GENERIC_BACKGROUND_PROCESS;
 		} else if( isset( $class_path[1] ) && $class_path[1] === 'Exporter' ) {
 			$dir = TAINACAN_EXPORTER_DIR;
 		} else if( isset( $class_path[1] ) && $class_path[1] === 'Exposers' ){
@@ -177,7 +185,7 @@ $Tainacan_Elastic_press = \Tainacan\Elastic_Press::get_instance();
 require_once(__DIR__ . '/class-tainacan-background-process-heartbeat.php');
 $Tainacan_Importer_Heartbeat = new \Tainacan\Background_Importer_Heartbeat();
 
-$Tainacan_Capabilities = \Tainacan\Capabilities::get_instance();
+$Tainacan_Roles = \Tainacan\Roles::get_instance();
 
 $TainacanPrivateFiles = \Tainacan\Private_Files::get_instance();
 
@@ -188,5 +196,6 @@ if (class_exists('WP_CLI')) {
 	$Tainacan_Cli = \Tainacan\Cli::get_instance();
 }
 
+include_once('tainacan-loaders.php');
 
 ?>

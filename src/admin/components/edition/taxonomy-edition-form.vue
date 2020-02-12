@@ -4,14 +4,14 @@
             <tainacan-title 
                     :bread-crumb-items="[
                         { path: $routerHelper.getTaxonomiesPath(), label: $i18n.get('taxonomies') },
-                        { path: '', label: (taxonomy!= null && taxonomy.name != undefined) ? taxonomy.name : $i18n.get('taxonomy') }
+                        { path: '', label: (taxonomy != null && taxonomy.name != undefined) ? taxonomy.name : $i18n.get('taxonomy') }
                     ]"/>
             <b-tabs 
                     @change="onChangeTab($event)"
                     v-model="tabIndex">    
                 <b-tab-item :label="$i18n.get('taxonomy')">
                     <form 
-                            v-if="taxonomy != null && taxonomy != undefined" 
+                            v-if="taxonomy != null && taxonomy != undefined && (($route.name == 'TaxonomyCreationForm' && $userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyEditionForm' && taxonomy.current_user_can_edit))"
                             class="tainacan-form" 
                             label-width="120px">
                         <div class="columns">
@@ -193,6 +193,20 @@
                         </div>
                         <p class="help is-danger">{{ formErrorMessage }}</p>
                     </form>
+
+                    <div v-if="!isLoading && (($route.name == 'TaxonomyCreationForm' && !$userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyEditionForm' && taxonomy && taxonomy.current_user_can_edit != undefined && !taxonomy.current_user_can_edit))">
+                        <section class="section">
+                            <div class="content has-text-grey has-text-centered">
+                                <p>
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-taxonomies"/>
+                                    </span>
+                                </p>
+                                <p>{{ $i18n.get('info_can_not_edit_taxonomy') }}</p>
+                            </div>
+                        </section>
+                    </div>
+
                 </b-tab-item>
                 
                 <b-tab-item :label="$i18n.get('terms')">
@@ -200,7 +214,8 @@
                     <terms-list
                             :key="shouldReloadTermsList ? 'termslistreloaded' : 'termslist'" 
                             @isEditingTermUpdate="isEditingTermUpdate"
-                            :taxonomy-id="taxonomyId"/>
+                            :taxonomy-id="taxonomyId"
+                            :current-user-can-edit-taxonomy="taxonomy ? taxonomy.current_user_can_edit : false"/>
                 </b-tab-item>
 
                 <b-loading 
@@ -250,20 +265,22 @@
         beforeRouteLeave( to, from, next ) {
             let formNotSaved = false;
 
-            if (this.taxonomy.name != this.form.name)
-                formNotSaved = true;
-            if (this.taxonomy.description != this.form.description)
-                formNotSaved = true;
-            if (this.taxonomy.slug != this.form.slug)
-                formNotSaved = true;
-            if (this.taxonomy.allow_insert != this.form.allowInsert)
-                formNotSaved = true;
-            if (this.taxonomy.status != this.form.status)
-                formNotSaved = true;
-            if (this.taxonomy.enabled_post_types != this.form.enabledPostTypes)
-                formNotSaved = true;
+            if (this.taxonomy) {
+                if (this.taxonomy.name != this.form.name)
+                    formNotSaved = true;
+                if (this.taxonomy.description != this.form.description)
+                    formNotSaved = true;
+                if (this.taxonomy.slug != this.form.slug)
+                    formNotSaved = true;
+                if (this.taxonomy.allow_insert != this.form.allowInsert)
+                    formNotSaved = true;
+                if (this.taxonomy.status != this.form.status)
+                    formNotSaved = true;
+                if (this.taxonomy.enabled_post_types != this.form.enabledPostTypes)
+                    formNotSaved = true;
+            }
 
-            if (formNotSaved) {
+            if (formNotSaved && this.taxonomy) {
                 this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
@@ -324,14 +341,14 @@
                     slug: this.form.slug ? this.form.slug : '',
                     status: this.form.status,
                     allow_insert: this.form.allowInsert,
-                    enabled_post_types: this.form.enabledPostTypes
+                    enabled_post_types: this.form.enabledPostTypes,
+                    context: 'edit'
                 };
                 this.fillExtraFormData(data);
                 this.updateTaxonomy(data)
                     .then(updatedTaxonomy => {
 
                         this.taxonomy = updatedTaxonomy;
-
                         // Fills hook forms with it's real values 
                         this.updateExtraFormData(this.taxonomy);
 
@@ -346,7 +363,6 @@
                         this.isLoadingTaxonomy = false;
                         this.formErrorMessage = '';
                         this.editFormErrors = {};
-
                         // Updates saved at message
                         let now = new Date();
                         this.updatedAt = now.toLocaleString();
@@ -420,7 +436,10 @@
                         this.shouldReloadTermsList = false;
 
                     })
-                    .catch(error => this.$console.error(error));
+                    .catch((error) => {
+                        this.$console.error(error)
+                        this.isLoadingTaxonomy = false;
+                    });
             },
             clearErrors(attribute) {
                 this.editFormErrors[attribute] = undefined;
@@ -474,25 +493,27 @@
                 this.pathArray = this.$route.fullPath.split("/").reverse();
                 this.taxonomyId = this.pathArray[1];
 
-                this.fetchTaxonomy(this.taxonomyId).then(res => {
-                    this.taxonomy = res.taxonomy;
+                this.fetchTaxonomy({ taxonomyId: this.taxonomyId, isContextEdit: true })
+                    .then(res => {
+                        this.taxonomy = res.taxonomy;
 
-                    // Fills hook forms with it's real values 
-                    this.$nextTick()
-                        .then(() => {
-                            this.updateExtraFormData(this.taxonomy);
-                        });
+                        // Fills hook forms with it's real values 
+                        this.$nextTick()
+                            .then(() => {
+                                this.updateExtraFormData(this.taxonomy);
+                            });
 
-                    // Fill this.form data with current data.
-                    this.form.name = this.taxonomy.name;
-                    this.form.description = this.taxonomy.description;
-                    this.form.slug = this.taxonomy.slug;
-                    this.form.status = this.taxonomy.status;
-                    this.form.allowInsert = this.taxonomy.allow_insert;
-                    this.form.enabledPostTypes = this.taxonomy.enabled_post_types;
+                        // Fill this.form data with current data.
+                        this.form.name = this.taxonomy.name;
+                        this.form.description = this.taxonomy.description;
+                        this.form.slug = this.taxonomy.slug;
+                        this.form.status = this.taxonomy.status;
+                        this.form.allowInsert = this.taxonomy.allow_insert;
+                        this.form.enabledPostTypes = this.taxonomy.enabled_post_types;
 
-                    this.isLoadingTaxonomy = false;
-                });
+                        this.isLoadingTaxonomy = false;
+                    })
+                    .catch(() => this.isLoadingTaxonomy = false);
             }
         }
     }

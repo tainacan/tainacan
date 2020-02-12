@@ -459,7 +459,7 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	    $collection = $Tainacan_collections->fetch($id);
 	    
 	    $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
-	    $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [ 'order' => 'id' ], 'OBJECT' );
+	    $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [ 'order' => 'id' ] );
 	    
 	    $this->assertEquals(count($mapper->metadata), count($metadata));
 	    foreach ($metadata as $metadatum) {

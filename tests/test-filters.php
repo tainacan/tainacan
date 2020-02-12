@@ -281,7 +281,7 @@ class Filters extends TAINACAN_UnitTestCase {
 	        true
         );
 
-        $retrieve_filters =  $Tainacan_Filters->fetch_by_collection( $collection_son, [], 'OBJECT' );
+        $retrieve_filters =  $Tainacan_Filters->fetch_by_collection( $collection_son );
 
 		$retrieve_filters_ids =  $Tainacan_Filters->fetch_ids_by_collection( $collection_son, [] );
 

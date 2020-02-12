@@ -116,10 +116,10 @@ class Terms extends Repository {
 		if ( ! $term->get_validated() ) {
 			throw new \Exception( 'Entities must be validated before you can save them' );
 		}
-		
+
 		do_action( 'tainacan-pre-insert', $term );
 		do_action( 'tainacan-pre-insert-term', $term );
-		
+
 		// First iterate through the native post properties
 		$map = $this->get_map();
 		foreach ( $map as $prop => $mapped ) {
@@ -151,7 +151,7 @@ class Terms extends Repository {
 				'description' => $term->get_description(),
 			] );
 		}
-		
+
 		if ( is_wp_error($term_saved) ) {
 			throw new \Exception( 'Error adding term ' . $term->get_name() . ' - ' . $term_saved->get_error_message() );
 		}
@@ -162,7 +162,7 @@ class Terms extends Repository {
 				update_term_meta( $term_saved['term_id'], $prop, wp_slash( $term->get_mapped_property( $prop ) ) );
 			}
 		}
-		
+
 		$new_entity = new Entities\Term( $term_saved['term_id'], $term->get_taxonomy() );
 
 		do_action( 'tainacan-insert', $new_entity );
@@ -170,7 +170,7 @@ class Terms extends Repository {
 
 		return $new_entity;
 	}
-	
+
 	// TODO: Is this workaround ok to avoid getting htmlentities ?
 	function get_mapped_property($entity, $prop) {
 		$property = parent::get_mapped_property($entity, $prop);
@@ -235,7 +235,7 @@ class Terms extends Repository {
 			}
 
 			return $return;
-		} elseif ( is_numeric( $args ) ) { 
+		} elseif ( is_numeric( $args ) ) {
 			$wp_term       = get_term( (int) $args, $cpt );
 			$tainacan_term = new Entities\Term( $wp_term );
 			return $tainacan_term;
@@ -256,12 +256,12 @@ class Terms extends Repository {
 	 */
 	public function delete( Entities\Entity $term, $permanent = true ) {
 		$deleted = $term;
-		
+
 		$permanent = true; // there is no such option for terms
-		
+
 		do_action( 'tainacan-pre-delete', $deleted, $permanent );
 		do_action( 'tainacan-pre-delete-term', $deleted, $permanent );
-		
+
 		$return = wp_delete_term( $term->get_id(), $term->get_taxonomy() );
 
 		if ( $deleted ) {
@@ -271,16 +271,16 @@ class Terms extends Repository {
 
 		return $return;
 	}
-	
+
 	/**
-	* Check if a term already exists 
+	* Check if a term already exists
 	*
-	* @param string $searched_term The term name (string) or term_id (integer). If term id is passed, parent is not considered. 
+	* @param string $searched_term The term name (string) or term_id (integer). If term id is passed, parent is not considered.
 	* @param mixed $taxonomy The taxonomy ID, slug or Entity.
-	* @param int $parent The ID of the parent term to look for children or null to look for terms in any hierarchical position. Default is null 
-	* @param bool $return_term wether to return the term object if it exists. default is to false 
-	* 
-	* @return bool|WP_Term return boolean indicating if term exists. If $return_term is true and term exists, return WP_Term object 
+	* @param int $parent The ID of the parent term to look for children or null to look for terms in any hierarchical position. Default is null
+	* @param bool $return_term wether to return the term object if it exists. default is to false
+	*
+	* @return bool|WP_Term return boolean indicating if term exists. If $return_term is true and term exists, return WP_Term object
 	*/
 	public function term_exists($searched_term, $taxonomy, $parent = null, $return_term = false) {
 		if ($searched_term == "") {
@@ -298,13 +298,13 @@ class Terms extends Repository {
 		}
 
 		if(is_int($searched_term)){
-			
+
 			$term = get_term_by( 'id', $searched_term, $taxonomy_slug );
-			
+
 			if ( ! $term ) {
 				return false;
 			}
-			
+
 		} else {
 			$args = [
 				'name'            => $searched_term,
@@ -313,30 +313,121 @@ class Terms extends Repository {
 				'hide_empty'      => 0,
 				'suppress_filter' => true
 			];
-			
+
 			if (is_null($parent)) {
 				unset($args['parent']);
 			}
-			
+
 			$terms = get_terms($args);
-			
+
 			if (empty($terms)) {
 				return false;
 			}
-			
+
 			$term = $terms[0];
-			
+
 		}
-		
+
 		if ($return_term) {
 			return $term;
 		}
-		
+
 		return true;
-		
+
 	}
 
 
 	public function register_post_type() {
+	}
+
+	/**
+	 * Check if $user can edit/create a entity
+	 *
+	 * @param Entities\Entity $entity
+	 * @param int|\WP_User|null $user default is null for the current user
+	 *
+	 * @return boolean
+	 * @throws \Exception
+	 */
+	public function can_edit( Entities\Entity $term, $user = null ) {
+		$taxonomy = null;
+		if ( $term instanceof Entities\Term ) {
+			$taxonomy = \tainacan_taxonomies()->fetch_by_db_identifier( $term->get_taxonomy() );
+		}
+
+		if ( ! $taxonomy instanceof Entities\Taxonomy ) {
+			return false;
+		}
+
+		return $taxonomy->can_edit();
+
+
+	}
+
+	/**
+	 * Check if $user can read the entity
+	 *
+	 * @param Entities\Entity $term
+	 * @param int|\WP_User|null $user default is null for the current user
+	 *
+	 * @return boolean
+	 * @throws \Exception
+	 */
+	public function can_read( Entities\Entity $term, $user = null ) {
+		$taxonomy = null;
+		if ( $term instanceof Entities\Term ) {
+			$taxonomy = \tainacan_taxonomies()->fetch_by_db_identifier( $term->get_taxonomy() );
+		}
+
+		if ( ! $taxonomy instanceof Entities\Taxonomy ) {
+			return false;
+		}
+
+		return $taxonomy->can_read();
+	}
+
+	/**
+	 * Check if $user can delete the entity
+	 *
+	 * @param Entities\Entity $entity
+	 * @param int|\WP_User|null $user default is null for the current user
+	 *
+	 * @return boolean
+	 * @throws \Exception
+	 */
+	public function can_delete( $term, $user = null ) {
+		$taxonomy = null;
+		if ( $term instanceof Entities\Term ) {
+			$taxonomy = \tainacan_taxonomies()->fetch_by_db_identifier( $term->get_taxonomy() );
+		}
+
+		if ( ! $taxonomy instanceof Entities\Taxonomy ) {
+			return false;
+		}
+
+		return $taxonomy->can_edit(); // if user can EDIT taxonomy, it means he can delete terms
+	}
+
+	/**
+	 * Check if $user can publish entity
+	 *
+	 * @param Entities\Entity $entity
+	 * @param int|\WP_User|null $user default is null for the current user
+	 *
+	 * @return boolean
+	 * @throws \Exception
+	 */
+	public function can_publish(Entities\Entity $term, $user = null) {
+		$taxonomy = null;
+		if ( $term instanceof Entities\Term ) {
+			$taxonomy = \tainacan_taxonomies()->fetch_by_db_identifier( $term->get_taxonomy() );
+		}
+
+		if ( ! $taxonomy instanceof Entities\Taxonomy ) {
+			return false;
+		}
+
+		return $taxonomy->can_edit(); // if user can EDIT taxonomy, it means he can publish terms
+
 	}
 }

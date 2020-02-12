@@ -40,6 +40,8 @@ class Metadata extends Repository {
 		add_filter( 'pre_trash_post', array( &$this, 'disable_delete_core_metadata' ), 10, 2 );
 		add_filter( 'pre_delete_post', array( &$this, 'force_delete_core_metadata' ), 10, 3 );
 
+		add_action('tainacan-insert-tainacan-taxonomy', [$this, 'hook_taxonomies_saved_as_private']);
+
 	}
 
 	/**
@@ -238,7 +240,7 @@ class Metadata extends Repository {
 			'rewrite'             => true,
 			'map_meta_cap'        => true,
 			'show_in_nav_menus'   => false,
-			'capability_type'     => Entities\Metadatum::get_capability_type(),
+			'capabilities'        => (array) $this->get_capabilities(),
 			'supports'            => [
 				'title',
 				'editor',
@@ -364,41 +366,87 @@ class Metadata extends Repository {
 	 *
 	 * @param Entities\Collection $collection
 	 * @param array $args WP_Query args plus disabled_metadata
-	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
 	 *
 	 * @return array Entities\Metadatum
 	 * @throws \Exception
 	 */
-	public function fetch_by_collection( Entities\Collection $collection, $args = [], $output = null ) {
+	public function fetch_by_collection( Entities\Collection $collection, $args = [] ) {
 		$collection_id = $collection->get_id();
 
 		//get parent collections
 		$parents = get_post_ancestors( $collection_id );
 
 		//insert the actual collection
-		$parents[] = $collection_id;
+		if ( is_numeric($collection_id) ) {
+			$parents[] = $collection_id;
+		}
 
 		//search for default metadatum
 		$parents[] = $this->get_default_metadata_attribute();
 
-		$meta_query = array(
-			'key'     => 'collection_id',
-			'value'   => $parents,
-			'compare' => 'IN',
-		);
+		$results = [];
 
 		$args = array_merge( [
 			'parent' => 0
 		], $args );
 
-		if ( isset( $args['meta_query'] ) ) {
+		$original_meta_q = isset( $args['meta_query'] ) ? $args['meta_query'] : [];
+
+		/**
+		 * Since we introduced roles & capabalities management, we can not rely
+		 * on WordPress behavior when handling default post status values.
+		 * WordPress checks if the current user can read_priva_posts, but this is
+		 * not enough for us. We have to handle this ourselves to mimic WordPress behavior
+		 * considering how tainacan manages metadata capabilities
+		 */
+		if ( ! isset($args['post_status']) ) {
+
+			foreach ( $parents as $parent_id ) {
+
+				// Add public states.
+				$statuses = get_post_stati( array( 'public' => true ) );
+
+				$read_private_cap = $this->get_default_metadata_attribute() == $parent_id ? 'tnc_rep_read_private_metadata' : 'tnc_col_' . $parent_id . '_read_private_metadata';
+				if ( current_user_can($read_private_cap) ) {
+					$statuses = array_merge( $statuses, get_post_stati( array( 'private' => true ) ) );
+				}
+
+				$args['post_status'] = $statuses;
+
+				$meta_query = array(
+					'key'     => 'collection_id',
+					'value'   => $parent_id,
+				);
+
+				$args['meta_query'] = $original_meta_q;
+				$args['meta_query'][] = $meta_query;
+
+				//var_dump($args);
+				$results = array_merge($results, $this->fetch( $args, 'OBJECT' ));
+
+			}
+
+		} else {
+			$meta_query = array(
+				'key'     => 'collection_id',
+				'value'   => $parents,
+				'compare' => 'IN',
+			);
+
+			$args = array_merge( [
+				'parent' => 0
+			], $args );
+
+			$args['meta_query'] = $original_meta_q;
 			$args['meta_query'][] = $meta_query;
-		} elseif ( is_array( $args ) ) {
-			$args['meta_query'] = array( $meta_query );
+
+			$results = $this->fetch( $args, 'OBJECT' );
 		}
 
+
+
 		return $this->order_result(
-			$this->fetch( $args, $output ),
+			$results,
 			$collection,
 			isset( $args['include_disabled'] ) ? $args['include_disabled'] : false
 		);
@@ -427,28 +475,72 @@ class Metadata extends Repository {
 		$parents = get_post_ancestors( $collection_id );
 
 		//insert the actual collection
-		$parents[] = $collection_id;
+		if ( is_numeric($collection_id) ) {
+			$parents[] = $collection_id;
+		}
 
 		//search for default metadatum
 		$parents[] = $this->get_default_metadata_attribute();
 
-		$meta_query = array(
-			'key'     => 'collection_id',
-			'value'   => $parents,
-			'compare' => 'IN',
-		);
+		$results = [];
 
 		$args = array_merge( [
 			'parent' => 0
 		], $args );
 
-		if ( isset( $args['meta_query'] ) ) {
+		$original_meta_q = isset( $args['meta_query'] ) ? $args['meta_query'] : [];
+
+		/**
+		 * Since we introduced roles & capabalities management, we can not rely
+		 * on WordPress behavior when handling default post status values.
+		 * WordPress checks if the current user can read_priva_posts, but this is
+		 * not enough for us. We have to handle this ourselves to mimic WordPress behavior
+		 * considering how tainacan manages metadata capabilities
+		 */
+		if ( ! isset($args['post_status']) ) {
+
+			foreach ( $parents as $parent_id ) {
+
+				// Add public states.
+				$statuses = get_post_stati( array( 'public' => true ) );
+
+				$read_private_cap = $this->get_default_metadata_attribute() == $parent_id ? 'tnc_rep_read_private_metadata' : 'tnc_col_' . $parent_id . '_read_private_metadata';
+				if ( current_user_can($read_private_cap) ) {
+					$statuses = array_merge( $statuses, get_post_stati( array( 'private' => true ) ) );
+				}
+
+				$args['post_status'] = $statuses;
+
+				$meta_query = array(
+					'key'     => 'collection_id',
+					'value'   => $parent_id,
+				);
+
+				$args['meta_query'] = $original_meta_q;
+				$args['meta_query'][] = $meta_query;
+
+				$results = array_merge($results, $this->fetch_ids( $args ));
+
+			}
+
+		} else {
+			$meta_query = array(
+				'key'     => 'collection_id',
+				'value'   => $parents,
+				'compare' => 'IN',
+			);
+
+			$args = array_merge( [
+				'parent' => 0
+			], $args );
+
+			$args['meta_query'] = $original_meta_q;
 			$args['meta_query'][] = $meta_query;
-		} elseif ( is_array( $args ) ) {
-			$args['meta_query'] = array( $meta_query );
+
+			$results = $this->fetch_ids( $args );
 		}
 
-		return $this->fetch_ids( $args );
+		return $results;
 	}
 
 	/**
@@ -456,11 +548,11 @@ class Metadata extends Repository {
 	 * metadata not ordinated appear on the end of the list
 	 *
 	 *
-	 * @param \WP_Query|array $result Response from method fetch
+	 * @param array $result Response from method fetch_by_collection
 	 * @param Entities\Collection $collection
 	 * @param bool $include_disabled Wether to include disabled metadata in the results or not
 	 *
-	 * @return array or WP_Query ordinate
+	 * @return array
 	 */
 	public function order_result( $result, Entities\Collection $collection, $include_disabled = false ) {
 		$order = $collection->get_metadata_order();
@@ -495,29 +587,8 @@ class Metadata extends Repository {
 				$result_ordinate = array_merge( $result_ordinate, $not_ordinate );
 
 				return $result_ordinate;
-			} // if the result is a wp query object
-			else {
-				$posts           = $result->posts;
-				$result_ordinate = [];
-				$not_ordinate    = [];
-
-				foreach ( $posts as $item ) {
-					$id    = $item->ID;
-					$index = array_search( $id, array_column( $order, 'id' ) );
-
-					if ( $index !== false ) {
-						$result_ordinate[ $index ] = $item;
-					} else {
-						$not_ordinate[] = $item;
-					}
-				}
-
-				ksort( $result_ordinate );
-				$result->posts = $result_ordinate;
-				$result->posts = array_merge( $result->posts, $not_ordinate );
-
-				return $result;
 			}
+
 		}
 
 		return $result;
@@ -609,8 +680,8 @@ class Metadata extends Repository {
 			"UPDATE $wpdb->postmeta
 				SET meta_key = %s
 				WHERE meta_key = %s AND post_id IN (
-				SELECT ID 
-				FROM $wpdb->posts 
+				SELECT ID
+				FROM $wpdb->posts
 				WHERE post_type = %s
 			)", $new_title_metadatum->get_id(), $old_title_metadatum->get_id(), $item_post_type
 		);
@@ -621,8 +692,8 @@ class Metadata extends Repository {
 			"UPDATE $wpdb->postmeta
 				SET meta_key = %s
 				WHERE meta_key = %s AND post_id IN (
-				SELECT ID 
-				FROM $wpdb->posts 
+				SELECT ID
+				FROM $wpdb->posts
 				WHERE post_type = %s
 			)", $new_description_metadatum->get_id(), $old_description_metadatum->get_id(), $item_post_type
 		);
@@ -639,7 +710,7 @@ class Metadata extends Repository {
 	 * @return array
 	 */
 	private function get_data_core_metadata( Entities\Collection $collection ) {
-    
+
 		return $data_core_metadata = [
 			'core_description' => [
 				'name'            => 'Description',
@@ -706,11 +777,11 @@ class Metadata extends Repository {
 	 * @throws \Exception
 	 */
 	public function disable_delete_core_metadata( $before, $post ) {
-		
+
 		if ( Entities\Metadatum::get_post_type() != $post->post_type ) {
 			return null;
 		}
-		
+
 		$metadatum = $this->fetch( $post->ID );
 
 		if ( $metadatum && in_array( $metadatum->get_metadata_type(), $this->core_metadata ) && is_numeric( $metadatum->get_collection_id() ) ) {
@@ -730,11 +801,11 @@ class Metadata extends Repository {
 	 * @internal param The $post_id post ID which is deleting
 	 */
 	public function force_delete_core_metadata( $before, $post, $force_delete ) {
-		
+
 		if ( Entities\Metadatum::get_post_type() != $post->post_type ) {
 			return null;
 		}
-		
+
 		$metadatum = $this->fetch( $post->ID );
 
 		if ( $metadatum && in_array( $metadatum->get_metadata_type(), $this->core_metadata ) && is_numeric( $metadatum->get_collection_id() ) ) {
@@ -761,7 +832,7 @@ class Metadata extends Repository {
 				]
 			],
 			'include_disabled' => true
-		], 'OBJECT' );
+		] );
 
 	}
 
@@ -783,7 +854,7 @@ class Metadata extends Repository {
 				]
 			],
 			'posts_per_page' => 1
-		], 'OBJECT' );
+		] );
 
 		if ( is_array( $results ) && sizeof( $results ) == 1 && $results[0] instanceof \Tainacan\Entities\Metadatum ) {
 			return $results[0];
@@ -810,7 +881,7 @@ class Metadata extends Repository {
 				]
 			],
 			'posts_per_page' => 1
-		], 'OBJECT' );
+		] );
 
 		if ( is_array( $results ) && sizeof( $results ) == 1 && $results[0] instanceof \Tainacan\Entities\Metadatum ) {
 			return $results[0];
@@ -846,7 +917,7 @@ class Metadata extends Repository {
 
 
 	/**
-	  * Return all possible values for a metadatum 
+	  * Return all possible values for a metadatum
 	  *
 	  * Each metadata is a label with the metadatum name and the value.
 	  *
@@ -856,32 +927,32 @@ class Metadata extends Repository {
 	  * @param int $metadatum_id 	The ID of the metadata to fetch values from
 	  * @param array|string $args {
 	  *     Optional. Array or string of arguments.
-	  * 
+	  *
 	  * 	@type mixed		 $collection_id				The collection ID you want to consider or null for all collections. If a collectoin is set
 	  *													then only values applied to items in this collection will be returned
-	  * 
+	  *
 	  *     @type int		 $number					The number of values to return (for pagination). Default empty (unlimited)
-	  * 
+	  *
 	  *     @type int		 $offset					The offset (for pagination). Default 0
-	  * 
+	  *
 	  *     @type array|bool $items_filter				Array in the same format used in @see \Tainacan\Repositories\Items::fetch(). It will filter the results to only return values used in the items inside this criteria. If false, it will return all values, even unused ones. Defatul [] (all items)
-	  * 
+	  *
 	  *     @type array		 $include					Array if ids to be included in the result. Default [] (nothing)
 	  *
 	  *     @type array		 $search					String to search. It will only return values that has this string. Default '' (nothing)
 	  *
-	  *     @type array		 $parent_id					Used by taxonomy metadata. The ID of the parent term to retrieve terms from. Default 0 
+	  *     @type array		 $parent_id					Used by taxonomy metadata. The ID of the parent term to retrieve terms from. Default 0
 	  *
 		*     @type bool		 $count_items				Include the count of items that can be found in each value (uses $items_filter as well). Default false
 		*
 		*     @type string   $last_term				The last term returned when using a elasticsearch for calculates the facet.
-	  * 
+	  *
 	  * }
-	  * 
+	  *
 	  * @return array        Array with the total number of values found. The total number of pages with the current number and the results with id and label for each value. Terms also include parent, taxonomy and number of children.
 	  */
 	public function fetch_all_metadatum_values( $metadatum_id, $args = [] ) {
-		
+
 		$defaults = array(
 			'collection_id' => null,
 			'search' => '',
@@ -894,34 +965,34 @@ class Metadata extends Repository {
 			'last_term' => ''
 		);
 		$args = wp_parse_args($args, $defaults);
-		
+
 		global $wpdb;
 
 		$itemsRepo = Items::get_instance();
 		$metadataRepo = Metadata::get_instance();
-		
+
 		$metadatum = $metadataRepo->fetch($metadatum_id);
 		$metadatum_type = $metadatum->get_metadata_type();
 		$metadatum_options = $metadatum->get_metadata_type_options();
-		
+
 		if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ) {
 			$taxonomy_id = $metadatum_options['taxonomy_id'];
 			$taxonomy_slug = Taxonomies::get_instance()->get_db_identifier_by_id($taxonomy_id);
 		}
-		
-		
-		
+
+
+
 		$items_query = false;
 		if ( false !== $args['items_filter'] && is_array($args['items_filter']) ) {
-			
+
 			$args['items_filter']['fields'] = 'ids';
 			unset($args['items_filter']['paged']);
 			unset($args['items_filter']['offset']);
 			unset($args['items_filter']['perpage']);
 			$args['items_filter']['nopaging'] = 1;
-			
-			// When filtering the items, we should consider only other metadata, and ignore current metadatum 
-			// This is because the relation between values from the same metadatum when filtering item is OR, 
+
+			// When filtering the items, we should consider only other metadata, and ignore current metadatum
+			// This is because the relation between values from the same metadatum when filtering item is OR,
 			// so when you filter items by one value of a metadatum you dont want to exclude all the other possibilities for that meta.
 			// Only values of all other filters (facets) are reduced.
 			if ( $metadatum_type == 'Tainacan\Metadata_Types\Taxonomy' && isset($args['items_filter']['tax_query']) && is_array($args['items_filter']['tax_query']) ) {
@@ -935,12 +1006,12 @@ class Metadata extends Repository {
 			}
 
 		}
-		
+
 		$filter = apply_filters('tainacan-fetch-all-metadatum-values', null, $metadatum, $args);
 		if ($filter !== null) {
 			return $filter;
 		}
-		
+
 		//////////////////////////////////////////
 		// Get the query for current items
 		// this avoids wp_query to run the query. We just want to build the query
@@ -954,12 +1025,12 @@ class Metadata extends Repository {
 		////////////////////////////////////////////
 		////////////////////////////////////////////
 
-		
+
 		$pagination = '';
 		if ( $args['offset'] >= 0 && $args['number'] >= 1 ) {
 			$pagination = $wpdb->prepare( "LIMIT %d,%d", (int) $args['offset'], (int) $args['number'] );
 		}
-		
+
 		$search_q = '';
 		$search = trim($args['search']);
 		if (!empty($search)) {
@@ -970,24 +1041,24 @@ class Metadata extends Repository {
 			} else {
 				$search_q = $wpdb->prepare("AND meta_value LIKE %s", '%' . $search . '%');
 			}
-			
-			
+
+
 		}
 
 		if ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ) {
-			
+
 			if ($items_query) {
-				
+
 				$check_hierarchy_q = $wpdb->prepare("SELECT term_id FROM $wpdb->term_taxonomy WHERE taxonomy = %s AND parent > 0 LIMIT 1", $taxonomy_slug);
 				$has_hierarchy = ! is_null($wpdb->get_var($check_hierarchy_q));
-				
+
 				if ( ! $has_hierarchy ) {
-					$base_query = $wpdb->prepare("FROM $wpdb->term_relationships tr 
+					$base_query = $wpdb->prepare("FROM $wpdb->term_relationships tr
 						INNER JOIN $wpdb->term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
-						INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
-						WHERE 
+						INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id
+						WHERE
 						tt.parent = %d AND
-						tr.object_id IN ($items_query) AND 
+						tr.object_id IN ($items_query) AND
 						tt.taxonomy = %s
 						$search_q
 						ORDER BY t.name ASC
@@ -995,46 +1066,49 @@ class Metadata extends Repository {
 						$args['parent_id'],
 						$taxonomy_slug
 					);
-					
+
 					$query = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent $base_query $pagination";
-					
+
 					$total_query = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) $base_query";
 					$total = $wpdb->get_var($total_query);
-					
+
 					$results = $wpdb->get_results($query);
-					
+
 				} else {
-					
+
 					$base_query = $wpdb->prepare("
 						SELECT DISTINCT t.term_id, t.name, tt.parent, coalesce(tr.term_taxonomy_id, 0) as have_items
-						FROM 
-						$wpdb->terms t INNER JOIN $wpdb->term_taxonomy tt ON t.term_id = tt.term_id 
-						LEFT JOIN $wpdb->term_relationships tr ON tt.term_taxonomy_id = tr.term_taxonomy_id AND tr.object_id IN ($items_query)
+						FROM
+						$wpdb->terms t INNER JOIN $wpdb->term_taxonomy tt ON t.term_id = tt.term_id
+						LEFT JOIN (
+							SELECT DISTINCT term_taxonomy_id FROM $wpdb->term_relationships 
+								INNER JOIN ($items_query) as posts ON $wpdb->term_relationships.object_id = posts.ID
+						) as tr ON tt.term_taxonomy_id = tr.term_taxonomy_id
 						WHERE tt.taxonomy = %s ORDER BY t.name ASC", $taxonomy_slug
 					);
-					
+
 					$all_hierarchy = $wpdb->get_results($base_query);
-					
+
 					if (empty($search)) {
 						$results = $this->_process_terms_tree($all_hierarchy, $args['parent_id'], 'parent');
 					} else  {
 						$results = $this->_process_terms_tree($all_hierarchy, $search, 'name');
 					}
-					
+
 					$total = count($results);
-					
+
 					if ( $args['offset'] >= 0 && $args['number'] >= 1 ) {
 						$results = array_slice($results, (int) $args['offset'], (int) $args['number']);
 					}
 				}
 			} else {
-				
+
 				$parent_q = $wpdb->prepare("AND tt.parent = %d", $args['parent_id']);
 				if ($search_q) {
 					$parent_q = '';
 				}
-				$base_query = $wpdb->prepare("FROM $wpdb->term_taxonomy tt 
-					INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
+				$base_query = $wpdb->prepare("FROM $wpdb->term_taxonomy tt
+					INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id
 					WHERE 1=1
 					$parent_q
 					AND tt.taxonomy = %s
@@ -1043,59 +1117,59 @@ class Metadata extends Repository {
 					",
 					$taxonomy_slug
 				);
-				
+
 				$query = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent $base_query $pagination";
-				
+
 				$total_query = "SELECT COUNT(DISTINCT tt.term_taxonomy_id) $base_query";
 				$total = $wpdb->get_var($total_query);
-				
+
 				$results = $wpdb->get_results($query);
-				
+
 			}
-			
-			
-			
-			
+
+
+
+
 			// add selected to the result
 			if ( !empty($args['include']) ) {
 				if ( is_array($args['include']) && !empty($args['include']) ) {
-					
+
 					// protect sql
 					$args['include'] = array_map(function($t) { return (int) $t; }, $args['include']);
-					
+
 					$include_ids = implode(',', $args['include']);
-					$query_to_include = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent FROM $wpdb->term_taxonomy tt 
-						INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id 
-						WHERE 
+					$query_to_include = "SELECT DISTINCT t.name, t.term_id, tt.term_taxonomy_id, tt.parent FROM $wpdb->term_taxonomy tt
+						INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id
+						WHERE
 						t.term_id IN ($include_ids)";
-					
+
 					$to_include = $wpdb->get_results($query_to_include);
-					
+
 					// remove terms that will be included at the begining
 					$results = array_filter($results, function($t) use($args) { return !in_array($t->term_id, $args['include']); });
-					
+
 					$results = array_merge($to_include, $results);
-					
+
 				}
 			}
-			
-			
+
+
 			$number = ctype_digit($args['number']) && $args['number'] >=1 ? $args['number'] : $total;
 			if( $number < 1){
 				$pages = 1;
 			} else {
 				$pages = ceil( $total / $number );
 			}
-			
+
 			$values = [];
 			foreach ($results as $r) {
-				
+
 				$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $r->term_id);
 				$total_children = $wpdb->get_var($count_query);
-				
+
 				$label = wp_specialchars_decode($r->name);
 				$total_items = null;
-				
+
 				if ( $args['count_items'] ) {
 					$count_items_query = $args['items_filter'];
 					$count_items_query['posts_per_page'] = 1;
@@ -1108,11 +1182,11 @@ class Metadata extends Repository {
 					];
 					$count_items_results = $itemsRepo->fetch($count_items_query, $args['collection_id']);
 					$total_items = $count_items_results->found_posts;
-					
+
 					//$label .= " ($total_items)";
-					
+
 				}
-				
+
 				$values[] = [
 					'value' => $r->term_id,
 					'label' => $label,
@@ -1123,22 +1197,22 @@ class Metadata extends Repository {
 					'total_items' => $total_items,
 					'type' => 'Taxonomy'
 				];
-				
+
 			}
-			
-			
-			
+
+
+
 		} else {
-			
+
 			$items_query_clause = '';
 			if ($items_query) {
 				$items_query_clause = "AND post_id IN($items_query)";
 			}
 			$base_query = $wpdb->prepare( "FROM $wpdb->postmeta WHERE meta_key = %s $search_q $items_query_clause ORDER BY meta_value", $metadatum_id );
-			
+
 			$total_query = "SELECT COUNT(DISTINCT meta_value) $base_query";
 			$query = "SELECT DISTINCT meta_value $base_query $pagination";
-			
+
 			$results = $wpdb->get_col($query);
 			$total = $wpdb->get_var($total_query);
 			$number = ctype_digit($args['number']) && $args['number'] >=1 ? $args['number'] : $total;
@@ -1147,17 +1221,17 @@ class Metadata extends Repository {
 			} else {
 				$pages = ceil( $total / $number );
 			}
-			
+
 			// add selected to the result
 			if ( !empty($args['include']) ) {
 				if ( is_array($args['include']) ) {
 					$results = array_unique( array_merge($args['include'], $results) );
 				}
 			}
-			
+
 			$values = [];
 			foreach ($results as $r) {
-				
+
 				$label = $r;
 
 				if ( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) {
@@ -1167,9 +1241,9 @@ class Metadata extends Repository {
 					}
 					$label = $_post->post_title;
 				}
-				
+
 				$total_items = null;
-				
+
 				if ( $args['count_items'] ) {
 					$count_items_query = $args['items_filter'];
 					$count_items_query['posts_per_page'] = 1;
@@ -1182,50 +1256,50 @@ class Metadata extends Repository {
 					];
 					$count_items_results = $itemsRepo->fetch($count_items_query, $args['collection_id']);
 					$total_items = $count_items_results->found_posts;
-					
+
 					//$label .= " ($total_items)";
-					
+
 				}
-				
+
 				$values[] = [
 					'label' => $label,
 					'value' => $r,
 					'total_items' => $total_items,
 					'type' => 'Text'
 				];
-				
+
 			}
 		}
-		
+
 		return [
 			'total' => $total,
 			'pages' => $pages,
 			'values' => $values,
 			'last_term' => $args['last_term']
 		];
-		
+
 	}
-	
+
 	/**
 	* This method processes the result of the query for all terms in a taxonomy done in get_all_metadatum_values()
-	* It efficiently runs through all the terms and checks what terms with a given $parent have items in itself or any of 
+	* It efficiently runs through all the terms and checks what terms with a given $parent have items in itself or any of
 	* its descendants, keeping the order they originally came.
-	* 
-	* It returns an array with the term objects with the given $parent that have items considering items in its descendants. The objects are 
-	* in the same format they came, as expected by the rest of the method. 
+	*
+	* It returns an array with the term objects with the given $parent that have items considering items in its descendants. The objects are
+	* in the same format they came, as expected by the rest of the method.
 	*
 	* This method is public only for tests purposes, it should not be used anywhere else
 	*/
 	public function _process_terms_tree($tree, $search_value, $search_type='parent') {
-		
-		$h_map = []; // all terms will mapped to this array 
+
+		$h_map = []; // all terms will mapped to this array
 		$results = []; // terms that match search criteria will be copied to this array
 		foreach ( $tree as $h ) {
-			
-			// if current term comes with have_items = 1 from the database 
+
+			// if current term comes with have_items = 1 from the database
 			// or, if it was temporarily added by its child that had have_items = 1:
 			if ( $h->have_items > 0 || ( isset($h_map[$h->term_id]) && $h_map[$h->term_id]->have_items > 0 ) ) {
-				
+
 				// in the case of a parent that was temporarily added by a child, mark it as having items as well
 				$h->have_items = 1;
 				$h_map[$h->term_id] = $h; // send it to the map array, overriding temporary item if existed
@@ -1235,25 +1309,25 @@ class Metadata extends Repository {
 					 ($search_type == 'name' && strpos(strtolower($h->name), strtolower($search_value)) !== false)) {
 					$results[$h->term_id] = $h;
 				}
-				
-				// Now that we know this ter have_items. Lets climb the tree all the way up 
+
+				// Now that we know this ter have_items. Lets climb the tree all the way up
 				// marking all parents with have_items = 1
 				$_parent = $h->parent;
-				
+
 				// If parent was not added to the map array yet
 				// Lets add a temporary entry
 				if ( $h->parent > 0 && !isset($h_map[$_parent]) ) {
 					$h_map[$_parent] = (object)['have_items' => 1];
 				}
-				
+
 				// Now lets loop thorough the map array until I check all my parents
 				while( isset($h_map[$_parent]) && $h_map[$_parent]->have_items != 1 ) {
-					
+
 					// If my parent was added before, but marked with have_items = 0
 					// Lets set it to 1
-					
+
 					$h_map[$_parent]->have_items = 1;
-					
+
 					// If my parent is a whole object, and not a temporary one
 					if ( isset($h_map[$_parent]->parent) ) {
 						// if parent matches search criteira, add to results
@@ -1267,21 +1341,21 @@ class Metadata extends Repository {
 						// Quit loop. We have reached as high as we could in the tree
 						$_parent = 0;
 					}
-					
+
 				}
-				
+
 			} else {
-				
+
 				// if current term have_items = 0
-				
+
 				// add it to the map
 				$h_map[$h->term_id] = $h;
-				
+
 				// if parent was not mapped yet, create a temporary entry for him
 				if ( $h->parent > 0 && !isset($h_map[$h->parent]) ) {
 					$h_map[$h->parent] = (object)['have_items' => $h->have_items];
 				}
-				
+
 				// if item matches search criteria, add it to the results
 				if(($search_type == 'parent' && $h->parent == $search_value) ||
 					 ($search_type == 'name' && $h->have_items > 0 && strpos(strtolower($h->name), strtolower($search_value)) !== false)) {
@@ -1290,7 +1364,7 @@ class Metadata extends Repository {
 			}
 
 		}
-		
+
 		// Results have all terms that matches search criteria. Now we unset those who dont have items
 		// and set it back to incremental keys]
 		// we could have sent to $results only those with items, but doing that we would not preserve their order
@@ -1300,9 +1374,9 @@ class Metadata extends Repository {
 			}
 			return $return;
 		}, []);
-		
+
 		return $results;
-		
+
 	}
 
 	/**
@@ -1352,10 +1426,10 @@ class Metadata extends Repository {
 
 		}
 	}
-	
+
 	/**
 	 * Creates an index with the exploded values of metadata_type_options array. Each option is prefixed with '_option_'
-	 * This is useful to allow metadata to be queried based on a specific value of a metadata type option. 
+	 * This is useful to allow metadata to be queried based on a specific value of a metadata type option.
 	 * For example, fetch all taxonomy metadata which the taxonomy_id metadata type option is equal to 4
 	 *
 	 * $metadata_repository->fetch([
@@ -1366,11 +1440,11 @@ class Metadata extends Repository {
 	 * 			]
 	 * 		]
 	 * ])
-	 * 
+	 *
 	 * @var Entities\Metadatum $metadatum
 	 */
 	private function update_metadata_type_index( Entities\Metadatum $metadatum ) {
-		
+
 		$options = $this->get_mapped_property($metadatum, 'metadata_type_options');
 		if (!is_array($options)) {
 			return;
@@ -1378,9 +1452,9 @@ class Metadata extends Repository {
 		foreach ($options as $option => $value) {
 			update_post_meta($metadatum->get_id(), '_option_' . $option, $value);
 		}
-		
+
 	}
-	
+
 	/**
 	 * @inheritDoc
 	 */
@@ -1401,5 +1475,40 @@ class Metadata extends Repository {
 				do_action( 'tainacan-taxonomy-removed-from-collection', $removed_tax, $collection );
 			}
 		}
+	}
+
+	/**
+	 * When a private taxonomy is saved, check if there are any public metadata and set them to private
+	 *
+	 * @param \Tainacan\Entities\Taxonomy $taxonomy
+	 * @return void
+	 */
+	public function hook_taxonomies_saved_as_private($taxonomy) {
+
+		if ( $taxonomy instanceof Entities\Taxonomy ) {
+
+			$status_obj = get_post_status_object( $taxonomy->get_status() );
+
+			if ( is_object($status_obj) && ! $status_obj->public ) {
+
+				$stati = get_post_stati(['public' => true]);
+
+				$taxonomy_id = $taxonomy->get_id();
+
+				$metadata = $this->fetch(['metadata_type' => 'Tainacan\Metadata_Types\Taxonomy', '_option_taxonomy_id' => $taxonomy_id, 'post_status' => $stati], 'OBJECT');
+
+				foreach ($metadata as $meta) {
+					$meta->set_status( $taxonomy->get_status() );
+					if ( $meta->validate() ) {
+						$this->insert($meta);
+					}
+
+				}
+
+			}
+
+
+		}
+
 	}
 }

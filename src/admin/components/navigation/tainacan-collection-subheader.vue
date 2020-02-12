@@ -67,7 +67,7 @@
                         }">
                     <router-link 
                             tag="a" 
-                            :to="{ path: $routerHelper.getCollectionItemsPath(id, '') }" 
+                            :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '' }" 
                             :aria-label="$i18n.get('label_collection_items')">               
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-items"/>
@@ -76,7 +76,7 @@
                     </router-link>
                 </li>
                 <li 
-                        v-if="currentUserCanEdit"
+                        v-if="collection && collection.current_user_can_edit"
                         :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
                         class="level-item"
                         v-tooltip="{
@@ -91,7 +91,7 @@
                         }">
                     <router-link
                             tag="a" 
-                            :to="{ path: $routerHelper.getCollectionEditPath(id) }" 
+                            :to="{ path: collection && collection.id ? $routerHelper.getCollectionEditPath(collection.id) : '' }" 
                             :aria-label="$i18n.get('label_settings')">
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-settings"/>
@@ -101,7 +101,7 @@
                     </router-link>
                 </li>
                 <li 
-                        v-if="currentUserCanEdit"
+                        v-if="collection && collection.current_user_can_edit_metadata"
                         :class="activeRoute == 'MetadataList' ? 'is-active':''"
                         class="level-item"
                         v-tooltip="{
@@ -116,7 +116,7 @@
                         }">
                     <router-link  
                             tag="a" 
-                            :to="{ path: $routerHelper.getCollectionMetadataPath(id) }"
+                            :to="{ path: collection && collection.id ? $routerHelper.getCollectionMetadataPath(collection.id) : '' }"
                             :aria-label="$i18n.get('label_collection_metadata')">
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/>
@@ -125,7 +125,7 @@
                     </router-link>
                 </li>
                 <li 
-                        v-if="currentUserCanEdit"
+                        v-if="collection && collection.current_user_can_edit_filters"
                         :class="activeRoute == 'FiltersList' ? 'is-active':''" 
                         class="level-item"
                         v-tooltip="{
@@ -140,7 +140,7 @@
                         }">
                     <router-link 
                             tag="a" 
-                            :to="{ path: $routerHelper.getCollectionFiltersPath(id) }" 
+                            :to="{ path: collection && collection.id ? $routerHelper.getCollectionFiltersPath(collection.id) : ''}" 
                             :aria-label="$i18n.get('label_collection_filters')">
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/>
@@ -149,6 +149,7 @@
                     </router-link>
                 </li>
                 <li 
+                        v-if="$userCaps.hasCapability('tnc_rep_read_logs')"
                         :class="activeRoute == 'CollectionActivitiesPage' ? 'is-active':''"
                         class="level-item"
                         v-tooltip="{
@@ -163,10 +164,54 @@
                         }">
                     <router-link 
                             tag="a" 
-                            :to="{ path: $routerHelper.getCollectionActivitiesPath(id) }"
+                            :to="{ path: collection && collection.id ? $routerHelper.getCollectionActivitiesPath(collection.id) : '' }"
                             :aria-label="$i18n.get('label_collection_activities')">
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
+                        </span>
+                        <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
+                    </router-link>                
+                </li>
+                <li 
+                        v-if="collection && collection.current_user_can_edit_users"
+                        :class="activeRoute == 'CollectionCapabilitiesPage' ? 'is-active':''"
+                        class="level-item"
+                        v-tooltip="{
+                            delay: {
+                                show: 300,
+                                hide: 100,
+                            },
+                            content: $i18n.get('capabilities'),
+                            autoHide: false,
+                            placement: 'bottom-start',
+                            classes: ['header-tooltips']
+                        }">
+                    <router-link 
+                            tag="a" 
+                            :to="{ path: collection && collection.id ? $routerHelper.getCollectionCapabilitiesPath(collection.id) : '' }"
+                            :aria-label="$i18n.get('label_collection_capabilities')">
+                        <span class="icon">
+                            <svg
+                                    xmlns:dc="http://purl.org/dc/elements/1.1/"
+                                    xmlns:cc="http://creativecommons.org/ns#"
+                                    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                                    xmlns:svg="http://www.w3.org/2000/svg"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    version="1.1"
+                                    viewBox="0 0 833 750"
+                                    data-name="Camada 1"
+                                    id="Camada_1">
+                                <defs
+                                        id="defs11" />
+                                <path
+                                        id="path4"
+                                        transform="translate(-83.5 -125)"
+                                        d="M812.38,125H187.62A103.77,103.77,0,0,0,83.5,229.12V770.88A104.1,104.1,0,0,0,187.62,875H812.38A104,104,0,0,0,916.5,771V229.12A104.12,104.12,0,0,0,812.38,125ZM833.5,792h-666V209h666Z" />
+                                <path
+                                        id="path6"
+                                        transform="translate(-83.5 -125)"
+                                        d="M377.5,626a126,126,0,0,0,118.82-84H583.5v83h84V542h83V459H496.67A126,126,0,1,0,377.5,626Zm0-168a42,42,0,1,1-42,42A42,42,0,0,1,377.5,458Z" />
+                            </svg>
                         </span>
                         <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
                     </router-link>                
@@ -178,7 +223,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'TainacanCollectionSubheader',
@@ -187,27 +232,31 @@ export default {
             activeRoute: 'ItemsList',
             pageTitle: '',
             activeRouteName: '',
-            collectionNameRequestCancel: undefined,
-            collectionBreadCrumbItem: {},
             childrenBreadCrumbItems: []
         }
     },
-    props: {
-        id: Number,
-        currentUserCanEdit: Boolean
+    computed: {
+        collection() {
+            return this.getCollection();
+        },
+        collectionBreadCrumbItem() {
+            return { 
+                url: this.collection && this.collection.id ? this.$routerHelper.getCollectionPath(this.collection.id) : '',
+                name: this.collection && this.collection.name ? this.collection.name : ''
+            };
+        }
     },
     watch: {
         '$route' (to, from) {
             if (to.path != from.path) {
                 this.activeRoute = to.name;
-
                 this.pageTitle = this.$route.meta.title;
             }
         }
     },
     methods: {
-        ...mapActions('collection', [
-            'fetchCollectionNameAndURL'
+        ...mapGetters('collection', [
+            'getCollection'
         ]),
         collectionBreadCrumbUpdate(breadCrumbItems) {
             this.childrenBreadCrumbItems = breadCrumbItems;
@@ -220,28 +269,7 @@ export default {
 
         this.$root.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
     },
-    mounted() {
-
-        // Cancels previous Request
-        if (this.collectionNameRequestCancel != undefined)
-            this.collectionNameRequestCancel.cancel('Collection name Canceled.');
-            
-        this.fetchCollectionNameAndURL(this.id)
-            .then((resp) => {
-                resp.request
-                    .then(collection => this.collectionBreadCrumbItem = { url: this.$routerHelper.getCollectionPath(this.id), name: collection.name })
-                    .catch((error) => this.$console.error(error));
-                this.collectionNameRequestCancel = resp.source;
-            })
-            .catch((error) => this.$console.error(error));
-
-    },
     beforeDestroy() {
-
-        // Cancels previous Request
-        if (this.collectionNameRequestCancel != undefined)
-            this.collectionNameRequestCancel.cancel('Collection name Canceled.');
-
         this.$root.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
     }
 }
@@ -252,15 +280,15 @@ export default {
     @import "../../scss/_variables.scss";
 
     .header-tooltips .tooltip-inner {
-        color: white;
-        text-shadow: 1px 1px $turquoise4;
-        background-color: $turquoise3;
+        color: turquoise5;
+        text-shadow: none;
+        background-color: $turquoise2;
         font-size: 0.75rem;
         font-weight: 400;
         padding: 10px 14px;
     }
     .header-tooltips .tooltip-arrow {
-        border-color: $turquoise3;
+        border-color: $turquoise2;
     }
     
     // Tainacan Header
@@ -341,7 +369,7 @@ export default {
             width: 100%;
         }
 
-        li{
+        li {
             margin-right: 0px;
             transition: background-color 0.2s ease;
             // transition: max-width 0.4s ease-in , width 0.4s ease-in ;
@@ -357,6 +385,9 @@ export default {
                     color: white;
                     text-decoration: none;
                 }
+                svg {
+                    fill: white !important;
+                }
             }
             &:hover:not(.is-active) {
                 // max-width: 100%;
@@ -366,6 +397,9 @@ export default {
                     background-color: transparent;
                     text-decoration: none; 
                     color: $turquoise5;
+                }
+                svg {
+                    fill: $turquoise5;
                 }
                 // .menu-text {
                 //     opacity: 1.0;
@@ -396,6 +430,12 @@ export default {
                 padding: 0;
                 i {
                     font-size: 18px !important;
+                }
+                svg {
+                    position: relative;
+                    top: 1px;
+                    height: 18px;
+                    fill: #555758;
                 }
             }
             .menu-text {

@@ -37,6 +37,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'processes'                                      => __( 'Processes', 'tainacan' ),
 	'sequence'                                       => __( 'Sequence', 'tainacan' ),
 	'exporters'                                      => __( 'Exporters', 'tainacan' ),
+	'capabilities'                                   => __( 'Capabilities', 'tainacan' ),
 
 	// Actions
 	'close'                                          => __( 'Close', 'tainacan' ),
@@ -48,7 +49,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'export'                                         => __( 'Export', 'tainacan' ),
 	'cancel'                                         => __( 'Cancel', 'tainacan' ),
 	'remove_value'                                   => __( 'Remove value', 'tainacan' ),
-	'remove_filter'                                   => __( 'Remove filter', 'tainacan' ),
+	'remove_a_value'                                 => __( 'Remove a value', 'tainacan' ),
+	'clear_values'                                   => __( 'Clear values', 'tainacan' ),
+	'remove_filter'                                  => __( 'Remove filter', 'tainacan' ),
 	'save'                                           => __( 'Save', 'tainacan' ),
 	'next'                                           => __( 'Next', 'tainacan' ),
 	'previous'                                       => __( 'Previous', 'tainacan' ),
@@ -85,6 +88,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'undo'                                           => __( 'Undo', 'tainacan' ),
 	'delete'                                    	 => __( 'Delete', 'tainacan' ),
 	'skip'	                                    	 => __( 'Skip', 'tainacan' ),
+
+	// Wordpress CommentsStatus
+	'comments_status_open'                           => __( 'Open', 'tainacan' ),
+	'comments_status_closed'                         => __( 'Closed', 'tainacan' ),
 
 	// Wordpress Status
 	'status_publish'                                 => __( 'Publish', 'tainacan' ),
@@ -132,6 +139,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'title_processes_page'                           => __( 'Processes', 'tainacan' ),
 	'title_item_bulk_add'                            => __( 'Bulk Add Items', 'tainacan' ),
 	'title_exporter_page'                            => __( 'Exporter', 'tainacan'),
+	'title_collection_capabilities'					 => __( 'Capabilities Related to the Collection', 'tainacan'),
+	'title_repository_capabilities'					 => __( 'Capabilities Related to the Repository', 'tainacan'),
 
 	// Labels (used mainly on Aria Labels and Inputs)
 	'label'                                          => __( 'Label', 'tainacan' ),
@@ -156,7 +165,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_thumbnail'                                => __( 'Thumbnail', 'tainacan' ),
 	'label_empty_thumbnail'                          => __( 'Empty Thumbnail', 'tainacan' ),
 	'label_empty_term_image'                         => __( 'Empty Term Image', 'tainacan' ),
-	'label_moderators'                               => __( 'Moderators', 'tainacan' ),
 	'label_parent_collection'                        => __( 'Parent collection', 'tainacan' ),
 	'label_no_parent_collection'                     => __( 'No parent collection', 'tainacan' ),
 	'label_button_view'                              => __( 'Button View', 'tainacan' ),
@@ -407,20 +415,21 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_previous_page'						 	 => __( 'Previous page', 'tainacan' ),
 	'label_page'								 	 => __( 'Page', 'tainacan' ),
 	'label_current_page'							 => __( 'Current page', 'tainacan' ),
-	'label_shrink_menu'								 => __( 'Shrink menu', 'tainacan' ),	
-	'label_document_uploaded'						 => __( 'Document uploaded', 'tainacan' ),	
-	'label_repository_filter'						 => __( 'Repository filter', 'tainacan' ),	
-	'label_repository_metadatum'					 => __( 'Repository metadatum', 'tainacan' ),	
-	'label_collection_filter'						 => __( 'Collection filter', 'tainacan' ),	
-	'label_collection_metadatum'					 => __( 'Collection metadatum', 'tainacan' ),	
-	'label_recover_from_trash'						 => __( 'Recover from trash', 'tainacan' ),	
-	'label_show_children_terms'						 => __( 'Show children terms', 'tainacan' ),	
-	'label_begin_slide_transition'					 => __( 'Begin slide transition', 'tainacan' ),	
-	'label_pause_slide_transition'					 => __( 'Pause slide transition', 'tainacan' ),	
-	'label_next_group_slides'					 	 => __( 'Next group of slides', 'tainacan' ),		
-	'label_previous_group_slides'					 => __( 'Previous group of slides', 'tainacan' ),	
-	'label_plugin_home_page'					 	 => __( 'Plugin home page', 'tainacan' ),	
-	'label_wordpress_admin_page'					 => __( 'WordPress Admin Page', 'tainacan' ),	
+	'label_shrink_menu'								 => __( 'Shrink menu', 'tainacan' ),
+	'label_document_uploaded'						 => __( 'Document uploaded', 'tainacan' ),
+	'label_repository_filter'						 => __( 'Repository filter', 'tainacan' ),
+	'label_repository_metadatum'					 => __( 'Repository metadatum', 'tainacan' ),
+	'label_collection_filter'						 => __( 'Collection filter', 'tainacan' ),
+	'label_collection_metadatum'					 => __( 'Collection metadatum', 'tainacan' ),
+	'label_collection_capabilities'					 => __( 'Collection capabilities', 'tainacan' ),
+	'label_recover_from_trash'						 => __( 'Recover from trash', 'tainacan' ),
+	'label_show_children_terms'						 => __( 'Show children terms', 'tainacan' ),
+	'label_begin_slide_transition'					 => __( 'Begin slide transition', 'tainacan' ),
+	'label_pause_slide_transition'					 => __( 'Pause slide transition', 'tainacan' ),
+	'label_next_group_slides'					 	 => __( 'Next group of slides', 'tainacan' ),
+	'label_previous_group_slides'					 => __( 'Previous group of slides', 'tainacan' ),
+	'label_plugin_home_page'					 	 => __( 'Plugin home page', 'tainacan' ),
+	'label_wordpress_admin_page'					 => __( 'WordPress Admin Page', 'tainacan' ),
 	'label_view_all_%s_collections'					 => __( 'View all %s collections', 'tainacan' ),
 	'label_view_collections_list'                    => __( 'View collections list', 'tainacan' ),
 	'label_comparator'								 => __( 'Comparator', 'tainacan' ),
@@ -442,7 +451,11 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_month'							 		 => __( 'Month', 'tainacan' ),
 	'label_year'							 		 => __( 'Year', 'tainacan' ),
 	'label_related_to'							 	 => __( 'Related to', 'tainacan' ),
-	
+	'label_user_roles'							 	 => __( 'User roles', 'tainacan' ),
+	'label_associated_roles'					 	 => __( 'Associated roles', 'tainacan' ),
+	'label_inherited_roles'						 	 => __( 'Inherited roles', 'tainacan' ),
+	'label_editing_capabilitiy'					 	 => __( 'Editing capabilitiy', 'tainacan' ),
+
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -450,12 +463,14 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_image_upload_box'                   => __( 'Drop an image here or click to upload.', 'tainacan' ),
 	'instruction_select_a_status'                    => __( 'Select a status:', 'tainacan' ),
 	'instruction_select_a_status2'                   => __( 'Select a status', 'tainacan' ),
+	'instruction_select_a_comments_status'           => __( 'Select a comments status', 'tainacan' ),
 	'instruction_click_to_select_a_filter_type'      => __( 'Click to select a filter type:', 'tainacan' ),
 	'instruction_select_a_parent_term'               => __( 'Select a parent term:', 'tainacan' ),
 	'instruction_select_a_metadatum'                 => __( 'Select a metadatum', 'tainacan' ),
 	'instruction_cover_page'                         => __( 'Type to search a Page to choose.', 'tainacan' ),
 	'instruction_moderators'                         => __( 'Type to search a User to add.', 'tainacan' ),
 	'instruction_type_search_users_filter'           => __( 'Type to search users to filter...', 'tainacan' ),
+	'instruction_type_search_roles_filter'           => __( 'Type to search roles to filter...', 'tainacan' ),
 	'instruction_select_a_parent_collection'         => __( 'Select a parent collection.', 'tainacan' ),
 	'instruction_select_collection_thumbnail'        => __( 'Select a thumbnail image for collection', 'tainacan' ),
 	'instruction_select_item_thumbnail'              => __( 'Select a thumbnail image for item', 'tainacan' ),
@@ -467,7 +482,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_write_text'                         => __( 'Write Text', 'tainacan' ),
 	'instruction_search'                             => __( 'Search', 'tainacan' ),
 	'instruction_search_in_repository'               => __( 'Search in repository', 'tainacan' ),
-	'instruction_select_a_target_collection'         => __( 'Select a target collection', 'tainacan' ),
+	'instruction_select_a_target_collection'         => __( 'Select a target collection.', 'tainacan' ),
 	'instruction_select_a_mapper'                    => __( 'Select a mapper', 'tainacan' ),
 	'instruction_select_an_importer_type'            => __( 'Select an importer from the options below:', 'tainacan' ),
 	'instruction_drop_file_or_click_to_upload'       => __( 'Drop your source file or click here to upload.', 'tainacan' ),
@@ -519,22 +534,22 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_search_criteria'                           => __( 'Advanced Search Criteria', 'tainacan' ),
 	'info_name_is_required'                          => __( 'Name is required.', 'tainacan' ),
 	'info_no_collection_created'                     => __( 'No collection was created in this repository.', 'tainacan' ),
-	
+
 	'info_no_items_publish'			                 => __( 'No public items found.', 'tainacan' ),
 	'info_no_items_private'			                 => __( 'No private items found.', 'tainacan' ),
 	'info_no_items_draft'			                 => __( 'No draft items found.', 'tainacan' ),
 	'info_no_items_trash'			                 => __( 'No items found on trash.', 'tainacan' ),
-	
+
 	'info_no_collections_publish'			         => __( 'No public collections found.', 'tainacan' ),
 	'info_no_collections_private'			         => __( 'No private collections found.', 'tainacan' ),
 	'info_no_collections_draft'			             => __( 'No draft collections found.', 'tainacan' ),
 	'info_no_collections_trash'			             => __( 'No collections found on trash.', 'tainacan' ),
-	
+
 	'info_no_taxonomies_publish'			         => __( 'No public taxonomies found.', 'tainacan' ),
 	'info_no_taxonomies_private'			         => __( 'No private taxonomies found.', 'tainacan' ),
 	'info_no_taxonomies_draft'			             => __( 'No draft taxonomies found.', 'tainacan' ),
 	'info_no_taxonomies_trash'			             => __( 'No taxonomies found on trash.', 'tainacan' ),
-		
+
 	'info_no_taxonomy_created'                       => __( 'No taxonomy was created in this repository.', 'tainacan' ),
 	'info_no_terms_created_on_taxonomy'              => __( 'No term was created for this taxonomy.', 'tainacan' ),
 	'info_no_terms_found'				 			 => __( 'No term was found here', 'tainacan' ),
@@ -545,11 +560,12 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_no_item_found_filter'                      => __( 'No item was found here with these filters.', 'tainacan' ),
 	'info_no_item_found'                             => __( 'No item was found.', 'tainacan' ),
 	'info_item_not_saved'                            => __( 'Warning: Item not saved.', 'tainacan' ),
-	'info_no_moderator_on_collection'                => __( "This collection doesn't have any moderator yet.", 'tainacan' ),
+	'info_no_associated_role' 						 => __( 'No associated role.', 'tainacan' ),
 	'info_error_deleting_collection'                 => __( 'Error on deleting collection.', 'tainacan' ),
 	'info_error_deleting_taxonomy'                   => __( 'Error on deleting taxonomy', 'tainacan' ),
 	'info_error_first_value_greater'                 => __( 'First value should be lower than second value', 'tainacan' ),
 	'info_error_value_must_be_number'                => __( 'Value should be a number', 'tainacan' ),
+	'info_error_upload'							 	 => __( 'Error while uploading files.', 'tainacan' ),
 	'info_collection_deleted'                        => __( 'Collection deleted.', 'tainacan' ),
 	'info_item_deleted'                              => __( 'Item deleted.', 'tainacan' ),
 	'info_taxonomy_deleted'                          => __( 'Taxonomy deleted', 'tainacan' ),
@@ -575,6 +591,11 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_showing_taxonomies'                        => __( 'Showing taxonomies ', 'tainacan' ),
 	'info_showing_activities'                        => __( 'Showing activities ', 'tainacan' ),
 	'info_showing_processes'                         => __( 'Showing processes ', 'tainacan' ),
+	'info_showing_capabilities'                      => __( 'Showing capabilities ', 'tainacan' ),
+	'info_no_capabilities_found'					 => __( 'No capabilities found.', 'tainacan' ),
+	'info_no_role_associated_capability'             => __( 'No role associated to this capability', 'tainacan' ),
+	'info_associated_roles'							 => __( 'These are the roles that have this capability set. You may add or remove the capability to customize the role.', 'tainacan' ),
+	'info_inherited_roles'							 => __( 'These are the roles that have greater capabilities, which inherit this one. You can not edit this as it will not have precendece over the greater capability.', 'tainacan' ),
 	'info_showing_terms'                        	 => __( 'Showing terms ', 'tainacan' ),
 	'info_warning_remove_from_trash_first'           => __( 'Remove this item from trash first' ),
 	'info_to'                                        => __( ' to ', 'tainacan' ),
@@ -606,7 +627,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_create_filters'                            => __( 'Click or Drag and Drop Metadata here for creating a new Filter.', 'tainacan' ),
 	'info_create_metadata'                           => __( 'Click or Drag and Drop Metadata Types here for creating a new Metadata.', 'tainacan' ),
 	'info_choose_your_metadata'                      => __( 'Choose your metadata.', 'tainacan' ),
-	'info_target_collection_helper'                  => __( 'The collection where imported item will be added.', 'tainacan' ),
+	'info_target_collection_helper'                  => __( 'The collection where imported item will be added. Only those that you have permission are listed.', 'tainacan' ),
 	'info_source_file_upload'                        => __( 'The file containing the data to be imported.', 'tainacan' ),
 	'info_no_metadata_source_file'                   => __( 'No metadata was found from the source file.', 'tainacan' ),
 	'info_no_special_fields_available'               => __( 'No special field was found.', 'tainacan' ),
@@ -636,9 +657,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_bulk_add_items'                            => __( 'Bulk add documents from your computer as items.', 'tainacan' ),
 	'info_editing_items_in_bulk'                     => __( 'Bulk edit items', 'tainacan' ),
 	'info_by_inner'                                  => __( 'by', 'tainacan' ),
-	'info_items_selected'                            => __( 'items selected', 'tainacan' ),
-	'info_items_affected'                            => __( 'items affected', 'tainacan' ),
-	'info_item_affected'                             => __( 'item affected', 'tainacan' ),
+	'info_bulk_edition_process_added'				 => __( 'Bulk edition added to process queue.', 'tainacan' ),
 	'info_no_parent_term_found'                      => __( 'No valid parent term was found with this name.', 'tainacan' ),
 	'info_warning_changing_parent_term'              => __( 'Warning! Changing parent term will reload the terms list, thus uncheking any selection.', 'tainacan' ),
 	'info_warning_selected_items_remove_from_trash'  => __( 'Do you really want to remove from trash the selected items?', 'tainacan' ),
@@ -674,6 +693,16 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_final_value'                               => __( 'Final value', 'tainacan' ),
 	'info_show_interval_on_tag'                      => __( 'Show applied interval on tags', 'tainacan' ),
 	'info_title_mapping'							 => __( 'The title is the most relevant metadata, that shall identify your item on lists for different view modes. Select the title source metadata first, or skip to run importer as it is.', 'taincan'),
+	'info_can_not_edit_collection'					 => __( 'You are not allowed to edit this collection.', 'tainacan' ),
+	'info_can_not_edit_taxonomy'					 => __( 'You are not allowed to edit this taxonomy.', 'tainacan' ),
+	'info_can_not_edit_filters'					 	 => __( 'You are not allowed to edit filters.', 'tainacan' ),
+	'info_can_not_edit_metadata'				 	 => __( 'You are not allowed to edit metadata.', 'tainacan' ),
+	'info_can_not_edit_capabilities'				 => __( 'You are not allowed to edit capabilities.', 'tainacan' ),
+	'info_can_not_read_activities'				 	 => __( 'You are not allowed to read activities.', 'tainacan' ),
+	'info_can_not_edit_item'						 => __( 'You are not allowed to edit this item.', 'tainacan' ),
+	'info_can_not_bulk_edit_items_collection'		 => __( 'You are not allowed to bulk edit items from this collection.', 'tainacan' ),
+	'info_not_allowed_change_order_metadata'		 => __( 'Can not change metadata order now.', 'tainacan' ),
+	'info_not_allowed_change_order_filters'		 	 => __( 'Can not change filters order now.', 'tainacan' ),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),
@@ -704,6 +733,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'datepicker_short_friday'			=> __( 'F', 'tainacan' ),
 	/* translators: This refers to the short label that will appear on datepickers for Saturday */
 	'datepicker_short_saturday'			=> __( 'Sa', 'tainacan' )
-	
+
 ] );
 ?>

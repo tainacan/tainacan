@@ -82,9 +82,14 @@ export const fetch = ({ commit }, { page, taxonomiesPerPage, status, order, orde
     });
 };
 
-export const fetchTaxonomy = ({ commit }, taxonomyId) => {
+export const fetchTaxonomy = ({ commit }, { taxonomyId, isContextEdit }) => {
+    let endpoint = `/taxonomies/${taxonomyId}`;
+
+    if (isContextEdit)
+        endpoint += '?context=edit'
+
     return new Promise((resolve, reject) => {
-       axios.tainacan.get(`/taxonomies/${taxonomyId}`)
+       axios.tainacan.get(endpoint)
            .then(res => {
                let taxonomy = res.data;
 

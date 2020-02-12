@@ -10,16 +10,14 @@ trait Entity_Collections_Relation {
 	public function get_collections_ids() {
         return $this->get_mapped_property('collections_ids');
     }
-	
+
 	public function get_collections() {
-    	if (isset($this->collections))
-            return $this->collections;
-        
+
         if (is_array($this->get_collections_ids()) && !empty($this->get_collections_ids())) {
             $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-			
+
 			$this->collections = [];
-			
+
 			foreach ($this->get_collections_ids() as $col_id) {
                 $collection = $Tainacan_Collections->fetch($col_id);
 
@@ -27,28 +25,28 @@ trait Entity_Collections_Relation {
                     $this->collections[] = $collection;
                 }
 			}
-			
+
             return $this->collections;
         }
-        
+
         return null;
     }
-	
-	
-    
+
+
+
     public function set_collections_ids(Array $value) {
         $this->set_mapped_property('collections_ids', $value);
         $this->collections = null;
     }
-    
+
     public function set_collections(Array $collections) {
         $collections_ids = [];
         $this->collections = $collections;
-        
+
         foreach ($collections as $collection){
             $collections_ids[] = $collection->get_id();
         }
-        
+
         $this->set_collections_ids($collections_ids);
     }
 
@@ -59,7 +57,7 @@ trait Entity_Collections_Relation {
 
     	$this->set_collections_ids($collections);
     }
-	
+
 	public function remove_collection_id($collection_id){
     	$collections = $this->get_mapped_property('collections_ids');
 

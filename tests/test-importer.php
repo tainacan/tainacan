@@ -109,7 +109,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $_SESSION['tainacan_importer'][$id]->set_collection( $collection );
 
         // get collection metadata to map
-        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection ) ;
 
         //create a random mapping
         $map = [];
@@ -202,7 +202,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		];
 		
         // get collection metadata to map
-        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection ) ;
 
         //create a random mapping
         $map = [];
@@ -364,7 +364,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		];
 		
         // get collection metadata to map
-        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection ) ;
 
         //create a random mapping
         $map = [];
@@ -507,7 +507,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         ];
         
         // get collection metadata to map
-        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection ) ;
 
         //create a random mapping
         $map = [];
@@ -646,7 +646,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
           ];
 
           // get collection metadata to map
-        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection, [], 'OBJECT' ) ;
+        $metadata = $Tainacan_Metadata->fetch_by_collection( $collection ) ;
 
         //create a random mapping
         $map = [];

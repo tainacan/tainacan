@@ -266,7 +266,8 @@ export default {
             selectedExposer: undefined,
             selectedExposerMappers: [],
             maxItemsPerPage: tainacan_plugin.api_max_items_per_page,
-            shouldRespectFetchOnly: false
+            shouldRespectFetchOnly: false,
+            collectionURL: undefined
         }
     },
     computed: {
@@ -302,15 +303,6 @@ export default {
 
             return tainacan_plugin.tainacan_api_url + baseURL + '?' + qs.stringify(currentParams);
         },
-        collectionName() {
-            return this.getCollectionName();
-        },
-        collectionURL() {
-            if (this.collectionId != undefined)
-                return this.getCollectionURL();
-            else    
-                return tainacan_plugin.theme_items_list_url;
-        },
         availableExposers() {
             let exposers = this.getAvailableExposers();
 
@@ -336,11 +328,7 @@ export default {
             'getAvailableExposers'
         ]),
         ...mapActions('collection', [
-            'fetchCollectionNameAndURL'
-        ]),
-        ...mapGetters('collection', [
-            'getCollectionName',
-            'getCollectionURL'
+            'fetchCollectionForExposer'
         ]),
         collapse(index) {
             let exposerMapper = this.selectedExposerMappers[index];
@@ -467,8 +455,10 @@ export default {
             });
 
         if (this.collectionId != undefined) {
-            this.fetchCollectionNameAndURL(this.collectionId);
-        }
+            this.fetchCollectionForExposer(this.collectionId)
+                .then((collection) => this.collectionURL = collection.url);
+        } else    
+            this.collectionURL = tainacan_plugin.theme_items_list_url;
 
         if (this.itemId)
             this.shouldRespectFetchOnly = false;

@@ -5,7 +5,8 @@
             class="theme-items-list"
             :enabled-view-modes="$root.enabledViewModes" 
             :default-view-mode="$root.defaultViewMode"
-            :collection-id="$root.collectionId" />
+            :collection-id="$root.collectionId"
+            :is-on-theme="true" />
     <term-items-page
             v-if="$root.termId != undefined && $root.termId != ''"
             class="theme-items-list"
@@ -14,7 +15,8 @@
             :collection-id="$root.collectionId"
             :enabled-view-modes="$root.enabledViewModes" 
             :default-view-mode="$root.defaultViewMode"
-            :term-id="$root.termId" />
+            :term-id="$root.termId"
+            :is-on-theme="true" />
 </div>
 </template>
 

@@ -288,7 +288,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		    ),
 		    true
 		);
-		
+
 		$public_meta = $this->tainacan_entity_factory->create_entity(
 		    'metadatum',
 		    array(
@@ -299,7 +299,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		    ),
 		    true
 		);
-		
+
 		$discarded = $this->tainacan_entity_factory->create_entity(
 		    'metadatum',
 		    array(
@@ -371,7 +371,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			],
 		];
 
-		
+
 		// First without fetch only
 		$request = new \WP_REST_Request(
 			'GET', $this->namespace . '/items'
@@ -394,9 +394,9 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals( 2, sizeof($data) );
 		$this->assertEquals( 2, sizeof($data[0]['metadata']) );
 
-		
+
 		////
-		
+
 		$new_user = $this->factory()->user->create(array( 'role' => 'subscriber' ));
 		wp_set_current_user($new_user);
 
@@ -480,12 +480,12 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
         //$this->assertEquals(403, $response->get_status());
         $this->assertEquals(201, $response->get_status());
     }
-	
+
 	/**
 	 * @group duplicate
 	 */
 	function test_duplicate() {
-		
+
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -496,7 +496,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		
+
 		$public_meta = $this->tainacan_entity_factory->create_entity(
 		    'metadatum',
 		    array(
@@ -507,7 +507,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		    ),
 		    true
 		);
-		
+
 		$multiple_meta = $this->tainacan_entity_factory->create_entity(
 		    'metadatum',
 		    array(
@@ -519,7 +519,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		    ),
 		    true
 		);
-		
+
 		$taxonomy = $this->tainacan_entity_factory->create_entity(
 			'taxonomy',
 			array(
@@ -529,7 +529,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$taxonomy2 = $this->tainacan_entity_factory->create_entity(
 			'taxonomy',
 			array(
@@ -539,7 +539,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$tax_meta = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -555,7 +555,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$tax_meta_single = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -571,7 +571,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$item1 = $this->tainacan_entity_factory->create_entity(
 			'item',
 			array(
@@ -589,22 +589,22 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$newMeta->set_value('test');
 		$newMeta->validate();
 		$itemMetaRepo->insert($newMeta);
-		
+
 		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item1, $multiple_meta);
 		$newMeta->set_value(['test1', 'test2']);
 		$newMeta->validate();
 		$itemMetaRepo->insert($newMeta);
-		
+
 		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item1, $tax_meta);
 		$newMeta->set_value(['blue', 'red']);
 		$newMeta->validate();
 		$itemMetaRepo->insert($newMeta);
-		
+
 		$newMeta = new \Tainacan\Entities\Item_Metadata_Entity($item1, $tax_meta_single);
 		$newMeta->set_value('test term');
 		$newMeta->validate();
 		$itemMetaRepo->insert($newMeta);
-		
+
 		$request  = new \WP_REST_Request('POST', $this->namespace . '/collection/' . $collection->get_id() . '/items/' . $item1->get_id() . '/duplicate');
 
 		$response = $this->server->dispatch($request);
@@ -614,50 +614,50 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$data = $response->get_data();
 
 		$this->assertEquals('Lean Startup', $data['items'][0]['title']);
-		
+
 		$metadata_1 = $item1->get_metadata();
 		sort($metadata_1);
-		
+
 		$duplicated = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $data['items'][0]['id'] );
-		
+
 		$metadata_2 = $duplicated->get_metadata();
 		sort($metadata_2);
-		
+
 		foreach( $metadata_1 as $k => $m ) {
 			$this->assertEquals( $m->get_value(), $metadata_2[$k]->get_value() );
 		}
-		
-		
+
+
 		$request  = new \WP_REST_Request('POST', $this->namespace . '/collection/' . $collection->get_id() . '/items/' . $item1->get_id() . '/duplicate');
 
 		$params = json_encode([
 			'copies' => 4,
 			'status' => 'publish'
 		]);
-		
+
 		$request->set_body($params);
 
 		$response = $this->server->dispatch($request);
-		
+
 		$data = $response->get_data();
-		
+
 		$this->assertEquals(4, count($data['items']));
-		
+
 		foreach ( $data['items'] as $created_item ) {
 			$duplicated = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $created_item['id'] );
-			
+
 			$this->assertEquals('publish', $created_item['status']);
-			
+
 			$metadata_2 = $duplicated->get_metadata();
 			sort($metadata_2);
-			
+
 			foreach( $metadata_1 as $k => $m ) {
 				$this->assertEquals( $m->get_value(), $metadata_2[$k]->get_value() );
 			}
 		}
-		
-		
-		// Create a required metadata 
+
+
+		// Create a required metadata
 		$required_meta = $this->tainacan_entity_factory->create_entity(
 		    'metadatum',
 		    array(
@@ -670,47 +670,47 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		    ),
 		    true
 		);
-		
-		// $metas = \Tainacan\Repositories\Metadata::get_instance()->fetch_by_collection($collection, [], 'OBJECT');
-		// 
+
+		// $metas = \Tainacan\Repositories\Metadata::get_instance()->fetch_by_collection($collection);
+		//
 		// foreach ($metas as $m) {
 		// 	var_dump($m->get_name());
 		// }
-		
+
 		$request  = new \WP_REST_Request('POST', $this->namespace . '/collection/' . $collection->get_id() . '/items/' . $item1->get_id() . '/duplicate');
 
 		$params = json_encode([
 			'copies' => 3,
 			'status' => 'publish'
 		]);
-		
+
 		$request->set_body($params);
 
 		$response = $this->server->dispatch($request);
-		
+
 		$data = $response->get_data();
-		
+
 		$this->assertEquals(3, count($data['items']));
-		
+
 		foreach ( $data['items'] as $created_item ) {
 			$duplicated = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $created_item['id'] );
-			
+
 			// item does not validate because required meta is empty and stays draft
 			$this->assertEquals('draft', $duplicated->get_status());
 			$this->assertEquals('draft', $created_item['status']);
 
 		}
-		
-		
-		
-		
+
+
+
+
 	}
-	
+
 	/*
 	* @group tax_query
 	 */
 	function test_support_tax_query_like() {
-		
+
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -721,7 +721,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			true
 		);
 
-		
+
 		$taxonomy = $this->tainacan_entity_factory->create_entity(
 			'taxonomy',
 			array(
@@ -731,7 +731,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$tax_meta = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -747,7 +747,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		
+
 		$item1 = $this->tainacan_entity_factory->create_entity(
 			'item',
 			array(
@@ -765,7 +765,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$newMeta->set_value(['blue', 'mellon']);
 		$newMeta->validate();
 		$itemMetaRepo->insert($newMeta);
-		
+
 		$item2 = $this->tainacan_entity_factory->create_entity(
 			'item',
 			array(
@@ -781,7 +781,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$newMeta->set_value(['red', 'watermellon']);
 		$newMeta->validate();
 		$itemMetaRepo->insert($newMeta);
-		
+
 		$item3 = $this->tainacan_entity_factory->create_entity(
 			'item',
 			array(
@@ -797,12 +797,12 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$newMeta->set_value(['red', 'blue']);
 		$newMeta->validate();
 		$itemMetaRepo->insert($newMeta);
-		
-		
+
+
 		####################################################
-		
+
 		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
-		
+
 		$attributes = [
 			'taxquery' => [
 				[
@@ -812,22 +812,22 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 				]
 			]
 		];
-		
+
 		$request->set_query_params($attributes);
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data()['items'];
-		
+
 		$this->assertEquals(2, count($data));
 		$ids = array_map(function($e) { return $e['id']; }, $data);
 		$this->assertContains($item1->get_id(), $ids);
 		$this->assertContains($item2->get_id(), $ids);
-		
+
 		####################################################
-		
+
 		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
-		
+
 		$attributes = [
 			'taxquery' => [
 				[
@@ -837,22 +837,22 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 				]
 			]
 		];
-		
+
 		$request->set_query_params($attributes);
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data()['items'];
-		
+
 		$this->assertEquals(2, count($data));
 		$ids = array_map(function($e) { return $e['id']; }, $data);
 		$this->assertContains($item2->get_id(), $ids);
 		$this->assertContains($item3->get_id(), $ids);
-		
+
 		####################################################
-		
+
 		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
-		
+
 		$attributes = [
 			'taxquery' => [
 				[
@@ -862,21 +862,21 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 				]
 			]
 		];
-		
+
 		$request->set_query_params($attributes);
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data()['items'];
-		
+
 		$this->assertEquals(1, count($data));
 		$ids = array_map(function($e) { return $e['id']; }, $data);
 		$this->assertContains($item2->get_id(), $ids);
-		
+
 		####################################################
-		
+
 		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
-		
+
 		$attributes = [
 			'taxquery' => [
 				[
@@ -886,21 +886,21 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 				]
 			]
 		];
-		
+
 		$request->set_query_params($attributes);
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data()['items'];
-		
+
 		$this->assertEquals(1, count($data));
 		$ids = array_map(function($e) { return $e['id']; }, $data);
 		$this->assertContains($item3->get_id(), $ids);
-		
+
 		####################################################
-		
+
 		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
-		
+
 		$attributes = [
 			'taxquery' => [
 				[
@@ -910,19 +910,19 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 				]
 			]
 		];
-		
+
 		$request->set_query_params($attributes);
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data()['items'];
-		
+
 		$this->assertEquals(3, count($data));
-		
+
 		####################################################
-		
+
 		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
-		
+
 		$attributes = [
 			'taxquery' => [
 				[
@@ -932,17 +932,121 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 				]
 			]
 		];
-		
+
 		$request->set_query_params($attributes);
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals(200, $response->get_status());
 		$data = $response->get_data()['items'];
-		
+
 		$this->assertEquals(0, count($data));
-		
+
 	}
-	
+
+	public function test_fetch_items_exclude(){
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Agile',
+				'description' => 'Agile methods',
+                'status'      => 'publish'
+			),
+			true
+		);
+
+		$item1 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'Lean Startup',
+				'description' => 'Um processo ágil de criação de novos negócios.',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$item2 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'SCRUM',
+				'description' => 'Um framework ágil para gerenciamento de tarefas.',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$item3 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'SCRUM3',
+				'description' => 'Um framework ágil para gerenciamento de tarefas.',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$item4 = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'SCRUM4',
+				'description' => 'Um framework ágil para gerenciamento de tarefas.',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
+
+		$attributes = [
+			'exclude' => [
+				$item1->get_id(),
+				$item2->get_id()
+			]
+		];
+
+		$request->set_query_params($attributes);
+
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals(200, $response->get_status());
+		$data = $response->get_data()['items'];
+
+		$this->assertEquals(2, sizeof($data));
+
+		$items_titles = [$data[0]['title'], $data[1]['title']];
+
+		$this->assertContains($item3->get_title(), $items_titles);
+		$this->assertContains($item4->get_title(), $items_titles);
+
+		// test using an string
+		$request  = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/items');
+
+		$attributes = [
+			'exclude' => implode(',', [
+				$item1->get_id(),
+				$item2->get_id()
+			])
+		];
+
+		$request->set_query_params($attributes);
+
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals(200, $response->get_status());
+		$data = $response->get_data()['items'];
+
+		$this->assertEquals(2, sizeof($data));
+
+		$items_titles = [$data[0]['title'], $data[1]['title']];
+
+		$this->assertContains($item3->get_title(), $items_titles);
+		$this->assertContains($item4->get_title(), $items_titles);
+
+	}
+
 }
 
 ?>

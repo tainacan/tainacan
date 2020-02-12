@@ -23,14 +23,6 @@ class Collections extends Repository {
 	}
 
 	/**
-	 * Collections constructor.
-	 */
-	protected function __construct() {
-		parent::__construct();
-		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
-	}
-
-	/**
 	 * {@inheritDoc}
 	 * @see \Tainacan\Repositories\Repository::get_map()
 	 */
@@ -182,14 +174,6 @@ class Collections extends Repository {
 				//'validation' => v::numeric(),
 				'default'     => ''
 			],
-			'moderators_ids'             => [
-				'map'         => 'meta_multi',
-				'title'       => __( 'Moderators', 'tainacan' ),
-				'type'        => 'array/object/string',
-				'items'       => [ 'type' => 'array/string/integer/object' ],
-				'description' => __( 'Moderators of this collection', 'tainacan' ),
-				'validation'  => ''
-			],
 			'_thumbnail_id'              => [
 				'map'         => 'meta',
 				'title'       => __( 'Thumbnail', 'tainacan' ),
@@ -255,7 +239,7 @@ class Collections extends Repository {
 			'can_export'          => true,
 			/* Translators: The Collections slug - will be the URL for the collections archive */
 			'rewrite'             => ['slug' => sanitize_title(_x('collections', 'Slug: the string that will be used to build the URL', 'tainacan'))],
-			'capability_type'     => Entities\Collection::get_capability_type(),
+			'capabilities'        => (array) $this->get_capabilities(),
 			'map_meta_cap'        => true,
 			'supports'            => [
 				'title',
@@ -285,7 +269,6 @@ class Collections extends Repository {
 
 		$collection->register_collection_item_post_type();
 		flush_rewrite_rules( false ); // needed to activate items post type archive url
-		$this->update_moderators( $new_collection );
 
 		return $new_collection;
 	}
@@ -301,7 +284,7 @@ class Collections extends Repository {
 	 * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
 	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
 	 * appropriate WP_Query argument
-	 * 
+	 *
 	 * If a number is passed to $args, it will return a \Tainacan\Entities\Collection object.  But if the post is not found or
 	 * does not match the entity post type, it will return an empty array
 	 *
@@ -361,9 +344,6 @@ class Collections extends Repository {
 	}
 
 	function pre_process( $collection ) {
-		// make sure we get the current value from database
-		$current_moderators       = $this->get_mapped_property( $collection, 'moderators_ids' );
-		$this->current_moderators = is_array( $current_moderators ) ? $current_moderators : [];
 
 		$this->old_collection       = $this->fetch( $collection->get_id() );
 		$this->old_core_title       = $collection->get_core_title_metadatum();
@@ -372,68 +352,20 @@ class Collections extends Repository {
 
 	}
 
-	function update_moderators( $collection ) {
-		$moderators = $collection->get_moderators_ids();
-
-		$deleted = array_diff( $this->current_moderators, $moderators );
-		$added   = array_diff( $moderators, $this->current_moderators );
-
-		do_action( 'tainacan-add-collection-moderators', $collection, $added );
-		do_action( 'tainacan-remove-collection-moderators', $collection, $deleted );
-	}
-
 	function handle_core_metadata( $collection ) {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 
 		$Tainacan_Metadata->register_core_metadata( $collection );
 
-		if ( $this->old_collection instanceof Entities\Collection && 
+		if ( $this->old_collection instanceof Entities\Collection &&
 			$this->old_collection->get_parent() != $collection->get_parent() &&
 			$this->old_core_title instanceof Entities\Metadatum &&
-			$this->old_core_description instanceof Entities\Metadatum 
+			$this->old_core_description instanceof Entities\Metadatum
 		) {
 			$Tainacan_Metadata->maybe_update_core_metadata_meta_keys( $collection, $this->old_collection, $this->old_core_title, $this->old_core_description );
 		}
 	}
 
-	/**
-	 * Filter to handle special permissions
-	 *
-	 * @see https://developer.wordpress.org/reference/hooks/map_meta_cap/
-	 *
-	 */
-	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
 
-		// Filters meta caps edit_tainacan-collection and check if user is moderator
-
-		if ( $cap == 'edit_post' && is_array( $args ) && array_key_exists( 0, $args ) ) { // edit_tainacan-colletion is mapped to edit_post
-
-			$entity = $args[0];
-
-			if ( is_numeric( $entity ) || $entity instanceof Entities\Collection ) {
-
-				if ( is_numeric( $entity ) ) {
-					$post = get_post( $entity );
-					if ( $post instanceof \WP_Post && $post->post_type == Entities\Collection::get_post_type() ) {
-						$entity = new Entities\Collection( $post );
-					}
-
-				}
-
-				if ( $entity instanceof Entities\Collection ) {
-					$moderators = $entity->get_moderators_ids();
-					if ( is_array( $moderators ) && in_array( $user_id, $moderators ) ) {
-
-						// if user is moderator, we clear the current caps
-						// (that might fave edit_others_posts) and leave only read, that everybody has
-						$collection_cpt = get_post_type_object( Entities\Collection::get_post_type() );
-						$caps           = [ 'read' ];
-					}
-				}
-			}
-		}
-
-		return $caps;
-	}
 
 }

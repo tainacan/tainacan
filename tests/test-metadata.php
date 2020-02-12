@@ -160,7 +160,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 		    true
 	    );
 
-        $retrieve_metadata =  $Tainacan_Metadata->fetch_by_collection( $collection_son, [], 'OBJECT' );
+        $retrieve_metadata =  $Tainacan_Metadata->fetch_by_collection( $collection_son );
 		
 		$retrieve_metadata_ids =  $Tainacan_Metadata->fetch_ids_by_collection( $collection_son, [] );
 
@@ -262,10 +262,10 @@ class Metadata extends TAINACAN_UnitTestCase {
 
         $update_collection = $Tainacan_Collections->update( $collection );
         
-        $metadata_ordinate = $Tainacan_Metadata->fetch_by_collection( $update_collection, [], 'OBJECT' );
+        $metadata_ordinate = $Tainacan_Metadata->fetch_by_collection( $update_collection );
         $this->assertEquals( 'metadatum2', $metadata_ordinate[0]->get_name() );
 
-        $metadata_ordinate_enabled = $Tainacan_Metadata->fetch_by_collection( $update_collection, [ 'include_disabled' => true ], 'OBJECT' );
+        $metadata_ordinate_enabled = $Tainacan_Metadata->fetch_by_collection( $update_collection, [ 'include_disabled' => true ] );
         $this->assertEquals( 'metadatum3', $metadata_ordinate_enabled[0]->get_name() );
 		
 		$this->assertFalse($metadata_ordinate_enabled[0]->get_enabled_for_collection());

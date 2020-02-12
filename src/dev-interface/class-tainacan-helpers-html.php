@@ -53,7 +53,7 @@ use Tainacan\Entities;
      public static function metadata_dropdown( $collection  , $selected, $name_metadatum = 'tnc_prop_metadatum_id', $args = []){
          $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
          $collection = ( is_numeric( $collection ) ) ? new Entities\Collection( $collection ) : $collection;
-         $metadatum = $Tainacan_Metadata->fetch_by_collection( $collection, $args, 'OBJECT');
+         $metadatum = $Tainacan_Metadata->fetch_by_collection( $collection, $args);
          ?>
          <select name="<?php echo $name_metadatum ?>">
              <option value=""><?php echo __('Select an option','tainacan') ?>...</option>
@@ -76,7 +76,7 @@ use Tainacan\Entities;
      public static function metadata_checkbox_list( $collection , $selected,$name_metadatum = 'tnc_prop_tnc_metadatum_ids[]', $args = []) {
          $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
          $collection = ( is_numeric( $collection ) ) ? new Entities\Collection( $collection ) : $collection;
-         $metadatum = $Tainacan_Metadata->fetch_by_collection( $collection, $args, 'OBJECT');
+         $metadatum = $Tainacan_Metadata->fetch_by_collection( $collection, $args);
          $selected =  ( is_array( $selected) ) ? $selected : json_decode($selected);
          $selected =  ( $selected ) ?  $selected : [];
          ?>

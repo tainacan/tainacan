@@ -394,6 +394,62 @@ $modal-z: 9999999;
     animation-timing-function: ease;   
 }
 
+// Capababilities Form Collapse 
+@keyframes form-capabilities-in {
+    from {
+        opacity: 0;
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+        // -ms-transform: translate(0%, -30%); /* IE 9 */
+        // -webkit-transform: translate(0%, -30%); /* Safari */
+        // transform: translate(0%, -30%);
+    }
+    to {
+        height: 120px;
+        max-height: 120px;
+        min-height: 120px;
+        opacity: 1;        
+        // -ms-transform: translate(0, 0); /* IE 9 */
+        // -webkit-transform: translate(0, 0); /* Safari */
+        // transform: translate(0, 0);
+    }
+}
+
+@keyframes form-capabilities-out {
+    from {
+        height: 120px;
+        max-height: 120px;
+        min-height: 120px;
+        //opacity: 1;
+        // -ms-transform: translate(0, 0); /* IE 9 */
+        // -webkit-transform: translate(0, 0); /* Safari */
+        // transform: translate(0, 0);
+    }
+    to {
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+       //opacity: 0;
+        // -ms-transform: translate(0%, -30%); /* IE 9 */
+        // -webkit-transform: translate(0%, -30%); /* Safari */
+        // transform: translate(0%, -30%);
+    }
+}
+
+.form-capabilities-enter-active {
+    overflow: hidden;
+    animation-name: form-capabilities-in;
+    animation-duration: 0.2s;
+    animation-timing-function: ease;   
+}
+.form-capabilities-leave-active {
+    overflow: hidden;
+    animation-name: form-capabilities-out;
+    animation-duration: 0.15s;
+    animation-timing-function: ease;   
+}
+
 // Filters menu 
 @keyframes filters-menu-in {
     from {

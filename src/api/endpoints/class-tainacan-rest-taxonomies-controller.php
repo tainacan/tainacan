@@ -18,7 +18,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		parent::__construct();
 		add_action('init', array(&$this, 'init_objects'), 11);
 	}
-	
+
 	/**
 	 * Initialize objects after post_type register
 	 */
@@ -125,34 +125,34 @@ class REST_Taxonomies_Controller extends REST_Controller {
 					// 			$item_arr['collections'][] = $tax_collection->_toArray();
 					// 		}
 					// 	}
-					// 
+					//
 					// }
 				}
-				
+
 				/**
-				* 
-				* 
+				*
+				*
 				* See issue #229
-				* 
+				*
 				*/
 				$item_arr['collections'] = [];
 				$item_arr['collections_ids'] = [];
-				
+
 				$taxonomy = get_taxonomy( $item->get_db_identifier() );
 				if (is_object($taxonomy) && isset($taxonomy->object_type) && is_array($taxonomy->object_type)) {
 					foreach ($taxonomy->object_type as $slug) {
-						
+
 						$tax_collection = Repositories\Collections::get_instance()->fetch_by_db_identifier($slug);
 						if ( $tax_collection instanceof \Tainacan\Entities\Collection ) {
 							$item_arr['collections'][] = $tax_collection->_toArray();
 							$item_arr['collections_ids'][] = $tax_collection->get_id();
 						}
-						
+
 					}
 				}
-				
-				
-				
+
+
+
 			} else {
 				$attributes_to_filter = $request['fetch_only'];
 
@@ -163,7 +163,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 			 * Use this filter to add additional post_meta to the api response
 			 * Use the $request object to get the context of the request and other variables
 			 * For example, id context is edit, you may want to add your meta or not.
-			 * 
+			 *
 			 * Also take care to do any permissions verification before exposing the data
 			 */
 			$extra_metadata = apply_filters('tainacan-api-response-taxonomy-meta', [], $request);
@@ -171,7 +171,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 			foreach ($extra_metadata as $extra_meta) {
 				$item_arr[$extra_meta] = get_post_meta($item_arr['id'], $extra_meta, true);
 			}
-			
+
 			return $item_arr;
 		}
 
@@ -198,14 +198,14 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		$taxonomy_id = $request['taxonomy_id'];
 
 		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
-		
+
 		if (! $taxonomy instanceof Entities\Taxonomy) {
 			return new \WP_REST_Response([
 				'error_message' => __('A taxonomy with this ID was not found', 'tainacan' ),
 				'taxonomy_id'   => $taxonomy_id
 			], 400);
 		}
-		
+
 		$taxonomy_prepared = $this->prepare_item_for_response($taxonomy, $request);
 
 		return new \WP_REST_Response($taxonomy_prepared, 200);
@@ -220,14 +220,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
 
 		if(($taxonomy instanceof Entities\Taxonomy)) {
-			if('edit' === $request['context'] && !is_user_logged_in()) {
-				return false;
-			}
-			if(!$taxonomy->can_read()) {
-				return false;
-			}
-
-			return true;
+			return $taxonomy->can_read();
 		}
 
 		return false;
@@ -241,16 +234,16 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	public function delete_item( $request ) {
 		$taxonomy_id = $request['taxonomy_id'];
 		$permanently = $request['permanently'];
-		
+
 		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
-		
+
 		if (! $taxonomy instanceof Entities\Taxonomy) {
 			return new \WP_REST_Response([
 				'error_message' => __('A taxonomy with this ID was not found', 'tainacan' ),
 				'taxonomy_id'   => $taxonomy_id
 			], 400);
 		}
-		
+
 		if($permanently == true){
 			$deleted = $this->taxonomy_repository->delete($taxonomy);
 		} else {
@@ -341,9 +334,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		if('edit' === $request['context'] && !is_user_logged_in()) {
-			return false;
-		}
+
 		// if(!$this->taxonomy_repository->can_read($this->taxonomy)) {
 		// 	return false;
 		// }
@@ -387,7 +378,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function create_item_permissions_check( $request ) {
-		return $this->taxonomy_repository->can_edit($this->taxonomy);
+		return current_user_can( $this->taxonomy_repository->get_capabilities()->edit_posts );
 	}
 
 	/**
@@ -467,7 +458,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
 			$endpoint_args = array_merge(
-                $endpoint_args, 
+                $endpoint_args,
 				parent::get_wp_query_params(),
                 parent::get_fetch_only_param()
             );
@@ -518,18 +509,18 @@ class REST_Taxonomies_Controller extends REST_Controller {
 			'title' => 'taxonomy',
 			'type' => 'object'
 		];
-		
+
 		$main_schema = parent::get_repository_schema( $this->taxonomy_repository );
 		$permissions_schema = parent::get_permissions_schema();
-		
+
 		$schema['properties'] = array_merge(
 			parent::get_base_properties_schema(),
 			$main_schema,
 			$permissions_schema
 		);
-		
+
 		return $schema;
-		
+
 	}
 }
 
