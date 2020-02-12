@@ -20,7 +20,7 @@
     }
 
     .tainacan-record {
-        background-color: var(--tainacan-gray0);
+        background-color: rgba(126, 126, 126, 0.05);
         padding: 0px;
         flex-basis: 0;
         margin: 0 auto 30px auto;
@@ -117,7 +117,7 @@
             background-color: var(---tainacan-item-heading-hover-background-color) !important;
         }
         &:hover .media {
-            background-color: var(--tainacan-gray1) !important;
+            background-color: var(--tainacan-item-hover-background-color) !important;
         }
 
         .media {

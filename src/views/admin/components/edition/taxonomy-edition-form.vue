@@ -518,7 +518,10 @@
         }
     }
 </script>
-<style scoped>
+<style lang="scss" scoped>
+
+    @import '../../scss/_variables.scss';
+
     .tab-content {
         overflow: visible !important;
     }
@@ -533,7 +536,7 @@
         margin-bottom: 76px;
     }
     .tainacan-form .column {
-        padding: 1em 4.1666667%;
+        padding: 1em $page-side-padding;
     }
     .tainacan-form .column:last-of-type {
         padding-left: 0;

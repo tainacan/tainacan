@@ -212,7 +212,7 @@ export default {
 
         @media screen and (max-width: 769px) {
             top: 102px;
-            padding-left: 4.166666667% !important;
+            padding-left: $page-side-padding !important;
         }
     }
 </style>

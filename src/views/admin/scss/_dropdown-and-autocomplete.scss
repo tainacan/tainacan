@@ -13,7 +13,7 @@
         }
         .button.is-primary, .button.is-secondary, .button.is-success {
             .icon {
-                color: $white;
+                color: var(--taincan-background-color);
             }
         }
         .dropdown.is-disabled {
@@ -33,7 +33,7 @@
         z-index: 99;
         
         .dropdown-content {
-            padding: 0px;
+            padding: 0px 0px 1px 0px;
             border-radius: 0px !important;
             max-height: 240px;
             overflow-y: auto;
@@ -144,7 +144,7 @@
         display: inline-flex;
     }
     .tag {
-        background: var(--tainacan-white);
+        background: var(--tainacan-background-color);
         padding-right: 0;
         padding-left: 0.6em;
 
@@ -159,8 +159,8 @@
                 height: 1px !important;
             } 
             &:hover, &:focus {
-                background-color: var(--tainacan-white);
-                color: var(--tainacan-black);
+                background-color: var(--tainacan-background-color);
+                color: var(--tainacan-label-color);
             }
         }
     }
@@ -170,7 +170,7 @@
     border-color: var(--tainacan-input-border-color);
     border-width: 0px 1px 1px 1px;
     border-style: solid;
-    background-color: var(--tainacan-white);
+    background-color: var(--tainacan-background-color);
     display: flex;
     font-size: 0.75em;
 
@@ -178,7 +178,7 @@
         margin: 4px 6px 0px 6px;
     }
     .tag {
-        background: var(--tainacan-white);
+        background: var(--tainacan-background-color);
         padding-right: 0;
         padding-left: 0.5em;
 
@@ -193,8 +193,8 @@
                 height: 1px !important;
             } 
             &:hover, &:focus {
-                background-color: var(--tainacan-white);
-                color: var(--tainacan-black);
+                background-color: var(--tainacan-background-color);
+                color: var(--tainacan-label-color);
             }
         }
     }
@@ -233,7 +233,7 @@
         border: none;
         
         .dropdown-item {
-            background-color: var(--tainacan-white) !important;
+            background-color: var(--tainacan-background-color) !important;
         }
     }
 
@@ -276,6 +276,7 @@
     }
 
     .datepicker-table {
+        padding: 0;
         margin-bottom: 0px;
         
         .datepicker-cell {
@@ -290,7 +291,7 @@
             &.is-today,
             &.is-today:hover {
                 color: var(--tainacan-info-color) !important;
-                background-color: var(--tainacan-turquoise1);
+                background-color: var(--tainacan-primary);
             }
             &.is-selected,
             &.is-selected:hover {

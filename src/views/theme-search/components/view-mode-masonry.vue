@@ -180,7 +180,7 @@ export default {
     @import "../../admin/scss/_view-mode-masonry.scss";
 
     .tainacan-masonry-container .tainacan-masonry-item .metadata-title {
-        margin: 0px 6px;
+        margin: 0px 3px;
     }
 </style>
 
