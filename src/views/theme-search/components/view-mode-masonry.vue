@@ -85,7 +85,7 @@ export default {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             itemColumnWidth: Number,
             containerWidthDiscount: Number,
-            masonryCols: {default: 7, 1919: 6, 1407: 5, 1215: 4, 1023: 3, 767: 2, 343: 1}
+            masonryCols: {default: 6, 1919: 5, 1407: 4, 1215: 3, 1023: 3, 767: 2, 343: 1}
         }
     },
     watch: {
@@ -101,10 +101,10 @@ export default {
         },
         containerWidthDiscount() {
             let obj = {};
-            obj['default'] = 7;
-            obj[1980 - this.containerWidthDiscount] = 6;
-            obj[1460 - this.containerWidthDiscount] = 5;
-            obj[1275 - this.containerWidthDiscount] = 4;
+            obj['default'] = 6;
+            obj[1980 - this.containerWidthDiscount] = 5;
+            obj[1460 - this.containerWidthDiscount] = 4;
+            obj[1275 - this.containerWidthDiscount] = 3;
             obj[1080 - this.containerWidthDiscount] = 3;
             obj[828 - this.containerWidthDiscount] = 2;
             obj[400] = 1;
@@ -112,7 +112,6 @@ export default {
         }
     },
     mounted() {
-
         if (this.$refs.masonryWrapper != undefined && 
             this.$refs.masonryWrapper.children[0] != undefined && 
             this.$refs.masonryWrapper.children[0].children[0] != undefined && 

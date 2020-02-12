@@ -30,7 +30,7 @@
 
     .tooltip-inner {
         background: var(--tainacan-primary);
-        color: var(--tainacan-secondary);
+        color: var(--tainacan-info-color);
         font-size: 0.6875em;
         border-radius: 5px;
         padding: 10px 14px;
@@ -44,7 +44,7 @@
         border-style: solid;
         position: absolute;
         margin: 5px;
-        border-color: var(--tainacan-turquoise1);
+        border-color: var(--tainacan-primary);
         z-index: 1;
     }
     &[x-placement^="top"] {
