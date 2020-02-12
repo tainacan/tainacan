@@ -120,7 +120,7 @@
                                     autoHide: true,
                                     placement: 'auto',
                                 }">
-                            <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important', lineHeight: '1.5em' }">
+                            <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important', lineHeight: '1.75em' }">
                                 {{ `${$i18n.get('label_all_taxonomies')}` }}
                                 <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish)})` : '' }}</span>
                             </a>
@@ -433,13 +433,14 @@
                 align-items: center;
             }
 
-            .gray-icon, .gray-icon .icon {
+            .gray-icon, 
+            .gray-icon .icon {
                 color: var(--tainacan-gray4) !important;
                 padding-right: 10px;
+                height: 1.125em !important;
             }
             .gray-icon .icon i::before, 
             .gray-icon i::before {
-                font-size: 1.3125em !important;
                 max-width: 26px;
             }
 
@@ -449,7 +450,7 @@
                 color: var(--tainacan-blue5);
                 height: 27px;
                 font-size: 18px !important;
-                height: 1.75em !important;
+                height: 1.75em;
             }
         }
 

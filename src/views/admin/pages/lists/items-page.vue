@@ -247,24 +247,22 @@
                                 role="button"
                                 :class="{ 'is-active': order == 'DESC' }"
                                 :value="'DESC'"
-                                aria-role="listitem"
-                                style="padding-bottom: 0.45em">
-                            <span class="icon is-small gray-icon">
+                                aria-role="listitem">
+                            <span class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
                             </span>
-                            {{ $i18n.get('label_descending') }}
+                            <span>{{ $i18n.get('label_descending') }}</span>
                         </b-dropdown-item>
                         <b-dropdown-item
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': order == 'ASC' }"
                                 :value="'ASC'"
-                                aria-role="listitem"
-                                style="padding-bottom: 0.45em">
-                            <span class="icon is-small gray-icon">
+                                aria-role="listitem">
+                            <span class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
                             </span>
-                            {{ $i18n.get('label_ascending') }}
+                            <span>{{ $i18n.get('label_ascending') }}</span>
                         </b-dropdown-item>
                     </b-dropdown>
                     <span
@@ -1441,13 +1439,15 @@
                 align-items: center;
             }
 
-            .gray-icon, .gray-icon .icon {
+            .gray-icon, 
+            .gray-icon .icon {
                 color: var(--tainacan-gray4) !important;
                 padding-right: 10px;
             }
             .gray-icon .icon i::before, 
             .gray-icon i::before {
                 font-size: 1.3125em !important;
+                color: var(--tainacan-gray4) !important;
                 max-width: 26px;
             }
             

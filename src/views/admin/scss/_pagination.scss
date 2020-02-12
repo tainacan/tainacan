@@ -18,6 +18,10 @@
         flex-wrap: wrap;
     }
 
+    .field-body {
+        align-items: center;
+    }
+
     .control {
         font-size: 1em;
     }
@@ -81,6 +85,7 @@
 
         ul {
             margin-bottom: 0px;
+            margin-top: -4px;
             padding: 0px;
             li {
                 margin: 0.5em 0 0 0.2em;

@@ -507,13 +507,14 @@ export default {
                 align-items: center;
             }
 
-            .gray-icon, .gray-icon .icon {
+            .gray-icon, 
+            .gray-icon .icon {
                 color: var(--tainacan-gray4) !important;
                 padding-right: 10px;
+                height: 1.125em !important;
             }
             .gray-icon .icon i::before, 
             .gray-icon i::before {
-                font-size: 1.3125em !important;
                 max-width: 26px;
             }
         }
