@@ -6,7 +6,7 @@
         border: 1px solid var(--tainacan-gray4) !important;    
     }
     input[type="radio"] + .check::before {
-        background: black !important;
+        background: var(--tainacan-black) !important;
         width: 15px !important;
         height: 15px !important;
         margin-left: calc(-16px/2) !important;

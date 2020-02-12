@@ -571,7 +571,7 @@
 
             .process-title {
                 p {
-                    color: black !important;
+                    color: var(--tainacan-black) !important;
                     font-size: 0.875em !important;
                 }
                 width: 20.833333%;

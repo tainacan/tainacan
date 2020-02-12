@@ -19,7 +19,7 @@ input[type="week"].input {
     font-size: 0.875em;
     border-radius: 1px !important;
     box-shadow: none !important;
-    background-color: var(--tainacan-white);
+    background-color: var(--tainacan-input-background-color);
     border: 1px solid var(--tainacan-gray2);
     color: var(--tainacan-input-color);
     padding-top: calc(0.375em - 1px);
@@ -28,7 +28,7 @@ input[type="week"].input {
 
     &:focus, &:active {
         box-shadow: none !important;
-        background-color: var(--tainacan-white);
+        background-color: var(--tainacan-input-background-color);
         border: 1px solid var(--tainacan-gray4) !important;
     }  
     &:hover {
@@ -41,14 +41,20 @@ input[type="week"].input {
     &.readonly, &[readonly] {
         background-color: var(--tainacan-white) !important;
     }
-    &::placeholder,
-    &::-ms-input-placeholder,
-    &:-ms-input-placeholder,
-    &:-moz-placeholder,
-    &::-moz-placeholder,
-    &::-webkit-input-placeholder {
-        color: var(--tainacan-gray4) !important;
-        line-height: 0;
+    &::placeholder {
         font-size: 0.875em;
+        color: var(--tainacan-gray4) !important;
+    }
+    &::-ms-input-placeholder {
+        font-size: 0.875em;
+        color: var(--tainacan-gray4) !important;
+    }
+    &::-moz-placeholder {
+        font-size: 0.875em;
+        color: var(--tainacan-gray4) !important;
+    }
+    &::-webkit-input-placeholder {
+        font-size: 0.875em;
+        color: var(--tainacan-gray4) !important;
     }
 }

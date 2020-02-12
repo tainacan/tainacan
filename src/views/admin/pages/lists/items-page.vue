@@ -1423,6 +1423,7 @@
             }
 
             .label {
+                color: var(--tainacan-gray5);
                 font-size: 0.875em;
                 font-weight: normal;
                 margin-top: 3px;

@@ -323,7 +323,7 @@ export default {
 
         .popup-list {
             background-color: var(--tainacan-white);
-            color: black;
+            color: var(--tainacan-black);
             overflow-y: auto;
             overflow-x: hidden;
             max-height: 222px; 

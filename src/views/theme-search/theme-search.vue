@@ -81,7 +81,7 @@ export default {
         h6 {
             margin: 0;
         }
-
+        
         .tainacan-icon {
             opacity: 0; // Will make it 1 once window.load is done; 
         }
@@ -128,7 +128,7 @@ export default {
                 border: 1px solid var(--tainacan-gray4) !important;    
             }
             input[type="radio"] + .check::before {
-                background: black !important;
+                background: var(--tainacan-black) !important;
                 width: 7px !important;
                 height: 7px !important;
             }

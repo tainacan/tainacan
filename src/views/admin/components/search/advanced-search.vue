@@ -615,6 +615,7 @@
         }
 
         .control {
+            font-size: 1em;
             .select{
                 width: 100% !important;
                 select{

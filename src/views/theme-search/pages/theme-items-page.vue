@@ -1093,7 +1093,7 @@
         width: 100vw;
         height: 100vh;
         z-index: 999999999;
-        background-color: black;
+        background-color: var(--tainacan-black);
         transition: background-color 0.3s ease, width 0.3s ease, height 0.3s ease;
         animation: open-full-screen 0.4s ease;
 
@@ -1296,6 +1296,7 @@
             }
 
             .label {
+                color: var(--tainacan-gray5);
                 font-size: 0.875em;
                 font-weight: normal;
                 margin-top: 3px;

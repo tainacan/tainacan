@@ -127,11 +127,11 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
-            color: black !important;
+            color: var(--tainacan-black) !important;
             transition: background-color 0.3s ease;
 
             p {
-                color: black !important;
+                color: var(--tainacan-black) !important;
                 font-size: 0.875em !important; 
                 text-overflow: ellipsis;
                 white-space: nowrap;

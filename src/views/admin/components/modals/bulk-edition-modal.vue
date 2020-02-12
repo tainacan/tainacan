@@ -635,14 +635,14 @@
         .is-field-history {
 
             .input[disabled], .taginput [disabled].taginput-container.is-focusable, .textarea[disabled] {
-                color: black !important;
+                color: var(--tainacan-black) !important;
                 border: none !important;
-                background-color: var(--tainacan-white) !important;
+                background-color: var(--tainacan-input-background-color) !important;
             }
 
             .taginput-container {
                 .tags {
-                    color: black !important;
+                    color: var(--tainacan-black) !important;
                     background-color: var(--tainacan-white) !important;
                     border: none !important;
 
@@ -665,13 +665,13 @@
             }
 
             input {
-                color: black !important;
+                color: var(--tainacan-black) !important;
                 border: none !important;
                 background-color: var(--tainacan-white) !important;
             }
 
             textarea {
-                color: black !important;
+                color: var(--tainacan-black) !important;
                 border: none !important;
                 background-color: var(--tainacan-white) !important;
                 min-height: auto !important;

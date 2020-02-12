@@ -1,12 +1,15 @@
 // Tabs 
 .tabs {
     font-size: 1em;
+    ul {
+        border-bottom-color: var(--tainacan-gray2);
+    }
     li {
         overflow-y: hidden;
     }
     a {
         font-size: 0.8125em;
-        color: black !important;
+        color: var(--tainacan-black) !important;
         padding: 0.5em 1.45em;
         border-bottom: 4px solid transparent;
         transition: border-bottom-color ease 0.3s;
@@ -19,7 +22,7 @@
     }
     li.is-active a {
         border-bottom-color: var(--tainacan-turquoise5);
-        color: black !important;
+        color: var(--tainacan-black) !important;
     }
     .icon:first-child {
         margin-right: 0.2em;

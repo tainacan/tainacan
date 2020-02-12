@@ -68,6 +68,10 @@
         padding: 40px 8.333333vw;
     }
 
+    .modal-card-body {
+        background-color: var(--tainacan-background-color);
+    }
+
     nav {
         border: none !important;
     }
@@ -105,7 +109,7 @@
         margin: 0 auto !important;
 
         .modal-card-head, .modal-card-body, .modal-card-foot {
-            background-color: var(--tainacan-white);
+            background-color: var(--tainacan-background-color);
             color: var(--tainacan-gray5);
             border: none;
             padding-bottom: 12px;
@@ -128,6 +132,7 @@
             margin-bottom: 12px;
         }
         .modal-card-body {
+            background: var(--tainacan-background-color);
             padding: 0px 0px 12px 20px;
             width: 50%;
         }

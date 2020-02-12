@@ -31,6 +31,7 @@
         font-weight: bold;
         text-transform: inherit;
         font-size: 0.875em; 
+        color: var(--tainacan-gray5);
         display: inline-block;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -133,10 +134,9 @@
         white-space: nowrap;
     }
     .select {
-        
         select {
             color: var(--tainacan-input-color);
-            background-color: var(--tainacan-white) !important;
+            background-color: var(--tainacan-input-background-color) !important;
             border: 1px solid var(--tainacan-gray2) !important;
             &:focus>option:checked, &:focus>option:hover {
                 background-color: var(--tainacan-turquoise1) !important;

@@ -19,7 +19,7 @@
         color: var(--tainacan-white) !important;
     }
     .dropdown .dropdown-menu .dropdown-content a.dropdown-item:hover {
-        color: black !important;
+        color: var(--tainacan-black) !important;
     }
     .has-text-primary, 
     .has-text-primary:hover, 
@@ -63,7 +63,7 @@
             border-bottom-color: var(--tainacan-blue5);
         }
         a {
-            color: black !important;
+            color: var(--tainacan-black) !important;
         }
     }
     .select:not(.is-multiple)::after {
