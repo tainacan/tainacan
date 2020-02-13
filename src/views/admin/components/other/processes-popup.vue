@@ -68,7 +68,7 @@
                                 class="icon has-text-success">
                             <i
                                 style="margin-right: -5px;"
-                                class="tainacan-icon tainacan-icon-20px tainacan-icon-alert has-text-yellow2"/>
+                                class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alert has-text-yellow2"/>
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle"/>
                         </span>
                         <span 

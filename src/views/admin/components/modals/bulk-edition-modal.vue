@@ -193,7 +193,7 @@
                                         placement: 'auto-end'
                                     }"
                                     class="icon">
-                                <i class="has-text-gray4 tainacan-icon tainacan-icon-20px tainacan-icon-cancel"/>
+                                <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-cancel"/>
                             </span>
                         </button>
 
@@ -210,7 +210,7 @@
                                     animated
                                     :label="$i18n.get('info_bulk_edition_process_added')">
                                 <span class="icon">
-                                    <i class="has-text-success tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle"/>
+                                    <i class="has-text-success tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
                                 </span>
                             </b-tooltip>
                         </div>
@@ -230,7 +230,7 @@
                                         placement: 'auto-end'
                                     }"
                                     class="icon">
-                                <i class="has-text-gray4 tainacan-icon tainacan-icon-20px tainacan-icon-play"/>
+                                <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-play"/>
                             </span>
                         </button>
 

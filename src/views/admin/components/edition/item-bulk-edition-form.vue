@@ -116,7 +116,7 @@
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle" />
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle" />
                             </span>  
                         </div>   
                         <div 

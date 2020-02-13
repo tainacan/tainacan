@@ -50,6 +50,7 @@
                             <router-link
                                     v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
                                     tag="a" 
+                                    style="font-size: 0.875em;"
                                     class="add-link"     
                                     :to="{ path: $routerHelper.getNewCollectionPath(), query: { fromImporter: true }}">
                                 <span class="icon">

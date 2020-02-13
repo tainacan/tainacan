@@ -16,7 +16,7 @@
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 @click="closeSlideViewMode()">
             <span class="icon">
-                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-close"/>
+                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close"/>
             </span>
         </button>
 
@@ -36,7 +36,7 @@
             <span class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowright' : isMetadataCompressed, 'tainacan-icon-arrowleft' : !isMetadataCompressed }"
-                        class="tainacan-icon tainacan-icon-20px"/>
+                        class="tainacan-icon tainacan-icon-1-25em"/>
             </span>
         </button>
 
@@ -50,7 +50,7 @@
                         id="close-metadata-button"
                         @click="isMetadataCompressed = true">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-close"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close"/>
                     </span>
                 </button>
                 <hr>
@@ -67,7 +67,7 @@
                 <span class="icon">
                     <i 
                             :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll}"
-                            class="tainacan-icon tainacan-icon-20px"/>
+                            class="tainacan-icon tainacan-icon-1-25em"/>
                 </span>
             </a>
 
@@ -93,7 +93,7 @@
                         <span class="icon">
                             <i 
                                     :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open}"
-                                    class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                    class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                         </span>
                         <span 
                                 v-tooltip="{
@@ -278,7 +278,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon is-medium has-text-white">
-                            <icon class="tainacan-icon tainacan-icon-20px tainacan-icon-previous"/>
+                            <icon class="tainacan-icon tainacan-icon-1-25em tainacan-icon-previous"/>
                         </span>
                     </button>
                     <button 
@@ -293,7 +293,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon is-medium has-text-white">
-                            <icon class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                            <icon class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                         </span>
                     </button>
                 </div>

@@ -3,13 +3,13 @@
 .b-tooltip::after {
     box-shadow: none;
     &.is-primary {
-        background: var(--tainacan-turquoise1);
+        background: var(--tainacan-primary);
     }
 }
 .b-tooltip::before {
     box-shadow: none;
     &.is-primary {
-        background: var(--tainacan-turquoise1);
+        background: var(--tainacan-primary);
     }
 }
 .repository-tooltip {
@@ -122,12 +122,12 @@
             border-left-color: transparent !important;
             border-right-color: transparent !important;
             border-bottom-color: transparent !important;
-            border-top-color: var(--tainacan-turquoise1) !important;
+            border-top-color: var(--tainacan-primary) !important;
             top: initial !important;
             bottom: -5px !important;
     }
     .metadata-type-preview {
-        background: var(--tainacan-turquoise1);
+        background: var(--tainacan-primary);
         padding: 0px 8px;
         border-radius: 3px;
         width: 200px;
@@ -170,6 +170,8 @@
             width: 100%;
             .label { 
                 color: var(--tainacan-info-color);
+                font-size: 1em;
+                line-height: 2em;
             }
         }
         .add-new-term {

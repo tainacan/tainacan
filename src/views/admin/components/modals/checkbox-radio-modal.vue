@@ -21,7 +21,7 @@
                         @input="autoComplete"
                         class="input">
                 <span class="icon is-right">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search" />
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search" />
                 </span>
             </div>
 
@@ -130,7 +130,7 @@
                                         v-if="option.total_children > 0"
                                         @click="getOptionChildren(option, key, index)">
                                     <span class="icon is-pulled-right">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowright"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright"/>
                                     </span>
                                 </a>
                             </b-field>
@@ -140,7 +140,7 @@
                                         @click="getMoreOptions(finderColumn, key)"
                                         class="tainacan-show-more">
                                     <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-showmore"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore"/>
                                     </span>
                                 </div>
                                 <div 

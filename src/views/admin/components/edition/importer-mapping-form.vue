@@ -44,7 +44,7 @@
                               importerSourceInfo != null &&
                               !isLoading">
                     <template v-if="importerSourceInfo.source_metadata.length > 0 || (importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0)">
-                        <p class="mapping-header-label is-inline">{{ $i18n.get('label_from_source_collection') }}</p>
+                        <p class="mapping-header-label is-pulled-left">{{ $i18n.get('label_from_source_collection') }}</p>
                         <p class="mapping-header-label is-pulled-right">{{ $i18n.get('label_to_target_collection') }}</p>
                     </template>
                     <div
@@ -161,6 +161,7 @@
                     </b-modal>
                     <a
                             v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
+                            style="font-size: 0.875em;"
                             class="is-inline is-pulled-right add-link has-text-secondary"
                             @click="createNewMetadatum()">
                         <span class="icon">

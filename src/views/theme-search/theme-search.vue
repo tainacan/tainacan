@@ -120,31 +120,7 @@ export default {
                 }
             }
         }
-        .b-radio.radio {
-
-            input[type="radio"] + .check {
-                width: 13px !important;
-                height: 13px !important;
-                border: 1px solid var(--tainacan-info-color) !important;    
-            }
-            input[type="radio"] + .check::before {
-                background: var(--tainacan-black) !important;
-                width: 7px !important;
-                height: 7px !important;
-            }
-            &:focus input[type="radio"] + .check,
-            &:active input[type="radio"] + .check,
-            &:hover input[type="radio"] + .check {
-                box-shadow: none !important;
-            }
-            input[type="radio"]:checked + .check {
-                border-color: var(--tainacan-info-color) !important;
-            }
-            &:focus input[type="radio"]:checked + .check {
-                box-shadow: none !important;
-            }
-
-        }
+        
         .collapse-all {
             font-size: 0.75em;
         }

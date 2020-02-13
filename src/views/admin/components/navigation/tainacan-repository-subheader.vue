@@ -24,7 +24,7 @@
                         id="exporter-collection-button"
                         v-if="!isRepositoryLevel">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-export"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-export"/>
                     </span>
                 </a>
             </li>
@@ -46,7 +46,7 @@
                         class="button"
                         id="view-collection-button">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                 </span>
                     <!-- {{ $i18n.get('label_view_collection_on_website') }} -->
                 </a>
@@ -69,7 +69,7 @@
                         class="button"
                         id="view-repository-button">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                 </span>
                     <!-- {{ $i18n.get('label_view_collection_on_website') }} -->
                 </a>
@@ -175,7 +175,9 @@ export default {
             background-color: var(--tainacan-blue5);
             padding-right: $page-side-padding;
 
-            .repository-subheader-icons { margin-right: -1em !important; }
+            .repository-subheader-icons { 
+                margin-right: -1em !important; 
+            }
         }
 
         &.is-menu-compressed {     
@@ -198,7 +200,6 @@ export default {
             flex-wrap: nowrap;
             margin-right: calc(4.6666667% - 2.083333333px);
 
-            #view-repository-button,
             #view-collection-button,
             #exporter-collection-button {
                 border: none;
@@ -207,6 +208,21 @@ export default {
                 background-color: transparent;
                 color: var(--tainacan-white);
                 width: 48px;
+
+                &:hover {
+                    background-color: var(--tainacan-turquoise5) !important;
+                }
+            }
+            #view-repository-button {
+                border: none;
+                border-radius: 0px !important;
+                height: 42px !important;
+                background-color: transparent;
+                color: var(--tainacan-white);
+                width: 48px;
+                &:hover {
+                    background-color: var(--tainacan-blue4) !important;
+                }
             }
         }
 

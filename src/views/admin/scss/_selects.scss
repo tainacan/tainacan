@@ -36,10 +36,12 @@
         right: 10px !important;
         color: var(--tainacan-secondary) !important;
         display: flex !important;
-        align-items: initial;
-        margin-top: -10px !important;
+        align-items: center;
+        justify-content: center;
+        margin-top: -0.275em !important;
         text-transform: none !important;
         letter-spacing: normal !important;
+        font-size: 1.2em;
     }  
     &.is-loading.is-small::after {
         font-size: 0.875em;

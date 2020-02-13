@@ -36,7 +36,7 @@
                         @click="$router.push($routerHelper.getItemsPath())"
                         class="button is-small is-white level-item">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search"/>
                     </span>
                 </button>
             </div>
@@ -74,7 +74,7 @@
                             <span 
                                     style="margin-top: 5px; margin-right: -2px;"
                                     class="icon is-pulled-right">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowup has-text-secondary"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowup has-text-secondary"/>
                             </span>
                         </div>
                         <hr class="advanced-search-hr">
@@ -101,7 +101,7 @@
                             classes: ['repository-header-tooltips']
                         }"
                         class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-processes"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes"/>
                 </span>
             </button>
             <processes-popup

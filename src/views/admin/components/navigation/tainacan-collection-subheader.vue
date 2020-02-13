@@ -44,7 +44,7 @@
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '' }" 
                             :aria-label="$i18n.get('label_collection_items')">               
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-items"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('items') }}</span>
                     </router-link>
@@ -68,7 +68,7 @@
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionEditPath(collection.id) : '' }" 
                             :aria-label="$i18n.get('label_settings')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-settings"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings"/>
                         </span>
                     
                     <span class="menu-text">{{ $i18n.get('label_settings') }}</span>
@@ -93,7 +93,7 @@
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionMetadataPath(collection.id) : '' }"
                             :aria-label="$i18n.get('label_collection_metadata')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/>
                         </span>
                     <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                     </router-link>
@@ -117,7 +117,7 @@
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionFiltersPath(collection.id) : ''}" 
                             :aria-label="$i18n.get('label_collection_filters')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
                         </span>
                     <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
@@ -141,7 +141,7 @@
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionActivitiesPath(collection.id) : '' }"
                             :aria-label="$i18n.get('label_collection_activities')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('activities') }}</span>
                     </router-link>                
@@ -365,7 +365,7 @@ export default {
             }
             .menu-text {
                 margin-left: 2px;
-                font-size: 14px;
+                font-size: 0.875em;
                 display: inline-flex;
                 // width: 0px;
                 // right: 100%;

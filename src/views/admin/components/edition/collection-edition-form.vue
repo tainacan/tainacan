@@ -163,7 +163,7 @@
                                             placement: 'bottom'
                                         }"
                                         class="icon is-small">
-                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                                 </span>
                             </a>
                             &nbsp;&nbsp;
@@ -183,7 +183,8 @@
                         </span>
                         <br>
                         <a
-                                class="add-link"   
+                                class="add-link"  
+                                style="font-size: 0.875em;" 
                                 :class="{'disabled': form.enable_cover_page != 'yes'}"
                                 target="_blank"  
                                 :href="newPagePath">
@@ -214,7 +215,7 @@
                                         type="button">
                                     <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
                                     <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
                                     </span>
                                 </button>
                                 <b-dropdown-item
@@ -998,7 +999,7 @@ export default {
         }
         .thumbnail-buttons-row {
             position: relative;
-            left: 86px;
+            left: 90px;
             bottom: 20px;
         }
     }

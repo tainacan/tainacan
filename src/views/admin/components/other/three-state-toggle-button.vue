@@ -2,7 +2,6 @@
     <b-field>
         <div class="radio-wrapper">
             <b-radio-button
-                    size="is-small"
                     v-model="state"
                     :native-value="eventsName[1]"
                     type="is-danger">
@@ -12,7 +11,6 @@
             </b-radio-button>
 
             <b-radio-button
-                    size="is-small"
                     v-model="state"
                     :native-value="eventsName[2]">
                 <b-icon
@@ -21,7 +19,6 @@
             </b-radio-button>
 
             <b-radio-button
-                    size="is-small"
                     v-model="state"
                     :native-value="eventsName[0]"
                     type="is-success">

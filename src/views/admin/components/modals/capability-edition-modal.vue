@@ -20,7 +20,6 @@
                                 v-if="!capability.roles_inherited[role.slug]"
                                 v-for="(role, roleIndex) of existingRoles"
                                 :key="roleIndex"
-                                size="is-small"
                                 :value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
                                 @input="($event) => updateRole(role.slug, $event)"
                                 name="roles">
@@ -39,7 +38,7 @@
             <template v-if="existingRoles && Object.values(existingRoles).length && capability.roles">
                 <b-field :addons="false">
                     <label class="label is-inline-block">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-alertcircle"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle"/>
                         {{ $i18n.get('label_inherited_roles') }}
                         <help-button
                                 :title="$i18n.get('label_inherited_roles')"
@@ -52,7 +51,6 @@
                                 v-if="capability.roles_inherited[role.slug]"
                                 v-for="(role, roleIndex) of existingRoles"
                                 :key="roleIndex"
-                                size="is-small"
                                 class="has-text-yellow2"
                                 :value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
                                 name="roles_inherited"

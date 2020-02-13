@@ -51,7 +51,7 @@
                                 target="_blank"
                                 @click="siteLinkCopied = true; copyTextToClipboard(itemURL ? itemURL : collectionURL)">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
                             </span>
                         </a>
                         <div 
@@ -132,7 +132,7 @@
                         <span class="icon">
                             <i 
                                     :class="{ 'tainacan-icon-arrowdown' : !exposerMapper.collapsed, 'tainacan-icon-arrowright' : exposerMapper.collapsed }"
-                                    class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                    class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                         </span>
                         <label 
                                 v-tooltip="{
@@ -176,7 +176,7 @@
                                             }"
                                             @click="exposerMapper.linkCopied = pagedLink; copyTextToClipboard(getExposerFullURL(pagedLink, exposerMapper))">
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
                                         </span>
                                     </a>
                                     <div 

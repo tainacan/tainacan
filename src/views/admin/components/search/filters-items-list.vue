@@ -23,7 +23,7 @@
             <span class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowdown' : !collapseAll, 'tainacan-icon-arrowright' : collapseAll }"
-                        class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
             </span>
         </button>
 

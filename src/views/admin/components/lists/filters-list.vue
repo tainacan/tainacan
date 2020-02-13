@@ -111,7 +111,7 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
                                     </span>
                                 </a>
                                 <a 
@@ -126,7 +126,7 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
                                     </span>
                                 </a>
                             </span>
@@ -281,7 +281,7 @@
                                             class="field">
                                         <span class="collapse-handle">
                                             <span class="icon">
-                                                <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
                                             </span> 
                                             <label class="label has-tooltip">
                                                 {{ currentFilterTypePreview.name }}
@@ -796,7 +796,7 @@ export default {
         }
 
         .active-filters-area {
-            font-size: 14px;
+            font-size: 0.875em;
             margin-right: 0.8em;
             margin-left: -0.8em;
             padding-right: 3em;
@@ -980,7 +980,6 @@ export default {
                 background-color: var(--tainacan-white);
                 cursor: pointer;
                 left: 0;
-                line-height: 1.3em;
                 height: 40px;
                 position: relative;
                 border: 1px solid var(--tainacan-gray2);
@@ -1002,7 +1001,6 @@ export default {
                     overflow-x: hidden;
                     white-space: nowrap;
                     font-weight: bold;
-                    line-height: normal;
                     margin-left: 0.4em;
                     display: inline-block;
                     max-width: 180px;

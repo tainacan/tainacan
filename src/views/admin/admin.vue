@@ -28,7 +28,7 @@
                         class="icon">
                     <i 
                             :class="{ 'tainacan-icon-arrowleft' : !isMenuCompressed, 'tainacan-icon-arrowright' : isMenuCompressed }"
-                            class="tainacan-icon tainacan-icon-20px"/>
+                            class="tainacan-icon tainacan-icon-1-25em"/>
                 </span>
             </button>
             <tainacan-header />

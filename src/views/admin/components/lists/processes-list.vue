@@ -22,7 +22,7 @@
                             slot="trigger">
                         <span>{{ $i18n.get('label_bulk_actions') }}</span>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
                         </span>
                     </button> 
 
@@ -55,14 +55,13 @@
                     <span class="icon">
                         <i 
                                 :class="{ 'tainacan-icon-arrowdown' : collapses[index], 'tainacan-icon-arrowright' : !collapses[index] }"
-                                class="tainacan-icon tainacan-icon-20px has-text-blue4"/>
+                                class="tainacan-icon tainacan-icon-1-25em has-text-blue4"/>
                     </span>
                     <!-- Checking list -->
                     <!-- <span 
                             :class="{ 'is-selecting': isSelecting }"
                             class="checkbox-cell">
                         <b-checkbox 
-                                size="is-small"
                                 v-model="selected[index]"/> 
                     </span> -->
                     <!-- Name -->
@@ -142,7 +141,7 @@
                                     v-if=" bgProcess.status === 'running' "
                                     class="icon has-text-gray action-icon"
                                     @click.prevent.stop="pauseProcess(index)">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-stop"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-stop"/>
                             </span>
                             <span 
                                     v-tooltip="{
@@ -156,7 +155,7 @@
                                     }"
                                     v-if=" ( bgProcess.status === 'finished' && !bgProcess.error_log ) || bgProcess.status === null"
                                     class="icon has-text-success">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
                             </span>
                             <span
                                     v-tooltip="{
@@ -172,8 +171,8 @@
                                     class="icon has-text-success">
                                 <i
                                     style="margin-right: -5px;"
-                                    class="tainacan-icon tainacan-icon-20px tainacan-icon-alert has-text-yellow2"/>
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle"/>
+                                    class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alert has-text-yellow2"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
                             </span>
                             <span
                                     v-tooltip="{
@@ -187,7 +186,7 @@
                                     }"
                                     v-if=" bgProcess.status === 'cancelled' "
                                     class="icon has-text-success">
-                                <i class="tainacan-icon has-text-danger tainacan-icon-20px tainacan-icon-repprovedcircle"/>
+                                <i class="tainacan-icon has-text-danger tainacan-icon-1-25em tainacan-icon-repprovedcircle"/>
                             </span>
                             <span
                                     v-tooltip="{
@@ -201,7 +200,7 @@
                                     }"
                                     v-if=" bgProcess.status === 'paused' "
                                     class="icon has-text-gray">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-pause"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-pause"/>
                             </span>
                             <span
                                     v-tooltip="{
@@ -215,7 +214,7 @@
                                     }"
                                     v-if=" bgProcess.status === 'waiting' "
                                     class="icon has-text-gray">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-waiting"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting"/>
                             </span>
                             <span 
                                     v-tooltip="{
@@ -229,7 +228,7 @@
                                     }"
                                     v-if="bgProcess.status === 'errored'"
                                     class="icon has-text-danger">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-processerror" />
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processerror" />
                             </span>
                         </div>
                     </span>
@@ -505,7 +504,7 @@
 
         .select-all {
             color: var(--tainacan-info-color);
-            font-size: 14px;
+            font-size: 0.875em;
             &:hover {
                 color: var(--tainacan-info-color);
             }

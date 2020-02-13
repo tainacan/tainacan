@@ -18,7 +18,7 @@
                             slot="trigger">
                         <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                         </span>
                     </button>
                     <b-dropdown-item aria-role="listitem">
@@ -75,7 +75,7 @@
                                     class="tainacan-icon tainacan-icon-18px"/>
                         </span>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                         </span>
                     </button>
                     <b-dropdown-item
@@ -224,7 +224,7 @@
                                             slot="trigger">
                                         <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                         </span>
                                     </button>
                                     <b-dropdown-item aria-role="listitem">

@@ -63,7 +63,6 @@
                 </label>
                 <div class="inline-block">
                     <b-radio 
-                            size="is-small"
                             @focus="clearErrors('label_status')"
                             id="tainacan-select-status-publish"
                             name="status" 
@@ -73,7 +72,6 @@
                     </b-radio>
                     <br>
                     <b-radio
-                            size="is-small" 
                             @focus="clearErrors('label_status')"
                             id="tainacan-select-status-private"
                             name="status" 
@@ -317,6 +315,7 @@ export default {
         border-top: 1px solid var(--tainacan-gray2);
         border-bottom: 1px solid var(--tainacan-gray2);
         margin-top: 1.0em;
+        font-size: 1.1em;
 
         .options-columns {
             -moz-column-count: 2;

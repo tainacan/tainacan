@@ -10,7 +10,7 @@
                     target="_blank"
                     :href="editForm.url">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                 </span>
                 <span class="menu-text">{{ $i18n.get('label_view_on_theme') }}</span>
             </a>

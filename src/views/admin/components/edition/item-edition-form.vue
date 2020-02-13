@@ -179,7 +179,7 @@
                                             type="button"
                                             @click.prevent="setFileDocument($event)">
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-upload"/>
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload"/>
                                         </span>
                                     </button>
                                     <p>{{ $i18n.get('label_file') }}</p>
@@ -189,7 +189,7 @@
                                             type="button"
                                             @click.prevent="setTextDocument()">
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-text"/>
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text"/>
                                         </span>
                                     </button>
                                     <p>{{ $i18n.get('label_text') }}</p>
@@ -199,7 +199,7 @@
                                             type="button"
                                             @click.prevent="setURLDocument()">
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
                                         </span>
                                     </button>
                                     <p>{{ $i18n.get('label_url') }}</p>
@@ -474,7 +474,7 @@
                                     <span class="icon">
                                         <i
                                                 :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                                                class="tainacan-icon tainacan-icon-20px"/>
+                                                class="tainacan-icon tainacan-icon-1-25em"/>
                                     </span>
                                 </a>
                                 <tainacan-form-item
@@ -578,7 +578,7 @@
                         class="update-warning"
                         v-if="isUpdatingValues">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-updating"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating"/>
                     </span>
                     {{ $i18n.get('info_updating_metadata_values') }}
                     <span class="help is-danger">{{ formErrorMessage }}</span>
@@ -611,7 +611,7 @@
                         type="button"
                         class="button sequence-button">
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-previous"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-previous"/>
                     </span>
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
@@ -637,7 +637,7 @@
                         class="button is-secondary">
                     <span>{{ $i18n.get('label_update_draft') }}</span>
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                     </span>
                 </button>
                 <template v-if="collection && collection.current_user_can_publish_items">
@@ -653,7 +653,7 @@
                             class="button is-success">
                         <span>{{ $i18n.get('label_publish') }}</span>
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                         </span>
                     </button>
                 </template>
@@ -665,7 +665,7 @@
                             class="button is-success">
                         <span>{{ $i18n.get('label_next') }}</span>
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                         </span>
                     </button>
                 </template>
@@ -675,7 +675,7 @@
                         type="button"
                         class="button sequence-button">
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approved"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approved"/>
                     </span>
                     <span>{{ $i18n.get('finish') }}</span>
                 </button>
@@ -689,7 +689,7 @@
                         type="button"
                         class="button sequence-button">
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-previous"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-previous"/>
                     </span>
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
@@ -710,7 +710,7 @@
                         class="button is-secondary">
                     <span>{{ $i18n.get('label_save_as_draft') }}</span>
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                     </span>
                 </button>
                 <template v-if="collection && collection.current_user_can_publish_items">
@@ -728,7 +728,7 @@
                             class="button is-success">
                         <span>{{ $i18n.get('label_update') }}</span>
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                         </span>
                     </button>
                 </template>
@@ -741,7 +741,7 @@
                             class="button is-success">
                         <span>{{ $i18n.get('label_next') }}</span>
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                         </span>
                     </button>
                 </template>
@@ -751,7 +751,7 @@
                         type="button"
                         class="button sequence-button">
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approved"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approved"/>
                     </span>
                     <span>{{ $i18n.get('finish') }}</span>
                 </button>

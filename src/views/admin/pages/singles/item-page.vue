@@ -269,7 +269,7 @@
                             style="margin-right: auto;"
                             :to="{ path: $routerHelper.getNewItemPath(collectionId)}">
                         <!-- <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-add"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-add"/>
                         </span> -->
                         <span>{{ $i18n.get('label_create_another_item') }}</span>
                     </router-link>
@@ -278,7 +278,7 @@
                             class="button sequence-button"
                             :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
                         </span>
                         <span>{{ $i18n.getFrom('items','edit_item') }}</span>
                     </router-link>
@@ -288,7 +288,7 @@
                             :disabled="isLoading"
                             @click="openExposersModal()">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
                         </span>
                         <span class="is-hidden-touch">{{ $i18n.get('label_view_as') }}</span>
                     </button>
@@ -297,7 +297,7 @@
                             class="button sequence-button is-pulled-right"
                             :href="item.url">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                         </span>
                         <span>{{ $i18n.get('label_item_page_on_website') }}</span>
                     </a>
@@ -524,7 +524,7 @@
             margin-left: 0px !important;
 
             .label {
-                font-size: 14px;
+                font-size: 0.875em;
                 font-weight: 500;
                 margin-bottom: 0.5em;
                 display: inline-flex;

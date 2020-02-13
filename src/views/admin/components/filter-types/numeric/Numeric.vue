@@ -13,7 +13,7 @@
                     <i v-html="comparatorSymbol" />
                 </span>
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                 </span>
             </button>
             <b-dropdown-item

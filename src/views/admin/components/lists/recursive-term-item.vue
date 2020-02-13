@@ -13,7 +13,7 @@
         <span 
                 v-if="term.parent != 0 && index == 0"
                 class="icon children-icon">
-            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-nextlevel"/>
+            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-nextlevel"/>
         </span> 
         <span
                 v-tooltip="{
@@ -62,7 +62,7 @@
                             placement: 'bottom'
                         }"
                         class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-add"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-add"/>
                 </span>
             </a>
             <a
@@ -75,7 +75,7 @@
                             placement: 'bottom'
                         }"
                         class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
                 </span>
             </a>
             <a @click.prevent="tryToRemoveTerm()">
@@ -87,7 +87,7 @@
                             placement: 'bottom'
                         }"
                         class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
                 </span>
             </a>
         </span>
@@ -327,7 +327,7 @@ export default {
 
     // Term Item
     .term-item {
-        font-size: 14px;
+        font-size: 0.875em;
         padding: 0 0 0 1.75em;
         min-height: 40px;
         display: flex; 

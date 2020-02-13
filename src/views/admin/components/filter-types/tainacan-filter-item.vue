@@ -27,7 +27,7 @@
                 <span class="icon">
                     <i 
                             :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
-                            class="tainacan-icon tainacan-icon-20px"/>
+                            class="tainacan-icon tainacan-icon-1-25em"/>
                 </span>
                 <span class="collapse-label">{{ filter.name }}</span>
             </button>

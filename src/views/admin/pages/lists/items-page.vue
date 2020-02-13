@@ -67,7 +67,7 @@
                 <span class="icon">
                     <i 
                             :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
-                            class="tainacan-icon tainacan-icon-20px"/>
+                            class="tainacan-icon tainacan-icon-1-25em"/>
                 </span>
                 <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
             </button>
@@ -90,7 +90,7 @@
                                 aria-controls="items-list-results"
                                 @click="updateSearch()"
                                 class="icon is-right">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search"/>
                         </span>
                     </div>
                     <a
@@ -117,7 +117,7 @@
                             slot="trigger">
                         <span>{{ $i18n.getFrom('items','add_new') }}</span>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                         </span>
                     </button>
 
@@ -192,7 +192,7 @@
                         <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
                         <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                         </span>
                     </button>
                     <div class="metadata-options-container">
@@ -239,7 +239,7 @@
                                         class="tainacan-icon"/>
                             </span>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
                         <b-dropdown-item
@@ -281,7 +281,7 @@
                                 slot="trigger">
                             <span>{{ orderByName }}</span>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
                         <b-dropdown-item
@@ -330,12 +330,12 @@
                                                     'tainacan-icon-viewminiature' : adminViewMode == 'grid',
                                                     'tainacan-icon-viewrecords' : adminViewMode == 'records',
                                                     'tainacan-icon-viewmasonry' : adminViewMode == 'masonry'}"
-                                            class="tainacan-icon tainacan-icon-20px"/>
+                                            class="tainacan-icon tainacan-icon-1-25em"/>
                                 </span>
                             </span>
                             &nbsp;&nbsp;&nbsp;{{ adminViewMode != undefined ? $i18n.get('label_' + adminViewMode) : $i18n.get('label_table') }}
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
                         <b-dropdown-item 
@@ -407,7 +407,7 @@
                         :disabled="totalItems == undefined || totalItems <= 0"
                         @click="openExposersModal()">
                     <span class="gray-icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
                     </span>
                     <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_view_as') }}</span>
                 </button>

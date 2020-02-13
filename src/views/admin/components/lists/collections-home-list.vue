@@ -96,7 +96,7 @@
                                         :label="$i18n.get('items')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-items"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/>
                                     </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
@@ -111,7 +111,7 @@
                                         :label="$i18n.getFrom('metadata', 'name')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/>
                                     </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
@@ -127,7 +127,7 @@
                                         :label="$i18n.getFrom('filters', 'name')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
                                     </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
@@ -150,7 +150,7 @@
                                         :label="$i18n.get('items')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-items"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/>
                                     </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
@@ -165,7 +165,7 @@
                                         :label="$i18n.get('label_settings')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-settings"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings"/>
                                     </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.get('label_settings') }}</span> -->
@@ -180,7 +180,7 @@
                                         :label="$i18n.getFrom('metadata', 'name')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/>
                                     </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
@@ -196,7 +196,7 @@
                                         :label="$i18n.getFrom('filters', 'name')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
                                     </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
@@ -211,7 +211,7 @@
                                         :label="$i18n.get('activities')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities"/>
                                     </span>
                                 </b-tooltip>
                                 <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
@@ -226,7 +226,7 @@
                                         :label="$i18n.get('label_view_collection_on_website')"
                                         position="is-bottom">
                                     <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                                     </span>
                                 </b-tooltip>
                             </a>

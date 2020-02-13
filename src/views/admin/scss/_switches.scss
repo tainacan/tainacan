@@ -36,6 +36,7 @@
     }
 
     &.is-small {
+        font-size: 0.75em;
         input[type="checkbox"] + .check {
             border: 1.5px solid var(--tainacan-gray4);
             width: 2.35em;

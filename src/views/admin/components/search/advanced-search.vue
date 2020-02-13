@@ -128,7 +128,7 @@
                                         placement: 'auto-end'
                                     }"
                                     class="icon">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-close"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close"/>
                             </span>
                         </button>
                     </div>

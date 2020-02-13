@@ -17,7 +17,7 @@
                         target="_blank"
                         :href="themeItemsListURL">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                     </span>
                     <span class="menu-text">{{ $i18n.get('label_view_items_on_theme') }}</span>
                 </a>
@@ -127,7 +127,7 @@
                         :href="themeCollectionListURL"
                         style="position: relative">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                     </span>
                     <span class="menu-text">{{ $i18n.get('label_view_collections_on_theme') }}</span>
                 </a>
@@ -141,7 +141,7 @@
                     tag="a"
                     to="/collections">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-viewtable"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewtable"/>
                 </span>
                 <span
                         v-if="collectionsTotal != undefined && collectionsTotal > 1"

@@ -29,7 +29,7 @@
                                         placement: 'bottom'
                                     }"
                                     class="icon">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
                             </a>
                         </span>
                     </div>

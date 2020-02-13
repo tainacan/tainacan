@@ -317,6 +317,11 @@ font-weight: normal;
     font-size: 20px;
 }
 
+.tainacan-icon-1-25em.tainacan-icon-set, 
+.tainacan-icon-1-25em.tainacan-icon:before {
+    font-size: 1.25em;
+}
+
 .tainacan-icon-30px.tainacan-icon-set, 
 .tainacan-icon-30px.tainacan-icon:before {
     font-size: 30px;
