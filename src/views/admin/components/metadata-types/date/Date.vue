@@ -89,6 +89,6 @@
 <style scoped lang="scss">
 .control {
     padding: 0 !important;
-    .input { border: none !important; }
+    height: 2.0em;
 }
 </style>

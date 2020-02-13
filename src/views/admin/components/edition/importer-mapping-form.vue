@@ -617,7 +617,7 @@ export default {
         margin-bottom: 40px;
 
         h1, h2 {
-            font-size: 20px;
+            font-size: 1.25em;
             font-weight: 500;
             color: var(--tainacan-blue5);
             display: inline-block;

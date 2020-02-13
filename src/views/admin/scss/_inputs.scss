@@ -16,14 +16,16 @@ input[type="text"].input,
 input[type="time"].input,
 input[type="url"].input,
 input[type="week"].input {
+    height: auto;
+    line-height: 1em;
     font-size: 0.875em;
     border-radius: 1px !important;
     box-shadow: none !important;
     background-color: var(--tainacan-input-background-color);
     border: 1px solid var(--tainacan-input-border-color);
     color: var(--tainacan-input-color);
-    padding-top: calc(0.375em - 1px);
-    padding-bottom: calc(0.375em - 1px);
+    padding-top: calc(0.57em - 1px);
+    padding-bottom: calc(0.57em - 1px);
     transition: background-color 0.1s ease, border-color 0.3s ease;
 
     &:focus, &:active {

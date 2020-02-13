@@ -158,9 +158,6 @@
             input{
                 border: 1px solid var(--tainacan-input-border-color) !important;
             }
-            .control.has-icons-left .icon {
-                top: 3px !important;
-            }
             .tags {
                 display: none !important;
             }
@@ -171,7 +168,7 @@
             display: unset;
             white-space: nowrap;
             text-overflow: ellipsis;
-            height: 30px;
+            height: auto;
         }
 
         .control:not(.taginput) {
@@ -222,7 +219,7 @@
                                 padding-left: 1px !important;
                                 font-size: 0.875em !important;
                                 height: 24px !important;
-                                min-width: 100% !important;
+                                min-width: 100% !important; 
                             }
                             &:not(.is-loading)::after {
                                 margin-top: -10px !important;

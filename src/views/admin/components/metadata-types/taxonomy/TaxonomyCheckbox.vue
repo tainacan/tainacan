@@ -51,7 +51,7 @@
                 class="view-all">
             <span>
                 {{
-                    $i18n.get('info_showing_terms') + 1 +
+                    $i18n.get('info_showing_terms') + ' ' + 1 +
                     $i18n.get('info_to') + options.length +
                     $i18n.get('info_of') + totalTerms + '. '
                 }}

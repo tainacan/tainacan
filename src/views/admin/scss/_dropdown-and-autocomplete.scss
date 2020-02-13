@@ -21,7 +21,7 @@
         }
     }
     &>.control.has-icons-left .icon {
-        height: 2.125em;
+        height: 100%;//2.125em;
         width: 2.125em;
     }
     .dropdown-menu {
@@ -44,7 +44,7 @@
             .dropdown-item {
                 display: block;
                 text-decoration: none;
-                padding: 0.375em 1em;
+                padding: 0.57em 1em;
                 font-size: 0.825em;
                 color: var(--tainacan-input-color) !important;
                 transition: background-color 0.3s ease;
@@ -103,6 +103,7 @@
 }
 .taginput-container .mdi-magnify::before, 
 .autocomplete .mdi-magnify::before {
+    color: var(--tainacan-info-color);
     content: 'search';
     display: inline-block;
     font: normal normal normal 20px/1 "TainacanIcons";
@@ -112,7 +113,7 @@
     line-height: inherit;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 20px;
+    font-size: 1.25em;
     text-transform: none !important;
 }
 
@@ -123,15 +124,8 @@
     &:focus, &:active {
         border: none !important;
     }
-    .autocomplete .icon {
-        height: 2.5em !important;
-        .mdi-magnify::before {
-            margin-top: -3px;
-        }
-    }
     .input { 
         margin-bottom: 0px !important; 
-        height: 2.5em !important;
         text-overflow: ellipsis;
         background-color: var(--tainacan-input-background-color);
     }
@@ -207,7 +201,7 @@
         height: auto;
         
         input {
-            height: 30px;
+            height: auto;
         }
     }
 
@@ -259,7 +253,7 @@
 
                 &>span>i:before {
                     content: 'previous';
-                    font-size: 20px;
+                    font-size: 1em;
                 }
             }
 
@@ -269,7 +263,7 @@
 
                 &>span>i:before {
                     content: 'next';
-                    font-size: 20px;
+                    font-size: 1em;
                 }
             }
         }

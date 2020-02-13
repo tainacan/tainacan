@@ -262,7 +262,7 @@
                                 v-for="(viewModeOption, index) of enabledViewModes"
                                 :key="index"
                                 :value="viewModeOption"
-                                v-if="showFullscreenWithViewModes || (registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false)"
+                                v-if="(registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false) || (showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined)"
                                 aria-role="listitem">
                             <span 
                                     v-if="!showInlineViewModeOptions"
@@ -1106,7 +1106,7 @@
        margin-bottom: 40px;
 
         h1, h2 {
-            font-size: 20px;
+            font-size: 1.25em;
             font-weight: 500;
             color: var(--tainacan-heading-color);
             display: inline-block;
@@ -1129,11 +1129,11 @@
     }
 
     .advanced-search-results-title {
-       margin-bottom: 40px;
+        margin-bottom: 40px;
         margin: 0 $page-side-padding 42px $page-side-padding;
 
         h1, h2 {
-            font-size: 20px;
+            font-size: 1.25em;
             font-weight: 500;
             color: var(--tainacan-heading-color);
             display: inline-block;
@@ -1370,9 +1370,6 @@
                         pointer-events: all;
                         cursor: pointer;
                         color: var(--tainacan-blue5);
-                        height: 27px;
-                        font-size: 1.25em !important;
-                        height: auto !important;
                     }
                     margin: -2px 0 5px 0;
                 }

@@ -748,7 +748,7 @@ export default {
             justify-content: space-between;
 
             h1, h2 {
-                font-size: 20px;
+                font-size: 1.25em;
                 font-weight: 500;
                 color: var(--tainacan-heading-color);
                 display: inline-block;
@@ -1201,7 +1201,7 @@ export default {
 
                         .dropdown-trigger button {
                             padding: 0 0.5em !important;
-                            height: 30px !important;
+                            height: auto !important;
 
                             i:not(.tainacan-icon-arrowdown) {
                                 margin-top: -3px;

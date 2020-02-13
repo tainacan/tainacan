@@ -163,7 +163,7 @@
             tbody {
                 tr {
                     cursor: pointer;
-                    background-color: transparent;
+                    background-color: var(--tainacan-item-background-color);
                     transition: background-color 0.15s ease;
     
                     &.selected-row { 

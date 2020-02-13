@@ -598,7 +598,7 @@
                 padding: 0 0.5em;
 
                 .tainacan-icon-openurl {
-                    font-size: 20px;
+                    font-size: 1.25em;
                 }
             }
 

@@ -411,7 +411,7 @@ export default {
                 .icon {
                     bottom: 1px;   
                     position: relative;
-                    i, i:before { font-size: 20px; }
+                    i, i:before { font-size: 1.25em; }
                 }
             }            
         }

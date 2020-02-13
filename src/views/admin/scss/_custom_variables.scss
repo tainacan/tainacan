@@ -50,6 +50,7 @@
     --tainacan-skeleton-color: #{$skeleton-color};
 
     // Items
+    --tainacan-item-background-color: var(--tainacan-background-color);
     --tainacan-item-hover-background-color: var(--tainacan-gray1);
     --tainacan-item-heading-hover-background-color: var(--tainacan-gray2);
 

@@ -56,11 +56,13 @@
         }
     }
     .b-numberinput {
-        height: 30px;
+        height: auto;
         padding: 0 !important;
         
         .control {
             margin-right: 0 !important;
+            margin-bottom: 0;
+            margin-top: 0;
         }
         div.control {
             flex-shrink: 1;
@@ -68,7 +70,7 @@
         }
         button, 
         input {
-            height: 30px !important;
+            height: auto !important;
             text-align: start;
         }
         button.is-primary,
@@ -78,7 +80,7 @@
             border: 1px solid var(--tainacan-input-border-color);
             background-color: var(--tainacan-gray1) !important;
             color: var(--tainacan-secondary) !important;
-            padding: 0 0.6em !important;
+            padding: 0.26em 0.6em !important;
             border-radius: 0 !important;
 
             .mdi::before {
@@ -93,8 +95,7 @@
                 transform: none !important;
                 text-transform: none !important;
                 letter-spacing: normal !important;
-                font-size: 20px;
-                margin-top: -2px;
+                font-size: 1.3em;
             }
             .mdi-plus::before {
                 content: "plus" !important;

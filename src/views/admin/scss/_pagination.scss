@@ -22,6 +22,10 @@
         align-items: center;
     }
 
+    .button {
+        color: var(--tainacan-input-color) !important;
+    }
+
     .control {
         font-size: 1em;
     }
@@ -139,7 +143,7 @@
             transform: none !important;
         }
         .mdi-24px::before {
-            font-size: 24px !important;
+            font-size: 1.875em !important;
         }
         
         @media screen and (max-width: 768px) {

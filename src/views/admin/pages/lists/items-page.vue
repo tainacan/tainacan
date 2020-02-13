@@ -1234,7 +1234,7 @@
         margin-bottom: 40px;
 
         h1, h2 {
-            font-size: 20px;
+            font-size: 1.25em;
             font-weight: 500;
             color: var(--tainacan-heading-color);
             display: inline-block;
@@ -1261,7 +1261,7 @@
         margin: 0 $page-side-padding 42px $page-side-padding;
 
         h1, h2 {
-            font-size: 20px;
+            font-size: 1.25em;
             font-weight: 500;
             color: var(--tainacan-heading-color);
             display: inline-block;
@@ -1502,9 +1502,6 @@
                         pointer-events: all;
                         cursor: pointer;
                         color: var(--tainacan-label-color);
-                        height: 27px;
-                        font-size: 1.125em !important;
-                        height: auto !important;
                     }
                     margin-bottom: 5px;
                 }
