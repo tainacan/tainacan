@@ -263,7 +263,7 @@ export default {
             max-height: 42px;
             background-color: var(--tainacan-blue5);
             font-weight: bold;
-            font-size: 16px;
+            font-size: 1em;
             text-transform: uppercase;
             color: var(--tainacan-white);
             padding: 11px;
@@ -303,7 +303,7 @@ export default {
                     height: auto;
                     width: auto;
                     // i, i::before {
-                    //     font-size: 18px !important;
+                    //     font-size: 1.125em !important;
                     // }
                 }
             }

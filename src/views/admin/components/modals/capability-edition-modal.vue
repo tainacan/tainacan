@@ -139,13 +139,13 @@ export default {
                 flex-shrink: 1;
             }    
             &:last-of-type {
-                background-color: var(--tainacan-yellow)1;
-                color: var(--tainacan-yellow)2;
+                background-color: var(--tainacan-yellow1);
+                color: var(--tainacan-yellow1);
 
                 .label,
                 .control-label,
                 .check {
-                    color: var(--tainacan-yellow)2;
+                    color: var(--tainacan-yellow2);
                 }
             }
         }

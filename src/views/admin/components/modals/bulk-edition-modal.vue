@@ -589,7 +589,7 @@
     }
 
     .tainacan-total-objects-info {
-        font-size: 12px;
+        font-size: 0.75em;
         font-weight: normal;
     }
 
@@ -716,7 +716,7 @@
     }
 
     .tainacan-add-edition-criterion-button {
-        font-size: 12px;
+        font-size: 0.75em;
         color: var(--tainacan-turquoise5);
     }
 

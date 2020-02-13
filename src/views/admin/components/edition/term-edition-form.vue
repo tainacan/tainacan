@@ -525,7 +525,7 @@
                     padding: 0;
                     margin: 0;
                     margin-top: -2px;
-                    font-size: 18px;
+                    font-size: 1.125em;
                 }
             }
                 

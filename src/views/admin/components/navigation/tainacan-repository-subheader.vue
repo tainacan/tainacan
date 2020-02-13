@@ -202,6 +202,7 @@ export default {
 
             #view-collection-button,
             #exporter-collection-button {
+                font-size: 1rem !important;
                 border: none;
                 border-radius: 0px !important;
                 height: 42px !important;
@@ -214,6 +215,7 @@ export default {
                 }
             }
             #view-repository-button {
+                font-size: 1rem !important;
                 border: none;
                 border-radius: 0px !important;
                 height: 42px !important;

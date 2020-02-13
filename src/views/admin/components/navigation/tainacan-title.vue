@@ -148,7 +148,7 @@ export default {
             width: 100%;
         }
         .breadcrumbs {
-            font-size: 12px;
+            font-size: 0.75em;
             width: 100%;
             a {
                 text-overflow: ellipsis;

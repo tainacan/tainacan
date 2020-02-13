@@ -774,6 +774,9 @@
 
     .tainacan-form {
         max-width: 100%;
+        .form-submit {
+            padding-top: 16px !important;
+        }
     }
 
     .tainacan-show-more {

@@ -120,7 +120,7 @@ export default {
                 }
             }
         }
-        
+
         .collapse-all {
             font-size: 0.75em;
         }
@@ -140,8 +140,8 @@ export default {
             margin: 6px $page-side-padding;
             border-radius: 3px;
             padding: 4px 12px;
-            color: var(--tainacan-yellow)2;
-            background: var(--tainacan-yellow)1;
+            color: var(--tainacan-yellow2);
+            background: var(--tainacan-yellow1);
             animation-name: appear;
             animation-duration: 0.5s;
 
@@ -157,7 +157,7 @@ export default {
                 .button:active,
                 .button:focus {
                     background: none;
-                    color:var(--tainacan-yellow)2;
+                    color:var(--tainacan-yellow2);
                     font-weight: bold;
                     border: none;
                     cursor: pointer;

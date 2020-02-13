@@ -533,7 +533,7 @@ export default {
                     cursor: pointer;
                     color: var(--tainacan-blue5);
                     height: 27px;
-                    font-size: 18px !important;
+                    font-size: 1.125em !important;
                     height: auto !important;
                 }
             }

@@ -454,7 +454,7 @@ export default {
     }
 
     .section-label {
-        font-size: 16px !important;
+        font-size: 1em !important;
         font-weight: 500 !important;
         color: var(--tainacan-blue5) !important;
         line-height: 1.2em;

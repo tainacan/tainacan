@@ -217,7 +217,7 @@
             margin-left: -12px;
             
             .home-area { 
-                font-size: 24px;
+                font-size: 1.5em;
                 width: 50px;
                 height: $header-height;
                 background-color: var(--tainacan-gray1);
@@ -254,7 +254,10 @@
             }
 
             .tainacan-icon-wordpress {
-                font-size: 26px;
+                font-size: 1.6em;
+            }
+            .tainacan-icon-processes {
+                font-size: 1.45em;
             }
             
             .search-area {
@@ -278,7 +281,7 @@
                         color: var(--tainacan-blue5);
                         cursor: pointer;
                         height: 27px;
-                        font-size: 18px;
+                        font-size: 1.125em;
                         width: 30px !important;
                     }
                 }

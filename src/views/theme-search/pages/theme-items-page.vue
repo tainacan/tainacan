@@ -1206,9 +1206,9 @@
         z-index: 99;
         bottom: 0px;
         left: 0;
-        max-width: 23px;
-        height: 26px;
-        width: 23px;
+        max-width: 1.625em;
+        height: 1.625em;
+        width: 1.625em;
         border: none;
         background-color: var(--tainacan-primary);
         color: var(--tainacan-secondary);
@@ -1230,7 +1230,7 @@
             max-width: 100%;
             width: auto;
             padding: 3px 6px 3px 0px;
-            height: 26px;
+            height: 1.625em;
 
             .icon {
                 position: relative;

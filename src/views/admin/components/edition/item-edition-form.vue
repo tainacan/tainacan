@@ -1517,7 +1517,7 @@ export default {
     .section-label {
         position: relative;
         label {
-            font-size: 16px !important;
+            font-size: 1em !important;
             font-weight: 500 !important;
             color: var(--tainacan-gray5) !important;
             line-height: 1.2em;
@@ -1525,7 +1525,7 @@ export default {
     }
 
     .collapse-all {
-        font-size: 12px;
+        font-size: 0.75em;
         .icon {
             vertical-align: bottom;
         }
@@ -1571,7 +1571,7 @@ export default {
                 margin-left: 0;
             }
             .icon  {
-                font-size: 18px !important;
+                font-size: 1.125em !important;
                 color: var(--tainacan-gray3);
             }
         }
@@ -1604,7 +1604,7 @@ export default {
             padding: 0;
             margin: 0;
             margin-top: -2px;
-            font-size: 18px;
+            font-size: 1.125em;
         }
     }
 

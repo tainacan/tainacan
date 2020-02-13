@@ -541,7 +541,7 @@
     .section-label {
         position: relative;
         label {
-            font-size: 16px !important;
+            font-size: 1em !important;
             font-weight: 500 !important;
             color: var(--tainacan-gray5) !important;
             line-height: 1.2em;
@@ -587,7 +587,7 @@
             border-bottom: none;
 
             .icon {
-                font-size: 18px !important;
+                font-size: 1.125em !important;
                 color: var(--tainacan-gray3);
             }
         }

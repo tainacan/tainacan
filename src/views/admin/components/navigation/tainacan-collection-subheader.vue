@@ -270,7 +270,7 @@ export default {
         transition: padding 0.3s, height 0.3s;
 
         h1 {
-            font-size: 18px;
+            font-size: 1.125em;
             font-weight: 500;
             color: var(--tainacan-white);
             line-height: 22px;
@@ -353,7 +353,7 @@ export default {
                 margin: 0;
                 padding: 0;
                 i {
-                    font-size: 18px !important;
+                    font-size: 1.125em !important;
                 }
                 svg {
                     position: relative;

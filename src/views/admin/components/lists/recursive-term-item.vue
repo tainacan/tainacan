@@ -356,7 +356,7 @@ export default {
             position: absolute;
             left: -21px;
             top: 1px;
-            font-size: 24px;
+            font-size: 1.5em;
         }
         .children-dropdown {
             color: var(--tainacan-blue4);

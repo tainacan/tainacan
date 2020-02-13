@@ -479,7 +479,7 @@ export default {
                 margin-bottom: 0.25em;
 
                 .i::before {
-                    font-size: 18px;
+                    font-size: 1.125em;
                     margin-left: 0.5em;
                 }
             }

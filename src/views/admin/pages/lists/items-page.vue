@@ -1349,9 +1349,9 @@
         z-index: 99;
         bottom: 0px;
         left: 0;
-        max-width: 23px;
-        height: 26px;
-        width: 23px;
+        max-width: 1.625em;
+        height: 1.625em;
+        width: 1.625em;
         border: none;
         background-color: var(--tainacan-primary);
         color: var(--tainacan-secondary);
@@ -1373,7 +1373,7 @@
             max-width: 100%;
             width: auto;
             padding: 3px 6px 3px 0px;
-            height: 26px;
+            height: 1.625em;
 
             .icon {
                 position: relative;
@@ -1559,8 +1559,8 @@
         margin: 6px $page-side-padding;
         border-radius: 3px;
         padding: 4px 12px;
-        color: var(--tainacan-yellow)2;
-        background: var(--tainacan-yellow)1;
+        color: var(--tainacan-yellow2);
+        background: var(--tainacan-yellow1);
         animation-name: appear;
         animation-duration: 0.5s;
 
@@ -1576,7 +1576,7 @@
             .button:active,
             .button:focus {
                 background: none;
-                color:var(--tainacan-yellow)2;
+                color:var(--tainacan-yellow2);
                 font-weight: bold;
                 border: none;
                 cursor: pointer;
