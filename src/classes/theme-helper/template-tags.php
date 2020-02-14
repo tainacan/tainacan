@@ -198,7 +198,7 @@ function tainacan_the_collection_description() {
 	 * 	   @type bool 	$show-inline-view-mode-options		Display view modes as inline icon buttons instead of the dropdown
 	 * 	   @type bool 	$show-fullscreen-with-view-modes	Lists fullscreen viewmodes alongside with other view modes istead of separatelly
 	 * 	   @type string $default-view-mode			The default view mode
-	 * 	   @type string $enabled-view-modes			The list os enable view modes to display
+	 * 	   @type string[] $enabled-view-modes			The list os enable view modes to display
  * @return string  The HTML div to be used for rendering the items list vue component
  */
 function tainacan_the_faceted_search($args = array()) {
