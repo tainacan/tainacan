@@ -31,7 +31,7 @@
                 mode="out-in"
                 :name="(isOnSequenceEdit && sequenceRightDirection != undefined) ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
             <form
-                    v-if="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items) || (!isCreatingNewItem && item && item.current_user_can_edit))"
+                    v-show="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items) || (!isCreatingNewItem && item && item.current_user_can_edit))"
                     class="tainacan-form"
                     label-width="120px">
                 <div class="columns">
@@ -292,7 +292,9 @@
                                     :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
 
                         </div>
-                        <div class="section-box section-thumbnail">
+                        <div 
+                                v-if="!isLoading"
+                                class="section-box section-thumbnail">
                             <div class="thumbnail-field">
                                 <file-item
                                         v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
@@ -1037,6 +1039,7 @@ export default {
                 }
             })
             .catch((errors) => {
+                
                 if (errors.errors) {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){

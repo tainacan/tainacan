@@ -12,13 +12,17 @@ export const eventBusItemMetadata = new Vue({
     watch: {
         errors() {
             this.$emit('hasErrorsOnForm', this.errors.length > 0);
+
+            for (let error of this.errors) {
+                this.$emit('updateErrorMessageOf#' + error.metadatum_id, error);
+            }
         }
     },
     methods : {
         updateValue({ itemId, metadatumId, values}){
             
             this.$emit('isUpdatingValue', true);
-
+            
             if (itemId) {
 
                 if (values.length > 0 && values[0].value) {
@@ -31,7 +35,7 @@ export const eventBusItemMetadata = new Vue({
                     metadatum_id: metadatumId, 
                     values: Array.isArray(values[0]) ? values[0] : values
                 })
-                    .then(() => {
+                    .then(() => { 
                         this.$emit('isUpdatingValue', false);
                         let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId );
                         if (index >= 0) {
@@ -46,12 +50,13 @@ export const eventBusItemMetadata = new Vue({
 
                         for (let index in error)
                             messages.push(error[index]);
-
+                        
                         if ( index >= 0) {
                             Vue.set( this.errors, index, { metadatum_id: metadatumId, errors: messages });
                             this.$emit('updateErrorMessage', this.errors[index]);
                         } else {
                             this.errors.push( { metadatum_id: metadatumId, errors: messages } );
+
                             this.$emit('updateErrorMessageOf#' + metadatumId, this.errors[0]);
                         }
                         
