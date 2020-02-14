@@ -197,6 +197,8 @@ function tainacan_the_collection_description() {
 	 * 	   @type bool 	$filters-as-modal					Display the filters as a modal instead of a collapsable region on desktop
 	 * 	   @type bool 	$show-inline-view-mode-options		Display view modes as inline icon buttons instead of the dropdown
 	 * 	   @type bool 	$show-fullscreen-with-view-modes	Lists fullscreen viewmodes alongside with other view modes istead of separatelly
+	 * 	   @type string $default-view-mode			The default view mode
+	 * 	   @type string $enabled-view-modes			The list os enable view modes to display
  * @return string  The HTML div to be used for rendering the items list vue component
  */
 function tainacan_the_faceted_search($args = array()) {
@@ -206,6 +208,19 @@ function tainacan_the_faceted_search($args = array()) {
 	// Loads info related to view modes
 	$default_view_mode = apply_filters( 'tainacan-default-view-mode-for-themes', 'masonry' );
 	$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', ['table', 'cards', 'masonry', 'slideshow'] );
+
+	if( isset($args['default-view-mode']) ) {
+		$default_view_mode = $args['default-view-mode'];
+		unset($args['default-view-mode']);
+	}
+
+	if( isset($args['enabled-view-modes']) ) {
+		$enabled_view_modes = $args['enabled-view-modes'];
+		if ( !in_array($default_view_mode, $enabled_view_modes) ) {
+			$default_view_mode = $enabled_view_modes[0];
+		}
+		unset($args['enabled-view-modes']);
+	}
 
 	// If in a collection page
 	$collection_id = tainacan_get_collection_id();
