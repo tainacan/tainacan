@@ -194,7 +194,7 @@
                             v-if="taxonomies.length > 0">
                         <div class="shown-items">
                             {{
-                                $i18n.get('info_showing_taxonomies') +
+                                $i18n.get('info_showing_taxonomies') + ' ' +
                                 (taxonomiesPerPage * (page - 1) + 1) +
                                 $i18n.get('info_to') +
                                 getLastTaxonomyNumber() +
