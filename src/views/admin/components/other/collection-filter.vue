@@ -65,10 +65,10 @@
         },
         created(){
             this.fetchCollections({
-                    page: 1, 
-                    collectionsPerPage: -1, 
-                    status: null,
-                    contextEdit: false
+                page: 1, 
+                collectionsPerPage: -1, 
+                status: null,
+                contextEdit: false
             });
         },
         mounted(){
@@ -100,7 +100,7 @@
                     compare: 'IN',
                     collection_id: this.collectionsIdsToFilter,
                 });
-            },
+            }
         }
     }
 </script>

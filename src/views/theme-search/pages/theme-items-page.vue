@@ -649,7 +649,7 @@
         },
         created() {
 
-            this.isRepositoryLevel = (this.collectionId === undefined);
+            this.isRepositoryLevel = (this.collectionId == undefined || this.collectionId == '' || this.collectionId == null);
 
             if (this.collectionId != undefined)
                 this.$eventBusSearch.setCollectionId(this.collectionId);

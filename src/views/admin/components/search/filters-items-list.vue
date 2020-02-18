@@ -36,6 +36,9 @@
 
             <!-- TERM ITEMS PAGE FILTERS -->
             <template v-if="taxonomy && taxonomyFilters">
+                <collections-filter
+                        :open="!collapseAll"
+                        :query="getQuery"/>
                 <div 
                         v-if="key == 'repository-filters'"
                         :key="index"
