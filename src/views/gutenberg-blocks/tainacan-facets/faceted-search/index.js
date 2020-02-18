@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { BaseControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, PanelBody } = wp.components;
+const { BaseControl, RangeControl, Spinner, Button, SelectControl, ToggleControl, Tooltip, Placeholder, Toolbar, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -94,6 +94,10 @@ registerBlockType('tainacan/faceted-search', {
         showFullscreenWithViewModes: {
             type: Boolean,
             default: false
+        },
+        listType: {
+            type: String,
+            default: 'collection'
         }
     },
     supports: {
@@ -118,7 +122,8 @@ registerBlockType('tainacan/faceted-search', {
             startWithFiltersHidden,
             filtersAsModal,
             showInlineViewModeOptions,
-            showFullscreenWithViewModes
+            showFullscreenWithViewModes,
+            listType
         } = attributes;
  
         function setContent(){
@@ -368,35 +373,40 @@ registerBlockType('tainacan/faceted-search', {
                 { isSelected ? 
                     (
                     <div>
-                        
-                        { collectionId ? (
-                            <div className="block-control">
-                                <p>
-                                    <svg 
-                                            xmlns="http://www.w3.org/2000/svg" 
-                                            viewBox="0 0 24 24"
-                                            height="24px"
-                                            width="24px">
-                                        <path 
-                                                fill="#298596"
-                                                d="M21.43,13.64,19.32,16a2.57,2.57,0,0,1-2,1H11a3.91,3.91,0,0,0,0-.49,5.49,5.49,0,0,0-5-5.47V9.64A2.59,2.59,0,0,1,8.59,7H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,13.64ZM4,3A2,2,0,0,0,2,5v7.3a5.32,5.32,0,0,1,2-1V5H16V3ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1,0-7,2.74,2.74,0,0,1,.5,0A3.5,3.5,0,0,1,9,16a2.92,2.92,0,0,1,0,.51,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,1,0,5.5,18,1.5,1.5,0,0,0,7,16.53Z"/>
-                                    </svg>
-                                    {__('List facets from a Tainacan Collection or Repository', 'tainacan')}
-                                </p>
-                                <Button
-                                    isPrimary
-                                    type="submit"
-                                    onClick={ () => openMetadataModal() }>
-                                    {__('Select facets', 'tainacan')}
-                                </Button>    
-                            </div>
-                            ): null
-                        }
+                        <div className="block-control">
+                            <p style={{ display: 'flex', alignItems: 'baseline' }}>
+                                <svg 
+                                        xmlns="http://www.w3.org/2000/svg" 
+                                        viewBox="0 0 24 24"
+                                        height="24px"
+                                        width="24px">
+                                    <path 
+                                            fill="#298596"
+                                            d="M21.43,13.64,19.32,16a2.57,2.57,0,0,1-2,1H11a3.91,3.91,0,0,0,0-.49,5.49,5.49,0,0,0-5-5.47V9.64A2.59,2.59,0,0,1,8.59,7H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,13.64ZM4,3A2,2,0,0,0,2,5v7.3a5.32,5.32,0,0,1,2-1V5H16V3ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1,0-7,2.74,2.74,0,0,1,.5,0A3.5,3.5,0,0,1,9,16a2.92,2.92,0,0,1,0,.51,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,1,0,5.5,18,1.5,1.5,0,0,0,7,16.53Z"/>
+                                </svg>
+                                {__('Render an items list with faceted search from: ', 'tainacan')}
+                                &nbsp;
+                                <SelectControl
+                                    label={ __('Items list source', 'tainacan') }
+                                    hideLabelFromVision
+                                    value={ listType }
+                                    options={ [
+                                        { label: __('a Collection', 'tainacan'), value: 'collection' },
+                                        { label: __('a Taxonomy Term', 'tainacan'), value: 'term' },
+                                        { label: __('the Repository', 'tainacan'), value: 'repository' },
+                                    ] }
+                                    onChange={ ( aListType) => {
+                                        listType = aListType;
+                                        setAttributes({ listType: aListType });
+                                    } }
+                                />
+                            </p>  
+                        </div>
                     </div>
                     ) : null
                 }
 
-                { !collectionId ? (
+                { ( termId == undefined && listType == 'term' ) || ( collectionId == undefined && listType == 'collection' ) ? (
                     <Placeholder
                         icon={(
                             <img
@@ -414,11 +424,30 @@ registerBlockType('tainacan/faceted-search', {
                                         fill="#298596"
                                         d="M21.43,13.64,19.32,16a2.57,2.57,0,0,1-2,1H11a3.91,3.91,0,0,0,0-.49,5.49,5.49,0,0,0-5-5.47V9.64A2.59,2.59,0,0,1,8.59,7H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,13.64ZM4,3A2,2,0,0,0,2,5v7.3a5.32,5.32,0,0,1,2-1V5H16V3ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1,0-7,2.74,2.74,0,0,1,.5,0A3.5,3.5,0,0,1,9,16a2.92,2.92,0,0,1,0,.51,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,1,0,5.5,18,1.5,1.5,0,0,0,7,16.53Z"/>
                             </svg>
-                            {__('List facets from a Tainacan Collection or Repository', 'tainacan')}
+                            {__('Render a complete items list with faceted search.', 'tainacan')}
                         </p>
+                        <Button
+                            isPrimary
+                            type="submit"
+                            onClick={ () => listType == 'term' ? openTermModal() : openCollectionModal() }>
+                            { listType == 'term' ? __('Select a Term', 'tainacan') : __('Select a Collection', 'tainacan') }
+                        </Button>
                            
                     </Placeholder>
-                    ) : null
+                    ) : 
+                    (
+                        <div>
+                            <div class="preview-warning">
+                                { __('Warning: this is just a demonstration. To see the items list, either preview or publish your post.', 'tainacan') }
+                            </div>
+                            <div class="items-list-placeholder">
+                                <div class="search-control"></div>
+                                <div class="filters"></div>
+                                <div class="items"></div>
+                                <div class="pagination"></div>
+                            </div>
+                        </div>
+                    )
                 }
 
             </div>
