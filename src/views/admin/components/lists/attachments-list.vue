@@ -56,7 +56,7 @@
                 v-if="attachments.length > 0">
             <div class="shown-items">
                 {{
-                    $i18n.get('info_showing_attachments') +
+                    $i18n.get('info_showing_attachments') + ' ' +
                     (attachmentsPerPage * (attachmentsPage - 1) + 1) +
                     $i18n.get('info_to') +
                     getLastAttachmentsNumber() +

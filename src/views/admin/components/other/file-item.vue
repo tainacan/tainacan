@@ -42,9 +42,10 @@
                         tabindex="-1"
                         aria-modal
                         class="tainacan-modal-content">
-                    <div class="tainacan-modal-title">
-                        <h2 v-if="file.title != undefined">{{ file.title }}</h2>
-                    </div>
+                    <header class="tainacan-modal-title">
+                        <h2 v-if="file.title != undefined">{{ $i18n.get('label_attachment') + ': ' + file.title }}</h2>
+                        <hr>
+                    </header>
                     <div    
                             class="is-flex rendered-content"
                             v-html="file.description ? file.description : `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + file.url + `'/>`" />
@@ -175,6 +176,9 @@ export default {
             white-space: nowrap;
             text-align: center;
         }
+    }
+    .tainacan-modal-title {
+        text-align: left;
     }
     .rendered-content {
         justify-content: center !important;

@@ -1564,7 +1564,7 @@ export default {
     }
     .section-status {
         padding-bottom: 16px;
-        font-size: 0.75em;
+        font-size: 0.875em;
 
         .field {
             padding: 10px 0 14px 0px !important;
