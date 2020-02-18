@@ -239,7 +239,7 @@
         }
     }
     .view-all {
-        color: var(--tainacan-gray3);
+        color: var(--tainacan-gray4);
         margin-bottom: 20px;
         font-size: 0.75em;
     }
