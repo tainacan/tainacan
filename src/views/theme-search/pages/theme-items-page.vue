@@ -715,7 +715,7 @@
             this.showItemsHiddingDueSortingDialog();
 
             // Watches window resize to adjust filter's top position and compression on mobile
-            if (!this.hideFilters) {                 
+            if (!this.hideFilters) {            
                 this.hideFiltersOnMobile();
                 window.addEventListener('resize', this.hideFiltersOnMobile);
             }

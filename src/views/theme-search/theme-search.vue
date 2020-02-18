@@ -24,7 +24,7 @@
 export default {
     name: "ThemeSearch",
     created() {
-        this.$userPrefs.init(); 
+        this.$userPrefs.init();
     }
 }
 </script>
