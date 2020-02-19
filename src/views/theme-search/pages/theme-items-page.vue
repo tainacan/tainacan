@@ -697,13 +697,15 @@
             if (this.$userPrefs.get(prefsViewMode) == undefined)
                 this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
             else {
-                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
-                if (existingViewModeIndex >= 0)
-                    this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
+                const userPrefViewMode = this.$userPrefs.get(prefsViewMode);
+
+                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == userPrefViewMode);
+                let enabledViewModeIndex = this.enabledViewModes.findIndex((viewMode) => viewMode == userPrefViewMode);
+                if (existingViewModeIndex >= 0 && enabledViewModeIndex >= 0)
+                    this.$eventBusSearch.setInitialViewMode(userPrefViewMode);
                 else   
                     this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
             }
-            
             // For view modes such as slides, we force pagination to request only 12 per page
             let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
             if (existingViewModeIndex >= 0) {

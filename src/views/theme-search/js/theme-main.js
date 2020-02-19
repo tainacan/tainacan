@@ -113,32 +113,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (this.$el.attributes['enabled-view-modes'] != undefined)
                 this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
-
+            
             // Options related to hidding elements
             if (this.$el.attributes['hide-filters'] != undefined)
-                this.hideFilters = this.$el.attributes['hide-filters'].value;
+                this.hideFilters = this.$el.attributes['hide-filters'].value == 'true' ? true : false;
             if (this.$el.attributes['hide-hide-filters-button'] != undefined)
-                this.hideHideFiltersButton = this.$el.attributes['hide-hide-filters-button'].value;
+                this.hideHideFiltersButton = this.$el.attributes['hide-hide-filters-button'].value == 'true' ? true : false;
             if (this.$el.attributes['hide-search'] != undefined)
-                this.hideSearch = this.$el.attributes['hide-search'].value;
+                this.hideSearch = this.$el.attributes['hide-search'].value == 'true' ? true : false;
             if (this.$el.attributes['hide-advanced-search'] != undefined)
-                this.hideAdvancedSearch = this.$el.attributes['hide-advanced-search'].value;
+                this.hideAdvancedSearch = this.$el.attributes['hide-advanced-search'].value == 'true' ? true : false;
             if (this.$el.attributes['hide-sort-by-button'] != undefined)
-                this.hideSortByButton = this.$el.attributes['hide-sort-by-button'].value;
+                this.hideSortByButton = this.$el.attributes['hide-sort-by-button'].value == 'true' ? true : false;
             if (this.$el.attributes['hide-items-per-page-button'] != undefined)
-                this.hideItemsPerPageButton = this.$el.attributes['hide-items-per-page-button'].value;
+                this.hideItemsPerPageButton = this.$el.attributes['hide-items-per-page-button'].value == 'true' ? true : false;
             if (this.$el.attributes['hide-go-to-page-button'] != undefined)
-                this.hideGoToPageButton = this.$el.attributes['hide-go-to-page-button'].value;
-
+                this.hideGoToPageButton = this.$el.attributes['hide-go-to-page-button'].value == 'true' ? true : false;
             // Other Tweaks
             if (this.$el.attributes['start-with-filters-hidden'] != undefined)
-                this.startWithFiltersHidden = this.$el.attributes['start-with-filters-hidden'].value;
+                this.startWithFiltersHidden = this.$el.attributes['start-with-filters-hidden'].value == 'true' ? true : false;
             if (this.$el.attributes['filters-as-modal'] != undefined)
-                this.filtersAsModal = this.$el.attributes['filters-as-modal'].value;
+                this.filtersAsModal = this.$el.attributes['filters-as-modal'].value == 'true' ? true : false;
             if (this.$el.attributes['show-inline-view-mode-options'] != undefined)
-                this.showInlineViewModeOptions = this.$el.attributes['show-inline-view-mode-options'].value;
+                this.showInlineViewModeOptions = this.$el.attributes['show-inline-view-mode-options'].value == 'true' ? true : false;
             if (this.$el.attributes['show-fullscreen-with-view-modes'] != undefined)
-                this.showFullscreenWithViewModes = this.$el.attributes['show-fullscreen-with-view-modes'].value;
+                this.showFullscreenWithViewModes = this.$el.attributes['show-fullscreen-with-view-modes'].value == 'true' ? true : false;
         },
         render: h => h(ThemeSearch)
     });

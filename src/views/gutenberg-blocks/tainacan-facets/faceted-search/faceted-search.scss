@@ -55,5 +55,15 @@
         min-height: 400px;
         width: 100%;
         background-color: #f2f2f2;
+
+        .search-control,
+        .filters,
+        .items,
+        .pagination {
+            background-color: white;
+            padding: 12px;
+            margin: 6px;
+            border-radius: 6px;
+        }
     }
 }

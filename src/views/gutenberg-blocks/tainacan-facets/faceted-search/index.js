@@ -39,11 +39,11 @@ registerBlockType('tainacan/faceted-search', {
         },
         defaultViewMode: {
             type: String,
-            default: undefined
+            default: 'masonry'
         },
         enabledViewModes: {
             type: Array,
-            default: undefined
+            default: [ 'cards', 'masonry', 'table' ]
         },
         hideFilters: {
             type: Boolean,
@@ -428,24 +428,25 @@ registerBlockType('tainacan/faceted-search', {
             showFullscreenWithViewModes,
             listType
         } = attributes;
+        console.log(hideSortByButton)
         return <main 
                     className={ className }
                     term-id={ listType == 'term' ? termId : null }
                     taxonomy={ listType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
                     collection-id={ listType == 'collection' ? collectionId : null }  
                     default-view-mode={ defaultViewMode }
-                    enabled-view-modes={ enabledViewModes }  
-                    hide-filters = { '' +  hideFilters }
-                    hide-hide-filters-button= { hideHideFiltersButton }
-                    hide-search = { '' +  hideSearch }
-                    hide-advanced-search = { '' +  hideAdvancedSearch }
-                    hide-sort-by-button = { '' +  hideSortByButton }
-                    hide-items-per-page-button = { '' +  hideItemsPerPageButton }
-                    hide-go-to-page-button = { '' +  hideGoToPageButton }
-                    start-with-filters-hidden = { '' +  startWithFiltersHidden }
-                    filters-as-modal = { '' +  filtersAsModal }
-                    show-inline-view-mode-options = { '' +  showInlineViewModeOptions }
-                    show-fullscreen-with-view-modes = { '' +  showFullscreenWithViewModes }
+                    enabled-view-modes={ enabledViewModes.toString() }  
+                    hide-filters = { hideFilters.toString() }
+                    hide-hide-filters-button= { hideHideFiltersButton.toString() }
+                    hide-search = { hideSearch.toString() }
+                    hide-advanced-search = { hideAdvancedSearch.toString() }
+                    hide-sort-by-button = { hideSortByButton.toString() }
+                    hide-items-per-page-button = { hideItemsPerPageButton.toString() }
+                    hide-go-to-page-button = { hideGoToPageButton.toString() }
+                    start-with-filters-hidden = { startWithFiltersHidden.toString() }
+                    filters-as-modal = { filtersAsModal.toString() }
+                    show-inline-view-mode-options = { showInlineViewModeOptions.toString() }
+                    show-fullscreen-with-view-modes = { showFullscreenWithViewModes.toString() }
                     id="tainacan-items-page">
                 </main>
     }
