@@ -1495,7 +1495,17 @@ class Metadata extends Repository {
 
 				$taxonomy_id = $taxonomy->get_id();
 
-				$metadata = $this->fetch(['metadata_type' => 'Tainacan\Metadata_Types\Taxonomy', '_option_taxonomy_id' => $taxonomy_id, 'post_status' => $stati], 'OBJECT');
+				$args = [
+					'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy', 
+					'meta_query' => [
+						[
+							'key' => '_option_taxonomy_id', 
+							'value' => $taxonomy_id
+						]
+					], 
+					'post_status' => $stati
+				];
+				$metadata = $this->fetch($args, 'OBJECT');
 
 				foreach ($metadata as $meta) {
 					$meta->set_status( $taxonomy->get_status() );
