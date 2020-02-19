@@ -2,13 +2,12 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { BaseControl, RangeControl, Spinner, Button, SelectControl, ToggleControl, Tooltip, Placeholder, Toolbar, PanelBody } = wp.components;
+const { Button, SelectControl, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = wp.editor;
+const { InspectorControls } = wp.editor;
 
-import tainacan from '../../js/axios.js';
-import axios from 'axios';
-import qs from 'qs';
+import CollectionModal from './collection-modal.js';
+import TermModal from './term-modal.js';
 
 registerBlockType('tainacan/faceted-search', {
     title: __('Tainacan Faceted Search', 'tainacan'),
@@ -26,16 +25,11 @@ registerBlockType('tainacan/faceted-search', {
     keywords: [ __( 'facets', 'tainacan' ), __( 'search', 'tainacan' ), __( 'items', 'tainacan' ) ],
     description: __('A full items list faceted search from either the repository, a collection or a term.', 'tainacan'),
     attributes: {
-        content: {
-            type: 'array',
-            source: 'children',
-            selector: 'div'
-        },
         termId: {
             type: String,
             default: undefined
         },
-        taxonomy: {
+        taxonomyId: {
             type: String,
             default: undefined
         },
@@ -98,6 +92,14 @@ registerBlockType('tainacan/faceted-search', {
         listType: {
             type: String,
             default: 'collection'
+        },
+        isCollectionModalOpen: {
+            type: Boolean,
+            default: false
+        },
+        isTermModalOpen: {
+            type: Boolean,
+            default: false
         }
     },
     supports: {
@@ -108,7 +110,7 @@ registerBlockType('tainacan/faceted-search', {
     edit({ attributes, setAttributes, className, isSelected, clientId }){
         let {
             termId,
-            taxonomy,
+            taxonomyId,
             collectionId,
             defaultViewMode,
             enabledViewModes,
@@ -123,115 +125,24 @@ registerBlockType('tainacan/faceted-search', {
             filtersAsModal,
             showInlineViewModeOptions,
             showFullscreenWithViewModes,
-            listType
+            listType,
+            isCollectionModalOpen,
+            isTermModalOpen
         } = attributes;
- 
-        function setContent(){
 
-            facets = [];
-            isLoading = true;
-            
-            if (facetsRequestSource != undefined && typeof facetsRequestSource == 'function')
-                facetsRequestSource.cancel('Previous facets search canceled.');
-
-            facetsRequestSource = axios.CancelToken.source();
-            
-            setAttributes({
-                isLoading: isLoading
-            });
-            
-            let endpoint = '/facets/' + metadatumId;
-            let query = endpoint.split('?')[1];
-            let queryObject = qs.parse(query);
-
-            // Set up max facets to be shown
-            if (maxFacetsNumber != undefined && maxFacetsNumber > 0)
-                queryObject.number = maxFacetsNumber;
-            else if (queryObject.number != undefined && queryObject.number > 0)
-                setAttributes({ maxFacetsNumber: queryObject.number });
-            else {
-                queryObject.number = 12;
-                setAttributes({ maxFacetsNumber: 12 });
-            }
-
-            // Set up searching string
-            if (searchString != undefined)
-                queryObject.search = searchString;
-            else if (queryObject.search != undefined)
-                setAttributes({ searchString: queryObject.search });
-            else {
-                delete queryObject.search;
-                setAttributes({ searchString: undefined });
-            }
-
-            // Set up parentTerm for taxonomies
-            if (parentTerm && parentTerm.id !== undefined && parentTerm.id !== null && parentTerm.id !== '' && metadatumType == 'Taxonomy')
-                queryObject.parent = parentTerm.id;
-            else {
-                delete queryObject.parent;
-                setAttributes({ parentTerm: null });
-            }
-
-            // Parameter fo tech entity object with image and url
-            queryObject['context'] = 'extended';
-            
-            endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject);
-            
-            tainacan.get(endpoint, { cancelToken: facetsRequestSource.token })
-                .then(response => {
-                    facetsObject = [];
-
-                    if (metadatumType == 'Taxonomy') {
-                        for (let facet of response.data.values) {
-                            facetsObject.push(Object.assign({ 
-                                url: facet.entity && facet.entity.url ? facet.entity.url : tainacan_blocks.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
-                            }, facet));
-                        }
-                    } else {
-                        for (let facet of response.data.values) {
-                            facetsObject.push(Object.assign({ 
-                                url: tainacan_blocks.site_url + '/' + collectionSlug + '/#/?metaquery[0][key]=' + metadatumId + '&metaquery[0][value]=' + facet.value
-                            }, facet));
-                        }
-                    }
-                    
-                    for (let facet of facetsObject)
-                        facets.push(prepareFacet(facet));
-
-                    setAttributes({
-                        content: <div></div>,
-                        facets: facets,
-                        facetsObject: facetsObject,
-                        isLoading: false,
-                        facetsRequestSource: facetsRequestSource
-                    });
-                });
-        }
-
-        function updateContent() {
-
-            setAttributes({
-                content: <div></div>
-            });
-        }
-
-        function openMetadataModal() {
-            isModalOpen = true;
+        function openCollectionModal() {
+            isCollectionModalOpen = true;
             setAttributes( { 
-                isModalOpen: isModalOpen
-            } );
-        }
-        
-        function openParentTermModal() {
-            isParentTermModalOpen = true;
-            setAttributes( { 
-                isParentTermModalOpen: isParentTermModalOpen
+                isCollectionModalOpen: isCollectionModalOpen
             } );
         }
 
-        // Executed only on the first load of page
-        if(content && content.length && content[0].type)
-            setContent();
+        function openTermModal() {
+            isTermModalOpen = true;
+            setAttributes( { 
+                isTermModalOpen: isTermModalOpen
+            } );
+        }
 
         return (
             <div className={className}>
@@ -384,7 +295,7 @@ registerBlockType('tainacan/faceted-search', {
                                             fill="#298596"
                                             d="M21.43,13.64,19.32,16a2.57,2.57,0,0,1-2,1H11a3.91,3.91,0,0,0,0-.49,5.49,5.49,0,0,0-5-5.47V9.64A2.59,2.59,0,0,1,8.59,7H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,13.64ZM4,3A2,2,0,0,0,2,5v7.3a5.32,5.32,0,0,1,2-1V5H16V3ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1,0-7,2.74,2.74,0,0,1,.5,0A3.5,3.5,0,0,1,9,16a2.92,2.92,0,0,1,0,.51,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,1,0,5.5,18,1.5,1.5,0,0,0,7,16.53Z"/>
                                 </svg>
-                                {__('Render an items list with faceted search from: ', 'tainacan')}
+                                {__('Show items list from: ', 'tainacan')}
                                 &nbsp;
                                 <SelectControl
                                     label={ __('Items list source', 'tainacan') }
@@ -400,6 +311,17 @@ registerBlockType('tainacan/faceted-search', {
                                         setAttributes({ listType: aListType });
                                     } }
                                 />
+                                &nbsp;
+                                { 
+                                    (listType == 'collection' && collectionId != undefined) || (listType == 'term' && termId != undefined) ?
+                                        <Button
+                                            isPrimary
+                                            type="submit"
+                                            onClick={ () => listType == 'term' ? openTermModal() : openCollectionModal() }>
+                                            { listType == 'term' ? __('Change Term', 'tainacan') : __('Change Collection', 'tainacan') }
+                                        </Button>
+                                    : null
+                                }
                             </p>  
                         </div>
                     </div>
@@ -424,7 +346,7 @@ registerBlockType('tainacan/faceted-search', {
                                         fill="#298596"
                                         d="M21.43,13.64,19.32,16a2.57,2.57,0,0,1-2,1H11a3.91,3.91,0,0,0,0-.49,5.49,5.49,0,0,0-5-5.47V9.64A2.59,2.59,0,0,1,8.59,7H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,13.64ZM4,3A2,2,0,0,0,2,5v7.3a5.32,5.32,0,0,1,2-1V5H16V3ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1,0-7,2.74,2.74,0,0,1,.5,0A3.5,3.5,0,0,1,9,16a2.92,2.92,0,0,1,0,.51,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,1,0,5.5,18,1.5,1.5,0,0,0,7,16.53Z"/>
                             </svg>
-                            {__('Render a complete items list with faceted search.', 'tainacan')}
+                            {__('Show a complete items list with faceted search.', 'tainacan')}
                         </p>
                         <Button
                             isPrimary
@@ -450,13 +372,46 @@ registerBlockType('tainacan/faceted-search', {
                     )
                 }
 
+                { isCollectionModalOpen ? 
+                    <CollectionModal
+                        existingCollectionId={ collectionId } 
+                        onSelectCollection={ (selectedCollectionId) => {
+                            collectionId = selectedCollectionId;
+                            setAttributes({
+                                collectionId: collectionId, 
+                                isCollectionModalOpen: false
+                            });
+                        }}
+                        onCancelSelection={ () => setAttributes({ isCollectionModalOpen: false }) }/> 
+                    : null
+                }
+
+                { isTermModalOpen ? 
+                    <TermModal
+                        existingTermId={ termId } 
+                        existingTaxonomyId={ taxonomyId } 
+                        onSelectTaxonomy={ (selectedTaxonomy) => {
+                            taxonomyId = selectedTaxonomy;
+                            setAttributes({ taxonomyId: selectedTaxonomy });
+                        }}
+                        onSelectTerm={ (selectedTermId) => {
+                            termId = selectedTermId;
+                            setAttributes({
+                                termId: selectedTermId, 
+                                isTermModalOpen: false
+                            });
+                        }}
+                        onCancelSelection={ () => setAttributes({ isTermModalOpen: false }) }/> 
+                    : null
+                }
+
             </div>
         );
     },
     save({ attributes, className }){
         const {
             termId,
-            taxonomy,
+            taxonomyId,
             collectionId,
             defaultViewMode,
             enabledViewModes,
@@ -470,13 +425,14 @@ registerBlockType('tainacan/faceted-search', {
             startWithFiltersHidden,
             filtersAsModal,
             showInlineViewModeOptions,
-            showFullscreenWithViewModes
+            showFullscreenWithViewModes,
+            listType
         } = attributes;
         return <main 
                     className={ className }
-                    term-id={ termId }
-                    taxonomy={ taxonomy }
-                    collection-id={ '67472' /* collectionId */ }  
+                    term-id={ listType == 'term' ? termId : null }
+                    taxonomy={ listType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
+                    collection-id={ listType == 'collection' ? collectionId : null }  
                     default-view-mode={ defaultViewMode }
                     enabled-view-modes={ enabledViewModes }  
                     hide-filters = { '' +  hideFilters }
