@@ -424,7 +424,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 		
 		$this->assertEquals($metadatum->get_id(), $fetch[0]->get_id());
 		
-    }
+	}
 	
 	function test_relatioship_get_collection_method() {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
@@ -468,6 +468,151 @@ class Metadata extends TAINACAN_UnitTestCase {
 		$this->assertTrue( $colCheck instanceof \Tainacan\Entities\Collection );
 		$this->assertEquals($collection2->get_id(), $colCheck->get_id());
 		
+	}
+
+	public function test_update_taxonomy_cascate_status() {
+		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test_col',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$another_collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test_another',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$tax_public = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_public',
+				'collections' => [$collection, $another_collection],
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$tax = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_private',
+				'collections' => [$collection, $another_collection],
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$metadatum1 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'tax_public',
+				'status' => 'publish',
+				'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax_public->get_id(),
+				]
+			),
+			true
+		);
+
+		$metadatum2 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'tax_public',
+				'status' => 'publish',
+				'collection' => $another_collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax_public->get_id(),
+				]
+			),
+			true
+		);
+
+		$metadatum3 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'tax',
+				'status' => 'publish',
+				'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+				]
+			),
+			true
+		);
+
+		$metadatum4 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'tax',
+				'status' => 'publish',
+				'collection' => $another_collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+				]
+			),
+			true
+		);
+
+		$metadatum1 = $Tainacan_Metadata->fetch($metadatum1->get_id());
+		$metadatum2 = $Tainacan_Metadata->fetch($metadatum2->get_id());
+		$metadatum3 = $Tainacan_Metadata->fetch($metadatum3->get_id());
+		$metadatum4 = $Tainacan_Metadata->fetch($metadatum4->get_id());
+
+		$this->assertEquals($metadatum1->get_status(), 'publish');
+		$this->assertEquals($metadatum2->get_status(), 'publish');
+		$this->assertEquals($metadatum3->get_status(), 'publish');
+		$this->assertEquals($metadatum4->get_status(), 'publish');
+
+		$tax->set_status('private');
+		$tax->validate();
+		$tax = $Tainacan_Taxonomies->update($tax);
+
+		$metadatum1 = $Tainacan_Metadata->fetch($metadatum1->get_id());
+		$metadatum2 = $Tainacan_Metadata->fetch($metadatum2->get_id());
+		$metadatum3 = $Tainacan_Metadata->fetch($metadatum3->get_id());
+		$metadatum4 = $Tainacan_Metadata->fetch($metadatum4->get_id());
+
+		$this->assertEquals($metadatum1->get_status(), 'publish');
+		$this->assertEquals($metadatum2->get_status(), 'publish');
+		$this->assertEquals($metadatum3->get_status(), 'private');
+		$this->assertEquals($metadatum4->get_status(), 'private');
+
+		$tax_draft = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => '',
+				'collections' => [],
+				'status' => 'auto-draft'
+			),
+			true
+		);
+
+		$metadatum1 = $Tainacan_Metadata->fetch($metadatum1->get_id());
+		$metadatum2 = $Tainacan_Metadata->fetch($metadatum2->get_id());
+		$metadatum3 = $Tainacan_Metadata->fetch($metadatum3->get_id());
+		$metadatum4 = $Tainacan_Metadata->fetch($metadatum4->get_id());
+
+		$this->assertEquals($metadatum1->get_status(), 'publish');
+		$this->assertEquals($metadatum2->get_status(), 'publish');
+		$this->assertEquals($metadatum3->get_status(), 'private');
+		$this->assertEquals($metadatum4->get_status(), 'private');
+
+	
 	}
 }
 
