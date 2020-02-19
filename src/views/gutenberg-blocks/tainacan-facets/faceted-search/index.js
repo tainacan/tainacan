@@ -363,10 +363,40 @@ registerBlockType('tainacan/faceted-search', {
                                 { __('Warning: this is just a demonstration. To see the items list, either preview or publish your post.', 'tainacan') }
                             </div>
                             <div class="items-list-placeholder">
-                                <div class="search-control"></div>
-                                <div class="filters"></div>
-                                <div class="items"></div>
-                                <div class="pagination"></div>
+                                <div class="search-control">
+                                    { 
+                                        !hideSearch ?
+                                        <span class="fake-searchbar">
+                                            { !hideAdvancedSearch ? <span class="fake-advanced-searchbar"></span> : null }
+                                        </span>
+                                        : null
+                                    }
+                                    <span class="fake-button"></span>
+                                    <span class="fake-button"></span>
+                                    {
+                                        !hideSortByButton ? <span class="fake-button"></span> : null
+                                    }
+                                    <span class="fake-button"></span>
+                                    <span class="fake-button"></span>
+                                </div>
+                                <div class="below-search-control">
+                                    { 
+                                        !hideFilters ?
+                                        <div class="filters">
+                                            { !hideHideFiltersButton ? <span class="fake-hide-button"></span> : null }
+                                        </div>
+                                        : null
+                                    }
+                                    <div class="aside-filters">    
+                                        <div class="items"></div>
+                                        <div class="pagination">
+                                            <span class="fake-text"></span>
+                                            { !hideItemsPerPageButton ? <span class="fake-button"></span> : null }
+                                            { !hideGoToPageButton ? <span class="fake-button"></span> : null }
+                                            <span class="fake-searchbar"></span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )
@@ -428,7 +458,7 @@ registerBlockType('tainacan/faceted-search', {
             showFullscreenWithViewModes,
             listType
         } = attributes;
-        console.log(hideSortByButton)
+
         return <main 
                     className={ className }
                     term-id={ listType == 'term' ? termId : null }

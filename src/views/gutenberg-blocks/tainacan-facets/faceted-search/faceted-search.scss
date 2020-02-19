@@ -54,16 +54,92 @@
     .items-list-placeholder {
         min-height: 400px;
         width: 100%;
-        background-color: #f2f2f2;
+        background-color: rgba(200,200,200, 0.25);;
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: column;
+        padding: 6px;
+        border-radius: 2px;
 
         .search-control,
         .filters,
         .items,
         .pagination {
-            background-color: white;
+            background-color: var(--tainacan-background-color, white);
             padding: 12px;
-            margin: 6px;
-            border-radius: 6px;
+            margin: 3px;
+            border-radius: 4px;
+        }
+        .search-control {
+            flex: 0 0 15%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .below-search-control {
+            display: flex;
+            flex-wrap: nowrap;
+            flex-direction: row;
+            flex: 1 0 auto;
+
+            .filters {
+                flex: 0 1 var(--tainacan-filter-menu-width-theme, 20%);
+            }
+            .aside-filters {
+                display: flex;
+                flex-wrap: nowrap;
+                flex-direction: column;
+                flex: 1 0 auto;
+
+                .items {
+                    flex: 1 0 auto;
+                }
+
+                .pagination {
+                    flex: 0 1 5%;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+            }
+        }
+        .fake-text {
+            background-color: rgba(200,200,200, 0.3);
+            height: 5px;
+            width: 15%;
+            border-radius: 2px;
+        }
+        .fake-searchbar {
+            background-color: rgba(200,200,200, 0.3);
+            height: 10px;
+            width: 18%;
+            border-radius: 3px;
+
+            .fake-advanced-searchbar {
+                display: block;
+                background-color: rgba(200,200,200, 0.3);
+                height: 4px;
+                border-radius: 3px;
+                width: 70%;
+                position: relative;
+                bottom: -14px;
+            }
+        }
+        .fake-hide-button {
+            display: block;
+            background-color: rgba(200,200,200, 0.3);
+            height: 14px;
+            width: 16%;
+            border-radius: 3px;
+            position: relative;
+            left: -12px;
+            top: 12px;
+        }
+        .fake-button {
+            background-color: rgba(200,200,200, 0.3);
+            height: 10px;
+            width: 12%;
+            border-radius: 3px;
         }
     }
 }
