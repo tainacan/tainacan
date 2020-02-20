@@ -73,6 +73,21 @@ export default {
         position: relative;
         -webkit-overflow-scrolling: touch;
 
+        * {
+            // For Firefox
+            scrollbar-color: var(--tainacan-gray3) transparent;
+            scrollbar-width: thin;
+
+            // For Chromium and related
+            &::-webkit-scrollbar {
+                width: 0.55em;
+                opacity: 0.8;
+            }
+            &::-webkit-scrollbar-thumb {
+                background-color: var(--tainacan-gray3);
+            }
+        }
+
         h1,
         h2,
         h3,

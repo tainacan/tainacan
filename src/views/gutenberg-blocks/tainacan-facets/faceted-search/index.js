@@ -356,7 +356,7 @@ registerBlockType('tainacan/faceted-search', {
                         </Button>
                            
                     </Placeholder>
-                    ) : 
+                    ) :
                     (
                         <div>
                             <div class="preview-warning">
@@ -459,8 +459,8 @@ registerBlockType('tainacan/faceted-search', {
             listType
         } = attributes;
 
-        return <main 
-                    className={ className }
+        return <div className={ className }>
+                <main 
                     term-id={ listType == 'term' ? termId : null }
                     taxonomy={ listType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
                     collection-id={ listType == 'collection' ? collectionId : null }  
@@ -479,5 +479,6 @@ registerBlockType('tainacan/faceted-search', {
                     show-fullscreen-with-view-modes = { showFullscreenWithViewModes.toString() }
                     id="tainacan-items-page">
                 </main>
+            </div>
     }
 });

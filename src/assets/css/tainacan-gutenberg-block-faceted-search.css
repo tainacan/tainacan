@@ -292,5 +292,7 @@
       height: 10px;
       width: 12%;
       border-radius: 3px; }
+  .wp-block-tainacan-faceted-search .theme-items-list {
+    max-width: 100% !important; }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-faceted-search.css.map */
