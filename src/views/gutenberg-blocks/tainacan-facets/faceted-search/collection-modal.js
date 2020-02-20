@@ -11,6 +11,7 @@ export default class CollectionModal extends React.Component {
 
         // Initialize state
         this.state = {
+            collectionViewModes: [],
             collectionsPerPage: 24,
             collectionId: undefined,  
             isLoadingCollections: false, 

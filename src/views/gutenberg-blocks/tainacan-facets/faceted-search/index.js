@@ -584,13 +584,15 @@ registerBlockType('tainacan/faceted-search', {
             showFullscreenWithViewModes,
             listType,
             backgroundColor,
-            baseFontSize
+            baseFontSize,
+            filtersAreaWidth
         } = attributes;
         
         return <div 
                     style={{
+                        'font-size': baseFontSize + 'px',
                         '--tainacan-background-color': backgroundColor,
-                        'font-size': baseFontSize + 'px'
+                        '--tainacan-filter-menu-width-theme': filtersAreaWidth + '%'
                     }}
                     className={ className }>
                 <main 
