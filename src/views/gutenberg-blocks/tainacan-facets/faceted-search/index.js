@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { Button, SelectControl, ToggleControl, Placeholder, PanelBody } = wp.components;
+const { Button, ColorPicker, RangeControl, FontSizePicker, SelectControl, ToggleControl, Placeholder, PanelBody } = wp.components;
 
 const { InspectorControls } = wp.editor;
 
@@ -104,6 +104,18 @@ registerBlockType('tainacan/faceted-search', {
         isTermModalOpen: {
             type: Boolean,
             default: false
+        },
+        backgroundColor: {
+            type: String,
+            default: '#ffffff'
+        },
+        baseFontSize: {
+            type: Number,
+            default: 16
+        },
+        filtersAreaWidth: {
+            type: Number,
+            default: 20
         }
     },
     supports: {
@@ -132,8 +144,39 @@ registerBlockType('tainacan/faceted-search', {
             showFullscreenWithViewModes,
             listType,
             isCollectionModalOpen,
-            isTermModalOpen
+            isTermModalOpen,
+            backgroundColor,
+            baseFontSize,
+            filtersAreaWidth
         } = attributes;
+
+        const fontSizes = [
+            {
+                name: __( 'Tiny', 'tainacan' ),
+                slug: 'tiny',
+                size: 12,
+            },
+            {
+                name: __( 'Small', 'tainacan' ),
+                slug: 'small',
+                size: 14,
+            },
+            {
+                name: __( 'Normal', 'tainacan' ),
+                slug: 'normal',
+                size: 16,
+            },
+            {
+                name: __( 'Big', 'tainacan' ),
+                slug: 'big',
+                size: 18,
+            },
+            {
+                name: __( 'Huge', 'tainacan' ),
+                slug: 'huge',
+                size: 20,
+            },
+        ];
 
         function openCollectionModal() {
             isCollectionModalOpen = true;
@@ -176,7 +219,7 @@ registerBlockType('tainacan/faceted-search', {
                                 onChange={ ( isChecked ) => {
                                         hideAdvancedSearch = isChecked;
                                         setAttributes({ hideAdvancedSearch: isChecked });
-                                    } 
+                                    }  
                                 }
                             />
                             <ToggleControl
@@ -292,6 +335,34 @@ registerBlockType('tainacan/faceted-search', {
                                 }
                             />
                         </PanelBody>
+
+                        <PanelBody
+                                title={__('Colors and Sizes', 'tainacan')}
+                                initialOpen={ false }
+                            >
+                            <ColorPicker
+                                color={ backgroundColor }
+                                onChangeComplete={ (colorValue ) => {
+                                    backgroundColor = colorValue.hex;
+                                    setAttributes({ backgroundColor: backgroundColor });
+                                }}
+                            />
+                            <FontSizePicker
+                                fontSizes={ fontSizes }
+                                value={ baseFontSize }
+                                fallbackFontSize={ 16 }
+                                onChange={ ( newFontSize ) => {
+                                    setAttributes( { baseFontSize: newFontSize } );
+                                } }
+                            />
+                            <RangeControl
+                                label={ __('Filters Area Width (%)', 'tainacan') }
+                                value={ filtersAreaWidth }
+                                onChange={ ( width ) => setAttributes( { filtersAreaWidth: width } ) }
+                                min={ 5 }
+                                max={ 40 }
+                            />
+                        </PanelBody>
                        
                     </InspectorControls>
                 </div>
@@ -374,10 +445,17 @@ registerBlockType('tainacan/faceted-search', {
                     ) :
                     (
                         <div>
-                            <div class="preview-warning">
+                            <div 
+                                    style={{ fontSize: (baseFontSize - 2) + 'px' }}
+                                    class="preview-warning">
                                 { __('Warning: this is just a demonstration. To see the items list, either preview or publish your post.', 'tainacan') }
                             </div>
-                            <div class="items-list-placeholder">
+                            <div 
+                                    style={{
+                                        '--tainacan-background-color': backgroundColor,
+                                        'font-size': baseFontSize + 'px'
+                                    }}
+                                    class="items-list-placeholder">
                                 <div class="search-control">
                                     { 
                                         !hideSearch ?
@@ -412,7 +490,11 @@ registerBlockType('tainacan/faceted-search', {
                                     { !hideHideFiltersButton && !hideFilters ? <span class="fake-hide-button"></span> : null }
                                     { 
                                         !hideFilters && !filtersAsModal && !startWithFiltersHidden ?
-                                            <div class="filters">
+                                            <div 
+                                                    style={{
+                                                        flexBasis: filtersAreaWidth + '%'
+                                                    }}
+                                                    class="filters">
                                                 <span class="fake-text"></span>
                                                 <span class="fake-text"></span>
                                                 <span class="fake-text"></span>
@@ -500,10 +582,17 @@ registerBlockType('tainacan/faceted-search', {
             filtersAsModal,
             showInlineViewModeOptions,
             showFullscreenWithViewModes,
-            listType
+            listType,
+            backgroundColor,
+            baseFontSize
         } = attributes;
-
-        return <div className={ className }>
+        
+        return <div 
+                    style={{
+                        '--tainacan-background-color': backgroundColor,
+                        'font-size': baseFontSize + 'px'
+                    }}
+                    className={ className }>
                 <main 
                     term-id={ listType == 'term' ? termId : null }
                     taxonomy={ listType == 'term' ? 'tnc_tax_' + taxonomyId : null  }

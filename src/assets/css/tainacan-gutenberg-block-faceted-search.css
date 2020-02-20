@@ -253,7 +253,7 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        padding: 60px 20px 60px 15px; }
+        padding: 40px 20px 60px 15px; }
         .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters .fake-text {
           margin: 15%;
           width: 80%; }
