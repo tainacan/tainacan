@@ -11,6 +11,7 @@
             :hide-search="$root.hideSearch ? $root.hideSearch : false"
             :hide-advanced-search="$root.hideAdvancedSearch ? $root.hideAdvancedSearch : false"
             :hide-sort-by-button="$root.hideSortByButton ? $root.hideSortByButton : false"
+            :hide-exposers-button="$root.hideExposersButton ? $root.hideExposersButton : false"
             :hide-items-per-page-button="$root.hideItemsPerPageButton ? $root.hideItemsPerPageButton : false"
             :hide-go-to-page-button="$root.hideGoToPageButton ? $root.hideGoToPageButton : false"
             :start-with-filters-hidden="$root.startWithFiltersHidden ? $root.startWithFiltersHidden : false"

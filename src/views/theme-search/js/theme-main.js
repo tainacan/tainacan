@@ -88,6 +88,7 @@ export const ThemeItemsListing =  new Vue({
         hideSearch: false,
         hideAdvancedSearch: false,
         hideSortByButton: false,
+        hideExposersButton: false,
         hideItemsPerPageButton: false,
         hideGoToPageButton: false,
         startWithFiltersHidden: false,
@@ -125,6 +126,8 @@ export const ThemeItemsListing =  new Vue({
             this.hideAdvancedSearch = this.$el.attributes['hide-advanced-search'].value;
         if (this.$el.attributes['hide-sort-by-button'] != undefined)
             this.hideSortByButton = this.$el.attributes['hide-sort-by-button'].value;
+        if (this.$el.attributes['hide-exposers-button'] != undefined)
+            this.hideExposersButton = this.$el.attributes['hide-exposers-button'].value;
         if (this.$el.attributes['hide-items-per-page-button'] != undefined)
             this.hideItemsPerPageButton = this.$el.attributes['hide-items-per-page-button'].value;
         if (this.$el.attributes['hide-go-to-page-button'] != undefined)
