@@ -65,6 +65,10 @@ registerBlockType('tainacan/faceted-search', {
             type: Boolean,
             default: false
         },
+        hideExposersButton: {
+            type: Boolean,
+            default: false
+        },
         hideItemsPerPageButton: {
             type: Boolean,
             default: false
@@ -119,6 +123,7 @@ registerBlockType('tainacan/faceted-search', {
             hideSearch,
             hideAdvancedSearch,
             hideSortByButton,
+            hideExposersButton,
             hideItemsPerPageButton,
             hideGoToPageButton,
             startWithFiltersHidden,
@@ -201,6 +206,16 @@ registerBlockType('tainacan/faceted-search', {
                                 onChange={ ( isChecked ) => {
                                         showFullscreenWithViewModes = isChecked;
                                         setAttributes({ showFullscreenWithViewModes: isChecked });
+                                    } 
+                                }
+                            />
+                            <ToggleControl
+                                label={__('Hide "View as..." button', 'tainacan')}
+                                help={ hideExposersButton ? __('Do not show "View as...", the "Exposers" button', 'tainacan') : __('Toggle to show "View as...", the "Exposers" button', 'tainacan')}
+                                checked={ hideExposersButton }
+                                onChange={ ( isChecked ) => {
+                                        hideExposersButton = isChecked;
+                                        setAttributes({ hideExposersButton: isChecked });
                                     } 
                                 }
                             />
@@ -377,7 +392,9 @@ registerBlockType('tainacan/faceted-search', {
                                         !hideSortByButton ? <span class="fake-button"></span> : null
                                     }
                                     <span class="fake-button"></span>
-                                    <span class="fake-button"></span>
+                                    {
+                                        !hideExposersButton ? <span class="fake-button"></span> : null
+                                    }
                                 </div>
                                 <div class="below-search-control">
                                     { 
@@ -450,6 +467,7 @@ registerBlockType('tainacan/faceted-search', {
             hideSearch,
             hideAdvancedSearch,
             hideSortByButton,
+            hideExposersButton,
             hideItemsPerPageButton,
             hideGoToPageButton,
             startWithFiltersHidden,
@@ -471,6 +489,7 @@ registerBlockType('tainacan/faceted-search', {
                     hide-search = { hideSearch.toString() }
                     hide-advanced-search = { hideAdvancedSearch.toString() }
                     hide-sort-by-button = { hideSortByButton.toString() }
+                    hide-exposers-button = { hideExposersButton.toString() }
                     hide-items-per-page-button = { hideItemsPerPageButton.toString() }
                     hide-go-to-page-button = { hideGoToPageButton.toString() }
                     start-with-filters-hidden = { startWithFiltersHidden.toString() }
