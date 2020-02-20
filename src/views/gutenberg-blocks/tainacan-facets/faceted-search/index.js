@@ -156,8 +156,8 @@ registerBlockType('tainacan/faceted-search', {
                     <InspectorControls>
                         
                         <PanelBody
-                                title={__('Search Control Area', 'tainacan')}
-                                initialOpen={ true }
+                            title={__('Search Control Area', 'tainacan')}
+                            initialOpen={ true }
                             >
                             <ToggleControl
                                 label={__('Hide search input', 'tainacan')}
@@ -171,8 +171,8 @@ registerBlockType('tainacan/faceted-search', {
                             />
                             <ToggleControl
                                 label={__('Hide advanced search', 'tainacan')}
-                                help={ hideAdvancedSearch ? __('Do not show advanced search', 'tainacan') : __('Toggle to show advanced search', 'tainacan')}
-                                checked={ hideAdvancedSearch }
+                                help={ hideAdvancedSearch || hideSearch ? __('Do not show advanced search', 'tainacan') : __('Toggle to show advanced search', 'tainacan')}
+                                checked={ hideAdvancedSearch || hideSearch }
                                 onChange={ ( isChecked ) => {
                                         hideAdvancedSearch = isChecked;
                                         setAttributes({ hideAdvancedSearch: isChecked });
@@ -237,8 +237,8 @@ registerBlockType('tainacan/faceted-search', {
                             />
                             <ToggleControl
                                 label={__('Hide "Hide Filters" button', 'tainacan')}
-                                help={ hideHideFiltersButton ? __('Do not show "Hide Filters" button', 'tainacan') : __('Toggle to show "Hide Filters" button', 'tainacan')}
-                                checked={ hideHideFiltersButton }
+                                help={ hideHideFiltersButton || hideFilters ? __('Do not show "Hide Filters" button', 'tainacan') : __('Toggle to show "Hide Filters" button', 'tainacan')}
+                                checked={ hideHideFiltersButton || hideFilters }
                                 onChange={ ( isChecked ) => {
                                         hideHideFiltersButton = isChecked;
                                         setAttributes({ hideHideFiltersButton: isChecked });
@@ -409,15 +409,29 @@ registerBlockType('tainacan/faceted-search', {
                                     }
                                 </div>
                                 <div class="below-search-control">
+                                    { !hideHideFiltersButton && !hideFilters ? <span class="fake-hide-button"></span> : null }
                                     { 
-                                        !hideFilters ?
-                                        <div class="filters">
-                                            { !hideHideFiltersButton ? <span class="fake-hide-button"></span> : null }
-                                        </div>
-                                        : null
+                                        !hideFilters && !filtersAsModal && !startWithFiltersHidden ?
+                                            <div class="filters">
+                                                <span class="fake-text"></span>
+                                                <span class="fake-text"></span>
+                                                <span class="fake-text"></span>
+                                                <span class="fake-text"></span>
+                                                <span class="fake-text"></span>
+                                                <span class="fake-text"></span>
+                                                <span class="fake-text"></span>
+                                            </div> 
+                                        : null 
                                     }
                                     <div class="aside-filters">    
-                                        <div class="items"></div>
+                                        <div class="items">
+                                            <div class="fake-item"><span class="fake-item-header"></span></div>
+                                            <div class="fake-item"><span class="fake-item-header"></span></div>
+                                            <div class="fake-item"><span class="fake-item-header"></span></div>
+                                            <div class="fake-item"><span class="fake-item-header"></span></div>
+                                            <div class="fake-item"><span class="fake-item-header"></span></div>
+                                            <div class="fake-item"><span class="fake-item-header"></span></div>
+                                        </div>
                                         <div class="pagination">
                                             <span class="fake-text"></span>
                                             { !hideItemsPerPageButton ? <span class="fake-button"></span> : null }
