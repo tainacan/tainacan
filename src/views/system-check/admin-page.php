@@ -13,6 +13,11 @@
 		border-left: 5px solid green;
 		margin-right: 10px;
 	}
+	.tainacan-system-check .impartial {
+		border-left: 5px solid gray;
+		margin-right: 10px;
+	}
+
 
 </style>
 
@@ -44,6 +49,13 @@
 				<th scope="row"><?php _e('Database version', 'tainacan'); ?></th>
 				<td>
 					<?php $this->test_sql_server(); ?>
+				</td>
+			</tr>
+
+			<tr>
+				<th scope="row"><?php _e('Tainacan version', 'tainacan'); ?></th>
+				<td>
+					<?php $this->get_tainacan_version(); ?>
 				</td>
 			</tr>
 			
