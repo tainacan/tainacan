@@ -1550,8 +1550,6 @@ class Metadata extends Repository {
 				'post_status' => 'any',
 			];
 
-			$metadata = $this->fetch($args);
-			var_dump($metadata->request);
 			$metadata = $this->fetch($args, 'OBJECT');
 
 			foreach ($metadata as $meta) {
