@@ -222,7 +222,9 @@
             </div>
 
             <!-- View Modes Dropdown -->
-            <div class="search-control-item">
+            <div 
+                    v-if="enabledViewModes.length > 1"
+                    class="search-control-item">
                 <b-field>
                     <label 
                             class="label is-hidden-touch is-hidden-desktop-only"
@@ -306,7 +308,9 @@
             </div>
 
             <!-- Exposers or alternative links modal button -->
-            <div class="search-control-item">
+            <div 
+                    v-if="!hideExposersButton"
+                    class="search-control-item">
                 <button 
                         class="button is-white"
                         :aria-label="$i18n.get('label_view_as')"
@@ -533,6 +537,7 @@
             hideSearch: false,
             hideAdvancedSearch: false,
             hideSortByButton: false,
+            hideExposersButton: false,
             hideItemsPerPageButton: false,
             hideGoToPageButton: false,
             // Other Tweaks

@@ -532,6 +532,32 @@ class System_Check {
 		
 	}
 
+	public function get_tainacan_version() {
+		if ( ! function_exists( 'plugins_api' ) ) {
+			require_once( ABSPATH . 'wp-admin/includes/plugin-install.php' );
+		}
+		$current_version = TAINACAN_VERSION;
+
+		$args = array(
+			'slug' => 'Tainacan',
+			'fields' => array(
+					'version' => true,
+			)
+		);
+
+		$call_api = \plugins_api( 'plugin_information', $args );
+		$class = 'impartial';
+		if ( !is_wp_error( $call_api ) ) {
+			if ( ! empty( $call_api->version ) ) {
+					$version_latest = $call_api->version;
+					if ( version_compare($current_version, $version_latest) < 0 ) 
+						$class = 'warning';
+					else
+						$class = 'good';
+			}
+		}
+		echo "<span class='$class'></span> $current_version";
+	}
 }
 
 

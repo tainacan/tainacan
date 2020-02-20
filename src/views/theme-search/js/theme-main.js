@@ -125,10 +125,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 this.hideAdvancedSearch = this.$el.attributes['hide-advanced-search'].value == 'true' ? true : false;
             if (this.$el.attributes['hide-sort-by-button'] != undefined)
                 this.hideSortByButton = this.$el.attributes['hide-sort-by-button'].value == 'true' ? true : false;
+            if (this.$el.attributes['hide-exposers-button'] != undefined)
+                this.hideExposersButton = this.$el.attributes['hide-exposers-button'].value == 'true' ? true : false
             if (this.$el.attributes['hide-items-per-page-button'] != undefined)
                 this.hideItemsPerPageButton = this.$el.attributes['hide-items-per-page-button'].value == 'true' ? true : false;
             if (this.$el.attributes['hide-go-to-page-button'] != undefined)
                 this.hideGoToPageButton = this.$el.attributes['hide-go-to-page-button'].value == 'true' ? true : false;
+
             // Other Tweaks
             if (this.$el.attributes['start-with-filters-hidden'] != undefined)
                 this.startWithFiltersHidden = this.$el.attributes['start-with-filters-hidden'].value == 'true' ? true : false;
