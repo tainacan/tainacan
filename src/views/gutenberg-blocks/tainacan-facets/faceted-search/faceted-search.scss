@@ -141,6 +141,11 @@
             width: 12%;
             border-radius: 3px;
         }
+        .fake-buttons-group {
+            flex: 0 0 15%;
+            display: flex;
+            justify-content: space-evenly;
+        }
     }
 
     .theme-items-list {

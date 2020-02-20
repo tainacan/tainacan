@@ -386,12 +386,24 @@ registerBlockType('tainacan/faceted-search', {
                                         </span>
                                         : null
                                     }
-                                    <span class="fake-button"></span>
-                                    <span class="fake-button"></span>
                                     {
                                         !hideSortByButton ? <span class="fake-button"></span> : null
                                     }
                                     <span class="fake-button"></span>
+                                    {
+                                        !showInlineViewModeOptions ? 
+                                            <span class="fake-button"></span> 
+                                        : 
+                                            <div class="fake-buttons-group">
+                                                <div class="fake-button"></div>
+                                                <div class="fake-button"></div>
+                                                <div class="fake-button"></div>
+                                                { showFullscreenWithViewModes ? <span class="fake-button"></span> : null }
+                                            </div>
+                                    }
+                                    {
+                                        !showFullscreenWithViewModes ? <span class="fake-button"></span> : null
+                                    }
                                     {
                                         !hideExposersButton ? <span class="fake-button"></span> : null
                                     }
