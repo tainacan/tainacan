@@ -45,6 +45,12 @@ Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(ConsolePlugin, {visual: false});
 
+/* Registers Extra Vue Components passed to the TainacanExtraVueComponents  */
+if (typeof TainacanExtraVueComponents != "undefined") {
+    for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(TainacanExtraVueComponents))
+        Vue.component(extraVueComponentName, extraVueComponentObject);
+}
+
 Vue.component('tainacan-filter-item', TaincanFiltersList);
 
 /* Filters */

@@ -70,7 +70,6 @@ Vue.use(ConsolePlugin, {visual: false});
 Vue.use(VueTheMask);
 Vue.use(CommentsStatusHelperPlugin);
 
-
 /* Registers Extra Vue Components passed to the TainacanExtraVueComponents  */
 if (typeof TainacanExtraVueComponents != "undefined") {
     for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(TainacanExtraVueComponents))
