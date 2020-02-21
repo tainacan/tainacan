@@ -63,7 +63,6 @@
                 </label>
                 <div class="inline-block">
                     <b-radio 
-                            size="is-small"
                             @focus="clearErrors('label_status')"
                             id="tainacan-select-status-publish"
                             name="status" 
@@ -73,7 +72,6 @@
                     </b-radio>
                     <br>
                     <b-radio
-                            size="is-small" 
                             @focus="clearErrors('label_status')"
                             id="tainacan-select-status-private"
                             name="status" 
@@ -313,10 +311,11 @@ export default {
     @import "../../scss/_variables.scss";
 
     form#filterEditForm {
-        padding: 1.5rem $page-side-padding 0.5rem $page-side-padding;
-        border-top: 1px solid $gray2;
-        border-bottom: 1px solid $gray2;
+        padding: 1.5em $page-side-padding 0.5em $page-side-padding;
+        border-top: 1px solid var(--tainacan-gray2);
+        border-bottom: 1px solid var(--tainacan-gray2);
         margin-top: 1.0em;
+        font-size: 1.1em;
 
         .options-columns {
             -moz-column-count: 2;
@@ -326,9 +325,9 @@ export default {
             -webkit-column-gap: 0;
             -webkit-column-rule: none;
             column-count: 2;
-            column-gap: 4rem;
+            column-gap: 4em;
             column-rule: none;
-            padding-bottom: 1.5rem;
+            padding-bottom: 1.5em;
 
             &>.field, &>section {
                 -webkit-column-break-inside: avoid;

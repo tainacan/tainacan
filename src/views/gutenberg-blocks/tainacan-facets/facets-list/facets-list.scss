@@ -1,12 +1,12 @@
 @import '../../gutenberg-blocks-style.scss';
 
 .wp-block-tainacan-facets-list {
-    margin: 2rem auto;
+    margin: 2em auto;
 
     // Spinner
     .spinner-container {
         min-height: 56px;
-        padding: 1rem;
+        padding: 1em;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -58,9 +58,9 @@
             width: auto;
             min-width: 350px;
             flex-grow: 1;
-            padding: 1rem 100px 1rem 1rem;
+            padding: 1em 100px 1em 1em;
             text-align: right;
-            line-height: 1.5rem;
+            line-height: 1.5em;
             min-height: 165px;
             display: flex;
             justify-content: flex-end;
@@ -83,10 +83,10 @@
 
             &.only-collection-name {
                 justify-content: center;
-                padding: 1rem; 
+                padding: 1em; 
                 h3 {
                     text-align: center;
-                    font-size: 1.75rem;
+                    font-size: 1.75em;
                 }
             }
         }
@@ -122,8 +122,8 @@
                 min-width: 100% !important;
                 justify-content: center !important;
                 text-align: center !important;
-                padding: 64px 1rem 0rem 1rem;
-                h3 { margin-bottom: 1rem; }
+                padding: 64px 1em 0em 1em;
+                h3 { margin-bottom: 1em; }
             }
             .collection-thumbnail {
                 left: calc(-50% + 78px) !important;
@@ -141,7 +141,7 @@
         display: flex;
         align-items: center;
         border-bottom: 1px solid #cbcbcb;
-        padding: 1.00rem 0.5rem 0.75rem 0.5rem;
+        padding: 1.00em 0.5em 0.75em 0.5em;
 
         @media only screen and (max-width: 768px) {
             flex-wrap: wrap;
@@ -162,8 +162,8 @@
         } 
 
         button {
-            margin-right: 0.75rem;
-            padding: 0 0.35rem;
+            margin-right: 0.75em;
+            padding: 0 0.35em;
             min-height: 28px;
             z-index: 2;
             border: none;
@@ -180,14 +180,14 @@
                 fill: #545758;
             }
             &.next-button {
-                margin-right: 0rem;
+                margin-right: 0em;
                 padding: 0;
 
                 svg { fill: #298596; }
             }
             &.previous-button {
                 margin-left: auto;
-                margin-right: 1rem;
+                margin-right: 1em;
                 padding: 0;
 
                 svg { fill: #298596; }
@@ -244,7 +244,7 @@
                 width: 185px;
                 min-width: 185px;
                 padding: 0px;
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.5em;
             }
 
             span.facet-item-count {
@@ -344,9 +344,9 @@
             }
 
             &.facet-without-image { 
-                min-height: 0.875rem;
+                min-height: 0.875em;
                 a {
-                    height: 0.875rem;
+                    height: 0.875em;
                 }
                 img {
                     display: none;
@@ -433,7 +433,7 @@
 
     .show-more-button {
         margin: 12px auto;
-        padding: 0.25rem;
+        padding: 0.25em;
         display: block;
         background: #298596;
         border: none;

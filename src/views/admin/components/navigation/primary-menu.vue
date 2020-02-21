@@ -23,7 +23,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-repository"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-repository"/>
                         </span>
                     </router-link>
                 </li>
@@ -41,7 +41,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-collections"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-collections"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
                     </router-link>
@@ -60,7 +60,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-items"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
                     </router-link>
@@ -80,7 +80,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('metadata') }}</span>
                     </router-link>
@@ -99,7 +99,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
@@ -118,7 +118,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-taxonomies"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-taxonomies"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('taxonomies', 'name') }}</span>
                     </router-link>
@@ -137,7 +137,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('activities') }}</span>
                     </router-link>
@@ -199,7 +199,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-importers"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-importers"/>
                         </span>
                         <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                     </router-link>
@@ -220,7 +220,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-export"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-export"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('exporters') }}</span>
                     </router-link>
@@ -245,12 +245,12 @@ export default {
     @import "../../scss/_variables.scss";
 
     #primary-menu {
-        background-color: $blue4;
+        background-color: var(--tainacan-blue4);
         padding: 52px 0px 0px 0px;
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear;
         max-width: $side-menu-width;
-        z-index: 99;
+        z-index: 101;
 
         a:hover {
             text-decoration: none;
@@ -261,11 +261,11 @@ export default {
         }
         .repository-label {
             max-height: 42px;
-            background-color: $blue5;
+            background-color: var(--tainacan-blue5);
             font-weight: bold;
-            font-size: 16px;
+            font-size: 1em;
             text-transform: uppercase;
-            color: white;
+            color: var(--tainacan-white);
             padding: 11px;
             text-align: center;
             opacity: 1;
@@ -290,7 +290,7 @@ export default {
         }
         li {
             a { 
-                color: white;
+                color: var(--tainacan-white);
                 white-space: nowrap;
                 overflow: hidden;
                 padding: 8px 15px;
@@ -303,7 +303,7 @@ export default {
                     height: auto;
                     width: auto;
                     // i, i::before {
-                    //     font-size: 18px !important;
+                    //     font-size: 1.125em !important;
                     // }
                 }
             }
@@ -312,11 +312,11 @@ export default {
                 top: 3px;
                 height: 18px;
                 width: 18px;
-                fill: white;
+                fill: var(--tainacan-white);
             }
 
             a:hover, a.is-active {
-                background-color: $blue3;
+                background-color: var(--tainacan-blue3);
             }
             a:focus {
                 box-shadow: none;

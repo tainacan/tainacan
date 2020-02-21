@@ -175,20 +175,20 @@
 
     
     .view-all-button {
-        font-size: 0.75rem;
-        padding: 0.1rem 1rem;
+        font-size: 0.75em;
+        padding: 0.1em 1em;
     }
 
     .is-loading:after {
-        border: 2px solid white !important;
-        border-top-color: #dbdbdb !important;
-        border-right-color: #dbdbdb !important;
+        border: 2px solid var(--tainacan-background-color) !important;
+        border-top-color: var(--tainacan-gray2) !important;
+        border-right-color: var(--tainacan-gray2) !important;
     }
 
     .no-options-placeholder {
-        margin-left: 0.5rem;
-        font-size: 0.75rem;
-        color: #555758;
+        margin-left: 0.5em;
+        font-size: 0.75em;
+        color: var(--tainacan-info-color);
     }
 
     .b-checkbox .control-label {

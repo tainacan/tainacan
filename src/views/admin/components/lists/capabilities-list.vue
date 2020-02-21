@@ -103,7 +103,7 @@
                                                     placement: 'auto'
                                                 }"
                                                 class="icon">
-                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
                                         </span>
                                     </a>
                                 </div>

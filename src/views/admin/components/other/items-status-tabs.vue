@@ -9,7 +9,7 @@
                         autoHide: true,
                         placement: 'auto',
                     }">
-                <a :style="{ fontWeight: 'bold', color: '#454647 !important', lineHeight: '1.5rem' }">
+                <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important', lineHeight: '1.875em' }">
                     {{ $i18n.get('label_all_published_items') }}
                     <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish)})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish })` : '' }}</span>
                 </a>

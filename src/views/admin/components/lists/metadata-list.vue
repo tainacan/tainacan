@@ -130,7 +130,7 @@
                                                         placement: 'auto-start'
                                                     }"
                                                     class="icon">
-                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
                                             </span>
                                         </a>
                                         <a 
@@ -150,7 +150,7 @@
                                                         placement: 'auto-start'
                                                     }"
                                                     class="icon">
-                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
                                             </span>
                                         </a>
                                     </span>
@@ -317,7 +317,7 @@
                                                         placement: 'auto-start'
                                                     }"
                                                     class="icon">
-                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
                                             </span>
                                         </a>
                                         <a 
@@ -334,7 +334,7 @@
                                                         placement: 'auto-start'
                                                     }"
                                                     class="icon">
-                                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
                                             </span>
                                         </a>
                                     </b-table-column>
@@ -947,7 +947,7 @@ export default {
                         <div class="field">
                             <span class="collapse-handle">
                                 <span class="icon">
-                                    <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"></i>
+                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"></i>
                                 </span> 
                                 <label class="label has-tooltip">`
                                     + metadatum.name +
@@ -976,9 +976,9 @@ export default {
             justify-content: space-between;
 
             h1, h2 {
-                font-size: 20px;
+                font-size: 1.25em;
                 font-weight: 500;
-                color: $gray5;
+                color: var(--tainacan-heading-color);
                 display: inline-block;
                 width: 80%;
                 flex-shrink: 1;
@@ -992,7 +992,7 @@ export default {
             hr{
                 margin: 3px 0px 4px 0px; 
                 height: 1px;
-                background-color: $secondary;
+                background-color: var(--tainacan-secondary);
                 width: 100%;
             }
         }
@@ -1017,10 +1017,10 @@ export default {
         }
 
         .page-title {
-            border-bottom: 1px solid $secondary;
+            border-bottom: 1px solid var(--tainacan-secondary);
             margin: 1em 0em 2.0em 0em;
             h2 {
-                color: $blue5;
+                color: var(--tainacan-blue5);
                 font-weight: 500;
             }
         }
@@ -1037,7 +1037,7 @@ export default {
 
         .loading-spinner {
             animation: spinAround 500ms infinite linear;
-            border: 2px solid #dbdbdb;
+            border: 2px solid var(--tainacan-gray2);
             border-radius: 290486px;
             border-right-color: transparent;
             border-top-color: transparent;
@@ -1048,10 +1048,10 @@ export default {
         }
 
         .active-metadata-area {
-            font-size: 14px;
-            margin-right: 0.8rem;
-            margin-left: -0.8rem;
-            padding-right: 3rem;
+            font-size: 0.875em;
+            margin-right: 0.8em;
+            margin-left: -0.8em;
+            padding-right: 3em;
             min-height: 330px;
 
             @media screen and (max-width: 769px) {
@@ -1072,7 +1072,7 @@ export default {
             }
 
             .active-metadatum-item {
-                background-color: white;
+                background-color: var(--tainacan-white);
                 padding: 0.7em 0.9em;
                 margin: 4px;
                 min-height: 40px;
@@ -1082,7 +1082,7 @@ export default {
                 opacity: 1 !important;
                         
                 &>.field, form {
-                    background-color: white !important;
+                    background-color: var(--tainacan-white) !important;
                 }
                 
                 .handle {
@@ -1091,7 +1091,7 @@ export default {
                     display: flex;
                 }
                 .grip-icon { 
-                    color: $gray3; 
+                    color: var(--tainacan-gray3); 
                     position: relative;
                 }
                 .metadatum-name {
@@ -1103,18 +1103,18 @@ export default {
                     margin-right: 0.4em;
 
                     &.is-danger {
-                        color: $danger !important;
+                        color: var(--tainacan-danger) !important;
                     }
                 }
                 .label-details {
                     font-weight: normal;
-                    color: $gray3;
+                    color: var(--tainacan-gray3);
                 }
                 .not-saved {
                     font-style: italic;
                     font-weight: bold;
-                    color: $danger;
-                    margin-left: 0.5rem;
+                    color: var(--tainacan-danger);
+                    margin-left: 0.5em;
                 }
                 .controls { 
                     position: absolute;
@@ -1127,60 +1127,60 @@ export default {
                     .icon {
                         bottom: 1px;   
                         position: relative;
-                        i, i:before { font-size: 20px; }
+                        i, i:before { font-size: 1.25em; }
                     }
                 }
         
                 &.not-sortable-item, &.not-sortable-item:hover {
                     cursor: default;
-                    background-color: white !important;
+                    background-color: var(--tainacan-white) !important;
                 } 
                 &.not-focusable-item, &.not-focusable-item:hover {
                     cursor: default;
                 
                     .metadatum-name {
-                        color: $secondary;
+                        color: var(--tainacan-secondary);
                     }
                 }
                 &.disabled-metadatum {
-                    color: $gray3;
+                    color: var(--tainacan-gray3);
                 }    
             }
             .active-metadatum-item:hover:not(.not-sortable-item) {
-                background-color: $secondary;
-                border-color: $secondary;
-                color: white !important;
+                background-color: var(--tainacan-secondary);
+                border-color: var(--tainacan-secondary);
+                color: var(--tainacan-white) !important;
                         
                 &>.field, form {
-                    background-color: white !important;
+                    background-color: var(--tainacan-white) !important;
                 }
 
                 .label-details, .icon, .not-saved, .icon-level-identifier>i {
-                    color: white !important;
+                    color: var(--tainacan-white) !important;
                 }
 
                 .grip-icon { 
-                    color: white; 
+                    color: var(--tainacan-white); 
                 }
 
                 .switch.is-small {
                     input[type="checkbox"] + .check {
-                        background-color: $secondary !important;
+                        background-color: var(--tainacan-secondary) !important;
                         border: 1.5px solid white !important;
-                        &::before { background-color: white !important; }
+                        &::before { background-color: var(--tainacan-white) !important; }
                     } 
                     input[type="checkbox"]:checked + .check {
                         border: 1.5px solid white !important;
-                        &::before { background-color: white !important; }
+                        &::before { background-color: var(--tainacan-white) !important; }
                     }
                     &:hover input[type="checkbox"] + .check {
                         border: 1.5px solid white !important;
-                        background-color: $secondary !important;
+                        background-color: var(--tainacan-secondary) !important;
                     }
                 }
             }
             .sortable-ghost {
-                border: 1px dashed $gray2;
+                border: 1px dashed var(--tainacan-gray2);
                 display: block;
                 padding: 0.7em 0.9em;
                 margin: 4px;
@@ -1188,7 +1188,7 @@ export default {
                 position: relative;
 
                 .grip-icon { 
-                    color: white; 
+                    color: var(--tainacan-white); 
                 }
             }
         }
@@ -1198,7 +1198,7 @@ export default {
             margin: 0;
             max-width: 500px;
             min-width: 20.8333333%;
-            font-size: 0.875rem;
+            font-size: 0.875em;
 
             @media screen and (max-width: 769px) {
                 max-width: 100%;
@@ -1213,25 +1213,24 @@ export default {
             }
 
             h3 {
-                margin: 0.2rem 0rem 1rem 0rem;
+                margin: 0.2em 0em 1em 0em;
                 font-weight: 500;
             }
 
             .available-metadatum-item {
-                padding: 0.6rem;
-                margin: 4px 4px 4px 1.2rem;
-                background-color: white;
+                padding: 0.6em;
+                margin: 4px 4px 4px 1.2em;
+                background-color: var(--tainacan-white);
                 cursor: pointer;
                 left: 0;
-                line-height: 1.3em;
                 height: 40px;
                 position: relative;
-                border: 1px solid $gray2;
+                border: 1px solid var(--tainacan-gray2);
                 border-radius: 1px;
                 transition: left 0.2s ease;
                 
                 .grip-icon { 
-                    color: $gray3;
+                    color: var(--tainacan-gray3);
                     top: -6px;
                     position: relative;
                     display: inline-block;
@@ -1249,8 +1248,7 @@ export default {
                     overflow-x: hidden;
                     white-space: nowrap;
                     font-weight: bold;
-                    line-height: normal;
-                    margin-left: 0.4rem;
+                    margin-left: 0.4em;
                     display: inline-block;
                     max-width: 180px;
                     width: 60%;
@@ -1275,7 +1273,7 @@ export default {
                 }
                 &::before {
                     top: -1px;
-                    border-color: transparent $gray2 transparent transparent;
+                    border-color: transparent var(--tainacan-gray2) transparent transparent;
                     border-right-width: 16px;
                     border-top-width: 20px;
                     border-bottom-width: 20px;
@@ -1296,29 +1294,29 @@ export default {
             @keyframes hightlighten {
                 0%   {
                     color: #222;             
-                    background-color: white;
-                    border-color: white;
+                    background-color: var(--tainacan-white);
+                    border-color: var(--tainacan-white);
                 }
                 25%  {
-                    color: white;            
+                    color: var(--tainacan-white);            
                     background-color: #2cb4c1; 
                     border-color: #2cb4c1;
                 }
                 75%  {
-                    color: white;            
+                    color: var(--tainacan-white);            
                     background-color: #2cb4c1; 
                     border-color: #2cb4c1;
                 }
                 100% {
                     color: #222;             
-                    background-color: white;
-                    border-color: white;
+                    background-color: var(--tainacan-white);
+                    border-color: var(--tainacan-white);
                 }
             }
             @keyframes hightlighten-icon {
                 0%   { color: #b1b1b1; }
-                25%  { color: white; }
-                75%  { color: white; }
+                25%  { color: var(--tainacan-white); }
+                75%  { color: var(--tainacan-white); }
                 100% { color: #b1b1b1; }
             }
             @keyframes hightlighten-arrow {
@@ -1340,7 +1338,7 @@ export default {
                 }
             }
             .hightlighted-metadatum {
-                background-color: white;
+                background-color: var(--tainacan-white);
                 position: relative;
                 left: 0px;
                 animation-name: hightlighten;
@@ -1361,51 +1359,51 @@ export default {
                 }
             }
             .available-metadatum-item:hover {
-                background-color: $secondary;
-                border-color: $secondary;
-                color: white;
+                background-color: var(--tainacan-secondary);
+                border-color: var(--tainacan-secondary);
+                color: var(--tainacan-white);
                 position: relative;
                 left: -4px;
 
                 &:after {
-                    border-color: transparent $secondary transparent transparent;
+                    border-color: transparent var(--tainacan-secondary) transparent transparent;
                 }
                 &:before {
-                    border-color: transparent $secondary transparent transparent;
+                    border-color: transparent var(--tainacan-secondary) transparent transparent;
                 }
                 .icon {
-                    color: white !important;
+                    color: var(--tainacan-white) !important;
                 }
             
                 .grip-icon { 
-                    color: white;
+                    color: var(--tainacan-white);
                 }
                 
             }
         }
         .inherited-metadatum {
             &.active-metadatum-item:hover:not(.not-sortable-item) {
-                background-color: $blue5;
-                border-color: $blue5;
+                background-color: var(--tainacan-blue5);
+                border-color: var(--tainacan-blue5);
                 
                 .switch.is-small {
                     input[type="checkbox"] + .check {
-                        background-color: $blue5 !important;
+                        background-color: var(--tainacan-blue5) !important;
                     } 
                     &:hover input[type="checkbox"] + .check {
-                        background-color: $blue5 !important;
+                        background-color: var(--tainacan-blue5) !important;
                     }
                 }
             }
             &.available-metadatum-item:hover {
-                background-color: $blue5 !important;
-                border-color: $blue5 !important;
+                background-color: var(--tainacan-blue5) !important;
+                border-color: var(--tainacan-blue5) !important;
             
                 &:after {
-                    border-color: transparent $blue5 transparent transparent !important;
+                    border-color: transparent var(--tainacan-blue5) transparent transparent !important;
                 }
                 &:before {
-                    border-color: transparent $blue5 transparent transparent !important;
+                    border-color: transparent var(--tainacan-blue5) transparent transparent !important;
                 }
 
             }

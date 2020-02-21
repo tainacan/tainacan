@@ -11,133 +11,133 @@
     }
 
     .is-primary:not(.upload-draggable), .is-primary:hover, .is-primary:focus {
-        background-color: $blue3 !important;
-        color: white !important;
+        background-color: var(--tainacan-blue3) !important;
+        color: var(--tainacan-white) !important;
     }
     .is-secondary, .is-secondary:hover, .is-secondary:focus {
-        background-color: $blue5 !important;
-        color: white !important;
+        background-color: var(--tainacan-blue5) !important;
+        color: var(--tainacan-white) !important;
     }
     .dropdown .dropdown-menu .dropdown-content a.dropdown-item:hover {
-        color: black !important;
+        color: var(--tainacan-black) !important;
     }
     .has-text-primary, 
     .has-text-primary:hover, 
-    .is-has-text-primary:focus,
+    .has-text-primary:focus,
     a:not(.has-text-danger):not(.disabled), 
     a:hover:not(.has-text-danger):not(.disabled),
     .has-text-secondary, 
     .has-text-secondary:hover, 
-    .is-has-text-secondary:focus {
-        color: $blue4 !important;
+    .has-text-secondary:focus {
+        color: var(--tainacan-blue4) !important;
     }
     a.button.is-secondary,
     a.button.is-secondary:hover  {
-        color: white !important;
+        color: var(--tainacan-white) !important;
     }
     .tainacan-page-title hr{
-        background-color: $blue3 !important;
+        background-color: var(--tainacan-blue3) !important;
     }
     button.link-style, button.link-style:focus button.link-style:active {
-        color: $blue4;
+        color: var(--tainacan-blue4);
     }
     .button[disabled]:not(.is-white), .button:hover[disabled]:not(.is-white) {
         border: none !important;
         cursor: not-allowed !important;
-        color: $gray4 !important;
-        background-color: $gray2 !important;
+        color: var(--tainacan-info-color) !important;
+        background-color: var(--tainacan-input-border-color) !important;
     }
     .button.is-outlined {
-        color: $blue5 !important;
+        color: var(--tainacan-blue5) !important;
     }
     .b-numberinput {
         button.is-primary,
         button.is-primary:hover,
         button.is-primary:focus,
         button.is-primary:active  {
-            color: $blue5 !important;
+            color: var(--tainacan-blue5) !important;
         }
     }
     .tabs {
         li.is-active a {
-            border-bottom-color: $blue5;
+            border-bottom-color: var(--tainacan-blue5);
         }
         a {
-            color: black !important;
+            color: var(--tainacan-black) !important;
         }
     }
     .select:not(.is-multiple)::after {
-        color: $blue3 !important;
+        color: var(--tainacan-blue3) !important;
 
         option:checked, option:hover {
-            background-color: $gray2 !important;
+            background-color: var(--tainacan-input-border-color) !important;
         }
     }
     .tainacan-table {
         tr.selected-row { 
-            background-color: $blue1 !important; 
+            background-color: var(--tainacan-blue1) !important; 
             .checkbox-cell .checkbox, .actions-cell .actions-container {
-                background-color: $blue2 !important;
+                background-color: var(--tainacan-blue2) !important;
             }
         }
     }
     .dropdown-trigger {
         .button .icon {
-            color: $blue5;
+            color: var(--tainacan-blue5);
         }
     }
     .dropdown-menu .dropdown-content {
-        .dropdown-item.is-active { background-color: $blue2; }
+        .dropdown-item.is-active { background-color: var(--tainacan-blue2); }
     }
     .datepicker {
         .datepicker-header a>span>i:before {
-            color: $blue5 !important;
+            color: var(--tainacan-blue5) !important;
         }
         .datepicker-table {
             .datepicker-cell.is-today,
             .datepicker-cell.is-today:hover {
-                background-color: $blue1 !important;
+                background-color: var(--tainacan-blue1) !important;
             }
             .datepicker-cell.is-selected,
             .datepicker-cell.is-selected:hover {
-                background-color: $blue5 !important;
+                background-color: var(--tainacan-blue5) !important;
             }
         }
     }
     .switch {
         &:hover input[type="checkbox"]:checked + .check {
-            background-color: $blue2;
+            background-color: var(--tainacan-blue2);
         }
         input[type="checkbox"]:checked + .check {
-            border: 2px solid $blue5;
+            border: 2px solid var(--tainacan-blue5);
     
             &::before {
-                background-color: $blue5;
+                background-color: var(--tainacan-blue5);
             }
         }
         &.is-small {
             input[type="checkbox"]:checked + .check {
-                border: 1.5px solid $blue5;
+                border: 1.5px solid var(--tainacan-blue5);
             }
         }
     }
     #filter-menu-compress-button {
-        background-color: $blue1 !important;
-        color: $blue5 !important;
+        background-color: var(--tainacan-blue1) !important;
+        color: var(--tainacan-blue5) !important;
     }
     .active-metadatum-item.not-focusable-item>.handle>.metadatum-name {
-        color: $blue3 !important;
+        color: var(--tainacan-blue3) !important;
     }
     .metadata-type-preview {
-        background-color: $blue1 !important;
+        background-color: var(--tainacan-blue1) !important;
         .metadata-type-label {
-            color: $blue4 !important;
+            color: var(--tainacan-blue4) !important;
         }
         .autocomplete>.control, .autocomplete>.control>input, .dropdown-content {
             background-color: #f9fcff !important;
         }
         &::before {
-            border-color: transparent transparent transparent $blue1 !important;
+            border-color: transparent transparent transparent var(--tainacan-blue1) !important;
         }
     }
 }

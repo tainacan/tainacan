@@ -17,7 +17,7 @@
                         target="_blank"
                         :href="themeItemsListURL">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                     </span>
                     <span class="menu-text">{{ $i18n.get('label_view_items_on_theme') }}</span>
                 </a>
@@ -127,7 +127,7 @@
                         :href="themeCollectionListURL"
                         style="position: relative">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                     </span>
                     <span class="menu-text">{{ $i18n.get('label_view_collections_on_theme') }}</span>
                 </a>
@@ -141,7 +141,7 @@
                     tag="a"
                     to="/collections">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-viewtable"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewtable"/>
                 </span>
                 <span
                         v-if="collectionsTotal != undefined && collectionsTotal > 1"
@@ -214,7 +214,7 @@ export default {
 
     .home-page {
         margin-top: $header-height;
-        background-color: white;
+        background-color: var(--tainacan-white);
         height: calc(100% - 52px);
         padding: 25px 8.333333333% !important;
         width: 100vw;
@@ -233,8 +233,8 @@ export default {
             }
 
             .section-connector {
-                border-left: 1px solid $gray2;
-                border-bottom: 1px solid $gray2;
+                border-left: 1px solid var(--tainacan-gray2);
+                border-bottom: 1px solid var(--tainacan-gray2);
                 position: absolute;
                 width: 42px;
                 height: 100%;
@@ -242,8 +242,8 @@ export default {
                 left: 26px;
             }
             .collection-section-connector {
-                border-left: 1px solid $gray2;
-                border-bottom: 1px solid $gray2;
+                border-left: 1px solid var(--tainacan-gray2);
+                border-bottom: 1px solid var(--tainacan-gray2);
                 position: absolute;
                 width: calc(100% + 26px);
                 height: 100%;
@@ -253,18 +253,18 @@ export default {
 
             .home-section-header {
                 width: 100%;
-                margin-top: 1rem;
-                margin-bottom: 0.5rem;
+                margin-top: 1em;
+                margin-bottom: 0.5em;
                 display: flex;
                 align-items: center;
                 height: 52px;
 
                 .home-section-icon {
-                    background-color: white;
-                    padding: 0.75rem;
+                    background-color: var(--tainacan-white);
+                    padding: 0.75em;
                     height: 52px;
                     width: 52px;
-                    font-size: 30px;
+                    font-size: 1.875em;
                     text-align: center;
                     z-index: 9;
                     display: flex;
@@ -277,10 +277,10 @@ export default {
                 }
 
                 h1 {
-                    color: $gray5;
-                    font-size: 1.375rem;
+                    color: var(--tainacan-heading-color);
+                    font-size: 1.375em;
                     font-weight: normal;
-                    padding: 0.75rem 1.375rem;
+                    padding: 0.75em 1.375em;
                     margin-right: auto;
                     overflow: hidden;
                     text-overflow: ellipsis;
@@ -288,32 +288,32 @@ export default {
                 }
 
                 a {
-                    margin-right: 2rem;
+                    margin-right: 2em;
                     display: inline-flex;
                     text-overflow: ellipsis;
                     white-space: nowrap;
 
-                    .menu-text { margin-left: 0.5rem;}
+                    .menu-text { margin-left: 0.5em;}
                 }
 
                 &.repository-section-header {
-                    border-bottom: 1px solid $blue5;
+                    border-bottom: 1px solid var(--tainacan-blue5);
                     a {
-                        color: $blue5;
+                        color: var(--tainacan-blue5);
                     }
                     .home-section-icon {
-                        background-color: $blue5;
-                        color: white;
+                        background-color: var(--tainacan-blue5);
+                        color: var(--tainacan-white);
                     }
                 }
                 &.collections-section-header {
-                    border-bottom: 1px solid $turquoise5;
+                    border-bottom: 1px solid var(--tainacan-turquoise5);
                     a {
-                        color: $turquoise5;
+                        color: var(--tainacan-turquoise5);
                     }
                     .home-section-icon {
-                        background-color: $turquoise5;
-                        color: white;
+                        background-color: var(--tainacan-turquoise5);
+                        color: var(--tainacan-white);
                     }
                 }
             }
@@ -322,8 +322,8 @@ export default {
                 display: inline-flex;
                 text-overflow: ellipsis;
                 white-space: nowrap;
-                background: $gray1;
-                color: $turquoise5;
+                background: var(--tainacan-gray1);
+                color: var(--tainacan-turquoise5);
                 float: right;
                 width: calc(100% - 20px);
                 transition: background-color 0.3s ease;
@@ -341,26 +341,26 @@ export default {
                     width: calc(20% - 20px);
                 }
 
-                .menu-text { margin-left: 0.5rem;}
+                .menu-text { margin-left: 0.5em;}
                 &:hover {
-                    background-color: $gray2;
+                    background-color: var(--tainacan-gray2);
                 }
             }
         }
 
         .repository-menu-list {
             display: flex;
-            width: calc(100% + 1.25rem);
+            width: calc(100% + 1.25em);
             justify-content: space-between;
             flex-wrap: wrap;
-            margin: 0 -0.75rem;
+            margin: 0 -0.75em;
 
             li {
-                padding: 1rem;
+                padding: 1em;
                 display: flex;
-                background-color: $gray1;
+                background-color: var(--tainacan-gray1);
                 flex-grow: 1;
-                margin: 0.75rem;
+                margin: 0.75em;
                 height: 120px; 
                 min-width: 13%;
                 flex-basis: 13%;
@@ -385,12 +385,12 @@ export default {
                 }
 
                 &:hover {
-                    background-color: $gray2;
+                    background-color: var(--tainacan-gray2);
                 }
 
                 a { 
                     width: 100%;
-                    color: $blue5; 
+                    color: var(--tainacan-blue5); 
                     display: flex;
                     flex-wrap: wrap;
                     flex-direction: column;

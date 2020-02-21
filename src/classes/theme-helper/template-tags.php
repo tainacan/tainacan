@@ -176,16 +176,53 @@ function tainacan_the_collection_description() {
 }
 
 /**
- * Outputs the div used by Vue to render the faceted search
+ * Outputs the div used by Vue to render the Items List with a powerful faceted search
+ *
+ * The items list bellong to a collection, to the whole repository or a taxonomy term, according to where
+ * it is used on the loop
+ * 
+ * The following params all optional for customizing the rendered vue component
+ *
+ * @param array $args {
+	 *     Optional. Array of arguments.
+	 *
+	 * 	   @type bool 	$hide-filters						Completely hide filter sidebar or modal
+	 * 	   @type bool 	$hide-hide-filters-button			Hides the button resonsible for collpasing filters sidebar on desktop
+	 * 	   @type bool 	$hide-search						Hides the complete search bar, including advanced search link
+	 * 	   @type bool 	$hide-advanced-search				Hides only the advanced search link
+	 * 	   @type bool 	$hide-sort-by-button				Hides the button where user can select the metadata to sort by items (keeps the sort direction)
+	 * 	   @type bool 	$hide-items-per-page-button			Hides the button for selecting amount of items loaded per page
+	 * 	   @type bool 	$hide-go-to-page-button				Hides the button for skiping to a specific page
+	 * 	   @type bool 	$start-with-filters-hidden			Loads the filters list hidden from start
+	 * 	   @type bool 	$filters-as-modal					Display the filters as a modal instead of a collapsable region on desktop
+	 * 	   @type bool 	$show-inline-view-mode-options		Display view modes as inline icon buttons instead of the dropdown
+	 * 	   @type bool 	$show-fullscreen-with-view-modes	Lists fullscreen viewmodes alongside with other view modes istead of separatelly
+	 * 	   @type string $default-view-mode			The default view mode
+	 * 	   @type string[] $enabled-view-modes			The list os enable view modes to display
+ * @return string  The HTML div to be used for rendering the items list vue component
  */
-function tainacan_the_faceted_search() {
+function tainacan_the_faceted_search($args = array()) {
 
 	$props = ' ';
-
+	
+	// Loads info related to view modes
 	$default_view_mode = apply_filters( 'tainacan-default-view-mode-for-themes', 'masonry' );
 	$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', ['table', 'cards', 'masonry', 'slideshow'] );
 
-	// if in a collection page
+	if( isset($args['default-view-mode']) ) {
+		$default_view_mode = $args['default-view-mode'];
+		unset($args['default-view-mode']);
+	}
+
+	if( isset($args['enabled-view-modes']) ) {
+		$enabled_view_modes = $args['enabled-view-modes'];
+		if ( !in_array($default_view_mode, $enabled_view_modes) ) {
+			$default_view_mode = $enabled_view_modes[0];
+		}
+		unset($args['enabled-view-modes']);
+	}
+
+	// If in a collection page
 	$collection_id = tainacan_get_collection_id();
 	if ($collection_id) {
 
@@ -195,7 +232,7 @@ function tainacan_the_faceted_search() {
 		$enabled_view_modes = $collection->get_enabled_view_modes();
 	}
 
-	// if in a tainacan taxonomy
+	// If in a tainacan taxonomy
 	$term = tainacan_get_term();
 	if ($term) {
 		$props .= 'term-id="' . $term->term_id . '" ';
@@ -204,6 +241,13 @@ function tainacan_the_faceted_search() {
 
 	$props .= 'default-view-mode="' . $default_view_mode . '" ';
 	$props .= 'enabled-view-modes="' . implode(',', $enabled_view_modes) . '" ';
+
+	// Passes arguments to custom props
+	foreach ($args as $key => $value) {
+		if ($value == true || $value == 'true') {
+			$props .= $key . '="' . $value . '" ';
+		}
+	}
 
 	echo "<main id='tainacan-items-page' $props ></main>";
 

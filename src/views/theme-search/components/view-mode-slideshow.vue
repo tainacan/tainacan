@@ -16,7 +16,7 @@
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 @click="closeSlideViewMode()">
             <span class="icon">
-                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-close"/>
+                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close"/>
             </span>
         </button>
 
@@ -36,7 +36,7 @@
             <span class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowright' : isMetadataCompressed, 'tainacan-icon-arrowleft' : !isMetadataCompressed }"
-                        class="tainacan-icon tainacan-icon-20px"/>
+                        class="tainacan-icon tainacan-icon-1-25em"/>
             </span>
         </button>
 
@@ -50,7 +50,7 @@
                         id="close-metadata-button"
                         @click="isMetadataCompressed = true">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-close"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close"/>
                     </span>
                 </button>
                 <hr>
@@ -60,13 +60,14 @@
             
             <a
                     v-if="!isLoadingItem && Object.keys(item.metadata).length > 0"
-                    class="collapse-all is-size-7"
+                    style="font-size: 0.75em;"
+                    class="collapse-all"
                     @click="collapseAll = !collapseAll">
                 {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                 <span class="icon">
                     <i 
                             :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll}"
-                            class="tainacan-icon tainacan-icon-20px"/>
+                            class="tainacan-icon tainacan-icon-1-25em"/>
                 </span>
             </a>
 
@@ -92,7 +93,7 @@
                         <span class="icon">
                             <i 
                                     :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open}"
-                                    class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                    class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                         </span>
                         <span 
                                 v-tooltip="{
@@ -277,7 +278,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon is-medium has-text-white">
-                            <icon class="tainacan-icon tainacan-icon-20px tainacan-icon-previous"/>
+                            <icon class="tainacan-icon tainacan-icon-1-25em tainacan-icon-previous"/>
                         </span>
                     </button>
                     <button 
@@ -292,7 +293,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon is-medium has-text-white">
-                            <icon class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                            <icon class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                         </span>
                     </button>
                 </div>
@@ -321,8 +322,7 @@ export default {
         items: Array,
         isLoading: Boolean,
         totalItems: Number,
-        hideControls: true,
-        isSwiping: false
+        hideControls: true
     },  
     data () {
         return {
@@ -526,19 +526,7 @@ export default {
             this.maxPage = JSON.parse(JSON.stringify(this.getPage() > this.maxPage ? this.getPage() : this.maxPage));
         },
         onHideControls() {
-            if (this.isSwiping == undefined || this.isSwiping == false)
-                this.hideControls = !this.hideControls;
-        },
-        onSwipeFiltersMenu($event) {
-            this.isSwiping = true;
-            if ($event.offsetDirection == 2) {
-                this.nextSlide();
-            } else if ($event.offsetDirection == 4) {
-                this.prevSlide();
-            }
-            setTimeout(() => {
-                this.isSwiping = false;
-            }, 500);
+            this.hideControls = !this.hideControls;
         },
         onSlideChange() {
 
@@ -651,15 +639,7 @@ export default {
 </script>
 
 <style  lang="scss">
-    $turquoise1: #e6f6f8;
-    $turquoise2: #d1e6e6;
-    $turquoise5: #298596;
-    $tainacan-input-color: #1d1d1d;
-    $gray1: #f2f2f2; 
-    $gray2: #e5e5e5;
-    $gray3: #dcdcdc;
-    $gray4: #555758;
-    $gray5: #454647; 
+
     $page-small-side-padding: 25px;
     $page-side-padding: 4.166666667%; 
 

@@ -29,6 +29,7 @@
 @import "../scss/_filters-menu-modal.scss";
 @import "../scss/_repository-level-overrides.scss";
 @import "../scss/_iframe_read_mode_overrides.scss";
+@import "../scss/_custom_variables.scss";
 
 // Clears wordpress content
 html {
@@ -38,7 +39,7 @@ body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, bod
     display: none;
 }
 #tainacan-admin-app {
-    background: #ffffff;
+    background: var(--tainacan-background-color);
     position: fixed;
     top: 0;
     left: 0;
@@ -49,20 +50,21 @@ body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, bod
     overflow-y: auto;
     margin: 0px !important; 
     font-family: $family-sans-serif;
+    font-size: 1em;
 }
 
 // Scrollbars
 #tainacan-admin-app * {
     // For Firefox
-    scrollbar-color: $gray3 transparent;
+    scrollbar-color: var(--tainacan-gray3) transparent;
     scrollbar-width: thin;
 
     // For Chromium and related
     &::-webkit-scrollbar {
-        width: 0.4rem;
+        width: 0.4em;
     }
     &::-webkit-scrollbar-thumb {
-        background-color: $gray3;
+        background-color: var(--tainacan-gray3);
     }
 }
 
@@ -72,6 +74,7 @@ body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, bod
 }
 .loading-overlay {
     z-index: 9999999999;
+    min-height: auto !important;
 }
 .loading-overlay .loading-icon::after {
     background-image: url('../../assets/images/tainacan_loading.gif');
@@ -92,25 +95,25 @@ body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, bod
 
 // Link (hover is the same color as secondary
 a:hover {
-    color: $secondary;
+    color: var(--tainacan-secondary);
     text-decoration: underline;
 }
 .add-link {
     display: inline-flex;
     align-items: center;
-    font-size: 0.75rem; 
+    font-size: 1em; 
     margin: 3px 0 6px 0;
     &.disabled {
         pointer-events: none;
         cursor: default;
-        color: $gray2 !important;
+        color: var(--tainacan-gray2) !important;
 
         .icon {
-            color: $gray2 !important;
+            color: var(--tainacan-gray2) !important;
         }
     }
     .tainacan-icon::before {
-        font-size: 0.875rem;
+        font-size: 0.875em;
     }
 }
 
@@ -138,21 +141,21 @@ a:hover {
 
 // Metadata type textarea has different separators in different spots on interface
 .multivalue-separator {
-    color: $gray3;
+    color: var(--tainacan-gray3);
     margin: 0 8px;    
 }
 .hierarchy-separator {
-    color: $gray3;
+    color: var(--tainacan-gray3);
 }
 .metadata-type-textarea {
     .multivalue-separator {
         display: block;
         max-height: 1px;
         width: 35px;
-        background: $gray3;
+        background: var(--tainacan-gray3);
         content: none;
         color: transparent;
-        margin: 1rem auto;
+        margin: 1em auto;
     }
 }
 

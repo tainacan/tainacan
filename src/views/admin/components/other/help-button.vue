@@ -1,6 +1,8 @@
 <template>
     <span class="help-wrapper">
-        <a class="help-button has-text-secondary">
+        <a 
+                :class="forcedColor ? 'has-text-' + forcedColor : 'has-text-secondary'"
+                class="help-button">
             <span class="icon is-small">
                 <i class="tainacan-icon tainacan-icon-help" />
             </span>
@@ -21,7 +23,8 @@ export default {
     name: 'HelpButton',
     props: {
         title: '',
-        message: ''
+        message: '',
+        forcedColor: ''
     }
 }
 </script>
@@ -37,7 +40,7 @@ export default {
     }
 
     a.help-button .icon {
-        i, i::before { font-size: 0.875rem !important }
+        i, i::before { font-size: 0.875em !important }
     }
 
     .help-wrapper:hover .help-tooltip {
@@ -48,12 +51,12 @@ export default {
     }
     .help-tooltip {
         z-index: 99999999999999999999;
-        color: $turquoise5;
-        background-color: $turquoise2;
+        color: var(--tainacan-turquoise5);
+        background-color: var(--tainacan-turquoise2);
         border: none;
         display: block;
         border-radius: 5px;
-        min-width: 250px;
+        min-width: 280px;
         max-width: 100%;
         transition: margin-bottom 0.2s ease, opacity 0.3s ease;
         position: absolute;
@@ -64,19 +67,19 @@ export default {
         opacity: 0;
 
         .help-tooltip-header {
-            padding: 0.8rem 0.8rem 0rem 0.8rem;
+            padding: 0.8em 0.8em 0em 0.8em;
 
             h5 {
-                font-size: 0.875rem;
+                font-size: 0.875em;
                 font-weight: bold;
             }
         }
 
         .help-tooltip-body {
-            padding: 0.5em 1.0rem 1.0rem 1.0rem;
+            padding: 0.5em 1.0em 1.0em 1.0em;
 
             p {
-                font-size: 0.875rem !important;
+                font-size: 0.875em !important;
                 font-weight: normal !important;
                 white-space: normal !important;
                 overflow: visible !important;
@@ -94,7 +97,7 @@ export default {
             border-style: solid;
         }
         &:before {
-            border-color: $turquoise2 transparent transparent transparent;
+            border-color: var(--tainacan-turquoise2) transparent transparent transparent;
             border-right-width: 15px;
             border-top-width: 12px;
             border-left-width: 15px;

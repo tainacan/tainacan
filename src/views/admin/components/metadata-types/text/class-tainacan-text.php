@@ -25,18 +25,6 @@ class Text extends Metadata_Type {
 			</div>
 		');
     }
-
-    /**
-     * @param $itemMetadata \Tainacan\Entities\Item_Metadata_Entity The instace of the entity itemMetadata
-     * @return string
-     */
-
-    public function render( $itemMetadata ){
-        return '<tainacan-text metadatum_id ="'.$itemMetadata->get_metadatum()->get_id().'" 
-                               item_id="'.$itemMetadata->get_item()->get_id().'"    
-                               value=\''.json_encode( $itemMetadata->get_value() ).'\'  
-                               name="'.$itemMetadata->get_metadatum()->get_name().'"></tainacan-text>';
-	}
 	
 	/**
 	 * Get the value as a HTML string with links

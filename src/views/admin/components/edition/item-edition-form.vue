@@ -31,7 +31,7 @@
                 mode="out-in"
                 :name="(isOnSequenceEdit && sequenceRightDirection != undefined) ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
             <form
-                    v-if="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items) || (!isCreatingNewItem && item && item.current_user_can_edit))"
+                    v-show="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items) || (!isCreatingNewItem && item && item.current_user_can_edit))"
                     class="tainacan-form"
                     label-width="120px">
                 <div class="columns">
@@ -179,7 +179,7 @@
                                             type="button"
                                             @click.prevent="setFileDocument($event)">
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-upload"/>
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload"/>
                                         </span>
                                     </button>
                                     <p>{{ $i18n.get('label_file') }}</p>
@@ -189,7 +189,7 @@
                                             type="button"
                                             @click.prevent="setTextDocument()">
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-text"/>
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text"/>
                                         </span>
                                     </button>
                                     <p>{{ $i18n.get('label_text') }}</p>
@@ -199,7 +199,7 @@
                                             type="button"
                                             @click.prevent="setURLDocument()">
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
                                         </span>
                                     </button>
                                     <p>{{ $i18n.get('label_url') }}</p>
@@ -292,7 +292,9 @@
                                     :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
 
                         </div>
-                        <div class="section-box section-thumbnail">
+                        <div 
+                                v-if="!isLoading"
+                                class="section-box section-thumbnail">
                             <div class="thumbnail-field">
                                 <file-item
                                         v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
@@ -406,7 +408,7 @@
                                 </div>
                                 <div class="section-status">
                                     <div
-                                            style="display: flex; flex-direction: column;"
+                                            style="display: flex; flex-direction: column; font-size: 1rem;"
                                             class="field has-addons">
                                         <b-radio
                                                 v-model="visibility"
@@ -474,7 +476,7 @@
                                     <span class="icon">
                                         <i
                                                 :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                                                class="tainacan-icon tainacan-icon-20px"/>
+                                                class="tainacan-icon tainacan-icon-1-25em"/>
                                     </span>
                                 </a>
                                 <tainacan-form-item
@@ -578,7 +580,7 @@
                         class="update-warning"
                         v-if="isUpdatingValues">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-updating"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating"/>
                     </span>
                     {{ $i18n.get('info_updating_metadata_values') }}
                     <span class="help is-danger">{{ formErrorMessage }}</span>
@@ -611,7 +613,7 @@
                         type="button"
                         class="button sequence-button">
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-previous"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-previous"/>
                     </span>
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
@@ -637,7 +639,7 @@
                         class="button is-secondary">
                     <span>{{ $i18n.get('label_update_draft') }}</span>
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                     </span>
                 </button>
                 <template v-if="collection && collection.current_user_can_publish_items">
@@ -653,7 +655,7 @@
                             class="button is-success">
                         <span>{{ $i18n.get('label_publish') }}</span>
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                         </span>
                     </button>
                 </template>
@@ -665,7 +667,7 @@
                             class="button is-success">
                         <span>{{ $i18n.get('label_next') }}</span>
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                         </span>
                     </button>
                 </template>
@@ -675,7 +677,7 @@
                         type="button"
                         class="button sequence-button">
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approved"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approved"/>
                     </span>
                     <span>{{ $i18n.get('finish') }}</span>
                 </button>
@@ -689,7 +691,7 @@
                         type="button"
                         class="button sequence-button">
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-previous"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-previous"/>
                     </span>
                     <span>{{ $i18n.get('previous') }}</span>
                 </button>
@@ -710,7 +712,7 @@
                         class="button is-secondary">
                     <span>{{ $i18n.get('label_save_as_draft') }}</span>
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                     </span>
                 </button>
                 <template v-if="collection && collection.current_user_can_publish_items">
@@ -728,7 +730,7 @@
                             class="button is-success">
                         <span>{{ $i18n.get('label_update') }}</span>
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                         </span>
                     </button>
                 </template>
@@ -741,7 +743,7 @@
                             class="button is-success">
                         <span>{{ $i18n.get('label_next') }}</span>
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-next"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                         </span>
                     </button>
                 </template>
@@ -751,7 +753,7 @@
                         type="button"
                         class="button sequence-button">
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approved"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approved"/>
                     </span>
                     <span>{{ $i18n.get('finish') }}</span>
                 </button>
@@ -1037,6 +1039,7 @@ export default {
                 }
             })
             .catch((errors) => {
+                
                 if (errors.errors) {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){
@@ -1426,7 +1429,7 @@ export default {
             margin-bottom: 110px;
 
             .field:not(:last-child) {
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.5em;
             }
         }
 
@@ -1439,9 +1442,9 @@ export default {
             justify-content: space-between;
 
             h1, h2 {
-                font-size: 20px;
+                font-size: 1.25em;
                 font-weight: 500;
-                color: $gray5;
+                color: var(--tainacan-heading-color);
                 display: inline-block;
                 width: 80%;
                 flex-shrink: 1;
@@ -1452,11 +1455,11 @@ export default {
                 max-width: 80%;
             }
             .status-tag {
-                color: white;
-                background: $turquoise5;
-                padding: 0.15rem 0.5rem;
-                font-size: 0.75rem;
-                margin: 0 1rem 0 0;
+                color: var(--tainacan-white);
+                background: var(--tainacan-turquoise5);
+                padding: 0.15em 0.5em;
+                font-size: 0.75em;
+                margin: 0 1em 0 0;
                 font-weight: 600;
                 position: relative;
                 top: -2px;
@@ -1469,7 +1472,7 @@ export default {
             hr{
                 margin: 3px 0px 4px 0px;
                 height: 1px;
-                background-color: $secondary;
+                background-color: var(--tainacan-secondary);
                 width: 100%;
             }
         }
@@ -1496,7 +1499,7 @@ export default {
                 justify-content: space-between;
 
                 .column {
-                    padding: 1rem 12px 0 12px;
+                    padding: 1em 12px 0 12px;
                 }
             }
 
@@ -1517,22 +1520,22 @@ export default {
     .section-label {
         position: relative;
         label {
-            font-size: 16px !important;
+            font-size: 1em !important;
             font-weight: 500 !important;
-            color: $gray5 !important;
+            color: var(--tainacan-gray5) !important;
             line-height: 1.2em;
         }
     }
 
     .collapse-all {
-        font-size: 12px;
+        font-size: 0.75em;
         .icon {
             vertical-align: bottom;
         }
     }
 
     .section-box {
-        background-color: white;
+        background-color: var(--tainacan-background-color);
         padding: 0 $page-side-padding 0 0;
         margin-top: 14px;
         margin-bottom: 32px;
@@ -1547,21 +1550,21 @@ export default {
                     height: 72px;
                     width: 72px;
                     border: none;
-                    background-color: $gray2;
-                    color: $secondary;
+                    background-color: var(--tainacan-gray2);
+                    color: var(--tainacan-secondary);
                     margin-bottom: 6px;
                     &:hover {
-                        background-color: $turquoise2;
+                        background-color: var(--tainacan-turquoise2);
                         cursor: pointer;
                     }
                 }
-                p { color: $secondary; }
+                p { color: var(--tainacan-secondary); }
             }
         }
     }
     .section-status {
         padding-bottom: 16px;
-        font-size: 0.75rem;
+        font-size: 0.875em;
 
         .field {
             padding: 10px 0 14px 0px !important;
@@ -1571,8 +1574,8 @@ export default {
                 margin-left: 0;
             }
             .icon  {
-                font-size: 18px !important;
-                color: $gray3;
+                font-size: 1.125em !important;
+                color: var(--tainacan-gray3);
             }
         }
     }
@@ -1604,7 +1607,7 @@ export default {
             padding: 0;
             margin: 0;
             margin-top: -2px;
-            font-size: 18px;
+            font-size: 1.125em;
         }
     }
 
@@ -1622,11 +1625,11 @@ export default {
             position: absolute;
             margin-left: 45px;
             margin-right: 45px;
-            font-size: 0.8rem;
+            font-size: 0.8em;
             font-weight: bold;
             z-index: 99;
             text-align: center;
-            color: $gray4;
+            color: var(--tainacan-info-color);
             top: 70px;
             max-width: 90px;
         }
@@ -1643,7 +1646,7 @@ export default {
         position: absolute;
         bottom: 0;
         z-index: 999999;
-        background-color: $gray1;
+        background-color: var(--tainacan-gray1);
         width: 100%;
         height: 65px;
         display: flex;
@@ -1658,12 +1661,12 @@ export default {
         }
 
         @keyframes blink {
-            from { color: $blue5; }
-            to { color: $gray4; }
+            from { color: var(--tainacan-blue5); }
+            to { color: var(--tainacan-info-color); }
         }
 
         .update-warning {
-            color: $blue5;
+            color: var(--tainacan-blue5);
             animation-name: blink;
             animation-duration: 0.5s;
             animation-delay: 0.5s;
@@ -1672,7 +1675,7 @@ export default {
         }
 
         .update-info-section {
-            color: $gray4;
+            color: var(--tainacan-info-color);
             margin-right: auto;
         }
 
@@ -1685,7 +1688,7 @@ export default {
 
         .sequence-progress {
             height: 5px;
-            background: $turquoise5;
+            background: var(--tainacan-turquoise5);
             width: 0%;
             position: absolute;
             top: 0;
@@ -1694,7 +1697,7 @@ export default {
         }
         .sequence-progress-background {
             height: 5px;
-            background: $gray3;
+            background: var(--tainacan-gray3);
             width: 100%;
             position: absolute;
             top: 0;
@@ -1703,7 +1706,7 @@ export default {
 
         .sequence-button {
             background-color: transparent;
-            color: $turquoise5;
+            color: var(--tainacan-turquoise5);
             border: none;
         }
     }

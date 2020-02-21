@@ -1,0 +1,143 @@
+// Declares css custom var using sass as fallback
+// CSS Variables
+:root {
+    // NEW TAINACAN CUSTOM COLORS ------------------
+    // Blue, used mainly for repository
+    --tainacan-blue1: #{$blue1};
+    --tainacan-blue2: #{$blue2};
+    --tainacan-blue3: #{$blue3};
+    --tainacan-blue4: #{$blue4};
+    --tainacan-blue5: #{$blue5};
+
+    // Turquoise, used mainly for collection level
+    --tainacan-turquoise1: #{$turquoise1};
+    --tainacan-turquoise2: #{$turquoise2};
+    --tainacan-turquoise3: #{$turquoise3};
+    --tainacan-turquoise4: #{$turquoise4};
+    --tainacan-turquoise5: #{$turquoise5};
+    --tainacan-turquoise6: #{$turquoise6};
+
+    // Gray, used mostly for information
+    --tainacan-gray0: #{$gray0};
+    --tainacan-gray1: #{$gray1};
+    --tainacan-gray2: #{$gray2};
+    --tainacan-gray3: #{$gray3};
+    --tainacan-gray4: #{$gray4};
+    --tainacan-gray5: #{$gray5};
+
+    // Red, used for error messages
+    --tainacan-red1: #{$red1};
+    --tainacan-red2: #{$red2};
+    // Green, used for success buttons
+    --tainacan-green1: #{$green1};
+    --tainacan-green2: #{$green2};
+    // Warning, used for warning messages
+    --tainacan-yellow1: #{$yellow1};
+    --tainacan-yellow2: #{$yellow2};
+    // Black and White
+    --tainacan-black: #{$black};
+    --tainacan-white: #{$white};
+
+    // Form and Text styling
+    --tainacan-input-color: #{$tainacan-input-color}; // Not quite black
+    --tainacan-input-background-color: var(--tainacan-white);
+    --tainacan-input-border-color: var(--tainacan-gray2); // Some input borders disabled state colors
+    --tainacan-label-color: var(--tainacan-gray5);
+    --tainacan-info-color: var(--tainacan-gray4);
+    --tainacan-heading-color: var(--tainacan-black);
+
+    // Skeleton color
+    --tainacan-skeleton-color: #{$skeleton-color};
+
+    // Items
+    --tainacan-item-background-color: var(--tainacan-background-color);
+    --tainacan-item-hover-background-color: var(--tainacan-gray1);
+    --tainacan-item-heading-hover-background-color: var(--tainacan-gray2);
+
+    // Derived colors
+    --tainacan-primary: var(--tainacan-turquoise2); // Tooltips and selected dropwdown items background
+    --tainacan-secondary: var(--tainacan-turquoise5); // Link, accent color!
+    --tainacan-success: var(--tainacan-green2);
+    --tainacan-danger: var(--tainacan-red2); 
+    --tainacan-warning: var(--tainacan-yellow2);
+
+    // Background
+    --tainacan-background-color: var(--tainacan-white);
+
+    // Font size
+    --tainacan-base-font-size: #{$base-font-size};
+
+    // Filter Menu Width when not a modal
+    --tainacan-filter-menu-width-theme: #{$filter-menu-width-theme};
+}
+
+// Some Bulma classes will work with SASS but not with CSS variables
+.has-text-primary, 
+.has-text-primary:hover, 
+.has-text-primary:focus,
+.has-text-secondary, 
+.has-text-secondary:hover, 
+.has-text-secondary:focus {
+    color: var(--tainacan-secondary) !important;
+}
+.has-text-turquoise5, 
+.has-text-turquoise5:hover, 
+.has-text-turquoise5:focus {
+    color: var(--tainacan-turquoise5) !important;
+}
+.has-text-blue5, 
+.has-text-blue5:hover, 
+.has-text-blue5:focus {
+    color: var(--tainacan-blue5) !important;
+}
+.has-text-blue4, 
+.has-text-blue4:hover, 
+.has-text-blue4:focus {
+    color: var(--tainacan-blue4) !important;
+}
+.has-text-gray, 
+.has-text-gray:hover, 
+.has-text-gray:focus {
+    color: var(--tainacan-info-color) !important;
+}
+.has-text-gray3, 
+.has-text-gray3:hover, 
+.has-text-gray3:focus {
+    color: var(--tainacan-gray3) !important;
+}
+.has-text-gray4, 
+.has-text-gray4:hover, 
+.has-text-gray4:focus {
+    color: var(--tainacan-gray4) !important;
+}
+.has-text-gray5, 
+.has-text-gray5:hover, 
+.has-text-gray5:focus {
+    color: var(--tainacan-gray4) !important;
+}
+.has-text-danger, 
+.has-text-danger:hover, 
+.has-text-danger:focus {
+    color: var(--tainacan-danger) !important;
+}
+.has-text-success, 
+.has-text-success:hover, 
+.has-text-success:focus {
+    color: var(--tainacan-success) !important;
+}
+.is-success, 
+.is-success:hover, 
+.is-success:focus {
+    background-color: var(--tainacan-success) !important;
+    color: var(--tainacan-white) !important;
+}
+.is-white, 
+.is-white:hover, 
+.is-white:focus {
+    background-color: var(--tainacan-white) !important;
+    color: var(--tainacan-black) !important;
+}
+
+a {
+    color: var(--tainacan-secondary);
+}

@@ -29,7 +29,7 @@
                                         placement: 'bottom'
                                     }"
                                     class="icon">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
                             </a>
                         </span>
                     </div>
@@ -56,7 +56,7 @@
                 v-if="attachments.length > 0">
             <div class="shown-items">
                 {{
-                    $i18n.get('info_showing_attachments') +
+                    $i18n.get('info_showing_attachments') + ' ' +
                     (attachmentsPerPage * (attachmentsPage - 1) + 1) +
                     $i18n.get('info_to') +
                     getLastAttachmentsNumber() +
@@ -204,7 +204,7 @@
 
             .file-item-control {
                 position: absolute;
-                background-color: #f2f2f2;
+                background-color: var(--tainacan-gray1);
                 width: 112px;
                 margin: 6px 0;
                 bottom: 0px;

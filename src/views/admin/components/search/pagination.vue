@@ -25,10 +25,12 @@
                     style="margin-top: -3px"
                     class="icon has-text-warning"
                     v-if="isSortingByCustomMetadata">
-                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-alertcircle" />
+                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle" />
             </span>
         </div> 
-        <div class="items-per-page">
+        <div 
+                v-if="!hideItemsPerPageButton"
+                class="items-per-page">
             <b-field 
                     id="items-per-page-select"
                     horizontal 
@@ -61,7 +63,9 @@
                 </b-select>
             </b-field>
         </div>
-        <div class="go-to-page items-per-page">
+        <div 
+                v-if="!hideGoToPageButton"
+                class="go-to-page items-per-page">
             <b-field 
                     horizontal 
                     id="go-to-page-dropdown"
@@ -77,7 +81,7 @@
                             slot="trigger">
                         <span>{{ page }}</span>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
                         </span>
                     </button>
                     <b-dropdown-item
@@ -116,7 +120,9 @@ import { mapGetters } from 'vuex';
 export default {
     name: 'Pagination',
     props: {
-        isSortingByCustomMetadata: Boolean
+        isSortingByCustomMetadata: Boolean,
+        hideItemsPerPageButton: false,
+        hideGoToPageButton: false
     },
     data() {
         return {

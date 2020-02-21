@@ -1,12 +1,16 @@
 // Tabs 
 .tabs {
+    font-size: 1em;
+    ul {
+        border-bottom-color: var(--tainacan-input-border-color);
+    }
     li {
         overflow-y: hidden;
     }
     a {
-        font-size: 0.8125rem;
-        color: black !important;
-        padding: 0.5rem 1.45rem;
+        font-size: 0.8125em;
+        color: var(--tainacan-black) !important;
+        padding: 0.5em 1.45em;
         border-bottom: 4px solid transparent;
         transition: border-bottom-color ease 0.3s;
         cursor: pointer !important;
@@ -17,16 +21,16 @@
         }
     }
     li.is-active a {
-        border-bottom-color: $turquoise5;
-        color: black !important;
+        border-bottom-color: var(--tainacan-turquoise5);
+        color: var(--tainacan-black) !important;
     }
     .icon:first-child {
-        margin-right: 0.2rem;
+        margin-right: 0.2em;
         margin-left: -3px;
     }
 }
 .b-tabs {
     .tab-content {         
-        padding: 0.75rem 1.5rem;  
+        padding: 0.75em 1.5em;  
     }
 }

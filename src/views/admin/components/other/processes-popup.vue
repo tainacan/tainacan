@@ -68,7 +68,7 @@
                                 class="icon has-text-success">
                             <i
                                 style="margin-right: -5px;"
-                                class="tainacan-icon tainacan-icon-20px tainacan-icon-alert has-text-yellow2"/>
+                                class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alert has-text-yellow2"/>
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle"/>
                         </span>
                         <span 
@@ -200,20 +200,15 @@ export default {
         });
 
         this.showProcessesList = false;
-
+        
         if (jQuery && jQuery( document )) {
-            jQuery( document ).on( 'heartbeat-tick-popup',  ( event, data ) => {
-                this.setProcesses(data.bg_process_feedback);
-            });
-
-            jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
-                jQuery( document ).trigger('heartbeat-tick-popup',data);
-            });
+            jQuery( document ).on( 'heartbeat-tick', this.onHeartBitTickPopup);
         }
     },
     beforeDestroy() {
-        if (jQuery && jQuery( document ))
-            jQuery( document ).unbind( 'heartbeat-tick-popup')
+        if (jQuery && jQuery( document )) {
+            jQuery( document ).unbind( 'heartbeat-tick', this.onHeartBitTickPopup)
+        }
     },
     methods: {
         ...mapActions('bgprocess', [
@@ -248,6 +243,9 @@ export default {
         },
         setProcesses(processes) {
             this.updatedProcesses = processes;
+        },
+        onHeartBitTickPopup(event, data) {
+            this.setProcesses(data.bg_process_feedback);
         }
     }
 }
@@ -257,9 +255,9 @@ export default {
     @import "../../scss/_variables.scss";
 
     .control.is-loading::after {
-        border: 2px solid $success;
-        border-right-color: $gray2;
-        border-top-color: $gray2;
+        border: 2px solid var(--tainacan-success);
+        border-right-color: var(--tainacan-gray2);
+        border-top-color: var(--tainacan-gray2);
     }
     .processes-popup-backdrop {
         position: absolute;
@@ -287,7 +285,7 @@ export default {
     }
 
     .processes-popup{
-        background-color: $blue2;
+        background-color: var(--tainacan-blue2);
         width: 320px;
         max-width: 100%;
         position: absolute;
@@ -296,12 +294,12 @@ export default {
         border-radius: 5px;
         animation-name: appear-from-top;
         animation-duration: 0.3s;
-        font-size: 0.75rem;
+        font-size: 0.75em;
 
         .popup-header, .popup-footer {
             display: flex;
             align-items: center;
-            color: $blue5;
+            color: var(--tainacan-blue5);
             .header-title, .footer-title {
                 margin-right: auto;
             }
@@ -319,13 +317,13 @@ export default {
             min-height: 29px;
             .footer-title { 
                 margin-right: auto;
-                font-size: 0.625rem;
+                font-size: 0.875em;
             }
         }
 
         .popup-list {
-            background-color: white;
-            color: black;
+            background-color: var(--tainacan-white);
+            color: var(--tainacan-black);
             overflow-y: auto;
             overflow-x: hidden;
             max-height: 222px; 
@@ -333,15 +331,15 @@ export default {
             animation-duration: 0.3s;
 
             .popup-list-subheader {
-                background-color: white !important;
+                background-color: var(--tainacan-white) !important;
                 padding: 6px 12px 12px 12px;
-                color: $gray4;
-                font-size: 0.625rem;
+                color: var(--tainacan-info-color);
+                font-size: 0.875em;
                 a { float: right; }
             }
 
             li:hover {
-                background-color: $gray0;
+                background-color: var(--tainacan-gray0);
 
                 .action-icon{
                     visibility: visible;
@@ -352,7 +350,7 @@ export default {
                     /*display: none;*/
                 /*}*/
                 .process-item>.process-title .tainacan-arrowleft, .process-item>.process-title .tainacan-arrowright {
-                    color: $gray3 !important;
+                    color: var(--tainacan-gray3) !important;
                 }
             }
 
@@ -377,7 +375,7 @@ export default {
                     }
                     
                     .tainacan-arrowleft, .tainacan-arrowright {
-                        color: $turquoise2;
+                        color: var(--tainacan-turquoise2);
                     }
                 }
                 .action-icon {
@@ -397,8 +395,8 @@ export default {
                 text-overflow: ellipsis;
                 overflow: hidden;
                 max-width: calc(100% - 40px);
-                font-size: 0.625rem;
-                color: $gray4;
+                font-size: 0.825em;
+                color: var(--tainacan-info-color);
                 animation-name: expand;
                 animation-duration: 0.3s;
             }
@@ -417,7 +415,7 @@ export default {
             width: 0;
             height: 0;
             border-style: solid;
-            border-color: transparent transparent $blue2 transparent;
+            border-color: transparent transparent var(--tainacan-blue2) transparent;
             border-right-width: 8px;
             border-bottom-width: 8px;
             border-left-width: 8px;
@@ -427,7 +425,7 @@ export default {
         .separator {
             margin: 0px 10px;
             height: 1px;
-            background-color: $secondary; 
+            background-color: var(--tainacan-secondary); 
         }
     }
 

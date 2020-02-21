@@ -10,7 +10,7 @@
                     target="_blank"
                     :href="editForm.url">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                 </span>
                 <span class="menu-text">{{ $i18n.get('label_view_on_theme') }}</span>
             </a>
@@ -445,9 +445,9 @@
     }
 
     form#termEditForm {
-        padding: 1.7rem 0 1.5rem 1.5rem;
-        border-left: 1px solid $gray2;
-        margin-left: 0.75rem;
+        padding: 1.7em 0 1.5em 1.5em;
+        border-left: 1px solid var(--tainacan-gray2);
+        margin-left: 0.75em;
         position: relative;
         animation-name: enter;
         animation-duration: 0.5s;
@@ -459,9 +459,9 @@
             align-items: baseline;
 
             h2 {
-                font-size: 20px;
+                font-size: 1.25em;
                 font-weight: 500;
-                color: $blue5;
+                color: var(--tainacan-blue5);
                 display: inline-block;
                 margin-right: auto;
             }
@@ -469,7 +469,7 @@
                 margin: 3px 0px 4px 0px; 
                 width: 100%;
                 height: 1px;
-                background-color: $secondary;
+                background-color: var(--tainacan-secondary);
             }
         }
 
@@ -505,7 +505,7 @@
                 font-weight: bold;
                 z-index: 99;
                 text-align: center;
-                color: $gray4;
+                color: var(--tainacan-info-color);
             }
             #button-delete-header,
             #button-edit-header {
@@ -520,12 +520,12 @@
                 margin-left: 10px !important;
                 
                 .icon {
-                    color: white !important;
+                    color: var(--tainacan-white) !important;
                     display: inherit;
                     padding: 0;
                     margin: 0;
                     margin-top: -2px;
-                    font-size: 18px;
+                    font-size: 1.125em;
                 }
             }
                 
@@ -536,9 +536,9 @@
             }
         }
         .checkboxes-warning {
-            color: $gray5;
+            color: var(--tainacan-gray5);
             font-style: italic;
-            padding: 0.2rem 0.75rem;
+            padding: 0.2em 0.75em;
         }
     }
 

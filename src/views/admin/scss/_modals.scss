@@ -12,6 +12,10 @@
         max-height: 95vh;
     }
 }
+.modal.is-full-screen > .animation-content, 
+.modal.is-full-screen > .animation-content > .modal-card {
+    background-color: transparent;
+}
 .modal .modal-close {
     z-index: 99999;
     @media only screen and (max-width: 768px) {
@@ -27,14 +31,15 @@
     align-items: flex-end;
 
     h1, h2 {
-        font-size: 1.25rem;
+        font-size: 1.25em;
         font-weight: normal;
         font-weight: 500;
-        color: $gray5;
+        color: var(--tainacan-heading-color);
         display: inline-block;
         width: 90%;
         margin-right: auto;
         margin-bottom: 0px;
+        margin: 0 auto 0 0;
     }
     a.back-link{
         font-weight: 500;
@@ -44,14 +49,14 @@
     hr{
         margin: 3px 0 4px 0;
         height: 1px;
-        background-color: $secondary;
+        background-color: var(--tainacan-secondary);
         border-top: 0;
         width: 100%;
     }
 }
 .tainacan-modal-content {
     border-radius: 0px;
-    background-color: white;
+    background-color: var(--tainacan-background-color);
     padding: 40px $page-side-padding;
     padding: 40px 4.166666667vw;
     position: relative;
@@ -61,6 +66,10 @@
     @media only screen and (max-width: 768px) {
         padding: 40px 8.333333%;
         padding: 40px 8.333333vw;
+    }
+
+    .modal-card-body {
+        background-color: var(--tainacan-background-color);
     }
 
     nav {
@@ -91,8 +100,8 @@
         background-color: rgba(0, 0, 0, 0.70);
     }
     .modal-card {
-        background-color: white;
-        color: $secondary;
+        background-color: var(--tainacan-white);
+        color: var(--tainacan-secondary);
         border-radius: 10px;
         flex-wrap: wrap;
         flex-direction: row;
@@ -100,13 +109,13 @@
         margin: 0 auto !important;
 
         .modal-card-head, .modal-card-body, .modal-card-foot {
-            background-color: white;
-            color: $gray5;
+            background-color: var(--tainacan-background-color);
+            color: var(--tainacan-gray5);
             border: none;
             padding-bottom: 12px;
         } 
         .modal-custom-icon {
-            background-color: $gray1;
+            background-color: var(--tainacan-gray1);
             border-radius: 50px;
             height: 80px;
             width: 80px;
@@ -116,13 +125,14 @@
         }
         .modal-card-head {
             h1 { 
-                color: $gray5; 
+                color: var(--tainacan-heading-color); 
             }
             font-weight: normal;
             padding: 0;
             margin-bottom: 12px;
         }
         .modal-card-body {
+            background: var(--tainacan-background-color);
             padding: 0px 0px 12px 20px;
             width: 50%;
         }
@@ -141,17 +151,17 @@
                 box-shadow: none !important;
                 display: inline-flex !important;
                 cursor: pointer;
-                height: 30px !important;
-                line-height: 1.25rem !important;
-                font-size: 0.875rem !important;
+                height: auto !important;
+                line-height: 1.25em !important;
+                font-size: 0.875em !important;
             }
             .button.is-success {
                 border: none;
             }
             .button:not(.is-success):not(.is-secondary) {
-                background-color: white;
-                color: $secondary;
-                border: 1px solid $gray4;
+                background-color: var(--tainacan-white);
+                color: var(--tainacan-secondary);
+                border: 1px solid var(--tainacan-gray4);
             }
         }
     }
@@ -169,133 +179,11 @@
     top: 100px;
     bottom: 100px;
     right: 100px;
-    background-color: white;
+    background-color: var(--tainacan-white);
     z-index: 99999999999 !important;
 
-    .media-toolbar button{
-        margin-top: 1rem !important
+    .media-toolbar button.button:not(.is-small):not(.is-medium):not(.is-large){
+        margin-top: 1em !important;
+        font-size: 0.875rem !important;
     }
 }
-// .media-modal {
-//     left: 100px;
-//     top: 100px;
-//     bottom: 100px;
-//     right: 100px;
-//     background-color: white;
-//     z-index: 99999999999 !important;
-    
-//     .media-modal-content {
-//         background-color: white;
-//         margin: 42px 60px;
-//         box-shadow: none;
-//     }
-
-//     .media-frame-title {
-//         border-bottom: 1px solid #298596 !important;
-//         margin-bottom: 60px !important;  
-//         box-shadow: none !important;
-        
-//         h1, h2 {
-//             font-size: 20px;
-//             font-weight: 500;
-//             color: $blue5;
-//             display: inline-block;
-//             margin-bottom: 3px;
-//         }
-//     }
-
-//     .media-frame-router {
-//         margin-top: 28px;
-//         a.media-menu-item.active {
-//             border-top: none;
-//             border-left: none;
-//             border-right: none;
-//             border-bottom: 3px solid $turquoise3;
-//         }
-//     }
-
-//     .media-frame-content {
-//         margin-top: 30px; 
-
-//         .attachments-browser .attachments, .media-toolbar {
-//             padding: 12px;
-//             right: 270px;
-
-//             .media-toolbar-primary {
-//                 max-width: 30%;
-//             }
-//             .media-toolbar-secondary {
-//                 max-width: 70%;
-//             }
-//             .attachment {
-//                 padding: 12px;
-//             }
-//             .attachment.details {
-//                 box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 14px $turquoise2;
-//             }
-//             .attachment.details .check, .wp-core-ui .attachment.selected .check:focus, .wp-core-ui .media-frame.mode-grid .attachment.selected .check {
-//                 background-color: $turquoise2;
-//                 box-shadow: 0 0 0 1px #fff,0 0 0 2px $turquoise2;
-//             }
-//         }
-//         .media-sidebar {
-//             background-color: white;
-//             width: 238px;
-//         }
-
-//         .crop-content{
-//             .imgareaselect-outer {
-//                 background-color: white;
-//                 opacity: 0.6;
-//             }
-//         }
-//     }
-
-//     .media-frame-toolbar .media-toolbar {
-//         bottom: initial;
-//         margin-top: -1px;
-//         padding: 28px 0px;
-//     }
-
-//     .media-button.button-primary {
-//         background-color: $success;
-//         border: none;
-//         box-shadow: none;
-//         color: #fff;
-//         text-decoration: none;
-//         text-shadow: none;
-//     }
-//     .media-button.button-primary[disabled] {
-//         color: #66c6e4 !important;
-//         background: $success !important;
-//         border-color: none!important;
-//         box-shadow: none !important;
-//         text-shadow: none !important;
-//         cursor: default;
-//     }
-//     .media-button.button-secondary {
-//         color: $blue5;
-//         border-color: #999;
-//         background: white;
-//         box-shadow: none;
-//         vertical-align: middle;
-//     }
-//     .button-hero {
-//         background-color: $secondary;
-//         border: none;
-//         box-shadow: none;
-//         color: #fff;
-//         text-decoration: none;
-//         text-shadow: none;
-//         font-size: 14px;
-//         height: 46px;
-//         line-height: 20px !important;
-//         padding: 0 36px;
-
-//         &:hover{
-//             background-color: #339daf;
-//             color: white;
-//         }
-//     }
-
-// }

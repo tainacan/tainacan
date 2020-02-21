@@ -20,7 +20,6 @@
                                 v-if="!capability.roles_inherited[role.slug]"
                                 v-for="(role, roleIndex) of existingRoles"
                                 :key="roleIndex"
-                                size="is-small"
                                 :value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
                                 @input="($event) => updateRole(role.slug, $event)"
                                 name="roles">
@@ -39,10 +38,12 @@
             <template v-if="existingRoles && Object.values(existingRoles).length && capability.roles">
                 <b-field :addons="false">
                     <label class="label is-inline-block">
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle"/>
                         {{ $i18n.get('label_inherited_roles') }}
                         <help-button
                                 :title="$i18n.get('label_inherited_roles')"
-                                :message="$i18n.get('info_inherited_roles')"/>
+                                :message="$i18n.get('info_inherited_roles')"
+                                forced-color="yellow2"/>
                     </label>
                     <br>
                     <div class="roles-list">
@@ -50,7 +51,7 @@
                                 v-if="capability.roles_inherited[role.slug]"
                                 v-for="(role, roleIndex) of existingRoles"
                                 :key="roleIndex"
-                                size="is-small"
+                                class="has-text-yellow2"
                                 :value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
                                 name="roles_inherited"
                                 disabled>
@@ -129,23 +130,27 @@ export default {
         min-height: 120px;
         vertical-align: top;
         display: flex;
-        align-items: flex-end;
+        padding-top: 24px;
 
         &>div {
-            padding: 12px 24px;
-
+            padding: 24px;
+            &:first-of-type {
+                flex-grow: 3;
+                flex-shrink: 1;
+            }    
             &:last-of-type {
-                background-color: $yellow1;
-                color: $yellow2;
+                background-color: var(--tainacan-yellow1);
+                color: var(--tainacan-yellow1);
 
-                .label ,
+                .label,
                 .control-label,
                 .check {
-                    color: $yellow2;
+                    color: var(--tainacan-yellow2);
                 }
             }
         }
         .roles-list {
+            height: 100%;
             column-count: 2;
             break-inside: avoid;
 

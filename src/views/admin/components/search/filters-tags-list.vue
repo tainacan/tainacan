@@ -25,9 +25,6 @@
 
     export default {
         name: 'FiltersTagsList',
-        props: {
-            filters: Array
-        },
         computed: {
             filterTags() {
                 let tags = this.getFilterTags();
@@ -73,12 +70,11 @@
 
     .filter-tags-list {
         width: 100%;
-        padding: 0 $page-side-padding 1.5rem $page-side-padding;
-        font-size: 0.75rem;
-        margin-bottom: -0.375rem;
+        padding: 1em $page-side-padding 1em $page-side-padding;
+        font-size: 0.75em;
 
         @media only screen and (max-width: 768px) { 
-            padding-top: 1rem;
+            padding-top: 1em;
         }   
 
         &.is-inline-flex {
@@ -88,6 +84,7 @@
         
         #button-clear-all {
             margin-left: auto;
+            font-size: 1em !important;
         }
     }
 

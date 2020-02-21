@@ -15,7 +15,7 @@
                         class="image"
                         :style="{ 'background-image': 'url(' + (file.thumbnails['tainacan-medium'] ? file.thumbnails['tainacan-medium'][0] : file.thumbnails['medium'][0]) + ')' }"/>
                 <div
-                        :style="{ 'background-color': '#f2f2f2' }"
+                        :style="{ 'background-color': 'var(--tainacan-gray1)' }"
                         v-else 
                         class="file-placeholder">
                     <span class="icon is-large">
@@ -42,9 +42,10 @@
                         tabindex="-1"
                         aria-modal
                         class="tainacan-modal-content">
-                    <div class="tainacan-modal-title">
-                        <h2 v-if="file.title != undefined">{{ file.title }}</h2>
-                    </div>
+                    <header class="tainacan-modal-title">
+                        <h2 v-if="file.title != undefined">{{ $i18n.get('label_attachment') + ': ' + file.title }}</h2>
+                        <hr>
+                    </header>
                     <div    
                             class="is-flex rendered-content"
                             v-html="file.description ? file.description : `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + file.url + `'/>`" />
@@ -131,7 +132,7 @@ export default {
         }
         &:hover {
             figcaption {
-                background-color: $gray1;
+                background-color: var(--tainacan-gray1);
             }
         }
         .image-wrapper {
@@ -166,15 +167,18 @@ export default {
         }
 
         figcaption {
-            background-color: white;
+            background-color: var(--tainacan-white);
             padding: 8px 15px;
-            font-size: 9px;
+            font-size: 0.75em;
             width: 100%;
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
             text-align: center;
         }
+    }
+    .tainacan-modal-title {
+        text-align: left;
     }
     .rendered-content {
         justify-content: center !important;

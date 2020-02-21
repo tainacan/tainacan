@@ -51,7 +51,7 @@
                 class="view-all">
             <span>
                 {{
-                    $i18n.get('info_showing_terms') + 1 +
+                    $i18n.get('info_showing_terms') + ' ' + 1 +
                     $i18n.get('info_to') + options.length +
                     $i18n.get('info_of') + totalTerms + '. '
                 }}
@@ -216,18 +216,18 @@
 
 <style scoped lang="scss">
     .selected-tags {
-        margin-top: 0.75rem;
-        font-size: 0.75rem;
+        margin-top: 0.75em;
+        font-size: 0.75em;
         position: relative;
     }
     .selected-tags .is-loading {
-        margin-left: 2rem;
-        margin-top: -0.4rem;
+        margin-left: 2em;
+        margin-top: -0.4em;
     }
     .selected-tags .is-loading::after {
-        border: 2px solid #555758 !important;
-        border-right-color: #dbdbdb !important;
-        border-top-color: #dbdbdb !important;
+        border: 2px solid var(--tainacan-gray4) !important;
+        border-right-color: var(--tainacan-gray2) !important;
+        border-top-color: var(--tainacan-gray2) !important;
     } 
     .metadata-taxonomy-list {
         column-count: 2;
@@ -239,8 +239,8 @@
         }
     }
     .view-all {
-        color: #898d8f;
+        color: var(--tainacan-gray4);
         margin-bottom: 20px;
-        font-size: 0.75rem;
+        font-size: 0.75em;
     }
 </style>

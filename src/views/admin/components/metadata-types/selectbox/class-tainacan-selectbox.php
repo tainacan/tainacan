@@ -41,20 +41,6 @@ class Selectbox extends Metadata_Type {
             ]
         ];
     }
-    /**
-     * @param $itemMetadata \Tainacan\Entities\Item_Metadata_Entity The instace of the entity itemMetadata
-     * @return string
-     */
-
-    public function render( $itemMetadata ){
-        $options = $this->get_option('options');
-        return '<tainacan-selectbox    
-                                       options="' . $options . '"
-                                       metadatum_id ="'.$itemMetadata->get_metadatum()->get_id().'" 
-                                       item_id="'.$itemMetadata->get_item()->get_id().'"    
-                                       value=\''.json_encode( $itemMetadata->get_value() ).'\'
-                                       name="'.$itemMetadata->get_metadatum()->get_name().'"></tainacan-selectbox>';
-    }
 
     /**
      * @param \Tainacan\Entities\Metadatum $metadatum

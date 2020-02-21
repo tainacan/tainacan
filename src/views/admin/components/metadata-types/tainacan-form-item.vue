@@ -9,7 +9,7 @@
             <span class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowdown' : isCollapsed || metadatumTypeMessage == 'is-danger', 'tainacan-icon-arrowright' : !(isCollapsed || metadatumTypeMessage == 'is-danger') }"
-                        class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
             </span>
             <label 
                     v-tooltip="{
@@ -213,28 +213,28 @@
 
     .multiple-inputs {
         display: flex;
-        margin: 0.75rem 0;
+        margin: 0.75em 0;
         flex-direction: column;
         justify-content: space-between;
     }
 
     .field {
-        border-bottom: 1px solid $gray2;
+        border-bottom: 1px solid var(--tainacan-gray2);
         padding: 10px 25px;
 
         .label {
-            font-size: 0.875rem;
+            font-size: 0.875em;
             font-weight: 500;
             margin-left: 15px;
             margin-bottom: 0;
-            margin-top: 0.15rem;
+            margin-top: 0.15em;
             max-width: 50%;
         }
         .metadata-type {
-            font-size: 0.8125rem;
+            font-size: 0.8125em;
             font-weight: 400;
-            color: $gray3;
-            top: -0.4em;
+            color: var(--tainacan-gray3);
+            top: -0.1em;
             position: relative;
         }
         .help-wrapper {
@@ -244,7 +244,7 @@
             cursor: pointer;
             position: relative;
             margin-left: -42px;
-            bottom: 0.1rem;
+            bottom: 0.1em;
             white-space: nowrap;
         }
     }

@@ -38,7 +38,7 @@
                             slot="trigger">
                         <span>{{ $i18n.get('label_bulk_actions') }}</span>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
                         </span>
                     </button>
 
@@ -140,14 +140,13 @@
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="grid-item-checkbox">
                         <b-checkbox
-                                size="is-small"
                                 :value="getSelectedItemChecked(item.id)"
                                 @input="setSelectedItemChecked(item.id)"/>
                     </div>
 
                     <!-- Title -->
                     <div
-                            :style="{ 'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0.5rem !important' : '2.75rem' }"
+                            :style="{ 'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0.5em !important' : '2.75em' }"
                             class="metadata-title">
                         <p
                                 v-tooltip="{
@@ -195,7 +194,7 @@
                                         placement: 'auto'
                                     }"
                                     class="icon">
-                                <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
                             </span>
                         </a>
                         <a
@@ -209,7 +208,7 @@
                                         placement: 'auto'
                                     }"
                                     class="icon">
-                                <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-undo"/>
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
                             </span>
                         </a>
                         <a
@@ -226,7 +225,7 @@
                                     class="icon">
                                 <i
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                             </span>
                         </a>
                     </div>
@@ -271,7 +270,7 @@
                     <!-- Title -->
                     <div
                             :style="{
-                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0 !important' : '1rem'
+                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0 !important' : '1em'
                             }"
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)"
@@ -308,7 +307,7 @@
                                         placement: 'auto'
                                     }"
                                     class="icon">
-                                <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
                             </span>
                         </a>
                         <a
@@ -322,7 +321,7 @@
                                         placement: 'auto'
                                     }"
                                     class="icon">
-                                <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-undo"/>
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
                             </span>
                         </a>
                         <a
@@ -339,7 +338,7 @@
                                     class="icon">
                                 <i
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                             </span>
                         </a>
                     </div>
@@ -365,7 +364,6 @@
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="card-checkbox">
                         <b-checkbox
-                                size="is-small"
                                 :value="getSelectedItemChecked(item.id)"
                                 @input="setSelectedItemChecked(item.id)"/>
                     </div>
@@ -373,7 +371,7 @@
                     <!-- Title -->
                     <div
                             :style="{ 
-                                'padding-left': !collectionId || $route.query.readmode || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) ? '0.5rem !important' : '2.75rem',
+                                'padding-left': !collectionId || $route.query.readmode || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) ? '0.5em !important' : '2.75em',
                                 'margin-bottom': item.current_user_can_edit && !$route.query.iframemode ? '-26px' : '0px'
                             }"
                             class="metadata-title">
@@ -410,7 +408,7 @@
                                         placement: 'auto'
                                     }"
                                     class="icon">
-                                <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
                             </span>
                         </a>
                         <a
@@ -424,7 +422,7 @@
                                         placement: 'auto'
                                     }"
                                     class="icon">
-                                <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-undo"/>
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
                             </span>
                         </a>
                         <a
@@ -441,7 +439,7 @@
                                     class="icon">
                                 <i
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                             </span>
                         </a>
                     </div>
@@ -547,7 +545,7 @@
                     <div
                             class="metadata-title"
                             :style="{
-                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '1.5rem !important' : '2.75rem',    
+                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '1.5em !important' : '2.75em',    
                                 'margin-bottom': item.current_user_can_edit || $route.query.iframemode ? '-27px' : '0px'
                             }">
                         <p 
@@ -602,7 +600,7 @@
                                         placement: 'auto'
                                     }"
                                     class="icon">
-                                <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
                             </span>
                         </a>
                         <a
@@ -616,7 +614,7 @@
                                         placement: 'auto'
                                     }"
                                     class="icon">
-                                <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-undo"/>
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
                             </span>
                         </a>
                         <a
@@ -633,7 +631,7 @@
                                     class="icon">
                                 <i
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                             </span>
                         </a>
                     </div>
@@ -738,7 +736,6 @@
                                 :class="{ 'is-selecting': isSelectingItems }"
                                 class="checkbox-cell">
                             <b-checkbox
-                                    size="is-small"
                                     :value="getSelectedItemChecked(item.id)"
                                     @input="setSelectedItemChecked(item.id)"/>
                         </td>
@@ -871,7 +868,7 @@
                                                 placement: 'auto'
                                             }"
                                             class="icon">
-                                        <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
                                     </span>
                                 </a>
                                 <a
@@ -885,7 +882,7 @@
                                                 placement: 'auto'
                                             }"
                                             class="icon">
-                                        <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-undo"/>
+                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
                                     </span>
                                 </a>
                                 <a
@@ -902,7 +899,7 @@
                                             class="icon">
                                     <i
                                             :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                            class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                                 </span>
                                 </a>
                             </div>
@@ -1297,17 +1294,17 @@ export default {
     .selection-control {
 
         padding: 6px 0px 0px 12px;
-        background: white;
+        background: var(--tainacan-white);
         height: 40px;
         display: flex;
 
         .select-all {
-            color: $gray4;
-            font-size: 0.875rem;
+            color: var(--tainacan-info-color);
+            font-size: 0.875em;
             margin-right: auto;
 
             &:hover {
-                color: $gray4;
+                color: var(--tainacan-info-color);
             }
         }
     }

@@ -21,13 +21,12 @@
                         @input="autoComplete"
                         class="input">
                 <span class="icon is-right">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search" />
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search" />
                 </span>
             </div>
 
             <b-tabs
                     v-if="!isSearching"
-                    size="is-small"
                     animated
                     @input="fetchSelectedLabels()"
                     v-model="activeTab">
@@ -54,7 +53,7 @@
                                     class="tainacan-li-checkbox-list"
                                     v-for="(option, key) in options"
                                     :key="key">
-                                <label class="b-checkbox checkbox is-small">
+                                <label class="b-checkbox checkbox">
                                     <input 
                                             v-model="selected"
                                             :value="option.value"
@@ -101,7 +100,7 @@
                                     :key="index">
                                 <label 
                                         v-if="isCheckbox"
-                                        class="b-checkbox checkbox is-small">
+                                        class="b-checkbox checkbox">
                                     <input 
                                             v-model="selected"
                                             :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
@@ -131,7 +130,7 @@
                                         v-if="option.total_children > 0"
                                         @click="getOptionChildren(option, key, index)">
                                     <span class="icon is-pulled-right">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowright"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright"/>
                                     </span>
                                 </a>
                             </b-field>
@@ -141,7 +140,7 @@
                                         @click="getMoreOptions(finderColumn, key)"
                                         class="tainacan-show-more">
                                     <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-showmore"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore"/>
                                     </span>
                                 </div>
                                 <div 
@@ -723,7 +722,7 @@
     @import "../../scss/variables.scss";
 
     .breadcrumb {
-        background-color: white !important;
+        background-color: var(--tainacan-white) !important;
 
         li + li::before {
             content: ">" !important;
@@ -770,11 +769,14 @@
     // In theme, the bootstrap removes the style of <a> without href
     a {
         cursor: pointer;
-        color: $turquoise5;
+        color: var(--tainacan-turquoise5);
     }
 
     .tainacan-form {
         max-width: 100%;
+        .form-submit {
+            padding-top: 16px !important;
+        }
     }
 
     .tainacan-show-more {
@@ -782,12 +784,12 @@
         display: flex;
         justify-content: center;
         cursor: pointer;
-        border: 1px solid $gray1;
+        border: 1px solid var(--tainacan-gray1);
         margin-top: 10px;
-        margin-bottom: -0.2rem;
+        margin-bottom: -0.2em;
 
         &:hover {
-            background-color: $blue1;
+            background-color: var(--tainacan-blue1);
         }
     }
 
@@ -802,7 +804,7 @@
         }
 
         &:hover {
-            background-color: $gray1;
+            background-color: var(--tainacan-gray1);
         }
     }
 
@@ -813,13 +815,13 @@
 
         .b-checkbox, .b-radio {
             max-width: 81%;
-            margin-left: 0.7rem;
+            margin-left: 0.7em;
             margin-bottom: 0;
             height: 24px;
         }
 
         &:hover {
-            background-color: $gray1;
+            background-color: var(--tainacan-gray1);
         }
 
     }
@@ -828,20 +830,20 @@
         flex-grow: 0;
         flex-shrink: 1;
         max-width: calc(50% - 8.3333333%);
-        padding-left: 0.5rem;
+        padding-left: 0.5em;
 
         .b-checkbox, .b-radio {
             margin-right: 10px;
         }
 
         &:hover {
-            background-color: $gray1;
+            background-color: var(--tainacan-gray1);
         }
     }
 
     .tainacan-finder-columns-container {
-        background-color: white;
-        border: solid 1px $gray1;
+        background-color: var(--tainacan-white);
+        border: solid 1px var(--tainacan-gray1);
         display: flex;
         overflow: auto;
         padding: 0 !important;
@@ -854,7 +856,7 @@
     }
 
     .tainacan-finder-column {
-        border-right: solid 1px $gray1;
+        border-right: solid 1px var(--tainacan-gray1);
         max-height: 400px;
         max-width: 25%;
         min-height: inherit;
@@ -862,7 +864,7 @@
         overflow-y: auto;
         list-style: none;
         margin: 0;
-        padding: 0rem;
+        padding: 0em;
     }
 
     ul {
@@ -875,7 +877,7 @@
     }
 
     .tainacan-li-checkbox-modal:first-child {
-        margin-top: 0.7rem;
+        margin-top: 0.7em;
     }
 
     .field:not(:last-child) {
@@ -890,10 +892,10 @@
 
         .icon {
             pointer-events: all;
-            color: $blue5;
+            color: var(--tainacan-blue5);
             cursor: pointer;
             height: 27px;
-            font-size: 1.125rem;
+            font-size: 1.125em;
             width: 30px !important;
             position: absolute;
             right: 0;
@@ -913,10 +915,10 @@
         height: 253px;
         align-items: center;
         display: flex;
-        background-color: $gray1;
+        background-color: var(--tainacan-gray1);
 
         &:hover {
-            background-color: $blue1;
+            background-color: var(--tainacan-blue1);
         }
     }
 
@@ -960,15 +962,15 @@
     }
 
     .tainacan-li-no-children {
-        padding: 3rem 1.5rem 3rem 0.5rem;
+        padding: 3em 1.5em 3em 0.5em;
     }
 
     .tainacan-li-checkbox-last-active {
-        background-color: $turquoise1;
+        background-color: var(--tainacan-turquoise1);
     }
 
     .tainacan-li-checkbox-parent-active {
-        background-color: $turquoise1;
+        background-color: var(--tainacan-turquoise1);
     }
 
     .b-checkbox .control-label {
@@ -984,9 +986,9 @@
     }
 
     .warning-no-more-terms {
-        color: $gray4;
-        font-size: 0.75rem;
-        padding: 0.5rem;
+        color: var(--tainacan-info-color);
+        font-size: 0.75em;
+        padding: 0.5em;
         text-align: center;
     }
 

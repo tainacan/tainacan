@@ -13,7 +13,7 @@
                     <i v-html="comparatorSymbol" />
                 </span>
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                 </span>
             </button>
             <b-dropdown-item
@@ -239,7 +239,7 @@
 
     .date-filter-container {
         display: flex;
-        height: 30px;
+        height: auto;
 
         @media screen and (min-width: 769px) and (max-width: 1500px) {
             flex-wrap: wrap;
@@ -251,14 +251,14 @@
             flex-grow: 2;
 
             .dropdown-trigger button {
-                padding: 0 0.5rem !important;
-                height: 30px !important;
+                padding: 0 0.5em !important;
+                height: auto !important;
 
                 i:not(.tainacan-icon-arrowdown) {
                     margin-top: -3px;
-                    font-size: 1.25rem;
+                    font-size: 1.25em;
                     font-style: normal;
-                    color: #555758;
+                    color: var(--tainacan-info-color);
                 }
             }
         }

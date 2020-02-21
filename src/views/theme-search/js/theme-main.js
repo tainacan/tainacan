@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Buefy from 'buefy';
 import VTooltip from 'v-tooltip';
 import VueMasonry from 'vue-masonry-css';
+import cssVars from 'css-vars-ponyfill';
 
 // Filters
 import FilterNumeric from '../../admin/components/filter-types/numeric/Numeric.vue';
@@ -82,12 +83,30 @@ export const ThemeItemsListing =  new Vue({
         collectionId: '',
         defaultViewMode: '',
         enabledViewModes: {},
-        customFilters: []
+        hideFilters: false,
+        hideHideFiltersButton: false,
+        hideSearch: false,
+        hideAdvancedSearch: false,
+        hideSortByButton: false,
+        hideExposersButton: false,
+        hideItemsPerPageButton: false,
+        hideGoToPageButton: false,
+        startWithFiltersHidden: false,
+        filtersAsModal: false,
+        showInlineViewModeOptions: false,
+        showFullscreenWithViewModes: false
     },
     beforeMount () {
 
-        this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
+        // Collection or Term source settings
+        if (this.$el.attributes['collection-id'] != undefined)
+            this.collectionId = this.$el.attributes['collection-id'].value;
+        if (this.$el.attributes['term-id'] != undefined)
+            this.termId = this.$el.attributes['term-id'].value;
+        if (this.$el.attributes['taxonomy'] != undefined)
+            this.taxonomy = this.$el.attributes['taxonomy'].value;
 
+        // View Mode settings
         if (this.$el.attributes['default-view-mode'] != undefined)
             this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
         else
@@ -96,13 +115,40 @@ export const ThemeItemsListing =  new Vue({
         if (this.$el.attributes['enabled-view-modes'] != undefined)
             this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
 
-        if (this.$el.attributes['term-id'] != undefined)
-            this.termId = this.$el.attributes['term-id'].value;
-        if (this.$el.attributes['taxonomy'] != undefined)
-            this.taxonomy = this.$el.attributes['taxonomy'].value;
+        // Options related to hidding elements
+        if (this.$el.attributes['hide-filters'] != undefined)
+            this.hideFilters = this.$el.attributes['hide-filters'].value;
+        if (this.$el.attributes['hide-hide-filters-button'] != undefined)
+            this.hideHideFiltersButton = this.$el.attributes['hide-hide-filters-button'].value;
+        if (this.$el.attributes['hide-search'] != undefined)
+            this.hideSearch = this.$el.attributes['hide-search'].value;
+        if (this.$el.attributes['hide-advanced-search'] != undefined)
+            this.hideAdvancedSearch = this.$el.attributes['hide-advanced-search'].value;
+        if (this.$el.attributes['hide-sort-by-button'] != undefined)
+            this.hideSortByButton = this.$el.attributes['hide-sort-by-button'].value;
+        if (this.$el.attributes['hide-exposers-button'] != undefined)
+            this.hideExposersButton = this.$el.attributes['hide-exposers-button'].value;
+        if (this.$el.attributes['hide-items-per-page-button'] != undefined)
+            this.hideItemsPerPageButton = this.$el.attributes['hide-items-per-page-button'].value;
+        if (this.$el.attributes['hide-go-to-page-button'] != undefined)
+            this.hideGoToPageButton = this.$el.attributes['hide-go-to-page-button'].value;
 
+        // Other Tweaks
+        if (this.$el.attributes['start-with-filters-hidden'] != undefined)
+            this.startWithFiltersHidden = this.$el.attributes['start-with-filters-hidden'].value;
+        if (this.$el.attributes['filters-as-modal'] != undefined)
+            this.filtersAsModal = this.$el.attributes['filters-as-modal'].value;
+        if (this.$el.attributes['show-inline-view-mode-options'] != undefined)
+            this.showInlineViewModeOptions = this.$el.attributes['show-inline-view-mode-options'].value;
+        if (this.$el.attributes['show-fullscreen-with-view-modes'] != undefined)
+            this.showFullscreenWithViewModes = this.$el.attributes['show-fullscreen-with-view-modes'].value;
     },
     render: h => h(ThemeSearch)
+});
+
+// Initialize Ponyfill for Custom CSS properties
+cssVars({
+// Options...
 });
 
 // Display Icons only once everything is loaded
@@ -112,10 +158,14 @@ function listen(evnt, elem, func) {
     else if (elem.attachEvent) { // IE DOM
          var r = elem.attachEvent("on"+evnt, func);
          return r;
-    }
-    else {
-        if (jQuery && jQuery('head'))
-            jQuery('head').append('<style>.tainacan-icon{ opacity: 1 !important; }</style>');
+    } else if (document.head) {
+        var iconHideStyle = document.createElement("style");
+        iconHideStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }'; 
+        document.head.appendChild(iconHideStyle);
+    } else {
+        var iconHideStyle = document.createElement("style");
+        iconHideStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }'; 
+        document.getElementsByTagName("head")[0].appendChild(iconHideStyle);
     }
 }
 listen("load", window, function() {

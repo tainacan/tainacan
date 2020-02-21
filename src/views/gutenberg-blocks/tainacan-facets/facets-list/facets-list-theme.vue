@@ -34,7 +34,7 @@
                 v-if="isLoading"
                 :style="{
                     gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + 185) + 'px)' : 'inherit', 
-                    marginTop: showSearchBar ? '1.5rem' : '0px'
+                    marginTop: showSearchBar ? '1.5em' : '0px'
                 }"
                 class="facets-list"
                 :class="'facets-layout-' + layout + (!showName ? ' facets-list-without-margin' : '')">
@@ -52,7 +52,7 @@
                     v-if="facets.length > 0"
                     :style="{
                         gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + 185) + 'px)' : 'inherit', 
-                        marginTop: showSearchBar ? '1.5rem' : '0px'
+                        marginTop: showSearchBar ? '1.5em' : '0px'
                     }"
                     class="facets-list"
                     :class="'facets-layout-' + layout">
@@ -66,7 +66,7 @@
                             :id="isNaN(facet.id) ? facet.id : 'facet-id-' + facet.id"
                             :href="facet.url"
                             target="_blank"
-                            :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'rem' : ''}">
+                            :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}">
                         <img
                             v-if="metadatumType == 'Taxonomy'"
                             :src=" 

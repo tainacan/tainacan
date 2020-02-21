@@ -1,9 +1,9 @@
 .tags {
-    border: solid 1px $gray2 !important;
+    border: solid 1px var(--tainacan-input-border-color) !important;
     border-radius: 20px;
     flex-wrap: nowrap;
-    margin-bottom: 0.375rem !important;
-    margin-right: 0.375rem;
+    margin-bottom: 0.375em !important;
+    margin-right: 0.375em;
     max-width: 100%;
     overflow: hidden;
     transition: all 0.2s ease;
@@ -11,7 +11,7 @@
     animation-duration: 0.3s;
 
     .tag {
-        background-color: white;
+        background-color: var(--tainacan-white);
         margin-bottom: 0 !important;
         margin-right: 4px !important;
         max-width: calc(100% - 21px);
@@ -29,8 +29,8 @@
             border-radius: 50px !important;
             border-radius: 50px !important;
             margin-right: 0px !important;
-            color: $gray4;
-            background-color: white;
+            color: var(--tainacan-info-color);
+            background-color: var(--tainacan-white);
             transition: border-width 0.15s linear, background-color 0.15s linear;
 
             &:after,
@@ -40,9 +40,9 @@
 
             &:hover,
             &:focus {
-                border: solid 1px $gray3 !important;
-                background-color: $gray2;
-                color: $gray5;
+                border: solid 1px var(--tainacan-gray3) !important;
+                background-color: var(--tainacan-input-border-color);
+                color: var(--tainacan-heading-color);
 
                 &:after {
                     transform: translateX(-50%) translateY(-50%) rotate(45deg) scale(1.15);

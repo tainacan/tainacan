@@ -1,8 +1,12 @@
 // Input components used in forms are gray in Tainacan
 .tainacan-form {
-    color: $tainacan-input-color;
+    color: var(--tainacan-input-color);
     width: 100%;
+    padding: 0;
 
+    .control {
+        font-size: 1em;
+    }
     .form-submit {
         justify-content: space-between !important;
         padding: 12px 0px ;
@@ -18,14 +22,16 @@
         }
     }
     .field:not(:last-child) {
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.5em;
     }
     .field>.field:not(:last-child) {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.5em;
     }
     .label { 
         font-weight: bold;
-        font-size: 0.875rem; 
+        text-transform: inherit;
+        font-size: 0.875em; 
+        color: var(--tainacan-label-color);
         display: inline-block;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -36,25 +42,27 @@
         cursor: default;
     }
     .required-metadatum-asterisk {
-        color: $gray5;
+        color: var(--tainacan-label-color);
         position: relative;
         top: -3px;
         
         &.is-danger {
-            color: $danger;
+            color: var(--tainacan-danger);
         }
     }
     .input, .textarea { 
         &.is-danger {
-          background-color: $red1;  
+          background-color: var(--tainacan-red1);  
         }
     }
     .b-numberinput {
-        height: 30px;
+        height: auto;
         padding: 0 !important;
         
         .control {
             margin-right: 0 !important;
+            margin-bottom: 0;
+            margin-top: 0;
         }
         div.control {
             flex-shrink: 1;
@@ -62,17 +70,17 @@
         }
         button, 
         input {
-            height: 30px !important;
+            height: auto !important;
             text-align: start;
         }
         button.is-primary,
         button.is-primary:hover,
         button.is-primary:focus,
         button.is-primary:active {
-            border: 1px solid $gray2;
-            background-color: $gray1 !important;
-            color: $secondary !important;
-            padding: 0 0.6rem !important;
+            border: 1px solid var(--tainacan-input-border-color);
+            background-color: var(--tainacan-gray1) !important;
+            color: var(--tainacan-secondary) !important;
+            padding: 0.26em 0.6em !important;
             border-radius: 0 !important;
 
             .mdi::before {
@@ -87,8 +95,7 @@
                 transform: none !important;
                 text-transform: none !important;
                 letter-spacing: normal !important;
-                font-size: 20px;
-                margin-top: -2px;
+                font-size: 1.3em;
             }
             .mdi-plus::before {
                 content: "plus" !important;
@@ -103,8 +110,19 @@
             .icon {
                 height: 2.0em;
                 .mdi-alert-circle::before {
-                    content: "\F156" !important;
-                    font-size: 1rem !important;
+                    content: "close";
+                    display: inline-block;
+                    font: normal normal normal 20px/1 "TainacanIcons";
+                    font-size: inherit;
+                    text-rendering: auto;
+                    vertical-align: middle;
+                    line-height: inherit;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale;
+                    transform: none !important;
+                    text-transform: none !important;
+                    letter-spacing: normal !important;
+                    font-size: 1em;
                 }
             }
         }
@@ -116,28 +134,27 @@
         width: 100%;
         
         &.is-danger {
-            border-color: $danger;
+            border-color: var(--tainacan-danger);
         }   
     }
     .control-label { // The value part in checkbox, radio and switches
-        color: $tainacan-input-color;
+        color: var(--tainacan-input-color);
         padding-left: 0.8em;
-        font-size: 0.75rem;
+        font-size: 0.81em;
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
     }
     .select {
-        
         select {
-            color: $tainacan-input-color;
-            background-color: white !important;
-            border: 1px solid $gray2 !important;
+            color: var(--tainacan-input-color);
+            background-color: var(--tainacan-input-background-color) !important;
+            border: 1px solid var(--tainacan-input-border-color) !important;
             &:focus>option:checked, &:focus>option:hover {
-                background-color: $turquoise1 !important;
+                background-color: var(--tainacan-turquoise1) !important;
             }
             &[disabled=disabled] {
-                border: 1px solid $gray1 !important;
+                border: 1px solid var(--tainacan-gray1) !important;
             }
         } 
     }
@@ -150,7 +167,7 @@
         .button {
             justify-content: space-between;
             width: 100%;
-            border: 1px solid $gray2 !important;
+            border: 1px solid var(--tainacan-input-border-color) !important;
             border-radius: 0 !important;
             padding: 2px 14px 2px 18px !important
         }
@@ -166,11 +183,11 @@
         }
     }
     .upload-draggable {
-        color: $gray4;
+        color: var(--tainacan-info-color);
         transition: color 0.2s background-color 0.2s;
         border-radius: 0 !important;
-        border-color: $gray2;
-        padding: 1.25rem;
+        border-color: var(--tainacan-input-border-color);
+        padding: 1.25em;
     }
     .autocomplete {
         .dropdown-menu {
@@ -182,18 +199,18 @@
     }
 
     .form-hook-region {
-        background-color: $gray1;
-        padding: 1rem 1.875rem 2rem 1.875rem;
+        background-color: var(--tainacan-gray1);
+        padding: 1em 1.875em 2em 1.875em;
 
         h4 {
             font-weight: 600;
-            color: $turquoise5;
+            color: var(--tainacan-turquoise5);
             margin-bottom: 6px;
         }
         hr {
             margin-top: 8px;
             height: 1px;
-            background-color: $turquoise5;
+            background-color: var(--tainacan-turquoise5);
         }
     }
 }

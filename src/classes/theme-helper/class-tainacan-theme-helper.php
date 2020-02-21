@@ -62,7 +62,7 @@ class Theme_Helper {
 		$this->register_view_mode('table', [
 			'label' => __('Table', 'tainacan'),
 			'dynamic_metadata' => true,
-			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewtable tainacan-icon-20px"></i></span>',
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewtable tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'implements_skeleton' => true
 		]);
@@ -70,7 +70,7 @@ class Theme_Helper {
 			'label' => __('Cards', 'tainacan'),
 			'dynamic_metadata' => false,
 			'description' => 'A cards view, displaying title, description, author name and creation date.',
-			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewcards tainacan-icon-20px"></i></span>',
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewcards tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'implements_skeleton' => true
 		]);
@@ -78,7 +78,7 @@ class Theme_Helper {
 			'label' => __('Records', 'tainacan'),
 			'dynamic_metadata' => true,
 			'description' => 'A records view, similiar to cards, but flexible for metadata',
-			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewrecords tainacan-icon-20px"></i></span>',
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewrecords tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'implements_skeleton' => true
 		]);
@@ -86,7 +86,7 @@ class Theme_Helper {
 			'label' => __('Masonry', 'tainacan'),
 			'dynamic_metadata' => false,
 			'description' => 'A masonry view, similar to pinterest, which will display images without cropping.',
-			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewmasonry tainacan-icon-20px"></i></span>',
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewmasonry tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'implements_skeleton' => true
 		]);
@@ -94,7 +94,7 @@ class Theme_Helper {
 			'label' => __('Slideshow', 'tainacan'),
 			'dynamic_metadata' => false,
 			'description' => 'A fullscreen slideshow view.',
-			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-20px"></i></span>',
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'show_pagination' => false,
 			'full_screen' => true
@@ -361,28 +361,36 @@ class Theme_Helper {
 			array(
 				'collection-id' => '',
 				'term-id' => '',
+				'taxonomy' => '',
 			),
 			$atts
 		);
 
+		// Loads info related to view modes
 		$default_view_mode = apply_filters( 'tainacan-default-view-mode-for-themes', 'masonry' );
 		$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', ['table', 'cards', 'masonry', 'slideshow'] );	
 
 		$params = '';
+
+		// If is a collection page
 		if (isset($atts['collection-id']) && $atts['collection-id'] != '') {
 			$params .= "collection-id=" . $atts['collection-id'];
 			$collection = new \Tainacan\Entities\Collection($atts['collection-id']);
 			$default_view_mode = $collection->get_default_view_mode();
 			$enabled_view_modes = $collection->get_enabled_view_modes();
 		}
-		if (isset($atts['term-id']) && $atts['term-id'] != '') {
+
+		// If is a tainacan taxonomy
+		if (isset($atts['term-id']) && $atts['term-id'] != '' && isset($atts['taxonomy']) && $atts['taxonomy'] != '' ) {
 			$params .= "term-id=" . $atts['term-id'];
+			$params .= ' "taxonomy="' . $atts['taxonomy'];
 		}
 
 		$params .= ' default-view-mode="' . $default_view_mode . '" ';
 		$params .= ' enabled-view-modes="' . implode(',', $enabled_view_modes) . '" ';	
 
 		$this->enqueue_scripts(true);
+
 		return "<div id='tainacan-items-page' $params ></div>";
 	}
 	

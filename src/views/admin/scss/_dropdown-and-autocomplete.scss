@@ -4,7 +4,7 @@
             border: none;
             align-items: center;
             .icon {
-                color: $secondary;
+                color: var(--tainacan-secondary);
                 align-items: center;
             }
             .gray-icon {
@@ -13,7 +13,7 @@
         }
         .button.is-primary, .button.is-secondary, .button.is-success {
             .icon {
-                color: $white;
+                color: var(--taincan-background-color);
             }
         }
         .dropdown.is-disabled {
@@ -21,45 +21,46 @@
         }
     }
     &>.control.has-icons-left .icon {
-        height: 2.125rem;
-        width: 2.125rem;
+        height: 100%;//2.125em;
+        width: 2.125em;
     }
     .dropdown-menu {
         padding: 0px;
         margin-top: 0;
         border-radius: 0px;
-        min-width: 6rem;
+        min-width: 6em;
         border: none;
         z-index: 99;
         
         .dropdown-content {
-            padding: 0px;
+            padding: 0px 0px 1px 0px;
             border-radius: 0px !important;
             max-height: 240px;
             overflow-y: auto;
             box-shadow: none;
-            border: 1px solid $gray3;
+            background-color: var(--tainacan-background-color);
+            border: 1px solid var(--tainacan-input-border-color);
 
             .dropdown-item {
                 display: block;
                 text-decoration: none;
-                padding: 0.375rem 1rem;
-                font-size: 0.8125rem;
-                color: $tainacan-input-color !important;
+                padding: 0.57em 1em;
+                font-size: 0.825em;
+                color: var(--tainacan-input-color) !important;
                 transition: background-color 0.3s ease;
 
                 label { margin-bottom: 0; }
-                &.control { font-size: 0.8125rem !important; }
+                &.control { font-size: 0.8125em !important; }
                 .b-checkbox { width: 100% };
-                &:hover { background-color: $gray2; }
-                .is-small { color: $gray4; }
-                &.is-active { background-color: $turquoise2; }
+                &:hover { background-color: var(--tainacan-input-border-color); }
+                .is-small { color: var(--tainacan-info-color); }
+                &.is-active { background-color: var(--tainacan-primary); }
 
                 .media {
                     align-items: center;
                 
                     .media-left {
-                        margin-right: 0.5rem;
+                        margin-right: 0.5em;
                     }
                     .media-content {
                         display: flex;
@@ -84,7 +85,7 @@
             .dropdown-menu {
                 border-radius: 4px;
                 .dropdown-item {
-                    padding: 0.75rem !important;
+                    padding: 0.75em !important;
                 }
             }  
         }
@@ -102,6 +103,7 @@
 }
 .taginput-container .mdi-magnify::before, 
 .autocomplete .mdi-magnify::before {
+    color: var(--tainacan-info-color);
     content: 'search';
     display: inline-block;
     font: normal normal normal 20px/1 "TainacanIcons";
@@ -111,7 +113,7 @@
     line-height: inherit;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-size: 20px;
+    font-size: 1.25em;
     text-transform: none !important;
 }
 
@@ -122,32 +124,26 @@
     &:focus, &:active {
         border: none !important;
     }
-    .autocomplete .icon {
-        height: 2.2em !important;
-        .mdi-magnify::before {
-            margin-top: -3px;
-        }
-    }
     .input { 
         margin-bottom: 0px !important; 
-        height: 1.85rem !important;
         text-overflow: ellipsis;
+        background-color: var(--tainacan-input-background-color);
     }
     .input.has-selected, .input:focus, .input:active {
-        background-color: white;
-        border: 1px solid $gray2 !important;
+        background-color: var(--tainacan-input-background-color);
+        border: 1px solid var(--tainacan-input-border-color) !important;
     }
     .tags {
-        margin:  0.17rem 0.25rem 0.08rem 0.25rem !important;
+        margin:  0.17em 0.25em 0.08em 0.25em !important;
         display: inline-flex;
     }
     .tag {
-        background: white;
+        background: var(--tainacan-background-color);
         padding-right: 0;
         padding-left: 0.6em;
 
         &.is-delete {
-            color: $gray4;
+            color: var(--tainacan-info-color);
             &::after {
                 height: 47% !important;
                 width: 1px !important;
@@ -157,31 +153,31 @@
                 height: 1px !important;
             } 
             &:hover, &:focus {
-                background-color: white;
-                color: black;
+                background-color: var(--tainacan-background-color);
+                color: var(--tainacan-label-color);
             }
         }
     }
 }
 .selected-list-box {
     padding: 4px 6px 0px 6px;
-    border-color: $gray2;
+    border-color: var(--tainacan-input-border-color);
     border-width: 0px 1px 1px 1px;
     border-style: solid;
-    background-color: white;
+    background-color: var(--tainacan-background-color);
     display: flex;
-    font-size: 0.75rem;
+    font-size: 0.75em;
 
     .tags {
         margin: 4px 6px 0px 6px;
     }
     .tag {
-        background: white;
+        background: var(--tainacan-background-color);
         padding-right: 0;
         padding-left: 0.5em;
 
         &.is-delete {
-            color: $gray4;
+            color: var(--tainacan-info-color);
             &::after {
                 height: 30% !important;
                 width: 1px !important;
@@ -191,8 +187,8 @@
                 height: 1px !important;
             } 
             &:hover, &:focus {
-                background-color: white;
-                color: black;
+                background-color: var(--tainacan-background-color);
+                color: var(--tainacan-label-color);
             }
         }
     }
@@ -205,7 +201,7 @@
         height: auto;
         
         input {
-            height: 30px;
+            height: auto;
         }
     }
 
@@ -213,7 +209,7 @@
     // .dropdown-trigger {
     //     span.icon>i.mdi-calendar-today::before{
     //         display: inline-block;
-    //         font: normal normal normal 20px/1 "TainacanIcons";
+    //         font: "TainacanIcons" normal normal normal 20px/1;
     //         font-size: inherit;
     //         text-rendering: auto;
     //         vertical-align: middle;
@@ -231,7 +227,7 @@
         border: none;
         
         .dropdown-item {
-            background-color: white !important;
+            background-color: var(--tainacan-background-color) !important;
         }
     }
 
@@ -248,7 +244,7 @@
                 -moz-osx-font-smoothing: grayscale;
                 text-transform: none !important;
                 letter-spacing: normal !important;
-                color: $secondary;
+                color: var(--tainacan-secondary);
             }
 
             .pagination-previous {
@@ -257,7 +253,7 @@
 
                 &>span>i:before {
                     content: 'previous';
-                    font-size: 20px;
+                    font-size: 1em;
                 }
             }
 
@@ -267,33 +263,34 @@
 
                 &>span>i:before {
                     content: 'next';
-                    font-size: 20px;
+                    font-size: 1em;
                 }
             }
         }
     }
 
     .datepicker-table {
+        padding: 0;
         margin-bottom: 0px;
         
         .datepicker-cell {
             border: none !important;
-            padding: 0.5rem 0.75rem;
+            padding: 0.5em 0.75em;
 
             &.is-selectable.is-first-hovered,
             &.is-selectable.is-last-hovered {
-                color: $gray4 !important;
-                background-color: $gray3 !important;
+                color: var(--tainacan-info-color) !important;
+                background-color: var(--tainacan-gray3) !important;
             }
             &.is-today,
             &.is-today:hover {
-                color: $gray4 !important;
-                background-color: $turquoise1;
+                color: var(--tainacan-info-color) !important;
+                background-color: var(--tainacan-primary);
             }
             &.is-selected,
             &.is-selected:hover {
-                color: white !important;
-                background-color: $turquoise5 !important;
+                color: var(--tainacan-white) !important;
+                background-color: var(--tainacan-turquoise5) !important;
             }
         }
 
@@ -301,9 +298,9 @@
             width: auto;
 
             .datepicker-cell {
-                height: 2rem;
+                height: 2em;
                 width: 50%;
-                padding: 0.3rem 0.25rem !important;
+                padding: 0.3em 0.25em !important;
                 text-overflow: ellipsis;
                 overflow: hidden;
                 display: block;
@@ -314,15 +311,15 @@
     @media screen and (min-width: 768px) {
 
         .datepicker-header {
-            margin-bottom: 0.5rem;
-            padding-top: 0.15rem;
-            padding-bottom: 0.5rem;
+            margin-bottom: 0.5em;
+            padding-top: 0.15em;
+            padding-bottom: 0.5em;
             
             .pagination {
                 flex-wrap: wrap;
             
                 .pagination-list {
-                    margin-bottom: 0.5rem;
+                    margin-bottom: 0.5em;
 
                     .field.has-addons {
                         width: 100% !important;
@@ -337,7 +334,7 @@
                     margin: 0;
                     height: 24px;
                     padding: 0;
-                    font-size: 0.75rem; 
+                    font-size: 0.75em; 
                     order: 3;
                 }
 
@@ -345,13 +342,13 @@
                     margin: 0;
                     height: 24px;
                     padding: 0;
-                    font-size: 0.75rem;
+                    font-size: 0.75em;
                 }
             }
         }
 
         .dropdown-item {
-            padding: 0.8rem !important;
+            padding: 0.8em !important;
         }
 
         .dropdown-menu {

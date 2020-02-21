@@ -7,7 +7,11 @@
                 :step="filterTypeOptions.step"
                 v-model="valueInit"
                 />
-        <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
+        <p 
+                style="font-size: 0.75em; margin-bottom: 0.125em;"
+                class="has-text-centered is-marginless">
+            {{ $i18n.get('label_until') }}
+        </p>
         <b-numberinput
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
@@ -115,9 +119,6 @@
 
 <style scoped>
     .field {
-        margin-bottom: 0.125rem !important;
-    }
-    p.is-size-7 {
-        margin-bottom: 0.125rem !important;
+        margin-bottom: 0.125em !important;
     }
 </style>

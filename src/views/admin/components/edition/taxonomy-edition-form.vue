@@ -518,7 +518,10 @@
         }
     }
 </script>
-<style scoped>
+<style lang="scss" scoped>
+
+    @import '../../scss/_variables.scss';
+
     .tab-content {
         overflow: visible !important;
     }
@@ -533,7 +536,7 @@
         margin-bottom: 76px;
     }
     .tainacan-form .column {
-        padding: 1rem 4.1666667%;
+        padding: 1em $page-side-padding;
     }
     .tainacan-form .column:last-of-type {
         padding-left: 0;
@@ -542,8 +545,8 @@
         align-items: center;
     }
     .updated-at {
-        margin: 0 1rem 0 auto;
-        color: #555758;
+        margin: 0 1em 0 auto;
+        color: var(--tainacan-info-color);
         font-style: italic;
     }
 </style>

@@ -116,7 +116,7 @@
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle" />
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle" />
                             </span>  
                         </div>   
                         <div 
@@ -380,9 +380,9 @@ export default {
             justify-content: space-between;
 
             h1, h2 {
-                font-size: 20px;
+                font-size: 1.25em;
                 font-weight: 500;
-                color: $gray5;
+                color: var(--tainacan-heading-color);
                 display: inline-block;
                 flex-shrink: 1;
                 flex-grow: 1;
@@ -395,19 +395,19 @@ export default {
             hr{
                 margin: 3px 0px 4px 0px; 
                 height: 1px;
-                background-color: $secondary;
+                background-color: var(--tainacan-secondary);
                 width: 100%;
             }
         }
         .source-file-upload {
             width: 100%;
-            padding: 0.75rem $page-side-padding;
+            padding: 0.75em $page-side-padding;
             @include display-grid;
         }
         .document-list {
             display: inline-block;
             width: 100%;
-            padding: 1rem 8.333333%;
+            padding: 1em 8.333333%;
 
             .document-item {
                 display: flex;
@@ -415,14 +415,14 @@ export default {
                 width: 100%;
                 justify-content: space-between;
                 align-items: center;
-                padding: 0.5rem 0.75rem;
+                padding: 0.5em 0.75em;
                 position: relative;
                 cursor: default;
 
                 .document-thumb {
                     max-height: 42px;
                     max-width: 42px;
-                    margin-right: 1rem;
+                    margin-right: 1em;
                 }
 
                 .document-name {
@@ -445,7 +445,7 @@ export default {
                 .document-actions {
                     position: absolute;
                     right: 0;
-                    background: $gray2;
+                    background: var(--tainacan-gray2);
                     height: 100%;
                     display: none;
                     justify-content: center;
@@ -459,7 +459,7 @@ export default {
                 }
 
                 &:hover {
-                    background-color: $gray1;
+                    background-color: var(--tainacan-gray1);
 
                     .document-actions {
                         display: flex;
@@ -476,28 +476,28 @@ export default {
             .sequence-progress-info {
                 display: flex;
                 justify-content: space-between;
-                margin-bottom: 0.25rem;
+                margin-bottom: 0.25em;
 
                 .i::before {
-                    font-size: 18px;
-                    margin-left: 0.5rem;
+                    font-size: 1.125em;
+                    margin-left: 0.5em;
                 }
             }
             .sequence-progress {
                 height: 5px;
-                background: $turquoise5;
+                background: var(--tainacan-turquoise5);
                 width: 0%;
                 transition: width 0.2s;
-                margin-bottom: 1rem;
+                margin-bottom: 1em;
             }
             .sequence-progress-background {
                 height: 5px;
-                background: $gray3;
+                background: var(--tainacan-gray3);
                 width: 100%;
                 top: -21px;
                 z-index: -1;
                 position: relative;
-                margin-bottom: 1rem;
+                margin-bottom: 1em;
             }        
         }
 
@@ -506,7 +506,7 @@ export default {
             position: absolute;
             bottom: 0;
             z-index: 999999;
-            background-color: $gray1;
+            background-color: var(--tainacan-gray1);
             width: 100%;
             height: 65px;
             display: flex;

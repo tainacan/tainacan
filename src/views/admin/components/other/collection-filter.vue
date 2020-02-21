@@ -12,7 +12,7 @@
                 <span class="icon is-right">
                     <i 
                             :class="{ 'tainacan-icon-arrowdown': props.open, 'tainacan-icon-arrowright': !props.open }"
-                            class="tainacan-icon tainacan-icon-20px" />
+                            class="tainacan-icon tainacan-icon-1-25em" />
                 </span>
                 {{ $i18n.get('collections') }}
             </label>
@@ -65,10 +65,10 @@
         },
         created(){
             this.fetchCollections({
-                    page: 1, 
-                    collectionsPerPage: -1, 
-                    status: null,
-                    contextEdit: false
+                page: 1, 
+                collectionsPerPage: -1, 
+                status: null,
+                contextEdit: false
             });
         },
         mounted(){
@@ -100,7 +100,7 @@
                     compare: 'IN',
                     collection_id: this.collectionsIdsToFilter,
                 });
-            },
+            }
         }
     }
 </script>

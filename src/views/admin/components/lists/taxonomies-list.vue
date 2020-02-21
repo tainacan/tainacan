@@ -25,7 +25,7 @@
                             slot="trigger">
                         <span>{{ $i18n.get('label_bulk_actions') }}</span>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
                         </span>
                     </button> 
 
@@ -84,7 +84,6 @@
                                 :class="{ 'is-selecting': isSelecting }"
                                 class="checkbox-cell">
                             <b-checkbox 
-                                    size="is-small"
                                     v-model="selected[index]"/> 
                         </td>
                         <!-- Name -->
@@ -163,7 +162,7 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
-                                        <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
                                     </span>
                                 </a>
                                 <a 
@@ -181,7 +180,7 @@
                                             class="icon">
                                         <i 
                                                 :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                                class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                                class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                                     </span>
                                 </a>
                             </div>
@@ -354,14 +353,14 @@
     .selection-control {
         
         padding: 6px 0px 0px 12px;
-        background: white;
+        background: var(--tainacan-white);
         height: 40px;
 
         .select-all {
-            color: $gray4;
-            font-size: 14px;
+            color: var(--tainacan-info-color);
+            font-size: 0.875em;
             &:hover {
-                color: $gray4;
+                color: var(--tainacan-info-color);
             }
         }
     }

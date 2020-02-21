@@ -44,7 +44,7 @@
                               importerSourceInfo != null &&
                               !isLoading">
                     <template v-if="importerSourceInfo.source_metadata.length > 0 || (importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0)">
-                        <p class="mapping-header-label is-inline">{{ $i18n.get('label_from_source_collection') }}</p>
+                        <p class="mapping-header-label is-pulled-left">{{ $i18n.get('label_from_source_collection') }}</p>
                         <p class="mapping-header-label is-pulled-right">{{ $i18n.get('label_to_target_collection') }}</p>
                     </template>
                     <div
@@ -161,6 +161,7 @@
                     </b-modal>
                     <a
                             v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
+                            style="font-size: 0.875em;"
                             class="is-inline is-pulled-right add-link has-text-secondary"
                             @click="createNewMetadatum()">
                         <span class="icon">
@@ -617,9 +618,9 @@ export default {
         margin-bottom: 40px;
 
         h1, h2 {
-            font-size: 20px;
+            font-size: 1.25em;
             font-weight: 500;
-            color: $blue5;
+            color: var(--tainacan-blue5);
             display: inline-block;
         }
         a.back-link{
@@ -630,10 +631,10 @@ export default {
         hr{
             margin: 3px 0px 4px 0px; 
             height: 1px;
-            background-color: $secondary;
+            background-color: var(--tainacan-secondary);
         }
         .breadcrumbs {
-            font-size: 12px;
+            font-size: 0.75em;
         }
         .level-left {
             .level-item {
@@ -673,16 +674,16 @@ export default {
     }
 
     .section-label {
-        font-size: 16px !important;
+        font-size: 1em !important;
         font-weight: 500 !important;
-        color: $blue5 !important;
+        color: var(--tainacan-blue5) !important;
         line-height: 1.2em;
     }
 
     .source-metadatum {
         padding: 2px 0;
         min-height: 35px;
-        border-bottom: 1px solid $gray2;
+        border-bottom: 1px solid var(--tainacan-gray2);
         width: 100%;
         margin-bottom: 6px;
         display: flex;
@@ -694,11 +695,11 @@ export default {
         display: inline;
     }
     .drop-inner{
-        padding: 1rem 3rem;
+        padding: 1em 3em;
     }
 
     .mapping-header-label {
-        color: $gray4;
+        color: var(--tainacan-info-color);
         margin: 12px 0 6px 0;
     }
 
@@ -707,14 +708,14 @@ export default {
         z-index: 99999;
 
         #metadatumEditForm {
-            background-color: white;
+            background-color: var(--tainacan-background-color);
         }
     }
 
     .metadata-types-container {
 
         .metadata-type {
-            border-bottom: 1px solid $gray2;
+            border-bottom: 1px solid var(--tainacan-gray2);
             padding: 15px 8.3333333%;
             cursor: pointer;
         
@@ -725,7 +726,7 @@ export default {
                 border-bottom: none;
             }
             &:hover {
-                background-color: $gray1;
+                background-color: var(--tainacan-gray1);
             }
         }
     }
@@ -736,8 +737,8 @@ export default {
 
         p {
             max-width: 74px;
-            font-size: 0.875rem;
-            color: $gray5;
+            font-size: 0.875em;
+            color: var(--tainacan-gray5);
             margin: 4px 8px;
             text-align: left;
             text-overflow: ellipsis;
@@ -747,7 +748,7 @@ export default {
         div {
             height: 90px;
             width: 90px;
-            background-color: $gray2;
+            background-color: var(--tainacan-gray2);
             border-radius: 2px;
         }
     }

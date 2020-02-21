@@ -1,3 +1,7 @@
+input.input,
+.input,
+textarea.textarea, 
+.textarea,
 input[type="color"].input,
 input[type="date"].input,
 input[type="datetime-local"].input,
@@ -11,40 +15,48 @@ input[type="tel"].input,
 input[type="text"].input,
 input[type="time"].input,
 input[type="url"].input,
-input[type="week"].input,
-input.input,
-.input,
-textarea.textarea, 
-.textarea {
-    font-size: 0.875rem;
+input[type="week"].input {
+    height: auto;
+    line-height: 1em;
+    font-size: 0.875em;
     border-radius: 1px !important;
     box-shadow: none !important;
-    background-color: white;
-    border: 1px solid $gray2;
-    color: $tainacan-input-color;
+    background-color: var(--tainacan-input-background-color);
+    border: 1px solid var(--tainacan-input-border-color);
+    color: var(--tainacan-input-color);
+    padding-top: calc(0.57em - 1px);
+    padding-bottom: calc(0.57em - 1px);
     transition: background-color 0.1s ease, border-color 0.3s ease;
 
     &:focus, &:active {
         box-shadow: none !important;
-        background-color: white;
-        border: 1px solid $gray4 !important;
+        background-color: var(--tainacan-input-background-color);
+        border: 1px solid var(--tainacan-gray4) !important;
     }  
     &:hover {
-        border: 1px solid $gray3;
+        border: 1px solid var(--tainacan-gray3);
     }  
     &[disabled] {
-        color: $gray4 !important;
-        background-color: $gray2 !important;
+        color: var(--tainacan-info-color) !important;
+        background-color: var(--tainacan-input-border-color) !important;
     }
     &.readonly, &[readonly] {
-        background-color: white !important;
+        background-color: var(--tainacan-white) !important;
     }
-    &::placeholder,
-    &::-ms-input-placeholder,
-    &:-ms-input-placeholder,
-    &:-moz-placeholder,
-    &::-moz-placeholder,
+    &::placeholder {
+        font-size: 0.875em;
+        color: var(--tainacan-info-color) !important;
+    }
+    &::-ms-input-placeholder {
+        font-size: 0.875em;
+        color: var(--tainacan-info-color) !important;
+    }
+    &::-moz-placeholder {
+        font-size: 0.875em;
+        color: var(--tainacan-info-color) !important;
+    }
     &::-webkit-input-placeholder {
-        color: $gray4 !important;
+        font-size: 0.875em;
+        color: var(--tainacan-info-color) !important;
     }
 }

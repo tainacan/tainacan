@@ -193,7 +193,7 @@
                                         placement: 'auto-end'
                                     }"
                                     class="icon">
-                                <i class="has-text-gray4 tainacan-icon tainacan-icon-20px tainacan-icon-cancel"/>
+                                <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-cancel"/>
                             </span>
                         </button>
 
@@ -210,7 +210,7 @@
                                     animated
                                     :label="$i18n.get('info_bulk_edition_process_added')">
                                 <span class="icon">
-                                    <i class="has-text-success tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle"/>
+                                    <i class="has-text-success tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
                                 </span>
                             </b-tooltip>
                         </div>
@@ -230,7 +230,7 @@
                                         placement: 'auto-end'
                                     }"
                                     class="icon">
-                                <i class="has-text-gray4 tainacan-icon tainacan-icon-20px tainacan-icon-play"/>
+                                <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-play"/>
                             </span>
                         </button>
 
@@ -589,7 +589,7 @@
     }
 
     .tainacan-total-objects-info {
-        font-size: 12px;
+        font-size: 0.75em;
         font-weight: normal;
     }
 
@@ -635,15 +635,15 @@
         .is-field-history {
 
             .input[disabled], .taginput [disabled].taginput-container.is-focusable, .textarea[disabled] {
-                color: black !important;
+                color: var(--tainacan-black) !important;
                 border: none !important;
-                background-color: white !important;
+                background-color: var(--tainacan-input-background-color) !important;
             }
 
             .taginput-container {
                 .tags {
-                    color: black !important;
-                    background-color: white !important;
+                    color: var(--tainacan-black) !important;
+                    background-color: var(--tainacan-white) !important;
                     border: none !important;
 
                     .tag.is-delete {
@@ -655,7 +655,7 @@
                     }
 
                     &:hover, .tag {
-                        background-color: white !important;
+                        background-color: var(--tainacan-white) !important;
                     }
                 }
 
@@ -665,17 +665,17 @@
             }
 
             input {
-                color: black !important;
+                color: var(--tainacan-black) !important;
                 border: none !important;
-                background-color: white !important;
+                background-color: var(--tainacan-white) !important;
             }
 
             textarea {
-                color: black !important;
+                color: var(--tainacan-black) !important;
                 border: none !important;
-                background-color: white !important;
+                background-color: var(--tainacan-white) !important;
                 min-height: auto !important;
-                line-height: 1.5rem;
+                line-height: 1.5em;
             }
 
             .select {
@@ -710,14 +710,14 @@
             flex-direction: row-reverse;
 
             .icon.has-text-gray4:hover {
-                color: $gray5 !important;
+                color: var(--tainacan-heading-color) !important;
             }
         }
     }
 
     .tainacan-add-edition-criterion-button {
-        font-size: 12px;
-        color: $turquoise5;
+        font-size: 0.75em;
+        color: var(--tainacan-turquoise5);
     }
 
     .tainacan-add-edition-criterion-button-disabled {

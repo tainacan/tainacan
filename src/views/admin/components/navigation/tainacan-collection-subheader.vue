@@ -44,7 +44,7 @@
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '' }" 
                             :aria-label="$i18n.get('label_collection_items')">               
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-items"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('items') }}</span>
                     </router-link>
@@ -68,7 +68,7 @@
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionEditPath(collection.id) : '' }" 
                             :aria-label="$i18n.get('label_settings')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-settings"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings"/>
                         </span>
                     
                     <span class="menu-text">{{ $i18n.get('label_settings') }}</span>
@@ -93,7 +93,7 @@
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionMetadataPath(collection.id) : '' }"
                             :aria-label="$i18n.get('label_collection_metadata')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-metadata"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/>
                         </span>
                     <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                     </router-link>
@@ -117,7 +117,7 @@
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionFiltersPath(collection.id) : ''}" 
                             :aria-label="$i18n.get('label_collection_filters')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-filters"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
                         </span>
                     <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
@@ -141,7 +141,7 @@
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionActivitiesPath(collection.id) : '' }"
                             :aria-label="$i18n.get('label_collection_activities')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-activities"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('activities') }}</span>
                     </router-link>                
@@ -241,18 +241,18 @@ export default {
     .header-tooltips .tooltip-inner {
         color: turquoise5;
         text-shadow: none;
-        background-color: $turquoise2;
-        font-size: 0.75rem;
+        background-color: var(--tainacan-turquoise2);
+        font-size: 0.75em;
         font-weight: 400;
         padding: 10px 14px;
     }
     .header-tooltips .tooltip-arrow {
-        border-color: $turquoise2;
+        border-color: var(--tainacan-turquoise2);
     }
     
     // Tainacan Header
     #tainacan-subheader {
-        background-color: $turquoise5;
+        background-color: var(--tainacan-turquoise5);
         height: $subheader-height;
         max-height: $subheader-height;
         width: 100%;
@@ -270,9 +270,9 @@ export default {
         transition: padding 0.3s, height 0.3s;
 
         h1 {
-            font-size: 18px;
+            font-size: 1.125em;
             font-weight: 500;
-            color: white;
+            color: var(--tainacan-white);
             line-height: 22px;
             margin-bottom: 12px; 
             max-width: 450px;
@@ -287,7 +287,7 @@ export default {
             height: 42px;
             width: $page-side-padding;
             min-width: $page-side-padding;
-            color: white;
+            color: var(--tainacan-white);
             display: flex;
 
             button, 
@@ -295,7 +295,7 @@ export default {
             button:focus, 
             button:active {
                 width: 100%;
-                color: white;
+                color: var(--tainacan-white);
                 background-color: transparent !important;
                 border: none;
                 height: 42px !important;
@@ -315,19 +315,19 @@ export default {
             // max-width: 50px;
 
             &.is-active {
-                background-color: $turquoise4;
+                background-color: var(--tainacan-turquoise4);
                 a { 
-                    background-color: $turquoise4;
+                    background-color: var(--tainacan-turquoise4);
                     transition: color 0.2s ease;
-                    color: white;
+                    color: var(--tainacan-white);
                     text-decoration: none;
                 }
                 svg {
-                    fill: white !important;
+                    fill: var(--tainacan-white) !important;
                 }
             }
             &:hover:not(.is-active) {
-                background-color: $turquoise4;
+                background-color: var(--tainacan-turquoise4);
 
                 a {
                     background-color: transparent;
@@ -335,7 +335,7 @@ export default {
                 }
             }
             a {
-                color: white;
+                color: var(--tainacan-white);
                 text-align: center;
                 white-space: nowrap;
                 padding: 9px 11px;
@@ -353,19 +353,19 @@ export default {
                 margin: 0;
                 padding: 0;
                 i {
-                    font-size: 18px !important;
+                    font-size: 1.125em !important;
                 }
                 svg {
                     position: relative;
                     top: 2px;
                     margin-bottom: 2px;
                     height: 16px;
-                    fill: white;
+                    fill: var(--tainacan-white);
                 }
             }
             .menu-text {
                 margin-left: 2px;
-                font-size: 14px;
+                font-size: 0.875em;
                 display: inline-flex;
                 // width: 0px;
                 // right: 100%;
@@ -388,7 +388,7 @@ export default {
             .level-left {
                 margin-left: 0px !important;
                 display: flex;
-                padding: 0 1rem;
+                padding: 0 1em;
                 .level-item {
                     display: inline-flex;
                 }
@@ -418,11 +418,11 @@ export default {
             z-index: 99;
         }
         .tooltip.is-primary::after {
-            background-color: $turquoise1;
-            color: $turquoise5;
+            background-color: var(--tainacan-turquoise1);
+            color: var(--tainacan-turquoise5);
         }
         .tooltip.is-primary::before {
-            border-bottom-color: $turquoise1;
+            border-bottom-color: var(--tainacan-turquoise1);
         }
 
     }

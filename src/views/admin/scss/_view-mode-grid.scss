@@ -9,10 +9,11 @@
     animation-duration: 0.5s;
 
     .selected-grid-item {
-        background-color: $turquoise1;
+        background-color: var(--tainacan-turquoise1);
     }
 
     .tainacan-grid-item {
+        background-color: var(--tainacan-item-background-color);
         max-width: 255px;
         min-height: 300px;
         max-height: 300px;
@@ -22,13 +23,13 @@
         transition: background-color 0.2s ease;
 
         &:hover {
-            background-color: $gray2;
+            background-color: var(--tainacan-item-heading-hover-background-color);
         }
 
         .grid-item-checkbox {
             position: absolute;
             margin-top: 9px;
-            margin-left: 1rem;
+            margin-left: 1em;
         }
         .actions-area {
             position: relative;
@@ -42,7 +43,7 @@
             opacity: 0;
             padding: 3px 8px;
             margin-top: 0px;
-            background-color: $gray2;
+            background-color: var(--tainacan-item-heading-hover-background-color);
             transition: visibility 0.2s ease, opacity 0.2s ease, height 0.2s ease, margin-top 0.2s ease;
 
             a {
@@ -56,7 +57,7 @@
             opacity: 1.0;
             height: 32px;
             margin-top: -30px;
-            background-color: $gray2 !important;
+            background-color: var(--tainacan-item-heading-hover-background-color) !important;
 
             a {
                 opacity: 1;
@@ -78,7 +79,7 @@
                 height: 255px;
                 position: absolute;
                 z-index: -1;
-                background-color: #e0e0e0;
+                background-color: var(--tainacan-skeleton-color);
                 bottom: 0;
             }
             
@@ -95,17 +96,17 @@
         .metadata-title {
             flex-shrink: 0;
             margin: 6px;
-            padding: 6px 1rem;
+            padding: 6px 1em;
             min-height: 30px;
             cursor: pointer;
 
             p { 
-                font-size: 0.875rem; 
+                font-size: 0.875em; 
                 text-overflow: ellipsis;
                 white-space: nowrap; 
                 overflow: hidden;
                 text-align: left;
-                color: black;
+                color: var(--tainacan-heading-color);
             }
         } 
     

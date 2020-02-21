@@ -5,7 +5,8 @@ button.link-style:active {
     outline: none;
     cursor: pointer;
     font-size: inherit;
-    color: $secondary;
+    text-transform: inherit;
+    color: var(--tainacan-secondary);
     padding: 0;
     margin: 0;
     font-weight: normal;
@@ -18,24 +19,29 @@ button.link-style:active {
 .button {
     border-radius: 6px !important;
     font-weight: normal;
-    padding: 2px 15px !important;
+    text-transform: inherit;
+    font-family: inherit;
+    padding: 2px 13px !important;
     margin-top: 0px !important;
     margin-bottom: 0px !important;
     height: inherit !important;
     box-shadow: none !important;
     display: inline-flex !important;
     cursor: pointer;
-    background-color: white;
+    background-color: var(--tainacan-white);
     text-shadow: none !important;
 
-    &.is-secondary:hover, &.is-secondary:focus {
-        background: $secondary !important;
+    &.is-secondary, &.is-secondary:hover, &.is-secondary:focus {
+        background: var(--tainacan-secondary) !important;
+        color: var(--tainacan-white) !important;
     }
-    &.is-primary:hover, &.is-primary:focus {
-        background: $turquoise3 !important;
+    &.is-primary, &:hover, &.is-primary:focus {
+        background: var(--tainacan-turquoise2) !important;
+        color: var(--tainacan-white) !important;
     }
-    &.is-success:hover, &.is-success:focus {
-        background: $success !important;
+    &.is-success, &.is-success:hover, &.is-success:focus {
+        background: var(--tainacan-success) !important;
+        color: var(--tainacan-white) !important;
     }
     &.is-white, &.is-white:hover, &.is-white:focus, &.is-outlined:hover, &.is-outlined:focus {
         background-color: transparent !important;
@@ -45,12 +51,12 @@ button.link-style:active {
         transform: none !important;
     }
     &.is-outlined {
-        color: $turquoise5;
-        background-color: white !important;
-        border-color: $gray4 !important;
+        color: var(--tainacan-secondary);
+        background-color: transparent !important;
+        border-color: var(--tainacan-input-color) !important;
     }
     &.is-outlined:hover {
-        color: $turquoise5 !important;
+        color: var(--tainacan-secondary) !important;
     }
     &:focus {
         outline: 0px;
@@ -58,14 +64,14 @@ button.link-style:active {
     &[disabled], &:hover[disabled] {
         border: none !important;
         cursor: not-allowed !important;
-        color: $gray4 !important;
-        background-color: $gray2 !important;
+        color: var(--tainacan-info-color) !important;
+        background-color: var(--tainacan-gray2) !important;
         text-shadow: none !important;
     }
     &.is-outlined[disabled], &.is-outlined:hover[disabled] {
-        border: 1px solid $gray2 !important;
-        color: $gray4 !important;
-        background-color: white !important;
+        border: 1px solid var(--tainacan-gray2) !important;
+        color: var(--tainacan-info-color) !important;
+        background-color: var(--tainacan-white) !important;
     }
     &.is-white[disabled] {
         background-color: transparent !important;
@@ -73,11 +79,11 @@ button.link-style:active {
     }
 }
 .button.is-small {
-    height: 1.625rem !important;
-    line-height: 0.75rem;
+    height: 1.625em !important;
+    line-height: 0.75em;
 }
 .button:not(.is-small):not(.is-medium):not(.is-large) {
-    height: 1.875rem !important;
-    font-size: 0.875rem !important;
-    line-height: 1.5rem;
+    height: 1.875em !important;
+    font-size: 0.875em !important;
+    line-height: 1.5em;
 }

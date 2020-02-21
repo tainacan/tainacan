@@ -111,7 +111,7 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
                                     </span>
                                 </a>
                                 <a 
@@ -126,7 +126,7 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-delete"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
                                     </span>
                                 </a>
                             </span>
@@ -281,7 +281,7 @@
                                             class="field">
                                         <span class="collapse-handle">
                                             <span class="icon">
-                                                <i class="has-text-secondary tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
                                             </span> 
                                             <label class="label has-tooltip">
                                                 {{ currentFilterTypePreview.name }}
@@ -748,9 +748,9 @@ export default {
             justify-content: space-between;
 
             h1, h2 {
-                font-size: 20px;
+                font-size: 1.25em;
                 font-weight: 500;
-                color: $gray5;
+                color: var(--tainacan-heading-color);
                 display: inline-block;
                 width: 80%;
                 flex-shrink: 1;
@@ -764,7 +764,7 @@ export default {
             hr{
                 margin: 3px 0px 4px 0px; 
                 height: 1px;
-                background-color: $secondary;
+                background-color: var(--tainacan-secondary);
                 width: 100%;
             }
         }
@@ -785,7 +785,7 @@ export default {
 
         .loading-spinner {
             animation: spinAround 500ms infinite linear;
-            border: 2px solid #dbdbdb;
+            border: 2px solid var(--tainacan-gray2);
             border-radius: 290486px;
             border-right-color: transparent;
             border-top-color: transparent;
@@ -796,10 +796,10 @@ export default {
         }
 
         .active-filters-area {
-            font-size: 14px;
-            margin-right: 0.8rem;
-            margin-left: -0.8rem;
-            padding-right: 3rem;
+            font-size: 0.875em;
+            margin-right: 0.8em;
+            margin-left: -0.8em;
+            padding-right: 3em;
             min-height: 330px;
 
             @media screen and (max-width: 769px) {
@@ -820,7 +820,7 @@ export default {
             }
 
             .active-filter-item {
-                background-color: white;
+                background-color: var(--tainacan-white);
                 padding: 0.7em 0.9em;
                 margin: 4px;
                 min-height: 40px;
@@ -832,12 +832,12 @@ export default {
                 form.tainacan-form {
                     padding: 1.0em 2.0em;
                     margin-top: 1.0em;
-                    border-top: 1px solid $gray2;
-                    border-bottom: 1px solid $gray2;
+                    border-top: 1px solid var(--tainacan-gray2);
+                    border-bottom: 1px solid var(--tainacan-gray2);
                 }
             
                 &>.field, form {
-                    background-color: white !important;
+                    background-color: var(--tainacan-white) !important;
                 }
 
                 .handle {
@@ -846,7 +846,7 @@ export default {
                     display: flex;
                 }
                 .grip-icon { 
-                    color: $gray3;
+                    color: var(--tainacan-gray3);
                     position: relative;
                 }
                 .filter-name {
@@ -858,18 +858,18 @@ export default {
                     margin-right: 0.4em;
 
                     &.is-danger {
-                        color: $danger !important;
+                        color: var(--tainacan-danger) !important;
                     }
                 }
                 .label-details {
                     font-weight: normal;
-                    color: $gray3;
+                    color: var(--tainacan-gray3);
                 }
                 .not-saved {
                     font-style: italic;
                     font-weight: bold;
-                    color: $danger;
-                    margin-left: 0.5rem;
+                    color: var(--tainacan-danger);
+                    margin-left: 0.5em;
                 }
                 .controls { 
                     position: absolute;
@@ -882,32 +882,32 @@ export default {
                     .icon {
                         bottom: 1px;   
                         position: relative;
-                        i, i:before { font-size: 20px; }
+                        i, i:before { font-size: 1.25em; }
                     }
                 }
 
                 &.not-sortable-item, &.not-sortable-item:hover {
                     cursor: default;
-                    background-color: white !important;
+                    background-color: var(--tainacan-white) !important;
                 } 
                 &.not-focusable-item, &.not-focusable-item:hover {
                     cursor: default;
                 
                     .metadatum-name {
-                        color: $secondary;
+                        color: var(--tainacan-secondary);
                     }
                 }
                 &.disabled-metadatum {
-                    color: $gray3;
+                    color: var(--tainacan-gray3);
                 }    
             }
             .active-filter-item:hover:not(.not-sortable-item) {
-                background-color: $secondary;
-                border-color: $secondary;
-                color: white !important;
+                background-color: var(--tainacan-secondary);
+                border-color: var(--tainacan-secondary);
+                color: var(--tainacan-white) !important;
 
                 &>.field, form {
-                    background-color: white !important;
+                    background-color: var(--tainacan-white) !important;
                 }
 
                 .grip-icon { 
@@ -915,27 +915,27 @@ export default {
                 }
 
                 .label-details, .icon, .icon-level-identifier>i {
-                    color: white !important;
+                    color: var(--tainacan-white) !important;
                 }
 
                 .switch.is-small {
                     input[type="checkbox"] + .check {
-                        background-color: $secondary !important;
+                        background-color: var(--tainacan-secondary) !important;
                         border: 1.5px solid white !important;
-                        &::before { background-color: white !important; }
+                        &::before { background-color: var(--tainacan-white) !important; }
                     } 
                     input[type="checkbox"]:checked + .check {
                         border: 1.5px solid white !important;
-                        &::before { background-color: white !important; }
+                        &::before { background-color: var(--tainacan-white) !important; }
                     }
                     &:hover input[type="checkbox"] + .check {
                         border: 1.5px solid white !important;
-                        background-color: $secondary !important;
+                        background-color: var(--tainacan-secondary) !important;
                     }
                 }
             }
             .sortable-ghost {
-                border: 1px dashed $gray2;
+                border: 1px dashed var(--tainacan-gray2);
                 display: block;
                 padding: 0.7em 0.9em;
                 margin: 4px;
@@ -943,7 +943,7 @@ export default {
                 position: relative;
 
                 .grip-icon { 
-                    color: $gray3;
+                    color: var(--tainacan-gray3);
                     top: 2px;
                     position: relative;
                 }
@@ -955,7 +955,7 @@ export default {
             margin: 0;
             max-width: 500px;
             min-width: 20.8333333%;
-            font-size: 0.875rem;
+            font-size: 0.875em;
 
             @media screen and (max-width: 769px) {
                 max-width: 100%;
@@ -970,25 +970,24 @@ export default {
             }
 
             h3 {
-                margin: 0.2rem 0rem 1rem 0rem;
+                margin: 0.2em 0em 1em 0em;
                 font-weight: 500;
             }
 
             .available-metadatum-item {
-                padding: 0.6rem;
-                margin: 4px 4px 4px 1.2rem;
-                background-color: white;
+                padding: 0.6em;
+                margin: 4px 4px 4px 1.2em;
+                background-color: var(--tainacan-white);
                 cursor: pointer;
                 left: 0;
-                line-height: 1.3em;
                 height: 40px;
                 position: relative;
-                border: 1px solid $gray2;
+                border: 1px solid var(--tainacan-gray2);
                 border-radius: 1px;
                 transition: left 0.2s ease;
                 
                 .grip-icon { 
-                    color: $gray3;
+                    color: var(--tainacan-gray3);
                     top: -6px;
                     position: relative;
                     display: inline-block;
@@ -1002,7 +1001,6 @@ export default {
                     overflow-x: hidden;
                     white-space: nowrap;
                     font-weight: bold;
-                    line-height: normal;
                     margin-left: 0.4em;
                     display: inline-block;
                     max-width: 180px;
@@ -1028,7 +1026,7 @@ export default {
                 }
                 &:before {
                     top: -1px;
-                    border-color: transparent $gray2 transparent transparent;
+                    border-color: transparent var(--tainacan-gray2) transparent transparent;
                     border-right-width: 16px;
                     border-top-width: 20px;
                     border-bottom-width: 20px;
@@ -1040,23 +1038,23 @@ export default {
             }
             .available-metadatum-item:not(.disabled-metadatum)  {
                 &:hover{
-                    background-color: $secondary;
-                    border-color: $secondary;
-                    color: white !important;
+                    background-color: var(--tainacan-secondary);
+                    border-color: var(--tainacan-secondary);
+                    color: var(--tainacan-white) !important;
                     position: relative;
                     left: -4px;
 
                     &:after {
-                        border-color: transparent $secondary transparent transparent;
+                        border-color: transparent var(--tainacan-secondary) transparent transparent;
                     }
                     &:before {
-                        border-color: transparent $secondary transparent transparent;
+                        border-color: transparent var(--tainacan-secondary) transparent transparent;
                     }
                     .icon-level-identifier>i {
-                        color: white !important;
+                        color: var(--tainacan-white) !important;
                     }
                     .grip-icon {
-                        color: white !important;
+                        color: var(--tainacan-white) !important;
                     }
                 }
             }
@@ -1064,15 +1062,15 @@ export default {
 
         .inherited-filter {
             &.active-filter-item:hover:not(.not-sortable-item) {
-                background-color: $blue5;
-                border-color: $blue5;
+                background-color: var(--tainacan-blue5);
+                border-color: var(--tainacan-blue5);
                 
                 .switch.is-small {
                     input[type="checkbox"] + .check {
-                        background-color: $blue5 !important;
+                        background-color: var(--tainacan-blue5) !important;
                     } 
                     &:hover input[type="checkbox"] + .check {
-                        background-color: $blue5 !important;
+                        background-color: var(--tainacan-blue5) !important;
                     }
                 }
             }
@@ -1080,14 +1078,14 @@ export default {
         .inherited-metadatum {
 
             &.available-metadatum-item:hover {
-                background-color: $blue5 !important;
-                border-color: $blue5 !important;
+                background-color: var(--tainacan-blue5) !important;
+                border-color: var(--tainacan-blue5) !important;
             
                 &:after {
-                    border-color: transparent $blue5 transparent transparent !important;
+                    border-color: transparent var(--tainacan-blue5) transparent transparent !important;
                 }
                 &:before {
-                    border-color: transparent $blue5 transparent transparent !important;
+                    border-color: transparent var(--tainacan-blue5) transparent transparent !important;
                 }
 
             }
@@ -1108,7 +1106,7 @@ export default {
                 p { margin-bottom: 16px; }
 
                 .filter-type {
-                    border-bottom: 1px solid $gray2;
+                    border-bottom: 1px solid var(--tainacan-gray2);
                     padding: 15px 8.3333333%;
                     cursor: pointer;
                 
@@ -1119,13 +1117,13 @@ export default {
                         border-bottom: none;
                     }
                     &:hover {
-                        background-color: $gray2;
+                        background-color: var(--tainacan-gray2);
                     }
                 }
             }
 
             .filter-type-preview {
-                background: $gray1;
+                background: var(--tainacan-gray1);
                 margin: 12px auto;
                 padding: 12px 30px;
                 border-radius: 3px;
@@ -1149,9 +1147,9 @@ export default {
 
                 .filter-type-label {
                     font-weight: 600;
-                    color: $gray4;
+                    color: var(--tainacan-info-color);
                     width: 100%;
-                    font-size: 1rem;
+                    font-size: 1em;
                     margin-left: -16px;
                 }
                 
@@ -1166,7 +1164,7 @@ export default {
                     background-color: rgba(255,255,255,0.60) !important;
                 }
                 .autocomplete>.control, .autocomplete>.control>input, .dropdown-content {
-                    background-color: $gray0 !important;
+                    background-color: var(--tainacan-gray0) !important;
                 }
                 .taginput {
                     margin-bottom: 80px;
@@ -1181,14 +1179,14 @@ export default {
                     width: 100%;
                     margin: 6px;
                     .label { 
-                        color: $gray5;
+                        color: var(--tainacan-label-color);
                         font-weight: normal;
                     }
                 }
                 .add-new-term {
-                    font-size: 0.75rem;
+                    font-size: 0.75em;
                     text-decoration: underline;
-                    margin: 0.875rem 1.5rem;
+                    margin: 0.875em 1.5em;
                 }
 
                 .numeric-filter-container,
@@ -1200,14 +1198,14 @@ export default {
                         width: auto;
 
                         .dropdown-trigger button {
-                            padding: 0 0.5rem !important;
-                            height: 30px !important;
+                            padding: 0 0.5em !important;
+                            height: auto !important;
 
                             i:not(.tainacan-icon-arrowdown) {
                                 margin-top: -3px;
-                                font-size: 1.5rem;
+                                font-size: 1.5em;
                                 font-style: normal;
-                                color: #555758;
+                                color: var(--tainacan-info-color);
                             }
                         }
                         .dropdown-menu {

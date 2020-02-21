@@ -1,7 +1,7 @@
 @import '../../gutenberg-blocks-style.scss';
 
 .wp-block-tainacan-terms-list {
-    margin: 2rem auto;
+    margin: 2em auto;
 
     // Spinner
     .components-spinner {
@@ -46,7 +46,7 @@
                 width: 185px;
                 min-width: 185px;
                 padding: 0px;
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.5em;
             }
 
             a.term-without-name span {

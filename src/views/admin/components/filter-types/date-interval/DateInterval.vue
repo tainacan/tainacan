@@ -22,7 +22,11 @@
                     $i18n.get('datepicker_short_friday'),
                     $i18n.get('datepicker_short_saturday'),
                 ]"/>
-        <p class="is-size-7 has-text-centered is-marginless">{{ $i18n.get('label_until') }}</p>
+        <p 
+                style="font-size: 0.75em; margin-bottom: 0.125em;"
+                class="has-text-centered is-marginless">
+            {{ $i18n.get('label_until') }}
+        </p>
         <b-datepicker
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('label_selectbox_init')"
@@ -178,9 +182,6 @@
 
 <style scoped>
     .field {
-        margin-bottom: 0.125rem !important;
-    }
-    p.is-size-7 {
-        margin-bottom: 0.125rem !important;
+        margin-bottom: 0.125em !important;
     }
 </style>

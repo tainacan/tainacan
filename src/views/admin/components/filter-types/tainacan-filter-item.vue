@@ -27,13 +27,13 @@
                 <span class="icon">
                     <i 
                             :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
-                            class="tainacan-icon tainacan-icon-20px"/>
+                            class="tainacan-icon tainacan-icon-1-25em"/>
                 </span>
                 <span class="collapse-label">{{ filter.name }}</span>
             </button>
             <div :id="'filter-input-id-' + filter.id">
                 <component
-                        :is="filter.filter_type_object.component"
+                        :is="filter.filter_type_object ? filter.filter_type_object.component : null"
                         :filter="filter"
                         :query="query"
                         :is-using-elastic-search="isUsingElasticSearch"
@@ -114,7 +114,7 @@
             margin-right: 0px;
         }
         .column {
-            padding: 0.75rem 1px 0.75rem 0 !important;
+            padding: 0.75em 1px 0.75em 0 !important;
         }
 
         .collapse {
@@ -132,16 +132,14 @@
 
         .label {
             font-weight: normal !important;
-            font-size: 0.875rem;
+            font-size: 0.875em;
             width: 100%;
         }
 
         .taginput-container {
-            font-size: 0.875rem;
             border-radius: 1px !important;
             box-shadow: none !important;
             transition: background-color 0.1s;
-            height: 2.25em !important;
         }
 
         .taginput-container {
@@ -154,14 +152,11 @@
             &.is-focusable:focus  {
                 border: none !important;
                 input:active, input:focus {
-                    border: 1px solid $gray4 !important;
+                    border: 1px solid var(--tainacan-input-border-color) !important;
                 }
             }    
             input{
-                border: 1px solid $gray2 !important;
-            }
-            .control.has-icons-left .icon {
-                top: 3px !important;
+                border: 1px solid var(--tainacan-input-border-color) !important;
             }
             .tags {
                 display: none !important;
@@ -173,7 +168,7 @@
             display: unset;
             white-space: nowrap;
             text-overflow: ellipsis;
-            height: 30px;
+            height: auto;
         }
 
         .control:not(.taginput) {
@@ -199,11 +194,14 @@
         
         .b-checkbox.checkbox  {
             font-weight: normal;
-            font-size: 0.75rem;
+            font-size: 1em;
             margin-right: 2px;
         }
 
         .datepicker {
+            .dropdown-menu {
+                left: -18px;
+            }
             @media screen and (min-width: 768px) {
 
                 .datepicker-header {
@@ -219,18 +217,18 @@
 
                             select {
                                 padding-left: 1px !important;
-                                font-size: 0.75rem !important;
+                                font-size: 0.875em !important;
                                 height: 24px !important;
-                                min-width: 100% !important;
+                                min-width: 100% !important; 
                             }
                             &:not(.is-loading)::after {
-                                margin-top: -13px !important;
+                                margin-top: -10px !important;
                             }
                         }
                     }
                 }
                 .datepicker-cell {
-                    padding: 0.15rem 0.175rem !important;
+                    padding: 0.15em 0.175em !important;
                 }
             }
         }

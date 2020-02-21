@@ -93,21 +93,6 @@ class Taxonomy extends Metadata_Type {
         ];
     }
 
-    /**
-     * @param $itemMetadata Item_Metadata_Entity The instace of the entity itemMetadata
-     * @return string
-     */
-
-    public function render( $itemMetadata ){
-        $options = ( isset( $this->get_options()['options'] ) ) ? $this->get_options()['options'] : '';
-        return '<tainacan-selectbox
-                                       options="' . $options . '"
-                                       metadatum_id ="'.$itemMetadata->get_metadatum()->get_id().'"
-                                       item_id="'.$itemMetadata->get_item()->get_id().'"
-                                       value=\''.json_encode( $itemMetadata->get_value() ).'\'
-                                       name="'.$itemMetadata->get_metadatum()->get_name().'"></tainacan-selectbox>';
-    }
-
 	public function validate_options( Metadatum $metadatum) {
 
 		if ( !in_array($metadatum->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )

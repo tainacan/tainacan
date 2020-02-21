@@ -129,9 +129,9 @@ export default {
         justify-content: space-between;
 
         h1, h2 {
-            font-size: 20px;
+            font-size: 1.25em;
             font-weight: 500;
-            color: $gray5;
+            color: var(--tainacan-heading-color);
             display: inline-block;
             width: 80%;
             flex-shrink: 1;
@@ -144,18 +144,18 @@ export default {
         hr{
             margin: 3px 0px 4px 0px; 
             height: 1px;
-            background-color: $secondary;
+            background-color: var(--tainacan-secondary);
             width: 100%;
         }
         .breadcrumbs {
-            font-size: 12px;
+            font-size: 0.75em;
             width: 100%;
             a {
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
                 max-width: 75%;
-                margin: 0 0.1rem;
+                margin: 0 0.1em;
                 display: inline-block;
                 vertical-align: bottom;
             }

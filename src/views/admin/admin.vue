@@ -28,7 +28,7 @@
                         class="icon">
                     <i 
                             :class="{ 'tainacan-icon-arrowleft' : !isMenuCompressed, 'tainacan-icon-arrowright' : isMenuCompressed }"
-                            class="tainacan-icon tainacan-icon-20px"/>
+                            class="tainacan-icon tainacan-icon-1-25em"/>
                 </span>
             </button>
             <tainacan-header />
@@ -132,15 +132,15 @@
 
     #menu-compress-button {
         position: absolute;
-        z-index: 99;
+        z-index: 999;
         top: 192px;
         left: 0px;
         max-width: 25px;
         height: 25px;
         width: 25px;
         border: none;
-        background-color: $blue5;
-        color: white;
+        background-color: var(--tainacan-blue5);
+        color: var(--tainacan-white);
         padding: 0px;
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
@@ -148,6 +148,15 @@
 
         .icon {
             margin-top: -2px;
+        }
+    }
+
+    @media screen and (min-width: 769px) {
+        .filters-menu {
+            .modal-background,
+            .modal-close {
+                display: none;
+            }
         }
     }
 

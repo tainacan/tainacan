@@ -36,7 +36,7 @@
                         @click="$router.push($routerHelper.getItemsPath())"
                         class="button is-small is-white level-item">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-search"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search"/>
                     </span>
                 </button>
             </div>
@@ -74,7 +74,7 @@
                             <span 
                                     style="margin-top: 5px; margin-right: -2px;"
                                     class="icon is-pulled-right">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowup has-text-secondary"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowup has-text-secondary"/>
                             </span>
                         </div>
                         <hr class="advanced-search-hr">
@@ -101,7 +101,7 @@
                             classes: ['repository-header-tooltips']
                         }"
                         class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-processes"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes"/>
                 </span>
             </button>
             <processes-popup
@@ -189,19 +189,19 @@
     @import "../../scss/_variables.scss";
 
     .repository-header-tooltips .tooltip-inner {
-        color: white;
-        background-color: $blue3;
-        font-size: 0.75rem;
+        color: var(--tainacan-white);
+        background-color: var(--tainacan-blue3);
+        font-size: 0.75em;
         font-weight: 400;
         padding: 10px 14px;
     }
     .repository-header-tooltips .tooltip-arrow {
-        border-color: $blue3;
+        border-color: var(--tainacan-blue3);
     }
 
     // Tainacan Header
     #tainacan-header {
-        background-color: white;
+        background-color: var(--tainacan-white);
         height: $header-height;
         max-height: $header-height;
         width: 100%;
@@ -211,21 +211,21 @@
         right: 0;
         position: absolute;
         z-index: 999;
-        color: $blue5;
+        color: var(--tainacan-blue5);
 
         .level-left {
             margin-left: -12px;
             
             .home-area { 
-                font-size: 24px;
+                font-size: 1.5em;
                 width: 50px;
                 height: $header-height;
-                background-color: $gray1;
-                padding-bottom: 0.4rem;
+                background-color: var(--tainacan-gray1);
+                padding-bottom: 0.4em;
                 transition: background-color 0.2s ease;
 
                 &:hover {
-                    background-color: $gray2;
+                    background-color: var(--tainacan-gray2);
                 }
             }
             .logo-area {
@@ -247,14 +247,17 @@
             padding-right: 14px;
 
             .button, a {
-                color: $blue5 !important;
+                color: var(--tainacan-blue5) !important;
             }
             .button:hover, .button:active, .button:focus {
-                background-color: white !important;
+                background-color: var(--tainacan-white) !important;
             }
 
             .tainacan-icon-wordpress {
-                font-size: 26px;
+                font-size: 1.6em;
+            }
+            .tainacan-icon-processes {
+                font-size: 1.45em;
             }
             
             .search-area {
@@ -263,22 +266,22 @@
                 margin-right: 28px;
                 .control {
                     .search-header {
-                        border: 1px solid $gray2;
+                        border: 1px solid var(--tainacan-gray2);
                         height: 28px;
                         transition: width linear 0.15s;
                         -webkit-transition: width linear 0.15s;
                         width: 220px;
-                        font-size: 0.75rem;
+                        font-size: 0.75em;
                     }
                     .search-header:focus, .search-header:active {
                         width: 372px !important;
                     }
                     .icon:not(.add-i) {
                         pointer-events: all;
-                        color: $blue5;
+                        color: var(--tainacan-blue5);
                         cursor: pointer;
                         height: 27px;
-                        font-size: 18px;
+                        font-size: 1.125em;
                         width: 30px !important;
                     }
                 }

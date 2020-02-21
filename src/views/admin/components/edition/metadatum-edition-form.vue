@@ -79,7 +79,6 @@
                 </label>
                 <b-field>
                     <b-radio
-                            size="is-small"
                             @focus="clearErrors('label_status')"
                             id="tainacan-select-status-publish"
                             name="status"
@@ -90,7 +89,6 @@
                 </b-field>
                 <b-field>
                     <b-radio
-                            size="is-small"
                             @focus="clearErrors('label_status')"
                             id="tainacan-select-status-private"
                             name="status"
@@ -116,7 +114,6 @@
 
                 <b-field>
                     <b-radio
-                            size="is-small"
                             @input="clearErrors('display')"
                             v-model="editForm.display"
                             native-value="yes"
@@ -127,7 +124,6 @@
 
                 <b-field>
                     <b-radio
-                            size="is-small"
                             @input="clearErrors('display')"
                             v-model="editForm.display"
                             native-value="no"
@@ -138,7 +134,6 @@
 
                 <b-field>
                     <b-radio
-                            size="is-small"
                             v-model="editForm.display"
                             @input="clearErrors('display')"
                             native-value="never"
@@ -155,7 +150,6 @@
                         :type="formErrors['required'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
                     <b-checkbox
-                            size="is-small"
                             @input="clearErrors('required')"
                             v-model="editForm.required"
                             true-value="yes"
@@ -174,7 +168,6 @@
                         :type="formErrors['multiple'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
                     <b-checkbox
-                            size="is-small"
                             @input="clearErrors('multiple')"
                             v-model="editForm.multiple"
                             true-value="yes"
@@ -192,7 +185,6 @@
                         :type="formErrors['collection_key'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['collection_key'] != undefined ? formErrors['collection_key'] : ''">
                     <b-checkbox
-                            size="is-small"
                             @input="clearErrors('collection_key')"
                             v-model="editForm.collection_key"
                             true-value="yes"
@@ -391,10 +383,11 @@
     @import "../../scss/_variables.scss";
 
     form#metadatumEditForm.inCollapse {
-        padding: 1.5rem $page-side-padding 0.5rem $page-side-padding;
-        border-top: 1px solid $gray2;
-        border-bottom: 1px solid $gray2;
+        padding: 1.5em $page-side-padding 0.5em $page-side-padding;
+        border-top: 1px solid var(--tainacan-gray2);
+        border-bottom: 1px solid var(--tainacan-gray2);
         margin-top: 1.0em;
+        font-size: 1.1em;
     }
     form#metadatumEditForm .options-columns {
         -moz-column-count: 2;
@@ -404,9 +397,9 @@
         -webkit-column-gap: 0;
         -webkit-column-rule: none;
         column-count: 2;
-        column-gap: 4rem;
+        column-gap: 4em;
         column-rule: none;
-        padding-bottom: 1.5rem;
+        padding-bottom: 1.5em;
 
         &>.field, &>section {
             -webkit-column-break-inside: avoid;

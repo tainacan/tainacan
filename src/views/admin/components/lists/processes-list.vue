@@ -22,7 +22,7 @@
                             slot="trigger">
                         <span>{{ $i18n.get('label_bulk_actions') }}</span>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
                         </span>
                     </button> 
 
@@ -55,14 +55,13 @@
                     <span class="icon">
                         <i 
                                 :class="{ 'tainacan-icon-arrowdown' : collapses[index], 'tainacan-icon-arrowright' : !collapses[index] }"
-                                class="tainacan-icon tainacan-icon-20px has-text-blue4"/>
+                                class="tainacan-icon tainacan-icon-1-25em has-text-blue4"/>
                     </span>
                     <!-- Checking list -->
                     <!-- <span 
                             :class="{ 'is-selecting': isSelecting }"
                             class="checkbox-cell">
                         <b-checkbox 
-                                size="is-small"
                                 v-model="selected[index]"/> 
                     </span> -->
                     <!-- Name -->
@@ -142,7 +141,7 @@
                                     v-if=" bgProcess.status === 'running' "
                                     class="icon has-text-gray action-icon"
                                     @click.prevent.stop="pauseProcess(index)">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-stop"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-stop"/>
                             </span>
                             <span 
                                     v-tooltip="{
@@ -156,7 +155,7 @@
                                     }"
                                     v-if=" ( bgProcess.status === 'finished' && !bgProcess.error_log ) || bgProcess.status === null"
                                     class="icon has-text-success">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
                             </span>
                             <span
                                     v-tooltip="{
@@ -172,8 +171,8 @@
                                     class="icon has-text-success">
                                 <i
                                     style="margin-right: -5px;"
-                                    class="tainacan-icon tainacan-icon-20px tainacan-icon-alert has-text-yellow2"/>
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-approvedcircle"/>
+                                    class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alert has-text-yellow2"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
                             </span>
                             <span
                                     v-tooltip="{
@@ -187,7 +186,7 @@
                                     }"
                                     v-if=" bgProcess.status === 'cancelled' "
                                     class="icon has-text-success">
-                                <i class="tainacan-icon has-text-danger tainacan-icon-20px tainacan-icon-repprovedcircle"/>
+                                <i class="tainacan-icon has-text-danger tainacan-icon-1-25em tainacan-icon-repprovedcircle"/>
                             </span>
                             <span
                                     v-tooltip="{
@@ -201,7 +200,7 @@
                                     }"
                                     v-if=" bgProcess.status === 'paused' "
                                     class="icon has-text-gray">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-pause"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-pause"/>
                             </span>
                             <span
                                     v-tooltip="{
@@ -215,7 +214,7 @@
                                     }"
                                     v-if=" bgProcess.status === 'waiting' "
                                     class="icon has-text-gray">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-waiting"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting"/>
                             </span>
                             <span 
                                     v-tooltip="{
@@ -229,7 +228,7 @@
                                     }"
                                     v-if="bgProcess.status === 'errored'"
                                     class="icon has-text-danger">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-processerror" />
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processerror" />
                             </span>
                         </div>
                     </span>
@@ -358,28 +357,14 @@
             if (this.$route.query.highlight) {
                 this.highlightedProcess = this.$route.query.highlight;
             }
-        },
-        created(){
+
             if (jQuery && jQuery( document )) {
-                jQuery( document ).on( 'heartbeat-tick-list',  ( event, data ) => {
-                    let updatedProcesses = data.bg_process_feedback;
-
-                    for (let updatedProcess of updatedProcesses) {
-                        let updatedProcessIndex = this.processes.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
-                        if (updatedProcessIndex >= 0) {
-                            this.heartBitUpdateProcess(updatedProcess);
-                        }
-                    }
-                });
-
-                jQuery( document ).on( 'heartbeat-tick',  ( event, data ) => {
-                    jQuery( document ).trigger('heartbeat-tick-list', data);
-                });
+                jQuery( document ).on( 'heartbeat-tick', this.onHeartBitTickList);
             }
         },
         beforeDestroy() {
             if (jQuery && jQuery( document )) {
-                jQuery( document ).unbind( 'heartbeat-tick-list')
+                jQuery( document ).unbind( 'heartbeat-tick', this.onHeartBitTickList)
             }
         },
         methods: {
@@ -492,6 +477,16 @@
                     },
                     trapFocus: true
                 });
+            },
+            onHeartBitTickList(event, data) {
+                let updatedProcesses = data.bg_process_feedback;
+
+                for (let updatedProcess of updatedProcesses) {
+                    let updatedProcessIndex = this.processes.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
+                    if (updatedProcessIndex >= 0) {
+                        this.heartBitUpdateProcess(updatedProcess);
+                    }
+                }
             }
         }
     }
@@ -504,14 +499,14 @@
     .selection-control {
         
         padding: 6px 0px 0px 12px;
-        background: white;
+        background: var(--tainacan-white);
         height: 40px;
 
         .select-all {
-            color: $gray4;
-            font-size: 14px;
+            color: var(--tainacan-info-color);
+            font-size: 0.875em;
             &:hover {
-                color: $gray4;
+                color: var(--tainacan-info-color);
             }
         }
     }
@@ -524,7 +519,7 @@
 
     @keyframes highlight {
         from {
-            background-color: $blue1; 
+            background-color: var(--tainacan-blue1); 
         }
         to {
             background-color: $white; 
@@ -542,7 +537,7 @@
 
     .processes-list-item {
         &.opened-process {
-            background-color: $gray0;
+            background-color: var(--tainacan-gray0);
         }
 
         &>.process-handler {
@@ -550,20 +545,20 @@
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            padding: 0.5rem 0.75rem;
+            padding: 0.5em 0.75em;
 
             &:hover {
-                background-color: $gray1;
+                background-color: var(--tainacan-gray1);
             }
             &>span:not(:first-of-type) {
-                margin: 0 0.75rem;
-                color: $gray4;
+                margin: 0 0.75em;
+                color: var(--tainacan-info-color);
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
 
                 .has-text-weight-bold {
-                    color: $gray5 !important;
+                    color: var(--tainacan-gray5) !important;
                 }
 
                 p {
@@ -575,8 +570,8 @@
 
             .process-title {
                 p {
-                    color: black !important;
-                    font-size: 0.875rem !important;
+                    color: var(--tainacan-black) !important;
+                    font-size: 0.875em !important;
                 }
                 width: 20.833333%;
                 margin-right: $page-side-padding !important;
@@ -599,10 +594,10 @@
                 align-items: center;
                 display: flex;
                 justify-content: flex-end;
-                padding: 0 0.5rem;
+                padding: 0 0.5em;
 
                 .tainacan-icon-openurl {
-                    font-size: 20px;
+                    font-size: 1.25em;
                 }
             }
 
@@ -615,27 +610,27 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            padding: 0.5rem 1.25rem 1rem 1.25rem;
+            padding: 0.5em 1.25em 1em 1.25em;
 
             &>span {
-                margin: 0 0.75rem;
-                color: $gray4;
+                margin: 0 0.75em;
+                color: var(--tainacan-info-color);
 
                 .has-text-weight-bold {
-                    color: $gray5 !important;
+                    color: var(--tainacan-gray5) !important;
                 }
             }
 
             .process-output {
-                margin-left: 1.75rem !important;
+                margin-left: 1.75em !important;
                 margin-right: $page-side-padding !important;
                 width: 20.83%;
 
                 ul {
                     column-count: 2;
-                    column-gap: 4rem;
+                    column-gap: 4em;
                     column-rule: none;
-                    padding: 0 0.75rem;
+                    padding: 0 0.75em;
                 }
             }
 
@@ -644,7 +639,7 @@
                 align-items: center;
 
                 .icon {
-                    margin: 0 0.5rem;
+                    margin: 0 0.5em;
                 } 
             }
 

@@ -1,12 +1,12 @@
 #close-fullscren-button {
     border-radius: 50px;
-    color: white;
+    color: var(--tainacan-white);
     background-color: transparent;
     border: none;
     position: absolute;
     top: 0;
     right: 0;
-    padding: 1rem;
+    padding: 1em;
     cursor: pointer;
     z-index: 9999999999;
 
@@ -15,7 +15,7 @@
     }
 }
 .metadata-menu {
-    background-color: black;
+    background-color: var(--tainacan-black);
     position: absolute;
     z-index: 10;
     width: 20.83% !important;
@@ -50,14 +50,14 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             margin-right: auto;
-            color: white;
-            font-size: 1.25rem;
+            color: var(--tainacan-white);
+            font-size: 1.25em;
             font-weight: bold;
             margin-bottom: 0;
         }
         #close-metadata-button {
             border-radius: 50px;
-            color: white;
+            color: var(--tainacan-white);
             background-color: transparent;
             border: none;
             padding: 0;
@@ -71,7 +71,7 @@
         hr {
             margin-top: 0;
             width: 100%;
-            background-color: $turquoise5;
+            background-color: var(--tainacan-turquoise5);
         }
     }
 
@@ -81,10 +81,10 @@
     }
 
     .collapse-all {
-        font-size: 12px;
+        font-size: 0.75em;
         display: inline-flex;
         align-items: center;
-        margin-bottom: 1rem;
+        margin-bottom: 1em;
 
         .icon {
             vertical-align: bottom;
@@ -98,14 +98,14 @@
 
     .field {        
         margin-bottom: 0px !important;
-        border-bottom: 1px solid $gray5;
-        padding: 1rem 0px 0.2rem 0px;
+        border-bottom: 1px solid var(--tainacan-gray5);
+        padding: 1em 0px 0.2em 0px;
 
         .label {
             cursor: pointer;
-            font-size: 14px;
+            font-size: 0.875em;
             font-weight: 500;
-            margin-bottom: 0.75rem !important;
+            margin-bottom: 0.75em !important;
             display: inline-flex;
             align-items: center;
             max-width: 100%;
@@ -122,7 +122,7 @@
             }
         }
         .content {
-            font-size: 0.75rem;
+            font-size: 0.75em;
         }
     }
 
@@ -142,8 +142,8 @@
     height: 26px;
     width: 33px;
     border: none;
-    background-color: $gray5;
-    color: white;
+    background-color: var(--tainacan-gray5);
+    color: var(--tainacan-white);
     padding: 0;
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
@@ -224,7 +224,7 @@
             width: 100%;
             max-width: 100vh;
             text-align: center;
-            color: white;
+            color: var(--tainacan-white);
             max-height: calc(100vh - 115px);
             overflow: hidden;
             transition: height 0.3s, max-height 0.3s;
@@ -234,9 +234,9 @@
         }
 
         .empty-document {
-            font-size: 4rem;
+            font-size: 4em;
             font-weight: normal;
-            color: $gray4;
+            color: var(--tainacan-info-color);
             text-align: center;
             position: relative;
             max-height: calc(100vh - 115px);
@@ -250,19 +250,19 @@
 
             p {
                 position: absolute;
-                margin: calc(50% - 4rem) auto;
+                margin: calc(50% - 4em) auto;
                 width: 100%;
             }
             @media screen and (max-width: 1024px) and (min-width: 768px) {
-                font-size: 3rem;
+                font-size: 3em;
                 p {
-                    margin: calc(50% - 1rem) auto;
+                    margin: calc(50% - 1em) auto;
                 }
             }
             @media screen and (max-width: 768px) {
-                font-size: 2rem;
+                font-size: 2em;
                 p {
-                    margin: calc(50% - 2rem) auto;
+                    margin: calc(50% - 2em) auto;
                 }
             }
         }
@@ -275,15 +275,15 @@
     // top: -85px;
     // margin-bottom: -85px;
     background-color: rgba(0,0,0,0.5);
-    padding: 1rem $page-side-padding;
+    padding: 1em $page-side-padding;
     display: flex;
     justify-content: space-between;
     align-items: center;
     transition: opacity 0.3s, visibility 0.3s, display 0.3s;
 
     h1 {
-        color: white;
-        font-size: 2rem;
+        color: var(--tainacan-white);
+        font-size: 2em;
         font-weight: normal;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -298,10 +298,10 @@
 
         .icon {
             border-radius: 100px;
-            background: white;
-            border: 3px solid $turquoise5;
+            background: var(--tainacan-white);
+            border: 3px solid var(--tainacan-turquoise5);
             i, i:before {
-                font-size: 36px;
+                font-size: 2.25em;
             }
         }
         &:focus, &:active {
@@ -317,10 +317,10 @@
 }
 .slide-control-arrow {
     cursor: pointer;
-    background-color: transparent;
+    background-color: transparent !important;
     border: none !important;
-    height: 3.5rem;
-    width: 3.5rem;
+    height: 3.5em;
+    width: 3.5em;
     text-align: center;
     vertical-align: middle;
     position: absolute;
@@ -331,15 +331,15 @@
         outline: none;
     }
     .icon {
-        height: 3.5rem;
-        width: 2.5rem;
+        height: 3.5em;
+        width: 2.5em;
         text-align: center;
 
         .tainacan-icon::before {
-            line-height: 5rem;
-            font-size: 5rem;
-            color: $turquoise5;
-            text-shadow: 0px 0px 2px $gray5;
+            line-height: 5em;
+            font-size: 5em;
+            color: var(--tainacan-turquoise5);
+            text-shadow: 0px 0px 2px var(--tainacan-gray5);
         }
     }
     &.arrow-left { 
@@ -356,14 +356,14 @@
         top: calc(50% - 33px);
 
         .icon {
-            height: 2.5rem;
-            width: 1.5rem;
+            height: 2.5em;
+            width: 1.5em;
         
             .tainacan-icon::before {
-                line-height: 3rem;
-                font-size: 3rem;
-                color: white;
-                text-shadow: 0px 0px 2px $gray5;
+                line-height: 3em;
+                font-size: 3em;
+                color: var(--tainacan-white);
+                text-shadow: 0px 0px 2px var(--tainacan-gray5);
             }
         }
     }
@@ -374,7 +374,7 @@
     transition: opacity 0.3s, visibility 0.3s, display 0.3s;
     height: 115px;
     min-height: 115px;
-    padding: 0.75rem 0;
+    padding: 0.75em 0;
 
     .loading-icon {
         width: 100%;
@@ -396,12 +396,12 @@
         
 
         .selected-record {
-            background-color: $turquoise1;
+            background-color: var(--tainacan-turquoise1);
             .metadata-title {
-                background-color: $turquoise2;
+                background-color: var(--tainacan-turquoise2);
             }
             .media {
-                background-color: $turquoise1;
+                background-color: var(--tainacan-turquoise1);
             }
         }
 
@@ -409,14 +409,14 @@
             cursor: pointer;
 
             &.active-item img {
-                border-bottom: 4px solid $turquoise5;
+                border-bottom: 4px solid var(--tainacan-turquoise5);
             }
             &:hover img{
-                border-bottom: 4px solid $gray2;
+                border-bottom: 4px solid var(--tainacan-gray2);
             }
 
             img {
-                color: white;
+                color: var(--tainacan-white);
                 width: 100%;//85px;
                 height: auto;
                 border-radius: 0px;

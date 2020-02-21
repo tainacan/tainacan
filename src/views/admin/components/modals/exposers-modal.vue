@@ -51,7 +51,7 @@
                                 target="_blank"
                                 @click="siteLinkCopied = true; copyTextToClipboard(itemURL ? itemURL : collectionURL)">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
                             </span>
                         </a>
                         <div 
@@ -132,7 +132,7 @@
                         <span class="icon">
                             <i 
                                     :class="{ 'tainacan-icon-arrowdown' : !exposerMapper.collapsed, 'tainacan-icon-arrowright' : exposerMapper.collapsed }"
-                                    class="has-text-secondary tainacan-icon tainacan-icon-20px"/>
+                                    class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                         </span>
                         <label 
                                 v-tooltip="{
@@ -176,7 +176,7 @@
                                             }"
                                             @click="exposerMapper.linkCopied = pagedLink; copyTextToClipboard(getExposerFullURL(pagedLink, exposerMapper))">
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
                                         </span>
                                     </a>
                                     <div 
@@ -480,7 +480,7 @@ export default {
             margin-bottom: 0;
         }
         .back-link {
-            color: $secondary;
+            color: var(--tainacan-secondary);
             cursor: pointer;
         }
     }
@@ -488,17 +488,17 @@ export default {
     .exposer-types-container {
 
         .exposer-item-link {
-            padding-left: 0rem;
+            padding-left: 0em;
             p {
-                padding-left: 0.5rem;
+                padding-left: 0.5em;
             }
         }
         
         p {
-            font-size: 0.875rem;
-            color: $gray5;
-            padding: 0rem 1.25rem;
-            margin-top: 0.75rem;
+            font-size: 1em;
+            color: var(--tainacan-gray5);
+            padding: 0em 1.25em;
+            margin-top: 0.75em;
             margin-bottom: 0;
         }
 
@@ -507,28 +507,31 @@ export default {
             flex-wrap: wrap;
         
             .exposer-type {
-                border: 1px solid $gray2;
+                border: 1px solid var(--tainacan-input-border-color);
                 padding: 15px;
                 margin: 24px 12px;
                 cursor: pointer;
                 max-width: 50%;
                 flex-grow: 1;
+                font-size: 1em;
                 transition: border 0.3s ease;
 
                 h4 {
-                    font-size: 1rem;
+                    color: var(--tainacan-heading-color);
+                    font-size: 1em;
                     font-weight: 500;
-                    padding: 0rem 0.5rem;
+                    padding: 0em 0.5em;
+                    margin: 0;
                 }
                 p {
-                    font-size: 0.75rem;
-                    color: $gray5;
-                    padding: 0rem 0.5rem;
+                    font-size: 0.75em;
+                    color: var(--tainacan-gray5);
+                    padding: 0em 0.5em;
                     margin-bottom: 0;
                 }
 
                 &:hover {
-                    border: 1px solid $gray3;
+                    border: 1px solid var(--tainacan-gray3);
                 }
             }
         }
@@ -539,32 +542,33 @@ export default {
         .exposer-item {
         
             &:first-child {
-                margin-top: 0.75rem;
+                margin-top: 0.75em;
             }
             &:last-child {
                 border-bottom: none;
             }
             .collapse-handler:hover {
                 cursor: pointer;
-                background-color: $gray1;
+                background-color: var(--tainacan-gray1);
             }
             .collapse-handle {
                 cursor: pointer;
                 .label {
-                    margin: 3px 0.75rem 0 0;
+                    color: var(--tainacan-label-color);
+                    margin: 3px 0.75em 0 0;
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     overflow: hidden;
                 }
                 .has-text-gray {
-                    font-size: 0.75rem;
+                    font-size: 0.75em;
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     overflow: hidden;
                 }
             }
             p {
-                padding: 0.5rem 0.75rem;
+                padding: 0.5em 0.75em;
             }
 
             // .exposer-item-links-list {
@@ -588,25 +592,26 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-left: 0.125rem;
+        padding-left: 0.125em;
         height: 42px;
 
         &:first-of-type {
-            margin-top: 0.5rem;
+            margin-top: 0.5em;
         }
         &>span {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.875rem;
+            padding: 0.5em 0.75em;
+            font-size: 1em;
 
             p { 
                 margin: 0; 
-                padding: 0rem 0.75rem;
+                padding: 0em 0.75em;
+                font-size: 0.875em;
             }
         }
         &:hover {
-            background-color: $gray1;
+            background-color: var(--tainacan-gray1);
             .exposer-item-actions {
-                background-color: $gray2;
+                background-color: var(--tainacan-gray2);
             }
         }
         .exposer-item-actions {
@@ -616,16 +621,16 @@ export default {
 
             a {
                 cursor: pointer;
-                margin: 0 0.5rem;
-                color: $secondary;
+                margin: 0 0.5em;
+                color: var(--tainacan-secondary);
                 position: relative;
             }
             .exposer-copy-popup {
                 animation-name: appear-from-top;
                 animation-duration: 0.3s;
                 position: absolute;
-                background: $gray1;
-                padding: 0.5rem 0.875rem 0.75rem 0.875rem;
+                background: var(--tainacan-gray1);
+                padding: 0.5em 0.875em 0.75em 0.875em;
                 border-radius: 4px;
                 top: 44px;
                 right: 12px;
@@ -636,10 +641,10 @@ export default {
                     top: 6px;
                     right: 4px;
                 }
-                p { padding: 0 0 0.5rem 0; }
+                p { padding: 0 0 0.5em 0; }
                 input {
-                    background-color: white;
-                    border: 1px solid $gray2;
+                    background-color: var(--tainacan-white);
+                    border: 1px solid var(--tainacan-gray2);
                     border-radius: 0;
                     padding: 2px 8px;
                 }
@@ -651,7 +656,7 @@ export default {
                     width: 0;
                     height: 0;
                     border-style: solid;
-                    border-color: transparent transparent $gray1 transparent;
+                    border-color: transparent transparent var(--tainacan-gray1) transparent;
                     border-right-width: 14px;
                     border-bottom-width: 16px;
                     border-left-width: 14px;

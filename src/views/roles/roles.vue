@@ -29,7 +29,7 @@
 
         .tooltip-inner {
             background: black;
-            padding: 0.35rem 0.45rem;
+            padding: 0.35em 0.45em;
             color: white;
             text-align: center;
         }

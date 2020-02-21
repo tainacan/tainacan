@@ -19,7 +19,7 @@
                     max-height: 52px;
                     max-width: 34px;
                     border-radius: 0;
-                    background-color: #eee !important;
+                    background-color: var(--tainacan-skeleton-color) !important;
                     border-top: 8px solid white !important;
                     border-bottom: 8px solid white !important;
                     border-left: 18px solid white !important;
@@ -28,7 +28,7 @@
                 td.skeleton:not(.thumbnail-cell) {
                     max-height: 52px;
                     border-radius: 0;
-                    background-color: #eee !important;
+                    background-color: var(--tainacan-skeleton-color) !important;
                     border-top: 18px solid white !important;
                     border-bottom: 18px solid white !important;
                     border-left: 8px solid white !important;
@@ -43,6 +43,7 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
+            border-color: transparent;
 
             &.is-narrow {
                 tbody td {
@@ -60,7 +61,7 @@
     
                 label.checkbox {  
                     border-radius: 0px;
-                    background-color: white;
+                    background-color: var(--tainacan-white);
                     padding: 0;
                     width: 100%;
                     height: 100%; 
@@ -79,7 +80,7 @@
             }
             // Only to be used in case we can implement Column resizing
             // th:not(:last-child) {
-            //     border-right: 1px solid $gray2 !important;
+            //     border-right: 1px solid var(--tainacan-item-heading-hover-background-color) !important;
             // }
     
             .thumbnail-cell {
@@ -91,44 +92,44 @@
                 min-width: 80px;
                 max-width: 80px;
                 p {
-                    color: $gray4;
-                    font-size: 0.6875rem;
-                    line-height: 1.03125rem;
+                    color: var(--tainacan-info-color);
+                    font-size: 0.6875em;
+                    line-height: 1.03125em;
                 }
             }
             .column-default-width {
                 min-width: 80px;
                 max-width: 160px;
                 p {
-                    color: $gray4;
-                    font-size: 0.6875rem;
-                    line-height: 1.03125rem;
+                    color: var(--tainacan-info-color);
+                    font-size: 0.6875em;
+                    line-height: 1.03125em;
                 }
             }
             .column-medium-width {
                 min-width: 120px;
                 max-width: 200px;
                 p {
-                    color: $gray4;
-                    font-size: 0.6875rem;
-                    line-height: 1.03125rem;
+                    color: var(--tainacan-info-color);
+                    font-size: 0.6875em;
+                    line-height: 1.03125em;
                 }
             }
             .column-large-width {
                 min-width: 120px;
                 max-width: 240px;
                 p {
-                    color: $gray4;
-                    font-size: 0.6875rem;
-                    line-height: 1.03125rem;
+                    color: var(--tainacan-info-color);
+                    font-size: 0.6875em;
+                    line-height: 1.03125em;
                 }
             }
             .column-main-content {
                 min-width: 120px !important;
                 max-width: 240px !important;
                 p { 
-                    font-size: 0.875rem !important;
-                    color: $tainacan-input-color !important;
+                    font-size: 0.875em !important;
+                    color: var(--tainacan-input-color) !important;
                     margin: 0px !important; 
                 }
             }
@@ -142,16 +143,17 @@
             th {
                 position: sticky;
                 position: -webkit-sticky;
-                background-color: white;
-                border-bottom: 1px solid $gray2;
+                background-color: var(--tainacan-background-color);
+                border: 0px solid transparent;
+                border-bottom: 1px solid var(--tainacan-input-border-color);
                 top: 0px;
                 z-index: 9;
                 padding: 10px;
                 vertical-align: bottom;
     
                 .th-wrap {
-                    font-size: 0.75rem !important;
-                    color: $gray4;
+                    font-size: 0.75em !important;
+                    color: var(--tainacan-info-color);
                     font-weight: normal !important;
                     text-overflow: ellipsis;
                     overflow-x: hidden;
@@ -161,11 +163,11 @@
             tbody {
                 tr {
                     cursor: pointer;
-                    background-color: transparent;
+                    background-color: var(--tainacan-item-background-color);
                     transition: background-color 0.15s ease;
     
                     &.selected-row { 
-                        background-color: $turquoise1; 
+                        background-color: var(--tainacan-turquoise1); 
                         .checkbox-cell .checkbox, 
                         .actions-cell .actions-container {
                             transition: background-color 0.15s ease;
@@ -176,7 +178,7 @@
                         max-height: 60px;
                         padding: 10px;
                         vertical-align: middle;
-                        line-height: 0.75rem;
+                        line-height: 0.75em;
                         border: none !important;
 
                         &.thumbnail-cell .skeleton {
@@ -191,12 +193,12 @@
                         }
 
                         p { 
-                            font-size: 0.875rem;
+                            font-size: 0.875em;
                             margin: 0px; 
                             text-overflow: ellipsis;
                             overflow: hidden;
                             white-space: nowrap;
-                            max-height: 1.125rem;
+                            max-height: 1.125em;
                         }
                         a:hover {
                             text-decoration: none !important;
@@ -223,7 +225,7 @@
                             height: 100%;
                             width: 80px;
                             z-index: 9;
-                            background-color: white; 
+                            background-color: var(--tainacan-white); 
                             float: right;
                             justify-content: center;
                             align-items: center;
@@ -232,27 +234,27 @@
     
                         a {
                             margin: auto;
-                            font-size: 1.125rem !important;
+                            font-size: 1.125em !important;
                         }
     
                     }
     
                     &:hover {
-                        background-color: $gray1 !important;
+                        background-color: var(--tainacan-item-hover-background-color) !important;
                         cursor: pointer;
     
                         .checkbox-cell {
                             position: sticky !important;
                             position: -webkit-sticky !important;
-                            background-color: $gray2;
+                            background-color: var(--tainacan-item-heading-hover-background-color);
                             
                             .checkbox { 
-                                background-color: $gray2 !important; 
+                                background-color: var(--tainacan-item-heading-hover-background-color) !important; 
                             }
                         }
                         .actions-cell {
                             .actions-container {
-                                background: $gray2 !important;
+                                background: var(--tainacan-item-heading-hover-background-color) !important;
                             }
                         }
     

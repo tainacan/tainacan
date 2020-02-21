@@ -163,7 +163,7 @@
                                             placement: 'bottom'
                                         }"
                                         class="icon is-small">
-                                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                                 </span>
                             </a>
                             &nbsp;&nbsp;
@@ -183,7 +183,8 @@
                         </span>
                         <br>
                         <a
-                                class="add-link"   
+                                class="add-link"  
+                                style="font-size: 0.875em;" 
                                 :class="{'disabled': form.enable_cover_page != 'yes'}"
                                 target="_blank"  
                                 :href="newPagePath">
@@ -214,7 +215,7 @@
                                         type="button">
                                     <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
                                     <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
                                     </span>
                                 </button>
                                 <b-dropdown-item
@@ -774,14 +775,20 @@ export default {
                 // Generates options for parent collection
                 this.isFetchingCollections = true;
                 this.fetchAllCollectionNames()
-                    .then((collections) => {
-                        this.collections = collections;
-                        this.isFetchingCollections = false;
+                    .then((resp) => {
+                        resp.request.then((collections) => {
+                            this.collections = collections;
+                            this.isFetchingCollections = false;
+                        })
+                        .catch((error) => {
+                            this.$console.error(error);
+                            this.isFetchingCollections = false;
+                        });
                     })
-                .catch((error) => {
-                    this.$console.error(error);
-                    this.isFetchingCollections = false;
-                }); 
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingCollections = false;
+                    });
 
                 this.isLoading = false;
                 
@@ -912,9 +919,9 @@ export default {
     }
 
     .section-label {
-        font-size: 16px !important;
+        font-size: 1em !important;
         font-weight: 500 !important;
-        color: $blue5 !important;
+        color: var(--tainacan-blue5) !important;
         line-height: 1.2em;
     }
 
@@ -936,26 +943,26 @@ export default {
             padding: 0;
             margin: 0;
             margin-top: -2px;
-            font-size: 18px;
-            color: white !important;
+            font-size: 1.125em;
+            color: var(--tainacan-white) !important;
         }
     }
     .header-field {  
-        padding-top: 1.5rem;
+        padding-top: 1.5em;
 
         .image-placeholder {
             position: absolute;
             left: 10%;
             right: 10%;
             top: 35%;
-            font-size: 2.0rem;
+            font-size: 2.0em;
             font-weight: bold;
             z-index: 99;
             text-align: center;
-            color: $gray4;
+            color: var(--tainacan-info-color);
             
             @media screen and (max-width: 1024px) {
-                font-size: 1.2rem;
+                font-size: 1.2em;
             }
             
         }
@@ -966,7 +973,7 @@ export default {
         }
     }
     .thumbnail-field {  
-        padding: 1.5rem;
+        padding: 1.5em;
         // margin-top: 16px;
         // margin-bottom: 38px;
 
@@ -982,17 +989,17 @@ export default {
             position: absolute;
             margin-left: 45px;
             margin-right: 45px;
-            font-size: 0.8rem;
+            font-size: 0.8em;
             font-weight: bold;
             z-index: 99;
             text-align: center;
-            color: $gray4;
+            color: var(--tainacan-info-color);
             top: 70px;
             max-width: 90px;
         }
         .thumbnail-buttons-row {
             position: relative;
-            left: 86px;
+            left: 90px;
             bottom: 20px;
         }
     }
@@ -1001,9 +1008,9 @@ export default {
         top: -1px;
     }
     .selected-cover-page {
-        border: 1px solid $gray2;
+        border: 1px solid var(--tainacan-gray2);
         padding: 8px;
-        font-size: .75rem;
+        font-size: .75em;
         .span { vertical-align: middle;}
 
         .selected-cover-page-control {
@@ -1017,7 +1024,7 @@ export default {
             pointer-events: none;
             cursor: not-allowed;
            
-           .icon { color: $gray2; }
+           .icon { color: var(--tainacan-gray2); }
         }
     }
     .status-radios {

@@ -269,7 +269,7 @@
                             style="margin-right: auto;"
                             :to="{ path: $routerHelper.getNewItemPath(collectionId)}">
                         <!-- <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-add"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-add"/>
                         </span> -->
                         <span>{{ $i18n.get('label_create_another_item') }}</span>
                     </router-link>
@@ -278,7 +278,7 @@
                             class="button sequence-button"
                             :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-edit"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
                         </span>
                         <span>{{ $i18n.getFrom('items','edit_item') }}</span>
                     </router-link>
@@ -288,7 +288,7 @@
                             :disabled="isLoading"
                             @click="openExposersModal()">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-url"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
                         </span>
                         <span class="is-hidden-touch">{{ $i18n.get('label_view_as') }}</span>
                     </button>
@@ -297,7 +297,7 @@
                             class="button sequence-button is-pulled-right"
                             :href="item.url">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                         </span>
                         <span>{{ $i18n.get('label_item_page_on_website') }}</span>
                     </a>
@@ -426,7 +426,7 @@
             margin-bottom: 110px;
 
             .field:not(:last-child) {
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.5em;
             }
         }
 
@@ -439,9 +439,9 @@
             justify-content: space-between;
 
             h1, h2 {
-                font-size: 20px;
+                font-size: 1.25em;
                 font-weight: 500;
-                color: $gray5;
+                color: var(--tainacan-heading-color);
                 display: inline-block;
                 width: 80%;
                 flex-shrink: 1;
@@ -452,11 +452,11 @@
                 max-width: 80%;
             }
             .status-tag {
-                color: white;
-                background: $turquoise5;
-                padding: 0.15rem 0.5rem;
-                font-size: 0.75rem;
-                margin: 0 1rem 0 0;
+                color: var(--tainacan-white);
+                background: var(--tainacan-turquoise5);
+                padding: 0.15em 0.5em;
+                font-size: 0.75em;
+                margin: 0 1em 0 0;
                 font-weight: 600;
                 position: relative;
                 top: -2px;
@@ -469,7 +469,7 @@
             hr {
                 margin: 3px 0px 4px 0px;
                 height: 1px;
-                background-color: $secondary;
+                background-color: var(--tainacan-secondary);
                 width: 100%;
             }
         }
@@ -497,7 +497,7 @@
                 justify-content: space-between;
 
                 .column {
-                    padding: 1rem 12px 0 12px;
+                    padding: 1em 12px 0 12px;
                 }
             }
             .field { 
@@ -519,12 +519,12 @@
 
     .metadata-area {
         .field {
-            border-bottom: 1px solid $gray2;
+            border-bottom: 1px solid var(--tainacan-gray2);
             padding: 10px 25px;
             margin-left: 0px !important;
 
             .label {
-                font-size: 14px;
+                font-size: 0.875em;
                 font-weight: 500;
                 margin-bottom: 0.5em;
                 display: inline-flex;
@@ -541,15 +541,15 @@
     .section-label {
         position: relative;
         label {
-            font-size: 16px !important;
+            font-size: 1em !important;
             font-weight: 500 !important;
-            color: $gray5 !important;
+            color: var(--tainacan-gray5) !important;
             line-height: 1.2em;
         }
     }
 
     .section-box {
-        background-color: white;
+        background-color: var(--tainacan-white);
         padding: 0 $page-side-padding 0 0;
         margin-top: 18px;
         margin-bottom: 32px;
@@ -564,16 +564,16 @@
                     height: 72px;
                     width: 72px;
                     border: none;
-                    background-color: $gray2;
-                    color: $secondary;
+                    background-color: var(--tainacan-gray2);
+                    color: var(--tainacan-secondary);
                     margin-bottom: 6px;
                     &:hover {
-                        background-color: $turquoise2;
+                        background-color: var(--tainacan-turquoise2);
                         cursor: pointer;
                     }
                 }
                 p {
-                    color: $secondary;
+                    color: var(--tainacan-secondary);
                 }
             }
         }
@@ -581,14 +581,14 @@
 
     .section-status {
         padding-bottom: 16px;
-        font-size: 0.75rem;
+        font-size: 0.75em;
 
         .field {
             border-bottom: none;
 
             .icon {
-                font-size: 18px !important;
-                color: $gray3;
+                font-size: 1.125em !important;
+                color: var(--tainacan-gray3);
             }
         }
     }
@@ -621,11 +621,11 @@
             position: absolute;
             margin-left: 45px;
             margin-right: 45px;
-            font-size: 0.8rem;
+            font-size: 0.8em;
             font-weight: bold;
             z-index: 99;
             text-align: center;
-            color: $gray4;
+            color: var(--tainacan-info-color);
             top: 70px;
             max-width: 90px;
         }
@@ -636,7 +636,7 @@
         position: absolute;
         bottom: 0;
         z-index: 999999;
-        background-color: $gray1;
+        background-color: var(--tainacan-gray1);
         width: 100%;
         height: 65px;
 
@@ -657,7 +657,7 @@
 
         .sequence-button {
             background-color: transparent;
-            color: $turquoise5;
+            color: var(--tainacan-turquoise5);
             border: none;
 
             .icon {

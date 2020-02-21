@@ -13,7 +13,8 @@
                 :placeholder="dateFormat.toLowerCase()" />
         <p
                 v-if="isInvalidDate && dateValue"
-                class="has-text-danger is-italic is-size-7">{{ $i18n.get('info_error_invalid_date') }}</p>
+                style="font-size: 0.75em;"
+                class="has-text-danger is-italic">{{ $i18n.get('info_error_invalid_date') }}</p>
         <!--<b-collapse-->
                 <!--position="is-bottom-right">-->
             <!--<span class="icon"-->
@@ -87,7 +88,7 @@
 
 <style scoped lang="scss">
 .control {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding: 0 !important;
+    height: 2.0em;
 }
 </style>

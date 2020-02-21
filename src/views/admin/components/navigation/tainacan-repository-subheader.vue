@@ -24,7 +24,7 @@
                         id="exporter-collection-button"
                         v-if="!isRepositoryLevel">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-export"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-export"/>
                     </span>
                 </a>
             </li>
@@ -46,7 +46,7 @@
                         class="button"
                         id="view-collection-button">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                 </span>
                     <!-- {{ $i18n.get('label_view_collection_on_website') }} -->
                 </a>
@@ -69,7 +69,7 @@
                         class="button"
                         id="view-repository-button">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-20px tainacan-icon-see"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                 </span>
                     <!-- {{ $i18n.get('label_view_collection_on_website') }} -->
                 </a>
@@ -128,31 +128,31 @@ export default {
     @import "../../scss/_variables.scss";
     
     .header-tooltips .tooltip-inner {
-        color: white;
-        text-shadow: 1px 1px $turquoise4;
-        background-color: $turquoise3;
-        font-size: 0.75rem;
+        color: var(--tainacan-white);
+        text-shadow: 1px 1px var(--tainacan-turquoise4);
+        background-color: var(--tainacan-turquoise3);
+        font-size: 0.75em;
         font-weight: 400;
         padding: 10px 14px;
     }
     .header-tooltips .tooltip-arrow {
-        border-color: $turquoise3;
+        border-color: var(--tainacan-turquoise3);
     }
 
     .repository-header-tooltips .tooltip-inner {
-        color: white;
-        background-color: $blue3;
-        font-size: 0.75rem;
+        color: var(--tainacan-white);
+        background-color: var(--tainacan-blue3);
+        font-size: 0.75em;
         font-weight: 400;
         padding: 10px 14px;
     }
     .repository-header-tooltips .tooltip-arrow {
-        border-color: $blue3;
+        border-color: var(--tainacan-blue3);
     }
 
     // Tainacan Header
     #tainacan-repository-subheader {
-        background-color: $turquoise6;
+        background-color: var(--tainacan-turquoise6);
         height: 42px;
         max-height: 42px;
         width: 100%;
@@ -168,14 +168,16 @@ export default {
         right: 0;
         top: $header-height;
         position: absolute;
-        z-index: 98;
+        z-index: 100;
         transition: padding-left 0.2s linear, background-color 0.2s linear;
 
         &.is-repository-level {
-            background-color: $blue5;
+            background-color: var(--tainacan-blue5);
             padding-right: $page-side-padding;
 
-            .repository-subheader-icons { margin-right: -1rem !important; }
+            .repository-subheader-icons { 
+                margin-right: -1em !important; 
+            }
         }
 
         &.is-menu-compressed {     
@@ -183,9 +185,9 @@ export default {
         }
 
         h1 {
-            font-size: 1.125rem;
-            color: white;
-            line-height: 1.4rem;
+            font-size: 1.125em;
+            color: var(--tainacan-white);
+            line-height: 1.4em;
             max-width: 100%;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -198,21 +200,37 @@ export default {
             flex-wrap: nowrap;
             margin-right: calc(4.6666667% - 2.083333333px);
 
-            #view-repository-button,
             #view-collection-button,
             #exporter-collection-button {
+                font-size: 1rem !important;
                 border: none;
                 border-radius: 0px !important;
                 height: 42px !important;
                 background-color: transparent;
-                color: white;
+                color: var(--tainacan-white);
                 width: 48px;
+
+                &:hover {
+                    background-color: var(--tainacan-turquoise5) !important;
+                }
+            }
+            #view-repository-button {
+                font-size: 1rem !important;
+                border: none;
+                border-radius: 0px !important;
+                height: 42px !important;
+                background-color: transparent;
+                color: var(--tainacan-white);
+                width: 48px;
+                &:hover {
+                    background-color: var(--tainacan-blue4) !important;
+                }
             }
         }
 
         @media screen and (max-width: 769px) {
             top: 102px;
-            padding-left: 4.166666667% !important;
+            padding-left: $page-side-padding !important;
         }
     }
 </style>

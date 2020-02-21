@@ -55,7 +55,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             // Differentiates between repository level and collection level queries
             let endpoint = '/collection/'+ collectionId +'/items?';
 
-            if (collectionId == undefined){
+            if (collectionId == undefined || collectionId == '' || collectionId == null){
                 endpoint = '/items?';
             }
  

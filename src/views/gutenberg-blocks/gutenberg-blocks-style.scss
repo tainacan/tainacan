@@ -17,13 +17,13 @@
     background: #f2f2f2;
 
     p {
-        font-size: 0.875rem !important; 
-        margin: 12px 1.5rem 16px 0; 
+        font-size: 0.875em !important; 
+        margin: 12px 1.5em 16px 0; 
         fill: #555758;
 
         svg {
             top: 4px;
-            margin-right: 0.75rem;
+            margin-right: 0.75em;
             position: relative;
             fill: #555758;
         }
@@ -37,13 +37,13 @@
         margin-bottom: 0;
     }
     .components-placeholder__fieldset p {
-        font-size: 0.875rem !important;
+        font-size: 1em !important;
         margin: 12px 0;
         color: #454647;
         fill: #555758;
 
         svg {
-            margin-right: 1rem; 
+            margin-right: 1em; 
             top: 4px;
             position: relative;
             fill: #555758;
@@ -91,7 +91,7 @@
             height: 68px;
             width: calc(100% + 32px);
             margin-left: -16px !important;
-            padding: 1.2rem 1.2rem !important;
+            padding: 1.2em 1.2em !important;
             border-top: 1px solid #cbcbcb;
         }
     }
@@ -99,7 +99,7 @@
     // Spinner
     .spinner-container {
         min-height: 56px;
-        padding: 1rem;
+        padding: 1em;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -112,7 +112,7 @@
     }
 
     hr {
-        margin: 5px 0.75rem;
+        margin: 5px 0.75em;
     }
 
     .modal-search-area {
@@ -133,7 +133,7 @@
             label.components-base-control__label {
                 font-weight: 500;
                 color: #454647;
-                font-size: 0.875rem;
+                font-size: 1em;
                 text-align: center;
             }
             input.components-text-control__input {
@@ -145,7 +145,7 @@
 
     .modal-radio-area-label {
         font-weight: 500;
-        margin-left: 1.75rem;
+        margin-left: 1.75em;
     }
 
     .modal-checkbox-list,

@@ -10,17 +10,17 @@
     animation-duration: 0.5s;
 
     .selected-record {
-        background-color: $turquoise1;
+        background-color: var(--tainacan-turquoise1);
         .metadata-title {
-            background-color: $turquoise2;
+            background-color: var(--tainacan-turquoise2);
         }
         .media {
-            background-color: $turquoise1;
+            background-color: var(--tainacan-turquoise1);
         }
     }
 
     .tainacan-record {
-        background-color: #f6f6f6;
+        background-color: rgba(126, 126, 126, 0.05);
         padding: 0px;
         flex-basis: 0;
         margin: 0 auto 30px auto;
@@ -33,12 +33,12 @@
         transition: background-color 0.2s ease;
 
         &:hover {
-            background-color: $gray1 !important;
+            background-color: var(--tainacan-item-hover-background-color) !important;
         }
 
         .record-checkbox {
             position: absolute;
-            margin-left: 1.0rem;
+            margin-left: 1.0em;
             margin-top: 7px;
         }
         .actions-area {
@@ -71,7 +71,7 @@
 
         .record-line {
             height: 1px;
-            background-color: $gray2;
+            background-color: var(--tainacan-item-heading-hover-background-color);
             margin-left: -44px;
             margin-right: -44px;
             opacity: 0;
@@ -93,19 +93,19 @@
         }
         .metadata-title {
             flex-shrink: 0;
-            padding: 0.5rem 4.75rem 0.5rem 2.75rem;
+            padding: 0.5em 4.75em 0.5em 2.75em;
             margin-bottom: -27px;
             min-height: 40px;
-            font-size: 0.875rem !important; 
+            font-size: 0.875em !important; 
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
-            color: black;
+            color: var(--tainacan-heading-color);
             transition: background-color 0.3s ease;
 
             p {
                 line-height: 1.7;
-                font-size: 0.875rem !important; 
+                font-size: 0.875em !important; 
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
@@ -114,10 +114,10 @@
             }
         }
         &:hover .metadata-title {
-            background-color: $gray2 !important;
+            background-color: var(---tainacan-item-heading-hover-background-color) !important;
         }
         &:hover .media {
-            background-color: $gray1 !important;
+            background-color: var(--tainacan-item-hover-background-color) !important;
         }
 
         .media {
@@ -128,21 +128,22 @@
             .list-metadata {
                 padding: 25px;
                 flex: 1;
-                font-size: 0.6875rem;
-                color: $gray4;
+                font-size: 1em;
+                color: var(--tainacan-info-color);
                 overflow: hidden;
                 width: 100%;
             
                 .metadata-label {
-                    font-size: 0.75rem;
+                    margin: 0 0 0.5em 0;
+                    font-size: 0.75em;
                     font-weight: 700;
-                    color: $gray4;
+                    color: var(--tainacan-info-color);
                 }
 
                 .metadata-value {
-                    font-size: 0.75rem;
-                    margin-bottom: 1rem;
-                    color: $gray4;
+                    font-size: 0.75em;
+                    margin-bottom: 1em;
+                    color: var(--tainacan-info-color);
                 }
 
                 & span:last-of-type>.metadata-value {

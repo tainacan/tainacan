@@ -65,14 +65,14 @@
         flex-wrap: wrap;
 
         .exporter-type {
-            border: 1px solid $gray2;
+            border: 1px solid var(--tainacan-gray2);
             padding: 15px;
             margin: 20px;
             cursor: pointer;
             transition: border 0.3s ease;
 
             &:hover {
-                border: 1px solid $gray3;
+                border: 1px solid var(--tainacan-gray3);
             }
         }
     }

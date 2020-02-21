@@ -59,7 +59,7 @@
         }
 
         label {
-            font-size: 0.75rem;
+            font-size: 0.75em;
             color: #555758;
         }
 
@@ -83,12 +83,12 @@
 }
 
 .wp-block-tainacan-carousel-collections-list {
-    margin: 2rem auto;
+    margin: 2em auto;
 
     // Spinner
     .spinner-container {
         min-height: 56px;
-        padding: 1rem;
+        padding: 1em;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -184,7 +184,7 @@
 
     .preview-warning {
         width: 100%;
-        font-size: 0.875rem;
+        font-size: 0.875em;
         font-style: italic;
         color: #898d8f;
         text-align: center;
@@ -267,7 +267,7 @@
             img {
                 height: auto;
                 padding: 0px;
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.5em;
             }
 
             &:hover a { 

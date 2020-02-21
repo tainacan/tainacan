@@ -419,7 +419,7 @@
         display: flex;
         justify-content: space-between;
         align-content: center;
-        margin: 2rem 0 1rem 0;
+        margin: 2em 0 1em 0;
 
         p {
             margin: 0;
@@ -430,9 +430,9 @@
         }
     }
     .name-edition-box label {
-        margin-right: 2rem;
+        margin-right: 2em;
         padding-bottom: 3px;
-        font-size: 1rem;
+        font-size: 1em;
     }
     .nav-tab {
         background-color: #faf9f9;
@@ -443,32 +443,32 @@
         background-color: #faf9f9;
         border: 1px solid #ccc;
         border-top: none;
-        padding: 1rem 2rem;
+        padding: 1em 2em;
     }
     .dashicons-info {
         color: #e69810;
     }
     .capabilities-list {
-        padding: 1rem 0;
+        padding: 1em 0;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
 
         .capability-group {
-            padding: 1rem 1rem 1rem 0rem;
+            padding: 1em 1em 1em 0em;
             margin-right: auto;
             break-inside: avoid;
             
             h3 {
                 margin-top: 0;
-                margin-bottom: 1rem;
-                font-size: 1rem;
+                margin-bottom: 1em;
+                font-size: 1em;
                 font-weight: bold;
                 color: #0073aa;
             }
             ul {
                 li {
-                    margin: 0 0.5rem 0.5rem;
+                    margin: 0 0.5em 0.5em;
                     display: inline-block;
                     white-space: nowrap;
                     .column-name {

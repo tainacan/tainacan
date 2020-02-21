@@ -29,7 +29,7 @@
                                 class="tainacan-icon"/>
                     </span>
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-20px tainacan-icon-arrowdown" />
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                     </span>
                 </button>
                 <b-dropdown-item
@@ -38,7 +38,7 @@
                         :class="{ 'is-active': order == 'desc' }"
                         :value="'desc'"
                         aria-role="listitem"
-                        style="padding-bottom: 0.45rem">
+                        style="padding-bottom: 0.45em">
                     <span class="icon is-small gray-icon">
                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
                     </span>
@@ -50,7 +50,7 @@
                         :class="{ 'is-active': order == 'asc' }"
                         :value="'asc'"
                         aria-role="listitem"
-                        style="padding-bottom: 0.45rem">
+                        style="padding-bottom: 0.45em">
                     <span class="icon is-small gray-icon">
                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
                     </span>
@@ -491,7 +491,7 @@ export default {
             margin-left: auto;
 
             .label {
-                font-size: 0.875rem;
+                font-size: 0.875em;
                 font-weight: normal;
                 margin-top: 3px;
                 margin-bottom: 2px;
@@ -507,13 +507,14 @@ export default {
                 align-items: center;
             }
 
-            .gray-icon, .gray-icon .icon {
-                color: $gray4 !important;
+            .gray-icon, 
+            .gray-icon .icon {
+                color: var(--tainacan-info-color) !important;
                 padding-right: 10px;
+                height: 1.125em !important;
             }
             .gray-icon .icon i::before, 
             .gray-icon i::before {
-                font-size: 1.3125rem !important;
                 max-width: 26px;
             }
         }
@@ -523,16 +524,16 @@ export default {
             align-items: center;
 
             .input {
-                border: 1px solid $gray2;
+                border: 1px solid var(--tainacan-gray2);
             }
             .control {
                 width: 100%;
                 .icon {
                     pointer-events: all;
                     cursor: pointer;
-                    color: $blue5;
+                    color: var(--tainacan-blue5);
                     height: 27px;
-                    font-size: 18px !important;
+                    font-size: 1.125em !important;
                     height: auto !important;
                 }
             }
@@ -544,18 +545,18 @@ export default {
     }
 
     .parent-term>div>.term-item:first-child:hover {
-        background-color: $gray1 !important;
+        background-color: var(--tainacan-gray1) !important;
         .controls {
             visibility: visible;
             opacity: 1.0;
         }
         &::before {
-            border-color: transparent transparent transparent $gray2 !important;
+            border-color: transparent transparent transparent var(--tainacan-gray2) !important;
         }
     }
     .parent-term>div>.opened-term.term-item:first-child {
         cursor: default;
-        background-color: $gray1 !important;
+        background-color: var(--tainacan-gray1) !important;
 
         &:before {
             content: '';
@@ -566,23 +567,23 @@ export default {
             width: 0;
             height: 0;
             border-style: solid;
-            border-color: transparent transparent transparent $gray1;
+            border-color: transparent transparent transparent var(--tainacan-gray1);
             border-left-width: 24px;
             border-top-width: 20px;
             border-bottom-width: 20px;
             top: 0;
         }
         &:hover:before {
-            border-color: transparent transparent transparent $gray1;
+            border-color: transparent transparent transparent var(--tainacan-gray1);
         }
     }
 
     .view-more-terms-level-0 {
-        font-size: 0.875rem;
+        font-size: 0.875em;
         margin: 0;
-        padding: 0.5rem 0 0.5rem 1.75rem;
+        padding: 0.5em 0 0.5em 1.75em;
         display: flex;
-        border-top: 1px solid #f2f2f2;
+        border-top: 1px solid var(--tainacan-gray1);
     }
 
     .edit-forms-list {

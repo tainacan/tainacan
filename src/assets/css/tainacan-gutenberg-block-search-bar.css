@@ -14,12 +14,12 @@
   width: calc(100% + 28px);
   background: #f2f2f2; }
   .block-control p {
-    font-size: 0.875rem !important;
-    margin: 12px 1.5rem 16px 0;
+    font-size: 0.875em !important;
+    margin: 12px 1.5em 16px 0;
     fill: #555758; }
     .block-control p svg {
       top: 4px;
-      margin-right: 0.75rem;
+      margin-right: 0.75em;
       position: relative;
       fill: #555758; }
 
@@ -29,12 +29,12 @@
   .components-placeholder .components-placeholder__label {
     margin-bottom: 0; }
   .components-placeholder .components-placeholder__fieldset p {
-    font-size: 0.875rem !important;
+    font-size: 1em !important;
     margin: 12px 0;
     color: #454647;
     fill: #555758; }
     .components-placeholder .components-placeholder__fieldset p svg {
-      margin-right: 1rem;
+      margin-right: 1em;
       top: 4px;
       position: relative;
       fill: #555758; }
@@ -60,11 +60,11 @@
       height: 68px;
       width: calc(100% + 32px);
       margin-left: -16px !important;
-      padding: 1.2rem 1.2rem !important;
+      padding: 1.2em 1.2em !important;
       border-top: 1px solid #cbcbcb; }
   .wp-block-tainacan-modal .spinner-container {
     min-height: 56px;
-    padding: 1rem;
+    padding: 1em;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -74,7 +74,7 @@
   .wp-block-tainacan-modal .components-modal__header .components-icon-button {
     padding-right: 0; }
   .wp-block-tainacan-modal hr {
-    margin: 5px 0.75rem; }
+    margin: 5px 0.75em; }
   .wp-block-tainacan-modal .modal-search-area {
     display: flex;
     justify-content: center;
@@ -91,14 +91,14 @@
       .wp-block-tainacan-modal .modal-search-area .components-base-control label.components-base-control__label {
         font-weight: 500;
         color: #454647;
-        font-size: 0.875rem;
+        font-size: 1em;
         text-align: center; }
       .wp-block-tainacan-modal .modal-search-area .components-base-control input.components-text-control__input {
         padding: 5px 8px;
         height: 28px; }
   .wp-block-tainacan-modal .modal-radio-area-label {
     font-weight: 500;
-    margin-left: 1.75rem; }
+    margin-left: 1.75em; }
   .wp-block-tainacan-modal .modal-checkbox-list,
   .wp-block-tainacan-modal .modal-radio-list .components-base-control__field {
     padding: 0;
@@ -173,7 +173,7 @@
   justify-content: center; }
 
 .wp-block-tainacan-search-bar {
-  margin: 2rem auto; }
+  margin: 2em auto; }
   .wp-block-tainacan-search-bar .tainacan-search-container {
     width: 100%; }
     .wp-block-tainacan-search-bar .tainacan-search-container #tainacan-search-bar-block {
@@ -198,7 +198,7 @@
         min-width: 28px;
         margin: 0;
         border: none;
-        padding: 4px 0.75rem;
+        padding: 4px 0.75em;
         text-overflow: ellipsis; }
       .wp-block-tainacan-search-bar .tainacan-search-container #tainacan-search-bar-block button {
         height: auto;
@@ -208,8 +208,8 @@
         box-shadow: none;
         border-radius: 0;
         background: white;
-        padding: 4px 1rem;
-        font-size: 1rem; }
+        padding: 4px 1em;
+        font-size: 1em; }
         .wp-block-tainacan-search-bar .tainacan-search-container #tainacan-search-bar-block button .icon {
           height: 28px; }
           .wp-block-tainacan-search-bar .tainacan-search-container #tainacan-search-bar-block button .icon svg {
@@ -259,8 +259,8 @@
       .wp-block-tainacan-search-bar.is-style-alternate #tainacan-search-bar-block input#tainacan-search-bar-block_input::placeholder {
         color: #cbcbcb; }
     .wp-block-tainacan-search-bar.is-style-alternate #tainacan-search-bar-block button {
-      margin-right: 0.75rem;
-      padding: 0 0.35rem;
+      margin-right: 0.75em;
+      padding: 0 0.35em;
       min-height: 28px;
       z-index: 2;
       border: none;
@@ -312,7 +312,7 @@
       margin-right: -56px;
       padding-right: 27px;
       padding-left: 26px;
-      font-size: 1rem;
+      font-size: 1em;
       border-width: 0;
       background: #f2f2f2;
       transition: width 0.5s ease-in, padding 0.5s ease-in; }
@@ -322,8 +322,8 @@
         padding-left: 24px;
         border-width: 0; }
     .wp-block-tainacan-search-bar.is-style-stylish #tainacan-search-bar-block button {
-      margin-left: 0.75rem;
-      padding: 0 0.35rem;
+      margin-left: 0.75em;
+      padding: 0 0.35em;
       min-height: 28px;
       z-index: 2;
       border: none;
@@ -349,7 +349,7 @@
     right: calc(4.1667vw + 26px);
     position: absolute; }
   .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container.is-aligned-left .tainacan-search-container {
-    width: calc(100% - 1rem - 26px);
+    width: calc(100% - 1em - 26px);
     top: calc(-50% + 26px);
     left: calc(4.1667% + 26px);
     left: calc(4.1667vw + 26px);
@@ -386,8 +386,8 @@
     flex-wrap: wrap;
     align-items: center;
     flex-grow: 2;
-    padding: 0.5rem 4.1667%;
-    padding: 0.5rem 4.1667vw;
+    padding: 0.5em 4.1667%;
+    padding: 0.5em 4.1667vw;
     text-align: center;
     text-decoration: none !important; }
     .wp-block-tainacan-search-bar .search-bar-collection-header-container.is-aligned-left {
@@ -412,8 +412,8 @@
       .wp-block-tainacan-search-bar .search-bar-collection-header-container .search-bar-collection-header-title h3 {
         margin: 0 auto;
         text-decoration: none;
-        font-size: 1.3rem;
-        line-height: 1.5rem;
+        font-size: 1.3em;
+        line-height: 1.5em;
         text-overflow: ellipsis;
         color: inherit; }
         .wp-block-tainacan-search-bar .search-bar-collection-header-container .search-bar-collection-header-title h3:hover {
@@ -423,9 +423,9 @@
         display: block;
         margin-top: -8px;
         font-weight: normal;
-        font-size: 1rem; }
+        font-size: 1em; }
     @media only screen and (max-width: 1024px) {
       .wp-block-tainacan-search-bar .search-bar-collection-header-container .search-bar-collection-header-title {
-        margin-bottom: 1rem; } }
+        margin-bottom: 1em; } }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-search-bar.css.map */

@@ -50,6 +50,7 @@
                             <router-link
                                     v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
                                     tag="a" 
+                                    style="font-size: 0.875em;"
                                     class="add-link"     
                                     :to="{ path: $routerHelper.getNewCollectionPath(), query: { fromImporter: true }}">
                                 <span class="icon">
@@ -453,15 +454,15 @@ export default {
     }
 
     .section-label {
-        font-size: 16px !important;
+        font-size: 1em !important;
         font-weight: 500 !important;
-        color: $blue5 !important;
+        color: var(--tainacan-blue5) !important;
         line-height: 1.2em;
     }
 
     .source-metadatum {
         padding: 2px 0;
-        border-bottom: 1px solid $gray2;
+        border-bottom: 1px solid var(--tainacan-gray2);
         width: 100%;
         margin-bottom: 6px;
         display: flex;
@@ -473,11 +474,11 @@ export default {
         display: inline;
     }
     .drop-inner{
-        padding: 1rem 3rem;
+        padding: 1em 3em;
     }
 
     .mapping-header-label {
-        color: $gray4;
+        color: var(--tainacan-info-color);
         margin: 12px 0 6px 0;
     }
 
@@ -486,7 +487,7 @@ export default {
         z-index: 99999;
 
         #metadatumEditForm {
-            background-color: white;
+            background-color: var(--tainacan-background-color);
         }
     }
 
@@ -496,9 +497,9 @@ export default {
     }
 
     .selected-source-file {
-        border: 1px solid $gray2;
+        border: 1px solid var(--tainacan-gray2);
         padding: 2px 10px;
-        font-size: .75rem;
+        font-size: .75em;
         display: flex;
         justify-content: space-between;
         align-items: center;

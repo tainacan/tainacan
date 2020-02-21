@@ -2,13 +2,22 @@
 // Tooltips:
 .b-tooltip::after {
     box-shadow: none;
+    &.is-primary {
+        background: var(--tainacan-primary);
+    }
+}
+.b-tooltip::before {
+    box-shadow: none;
+    &.is-primary {
+        background: var(--tainacan-primary);
+    }
 }
 .repository-tooltip {
     .tooltip-inner {
-        background: $blue1 !important;
+        background: var(--tainacan-blue1) !important;
     }
     .tooltip-arrow {
-        border-color: $blue1 !important;
+        border-color: var(--tainacan-blue1) !important;
     }
 }
 .tooltip {
@@ -20,9 +29,9 @@
     }
 
     .tooltip-inner {
-        background: $turquoise1;
-        color: $gray5;
-        font-size: 0.6875rem;
+        background: var(--tainacan-primary);
+        color: var(--tainacan-info-color);
+        font-size: 0.6875em;
         border-radius: 5px;
         padding: 10px 14px;
         max-width: 280px;
@@ -35,7 +44,7 @@
         border-style: solid;
         position: absolute;
         margin: 5px;
-        border-color: $turquoise1;
+        border-color: var(--tainacan-primary);
         z-index: 1;
     }
     &[x-placement^="top"] {
@@ -113,12 +122,12 @@
             border-left-color: transparent !important;
             border-right-color: transparent !important;
             border-bottom-color: transparent !important;
-            border-top-color: $turquoise1 !important;
+            border-top-color: var(--tainacan-primary) !important;
             top: initial !important;
             bottom: -5px !important;
     }
     .metadata-type-preview {
-        background: $turquoise1;
+        background: var(--tainacan-primary);
         padding: 0px 8px;
         border-radius: 3px;
         width: 200px;
@@ -132,9 +141,9 @@
 
         .metadata-type-label {
             font-weight: 600;
-            color: $turquoise4;
+            color: var(--tainacan-turquoise4);
             width: 100%;
-            font-size: 1rem;
+            font-size: 1em;
             margin-bottom: 6px;
             margin-left: -18px;
         }
@@ -160,33 +169,35 @@
         .field {
             width: 100%;
             .label { 
-                color: $gray4;
+                color: var(--tainacan-info-color);
+                font-size: 1em;
+                line-height: 2em;
             }
         }
         .add-new-term {
-            font-size: 0.75rem;
+            font-size: 0.75em;
             text-decoration: underline;
-            margin: 0.875rem 1.5rem;
+            margin: 0.875em 1.5em;
         }
     }
 
     // Metadata type textarea has different separators in different spots on interface
     & .multivalue-separator {
-        color: $gray4;
+        color: var(--tainacan-info-color);
         margin: 0 8px;    
     }
     & .hierarchy-separator {
-        color: $gray4;
+        color: var(--tainacan-info-color);
     }
     &.metadata-type-textarea {
         .multivalue-separator {
             display: block;
             max-height: 1px;
             width: 35px;
-            background: $gray4;
+            background: var(--tainacan-info-color);
             content: none;
             color: transparent;
-            margin: 1rem auto;
+            margin: 1em auto;
         }
     }
 }
