@@ -473,9 +473,7 @@ registerBlockType('tainacan/faceted-search', {
                                             <span class="fake-button"></span> 
                                         : 
                                             <div class="fake-buttons-group">
-                                                <div class="fake-button"></div>
-                                                <div class="fake-button"></div>
-                                                <div class="fake-button"></div>
+                                                { Array(3).fill().map( () => <div class="fake-button"></div> )}
                                                 { showFullscreenWithViewModes ? <span class="fake-button"></span> : null }
                                             </div>
                                     }
@@ -495,24 +493,13 @@ registerBlockType('tainacan/faceted-search', {
                                                         flexBasis: filtersAreaWidth + '%'
                                                     }}
                                                     class="filters">
-                                                <span class="fake-text"></span>
-                                                <span class="fake-text"></span>
-                                                <span class="fake-text"></span>
-                                                <span class="fake-text"></span>
-                                                <span class="fake-text"></span>
-                                                <span class="fake-text"></span>
-                                                <span class="fake-text"></span>
+                                                { Array(8).fill().map( () => <span class="fake-text"></span> )}
                                             </div> 
                                         : null 
                                     }
                                     <div class="aside-filters">    
                                         <div class="items">
-                                            <div class="fake-item"><span class="fake-item-header"></span></div>
-                                            <div class="fake-item"><span class="fake-item-header"></span></div>
-                                            <div class="fake-item"><span class="fake-item-header"></span></div>
-                                            <div class="fake-item"><span class="fake-item-header"></span></div>
-                                            <div class="fake-item"><span class="fake-item-header"></span></div>
-                                            <div class="fake-item"><span class="fake-item-header"></span></div>
+                                            { Array(6).fill().map( () => <div class="fake-item"><span class="fake-item-header"></span></div> ) }
                                         </div>
                                         <div class="pagination">
                                             <span class="fake-text"></span>
