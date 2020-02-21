@@ -65,20 +65,6 @@ class Relationship extends Metadata_Type {
            ]
        ];
     }
-
-    /**
-     * @param $itemMetadata \Tainacan\Entities\Item_Metadata_Entity The instace of the entity itemMetadata
-     * @return string
-     */
-
-    public function render( $itemMetadata ){
-        return '<tainacan-relationship 
-                            collection_id="' . $this->get_options()['collection_id'] . '"
-                            metadatum_id ="'.$itemMetadata->get_metadatum()->get_id().'" 
-                            item_id="'.$itemMetadata->get_item()->get_id().'"    
-                            value=\''.json_encode( $itemMetadata->get_value() ).'\'  
-                            name="'.$itemMetadata->get_metadatum()->get_name().'"></tainacan-relationship>';
-    }
     
     public function validate_options(\Tainacan\Entities\Metadatum $metadatum) {
         if ( !in_array($metadatum->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )

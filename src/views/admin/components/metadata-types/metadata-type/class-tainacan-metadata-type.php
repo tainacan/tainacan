@@ -89,8 +89,6 @@ abstract class Metadata_Type  {
      * @var string
      */
     private $preview_template;
-    
-    abstract function render( $itemMetadata );
 
     public function __construct(){
         
