@@ -131,7 +131,6 @@ export default {
         color: var(--tainacan-white);
         text-shadow: 1px 1px var(--tainacan-turquoise4);
         background-color: var(--tainacan-turquoise3);
-        font-size: 0.75em;
         font-weight: 400;
         padding: 10px 14px;
     }
@@ -142,7 +141,6 @@ export default {
     .repository-header-tooltips .tooltip-inner {
         color: var(--tainacan-white);
         background-color: var(--tainacan-blue3);
-        font-size: 0.75em;
         font-weight: 400;
         padding: 10px 14px;
     }

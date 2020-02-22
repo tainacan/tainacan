@@ -242,7 +242,6 @@ export default {
         color: turquoise5;
         text-shadow: none;
         background-color: var(--tainacan-turquoise2);
-        font-size: 0.75em;
         font-weight: 400;
         padding: 10px 14px;
     }

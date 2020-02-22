@@ -1117,12 +1117,13 @@ export default {
                     margin-left: 0.5em;
                 }
                 .controls { 
+                    font-size: 0.875em;
                     position: absolute;
                     right: 5px;
                     top: 10px;
                     .switch {
                         position: relative;
-                        bottom: 3px;
+                        bottom: 1px;
                     }
                     .icon {
                         bottom: 1px;   

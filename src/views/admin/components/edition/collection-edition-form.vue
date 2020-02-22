@@ -1009,8 +1009,8 @@ export default {
     }
     .selected-cover-page {
         border: 1px solid var(--tainacan-gray2);
-        padding: 8px;
-        font-size: .75em;
+        padding: 3px 8px;
+        font-size: .875em;
         .span { vertical-align: middle;}
 
         .selected-cover-page-control {
