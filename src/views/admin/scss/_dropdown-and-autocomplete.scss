@@ -21,6 +21,7 @@
         }
     }
     .dropdown-menu {
+        font-size: 1em;
         padding: 0px;
         margin-top: 0;
         border-radius: 0px;
@@ -139,6 +140,9 @@
                 color: var(--tainacan-label-color);
             }
         }
+    }
+    .autocomplete .icon {
+        height: 100% !important;
     }
 }
 .selected-list-box {
