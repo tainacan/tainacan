@@ -20,10 +20,6 @@
             cursor: default;
         }
     }
-    &>.control.has-icons-left .icon {
-        height: 100%;//2.125em;
-        width: 2.125em;
-    }
     .dropdown-menu {
         padding: 0px;
         margin-top: 0;
@@ -61,6 +57,7 @@
                 
                     .media-left {
                         margin-right: 0.5em;
+                        display: flex;
                     }
                     .media-content {
                         display: flex;
@@ -100,21 +97,6 @@
 }
 .taginput.is-expanded {
     width: 100%;
-}
-.taginput-container .mdi-magnify::before, 
-.autocomplete .mdi-magnify::before {
-    color: var(--tainacan-info-color);
-    content: 'search';
-    display: inline-block;
-    font: normal normal normal 20px/1 "TainacanIcons";
-    font-size: inherit;
-    text-rendering: auto;
-    vertical-align: middle;
-    line-height: inherit;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-size: 1.25em;
-    text-transform: none !important;
 }
 
 .taginput-container {
@@ -222,6 +204,14 @@
     //     }
     // }
 
+    & .dropdown.is-mobile-modal {
+        @media screen and (max-width: 768px) {
+            .field.has-addons {
+                font-size: 1.125em;
+            } 
+        }
+    }
+
     .dropdown-menu {
         background: transparent;
         border: none;
@@ -232,6 +222,7 @@
     }
 
     .datepicker-header {
+
         .pagination {
             a>span>i:before {
                 display: inline-block;
@@ -253,7 +244,7 @@
 
                 &>span>i:before {
                     content: 'previous';
-                    font-size: 1em;
+                    font-size: 1.25em;
                 }
             }
 
@@ -263,7 +254,7 @@
 
                 &>span>i:before {
                     content: 'next';
-                    font-size: 1em;
+                    font-size: 1.25em;
                 }
             }
         }
@@ -271,7 +262,8 @@
 
     .datepicker-table {
         padding: 0;
-        margin-bottom: 0px;
+        margin: 0px;
+        width: 100%;
         
         .datepicker-cell {
             border: none !important;
@@ -316,6 +308,7 @@
             padding-bottom: 0.5em;
             
             .pagination {
+                font-size: 1.1em;
                 flex-wrap: wrap;
             
                 .pagination-list {
@@ -325,24 +318,36 @@
                         width: 100% !important;
 
                         .control {
-                            height: 24px !important;
+                            select { 
+                                border: none !important; 
+                                min-height: 26px;
+                            }
+                        }
+                        .control:first-child {
+                            margin-right: 1px;
+                            .select {
+                                border-right: 1px solid var(--tainacan-input-border-color);
+                                margin-right: 1px;
+                            }
                         }
                     }
                 }
 
                 .pagination-previous {
                     margin: 0;
-                    height: 24px;
+                    height: 1.5em;
                     padding: 0;
-                    font-size: 0.75em; 
                     order: 3;
+                    min-height: 24px;
+                    margin-bottom: 0.35em;
                 }
 
                 .pagination-next {
                     margin: 0;
-                    height: 24px;
+                    height: 1.5em; 
                     padding: 0;
-                    font-size: 0.75em;
+                    min-height: 24px;
+                    margin-bottom: 0.35em;
                 }
             }
         }

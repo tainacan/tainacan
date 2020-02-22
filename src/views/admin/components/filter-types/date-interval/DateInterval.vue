@@ -4,7 +4,6 @@
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('label_selectbox_init')"
                 v-model="dateInit"
-                size="is-small"
                 @focus="isTouched = true"
                 @input="validadeValues()"
                 editable
@@ -31,7 +30,6 @@
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('label_selectbox_init')"
                 v-model="dateEnd"
-                size="is-small"
                 @input="validadeValues()"
                 @focus="isTouched = true"
                 editable

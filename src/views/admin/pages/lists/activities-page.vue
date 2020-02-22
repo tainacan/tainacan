@@ -42,7 +42,6 @@
                                 @input="searchActivities()"
                                 :date-formatter="(date) => dateFormatter(date)"
                                 :date-parser="(date) => dateParser(date)"
-                                size="is-small"
                                 icon="calendar-today"
                                 :years-range="[-50, 3]"
                                 :day-names="[
@@ -82,53 +81,48 @@
                     <b-field 
                             style="margin-left: auto"
                             class="header-item">
-                        <div class="control has-icons-right  is-small is-clearfix">
-                            <b-autocomplete
-                                    :data="users"
-                                    :placeholder="$i18n.get('instruction_type_search_users_filter')"
-                                    keep-first
-                                    open-on-focus
-                                    @input="fetchUsersForFiltering"
-                                    @focus.once="($event) => fetchUsersForFiltering($event.target.value)"
-                                    @select="filterActivitiesByUser"
-                                    :loading="isFetchingUsers"
-                                    field="name"
-                                    icon="account">
-                                <template slot-scope="props">
-                                    <div class="media">
-                                        <div
-                                                v-if="props.option.avatar_urls && props.option.avatar_urls['24']"
-                                                class="media-left">
-                                            <img
-                                                    width="24"
-                                                    :src="props.option.avatar_urls['24']">
-                                        </div>
-                                        <div class="media-content">
-                                            {{ props.option.name }}
-                                        </div>
+                        <b-autocomplete
+                                clearable
+                                :data="users"
+                                :placeholder="$i18n.get('instruction_type_search_users_filter')"
+                                keep-first
+                                open-on-focus
+                                @input="fetchUsersForFiltering"
+                                @focus.once="($event) => fetchUsersForFiltering($event.target.value)"
+                                @select="filterActivitiesByUser"
+                                :loading="isFetchingUsers"
+                                field="name"
+                                icon="account">
+                            <template slot-scope="props">
+                                <div class="media">
+                                    <div
+                                            v-if="props.option.avatar_urls && props.option.avatar_urls['24']"
+                                            class="media-left">
+                                        <img
+                                                width="24"
+                                                :src="props.option.avatar_urls['24']">
                                     </div>
-                                </template>
+                                    <div class="media-content">
+                                        {{ props.option.name }}
+                                    </div>
+                                </div>
+                            </template>
                             <template slot="empty">{{ $i18n.get('info_no_user_found') }}</template>
-                            </b-autocomplete>
-                        </div>
+                        </b-autocomplete>
                     </b-field>
 
                     <b-field class="header-item">
-                        <div class="control has-icons-right  is-small is-clearfix">
-                            <input
-                                    class="input is-small"
-                                    :placeholder="$i18n.get('instruction_search')"
-                                    type="search"
-                                    :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
-                                    autocomplete="on"
-                                    v-model="searchQuery"
-                                    @keyup.enter="searchActivities()">
-                            <span
-                                    @click="searchActivities()"
-                                    class="icon is-right">
-                                <i class="tainacan-icon tainacan-icon-search" />
-                            </span>
-                        </div>
+                        <b-input 
+                                :placeholder="$i18n.get('instruction_search')"
+                                type="search"
+                                size="is-small"
+                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
+                                autocomplete="on"
+                                v-model="searchQuery"
+                                @keyup.enter.native="searchActivities()"
+                                icon-right="magnify"
+                                icon-right-clickable
+                                @icon-right-click="searchActivities()" />
                     </b-field>
                 </div>
 

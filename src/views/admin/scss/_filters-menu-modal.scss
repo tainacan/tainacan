@@ -1,6 +1,9 @@
 #filters-modal { 
-    z-index: 999;
     padding: 0;
+
+    &.is-fullscreen {
+        z-index: 9999;
+    }
 
     .modal-content {
         padding: 24px 18px $page-side-padding;
