@@ -1372,6 +1372,39 @@
         }
     }
 
+    .metadata-alert {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 6px $page-side-padding;
+        border-radius: 3px;
+        padding: 4px 12px;
+        color: var(--tainacan-yellow2);
+        background: var(--tainacan-yellow1);
+        animation-name: appear;
+        animation-duration: 0.5s;
+
+        p {
+            margin: 0 auto;
+            font-size: 0.885em;
+        }
+        
+        &>div {
+            display: flex;
+            
+            .button,
+            .button:hover,
+            .button:active,
+            .button:focus {
+                background: none !important;
+                color: var(--tainacan-yellow2) !important;
+                font-weight: bold;
+                border: none;
+                cursor: pointer;
+            }
+        }
+    }
+
     #items-list-area {
         position: relative;
         height: 100%;

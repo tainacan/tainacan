@@ -1541,6 +1541,7 @@
 
         p {
             margin: 0 auto;
+            font-size: 0.885em;
         }
         
         &>div {
@@ -1550,8 +1551,8 @@
             .button:hover,
             .button:active,
             .button:focus {
-                background: none;
-                color:var(--tainacan-yellow2);
+                background: none !important;
+                color: var(--tainacan-yellow2) !important;
                 font-weight: bold;
                 border: none;
                 cursor: pointer;

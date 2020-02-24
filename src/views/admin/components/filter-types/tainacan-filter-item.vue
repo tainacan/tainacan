@@ -194,7 +194,7 @@
         
         .b-checkbox.checkbox  {
             font-weight: normal;
-            font-size: 1em;
+            font-size: 1em !important;
             margin-right: 2px;
         }
 
