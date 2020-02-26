@@ -444,16 +444,13 @@ registerBlockType('tainacan/faceted-search', {
                     </Placeholder>
                     ) :
                     (
-                        <div>
-                            <div 
-                                    style={{ fontSize: (baseFontSize - 2) + 'px' }}
-                                    class="preview-warning">
+                        <div style={{ fontSize: (baseFontSize - 2) + 'px' }}>
+                            <div class="preview-warning">
                                 { __('Warning: this is just a demonstration. To see the items list, either preview or publish your post.', 'tainacan') }
                             </div>
                             <div 
                                     style={{
-                                        '--tainacan-background-color': backgroundColor,
-                                        'font-size': baseFontSize + 'px'
+                                        '--tainacan-background-color': backgroundColor
                                     }}
                                     class="items-list-placeholder">
                                 <div class="search-control">
@@ -464,24 +461,22 @@ registerBlockType('tainacan/faceted-search', {
                                         </span>
                                         : null
                                     }
-                                    {
-                                        !hideSortByButton ? <span class="fake-button"></span> : null
-                                    }
-                                    <span class="fake-button"></span>
+                                    <span class="fake-button"><div class="fake-text"></div></span>
+                                    <span class="fake-button"> { !hideSortByButton ? <div class="fake-text"></div> : null }<div class="fake-icon"></div><div class="fake-text"></div></span>
                                     {
                                         !showInlineViewModeOptions ? 
-                                            <span class="fake-button"></span> 
+                                            <span class="fake-button"><div class="fake-icon"></div><div class="fake-text"></div></span> 
                                         : 
                                             <div class="fake-buttons-group">
-                                                { Array(3).fill().map( () => <div class="fake-button"></div> )}
-                                                { showFullscreenWithViewModes ? <span class="fake-button"></span> : null }
+                                                { Array(3).fill().map( () => <div class="fake-button"><div class="fake-icon"></div></div> )}
+                                                { showFullscreenWithViewModes ? <span class="fake-button"><div class="fake-icon"></div></span> : null }
                                             </div>
                                     }
                                     {
-                                        !showFullscreenWithViewModes ? <span class="fake-button"></span> : null
+                                        !showFullscreenWithViewModes ? <span class="fake-button"><div class="fake-icon"></div><div class="fake-text"></div></span> : null
                                     }
                                     {
-                                        !hideExposersButton ? <span class="fake-button"></span> : null
+                                        !hideExposersButton ? <span class="fake-button"><div class="fake-icon"></div><div class="fake-text"></div></span> : null
                                     }
                                 </div>
                                 <div class="below-search-control">
@@ -493,19 +488,55 @@ registerBlockType('tainacan/faceted-search', {
                                                         flexBasis: filtersAreaWidth + '%'
                                                     }}
                                                     class="filters">
-                                                { Array(8).fill().map( () => <span class="fake-text"></span> )}
+                                                <div class="fake-filters-heading"></div>
+                                                { Array(2).fill().map( () => {
+                                                    return <div class="fake-filter">
+                                                        <span class="fake-text"></span>
+                                                        <span class="fake-searchbar"></span>
+                                                    </div>
+                                                } )}
+                                                <div class="fake-filter">
+                                                    <span class="fake-text"></span>
+                                                    <div class="fake-checkbox-list">
+                                                        { Array(4).fill().map( () => {
+                                                            return <div>
+                                                                <span class="fake-checkbox"></span>
+                                                                <span class="fake-text"></span>
+                                                            </div>
+                                                        } ) }
+                                                        <div class="fake-link"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="fake-filter">
+                                                    <span class="fake-text"></span>
+                                                    <span class="fake-searchbar"></span>
+                                                </div>
                                             </div> 
                                         : null 
                                     }
                                     <div class="aside-filters">    
                                         <div class="items">
-                                            { Array(6).fill().map( () => <div class="fake-item"><span class="fake-item-header"></span></div> ) }
+                                            { Array(6).fill().map( () => {
+                                                return <div class="fake-item">
+                                                    <div class="fake-item-header">
+                                                        <div class="fake-text"></div>
+                                                    </div>
+                                                    <div 
+                                                            style={{ 
+                                                                backgroundImage: tainacan_plugin ? 'url("' + tainacan_plugin.base_url + '/assets/images/placeholder_square.png")' : '' 
+                                                            }}
+                                                            class="fake-item-thumb"></div>
+                                                    { Array(3).fill().map( () => <div class="fake-item-description"></div> ) }
+                                                </div>
+                                            } ) }
                                         </div>
                                         <div class="pagination">
                                             <span class="fake-text"></span>
-                                            { !hideItemsPerPageButton ? <span class="fake-button"></span> : null }
-                                            { !hideGoToPageButton ? <span class="fake-button"></span> : null }
-                                            <span class="fake-searchbar"></span>
+                                            { !hideItemsPerPageButton ? <span class="fake-button"><div class="fake-text"></div></span> : null }
+                                            { !hideGoToPageButton ? <span class="fake-button"><div class="fake-text"></div></span> : null }
+                                            <div class="fake-buttons-group">
+                                                { Array(6).fill().map( () => <div class="fake-link"></div> ) }
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
