@@ -47,6 +47,7 @@ export default {
     @import "../../../node_modules/buefy/src/scss/components/_loading.scss";
     @import "../../../node_modules/buefy/src/scss/components/_dropdown.scss";
     @import "../../../node_modules/buefy/src/scss/components/_modal.scss";
+    @import "../../../node_modules/buefy/src/scss/components/_dialog.scss";
     @import "../../../node_modules/buefy/src/scss/components/_notices.scss";
     @import "../../../node_modules/buefy/src/scss/components/_numberinput.scss";
 
@@ -63,6 +64,7 @@ export default {
     @import "../admin/scss/_selects.scss";
     @import "../admin/scss/_dropdown-and-autocomplete.scss";
     @import "../admin/scss/_tooltips.scss";
+    @import "../admin/scss/_control.scss";
     @import "../admin/scss/_tainacan-form.scss";
     @import "../admin/scss/_filters-menu-modal.scss";
     @import "./scss/_layout.scss";
@@ -102,8 +104,11 @@ export default {
             opacity: 0; // Will make it 1 once window.load is done; 
         }
 
-        a, a:not([href]){ color: var(--tainacan-secondary) }
-        a:hover, a:hover:not([href]) {
+        a, a:not([href]) { 
+            color: var(--tainacan-secondary);
+        }
+        a:hover, 
+        a:hover:not([href]) {
             cursor: pointer;
             color: var(--tainacan-secondary);
             text-decoration: underline;
@@ -112,17 +117,9 @@ export default {
             list-style: none;
         }
 
-        .dropdown {
-            display: inline-flex;
-            position: relative;
-            vertical-align: top;
-        }
+        // We need this because bootstrap messes up with this class
         .dropdown-menu {
             display: block;
-        }
-        .dropdown .dropdown-trigger .button .icon, 
-        .autocomplete .dropdown-trigger .button .icon {
-            align-items: center;
         }
         .dropdown.is-inline .dropdown-content {
             display: flex;
@@ -135,53 +132,6 @@ export default {
                     padding: 0;
                 }
             }
-        }
-
-        .collapse-all {
-            font-size: 0.75em;
-        }
-        .collapse .collapse-trigger {
-            display: inline;
-            cursor: pointer;
-            .label {
-                vertical-align: middle;
-                margin-bottom: 0px;
-            }
-        }
-    
-        .metadata-alert {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 6px $page-side-padding;
-            border-radius: 3px;
-            padding: 4px 12px;
-            color: var(--tainacan-yellow2);
-            background: var(--tainacan-yellow1);
-            animation-name: appear;
-            animation-duration: 0.5s;
-
-            p {
-                margin: 0 auto;
-            }
-            
-            &>div {
-                display: flex;
-                
-                .button,
-                .button:hover,
-                .button:active,
-                .button:focus {
-                    background: none;
-                    color:var(--tainacan-yellow2);
-                    font-weight: bold;
-                    border: none;
-                    cursor: pointer;
-                }
-            }
-        }
-        .b-checkbox.checkbox.is-small {
-            font-size: 1em;
         }
     }
     .loading-overlay {

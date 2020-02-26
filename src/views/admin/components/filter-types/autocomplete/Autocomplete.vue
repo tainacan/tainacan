@@ -11,6 +11,7 @@
                 @input="search"
                 field="label"
                 @select="onSelect"
+                clearable
                 :placeholder="(metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')">
             <template slot-scope="props">
                 <div class="media">
@@ -22,7 +23,9 @@
                                 width="24"
                                 :src="props.option.img">
                     </div>
-                    <div class="media-content">
+                    <div    
+                            :style="{ width: props.option.img ? '' : '100%'}"
+                            class="media-content">
                         <span class="ellipsed-text">{{ props.option.label }}</span>
                         <span 
                                 v-if="props.option.total_items != undefined"

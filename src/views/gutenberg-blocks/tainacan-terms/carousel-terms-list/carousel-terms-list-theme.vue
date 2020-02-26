@@ -204,6 +204,7 @@ export default {
             paged: undefined,
             totalTerms: 0,
             swiperOptions: {
+                watchOverflow: true,
                 mousewheel: true,
                 observer: true,
                 preventInteractionOnTransition: true,

@@ -26,19 +26,6 @@ class Textarea extends Metadata_Type {
 		');
 	
 	}
-
-    /**
-     * @param $itemMetadata \Tainacan\Entities\Item_Metadata_Entity The instace of the entity itemMetadata
-     * @return string
-     */
-
-    public function render( $itemMetadata ) {
-        return '<tainacan-textarea 
-                        metadatum_id ="'.$itemMetadata->get_metadatum()->get_id().'" 
-                        item_id="'.$itemMetadata->get_item()->get_id().'"    
-                        value=\''.json_encode( $itemMetadata->get_value() ).'\'  
-                        name="'.$itemMetadata->get_metadatum()->get_name().'"></tainacan-textarea>';
-    }
 	
 	public function get_multivalue_prefix() {
 		return '<p>';

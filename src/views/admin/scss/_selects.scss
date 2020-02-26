@@ -5,13 +5,16 @@
     &:not(.is-multiple) {
         height: auto;
     }
+    &.is-small select {
+        min-height: 24px !important;
+    }
     select {
         background: transparent; // WordPress 5.3 adds arrows here
         border: none;
         border-radius: 1px !important;
         font-weight: normal;
         font-size: 0.875em !important;
-        min-height: 30px !important;
+        line-height: 1.5em;
         height: auto !important;
         padding: calc(0.375em - 1px) 20px calc(0.375em - 1px) 10px !important;
         margin-top: 0px !important;
@@ -27,6 +30,7 @@
         &[disabled=disabled] {
             background: var(--tainacan-gray1) !important;
         }
+        
     }
     &:not(.is-loading)::after {
         content: "arrowdown" !important;
@@ -42,6 +46,7 @@
         text-transform: none !important;
         letter-spacing: normal !important;
         font-size: 1.2em;
+        line-height: 1.5em;
     }  
     &.is-loading.is-small::after {
         font-size: 0.875em;

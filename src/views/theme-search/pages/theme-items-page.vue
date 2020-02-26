@@ -58,22 +58,17 @@
                 <div 
                         role="search" 
                         class="search-area">
-                    <div class="control has-icons-right is-small is-clearfix">
-                        <input
-                                class="input is-small"
-                                :placeholder="$i18n.get('instruction_search')"
-                                type="search"
-                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
-                                :value="searchQuery"
-                                @input="futureSearchQuery = $event.target.value"
-                                @keyup.enter="updateSearch()">
-                            <span 
-                                    aria-controls="items-list-results"
-                                    @click="updateSearch()"
-                                    class="icon is-right">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search"/>
-                            </span>
-                    </div>
+                    <b-input
+                        size="is-small"
+                        :placeholder="$i18n.get('instruction_search')"
+                        type="search"
+                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
+                        :value="searchQuery"
+                        @input.native="futureSearchQuery = $event.target.value"
+                        @keyup.enter.native="updateSearch()"
+                        icon-right="magnify"
+                        icon-right-clickable
+                        @icon-right-click="updateSearch()" />
                     <a
                             v-if="!hideAdvancedSearch"
                             @click="openAdvancedSearch = !openAdvancedSearch"
@@ -1185,29 +1180,6 @@
         padding: 0;
     }
     
-    .filters-menu {
-        border-right: 0;
-        
-        .columns {
-            display: flex;
-        }
-
-        .taginput-container {
-            .control.has-icons-left .icon {
-                top: 5px;
-            }
-        }
-
-        .label {
-            font-size: 0.75em;
-            font-weight: normal;
-        }
-
-        .checkbox {
-            margin-bottom: 5px;
-            align-items: baseline;
-        }
-    }
     #filter-menu-compress-button {
         position: absolute;
         z-index: 99;
@@ -1306,7 +1278,7 @@
                 color: var(--tainacan-label-color);
                 font-size: 0.875em;
                 font-weight: normal;
-                margin-top: 3px;
+                margin-top: 2px;
                 margin-bottom: 2px;
                 cursor: default;
             }
@@ -1373,20 +1345,12 @@
 
                 .control {
                     width: 100%;
-                    .icon {
-                        pointer-events: all;
-                        cursor: pointer;
-                        color: var(--tainacan-blue5);
-                    }
                     margin: -2px 0 5px 0;
                 }
                 .is-pulled-right {
                     position: absolute;
                     right: 0;
                     top: 100%;
-                }
-                .input {
-                    border: 1px solid var(--tainacan-input-border-color);
                 }
                 a {
                     margin-left: 12px;
@@ -1407,6 +1371,39 @@
             position: relative;
             min-height: 50vh;
             height: auto;
+        }
+    }
+
+    .metadata-alert {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 6px $page-side-padding;
+        border-radius: 3px;
+        padding: 4px 12px;
+        color: var(--tainacan-yellow2);
+        background: var(--tainacan-yellow1);
+        animation-name: appear;
+        animation-duration: 0.5s;
+
+        p {
+            margin: 0 auto;
+            font-size: 0.885em;
+        }
+        
+        &>div {
+            display: flex;
+            
+            .button,
+            .button:hover,
+            .button:active,
+            .button:focus {
+                background: none !important;
+                color: var(--tainacan-yellow2) !important;
+                font-weight: bold;
+                border: none;
+                cursor: pointer;
+            }
         }
     }
 

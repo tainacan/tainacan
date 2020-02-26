@@ -213,6 +213,7 @@ export default {
             paged: undefined,
             totalCollections: 0,
             swiperOptions: {
+                watchOverflow: true,
                 mousewheel: true,
                 observer: true,
                 preventInteractionOnTransition: true,

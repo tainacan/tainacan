@@ -53,6 +53,7 @@
                             :data="parentTerms"
                             field="name"
                             v-model="parentTermName"
+                            clearable
                             @select="onSelectParentTerm($event)"
                             :loading="isFetchingParentTerms"
                             @input="fecthParentTerms($event)"

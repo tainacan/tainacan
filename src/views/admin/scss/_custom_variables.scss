@@ -138,6 +138,8 @@
     color: var(--tainacan-black) !important;
 }
 
-a {
+a,
+a:hover,
+a:focus {
     color: var(--tainacan-secondary);
 }

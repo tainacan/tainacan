@@ -77,22 +77,17 @@
                 <div 
                         role="search"
                         class="search-area">
-                    <div class="control has-icons-right  is-small is-clearfix">
-                        <input
-                                class="input is-small"
-                                :placeholder="$i18n.get('instruction_search')"
-                                type="search"
-                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
-                                :value="searchQuery"
-                                @input="futureSearchQuery = $event.target.value"
-                                @keyup.enter="updateSearch()">
-                        <span 
-                                aria-controls="items-list-results"
-                                @click="updateSearch()"
-                                class="icon is-right">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search"/>
-                        </span>
-                    </div>
+                    <b-input
+                            size="is-small"
+                            :placeholder="$i18n.get('instruction_search')"
+                            type="search"
+                            :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
+                            :value="searchQuery"
+                            @input.native="futureSearchQuery = $event.target.value"
+                            @keyup.enter.native="updateSearch()"
+                            icon-right="magnify"
+                            icon-right-clickable
+                            @icon-right-click="updateSearch()" />
                     <a
                             @click="openAdvancedSearch = !openAdvancedSearch"
                             style="font-size: 0.75em;"
@@ -1332,17 +1327,6 @@
             position: relative;
             position: sticky;
         }
-
-        .label {
-            font-size: 0.75em;
-            font-weight: normal;
-        }
-
-        .checkbox {
-            margin-bottom: 5px;
-            align-items: baseline;
-        }
-
     }
     #filter-menu-compress-button {
         position: absolute;
@@ -1426,7 +1410,7 @@
                 color: var(--tainacan-label-color);
                 font-size: 0.875em;
                 font-weight: normal;
-                margin-top: 3px;
+                margin-top: 2px;
                 margin-bottom: 2px;
                 cursor: default;
             }
@@ -1498,21 +1482,12 @@
 
                 .control {
                     width: 100%;
-                    .icon {
-                        pointer-events: all;
-                        cursor: pointer;
-                        color: var(--tainacan-label-color);
-                    }
                     margin-bottom: 5px;
                 }
                 .is-pulled-right {
                     position: absolute;
                     right: 15px;
                     top: 100%;
-                }
-                .input {
-                    border: 1px solid var(--tainacan-input-border-color);
-                    min-height: 30px !important;
                 }
                 a {
                     margin-left: 12px;
@@ -1566,6 +1541,7 @@
 
         p {
             margin: 0 auto;
+            font-size: 0.885em;
         }
         
         &>div {
@@ -1575,8 +1551,8 @@
             .button:hover,
             .button:active,
             .button:focus {
-                background: none;
-                color:var(--tainacan-yellow2);
+                background: none !important;
+                color: var(--tainacan-yellow2) !important;
                 font-weight: bold;
                 border: none;
                 cursor: pointer;
