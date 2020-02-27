@@ -14,6 +14,7 @@
             :hide-exposers-button="$root.hideExposersButton ? $root.hideExposersButton : false"
             :hide-items-per-page-button="$root.hideItemsPerPageButton ? $root.hideItemsPerPageButton : false"
             :hide-go-to-page-button="$root.hideGoToPageButton ? $root.hideGoToPageButton : false"
+            :show-filters-button-inside-search-control="$root.showFiltersButtonInsideSearchControl ? $root.showFiltersButtonInsideSearchControl : false"
             :start-with-filters-hidden="$root.startWithFiltersHidden ? $root.startWithFiltersHidden : false"
             :filters-as-modal="$root.filtersAsModal ? $root.filtersAsModal : false"
             :show-inline-view-mode-options="$root.showInlineViewModeOptions ? $root.showInlineViewModeOptions : false"

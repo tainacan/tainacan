@@ -91,6 +91,7 @@ export const ThemeItemsListing =  new Vue({
         hideExposersButton: false,
         hideItemsPerPageButton: false,
         hideGoToPageButton: false,
+        showFiltersButtonInsideSearchControl: false,
         startWithFiltersHidden: false,
         filtersAsModal: false,
         showInlineViewModeOptions: false,
@@ -134,6 +135,8 @@ export const ThemeItemsListing =  new Vue({
             this.hideGoToPageButton = this.$el.attributes['hide-go-to-page-button'].value;
 
         // Other Tweaks
+        if (this.$el.attributes['show-filters-button-inside-search-control'] != undefined)
+            this.showFiltersButtonInsideSearchControl = this.$el.attributes['show-filters-button-inside-search-control'].value;
         if (this.$el.attributes['start-with-filters-hidden'] != undefined)
             this.startWithFiltersHidden = this.$el.attributes['start-with-filters-hidden'].value;
         if (this.$el.attributes['filters-as-modal'] != undefined)
