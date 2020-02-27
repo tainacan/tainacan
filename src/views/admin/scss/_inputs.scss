@@ -46,6 +46,7 @@ input[type="week"].input {
     &::placeholder {
         font-size: 0.875em;
         color: var(--tainacan-info-color) !important;
+        text-overflow: ellipsis;
     }
     &::-ms-input-placeholder {
         font-size: 0.875em;

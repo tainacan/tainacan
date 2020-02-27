@@ -846,7 +846,7 @@ registerBlockType('tainacan/facets-list', {
                 blockId: {
                     type: String,
                     default: undefined
-                },
+                }
             },
             save({ attributes, className }){
                 const {

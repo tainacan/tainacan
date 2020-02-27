@@ -87,21 +87,17 @@
 
                 <!-- Textual Search -------------->
                 <b-field class="header-item">
-                    <div class="control has-icons-right is-small is-clearfix">
-                        <input
-                                class="input is-small"
-                                :placeholder="$i18n.get('instruction_search')"
-                                type="search"
-                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('taxonomies')"
-                                autocomplete="on"
-                                v-model="searchQuery"
-                                @keyup.enter="searchTaxonomies()">
-                        <span
-                                @click="searchTaxonomies()"
-                                class="icon is-right">
-                            <i class="tainacan-icon tainacan-icon-search" />
-                        </span>
-                    </div>
+                    <b-input 
+                            :placeholder="$i18n.get('instruction_search')"
+                            type="search"
+                            size="is-small"
+                            :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('taxonomies')"
+                            autocomplete="on"
+                            v-model="searchQuery"
+                            @keyup.enter.native="searchTaxonomies()"
+                            icon-right="magnify"
+                            icon-right-clickable
+                            @icon-right-click="searchTaxonomies()" />
                 </b-field>
             </div>
 

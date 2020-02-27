@@ -59,23 +59,18 @@
             </b-dropdown>
         </b-field>
         <div class="search-area is-hidden-mobile">
-            <div class="control has-icons-right  is-small is-clearfix">
-                <input
-                        class="input is-small"
-                        :placeholder="$i18n.get('instruction_search')"
-                        type="search"
-                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('terms')"
-                        autocomplete="on"
-                        v-model="searchQuery"
-                        @keyup.enter="searchTerms(0)"
-                        :disabled="isEditingTerm">
-                <span
-                        @click="searchTerms(0)"
-                        class="icon is-right"
-                        :class="{ 'has-text-gray3': isEditingTerm }">
-                    <i class="tainacan-icon tainacan-icon-search" />
-                </span>
-            </div>
+            <b-input 
+                    :placeholder="$i18n.get('instruction_search')"
+                    size="is-small"
+                    type="search"
+                    :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('terms')"
+                    autocomplete="on"
+                    v-model="searchQuery"
+                    icon-right="magnify"
+                    icon-right-clickable
+                    @icon-right-click="searchTerms(0)"
+                    @keyup.enter.native="searchTerms(0)"
+                    :disabled="isEditingTerm"/>
         </div>
     </div>
     <div class="columns">
@@ -528,14 +523,6 @@ export default {
             }
             .control {
                 width: 100%;
-                .icon {
-                    pointer-events: all;
-                    cursor: pointer;
-                    color: var(--tainacan-blue5);
-                    height: 27px;
-                    font-size: 1.125em !important;
-                    height: auto !important;
-                }
             }
             a {
                 margin-left: 12px;

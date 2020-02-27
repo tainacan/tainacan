@@ -26,10 +26,6 @@
         color: var(--tainacan-input-color) !important;
     }
 
-    .control {
-        font-size: 1em;
-    }
-
     .shown-items { 
         font-size: 0.875em; 
     }
@@ -105,6 +101,7 @@
         }
         .pagination-list {
             flex-wrap: nowrap;
+            font-size: 1em;
         }
         .pagination-link, .pagination-previous, .pagination-next {
             background-color: transparent;

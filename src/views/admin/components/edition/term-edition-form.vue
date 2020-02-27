@@ -148,6 +148,7 @@
                     :placeholder="$i18n.get('instruction_parent_term')"
                     :data="parentTerms"
                     field="name"
+                    clearable
                     v-model="parentTermName"
                     @select="onSelectParentTerm($event)"
                     :loading="isFetchingParentTerms"

@@ -77,7 +77,6 @@
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
                 :date-parser="(date) => dateParser(date)"
-                size="is-small"
                 icon="calendar-today"
                 :years-range="[-200, 50]"
                 :day-names="[

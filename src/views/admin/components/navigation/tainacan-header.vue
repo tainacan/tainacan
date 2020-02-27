@@ -41,22 +41,19 @@
                 </button>
             </div>
             <div class="search-area is-hidden-mobile">
-                <div class="control has-icons-right is-small is-clearfix">
-                    <input
-                            autocomplete="on"
-                            :aria-label="$i18n.get('instruction_search_in_repository')"
-                            :placeholder="$i18n.get('instruction_search_in_repository')"
-                            class="input is-small search-header"
-                            type="search"
-                            :value="searchQuery"
-                            @input="futureSearchQuery = $event.target.value"
-                            @keyup.enter="updateSearch()">
-                    <span class="icon is-right">
-                        <i 
-                                @click="updateSearch()"
-                                class="tainacan-icon tainacan-icon-search"/>
-                    </span>
-                </div>
+                <b-input 
+                    type="search"
+                    autocomplete="on"
+                    :aria-label="$i18n.get('instruction_search_in_repository')"
+                    :placeholder="$i18n.get('instruction_search_in_repository')"
+                    class="search-header"
+                    size="is-small"
+                    :value="searchQuery"
+                    @input.native="futureSearchQuery = $event.target.value"
+                    @keyup.enter.native="updateSearch()"
+                    icon-right="magnify"
+                    icon-right-clickable
+                    @icon-right-click="updateSearch()" />
                 <b-dropdown
                         ref="advancedSearchShortcut"
                         class="advanced-search-header-dropdown"
@@ -275,14 +272,6 @@
                     }
                     .search-header:focus, .search-header:active {
                         width: 372px !important;
-                    }
-                    .icon:not(.add-i) {
-                        pointer-events: all;
-                        color: var(--tainacan-blue5);
-                        cursor: pointer;
-                        height: 27px;
-                        font-size: 1.125em;
-                        width: 30px !important;
                     }
                 }
             }

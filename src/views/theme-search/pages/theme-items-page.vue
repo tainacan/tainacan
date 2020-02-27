@@ -29,7 +29,7 @@
                     aria-controls="filters-modal"
                     :aria-expanded="isFiltersModalActive"
                     :class="hideHideFiltersButton ? 'is-hidden-tablet' : ''"
-                    v-if="!hideFilters && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+                    v-if="!showFiltersButtonInsideSearchControl && !hideFilters && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                     id="filter-menu-compress-button"
                     :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                     @click="isFiltersModalActive = !isFiltersModalActive"
@@ -58,22 +58,17 @@
                 <div 
                         role="search" 
                         class="search-area">
-                    <div class="control has-icons-right is-small is-clearfix">
-                        <input
-                                class="input is-small"
-                                :placeholder="$i18n.get('instruction_search')"
-                                type="search"
-                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
-                                :value="searchQuery"
-                                @input="futureSearchQuery = $event.target.value"
-                                @keyup.enter="updateSearch()">
-                            <span 
-                                    aria-controls="items-list-results"
-                                    @click="updateSearch()"
-                                    class="icon is-right">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search"/>
-                            </span>
-                    </div>
+                    <b-input
+                        size="is-small"
+                        :placeholder="$i18n.get('instruction_search')"
+                        type="search"
+                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
+                        :value="searchQuery"
+                        @input.native="futureSearchQuery = $event.target.value"
+                        @keyup.enter.native="updateSearch()"
+                        icon-right="magnify"
+                        icon-right-clickable
+                        @icon-right-click="updateSearch()" />
                     <a
                             v-if="!hideAdvancedSearch"
                             @click="openAdvancedSearch = !openAdvancedSearch"
@@ -82,6 +77,21 @@
                         {{ $i18n.get('advanced_search') }}
                     </a>
                 </div>
+            </div>
+
+            <!-- Another option of the Button for hiding filters -->
+            <div 
+                    v-if="showFiltersButtonInsideSearchControl && !hideHideFiltersButton && !hideFilters && !openAdvancedSearch"
+                    class="search-control-item">
+                <button 
+                        class="button is-white"
+                        :aria-label="$i18n.get('filters')"
+                        @click="isFiltersModalActive = !isFiltersModalActive">
+                    <span class="gray-icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
+                    </span>
+                    <span class="is-hidden-touch">{{ $i18n.get('filters') }}</span>
+                </button>
             </div>
 
             <!-- Displayed Metadata Dropdown -->
@@ -541,6 +551,7 @@
             hideItemsPerPageButton: false,
             hideGoToPageButton: false,
             // Other Tweaks
+            showFiltersButtonInsideSearchControl: false,
             startWithFiltersHidden: false,
             filtersAsModal: false,
             showInlineViewModeOptions: false,
@@ -702,13 +713,15 @@
             if (this.$userPrefs.get(prefsViewMode) == undefined)
                 this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
             else {
-                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
-                if (existingViewModeIndex >= 0)
-                    this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
+                const userPrefViewMode = this.$userPrefs.get(prefsViewMode);
+
+                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == userPrefViewMode);
+                let enabledViewModeIndex = this.enabledViewModes.findIndex((viewMode) => viewMode == userPrefViewMode);
+                if (existingViewModeIndex >= 0 && enabledViewModeIndex >= 0)
+                    this.$eventBusSearch.setInitialViewMode(userPrefViewMode);
                 else   
                     this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
             }
-            
             // For view modes such as slides, we force pagination to request only 12 per page
             let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
             if (existingViewModeIndex >= 0) {
@@ -720,7 +733,7 @@
             this.showItemsHiddingDueSortingDialog();
 
             // Watches window resize to adjust filter's top position and compression on mobile
-            if (!this.hideFilters) {                 
+            if (!this.hideFilters) {            
                 this.hideFiltersOnMobile();
                 window.addEventListener('resize', this.hideFiltersOnMobile);
             }
@@ -1183,29 +1196,6 @@
         padding: 0;
     }
     
-    .filters-menu {
-        border-right: 0;
-        
-        .columns {
-            display: flex;
-        }
-
-        .taginput-container {
-            .control.has-icons-left .icon {
-                top: 5px;
-            }
-        }
-
-        .label {
-            font-size: 0.75em;
-            font-weight: normal;
-        }
-
-        .checkbox {
-            margin-bottom: 5px;
-            align-items: baseline;
-        }
-    }
     #filter-menu-compress-button {
         position: absolute;
         z-index: 99;
@@ -1304,7 +1294,7 @@
                 color: var(--tainacan-label-color);
                 font-size: 0.875em;
                 font-weight: normal;
-                margin-top: 3px;
+                margin-top: 2px;
                 margin-bottom: 2px;
                 cursor: default;
             }
@@ -1371,20 +1361,12 @@
 
                 .control {
                     width: 100%;
-                    .icon {
-                        pointer-events: all;
-                        cursor: pointer;
-                        color: var(--tainacan-blue5);
-                    }
                     margin: -2px 0 5px 0;
                 }
                 .is-pulled-right {
                     position: absolute;
                     right: 0;
                     top: 100%;
-                }
-                .input {
-                    border: 1px solid var(--tainacan-input-border-color);
                 }
                 a {
                     margin-left: 12px;
@@ -1405,6 +1387,39 @@
             position: relative;
             min-height: 50vh;
             height: auto;
+        }
+    }
+
+    .metadata-alert {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 6px $page-side-padding;
+        border-radius: 3px;
+        padding: 4px 12px;
+        color: var(--tainacan-yellow2);
+        background: var(--tainacan-yellow1);
+        animation-name: appear;
+        animation-duration: 0.5s;
+
+        p {
+            margin: 0 auto !important;
+            font-size: 0.885em;
+        }
+        
+        &>div {
+            display: flex;
+            
+            .button,
+            .button:hover,
+            .button:active,
+            .button:focus {
+                background: none !important;
+                color: var(--tainacan-yellow2) !important;
+                font-weight: bold;
+                border: none;
+                cursor: pointer;
+            }
         }
     }
 

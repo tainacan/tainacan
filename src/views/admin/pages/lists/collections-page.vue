@@ -125,21 +125,17 @@
 
             <!-- Textual Search -------------->
             <b-field class="header-item">
-                <div class="control has-icons-right is-small is-clearfix">
-                    <input
-                            class="input is-small"
-                            :placeholder="$i18n.get('instruction_search')"
-                            type="search"
-                            :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('collections')"
-                            autocomplete="on"
-                            v-model="searchQuery"
-                            @keyup.enter="searchCollections()">
-                    <span
-                            @click="searchCollections()"
-                            class="icon is-right">
-                        <i class="tainacan-icon tainacan-icon-search" />
-                    </span>
-                </div>
+                <b-input 
+                        :placeholder="$i18n.get('instruction_search')"
+                        type="search"
+                        size="is-small"
+                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('collections')"
+                        autocomplete="on"
+                        v-model="searchQuery"
+                        @keyup.enter.native="searchCollections()"
+                        icon-right="magnify"
+                        icon-right-clickable
+                        @icon-right-click="searchCollections()" />
             </b-field>
         </div>
 

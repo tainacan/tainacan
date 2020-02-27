@@ -1,5 +1,6 @@
 // Tainacan modals
 .modal .animation-content {
+    background: none;
     width: 91.6666667%;
     width: 91.6666667vw;
     max-height: 86%;
@@ -96,11 +97,12 @@
 }
 // Bulma modals customized for Tainacan (custom-dialog.vue)
 .dialog {
+
     .modal-background {
         background-color: rgba(0, 0, 0, 0.70);
     }
     .modal-card {
-        background-color: var(--tainacan-white);
+        background-color: var(--tainacan-background-color);
         color: var(--tainacan-secondary);
         border-radius: 10px;
         flex-wrap: wrap;
@@ -135,6 +137,7 @@
             background: var(--tainacan-background-color);
             padding: 0px 0px 12px 20px;
             width: 50%;
+            font-size: 0.875em;
         }
         .modal-card-foot {
             justify-content: space-between;
@@ -159,7 +162,7 @@
                 border: none;
             }
             .button:not(.is-success):not(.is-secondary) {
-                background-color: var(--tainacan-white);
+                background-color: var(--tainacan-background-color);
                 color: var(--tainacan-secondary);
                 border: 1px solid var(--tainacan-gray4);
             }
@@ -179,7 +182,7 @@
     top: 100px;
     bottom: 100px;
     right: 100px;
-    background-color: var(--tainacan-white);
+    background-color: var(--tainacan-background-color);
     z-index: 99999999999 !important;
 
     .media-toolbar button.button:not(.is-small):not(.is-medium):not(.is-large){

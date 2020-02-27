@@ -4,7 +4,6 @@
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('label_selectbox_init')"
                 v-model="dateInit"
-                size="is-small"
                 @focus="isTouched = true"
                 @input="validadeValues()"
                 editable
@@ -26,12 +25,11 @@
                 style="font-size: 0.75em; margin-bottom: 0.125em;"
                 class="has-text-centered is-marginless">
             {{ $i18n.get('label_until') }}
-        </p>
+        </p>  
         <b-datepicker
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('label_selectbox_init')"
                 v-model="dateEnd"
-                size="is-small"
                 @input="validadeValues()"
                 @focus="isTouched = true"
                 editable

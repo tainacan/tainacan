@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
-    "buefy": "^0.8.10",
+    "buefy": "^0.8.11",
     "bulma": "^0.7.5",
     "css-vars-ponyfill": "^2.1.2",
     "mdi": "^2.2.43",

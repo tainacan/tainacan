@@ -194,13 +194,14 @@
         
         .b-checkbox.checkbox  {
             font-weight: normal;
-            font-size: 1em;
+            font-size: 1em !important;
             margin-right: 2px;
         }
 
         .datepicker {
             .dropdown-menu {
                 left: -18px;
+                right: 0;
             }
             @media screen and (min-width: 768px) {
 
@@ -210,19 +211,17 @@
                         max-width: 165px !important;
                     }
                     .pagination .pagination-list .control {
-                        width: 77px !important; 
+                        width: 50% !important; 
 
                         .select {
                             min-width: 100% !important;    
-
+ 
                             select {
                                 padding-left: 1px !important;
-                                font-size: 0.875em !important;
-                                height: 24px !important;
-                                min-width: 100% !important; 
+                                min-width: 100% !important;
                             }
                             &:not(.is-loading)::after {
-                                margin-top: -10px !important;
+                                font-size: 1em;
                             }
                         }
                     }
