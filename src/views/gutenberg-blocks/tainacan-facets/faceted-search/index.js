@@ -412,7 +412,7 @@ registerBlockType('tainacan/faceted-search', {
                                 label={ __('Filters Area Width (%)', 'tainacan') }
                                 value={ filtersAreaWidth }
                                 onChange={ ( width ) => setAttributes( { filtersAreaWidth: width } ) }
-                                min={ 5 }
+                                min={ 10 }
                                 max={ 40 }
                             />
                             <HorizontalRule />
@@ -870,6 +870,7 @@ registerBlockType('tainacan/faceted-search', {
         return <div 
                     style={{
                         'font-size': baseFontSize + 'px',
+                        '--tainacan-base-font-size': baseFontSize + 'px',
                         '--tainacan-background-color': backgroundColor,
                         '--tainacan-filter-menu-width-theme': filtersAreaWidth + '%',
                         '--tainacan-input-color': inputColor,

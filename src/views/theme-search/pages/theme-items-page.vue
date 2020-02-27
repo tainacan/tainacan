@@ -1387,7 +1387,7 @@
         animation-duration: 0.5s;
 
         p {
-            margin: 0 auto;
+            margin: 0 auto !important;
             font-size: 0.885em;
         }
         
