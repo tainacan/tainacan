@@ -377,7 +377,8 @@
       display: flex;
       justify-content: space-evenly; }
     .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item {
-      flex: 1 0 158px;
+      background-color: var(--tainacan-item-background-color, white);
+      flex: 1 0 180px;
       margin: 12px;
       height: 78px; }
       .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item:hover {
@@ -396,14 +397,14 @@
           background-color: var(--tainacan-heading-color, rgba(200, 200, 200, 0.35)); }
       .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item .fake-item-thumb {
         background-size: cover;
-        background-color: rgba(59, 159, 180, 0.3);
+        background-color: var(--tainacan-input-border-color, rgba(200, 200, 200, 0.1));
         height: 58px;
         width: 58px;
         float: left; }
       .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item .fake-item-description {
         background-color: var(--tainacan-info-color, rgba(200, 200, 200, 0.15));
         height: 0.18em;
-        width: 55%;
+        width: 60%;
         border-radius: 2px;
         margin: 8px 6px 2px 6px;
         position: relative;

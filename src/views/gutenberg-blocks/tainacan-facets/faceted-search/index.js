@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { Button, ColorPicker, RangeControl, FontSizePicker, SelectControl, ToggleControl, Placeholder, PanelBody } = wp.components;
+const { Button, ColorPicker, BaseControl, RangeControl, FontSizePicker, HorizontalRule, SelectControl, ToggleControl, Placeholder, PanelBody } = wp.components;
 
 const { InspectorControls } = wp.editor;
 
@@ -116,6 +116,54 @@ registerBlockType('tainacan/faceted-search', {
         filtersAreaWidth: {
             type: Number,
             default: 20
+        },
+        inputColor: {
+            type: String,
+            default: '#1d1d1d'
+        },
+        inputBackgroundColor: {
+            type: String,
+            default: '#ffffff'
+        },
+        inputBorderColor: {
+            type: String,
+            default: '#dbdbdb'
+        },
+        labelColor: {
+            type: String,
+            default: '#454647'
+        },
+        infoColor: {
+            type: String,
+            default: '#555758'
+        },
+        headingColor: {
+            type: String,
+            default: '#000000'
+        },
+        skeletonColor: {
+            type: String,
+            default: '#eeeeee'
+        },
+        itemBackgroundColor: {
+            type: String,
+            default: '#ffffff'
+        },
+        itemHoverBackgroundColor: {
+            type: String,
+            default: '#f2f2f2'
+        },
+        itemHeadingHoverBackgroundColor: {
+            type: String,
+            default: '#dbdbdb'
+        },
+        primaryColor: {
+            type: String,
+            default: '#d9eced'
+        },
+        secondaryColor: {
+            type: String,
+            default: '#298596'
         }
     },
     supports: {
@@ -147,7 +195,19 @@ registerBlockType('tainacan/faceted-search', {
             isTermModalOpen,
             backgroundColor,
             baseFontSize,
-            filtersAreaWidth
+            filtersAreaWidth,
+            inputColor,
+            inputBackgroundColor,
+            inputBorderColor,
+            labelColor,
+            infoColor,
+            headingColor,
+            skeletonColor,
+            itemBackgroundColor,
+            itemHoverBackgroundColor,
+            itemHeadingHoverBackgroundColor,
+            primaryColor,
+            secondaryColor
         } = attributes;
 
         const fontSizes = [
@@ -340,13 +400,6 @@ registerBlockType('tainacan/faceted-search', {
                                 title={__('Colors and Sizes', 'tainacan')}
                                 initialOpen={ false }
                             >
-                            <ColorPicker
-                                color={ backgroundColor }
-                                onChangeComplete={ (colorValue ) => {
-                                    backgroundColor = colorValue.hex;
-                                    setAttributes({ backgroundColor: backgroundColor });
-                                }}
-                            />
                             <FontSizePicker
                                 fontSizes={ fontSizes }
                                 value={ baseFontSize }
@@ -362,6 +415,177 @@ registerBlockType('tainacan/faceted-search', {
                                 min={ 5 }
                                 max={ 40 }
                             />
+                            <HorizontalRule />
+                            <BaseControl
+                                    id="backgroundColorPicker"
+                                    label={ __('Background color', 'tainacan')}
+                                    help={ __('The background color of the entire items list', 'tainacan') }>
+                                <ColorPicker
+                                    color={ backgroundColor }
+                                    onChangeComplete={ (colorValue ) => {
+                                        backgroundColor = colorValue.hex;
+                                        setAttributes({ backgroundColor: backgroundColor });
+                                    }}
+                                    disableAlpha
+                                />
+                            </BaseControl>
+                            <HorizontalRule />
+                            <BaseControl
+                                    id="secondaryColorPicker"
+                                    label={ __('Link and Active Main color', 'tainacan')}
+                                    help={ __('The text color links and other action or active state elements, such as select arrows, tooltip contents, etc', 'tainacan') }>
+                                <ColorPicker
+                                    color={ secondaryColor }
+                                    onChangeComplete={ (colorValue ) => {
+                                        secondaryColor = colorValue.hex;
+                                        setAttributes({ secondaryColor: secondaryColor });
+                                    }}
+                                    disableAlpha
+                                />
+                            </BaseControl>
+                            <HorizontalRule />
+                            <BaseControl
+                                    id="primaryColorPicker"
+                                    label={ __('Tooltips background color', 'tainacan')}
+                                    help={ __('The tooltips background color and other elements, such as the hide filters button', 'tainacan') }>
+                                <ColorPicker
+                                    color={ primaryColor }
+                                    onChangeComplete={ (colorValue ) => {
+                                        primaryColor = colorValue.hex;
+                                        setAttributes({ primaryColor: primaryColor });
+                                    }}
+                                    disableAlpha
+                                />
+                            </BaseControl>
+                            <HorizontalRule />
+                            <BaseControl
+                                    id="inputBackgroundColorPicker"
+                                    label={ __('Input Background color', 'tainacan')}
+                                    help={ __('The background color for input fields', 'tainacan') }>
+                                <ColorPicker
+                                    color={ inputBackgroundColor }
+                                    onChangeComplete={ (colorValue ) => {
+                                        inputBackgroundColor = colorValue.hex;
+                                        setAttributes({ inputBackgroundColor: inputBackgroundColor });
+                                    }}
+                                    disableAlpha
+                                />
+                            </BaseControl>
+                            <HorizontalRule />
+                            <BaseControl
+                                    id="inputColorPicker"
+                                    label={ __('Input Text color', 'tainacan')}
+                                    help={ __('The text color for input fields, including dropdowns and buttons', 'tainacan') }>
+                                <ColorPicker
+                                    color={ inputColor }
+                                    onChangeComplete={ (colorValue ) => {
+                                        inputColor = colorValue.hex;
+                                        setAttributes({ inputColor: inputColor });
+                                    }}
+                                    disableAlpha
+                                />
+                            </BaseControl>
+                            <HorizontalRule />
+                            <BaseControl
+                                    id="inputBorderColorPicker"
+                                    label={ __('Input Border color', 'tainacan')}
+                                    help={ __('The border color for input fields', 'tainacan') }>
+                                <ColorPicker
+                                    color={ inputBorderColor }
+                                    onChangeComplete={ (colorValue ) => {
+                                        inputBorderColor = colorValue.hex;
+                                        setAttributes({ inputBorderColor: inputBorderColor });
+                                    }}
+                                    disableAlpha
+                                />
+                            </BaseControl>
+                            <HorizontalRule />
+                            <BaseControl
+                                    id="labelColorPicker"
+                                    label={ __('Label Text color', 'tainacan')}
+                                    help={ __('The text color for field labels', 'tainacan') }>
+                                <ColorPicker
+                                    color={ labelColor }
+                                    onChangeComplete={ (colorValue ) => {
+                                        labelColor = colorValue.hex;
+                                        setAttributes({ labelColor: labelColor });
+                                    }}
+                                    disableAlpha
+                                />
+                            </BaseControl>
+                            <HorizontalRule />
+                            <BaseControl
+                                    id="headingColorPicker"
+                                    label={ __('Headings Text color', 'tainacan')}
+                                    help={ __('The text color for headings such as items title and filters menu header', 'tainacan') }>
+                                <ColorPicker
+                                    color={ headingColor }
+                                    onChangeComplete={ (colorValue ) => {
+                                        headingColor = colorValue.hex;
+                                        setAttributes({ headingColor: headingColor });
+                                    }}
+                                    disableAlpha
+                                />
+                            </BaseControl>
+                            <HorizontalRule />
+                            <BaseControl
+                                    id="infoColorPicker"
+                                    label={ __('General Info Text color', 'tainacan')}
+                                    help={ __('The text color for other information such as item metadata, icons, number of pages, etc', 'tainacan') }>
+                                <ColorPicker
+                                    color={ infoColor }
+                                    onChangeComplete={ (colorValue ) => {
+                                        infoColor = colorValue.hex;
+                                        setAttributes({ infoColor: infoColor });
+                                    }}
+                                    disableAlpha
+                                />
+                            </BaseControl>
+                            <BaseControl
+                                    id="itemBackgroundColorPicker"
+                                    label={ __('Item Background color', 'tainacan')}
+                                    help={ __('The background color for an item on the list', 'tainacan') }>
+                                <ColorPicker
+                                    color={ itemBackgroundColor }
+                                    onChangeComplete={ (colorValue ) => {
+                                        itemBackgroundColor = colorValue.hex;
+                                        setAttributes({ itemBackgroundColor: itemBackgroundColor });
+                                    }}
+                                    disableAlpha
+                                />
+                            </BaseControl>
+                            <HorizontalRule />
+                            <BaseControl
+                                    id="itemHoverBackgroundColorPicker"
+                                    label={ __('Item Hover Background color', 'tainacan')}
+                                    help={ __('The background color for an item on the list, when hovered', 'tainacan') }>
+                                <ColorPicker
+                                    color={ itemHoverBackgroundColor }
+                                    onChangeComplete={ (colorValue ) => {
+                                        itemHoverBackgroundColor = colorValue.hex;
+                                        skeletonColor = colorValue.hex;
+                                        setAttributes({ 
+                                            itemHoverBackgroundColor: itemHoverBackgroundColor,
+                                            skeletonColor: skeletonColor
+                                        });
+                                    }}
+                                    disableAlpha
+                                />
+                            </BaseControl>
+                            <HorizontalRule />
+                            <BaseControl
+                                    id="itemHeadingHoverBackgroundColorPicker"
+                                    label={ __('Item Heading Hover Background color', 'tainacan')}
+                                    help={ __('The background color for the item heading (where the title is), when hovered', 'tainacan') }>
+                                <ColorPicker
+                                    color={ itemHeadingHoverBackgroundColor }
+                                    onChangeComplete={ (colorValue ) => {
+                                        itemHeadingHoverBackgroundColor = colorValue.hex;
+                                        setAttributes({ itemHeadingHoverBackgroundColor: itemHeadingHoverBackgroundColor });
+                                    }}
+                                    disableAlpha
+                                />
+                            </BaseControl>
                         </PanelBody>
                        
                     </InspectorControls>
@@ -450,7 +674,20 @@ registerBlockType('tainacan/faceted-search', {
                             </div>
                             <div 
                                     style={{
-                                        '--tainacan-background-color': backgroundColor
+                                        '--tainacan-background-color': backgroundColor,
+                                        '--tainacan-filter-menu-width-theme': filtersAreaWidth + '%',
+                                        '--tainacan-input-color': inputColor,
+                                        '--tainacan-input-background-color': inputBackgroundColor,
+                                        '--tainacan-input-border-color': inputBorderColor,
+                                        '--tainacan-label-color': labelColor,
+                                        '--tainacan-info-color': infoColor,
+                                        '--tainacan-heading-color': headingColor,
+                                        '--tainacan-skeleton-color': skeletonColor,
+                                        '--tainacan-item-background-color': itemBackgroundColor,
+                                        '--tainacan-item-hover-background-color': itemHoverBackgroundColor,
+                                        '--tainacan-item-heading-hover-background-color': itemHeadingHoverBackgroundColor,
+                                        '--tainacan-primary': primaryColor,
+                                        '--tainacan-secondary': secondaryColor
                                     }}
                                     class="items-list-placeholder">
                                 <div class="search-control">
@@ -603,14 +840,38 @@ registerBlockType('tainacan/faceted-search', {
             listType,
             backgroundColor,
             baseFontSize,
-            filtersAreaWidth
+            filtersAreaWidth,
+            inputColor,
+            inputBackgroundColor,
+            inputBorderColor,
+            labelColor,
+            infoColor,
+            headingColor,
+            skeletonColor,
+            itemBackgroundColor,
+            itemHoverBackgroundColor,
+            itemHeadingHoverBackgroundColor,
+            primaryColor,
+            secondaryColor
         } = attributes;
         
         return <div 
                     style={{
                         'font-size': baseFontSize + 'px',
                         '--tainacan-background-color': backgroundColor,
-                        '--tainacan-filter-menu-width-theme': filtersAreaWidth + '%'
+                        '--tainacan-filter-menu-width-theme': filtersAreaWidth + '%',
+                        '--tainacan-input-color': inputColor,
+                        '--tainacan-input-background-color': inputBackgroundColor,
+                        '--tainacan-input-border-color': inputBorderColor,
+                        '--tainacan-label-color': labelColor,
+                        '--tainacan-info-color': infoColor,
+                        '--tainacan-heading-color': headingColor,
+                        '--tainacan-skeleton-color': skeletonColor,
+                        '--tainacan-item-background-color': itemBackgroundColor,
+                        '--tainacan-item-hover-background-color': itemHoverBackgroundColor,
+                        '--tainacan-item-heading-hover-background-color': itemHeadingHoverBackgroundColor,
+                        '--tainacan-primary': primaryColor,
+                        '--tainacan-secondary': secondaryColor
                     }}
                     className={ className }>
                 <main 
