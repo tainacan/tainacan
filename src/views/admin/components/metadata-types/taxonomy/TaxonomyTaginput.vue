@@ -20,7 +20,9 @@
                 :loading="isFetching"
                 :class="{'has-selected': selected != undefined && selected != []}"
                 autocomplete
-                @typing="autoCompleteTerm">
+                @typing="loadTerms"
+                check-infinite-scroll
+                @infinite-scroll="loadMoreTerms">
             <template slot-scope="props">
                 <div class="media">
                     <div class="media-content">
@@ -50,11 +52,14 @@
             allowSelectToCreate: false,
             maxtags: '',
         },
-        data(){
+        data() {
             return {
                 selected: [],
                 labels: [],
                 isFetching: false,
+                offset: 0,
+                searchName: '',
+                totalTerms: 0
             }
         },
         watch: {
@@ -77,8 +82,26 @@
             ...mapGetters('taxonomy', [
                 'getTerms'
             ]),
-            autoCompleteTerm: _.debounce( function(value) {
-                this.labels = [];
+            loadTerms: _.debounce( function(value) {                
+
+                // String update
+                if (value != this.searchName) {
+                    this.searchName = value;
+                    this.labels = [];
+                    this.offset = 0;
+                } 
+                
+                // String cleared
+                if (!value.length) {
+                    this.searchName = value;
+                    this.labels = [];
+                    this.offset = 0;
+                }
+
+                if (this.offset > 0 && this.labels.length >= this.totalTerms) {
+                    return
+                }
+
                 this.isFetching = true;
 
                 this.fetchTerms({ 
@@ -90,19 +113,22 @@
                         }
                     },
                     search: { 
-                        searchterm: value
+                        searchterm: this.searchName
                     },
                     all: true,
                     order: 'asc',
-                    offset: 0,
+                    offset: this.offset,
                     number: 12
                 }).then((res) => {
                     
                     for (let term of res.terms)
-                        this.labels.push({label: term.name, value: term.id});
+                        this.labels.push({ label: term.name, value: term.id });
 
                     if (res.terms.length <= 0 && this.allowSelectToCreate)
-                        this.labels.push({label: `${value} (${this.$i18n.get('select_to_create')})`, value: value})
+                        this.labels.push({ label: `${value} (${this.$i18n.get('select_to_create')})`, value: value })
+
+                    this.offset += 12;
+                    this.totalTerms = res.total;
 
                     this.isFetching = false;    
                 }).catch((error) => {
@@ -110,6 +136,9 @@
                     throw error;
                 });
             }, 500),
+            loadMoreTerms: _.debounce(function () {
+                this.loadTerms(this.searchName)
+            }, 250),
             updateSelectedValues(){
                 let selected = [];
 
