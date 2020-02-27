@@ -186,19 +186,20 @@ function tainacan_the_collection_description() {
  * @param array $args {
 	 *     Optional. Array of arguments.
 	 *
-	 * 	   @type bool 	$hide-filters						Completely hide filter sidebar or modal
-	 * 	   @type bool 	$hide-hide-filters-button			Hides the button resonsible for collpasing filters sidebar on desktop
-	 * 	   @type bool 	$hide-search						Hides the complete search bar, including advanced search link
-	 * 	   @type bool 	$hide-advanced-search				Hides only the advanced search link
-	 * 	   @type bool 	$hide-sort-by-button				Hides the button where user can select the metadata to sort by items (keeps the sort direction)
-	 * 	   @type bool 	$hide-items-per-page-button			Hides the button for selecting amount of items loaded per page
-	 * 	   @type bool 	$hide-go-to-page-button				Hides the button for skiping to a specific page
-	 * 	   @type bool 	$start-with-filters-hidden			Loads the filters list hidden from start
-	 * 	   @type bool 	$filters-as-modal					Display the filters as a modal instead of a collapsable region on desktop
-	 * 	   @type bool 	$show-inline-view-mode-options		Display view modes as inline icon buttons instead of the dropdown
-	 * 	   @type bool 	$show-fullscreen-with-view-modes	Lists fullscreen viewmodes alongside with other view modes istead of separatelly
-	 * 	   @type string $default-view-mode			The default view mode
-	 * 	   @type string[] $enabled-view-modes			The list os enable view modes to display
+	 * 	   @type bool 	$hide-filters								Completely hide filter sidebar or modal
+	 * 	   @type bool 	$hide-hide-filters-button					Hides the button resonsible for collpasing filters sidebar on desktop
+	 * 	   @type bool 	$hide-search								Hides the complete search bar, including advanced search link
+	 * 	   @type bool 	$hide-advanced-search						Hides only the advanced search link
+	 * 	   @type bool 	$hide-sort-by-button						Hides the button where user can select the metadata to sort by items (keeps the sort direction)
+	 * 	   @type bool 	$hide-items-per-page-button					Hides the button for selecting amount of items loaded per page
+	 * 	   @type bool 	$hide-go-to-page-button						Hides the button for skiping to a specific page
+	 * 	   @type bool 	$show-filters-button-inside-search-control	Display the "hide filters" button inside of the search control instead of floating
+	 * 	   @type bool 	$start-with-filters-hidden					Loads the filters list hidden from start
+	 * 	   @type bool 	$filters-as-modal							Display the filters as a modal instead of a collapsable region on desktop
+	 * 	   @type bool 	$show-inline-view-mode-options				Display view modes as inline icon buttons instead of the dropdown
+	 * 	   @type bool 	$show-fullscreen-with-view-modes			Lists fullscreen viewmodes alongside with other view modes istead of separatelly
+	 * 	   @type string $default-view-mode							The default view mode
+	 * 	   @type string[] $enabled-view-modes						The list os enable view modes to display
  * @return string  The HTML div to be used for rendering the items list vue component
  */
 function tainacan_the_faceted_search($args = array()) {

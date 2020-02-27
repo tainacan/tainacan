@@ -91,6 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
             hideSortByButton: false,
             hideItemsPerPageButton: false,
             hideGoToPageButton: false,
+            showFiltersButtonInsideSearchControl: false,
             startWithFiltersHidden: false,
             filtersAsModal: false,
             showInlineViewModeOptions: false,
@@ -133,6 +134,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 this.hideGoToPageButton = this.$el.attributes['hide-go-to-page-button'].value == 'true' ? true : false;
 
             // Other Tweaks
+            if (this.$el.attributes['show-filters-button-inside-search-control'] != undefined)
+                this.showFiltersButtonInsideSearchControl = this.$el.attributes['show-filters-button-inside-search-control'].value == 'true' ? true : false;
             if (this.$el.attributes['start-with-filters-hidden'] != undefined)
                 this.startWithFiltersHidden = this.$el.attributes['start-with-filters-hidden'].value == 'true' ? true : false;
             if (this.$el.attributes['filters-as-modal'] != undefined)

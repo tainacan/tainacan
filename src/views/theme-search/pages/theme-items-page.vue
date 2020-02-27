@@ -29,7 +29,7 @@
                     aria-controls="filters-modal"
                     :aria-expanded="isFiltersModalActive"
                     :class="hideHideFiltersButton ? 'is-hidden-tablet' : ''"
-                    v-if="!hideFilters && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+                    v-if="!showFiltersButtonInsideSearchControl && !hideFilters && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                     id="filter-menu-compress-button"
                     :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                     @click="isFiltersModalActive = !isFiltersModalActive"
@@ -77,6 +77,21 @@
                         {{ $i18n.get('advanced_search') }}
                     </a>
                 </div>
+            </div>
+
+            <!-- Another option of the Button for hiding filters -->
+            <div 
+                    v-if="showFiltersButtonInsideSearchControl && !hideHideFiltersButton && !hideFilters && !openAdvancedSearch"
+                    class="search-control-item">
+                <button 
+                        class="button is-white"
+                        :aria-label="$i18n.get('filters')"
+                        @click="isFiltersModalActive = !isFiltersModalActive">
+                    <span class="gray-icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
+                    </span>
+                    <span class="is-hidden-touch">{{ $i18n.get('filters') }}</span>
+                </button>
             </div>
 
             <!-- Displayed Metadata Dropdown -->
@@ -536,6 +551,7 @@
             hideItemsPerPageButton: false,
             hideGoToPageButton: false,
             // Other Tweaks
+            showFiltersButtonInsideSearchControl: false,
             startWithFiltersHidden: false,
             filtersAsModal: false,
             showInlineViewModeOptions: false,

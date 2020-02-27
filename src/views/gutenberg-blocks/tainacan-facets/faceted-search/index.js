@@ -77,6 +77,10 @@ registerBlockType('tainacan/faceted-search', {
             type: Boolean,
             default: false
         },
+        showFiltersButtonInsideSearchControl: {
+            type: Boolean,
+            default: false
+        },
         startWithFiltersHidden: {
             type: Boolean,
             default: false
@@ -186,6 +190,7 @@ registerBlockType('tainacan/faceted-search', {
             hideExposersButton,
             hideItemsPerPageButton,
             hideGoToPageButton,
+            showFiltersButtonInsideSearchControl,
             startWithFiltersHidden,
             filtersAsModal,
             showInlineViewModeOptions,
@@ -319,6 +324,16 @@ registerBlockType('tainacan/faceted-search', {
                                 onChange={ ( isChecked ) => {
                                         hideExposersButton = isChecked;
                                         setAttributes({ hideExposersButton: isChecked });
+                                    } 
+                                }
+                            />
+                             <ToggleControl
+                                label={__('Show "Filters" button inside the Search Control', 'tainacan')}
+                                help={ showFiltersButtonInsideSearchControl ? __('Toggle to show Filters button inside the Search Control, instead of floating left', 'tainacan') : __('Keep Filters button as a floating arrow on the left', 'tainacan')}
+                                checked={ showFiltersButtonInsideSearchControl }
+                                onChange={ ( isChecked ) => {
+                                        showFiltersButtonInsideSearchControl = isChecked;
+                                        setAttributes({ showFiltersButtonInsideSearchControl: isChecked });
                                     } 
                                 }
                             />
@@ -698,6 +713,9 @@ registerBlockType('tainacan/faceted-search', {
                                         </span>
                                         : null
                                     }
+                                    {
+                                        showFiltersButtonInsideSearchControl && !hideHideFiltersButton ? <span class="fake-button"><div class="fake-icon"></div><div class="fake-text"></div></span> : null
+                                    }
                                     <span class="fake-button"><div class="fake-text"></div></span>
                                     <span class="fake-button"> { !hideSortByButton ? <div class="fake-text"></div> : null }<div class="fake-icon"></div><div class="fake-text"></div></span>
                                     {
@@ -717,7 +735,7 @@ registerBlockType('tainacan/faceted-search', {
                                     }
                                 </div>
                                 <div class="below-search-control">
-                                    { !hideHideFiltersButton && !hideFilters ? <span class="fake-hide-button"><div class="fake-icon"></div></span> : null }
+                                    { !showFiltersButtonInsideSearchControl & !hideHideFiltersButton && !hideFilters ? <span class="fake-hide-button"><div class="fake-icon"></div></span> : null }
                                     { 
                                         !hideFilters && !filtersAsModal && !startWithFiltersHidden ?
                                             <div 
@@ -845,6 +863,7 @@ registerBlockType('tainacan/faceted-search', {
             hideExposersButton,
             hideItemsPerPageButton,
             hideGoToPageButton,
+            showFiltersButtonInsideSearchControl,
             startWithFiltersHidden,
             filtersAsModal,
             showInlineViewModeOptions,
@@ -901,6 +920,7 @@ registerBlockType('tainacan/faceted-search', {
                     hide-exposers-button = { hideExposersButton.toString() }
                     hide-items-per-page-button = { hideItemsPerPageButton.toString() }
                     hide-go-to-page-button = { hideGoToPageButton.toString() }
+                    show-filters-button-inside-search-control = { showFiltersButtonInsideSearchControl.toString() }
                     start-with-filters-hidden = { startWithFiltersHidden.toString() }
                     filters-as-modal = { filtersAsModal.toString() }
                     show-inline-view-mode-options = { showInlineViewModeOptions.toString() }
