@@ -269,6 +269,8 @@
             width: 100%;
             display: flex;
             align-items: center; }
+            .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters .fake-filter .fake-checkbox-list > div:nth-child(odd) .fake-text {
+              width: 60%; }
           .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters .fake-filter .fake-checkbox-list .fake-checkbox {
             display: block;
             width: 0.4em;
@@ -332,6 +334,34 @@
       max-height: 0.3em;
       max-width: 0.3em;
       border-radius: 5px; }
+    .wp-block-tainacan-faceted-search .items-list-placeholder .fake-tooltip {
+      background-color: var(--tainacan-primary, rgba(200, 200, 200, 0.1));
+      position: absolute;
+      height: 0.75em;
+      width: 4em;
+      border-radius: 2px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      top: -0.75em;
+      left: 1em; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-tooltip .fake-link {
+        width: 100%;
+        margin: 0 4px 0 8px; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-tooltip:before {
+        content: "";
+        display: block;
+        position: absolute;
+        left: 12px;
+        width: 0;
+        height: 0;
+        border-style: solid; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-tooltip:before {
+        border-color: var(--tainacan-primary) transparent transparent transparent;
+        border-right-width: 7px;
+        border-top-width: 6px;
+        border-left-width: 7px;
+        bottom: -8px; }
     .wp-block-tainacan-faceted-search .items-list-placeholder .fake-searchbar {
       background-color: var(--tainacan-input-background-color, rgba(200, 200, 200, 0.3));
       height: 0.8em;
@@ -347,14 +377,19 @@
         position: relative;
         bottom: -0.85em; }
     .wp-block-tainacan-faceted-search .items-list-placeholder .fake-hide-button {
-      display: block;
-      background-color: var(--tainacan-primary, rgba(200, 200, 200, 0.3));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--tainacan-primary, rgba(200, 200, 200, 0.1));
       height: 0.9em;
-      width: 16px;
+      width: 0.9em;
+      font-size: 0.75em;
       border-radius: 3px;
       position: absolute;
       left: 0px;
       top: 42px; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-hide-button .fake-icon {
+        background-color: var(--tainacan-secondary, rgba(200, 200, 200, 0.3)); }
     .wp-block-tainacan-faceted-search .items-list-placeholder .fake-button {
       background-color: var(--tainacan-background-color, white);
       height: 0.8em;
@@ -381,9 +416,9 @@
       flex: 1 0 180px;
       margin: 12px;
       height: 78px; }
-      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item:hover {
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item.fake-item-hovered, .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item:hover {
         background-color: var(--tainacan-item-hover-background-color, rgba(200, 200, 200, 0.2)); }
-        .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item:hover .fake-item-header {
+        .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item.fake-item-hovered .fake-item-header, .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item:hover .fake-item-header {
           background-color: var(--tainacan-item-heading-hover-background-color, rgba(200, 200, 200, 0.3)); }
       .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item .fake-item-header {
         height: 20px;
@@ -409,6 +444,8 @@
         margin: 8px 6px 2px 6px;
         position: relative;
         left: 62px; }
+        .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item .fake-item-description:nth-child(odd) {
+          width: 50%; }
   .wp-block-tainacan-faceted-search .theme-items-list {
     max-width: 100% !important; }
 

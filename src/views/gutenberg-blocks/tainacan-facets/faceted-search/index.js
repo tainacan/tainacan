@@ -717,7 +717,7 @@ registerBlockType('tainacan/faceted-search', {
                                     }
                                 </div>
                                 <div class="below-search-control">
-                                    { !hideHideFiltersButton && !hideFilters ? <span class="fake-hide-button"></span> : null }
+                                    { !hideHideFiltersButton && !hideFilters ? <span class="fake-hide-button"><div class="fake-icon"></div></span> : null }
                                     { 
                                         !hideFilters && !filtersAsModal && !startWithFiltersHidden ?
                                             <div 
@@ -753,7 +753,7 @@ registerBlockType('tainacan/faceted-search', {
                                     }
                                     <div class="aside-filters">    
                                         <div class="items">
-                                            { Array(6).fill().map( () => {
+                                            { Array(5).fill().map( () => {
                                                 return <div class="fake-item">
                                                     <div class="fake-item-header">
                                                         <div class="fake-text"></div>
@@ -766,6 +766,18 @@ registerBlockType('tainacan/faceted-search', {
                                                     { Array(3).fill().map( () => <div class="fake-item-description"></div> ) }
                                                 </div>
                                             } ) }
+                                            <div class="fake-item fake-item-hovered">
+                                                <div class="fake-item-header">
+                                                    <div class="fake-tooltip"><div class="fake-link"></div></div>
+                                                    <div class="fake-text"></div>
+                                                </div>
+                                                <div 
+                                                        style={{ 
+                                                            backgroundImage: tainacan_plugin ? 'url("' + tainacan_plugin.base_url + '/assets/images/placeholder_square.png")' : '' 
+                                                        }}
+                                                        class="fake-item-thumb"></div>
+                                                { Array(3).fill().map( () => <div class="fake-item-description"></div> ) }
+                                            </div>
                                         </div>
                                         <div class="pagination">
                                             <span class="fake-text"></span>

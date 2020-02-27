@@ -109,6 +109,10 @@
                             width: 100%;
                             display: flex;
                             align-items: center;
+
+                            &:nth-child(odd) .fake-text {
+                                width: 60%;
+                            }
                         }
                         .fake-checkbox {
                             display: block;
@@ -191,6 +195,40 @@
             max-width: 0.3em;
             border-radius: 5px;
         }
+        .fake-tooltip {
+            background-color: var(--tainacan-primary, rgba(200,200,200, 0.1));
+            position: absolute;
+            height: 0.75em;
+            width: 4em;
+            border-radius: 2px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: -0.75em;
+            left: 1em;
+
+            .fake-link {
+                width: 100%;
+                margin: 0 4px 0 8px;
+            }
+
+            &:before {
+                content: "";
+                display: block;
+                position: absolute;
+                left: 12px;
+                width: 0;
+                height: 0;
+                border-style: solid;
+            }
+            &:before {
+                border-color: var(--tainacan-primary) transparent transparent transparent;
+                border-right-width: 7px;
+                border-top-width: 6px;
+                border-left-width: 7px;
+                bottom: -8px;
+            }
+        }
         .fake-searchbar {
             background-color: var(--tainacan-input-background-color, rgba(200,200,200, 0.3));
             height: 0.8em;
@@ -209,14 +247,21 @@
             }
         }
         .fake-hide-button {
-            display: block;
-            background-color: var(--tainacan-primary, rgba(200,200,200, 0.3));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--tainacan-primary, rgba(200,200,200, 0.1));
             height: 0.9em;
-            width: 16px;
+            width: 0.9em;
+            font-size: 0.75em;
             border-radius: 3px;
             position: absolute;
             left: 0px;
             top: 42px;
+
+            .fake-icon {
+                background-color: var(--tainacan-secondary, rgba(200,200,200, 0.3));
+            }
         }
         .fake-button {
             background-color: var(--tainacan-background-color, white);
@@ -250,6 +295,7 @@
             margin: 12px;
             height: 78px;
             
+            &.fake-item-hovered,
             &:hover {
                 background-color: var(--tainacan-item-hover-background-color, rgba(200,200,200, 0.2));
                 .fake-item-header {
@@ -284,6 +330,10 @@
                 margin: 8px 6px 2px 6px;
                 position: relative;
                 left: 62px;
+
+                &:nth-child(odd) {
+                    width: 50%;
+                }
             }
         }
     }
