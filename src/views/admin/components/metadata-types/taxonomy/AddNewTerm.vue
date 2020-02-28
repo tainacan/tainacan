@@ -146,8 +146,8 @@
                         taxonomyId: this.taxonomyId, 
                         termId: 'new', 
                         search: search })
-                    .then((parentTerms) => {
-                        this.parentTerms = parentTerms;
+                    .then((res) => {
+                        this.parentTerms = res.parentTerms;
                         this.isFetchingParentTerms = false;
                     })
                     .catch((error) => {
