@@ -120,10 +120,12 @@
                                 v-model="coverPageTitle"
                                 @select="onSelectCoverPage($event)"
                                 :loading="isFetchingPages"
-                                @input="fecthCoverPages($event)"
+                                @input="fecthCoverPages"
                                 @focus="clearErrors('cover_page_id')"
                                 v-if="coverPage == undefined || coverPage.title == undefined"
-                                :disabled="form.enable_cover_page != 'yes'">
+                                :disabled="form.enable_cover_page != 'yes'"
+                                check-infinite-scroll
+                                @infinite-scroll="fetchMoreCoverPages">
                             <template slot-scope="props">
                                 {{ props.option.title.rendered }}
                             </template>
@@ -533,6 +535,8 @@ export default {
             cover: {},
             isFetchingPages: false,
             coverPages: [],
+            coverPagesSearchQuery: '',
+            coverPagesSearchPage: 0,
             coverPage: '',
             coverPageTitle: '',
             coverPageEditPath: '',
@@ -819,18 +823,47 @@ export default {
             let index = this.form.enabled_view_modes.findIndex(aViewMode => aViewMode == viewMode);
             return index > -1;
         },
-        fecthCoverPages(search) {
+        fecthCoverPages: _.debounce(function(search) {
+
+            // String update
+            if (search != this.coverPagesSearchQuery) {
+                this.coverPagesSearchQuery = search;
+                this.coverPages = [];
+                this.coverPagesSearchPage = 1;
+            } 
+            
+            // String cleared
+            if (!search.length) {
+                this.coverPagesSearchQuery = search;
+                this.coverPages = [];
+                this.coverPagesSearchPage = 1;
+            }
+
+            // No need to load more
+            if (this.coverPagesSearchPage > 1 && this.coverPages.length > this.totalPages*12)
+                return;
+
             this.isFetchingPages = true;
-            this.fetchPages(search)
-                .then((pages) => {
-                    this.coverPages = pages;
+            this.fetchPages({ search: this.coverPagesSearchQuery, page: this.coverPagesSearchPage })
+                .then((res) => {
+                    if (res.pages) {
+                        for (let page of res.pages)
+                            this.coverPages.push(page); 
+                    }
+                    if (res.totalPages)
+                        this.totalPages = res.totalPages;
+
+                    this.coverPagesSearchPage++;
                     this.isFetchingPages = false;
                 })
                 .catch((error) => {
                     this.$console.error(error);
                     this.isFetchingPages = false;
                 });
-        },
+        }, 500),
+        fetchMoreCoverPages: _.debounce(function () {
+            this.fecthCoverPages(this.coverPagesSearchQuery)
+        }, 250),
         onSelectCoverPage(selectedPage) { 
             this.form.cover_page_id = selectedPage.id; 
             this.coverPage = selectedPage;

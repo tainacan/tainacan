@@ -355,12 +355,13 @@ export const updateHeaderImage = ({ commit }, { collectionId, headerImageId }) =
 };
 
 // Collection Cover Page
-export const fetchPages = ({ commit }, search ) => {
+export const fetchPages = ({ commit }, { search, page } ) => {
     return new Promise((resolve, reject) => {
-        axios.wp.get('/pages?search=' + search)
+        axios.wp.get('/pages?search=' + search + '&page=' + page)
         .then(res => {
-            let pages = res.data;
-            resolve( pages );
+            const pages = res.data;
+            const totalPages = res.headers['x-wp-total'];
+            resolve( { pages, totalPages} );
         })
         .catch(error => {
             reject( error );

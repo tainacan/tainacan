@@ -106,7 +106,7 @@
             },
             search: _.debounce(function(query) {
 
-                 // String update
+                // String update
                 if (query != this.searchQuery) {
                     this.searchQuery = query;
                     this.options = [];
@@ -121,7 +121,7 @@
                 }
 
                 // No need to load more
-                if (this.page > 1 && this.options.length >= this.totalItems)
+                if (this.page > 1 && this.options.length > this.totalItems*12)
                     return;
 
                 // There is already one value set and is not multiple
