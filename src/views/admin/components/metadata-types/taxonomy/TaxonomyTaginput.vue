@@ -18,7 +18,7 @@
                 :aria-close-label="$i18n.get('remove_value')"
                 :placeholder="$i18n.get('instruction_type_existing_term')"
                 :loading="isFetching"
-                :class="{'has-selected': selected != undefined && selected != []}"
+                :class="{ 'has-selected': selected != undefined && selected != [] }"
                 autocomplete
                 @typing="loadTerms"
                 check-infinite-scroll
@@ -98,9 +98,9 @@
                     this.offset = 0;
                 }
 
-                if (this.offset > 0 && this.labels.length >= this.totalTerms) {
+                // No need to load more
+                if (this.offset > 0 && this.labels.length >= this.totalTerms)
                     return
-                }
 
                 this.isFetching = true;
 

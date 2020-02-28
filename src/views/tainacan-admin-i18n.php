@@ -497,6 +497,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_collection_fetch_items'      => __( 'Select a collection to fetch items', 'tainacan' ),
 	'instruction_select_a_action'                    => __( 'Select an action', 'tainacan' ),
 	'instruction_parent_term'                        => __( 'Type to search a Parent Term to choose.', 'tainacan' ),
+	'instruction_type_existing_item'                 => __( 'Type to add an existing item...', 'tainacan' ),
 	'instruction_type_existing_term'                 => __( 'Type to add an existing term...', 'tainacan' ),
 	'instruction_select_an_exporter_type'            => __( 'Select an exporter from the options below:', 'tainacan'),
 	'instruction_select_a_collection'                => __( 'Select a collection', 'tainacan' ),
