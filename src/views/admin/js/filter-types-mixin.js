@@ -9,6 +9,7 @@ export const filterTypeMixin = {
             metadatumId: '',
             metadatumType: '',
             filterTypeOptions: [],
+            shouldAddOptions: false
         }
     },
     props: {
@@ -31,7 +32,8 @@ export const dynamicFilterTypeMixin = {
         return {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             getOptionsValuesCancel: undefined,
-            isLoadingOptions: false
+            isLoadingOptions: false,
+            facetSearchPage: 1
         }
     },
     computed: {
@@ -65,6 +67,7 @@ export const dynamicFilterTypeMixin = {
                 let query_items = { 'current_query': currentQuery };
 
                 let url = '';
+
                 if (isRepositoryLevel  || this.filter.collection_id == 'default')
                     url = `/facets/${metadatumId}?getSelected=${getSelected}&`;
                 else
@@ -77,13 +80,12 @@ export const dynamicFilterTypeMixin = {
                         url += `last_term=${offset}&number=${number}&`;
                 }  
 
-                if(search && offset != undefined && number != undefined){
+                if (search && offset != undefined && number != undefined)
                     url += `search=${search}&` + qs.stringify(query_items);
-                } else if(search){
+                else if (search)
                     url += `search=${search}&` + qs.stringify(query_items);
-                } else {
+                else
                     url += qs.stringify(query_items);
-                }
                 
                 this.isLoadingOptions = true;
                 
@@ -99,7 +101,7 @@ export const dynamicFilterTypeMixin = {
                                     else
                                         this.prepareOptionsForPlainText(res.data, search, valuesToIgnore, isInCheckboxModal);
                                 
-                                    resolve(res.data);
+                                    resolve(res);
                                 })
                                 .catch((thrown) => {
                                     if (axios.isCancel(thrown)) {
@@ -143,20 +145,19 @@ export const dynamicFilterTypeMixin = {
                 let query_items = { 'current_query': currentQuery };
 
                 let url = '';
+
                 if (isRepositoryLevel  || this.filter.collection_id == 'default')
                     url =  '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`; 
                 else
                     url =  '/collection/' + this.filter.collection_id + '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`;
                     
-                if(offset != undefined && number != undefined){
+                if (offset != undefined && number != undefined)
                     url += `offset=${offset}&number=${number}`;
-                } else {
-                    url += `nopaging=1`
-                }
+                else
+                    url += `nopaging=1`;
 
-                if(search){
+                if (search)
                     url += `&search=${search}`;
-                }
 
                 this.isLoadingOptions = true;
 
@@ -165,6 +166,7 @@ export const dynamicFilterTypeMixin = {
                         new Promise((resolve, reject) => {
                             axios.tainacan.get(url + '&fetch_only=thumbnail,title,id&' + qs.stringify(query_items))
                                 .then(res => {
+
                                     this.isLoadingOptions = false;
                                     
                                     if (res.data.values)
@@ -172,7 +174,7 @@ export const dynamicFilterTypeMixin = {
                                     else
                                         this.prepareOptionsForRelationship(res.data, search, valuesToIgnore, isInCheckboxModal);
                                 
-                                    resolve(res.data);
+                                    resolve(res);
                                 })
                                 .catch((thrown) => {
                                     if (axios.isCancel(thrown)) {
@@ -240,15 +242,22 @@ export const dynamicFilterTypeMixin = {
                     }
                 }
             }
+            
+            if (this.shouldAddOptions === true && this.searchResults && this.searchResults.length)
+                this.searchResults = this.searchResults.concat(sResults);
+            else
+                this.searchResults = sResults;
 
-            this.searchResults = sResults;
-
-            if (opts.length)
-                this.options = opts;
+            if (opts.length) {
+                if (this.shouldAddOptions === true && this.options && this.options.length)
+                    this.options = this.options.concat(opts)
+                else 
+                    this.options = opts;
+            }
             else if(!search)
                 this.noMorePage = 1;
 
-            if(this.options.length < this.maxNumOptionsCheckboxList && !search)
+            if (this.options.length < this.maxNumOptionsCheckboxList && !search)
                 this.noMorePage = 1;
 
             if (this.filter.max_options && this.options.length >= this.filter.max_options) {
@@ -305,14 +314,22 @@ export const dynamicFilterTypeMixin = {
                     }
                 }
             }
+            console.log(this.shouldAddOptions)
 
-            this.searchResults = sResults;
-
-            if (opts.length)
-                this.options = opts;
+            if (this.shouldAddOptions === true && this.searchResults && this.searchResults.length)
+                this.searchResults = this.searchResults.concat(sResults);
             else
+                this.searchResults = sResults;
+
+            if (opts.length) {
+                if (this.shouldAddOptions === true && this.options && this.options.length)
+                     this.options = this.options.concat(opts)
+                else 
+                    this.options = opts;
+            }
+            else if(!search)
                 this.noMorePage = 1;
-            
+        
 
             if (this.options.length < this.maxNumOptionsCheckboxList)
                 this.noMorePage = 1;

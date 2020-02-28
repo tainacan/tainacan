@@ -462,13 +462,13 @@
                     promise = this.getValuesPlainText( this.metadatumId, this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
                 
                 promise.request
-                    .then((data) => {
+                    .then((res) => {
                         this.isCheckboxListLoading = false;
                         this.isSearchingLoading = false;
 
                         if (this.isUsingElasticSearch) {
                                                         
-                            this.checkboxListOffset = data.last_term;
+                            this.checkboxListOffset = res.data.last_term;
 
                             if (!this.lastTermOnFisrtPage || this.lastTermOnFisrtPage == this.checkboxListOffset) {
                                 this.lastTermOnFisrtPage = this.checkboxListOffset;
