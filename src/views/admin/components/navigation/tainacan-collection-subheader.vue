@@ -351,9 +351,6 @@ export default {
             .icon {
                 margin: 0;
                 padding: 0;
-                i {
-                    font-size: 1.125em !important;
-                }
                 svg {
                     position: relative;
                     top: 2px;
