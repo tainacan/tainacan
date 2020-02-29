@@ -434,9 +434,14 @@ class Metadata extends Repository {
 				'compare' => 'IN',
 			);
 
-			$args = array_merge( [
-				'parent' => 0
-			], $args );
+			if( !isset( $args['parent']) ) {
+				$args = array_merge( [
+					'parent' => 0
+				], $args );
+			}
+
+			if( $args['parent'] === 'all ')
+				unset( $args['parent'] );
 
 			$args['meta_query'] = $original_meta_q;
 			$args['meta_query'][] = $meta_query;

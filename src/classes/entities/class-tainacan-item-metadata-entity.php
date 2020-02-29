@@ -17,7 +17,7 @@ class Item_Metadata_Entity extends Entity {
 	protected $repository = 'Item_Metadata';
 	
 	protected
-        $item,
+		$item,
 		$metadatum,
 		$parent_meta_id,
 		$meta_id,
@@ -178,13 +178,22 @@ class Item_Metadata_Entity extends Entity {
 	 */
 	public function get_value_as_array() {
 		$value = $this->get_value();
+		$primitive_type = $this->get_metadatum()->get_metadata_type_object()->get_primitive_type();
 		
 		if ( $this->is_multiple() ) {
 			
 			$return = [];
 			
 			foreach ($value as $v) {
-				if ( $v instanceof Term || $v instanceof ItemMetadataEntity ) {
+				if( is_array($v) ) {
+					$compounds = [];
+					foreach ($v as $itemMetadata) {
+						if ( $itemMetadata instanceof ItemMetadataEntity ) {
+							$compounds[] = $itemMetadata->_toArray();
+						}
+					}
+					$return[] = $compounds;
+				} else if ( $v instanceof Term || $v instanceof ItemMetadataEntity ) {
 					$return[] = $v->_toArray();
 				} else {
 					$return[] = $v;
@@ -195,7 +204,32 @@ class Item_Metadata_Entity extends Entity {
 			
 			$return = '';
 			
-			if ( $value instanceof Term || $value instanceof ItemMetadataEntity ) {
+			if( $primitive_type === 'compound' ) {
+				$compounds = [];
+				$options = $this->get_metadatum()->get_metadata_type_object()->get_options();
+
+				//dealing with categories
+				if( isset( $options['children_objects'] ) ) {
+					foreach ( $options['children_objects'] as $child ) {
+						$metadata = new Metadatum( $child['id'] );
+						$itemMetadata = new self( $this->get_item(), $metadata );
+						$child_primitive_type = $metadata->get_metadata_type_object()->get_primitive_type();
+						if ( $itemMetadata instanceof ItemMetadataEntity && $child_primitive_type === 'term' ) {
+							$compounds[$child['id']] = $itemMetadata->_toArray();
+						}
+					}
+				}
+
+				if( is_array($value) ) {
+					foreach ($value as $itemMetadata) {
+						$child_primitive_type = $itemMetadata->get_metadatum()->get_metadata_type_object()->get_primitive_type();
+						if ( $itemMetadata instanceof ItemMetadataEntity && $child_primitive_type !== 'term' ) {
+							$compounds[$itemMetadata->get_metadatum()->get_id()] = $itemMetadata->_toArray();
+						}
+					}
+				}
+				$return = $compounds;
+			} else if ( $value instanceof Term || $value instanceof ItemMetadataEntity ) {
 				$return = $value->_toArray();
 			} else {
 				$return = $value;
@@ -214,11 +248,11 @@ class Item_Metadata_Entity extends Entity {
 	 * 
 	 * @return array the representation of this object as an array
 	 */
-    public function  _toArray( $formatted_values = true, $cascade = false ){
+	public function  _toArray( $formatted_values = true, $cascade = false ){
 		$as_array = [];
 		
 		$as_array['value'] = $this->get_value_as_array();
-		
+		$as_array['parent_meta_id'] = $this->get_parent_meta_id();
 		if ( $formatted_values ) {
 			$as_array['value_as_html'] = $this->get_value_as_html();
 			$as_array['value_as_string'] = $this->get_value_as_string();
@@ -230,7 +264,7 @@ class Item_Metadata_Entity extends Entity {
 		
 		if ( $cascade ) {
 			$as_array['item']  = $this->get_item()->_toArray();
-		    $as_array['metadatum'] = $this->get_metadatum()->_toArray();
+			$as_array['metadatum'] = $this->get_metadatum()->_toArray();
 		}
 	    
 
