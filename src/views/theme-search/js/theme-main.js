@@ -35,6 +35,12 @@ import routerTheme from './theme-router.js';
 import eventBusSearch from '../../admin/js/event-bus-search';
 import { I18NPlugin, UserPrefsPlugin, ConsolePlugin } from '../../admin/js/utilities';
 
+/* Registers Extra Vue Pluginss passed to the TainacanExtraVuePlugins  */
+if (typeof TainacanExtraVuePlugins != "undefined") {
+    for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(TainacanExtraVuePlugin))
+        Vue.use(extraVuePluginObject);
+}
+
 // Configure and Register Plugins
 Vue.use(Buefy, {
     defaultTooltipAnimated: true

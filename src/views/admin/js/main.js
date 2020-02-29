@@ -55,6 +55,12 @@ import eventBusSearch from './event-bus-search';
 import eventBusTermsList from './event-bus-terms-list.js';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin, StatusHelperPlugin, CommentsStatusHelperPlugin } from './utilities';
 
+/* Registers Extra Vue Pluginss passed to the TainacanExtraVuePlugins  */
+if (typeof TainacanExtraVuePlugins != "undefined") {
+    for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(TainacanExtraVuePlugin))
+        Vue.use(extraVuePluginObject);
+}
+
 // Configure and Register Plugins
 Vue.use(Buefy, {
     defaultTooltipAnimated: true
