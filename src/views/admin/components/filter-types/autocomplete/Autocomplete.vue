@@ -12,7 +12,9 @@
                 field="label"
                 @select="onSelect"
                 clearable
-                :placeholder="(metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')">
+                :placeholder="(metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')"
+                check-infinite-scroll
+                @infinite-scroll="searchMore">
             <template slot-scope="props">
                 <div class="media">
                     <div
@@ -52,7 +54,11 @@
             return {
                 selected:'',
                 options: [],
-                label: ''
+                label: '',
+                searchQuery: '',
+                searchOffset: 0,
+                searchNumber: 12,
+                totalFacets: 0
             }
         },
         watch: {
@@ -84,24 +90,48 @@
             },
             search: _.debounce( function(query) {
 
-                if (query != '') {
-                    let promise = null;
+                // String update
+                if (query != this.searchQuery) {
+                    this.searchQuery = query;
                     this.options = [];
+                    this.searchOffset = 0;
+                } 
+                
+                // String cleared
+                if (!query.length) {
+                    this.searchQuery = query;
+                    this.options = [];
+                    this.searchOffset = 0;
+                }
+
+                // No need to load more
+                if (this.searchOffset > 0 && this.options.length >= this.totalFacets)
+                    return;
+
+                if (this.searchQuery != '') {
+
+                    let promise = null;
+
                     // Cancels previous Request
                     if (this.getOptionsValuesCancel != undefined)
                         this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
                     if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
-                        promise = this.getValuesRelationship( query, this.isRepositoryLevel );
+                        promise = this.getValuesRelationship( this.searchQuery, this.isRepositoryLevel, [], this.searchOffset, this.searchNumber );
                     else
-                        promise = this.getValuesPlainText( this.metadatumId, query, this.isRepositoryLevel );
+                        promise = this.getValuesPlainText( this.metadatumId, this.searchQuery, this.isRepositoryLevel, [], this.searchOffset, this.searchNumber );
                     
-                    promise.request.catch( error => {
-                        if (isCancel(error))
-                            this.$console.log('Request canceled: ' + error.message);
-                        else
-                            this.$console.error( error );
-                    });
+                    promise.request
+                        .then( res => {
+                            this.totalFacets = res.headers['x-wp-total'];
+                            this.searchOffset += this.searchNumber;
+                        })
+                        .catch( error => {
+                            if (isCancel(error))
+                                this.$console.log('Request canceled: ' + error.message);
+                            else
+                                this.$console.error( error );
+                        });
 
                     // Search Request Token for cancelling
                     this.getOptionsValuesCancel = promise.source;
@@ -117,6 +147,10 @@
                     });
                 }
             }, 500),
+            searchMore: _.debounce(function () {
+                this.shouldAddOptions = true;
+                this.search(this.searchQuery);
+            }, 250),
             updateSelectedValues(){
 
                 if (!this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ))
