@@ -55,16 +55,4 @@ class Numeric_List_Interval extends Filter_Type {
             ]
         ];
     }
-
-    /**
-     * @param $filter
-     * @return string
-     * @internal param $metadatum
-     */
-    public function render( $filter ) {
-         return '<tainacan-filter-numeric-list-interval 
-                                        name="'.$filter->get_name().'"
-                                        collection_id="'.$filter->get_collection_id().'"
-                                        metadatum_id="'.$filter->get_metadatum()->get_id().'"></tainacan-filter-form-numeric-list-interval>';
-    }
 }
