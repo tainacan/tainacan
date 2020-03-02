@@ -81,7 +81,6 @@ Vue.use(CommentsStatusHelperPlugin);
 if (typeof window.tainacan_extra_components != "undefined") {
     for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
         Vue.component(extraVueComponentName, extraVueComponentObject);
-        console.log(extraVueComponentName, extraVueComponentObject)
     }
 }
 

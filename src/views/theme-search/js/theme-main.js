@@ -39,7 +39,6 @@ import { I18NPlugin, UserPrefsPlugin, ConsolePlugin } from '../../admin/js/utili
 if (typeof window.tainacan_extra_plugins != "undefined") {
     for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins)) {
         Vue.component(extraVuePluginName, extraVuePluginObject);
-        console.log(extraVuePluginName, extraVuePluginObject)
     }
 }
 
@@ -57,7 +56,6 @@ Vue.use(ConsolePlugin, {visual: false});
 if (typeof window.tainacan_extra_components != "undefined") {
     for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
         Vue.component(extraVueComponentName, extraVueComponentObject);
-        console.log(extraVueComponentName, extraVueComponentObject)
     }
 }
 
