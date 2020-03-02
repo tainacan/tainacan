@@ -4,6 +4,7 @@ const tainacan = axios.create({
     baseURL: tainacan_blocks.root
 });
 
-tainacan.defaults.headers.common['X-WP-Nonce'] = tainacan_blocks.nonce;
+if (tainacan_blocks.nonce)
+    tainacan.defaults.headers.common['X-WP-Nonce'] = tainacan_blocks.nonce;
 
 export default tainacan;
