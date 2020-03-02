@@ -35,10 +35,12 @@ import routerTheme from './theme-router.js';
 import eventBusSearch from '../../admin/js/event-bus-search';
 import { I18NPlugin, UserPrefsPlugin, ConsolePlugin } from '../../admin/js/utilities';
 
-/* Registers Extra Vue Pluginss passed to the TainacanExtraVuePlugins  */
-if (typeof TainacanExtraVuePlugins != "undefined") {
-    for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(TainacanExtraVuePlugin))
-        Vue.use(extraVuePluginObject);
+/* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
+if (typeof window.tainacan_extra_plugins != "undefined") {
+    for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins)) {
+        Vue.component(extraVuePluginName, extraVuePluginObject);
+        console.log(extraVuePluginName, extraVuePluginObject)
+    }
 }
 
 // Configure and Register Plugins
@@ -51,10 +53,12 @@ Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(ConsolePlugin, {visual: false});
 
-/* Registers Extra Vue Components passed to the TainacanExtraVueComponents  */
-if (typeof TainacanExtraVueComponents != "undefined") {
-    for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(TainacanExtraVueComponents))
+/* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
+if (typeof window.tainacan_extra_components != "undefined") {
+    for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
         Vue.component(extraVueComponentName, extraVueComponentObject);
+        console.log(extraVueComponentName, extraVueComponentObject)
+    }
 }
 
 Vue.component('tainacan-filter-item', TaincanFiltersList);

@@ -21,6 +21,8 @@ module.exports = {
     globals: {
         'tainacan_plugin': true,
         '_': true,
-        'jQuery': true
+        'jQuery': true,
+        'tainacan_extra_components': true,
+        'tainacan_extra_plugins': true
     }
 }
