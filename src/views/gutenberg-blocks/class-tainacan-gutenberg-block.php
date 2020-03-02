@@ -326,7 +326,7 @@ function tainacan_blocks_get_plugin_js_settings(){
 
 	$settings = [
 		'root'     	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
-		'nonce'   	=> wp_create_nonce( 'wp_rest' ),
+		'nonce'   	=> is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
 		'base_url' 	=> $TAINACAN_BASE_URL,
 		'admin_url' => admin_url(),
 		'site_url'	=> site_url(),

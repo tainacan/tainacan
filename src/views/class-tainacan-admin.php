@@ -223,7 +223,7 @@ class Admin {
 			'tainacan_api_url'         	=> esc_url_raw( rest_url() ) . 'tainacan/v2',
 			'wp_api_url'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
 			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
-			'nonce'                  	=> wp_create_nonce( 'wp_rest' ),
+			'nonce'                  	=> is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
 			'components'             	=> $components,
 			'i18n'                   	=> $tainacan_admin_i18n,
 			'user_caps'              	=> $user_caps,
