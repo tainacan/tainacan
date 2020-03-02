@@ -1,0 +1,452 @@
+[data-align='full'] .block-control {
+  width: calc(100% + 14px); }
+
+.block-control {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  position: relative;
+  top: -14px;
+  left: -14px;
+  width: calc(100% + 28px);
+  background: #f2f2f2; }
+  .block-control p {
+    font-size: 0.875em !important;
+    margin: 12px 1.5em 16px 0;
+    fill: #555758; }
+    .block-control p svg {
+      top: 4px;
+      margin-right: 0.75em;
+      position: relative;
+      fill: #555758; }
+
+.components-placeholder {
+  margin-bottom: 0;
+  background: #f6f6f6; }
+  .components-placeholder .components-placeholder__label {
+    margin-bottom: 0; }
+  .components-placeholder .components-placeholder__fieldset p {
+    font-size: 1em !important;
+    margin: 12px 0;
+    color: #454647;
+    fill: #555758; }
+    .components-placeholder .components-placeholder__fieldset p svg {
+      margin-right: 1em;
+      top: 4px;
+      position: relative;
+      fill: #555758; }
+
+.wp-block-tainacan-modal {
+  width: 50%; }
+  @media only screen and (max-width: 1024px) {
+    .wp-block-tainacan-modal {
+      width: 75%; } }
+  @media only screen and (max-width: 768px) {
+    .wp-block-tainacan-modal {
+      width: 100%; } }
+  .wp-block-tainacan-modal.dynamic-modal {
+    width: 90%;
+    height: 90%;
+    width: 80vw;
+    height: 80vh; }
+    .wp-block-tainacan-modal.dynamic-modal iframe {
+      width: calc(100% + 32px);
+      height: calc(100% - 128px);
+      margin-left: -16px; }
+    .wp-block-tainacan-modal.dynamic-modal .modal-footer-area {
+      height: 68px;
+      width: calc(100% + 32px);
+      margin-left: -16px !important;
+      padding: 1.2em 1.2em !important;
+      border-top: 1px solid #cbcbcb; }
+  .wp-block-tainacan-modal .spinner-container {
+    min-height: 56px;
+    padding: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #555758; }
+    .wp-block-tainacan-modal .spinner-container .components-spineer {
+      margin: 8px; }
+  .wp-block-tainacan-modal .components-modal__header .components-icon-button {
+    padding-right: 0; }
+  .wp-block-tainacan-modal hr {
+    margin: 5px 0.75em; }
+  .wp-block-tainacan-modal .modal-search-area {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 14px; }
+    .wp-block-tainacan-modal .modal-search-area .components-base-control {
+      width: 60%; }
+      @media only screen and (max-width: 1024px) {
+        .wp-block-tainacan-modal .modal-search-area .components-base-control {
+          width: 95%; } }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control:nth-child(2) {
+        flex-shrink: 2; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control .components-base-control__field {
+        flex-wrap: wrap; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control label.components-base-control__label {
+        font-weight: 500;
+        color: #454647;
+        font-size: 1em;
+        text-align: center; }
+      .wp-block-tainacan-modal .modal-search-area .components-base-control input.components-text-control__input {
+        padding: 5px 8px;
+        height: 28px; }
+  .wp-block-tainacan-modal .modal-radio-area-label {
+    font-weight: 500;
+    margin-left: 1.75em; }
+  .wp-block-tainacan-modal .modal-checkbox-list,
+  .wp-block-tainacan-modal .modal-radio-list .components-base-control__field {
+    padding: 0;
+    flex-wrap: wrap;
+    display: flex;
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: 250px 250px;
+    grid-template-columns: repeat(auto-fill, 250px);
+    grid-gap: 0px;
+    justify-content: space-evenly;
+    list-style-type: none;
+    margin: 12px;
+    max-height: 50vh;
+    overflow-y: auto;
+    overflow-x: hidden; }
+    .wp-block-tainacan-modal .modal-checkbox-list .components-base-control,
+    .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-base-control {
+      overflow: hidden; }
+    .wp-block-tainacan-modal .modal-checkbox-list svg.dashicon.components-checkbox-control__checked,
+    .wp-block-tainacan-modal .modal-radio-list .components-base-control__field svg.dashicon.components-checkbox-control__checked {
+      fill: black; }
+    .wp-block-tainacan-modal .modal-checkbox-list .modal-checkbox-list-item,
+    .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option,
+    .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item,
+    .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-radio-control__option {
+      display: flex;
+      justify-content: flex-start; }
+      .wp-block-tainacan-modal .modal-checkbox-list .modal-checkbox-list-item img,
+      .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option img,
+      .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item img,
+      .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-radio-control__option img {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px; }
+      .wp-block-tainacan-modal .modal-checkbox-list .modal-checkbox-list-item label,
+      .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option label,
+      .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item label,
+      .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-radio-control__option label {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: inline-block;
+        max-width: 85%; }
+        @media only screen and (max-width: 768px) {
+          .wp-block-tainacan-modal .modal-checkbox-list .modal-checkbox-list-item label,
+          .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option label,
+          .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item label,
+          .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-radio-control__option label {
+            max-width: 80%; } }
+  .wp-block-tainacan-modal .modal-loadmore-section {
+    display: flex;
+    align-items: baseline;
+    justify-content: center; }
+    .wp-block-tainacan-modal .modal-loadmore-section p {
+      color: #555758;
+      margin-right: 12px;
+      margin-top: 2px; }
+  .wp-block-tainacan-modal .modal-footer-area {
+    border-top: 1px solid #e2e4e7;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 16px 16px 0 16px;
+    margin: 0 -16px; }
+    .wp-block-tainacan-modal .modal-footer-area p {
+      padding: 0 12px;
+      color: #454647; }
+
+.wp-block-tainacan-faceted-search {
+  margin: 2em auto; }
+  .wp-block-tainacan-faceted-search .spinner-container {
+    min-height: 56px;
+    padding: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #555758; }
+@-webkit-keyframes skeleton-animation {
+  0% {
+    opacity: 1.0; }
+  50% {
+    opacity: 0.2; }
+  100% {
+    opacity: 1.0; } }
+@-moz-keyframes skeleton-animation {
+  0% {
+    opacity: 1.0; }
+  50% {
+    opacity: 0.2; }
+  100% {
+    opacity: 1.0; } }
+@-o-keyframes skeleton-animation {
+  0% {
+    opacity: 1.0; }
+  50% {
+    opacity: 0.2; }
+  100% {
+    opacity: 1.0; } }
+@keyframes skeleton-animation {
+  0% {
+    opacity: 1.0; }
+  50% {
+    opacity: 0.2; }
+  100% {
+    opacity: 1.0; } }
+  .wp-block-tainacan-faceted-search .skeleton {
+    border-radius: 2px;
+    background: #f2f2f2;
+    -webkit-animation: skeleton-animation 1.8s ease infinite;
+    -moz-animation: skeleton-animation 1.8s ease infinite;
+    -o-animation: skeleton-animation 1.8s ease infinite;
+    animation: skeleton-animation 1.8s ease infinite; }
+  .wp-block-tainacan-faceted-search .preview-warning {
+    width: 100%;
+    font-size: 0.875em;
+    font-style: italic;
+    color: #898d8f;
+    text-align: center;
+    margin: 4px auto; }
+  .wp-block-tainacan-faceted-search .items-list-placeholder {
+    font-size: 1.125em;
+    min-height: 400px;
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    border-radius: 4px;
+    border: 1px solid rgba(200, 200, 200, 0.3);
+    overflow: hidden; }
+    .wp-block-tainacan-faceted-search .items-list-placeholder .search-control,
+    .wp-block-tainacan-faceted-search .items-list-placeholder .filters,
+    .wp-block-tainacan-faceted-search .items-list-placeholder .items,
+    .wp-block-tainacan-faceted-search .items-list-placeholder .pagination {
+      background-color: var(--tainacan-background-color, white);
+      border: 1px solid rgba(200, 200, 200, 0.3);
+      padding: 12px;
+      margin: 0px;
+      border-radius: 1px; }
+    .wp-block-tainacan-faceted-search .items-list-placeholder .search-control {
+      flex: 0 0 15%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center; }
+    .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control {
+      position: relative;
+      display: flex;
+      flex-wrap: nowrap;
+      flex-direction: row;
+      flex: 1 0 auto; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters {
+        flex: 0 1 var(--tainacan-filter-menu-width-theme, 20%);
+        display: flex;
+        flex-direction: column;
+        padding: 40px 20px 60px 15px; }
+        .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters .fake-filter {
+          display: flex;
+          flex-direction: column;
+          width: 80%;
+          margin: 4% 12%; }
+          .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters .fake-filter .fake-text {
+            margin: 4px 0;
+            width: 35%;
+            background-color: var(--tainacan-label-color, rgba(200, 200, 200, 0.2)); }
+          .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters .fake-filter .fake-searchbar {
+            width: 100%; }
+          .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters .fake-filter .fake-checkbox-list > div {
+            width: 100%;
+            display: flex;
+            align-items: center; }
+            .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters .fake-filter .fake-checkbox-list > div:nth-child(odd) .fake-text {
+              width: 60%; }
+          .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters .fake-filter .fake-checkbox-list .fake-checkbox {
+            display: block;
+            width: 0.4em;
+            height: 0.4em;
+            min-width: 0.4em;
+            min-height: 0.4em;
+            max-width: 0.4em;
+            max-height: 0.4em;
+            border: 2px solid var(--tainacan-input-border-color, rgba(200, 200, 200, 0.3));
+            border-radius: 2px;
+            margin-right: 4px; }
+          .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters .fake-filter .fake-checkbox-list .fake-text {
+            background-color: var(--tainacan-input-color, rgba(200, 200, 200, 0.3));
+            width: 54%; }
+          .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters .fake-filter .fake-checkbox-list .fake-link {
+            width: 25%;
+            margin: 3px; }
+        .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters .fake-filters-heading {
+          position: relative;
+          top: -1.3em;
+          left: -0.3em;
+          background-color: var(--tainacan-heading-color, rgba(200, 200, 200, 0.3));
+          height: 0.2em;
+          width: 28%;
+          border-radius: 2px; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .aside-filters {
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: column;
+        flex: 1 1 auto; }
+        .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .aside-filters .items {
+          flex: 1 0 auto;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-evenly;
+          align-content: flex-start; }
+        .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .aside-filters .pagination {
+          flex: 0 1 5%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center; }
+          .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .aside-filters .pagination > .fake-text {
+            background-color: var(--tainacan-info-color, rgba(200, 200, 200, 0.2)); }
+    .wp-block-tainacan-faceted-search .items-list-placeholder .fake-text {
+      background-color: var(--tainacan-input-color, rgba(200, 200, 200, 0.3));
+      height: 0.2em;
+      width: 24%;
+      min-width: 1.25em;
+      border-radius: 2px; }
+    .wp-block-tainacan-faceted-search .items-list-placeholder .fake-link {
+      background-color: var(--tainacan-secondary, rgba(200, 200, 200, 0.3));
+      height: 0.2em;
+      width: 10%;
+      border-radius: 2px; }
+    .wp-block-tainacan-faceted-search .items-list-placeholder .fake-icon {
+      background-color: var(--tainacan-info-color, rgba(200, 200, 200, 0.3));
+      height: 0.3em;
+      width: 0.3em;
+      min-height: 0.3em;
+      min-width: 0.3em;
+      max-height: 0.3em;
+      max-width: 0.3em;
+      border-radius: 5px; }
+    .wp-block-tainacan-faceted-search .items-list-placeholder .fake-tooltip {
+      background-color: var(--tainacan-primary, rgba(200, 200, 200, 0.1));
+      position: absolute;
+      height: 0.75em;
+      width: 4em;
+      border-radius: 2px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      top: -0.75em;
+      left: 1em; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-tooltip .fake-link {
+        width: 100%;
+        margin: 0 4px 0 8px; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-tooltip:before {
+        content: "";
+        display: block;
+        position: absolute;
+        left: 12px;
+        width: 0;
+        height: 0;
+        border-style: solid; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-tooltip:before {
+        border-color: var(--tainacan-primary) transparent transparent transparent;
+        border-right-width: 7px;
+        border-top-width: 6px;
+        border-left-width: 7px;
+        bottom: -8px; }
+    .wp-block-tainacan-faceted-search .items-list-placeholder .fake-searchbar {
+      background-color: var(--tainacan-input-background-color, rgba(200, 200, 200, 0.3));
+      height: 0.8em;
+      width: 18%;
+      border: 2px solid var(--tainacan-input-border-color, rgba(200, 200, 200, 0.3));
+      border-radius: 3px; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-searchbar .fake-advanced-searchbar {
+        display: block;
+        background-color: var(--tainacan-secondary, rgba(200, 200, 200, 0.3));
+        height: 0.2em;
+        border-radius: 3px;
+        width: 70%;
+        position: relative;
+        bottom: -0.85em; }
+    .wp-block-tainacan-faceted-search .items-list-placeholder .fake-hide-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--tainacan-primary, rgba(200, 200, 200, 0.1));
+      height: 0.9em;
+      width: 0.9em;
+      font-size: 0.75em;
+      border-radius: 3px;
+      position: absolute;
+      left: 0px;
+      top: 42px; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-hide-button .fake-icon {
+        background-color: var(--tainacan-secondary, rgba(200, 200, 200, 0.3)); }
+    .wp-block-tainacan-faceted-search .items-list-placeholder .fake-button {
+      background-color: var(--tainacan-background-color, white);
+      height: 0.8em;
+      width: 10%;
+      max-width: 3.25em;
+      min-width: 1em;
+      margin-left: 6px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-button .fake-text {
+        background-color: var(--tainacan-input-color, rgba(200, 200, 200, 0.3));
+        width: 95%;
+        margin: 0 2px; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-button .fake-icon {
+        flex: 1 0 auto;
+        margin: 0 2px; }
+    .wp-block-tainacan-faceted-search .items-list-placeholder .fake-buttons-group {
+      flex: 0 0 15%;
+      display: flex;
+      justify-content: space-evenly; }
+    .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item {
+      background-color: var(--tainacan-item-background-color, white);
+      flex: 1 0 180px;
+      margin: 12px;
+      height: 78px; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item.fake-item-hovered, .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item:hover {
+        background-color: var(--tainacan-item-hover-background-color, rgba(200, 200, 200, 0.2)); }
+        .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item.fake-item-hovered .fake-item-header, .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item:hover .fake-item-header {
+          background-color: var(--tainacan-item-heading-hover-background-color, rgba(200, 200, 200, 0.3)); }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item .fake-item-header {
+        height: 20px;
+        width: 100%;
+        position: relative;
+        top: 0;
+        display: flex;
+        align-items: center;
+        padding: 6px; }
+        .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item .fake-item-header .fake-text {
+          background-color: var(--tainacan-heading-color, rgba(200, 200, 200, 0.35)); }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item .fake-item-thumb {
+        background-size: cover;
+        background-color: var(--tainacan-input-border-color, rgba(200, 200, 200, 0.1));
+        height: 58px;
+        width: 58px;
+        float: left; }
+      .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item .fake-item-description {
+        background-color: var(--tainacan-info-color, rgba(200, 200, 200, 0.15));
+        height: 0.18em;
+        width: 60%;
+        border-radius: 2px;
+        margin: 8px 6px 2px 6px;
+        position: relative;
+        left: 62px; }
+        .wp-block-tainacan-faceted-search .items-list-placeholder .fake-item .fake-item-description:nth-child(odd) {
+          width: 50%; }
+  .wp-block-tainacan-faceted-search .theme-items-list {
+    max-width: 100% !important; }
+
+/*# sourceMappingURL=tainacan-gutenberg-block-faceted-search.css.map */

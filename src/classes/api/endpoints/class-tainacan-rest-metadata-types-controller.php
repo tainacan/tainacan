@@ -71,7 +71,7 @@ class REST_Metadata_Types_Controller extends REST_Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		$name = "\Tainacan\Metadata_Types\\$item";
-		$metadata_type = new $name();
+		$metadata_type = new $item();
 
 		$metadatum_arr = $metadata_type->_toArray();
 
@@ -86,7 +86,7 @@ class REST_Metadata_Types_Controller extends REST_Controller {
 	public function get_items( $request ) {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 
-		$metadata_types = $Tainacan_Metadata->fetch_metadata_types('NAME');
+		$metadata_types = $Tainacan_Metadata->fetch_metadata_types( );
 
 		$prepared = [];
 		foreach ($metadata_types as $metadata_type){

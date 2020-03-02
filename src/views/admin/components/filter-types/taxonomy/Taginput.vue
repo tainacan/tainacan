@@ -16,7 +16,9 @@
                 :class="{'has-selected': selected != undefined && selected != []}"
                 @typing="search"
                 @input="onSelect"
-                :placeholder="$i18n.get('info_type_to_add_terms')">
+                :placeholder="$i18n.get('info_type_to_add_terms')"
+                check-infinite-scroll
+                @infinite-scroll="searchMore">
             <template slot-scope="props">
                 <div class="media">
                     <div class="media-content">
@@ -39,20 +41,27 @@
 <script>
     import qs from 'qs';
     import { tainacan as axios } from '../../../js/axios';
-    import { filterTypeMixin, dynamicFilterTypeMixin } from '../../../js/filter-types-mixin';
+    import { filterTypeMixin } from '../../../js/filter-types-mixin';
     
     export default {
-        mixins: [ filterTypeMixin, dynamicFilterTypeMixin ],
+        mixins: [ filterTypeMixin ],
         data(){
             return {
+                isLoadingOptions: false,
                 results:'',
                 selected:[],
                 options: [],
                 taxonomy: '',
-                taxonomyId: ''
+                taxonomyId: '',
+                searchQuery: '',
+                totalFacets: 0,
+                offset: 0
             }
         },
         watch: {
+            isLoadingItems() {
+                this.isLoadingOptions = this.isLoadingItems;
+            },
             'query.taxquery'() {
                 this.updateSelectedValues();
             },
@@ -75,12 +84,32 @@
         },
         methods: {
             search: _.debounce( function(query) {
+
+                // String update
+                if (query != this.searchQuery) {
+                    this.searchQuery = query;
+                    this.options = [];
+                    this.offset = 0;
+                } 
+                
+                // String cleared
+                if (!query.length) {
+                    this.searchQuery = query;
+                    this.options = [];
+                    this.offset = 0;
+                }
+
+                // No need to load more
+                if (this.offset > 0 && this.options.length >= this.totalFacets)
+                    return
+
                 this.isLoadingOptions = true;
-                this.options = [];
                 
                 let query_items = { 
                     'current_query': this.query, 
-                    'search': query
+                    'search': this.searchQuery,
+                    'offset': this.offset,
+                    'number': 12
                 };
 
                 let endpoint = this.isRepositoryLevel ? '/facets/' + this.metadatumId : '/collection/'+ this.collectionId +'/facets/' + this.metadatumId;
@@ -88,7 +117,8 @@
                 endpoint += '?order=asc&' + qs.stringify(query_items);
                 
                 let valuesToIgnore = [];
-                for(let val of this.selected)
+
+                for (let val of this.selected)
                     valuesToIgnore.push( val.value );
                 
                 return axios.get(endpoint).then( res => {
@@ -97,7 +127,7 @@
                         if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {
                             let indexToIgnore = valuesToIgnore.findIndex(value => value == term.value);
                             if (indexToIgnore < 0) {
-                                if( term.label.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
+                                if (term.label.toLowerCase().indexOf( query.toLowerCase() ) >= 0){
                                     this.options.push({
                                         label: term.label, 
                                         value: term.value,
@@ -106,15 +136,19 @@
                                 }
                             }
                         } else {
-                            if( term.label.toLowerCase().indexOf( query.toLowerCase() ) >= 0 ){
+                            if (term.label.toLowerCase().indexOf( query.toLowerCase() ) >= 0){
                                 this.options.push({
                                     label: term.label,
                                     value: term.value,    
                                     total_items: term.total_items
                                 });
                             }
-                        }                                       
+                        } 
+                        
                     }
+                    
+                    this.totalFacets = res.headers['x-wp-total'];
+                    this.offset += 12;
                     this.isLoadingOptions = false;
                 })
                 .catch(error => {
@@ -122,6 +156,9 @@
                     this.$console.log(error);
                 });
             }, 500),
+            searchMore: _.debounce(function () {
+                this.search(this.searchQuery)
+            }, 250),
             updateSelectedValues(){
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;

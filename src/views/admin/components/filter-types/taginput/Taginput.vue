@@ -15,7 +15,9 @@
                 @typing="search"
                 :aria-close-label="$i18n.get('remove_value')"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="(metadatumType == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_add_items') : $i18n.get('info_type_to_add_metadata')">
+                :placeholder="(metadatumType == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_add_items') : $i18n.get('info_type_to_add_metadata')"
+                check-infinite-scroll
+                @infinite-scroll="searchMore">
             <template slot-scope="props">
                 <div class="media">
                     <div
@@ -55,7 +57,11 @@
                 results:'',
                 selected:[],
                 options: [],
-                relatedCollectionId: ''
+                relatedCollectionId: '',
+                searchQuery: '',
+                searchOffset: 0,
+                searchNumber: 12,
+                totalFacets: 0
             }
         },
         watch: {
@@ -80,11 +86,29 @@
         },
         methods: {
             search: _.debounce( function(query) {
+
+                // String update
+                if (query != this.searchQuery) {
+                    this.searchQuery = query;
+                    this.options = [];
+                    this.searchOffset = 0;
+                } 
+                
+                // String cleared
+                if (!query.length) {
+                    this.searchQuery = query;
+                    this.options = [];
+                    this.searchOffset = 0;
+                }
+
+                // No need to load more
+                if (this.searchOffset > 0 && this.options.length >= this.totalFacets)
+                    return;
+
                 let promise = null;
-                this.options = [];
                 let valuesToIgnore = [];
 
-                for(let val of this.selected)
+                for (let val of this.selected)
                     valuesToIgnore.push( val.value );
 
                 // Cancels previous Request
@@ -92,11 +116,15 @@
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
                 if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
-                    promise = this.getValuesRelationship( query, this.isRepositoryLevel, valuesToIgnore );
+                    promise = this.getValuesRelationship( this.searchQuery, this.isRepositoryLevel, valuesToIgnore, this.searchOffset, this.searchNumber );
                 else
-                    promise = this.getValuesPlainText( this.metadatumId, query, this.isRepositoryLevel, valuesToIgnore );
+                    promise = this.getValuesPlainText( this.metadatumId, this.searchQuery, this.isRepositoryLevel, valuesToIgnore, this.searchOffset, this.searchNumber );
 
                 promise.request
+                    .then( res => {
+                        this.totalFacets = res.headers['x-wp-total'];
+                        this.searchOffset += this.searchNumber;
+                    })
                     .catch( error => {
                         if (isCancel(error))
                             this.$console.log('Request canceled: ' + error.message);
@@ -108,6 +136,10 @@
                 this.getOptionsValuesCancel = promise.source;
                 
             }, 500),
+            searchMore: _.debounce(function () {
+                this.shouldAddOptions = true;
+                this.search(this.searchQuery);
+            }, 250),
             updateSelectedValues() {
 
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )

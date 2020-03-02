@@ -152,9 +152,11 @@
                     v-model="parentTermName"
                     @select="onSelectParentTerm($event)"
                     :loading="isFetchingParentTerms"
-                    @input="fecthParentTerms($event)"
+                    @input="fetchParentTerms"
                     @focus="clearErrors('parent');"
-                    :disabled="!hasParent">
+                    :disabled="!hasParent"
+                    check-infinite-scroll
+                    @infinite-scroll="fetchMoreParentTerms">
                 <template slot-scope="props">
                     <div class="media">
                         <div 
@@ -239,6 +241,8 @@
                 initialParentId: undefined,
                 entityName: 'term',
                 isLoading: false,
+                parentTermSearchQuery: '',
+                parentTermSearchOffset: 0
             }
         },
         mounted() {
@@ -385,22 +389,50 @@
                     this.formErrors[attributes] = undefined;
                 }
             },
-            fecthParentTerms(search) {
+            fetchParentTerms: _.debounce(function(search) {
+
+                // String update
+                if (search != this.parentTermSearchQuery) {
+                    this.parentTermSearchQuery = search;
+                    this.parentTerms = [];
+                    this.parentTermSearchOffset = 0;
+                } 
+                
+                // String cleared
+                if (!search.length) {
+                    this.parentTermSearchQuery = search;
+                    this.parentTerms = [];
+                    this.parentTermSearchOffset = 0;
+                }
+
+                // No need to load more
+                if (this.parentTermSearchOffset > 0 && this.parentTerms.length >= this.totalTerms)
+                    return
+
+
                 this.isFetchingParentTerms = true;
                 
                 this.fetchPossibleParentTerms({
                         taxonomyId: this.taxonomyId, 
                         termId: this.editForm.id, 
-                        search: search })
-                    .then((parentTerms) => {
-                        this.parentTerms = parentTerms;
+                        search: this.parentTermSearchQuery,
+                        offset: this.parentTermSearchOffset })
+                    .then((res) => {
+                        for (let term of res.parentTerms)
+                            this.parentTerms.push(term);
+
+                        this.parentTermSearchOffset += 12;
+                        this.totalTerms = res.totalTerms;
                         this.isFetchingParentTerms = false;
                     })
                     .catch((error) => {
                         this.$console.error(error);
                         this.isFetchingParentTerms = false;
                     });
-            },
+            }, 500),
+            fetchMoreParentTerms: _.debounce(function () {
+                this.fetchParentTerms(this.parentTermSearchQuery)
+            }, 250),
             onToggleSwitch() {
 
                 if (this.editForm.parent == 0) {

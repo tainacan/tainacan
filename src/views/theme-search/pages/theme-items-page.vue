@@ -29,7 +29,7 @@
                     aria-controls="filters-modal"
                     :aria-expanded="isFiltersModalActive"
                     :class="hideHideFiltersButton ? 'is-hidden-tablet' : ''"
-                    v-if="!hideFilters && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+                    v-if="!showFiltersButtonInsideSearchControl && !hideFilters && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                     id="filter-menu-compress-button"
                     :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                     @click="isFiltersModalActive = !isFiltersModalActive"
@@ -77,6 +77,21 @@
                         {{ $i18n.get('advanced_search') }}
                     </a>
                 </div>
+            </div>
+
+            <!-- Another option of the Button for hiding filters -->
+            <div 
+                    v-if="showFiltersButtonInsideSearchControl && !hideHideFiltersButton && !hideFilters && !openAdvancedSearch"
+                    class="search-control-item">
+                <button 
+                        class="button is-white"
+                        :aria-label="$i18n.get('filters')"
+                        @click="isFiltersModalActive = !isFiltersModalActive">
+                    <span class="gray-icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
+                    </span>
+                    <span class="is-hidden-touch">{{ $i18n.get('filters') }}</span>
+                </button>
             </div>
 
             <!-- Displayed Metadata Dropdown -->
@@ -536,6 +551,7 @@
             hideItemsPerPageButton: false,
             hideGoToPageButton: false,
             // Other Tweaks
+            showFiltersButtonInsideSearchControl: false,
             startWithFiltersHidden: false,
             filtersAsModal: false,
             showInlineViewModeOptions: false,
@@ -697,13 +713,15 @@
             if (this.$userPrefs.get(prefsViewMode) == undefined)
                 this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
             else {
-                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
-                if (existingViewModeIndex >= 0)
-                    this.$eventBusSearch.setInitialViewMode(this.$userPrefs.get(prefsViewMode));
+                const userPrefViewMode = this.$userPrefs.get(prefsViewMode);
+
+                let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == userPrefViewMode);
+                let enabledViewModeIndex = this.enabledViewModes.findIndex((viewMode) => viewMode == userPrefViewMode);
+                if (existingViewModeIndex >= 0 && enabledViewModeIndex >= 0)
+                    this.$eventBusSearch.setInitialViewMode(userPrefViewMode);
                 else   
                     this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
             }
-            
             // For view modes such as slides, we force pagination to request only 12 per page
             let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
             if (existingViewModeIndex >= 0) {
@@ -715,7 +733,7 @@
             this.showItemsHiddingDueSortingDialog();
 
             // Watches window resize to adjust filter's top position and compression on mobile
-            if (!this.hideFilters) {                 
+            if (!this.hideFilters) {            
                 this.hideFiltersOnMobile();
                 window.addEventListener('resize', this.hideFiltersOnMobile);
             }
@@ -1385,7 +1403,7 @@
         animation-duration: 0.5s;
 
         p {
-            margin: 0 auto;
+            margin: 0 auto !important;
             font-size: 0.885em;
         }
         

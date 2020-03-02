@@ -29,7 +29,9 @@ module.exports = {
         
         block_facets_list: './src/views/gutenberg-blocks/tainacan-facets/facets-list/index.js',
         block_facets_list_theme: './src/views/gutenberg-blocks/tainacan-facets/facets-list/facets-list-theme.js',
-                
+        
+        block_faceted_search: './src/views/gutenberg-blocks/tainacan-facets/faceted-search/index.js',
+        
         block_carousel_terms_list: './src/views/gutenberg-blocks/tainacan-terms/carousel-terms-list/index.js',
         block_carousel_terms_list_theme: './src/views/gutenberg-blocks/tainacan-terms/carousel-terms-list/carousel-terms-list-theme.js'
 

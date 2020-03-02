@@ -55,8 +55,7 @@ class REST_Filter_Types_Controller extends REST_Controller {
 	 * @return mixed|\WP_Error|\WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		$name = "\Tainacan\Filter_Types\\$item";
-		$filter_type = new $name();
+		$filter_type = new $item();
 
 		$filter_arr = $filter_type->_toArray();
 
@@ -71,7 +70,7 @@ class REST_Filter_Types_Controller extends REST_Controller {
 	public function get_items( $request ) {
 		$Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 
-		$filter_types = $Tainacan_Filters->fetch_filter_types('NAME');
+		$filter_types = $Tainacan_Filters->fetch_filter_types( );
 
 		$prepared = [];
 		foreach ($filter_types as $filter_type){

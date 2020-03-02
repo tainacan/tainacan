@@ -14,6 +14,7 @@
             :hide-exposers-button="$root.hideExposersButton ? $root.hideExposersButton : false"
             :hide-items-per-page-button="$root.hideItemsPerPageButton ? $root.hideItemsPerPageButton : false"
             :hide-go-to-page-button="$root.hideGoToPageButton ? $root.hideGoToPageButton : false"
+            :show-filters-button-inside-search-control="$root.showFiltersButtonInsideSearchControl ? $root.showFiltersButtonInsideSearchControl : false"
             :start-with-filters-hidden="$root.startWithFiltersHidden ? $root.startWithFiltersHidden : false"
             :filters-as-modal="$root.filtersAsModal ? $root.filtersAsModal : false"
             :show-inline-view-mode-options="$root.showInlineViewModeOptions ? $root.showInlineViewModeOptions : false"
@@ -25,7 +26,7 @@
 export default {
     name: "ThemeSearch",
     created() {
-        this.$userPrefs.init(); 
+        this.$userPrefs.init();
     }
 }
 </script>
@@ -75,6 +76,21 @@ export default {
         font-size: var(--tainacan-base-font-size);
         position: relative;
         -webkit-overflow-scrolling: touch;
+
+        * {
+            // For Firefox
+            scrollbar-color: var(--tainacan-gray3) transparent;
+            scrollbar-width: thin;
+
+            // For Chromium and related
+            &::-webkit-scrollbar {
+                width: 0.55em;
+                opacity: 0.8;
+            }
+            &::-webkit-scrollbar-thumb {
+                background-color: var(--tainacan-gray3);
+            }
+        }
 
         h1,
         h2,

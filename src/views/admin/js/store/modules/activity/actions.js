@@ -166,11 +166,16 @@ export const notApprove = ({commit}, activityId) => {
 };
 
 // Users for filtering
-export const fetchUsers = ({ commit }, { search }) => {
+export const fetchUsers = ({ commit }, { search, page }) => {
+    let endpoint = '/users?search=' + search;
+
+    if (page)
+        endpoint += '&page=' + page;
+
     return new Promise((resolve, reject) => {
-        axios.wp.get('/users?search=' + search)
+        axios.wp.get(endpoint)
         .then(res => {
-            resolve(res.data);
+            resolve({ users: res.data, totalUsers: res.headers['x-wp-total'] } );
         })
         .catch(error => {
             reject(error);

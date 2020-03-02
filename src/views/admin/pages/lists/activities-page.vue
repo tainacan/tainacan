@@ -92,7 +92,9 @@
                                 @select="filterActivitiesByUser"
                                 :loading="isFetchingUsers"
                                 field="name"
-                                icon="account">
+                                icon="account"
+                                check-infinite-scroll
+                                @infinite-scroll="fetchMoreUsersForFiltering">
                             <template slot-scope="props">
                                 <div class="media">
                                     <div
@@ -285,7 +287,10 @@
                 searchDates: [],
                 users: [],
                 isFetchingUsers: false,
-                userIdForFiltering: null
+                userIdForFiltering: null,
+                usersForFilteringSearchQuery: '',
+                usersForFilteringSearchPage: 1,
+                totalUsers: 0
             }
         },
         computed: {
@@ -504,18 +509,48 @@
             },
             fetchUsersForFiltering: _.debounce(function (search) {
 
+                // String update
+                if (search != this.usersForFilteringSearchQuery) {
+                    this.usersForFilteringSearchQuery = search;
+                    this.users = [];
+                    this.usersForFilteringSearchPage = 1;
+                } 
+                
+                // String cleared
+                if (!search.length) {
+                    this.usersForFilteringSearchQuery = search;
+                    this.users = [];
+                    this.usersForFilteringSearchPage = 1;
+                }
+
+                // No need to load more
+                if (this.usersForFilteringSearchPage > 1 && this.users.length > this.totalPages*12)
+                    return;
+
                 this.isFetchingUsers = true;
 
-                this.fetchUsers({ search: search })
-                    .then((users) => {
-                        this.users = users;
+                this.fetchUsers({ search: this.usersForFilteringSearchQuery, page: this.usersForFilteringSearchPage })
+                    .then((res) => {
+                        if (res.users) {
+                            for (let user of res.users)
+                                this.users.push(user); 
+                        }
+                        
+                        if (res.totalUsers)
+                            this.totalUsers = res.totalUsers;
+
+                        this.usersForFilteringSearchPage++;
+                        
                         this.isFetchingUsers = false;
                     })
                     .catch((error) => {
                         this.$console.error(error);
                         this.isFetchingPages = false;
                     });
-            }, 500)
+            }, 500),
+            fetchMoreUsersForFiltering: _.debounce(function () {
+                this.fetchUsersForFiltering(this.usersForFilteringSearchQuery)
+            }, 250),
         }
     }
 </script>

@@ -131,32 +131,9 @@ $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
 $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
-$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+$Metadata_Type_Helper = \Tainacan\Metadata_Types\Metadata_Type_Helper::get_instance();
 
-//register metadatum types
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Text');
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Textarea');
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Date');
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Numeric');
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Selectbox');
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Relationship');
-$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Taxonomy');
-//$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Compound');
-
-$Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
-
-//register filter type
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Date');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Selectbox');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Autocomplete');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Taginput');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Checkbox');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyTaginput');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\TaxonomyCheckbox');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Date_Interval');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric_Interval');
-$Tainacan_Filters->register_filter_type('Tainacan\Filter_Types\Numeric_List_Interval');
+$Filter_Type_Helper = \Tainacan\Filter_Types\Filter_Type_Helper::get_instance();
 
 $Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
 
@@ -178,6 +155,12 @@ $Tainacan_Admin = \Tainacan\Admin::get_instance();
 require_once(__DIR__ . '/../views/class-tainacan-admin-hooks.php');
 require_once(__DIR__ . '/../views/admin-hooks-functions.php');
 $Tainacan_Admin_Hooks = \Tainacan\Admin_Hooks::get_instance();
+
+require_once(__DIR__ . '/../views/class-tainacan-component-hooks.php');
+$Tainacan_Component_Hooks = \Tainacan\Component_Hooks::get_instance();
+
+require_once(__DIR__ . '/../views/class-tainacan-plugin-hooks.php');
+$Tainacan_Plugin_Hooks = \Tainacan\Plugin_Hooks::get_instance();
 
 require_once(__DIR__ . '/theme-helper/class-tainacan-theme-helper.php');
 require_once(__DIR__ . '/theme-helper/template-tags.php');

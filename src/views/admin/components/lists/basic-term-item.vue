@@ -148,7 +148,6 @@ export default {
 
     // Term Item
     .term-item {
-        font-size: 0.875em;
         padding: 0 0 0 1.75em;
         min-height: 40px;
         display: flex; 

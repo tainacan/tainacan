@@ -13,12 +13,14 @@
                 :maxtags="maxtags != undefined ? maxtags : (metadatum.metadatum.multiple == 'yes' || allowNew === true ? 100 : 1)"
                 autocomplete
                 attached
-                :placeholder="$i18n.get('instruction_type_existing_term')"
+                :placeholder="$i18n.get('instruction_type_existing_item')"
                 :loading="isLoading"
                 :aria-close-label="$i18n.get('remove_value')"
                 :class="{'has-selected': selected != undefined && selected != []}"
                 field="label"
-                @typing="(query) => { options = []; search(query); }">
+                @typing="search"
+                check-infinite-scroll
+                @infinite-scroll="searchMore">
             <template slot-scope="props">
                 <div class="media">
                     <div 
@@ -62,7 +64,10 @@
                 collectionId: '',
                 inputValue: null,
                 queryObject: {},
-                itemsFound: []
+                itemsFound: [],
+                searchQuery: '',
+                totalItems: 0,
+                page: 1
             }
         },
         created() {
@@ -100,16 +105,34 @@
                 this.$emit('blur');
             },
             search: _.debounce(function(query) {
-                if ( this.selected.length > 0  && this.metadatum.metadatum.multiple === 'no')
-                    return '';
 
-                if (query !== '') {
+                // String update
+                if (query != this.searchQuery) {
+                    this.searchQuery = query;
+                    this.options = [];
+                    this.page = 1;
+                } 
+                
+                // String cleared
+                if (!query.length) {
+                    this.searchQuery = query;
+                    this.options = [];
+                    this.page = 1;
+                }
+
+                // No need to load more
+                if (this.page > 1 && this.options.length > this.totalItems*12)
+                    return;
+
+                // There is already one value set and is not multiple
+                if (this.selected.length > 0 && this.metadatum.metadatum.multiple === 'no')
+                    return;
+
+                if (this.searchQuery !== '') {
                     this.isLoading = true;
 
-                    axios.get('/collection/' + this.collectionId + '/items?' + this.getQueryString(query))
+                    axios.get('/collection/' + this.collectionId + '/items?' + this.getQueryString(this.searchQuery))
                         .then( res => {
-                            this.isLoading = false;
-                            this.options = [];
 
                             if (res.data.items) {
                                 for (let item of res.data.items)
@@ -119,13 +142,23 @@
                                         img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : ''
                                     })
                             }
+                            if (res.headers['x-wp-total'])
+                                this.totalItems = res.headers['x-wp-total'];
+                            
+                            this.page++;
+
+                            this.isLoading = false;
                         })
                         .catch(error => {
+                            this.isLoading = false;
                             this.$console.log(error);
                         });
                 }
 
             }, 500),
+            searchMore: _.debounce(function () {
+                this.search(this.searchQuery)
+            }, 250),
             getItemLabel(item) {
                 let label = '';
                 for (let m in item.metadata) {
@@ -158,6 +191,8 @@
                 }
                 query['fetch_only'] = 'title,thumbnail';
                 query['fetch_only_meta'] = this.metadatum.metadatum.metadata_type_options.search;
+                query['perpage'] = 12;
+                query['paged'] = this.page;
 
                 return qs.stringify(query);
             }

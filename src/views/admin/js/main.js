@@ -55,6 +55,12 @@ import eventBusSearch from './event-bus-search';
 import eventBusTermsList from './event-bus-terms-list.js';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin, StatusHelperPlugin, CommentsStatusHelperPlugin } from './utilities';
 
+/* Registers Extra Vue Pluginss passed to the TainacanExtraVuePlugins  */
+if (typeof TainacanExtraVuePlugins != "undefined") {
+    for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(TainacanExtraVuePlugin))
+        Vue.use(extraVuePluginObject);
+}
+
 // Configure and Register Plugins
 Vue.use(Buefy, {
     defaultTooltipAnimated: true
@@ -69,6 +75,12 @@ Vue.use(StatusHelperPlugin);
 Vue.use(ConsolePlugin, {visual: false});
 Vue.use(VueTheMask);
 Vue.use(CommentsStatusHelperPlugin);
+
+/* Registers Extra Vue Components passed to the TainacanExtraVueComponents  */
+if (typeof TainacanExtraVueComponents != "undefined") {
+    for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(TainacanExtraVueComponents))
+        Vue.component(extraVueComponentName, extraVueComponentObject);
+}
 
 /* Metadata */
 Vue.component('tainacan-text', Text);

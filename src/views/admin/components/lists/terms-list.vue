@@ -26,7 +26,7 @@
                     <span class="icon is-small gray-icon">
                         <i 
                                 :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                class="tainacan-icon"/>
+                                class="tainacan-icon tainacan-icon-1-25em"/>
                     </span>
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -40,7 +40,7 @@
                         aria-role="listitem"
                         style="padding-bottom: 0.45em">
                     <span class="icon is-small gray-icon">
-                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-sortdescending"/>
                     </span>
                     {{ $i18n.get('label_descending') }}
                 </b-dropdown-item>
@@ -52,7 +52,7 @@
                         aria-role="listitem"
                         style="padding-bottom: 0.45em">
                     <span class="icon is-small gray-icon">
-                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-sortascending"/>
                     </span>
                     {{ $i18n.get('label_ascending') }}
                 </b-dropdown-item>
@@ -79,6 +79,7 @@
                 :active.sync="isLoadingTerms" 
                 :can-cancel="false"/>
         <div 
+                style="font-size: 0.875em;"
                 :class="{ 'is-12': !isEditingTerm, 'is-8-fullhd is-7-fullscreen is-6-desktop is-5-tablet': isEditingTerm }"
                 class="column">
             <br>

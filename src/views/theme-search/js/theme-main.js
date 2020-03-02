@@ -35,6 +35,12 @@ import routerTheme from './theme-router.js';
 import eventBusSearch from '../../admin/js/event-bus-search';
 import { I18NPlugin, UserPrefsPlugin, ConsolePlugin } from '../../admin/js/utilities';
 
+/* Registers Extra Vue Pluginss passed to the TainacanExtraVuePlugins  */
+if (typeof TainacanExtraVuePlugins != "undefined") {
+    for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(TainacanExtraVuePlugin))
+        Vue.use(extraVuePluginObject);
+}
+
 // Configure and Register Plugins
 Vue.use(Buefy, {
     defaultTooltipAnimated: true
@@ -44,6 +50,12 @@ Vue.use(VueMasonry);
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(ConsolePlugin, {visual: false});
+
+/* Registers Extra Vue Components passed to the TainacanExtraVueComponents  */
+if (typeof TainacanExtraVueComponents != "undefined") {
+    for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(TainacanExtraVueComponents))
+        Vue.component(extraVueComponentName, extraVueComponentObject);
+}
 
 Vue.component('tainacan-filter-item', TaincanFiltersList);
 
@@ -73,77 +85,80 @@ Vue.component('view-mode-slideshow', ViewModeSlideshow);
 
 Vue.use(eventBusSearch, { store: store, router: routerTheme});
 
-export const ThemeItemsListing =  new Vue({
-    el: '#tainacan-items-page',
-    store,
-    router: routerTheme,
-    data: {
-        termId: '',
-        taxonomy: '',
-        collectionId: '',
-        defaultViewMode: '',
-        enabledViewModes: {},
-        hideFilters: false,
-        hideHideFiltersButton: false,
-        hideSearch: false,
-        hideAdvancedSearch: false,
-        hideSortByButton: false,
-        hideExposersButton: false,
-        hideItemsPerPageButton: false,
-        hideGoToPageButton: false,
-        startWithFiltersHidden: false,
-        filtersAsModal: false,
-        showInlineViewModeOptions: false,
-        showFullscreenWithViewModes: false
-    },
-    beforeMount () {
+document.addEventListener("DOMContentLoaded", () => {
+    new Vue({
+        el: '#tainacan-items-page',
+        store,
+        router: routerTheme,
+        data: {
+            termId: '',
+            taxonomy: '',
+            collectionId: '',
+            defaultViewMode: '',
+            enabledViewModes: {},
+            hideFilters: false,
+            hideHideFiltersButton: false,
+            hideSearch: false,
+            hideAdvancedSearch: false,
+            hideSortByButton: false,
+            hideItemsPerPageButton: false,
+            hideGoToPageButton: false,
+            showFiltersButtonInsideSearchControl: false,
+            startWithFiltersHidden: false,
+            filtersAsModal: false,
+            showInlineViewModeOptions: false,
+            showFullscreenWithViewModes: false
+        },
+        beforeMount () {
+            // Collection or Term source settings
+            if (this.$el.attributes['collection-id'] != undefined)
+                this.collectionId = this.$el.attributes['collection-id'].value;
+            if (this.$el.attributes['term-id'] != undefined)
+                this.termId = this.$el.attributes['term-id'].value;
+            if (this.$el.attributes['taxonomy'] != undefined)
+                this.taxonomy = this.$el.attributes['taxonomy'].value;
 
-        // Collection or Term source settings
-        if (this.$el.attributes['collection-id'] != undefined)
-            this.collectionId = this.$el.attributes['collection-id'].value;
-        if (this.$el.attributes['term-id'] != undefined)
-            this.termId = this.$el.attributes['term-id'].value;
-        if (this.$el.attributes['taxonomy'] != undefined)
-            this.taxonomy = this.$el.attributes['taxonomy'].value;
+            // View Mode settings
+            if (this.$el.attributes['default-view-mode'] != undefined)
+                this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
+            else
+                this.defaultViewMode = 'cards';
 
-        // View Mode settings
-        if (this.$el.attributes['default-view-mode'] != undefined)
-            this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
-        else
-            this.defaultViewMode = 'cards';
+            if (this.$el.attributes['enabled-view-modes'] != undefined)
+                this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
+            
+            // Options related to hidding elements
+            if (this.$el.attributes['hide-filters'] != undefined)
+                this.hideFilters = this.$el.attributes['hide-filters'].value == 'true' ? true : false;
+            if (this.$el.attributes['hide-hide-filters-button'] != undefined)
+                this.hideHideFiltersButton = this.$el.attributes['hide-hide-filters-button'].value == 'true' ? true : false;
+            if (this.$el.attributes['hide-search'] != undefined)
+                this.hideSearch = this.$el.attributes['hide-search'].value == 'true' ? true : false;
+            if (this.$el.attributes['hide-advanced-search'] != undefined)
+                this.hideAdvancedSearch = this.$el.attributes['hide-advanced-search'].value == 'true' ? true : false;
+            if (this.$el.attributes['hide-sort-by-button'] != undefined)
+                this.hideSortByButton = this.$el.attributes['hide-sort-by-button'].value == 'true' ? true : false;
+            if (this.$el.attributes['hide-exposers-button'] != undefined)
+                this.hideExposersButton = this.$el.attributes['hide-exposers-button'].value == 'true' ? true : false
+            if (this.$el.attributes['hide-items-per-page-button'] != undefined)
+                this.hideItemsPerPageButton = this.$el.attributes['hide-items-per-page-button'].value == 'true' ? true : false;
+            if (this.$el.attributes['hide-go-to-page-button'] != undefined)
+                this.hideGoToPageButton = this.$el.attributes['hide-go-to-page-button'].value == 'true' ? true : false;
 
-        if (this.$el.attributes['enabled-view-modes'] != undefined)
-            this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
-
-        // Options related to hidding elements
-        if (this.$el.attributes['hide-filters'] != undefined)
-            this.hideFilters = this.$el.attributes['hide-filters'].value;
-        if (this.$el.attributes['hide-hide-filters-button'] != undefined)
-            this.hideHideFiltersButton = this.$el.attributes['hide-hide-filters-button'].value;
-        if (this.$el.attributes['hide-search'] != undefined)
-            this.hideSearch = this.$el.attributes['hide-search'].value;
-        if (this.$el.attributes['hide-advanced-search'] != undefined)
-            this.hideAdvancedSearch = this.$el.attributes['hide-advanced-search'].value;
-        if (this.$el.attributes['hide-sort-by-button'] != undefined)
-            this.hideSortByButton = this.$el.attributes['hide-sort-by-button'].value;
-        if (this.$el.attributes['hide-exposers-button'] != undefined)
-            this.hideExposersButton = this.$el.attributes['hide-exposers-button'].value;
-        if (this.$el.attributes['hide-items-per-page-button'] != undefined)
-            this.hideItemsPerPageButton = this.$el.attributes['hide-items-per-page-button'].value;
-        if (this.$el.attributes['hide-go-to-page-button'] != undefined)
-            this.hideGoToPageButton = this.$el.attributes['hide-go-to-page-button'].value;
-
-        // Other Tweaks
-        if (this.$el.attributes['start-with-filters-hidden'] != undefined)
-            this.startWithFiltersHidden = this.$el.attributes['start-with-filters-hidden'].value;
-        if (this.$el.attributes['filters-as-modal'] != undefined)
-            this.filtersAsModal = this.$el.attributes['filters-as-modal'].value;
-        if (this.$el.attributes['show-inline-view-mode-options'] != undefined)
-            this.showInlineViewModeOptions = this.$el.attributes['show-inline-view-mode-options'].value;
-        if (this.$el.attributes['show-fullscreen-with-view-modes'] != undefined)
-            this.showFullscreenWithViewModes = this.$el.attributes['show-fullscreen-with-view-modes'].value;
-    },
-    render: h => h(ThemeSearch)
+            // Other Tweaks
+            if (this.$el.attributes['show-filters-button-inside-search-control'] != undefined)
+                this.showFiltersButtonInsideSearchControl = this.$el.attributes['show-filters-button-inside-search-control'].value == 'true' ? true : false;
+            if (this.$el.attributes['start-with-filters-hidden'] != undefined)
+                this.startWithFiltersHidden = this.$el.attributes['start-with-filters-hidden'].value == 'true' ? true : false;
+            if (this.$el.attributes['filters-as-modal'] != undefined)
+                this.filtersAsModal = this.$el.attributes['filters-as-modal'].value == 'true' ? true : false;
+            if (this.$el.attributes['show-inline-view-mode-options'] != undefined)
+                this.showInlineViewModeOptions = this.$el.attributes['show-inline-view-mode-options'].value == 'true' ? true : false;
+            if (this.$el.attributes['show-fullscreen-with-view-modes'] != undefined)
+                this.showFullscreenWithViewModes = this.$el.attributes['show-fullscreen-with-view-modes'].value == 'true' ? true : false;
+        },
+        render: h => h(ThemeSearch)
+    });
 });
 
 // Initialize Ponyfill for Custom CSS properties

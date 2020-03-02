@@ -301,16 +301,25 @@ export const clearTerms = ({ commit }) => {
 };
 
 // Used only on Term Edition form, for autocomplete search for parents
-export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, search } ) => {
+export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, search, offset } ) => {
+    
+    let endpoint = '/taxonomy/' + taxonomyId + '/terms?searchterm=' + search + '&hierarchical=1&exclude_tree=' + termId + "&hideempty=0&offset=0&number=20&order=asc";
+    
+    if (offset)
+        endpoint += '&offset=' + offset;
+
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/taxonomy/' + taxonomyId + '/terms?searchterm=' + search + '&hierarchical=1&exclude_tree=' + termId + "&hideempty=0&offset=0&number=20&order=asc")
+        axios.tainacan.get(endpoint)
         .then(res => {
             let parentTerms = res.data;
+            
             const theParentIndex = parentTerms.findIndex((term) => term.id == termId);
             if (theParentIndex >= 0)
                 parentTerms.splice(theParentIndex, 1);
-             
-            resolve( parentTerms );
+            
+            const totalTerms = res.headers['x-wp-total'];
+                
+            resolve( { parentTerms, totalTerms } );
         })
         .catch(error => {
             reject( error );
