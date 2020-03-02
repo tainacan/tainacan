@@ -32,10 +32,10 @@ class Component_Hooks {
 		// the priority should see less than on function
 		// `load_admin_page()` of class `Admin` in file /src/views/class-tainacan-admin.php
 		add_action( 'admin_enqueue_scripts', array( &$this, 'register_component' ), 80 );
-		do_action('tainacan-register-vuejs-component', $this);
 	}
 
 	public function register_component() {
+		do_action('tainacan-register-vuejs-component', $this);
 		foreach($this->registered_component as $handle => $component) {
 			wp_enqueue_script($handle, $component['script_path']);
 		}
