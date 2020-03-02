@@ -57,15 +57,4 @@ class Checkbox extends Filter_Type {
             </div>
         ');
     }
-
-    /**
-     * @param $filter
-     * @return string
-     */
-
-    public function render( $filter ){
-        return '<tainacan-filter-checkbox name="'.$filter->get_name().'"
-                                        collection_id="'.$filter->get_collection_id().'"
-                                        metadatum_id="'.$filter->get_metadatum_id().'"></tainacan-filter-selectbox>';
-    }
 }

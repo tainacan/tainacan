@@ -55,15 +55,4 @@ class Taginput extends Filter_Type {
             </div>
         ');
     }
-
-    /**
-     * @param $filter
-     * @return string
-     */
-
-    public function render( $filter ){
-        return '<tainacan-filter-taginput name="'.$filter->get_name().'"
-                                        collection_id="'.$filter->get_collection_id().'"
-                                        metadatum_id="'.$filter->get_metadatum_id().'"></tainacan-filter-taginput>';
-    }
 }

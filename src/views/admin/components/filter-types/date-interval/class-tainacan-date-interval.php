@@ -40,16 +40,4 @@ class Date_Interval extends Filter_Type {
             </div>
         ');
     }
-
-    /**
-     * @param $filter
-     * @return string
-     * @internal param $metadatum
-     */
-    public function render( $filter ){
-         return '<tainacan-filter-date-interval 
-                                        name="'.$filter->get_name().'"
-                                        collection_id="'.$filter->get_collection_id().'"
-                                        metadatum_id="'.$filter->get_metadatum()->get_id().'"></tainacan-filter-date-interval>';
-    }
 }

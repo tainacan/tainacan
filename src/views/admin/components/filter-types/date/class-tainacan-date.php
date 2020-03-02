@@ -72,18 +72,4 @@ class Date extends Filter_Type {
     //         ]
     //     ];
     // }
-
-    /**
-     * @param $filter
-     * @return string
-     * @internal param $metadatum
-     */
-    public function render( $filter ){
-        return '<tainacan-filter-date 
-                                        name="'.$filter->get_name().'"
-                                        collection_id="'.$filter->get_collection_id().'"
-                                        metadatum_id="'.$filter->get_metadatum_id().'"></tainacan-filter-date>';
-                                        // type="' . $this->get_option('type') . '"
-    }
-
 }

@@ -80,19 +80,6 @@ class Numeric extends Filter_Type {
             ]
         ];
     }
-    /**
-     * @param $filter
-     * @return string
-     * @internal param $metadatum
-     */
-    public function render( $filter ){
-        return '<tainacan-filter-numeric
-                                        step="' . $this->get_option('step') . '" 
-                                        name="'.$filter->get_name().'"
-                                        collection_id="'.$filter->get_collection_id().'"
-                                        metadatum_id="'.$filter->get_metadatum_id().'"></tainacan-filter-numeric>';
-    }
-
 
     /**
      * @param \Tainacan\Entities\Filter $filter

@@ -59,8 +59,6 @@ abstract class Filter_Type {
         add_action('register_filter_types', array(&$this, 'register_filter_type'));
     }
 
-    abstract function render( $metadatum );
-
     /**
      * generate the metadata for this metadatum type
      */
