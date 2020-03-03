@@ -873,6 +873,7 @@ export default {
         removeCoverPage() {
             this.coverPage = {};
             this.coverPageTitle = '';
+            this.form.enable_cover_page = 'no';
             this.form.cover_page_id = '';
         },
         deleteThumbnail() {
