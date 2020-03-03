@@ -15,10 +15,20 @@ class Compound extends Metadata_Type {
 	function __construct() {
 		// call metadatum type constructor
 		parent::__construct();
+		$this->set_name( __('Compound', 'tainacan') );
+		$this->set_description( __('A compount metadata', 'tainacan') );
 		$this->set_primitive_type('compound');
 		$this->set_component('tainacan-compound');
 		$this->set_form_component('tainacan-form-compound');
 		add_action( 'tainacan-insert-tainacan-metadatum', array( &$this, 'save_children' ), 10, 1 );
+
+		$this->set_preview_template('
+				<div>
+						<div class="control is-clearfix">
+								Compound
+						</div>
+				</div>
+		');
 	}
 
 	/**

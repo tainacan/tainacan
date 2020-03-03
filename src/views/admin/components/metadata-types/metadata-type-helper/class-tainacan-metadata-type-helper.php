@@ -39,7 +39,7 @@ class Metadata_Type_Helper {
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Selectbox');
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Relationship');
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Taxonomy');
-		//$Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Compound');
+		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Compound');
 
 		// the priority should see less than on function 
 		// `load_admin_page()` of class `Admin` in file /src/views/class-tainacan-admin.php
