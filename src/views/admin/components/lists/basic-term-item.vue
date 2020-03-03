@@ -200,7 +200,7 @@ export default {
             display: flex;
             justify-content: space-between;
             background-color: var(--tainacan-gray2);
-            padding: 0.5em 0.875em;
+            padding: 0.65em 0.875em;
 
             a {
                 display: flex;

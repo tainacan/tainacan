@@ -195,6 +195,24 @@ $modal-z: 9999999;
     border: 0;
 }
 
+// Bulma icon sizes are rem, we use them as em
+.icon {
+    height: 1.5em;
+    width: 1.5em;
+}
+.icon.is-small {
+    height: 1em;
+    width: 1em;
+}
+.icon.is-medium {
+    height: 2em;
+    width: 2em;
+}
+.icon.is-large {
+    height: 3em;
+    width: 3em;
+}
+
 // Animations for Slide Menu
 @keyframes slide-menu-in {
     from {

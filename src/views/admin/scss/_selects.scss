@@ -31,6 +31,9 @@
         &[disabled=disabled] {
             background: var(--tainacan-gray1) !important;
         }
+        &:hover {
+            color: var(--tainacan-input-color) !important;
+        }
         
     }
     &:not(.is-loading)::after {

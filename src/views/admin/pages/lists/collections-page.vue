@@ -150,7 +150,7 @@
                                 autoHide: true,
                                 placement: 'auto',
                             }">
-                        <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important', lineHeight: '1.75em' }">
+                        <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                             {{ `${$i18n.get('label_all_collections')}` }}
                             <span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${Number(repositoryTotalCollections.private) + Number(repositoryTotalCollections.publish)})` : '' }`}` }}</span>
                         </a>
