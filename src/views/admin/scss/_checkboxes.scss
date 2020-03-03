@@ -1,5 +1,6 @@
 .b-checkbox.checkbox {
-   
+    font-family: var(--tainacan-font-family, inherit);
+
     input[type="checkbox"] {
         box-shadow: none !important;
     }

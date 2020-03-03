@@ -1,6 +1,8 @@
 // Tabs 
 .tabs {
     font-size: 1em;
+    font-family: var(--tainacan-font-family, inherit);
+
     ul {
         border-bottom-color: var(--tainacan-input-border-color);
     }

@@ -22,6 +22,7 @@
 }
 .tooltip {
     font-size: 0.6875em;
+    font-family: var(--tainacan-font-family, inherit);
     z-index: 999999999;
     display: block !important;
 

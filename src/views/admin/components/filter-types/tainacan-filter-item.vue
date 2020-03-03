@@ -104,6 +104,7 @@
                 width: 100%;
                 overflow-x: hidden;
                 text-overflow: ellipsis;
+                line-height: 1.3em;
             }
         }
         .collapse-content {

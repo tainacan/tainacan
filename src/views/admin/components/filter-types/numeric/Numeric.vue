@@ -175,6 +175,7 @@
             .dropdown-trigger button {
                 height: auto !important;
                 font-size: 1em !important;
+                min-height: 100%;
                 
                 i:not(.tainacan-icon-arrowdown) {
                     font-size: 1.25em;
