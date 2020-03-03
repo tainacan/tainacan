@@ -56,6 +56,7 @@
     }
 }
 .tainacan-modal-content {
+    font-family: var(--tainacan-font-family, inherit);
     border-radius: 0px;
     background-color: var(--tainacan-background-color);
     padding: 40px $page-side-padding;

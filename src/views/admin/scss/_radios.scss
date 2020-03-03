@@ -1,4 +1,5 @@
 .b-radio.radio {
+    font-family: var(--tainacan-font-family, inherit);
 
     input[type="radio"] + .check {
         width: 0.755em !important;

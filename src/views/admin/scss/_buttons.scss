@@ -20,7 +20,7 @@ button.link-style:active {
     border-radius: 6px !important;
     font-weight: normal;
     text-transform: inherit;
-    font-family: inherit;
+    font-family: var(--tainacan-font-family, inherit);
     padding: 2px 13px !important;
     margin-top: 0px !important;
     margin-bottom: 0px !important;

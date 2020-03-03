@@ -252,6 +252,7 @@
             .dropdown-trigger button {
                 padding: 0 0.5em !important;
                 height: auto !important;
+                min-height: 100%;
 
                 i:not(.tainacan-icon-arrowdown) {
                     margin-top: -3px;

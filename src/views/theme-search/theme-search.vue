@@ -72,8 +72,9 @@ export default {
     @import "../admin/scss/_custom_variables.scss";
 
     .theme-items-list {
-        background: var(--tainacan-background-color);
-        font-size: var(--tainacan-base-font-size);
+        background: var(--tainacan-background-color, inherit);
+        font-size: var(--tainacan-base-font-size, inherit);
+        font-family: var(--tainacan-font-family, inherit);
         position: relative;
         -webkit-overflow-scrolling: touch;
 

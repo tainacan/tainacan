@@ -64,7 +64,8 @@
     // Background
     --tainacan-background-color: var(--tainacan-white);
 
-    // Font size
+    // Font family and size
+    --tainacan-font-family: #{$family-sans-serif};
     --tainacan-base-font-size: #{$base-font-size};
 
     // Filter Menu Width when not a modal
