@@ -129,22 +129,6 @@ class Compound extends Metadata_Type {
 		}
 		return $options;
 	}
-
-	public function render( $itemMetadata ) {
-		return '<tainacan-text
-							id="tainacan-text-' . $itemMetadata->get_item()->WP_Post->post_name . '"
-							field_id ="'.$itemMetadata->get_metadatum()->get_id().'"
-							item_id="'.$itemMetadata->get_item()->get_id().'"
-							value=\''.json_encode( $itemMetadata->get_value() ).'\'
-							name="'.$itemMetadata->get_metadatum()->get_name().'"></tainacan-text>';
-	}
-
-	/**
-	 * generate the metadata for this metadatum type
-	 */
-	public function form() {
-
-	}
 	
 		
 	/**
