@@ -395,7 +395,7 @@ export default {
                 text-overflow: ellipsis;
                 overflow: hidden;
                 max-width: calc(100% - 40px);
-                font-size: 0.825em;
+                font-size: 0.85em;
                 color: var(--tainacan-info-color);
                 animation-name: expand;
                 animation-duration: 0.3s;
