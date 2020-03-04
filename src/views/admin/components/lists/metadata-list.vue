@@ -969,7 +969,7 @@ export default {
         padding-bottom: 0;
 
         .tainacan-page-title {
-            margin-bottom: 35px;
+            margin-bottom: 32px;
             display: flex;
             flex-wrap: wrap;
             align-items: flex-end;
