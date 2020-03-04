@@ -15,7 +15,6 @@
             v-for="(child, index) in children"
             :key="index"
             :metadatum="child"
-            :parent-meta-id="metadatum.metadatum.id"
             :is-collapsed="childrenMetadataCollapses[index]"
             @changeCollapse="onChangeCollapse($event, index)"/>
 </div>
@@ -30,8 +29,6 @@
         },
         data() {
             return {
-                uniqueId: new Date().getTime(),
-                valueChild: [],
                 children: [],
                 collapseAllChildren: false,
                 childrenMetadataCollapses: [],

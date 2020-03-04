@@ -108,8 +108,7 @@
         name: 'TainacanFormItem',
         props: {
             metadatum: Object,
-            isCollapsed: true,
-            parentMetaId: false
+            isCollapsed: true
         },
         data(){
             return {
@@ -184,7 +183,7 @@
                     itemId: this.metadatum.item.id,
                     metadatumId: this.metadatum.metadatum.id,
                     values: this.inputs ? this.inputs : '',
-                    parentMetaId: this.parentMetaId
+                    parentMetaId: this.metadatum.parent_meta_id
                 });
             },
             createInputs() {
