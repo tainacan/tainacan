@@ -16,19 +16,18 @@ class Compound extends Metadata_Type {
 		// call metadatum type constructor
 		parent::__construct();
 		$this->set_name( __('Compound', 'tainacan') );
-		$this->set_description( __('A compount metadata', 'tainacan') );
+		$this->set_description( __('A compound metadata can have different types with groups of values.', 'tainacan') );
 		$this->set_primitive_type('compound');
 		$this->set_component('tainacan-compound');
 		$this->set_form_component('tainacan-form-compound');
-		add_action( 'tainacan-insert-tainacan-metadatum', array( &$this, 'save_children' ), 10, 1 );
-
 		$this->set_preview_template('
-				<div>
-						<div class="control is-clearfix">
-								Compound
-						</div>
+			<div>
+				<div class="control is-clearfix">
+						Compound
 				</div>
+			</div>
 		');
+		add_action( 'tainacan-insert-tainacan-metadatum', array( &$this, 'save_children' ), 10, 1 );
 	}
 
 	/**
@@ -107,7 +106,7 @@ class Compound extends Metadata_Type {
 	/**
 	 * Overrides and bring back all data for the children
 	 * that were not set yet.
-	 * @return array Field type options
+	 * @return array Metadata type options
 	 */
 	public function get_options() {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();

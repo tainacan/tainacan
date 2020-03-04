@@ -17,11 +17,14 @@ export const sendMetadatum = ( { commit }, { item_id, metadatum_id, values }) =>
    });
 };
 
-export const updateMetadata = ({ commit }, { item_id, metadatum_id, values }) => {
+export const updateMetadata = ({ commit }, { item_id, metadatum_id, values, parent_meta_id }) => {
+    let body = { values: values }
+
+    if (parent_meta_id != undefined && parent_meta_id != null && parent_meta_id != false)
+        body['parent_meta_id'] = parent_meta_id;
+
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch(`/item/${item_id}/metadata/${metadatum_id}`, {
-            values: values,
-        })
+        axios.tainacan.patch(`/item/${item_id}/metadata/${metadatum_id}`, body)
             .then( res => {
                 let metadatum = res.data;
                 commit('setSingleMetadatum', metadatum);

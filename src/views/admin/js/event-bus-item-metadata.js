@@ -4,10 +4,8 @@ import store from './store/store'
 export const eventBusItemMetadata = new Vue({
     store,
     data: {
-        errors : []
-    },
-    created() {
-        this.$on('input', this.updateValue);
+        errors : [],
+        compoundsMap: []
     },
     watch: {
         errors() {
@@ -18,8 +16,14 @@ export const eventBusItemMetadata = new Vue({
             }
         }
     },
+    created() {
+        this.$on('input', this.updateValue);
+    },
+    beforeUpdate() {
+        this.$off('input', this.updateValue);
+    },
     methods : {
-        updateValue({ itemId, metadatumId, values}){
+        updateValue({ itemId, metadatumId, values, parentMetaId }){
             
             this.$emit('isUpdatingValue', true);
             
@@ -33,7 +37,8 @@ export const eventBusItemMetadata = new Vue({
                 this.$store.dispatch('item/updateMetadata', { 
                     item_id: itemId, 
                     metadatum_id: metadatumId, 
-                    values: Array.isArray(values[0]) ? values[0] : values
+                    values: Array.isArray(values[0]) ? values[0] : values,
+                    parent_meta_id: parentMetaId ? parentMetaId : null
                 })
                     .then(() => { 
                         this.$emit('isUpdatingValue', false);
@@ -66,9 +71,5 @@ export const eventBusItemMetadata = new Vue({
         clearAllErrors() {
            this.errors = [];
         }
-    },
-    beforeUpdate() {
-        this.$off('input', this.updateValue);
     }
-
 });

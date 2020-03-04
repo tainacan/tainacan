@@ -108,7 +108,8 @@
         name: 'TainacanFormItem',
         props: {
             metadatum: Object,
-            isCollapsed: true
+            isCollapsed: true,
+            parentMetaId: false
         },
         data(){
             return {
@@ -182,12 +183,13 @@
                 eventBusItemMetadata.$emit('input', {
                     itemId: this.metadatum.item.id,
                     metadatumId: this.metadatum.metadatum.id,
-                    values: this.inputs ? this.inputs : ''
+                    values: this.inputs ? this.inputs : '',
+                    parentMetaId: this.parentMetaId
                 });
             },
             createInputs() {
                 if (this.metadatum.value instanceof Array)
-                    this.inputs = this.metadatum.value.slice(0);
+                    this.inputs = this.metadatum.value.slice(0); // This way we garantee this.inputs is a copy of the contents of this.metadatum.value, instead of a reference to it
                 else
                     this.metadatum.value == null || this.metadatum.value == undefined ? this.inputs = [] : this.inputs.push(this.metadatum.value);
             },
