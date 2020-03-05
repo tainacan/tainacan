@@ -38,8 +38,8 @@
                                 'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
                                 'not-focusable-item': openedMetadatumId == metadatum.id,
                                 'disabled-metadatum': metadatum.enabled == false,
-                                'inherited-metadatum': (metadatum.collection_id != collectionId && metadatum.parent == 0) || isRepositoryLevel,
-                                'child-metadatum': (metadatum.parent > 0)
+                                'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel,
+                                'child-metadatum': metadatum.parent > 0
                             }" 
                             :key="metadatum.id">
                         <div class="handle">
@@ -651,7 +651,8 @@ export default {
                 collectionId: this.collectionId, 
                 isRepositoryLevel: this.isRepositoryLevel, 
                 isContextEdit: true, 
-                includeDisabled: true
+                includeDisabled: true,
+                parent: 'any'
             }).then((resp) => {
                     resp.request
                         .then(() => {

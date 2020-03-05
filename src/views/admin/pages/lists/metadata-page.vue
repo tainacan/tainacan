@@ -71,9 +71,7 @@ export default {
 </script>
 
 <style scoped>
-.metadata-list-page {
+    .metadata-list-page {
         padding-bottom: 0;
-}
+    }
 </style>
-
-
