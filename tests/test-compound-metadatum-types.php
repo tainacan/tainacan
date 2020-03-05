@@ -11,7 +11,8 @@ namespace Tainacan\Tests;
 use Tainacan\Entities;
 
 /**
- * Sample test case.
+ * Compound Metadatum Types test case.
+ * @group compound_metadatum
  */
 class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 

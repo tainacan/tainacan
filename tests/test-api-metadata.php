@@ -842,6 +842,107 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 	}
 
+	/**
+	 * @group compound_metadatum
+	 */
+	public function test_create_compound_metadatum_API() {
+		$collection = $this->tainacan_entity_factory->create_entity('collection', '', true);
+
+		$this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'No name',
+				'description' => 'No description',
+				'collection'  => $collection
+			),
+			true
+		);
+
+		$metadatum_compound = json_encode(
+			array(
+				'name'        => 'quadrado',
+				'description' => 'Descrição de um quadrado.',
+				'status' => 'publish',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Compound',
+			)
+		);
+
+		$request = new \WP_REST_Request(
+			'POST',
+			$this->namespace . '/collection/' . $collection->get_id() . '/metadata'
+		);
+		$request->set_body($metadatum_compound);
+		$response = $this->server->dispatch($request);
+
+		$metadatum_compound_added = $response->get_data();
+		$this->assertTrue(is_array($metadatum_compound_added) && array_key_exists('name', $metadatum_compound_added), sprintf('cannot create metadatum, response: %s', print_r($metadatum_compound_added, true)));
+		$this->assertEquals('quadrado', $metadatum_compound_added['name']);
+		$this->assertNotEquals('default', $metadatum_compound_added['collection_id']);
+
+
+		$metadatum_largura = json_encode(
+			array(
+				'name'        => 'largura',
+				'description' => 'largura.',
+				'status' => 'publish',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Numeric',
+				'parent' 	 => $metadatum_compound_added['id']
+			)
+		);
+		$metadatum_altura = json_encode(
+			array(
+				'name'        => 'altura',
+				'description' => 'altura',
+				'status' => 'publish',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Numeric',
+				'parent' 	 => $metadatum_compound_added['id']
+			)
+		);
+
+		$request = new \WP_REST_Request(
+			'POST',
+			$this->namespace . '/collection/' . $collection->get_id() . '/metadata'
+		);
+		$request->set_body($metadatum_largura);
+		$response = $this->server->dispatch($request);
+		$metadatum_largura = $response->get_data();
+
+		$this->assertTrue(is_array($metadatum_largura) && array_key_exists('name', $metadatum_largura), sprintf('cannot create metadatum, response: %s', print_r($metadatum_largura, true)));
+		$this->assertEquals('largura', $metadatum_largura['name']);
+		$this->assertNotEquals('default', $metadatum_largura['collection_id']);
+
+		$request = new \WP_REST_Request(
+			'POST',
+			$this->namespace . '/collection/' . $collection->get_id() . '/metadata'
+		);
+		$request->set_body($metadatum_altura);
+		$response = $this->server->dispatch($request);
+		$metadatum_altura = $response->get_data();
+
+		$this->assertTrue(is_array($metadatum_altura) && array_key_exists('name', $metadatum_altura), sprintf('cannot create metadatum, response: %s', print_r($metadatum_altura, true)));
+		$this->assertEquals('altura', $metadatum_altura['name']);
+		$this->assertNotEquals('default', $metadatum_altura['collection_id']);
+
+
+		$metadatum_multiplo = json_encode(
+			array(
+				'name'        => 'multiplo',
+				'description' => 'multiplo.',
+				'multiple' => 'yes',
+				'status' => 'publish',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Numeric',
+				'parent' 	 => $metadatum_compound_added['id']
+			)
+		);
+		$request = new \WP_REST_Request(
+			'POST',
+			$this->namespace . '/collection/' . $collection->get_id() . '/metadata'
+		);
+		$request->set_body($metadatum_multiplo);
+		$response = $this->server->dispatch($request);
+		$metadatum_multiplo_data = $response->get_data();
+		$this->assertEquals(400, $response->get_status(), sprintf('cannot create metadatum, response: %s', print_r($metadatum_multiplo_data, true)) );
+	}
 
 }
 
