@@ -68,6 +68,7 @@
             </b-field>
 
             <b-field
+                    v-if="editedMetadatum.parent == 0"
                     :addons="false"
                     :type="formErrors['status'] != undefined ? 'is-danger' : ''"
                     :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
@@ -101,6 +102,7 @@
 
             <!-- Display on listing -->
             <b-field
+                    v-if="editedMetadatum.parent == 0"
                     :type="formErrors['display'] != undefined ? 'is-danger' : ''"
                     :message="formErrors['display'] != undefined ? formErrors['display'] : ''" 
                     :addons="false">
@@ -144,9 +146,12 @@
 
             </b-field>
 
-            <b-field :addons="false">
+            <b-field 
+                    :addons="false">
                 <label class="label is-inline-block">{{ $i18n.get('label_insert_options') }}</label>
+                
                 <b-field
+                        v-if="editedMetadatum.metadata_type_object.component != 'tainacan-compound'"
                         :type="formErrors['required'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
                     <b-checkbox
@@ -164,7 +169,7 @@
                 </b-field>
 
                 <b-field
-                        v-if="!originalMetadatum.metadata_type_object.core"
+                        v-if="!originalMetadatum.metadata_type_object.core && editedMetadatum.parent == 0"
                         :type="formErrors['multiple'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
                     <b-checkbox
@@ -182,6 +187,7 @@
                 </b-field>
 
                 <b-field
+                        v-if="editedMetadatum.metadata_type_object.component != 'tainacan-compound'"
                         :type="formErrors['collection_key'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['collection_key'] != undefined ? formErrors['collection_key'] : ''">
                     <b-checkbox

@@ -24,6 +24,7 @@ import FormRelationship from '../components/metadata-types/relationship/FormRela
 import FormTaxonomy from '../components/metadata-types/taxonomy/FormTaxonomy.vue';
 import FormSelectbox from '../components/metadata-types/selectbox/FormSelectbox.vue';
 import FormNumeric from '../components/metadata-types/numeric/FormNumeric.vue';
+import FormCompound from '../components/metadata-types/compound/FormCompound.vue';
 
 import FilterNumeric from '../components/filter-types/numeric/Numeric.vue';
 import FilterDate from '../components/filter-types/date/Date.vue';
@@ -98,8 +99,7 @@ Vue.component('tainacan-form-relationship', FormRelationship);
 Vue.component('tainacan-form-taxonomy', FormTaxonomy);
 Vue.component('tainacan-form-selectbox', FormSelectbox);
 Vue.component('tainacan-form-numeric', FormNumeric);
-Vue.component('tainacan-form-item', TainacanFormItem);
-Vue.component('tainacan-filter-item', TainacanFiltersList);
+Vue.component('tainacan-form-compound', FormCompound);
 
 /* Filters */
 Vue.component('tainacan-filter-numeric', FilterNumeric);
@@ -119,6 +119,10 @@ Vue.component('tainacan-filter-form-numeric', FormFilterNumeric);
 Vue.component('tainacan-filter-form-numeric-interval', FormFilterNumericInterval);
 Vue.component('tainacan-filter-form-numeric-list-interval', FormFilterNumericListInterval);
 // Vue.component('tainacan-filter-form-date', FormDate);
+
+// Filter and Metadadum parent containers
+Vue.component('tainacan-form-item', TainacanFormItem);
+Vue.component('tainacan-filter-item', TainacanFiltersList);
 
 /* Others */
 Vue.component('help-button', HelpButton);

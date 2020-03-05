@@ -31,6 +31,18 @@ class Compound extends Metadata_Type {
 	}
 
 	/**
+     * @inheritdoc
+     */
+    public function get_form_labels(){
+        return [
+            'children' => [
+                'title' => __( 'Child Metadata', 'tainacan' ),
+                'description' => __( 'The list of inner metadata that compose this compound metadata.', 'tainacan' ),
+            ]
+        ];
+    }
+
+	/**
 	 * save options and remove old children
 	 * @param $options
 	 */
