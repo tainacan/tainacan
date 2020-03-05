@@ -846,14 +846,22 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 	 * @group compound_metadatum
 	 */
 	public function test_create_compound_metadatum_API() {
-		$collection = $this->tainacan_entity_factory->create_entity('collection', '', true);
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection', 
+			array(
+				'name'   => 'quadrado', 
+				'status' => 'publish'
+			), 
+			true
+		);
 
 		$this->tainacan_entity_factory->create_entity(
 			'item',
 			array(
 				'title'       => 'No name',
 				'description' => 'No description',
-				'collection'  => $collection
+				'collection'  => $collection,
+				'status' => 'publish'
 			),
 			true
 		);

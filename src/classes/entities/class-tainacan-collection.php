@@ -746,8 +746,36 @@ class Collection extends Entity {
 			return true;
 		}
 
-		return parent::validate();
+		return $this->validate_metadata_order() && parent::validate();
 
+	}
+
+	/**
+	 * Validate metadata order collection
+	 *
+	 * @return bool
+	 */
+	function validate_metadata_order() {
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		$metadata_order = $this->get_metadata_order();
+		if( empty($metadata_order) ) {
+			return true;
+		}
+
+		$parent = 0;
+		for($pos = 0; $pos < sizeof($metadata_order); $pos++ ) {
+			$metadatum_id = $metadata_order[$pos]['id'];
+			$metadatum = $Tainacan_Metadata->fetch( $metadatum_id );
+			if ($metadatum->get_parent() != 0) {
+				if ($parent != $metadatum->get_parent()) {
+					$this->add_error('metadata_order', __('collection order is invalid', 'tainacan'));
+					return false;
+				}
+			} else {
+				$parent = $metadatum_id;
+			}
+		}
+		return true;
 	}
 
 	/**

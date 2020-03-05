@@ -336,5 +336,131 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		
 		
 	}
+
+	function teste_validations_metadada_order() {
+
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+		
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'meta',
+				'description' => 'description',
+				'collection' => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Compound',
+				'status'	 => 'publish',
+			),
+			true
+		);
+
+		$metadatum_child1 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'meta2',
+				'description' => 'description',
+				'collection' => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				'status'	 => 'publish',
+				'parent' 	 => $metadatum->get_id(),
+			),
+			true
+		);
+
+		$metadatum_child2 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'meta3',
+				'description' => 'description',
+				'collection' => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				'status'	 => 'publish',
+				'parent' 	 => $metadatum->get_id(),
+			),
+			true
+		);
+
+		$metadatum1 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'meta3',
+				'description' => 'description',
+				'collection' => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				'status'	 => 'publish'
+			),
+			true
+		);
+
+		$metadatum2 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'meta4',
+				'description' => 'description',
+				'collection' => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				'status'	 => 'publish'
+			),
+			true
+		);
+
+		$order = [
+			['id' => $metadatum->get_id(), 'enabled' => true],
+			['id' => $metadatum_child1->get_id(), 'enabled' => true],
+			['id' => $metadatum_child2->get_id(), 'enabled' => true],
+			['id' => $metadatum1->get_id(), 'enabled' => true],
+			['id' => $metadatum2->get_id(), 'enabled' => true]
+		];
+
+		$collection->set_metadata_order($order);
+		$collection->validate();
+		\tainacan_collections()->insert($collection);
+		
+		$metadata_order = $Tainacan_Collections->fetch( $collection->get_id(), 'OBJECT' )->get_metadata_order();
+		$this->assertEquals($metadata_order[0]['id'], $order[0]['id']);
+		$this->assertEquals($metadata_order[1]['id'], $order[1]['id']);
+		$this->assertEquals($metadata_order[2]['id'], $order[2]['id']);
+		$this->assertEquals($metadata_order[3]['id'], $order[3]['id']);
+		$this->assertEquals($metadata_order[4]['id'], $order[4]['id']);
 	
+		$order = [
+			['id' => $metadatum1->get_id(), 'enabled' => true],
+			['id' => $metadatum2->get_id(), 'enabled' => true],
+			['id' => $metadatum->get_id(), 'enabled' => true],
+			['id' => $metadatum_child1->get_id(), 'enabled' => true],
+			['id' => $metadatum_child2->get_id(), 'enabled' => true]
+		];
+
+		$collection->set_metadata_order($order);
+		$collection->validate();
+		\tainacan_collections()->insert($collection);
+		
+		$metadata_order = $Tainacan_Collections->fetch( $collection->get_id(), 'OBJECT' )->get_metadata_order();
+		$this->assertEquals($metadata_order[0]['id'], $order[0]['id']);
+		$this->assertEquals($metadata_order[1]['id'], $order[1]['id']);
+		$this->assertEquals($metadata_order[2]['id'], $order[2]['id']);
+		$this->assertEquals($metadata_order[3]['id'], $order[3]['id']);
+		$this->assertEquals($metadata_order[4]['id'], $order[4]['id']);
+
+
+		$order = [
+			['id' => $metadatum1->get_id(), 'enabled' => true],
+			['id' => $metadatum->get_id(), 'enabled' => true],
+			['id' => $metadatum2->get_id(), 'enabled' => true],
+			['id' => $metadatum_child1->get_id(), 'enabled' => true],
+			['id' => $metadatum_child2->get_id(), 'enabled' => true]
+		];
+
+		$collection->set_metadata_order($order);
+		$this->assertFalse($collection->validate());
+	}
 }
