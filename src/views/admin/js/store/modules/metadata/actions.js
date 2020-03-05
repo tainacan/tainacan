@@ -39,21 +39,23 @@ export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isCont
     });
 };
 
-export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, status, isRepositoryLevel, newIndex}) => {
+export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, status, isRepositoryLevel, newIndex, parent}) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
         if (!isRepositoryLevel)
             endpoint = '/collection/' + collectionId + '/metadata/';
         else
             endpoint = '/metadata/';
+
         axios.tainacan.post(endpoint + '?context=edit', {
             name: name,
             metadata_type: metadatumType,
-            status: status
+            status: status,
+            parent: parent
         })
             .then(res => {
                 let metadatum = res.data;
-                commit('setSingleMetadatum', {metadatum: metadatum, index: newIndex});
+                commit('setSingleMetadatum', { metadatum: metadatum, index: newIndex });
                 resolve(res.data);
             })
             .catch(error => {
