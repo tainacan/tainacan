@@ -768,7 +768,7 @@ class Collection extends Entity {
 			$metadatum = $Tainacan_Metadata->fetch( $metadatum_id );
 			if ($metadatum->get_parent() != 0) {
 				if ($parent != $metadatum->get_parent()) {
-					$this->add_error('metadata_order', __('collection order is invalid', 'tainacan'));
+					$this->add_error('metadata_order', __('collection metadata order is invalid', 'tainacan'));
 					return false;
 				}
 			} else {
