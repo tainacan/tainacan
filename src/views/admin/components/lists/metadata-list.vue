@@ -203,7 +203,7 @@
                                     'inherited-metadatum': (childMetadatum.collection_id != collectionId && childMetadatum.parent == 0) || isRepositoryLevel,
                                     'child-metadatum': (childMetadatum.parent > 0)
                                 }" 
-                                v-for="(childMetadatum, index) in activeMetadatumList.filter((meta) => meta.parent == metadatum.id)"
+                                v-for="(childMetadatum, index) in activeMetadatumList.filter((meta) => meta != undefined && metadatum != undefined && meta.parent == metadatum.id)"
                                 :key="childMetadatum.id">
                             <div class="handle">
                                 <span 
