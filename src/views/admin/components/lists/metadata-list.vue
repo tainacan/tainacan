@@ -1137,20 +1137,24 @@ export default {
             }
         }
         .child-metadata-area {
-            margin-left: $page-side-padding;
+            margin-left: 3em;
             margin-right: 0;
+            padding-left: 0;
             padding-right: 0;
             min-height: auto;
+            border-left: 1px solid var(--tainacan-gray2);
             font-size: 1em;
 
             section {
                 padding: 0.5em 1em;
             }
- 
+            .active-metadatum-item {
+                margin-left: 0;
+            }
             .children-icon {
                 float: left;
                 position: relative;
-                left: -1em;
+                left: -1.5em;
                 top: 0.25em;
 
                 .icon {
