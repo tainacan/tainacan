@@ -31,7 +31,9 @@
                     chosen-class="sortable-chosen"
                     filter="not-sortable-item"
                     :animation="250">
-                <template v-for="(metadatum, index) in activeMetadatumList.filter((meta) => meta.parent == 0)">                
+                <div    
+                        v-for="(metadatum, index) in activeMetadatumList.filter((meta) => meta != undefined && meta.parent == 0)"
+                        :key="metadatum.id">                
                     <div 
                             class="active-metadatum-item"
                             :class="{
@@ -40,8 +42,7 @@
                                 'disabled-metadatum': metadatum.enabled == false,
                                 'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel,
                                 'child-metadatum': metadatum.parent > 0
-                            }" 
-                            :key="metadatum.id">
+                            }">
                         <div class="handle">
                             <span 
                                     v-if="!(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder)"
@@ -165,28 +166,26 @@
                         </transition>
                     </div>
                     <draggable
-                            :key="metadatum.id"
                             class="active-metadata-area child-metadata-area"
                             v-if="metadatum.metadata_type_object && metadatum.metadata_type_object.component == 'tainacan-compound'" 
                             v-model="activeMetadatumList"
                             @change="handleChange($event, metadatum.id)"
                             :class="{'metadata-area-receive': isDraggingFromAvailable}"
-                            :group="{ name:'metadata', pull: false, put: true }"
+                            :group="{ name:'metadata', pull: false, put: isAvailableChildMetadata }"
                             :sort="(openedMetadatumId == '' || openedMetadatumId == undefined) && !isRepositoryLevel"
                             :handle="'.handle'"
                             ghost-class="sortable-ghost"
                             chosen-class="sortable-chosen"
-                            filter="not-sortable-item"
+                            filter=".not-sortable-item"
+                            :dragover-bubble="true"
                             :animation="250">
                         <section 
-                                v-if="activeMetadatumList.filter((meta) => meta.parent == metadatum.id).length <= 0 && !isLoadingMetadata"
-                                class="field is-grouped-centered section">
+                                v-if="openedMetadatumId != metadatum.id && activeMetadatumList.filter((meta) => meta != undefined && metadatum != undefined && meta.parent == metadatum.id).length <= 0 && !isLoadingMetadata"
+                                class="field is-grouped-centered section not-sortable-item">
                             <div class="content has-text-gray has-text-centered">
-                                <p>
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-metadata"/>
-                                    </span>
-                                </p>
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
+                                </span>
                                 <p>{{ $i18n.get('info_create_child_metadata' ) }}</p>
                             </div>
                         </section>
@@ -329,7 +328,7 @@
                             </transition>
                         </div>
                     </draggable>
-                </template>
+                </div>
             </draggable> 
         </div>
     
@@ -344,6 +343,7 @@
                         :group="{ name:'metadata', pull: 'clone', put: false, revertClone: true }"
                         drag-class="sortable-drag">
                     <div 
+                            :id="metadatum.component"
                             @click.prevent="addMetadatumViaButton(metadatum)"
                             class="available-metadatum-item"
                             :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name, 'inherited-metadatum': isRepositoryLevel }"
@@ -527,7 +527,8 @@ export default {
         updateMetadataOrder() {
             let metadataOrder = [];
             for (let metadatum of this.activeMetadatumList)
-                metadataOrder.push({ 'id': metadatum.id, 'enabled': metadatum.enabled });
+                if (metadatum != undefined)
+                    metadataOrder.push({ 'id': metadatum.id, 'enabled': metadatum.enabled });
             
             this.isUpdatingMetadataOrder = true;
             this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder })
@@ -673,6 +674,9 @@ export default {
                     this.metadataSearchCancel = resp.source;
                 })
                 .catch(() => this.isLoadingMetadata = false);  
+        },
+        isAvailableChildMetadata(to, from, item) {
+            return !['tainacan-compound', 'tainacan-taxonomy', 'tainacan-relationship'].includes(item.id);
         },
         getPreviewTemplateContent(metadatum) {
             return `<div class="metadata-type-preview tainacan-form">
