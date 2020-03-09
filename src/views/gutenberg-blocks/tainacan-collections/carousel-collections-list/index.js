@@ -215,7 +215,7 @@ registerBlockType('tainacan/carousel-collections-list', {
 
             collections = [];
 
-            let endpoint = '/collections?'+ qs.stringify({ postin: selectedCollections, perpage: selectedCollections.length }) + '&fetch_only=name,url,thumbnail';
+            let endpoint = '/collections?'+ qs.stringify({ postin: selectedCollections.map((collection) => { return collection.id }), perpage: selectedCollections.length }) + '&fetch_only=name,url,thumbnail';
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
 
@@ -266,7 +266,7 @@ registerBlockType('tainacan/carousel-collections-list', {
             if (existingItemIndex >= 0)
                 collections.splice(existingItemIndex, 1);
 
-            let existingSelectedItemIndex = selectedCollections.findIndex((existingSelectedItem) => existingSelectedItem == itemId);
+            let existingSelectedItemIndex = selectedCollections.findIndex((existingSelectedItem) => existingSelectedItem.id == itemId);
             if (existingSelectedItemIndex >= 0)
                 selectedCollections.splice(existingSelectedItemIndex, 1);
         
@@ -405,9 +405,9 @@ registerBlockType('tainacan/carousel-collections-list', {
                             <CarouselCollectionsModal
                                 selectedCollectionsObject={ selectedCollections }
                                 onApplySelection={ (aSelectionOfCollections) => {
-                                    selectedCollections = selectedCollections.concat(aSelectionOfCollections.map((collection) => { return collection.id; })); 
+                                    selectedCollections = aSelectionOfCollections; 
                                     setAttributes({
-                                        selectedCollections: selectedCollections,
+                                        selectedCollections: aSelectionOfCollections,
                                         isModalOpen: false
                                     });
                                     setContent();
@@ -535,7 +535,7 @@ registerBlockType('tainacan/carousel-collections-list', {
         } = attributes;
         return <div 
                     className={ className }
-                    selected-collections={ JSON.stringify(selectedCollections) }
+                    selected-collections={ JSON.stringify(selectedCollections.map((collection) => { return collection.id })) }
                     arrows-position={ arrowsPosition }
                     auto-play={ '' + autoPlay }
                     auto-play-speed={ autoPlaySpeed }
@@ -548,5 +548,38 @@ registerBlockType('tainacan/carousel-collections-list', {
                     id={ 'wp-block-tainacan-carousel-collections-list_' + blockId }>
                         { content }
                 </div>
-    }
+    },
+    deprecated: [
+        {
+            save({ attributes, className }){
+                const {
+                    content, 
+                    blockId,
+                    selectedCollections,
+                    arrowsPosition,
+                    maxCollectionsNumber,
+                    autoPlay,
+                    autoPlaySpeed,
+                    loopSlides,
+                    hideName,
+                    showCollectionThumbnail
+                } = attributes;
+                return <div 
+                            className={ className }
+                            selected-collections={ JSON.stringify(selectedCollections) }
+                            arrows-position={ arrowsPosition }
+                            auto-play={ '' + autoPlay }
+                            auto-play-speed={ autoPlaySpeed }
+                            loop-slides={ '' + loopSlides }
+                            hide-name={ '' + hideName }
+                            max-collections-number={ maxCollectionsNumber }
+                            tainacan-api-root={ tainacan_blocks.root }
+                            tainacan-base-url={ tainacan_blocks.base_url }
+                            show-collection-thumbnail={ '' + showCollectionThumbnail }
+                            id={ 'wp-block-tainacan-carousel-collections-list_' + blockId }>
+                                { content }
+                        </div>
+            }
+        }
+    ]
 });
