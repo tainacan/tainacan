@@ -112,7 +112,16 @@
                     'number': 12
                 };
 
-                let endpoint = this.isRepositoryLevel ? '/facets/' + this.metadatumId : '/collection/'+ this.collectionId +'/facets/' + this.metadatumId;
+                let endpoint = '';
+                
+                if (this.isRepositoryLevel) 
+                    endpoint += '/facets/' + this.metadatumId;
+                else {
+                    if (this.collectionId == 'default' && this.currentCollection)
+                        endpoint += '/collection/' + this.currentCollectionId +'/facets/' + this.metadatumId;
+                    else
+                        endpoint += '/collection/' + this.collectionId +'/facets/' + this.metadatumId;
+                }
 
                 endpoint += '?order=asc&' + qs.stringify(query_items);
                 
