@@ -30,23 +30,35 @@
     }
 }
 .components-placeholder {
-    margin-bottom: 0;
+    align-items: center !important;
+    margin-bottom: 0 !important;
     background: #f6f6f6;
 
     .components-placeholder__label {
         margin-bottom: 0;
     }
-    .components-placeholder__fieldset p {
-        font-size: 1em !important;
-        margin: 12px 0;
-        color: #454647;
-        fill: #555758;
+    .components-placeholder__fieldset {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: baseline;
+        width: 100%;
+        max-width: 70%;
+        flex-wrap: wrap;
+        z-index: 1;
 
-        svg {
-            margin-right: 1em; 
-            top: 4px;
-            position: relative;
+        p {
+            font-size: 1em !important;
+            margin: 12px;
+            color: #454647;
             fill: #555758;
+
+            svg {
+                margin-right: 1em; 
+                top: 4px;
+                position: relative;
+                fill: #555758;
+            }
         }
     }
 }
@@ -107,18 +119,31 @@
         .components-spineer { margin: 8px; }
     }
 
+    .components-modal__header .components-button.has-icon,
     .components-modal__header .components-icon-button {
         padding-right: 0;
+
+        &:hover {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
     }
 
     hr {
         margin: 5px 0.75em;
     }
 
+    .components-select-control__input {
+        padding: 4px 8px !important;
+        margin: 0 !important;
+        line-height: 1em;
+    }
+
     .modal-search-area {
         display: flex;
         justify-content: center;
-        margin-bottom: 14px;
+        margin-bottom: 6px;
 
         .components-base-control {
             width: 60%;
@@ -157,16 +182,18 @@
         grid-gap: 0px;
         justify-content: space-evenly;
         list-style-type: none;
-        margin: 12px;
+        margin: 10px;
+        padding: 2px;
         max-height: 50vh;
         overflow-y: auto;
         overflow-x: hidden;
 
         .components-base-control {
             overflow: hidden;
+            padding-left: 1px;
         }
 
-        svg.dashicon.components-checkbox-control__checked {
+        svg.components-checkbox-control__checked {
             fill: black;
         }
     

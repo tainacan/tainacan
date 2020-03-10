@@ -310,33 +310,36 @@ registerBlockType('tainacan/search-bar', {
  
                 <div>
                     <InspectorControls>
-                        <hr />
-                        <div style={{ marginTop: '24px' }}>
-                            <TextControl
-                                label={ __('Placeholder text', 'tainacan') }
-                                value={ placeholderText }
-                                onChange={ ( aPlaceholderText ) => {
-                                    placeholderText = aPlaceholderText
-                                    setAttributes( { placeholderText: placeholderText } );
-                                    setContent(); 
-                                }}
-                            />
-                        </div>
-                        <br />
-                        <div style={{ marginBottom: '12px' }}>
-                            <RangeControl
-                                label={__('Maximum width size (%)', 'tainacan')}
-                                value={ maxWidth ? maxWidth : 80 }
-                                onChange={ ( aMaxWidth ) => {
-                                    maxWidth = aMaxWidth;
-                                    setAttributes( { maxWidth: aMaxWidth } ) 
-                                    setContent();
-                                }}
-                                min={ 15 }
-                                max={ 100 }
-                            />
-                        </div>
-                        <br />
+                        <PanelBody
+                                    title={__('Input settings', 'tainacan')}
+                                    initialOpen={ true }
+                                >
+                            <div style={{ marginTop: '24px' }}>
+                                <TextControl
+                                    label={ __('Placeholder text', 'tainacan') }
+                                    value={ placeholderText }
+                                    onChange={ ( aPlaceholderText ) => {
+                                        placeholderText = aPlaceholderText
+                                        setAttributes( { placeholderText: placeholderText } );
+                                        setContent(); 
+                                    }}
+                                />
+                            </div>
+                            <br />
+                            <div style={{ marginBottom: '12px' }}>
+                                <RangeControl
+                                    label={__('Maximum width size (%)', 'tainacan')}
+                                    value={ maxWidth ? maxWidth : 80 }
+                                    onChange={ ( aMaxWidth ) => {
+                                        maxWidth = aMaxWidth;
+                                        setAttributes( { maxWidth: aMaxWidth } ) 
+                                        setContent();
+                                    }}
+                                    min={ 15 }
+                                    max={ 100 }
+                                />
+                            </div>
+                        </PanelBody>
                         
                         <PanelBody
                                 title={__('Collection header', 'tainacan')}
