@@ -207,6 +207,7 @@ export default class CarouselItemsModal extends React.Component {
                 className="wp-block-tainacan-modal dynamic-modal"
                 title={ this.props.loadStrategy == 'selection' ? __('Select items to add on block', 'tainacan') : __('Configure the items search to be used on block', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
+                shouldCloseOnClickOutside={ false }
                 contentLabel={ this.props.loadStrategy == 'selection' ? __('Select items that will be added on block', 'tainacan') : __('Configure your items search that will load items on block', 'tainacan')}>
                 <iframe
                         id="itemsFrame"
@@ -242,6 +243,7 @@ export default class CarouselItemsModal extends React.Component {
                 className="wp-block-tainacan-modal"
                 title={__('Select a collection to fetch items from', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
+                shouldCloseOnClickOutside={ false }
                 contentLabel={__('Select items', 'tainacan')}>
                 <div>
                     <div className="modal-search-area">
