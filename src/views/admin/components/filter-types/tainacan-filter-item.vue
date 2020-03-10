@@ -39,8 +39,9 @@
                         :is-using-elastic-search="isUsingElasticSearch"
                         :is-repository-level="isRepositoryLevel"
                         :is-loading-items.sync="isLoadingItems"
+                        :current-collection-id="$eventBusSearch.collectionId"
                         @input="onInput"
-                        @sendValuesToTags="onSendValuesToTags"/>
+                        @sendValuesToTags="onSendValuesToTags" />
             </div>
         </b-collapse>
     </b-field>

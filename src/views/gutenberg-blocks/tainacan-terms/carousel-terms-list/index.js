@@ -210,7 +210,7 @@ registerBlockType('tainacan/carousel-terms-list', {
 
             terms = [];
 
-            let endpoint = '/taxonomy/' + taxonomyId + '/terms/?'+ qs.stringify({ hideempty: 0, include: selectedTerms }) + '&order=asc&fetch_only=id,name,url,header_image';
+            let endpoint = '/taxonomy/' + taxonomyId + '/terms/?'+ qs.stringify({ hideempty: 0, include: selectedTerms.map((term) => { return term.id; }) }) + '&order=asc&fetch_only=id,name,url,header_image';
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
 
@@ -261,7 +261,7 @@ registerBlockType('tainacan/carousel-terms-list', {
             if (existingItemIndex >= 0)
                 terms.splice(existingItemIndex, 1);
 
-            let existingSelectedItemIndex = selectedTerms.findIndex((existingSelectedItem) => existingSelectedItem == itemId);
+            let existingSelectedItemIndex = selectedTerms.findIndex((existingSelectedItem) => existingSelectedItem.id == itemId);
             if (existingSelectedItemIndex >= 0)
                 selectedTerms.splice(existingSelectedItemIndex, 1);
         
@@ -406,7 +406,8 @@ registerBlockType('tainacan/carousel-terms-list', {
                                         setAttributes({ taxonomyId: taxonomyId });
                                     }}
                                     onApplySelection={ (aSelectionOfTerms) =>{
-                                        selectedTerms = selectedTerms.concat(aSelectionOfTerms.map((term) => { return term.id; }));
+                                        selectedTerms = aSelectionOfTerms;
+                                        
                                         setAttributes({
                                             selectedTerms: selectedTerms,
                                             isModalOpen: false
@@ -537,7 +538,7 @@ registerBlockType('tainacan/carousel-terms-list', {
         } = attributes;
         return <div 
                     className={ className }
-                    selected-terms={ JSON.stringify(selectedTerms) }
+                    selected-terms={ JSON.stringify(selectedTerms.map((term) => { return term.id; })) }
                     arrows-position={ arrowsPosition }
                     auto-play={ '' + autoPlay }
                     auto-play-speed={ autoPlaySpeed }
@@ -551,5 +552,40 @@ registerBlockType('tainacan/carousel-terms-list', {
                     id={ 'wp-block-tainacan-carousel-terms-list_' + blockId }>
                         { content }
                 </div>
-    }
+    },
+    deprecated: [
+        {
+            save({ attributes, className }){
+                const {
+                    content, 
+                    blockId,
+                    selectedTerms,
+                    arrowsPosition,
+                    maxTermsNumber,
+                    autoPlay,
+                    autoPlaySpeed,
+                    loopSlides,
+                    hideName,
+                    showTermThumbnail,
+                    taxonomyId
+                } = attributes;
+                return <div 
+                            className={ className }
+                            selected-terms={ JSON.stringify(selectedTerms) }
+                            arrows-position={ arrowsPosition }
+                            auto-play={ '' + autoPlay }
+                            auto-play-speed={ autoPlaySpeed }
+                            loop-slides={ '' + loopSlides }
+                            hide-name={ '' + hideName }
+                            max-terms-number={ maxTermsNumber }
+                            taxonomy-id={ taxonomyId }
+                            tainacan-api-root={ tainacan_blocks.root }
+                            tainacan-base-url={ tainacan_blocks.base_url }
+                            show-term-thumbnail={ '' + showTermThumbnail }
+                            id={ 'wp-block-tainacan-carousel-terms-list_' + blockId }>
+                                { content }
+                        </div>
+            }
+        }
+    ]
 });

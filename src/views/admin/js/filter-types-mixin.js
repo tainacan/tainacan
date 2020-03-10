@@ -17,7 +17,8 @@ export const filterTypeMixin = {
         query: Object,
         isRepositoryLevel: Boolean,
         isUsingElasticSearch: Boolean,
-        isLoadingItems: Boolean
+        isLoadingItems: Boolean,
+        currentCollectionId: Boolean
     },
     created() {
         this.collectionId = this.filter.collection_id ? this.filter.collection_id : this.collectionId;
@@ -67,11 +68,15 @@ export const dynamicFilterTypeMixin = {
                 let query_items = { 'current_query': currentQuery };
 
                 let url = '';
-
-                if (isRepositoryLevel  || this.filter.collection_id == 'default')
+                
+                if (isRepositoryLevel)
                     url = `/facets/${metadatumId}?getSelected=${getSelected}&`;
-                else
-                    url = `/collection/${this.filter.collection_id}/facets/${metadatumId}?getSelected=${getSelected}&`;
+                else {
+                    if (this.filter.collection_id == 'default' && this.currentCollectionId)
+                        url = `/collection/${this.currentCollectionId}/facets/${metadatumId}?getSelected=${getSelected}&`;
+                    else
+                        url = `/collection/${this.filter.collection_id}/facets/${metadatumId}?getSelected=${getSelected}&`;
+                }
 
                 if (offset != undefined && number != undefined) {
                     if (!this.isUsingElasticSearch)
@@ -145,12 +150,16 @@ export const dynamicFilterTypeMixin = {
                 let query_items = { 'current_query': currentQuery };
 
                 let url = '';
-
-                if (isRepositoryLevel  || this.filter.collection_id == 'default')
-                    url =  '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`; 
-                else
-                    url =  '/collection/' + this.filter.collection_id + '/facets/' + this.filter.metadatum.metadatum_id + `?getSelected=${getSelected}&`;
-                    
+                
+                if (isRepositoryLevel)
+                    url = `/facets/${this.filter.metadatum.metadatum_id}?getSelected=${getSelected}&`;
+                else {
+                    if (this.filter.collection_id == 'default' && this.currentCollectionId)
+                        url = `/collection/${this.currentCollectionId}/facets/${this.filter.metadatum.metadatum_id}?getSelected=${getSelected}&`;
+                    else
+                        url = `/collection/${this.filter.collection_id}/facets/${this.filter.metadatum.metadatum_id}?getSelected=${getSelected}&`;
+                }     
+                
                 if (offset != undefined && number != undefined)
                     url += `offset=${offset}&number=${number}`;
                 else
@@ -314,7 +323,6 @@ export const dynamicFilterTypeMixin = {
                     }
                 }
             }
-            console.log(this.shouldAddOptions)
 
             if (this.shouldAddOptions === true && this.searchResults && this.searchResults.length)
                 this.searchResults = this.searchResults.concat(sResults);

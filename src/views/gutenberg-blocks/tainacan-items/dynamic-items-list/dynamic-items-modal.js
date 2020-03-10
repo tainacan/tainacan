@@ -171,6 +171,7 @@ export default class DynamicItemsModal extends React.Component {
                 className="wp-block-tainacan-modal dynamic-modal"
                 title={__('Configure the items search to be used on block', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
+                shouldCloseOnClickOutside={ false }
                 contentLabel={__('Configure your items search to be shown on block', 'tainacan')}>
                 <iframe
                         id="itemsFrame"
@@ -194,6 +195,7 @@ export default class DynamicItemsModal extends React.Component {
                 className="wp-block-tainacan-modal"
                 title={__('Select a collection to fetch items from', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
+                shouldCloseOnClickOutside={ false }
                 contentLabel={__('Select items', 'tainacan')}>
                 <div>
                     <div className="modal-search-area">

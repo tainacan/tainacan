@@ -53,7 +53,11 @@
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
     
     export default {
-        mixins: [ filterTypeMixin ],   
+        mixins: [ filterTypeMixin ], 
+        props: {
+            isRepositoryLevel: Boolean,
+            currentCollectionId: String
+        },
         data(){
             return {
                 isLoadingOptions: true,
@@ -129,10 +133,14 @@
 
                     let route = '';
                     
-                    if (this.collectionId == 'default')
+                    if (this.isRepositoryLevel)
                         route = `/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
-                    else
-                        route = `/collection/${this.collectionId}/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
+                    else {
+                        if (this.collectionId == 'default' && this.currentCollectionId)
+                            route = `/collection/${this.currentCollectionId}/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
+                        else
+                            route = `/collection/${this.collectionId}/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
+                    }
 
                     this.options = [];
 

@@ -51,7 +51,7 @@ export default class TermsModal extends React.Component {
             taxonomyId: this.props.existingTaxonomyId,
             temporarySelectedTerms: JSON.parse(JSON.stringify(this.props.selectedTermsObject))
         });
-
+        
         if (this.props.existingTaxonomyId != null && this.props.existingTaxonomyId != undefined) {
             this.fetchTaxonomy(this.props.existingTaxonomyId);
             this.fetchModalTerms(0, this.props.existingTaxonomyId);
