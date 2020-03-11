@@ -18,15 +18,19 @@
 
     p {
         font-size: 0.875em !important; 
-        margin: 12px 1.5em 16px 0; 
+        margin: 12px 1.5em !important; 
         fill: #555758;
 
         svg {
-            top: 4px;
+            top: 6px;
             margin-right: 0.75em;
             position: relative;
             fill: #555758;
         }
+    }
+
+    .components-base-control .components-base-control__field {
+        margin-bottom: 0;
     }
 }
 .components-placeholder {

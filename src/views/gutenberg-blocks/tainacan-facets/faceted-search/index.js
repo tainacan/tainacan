@@ -616,9 +616,7 @@ registerBlockType('tainacan/faceted-search', {
                                         viewBox="0 0 24 24"
                                         height="24px"
                                         width="24px">
-                                    <path 
-                                            fill="#298596"
-                                            d="M21.43,13.64,19.32,16a2.57,2.57,0,0,1-2,1H11a3.91,3.91,0,0,0,0-.49,5.49,5.49,0,0,0-5-5.47V9.64A2.59,2.59,0,0,1,8.59,7H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,13.64ZM4,3A2,2,0,0,0,2,5v7.3a5.32,5.32,0,0,1,2-1V5H16V3ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1,0-7,2.74,2.74,0,0,1,.5,0A3.5,3.5,0,0,1,9,16a2.92,2.92,0,0,1,0,.51,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,1,0,5.5,18,1.5,1.5,0,0,0,7,16.53Z"/>
+                                    <path d="M21.43,13.64,19.32,16a2.57,2.57,0,0,1-2,1H11a3.91,3.91,0,0,0,0-.49,5.49,5.49,0,0,0-5-5.47V9.64A2.59,2.59,0,0,1,8.59,7H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,13.64ZM4,3A2,2,0,0,0,2,5v7.3a5.32,5.32,0,0,1,2-1V5H16V3ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1,0-7,2.74,2.74,0,0,1,.5,0A3.5,3.5,0,0,1,9,16a2.92,2.92,0,0,1,0,.51,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,1,0,5.5,18,1.5,1.5,0,0,0,7,16.53Z"/>
                                 </svg>
                                 {__('Show items list from: ', 'tainacan')}
                                 &nbsp;
@@ -667,9 +665,7 @@ registerBlockType('tainacan/faceted-search', {
                                     viewBox="0 0 24 24"
                                     height="24px"
                                     width="24px">
-                                <path 
-                                        fill="#298596"
-                                        d="M21.43,13.64,19.32,16a2.57,2.57,0,0,1-2,1H11a3.91,3.91,0,0,0,0-.49,5.49,5.49,0,0,0-5-5.47V9.64A2.59,2.59,0,0,1,8.59,7H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,13.64ZM4,3A2,2,0,0,0,2,5v7.3a5.32,5.32,0,0,1,2-1V5H16V3ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1,0-7,2.74,2.74,0,0,1,.5,0A3.5,3.5,0,0,1,9,16a2.92,2.92,0,0,1,0,.51,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,1,0,5.5,18,1.5,1.5,0,0,0,7,16.53Z"/>
+                                <path d="M21.43,13.64,19.32,16a2.57,2.57,0,0,1-2,1H11a3.91,3.91,0,0,0,0-.49,5.49,5.49,0,0,0-5-5.47V9.64A2.59,2.59,0,0,1,8.59,7H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,13.64ZM4,3A2,2,0,0,0,2,5v7.3a5.32,5.32,0,0,1,2-1V5H16V3ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1,0-7,2.74,2.74,0,0,1,.5,0A3.5,3.5,0,0,1,9,16a2.92,2.92,0,0,1,0,.51,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,1,0,5.5,18,1.5,1.5,0,0,0,7,16.53Z"/>
                             </svg>
                             {__('Show a complete items list with faceted search.', 'tainacan')}
                         </p>
@@ -766,6 +762,18 @@ registerBlockType('tainacan/faceted-search', {
                                                     <span class="fake-text"></span>
                                                     <span class="fake-searchbar"></span>
                                                 </div>
+                                                <div class="fake-filter">
+                                                    <span class="fake-text"></span>
+                                                    <div class="fake-checkbox-list">
+                                                        { Array(2).fill().map( () => {
+                                                            return <div>
+                                                                <span class="fake-checkbox"></span>
+                                                                <span class="fake-text"></span>
+                                                            </div>
+                                                        } ) }
+                                                        <div class="fake-link"></div>
+                                                    </div>
+                                                </div>
                                             </div> 
                                         : null 
                                     }
@@ -796,6 +804,19 @@ registerBlockType('tainacan/faceted-search', {
                                                         class="fake-item-thumb"></div>
                                                 { Array(3).fill().map( () => <div class="fake-item-description"></div> ) }
                                             </div>
+                                            { Array(2).fill().map( () => {
+                                                return <div class="fake-item">
+                                                    <div class="fake-item-header">
+                                                        <div class="fake-text"></div>
+                                                    </div>
+                                                    <div 
+                                                            style={{ 
+                                                                backgroundImage: tainacan_plugin ? 'url("' + tainacan_plugin.base_url + '/assets/images/placeholder_square.png")' : '' 
+                                                            }}
+                                                            class="fake-item-thumb"></div>
+                                                    { Array(3).fill().map( () => <div class="fake-item-description"></div> ) }
+                                                </div>
+                                            } ) }
                                         </div>
                                         <div class="pagination">
                                             <span class="fake-text"></span>

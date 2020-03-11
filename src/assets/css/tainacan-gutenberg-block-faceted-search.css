@@ -15,13 +15,15 @@
   background: #f2f2f2; }
   .block-control p {
     font-size: 0.875em !important;
-    margin: 12px 1.5em 16px 0;
+    margin: 12px 1.5em !important;
     fill: #555758; }
     .block-control p svg {
       top: 4px;
       margin-right: 0.75em;
       position: relative;
       fill: #555758; }
+  .block-control .components-base-control .components-base-control__field {
+    margin-bottom: 0; }
 
 .components-placeholder {
   align-items: center !important;
@@ -243,7 +245,7 @@
     margin: 4px auto; }
   .wp-block-tainacan-faceted-search .items-list-placeholder {
     font-size: 1.125em;
-    min-height: 400px;
+    min-height: 500px;
     width: 100%;
     display: flex;
     flex-wrap: nowrap;
@@ -280,7 +282,7 @@
           display: flex;
           flex-direction: column;
           width: 80%;
-          margin: 4% 12%; }
+          margin: 5% 12%; }
           .wp-block-tainacan-faceted-search .items-list-placeholder .below-search-control .filters .fake-filter .fake-text {
             margin: 4px 0;
             width: 35%;
