@@ -288,7 +288,7 @@
                             :disabled="isLoading"
                             @click="openExposersModal()">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas"/>
                         </span>
                         <span class="is-hidden-touch">{{ $i18n.get('label_view_as') }}</span>
                     </button>

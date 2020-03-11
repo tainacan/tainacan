@@ -10,7 +10,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-const TAINACAN_VERSION = '0.15.1';
+const TAINACAN_VERSION = '0.16';
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 $TAINACAN_BASE_URL = plugins_url('', __FILE__);

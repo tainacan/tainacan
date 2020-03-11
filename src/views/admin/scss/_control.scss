@@ -38,6 +38,9 @@
             .mdi-account::before {
                 content: 'user';
             }
+            .mdi-calendar-today::before {
+                content: 'calendar';
+            }
         }
     }
     &.has-icons-right .icon .mdi-magnify::before {
