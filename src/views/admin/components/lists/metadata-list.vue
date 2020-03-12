@@ -23,7 +23,6 @@
                     v-model="activeMetadatumList"
                     class="active-metadata-area"
                     @change="handleChange($event)"
-                    :class="{'metadata-area-receive': isDraggingFromAvailable}"
                     :group="{ name:'metadata', pull: false, put: true }"
                     :sort="(openedMetadatumId == '' || openedMetadatumId == undefined) && !isRepositoryLevel"
                     :handle="'.handle'"
@@ -240,7 +239,6 @@ export default {
     data(){           
         return {
             collectionId: '',
-            isDraggingFromAvailable: false,
             isLoadingMetadatumTypes: true,
             isLoadingMetadata: false,
             isUpdatingMetadataOrder: false,

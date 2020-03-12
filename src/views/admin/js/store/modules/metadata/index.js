@@ -4,7 +4,7 @@ import * as mutations from './mutations';
 
 const state = {
     metadata: [],
-    childrenMetadata: [],
+    childrenMetadata: {},
     metadatumTypes: [],
     metadatumMappers: [],
 };

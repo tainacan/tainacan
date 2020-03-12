@@ -8,9 +8,9 @@ export const deleteMetadatum = ( state, metadatum ) => {
 }
 
 export const deleteChildrenMetadatum = ( state, metadatum ) => {
-    let index = state.childrenMetadata.findIndex(deletedMetadatum => deletedMetadatum.id == metadatum.id);
+    let index = state.childrenMetadata[metadatum.parent].findIndex(deletedMetadatum => deletedMetadatum.id == metadatum.id);
     if (index >= 0) {
-        state.childrenMetadata.splice(index, 1);
+        state.childrenMetadata[metadatum.parent].splice(index, 1);
     }
 }
 
@@ -19,15 +19,16 @@ export const setSingleMetadatum = (state, {metadatum, index}) => {
 }
 
 export const setSingleChildMetadatum = (state, {metadatum, index}) => {
-    Vue.set( state.childrenMetadata, index, metadatum);
+    if (metadatum.id && metadatum.parent)
+        Vue.set( state.childrenMetadata[metadatum.parent], index, metadatum);
 }
 
 export const setMetadata = (state, metadata) => {
     state.metadata = metadata;
 }
 
-export const setChildrenMetadata = (state, metadata) => {
-    state.childrenMetadata = metadata;
+export const setChildrenMetadata = (state, metadata, parent) => {
+    Vue.set(state.childrenMetadata, parent, metadata);
 }
 
 export const updateMetadataOrderFromCollection = (state, metadataOrder) => {
@@ -50,6 +51,6 @@ export const cleanMetadata = (state) => {
     state.metadata = [];
 }
 
-export const cleanChildrenMetadata = (state) => {
-    state.childrenMetadata = [];
+export const cleanChildrenMetadata = (state, parent) => {
+    state.childrenMetadata[parent] = [];
 }

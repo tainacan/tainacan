@@ -1,33 +1,31 @@
 <template>
     <div class="child-metadata-list-container">    
-        
+        <span class="icon children-icon not-sortable-item">
+            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-nextlevel"/>
+        </span> 
+        <section 
+                v-if="childrenMetadata.length <= 0"
+                class="field is-grouped-centered section not-sortable-item">
+            <div class="content has-text-gray has-text-centered">
+                <p>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
+                    </span>
+                </p>
+                <p>{{ $i18n.get('info_create_child_metadata') }}</p>
+            </div>
+        </section>    
         <draggable 
                 v-model="childrenMetadata"
                 class="active-metadata-area child-metadata-area"
                 @change="handleChange"
-                :class="{'metadata-area-receive': isDraggingFromAvailable}"
                 :group="{ name:'metadata', pull: false, put: true }"
                 :sort="(openedMetadatumId == '' || openedMetadatumId == undefined) && !isRepositoryLevel"
                 :handle="'.handle'"
                 ghost-class="sortable-ghost"
                 chosen-class="sortable-chosen"
                 filter=".not-sortable-item"
-                :animation="250">
-            <span class="icon children-icon not-sortable-item">
-                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-nextlevel"/>
-            </span> 
-            <section 
-                    v-if="childrenMetadata.length <= 0"
-                    class="field is-grouped-centered section not-sortable-item">
-                <div class="content has-text-gray has-text-centered">
-                    <p>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
-                        </span>
-                    </p>
-                    <p>{{ $i18n.get('info_create_child_metadata') }}</p>
-                </div>
-            </section>     
+                :animation="250"> 
             <div 
                     class="active-metadatum-item"
                     :class="{
@@ -157,7 +155,6 @@
                                 :index="index"
                                 :original-metadatum="metadatum"
                                 :edited-metadatum="editForms[metadatum.id]"/>
-                        <pre> Metadadum Edition Form will go here.</pre>
                     </div>
                 </transition>
             </div>
@@ -181,7 +178,6 @@
         data() {
             return {
                 collectionId: '',
-                isDraggingFromAvailable: false,
                 isLoadingMetadata: false,
                 isUpdatingMetadataOrder: false,
                 openedMetadatumId: '',
@@ -194,10 +190,15 @@
         computed: {
             childrenMetadata: {
                 get() {
-                    return this.getChildrenMetadata();
+                    const allChildrenMetadata = this.getChildrenMetadata();
+                    
+                    if (allChildrenMetadata[this.parent])
+                        return allChildrenMetadata[this.parent];
+                    else
+                        return [];
                 },
                 set(value) {
-                    this.updateChildrenMetadata(value);
+                    this.updateChildrenMetadata(value, this.parent);
                 }
             }
         },
@@ -205,9 +206,10 @@
             '$route.query': {
                 handler(newQuery) {
                     if (newQuery.edit != undefined) {
+                        
                         let existingMetadataIndex = this.childrenMetadata.findIndex((metadatum) => metadatum && (metadatum.id == newQuery.edit));
                         if (existingMetadataIndex >= 0)
-                            this.editMetadatum(this.childrenMetadata[existingMetadataIndex])                        
+                            this.editMetadatum(this.childrenMetadata[existingMetadataIndex])                  
                     }
                 },
                 immediate: true
@@ -239,7 +241,7 @@
             }  
         },
         mounted() {
-            this.cleanChildrenMetadata();
+            this.cleanChildrenMetadata(this.parent);
             this.isLoadingMetadata = true;
             this.refreshMetadata();
         },
@@ -424,13 +426,23 @@
 <style lang="scss" scoped>
 .child-metadata-list-container{
     margin-left: 42px;
+
     section {
         padding: 1em 0.5em;
     }
+    .children-icon {
+        position: absolute;
+        left: -1.5em;
+
+        .icon {
+            color: var(--tainacan-info-color) !important;
+        }
+    }
+
     .child-metadata-area {
         padding: 0;
         margin: 0;
-        min-height: auto;
+        min-height: 42px;
         border-left: 1px solid var(--tainacan-gray2);
         font-size: 1em;
 
@@ -439,16 +451,6 @@
         }
         .active-metadatum-item {
             margin-left: 0;
-        }
-        .children-icon {
-            float: left;
-            position: relative;
-            left: -1.5em;
-            top: 0.25em;
-
-            .icon {
-                color: var(--tainacan-info-color) !important;
-            }
         }
     }
 }

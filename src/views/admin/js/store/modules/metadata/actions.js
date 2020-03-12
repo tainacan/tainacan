@@ -67,7 +67,7 @@ export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, stat
                     commit('setSingleChildMetadatum', { metadatum: metadatum, index: newIndex });
                 else
                     commit('setSingleMetadatum', { metadatum: metadatum, index: newIndex });
-                resolve(res.data);
+                resolve(metadatum);
             })
             .catch(error => {
                 reject(error.response);
@@ -126,8 +126,8 @@ export const updateMetadata = ({commit}, metadata) => {
     commit('setMetadata', metadata);
 };
 
-export const updateChildrenMetadata = ({commit}, metadata) => {
-    commit('setChildrenMetadata', metadata);
+export const updateChildrenMetadata = ({commit}, { metadata, parent }) => {
+    commit('setChildrenMetadata', metadata, parent);
 };
 
 export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isRepositoryLevel}) => {
@@ -158,8 +158,8 @@ export const cleanMetadata = ({commit}) => {
     commit('cleanMetadata');
 };
 
-export const cleanChildrenMetadata = ({commit}) => {
-    commit('cleanChildrenMetadata');
+export const cleanChildrenMetadata = ({commit}, parent) => {
+    commit('cleanChildrenMetadata', parent );
 };
 
 export const updateCollectionMetadataOrder = ({ commit }, {collectionId, metadataOrder}) => {
