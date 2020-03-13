@@ -343,7 +343,7 @@ export default {
             'deleteMetadatum',
             'updateMetadata',
             'updateCollectionMetadataOrder',
-            'cleanMetadata'
+            'cleanMetadata',
         ]),
         ...mapGetters('metadata',[
             'getMetadatumTypes',
@@ -474,7 +474,7 @@ export default {
             this.$router.push({ query: {}});
         },
         refreshMetadata() {
-            
+
             // Cancels previous Request
             if (this.metadataSearchCancel != undefined)
                 this.metadataSearchCancel.cancel('Metadata search Canceled.');
@@ -510,9 +510,6 @@ export default {
                     this.metadataSearchCancel = resp.source;
                 })
                 .catch(() => this.isLoadingMetadata = false);  
-        },
-        isAvailableChildMetadata(to, from, item) {
-            return !['tainacan-compound', 'tainacan-taxonomy', 'tainacan-relationship'].includes(item.id);
         },
         getPreviewTemplateContent(metadatum) {
             return `<div class="metadata-type-preview tainacan-form">

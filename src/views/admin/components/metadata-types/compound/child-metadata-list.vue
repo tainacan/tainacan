@@ -19,7 +19,7 @@
                 v-model="childrenMetadata"
                 class="active-metadata-area child-metadata-area"
                 @change="handleChange"
-                :group="{ name:'metadata', pull: false, put: true }"
+                :group="{ name:'metadata', pull: false, put: isAvailableChildMetadata }"
                 :sort="(openedMetadatumId == '' || openedMetadatumId == undefined) && !isRepositoryLevel"
                 :handle="'.handle'"
                 ghost-class="sortable-ghost"
@@ -201,7 +201,6 @@
                 immediate: true
             },
             updateChildrenMetadata(value) {
-                console.log(value)
                 this.updateChildrenMetadata(value, this.parent);
             }
         },
@@ -268,12 +267,11 @@
                 for (let metadatum of this.childrenMetadata)
                     if (metadatum != undefined)
                         metadataOrder.push({ 'id': metadatum.id, 'enabled': metadatum.enabled });
-              /*  
+                /*
                 this.isUpdatingMetadataOrder = true;
-                this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder })
+                this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder, parent: this.parent })
                     .then(() => this.isUpdatingMetadataOrder = false)
-                    .catch(() => this.isUpdatingMetadataOrder = false);
-                    */
+                    .catch(() => this.isUpdatingMetadataOrder = false);*/
             },
             onChangeEnable($event, index) {
                 let metadataOrder = [];
@@ -282,10 +280,14 @@
                         metadataOrder.push({'id': metadatum.id, 'enabled': metadatum.enabled});
                 
                 metadataOrder[index].enabled = $event;
+                /*
                 this.isUpdatingMetadataOrder = true;
-                this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder })
-                    .then(() => this.isUpdatingMetadataOrder = false)
-                    .catch(() => this.isUpdatingMetadataOrder = false);
+                this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder, parent: this.parent })
+                    .then(() => {
+                        this.childrenMetadata[index].enabled = $event;
+                        this.isUpdatingMetadataOrder = false;
+                    })
+                    .catch(() => this.isUpdatingMetadataOrder = false);*/
             },
             addNewMetadatum(newMetadatum, newIndex) {
                 this.sendMetadatum({
@@ -407,6 +409,9 @@
                         this.metadataSearchCancel = resp.source;
                     })
                     .catch(() => this.isLoadingMetadata = false);  
+            },
+            isAvailableChildMetadata(to, from, item) {
+                return !['tainacan-compound', 'tainacan-taxonomy', 'tainacan-relationship'].includes(item.id);
             },
         }
     }

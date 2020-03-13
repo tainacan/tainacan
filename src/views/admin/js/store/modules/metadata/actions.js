@@ -162,10 +162,24 @@ export const cleanChildrenMetadata = ({commit}, parent) => {
     commit('cleanChildrenMetadata', parent );
 };
 
-export const updateCollectionMetadataOrder = ({ commit }, {collectionId, metadataOrder}) => {
+export const updateCollectionMetadataOrder = ({ commit, state }, {collectionId, metadataOrder, parent}) => {
+    
+    let allMetadataOrder = [];
+
+    if (parent && parent > 0) {
+        allMetadataOrder = state.metadataOrder;
+        console.log(allMetadataOrder)
+        const parentMetadataIndex = allMetadataOrder.find((metadatumOrder) => metadatumOrder.id == parent);
+        if (parentMetadataIndex >= 0)
+            allMetadataOrder[parentMetadataIndex]['children_metadata_order'] = metadataOrder;
+        
+    } else {
+        allMetadataOrder = metadataOrder;
+    }
+
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collectionId + '/metadata_order?context=edit', {
-            metadata_order: metadataOrder
+            metadata_order: allMetadataOrder
         }).then(res => {
             commit('collection/setCollection', res.data, { root: true });
             commit('updateMetadataOrderFromCollection', res.data.metadata_order);
