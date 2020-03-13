@@ -171,7 +171,7 @@
                 </div>
             </draggable> 
         </div>
-    
+         
         <div 
                 v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata')) || !isRepositoryLevel"
                 class="column available-metadata-area" >
