@@ -21,6 +21,7 @@
 </template>
 
 <script>
+    import { mapActions } from 'vuex';
     export default {
         props: {
             metadatum: Object,
@@ -29,7 +30,7 @@
         },
         data() {
             return {
-                children: [],
+                childrenMetadatum: [],
                 collapseAllChildren: false,
                 childrenMetadataCollapses: [],
             }
@@ -38,15 +39,21 @@
             this.createChildInputs();
         },
         methods: {
+             ...mapActions('item', [
+                'fetchChildrenMetadata'
+            ]),
             createChildInputs() {
                 if (this.metadatum.metadatum &&
                     this.metadatum.metadatum.metadata_type_options &&
                     this.metadatum.metadatum.metadata_type_options.children_objects.length > 0 
                 ) {
-                    for (let metadatum of this.metadatum.metadatum.metadata_type_options.children_objects) {
-                        this.children.push(metadatum);
-                        this.childrenMetadataCollapses.push(true);
-                    }
+                    this.fetchChildrenMetadata({
+                        itemId: this.metadatum.item.id,
+                        parentId: this.metadatum.metadatum.id
+                    }).then(childrenMetadata => {
+                            this.children = childrenMetadata;
+                            this.childrenMetadataCollapses = new Array(childrenMetadata.length).fill(true);
+                    })
                 }
             },
             toggleCollapseAllChildren() {
