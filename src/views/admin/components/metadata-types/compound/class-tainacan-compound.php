@@ -28,6 +28,7 @@ class Compound extends Metadata_Type {
 			</div>
 		');
 		add_action( 'tainacan-insert-tainacan-metadatum', array( &$this, 'save_children' ), 10, 1 );
+		add_action( 'tainacan-pre-delete-tainacan-metadatum', array( &$this, 'delete_children' ), 10, 1 );
 	}
 
 	/**
@@ -50,69 +51,33 @@ class Compound extends Metadata_Type {
 		$metadatum_type_object = $metadatum->get_metadata_type_object();
 
 		if( $metadatum_type_object instanceof \Tainacan\Metadata_Types\Compound ) {
-			$options = $metadatum_type_object->get_options();
-			$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
-
-			if( !isset( $options['parent'] ) )
-				return;
-
-			if( isset( $options['before_children'] ) && is_array( $options['before_children'] ) ) {
-				foreach ( $options['before_children'] as $child) {
-					if( isset( $options['children'] ) && is_array( $options['children'] ) && in_array( $child,  $options['children']))
-						continue;
-
-					$metadatum = new \Tainacan\Entities\Metadatum( $child );
-					$metadatum->set_parent(0);
-
-					if( $metadatum->validate() ) {
-						$Tainacan_Metadata->update( $field );
-					}
-				}
-			}
-
-			if( isset( $options['children'] ) && is_array( $options['children'] ) ) {
-				foreach ( $options['children'] as $child) {
-					$metadatum = new \Tainacan\Entities\Metadatum( $child );
-					$metadatum->set_parent( $options['parent'] );
-					if( $metadatum->validate() ) {
-						$Tainacan_Metadata->update( $metadatum );
-					}
-				}
+			$options = $metadatum->get_metadata_type_options();
+			
+			if( isset( $options['parent'] ) )
+				 return;
+			
+			$options['parent'] = $metadatum->get_ID();
+			$metadatum->set_metadata_type_options($options);
+			if( $metadatum->validate() ) {
+				$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+				$Tainacan_Metadata->update( $metadatum );
 			}
 		}
 	}
 
-	/**
-	 * validate the children of the compound
-	 * @param \Tainacan\Entities\Metadatum $metadatum
-	 * @return array|bool
-	 */
-	public function validate_options( \Tainacan\Entities\Metadatum $metadatum ) {
-		if ( !in_array($metadatum->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
-			return true;
-
+	public function delete_children ( $metadatum) {
 		$metadatum_type_object = $metadatum->get_metadata_type_object();
 
 		if( $metadatum_type_object instanceof \Tainacan\Metadata_Types\Compound ) {
-			$options = $metadatum_type_object->get_options();
-
-			// if parent is not set, it comes from tests
-			if( !isset( $options['parent'] ) )
-				return true;
-
-			if( !isset( $options['children'] ) || empty( $options['children'] ) ) {
-				return ['children' => __('Children is required','tainacan')];
-			}
-
-			foreach ($options['children'] as $child) {
-				$metadatum = new \Tainacan\Entities\Metadatum( $child );
-				$metadatum->set_parent( $options['parent'] );
-				if( !$metadatum->validate() ) {
-					return [ $metadatum->get_errors()[0] ];
+			$options = parent::get_options();
+			if( isset( $options['parent'] ) ) {
+				$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+				$childrens = $Tainacan_Metadata->fetch( ['parent' => $options['parent'] ], "OBJECT" );
+				foreach ($childrens as $child) {
+					$Tainacan_Metadata->trash($child);
 				}
 			}
 		}
-		return true;
 	}
 
 	/**
@@ -125,17 +90,17 @@ class Compound extends Metadata_Type {
 		$options = parent::get_options();
 		$options['children_objects'] = [];
 
-		if( isset( $options['children'] ) && !empty( $options['children'] ) ) {
-			foreach ($options['children'] as $child) {
-				$item = new \Tainacan\Entities\Metadatum( $child );
-				$item_arr = $item->_toArray();
-				$item_arr['metadata_type_object'] = $item->get_metadata_type_object()->_toArray();
-				$item_arr['current_user_can_edit'] = $item->can_edit();
-				ob_start();
-				$item->get_metadata_type_object()->form();
-				$form = ob_get_clean();
-				$item_arr['edit_form'] = $form;
-				$options['children_objects'][] = $item_arr;
+		if( isset( $options['parent'] ) ) {
+			$childrens = $Tainacan_Metadata->fetch( ['parent' => $options['parent'] ], "OBJECT" );
+			foreach ($childrens as $child) {
+				$item_arr = $child->_toArray();
+				$item_arr['metadata_type_object'] = $child->get_metadata_type_object()->_toArray();
+			 	$item_arr['current_user_can_edit'] = $child->can_edit();
+			 	ob_start();
+			 	$child->get_metadata_type_object()->form();
+			 	$child = ob_get_clean();
+			 	$item_arr['edit_form'] = $form;
+			 	$options['children_objects'][] = $item_arr;
 			}
 		}
 		return $options;
