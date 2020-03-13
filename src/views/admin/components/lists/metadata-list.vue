@@ -569,7 +569,7 @@ export default {
                   
         .b-tabs .tab-content {
             overflow: visible;
-            min-height: 500px;
+            min-height: 300px;
         }
 
         .column {

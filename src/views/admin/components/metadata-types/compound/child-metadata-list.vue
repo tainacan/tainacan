@@ -418,7 +418,8 @@
 </script>
 
 <style lang="scss" scoped>
-.child-metadata-list-container{
+.child-metadata-list-container {
+    position: relative;
     margin-left: 42px;
     border-left: 1px solid var(--tainacan-gray2);
 
@@ -427,7 +428,8 @@
     }
     .children-icon {
         position: absolute;
-        left: 22px;
+        top: 0;
+        left: -22px;
 
         .icon {
             color: var(--tainacan-info-color) !important;
