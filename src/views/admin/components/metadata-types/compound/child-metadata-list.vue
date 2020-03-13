@@ -302,6 +302,8 @@
                 .then((metadatum) => {
                     if (!this.isRepositoryLevel)
                         this.updateMetadataOrder();
+                    
+                    this.childrenMetadata.splice(newIndex, 1, metadatum);
 
                     this.toggleMetadatumEdition(metadatum.id)
                     this.hightlightedMetadatum = '';
@@ -319,12 +321,20 @@
                         title: this.$i18n.get('label_warning'),
                         message: this.$i18n.get('info_warning_metadatum_delete'),
                         onConfirm: () => { 
-                            this.deleteMetadatum({ collectionId: this.collectionId, metadatumId: removedMetadatum.id, isRepositoryLevel: this.isRepositoryLevel})
-                                .then(() => {
+                            this.deleteMetadatum({
+                                    collectionId: this.collectionId,
+                                    metadatumId: removedMetadatum.id,
+                                    isRepositoryLevel: this.isRepositoryLevel
+                                })
+                                .then((removedMetadatum) => {
                                     if (!this.isRepositoryLevel)
                                         this.updateMetadataOrder();
                                     else 
                                         this.$root.$emit('metadatumUpdated', this.isRepositoryLevel);
+                                    
+                                    const removedMetadatumIndex = this.childrenMetadata.findIndex(metadatum => metadatum.id == removedMetadatum.id);
+                                    if (removedMetadatumIndex >= 0)
+                                        this.childrenMetadata.splice(removedMetadatumIndex, 1);
                                 })
                                 .catch(() => {
                                     this.$console.log("Error deleting metadatum.")
@@ -424,7 +434,7 @@
     border-left: 1px solid var(--tainacan-gray2);
 
     section {
-        padding: 1em 0.5em;
+        padding: 0.5em 0.5em 0 0.5em;
     }
     .children-icon {
         position: absolute;
