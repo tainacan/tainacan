@@ -27,8 +27,10 @@ export const setMetadata = (state, metadata) => {
     state.metadata = metadata;
 }
 
-export const setChildrenMetadata = (state, metadata, parent) => {
-    Vue.set(state.childrenMetadata, parent, metadata);
+export const setChildrenMetadata = (state, {metadata, parent}) => {
+    const updatedChildrenMetadata = state.childrenMetadata;
+    updatedChildrenMetadata[parent] = metadata;
+    state.childrenMetadata = updatedChildrenMetadata;
 }
 
 export const updateMetadataOrderFromCollection = (state, metadataOrder) => {

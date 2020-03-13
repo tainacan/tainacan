@@ -185,21 +185,7 @@
                 hightlightedMetadatum: '',
                 editForms: {},
                 metadataSearchCancel: undefined,
-            }
-        },
-        computed: {
-            childrenMetadata: {
-                get() {
-                    const allChildrenMetadata = this.getChildrenMetadata();
-                    
-                    if (allChildrenMetadata[this.parent])
-                        return allChildrenMetadata[this.parent];
-                    else
-                        return [];
-                },
-                set(value) {
-                    this.updateChildrenMetadata(value, this.parent);
-                }
+                childrenMetadata: []
             }
         },
         watch: {
@@ -213,6 +199,10 @@
                     }
                 },
                 immediate: true
+            },
+            updateChildrenMetadata(value) {
+                console.log(value)
+                this.updateChildrenMetadata(value, this.parent);
             }
         },
         beforeRouteLeave ( to, from, next ) {
@@ -241,7 +231,6 @@
             }  
         },
         mounted() {
-            this.cleanChildrenMetadata(this.parent);
             this.isLoadingMetadata = true;
             this.refreshMetadata();
         },
@@ -262,7 +251,7 @@
                 'cleanChildrenMetadata'
             ]),
             ...mapGetters('metadata',[
-                'getChildrenMetadata',
+                'getChildrenMetadata'
             ]),
             handleChange(event) {     
                if (event.added) {
@@ -400,9 +389,9 @@
                     parent: this.parent
                 }).then((resp) => {
                         resp.request
-                            .then(() => {
+                            .then((metadata) => {
                                 this.isLoadingMetadata = false;
-                                
+                                this.childrenMetadata = metadata;
                                 // Checks URL as router watcher would not wait for list to load
                                 if (this.$route.query.edit != undefined) {
                                     let existingMetadataIndex = this.childrenMetadata.findIndex((metadatum) => metadatum.id == this.$route.query.edit);
@@ -426,13 +415,14 @@
 <style lang="scss" scoped>
 .child-metadata-list-container{
     margin-left: 42px;
+    border-left: 1px solid var(--tainacan-gray2);
 
     section {
         padding: 1em 0.5em;
     }
     .children-icon {
         position: absolute;
-        left: -1.5em;
+        left: 22px;
 
         .icon {
             color: var(--tainacan-info-color) !important;
@@ -443,7 +433,6 @@
         padding: 0;
         margin: 0;
         min-height: 42px;
-        border-left: 1px solid var(--tainacan-gray2);
         font-size: 1em;
 
         section {

@@ -28,7 +28,7 @@ export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isCont
                     let metadata = res.data;
                     if (!isAdvancedSearch) {
                         if (parent && parent > 0)
-                            commit('setChildrenMetadata', metadata);
+                            commit('setChildrenMetadata', { metadata, parent });
                         else
                             commit('setMetadata', metadata);
                     }
@@ -142,7 +142,7 @@ export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isReposito
             .then(res => {
                 const metadatum = res.data;
                 if (metadatum.parent && metadatum.parent > 0)
-                    commit('deleteChildrenMetadata', metadatum);
+                    commit('deleteChildrenMetadatum', metadatum);
                 else
                     commit('deleteMetadatum', metadatum);
                 resolve(res.data);
