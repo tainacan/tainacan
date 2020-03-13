@@ -476,12 +476,12 @@ registerBlockType('tainacan/carousel-items-list', {
                 </div>
 
                 { isSelected ? 
-                    (
+                    ( 
                     <div>
-                        { isModalOpen ? 
+                        { isModalOpen ?   
                             <CarouselItemsModal
                                 loadStrategy={ loadStrategy }
-                                existingCollectionId={ collectionId } 
+                                existingCollectionId={ collectionId }
                                 existingSearchURL={ loadStrategy == 'search' ? searchURL : false } 
                                 onSelectCollection={ (selectedCollectionId) => {
                                     if (collectionId != selectedCollectionId) {

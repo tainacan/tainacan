@@ -77,6 +77,7 @@
                 }
             }
             span.label { 
+                color: white; 
                 font-weight: normal; 
                 font-size: 0.75em;
             }
@@ -282,6 +283,7 @@
         }
 
         &:hover button {
+            height: auto;
             visibility: visible;
             background-color: rgba(255, 255, 255, 1) !important;
             opacity: 1;

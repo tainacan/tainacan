@@ -325,6 +325,7 @@
         display: inline-flex;
         align-items: center;
         position: relative;
+        padding: 5px 8px;
 
         a:first-child {
             border-top-right-radius: 0;
