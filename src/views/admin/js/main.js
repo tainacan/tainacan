@@ -19,12 +19,12 @@ import Numeric from '../components/metadata-types/numeric/Numeric.vue';
 import Date from '../components/metadata-types/date/Date.vue';
 import Relationship from '../components/metadata-types/relationship/Relationship.vue';
 import Taxonomy from '../components/metadata-types/taxonomy/Taxonomy.vue';
+import Compound from '../components/metadata-types/compound/Compound.vue';
 
 import FormRelationship from '../components/metadata-types/relationship/FormRelationship.vue';
 import FormTaxonomy from '../components/metadata-types/taxonomy/FormTaxonomy.vue';
 import FormSelectbox from '../components/metadata-types/selectbox/FormSelectbox.vue';
 import FormNumeric from '../components/metadata-types/numeric/FormNumeric.vue';
-import FormCompound from '../components/metadata-types/compound/FormCompound.vue';
 
 import FilterNumeric from '../components/filter-types/numeric/Numeric.vue';
 import FilterDate from '../components/filter-types/date/Date.vue';
@@ -93,13 +93,13 @@ Vue.component('tainacan-numeric', Numeric);
 Vue.component('tainacan-date', Date);
 Vue.component('tainacan-relationship', Relationship);
 Vue.component('tainacan-taxonomy', Taxonomy);
+Vue.component('tainacan-compound', Compound);
 
 /* Metadata Option forms */
 Vue.component('tainacan-form-relationship', FormRelationship);
 Vue.component('tainacan-form-taxonomy', FormTaxonomy);
 Vue.component('tainacan-form-selectbox', FormSelectbox);
 Vue.component('tainacan-form-numeric', FormNumeric);
-Vue.component('tainacan-form-compound', FormCompound);
 
 /* Filters */
 Vue.component('tainacan-filter-numeric', FilterNumeric);

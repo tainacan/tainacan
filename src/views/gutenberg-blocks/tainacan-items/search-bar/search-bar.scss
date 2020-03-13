@@ -43,12 +43,12 @@
                 text-overflow: ellipsis;
             }
             button {
-                height: auto;
+                height: auto !important;
                 display: flex;
                 align-items: center;
                 border: none;
                 box-shadow: none;
-                border-radius: 0;
+                border-radius: 0 !important;
                 background: white;
                 padding: 4px 1em;
                 font-size: 1em;
@@ -261,7 +261,7 @@
                     }
                 }
                 &:hover {
-                   background: transparent;     
+                   background: transparent !important;     
                 }
             }
 
@@ -392,7 +392,8 @@
                     text-decoration: none;
                 }
             }
-            span.label { 
+            span.label {
+                color: inherit; 
                 width: 100%;
                 display: block;
                 margin-top: -8px;

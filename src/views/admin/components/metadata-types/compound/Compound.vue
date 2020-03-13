@@ -47,7 +47,6 @@
                         this.children.push(metadatum);
                         this.childrenMetadataCollapses.push(true);
                     }
-                    
                 }
             },
             toggleCollapseAllChildren() {
