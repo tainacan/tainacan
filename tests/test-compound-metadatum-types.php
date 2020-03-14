@@ -429,8 +429,8 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		$this->assertEquals($metadata_order[0]['id'], $order[0]['id']);
 		//$this->assertEquals($metadata_order[1]['id'], $order[1]['id']);
 		//$this->assertEquals($metadata_order[2]['id'], $order[2]['id']);
-		$this->assertEquals($metadata_order[1]['id'], $order[3]['id']);
-		$this->assertEquals($metadata_order[2]['id'], $order[4]['id']);
+		$this->assertEquals($metadata_order[1]['id'], $order[1]['id']);
+		$this->assertEquals($metadata_order[2]['id'], $order[2]['id']);
 	
 		$order = [
 			['id' => $metadatum1->get_id(), 'enabled' => true],
