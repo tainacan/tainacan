@@ -427,7 +427,7 @@ class Item_Metadata_Entity extends Entity {
      *
      * @return boolean
      */
-    function validate() {   
+    function validate() {
         $value = $this->get_value();
         $metadatum = $this->get_metadatum();
         $item = $this->get_item();

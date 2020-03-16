@@ -358,7 +358,7 @@ class Item_Metadata extends Repository {
 				$post_meta_object = get_metadata_by_mid( 'post', $id );
 				if ( is_object( $post_meta_object ) ) {
 					$metadatum                            = new Entities\Metadatum( $post_meta_object->meta_key );
-					$return_value[ $metadatum->get_id() ] = new Entities\Item_Metadata_Entity( $item, $metadatum, $id, $compound_meta_id );
+					$return_value[ $metadatum->get_id() ] = new Entities\Item_Metadata_Entity( $item, $metadatum, $id, (int)$compound_meta_id );
 				}
 
 			}
