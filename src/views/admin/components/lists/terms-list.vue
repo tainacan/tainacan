@@ -445,7 +445,7 @@ export default {
         },
         eventOnEditTerm(term) {
             // Position edit form in a visible area
-            let container = document.getElementById('repository-container');
+            let container = document.getElementsByClassName('repository-level-page')[0];
             if (container && container.scrollTop && container.scrollTop > 80)
                 this.termEditionFormTop = container.scrollTop - 80;
             else
