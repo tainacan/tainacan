@@ -663,6 +663,13 @@
             .icon {
                 margin-right: 5px !important;
             }
+
+            &:hover,
+            &:focus,
+            &:active {
+                background-color: transparent !important;
+                color: var(--tainacan-turquoise5) !important;
+            }
         }
     }
 </style>

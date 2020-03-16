@@ -1708,6 +1708,17 @@ export default {
             background-color: transparent;
             color: var(--tainacan-turquoise5);
             border: none;
+
+            .icon {
+                margin-right: 5px !important;
+            }
+
+            &:hover,
+            &:focus,
+            &:active {
+                background-color: transparent !important;
+                color: var(--tainacan-turquoise5) !important;
+            }
         }
     }
 
