@@ -183,7 +183,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 			$item_id  = $request['item_id'];
 			$metadatum_id = $request['metadatum_id'];
 			$value    = $body['values'];
-			$parent_meta_id = isset( $body['parent_meta_id'] ) && $parent_meta_id > 0 ? $body['parent_meta_id'] : null;
+			$parent_meta_id = isset( $body['parent_meta_id'] ) && $body['parent_meta_id'] > 0 ? $body['parent_meta_id'] : null;
 
 			$item  = $this->item_repository->fetch( $item_id );
 			$metadatum = $this->metadatum_repository->fetch( $metadatum_id );
@@ -278,6 +278,11 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 					'type' => 'array/string/object/integer'
 				],
 				'description' => __('The value(s) of item metadata')
+			];
+			$endpoint_args['parent_meta_id'] = [
+				'type'        => 'array/string/object/integer',
+				'items'       => ['type' => 'array/string/object/integer'],
+				'description' => __('The parent meta ID for group children item metadatas')
 			];
 		}
 

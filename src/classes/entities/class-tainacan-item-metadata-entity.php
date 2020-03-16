@@ -30,11 +30,11 @@ class Item_Metadata_Entity extends Entity {
 	 * @param Metadatum  $metadatum   Metadatum Entity
 	 * @param int $meta_id ID for a specific meta row 
 	 */
-    function __construct(Item $item = null, Metadatum $metadatum = null, $meta_id = null, $parent_meta_id = null) {
-        
-        $this->set_item($item);
-        $this->set_metadatum($metadatum);
-		
+	function __construct(Item $item = null, Metadatum $metadatum = null, $meta_id = null, $parent_meta_id = null) {
+
+		$this->set_item($item);
+		$this->set_metadatum($metadatum);
+
 		if (!is_null($meta_id) && is_int($meta_id)) {
 			$this->set_meta_id($meta_id);
 		}
@@ -42,9 +42,7 @@ class Item_Metadata_Entity extends Entity {
 		if (!is_null($parent_meta_id) && is_int($parent_meta_id)) {
 			$this->set_parent_meta_id($parent_meta_id);
 		}
-		
-		
-    }
+	}
 	
 	/**
 	 * Gets the string used before each value when concatenating multiple values 
@@ -214,7 +212,7 @@ class Item_Metadata_Entity extends Entity {
 						$metadata = new Metadatum( $child['id'] );
 						$itemMetadata = new self( $this->get_item(), $metadata );
 						$child_primitive_type = $metadata->get_metadata_type_object()->get_primitive_type();
-						if ( $itemMetadata instanceof ItemMetadataEntity && $child_primitive_type === 'term' ) {
+						if ( $itemMetadata instanceof Item_Metadata_Entity && $child_primitive_type === 'term' ) {
 							$compounds[$child['id']] = $itemMetadata->_toArray();
 						}
 					}
@@ -223,7 +221,7 @@ class Item_Metadata_Entity extends Entity {
 				if( is_array($value) ) {
 					foreach ($value as $itemMetadata) {
 						$child_primitive_type = $itemMetadata->get_metadatum()->get_metadata_type_object()->get_primitive_type();
-						if ( $itemMetadata instanceof ItemMetadataEntity && $child_primitive_type !== 'term' ) {
+						if ( $itemMetadata instanceof Item_Metadata_Entity && $child_primitive_type !== 'term' ) {
 							$compounds[$itemMetadata->get_metadatum()->get_id()] = $itemMetadata->_toArray();
 						}
 					}
