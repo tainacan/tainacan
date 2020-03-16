@@ -159,6 +159,11 @@ a:hover {
         margin: 1em auto;
     }
 }
+.metadata-type-compound {
+    padding-left: 15px;
+    margin-left: 15px;
+    border-left: 1px solid var(--tainacan-gray2);
+}
 
 // Buefy notices (toast, snackbar...)
 .notices {

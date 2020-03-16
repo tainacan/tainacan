@@ -52,21 +52,6 @@ export const fetchMetadata = ({ commit }, item_id) => {
     });
 };
 
-export const fetchChildrenMetadata = ({ commit }, { itemId, parentId }) => {
-    return new Promise((resolve, reject) => {
-        // axios.tainacan.get('/item/' + itemId + '/metadata?parent_meta_id=' + parentId)
-        axios.tainacan.get('/item/' + itemId + '/metadata?parent=any')
-            .then(res => {
-                const childMetadata = res.data.filter(metadatum => metadatum.parent_meta_id == parentId);
-                console.log(childMetadata)
-                resolve( childMetadata );
-            })
-            .catch(error => {
-                reject( error );
-            });
-    });
-};
-
 export const cleanMetadata = ({ commit }) => {
     commit('cleanMetadata');
 };

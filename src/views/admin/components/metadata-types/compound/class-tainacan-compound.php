@@ -118,15 +118,15 @@ class Compound extends Metadata_Type {
 		
 		if ( $item_metadata->is_multiple() ) {
 			
-			$return .= '<div class="tainacan-compund-group">';
+			$return .= '<div class="tainacan-compound-group">';
 			
 			foreach ( $value as $compound_element ) {
 				
-				$return .= '<div class="tainacan-compund-metadatum">';
+				$return .= '<div class="tainacan-compound-metadatum">';
 				
 				foreach ( $compound_element as $meta ) {
 					if ( $meta instanceof Item_Metadata_Entity ) {
-						$return .= '<h4>' . $meta->get_metadatum()->get_name() . "</h4>\n";
+						$return .= '<label class="label">' . $meta->get_metadatum()->get_name() . "</label>\n";
 						$return .= '<p>' . $meta->get_value_as_html() . '</p>' . "\n\n";
 					}
 				}
@@ -142,10 +142,10 @@ class Compound extends Metadata_Type {
 			
 			foreach ( $value as $meta ) {
 				
-				$return .= '<div class="tainacan-compund-metadatum">';
+				$return .= '<div class="tainacan-metadatum">';
 				
 				if ( $meta instanceof Item_Metadata_Entity ) {
-					$return .= '<h4>' . $meta->get_metadatum()->get_name() . "</h4>\n";
+					$return .= '<label class="label">' . $meta->get_metadatum()->get_name() . "</label>\n";
 					$return .= '<p>' . $meta->get_value_as_html() . '</p>';
 				}
 				
