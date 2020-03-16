@@ -480,9 +480,9 @@
                                     </span>
                                 </a>
                                 <tainacan-form-item
-                                        v-for="(metadatum, index) of metadatumList"
+                                        v-for="(itemMetadatum, index) of metadatumList"
                                         :key="index"
-                                        :metadatum="metadatum"
+                                        :item-metadatum="itemMetadatum"
                                         :is-collapsed="metadataCollapses[index]"
                                         @changeCollapse="onChangeCollapse($event, index)"/>
 

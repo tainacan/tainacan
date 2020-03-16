@@ -8,12 +8,12 @@
                 :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNew"
                 :taxonomy-id="taxonomyId"
-                :metadatum="metadatum.metadatum"/>
+                :item-metadatum="itemMetadatum"/>
         <add-new-term
                 v-if="allowNew"
                 :component-type="getComponent"
                 :taxonomy-id="taxonomyId"
-                :metadatum="metadatum"
+                :item-metadatum="itemMetadatum"
                 :value="valueComponent"
                 @newTerm="reload"/>
     </div>
@@ -32,7 +32,7 @@
             AddNewTerm
         },
         props: {
-            metadatum: Object,
+            itemMetadatum: Object,
             value: [ Number, String, Array, Object ],
             disabled: false,
             forcedComponentType: '',
@@ -52,11 +52,11 @@
             getComponent() {
                 if (this.forcedComponentType)
                    return this.forcedComponentType;
-                else if(this.metadatum.metadatum &&
-                        this.metadatum.metadatum.metadata_type_options &&
-                        this.metadatum.metadatum.metadata_type_options.input_type
+                else if(this.itemMetadatum.metadatum &&
+                        this.itemMetadatum.metadatum.metadata_type_options &&
+                        this.itemMetadatum.metadatum.metadata_type_options.input_type
                         )
-                    return this.metadatum.metadatum.metadata_type_options.input_type;
+                    return this.itemMetadatum.metadatum.metadata_type_options.input_type;
             }
         },
         watch: {
@@ -64,13 +64,13 @@
                 this.$emit('input', val);
             }
         },
-        created(){
-            const metadata_type_options = this.metadatum.metadatum.metadata_type_options;
+        created() {
+            const metadata_type_options = this.itemMetadatum.metadatum.metadata_type_options;
 
             this.taxonomyId = metadata_type_options.taxonomy_id;
             this.taxonomy = metadata_type_options.taxonomy;
 
-            if (metadata_type_options && metadata_type_options.allow_new_terms && this.metadatum.item) 
+            if (metadata_type_options && metadata_type_options.allow_new_terms && this.itemMetadatum.item) 
                 this.allowNew = metadata_type_options.allow_new_terms == 'yes';
 
             this.getTermsId();
@@ -78,16 +78,16 @@
         methods: {
             getTermsId() {
                 let values = [];
-                if (this.value && this.metadatum.metadatum && this.getComponent != 'tainacan-taxonomy-tag-input') {
+                if (this.value && this.itemMetadatum.metadatum && this.getComponent != 'tainacan-taxonomy-tag-input') {
                     values = this.value.map(term => term.id) 
-                    this.valueComponent = (values.length >= 0 && this.metadatum.metadatum && this.metadatum.metadatum.multiple === 'no') ? values[0] : values;
-                } else if (this.value && this.metadatum.metadatum && this.getComponent == 'tainacan-taxonomy-tag-input') {
+                    this.valueComponent = (values.length >= 0 && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple === 'no') ? values[0] : values;
+                } else if (this.value && this.itemMetadatum.metadatum && this.getComponent == 'tainacan-taxonomy-tag-input') {
                     values = this.value.map((term) => { return { label: term.name, value: term.id } });
                     this.valueComponent = values;
                 }
             },
             reload($event) {
-                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatum.metadatum.id) {
+                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.itemMetadatum.metadatum.id) {
                     this.valueComponent = $event.values;
                     this.$emit('update-taxonomy-inputs', $event)
                 }

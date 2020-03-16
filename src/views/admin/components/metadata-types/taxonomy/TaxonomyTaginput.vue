@@ -3,7 +3,7 @@
         <b-taginput
                 expanded
                 :disabled="disabled"
-                :id="metadatumComponentId"
+                :id="itemMetadatum.metadatum.metadata_type_object.component + '-' + itemMetadatum.metadatum.slug"
                 size="is-small"
                 icon="magnify"
                 :allow-new="false"
@@ -44,7 +44,7 @@
 
     export default {
         props: {
-            metadatumComponentId: '',
+            itemMetadatum: Object,
             value: [ Number, String, Array ],
             allowNew: true,
             taxonomyId: Number,

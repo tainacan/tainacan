@@ -202,19 +202,19 @@
                             <!-- Metadata -------------------------------- -->
                             <div class="metadata-area">
                                 <div
-                                        v-for="(metadatum, index) of metadatumList"
+                                        v-for="(itemMetadatum, index) of metadatumList"
                                         :key="index"
                                         class="field">
-                                    <label class="label">{{ metadatum.metadatum.name }}</label>
+                                    <label class="label">{{ itemMetadatum.metadatum.name }}</label>
                                     <div
                                             :class="{ 
-                                                'metadata-type-textarea': metadatum.metadatum.metadata_type_object.component == 'tainacan-textarea',
-                                                'metadata-type-compound': metadatum.metadatum.metadata_type_object.component == 'tainacan-compound'
+                                                'metadata-type-textarea': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-textarea',
+                                                'metadata-type-compound': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound'
                                             }"
                                             class="content">
                                         <component 
-                                                :is="metadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ? 'div' : 'p'" 
-                                                v-html="metadatum.value_as_html != '' ? metadatum.value_as_html : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                                :is="itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ? 'div' : 'p'" 
+                                                v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
                                     </div>
                                 </div>
                             </div>

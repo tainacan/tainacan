@@ -31,7 +31,7 @@
         </p>
         <div 
                 class="metadata-taxonomy-list"
-                :id="metadatum.metadata_type_object.component + '-' + metadatum.slug">
+                :id="itemMetadatum.metadatum.metadata_type_object.component + '-' + itemMetadatum.metadatum.slug">
             <template v-for="(option, index) in options">
                 <b-checkbox
                         :key="index"
@@ -69,12 +69,11 @@
     import CheckboxRadioModal from '../../modals/checkbox-radio-modal.vue';
 
     export default {
-        
         props: {
             value: [ Number, String, Array ],
             disabled: false,
             taxonomyId: Number,
-            metadatum: Object
+            itemMetadatum: Object
         },
         data() {
             return {
@@ -105,7 +104,7 @@
 
             this.getTermsFromTaxonomy();
             this.$parent.$on('update-taxonomy-inputs', ($event) => {
-                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatum.id) {
+                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.itemMetadatum.metadatum.id) {
                     this.offset = 0;
                     this.getTermsFromTaxonomy();
                 }
@@ -192,12 +191,12 @@
                         parent: 0,
                         taxonomy_id: this.taxonomyId,
                         selected: !this.value ? [] : this.value,
-                        metadatumId: this.metadatum.id,
+                        metadatumId: this.itemMetadatum.metadatum.id,
                         taxonomy: this.taxonomy,
-                        collectionId: this.metadatum.collection_id,
+                        collectionId: this.itemMetadatum.metadatum.collection_id,
                         isTaxonomy: true,
                         query: '',
-                        metadatum: this.metadatum,
+                        metadatum: this.itemMetadatum.metadatum,
                         isCheckbox: true
                     },
                     events: {

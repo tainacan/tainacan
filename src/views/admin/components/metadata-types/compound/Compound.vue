@@ -14,7 +14,7 @@
             :is="'tainacan-form-item'"
             v-for="(child, index) in children"
             :key="index"
-            :metadatum="child"
+            :item-metadatum="child"
             :is-collapsed="childrenMetadataCollapses[index]"
             @changeCollapse="onChangeCollapse($event, index)"/>
 
@@ -25,7 +25,7 @@
     import { mapActions } from 'vuex';
     export default {
         props: {
-            metadatum: Object,
+            itemMetadatum: Object,
             value: [String, Number, Array],
             disabled: false
         },
@@ -44,18 +44,18 @@
                 'fetchChildrenMetadata'
             ]),
             createChildInputs() {
-                if (this.metadatum.metadatum &&
-                    this.metadatum.metadatum.metadata_type_options &&
-                    this.metadatum.metadatum.metadata_type_options.children_objects.length > 0 
+                if (this.itemMetadatum.metadatum &&
+                    this.itemMetadatum.metadatum.metadata_type_options &&
+                    this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
                 ) {
-                    for (let child of this.metadatum.metadatum.metadata_type_options.children_objects) {
+                    for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
                         this.children.push({
-                            parent_meta_id: this.metadatum.value[child.id] ? this.metadatum.value[child.id].parent_meta_id : 0,
-                            item: this.metadatum.item,
+                            parent_meta_id: this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].parent_meta_id : 0,
+                            item: this.itemMetadatum.item,
                             metadatum: child,
-                            value: this.metadatum.value[child.id] ? this.metadatum.value[child.id].value : [],
-                            value_as_html: this.metadatum.value[child.id] ? this.metadatum.value[child.id].value_as_html : '',
-                            value_as_string: this.metadatum.value[child.id] ? this.metadatum.value[child.id].value_as_string : ''
+                            value: this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].value : [],
+                            value_as_html: this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].value_as_html : '',
+                            value_as_string: this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].value_as_string : ''
                         });
                         this.childrenMetadataCollapses.push(true);
                     }

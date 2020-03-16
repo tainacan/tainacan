@@ -2,7 +2,7 @@
     <b-select
             expanded
             :disabled="disabled"
-            :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
+            :id="itemMetadatum.metadatum.metadata_type_object.component + '-' + itemMetadatum.metadatum.slug"
             :placeholder="$i18n.get('label_selectbox_init')"
             :value="value"
             @input="onSelected($event)">
@@ -21,14 +21,14 @@
 
     export default {
         props: {
-            metadatum: Object,
+            itemMetadatum: Object,
             value: [String, Number, Array],
             disabled: false,
         },
         computed: {
             getOptions(){
-                if (this.metadatum && this.metadatum.metadatum.metadata_type_options && this.metadatum.metadatum.metadata_type_options.options ) {
-                    const metadata = this.metadatum.metadatum.metadata_type_options.options;
+                if (this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.options ) {
+                    const metadata = this.itemMetadatum.metadatum.metadata_type_options.options;
                     return ( metadata ) ? metadata.split("\n") : [];
                 }
                 return [];

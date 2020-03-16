@@ -1,16 +1,16 @@
 <template>
-    <div :class="{ 'is-flex': metadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
+    <div :class="{ 'is-flex': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
         <b-taginput
                 expanded
                 :disabled="disabled"
-                :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
+                :id="itemMetadatum.metadatum.metadata_type_object.component + '-' + itemMetadatum.metadatum.slug"
                 :value="selected"
                 size="is-small"
                 icon="magnify"
                 @input="onInput"
                 @blur="onBlur"
                 :data="options"
-                :maxtags="maxtags != undefined ? maxtags : (metadatum.metadatum.multiple == 'yes' || allowNew === true ? 100 : 1)"
+                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? 100 : 1)"
                 autocomplete
                 attached
                 :placeholder="$i18n.get('instruction_type_existing_item')"
@@ -50,7 +50,7 @@
 
     export default {       
         props: {
-            metadatum: Object,
+            itemMetadatum: Object,
             maxtags: undefined,
             disabled: false,
             allowNew: true,
@@ -71,10 +71,10 @@
             }
         },
         created() {
-            this.collectionId = ( this.metadatum && this.metadatum.metadatum.metadata_type_options && this.metadatum.metadatum.metadata_type_options.collection_id ) ? this.metadatum.metadatum.metadata_type_options.collection_id : '';
-            if (this.metadatum.value && (Array.isArray( this.metadatum.value ) ? this.metadatum.value.length > 0 : true )) {
-                let query = qs.stringify({ postin: ( Array.isArray( this.metadatum.value ) ) ? this.metadatum.value : [ this.metadatum.value ]  });
-                query += this.metadatum.metadatum.metadata_type_options.search ? '&fetch_only_meta=' + this.metadatum.metadatum.metadata_type_options.search : '';
+            this.collectionId = ( this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.collection_id ) ? this.itemMetadatum.metadatum.metadata_type_options.collection_id : '';
+            if (this.itemMetadatum.value && (Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value.length > 0 : true )) {
+                let query = qs.stringify({ postin: ( Array.isArray( this.itemMetadatum.value ) ) ? this.itemMetadatum.value : [ this.itemMetadatum.value ]  });
+                query += this.itemMetadatum.metadatum.metadata_type_options.search ? '&fetch_only_meta=' + this.itemMetadatum.metadatum.metadata_type_options.search : '';
                 axios.get('/collection/' + this.collectionId + '/items?' + query + '&nopaging=1&fetch_only=title,thumbnail')
                     .then( res => {
                         if (res.data.items) {
@@ -125,7 +125,7 @@
                     return;
 
                 // There is already one value set and is not multiple
-                if (this.selected.length > 0 && this.metadatum.metadatum.multiple === 'no')
+                if (this.selected.length > 0 && this.itemMetadatum.metadatum.multiple === 'no')
                     return;
 
                 if (this.searchQuery !== '') {
@@ -162,7 +162,7 @@
             getItemLabel(item) {
                 let label = '';
                 for (let m in item.metadata) {
-                    if (item.metadata[m].id == this.metadatum.metadatum.metadata_type_options.search)
+                    if (item.metadata[m].id == this.itemMetadatum.metadatum.metadata_type_options.search)
                         label = item.metadata[m].value_as_string;
                 }
                 if (label != '' && label != item.title && item.title != '')
@@ -175,13 +175,13 @@
             getQueryString( search ) {
                 let query = [];
 
-                if (this.metadatum.metadatum.metadata_type_options &&
-                    this.metadatum.metadatum.metadata_type_options.search)
+                if (this.itemMetadatum.metadatum.metadata_type_options &&
+                    this.itemMetadatum.metadatum.metadata_type_options.search)
                 {
                     query['metaquery'] = [];
                     
                     query['metaquery'][0] = {
-                        key: this.metadatum.metadatum.metadata_type_options.search,
+                        key: this.itemMetadatum.metadatum.metadata_type_options.search,
                         value: search,
                         compare: 'LIKE'
                     }
@@ -190,7 +190,7 @@
                     query['search'] = search;
                 }
                 query['fetch_only'] = 'title,thumbnail';
-                query['fetch_only_meta'] = this.metadatum.metadatum.metadata_type_options.search;
+                query['fetch_only_meta'] = this.itemMetadatum.metadatum.metadata_type_options.search;
                 query['perpage'] = 12;
                 query['paged'] = this.page;
 

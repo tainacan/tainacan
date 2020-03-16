@@ -91,7 +91,7 @@
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
                                 :is="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component"
-                                :metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID)}"
+                                :item-metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID)}"
                                 class="tainacan-bulk-edition-field"
                                 @input="addToBulkEditionProcedures($event, 'oldValue', criterion)"
                         />
@@ -112,7 +112,7 @@
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
                                 :is="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component"
-                                :metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID)}"
+                                :item-metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID)}"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                                 @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
                         />
@@ -170,7 +170,7 @@
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting"
                                 :is="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component"
-                                :metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID)}"
+                                :item-metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID)}"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                 @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
                         />

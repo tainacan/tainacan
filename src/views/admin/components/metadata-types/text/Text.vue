@@ -1,7 +1,7 @@
 <template>
     <b-input
             :disabled="disabled"
-            :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
+            :id="itemMetadatum.metadatum.metadata_type_object.component + '-' + itemMetadatum.metadatum.slug"
             :value="value"
             @input="onInput($event)"
             @blur="onBlur"/>
@@ -10,7 +10,7 @@
 <script>
     export default {
         props: {
-            metadatum: Object,
+            itemMetadatum: Object,
             value: [String, Number, Array],
             disabled: false
         },

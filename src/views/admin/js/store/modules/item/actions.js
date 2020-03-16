@@ -7,9 +7,10 @@ export const sendMetadatum = ( { commit }, { item_id, metadatum_id, values }) =>
             values: values
         })
         .then( res => {
-            commit('setSingleMetadata', { item_id: item_id, metadatum_id: metadatum_id, values: values });
+            const metadatum = res.data
+            commit('setSingleMetadatum', metadatum);
             commit('setLastUpdated');
-            resolve( res.data );
+            resolve( metadatum );
         })
         .catch(error => {
             reject( error);

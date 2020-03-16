@@ -32,7 +32,7 @@
         <div class="metadata-taxonomy-list">
             <b-radio
                     :disabled="disabled"
-                    :id="metadatum.metadata_type_object.component + '-' + metadatum.slug"
+                    :id="itemMetadatum.metadatum.metadata_type_object.component + '-' + itemMetadatum.metadatum.slug"
                     v-model="checked"
                     @input="onChecked('')"
                     :native-value="''"
@@ -40,7 +40,7 @@
                 {{ $i18n.get('clear_radio') }}
             </b-radio>
             <template
-                    :id="metadatum.metadata_type_object.component + '-' + metadatum.slug"
+                    :id="itemMetadatum.metadatum.metadata_type_object.component + '-' + itemMetadatum.metadatum.slug"
                     v-for="(option, index) in options">
                 <b-radio
                         :disabled="disabled"
@@ -82,7 +82,7 @@
             value: [ Number, String, Array ],
             disabled: false,
             taxonomyId: Number,
-            metadatum: Object
+            itemMetadatum: Object
         },
         data() {
             return {
@@ -110,7 +110,7 @@
         created() {
             this.getTermsFromTaxonomy();
             this.$parent.$on('update-taxonomy-inputs', ($event) => {
-                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatum.id) {
+                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.itemMetadatum.metadatum.id) {
                     this.offset = 0;
                     this.getTermsFromTaxonomy();
                 }
@@ -201,12 +201,12 @@
                         parent: 0,
                         taxonomy_id: this.taxonomyId,
                         selected: !this.value ? [] : this.value,
-                        metadatumId: this.metadatum.id,
+                        metadatumId: this.itemMetadatum.id,
                         taxonomy: this.taxonomy,
-                        collectionId: this.metadatum.collection_id,
+                        collectionId: this.itemMetadatum.collection_id,
                         isTaxonomy: true,
                         query: '',
-                        metadatum: this.metadatum,
+                        metadatum: this.itemMetadatum,
                         isCheckbox: false
                     },
                     events: {

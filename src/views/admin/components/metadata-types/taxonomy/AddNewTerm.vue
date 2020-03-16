@@ -101,7 +101,7 @@
 
     export default {
         props: {
-            metadatum: [Number,String],
+            itemMetadatum: [Number,String],
             taxonomyId: [Number,String],
             value: [ Array, Boolean, Number ],
             componentType: ''
@@ -117,8 +117,8 @@
                 parentTermName: '',
                 isAddingNewTerm: false,
                 isFetchingParentTerms: false,
-                metadatumId: this.metadatum.metadatum.id,
-                itemId: this.metadatum.item.id,
+                metadatumId: this.itemMetadatum.metadatum.id,
+                itemId: this.itemMetadatum.item.id,
                 formErrors: {},
                 parentTermSearchQuery: '',
                 parentTermSearchOffset: 0
@@ -227,7 +227,7 @@
                             let id = res.id ? res.id : res.data.id;
                             let val = this.value;
 
-                            if (!Array.isArray(val) && this.metadatum.metadatum.multiple === 'no') {
+                            if (!Array.isArray(val) && this.itemMetadatum.metadatum.multiple === 'no') {
                                 axios.patch(`/item/${this.itemId}/metadata/${this.metadatumId}`, {
                                     values: id,
                                 }).then(() => {

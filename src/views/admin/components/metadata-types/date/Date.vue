@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-input
-                :id="metadatum.metadatum.metadata_type_object.component + '-' + metadatum.metadatum.slug"
+                :id="itemMetadatum.metadatum.metadata_type_object.component + '-' + itemMetadatum.metadatum.slug"
                 :disabled="disabled"
                 class="input"
                 :class="{'is-danger': isInvalidDate && dateValue}"
@@ -41,7 +41,7 @@
     export default {
         mixins: [ dateInter ],
         props: {
-            metadatum: Object,
+            itemMetadatum: Object,
             value: [String, Number, Array],
             disabled: false,
         },

@@ -62,26 +62,27 @@ export const cleanMetadata = (state) => {
     state.metadata = [];
 }
 
-export const setSingleMetadatum = (state, metadatum) => {
-    if (metadatum.metadatum.parent > 0) {
-        let index = state.metadata.findIndex(itemMetadata => itemMetadata.metadatum.id === metadatum.metadatum.id);
+export const setSingleMetadatum = (state, itemMetadatum) => {
+  
+    if (itemMetadatum.metadatum.parent <= 0) {
+        let index = state.metadata.findIndex(anItemMetadatum => anItemMetadatum.metadatum.id == itemMetadatum.metadatum.id);
         if (index >= 0)
-            Vue.set( state.metadata, index, metadatum );
+            Vue.set( state.metadata, index, itemMetadatum );
         else
-            state.metadata.push( metadatum );
+            state.metadata.push( itemMetadatum );
     } else {
-        let parentIndex = state.metadata.findIndex(itemMetadata => itemMetadata.metadatum.id === metadatum.metadatum.id);
+
+        let parentIndex = state.metadata.findIndex(anItemMetadatum => anItemMetadatum.metadatum.id == itemMetadatum.metadatum.parent);
         
         if (parentIndex >= 0) {
             let currentParent = state.metadata[parentIndex];
-            currentParent.value[metadatum.metadatum.id] = {
-                parent_meta_id: metadatum.value[child.id] ? metadatum.value[child.id].parent_meta_id : 0,
-                value: metadatum.value[child.id] ? metadatum.value[child.id].value : [],
-                value_as_html: metadatum.value[child.id] ? metadatum.value[child.id].value_as_html : '',
-                value_as_string: metadatum.value[child.id] ? metadatum.value[child.id].value_as_string : ''
+            currentParent.value[itemMetadatum.metadatum.id] = {
+                parent_meta_id: itemMetadatum.parent_meta_id ? itemMetadatum.parent_meta_id : 0,
+                value: itemMetadatum.value ? itemMetadatum.value : [],
+                value_as_html: itemMetadatum.value_as_html ? itemMetadatum.value_as_html : '',
+                value_as_string: itemMetadatum.value_as_string ? itemMetadatum.value_as_string : ''
             };
             Vue.set(state.metadata, parentIndex, currentParent);
-            console.log(state.metadata)
         }
     }
 }
