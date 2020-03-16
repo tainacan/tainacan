@@ -50,7 +50,7 @@
                 ) {
                     for (let child of this.metadatum.metadatum.metadata_type_options.children_objects) {
                         this.children.push({
-                            parent_meta_id: this.metadatum.parent_meta_id,
+                            parent_meta_id: this.metadatum.value[child.id] ? this.metadatum.value[child.id].parent_meta_id : 0,
                             item: this.metadatum.item,
                             metadatum: child,
                             value: this.metadatum.value[child.id] ? this.metadatum.value[child.id].value : [],

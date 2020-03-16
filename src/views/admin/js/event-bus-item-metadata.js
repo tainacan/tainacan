@@ -4,8 +4,7 @@ import store from './store/store'
 export const eventBusItemMetadata = new Vue({
     store,
     data: {
-        errors : [],
-        compoundsMap: []
+        errors : []
     },
     watch: {
         errors() {
@@ -40,12 +39,12 @@ export const eventBusItemMetadata = new Vue({
                     values: Array.isArray(values[0]) ? values[0] : values,
                     parent_meta_id: parentMetaId ? parentMetaId : null
                 })
-                    .then(() => { 
+                    .then((updatedMetadatum) => { 
                         this.$emit('isUpdatingValue', false);
                         let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId );
-                        if (index >= 0) {
+                        if (index >= 0)
                             this.errors.splice( index, 1);
-                        }
+                        
                         this.$emit('updateErrorMessageOf#' + metadatumId, this.errors[index]);
                     })
                     .catch((error) => {

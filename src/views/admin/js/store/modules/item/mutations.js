@@ -62,13 +62,27 @@ export const cleanMetadata = (state) => {
     state.metadata = [];
 }
 
-export const setSingleMetadatum = ( state, metadatum) => {
-    let index = state.metadata.findIndex(itemMetadata => itemMetadata.metadatum.id === metadatum.metadatum.id);
-    if ( index >= 0){
-        //state.metadatum[index] = metadatum;
-        Vue.set( state.metadata, index, metadatum );
+export const setSingleMetadatum = (state, metadatum) => {
+    if (metadatum.metadatum.parent > 0) {
+        let index = state.metadata.findIndex(itemMetadata => itemMetadata.metadatum.id === metadatum.metadatum.id);
+        if (index >= 0)
+            Vue.set( state.metadata, index, metadatum );
+        else
+            state.metadata.push( metadatum );
     } else {
-        state.metadata.push( metadatum );
+        let parentIndex = state.metadata.findIndex(itemMetadata => itemMetadata.metadatum.id === metadatum.metadatum.id);
+        
+        if (parentIndex >= 0) {
+            let currentParent = state.metadata[parentIndex];
+            currentParent.value[metadatum.metadatum.id] = {
+                parent_meta_id: metadatum.value[child.id] ? metadatum.value[child.id].parent_meta_id : 0,
+                value: metadatum.value[child.id] ? metadatum.value[child.id].value : [],
+                value_as_html: metadatum.value[child.id] ? metadatum.value[child.id].value_as_html : '',
+                value_as_string: metadatum.value[child.id] ? metadatum.value[child.id].value_as_string : ''
+            };
+            Vue.set(state.metadata, parentIndex, currentParent);
+            console.log(state.metadata)
+        }
     }
 }
 

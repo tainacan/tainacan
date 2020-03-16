@@ -823,6 +823,7 @@ export default {
             return this.getCollection()
         },
         metadatumList() {
+            console.log(this.getMetadata())
             return JSON.parse(JSON.stringify(this.getMetadata()));
         },
         lastUpdated() {
