@@ -10,9 +10,8 @@ export const eventBusItemMetadata = new Vue({
         errors() {
             this.$emit('hasErrorsOnForm', this.errors.length > 0);
 
-            for (let error of this.errors) {
+            for (let error of this.errors)
                 this.$emit('updateErrorMessageOf#' + error.metadatum_id, error);
-            }
         }
     },
     created() {

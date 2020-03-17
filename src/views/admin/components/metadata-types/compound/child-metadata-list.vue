@@ -205,6 +205,7 @@
             }
         },
         beforeRouteLeave ( to, from, next ) {
+            
             let hasUnsavedForms = false;
             for (let editForm in this.editForms) {
                 if (!this.editForms[editForm].saved) 
@@ -357,7 +358,7 @@
             },
             editMetadatum(metadatum) {
                 this.openedMetadatumId = metadatum.id;
-                
+
                 // First time opening
                 if (this.editForms[this.openedMetadatumId] == undefined) {
                     this.editForms[this.openedMetadatumId] = JSON.parse(JSON.stringify(metadatum));
@@ -374,6 +375,7 @@
                 this.formWithErrors = '';
                 delete this.editForms[this.openedMetadatumId];
                 this.openedMetadatumId = '';
+                this.refreshMetadata();
                 this.$router.push({ query: {}});
             },
             onEditionCanceled() {
@@ -404,6 +406,7 @@
                             .then((metadata) => {
                                 this.isLoadingMetadata = false;
                                 this.childrenMetadata = metadata;
+
                                 // Checks URL as router watcher would not wait for list to load
                                 if (this.$route.query.edit != undefined) {
                                     let existingMetadataIndex = this.childrenMetadata.findIndex((metadatum) => metadatum.id == this.$route.query.edit);

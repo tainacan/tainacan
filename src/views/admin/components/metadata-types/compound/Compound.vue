@@ -36,6 +36,11 @@
                 childrenMetadataCollapses: [],
             }
         },
+        watch: {
+            itemMetadatum() {
+                this.createChildInputs();
+            }
+        },
         created() {
             this.createChildInputs();
         },
@@ -44,18 +49,22 @@
                 'fetchChildrenMetadata'
             ]),
             createChildInputs() {
+                this.children = [];
+
                 if (this.itemMetadatum.metadatum &&
                     this.itemMetadatum.metadatum.metadata_type_options &&
                     this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
                 ) {
                     for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
                         let values = [];
-
-                        if (Array.isArray(this.itemMetadatum.value))
+                        
+                        if (Array.isArray(this.itemMetadatum.value)) {
+                            // console.log(this.itemMetadatum.value)
                             values = this.itemMetadatum.value.map((aValue) => aValue[child.id] ? aValue[child.id].value : [])
-                        else
+                        } else
                            values = this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].value : []
                         
+                        //console.log(this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].parent_meta_id : 0)
                         this.children.push({
                             parent_meta_id: this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].parent_meta_id : 0,
                             item: this.itemMetadatum.item,

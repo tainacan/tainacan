@@ -76,12 +76,27 @@ export const setSingleMetadatum = (state, itemMetadatum) => {
         
         if (parentIndex >= 0) {
             let currentParent = state.itemMetadata[parentIndex];
-            currentParent.value[itemMetadatum.metadatum.id] = {
+            let updatedParent = {
                 parent_meta_id: itemMetadatum.parent_meta_id ? itemMetadatum.parent_meta_id : 0,
                 value: itemMetadatum.value ? itemMetadatum.value : [],
                 value_as_html: itemMetadatum.value_as_html ? itemMetadatum.value_as_html : '',
                 value_as_string: itemMetadatum.value_as_string ? itemMetadatum.value_as_string : ''
             };
+
+            if (Array.isArray(currentParent.value)) {
+                let metadatumIndex = currentParent.value.findIndex((aValue) => aValue.parent_meta_id == itemMetadatum.parent_meta_id);
+
+                if (metadatumIndex >= 0)
+                    currentParent.value[metadatumIndex][itemMetadatum.metadatum.id] = updatedParent;
+                else {
+                    const parentObject = {}
+                    parentObject[itemMetadatum.metadatum.id] = updatedParent;
+                    currentParent.value.push(parentObject);
+                }
+            } else {
+                currentParent.value['' + itemMetadatum.metadatum.id] = updatedParent;
+            }
+            console.log(currentParent)
             Vue.set(state.itemMetadata, parentIndex, currentParent);
         }
     }

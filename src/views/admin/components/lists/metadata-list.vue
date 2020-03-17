@@ -280,6 +280,7 @@ export default {
         }
     },
     beforeRouteLeave ( to, from, next ) {
+        
         let hasUnsavedForms = false;
         for (let editForm in this.editForms) {
             if (!this.editForms[editForm].saved) 

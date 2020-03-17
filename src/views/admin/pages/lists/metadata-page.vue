@@ -62,6 +62,9 @@ export default {
     created() {
         this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
     },
+    beforeRouteLeave ( to, from, next ) {
+        next();
+    },
     methods: {
          ...mapGetters('collection', [
             'getCollection',

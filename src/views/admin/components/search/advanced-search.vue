@@ -278,7 +278,8 @@
                         isRepositoryLevel: this.isRepositoryLevel,
                         isContextEdit: false,
                         includeDisabled: false,
-                        isAdvancedSearch: true
+                        isAdvancedSearch: true,
+                        parent: '0'
                     }).then((resp) => {
                             resp.request
                                 .then((metadata) => {
