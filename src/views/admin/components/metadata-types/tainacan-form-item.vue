@@ -2,13 +2,16 @@
     <b-field
             :addons="false"
             :message="errorMessage"
-            :type="metadatumTypeMessage">
+            :type="errorMessage ? 'is-danger' : ''">
         <span   
                 class="collapse-handle"
-                @click="$emit('changeCollapse', metadatumTypeMessage != 'is-danger' ? !isCollapsed : true)">
+                @click="$emit('changeCollapse', errorMessage ? true : isCollapsed)">
             <span class="icon">
                 <i 
-                        :class="{ 'tainacan-icon-arrowdown' : isCollapsed || metadatumTypeMessage == 'is-danger', 'tainacan-icon-arrowright' : !(isCollapsed || metadatumTypeMessage == 'is-danger') }"
+                        :class="{
+                            'tainacan-icon-arrowdown' : isCollapsed || errorMessage,
+                            'tainacan-icon-arrowright' : !(isCollapsed || errorMessage)
+                        }"
                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
             </span>
             <label 
@@ -27,7 +30,7 @@
             <span
                     v-if="itemMetadatum.metadatum.required == 'yes'"
                     class="required-metadatum-asterisk"
-                    :class="metadatumTypeMessage">
+                    :class="errorMessage ? 'is-danger' : ''">
                 *
             </span>
             <span class="metadata-type">
@@ -39,30 +42,30 @@
         </span>
         <transition name="filter-item">
             <div   
-                    v-show="isCollapsed || metadatumTypeMessage == 'is-danger'"
+                    v-show="isCollapsed || errorMessage"
                     v-if="isTextInputComponent( itemMetadatum.metadatum.metadata_type_object.component )">
                 <component 
                         :is="itemMetadatum.metadatum.metadata_type_object.component"
-                        v-model="inputs[0]" 
+                        v-model="values[0]" 
                         :item-metadatum="itemMetadatum"
-                        @input="changeValue()"
-                        @blur="performValueChange()"/>
-                <template v-if="itemMetadatum.metadatum.multiple == 'yes' && inputs.length > 1">
+                        @input="changeValue"
+                        @blur="performValueChange"/>
+                <template v-if="itemMetadatum.metadatum.multiple == 'yes' && values.length > 1">
                     <transition-group
                             name="filter-item"
                             class="multiple-inputs">
-                        <template v-for="(input, index) of inputs">
+                        <template v-for="(value, index) of values">
                             <component 
                                     v-if="index > 0"
                                     :key="index"
                                     :is="itemMetadatum.metadatum.metadata_type_object.component"
-                                    v-model="inputs[index]" 
+                                    v-model="values[index]" 
                                     :item-metadatum="itemMetadatum"
-                                    @input="changeValue()"
-                                    @blur="performValueChange()"/>
+                                    @input="changeValue"
+                                    @blur="performValueChange"/>
                             <a 
                                     v-if="index > 0" 
-                                    @click="removeInput(index)"
+                                    @click="removeValue(index)"
                                     class="add-link"
                                     :key="index">
                                 <b-icon
@@ -76,7 +79,7 @@
                 </template>
                 <template v-if="itemMetadatum.metadatum.multiple == 'yes'">
                     <a 
-                            @click="addInput"
+                            @click="addValue"
                             class="is-block add-link">
                         <span class="icon is-small">
                             <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
@@ -92,7 +95,7 @@
                     v-if="!isTextInputComponent( itemMetadatum.metadatum.metadata_type_object.component )">
                 <component
                         :is="itemMetadatum.metadatum.metadata_type_object.component"
-                        v-model="inputs"
+                        v-model="values"
                         :item-metadatum="itemMetadatum"
                         @input="changeValue()"
                         @blur="performValueChange()"/>
@@ -112,17 +115,12 @@
         },
         data(){
             return {
-                inputs: [],
+                values: [],
                 errorMessage: ''
             }
         },
-        computed: {
-            metadatumTypeMessage() {
-                return this.errorMessage ? 'is-danger' : ''
-            }
-        },
         created() {
-            this.createInputs();
+            this.setInitialValues();
             eventBusItemMetadata.$on('updateErrorMessageOf#' + this.itemMetadatum.metadatum.id, (errors) => {
                 let updatedErrorMessage = '';
                 if (errors && this.itemMetadatum.metadatum.id == errors.metadatum_id && errors.errors) {
@@ -142,8 +140,9 @@
                 this.performValueChange();
             }, 800),
             performValueChange() {
-                if (this.inputs && this.inputs.length > 0 && this.inputs[0] && this.inputs[0].value) {
-                    let terms = this.inputs.map(term => term.value)
+
+                if (this.values && this.values.length > 0 && this.values[0] && this.values[0].value) {
+                    let terms = this.values.map(term => term.value)
                     
                     if (this.itemMetadatum.value instanceof Array) {
                         let equal = [];
@@ -159,45 +158,46 @@
                     }
                 } else if (this.itemMetadatum.value.constructor.name == 'Object') {
 
-                    if (this.itemMetadatum.value.id == this.inputs)
+                    if (this.itemMetadatum.value.id == this.values)
                         return;
 
                 } else if (this.itemMetadatum.value instanceof Array) {  
 
                     let equal = [];
 
-                    for (let meta of this.inputs) {
+                    for (let meta of this.values) {
                         let foundIndex = this.itemMetadatum.value.findIndex(element => meta == element.id);
 
                         if (foundIndex >= 0)
                             equal.push(this.itemMetadatum.value[foundIndex]);
                     }
 
-                    if (equal.length == this.inputs.length && this.itemMetadatum.value.length <= equal.length)
+                    if (equal.length == this.values.length && this.itemMetadatum.value.length <= equal.length)
                         return;
-                } else if (this.inputs && this.inputs.length == 1 && this.inputs[0] == this.itemMetadatum.value) {
+                        
+                } else if (this.values && this.values.length == 1 && this.values[0] == this.itemMetadatum.value) {
                     return
                 }
 
                 eventBusItemMetadata.$emit('input', {
                     itemId: this.itemMetadatum.item.id,
                     metadatumId: this.itemMetadatum.metadatum.id,
-                    values: this.inputs ? this.inputs : '',
+                    values: this.values ? this.values : '',
                     parentMetaId: this.itemMetadatum.parent_meta_id
                 });
             },
-            createInputs() {
+            setInitialValues() {
                 if (this.itemMetadatum.value instanceof Array)
-                    this.inputs = this.itemMetadatum.value.slice(0); // This way we garantee this.inputs is a copy of the contents of this.itemMetadatum.value, instead of a reference to it
+                    this.values = this.itemMetadatum.value.slice(0); // This way we garantee this.values is a copy of the contents of this.itemMetadatum.value, instead of a reference to it
                 else
-                    this.itemMetadatum.value == null || this.itemMetadatum.value == undefined ? this.inputs = [] : this.inputs.push(this.itemMetadatum.value);
+                    this.itemMetadatum.value == null || this.itemMetadatum.value == undefined ? this.values = [] : this.values.push(this.itemMetadatum.value);
             },
-            addInput(){
-                this.inputs.push('');
+            addValue(){
+                this.values.push('');
                 this.changeValue();
             },
-            removeInput(index) {
-                this.inputs.splice(index, 1);
+            removeValue(index) {
+                this.values.splice(index, 1);
                 this.changeValue();
             },
             isTextInputComponent(component) {
