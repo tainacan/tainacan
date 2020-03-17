@@ -43,14 +43,14 @@
         <transition name="filter-item">
             <div   
                     v-show="isCollapsed || errorMessage"
-                    v-if="isTextInputComponent( itemMetadatum.metadatum.metadata_type_object.component )">
+                    v-if="isTextInputComponent">
                 <component 
-                        :is="itemMetadatum.metadatum.metadata_type_object.component"
+                        :is="metadatumComponent"
                         v-model="values[0]" 
                         :item-metadatum="itemMetadatum"
                         @input="changeValue"
                         @blur="performValueChange"/>
-                <template v-if="itemMetadatum.metadatum.multiple == 'yes' && values.length > 1">
+                <template v-if="isMultiple && values.length > 1">
                     <transition-group
                             name="filter-item"
                             class="multiple-inputs">
@@ -58,7 +58,7 @@
                             <component 
                                     v-if="index > 0"
                                     :key="index"
-                                    :is="itemMetadatum.metadatum.metadata_type_object.component"
+                                    :is="metadatumComponent"
                                     v-model="values[index]" 
                                     :item-metadatum="itemMetadatum"
                                     @input="changeValue"
@@ -77,7 +77,7 @@
                         </template>
                     </transition-group>
                 </template>
-                <template v-if="itemMetadatum.metadatum.multiple == 'yes'">
+                <template v-if="isMultiple">
                     <a 
                             @click="addValue"
                             class="is-block add-link">
@@ -92,13 +92,13 @@
         <transition name="filter-item">
             <div 
                     v-show="isCollapsed"
-                    v-if="!isTextInputComponent( itemMetadatum.metadatum.metadata_type_object.component )">
+                    v-if="!isTextInputComponent">
                 <component
-                        :is="itemMetadatum.metadatum.metadata_type_object.component"
+                        :is="metadatumComponent"
                         v-model="values"
                         :item-metadatum="itemMetadatum"
-                        @input="changeValue()"
-                        @blur="performValueChange()"/>
+                        @input="changeValue"
+                        @blur="performValueChange"/>
             </div>
         </transition>
     </b-field>
@@ -119,6 +119,18 @@
                 errorMessage: ''
             }
         },
+        computed: {
+            metadatumComponent() {
+                return this.itemMetadatum.metadatum.metadata_type_object.component;
+            },
+            isMultiple() {
+                return this.itemMetadatum.metadatum.multiple == 'yes';
+            },
+            isTextInputComponent() {
+                const array = ['tainacan-relationship','tainacan-taxonomy'];
+                return !(array.indexOf(this.metadatumComponent) >= 0 );
+            }
+        },
         created() {
             this.setInitialValues();
             eventBusItemMetadata.$on('updateErrorMessageOf#' + this.itemMetadatum.metadatum.id, (errors) => {
@@ -136,61 +148,68 @@
             eventBusItemMetadata.$off('updateErrorMessageOf#' + this.itemMetadatum.metadatum.id);
         },
         methods: {
+            // 'this.values' is always an array for this component, even if it is single valued.
+            setInitialValues() {
+                if (this.itemMetadatum.value instanceof Array)
+                    this.values = this.itemMetadatum.value.slice(0); // This way we garantee this.values is a copy of the contents of this.itemMetadatum.value, instead of a reference to it
+                else
+                    this.itemMetadatum.value == null || this.itemMetadatum.value == undefined ? this.values = [] : this.values.push(this.itemMetadatum.value);
+            },
             changeValue: _.debounce(function() {
                 this.performValueChange();
             }, 800),
             performValueChange() {
 
-                if (this.values && this.values.length > 0 && this.values[0] && this.values[0].value) {
-                    let terms = this.values.map(term => term.value)
-                    
-                    if (this.itemMetadatum.value instanceof Array) {
-                        let equal = [];
+                // Compound metadata do not emit values, only their children.
+                if (this.metadatumComponent == 'tainacan-compound')
+                    return;
 
-                        for (let meta of terms) {
-                            let foundIndex = this.itemMetadatum.value.findIndex(element => meta == element.id);
+                // This routine avoids calling the API if the value did not changed
+                switch(this.itemMetadatum.value.constructor.name) {
+
+                    // Multivalored Metadata requires checking the whole array
+                    case 'Array': {
+
+                        let equal = [];
+                        let currentValues = [];
+
+                        // An array of terms
+                        if (this.values[0].constructor.name == 'Object')
+                            currentValues = this.values.map(term => term.value)
+                        else
+                            currentValues = this.values;
+                        
+                        for (let value of currentValues) {
+                            let foundIndex = this.itemMetadatum.value.findIndex(element => value == element.id);
                             if (foundIndex >= 0)
                                 equal.push(this.itemMetadatum.value[foundIndex]);
                         }
 
-                        if (equal.length == terms.length && this.itemMetadatum.value.length <= equal.length)
+                        if (equal.length == currentValues.length && this.itemMetadatum.value.length <= equal.length)
                             return;
+
+                        break;
                     }
-                } else if (this.itemMetadatum.value.constructor.name == 'Object') {
+                    
+                    // A single term value
+                    case 'Object':
+                        if (this.values[0] == this.itemMetadatum.value.id)
+                            return;
+                        break;
 
-                    if (this.itemMetadatum.value.id == this.values)
-                        return;
-
-                } else if (this.itemMetadatum.value instanceof Array) {  
-
-                    let equal = [];
-
-                    for (let meta of this.values) {
-                        let foundIndex = this.itemMetadatum.value.findIndex(element => meta == element.id);
-
-                        if (foundIndex >= 0)
-                            equal.push(this.itemMetadatum.value[foundIndex]);
-                    }
-
-                    if (equal.length == this.values.length && this.itemMetadatum.value.length <= equal.length)
-                        return;
-                        
-                } else if (this.values && this.values.length == 1 && this.values[0] == this.itemMetadatum.value) {
-                    return
+                    // Any single metadatum value that is not a term
+                    default:
+                        if (this.values[0] == this.itemMetadatum.value)
+                            return;
                 }
 
+                // If none is the case, the value is update request is sent to the API
                 eventBusItemMetadata.$emit('input', {
                     itemId: this.itemMetadatum.item.id,
                     metadatumId: this.itemMetadatum.metadatum.id,
                     values: this.values ? this.values : '',
                     parentMetaId: this.itemMetadatum.parent_meta_id
                 });
-            },
-            setInitialValues() {
-                if (this.itemMetadatum.value instanceof Array)
-                    this.values = this.itemMetadatum.value.slice(0); // This way we garantee this.values is a copy of the contents of this.itemMetadatum.value, instead of a reference to it
-                else
-                    this.itemMetadatum.value == null || this.itemMetadatum.value == undefined ? this.values = [] : this.values.push(this.itemMetadatum.value);
             },
             addValue(){
                 this.values.push('');
@@ -199,10 +218,6 @@
             removeValue(index) {
                 this.values.splice(index, 1);
                 this.changeValue();
-            },
-            isTextInputComponent(component) {
-                const array = ['tainacan-relationship','tainacan-taxonomy'];
-                return !(array.indexOf(component) >= 0 );
             }
         }
     }
