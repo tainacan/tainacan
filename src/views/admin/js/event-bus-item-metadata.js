@@ -33,7 +33,7 @@ export const eventBusItemMetadata = new Vue({
                     values = onlyValues;
                 }
 
-                this.$store.dispatch('item/updateMetadata', { 
+                this.$store.dispatch('item/updateItemMetadatum', { 
                     item_id: itemId, 
                     metadatum_id: metadatumId, 
                     values: Array.isArray(values[0]) ? values[0] : values,

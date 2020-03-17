@@ -174,7 +174,7 @@
                         let currentValues = [];
 
                         // An array of terms
-                        if (this.values[0].constructor.name == 'Object')
+                        if (this.values.length && this.values[0].constructor.name == 'Object')
                             currentValues = this.values.map(term => term.value)
                         else
                             currentValues = this.values;
@@ -193,16 +193,16 @@
                     
                     // A single term value
                     case 'Object':
-                        if (this.values[0] == this.itemMetadatum.value.id)
+                        if (this.values.length && this.values[0] == this.itemMetadatum.value.id)
                             return;
                         break;
 
                     // Any single metadatum value that is not a term
                     default:
-                        if (this.values[0] == this.itemMetadatum.value)
+                        if (this.values.length && this.values[0] == this.itemMetadatum.value)
                             return;
                 }
-
+                
                 // If none is the case, the value is update request is sent to the API
                 eventBusItemMetadata.$emit('input', {
                     itemId: this.itemMetadatum.item.id,

@@ -1,5 +1,5 @@
-export const getMetadata =  state => {
-    return state.metadata;
+export const getItemMetadata =  state => {
+    return state.itemMetadata;
 }
 
 export const getItem = state => {

@@ -26,7 +26,7 @@ export const setAttachments = ( state, attachments ) => {
     state.attachments = attachments;
 }
 
-export const  removeAttatchmentFromItem = (state, attachmentId) => {
+export const removeAttatchmentFromItem = (state, attachmentId) => {
     let indexOfRemoved = state.attachments.findIndex((anAttachment) => anAttachment.id == attachmentId);
 
     if (indexOfRemoved >= 0)
@@ -54,35 +54,35 @@ export const cleanItemTitle = ( state ) => {
     state.itemTitle = '';
 }
 
-export const setMetadata = ( state, metadata) => {
-    state.metadata = metadata;
+export const setItemMetadata = ( state, itemMetadata) => {
+    state.itemMetadata = itemMetadata;
 }
 
-export const cleanMetadata = (state) => {
-    state.metadata = [];
+export const cleanItemMetadata = (state) => {
+    state.itemMetadata = [];
 }
 
 export const setSingleMetadatum = (state, itemMetadatum) => {
   
     if (itemMetadatum.metadatum.parent <= 0) {
-        let index = state.metadata.findIndex(anItemMetadatum => anItemMetadatum.metadatum.id == itemMetadatum.metadatum.id);
+        let index = state.itemMetadata.findIndex(anItemMetadatum => anItemMetadatum.metadatum.id == itemMetadatum.metadatum.id);
         if (index >= 0)
-            Vue.set( state.metadata, index, itemMetadatum );
+            Vue.set( state.itemMetadata, index, itemMetadatum );
         else
-            state.metadata.push( itemMetadatum );
+            state.itemMetadata.push( itemMetadatum );
     } else {
 
-        let parentIndex = state.metadata.findIndex(anItemMetadatum => anItemMetadatum.metadatum.id == itemMetadatum.metadatum.parent);
+        let parentIndex = state.itemMetadata.findIndex(anItemMetadatum => anItemMetadatum.metadatum.id == itemMetadatum.metadatum.parent);
         
         if (parentIndex >= 0) {
-            let currentParent = state.metadata[parentIndex];
+            let currentParent = state.itemMetadata[parentIndex];
             currentParent.value[itemMetadatum.metadatum.id] = {
                 parent_meta_id: itemMetadatum.parent_meta_id ? itemMetadatum.parent_meta_id : 0,
                 value: itemMetadatum.value ? itemMetadatum.value : [],
                 value_as_html: itemMetadatum.value_as_html ? itemMetadatum.value_as_html : '',
                 value_as_string: itemMetadatum.value_as_string ? itemMetadatum.value_as_string : ''
             };
-            Vue.set(state.metadata, parentIndex, currentParent);
+            Vue.set(state.itemMetadata, parentIndex, currentParent);
         }
     }
 }

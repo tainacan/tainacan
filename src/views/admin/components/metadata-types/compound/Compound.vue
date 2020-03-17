@@ -10,8 +10,7 @@
                     class="tainacan-icon tainacan-icon-1-25em"/>
         </span>
     </a>
-    <component
-            :is="'tainacan-form-item'"
+    <tainacan-form-item
             v-for="(child, index) in children"
             :key="index"
             :item-metadatum="child"
@@ -23,6 +22,7 @@
 
 <script>
     import { mapActions } from 'vuex';
+
     export default {
         props: {
             itemMetadatum: Object,
@@ -49,11 +49,18 @@
                     this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
                 ) {
                     for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
+                        let values = [];
+
+                        if (Array.isArray(this.itemMetadatum.value))
+                            values = this.itemMetadatum.value.map((aValue) => aValue[child.id] ? aValue[child.id].value : [])
+                        else
+                           values = this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].value : []
+                        
                         this.children.push({
                             parent_meta_id: this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].parent_meta_id : 0,
                             item: this.itemMetadatum.item,
                             metadatum: child,
-                            value: this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].value : [],
+                            value: values,
                             value_as_html: this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].value_as_html : '',
                             value_as_string: this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].value_as_string : ''
                         });

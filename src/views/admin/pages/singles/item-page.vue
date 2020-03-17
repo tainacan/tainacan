@@ -354,7 +354,7 @@
                 return this.getItem();
             },
             metadatumList() {
-                return JSON.parse(JSON.stringify(this.getMetadata()));
+                return JSON.parse(JSON.stringify(this.getItemMetadata()));
             },
             totalAttachments() {
                 return this.getTotalAttachments();
@@ -386,11 +386,11 @@
         methods: {
             ...mapActions('item', [
                 'fetchItem',
-                'fetchMetadata',
+                'fetchItemMetadata',
             ]),
             ...mapGetters('item', [
                 'getItem',
-                'getMetadata',
+                'getItemMetadata',
                 'getTotalAttachments'
             ]),
             ...mapGetters('collection', [
@@ -398,7 +398,7 @@
             ]),
             loadMetadata() {
                 // Obtains Item Metadatum
-                this.fetchMetadata(this.itemId).then(() => {
+                this.fetchItemMetadata(this.itemId).then(() => {
                     this.isLoading = false;
                 });
             },

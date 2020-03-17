@@ -823,7 +823,7 @@ export default {
             return this.getCollection()
         },
         metadatumList() {
-            return JSON.parse(JSON.stringify(this.getMetadata()));
+            return JSON.parse(JSON.stringify(this.getItemMetadata()));
         },
         lastUpdated() {
             return this.getLastUpdated();
@@ -849,7 +849,7 @@ export default {
             this.$userPrefs.set('sequence_' + this.sequenceId + '_position', this.itemPosition);
 
             // Clear form variables
-            this.cleanMetadata();
+            this.cleanItemMetadata();
             eventBusItemMetadata.clearAllErrors();
             this.formErrorMessage = '';
 
@@ -871,7 +871,7 @@ export default {
     },
     created(){
         // Obtains collection ID
-        this.cleanMetadata();
+        this.cleanItemMetadata();
         eventBusItemMetadata.clearAllErrors();
         this.formErrorMessage = '';
         this.collectionId = this.$route.params.collectionId;
@@ -957,10 +957,9 @@ export default {
             'sendItem',
             'updateItem',
             'updateItemDocument',
-            'fetchMetadata',
-            'sendMetadatum',
+            'fetchItemMetadata',
             'fetchItem',
-            'cleanMetadata',
+            'cleanItemMetadata',
             'sendAttachments',
             'fetchAttachments',
             'deletePermanentlyAttachment',
@@ -970,7 +969,7 @@ export default {
             'removeAttachmentFromItem'
         ]),
         ...mapGetters('item',[
-            'getMetadata',
+            'getItemMetadata',
             'getTotalAttachments',
             'getLastUpdated'
         ]),
@@ -1101,7 +1100,7 @@ export default {
         },
         loadMetadata() {
             // Obtains Item Metadatum
-            this.fetchMetadata(this.itemId).then((metadata) => {
+            this.fetchItemMetadata(this.itemId).then((metadata) => {
                 this.metadataCollapses = [];
 
                 if (this.isOnSequenceEdit && this.$route.query.collapses) {
