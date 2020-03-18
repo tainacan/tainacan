@@ -163,7 +163,7 @@
 </template>
 
 <script>
-    import { mapActions, mapGetters } from 'vuex';
+    import { mapActions } from 'vuex';
     import MetadatumEditionForm from '../../edition/metadatum-edition-form.vue';
     import CustomDialog from '../../other/custom-dialog.vue';
 
@@ -200,9 +200,6 @@
                 },
                 immediate: true
             },
-            updateChildrenMetadata(value) {
-                this.updateChildrenMetadata(value, this.parent);
-            }
         },
         beforeRouteLeave ( to, from, next ) {
             
@@ -246,12 +243,7 @@
                 'fetchMetadata',
                 'sendMetadatum',
                 'deleteMetadatum',
-                'updateChildrenMetadata',
-                'updateCollectionMetadataOrder',
-                'cleanChildrenMetadata'
-            ]),
-            ...mapGetters('metadata',[
-                'getChildrenMetadata'
+                'updateChildMetadataOrder'
             ]),
             handleChange(event) {     
                if (event.added) {
@@ -268,11 +260,18 @@
                 for (let metadatum of this.childrenMetadata)
                     if (metadatum != undefined)
                         metadataOrder.push({ 'id': metadatum.id, 'enabled': metadatum.enabled });
-                /*
+                
                 this.isUpdatingMetadataOrder = true;
-                this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder, parent: this.parent })
-                    .then(() => this.isUpdatingMetadataOrder = false)
-                    .catch(() => this.isUpdatingMetadataOrder = false);*/
+                this.updateChildMetadataOrder({ 
+                    collectionId: this.collectionId,
+                    parentMetadatumId: this.parent,
+                    childMetadataOrder: metadataOrder
+                })
+                    .then(() => {
+                        this.refreshMetadata();
+                        this.isUpdatingMetadataOrder = false;
+                    })
+                    .catch(() => this.isUpdatingMetadataOrder = false);
             },
             onChangeEnable($event, index) {
                 let metadataOrder = [];
@@ -281,14 +280,17 @@
                         metadataOrder.push({'id': metadatum.id, 'enabled': metadatum.enabled});
                 
                 metadataOrder[index].enabled = $event;
-                /*
                 this.isUpdatingMetadataOrder = true;
-                this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder, parent: this.parent })
+                this.updateChildMetadataOrder({ 
+                    collectionId: this.collectionId,
+                    parentMetadatumId: this.parent,
+                    childMetadataOrder: metadataOrder
+                })
                     .then(() => {
-                        this.childrenMetadata[index].enabled = $event;
+                        this.refreshMetadata();
                         this.isUpdatingMetadataOrder = false;
                     })
-                    .catch(() => this.isUpdatingMetadataOrder = false);*/
+                    .catch(() => this.isUpdatingMetadataOrder = false);
             },
             addNewMetadatum(newMetadatum, newIndex) {
                 this.sendMetadatum({
@@ -406,7 +408,7 @@
                             .then((metadata) => {
                                 this.isLoadingMetadata = false;
                                 this.childrenMetadata = metadata;
-
+                                console.log(metadata)
                                 // Checks URL as router watcher would not wait for list to load
                                 if (this.$route.query.edit != undefined) {
                                     let existingMetadataIndex = this.childrenMetadata.findIndex((metadatum) => metadatum.id == this.$route.query.edit);
