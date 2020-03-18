@@ -186,12 +186,12 @@ class Item_Metadata_Entity extends Entity {
 				if( is_array($v) ) {
 					$compounds = [];
 					foreach ($v as $itemMetadata) {
-						if ( $itemMetadata instanceof ItemMetadataEntity ) {
+						if ( $itemMetadata instanceof Item_Metadata_Entity ) {
 							$compounds[] = $itemMetadata->_toArray();
 						}
 					}
 					$return[] = $compounds;
-				} else if ( $v instanceof Term || $v instanceof ItemMetadataEntity ) {
+				} else if ( $v instanceof Term || $v instanceof Item_Metadata_Entity ) {
 					$return[] = $v->_toArray();
 				} else {
 					$return[] = $v;
@@ -236,7 +236,7 @@ class Item_Metadata_Entity extends Entity {
 				}
 				ksort( $compounds );
 				$return = array_merge($compounds, $compounds_not_ordinate);
-			} else if ( $value instanceof Term || $value instanceof ItemMetadataEntity ) {
+			} else if ( $value instanceof Term || $value instanceof Item_Metadata_Entity ) {
 				$return = $value->_toArray();
 			} else {
 				$return = $value;

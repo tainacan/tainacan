@@ -90,6 +90,7 @@ class Compound extends Metadata_Type {
 		$options = parent::get_options();
 		$options['children_order'] = isset($options['children_order']) ? $options['children_order'] : [];
 		$options['children_objects'] = [];
+		$children_not_ordinate = [];
 
 		if( isset( $options['parent'] ) ) {
 			$childrens = $Tainacan_Metadata->fetch( ['parent' => $options['parent'] ], "OBJECT" );
@@ -100,9 +101,17 @@ class Compound extends Metadata_Type {
 			 	ob_start();
 			 	$child->get_metadata_type_object()->form();
 			 	$child = ob_get_clean();
-			 	$item_arr['edit_form'] = $form;
-			 	$options['children_objects'][] = $item_arr;
+				$item_arr['edit_form'] = $form;
+				
+				$index = array_search( $item_arr['id'], array_column( $options['children_order'], 'id' ) );
+				if ( $index !== false ) {
+					$options['children_objects'][$index] = $item_arr;
+				} else {
+					$children_not_ordinate['children_objects'][] = $item_arr;
+				}
 			}
+			ksort( $options['children_objects'] );
+			$options['children_objects'] = array_merge($options['children_objects'], $children_not_ordinate);
 		}
 		return $options;
 	}
