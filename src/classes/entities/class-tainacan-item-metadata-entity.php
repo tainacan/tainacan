@@ -204,7 +204,9 @@ class Item_Metadata_Entity extends Entity {
 			
 			if( $primitive_type === 'compound' ) {
 				$compounds = [];
+				$compounds_not_ordinate = [];
 				$options = $this->get_metadatum()->get_metadata_type_object()->get_options();
+				$order = $options['children_order'];
 
 				//dealing with categories
 				if( isset( $options['children_objects'] ) ) {
@@ -213,7 +215,7 @@ class Item_Metadata_Entity extends Entity {
 						$itemMetadata = new self( $this->get_item(), $metadata );
 						$child_primitive_type = $metadata->get_metadata_type_object()->get_primitive_type();
 						if ( $itemMetadata instanceof Item_Metadata_Entity && $child_primitive_type === 'term' ) {
-							$compounds[$child['id']] = $itemMetadata->_toArray();
+							$compounds[] = array_merge( ['metadatum_id' => $child['id']], $itemMetadata->_toArray() );
 						}
 					}
 				}
@@ -222,11 +224,18 @@ class Item_Metadata_Entity extends Entity {
 					foreach ($value as $itemMetadata) {
 						$child_primitive_type = $itemMetadata->get_metadatum()->get_metadata_type_object()->get_primitive_type();
 						if ( $itemMetadata instanceof Item_Metadata_Entity && $child_primitive_type !== 'term' ) {
-							$compounds[$itemMetadata->get_metadatum()->get_id()] = $itemMetadata->_toArray();
+							$metadatum_id = $itemMetadata->get_metadatum()->get_id();
+							$index = array_search( $metadatum_id, array_column( $order, 'id' ) );
+							if ( $index !== false ) {
+								$compounds[$index] = array_merge( ['metadatum_id' => $metadatum_id], $itemMetadata->_toArray() );
+							} else {
+								$compounds_not_ordinate[] = array_merge( ['metadatum_id' => $metadatum_id], $itemMetadata->_toArray() );
+							}
 						}
 					}
 				}
-				$return = $compounds;
+				ksort( $compounds );
+				$return = array_merge($compounds, $compounds_not_ordinate);
 			} else if ( $value instanceof Term || $value instanceof ItemMetadataEntity ) {
 				$return = $value->_toArray();
 			} else {

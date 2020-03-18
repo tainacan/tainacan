@@ -88,6 +88,7 @@ class Compound extends Metadata_Type {
 	public function get_options() {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		$options = parent::get_options();
+		$options['children_order'] = isset($options['children_order']) ? $options['children_order'] : [];
 		$options['children_objects'] = [];
 
 		if( isset( $options['parent'] ) ) {
