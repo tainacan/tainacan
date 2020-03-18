@@ -27,9 +27,7 @@ export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isCont
                 .then((res) => {
                     let metadata = res.data;
                     if (!isAdvancedSearch) {
-                        if (parent && parent > 0)
-                            commit('setChildrenMetadata', { metadata, parent });
-                        else
+                        if (parent == undefined || parent == null || parent <= 0)
                             commit('setMetadata', metadata);
                     }
 
@@ -63,9 +61,7 @@ export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, stat
         })
             .then(res => {
                 let metadatum = res.data;
-                if (metadatum.parent && metadatum.parent > 0)
-                    commit('setSingleChildMetadatum', { metadatum: metadatum, index: newIndex });
-                else
+                if (metadatum.parent == undefined || metadatum.parent == null || metadatum.parent <= 0)
                     commit('setSingleMetadatum', { metadatum: metadatum, index: newIndex });
                 resolve(metadatum);
             })
@@ -87,9 +83,7 @@ export const updateMetadatum = ({commit}, {collectionId, metadatumId, isReposito
         axios.tainacan.put(endpoint + '?context=edit', options)
             .then(res => {
                 let metadatum = res.data;
-                if (metadatum.parent && metadatum.parent > 0)
-                    commit('setSingleChildMetadatum', { metadatum: metadatum, index: index });
-                else
+                if (metadatum.parent == undefined || metadatum.parent == null || metadatum.parent <= 0)
                     commit('setSingleMetadatum', { metadatum: metadatum, index: index });
                 resolve(metadatum);
             })
@@ -126,10 +120,6 @@ export const updateMetadata = ({commit}, metadata) => {
     commit('setMetadata', metadata);
 };
 
-export const updateChildrenMetadata = ({commit}, { metadata, parent }) => {
-    commit('setChildrenMetadata', metadata, parent);
-};
-
 export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isRepositoryLevel}) => {
     let endpoint = '';
     if (!isRepositoryLevel)
@@ -141,9 +131,7 @@ export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isReposito
         axios.tainacan.delete(endpoint)
             .then(res => {
                 const metadatum = res.data;
-                if (metadatum.parent && metadatum.parent > 0)
-                    commit('deleteChildrenMetadatum', metadatum);
-                else
+                if (metadatum.parent == undefined || metadatum.parent == null || metadatum.parent <= 0)
                     commit('deleteMetadatum', metadatum);
                 resolve(res.data);
             }).catch((error) => {
@@ -158,28 +146,11 @@ export const cleanMetadata = ({commit}) => {
     commit('cleanMetadata');
 };
 
-export const cleanChildrenMetadata = ({commit}, parent) => {
-    commit('cleanChildrenMetadata', parent );
-};
-
-export const updateCollectionMetadataOrder = ({ commit, state }, {collectionId, metadataOrder, parent}) => {
-    
-    let allMetadataOrder = [];
-
-    if (parent && parent > 0) {
-        allMetadataOrder = state.metadataOrder;
-        console.log(allMetadataOrder)
-        const parentMetadataIndex = allMetadataOrder.find((metadatumOrder) => metadatumOrder.id == parent);
-        if (parentMetadataIndex >= 0)
-            allMetadataOrder[parentMetadataIndex]['children_metadata_order'] = metadataOrder;
-        
-    } else {
-        allMetadataOrder = metadataOrder;
-    }
+export const updateCollectionMetadataOrder = ({ commit }, {collectionId, metadataOrder}) => {
 
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collectionId + '/metadata_order?context=edit', {
-            metadata_order: allMetadataOrder
+            metadata_order: metadataOrder
         }).then(res => {
             commit('collection/setCollection', res.data, { root: true });
             commit('updateMetadataOrderFromCollection', res.data.metadata_order);
@@ -188,6 +159,26 @@ export const updateCollectionMetadataOrder = ({ commit, state }, {collectionId, 
             reject(error.response);
         });
 
+    });
+}
+
+export const updateChildMetadataOrder = ({ commit }, {collectionId, parentMetadatumId, childMetadataOrder }) => {
+
+    const body = {
+        'metadata_type_options': {
+            'children_order': childMetadataOrder
+        }
+    }
+
+    return new Promise((resolve, reject) => {
+        axios.tainacan.put('/collection/' + collectionId + '/metadata/' + parentMetadatumId + '?context=edit', body)
+            .then(res => {
+                const updatedParentMetadatum = res.data;
+                commit('setSingleMetadatum', { metadatum: updatedParentMetadatum });
+                resolve(updatedParentMetadatum);
+            }).catch(error => {
+                reject(error.response);
+            });
     });
 }
 
