@@ -10,19 +10,58 @@
                     class="tainacan-icon tainacan-icon-1-25em"/>
         </span>
     </a>
-    <tainacan-form-item
-            v-for="(child, index) in children"
-            :key="index"
-            :item-metadatum="child"
-            :is-collapsed="childrenMetadataCollapses[index]"
-            @changeCollapse="onChangeCollapse($event, index)"/>
+    
+    <transition name="filter-item">
+        <div>
+            <tainacan-form-item
+                    v-for="(childItemMetadatum, index) of Object.values(childItemMetadata)[0]"
+                    :key="index"
+                    :item-metadatum="childItemMetadatum"
+                    :is-collapsed="childrenMetadataCollapses[index]"
+                    @changeCollapse="onChangeCollapse($event, index)"/>
+            <template v-if="isMultiple && childItemMetadata.length > 1">
+                <transition-group
+                        name="filter-item"
+                        class="multiple-inputs">
+                    <template v-for="(parentMetaIdGroup, groupIndex) of Object.values(childItemMetadata)">
+                        <tainacan-form-item
+                                v-if="groupIndex > 0"
+                                v-for="(childItemMetadatum, index) of parentMetaIdGroup"
+                                :key="groupIndex + '-' + index"
+                                :item-metadatum="childItemMetadatum"
+                                :is-collapsed="childrenMetadataCollapses[index]"
+                                @changeCollapse="onChangeCollapse($event, index)"/>
+                        <a 
+                                v-if="index > 0" 
+                                @click="removeValue(index)"
+                                class="add-link"
+                                :key="groupIndex + '-' + index">
+                            <b-icon
+                                    icon="minus-circle"
+                                    size="is-small"
+                                    type="is-secondary"/>
+                            &nbsp;{{ $i18n.get('label_remove_value') }}
+                        </a>
+                    </template>
+                </transition-group>
+            </template>
+            <template v-if="isMultiple">
+                <a 
+                        @click="addValue"
+                        class="is-block add-link">
+                    <span class="icon is-small">
+                        <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                    </span>
+                    &nbsp;{{ $i18n.get('label_add_value') }}
+                </a>
+            </template>
+        </div>
+    </transition>
 
 </div>
 </template>
 
 <script>
-    import { mapActions } from 'vuex';
-
     export default {
         props: {
             itemMetadatum: Object,
@@ -36,43 +75,108 @@
                 childrenMetadataCollapses: [],
             }
         },
-        watch: {
-            itemMetadatum() {
-                this.createChildInputs();
+        computed: {
+            isMultiple() {
+                return this.itemMetadatum.metadatum.multiple == 'yes';
+            },
+            childItemMetadata() {
+                let currentValue = [];
+                
+                if (this.itemMetadatum.value && this.itemMetadatum.value.length) {
+
+                    // Here we load the values from the object, but must also create
+                    // empty forms for those not created
+                    if (this.itemMetadatum.metadatum &&
+                        this.itemMetadatum.metadatum.metadata_type_options &&
+                        this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
+                    ) {
+                        let lastParentMetaId = 0;
+                        
+                        for (let i = this.itemMetadatum.value.length - 1; i >= 0; i--) {
+                            if (this.itemMetadatum.value[i].parent_meta_id && this.itemMetadatum.value[i].parent_meta_id > 0) {
+                                lastParentMetaId = this.itemMetadatum.value[i].parent_meta_id;
+                                break;
+                            }
+                        }
+
+                        for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
+                            const existingValueIndex = this.itemMetadatum.value.findIndex((anItemMetadatum) => anItemMetadatum.metadatum_id == child.id)
+                            
+                            if (existingValueIndex >= 0)
+                                currentValue.splice(existingValueIndex, 0, this.itemMetadatum.value[existingValueIndex]);
+                            else
+                                currentValue.push({
+                                    item: this.itemMetadatum.item,
+                                    metadatum: child,
+                                    parent_meta_id: lastParentMetaId,
+                                    value: '',
+                                    value_as_html: '',
+                                    value_as_string: ''
+                                })
+                        }
+                    }
+
+                } else {
+                    // In this situation, we simply create empty forms
+                    if (this.itemMetadatum.metadatum &&
+                        this.itemMetadatum.metadatum.metadata_type_options &&
+                        this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
+                    ) {
+                        for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
+                            let childObject = {
+                                item: this.itemMetadatum.item,
+                                metadatum: child,
+                                parent_meta_id: '0',
+                                value: '',
+                                value_as_html: '',
+                                value_as_string: ''
+                            };
+                            currentValue.push(childObject)
+                        }
+                    }
+                }
+                console.log(currentValue)
+                return _.groupBy(currentValue, 'parent_meta_id');
             }
         },
-        created() {
-            this.createChildInputs();
+        watch: {
+            childItemMetadata() {
+                if (this.itemMetadatum.metadatum &&
+                    this.itemMetadatum.metadatum.metadata_type_options &&
+                    this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
+                ) {
+                    for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects)
+                        this.childrenMetadataCollapses.push(true);
+                }
+            }
         },
         methods: {
-             ...mapActions('item', [
-                'fetchChildrenMetadata'
-            ]),
             createChildInputs() {
+                console.log(this.childItemMetadata)
                 this.children = [];
-
                 if (this.itemMetadatum.metadatum &&
                     this.itemMetadatum.metadatum.metadata_type_options &&
                     this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
                 ) {
                     for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
-                        let values = [];
-                        
-                        if (Array.isArray(this.itemMetadatum.value)) {
-                            // console.log(this.itemMetadatum.value)
-                            values = this.itemMetadatum.value.map((aValue) => aValue[child.id] ? aValue[child.id].value : [])
-                        } else
-                           values = this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].value : []
-                        
-                        //console.log(this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].parent_meta_id : 0)
-                        this.children.push({
-                            parent_meta_id: this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].parent_meta_id : 0,
+                        let childObject = {
                             item: this.itemMetadatum.item,
                             metadatum: child,
-                            value: values,
-                            value_as_html: this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].value_as_html : '',
-                            value_as_string: this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].value_as_string : ''
-                        });
+                        };
+                        if (Array.isArray(this.itemMetadatum.value)) {
+                            childObject.parent_meta_id = this.itemMetadatum.value.map((aValue) => aValue.metadatum_id == child.id ? aValue.parent_meta_id : [])
+                            childObject.value = this.itemMetadatum.value.map((aValue) => aValue.metadatum_id == child.id ? aValue.value : []);
+                            childObject.value_as_html = this.itemMetadatum.value.map((aValue) => aValue.metadatum_id == child.id ? aValue.value_as_string : []);
+                            childObject.value_as_string = this.itemMetadatum.value.map((aValue) => aValue.metadatum_id == child.id ? aValue.value_as_string : []);
+                        } else {
+                            childObject.parent_meta_id = this.itemMetadatum.value.metadatum_id == child.id ? this.itemMetadatum.parent_meta_id : [],
+                            childObject.value = this.itemMetadatum.value.metadatum_id == child.id ? this.itemMetadatum.value : [];
+                            childObject.value_as_html = this.itemMetadatum.value.metadatum_id == child.id ? this.itemMetadatum.value_as_html : '';
+                            childObject.value_as_string = this.itemMetadatum.value.metadatum_id == child.id ? this.itemMetadatum.value_as_string : '';
+                        }
+                        //console.log(JSON.parse(JSON.stringify(childObject)));
+                        //console.log(this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].parent_meta_id : 0)
+                        this.children.push(childObject);
                         this.childrenMetadataCollapses.push(true);
                     }
                 }
@@ -85,6 +189,12 @@
             },
             onChangeCollapse(event, index) {
                 this.childrenMetadataCollapses.splice(index, 1, event);
+            },
+            addValue(){
+                // Create a new placeholder parent_meta_id group here.
+            },
+            removeValue(index) {
+                // Remove the whole parent_meta_id group here.
             }
         }
     }

@@ -202,7 +202,7 @@
                         if (this.values.length && this.values[0] == this.itemMetadatum.value)
                             return;
                 }
-
+                
                 // If none is the case, the value is update request is sent to the API
                 eventBusItemMetadata.$emit('input', {
                     itemId: this.itemMetadatum.item.id,

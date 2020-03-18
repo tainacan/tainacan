@@ -408,7 +408,7 @@
                             .then((metadata) => {
                                 this.isLoadingMetadata = false;
                                 this.childrenMetadata = metadata;
-                                console.log(metadata)
+                                
                                 // Checks URL as router watcher would not wait for list to load
                                 if (this.$route.query.edit != undefined) {
                                     let existingMetadataIndex = this.childrenMetadata.findIndex((metadatum) => metadatum.id == this.$route.query.edit);

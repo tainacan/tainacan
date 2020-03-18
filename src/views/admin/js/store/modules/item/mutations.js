@@ -76,27 +76,22 @@ export const setSingleMetadatum = (state, itemMetadatum) => {
         
         if (parentIndex >= 0) {
             let currentParent = state.itemMetadata[parentIndex];
-            let updatedParent = {
-                parent_meta_id: itemMetadatum.parent_meta_id ? itemMetadatum.parent_meta_id : 0,
-                value: itemMetadatum.value ? itemMetadatum.value : [],
-                value_as_html: itemMetadatum.value_as_html ? itemMetadatum.value_as_html : '',
-                value_as_string: itemMetadatum.value_as_string ? itemMetadatum.value_as_string : ''
+            let currentParentValues = currentParent.value;
+            let childMetadatumValue = {
+                metadatum_id: itemMetadatum.metadatum.id,
+                value: itemMetadatum.value,
+                value_as_html: itemMetadatum.value_as_html,
+                value_as_string: itemMetadatum.value_as_string,
+                parent_meta_id: itemMetadatum.parent_meta_id
             };
+            let currrentChildMetadatumIndex = currentParentValues.findIndex((metadatumValue) => metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id && metadatumValue.metadatum_id == itemMetadatum.metadatum.id);
+            if (currrentChildMetadatumIndex >= 0)
+                currentParentValues[currrentChildMetadatumIndex] = childMetadatumValue;
+            else
+                currentParentValues.push(childMetadatumValue);
 
-            if (Array.isArray(currentParent.value)) {
-                let metadatumIndex = currentParent.value.findIndex((aValue) => aValue.parent_meta_id == itemMetadatum.parent_meta_id);
-
-                if (metadatumIndex >= 0)
-                    currentParent.value[metadatumIndex][itemMetadatum.metadatum.id] = updatedParent;
-                else {
-                    const parentObject = {}
-                    parentObject[itemMetadatum.metadatum.id] = updatedParent;
-                    currentParent.value.push(parentObject);
-                }
-            } else {
-                currentParent.value['' + itemMetadatum.metadatum.id] = updatedParent;
-            }
-            console.log(currentParent)
+            currentParent.value = currentParentValues;
+            console.log(JSON.parse(JSON.stringify(currentParent)));
             Vue.set(state.itemMetadata, parentIndex, currentParent);
         }
     }
