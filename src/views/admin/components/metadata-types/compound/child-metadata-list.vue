@@ -185,19 +185,11 @@
                 hightlightedMetadatum: '',
                 editForms: {},
                 metadataSearchCancel: undefined,
+                childrenMetadata: []
             }
         },
         computed: {
-            childrenMetadata() {
-                console.log(this.parent.metadata_type_options.children_objects)
-                if (this.parent &&
-                    this.parent.metadata_type_options &&
-                    this.parent.metadata_type_options.children_objects.length > 0 
-                )
-                    return this.parent.metadata_type_options.children_objects;
-                else
-                    return [];
-            }
+            
         },
         watch: {
             '$route.query': {
@@ -211,6 +203,15 @@
                 },
                 immediate: true
             },
+            'parent.metadata_type_options.children_objects': {
+                handler(childrenObjects) {
+                    if (childrenObjects && childrenObjects.length > 0)
+                        this.childrenMetadata = childrenObjects;
+                    else
+                        this.childrenMetadata = [];
+                }, 
+                immediate: true
+            }
         },
         beforeRouteLeave ( to, from, next ) {
             
@@ -273,7 +274,7 @@
                 for (let metadatum of this.childrenMetadata)
                     if (metadatum != undefined)
                         metadataOrder.push({ 'id': metadatum.id, 'enabled': metadatum.enabled });
-                
+           
                 this.isUpdatingMetadataOrder = true;
                 this.updateChildMetadataOrder({ 
                     collectionId: this.collectionId,
@@ -334,7 +335,7 @@
                                     metadatumId: removedMetadatum.id,
                                     isRepositoryLevel: this.isRepositoryLevel
                                 })
-                                .then((removedMetadatum) => {
+                                .then(() => {
                                     if (!this.isRepositoryLevel)
                                         this.updateMetadataOrder();
                                     else 
