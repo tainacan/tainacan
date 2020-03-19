@@ -27,7 +27,7 @@ export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isCont
                 .then((res) => {
                     let metadata = res.data;
                     if (!isAdvancedSearch) {
-                        if (parent == undefined || parent == null || parent <= 0)
+                        if (parent == undefined || parent == null || parent <= 0 || parent == 'any')
                             commit('setMetadata', metadata);
                     }
 

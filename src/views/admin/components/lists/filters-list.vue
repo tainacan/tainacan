@@ -415,7 +415,6 @@ export default {
         else
             this.collectionId = this.$route.params.collectionId;
 
-        this.isLoadingFilters = true;
         this.isLoadingFilterTypes = true;
 
         this.fetchFilterTypes()
@@ -552,8 +551,8 @@ export default {
         },
         updateListOfMetadata() {
 
-            let availableMetadata = JSON.parse(JSON.stringify(this.getMetadata())) ;
-
+            let availableMetadata = JSON.parse(JSON.stringify(this.getMetadata())).filter((aMetadatum) => aMetadatum.metadata_type_object.component != 'tainacan-compound');
+            
             for (let activeFilter of this.activeFilterList) {
                 for (let i = availableMetadata.length - 1; i >= 0 ; i--) {
                     if (activeFilter.metadatum != undefined) {
@@ -681,6 +680,7 @@ export default {
             return 190;
         },
         refreshFilters() {
+            this.isLoadingFilters = true;
             this.fetchFilters({
                 collectionId: this.collectionId,
                 isRepositoryLevel: this.isRepositoryLevel,
@@ -690,6 +690,7 @@ export default {
                 resp.request
                     .then(() => {
                         
+                        this.isLoadingFilters = false;
                         this.isLoadingMetadatumTypes = true;
 
                         // Checks URL as router watcher would not wait for list to load
@@ -707,7 +708,8 @@ export default {
                         this.fetchMetadata({
                             collectionId: this.collectionId, 
                             isRepositoryLevel: this.isRepositoryLevel, 
-                            isContextEdit: true 
+                            isContextEdit: true,
+                            parent: 'any' 
                         }).then((resp) => {
                                 resp.request
                                     .then(() => {
@@ -772,6 +774,10 @@ export default {
         .column {
             overflow-x: hidden;
             overflow-y: auto;
+
+            &>section.field {
+                position: absolute;
+            }
 
             &:not(.available-metadata-area){
                 margin-right: $page-side-padding;
@@ -937,6 +943,7 @@ export default {
             }
             .sortable-ghost {
                 border: 1px dashed var(--tainacan-gray2);
+                background: var(--tainacan-white);
                 display: block;
                 padding: 0.7em 0.9em;
                 margin: 4px;
@@ -995,7 +1002,7 @@ export default {
                 }
                 .icon {
                     position: relative;
-                    bottom: 4px;
+                    bottom: 6px;
                 }
                 .metadatum-name {
                     text-overflow: ellipsis;

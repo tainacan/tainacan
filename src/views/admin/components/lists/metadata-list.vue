@@ -316,7 +316,6 @@ export default {
 
         this.cleanMetadata();
         this.isLoadingMetadatumTypes = true;
-        this.isLoadingMetadata = true;
 
         this.fetchMetadatumTypes()
             .then(() => {
@@ -475,6 +474,7 @@ export default {
             this.$router.push({ query: {}});
         },
         refreshMetadata() {
+            this.isLoadingMetadata = true;
 
             // Cancels previous Request
             if (this.metadataSearchCancel != undefined)
@@ -576,6 +576,10 @@ export default {
         .column {
             overflow-x: hidden;
             overflow-y: auto;
+
+            &>section.field {
+                position: absolute;
+            }
 
             &:not(.available-metadata-area){
                 margin-right: $page-side-padding;
@@ -744,6 +748,7 @@ export default {
             }
             .sortable-ghost {
                 border: 1px dashed var(--tainacan-gray2);
+                background: var(--tainacan-white);
                 display: block;
                 padding: 0.7em 0.9em;
                 margin: 4px;
