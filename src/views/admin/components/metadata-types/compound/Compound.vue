@@ -87,6 +87,7 @@
                     let currentValue = [];
                     
                     if (this.itemMetadatum.value && this.itemMetadatum.value.length) {
+                        console.log(this.itemMetadatum.value)
                         // Here we load the values from the object, but must also create
                         // empty forms for those not created
                         if (this.itemMetadatum.metadatum &&
@@ -151,7 +152,6 @@
             },
             childItemMetadata: {
                 handler(value) {
-                    console.log(value)
                     if (this.itemMetadatum.metadatum &&
                         this.itemMetadatum.metadatum.metadata_type_options &&
                         this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 

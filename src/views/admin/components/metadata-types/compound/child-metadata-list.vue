@@ -17,6 +17,7 @@
         </section>    
         <draggable 
                 v-model="childrenMetadata"
+                :style="{ minHeight: childrenMetadata.length > 0 ? '40px' : '70px' }"
                 class="active-metadata-area child-metadata-area"
                 @change="handleChange"
                 :group="{ name:'metadata', pull: false, put: isAvailableChildMetadata }"
@@ -376,8 +377,9 @@
     margin-left: 42px;
     border-left: 1px solid var(--tainacan-gray2);
 
-    section {
-        padding: 0.5em 0.5em 0 0.5em;
+    section.field {
+        padding: 0.5em 1em 0 1em;
+        position: absolute;
     }
     .children-icon {
         position: absolute;
@@ -392,7 +394,6 @@
     .child-metadata-area {
         padding: 0;
         margin: 0;
-        min-height: 42px;
         font-size: 1em;
 
         section {

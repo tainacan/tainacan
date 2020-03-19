@@ -131,8 +131,7 @@ export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isReposito
         axios.tainacan.delete(endpoint)
             .then(res => {
                 const metadatum = res.data;
-                if (metadatum.parent == undefined || metadatum.parent == null || metadatum.parent <= 0)
-                    commit('deleteMetadatum', metadatum);
+                commit('deleteMetadatum', metadatum);
                 resolve(res.data);
             }).catch((error) => {
             console.log(error);

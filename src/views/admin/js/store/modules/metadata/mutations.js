@@ -14,6 +14,7 @@ export const deleteMetadatum = ( state, metadatum ) => {
             existingParent.metadata_type_options.children_objects = existingParentChildrenObject;
             Vue.set(state.metadata, existingParentIndex, existingParent);
         }
+        
     } else {
         let index = state.metadata.findIndex(deletedMetadatum => deletedMetadatum.id == metadatum.id);
         if (index >= 0) {
