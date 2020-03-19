@@ -1,9 +1,24 @@
 import Vue from 'vue';
 
 export const deleteMetadatum = ( state, metadatum ) => {
-    let index = state.metadata.findIndex(deletedMetadatum => deletedMetadatum.id == metadatum.id);
-    if (index >= 0) {
-        state.metadata.splice(index, 1);
+    if (metadatum.parent && metadatum.parent >= 0) {
+        const existingParentIndex = state.metadata.findIndex((aMetadatum) => aMetadatum.id == metadatum.parent);
+        if (existingParentIndex >= 0) {
+            let existingParent = JSON.parse(JSON.stringify(state.metadata[existingParentIndex]));
+            let existingParentChildrenObject = existingParent.metadata_type_options.children_objects;
+            
+            const existingIndex = existingParentChildrenObject.findIndex((aMetadatum) => aMetadatum.id == metadatum.id);
+            if (existingIndex >= 0)
+                existingParentChildrenObject.splice(existingIndex, 1);
+            
+            existingParent.metadata_type_options.children_objects = existingParentChildrenObject;
+            Vue.set(state.metadata, existingParentIndex, existingParent);
+        }
+    } else {
+        let index = state.metadata.findIndex(deletedMetadatum => deletedMetadatum.id == metadatum.id);
+        if (index >= 0) {
+            state.metadata.splice(index, 1);
+        }
     }
 }
 

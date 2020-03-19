@@ -243,8 +243,6 @@
                 this.collectionId = 'default';
             else
                 this.collectionId = this.$route.params.collectionId;
-                
-            this.refreshMetadata();
         },
         beforeDestroy() {
 
@@ -282,10 +280,7 @@
                     parentMetadatumId: this.parent.id,
                     childMetadataOrder: metadataOrder
                 })
-                    .then(() => {
-                        this.refreshMetadata();
-                        this.isUpdatingMetadataOrder = false;
-                    })
+                    .then(() => this.isUpdatingMetadataOrder = false)
                     .catch(() => this.isUpdatingMetadataOrder = false);
             },
             onChangeEnable($event, index) {
@@ -301,10 +296,7 @@
                     parentMetadatumId: this.parent.id,
                     childMetadataOrder: metadataOrder
                 })
-                    .then(() => {
-                        this.refreshMetadata();
-                        this.isUpdatingMetadataOrder = false;
-                    })
+                    .then(() => this.isUpdatingMetadataOrder = false)
                     .catch(() => this.isUpdatingMetadataOrder = false);
             },
             addNewMetadatum(newMetadatum, newIndex) {
@@ -320,8 +312,6 @@
                 .then((metadatum) => {
                     if (!this.isRepositoryLevel)
                         this.updateMetadataOrder();
-                    
-                    //this.childrenMetadata.splice(newIndex, 1, metadatum);
 
                     this.toggleMetadatumEdition(metadatum.id)
                     this.hightlightedMetadatum = '';
@@ -349,10 +339,6 @@
                                         this.updateMetadataOrder();
                                     else 
                                         this.$root.$emit('metadatumUpdated', this.isRepositoryLevel);
-                                    
-                                    const removedMetadatumIndex = this.childrenMetadata.findIndex(metadatum => metadatum.id == removedMetadatum.id);
-                                    if (removedMetadatumIndex >= 0)
-                                        this.childrenMetadata.splice(removedMetadatumIndex, 1);
                                 })
                                 .catch(() => {
                                     this.$console.log("Error deleting metadatum.")
@@ -392,7 +378,6 @@
                 this.formWithErrors = '';
                 delete this.editForms[this.openedMetadatumId];
                 this.openedMetadatumId = '';
-                this.refreshMetadata();
                 this.$router.push({ query: {}});
             },
             onEditionCanceled() {
@@ -400,43 +385,6 @@
                 delete this.editForms[this.openedMetadatumId];
                 this.openedMetadatumId = '';
                 this.$router.push({ query: {}});
-            },
-            refreshMetadata() {
-                /*
-                this.isLoadingMetadata = true;
-
-                // Cancels previous Request
-                if (this.metadataSearchCancel != undefined)
-                    this.metadataSearchCancel.cancel('Metadata search Canceled.');
-
-                this.fetchMetadata({
-                    collectionId: this.collectionId, 
-                    isRepositoryLevel: this.isRepositoryLevel, 
-                    isContextEdit: true, 
-                    includeDisabled: true,
-                    parent: this.parent.id
-                }).then((resp) => {
-                        resp.request
-                            .then((metadata) => {
-                                this.isLoadingMetadata = false;
-                                this.childrenMetadata = metadata;
-                                
-                                // Checks URL as router watcher would not wait for list to load
-                                if (this.$route.query.edit != undefined) {
-                                    let existingMetadataIndex = this.childrenMetadata.findIndex((metadatum) => metadatum.id == this.$route.query.edit);
-                                    if (existingMetadataIndex >= 0)
-                                        this.editMetadatum(this.childrenMetadata[existingMetadataIndex]);                        
-                                }
-                            })
-                            .catch(() => {
-                                this.isLoadingMetadata = false;
-                            });
-
-                        // Search Request Token for cancelling
-                        this.metadataSearchCancel = resp.source;
-                    })
-                    .catch(() => this.isLoadingMetadata = false);  
-                    */
             },
             isAvailableChildMetadata(to, from, item) {
                 return !['tainacan-compound', 'tainacan-taxonomy', 'tainacan-relationship'].includes(item.id);

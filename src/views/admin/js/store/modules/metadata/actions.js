@@ -173,9 +173,7 @@ export const updateChildMetadataOrder = ({ commit }, {collectionId, parentMetada
     return new Promise((resolve, reject) => {
         axios.tainacan.put('/collection/' + collectionId + '/metadata/' + parentMetadatumId + '?context=edit', body)
             .then(res => {
-                const updatedParentMetadatum = res.data;
-                // commit('setSingleMetadatum', { metadatum: updatedParentMetadatum });
-                resolve(updatedParentMetadatum);
+                resolve(res.data);
             }).catch(error => {
                 reject(error.response);
             });
