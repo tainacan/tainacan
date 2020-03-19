@@ -208,7 +208,7 @@ export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId,
 
     let endpoint = '/items/' + itemId + '/attachments?perpage=' + attachmentsPerPage + '&paged=' + page;
 
-    if (documentId)
+    if (documentId && !isNaN(documentId))
         endpoint += '&exclude=' + documentId;
 
     return new Promise((resolve, reject) => {
