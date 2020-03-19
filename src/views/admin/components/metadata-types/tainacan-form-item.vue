@@ -121,10 +121,10 @@
         },
         computed: {
             metadatumComponent() {
-                return this.itemMetadatum.metadatum.metadata_type_object.component;
+                return (this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.metadata_type_object.component) ? this.itemMetadatum.metadatum.metadata_type_object.component : '';
             },
             isMultiple() {
-                return this.itemMetadatum.metadatum.multiple == 'yes';
+                return (this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple == 'yes') ? this.itemMetadatum.metadatum.multiple == 'yes' : false;
             },
             isTextInputComponent() {
                 const array = ['tainacan-relationship','tainacan-taxonomy'];
@@ -135,7 +135,7 @@
             this.setInitialValues();
             eventBusItemMetadata.$on('updateErrorMessageOf#' + this.itemMetadatum.metadatum.id, (errors) => {
                 let updatedErrorMessage = '';
-                if (errors && this.itemMetadatum.metadatum.id == errors.metadatum_id && errors.errors) {
+                if (errors && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.id == errors.metadatum_id && errors.errors) {
                     for (let error of errors.errors) { 
                         for (let index of Object.keys(error))
                             updatedErrorMessage += error[index] + '\n';

@@ -17,7 +17,7 @@
                     v-for="(childItemMetadatum, index) of Object.values(childItemMetadata)[0]"
                     :key="index"
                     :item-metadatum="childItemMetadatum"
-                    :is-collapsed="childrenMetadataCollapses[index]"
+                    :is-collapsed="true"
                     @changeCollapse="onChangeCollapse($event, index)"/>
             <template v-if="isMultiple && childItemMetadata.length > 1">
                 <transition-group
@@ -29,7 +29,7 @@
                                 v-for="(childItemMetadatum, index) of parentMetaIdGroup"
                                 :key="groupIndex + '-' + index"
                                 :item-metadatum="childItemMetadatum"
-                                :is-collapsed="childrenMetadataCollapses[index]"
+                                :is-collapsed="true"
                                 @changeCollapse="onChangeCollapse($event, index)"/>
                         <a 
                                 v-if="index > 0" 
@@ -77,7 +77,7 @@
         },
         computed: {
             isMultiple() {
-                return this.itemMetadatum.metadatum.multiple == 'yes';
+                return (this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple == 'yes') ? this.itemMetadatum.metadatum.multiple == 'yes' : false;
             },
             childItemMetadata() {
                 let currentValue = [];
@@ -103,7 +103,14 @@
                             const existingValueIndex = this.itemMetadatum.value.findIndex((anItemMetadatum) => anItemMetadatum.metadatum_id == child.id)
                             
                             if (existingValueIndex >= 0)
-                                currentValue.splice(existingValueIndex, 0, this.itemMetadatum.value[existingValueIndex]);
+                                currentValue.splice(existingValueIndex, 0, {
+                                    item: this.itemMetadatum.item,
+                                    metadatum: child,
+                                    parent_meta_id: this.itemMetadatum.value[existingValueIndex].parent_meta_id,
+                                    value: this.itemMetadatum.value[existingValueIndex].value,
+                                    value_as_html: this.itemMetadatum.value[existingValueIndex].value_as_html,
+                                    value_as_string: this.itemMetadatum.value[existingValueIndex].value_as_string,
+                                });
                             else
                                 currentValue.push({
                                     item: this.itemMetadatum.item,
@@ -151,36 +158,6 @@
             }
         },
         methods: {
-            createChildInputs() {
-                console.log(this.childItemMetadata)
-                this.children = [];
-                if (this.itemMetadatum.metadatum &&
-                    this.itemMetadatum.metadatum.metadata_type_options &&
-                    this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
-                ) {
-                    for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
-                        let childObject = {
-                            item: this.itemMetadatum.item,
-                            metadatum: child,
-                        };
-                        if (Array.isArray(this.itemMetadatum.value)) {
-                            childObject.parent_meta_id = this.itemMetadatum.value.map((aValue) => aValue.metadatum_id == child.id ? aValue.parent_meta_id : [])
-                            childObject.value = this.itemMetadatum.value.map((aValue) => aValue.metadatum_id == child.id ? aValue.value : []);
-                            childObject.value_as_html = this.itemMetadatum.value.map((aValue) => aValue.metadatum_id == child.id ? aValue.value_as_string : []);
-                            childObject.value_as_string = this.itemMetadatum.value.map((aValue) => aValue.metadatum_id == child.id ? aValue.value_as_string : []);
-                        } else {
-                            childObject.parent_meta_id = this.itemMetadatum.value.metadatum_id == child.id ? this.itemMetadatum.parent_meta_id : [],
-                            childObject.value = this.itemMetadatum.value.metadatum_id == child.id ? this.itemMetadatum.value : [];
-                            childObject.value_as_html = this.itemMetadatum.value.metadatum_id == child.id ? this.itemMetadatum.value_as_html : '';
-                            childObject.value_as_string = this.itemMetadatum.value.metadatum_id == child.id ? this.itemMetadatum.value_as_string : '';
-                        }
-                        //console.log(JSON.parse(JSON.stringify(childObject)));
-                        //console.log(this.itemMetadatum.value[child.id] ? this.itemMetadatum.value[child.id].parent_meta_id : 0)
-                        this.children.push(childObject);
-                        this.childrenMetadataCollapses.push(true);
-                    }
-                }
-            },
             toggleCollapseAllChildren() {
                 this.collapseAllChildren = !this.collapseAllChildren;
 
