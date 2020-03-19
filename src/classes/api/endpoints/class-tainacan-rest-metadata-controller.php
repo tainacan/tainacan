@@ -324,6 +324,13 @@ class REST_Metadata_Controller extends REST_Controller {
 				$form = ob_get_clean();
 				$item_arr['edit_form'] = $form;
 				$item_arr['enabled'] = $item->get_enabled_for_collection();
+
+				if(isset($item_arr['metadata_type_options']) && isset($item_arr['metadata_type_options']['children_objects'])) {
+					foreach ($item_arr['metadata_type_options']['children_objects'] as $index => $children) {
+						$item_arr['metadata_type_options']['children_objects'][$index]['current_user_can_edit'] = $item->can_edit();
+						$item_arr['metadata_type_options']['children_objects'][$index]['current_user_can_delete'] = $item->can_delete();
+					}
+				}
 			}
 
 			/**
