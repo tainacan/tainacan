@@ -192,7 +192,13 @@
                                     }"
                                     class="tainacan-icon" />
                             </span>  
-                            <span class="metadatum-name">{{ metadatum.name }}</span>
+                            <span class="metadatum-name">{{ metadatum.name }}
+                                <span   
+                                    v-if="metadatum.parent_name"
+                                    class="label-details"> 
+                                    <em>{{ '(' + metadatum.parent_name + ')' }}</em>
+                                </span>
+                            </span>
                         </div>
                     </draggable>   
                 
@@ -550,9 +556,15 @@ export default {
                 .catch(() => { this.isUpdatingFiltersOrder = false });
         },
         updateListOfMetadata() {
+            const availableMetadata = JSON.parse(JSON.stringify(this.getMetadata()));
+            const availableMetadataNames = {};
 
-            let availableMetadata = JSON.parse(JSON.stringify(this.getMetadata())).filter((aMetadatum) => aMetadatum.metadata_type_object.component != 'tainacan-compound');
-            
+            for (let availableMetadatum of availableMetadata) {
+                availableMetadataNames['' + availableMetadatum.id] = availableMetadatum.name;
+                if (availableMetadatum.parent > 0 && availableMetadataNames[availableMetadatum.parent])
+                    availableMetadatum.parent_name = availableMetadataNames[availableMetadatum.parent];
+            }
+           
             for (let activeFilter of this.activeFilterList) {
                 for (let i = availableMetadata.length - 1; i >= 0 ; i--) {
                     if (activeFilter.metadatum != undefined) {
@@ -562,8 +574,8 @@ export default {
                 }
             }
 
-            this.availableMetadata = availableMetadata;
-        },
+            this.availableMetadata = availableMetadata.filter((aMetadatum) => aMetadatum.metadata_type_object.component != 'tainacan-compound');
+        },  
         onChangeEnable($event, index) {
             let filtersOrder = [];
             for (let filter of this.activeFilterList) {
@@ -1039,6 +1051,10 @@ export default {
                     border-top-width: 20px;
                     border-bottom-width: 20px;
                     left: -20px;
+                }
+                .label-details {
+                    font-weight: normal;
+                    color: var(--tainacan-gray3);
                 }
             }
             .sortable-drag {
