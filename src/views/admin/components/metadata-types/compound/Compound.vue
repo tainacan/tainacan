@@ -142,7 +142,6 @@
                         }
                     }
                 }
-                console.log(currentValue)
                 return _.groupBy(currentValue, 'parent_meta_id');
             }
         },

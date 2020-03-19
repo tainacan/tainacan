@@ -61,8 +61,8 @@ export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, stat
         })
             .then(res => {
                 let metadatum = res.data;
-                if (metadatum.parent == undefined || metadatum.parent == null || metadatum.parent <= 0)
-                    commit('setSingleMetadatum', { metadatum: metadatum, index: newIndex });
+                commit('setSingleMetadatum', { metadatum: metadatum, index: newIndex });
+
                 resolve(metadatum);
             })
             .catch(error => {
@@ -83,8 +83,8 @@ export const updateMetadatum = ({commit}, {collectionId, metadatumId, isReposito
         axios.tainacan.put(endpoint + '?context=edit', options)
             .then(res => {
                 let metadatum = res.data;
-                if (metadatum.parent == undefined || metadatum.parent == null || metadatum.parent <= 0)
-                    commit('setSingleMetadatum', { metadatum: metadatum, index: index });
+                commit('setSingleMetadatum', { metadatum: metadatum, index: index });
+                
                 resolve(metadatum);
             })
             .catch(error => {

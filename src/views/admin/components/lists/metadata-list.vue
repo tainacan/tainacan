@@ -166,7 +166,7 @@
                     </div>
                     <child-metadata-list
                             v-if="metadatum.metadata_type_object && metadatum.metadata_type_object.component == 'tainacan-compound'"
-                            :parent="metadatum.id"
+                            :parent.sync="metadatum"
                             :is-repository-level="isRepositoryLevel" />
                 </div>
             </draggable> 

@@ -8,12 +8,33 @@ export const deleteMetadatum = ( state, metadatum ) => {
 }
 
 export const setSingleMetadatum = (state, {metadatum, index}) => {
-    if (index != undefined && index != null)
-        Vue.set( state.metadata, index, metadatum);
-    else {
-        const existingIndex = state.metadata.findIndex((aMetadatum) => aMetadatum.id == metadatum.id);
-        if (existingIndex >= 0)
-            Vue.set( state.metadata, existingIndex, metadatum)
+    if (metadatum.parent && metadatum.parent >= 0) {
+        const existingParentIndex = state.metadata.findIndex((aMetadatum) => aMetadatum.id == metadatum.parent);
+        if (existingParentIndex >= 0) {
+            let existingParent = JSON.parse(JSON.stringify(state.metadata[existingParentIndex]));
+            let existingParentChildrenObject = existingParent.metadata_type_options.children_objects;
+            
+            if (index != undefined && index != null)
+                existingParentChildrenObject.splice(index, 0, metadatum);
+            else {
+                const existingIndex = existingParentChildrenObject.findIndex((aMetadatum) => aMetadatum.id == metadatum.id);
+                if (existingIndex >= 0)
+                    existingParentChildrenObject.splice(existingIndex, 0, metadatum);
+                else
+                    existingParentChildrenObject.push(metadatum);
+            }
+            
+            existingParent.metadata_type_options.children_objects = existingParentChildrenObject;
+            Vue.set(state.metadata, existingParentIndex, existingParent)
+        }    
+    } else {
+        if (index != undefined && index != null)
+            Vue.set( state.metadata, index, metadatum);
+        else {
+            const existingIndex = state.metadata.findIndex((aMetadatum) => aMetadatum.id == metadatum.id);
+            if (existingIndex >= 0)
+                Vue.set( state.metadata, existingIndex, metadatum)
+        } 
     }
 }
 

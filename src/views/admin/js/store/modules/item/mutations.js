@@ -63,7 +63,7 @@ export const cleanItemMetadata = (state) => {
 }
 
 export const setSingleMetadatum = (state, itemMetadatum) => {
-  
+
     if (itemMetadatum.metadatum.parent <= 0) {
         let index = state.itemMetadata.findIndex(anItemMetadatum => anItemMetadatum.metadatum.id == itemMetadatum.metadatum.id);
         if (index >= 0)

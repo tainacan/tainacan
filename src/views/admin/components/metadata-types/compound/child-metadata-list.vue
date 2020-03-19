@@ -173,7 +173,7 @@
         },
         props: {
             isRepositoryLevel: Boolean,
-            parent: String
+            parent: Object
         },
         data() {
             return {
@@ -185,7 +185,18 @@
                 hightlightedMetadatum: '',
                 editForms: {},
                 metadataSearchCancel: undefined,
-                childrenMetadata: []
+            }
+        },
+        computed: {
+            childrenMetadata() {
+                console.log(this.parent.metadata_type_options.children_objects)
+                if (this.parent &&
+                    this.parent.metadata_type_options &&
+                    this.parent.metadata_type_options.children_objects.length > 0 
+                )
+                    return this.parent.metadata_type_options.children_objects;
+                else
+                    return [];
             }
         },
         watch: {
@@ -228,7 +239,11 @@
             }  
         },
         mounted() {
-            this.isLoadingMetadata = true;
+            if (this.isRepositoryLevel)
+                this.collectionId = 'default';
+            else
+                this.collectionId = this.$route.params.collectionId;
+                
             this.refreshMetadata();
         },
         beforeDestroy() {
@@ -264,7 +279,7 @@
                 this.isUpdatingMetadataOrder = true;
                 this.updateChildMetadataOrder({ 
                     collectionId: this.collectionId,
-                    parentMetadatumId: this.parent,
+                    parentMetadatumId: this.parent.id,
                     childMetadataOrder: metadataOrder
                 })
                     .then(() => {
@@ -283,7 +298,7 @@
                 this.isUpdatingMetadataOrder = true;
                 this.updateChildMetadataOrder({ 
                     collectionId: this.collectionId,
-                    parentMetadatumId: this.parent,
+                    parentMetadatumId: this.parent.id,
                     childMetadataOrder: metadataOrder
                 })
                     .then(() => {
@@ -300,13 +315,13 @@
                     status: 'auto-draft', 
                     isRepositoryLevel: this.isRepositoryLevel, 
                     newIndex: newIndex,
-                    parent: this.parent
+                    parent: this.parent.id
                 })
                 .then((metadatum) => {
                     if (!this.isRepositoryLevel)
                         this.updateMetadataOrder();
                     
-                    this.childrenMetadata.splice(newIndex, 1, metadatum);
+                    //this.childrenMetadata.splice(newIndex, 1, metadatum);
 
                     this.toggleMetadatumEdition(metadatum.id)
                     this.hightlightedMetadatum = '';
@@ -387,22 +402,19 @@
                 this.$router.push({ query: {}});
             },
             refreshMetadata() {
-                
+                /*
+                this.isLoadingMetadata = true;
+
                 // Cancels previous Request
                 if (this.metadataSearchCancel != undefined)
                     this.metadataSearchCancel.cancel('Metadata search Canceled.');
-
-                if (this.isRepositoryLevel)
-                    this.collectionId = 'default';
-                else
-                    this.collectionId = this.$route.params.collectionId;
 
                 this.fetchMetadata({
                     collectionId: this.collectionId, 
                     isRepositoryLevel: this.isRepositoryLevel, 
                     isContextEdit: true, 
                     includeDisabled: true,
-                    parent: this.parent
+                    parent: this.parent.id
                 }).then((resp) => {
                         resp.request
                             .then((metadata) => {
@@ -424,6 +436,7 @@
                         this.metadataSearchCancel = resp.source;
                     })
                     .catch(() => this.isLoadingMetadata = false);  
+                    */
             },
             isAvailableChildMetadata(to, from, item) {
                 return !['tainacan-compound', 'tainacan-taxonomy', 'tainacan-relationship'].includes(item.id);
