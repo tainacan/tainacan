@@ -148,7 +148,8 @@ a:hover {
 .hierarchy-separator {
     color: var(--tainacan-gray3);
 }
-.metadata-type-textarea {
+.metadata-type-textarea,
+.metadata-type-compound {
     .multivalue-separator {
         display: block;
         max-height: 1px;
@@ -163,6 +164,17 @@ a:hover {
     padding-left: 15px;
     margin-left: 15px;
     border-left: 1px solid var(--tainacan-gray2);
+
+    .tainacan-compound-metadatum {
+        margin-bottom: 0.5em;
+
+        .label:not(:last-child) {
+            margin-bottom: 0.3em;
+        }
+        p:not(:last-child) {
+            margin-bottom: 0.75em;
+        }
+    }
 }
 
 // Buefy notices (toast, snackbar...)

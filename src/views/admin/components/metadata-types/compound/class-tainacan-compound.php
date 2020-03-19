@@ -125,6 +125,7 @@ class Compound extends Metadata_Type {
 	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
 		$return = '';
+		$separator = $item_metadata->get_multivalue_separator();
 		
 		if ( $item_metadata->is_multiple() ) {
 			
@@ -141,7 +142,7 @@ class Compound extends Metadata_Type {
 					}
 				}
 				
-				$return .= '</div>' . "\n\n";
+				$return .= '</div>' . "\n" . $separator . "\n";
 				
 			}
 			
