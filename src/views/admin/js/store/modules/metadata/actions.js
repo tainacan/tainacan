@@ -84,7 +84,7 @@ export const updateMetadatum = ({commit}, {collectionId, metadatumId, isReposito
             .then(res => {
                 let metadatum = res.data;
                 commit('setSingleMetadatum', { metadatum: metadatum, index: index });
-                
+
                 resolve(metadatum);
             })
             .catch(error => {
@@ -174,7 +174,7 @@ export const updateChildMetadataOrder = ({ commit }, {collectionId, parentMetada
         axios.tainacan.put('/collection/' + collectionId + '/metadata/' + parentMetadatumId + '?context=edit', body)
             .then(res => {
                 const updatedParentMetadatum = res.data;
-                commit('setSingleMetadatum', { metadatum: updatedParentMetadatum });
+                // commit('setSingleMetadatum', { metadatum: updatedParentMetadatum });
                 resolve(updatedParentMetadatum);
             }).catch(error => {
                 reject(error.response);
