@@ -107,7 +107,7 @@ class Compound extends Metadata_Type {
 				if ( $index !== false ) {
 					$options['children_objects'][$index] = $item_arr;
 				} else {
-					$children_not_ordinate['children_objects'][] = $item_arr;
+					$children_not_ordinate[] = $item_arr;
 				}
 			}
 			ksort( $options['children_objects'] );
