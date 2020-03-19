@@ -89,6 +89,7 @@
                 </template>
             </div>
         </transition>
+        <!-- Non-textual metadata such as taxonomy, relationship and compound manage multiple state in different ways -->
         <transition name="filter-item">
             <div 
                     v-show="isCollapsed"
@@ -127,7 +128,7 @@
                 return (this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple == 'yes') ? this.itemMetadatum.metadatum.multiple == 'yes' : false;
             },
             isTextInputComponent() {
-                const array = ['tainacan-relationship','tainacan-taxonomy'];
+                const array = ['tainacan-relationship','tainacan-taxonomy', 'tainacan-compound'];
                 return !(array.indexOf(this.metadatumComponent) >= 0 );
             }
         },
@@ -202,7 +203,7 @@
                         if (this.values.length && this.values[0] == this.itemMetadatum.value)
                             return;
                 }
-                
+
                 // If none is the case, the value is update request is sent to the API
                 eventBusItemMetadata.$emit('input', {
                     itemId: this.itemMetadatum.item.id,

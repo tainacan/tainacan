@@ -31,7 +31,6 @@
                     :class="{
                         'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
                         'not-focusable-item': openedMetadatumId == metadatum.id,
-                        'disabled-metadatum': metadatum.enabled == false,
                         'inherited-metadatum': (metadatum.collection_id != collectionId && metadatum.parent == 0) || isRepositoryLevel
                     }" 
                     v-for="(metadatum, index) in childrenMetadata"
@@ -60,9 +59,8 @@
                             :class="{ 
                                 'tainacan-icon-collections': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
                                 'tainacan-icon-repository': (metadatum.collection_id == 'default') || isRepositoryLevel,
-                                'has-text-turquoise5': metadatum.enabled && (metadatum.collection_id != 'default' && !isRepositoryLevel), 
-                                'has-text-blue5': metadatum.enabled && (metadatum.collection_id == 'default' || isRepositoryLevel),
-                                'has-text-gray3': !metadatum.enabled
+                                'has-text-turquoise5': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                'has-text-blue5': (metadatum.collection_id == 'default' || isRepositoryLevel)
                             }"
                             class="tainacan-icon" />
                     </span>  
@@ -98,12 +96,6 @@
                     <span 
                             class="controls" 
                             v-if="metadatum.id !== undefined">
-                        <b-switch 
-                                v-if="!isRepositoryLevel"
-                                :disabled="isUpdatingMetadataOrder"
-                                size="is-small" 
-                                :value="metadatum.enabled"
-                                @input="onChangeEnable($event, index)"/>
                         <a 
                                 v-if="metadatum.current_user_can_edit"
                                 :style="{ visibility: 
@@ -273,24 +265,8 @@
                 let metadataOrder = [];
                 for (let metadatum of this.childrenMetadata)
                     if (metadatum != undefined)
-                        metadataOrder.push({ 'id': metadatum.id, 'enabled': metadatum.enabled });
+                        metadataOrder.push({ 'id': metadatum.id });
            
-                this.isUpdatingMetadataOrder = true;
-                this.updateChildMetadataOrder({ 
-                    collectionId: this.collectionId,
-                    parentMetadatumId: this.parent.id,
-                    childMetadataOrder: metadataOrder
-                })
-                    .then(() => this.isUpdatingMetadataOrder = false)
-                    .catch(() => this.isUpdatingMetadataOrder = false);
-            },
-            onChangeEnable($event, index) {
-                let metadataOrder = [];
-                for (let metadatum of this.childrenMetadata)
-                    if (metadatum != undefined)
-                        metadataOrder.push({'id': metadatum.id, 'enabled': metadatum.enabled});
-                
-                metadataOrder[index].enabled = $event;
                 this.isUpdatingMetadataOrder = true;
                 this.updateChildMetadataOrder({ 
                     collectionId: this.collectionId,
