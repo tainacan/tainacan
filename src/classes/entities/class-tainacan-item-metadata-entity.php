@@ -179,12 +179,12 @@ class Item_Metadata_Entity extends Entity {
 		$primitive_type = $this->get_metadatum()->get_metadata_type_object()->get_primitive_type();
 		
 		if ( $this->is_multiple() ) {
-			$options = $this->get_metadatum()->get_metadata_type_object()->get_options();
-			$order = $options['children_order'];
 			$return = [];
 			
 			foreach ($value as $v) {
 				if( is_array($v) ) {
+					$options = $this->get_metadatum()->get_metadata_type_object()->get_options();
+					$order = $options['children_order'];
 					$compounds = [];
 					$compounds_not_ordinate = [];
 					foreach ($v as $metadatum_id => $itemMetadata) {
