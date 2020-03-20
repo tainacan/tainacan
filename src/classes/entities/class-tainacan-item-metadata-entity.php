@@ -179,18 +179,26 @@ class Item_Metadata_Entity extends Entity {
 		$primitive_type = $this->get_metadatum()->get_metadata_type_object()->get_primitive_type();
 		
 		if ( $this->is_multiple() ) {
-			
+			$options = $this->get_metadatum()->get_metadata_type_object()->get_options();
+			$order = $options['children_order'];
 			$return = [];
 			
 			foreach ($value as $v) {
 				if( is_array($v) ) {
 					$compounds = [];
-					foreach ($v as $itemMetadata) {
+					$compounds_not_ordinate = [];
+					foreach ($v as $metadatum_id => $itemMetadata) {
 						if ( $itemMetadata instanceof Item_Metadata_Entity ) {
-							$compounds[] = $itemMetadata->_toArray();
+							$index = array_search( $metadatum_id, array_column( $order, 'id' ) );
+							if ( $index !== false ) {
+								$compounds[$index] = array_merge( ['metadatum_id' => $metadatum_id], $itemMetadata->_toArray() );
+							} else {
+								$compounds_not_ordinate[] = array_merge( ['metadatum_id' => $metadatum_id], $itemMetadata->_toArray() );
+							}
 						}
 					}
-					$return[] = $compounds;
+					ksort( $compounds );
+					$return[] = array_merge($compounds, $compounds_not_ordinate);
 				} else if ( $v instanceof Term || $v instanceof Item_Metadata_Entity ) {
 					$return[] = $v->_toArray();
 				} else {
