@@ -12,21 +12,21 @@
     </a>
     
     <transition name="filter-item">
-        <div>
+        <div v-if="childItemMetadataGroups.length > 0">
             <tainacan-form-item
-                    v-for="(childItemMetadatum, index) of Object.values(childItemMetadata)[0]"
+                    v-for="(childItemMetadatum, index) of childItemMetadataGroups[0]"
                     :key="index"
                     :item-metadatum="childItemMetadatum"
                     :is-collapsed="true"
                     @changeCollapse="onChangeCollapse($event, index)"/>
-            <template v-if="isMultiple && childItemMetadata.length > 1">
+            <template v-if="isMultiple && childItemMetadataGroups.length > 1">
                 <transition-group
                         name="filter-item"
                         class="multiple-inputs">
-                    <template v-for="(parentMetaIdGroup, groupIndex) of Object.values(childItemMetadata)">
+                    <template v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups">
                         <tainacan-form-item
                                 v-if="groupIndex > 0"
-                                v-for="(childItemMetadatum, index) of parentMetaIdGroup"
+                                v-for="(childItemMetadatum, index) of childItemMetadata"
                                 :key="groupIndex + '-' + index"
                                 :item-metadatum="childItemMetadatum"
                                 :is-collapsed="true"
@@ -72,7 +72,7 @@
             return {
                 children: [],
                 collapseAllChildren: true,
-                childItemMetadata: [],
+                childItemMetadataGroups: [],
                 childrenMetadataCollapses: [],
             }
         },
@@ -82,57 +82,66 @@
             }
         },
         watch: {
+            /*  This will create the input object structure for 
+             *   <tainacan-item-form :item-metadatum="childItemMetadatum" />
+             *   looking at the values from the parent (this.itemMetadatum)   
+             */  
             'itemMetadatum.value': {
                 handler() {
-                    let currentValue = [];
-                    
-                    if (this.itemMetadatum.value && this.itemMetadatum.value.length) {
-                        console.log(this.itemMetadatum.value)
-                        // Here we load the values from the object, but must also create
-                        // empty forms for those not created
-                        if (this.itemMetadatum.metadatum &&
-                            this.itemMetadatum.metadatum.metadata_type_options &&
-                            this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
-                        ) {
-                            let lastParentMetaId = 0;
-                            
-                            for (let i = this.itemMetadatum.value.length - 1; i >= 0; i--) {
-                                if (this.itemMetadatum.value[i].parent_meta_id && this.itemMetadatum.value[i].parent_meta_id > 0) {
-                                    lastParentMetaId = this.itemMetadatum.value[i].parent_meta_id;
-                                    break;
-                                }
-                            }
-                            
-                            for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
-                                const existingValueIndex = this.itemMetadatum.value.findIndex((anItemMetadatum) => anItemMetadatum.metadatum_id == child.id)
-                                
-                                if (existingValueIndex >= 0)
-                                    currentValue.splice(existingValueIndex, 0, {
-                                        item: this.itemMetadatum.item,
-                                        metadatum: child,
-                                        parent_meta_id: this.itemMetadatum.value[existingValueIndex].parent_meta_id,
-                                        value: this.itemMetadatum.value[existingValueIndex].value,
-                                        value_as_html: this.itemMetadatum.value[existingValueIndex].value_as_html,
-                                        value_as_string: this.itemMetadatum.value[existingValueIndex].value_as_string,
-                                    });
-                                else
-                                    currentValue.push({
-                                        item: this.itemMetadatum.item,
-                                        metadatum: child,
-                                        parent_meta_id: lastParentMetaId,
-                                        value: '',
-                                        value_as_html: '',
-                                        value_as_string: ''
-                                    })
-                            }
-                        }
+                    let currentChildItemMetadataGroups = [];
 
-                    } else {
-                        // In this situation, we simply create empty forms
-                        if (this.itemMetadatum.metadatum &&
-                            this.itemMetadatum.metadatum.metadata_type_options &&
-                            this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
-                        ) {
+                    const parentValues = this.isMultiple ? this.itemMetadatum.value : [ this.itemMetadatum.value ];
+
+                    if (this.itemMetadatum.metadatum &&
+                        this.itemMetadatum.metadatum.metadata_type_options &&
+                        this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
+                    ) {
+
+                        // Here we load the values from the object, but must also create some
+                        if (parentValues && this.itemMetadatum.value.length) {
+                            
+                            for (let childItemMetadata of parentValues) {
+                                let existingChildItemMetadata = [];
+
+                                // Loads the existing values
+                                for (let childItemMetadatum of childItemMetadata) {
+                                    const childMetadatum = this.itemMetadatum.metadatum.metadata_type_options.children_objects.find((aMetadatum) => aMetadatum.id == childItemMetadatum.metadatum_id);
+                                    
+                                    existingChildItemMetadata.push({
+                                        item: this.itemMetadatum.item,
+                                        metadatum: childMetadatum,
+                                        parent_meta_id: childItemMetadatum.parent_meta_id,
+                                        value: childItemMetadatum.value,
+                                        value_as_html: childItemMetadatum.value_as_html,
+                                        value_as_string: childItemMetadatum.value_as_string,
+                                    })
+                                }
+                                // If some have empty childs, we need to creat their input
+                                if (childItemMetadata.length < this.itemMetadatum.metadatum.metadata_type_options.children_objects.length) {
+                                    for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
+                                        const existingValueIndex = childItemMetadata.findIndex((anItemMetadatum) => anItemMetadatum.metadatum_id == child.id);
+                                        if (existingValueIndex < 0) {
+                                            const existintParentMetaId = childItemMetadata.findIndex((anItemMetadatum) => anItemMetadatum.parent_meta_id > 0);
+                                            existingChildItemMetadata.push({
+                                                item: this.itemMetadatum.item,
+                                                metadatum: child,
+                                                parent_meta_id: existintParentMetaId ? existintParentMetaId : 0,
+                                                value: '',
+                                                value_as_html: '',
+                                                value_as_string: ''
+                                            });
+                                        }
+                                    }
+                                }
+                                currentChildItemMetadataGroups.push(existingChildItemMetadata)
+                            }
+
+                        } else {
+                            
+                            // In this situation, we simply create empty forms
+                            let currentChildItemMetadata = [];
+
+                            // A new input for each type of child metadatum
                             for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
                                 let childObject = {
                                     item: this.itemMetadatum.item,
@@ -142,23 +151,13 @@
                                     value_as_html: '',
                                     value_as_string: ''
                                 };
-                                currentValue.push(childObject)
+                                currentChildItemMetadata.push(childObject)
                             }
+                            currentChildItemMetadataGroups.push(currentChildItemMetadata);
                         }
                     }
-                    this.childItemMetadata = _.groupBy(currentValue, 'parent_meta_id');
-                },
-                immediate: true
-            },
-            childItemMetadata: {
-                handler(value) {
-                    if (this.itemMetadatum.metadatum &&
-                        this.itemMetadatum.metadatum.metadata_type_options &&
-                        this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
-                    ) {
-                        for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects)
-                            this.childrenMetadataCollapses.push(true);
-                    }
+                    
+                    this.childItemMetadataGroups = currentChildItemMetadataGroups;
                 },
                 immediate: true
             }
@@ -185,7 +184,7 @@
                         let childObject = {
                             item: this.itemMetadatum.item,
                             metadatum: child,
-                            parent_meta_id: '0',
+                            parent_meta_id: 0,
                             value: '',
                             value_as_html: '',
                             value_as_string: ''
@@ -193,7 +192,7 @@
                         newEmptyGroup.push(childObject)
                     }
                 }
-                this.childItemMetadata['0'] = newEmptyGroup;
+                this.childItemMetadataGroups.push(newEmptyGroup);
             },
             removeValue(index) {
                 // Remove the whole parent_meta_id group here.

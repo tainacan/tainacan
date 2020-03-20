@@ -84,12 +84,28 @@ export const setSingleMetadatum = (state, itemMetadatum) => {
                 value_as_string: itemMetadatum.value_as_string,
                 parent_meta_id: itemMetadatum.parent_meta_id
             };
-            let currrentChildMetadatumIndex = currentParentValues.findIndex((metadatumValue) => metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id && metadatumValue.metadatum_id == itemMetadatum.metadatum.id);
-            if (currrentChildMetadatumIndex >= 0)
-                currentParentValues.splice(currrentChildMetadatumIndex, 1, childMetadatumValue);
-            else
-                currentParentValues.push(childMetadatumValue);
 
+            if (currentParent.metadatum.multiple == 'yes') {
+                let currrentChildMetadataGroupIndex = currentParentValues.findIndex((metadataGroup) => {
+                    return metadataGroup.findIndex((metadatumValue) => metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id && metadatumValue.metadatum_id == itemMetadatum.metadatum.id) >= 0;
+                });
+                if (currrentChildMetadataGroupIndex >= 0) {
+                    let currrentChildMetadatumIndex = currentParentValues[currrentChildMetadataGroupIndex].findIndex((metadatumValue) => metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id && metadatumValue.metadatum_id == itemMetadatum.metadatum.id);
+                    if (currrentChildMetadatumIndex >= 0)
+                        currentParentValues[currrentChildMetadataGroupIndex].splice(currrentChildMetadatumIndex, 1, childMetadatumValue);
+                    else
+                        currentParentValues[currrentChildMetadataGroupIndex].push(childMetadatumValue);
+                } else {
+                    currentParentValues.push([childMetadatumValue])
+                }
+            } else {
+                let currrentChildMetadatumIndex = currentParentValues.findIndex((metadatumValue) => metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id && metadatumValue.metadatum_id == itemMetadatum.metadatum.id);
+                if (currrentChildMetadatumIndex >= 0)
+                    currentParentValues.splice(currrentChildMetadatumIndex, 1, childMetadatumValue);
+                else
+                    currentParentValues.push(childMetadatumValue);
+            }
+            
             currentParent.value = currentParentValues;
             Vue.set(state.itemMetadata, parentIndex, currentParent);
         }
