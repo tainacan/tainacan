@@ -33,7 +33,7 @@
                                 @changeCollapse="onChangeCollapse($event, index)"/>
                         <a 
                                 v-if="index > 0" 
-                                @click="removeValue(index)"
+                                @click="removeGroup(groupIndex)"
                                 class="add-link"
                                 :key="groupIndex + '-' + index">
                             <b-icon
@@ -47,7 +47,7 @@
             </template>
             <template v-if="isMultiple">
                 <a 
-                        @click="addValue"
+                        @click="addGroup"
                         class="is-block add-link">
                     <span class="icon is-small">
                         <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
@@ -172,7 +172,7 @@
             onChangeCollapse(event, index) {
                 this.childrenMetadataCollapses.splice(index, 1, event);
             },
-            addValue(){
+            addGroup(){
                 // Create a new placeholder parent_meta_id group here.
                 let newEmptyGroup = [];
 
@@ -194,8 +194,18 @@
                 }
                 this.childItemMetadataGroups.push(newEmptyGroup);
             },
-            removeValue(index) {
-                // Remove the whole parent_meta_id group here.
+            removeGroup(groupIndex) {
+                this.currentChildItemMetadataGroups.splice(groupIndex, 1);
+                updatedItemMetadatum = JSON.parse(JSON.stringify(this.itemMetadatum))
+                updatedItemMetadatum.slice(groupIndex, 1);
+
+                // If none is the case, the value is update request is sent to the API
+                eventBusItemMetadata.$emit('input', {
+                    itemId: this.itemMetadatum.item.id,
+                    metadatumId: this.itemMetadatum.metadatum.id,
+                    values: updatedItemMetadatum,
+                    parentMetaId: this.itemMetadatum.parent_meta_id
+                });
             }
         }
     }
