@@ -17,8 +17,8 @@
                     v-for="(childItemMetadatum, index) of childItemMetadataGroups[0]"
                     :key="index"
                     :item-metadatum="childItemMetadatum"
-                    :is-collapsed="true"
-                    @changeCollapse="onChangeCollapse($event, index)"/>
+                    :is-collapsed="childItemMetadatum.collapse"
+                    @changeCollapse="onChangeCollapse($event, 0, index)"/>
             <template v-if="isMultiple && childItemMetadataGroups.length > 1">
                 <transition-group
                         name="filter-item"
@@ -29,8 +29,8 @@
                                 v-for="(childItemMetadatum, index) of childItemMetadata"
                                 :key="groupIndex + '-' + index"
                                 :item-metadatum="childItemMetadatum"
-                                :is-collapsed="true"
-                                @changeCollapse="onChangeCollapse($event, index)"/>
+                                :is-collapsed="childItemMetadatum.collapse"
+                                @changeCollapse="onChangeCollapse($event, groupIndex, index)"/>
                         <a 
                                 v-if="index > 0" 
                                 @click="removeGroup(groupIndex)"
@@ -62,6 +62,8 @@
 </template>
 
 <script>
+    import { eventBusItemMetadata } from '../../../js/event-bus-item-metadata';
+
     export default {
         props: {
             itemMetadatum: Object,
@@ -72,8 +74,7 @@
             return {
                 children: [],
                 collapseAllChildren: true,
-                childItemMetadataGroups: [],
-                childrenMetadataCollapses: [],
+                childItemMetadataGroups: []
             }
         },
         computed: {
@@ -114,6 +115,7 @@
                                         value: childItemMetadatum.value,
                                         value_as_html: childItemMetadatum.value_as_html,
                                         value_as_string: childItemMetadatum.value_as_string,
+                                        collapse: this.collapseAllChildren ? this.collapseAllChildren : false
                                     })
                                 }
                                 // If some have empty childs, we need to creat their input
@@ -128,7 +130,8 @@
                                                 parent_meta_id: existintParentMetaId ? existintParentMetaId : 0,
                                                 value: '',
                                                 value_as_html: '',
-                                                value_as_string: ''
+                                                value_as_string: '',
+                                                collapse: this.collapseAllChildren ? this.collapseAllChildren : false
                                             });
                                         }
                                     }
@@ -149,7 +152,8 @@
                                     parent_meta_id: '0',
                                     value: '',
                                     value_as_html: '',
-                                    value_as_string: ''
+                                    value_as_string: '',
+                                    collapse: this.collapseAllChildren ? this.collapseAllChildren : false
                                 };
                                 currentChildItemMetadata.push(childObject)
                             }
@@ -166,11 +170,12 @@
             toggleCollapseAllChildren() {
                 this.collapseAllChildren = !this.collapseAllChildren;
 
-                for (let i = 0; i < this.childrenMetadataCollapses.length; i++)
-                    this.childrenMetadataCollapses[i] = this.collapseAllChildren;
+                for (let i = 0; i < this.childItemMetadataGroups; i++)
+                    for (let j = 0; j < this.childItemMetadataGroups[i]; j++)
+                        this.childItemMetadataGroups[i][j].collapse = this.collapseAllChildren;
             },
-            onChangeCollapse(event, index) {
-                this.childrenMetadataCollapses.splice(index, 1, event);
+            onChangeCollapse(event, groupIndex, index) {
+                this.childItemMetadataGroups[groupIndex][index].collapse = !event;
             },
             addGroup(){
                 // Create a new placeholder parent_meta_id group here.
@@ -187,7 +192,8 @@
                             parent_meta_id: 0,
                             value: '',
                             value_as_html: '',
-                            value_as_string: ''
+                            value_as_string: '',
+                            collapse: this.collapseAllChildren ? this.collapseAllChildren : false
                         };
                         newEmptyGroup.push(childObject)
                     }
@@ -196,7 +202,7 @@
             },
             removeGroup(groupIndex) {
                 this.currentChildItemMetadataGroups.splice(groupIndex, 1);
-                updatedItemMetadatum = JSON.parse(JSON.stringify(this.itemMetadatum))
+                let updatedItemMetadatum = JSON.parse(JSON.stringify(this.itemMetadatum))
                 updatedItemMetadatum.slice(groupIndex, 1);
 
                 // If none is the case, the value is update request is sent to the API
