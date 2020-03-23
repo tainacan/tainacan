@@ -75,6 +75,9 @@ font-weight: normal;
 .tainacan-icon-add:before {
     content: "add";
 }
+.tainacan-icon-remove:before {
+    content: "remove";
+}
 .tainacan-icon-addcollection:before {
     content: "addcollection";
 }

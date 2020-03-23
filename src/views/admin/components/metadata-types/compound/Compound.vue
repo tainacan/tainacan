@@ -24,6 +24,9 @@
                         name="filter-item"
                         class="multiple-inputs">
                     <template v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups">
+                        <hr 
+                                v-if="groupIndex > 0"
+                                :key="groupIndex + '-' + index">
                         <tainacan-form-item
                                 v-if="groupIndex > 0"
                                 v-for="(childItemMetadatum, index) of childItemMetadata"
@@ -255,8 +258,17 @@
             margin-left: 3px;
             margin-bottom: 0.875em;
         }
-        .field:last-child {
+        .field:last-of-type {
             border-bottom: none;
+        }
+        .add-link {
+            font-size: 0.75em;
+        }
+        .multiple-inputs hr {
+            background-color: var(--tainacan-gray2);
+            margin-left: -38px;
+            width: calc(100% + 38px);
+            height: 1px;
         }
     }
 </style>
