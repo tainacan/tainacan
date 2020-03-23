@@ -68,10 +68,9 @@
                                     @click="removeValue(index)"
                                     class="add-link"
                                     :key="index">
-                                <b-icon
-                                        icon="minus-circle"
-                                        size="is-small"
-                                        type="is-secondary"/>
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon has-text-secondary tainacan-icon-remove"/>
+                                </span>
                                 &nbsp;{{ $i18n.get('label_remove_value') }}
                             </a>
                         </template>

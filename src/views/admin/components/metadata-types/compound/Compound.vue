@@ -32,14 +32,13 @@
                                 :is-collapsed="childItemMetadatum.collapse"
                                 @changeCollapse="onChangeCollapse($event, groupIndex, index)"/>
                         <a 
-                                v-if="index > 0" 
+                                v-if="groupIndex > 0" 
                                 @click="removeGroup(groupIndex)"
                                 class="add-link"
-                                :key="groupIndex + '-' + index">
-                            <b-icon
-                                    icon="minus-circle"
-                                    size="is-small"
-                                    type="is-secondary"/>
+                                :key="groupIndex">
+                            <span class="icon is-small">
+                                <i class="tainacan-icon has-text-secondary tainacan-icon-remove"/>
+                            </span>
                             &nbsp;{{ $i18n.get('label_remove_value') }}
                         </a>
                     </template>
@@ -97,43 +96,64 @@
                         this.itemMetadatum.metadatum.metadata_type_options &&
                         this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
                     ) {
-
+                        
                         // Here we load the values from the object, but must also create some
-                        if (parentValues && this.itemMetadatum.value.length) {
+                        if (parentValues && parentValues.length) {
                             
                             for (let childItemMetadata of parentValues) {
                                 let existingChildItemMetadata = [];
-
-                                // Loads the existing values
-                                for (let childItemMetadatum of childItemMetadata) {
-                                    const childMetadatum = this.itemMetadatum.metadatum.metadata_type_options.children_objects.find((aMetadatum) => aMetadatum.id == childItemMetadatum.metadatum_id);
+                                
+                                if (childItemMetadata && childItemMetadata.length) {
+                                
+                                    // Loads the existing values
+                                    for (let childItemMetadatum of childItemMetadata) {
+                                        const childMetadatum = this.itemMetadatum.metadatum.metadata_type_options.children_objects.find((aMetadatum) => aMetadatum.id == childItemMetadatum.metadatum_id);
+                                        
+                                        existingChildItemMetadata.push({
+                                            item: this.itemMetadatum.item,
+                                            metadatum: childMetadatum,
+                                            parent_meta_id: childItemMetadatum.parent_meta_id,
+                                            value: childItemMetadatum.value,
+                                            value_as_html: childItemMetadatum.value_as_html,
+                                            value_as_string: childItemMetadatum.value_as_string,
+                                            collapse: this.collapseAllChildren ? this.collapseAllChildren : false
+                                        })
+                                    }
                                     
-                                    existingChildItemMetadata.push({
-                                        item: this.itemMetadatum.item,
-                                        metadatum: childMetadatum,
-                                        parent_meta_id: childItemMetadatum.parent_meta_id,
-                                        value: childItemMetadatum.value,
-                                        value_as_html: childItemMetadatum.value_as_html,
-                                        value_as_string: childItemMetadatum.value_as_string,
-                                        collapse: this.collapseAllChildren ? this.collapseAllChildren : false
-                                    })
-                                }
-                                // If some have empty childs, we need to creat their input
-                                if (childItemMetadata.length < this.itemMetadatum.metadatum.metadata_type_options.children_objects.length) {
-                                    for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
-                                        const existingValueIndex = childItemMetadata.findIndex((anItemMetadatum) => anItemMetadatum.metadatum_id == child.id);
-                                        if (existingValueIndex < 0) {
-                                            const existintParentMetaId = childItemMetadata.findIndex((anItemMetadatum) => anItemMetadatum.parent_meta_id > 0);
-                                            existingChildItemMetadata.push({
-                                                item: this.itemMetadatum.item,
-                                                metadatum: child,
-                                                parent_meta_id: existintParentMetaId ? existintParentMetaId : 0,
-                                                value: '',
-                                                value_as_html: '',
-                                                value_as_string: '',
-                                                collapse: this.collapseAllChildren ? this.collapseAllChildren : false
-                                            });
+                                    // If some have empty childs, we need to create their input
+                                    if (childItemMetadata.length < this.itemMetadatum.metadatum.metadata_type_options.children_objects.length) {
+                                        const existingParentMetaIdIndex = childItemMetadata.findIndex((anItemMetadatum) => anItemMetadatum.parent_meta_id > 0);
+                                        
+                                        for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
+                                            
+                                            const existingValueIndex = childItemMetadata.findIndex((anItemMetadatum) => anItemMetadatum.metadatum_id == child.id);
+                                            if (existingValueIndex < 0) {
+                                                existingChildItemMetadata.push({
+                                                    item: this.itemMetadatum.item,
+                                                    metadatum: child,
+                                                    parent_meta_id: existingParentMetaIdIndex >= 0 ? childItemMetadata[existingParentMetaIdIndex].parent_meta_id : 0,
+                                                    value: '',
+                                                    value_as_html: '',
+                                                    value_as_string: '',
+                                                    collapse: this.collapseAllChildren ? this.collapseAllChildren : false
+                                                });
+                                            }
                                         }
+                                    }
+                                } else {
+
+                                    // A new input for each type of child metadatum
+                                    for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
+                                        let childObject = {
+                                            item: this.itemMetadatum.item,
+                                            metadatum: child,
+                                            parent_meta_id: '0',
+                                            value: '',
+                                            value_as_html: '',
+                                            value_as_string: '',
+                                            collapse: this.collapseAllChildren ? this.collapseAllChildren : false
+                                        };
+                                        existingChildItemMetadata.push(childObject)
                                     }
                                 }
                                 currentChildItemMetadataGroups.push(existingChildItemMetadata)
