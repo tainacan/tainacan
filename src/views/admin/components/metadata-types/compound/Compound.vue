@@ -26,14 +26,14 @@
                     <template v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups">
                         <hr 
                                 v-if="groupIndex > 0"
-                                :key="groupIndex + '-' + index">
+                                :key="groupIndex">
                         <tainacan-form-item
                                 v-if="groupIndex > 0"
-                                v-for="(childItemMetadatum, index) of childItemMetadata"
-                                :key="groupIndex + '-' + index"
+                                v-for="(childItemMetadatum, childIndex) of childItemMetadata"
+                                :key="childIndex"
                                 :item-metadatum="childItemMetadatum"
                                 :is-collapsed="childItemMetadatum.collapse"
-                                @changeCollapse="onChangeCollapse($event, groupIndex, index)"/>
+                                @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"/>
                         <a 
                                 v-if="groupIndex > 0" 
                                 @click="removeGroup(groupIndex)"
@@ -94,7 +94,7 @@
                     let currentChildItemMetadataGroups = [];
 
                     const parentValues = this.isMultiple ? this.itemMetadatum.value : [ this.itemMetadatum.value ];
-
+                    
                     if (this.itemMetadatum.metadatum &&
                         this.itemMetadatum.metadatum.metadata_type_options &&
                         this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
@@ -224,15 +224,17 @@
                 this.childItemMetadataGroups.push(newEmptyGroup);
             },
             removeGroup(groupIndex) {
-                this.currentChildItemMetadataGroups.splice(groupIndex, 1);
-                let updatedItemMetadatum = JSON.parse(JSON.stringify(this.itemMetadatum))
-                updatedItemMetadatum.slice(groupIndex, 1);
 
+                console.log(JSON.parse(JSON.stringify(this.childItemMetadataGroups)))
+                this.childItemMetadataGroups.splice(groupIndex, 1);
+                let updatedItemMetadatumValue = JSON.parse(JSON.stringify(this.itemMetadatum.value))
+                updatedItemMetadatumValue.splice(groupIndex, 1);
+                console.log(JSON.parse(JSON.stringify(this.childItemMetadataGroups)))
                 // If none is the case, the value is update request is sent to the API
                 eventBusItemMetadata.$emit('input', {
                     itemId: this.itemMetadatum.item.id,
                     metadatumId: this.itemMetadatum.metadatum.id,
-                    values: updatedItemMetadatum,
+                    values: updatedItemMetadatumValue,
                     parentMetaId: this.itemMetadatum.parent_meta_id
                 });
             }

@@ -2,7 +2,7 @@ import axios from '../../../axios';
 
 // Actions related to Item's metadata
 export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values, parent_meta_id }) => {
-    let body = { values: values }
+    let body = { value: values }
 
     if (parent_meta_id != undefined && parent_meta_id != null && parent_meta_id != false)
         body['parent_meta_id'] = parent_meta_id;

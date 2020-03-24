@@ -86,9 +86,13 @@ export const setSingleMetadatum = (state, itemMetadatum) => {
             };
 
             if (currentParent.metadatum.multiple == 'yes') {
+                
                 let currrentChildMetadataGroupIndex = currentParentValues.findIndex((metadataGroup) => {
-                    return metadataGroup.findIndex((metadatumValue) => metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id && metadatumValue.metadatum_id == itemMetadatum.metadatum.id) >= 0;
+                    return metadataGroup.findIndex((metadatumValue) => {
+                        return metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id;
+                    }) >= 0;
                 });
+                
                 if (currrentChildMetadataGroupIndex >= 0) {
                     let currrentChildMetadatumIndex = currentParentValues[currrentChildMetadataGroupIndex].findIndex((metadatumValue) => metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id && metadatumValue.metadatum_id == itemMetadatum.metadatum.id);
                     if (currrentChildMetadatumIndex >= 0)
