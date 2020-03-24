@@ -12,49 +12,50 @@
     </a>
     
     <transition name="filter-item">
-        <template v-if="childItemMetadataGroups.length > 0">
-            <transition-group
-                    name="filter-item"
-                    class="multiple-inputs">
-                <template v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups">
-                    <hr 
-                            v-if="groupIndex > 0"
-                            :key="groupIndex">
-                    <tainacan-form-item
-                            v-for="(childItemMetadatum, childIndex) of childItemMetadata"
-                            :key="childIndex"
-                            :item-metadatum="childItemMetadatum"
-                            :is-collapsed="childItemMetadatum.collapse"
-                            @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"/>
-                    <a 
-                            v-if="groupIndex > 0" 
-                            @click="removeGroup(groupIndex)"
-                            class="add-link"
-                            :key="groupIndex">
-                        <span class="icon is-small">
-                            <i class="tainacan-icon has-text-secondary tainacan-icon-remove"/>
-                        </span>
-                        &nbsp;{{ $i18n.get('label_remove_value') }}
-                    </a>
-                </template>
-            </transition-group>
-        </template>
-        <template v-else>
-            <p class="empty-label">
-                {{ $i18n.get('info_no_value_compound_metadata') }}
-            </p>
-        </template>
-        <template v-if="isMultiple">
-            <a 
-                    @click="addGroup"
-                    class="is-block add-link">
-                <span class="icon is-small">
-                    <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
-                </span>
-                &nbsp;{{ $i18n.get('label_add_value') }}
-            </a>
-        </template>
+        
+        <transition-group
+            v-if="childItemMetadataGroups.length > 0"
+                name="filter-item"
+                class="multiple-inputs">
+            <template v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups">
+                <hr 
+                        v-if="groupIndex > 0"
+                        :key="groupIndex">
+                <tainacan-form-item
+                        v-for="(childItemMetadatum, childIndex) of childItemMetadata"
+                        :key="childIndex"
+                        :item-metadatum="childItemMetadatum"
+                        :is-collapsed="childItemMetadatum.collapse"
+                        @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"
+                        :class="{ 'is-last-input': childIndex == childItemMetadata.length - 1}"/>
+                <a 
+                        v-if="groupIndex > 0" 
+                        @click="removeGroup(groupIndex)"
+                        class="add-link"
+                        :key="groupIndex">
+                    <span class="icon is-small">
+                        <i class="tainacan-icon has-text-secondary tainacan-icon-remove"/>
+                    </span>
+                    &nbsp;{{ $i18n.get('label_remove_value') }}
+                </a>
+            </template>
+        </transition-group>
+        <p 
+                v-else
+                class="empty-label">
+            {{ $i18n.get('info_no_value_compound_metadata') }}
+        </p>
     </transition>
+
+    <a 
+            v-if="isMultiple"
+            @click="addGroup"
+            class="is-block add-link">
+        <span class="icon is-small">
+            <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+        </span>
+        &nbsp;{{ $i18n.get('label_add_value') }}
+    </a>
 
 </div>
 </template>
@@ -246,7 +247,7 @@
             margin-left: 3px;
             margin-bottom: 0.875em;
         }
-        .field:last-of-type {
+        .is-last-input.field {
             border-bottom: none;
         }
         .add-link {
@@ -254,7 +255,7 @@
         }
         .multiple-inputs hr {
             background-color: var(--tainacan-gray2);
-            margin-left: -38px;
+            margin: 6px 0px 12px -38px;
             width: calc(100% + 38px);
             height: 1px;
         }
