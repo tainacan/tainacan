@@ -405,7 +405,7 @@ class Item extends Entity {
 			$is_valid = false;
 		}
 
-		$arrayItemMetadata = $this->get_metadata();
+		$arrayItemMetadata = $this->get_metadata(['parent'=>'any']);
 		if ( $arrayItemMetadata ) {
 			foreach ( $arrayItemMetadata as $itemMetadata ) {
 
