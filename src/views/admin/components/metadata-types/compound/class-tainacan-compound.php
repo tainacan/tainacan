@@ -100,7 +100,7 @@ class Compound extends Metadata_Type {
 			 	$item_arr['current_user_can_edit'] = $child->can_edit();
 			 	ob_start();
 			 	$child->get_metadata_type_object()->form();
-			 	$child = ob_get_clean();
+			 	$form = ob_get_clean();
 				$item_arr['edit_form'] = $form;
 				
 				$index = array_search( $item_arr['id'], array_column( $options['children_order'], 'id' ) );
