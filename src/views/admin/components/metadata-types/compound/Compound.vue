@@ -12,52 +12,48 @@
     </a>
     
     <transition name="filter-item">
-        <div v-if="childItemMetadataGroups.length > 0">
-            <tainacan-form-item
-                    v-for="(childItemMetadatum, index) of childItemMetadataGroups[0]"
-                    :key="index"
-                    :item-metadatum="childItemMetadatum"
-                    :is-collapsed="childItemMetadatum.collapse"
-                    @changeCollapse="onChangeCollapse($event, 0, index)"/>
-            <template v-if="isMultiple && childItemMetadataGroups.length > 1">
-                <transition-group
-                        name="filter-item"
-                        class="multiple-inputs">
-                    <template v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups">
-                        <hr 
-                                v-if="groupIndex > 0"
-                                :key="groupIndex">
-                        <tainacan-form-item
-                                v-if="groupIndex > 0"
-                                v-for="(childItemMetadatum, childIndex) of childItemMetadata"
-                                :key="childIndex"
-                                :item-metadatum="childItemMetadatum"
-                                :is-collapsed="childItemMetadatum.collapse"
-                                @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"/>
-                        <a 
-                                v-if="groupIndex > 0" 
-                                @click="removeGroup(groupIndex)"
-                                class="add-link"
-                                :key="groupIndex">
-                            <span class="icon is-small">
-                                <i class="tainacan-icon has-text-secondary tainacan-icon-remove"/>
-                            </span>
-                            &nbsp;{{ $i18n.get('label_remove_value') }}
-                        </a>
-                    </template>
-                </transition-group>
-            </template>
-            <template v-if="isMultiple">
-                <a 
-                        @click="addGroup"
-                        class="is-block add-link">
-                    <span class="icon is-small">
-                        <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
-                    </span>
-                    &nbsp;{{ $i18n.get('label_add_value') }}
-                </a>
-            </template>
-        </div>
+        <template v-if="childItemMetadataGroups.length > 0">
+            <transition-group
+                    name="filter-item"
+                    class="multiple-inputs">
+                <template v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups">
+                    <hr 
+                            v-if="groupIndex > 0"
+                            :key="groupIndex">
+                    <tainacan-form-item
+                            v-for="(childItemMetadatum, childIndex) of childItemMetadata"
+                            :key="childIndex"
+                            :item-metadatum="childItemMetadatum"
+                            :is-collapsed="childItemMetadatum.collapse"
+                            @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"/>
+                    <a 
+                            v-if="groupIndex > 0" 
+                            @click="removeGroup(groupIndex)"
+                            class="add-link"
+                            :key="groupIndex">
+                        <span class="icon is-small">
+                            <i class="tainacan-icon has-text-secondary tainacan-icon-remove"/>
+                        </span>
+                        &nbsp;{{ $i18n.get('label_remove_value') }}
+                    </a>
+                </template>
+            </transition-group>
+        </template>
+        <template v-else>
+            <p class="empty-label">
+                {{ $i18n.get('info_no_value_compound_metadata') }}
+            </p>
+        </template>
+        <template v-if="isMultiple">
+            <a 
+                    @click="addGroup"
+                    class="is-block add-link">
+                <span class="icon is-small">
+                    <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                </span>
+                &nbsp;{{ $i18n.get('label_add_value') }}
+            </a>
+        </template>
     </transition>
 
 </div>
@@ -105,13 +101,13 @@
                             
                             for (let childItemMetadata of parentValues) {
                                 let existingChildItemMetadata = [];
-                                
+
                                 if (childItemMetadata && childItemMetadata.length) {
                                 
                                     // Loads the existing values
                                     for (let childItemMetadatum of childItemMetadata) {
                                         const childMetadatum = this.itemMetadatum.metadatum.metadata_type_options.children_objects.find((aMetadatum) => aMetadatum.id == childItemMetadatum.metadatum_id);
-                                        
+                                
                                         existingChildItemMetadata.push({
                                             item: this.itemMetadatum.item,
                                             metadatum: childMetadatum,
@@ -162,25 +158,6 @@
                                 currentChildItemMetadataGroups.push(existingChildItemMetadata)
                             }
 
-                        } else {
-                            
-                            // In this situation, we simply create empty forms
-                            let currentChildItemMetadata = [];
-
-                            // A new input for each type of child metadatum
-                            for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
-                                let childObject = {
-                                    item: this.itemMetadatum.item,
-                                    metadatum: child,
-                                    parent_meta_id: '0',
-                                    value: '',
-                                    value_as_html: '',
-                                    value_as_string: '',
-                                    collapse: this.collapseAllChildren ? this.collapseAllChildren : false
-                                };
-                                currentChildItemMetadata.push(childObject)
-                            }
-                            currentChildItemMetadataGroups.push(currentChildItemMetadata);
                         }
                     }
                     
@@ -188,6 +165,10 @@
                 },
                 immediate: true
             }
+        },
+        mounted() {
+            if (!this.isMultiple && this.itemMetadatum.value.length <= 0)
+                this.addGroup();
         },
         methods: {
             toggleCollapseAllChildren() {
@@ -221,15 +202,20 @@
                         newEmptyGroup.push(childObject)
                     }
                 }
-                this.childItemMetadataGroups.push(newEmptyGroup);
+
+                // Sends value to api so we can obtain the parent_meta_id
+                eventBusItemMetadata.$emit('input', {
+                    itemId: this.itemMetadatum.item.id,
+                    metadatumId: newEmptyGroup[newEmptyGroup.length - 1].metadatum.id,
+                    values: newEmptyGroup[newEmptyGroup.length - 1].value,
+                    parentMetaId: newEmptyGroup[newEmptyGroup.length - 1].parent_meta_id
+                });
             },
             removeGroup(groupIndex) {
-
-                console.log(JSON.parse(JSON.stringify(this.childItemMetadataGroups)))
                 this.childItemMetadataGroups.splice(groupIndex, 1);
                 let updatedItemMetadatumValue = JSON.parse(JSON.stringify(this.itemMetadatum.value))
                 updatedItemMetadatumValue.splice(groupIndex, 1);
-                console.log(JSON.parse(JSON.stringify(this.childItemMetadataGroups)))
+
                 // If none is the case, the value is update request is sent to the API
                 eventBusItemMetadata.$emit('input', {
                     itemId: this.itemMetadatum.item.id,
@@ -271,6 +257,10 @@
             margin-left: -38px;
             width: calc(100% + 38px);
             height: 1px;
+        }
+        .empty-label {
+            color: var(--tainacan-gray3);
+            font-style: italic;
         }
     }
 </style>

@@ -709,6 +709,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_can_not_bulk_edit_items_collection'		 => __( 'You are not allowed to bulk edit items from this collection.', 'tainacan' ),
 	'info_not_allowed_change_order_metadata'		 => __( 'Can not change metadata order now.', 'tainacan' ),
 	'info_not_allowed_change_order_filters'		 	 => __( 'Can not change filters order now.', 'tainacan' ),
+	'info_no_value_compound_metadata'			 	 => __( 'No value has been added to this compound metadata.', 'tainacan' ),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),
