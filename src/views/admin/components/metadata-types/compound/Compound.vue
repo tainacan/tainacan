@@ -100,15 +100,17 @@
                         // Here we load the values from the object, but must also create some
                         if (parentValues && parentValues.length) {
                             
-                            for (let childItemMetadata of parentValues) {
+                            for (let groupIndex = 0; groupIndex < parentValues.length; groupIndex++) {
+                                const childItemMetadata = parentValues[groupIndex];
                                 let existingChildItemMetadata = [];
 
                                 if (childItemMetadata && childItemMetadata.length) {
                                 
                                     // Loads the existing values
-                                    for (let childItemMetadatum of childItemMetadata) {
+                                    for (let childIndex = 0; childIndex < childItemMetadata.length; childIndex++) {
+                                        const childItemMetadatum = childItemMetadata[childIndex];
                                         const childMetadatum = this.itemMetadatum.metadatum.metadata_type_options.children_objects.find((aMetadatum) => aMetadatum.id == childItemMetadatum.metadatum_id);
-                                
+                                        
                                         existingChildItemMetadata.push({
                                             item: this.itemMetadatum.item,
                                             metadatum: childMetadatum,
@@ -116,7 +118,7 @@
                                             value: childItemMetadatum.value,
                                             value_as_html: childItemMetadatum.value_as_html,
                                             value_as_string: childItemMetadatum.value_as_string,
-                                            collapse: this.collapseAllChildren ? this.collapseAllChildren : false
+                                            collapse: this.childItemMetadataGroups[groupIndex] && this.childItemMetadataGroups[groupIndex][childIndex] ? this.childItemMetadataGroups[groupIndex][childIndex].collapse : (this.collapseAllChildren ? this.collapseAllChildren : false)
                                         })
                                     }
                                     
@@ -175,14 +177,14 @@
             toggleCollapseAllChildren() {
                 this.collapseAllChildren = !this.collapseAllChildren;
 
-                for (let i = 0; i < this.childItemMetadataGroups; i++)
-                    for (let j = 0; j < this.childItemMetadataGroups[i]; j++)
+                for (let i = 0; i < this.childItemMetadataGroups.length; i++)
+                    for (let j = 0; j < this.childItemMetadataGroups[i].length; j++)
                         this.childItemMetadataGroups[i][j].collapse = this.collapseAllChildren;
             },
             onChangeCollapse(event, groupIndex, index) {
                 this.childItemMetadataGroups[groupIndex][index].collapse = !event;
             },
-            addGroup(){
+            addGroup() {
                 // Create a new placeholder parent_meta_id group here.
                 let newEmptyGroup = [];
 
@@ -198,7 +200,7 @@
                             value: '',
                             value_as_html: '',
                             value_as_string: '',
-                            collapse: this.collapseAllChildren ? this.collapseAllChildren : false
+                            collapse: false
                         };
                         newEmptyGroup.push(childObject)
                     }
