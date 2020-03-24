@@ -440,7 +440,26 @@ class Item_Metadata_Entity extends Entity {
                 $valid = true;
                 foreach($value as $val) {
                     if (!empty($val))
-                        $one_filled = true;
+												$one_filled = true;
+										
+										if ($this->is_collection_key()) {
+											$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+											$test = $Tainacan_Items->fetch([
+												'meta_query' => [
+														[
+															'key'   => $this->metadatum->get_id(),
+															'value' => $val
+														],
+												],
+												'post__not_in' => [$item->get_id()]
+											], $item->get_collection());
+					
+											if ($test->have_posts()) {
+													// translators: %s = metadatum name. ex: Register ID is a collection key and there is another item with the same value
+												$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
+													return false;
+											}
+										}
                 }
                 
                 if ($this->is_required() && !$one_filled) {
@@ -456,7 +475,7 @@ class Item_Metadata_Entity extends Entity {
                 }
                 
                 $this->set_as_valid();
-                return true;   
+                return true;
             } else {
                 // translators: %s = metadatum name. ex: Title is invalid
                 $this->add_error( 'invalid', sprintf( __('%s is invalid', 'tainacan'), $metadatum->get_name() ) );
@@ -491,7 +510,7 @@ class Item_Metadata_Entity extends Entity {
             }
 
             $this->set_as_valid();
-            return true;   
+            return true;
         }   
     }
 }
