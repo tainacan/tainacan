@@ -179,15 +179,25 @@
                         this.loadingMetadata = false;
                         let metadata = res.data;
 
-                        if( metadata.length > 0 ){
+                        if (metadata.length > 0 ){
                             this.metadata = [];
 
                             for (let metadatum of metadata) {
-                               if (metadatum.metadata_type !== "Tainacan\\Metadata_Types\\Relationship") {
+                                
+                               if (metadatum.metadata_type_object.component !== 'tainacan-relationship' && metadatum.metadata_type_object.component !== 'tainacan-compound') {
                                    this.metadata.push( metadatum );
                                    this.hasMetadata = true;
                                    this.checkMetadata()
                                }
+                            }
+
+                            if (this.metadata.length <= 0) {
+                                this.$buefy.toast.open({
+                                    duration: 4000,
+                                    message: this.$i18n.get('info_warning_no_metadata_found'),
+                                    position: 'is-bottom',
+                                    type: 'is-danger'
+                                })
                             }
 
                         } else {
