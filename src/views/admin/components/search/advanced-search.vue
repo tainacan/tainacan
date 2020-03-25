@@ -593,8 +593,6 @@
 
 <style lang="scss">
 
-    @import '../../scss/_variables.scss';
-
     .loading-overlay {
         min-height: 200px;
     }
@@ -604,8 +602,8 @@
     }
 
     .padding-regular {
-        padding-right: $page-side-padding;
-        padding-left: $page-side-padding;
+        padding-right: var(--tainacan-one-column);
+        padding-left: var(--tainacan-one-column);
     }
 
     .tnc-advanced-search-container {

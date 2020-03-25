@@ -558,8 +558,6 @@
 
 <style lang="scss">
 
-    @import '../../scss/_variables.scss';
-
     @media screen and (max-width: 768px) {
         .tainacan-bulk-edition-inline-fields {
             flex-direction: column !important;

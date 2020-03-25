@@ -97,14 +97,12 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     .collection-types-container {
         position: relative;
 
         .collection-type {
             border-bottom: 1px solid var(--tainacan-gray2);
-            padding: 15px 8.3333333%;
+            padding: 15px calc(2 * var(--tainacan-one-column));
             cursor: pointer;
         
             &:first-child {

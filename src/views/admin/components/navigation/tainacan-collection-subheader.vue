@@ -237,7 +237,7 @@ export default {
         width: 100%;
         padding-top: 18px;
         padding-bottom: 18px;
-        padding-right: $page-side-padding;
+        padding-right: var(--tainacan-one-column);
         padding-left: 0;
         margin: 0px;
         vertical-align: middle; 
@@ -264,8 +264,8 @@ export default {
             padding: 0;
             margin: 0;
             height: 42px;
-            width: $page-side-padding;
-            min-width: $page-side-padding;
+            width: var(--tainacan-one-column);
+            min-width: var(--tainacan-one-column);
             color: var(--tainacan-white);
             display: flex;
 

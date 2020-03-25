@@ -332,7 +332,7 @@ export default {
                     objectType: this.$i18n.get('items'),
                     collectionID: this.collectionId
                 },
-                width: 'calc(100% - 8.333333333%)',
+                width: 'calc(100% - (2 * var(--tainacan-one-column)))',
                 trapFocus: true
             });
         },
@@ -364,7 +364,6 @@ export default {
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
-
 
     .page-container {
 
@@ -401,13 +400,13 @@ export default {
         }
         .source-file-upload {
             width: 100%;
-            padding: 0.75em $page-side-padding;
+            padding: 0.75em var(--tainacan-one-column);
             @include display-grid;
         }
         .document-list {
             display: inline-block;
             width: 100%;
-            padding: 1em 8.333333%;
+            padding: 1em calc(2 * var(--tainacan-one-column));
 
             .document-item {
                 display: flex;
@@ -502,7 +501,7 @@ export default {
         }
 
         .footer {
-            padding: 18px $page-side-padding;
+            padding: 18px var(--tainacan-one-column);
             position: absolute;
             bottom: 0;
             z-index: 999999;

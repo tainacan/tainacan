@@ -268,7 +268,7 @@
 <style scoped>
     .add-new-term {
         margin-top: 15px;
-        margin-bottom: 25px;
+        margin-bottom: var(--tainacan-container-padding);
         font-size: 0.75em;
     }
     .add-new-term-form {

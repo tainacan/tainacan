@@ -457,8 +457,6 @@
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     .column {
         padding: 0;
         &.is-narrow {

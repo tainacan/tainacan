@@ -158,7 +158,7 @@ export default {
         padding-top: 10px;
         padding-bottom: 10px;
         padding-right: 0;
-        padding-left: calc((4.166666667% - 6.666666667px) + 160px);
+        padding-left: calc((var(--tainacan-one-column) - 6.666666667px) + 160px);
         margin: 0px;
         display: flex;
         vertical-align: middle; 
@@ -171,7 +171,7 @@ export default {
 
         &.is-repository-level {
             background-color: var(--tainacan-blue5);
-            padding-right: $page-side-padding;
+            padding-right: var(--tainacan-one-column);
 
             .repository-subheader-icons { 
                 margin-right: -1em !important; 
@@ -179,7 +179,7 @@ export default {
         }
 
         &.is-menu-compressed {     
-            padding-left: calc((4.166666667% - 2.083333333px)  + 50px);
+            padding-left: calc((var(--tainacan-one-column)  - 2.083333333px)  + 50px);
         }
 
         h1 {
@@ -196,7 +196,7 @@ export default {
         .repository-subheader-icons {
             display: flex;
             flex-wrap: nowrap;
-            margin-right: calc(4.6666667% - 2.083333333px);
+            margin-right: calc(var(--tainacan-one-column) - 2.083333333px);
 
             #view-collection-button,
             #exporter-collection-button {
@@ -228,7 +228,7 @@ export default {
 
         @media screen and (max-width: 769px) {
             top: 102px;
-            padding-left: $page-side-padding !important;
+            padding-left: var(--tainacan-one-column) !important;
         }
     }
 </style>

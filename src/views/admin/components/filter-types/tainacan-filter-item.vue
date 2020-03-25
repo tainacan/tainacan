@@ -91,7 +91,6 @@
 </script>
 
 <style lang="scss">
-    @import "../../scss/_variables.scss";
 
     .filter-item-forms {
 

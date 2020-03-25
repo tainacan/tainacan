@@ -58,8 +58,6 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     .importer-types-container {
         display: flex;
         flex-wrap: wrap;

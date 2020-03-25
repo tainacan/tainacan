@@ -206,7 +206,7 @@
                             this.$emit('input', this.value);
                         }
                     },
-                    width: 'calc(100% - 8.333333333%)',
+                    width: 'calc(100% - (2 * var(--tainacan-one-column)))',
                     trapFocus: true
                 });
             }

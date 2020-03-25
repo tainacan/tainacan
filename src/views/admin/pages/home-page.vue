@@ -216,7 +216,7 @@ export default {
         margin-top: $header-height;
         background-color: var(--tainacan-white);
         height: calc(100% - 52px);
-        padding: 25px 8.333333333% !important;
+        padding: var(--tainacan-container-padding) calc(2 * var(--tainacan-one-column)) !important;
         width: 100vw;
 
         .home-section {

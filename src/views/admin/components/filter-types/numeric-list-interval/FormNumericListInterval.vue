@@ -169,8 +169,7 @@
 </script>
 
 <style scoped lang="scss">
-    @import '../../scss/_variables.scss';
-
+ 
     .options-input {
         display: flex;
         flex-wrap: wrap;

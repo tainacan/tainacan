@@ -380,10 +380,8 @@
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     form#metadatumEditForm.inCollapse {
-        padding: 1.5em $page-side-padding 0.5em $page-side-padding;
+        padding: 1.5em var(--tainacan-one-column) 0.5em var(--tainacan-one-column);
         border-top: 1px solid var(--tainacan-gray2);
         border-bottom: 1px solid var(--tainacan-gray2);
         margin-top: 1.0em;

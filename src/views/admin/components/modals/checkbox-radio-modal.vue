@@ -721,8 +721,6 @@
 
 <style lang="scss" scoped>
 
-    @import "../../scss/variables.scss";
-
     .breadcrumb {
         background-color: var(--tainacan-white) !important;
 
@@ -748,11 +746,11 @@
         }
 
         .tainacan-li-search-results {
-            max-width: calc(100% - 8.3333333%) !important;
+            max-width: calc(100% - (2 * var(--tainacan-one-column))) !important;
         }
 
         .tainacan-li-checkbox-list {
-            max-width: calc(100% - 8.3333333%) !important;
+            max-width: calc(100% - (2 * var(--tainacan-one-column))) !important;
         }
     }
 
@@ -762,7 +760,7 @@
 
         .b-tabs {
             margin-bottom: 0 !important;
-
+            
             .tab-content {
                 padding: 0.5em;
             }
@@ -806,7 +804,7 @@
     .tainacan-li-search-results {
         flex-grow: 0;
         flex-shrink: 1;
-        max-width: calc(50% - 8.3333333%);
+        max-width: calc(50% - (2 * var(--tainacan-one-column)));
 
         .b-checkbox, .b-radio {
             max-width: 81%;
@@ -839,7 +837,7 @@
     .tainacan-li-checkbox-list {
         flex-grow: 0;
         flex-shrink: 1;
-        max-width: calc(50% - 8.3333333%);
+        max-width: calc(50% - (2 * var(--tainacan-one-column)));
         padding-left: 0.5em;
 
         .b-checkbox, .b-radio {
@@ -895,7 +893,7 @@
     }
 
     .tainacan-checkbox-search-section {
-        margin-bottom: 25px;
+        margin-bottom: var(--tainacan-container-padding);
         display: flex;
         align-items: center;
         position: relative;
@@ -946,11 +944,11 @@
     }
 
     .tainacan-modal-checkbox-list-body-dynamic-m-l {
-        margin-left: $page-side-padding !important;
+        margin-left: var(--tainacan-one-column) !important;
     }
 
     .tainacan-modal-checkbox-list-body-dynamic-m-r {
-        margin-right: $page-side-padding !important;
+        margin-right: var(--tainacan-one-column) !important;
     }
 
     .tainacan-search-results-container {

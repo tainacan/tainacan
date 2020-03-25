@@ -90,8 +90,8 @@ body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, bod
     height: 46px;
     width: 46px;
     background-size: initial;
-    top: calc(50% - 25px);
-    left: calc(50% - 25px);
+    top: calc(50% - var(--tainacan-container-padding));
+    left: calc(50% - var(--tainacan-container-padding));
 }
 
 // Link (hover is the same color as secondary
@@ -120,7 +120,7 @@ a:hover {
 
 // Generic page container
 .page-container {
-    padding: $page-top-padding $page-side-padding;
+    padding: var(--tainacan-container-padding) var(--tainacan-one-column);
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
@@ -132,11 +132,11 @@ a:hover {
     transition: height 0.6s;
 }
 // Used for pages with subheader in mobile
-.page-container-narrow{
-    padding: $page-small-top-padding $page-small-side-padding;
+.page-container-narrow {
+    padding: var(--tainacan-container-padding);
     
     @media screen and (max-width: 769px) {
-        padding: $page-mobile-top-padding $page-mobile-side-padding;
+        padding: 1em;
     }
 }
 

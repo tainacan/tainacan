@@ -640,9 +640,6 @@ export default {
 
 <style  lang="scss">
 
-    $page-small-side-padding: 25px;
-    $page-side-padding: 4.166666667%; 
-
     @import "../scss/_view-mode-slideshow.scss";
 
     .is-fullscreen .table-wrapper {

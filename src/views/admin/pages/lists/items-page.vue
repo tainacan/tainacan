@@ -1217,7 +1217,7 @@
     @import '../../scss/_variables.scss';
 
     .tainacan-page-title {
-        padding: 25px $page-side-padding;
+        padding: var(--tainacan-container-padding) var(--tainacan-one-column);
         margin: 0;
     }
 
@@ -1253,7 +1253,7 @@
 
     .advanced-search-results-title {
         margin-bottom: 40px;
-        margin: 0 $page-side-padding 42px $page-side-padding;
+        margin: 0 var(--tainacan-one-column) 42px var(--tainacan-one-column);
 
         h1, h2 {
             font-size: 1.25em;
@@ -1280,17 +1280,17 @@
     .advanced-search-form-submit {
         display: flex;
         justify-content: flex-end;
-        padding-right: $page-side-padding;
-        padding-left: $page-side-padding;
+        padding-right: var(--tainacan-one-column);
+        padding-left: var(--tainacan-one-column);
         margin-bottom: 1em;
 
         p { margin-left: 0.75em; }
     }
 
     .tnc-advanced-search-close {
-        padding-top: 25px;
-        padding-right: $page-side-padding;
-        padding-left: $page-side-padding;
+        padding-top: var(--tainacan-container-padding);
+        padding-right: var(--tainacan-one-column);
+        padding-left: var(--tainacan-one-column);
 
         .column {
             padding: 0 0.3em 0.3em !important;
@@ -1319,7 +1319,7 @@
             padding: 0;
             
             #filters-items-list {
-                padding: $page-small-side-padding;
+                padding: var(--tainacan-container-padding);
             }
         }
         @media screen and (min-width: 769px) {
@@ -1371,13 +1371,10 @@
     }
         
     .search-control {
-        min-height: $subheader-height;
+        min-height: 42px;
         height: auto;
         position: relative;
-        padding-top: $page-small-top-padding;
-        padding-bottom: $page-small-top-padding;
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
+        padding: var(--tainacan-container-padding) var(--tainacan-one-column);
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
@@ -1515,8 +1512,8 @@
     .tabs {
         padding-top: 6px;
         margin-bottom: 20px;
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
+        padding-left: var(--tainacan-one-column);
+        padding-right: var(--tainacan-one-column);
 
         @media screen and (min-width: 1024px) {
             overflow: visible;
@@ -1531,7 +1528,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin: 6px $page-side-padding;
+        margin: 6px var(--tainacan-one-column);
         border-radius: 3px;
         padding: 4px 12px;
         color: var(--tainacan-yellow2);
@@ -1568,14 +1565,14 @@
     }
 
     .table-container {
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
+        padding-left: var(--tainacan-one-column);
+        padding-right: var(--tainacan-one-column);
         min-height: 50vh;
     }
 
     .pagination-area {
-        margin-left: $page-side-padding;
-        margin-right: $page-side-padding;
+        margin-left: var(--tainacan-one-column);
+        margin-right: var(--tainacan-one-column);
     }
 
 

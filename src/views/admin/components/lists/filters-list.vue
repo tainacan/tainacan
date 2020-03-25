@@ -735,8 +735,6 @@ export default {
 
 <style lang="scss">
 
-    @import "../../scss/_variables.scss";
-
     .filters-list-page {
         padding-bottom: 0;
 
@@ -774,7 +772,7 @@ export default {
             overflow-y: auto;
 
             &:not(.available-metadata-area){
-                margin-right: $page-side-padding;
+                margin-right: var(--tainacan-one-column);
                 flex-grow: 2;
 
                 @media screen and (max-width: 769px) {
@@ -912,7 +910,7 @@ export default {
                 }
 
                 .grip-icon { 
-                    color: $white;
+                    color: var(--tainacan-white);
                 }
 
                 .label-details, .icon, .icon-level-identifier>i {
@@ -1108,7 +1106,7 @@ export default {
 
                 .filter-type {
                     border-bottom: 1px solid var(--tainacan-gray2);
-                    padding: 15px 8.3333333%;
+                    padding: 15px calc(2 * var(--tainacan-one-column));
                     cursor: pointer;
                 
                     &:first-child {

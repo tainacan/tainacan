@@ -52,8 +52,6 @@ export default {
 
 <style lang="scss">
 
-    @import "../../scss/_variables.scss";
-
     .document-item {
 
         &:hover {

@@ -1087,8 +1087,6 @@
 
 <style lang="scss" scoped>
 
-    @import '../../scss/_variables.scss';
-
     @keyframes open-full-screen {
         from {
             opacity: 0;
@@ -1148,7 +1146,7 @@
 
     .advanced-search-results-title {
         margin-bottom: 40px;
-        margin: 0 $page-side-padding 42px $page-side-padding;
+        margin: 0 var(--tainacan-one-column) 42px var(--tainacan-one-column);
 
         h1, h2 {
             font-size: 1.25em;
@@ -1175,8 +1173,8 @@
     .advanced-search-form-submit {
         display: flex;
         justify-content: flex-end;
-        padding-right: $page-side-padding;
-        padding-left: $page-side-padding;
+        padding-right: var(--tainacan-one-column);
+        padding-left: var(--tainacan-one-column);
         margin-bottom: 1em;
 
         p { margin-left: 0.75em; }
@@ -1184,8 +1182,8 @@
 
     .tnc-advanced-search-close {
         padding-top: 47px;
-        padding-right: $page-side-padding;
-        padding-left: $page-side-padding;
+        padding-right: var(--tainacan-one-column);
+        padding-left: var(--tainacan-one-column);
 
         .column {
             padding: 0 0.3em 0.3em !important;
@@ -1243,12 +1241,9 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between !important;
-        min-height: $subheader-height;
+        min-height: 42px;
         height: auto;
-        padding-top: $page-small-top-padding;
-        padding-bottom: 20px;
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
+        padding: var(--tainacan-container-padding) var(--tainacan-one-column) 20px var(--tainacan-one-column);
 
         .dropdown-item {
             padding: 0.25em 1.35em 0.25em 0.25em;
@@ -1394,7 +1389,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin: 6px $page-side-padding;
+        margin: 6px var(--tainacan-one-column);
         border-radius: 3px;
         padding: 4px 12px;
         color: var(--tainacan-yellow2);
@@ -1450,15 +1445,15 @@
     }
 
     .table-container {
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
+        padding-left: var(--tainacan-one-column);
+        padding-right: var(--tainacan-one-column);
         min-height: 50vh;
         //height: calc(100% - 82px);
     }
 
     .pagination-area {
-        margin-left: $page-side-padding;
-        margin-right: $page-side-padding;
+        margin-left: var(--tainacan-one-column);
+        margin-right: var(--tainacan-one-column);
     }
 
 </style>

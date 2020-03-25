@@ -252,7 +252,6 @@ export default {
 </script>
 
 <style lang="scss">
-    @import "../../scss/_variables.scss";
 
     .control.is-loading::after {
         border: 2px solid var(--tainacan-success);

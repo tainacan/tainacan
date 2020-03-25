@@ -437,11 +437,11 @@ export default {
     @import "../../scss/_variables.scss";
 
     .columns.is-gapless {
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
+        padding-left: var(--tainacan-one-column);
+        padding-right: var(--tainacan-one-column);
 
         .column:not(:first-child) {
-            margin-left: $page-side-padding;
+            margin-left: var(--tainacan-one-column);
         }
     }
 

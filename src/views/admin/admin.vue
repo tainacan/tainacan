@@ -82,8 +82,6 @@
 
 <style lang="scss">
 
-    @import "./scss/_variables.scss";
-
     .is-fullheight {
         height: 100%;
         margin-bottom: 0px;

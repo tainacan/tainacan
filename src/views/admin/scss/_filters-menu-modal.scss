@@ -6,7 +6,7 @@
     }
 
     .modal-content {
-        padding: 24px 18px $page-side-padding;
+        padding: 24px 18px var(--tainacan-one-column);
         padding: 24px 18px 24px 4.1666667vw;
         margin: 0;
         height: 100%;
@@ -24,7 +24,7 @@
 
     .modal-close {
         top: 32px;
-        right: calc(8.3333333% + 28px);
+        right: calc((2 * var(--tainacan-one-column)) + 28px);
         background-color: var(--tainacan-background-color);
 
         &::before, &::after {
@@ -38,7 +38,7 @@
             background-color: var(--tainacan-background-color);
             margin: 0 12% 0 0;
             margin: 0 12vw 0 0;
-            padding: $page-small-side-padding;
+            padding: var(--tainacan-container-padding);
        }
     }
 }
