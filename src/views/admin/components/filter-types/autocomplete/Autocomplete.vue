@@ -8,7 +8,7 @@
                 :data="options"
                 expanded
                 :loading="isLoadingOptions"
-                @input="search"
+                @input="($event) => { resetPage(); search($event); }"
                 field="label"
                 @select="onSelect"
                 clearable

@@ -690,6 +690,8 @@
             applyFilter() {
                 this.$parent.close();
 
+                this.$eventBusSearch.resetPageOnStore();
+
                 if (this.isTaxonomy && this.isFilter) {
                     this.$eventBusSearch.$emit('input', {
                         filter: 'checkbox',
@@ -756,7 +758,15 @@
 
     .tainacan-modal-content {
         width: auto;
-        min-height: 600px;
+        min-height: 550px;
+
+        .b-tabs {
+            margin-bottom: 0 !important;
+
+            .tab-content {
+                padding: 0.5em;
+            }
+        }
     }
 
     .tainacan-modal-title {
@@ -847,7 +857,7 @@
         display: flex;
         overflow: auto;
         padding: 0 !important;
-        min-height: 253px;
+        min-height: 232px;
         max-height: 35vh;
 
         &:focus {

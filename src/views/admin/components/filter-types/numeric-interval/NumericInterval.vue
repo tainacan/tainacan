@@ -3,7 +3,7 @@
         <b-numberinput
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
-                @input="validadeValues()"
+                @input="($event) => { resetPage(); validadeValues($event) }"
                 :step="filterTypeOptions.step"
                 v-model="valueInit"
                 />
@@ -15,7 +15,7 @@
         <b-numberinput
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
-                @input="validadeValues()"
+                @input="($event) => { resetPage(); validadeValues($event) }"
                 :step="filterTypeOptions.step"
                 v-model="valueEnd"/>
         

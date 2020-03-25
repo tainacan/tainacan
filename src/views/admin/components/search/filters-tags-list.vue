@@ -45,6 +45,7 @@
                 'getFilterTags'
             ]),
             removeMetaQuery({ filterId, value, singleLabel, label, taxonomy, metadatumId }) {
+                this.$eventBusSearch.resetPageOnStore();
                 this.$eventBusSearch.removeMetaFromFilterTag({ 
                     filterId: filterId,
                     singleLabel: singleLabel,
@@ -55,7 +56,7 @@
                 });
             },
             clearAllFilters() {
-                // this.$eventBusSearch.clearAllFilters();
+                this.$eventBusSearch.resetPageOnStore();
                 for (let tag of this.filterTags) {
                     this.removeMetaQuery(tag);
                 }

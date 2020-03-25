@@ -11,7 +11,7 @@
                 :remove-on-keys="[]"
                 field="label"
                 attached
-                @input="onSelect"
+                @input="($event) => { resetPage(); onSelect($event) }"
                 @typing="search"
                 :aria-close-label="$i18n.get('remove_value')"
                 :aria-labelledby="'filter-label-id-' + filter.id"
