@@ -2,7 +2,7 @@
     <div class="numeric-filter-container">
          <b-dropdown
                 :mobile-modal="true"
-                @input="onChangeComparator($event)"
+                @input="($event) => { resetPage(); onChangeComparator($event) }"
                 aria-role="list"
                 trap-focus>
             <button
@@ -64,7 +64,7 @@
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 size="is-small"
                 :step="Number(filterTypeOptions.step)"
-                @input="emit()"
+                @input="($event) => { resetPage($event); emit($event); }"
                 v-model="value"/>
     </div>
 </template>

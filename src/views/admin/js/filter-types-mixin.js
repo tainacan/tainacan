@@ -25,6 +25,11 @@ export const filterTypeMixin = {
         this.metadatumId = this.filter.metadatum.metadatum_id ? this.filter.metadatum.metadatum_id : this.metadatumId;
         this.filterTypeOptions = this.filter.filter_type_options ? this.filter.filter_type_options : this.filterTypeOptions;
         this.metadatumType = this.filter.metadatum.metadata_type_object && this.filter.metadatum.metadata_type_object.className ? this.filter.metadatum.metadata_type_object.className : this.metadatumType;
+    },
+    methods: {
+        resetPage() {
+            this.$eventBusSearch.resetPageOnStore()
+        }
     }
 };
 

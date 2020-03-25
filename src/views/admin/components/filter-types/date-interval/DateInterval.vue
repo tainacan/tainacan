@@ -5,7 +5,7 @@
                 :placeholder="$i18n.get('label_selectbox_init')"
                 v-model="dateInit"
                 @focus="isTouched = true"
-                @input="validadeValues()"
+                @input="($event) => { resetPage(); validadeValues($event) }"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"

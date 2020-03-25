@@ -15,8 +15,6 @@ export default {
             },
             created() {
                 this.$on('input', data => {
-                    
-                    this.$store.dispatch('search/setPage', 1);
                     if (data.taxonomy)
                         this.addTaxquery(data);
                     else
@@ -234,6 +232,10 @@ export default {
                 setPage(page) {
                     this.$store.dispatch('search/setPage', page);
                     this.updateURLQueries();
+                },
+                resetPageOnStore() {
+                    console.log('resetei')
+                    this.$store.dispatch('search/setPage', 1);
                 },
                 setItemsPerPage(itemsPerPage) {
                     this.$store.dispatch('search/setItemsPerPage', itemsPerPage);
