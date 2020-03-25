@@ -234,7 +234,6 @@ export default {
                     this.updateURLQueries();
                 },
                 resetPageOnStore() {
-                    console.log('resetei')
                     this.$store.dispatch('search/setPage', 1);
                 },
                 setItemsPerPage(itemsPerPage) {
