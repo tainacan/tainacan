@@ -628,7 +628,7 @@ export default {
             }
 
             &:not(.available-metadata-area){
-                margin-right: $page-side-padding;
+                margin-right: var(--tainacan-one-column);
                 flex-grow: 2;
 
                 @media screen and (max-width: 769px) {
