@@ -580,8 +580,6 @@ export default {
 
 <style lang="scss">
 
-    @import "../../scss/_variables.scss";
-
     .metadata-list-page {
         padding-bottom: 0;
 
