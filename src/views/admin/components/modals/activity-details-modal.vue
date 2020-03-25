@@ -721,8 +721,6 @@
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     .tainacan-modal-title {
         align-self: baseline;
         display: flex;
@@ -747,7 +745,7 @@
         min-height: 300px;
         padding: 0;
         .columns {
-            margin: 6px $page-side-padding 0 $page-side-padding;
+            margin: 6px var(--tainacan-one-column) 0 var(--tainacan-one-column);
         }
     }
 

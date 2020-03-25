@@ -940,11 +940,9 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     @media screen and (min-width: 1024px) {
         .column:last-of-type {
-            padding-left: $page-side-padding !important;
+            padding-left: var(--tainacan-one-column) !important;
         }
     }
 

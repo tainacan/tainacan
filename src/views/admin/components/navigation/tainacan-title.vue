@@ -119,8 +119,6 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-    
     .tainacan-page-title {
         margin-bottom: 32px;
         display: flex;

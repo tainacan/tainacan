@@ -222,14 +222,12 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     #primary-menu {
         background-color: var(--tainacan-blue4);
         padding: 52px 0px 0px 0px;
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear;
-        max-width: $side-menu-width;
+        max-width: 160px;
         z-index: 101;
 
         a:hover {

@@ -21,7 +21,7 @@
                     </form>
                 </div>
                 <div
-                        style="max-width: 4.6666667%;"
+                        style="max-width: var(--tainacan-one-column);"
                         class="column is-gapless"/>
                 <div class="column is-gapless">
                     <b-field
@@ -237,7 +237,7 @@
 <style scoped>
 
     .tainacan-form>.columns {
-        padding: 0 4.6666667%;
+        padding: 0 var(--tainacan-one-column);
     }
 
 </style>

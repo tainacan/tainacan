@@ -152,7 +152,7 @@ class Search_Engine {
 		$fields = implode(", ' || ', ", $search_query_fields);
 		foreach ( $terms as $term ) {
 			$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
-			$searchQuery .= "{$seperator}CONCAT( $fields ) LIKE $esc_term";
+			$searchQuery .= "{$seperator}CONCAT_WS( $fields ) LIKE $esc_term";
 			$seperator = ' OR ';
 		}
 		$searchQuery .= ')';

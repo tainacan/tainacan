@@ -276,7 +276,7 @@
 
             &:not(.is-aligned-right):not(.is-aligned-left) {
                 .tainacan-search-container {
-                    width: calc(100% - 4.1667% - 53px);
+                    width: calc(100% - var(--tainacan-one-column) - 53px);
                     width: calc(100% - 4.1667vw - 53px);
                     bottom: calc(-50% + 38px);
                     position: absolute;
@@ -287,10 +287,10 @@
             }
             &.is-aligned-right {
                 .tainacan-search-container {
-                    width: calc(100% - 4.1667% - 26px);
+                    width: calc(100% - var(--tainacan-one-column) - 26px);
                     width: calc(100% - 4.1667vw - 26px);
                     top: calc(-50% + 26px);
-                    right: calc(4.1667% + 26px);
+                    right: calc(var(--tainacan-one-column) + 26px);
                     right: calc(4.1667vw + 26px);
                     position: absolute;
                 }
@@ -300,7 +300,7 @@
                 .tainacan-search-container {
                     width: calc(100% - 1em - 26px);
                     top: calc(-50% + 26px);
-                    left: calc(4.1667% + 26px);
+                    left: calc(var(--tainacan-one-column) + 26px);
                     left: calc(4.1667vw + 26px);
                     position: absolute;
                 }
@@ -321,7 +321,7 @@
 
             @media only screen and (max-width: 768px) { 
                 .tainacan-search-container {
-                    width: calc(100% - 4.1667% - 53px) !important;
+                    width: calc(100% - var(--tainacan-one-column) - 53px) !important;
                     width: calc(100% - 4.1667vw - 53px) !important;
                     bottom: calc(-50% + 38px) !important;
                     position: absolute !important;
@@ -353,7 +353,7 @@
         flex-wrap: wrap;
         align-items: center;
         flex-grow: 2;
-        padding: 0.5em 4.1667%;
+        padding: 0.5em var(--tainacan-one-column);
         padding: 0.5em 4.1667vw;
         text-align: center;
         text-decoration: none !important;

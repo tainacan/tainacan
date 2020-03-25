@@ -225,8 +225,6 @@
 
 <style lang="scss" scoped>
 
-    @import '../../scss/_variables.scss'; 
-
     .multiple-inputs {
         display: flex;
         margin: 0.75em 0;
@@ -236,7 +234,7 @@
 
     .field {
         border-bottom: 1px solid var(--tainacan-gray2);
-        padding: 10px 25px;
+        padding: 10px var(--tainacan-container-padding);
 
         .label {
             font-size: 0.875em;

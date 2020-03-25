@@ -67,11 +67,9 @@
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     .filter-tags-list {
         width: 100%;
-        padding: 1em $page-side-padding 1em $page-side-padding;
+        padding: 1em var(--tainacan-one-column) 1em var(--tainacan-one-column);
         font-size: 0.75em;
 
         @media only screen and (max-width: 768px) { 

@@ -422,10 +422,8 @@
 
 <style lang="scss" scoped>
 
-    @import '../../scss/_variables.scss';
-
     .page-container {
-        padding: 25px 0;
+        padding: var(--tainacan-container-padding) 0;
 
         & > .tainacan-form {
             margin-bottom: 110px;
@@ -436,7 +434,7 @@
         }
 
         .tainacan-page-title {
-            padding: 0 $page-side-padding;
+            padding: 0 var(--tainacan-one-column);
             margin-bottom: 32px;
             display: flex;
             flex-wrap: wrap;
@@ -481,13 +479,13 @@
 
         .tainacan-form > .columns {
             margin-bottom: 70px;
-            margin-left: $page-side-padding;
-            margin-right: $page-side-padding;
+            margin-left: var(--tainacan-one-column);
+            margin-right: var(--tainacan-one-column);
         }
 
         .column.is-5 {
-            padding-left: $page-side-padding;
-            padding-right: $page-side-padding;
+            padding-left: var(--tainacan-one-column);
+            padding-right: var(--tainacan-one-column);
 
             @media screen and (max-width: 769px) {
                 width: 100%;
@@ -495,7 +493,7 @@
         }
         .column.is-7 {
             padding-left: 0;
-            padding-right: $page-side-padding;
+            padding-right: var(--tainacan-one-column);
 
             .columns {
                 flex-wrap: wrap;
@@ -511,7 +509,7 @@
             }
 
             @media screen and (max-width: 769px) {
-                padding-left: $page-side-padding;
+                padding-left: var(--tainacan-one-column);
                 width: 100%;
             }
         }
@@ -525,7 +523,7 @@
     .metadata-area {
         .field {
             border-bottom: 1px solid var(--tainacan-gray2);
-            padding: 10px 25px;
+            padding: 10px var(--tainacan-container-padding);
             margin-left: 0px !important;
 
             .label {
@@ -555,7 +553,7 @@
 
     .section-box {
         background-color: var(--tainacan-white);
-        padding: 0 $page-side-padding 0 0;
+        padding: 0 var(--tainacan-one-column) 0 0;
         margin-top: 18px;
         margin-bottom: 32px;
 
@@ -637,7 +635,7 @@
     }
 
     .footer {
-        padding: 18px $page-side-padding;
+        padding: 18px var(--tainacan-one-column);
         position: absolute;
         bottom: 0;
         z-index: 999999;

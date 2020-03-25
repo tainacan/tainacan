@@ -494,8 +494,6 @@
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     .selection-control {
         
         padding: 6px 0px 0px 12px;
@@ -522,7 +520,7 @@
             background-color: var(--tainacan-blue1); 
         }
         to {
-            background-color: $white; 
+            background-color: var(--tainacan-white); 
         }
     }
 
@@ -574,11 +572,11 @@
                     font-size: 0.875em !important;
                 }
                 width: 20.833333%;
-                margin-right: $page-side-padding !important;
+                margin-right: var(--tainacan-one-column) !important;
             }
             .process-progress {
                 width: auto;
-                margin-right: $page-side-padding !important;
+                margin-right: var(--tainacan-one-column) !important;
                 flex-grow: 2;
 
                 .occluding-content {
@@ -603,7 +601,7 @@
 
             .process-queued-on {
                 width: 16.6666667%;
-                margin-right: $page-side-padding !important;
+                margin-right: var(--tainacan-one-column) !important;
             }
         }
         &>.process-collapse {
@@ -623,7 +621,7 @@
 
             .process-output {
                 margin-left: 1.75em !important;
-                margin-right: $page-side-padding !important;
+                margin-right: var(--tainacan-one-column) !important;
                 width: 20.83%;
 
                 ul {
@@ -645,7 +643,7 @@
 
             .process-last-processed-on {
                 margin-left: auto !important;
-                margin-right: calc(4.6666667% + 72px) !important;
+                margin-right: calc(var(--tainacan-one-column) + 72px) !important;
             }
         }
     }

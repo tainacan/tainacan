@@ -288,7 +288,7 @@
                             this.loadOptions();
                         } 
                     },
-                    width: 'calc(100% - 16.6666%)',
+                    width: 'calc(100% - (4 * var(--tainacan-one-column)))',
                     trapFocus: true
                 });
             },

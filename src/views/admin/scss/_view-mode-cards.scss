@@ -10,7 +10,7 @@
     animation-duration: 0.5s;
 
     @media screen and (max-width: 480px) {    
-        width: 91.666666667%;  
+        width: calc(100% - (2 * var(--tainacan-one-column)));  
         -ms-grid-columns: 100%;
         grid-template-columns: repeat(auto-fill, 100%);
     }
@@ -66,7 +66,7 @@
         .actions-area {
             position: relative;
             float: right;
-            top: -25px;
+            top: calc(-1 * var(--tainacan-container-padding));
             padding-right: 12px;
             display: flex;
             justify-content: space-between;

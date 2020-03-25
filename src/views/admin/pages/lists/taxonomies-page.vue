@@ -463,8 +463,8 @@
     .tabs {
         padding-top: 20px;
         margin-bottom: 20px;
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
+        padding-left: var(--tainacan-one-column);
+        padding-right: var(--tainacan-one-column);
     }
     .above-subheader {
         margin-bottom: 0;
