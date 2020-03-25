@@ -25,10 +25,6 @@ import ItemBulkEditionForm from '../components/edition/item-bulk-edition-form.vu
 import TaxonomyEditionForm from '../components/edition/taxonomy-edition-form.vue'
 import ExporterEditionForm from '../components/edition/exporter-edition-form.vue'
 
-// Listing components
-import FiltersList from '../components/lists/filters-list.vue'
-import MetadataList from '../components/lists/metadata-list.vue'
-
 Vue.use(VueRouter);
 
 const i18nGet = function (key) {
