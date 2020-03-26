@@ -163,52 +163,61 @@
                                 @change="handleChangeOnMetadata"
                                 v-if="availableMetadata.length > 0 && !isLoadingMetadatumTypes"
                                 v-model="availableMetadata"
-                                :sort="false" 
+                                :sort="false"
+                                filter="not-sortable-item" 
                                 :group="{ name:'filters', pull: !isSelectingFilterType, put: false, revertClone: true }"
                                 drag-class="sortable-drag">
-                            <div 
-                                    class="available-metadatum-item"
-                                    :class="{
-                                        'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel,
-                                        'disabled-metadatum': isSelectingFilterType
-                                    }"
-                                    v-if="metadatum.enabled"
-                                    v-for="(metadatum, index) in availableMetadata"
-                                    :key="index"
-                                    @click.prevent="addMetadatumViaButton(metadatum, index)">
+                            <template v-for="(metadatum, index) in availableMetadata">
                                 <span 
-                                        v-tooltip="{
-                                            content: $i18n.get('instruction_click_or_drag_filter_create'),
-                                            autoHide: true,
-                                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
-                                            placement: 'auto-start'
-                                        }" 
-                                        class="icon grip-icon">
-                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
+                                        :key="index"
+                                        v-if="metadatum.parent_name && metadatum.first_child"
+                                        class="not-sortable-item compound-metadatum-label">
+                                    {{ metadatum.parent_name }}
                                 </span>
-                                <span 
-                                        v-tooltip="{
-                                            content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
-                                            autoHide: true,
-                                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
-                                            placement: 'auto-start'
+                                <div 
+                                        class="available-metadatum-item"
+                                        :class="{
+                                            'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel,
+                                            'disabled-metadatum': isSelectingFilterType,
+                                            'child-metadatum': metadatum.parent_name
                                         }"
-                                        class="icon icon-level-identifier">
-                                    <i 
-                                        :class="{   
-                                            'tainacan-icon-collections has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 
-                                            'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId 
-                                        }"
-                                        class="tainacan-icon" />
-                                </span>  
-                                <span class="metadatum-name">{{ metadatum.name }}
-                                    <span   
-                                        v-if="metadatum.parent_name"
-                                        class="label-details"> 
-                                        <em>{{ '(' + metadatum.parent_name + ')' }}</em>
+                                        v-if="metadatum.enabled"
+                                        :key="index"
+                                        @click.prevent="addMetadatumViaButton(metadatum, index)">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('instruction_click_or_drag_filter_create'),
+                                                autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                placement: 'auto-start'
+                                            }" 
+                                            class="icon grip-icon">
+                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
                                     </span>
-                                </span>
-                            </div>
+                                    <span 
+                                            v-tooltip="{
+                                                content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
+                                                autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                placement: 'auto-start'
+                                            }"
+                                            class="icon icon-level-identifier">
+                                        <i 
+                                            :class="{   
+                                                'tainacan-icon-collections has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 
+                                                'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId 
+                                            }"
+                                            class="tainacan-icon" />
+                                    </span>  
+                                    <span class="metadatum-name">{{ metadatum.name }}
+                                        <span   
+                                            v-if="metadatum.parent_name"
+                                            class="label-details"> 
+                                            <em>{{ '(' + metadatum.parent_name + ')' }}</em>
+                                        </span>
+                                    </span>
+                                </div>
+                            </template>
                         </draggable>   
                     
                         <section 
@@ -569,11 +578,19 @@ export default {
         updateListOfMetadata() {
             const availableMetadata = JSON.parse(JSON.stringify(this.getMetadata()));
             const availableMetadataNames = {};
+            let lastParentName = '';
 
             for (let availableMetadatum of availableMetadata) {
                 availableMetadataNames['' + availableMetadatum.id] = availableMetadatum.name;
-                if (availableMetadatum.parent > 0 && availableMetadataNames[availableMetadatum.parent])
+                
+                if (availableMetadatum.parent > 0 && availableMetadataNames[availableMetadatum.parent]) {
                     availableMetadatum.parent_name = availableMetadataNames[availableMetadatum.parent];
+                    
+                    if (lastParentName !== availableMetadatum.parent_name)
+                        availableMetadatum.first_child = true;
+
+                    lastParentName = availableMetadatum.parent_name;   
+                }
             }
            
             for (let activeFilter of this.activeFilterList) {
@@ -1069,6 +1086,14 @@ export default {
             .sortable-drag {
                 opacity: 1 !important;
             }
+
+            .compound-metadatum-label {
+                font-weight: bold;
+                color: var(--tainacan-gray3);
+                padding: 20px;
+                position: relative;
+                top: 2px;
+            }
             .available-metadatum-item:not(.disabled-metadatum)  {
                 &:hover{
                     background-color: var(--tainacan-secondary);
@@ -1122,6 +1147,9 @@ export default {
                 }
 
             }
+        }
+        .child-metadatum {
+            margin-left: 42px !important;
         }
         .tainacan-modal-content {
 
