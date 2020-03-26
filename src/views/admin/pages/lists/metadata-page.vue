@@ -56,7 +56,9 @@
                                                 'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel,
                                                 'child-metadatum': metadatum.parent > 0
                                             }">
-                                        <div class="handle">
+                                        <div 
+                                                :ref="'metadatum-handler-' + metadatum.id"
+                                                class="handle">
                                             <span 
                                                     :style="{ opacity: !(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder) ? '1.0' : '0.0' }"
                                                     v-tooltip="{
@@ -493,7 +495,14 @@ export default {
             }
         },
         editMetadatum(metadatum) {
+
             this.openedMetadatumId = metadatum.id;
+            
+            // Scroll to opened metadata form
+            this.$nextTick(() => { 
+                if (this.$refs['metadatum-handler-' + metadatum.id] && this.$refs['metadatum-handler-' + metadatum.id][0])
+                    this.$refs['metadatum-handler-' + metadatum.id][0].scrollIntoView(true);
+            });
             
             // First time opening
             if (this.editForms[this.openedMetadatumId] == undefined) {
