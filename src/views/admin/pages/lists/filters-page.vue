@@ -87,8 +87,8 @@
                                         {{ filter.name }}
                                 </span>
                                 <span   
-                                    v-if="filter.filter_type_object != undefined"
-                                    class="label-details">  
+                                        v-if="filter.filter_type_object != undefined"
+                                        class="label-details">  
                                     ({{ filter.filter_type_object.name }})  
                                         <span 
                                                 class="not-saved" 
@@ -168,18 +168,11 @@
                                 :group="{ name:'filters', pull: !isSelectingFilterType, put: false, revertClone: true }"
                                 drag-class="sortable-drag">
                             <template v-for="(metadatum, index) in availableMetadata">
-                                <span 
-                                        :key="index"
-                                        v-if="metadatum.parent_name && metadatum.first_child"
-                                        class="not-sortable-item compound-metadatum-label">
-                                    {{ metadatum.parent_name }}
-                                </span>
                                 <div 
                                         class="available-metadatum-item"
                                         :class="{
                                             'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel,
-                                            'disabled-metadatum': isSelectingFilterType,
-                                            'child-metadatum': metadatum.parent_name
+                                            'disabled-metadatum': isSelectingFilterType
                                         }"
                                         v-if="metadatum.enabled"
                                         :key="index"
@@ -209,11 +202,13 @@
                                             }"
                                             class="tainacan-icon" />
                                     </span>  
-                                    <span class="metadatum-name">{{ metadatum.name }}
+                                    <span class="metadatum-name">
+                                        {{ metadatum.name }}
                                         <span   
                                             v-if="metadatum.parent_name"
-                                            class="label-details"> 
-                                            <em>{{ '(' + metadatum.parent_name + ')' }}</em>
+                                            class="label-details"
+                                            style="font-size: 0.875em;"> 
+                                            <em>{{ '(' + $i18n.get('info_child_of') + ' ' + metadatum.parent_name + ')' }}</em>
                                         </span>
                                     </span>
                                 </div>
