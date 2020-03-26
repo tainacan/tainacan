@@ -54,5 +54,12 @@
     }  
     &.is-loading.is-small::after {
         font-size: 0.875em;
+    }
+    optgroup,
+    optgroup[label],
+    optgroup::before {
+        color: var(--tainacan-gray2);
+        font-weight: normal;
+        font-style: italic;
     }     
 }
