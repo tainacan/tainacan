@@ -945,6 +945,8 @@ export default {
     beforeDestroy () {
         eventBusItemMetadata.$off('isUpdatingValue');
         eventBusItemMetadata.$off('hasErrorsOnForm');
+        if (this.$refs['item-edition-page-container'])
+            this.$refs['item-edition-page-container'].removeEventListener('scroll', this.handleScroll);
     },
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
@@ -1676,6 +1678,10 @@ export default {
         justify-content: flex-end;
         align-items: center;
         transition: bottom 0.5s ease-in;
+
+        &:hover {
+            bottom: 0 !important;
+        }
 
         .form-submission-footer {
             .button {
