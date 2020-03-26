@@ -49,19 +49,13 @@
                                     {{ childMetadatum.name }}
                                 </option>
                             </optgroup>
-                            <option
-                                    :key="index"
-                                    v-if="index === Object.keys(metadata).length-1"
-                                    value="status">
-                                {{ $i18n.get('label_status') }}
-                            </option>
-                            <option
-                                    :key="index"
-                                    v-if="index === Object.keys(metadata).length-1"
-                                    value="comments">
-                                {{ $i18n.get('label_allow_comments') }}
-                            </option>
                         </template>
+                        <option value="status">
+                            {{ $i18n.get('label_status') }}
+                        </option>
+                        <option value="comments">
+                            {{ $i18n.get('label_allow_comments') }}
+                        </option>
                     </b-select>
 
                     <b-select
@@ -585,10 +579,20 @@
 
     .this-tainacan-modal-content {
         min-height: 300px;
-    }
-
-    .this-tainacan-modal-content .form-submit {
-        padding: 42px 0 0.4em 0 !important;
+        
+        .button.is-white.is-loading {
+            cursor: inherit;
+            color: var(--tainacan-gray4) !important;
+        }
+        .is-pulled-right .is-success {
+            background-color: transparent !important;
+        }
+        .add-link {
+            font-size: 0.875em;
+        }
+        .form-submit {
+            padding: 42px 0 0.4em 0 !important;
+        }
     }
 
     .no-overflow-modal-card-body {
@@ -730,17 +734,5 @@
 
     .tainacan-add-edition-criterion-button-disabled {
         cursor: not-allowed !important;
-    }
-
-    .button.is-white.is-loading {
-        cursor: inherit;
-        color: var(--tainacan-gray4) !important;
-    }
-
-    .is-pulled-right .is-success {
-        background-color: transparent !important;
-    }
-    .add-link {
-        font-size: 0.875em;
     }
 </style>

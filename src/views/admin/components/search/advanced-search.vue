@@ -43,24 +43,39 @@
                         <b-select
                                 :placeholder="$i18n.get('instruction_select_a_metadatum')"
                                 :disabled="advancedSearchQuery.taxquery[searchCriterion] ||
-                                 advancedSearchQuery.metaquery[searchCriterion] ? true : false"
+                                    advancedSearchQuery.metaquery[searchCriterion] ? true : false"
                                 :value="advancedSearchQuery.metaquery[searchCriterion] ?
-                                 advancedSearchQuery.metaquery[searchCriterion].originalMeta :
-                                  (advancedSearchQuery.taxquery[searchCriterion] ? advancedSearchQuery.taxquery[searchCriterion].originalMeta : undefined)"
+                                    advancedSearchQuery.metaquery[searchCriterion].originalMeta :
+                                    (advancedSearchQuery.taxquery[searchCriterion] ? advancedSearchQuery.taxquery[searchCriterion].originalMeta : undefined)"
                                 @input="addToAdvancedSearchQuery($event, 'metadatum', searchCriterion)">
-                            <option
-                                    v-for="(metadatum, metadatumIndex) in metadata"
-                                    v-if="isRelationship(metadatum, metadatumIndex)"
-                                    :value="`${metadatum.id}-${metadatum.metadata_type_options.taxonomy}-${metadatum.metadata_type_object.primitive_type}`"
-                                    :key="metadatum.id"
-                            >{{ metadatum.name }}</option>
-                            <option value="document_content_index-undefined-string">Documento</option>
+                            <template v-for="(metadatum, metadatumIndex) in metadata">
+                                <option
+                                        v-if="metadatum.metadata_type_object.component !== 'tainacan-relationship' && metadatum.metadata_type_object.component !== 'tainacan-compound' && metadatum.parent <= 0"
+                                        :value="`${metadatum.id}-${metadatum.metadata_type_options.taxonomy}-${metadatum.metadata_type_object.primitive_type}`"
+                                        :key="metadatumIndex">
+                                    {{ metadatum.name }}
+                                </option>
+                                <optgroup
+                                        v-if="metadatum.metadata_type_object.component === 'tainacan-compound'"
+                                        :key="metadatumIndex"
+                                        :label="metadatum.name">
+                                    <option
+                                            v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects"
+                                            :key="childIndex"
+                                            :value="`${childMetadatum.id}-${childMetadatum.metadata_type_options.taxonomy}-${childMetadatum.metadata_type_object.primitive_type}`">
+                                        {{ childMetadatum.name }}
+                                    </option>
+                                </optgroup>
+                            </template>
+                            <option value="document_content_index-undefined-string">
+                                {{ $i18n.get('label_document') }}
+                            </option>
                         </b-select>
                     </b-field>
 
                     <!-- Inputs -->
                     <b-field
-                            :class="{'is-two-thirds': !isHeader}"
+                            :class="{'is-half': !isHeader}"
                             class="column">
                         <b-input
                                 v-if="advancedSearchQuery.metaquery[searchCriterion] &&
@@ -259,11 +274,11 @@
             }
         },
         watch: {
-          isDoSearch(){
+          isDoSearch() {
               this.searchAdvanced();
           }
         },
-        mounted(){
+        mounted() {
             this.$root.$on('metadatumUpdated', (isRepositoryLevel) => {
 
                 if (isRepositoryLevel) {
@@ -279,7 +294,7 @@
                         isContextEdit: false,
                         includeDisabled: false,
                         isAdvancedSearch: true,
-                        parent: '0'
+                        parent: 'any'
                     }).then((resp) => {
                             resp.request
                                 .then((metadata) => {
@@ -296,7 +311,7 @@
                 }
             });
         },
-        created(){
+        created() {
 
             this.metadataIsLoading = true;
 
@@ -305,7 +320,8 @@
                 isRepositoryLevel: this.isRepositoryLevel,
                 isContextEdit: false,
                 includeDisabled: false,
-                isAdvancedSearch: true
+                isAdvancedSearch: true,
+                parent: 'any'
             }).then((resp) => {
                     resp.request
                         .then((metadata) => {
@@ -321,54 +337,44 @@
                 .catch(() => this.metadataIsLoading = false);  
 
             if ((this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0) ||
-                (this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0) ){
+                (this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0) ) {
                 this.searchCriteria = [];
             }
 
-            if(this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0){
+            if (this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0) {
 
                 let metaquery = this.$route.query.metaquery;
 
-                for(let meta in metaquery){
+                for(let meta in metaquery)
                     this.$set(this.advancedSearchQuery.metaquery, `${meta}`, metaquery[meta]);
-                }
 
                 let keys = Object.keys(this.advancedSearchQuery.metaquery);
 
-                let relationIndex = keys.findIndex((element) => {
-                    return element == 'relation';
-                });
+                let relationIndex = keys.findIndex((element) => element == 'relation');
 
-                if(relationIndex != -1) {
+                if (relationIndex != -1)
                     keys.splice(relationIndex, 1);
-                }
 
-                for(let k of keys){
+                for(let k of keys)
                     this.searchCriteria.push(k);
-                }
 
             }
 
-            if(this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0){
+            if (this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0) {
                 let taxquery = this.$route.query.taxquery;
 
-                for(let tax in taxquery){
+                for(let tax in taxquery)
                     this.$set(this.advancedSearchQuery.taxquery, `${tax}`, taxquery[tax]);
-                }
 
                 let keys = Object.keys(this.advancedSearchQuery.taxquery);
 
-                let relationIndex = keys.findIndex((element) => {
-                    return element == 'relation';
-                });
+                let relationIndex = keys.findIndex((element) => element == 'relation');
 
-                if(relationIndex != -1) {
+                if (relationIndex != -1) 
                     keys.splice(relationIndex, 1);
-                }
 
-                for(let k of keys){
+                for(let k of keys)
                     this.searchCriteria.push(k);
-                }
             }
         },
         beforeDestroy() {
@@ -383,62 +389,40 @@
             ...mapActions('metadata', [
                 'fetchMetadata'
             ]),
-            isRelationship(metadatum, metadatumIndex){
-                if(!metadatum){
-                    return false;
-                } else if(metadatum.metadata_type.includes('Relationship')){
-                    this.metadata.splice(metadatumIndex, 1);
-
-                    return false;
-                }
-
-                return true;
-            },
-            getComparators(searchCriterion){
-                if(this.advancedSearchQuery.taxquery[searchCriterion]){
+            getComparators(searchCriterion) {
+                if (this.advancedSearchQuery.taxquery[searchCriterion]) {
                     return this.taxqueryOperators;
-                } else if(this.advancedSearchQuery.metaquery[searchCriterion]){
-                    if(this.advancedSearchQuery.metaquery[searchCriterion].ptype == 'int' ||
+                } else if (this.advancedSearchQuery.metaquery[searchCriterion]) {
+                    if (this.advancedSearchQuery.metaquery[searchCriterion].ptype == 'int' ||
                     this.advancedSearchQuery.metaquery[searchCriterion].ptype == 'float' ||
-                    this.advancedSearchQuery.metaquery[searchCriterion].ptype == 'date'){
+                    this.advancedSearchQuery.metaquery[searchCriterion].ptype == 'date') {
                         return this.metaqueryOperatorsForInterval;
                     } else{
                         return this.metaqueryOperatorsRegular;
                     }
                 }
             },
-            removeThis(searchCriterion){
-                let criteriaIndex = this.searchCriteria.findIndex((element) => {
-                    return element == searchCriterion;
-                });
+            removeThis(searchCriterion) {
+                let criteriaIndex = this.searchCriteria.findIndex((element) => element == searchCriterion);
 
                 this.searchCriteria.splice(criteriaIndex, 1);
 
-                if(this.advancedSearchQuery.taxquery[searchCriterion]){
+                if (this.advancedSearchQuery.taxquery[searchCriterion])
                     delete this.advancedSearchQuery.taxquery[searchCriterion];
-                } else if(this.advancedSearchQuery.metaquery[searchCriterion]){
+                else if (this.advancedSearchQuery.metaquery[searchCriterion])
                     delete this.advancedSearchQuery.metaquery[searchCriterion];
-                }
             },
-            // hasTagIn(value, searchCriterion){
-            //     return !!this.advancedSearchQuery.taxquery[searchCriterion].btags.find((element) => {
-            //         return element == value;
-            //     });
-            // },
-            addSearchCriteria(){
+            addSearchCriteria() {
                 let aleatoryKey = Math.floor(Math.random() * (1000 - 2 + 1)) + 2;
 
-                let found = this.searchCriteria.find((element) => {
-                    return element == aleatoryKey;
-                });
+                let found = this.searchCriteria.find((element) => element == aleatoryKey);
 
-                if(found == undefined){
+                if (found == undefined)
                     this.searchCriteria.push(aleatoryKey);
-                } else {
+                else
                     this.addSearchCriteria();
-                }
             },
-            clearSearch(){
+            clearSearch() {
                 this.searchCriteria = [1];
                 this.advancedSearchQuery = {
                     advancedSearch: true,
@@ -446,11 +430,11 @@
                     taxquery: {}
                 };
             },
-            convertDateToMatchInDB(dateValue){
+            convertDateToMatchInDB(dateValue) {
                 return moment(dateValue,  this.dateFormat).toISOString().split('T')[0];
             },
-            addValueToAdvancedSearchQueryWithoutDelay($event, type, searchCriterion){
-                if(type == ''){
+            addValueToAdvancedSearchQueryWithoutDelay($event, type, searchCriterion) {
+                if (type == '') {
                     this.$set($event.target, 'value', '');
                     this.addToAdvancedSearchQuery('', 'value', searchCriterion);
                 } else {               
@@ -460,90 +444,84 @@
             addValueToAdvancedSearchQuery: _.debounce(function(value, type, searchCriterion) {
                 this.addToAdvancedSearchQuery(value, type, searchCriterion);
             }, 900),
-            searchAdvanced(){
+            searchAdvanced() {
 
-                if(this.isHeader){
+                if (this.isHeader) {
                     this.$root.$emit('closeAdvancedSearchShortcut', true);
 
-                    if(this.$route.path == '/items') {
+                    if (this.$route.path == '/items')
                         this.$root.$emit('openAdvancedSearch', true);
-                    }
 
-                    if(this.$route.path != '/items') {
+                    if (this.$route.path != '/items') {
                         this.$router.push({
                             path: '/items',
                         });
                     }
                 }
 
-                if(Object.keys(this.advancedSearchQuery.taxquery).length > 0 &&
-                 Object.keys(this.advancedSearchQuery.metaquery).length > 0){
+                if (Object.keys(this.advancedSearchQuery.taxquery).length > 0 &&
+                    Object.keys(this.advancedSearchQuery.metaquery).length > 0) {
                     this.advancedSearchQuery.relation = 'AND';
                 } 
 
-                if(Object.keys(this.advancedSearchQuery.taxquery).length > 1){
+                if (Object.keys(this.advancedSearchQuery.taxquery).length > 1)
                     this.$set(this.advancedSearchQuery.taxquery, 'relation', 'AND');
-                } else if(this.advancedSearchQuery.taxquery.hasOwnProperty('relation')){
+                else if (this.advancedSearchQuery.taxquery.hasOwnProperty('relation'))
                     delete this.advancedSearchQuery.taxquery.relation;
-                }
 
                 // Convert date values to a format (ISO_8601) that will match in database
-                if(Object.keys(this.advancedSearchQuery.metaquery).length > 0){
-                    for(let metaquery in this.advancedSearchQuery.metaquery){
-                        if(this.advancedSearchQuery.metaquery[metaquery].ptype == 'date'){
+                if (Object.keys(this.advancedSearchQuery.metaquery).length > 0) {
+
+                    for (let metaquery in this.advancedSearchQuery.metaquery) {
+                        if (this.advancedSearchQuery.metaquery[metaquery].ptype == 'date') {
                             let value = this.advancedSearchQuery.metaquery[metaquery].value;
                             
-                            if(value.includes('/')){
+                            if (value.includes('/'))
                                 this.$set(this.advancedSearchQuery.metaquery[metaquery], 'value', this.convertDateToMatchInDB(value));
-                            }
                         }
                     }
                 }
 
-                if(Object.keys(this.advancedSearchQuery.metaquery).length > 1){
+                if (Object.keys(this.advancedSearchQuery.metaquery).length > 1)
                     this.$set(this.advancedSearchQuery.metaquery, 'relation', 'AND');
-                } else if(this.advancedSearchQuery.metaquery.hasOwnProperty('relation')){
+                else if (this.advancedSearchQuery.metaquery.hasOwnProperty('relation'))
                     delete this.advancedSearchQuery.metaquery.relation;
-                }
                 
-                if(this.advancedSearchQuery.hasOwnProperty('relation') && Object.keys(this.advancedSearchQuery).length <= 3){
+                if (this.advancedSearchQuery.hasOwnProperty('relation') && Object.keys(this.advancedSearchQuery).length <= 3)
                     delete this.advancedSearchQuery.relation;
-                }
 
                 this.$eventBusSearch.$emit('searchAdvanced', this.advancedSearchQuery);
                 
-                if(Object.keys(this.advancedSearchQuery.metaquery).length > 0){
-                    for(let metaquery in this.advancedSearchQuery.metaquery){
-                        if(this.advancedSearchQuery.metaquery[metaquery].ptype == 'date'){
+                if (Object.keys(this.advancedSearchQuery.metaquery).length > 0) {
+
+                    for (let metaquery in this.advancedSearchQuery.metaquery) {
+                        if (this.advancedSearchQuery.metaquery[metaquery].ptype == 'date') {
                             let value = this.advancedSearchQuery.metaquery[metaquery].value;
                             
                             setTimeout(() => {
-                                if(value.includes('-')){
+                                if (value.includes('-'))
                                     this.$set(this.advancedSearchQuery.metaquery[metaquery], 'value', this.parseDateToNavigatorLanguage(value));
-                                }
                             }, 200);
                         }
                     }
                 }
             },
-            parseDateToNavigatorLanguage(date){
-                if(date && date.length === this.dateMask.length) {
+            parseDateToNavigatorLanguage(date) {
+                if (date && date.length === this.dateMask.length) {
                     date = new Date(date.replace(/-/g, '/'));
-
                     return moment(date, moment.ISO_8601).format(this.dateFormat);
                 } else {
                     return date;
                 }
             },
-            addToAdvancedSearchQuery(value, type, searchCriterion){
-                if(!value){
+            addToAdvancedSearchQuery(value, type, searchCriterion) {
+                if (!value)
                     return;
-                }
 
-                if(type == 'metadatum') {
+                if (type == 'metadatum') {
                     const criteriaKey = value.split('-');
                     
-                    if(criteriaKey[1] != 'undefined'){
+                    if (criteriaKey[1] != 'undefined') {
                         // Was selected a taxonomy criteria      
                         this.advancedSearchQuery.taxquery = Object.assign({}, this.advancedSearchQuery.taxquery, {
                             [`${searchCriterion}`]: {
@@ -556,7 +534,7 @@
                         });
                     } else {
                         // Was selected a metadatum criteria
-                        if(criteriaKey[2] != 'date' && criteriaKey[2] != 'int' && criteriaKey[2] != 'float'){
+                        if (criteriaKey[2] != 'date' && criteriaKey[2] != 'int' && criteriaKey[2] != 'float') {
                             this.advancedSearchQuery.metaquery = Object.assign({}, this.advancedSearchQuery.metaquery, {
                                 [`${searchCriterion}`]: {
                                     key: criteriaKey[0],
@@ -576,16 +554,15 @@
 
                         this.$set(this.advancedSearchQuery.metaquery[searchCriterion], 'ptype', criteriaKey[2]);
                     }
-                } else if(type == "term_value") {
+                } else if (type == "term_value") {
                     this.$set(this.advancedSearchQuery.taxquery[searchCriterion], 'terms', value);
-                } else if(type == 'value'){
+                } else if (type == 'value') {
                     this.$set(this.advancedSearchQuery.metaquery[searchCriterion], 'value', value);
-                } else if(type == 'comparator'){
-                    if(this.advancedSearchQuery.taxquery[searchCriterion]){
+                } else if (type == 'comparator') {
+                    if (this.advancedSearchQuery.taxquery[searchCriterion])
                         this.$set(this.advancedSearchQuery.taxquery[searchCriterion], 'operator', value);
-                    } else if(this.advancedSearchQuery.metaquery[searchCriterion]){
+                    else if (this.advancedSearchQuery.metaquery[searchCriterion])
                         this.$set(this.advancedSearchQuery.metaquery[searchCriterion], 'compare', value);
-                    }
                 }
             },
         }
@@ -677,6 +654,7 @@
         }
 
         .dropdown-content {
+            font-size: 1.15em;
             width: 800px !important;
             padding-bottom: 1.25em !important;
         }
