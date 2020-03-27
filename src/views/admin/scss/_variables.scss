@@ -280,7 +280,7 @@ $modal-z: 9999999;
 }
 
 // Animations for background processes popup and url copy popup
-@keyframes appear-from-top {
+@keyframes appear-from-top-tooltip {
     from { 
         top: 24px;
         opacity: 0; 
@@ -288,6 +288,14 @@ $modal-z: 9999999;
     to { 
         top: 48px;
         opacity: 1; 
+    }
+}
+@keyframes appear-from-top {
+    from { 
+        top: -48px;
+    }
+    to { 
+        top: 0px; 
     }
 }
 @keyframes appear-from-bottom {
