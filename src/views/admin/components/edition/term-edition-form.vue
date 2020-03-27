@@ -251,6 +251,7 @@
             this.$nextTick()
                 .then(() => {
                     this.updateExtraFormData(this.editForm);
+                    document.getElementById('termEditForm').scrollIntoView();
                 });
 
             this.showCheckboxesWarning = false;
