@@ -1,5 +1,5 @@
 <template>
-    <div ref="item-page-container">
+    <div>
         <b-loading
                 :active.sync="isLoading"
                 :can-cancel="false"/>
@@ -24,94 +24,87 @@
         <div class="tainacan-form">
             <div class="columns">
                 <div class="column is-5">
-                    <div 
-                            :style="{
-                                position: 'sticky',
-                                top: 0,
-                                overflowX: 'hidden',
-                                overflowY: 'auto'
-                            }">
-                        <!-- Hook for extra Form options -->
-                        <template
-                                v-if="formHooks != undefined &&
-                            formHooks['view-item'] != undefined &&
-                            formHooks['view-item']['begin-left'] != undefined">
-                            <div
-                                    id="view-item-begin-left"
-                                    class="form-hook-region"
-                                    v-html="formHooks['view-item']['begin-left'].join('')"/>
-                        </template>
 
-                        <!-- Document -------------------------------- -->
-                        <div class="section-label">
-                            <label>{{ item.document !== undefined && item.document !== null && item.document !== ''
-                                ?
-                                $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
-                        </div>
-                        <div class="section-box">
-                            <div
-                                    v-if="item.document !== undefined && item.document !== null &&
-                                    item.document_type !== undefined && item.document_type !== null &&
-                                    item.document !== '' && item.document_type !== 'empty'">
+                    <!-- Hook for extra Form options -->
+                    <template
+                            v-if="formHooks != undefined &&
+                        formHooks['view-item'] != undefined &&
+                        formHooks['view-item']['begin-left'] != undefined">
+                        <div
+                                id="view-item-begin-left"
+                                class="form-hook-region"
+                                v-html="formHooks['view-item']['begin-left'].join('')"/>
+                    </template>
 
-                                <div v-if="item.document_type === 'attachment'">
-                                    <!-- <div v-html="item.document_as_html"/> -->
-                                    <document-item :document-html="item.document_as_html"/>
-                                </div>
-
-                                <div v-else-if="item.document_type === 'text'">
-                                    <div v-html="item.document_as_html"/>
-                                </div>
-
-                                <div v-else-if="item.document_type === 'url'">
-                                    <div v-html="item.document_as_html"/>
-                                </div>
-                            </div>
-                            <div v-else>
-                                <p>{{ $i18n.get('info_no_document_to_item') }}</p>
-                            </div>
-                        </div>
-
-                        <!-- Thumbnail -------------------------------- -->
-                        <div class="section-label">
-                            <label>{{ $i18n.get('label_thumbnail') }}</label>
-                        </div>
-                        <div class="section-box section-thumbnail">
-                            <div class="thumbnail-field">
-                                <file-item
-                                        v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
-                                        :show-name="false"
-                                        :modal-on-click="false"
-                                        :size="178"
-                                        :file="{
-                                    media_type: 'image',
-                                    thumbnails: { 'tainacan-medium': [ item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] ] },
-                                    title: $i18n.get('label_thumbnail'),
-                                    description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + item.thumbnail.full[0] + `'/>` 
-                                }"/>
-                                <figure
-                                        v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
-                                        class="image">
-                                    <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
-                                    <img
-                                            :alt="$i18n.get('label_thumbnail')"
-                                            :src="thumbPlaceholderPath">
-                                </figure>
-                            </div>
-                        </div>        
-
-                        <!-- Hook for extra Form options -->
-                        <template
-                                v-if="formHooks != undefined &&
-                            formHooks['view-item'] != undefined &&
-                            formHooks['view-item']['end-left'] != undefined">
-                            <div
-                                    id="view-item-end-left"
-                                    class="form-hook-region"
-                                    v-html="formHooks['view-item']['end-left'].join('')"/>
-                        </template>
-
+                    <!-- Document -------------------------------- -->
+                    <div class="section-label">
+                        <label>{{ item.document !== undefined && item.document !== null && item.document !== ''
+                            ?
+                            $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
                     </div>
+                    <div class="section-box">
+                        <div
+                                v-if="item.document !== undefined && item.document !== null &&
+                                item.document_type !== undefined && item.document_type !== null &&
+                                item.document !== '' && item.document_type !== 'empty'">
+
+                            <div v-if="item.document_type === 'attachment'">
+                                <!-- <div v-html="item.document_as_html"/> -->
+                                <document-item :document-html="item.document_as_html"/>
+                            </div>
+
+                            <div v-else-if="item.document_type === 'text'">
+                                <div v-html="item.document_as_html"/>
+                            </div>
+
+                            <div v-else-if="item.document_type === 'url'">
+                                <div v-html="item.document_as_html"/>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <p>{{ $i18n.get('info_no_document_to_item') }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Thumbnail -------------------------------- -->
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_thumbnail') }}</label>
+                    </div>
+                    <div class="section-box section-thumbnail">
+                        <div class="thumbnail-field">
+                            <file-item
+                                    v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
+                                    :show-name="false"
+                                    :modal-on-click="false"
+                                    :size="178"
+                                    :file="{
+                                media_type: 'image',
+                                thumbnails: { 'tainacan-medium': [ item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] ] },
+                                title: $i18n.get('label_thumbnail'),
+                                description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + item.thumbnail.full[0] + `'/>` 
+                            }"/>
+                            <figure
+                                    v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
+                                    class="image">
+                                <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
+                                <img
+                                        :alt="$i18n.get('label_thumbnail')"
+                                        :src="thumbPlaceholderPath">
+                            </figure>
+                        </div>
+                    </div>        
+
+                    <!-- Hook for extra Form options -->
+                    <template
+                            v-if="formHooks != undefined &&
+                        formHooks['view-item'] != undefined &&
+                        formHooks['view-item']['end-left'] != undefined">
+                        <div
+                                id="view-item-end-left"
+                                class="form-hook-region"
+                                v-html="formHooks['view-item']['end-left'].join('')"/>
+                    </template>
+
                 </div>
                 <div class="column is-7">
 
@@ -384,17 +377,6 @@
             });
 
         },
-        mounted() {
-            // Watch Scroll
-            this.$nextTick(() => {
-                if (this.$refs['item-page-container'])
-                    this.$refs['item-page-container'].addEventListener('scroll', this.handleScroll);
-            })
-        },
-        beforeDestroy() {
-            if (this.$refs['item-page-container'])
-                this.$refs['item-page-container'].removeEventListener('scroll', this.handleScroll);
-        },
         methods: {
             ...mapActions('item', [
                 'fetchItem',
@@ -427,15 +409,7 @@
                     },
                     trapFocus: true
                 });
-            },
-            handleScroll: _.throttle((scrollEvent) => {
-                if (!scrollEvent.target.classList.contains('hide-footer'))
-                    scrollEvent.target.classList.add('hide-footer');
-
-                setTimeout(() => {
-                    scrollEvent.target.classList.remove('hide-footer');
-                }, 1000)
-            }, 500)
+            }
         }
     }
 </script>
@@ -537,10 +511,6 @@
         .b-tabs {
             overflow: hidden !important;
             margin-top: -15px;
-        }
-
-        &.hide-footer footer {
-            bottom: -65px;
         }
     }
 
@@ -666,11 +636,6 @@
         background-color: var(--tainacan-gray1);
         width: 100%;
         height: 65px;
-        transition: bottom 0.5s ease-in;
-
-        &:hover {
-            bottom: 0 !important;
-        }
 
         .form-submission-footer {
             width: 100%;
