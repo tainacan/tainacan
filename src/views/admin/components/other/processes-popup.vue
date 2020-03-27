@@ -291,7 +291,7 @@ export default {
         top: 48px;
         right: 40px;
         border-radius: 5px;
-        animation-name: appear-from-top;
+        animation-name: appear-from-top-tooltip;
         animation-duration: 0.3s;
         font-size: 0.75em;
 

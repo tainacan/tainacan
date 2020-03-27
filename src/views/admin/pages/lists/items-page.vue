@@ -1200,11 +1200,26 @@
             }, 500),
             handleMouseMoveOverList: _.debounce( function($event) {
 
+                // Handles search control bar
+                if (this.$refs['search-control']) {
+                    const bounding = this.$refs['search-control'].getBoundingClientRect();
+                    const isHidden = !(bounding.top >= 0 && bounding.bottom <= ((window.innerHeight || document.documentElement.clientHeight) + 136));
+                    
+                    if (isHidden && ($event.screenY <= 286)) {
+                        if (!(this.$refs['search-control'].classList.contains('floating-search-control')))
+                            this.$refs['search-control'].classList.add('floating-search-control');                    
+                    } else {
+                        if ((this.$refs['search-control'].classList.contains('floating-search-control')))
+                            this.$refs['search-control'].classList.remove('floating-search-control');
+                    }
+                }
+
+                // Handles pagination bar
                 if (this.$refs['items-pagination']) {
                     const bounding = this.$refs['items-pagination'].getBoundingClientRect();
                     const isHidden = !(bounding.top >= 0 && bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight));
                       
-                    if (isHidden && ($event.screenY + 150 >= window.screen.height)) {
+                    if (isHidden && ($event.screenY + 100 >= window.screen.height)) {
                         if (!(this.$refs['items-pagination'].classList.contains('floating-pagination'))) {
                             this.$refs['items-pagination'].classList.add('floating-pagination');
                             if (this.$refs['items-pagination'].children[0]) {
@@ -1396,7 +1411,7 @@
             }
         }
     }
-        
+
     .search-control {
         min-height: 42px;
         height: auto;
@@ -1405,6 +1420,26 @@
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
+        transition: top 0.3s, opacity 0.3s, padding 0.3s, height 0.3s, position 0.3s;
+
+        &.floating-search-control {
+            position: sticky;
+            top: 0;
+            z-index: 99999999;
+            background: var(--tainacan-background-color);
+            animation: appear-from-top 0.2s;
+            opacity: 0.85;
+            border-bottom: 1px solid var(--tainacan-gray2);
+            padding: 20px var(--tainacan-one-column) 2px var(--tainacan-one-column);
+
+            &:hover {
+                opacity: 1;
+            }
+
+            .search-area .is-pulled-right {
+                display: none;
+            }
+        }
 
         .search-control-item {
             display: inline-block;
@@ -1606,7 +1641,7 @@
         min-height: 42px;
 
         .pagination-area {
-            opacity: 0.75;
+            opacity: 0.85;
             background: var(--tainacan-background-color);
             position: fixed;
             z-index: 99999;

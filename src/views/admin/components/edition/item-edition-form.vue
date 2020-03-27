@@ -1571,7 +1571,7 @@ export default {
             }
             .icon  {
                 font-size: 1.125em !important;
-                color: var(--tainacan-gray3);
+                color: var(--tainacan-info-color);
             }
         }
     }

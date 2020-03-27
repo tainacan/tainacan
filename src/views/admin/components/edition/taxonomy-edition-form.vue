@@ -531,7 +531,7 @@
         align-items: center;
     }
     .tainacan-form>.columns {
-        margin-bottom: 76px;
+        margin-bottom: var(--tainacan-container-padding);
     }
     .tainacan-form .column {
         padding: 1em var(--tainacan-one-column);

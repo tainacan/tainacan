@@ -95,6 +95,11 @@
                                                 v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'"> 
                                             {{ $i18n.get('info_not_saved') }}
                                         </span>
+                                    <span 
+                                            v-if="filter.status == 'private'"
+                                            class="icon">
+                                        <i class="tainacan-icon tainacan-icon-private"/>
+                                    </span>
                                 </span> 
                                 <span 
                                         class="loading-spinner" 

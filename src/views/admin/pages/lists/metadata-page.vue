@@ -113,6 +113,11 @@
                                                     v-if="(editForms[metadatum.id] != undefined && editForms[metadatum.id].saved != true) || metadatum.status == 'auto-draft'">
                                                 {{ $i18n.get('info_not_saved') }}
                                                 </span>
+                                                <span 
+                                                        v-if="metadatum.status == 'private'"
+                                                        class="icon">
+                                                    <i class="tainacan-icon tainacan-icon-private"/>
+                                                </span>
                                             </span>
                                             <span 
                                                     class="loading-spinner" 
@@ -593,7 +598,7 @@ export default {
         padding-bottom: 0;
 
         .tainacan-page-title {
-            margin-bottom: 32px;
+            margin-bottom: 18px;
             display: flex;
             flex-wrap: wrap;
             align-items: flex-end;
