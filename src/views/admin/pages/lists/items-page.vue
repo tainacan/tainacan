@@ -4,7 +4,8 @@
                 'repository-level-page': isRepositoryLevel,
                 'is-filters-menu-open': isFiltersModalActive && !openAdvancedSearch
             }"
-            aria-live="polite">
+            aria-live="polite"
+            ref="items-page-container">
 
         <!-- PAGE TITLE --------------------- -->
         <tainacan-title
@@ -747,6 +748,15 @@
             this.$eventBusSearch.updateStoreFromURL();
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
+                
+                if (isLoadingItems != this.isLoadingItems && this.$refs['items-page-container'] && this.$refs['search-control']) {
+
+                    if ((this.$refs['search-control'].classList.contains('floating-search-control')))
+                        this.$refs['search-control'].classList.remove('floating-search-control');
+                        
+                    this.$refs['items-page-container'].scrollTo({ top: this.$refs['search-control'].offsetTop - (this.isRepositoryLevel ? 94 : 42), behavior: 'smooth'});
+                }
+
                 this.isLoadingItems = isLoadingItems;
             });
 
