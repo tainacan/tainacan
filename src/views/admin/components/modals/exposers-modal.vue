@@ -624,7 +624,7 @@ export default {
                 position: relative;
             }
             .exposer-copy-popup {
-                animation-name: appear-from-top;
+                animation-name: appear-from-top-tooltip;
                 animation-duration: 0.3s;
                 position: absolute;
                 background: var(--tainacan-gray1);
