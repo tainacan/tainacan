@@ -28,17 +28,7 @@
             <ul class="menu-list level-right">
                 <li     
                         :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
-                        class="level-item"
-                        v-tooltip="{
-                            delay: {
-                                show: 500,
-                                hide: 100,
-                            },
-                            content: $i18n.get('items'),
-                            autoHide: false,
-                            placement: 'bottom-start',
-                            classes: ['header-tooltips']
-                        }">
+                        class="level-item">
                     <router-link 
                             tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '' }" 
@@ -52,17 +42,7 @@
                 <li 
                         v-if="collection && collection.current_user_can_edit"
                         :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
-                        class="level-item"
-                        v-tooltip="{
-                            delay: {
-                                show: 500,
-                                hide: 100,
-                            },
-                            content: $i18n.get('label_settings'),
-                            autoHide: false,
-                            placement: 'bottom-start',
-                            classes: ['header-tooltips']
-                        }">
+                        class="level-item">
                     <router-link
                             tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionEditPath(collection.id) : '' }" 
@@ -77,17 +57,7 @@
                 <li 
                         v-if="collection && collection.current_user_can_edit_metadata"
                         :class="activeRoute == 'CollectionMetadataPage' ? 'is-active':''"
-                        class="level-item"
-                        v-tooltip="{
-                            delay: {
-                                show: 500,
-                                hide: 100,
-                            },
-                            content: $i18n.getFrom('metadata', 'name'),
-                            autoHide: false,
-                            placement: 'bottom-start',
-                            classes: ['header-tooltips']
-                        }">
+                        class="level-item">
                     <router-link  
                             tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionMetadataPath(collection.id) : '' }"
@@ -101,17 +71,7 @@
                 <li 
                         v-if="collection && collection.current_user_can_edit_filters"
                         :class="activeRoute == 'CollectionFiltersPage' ? 'is-active':''" 
-                        class="level-item"
-                        v-tooltip="{
-                            delay: {
-                                show: 500,
-                                hide: 100,
-                            },
-                            content: $i18n.getFrom('filters', 'name'),
-                            autoHide: false,
-                            placement: 'bottom-start',
-                            classes: ['header-tooltips']
-                        }">
+                        class="level-item">
                     <router-link 
                             tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionFiltersPath(collection.id) : ''}" 
@@ -125,17 +85,7 @@
                 <li 
                         v-if="$userCaps.hasCapability('tnc_rep_read_logs')"
                         :class="activeRoute == 'CollectionActivitiesPage' ? 'is-active':''"
-                        class="level-item"
-                        v-tooltip="{
-                            delay: {
-                                show: 500,
-                                hide: 100,
-                            },
-                            content: $i18n.get('activities'),
-                            autoHide: false,
-                            placement: 'bottom-start',
-                            classes: ['header-tooltips']
-                        }">
+                        class="level-item">
                     <router-link 
                             tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionActivitiesPath(collection.id) : '' }"
@@ -149,17 +99,7 @@
                 <li 
                         v-if="collection && collection.current_user_can_edit_users"
                         :class="activeRoute == 'CollectionCapabilitiesPage' ? 'is-active':''"
-                        class="level-item"
-                        v-tooltip="{
-                            delay: {
-                                show: 500,
-                                hide: 100,
-                            },
-                            content: $i18n.get('capabilities'),
-                            autoHide: false,
-                            placement: 'bottom-start',
-                            classes: ['header-tooltips']
-                        }">
+                        class="level-item">
                     <router-link 
                             tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionCapabilitiesPath(collection.id) : '' }"
@@ -217,17 +157,6 @@ export default {
 <style lang="scss" scoped>
 
     @import "../../scss/_variables.scss";
-
-    .header-tooltips .tooltip-inner {
-        color: turquoise5;
-        text-shadow: none;
-        background-color: var(--tainacan-turquoise2);
-        font-weight: 400;
-        padding: 10px 14px;
-    }
-    .header-tooltips .tooltip-arrow {
-        border-color: var(--tainacan-turquoise2);
-    }
     
     // Tainacan Header
     #tainacan-subheader {

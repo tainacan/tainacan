@@ -754,7 +754,7 @@
                     if ((this.$refs['search-control'].classList.contains('floating-search-control')))
                         this.$refs['search-control'].classList.remove('floating-search-control');
                         
-                    this.$refs['items-page-container'].scrollTo({ top: this.$refs['search-control'].offsetTop - 42, behavior: 'smooth'});
+                    this.$refs['items-page-container'].scrollTo({ top: this.$refs['search-control'].offsetTop - (this.isRepositoryLevel ? 94 : 42), behavior: 'smooth'});
                 }
 
                 this.isLoadingItems = isLoadingItems;
