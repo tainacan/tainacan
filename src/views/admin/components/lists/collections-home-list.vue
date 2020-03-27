@@ -270,7 +270,6 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
     @import "../../scss/_collection-home-cards.scss";
 
     .new-collection-menu {

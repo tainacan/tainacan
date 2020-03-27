@@ -2,7 +2,7 @@
     <div class="date-filter-container">
          <b-dropdown
                 :mobile-modal="true"
-                @input="onChangeComparator($event)"
+                @input="($event) => { resetPage(); onChangeComparator($event) }"
                 aria-role="list"
                 trap-focus>
             <button
@@ -72,7 +72,7 @@
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('instruction_select_a_date')"
                 v-model="value"
-                @input="emit()"
+                @input="($event) => { resetPage(); emit($event) }"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"

@@ -20,6 +20,7 @@
                     class="b-checkbox checkbox is-small">
                 <input 
                         v-model="selected"
+                        @input="resetPage"
                         :value="option.value"
                         type="checkbox"> 
                 <span class="check" /> 
@@ -78,7 +79,6 @@
                 const isEqual = (newVal.length == oldVal.length) && newVal.every((element, index) => {
                     return element === oldVal[index]; 
                 });
-
                 if (!isEqual)
                     this.onSelect();
             },
@@ -257,7 +257,8 @@
 
                 this.$emit('sendValuesToTags', { label: onlyLabels, taxonomy: this.taxonomy, value: this.selected });
             },
-            onSelect(){
+            onSelect() {
+                
                 this.$emit('input', {
                     filter: 'checkbox',
                     taxonomy: this.taxonomy,
@@ -287,7 +288,7 @@
                             this.loadOptions();
                         } 
                     },
-                    width: 'calc(100% - 16.6666%)',
+                    width: 'calc(100% - (4 * var(--tainacan-one-column)))',
                     trapFocus: true
                 });
             },

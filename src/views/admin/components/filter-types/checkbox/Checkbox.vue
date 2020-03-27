@@ -14,6 +14,7 @@
                 <input 
                         v-model="selected"
                         :value="option.value"
+                        @input="resetPage()"
                         type="checkbox"> 
                     <span class="check" /> 
                     <span class="control-label">

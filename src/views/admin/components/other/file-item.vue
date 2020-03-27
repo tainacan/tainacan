@@ -119,8 +119,6 @@ export default {
 
 <style lang="scss">
 
-    @import "../../scss/_variables.scss";
-
     .file-item {
         display: inline-block;
 

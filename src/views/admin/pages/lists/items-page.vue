@@ -436,7 +436,8 @@
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
         <div 
                 id="items-list-area"
-                class="items-list-area">
+                class="items-list-area"
+                @mousemove="handleMouseMoveOverList">
 
             <!-- ADVANCED SEARCH -->
             <div
@@ -592,9 +593,11 @@
                 </section>
 
                 <!-- Pagination -->
-                <pagination
-                        :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
-                        v-if="totalItems > 0 && (advancedSearchResults || !openAdvancedSearch)"/>
+                <div ref="items-pagination">
+                    <pagination
+                            :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
+                            v-if="totalItems > 0 && (advancedSearchResults || !openAdvancedSearch)"/>
+                </div>
             </div>
         </div>
     </div>
@@ -1195,6 +1198,30 @@
                     }
                 });
             }, 500),
+            handleMouseMoveOverList: _.debounce( function($event) {
+
+                if (this.$refs['items-pagination']) {
+                    const bounding = this.$refs['items-pagination'].getBoundingClientRect();
+                    const isHidden = !(bounding.top >= 0 && bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight));
+                      
+                    if (isHidden && ($event.screenY + 150 >= window.screen.height)) {
+                        if (!(this.$refs['items-pagination'].classList.contains('floating-pagination'))) {
+                            this.$refs['items-pagination'].classList.add('floating-pagination');
+                            if (this.$refs['items-pagination'].children[0]) {
+                                this.$refs['items-pagination'].children[0].style.setProperty('width', 'calc(' + this.$refs['items-pagination'].clientWidth + 'px + 0.75em)');
+                                this.$refs['items-pagination'].children[0].style.setProperty('margin-left', '0px');
+                            }
+                        }
+                    } else {
+                        this.$refs['items-pagination'].classList.remove('floating-pagination')
+                        if (this.$refs['items-pagination'].children[0]) {
+                            this.$refs['items-pagination'].children[0].style.removeProperty('width');
+                            this.$refs['items-pagination'].children[0].style.removeProperty('margin');
+                        }
+                    }
+                }
+                
+            }, 1000),
             removeEventListeners() {
                 // Component
                 this.$off();
@@ -1217,7 +1244,7 @@
     @import '../../scss/_variables.scss';
 
     .tainacan-page-title {
-        padding: 25px $page-side-padding;
+        padding: var(--tainacan-container-padding) var(--tainacan-one-column);
         margin: 0;
     }
 
@@ -1253,7 +1280,7 @@
 
     .advanced-search-results-title {
         margin-bottom: 40px;
-        margin: 0 $page-side-padding 42px $page-side-padding;
+        margin: 0 var(--tainacan-one-column) 42px var(--tainacan-one-column);
 
         h1, h2 {
             font-size: 1.25em;
@@ -1280,17 +1307,17 @@
     .advanced-search-form-submit {
         display: flex;
         justify-content: flex-end;
-        padding-right: $page-side-padding;
-        padding-left: $page-side-padding;
+        padding-right: var(--tainacan-one-column);
+        padding-left: var(--tainacan-one-column);
         margin-bottom: 1em;
 
         p { margin-left: 0.75em; }
     }
 
     .tnc-advanced-search-close {
-        padding-top: 25px;
-        padding-right: $page-side-padding;
-        padding-left: $page-side-padding;
+        padding-top: var(--tainacan-container-padding);
+        padding-right: var(--tainacan-one-column);
+        padding-left: var(--tainacan-one-column);
 
         .column {
             padding: 0 0.3em 0.3em !important;
@@ -1319,7 +1346,7 @@
             padding: 0;
             
             #filters-items-list {
-                padding: $page-small-side-padding;
+                padding: var(--tainacan-container-padding);
             }
         }
         @media screen and (min-width: 769px) {
@@ -1371,13 +1398,10 @@
     }
         
     .search-control {
-        min-height: $subheader-height;
+        min-height: 42px;
         height: auto;
         position: relative;
-        padding-top: $page-small-top-padding;
-        padding-bottom: $page-small-top-padding;
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
+        padding: var(--tainacan-container-padding) var(--tainacan-one-column);
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
@@ -1515,8 +1539,8 @@
     .tabs {
         padding-top: 6px;
         margin-bottom: 20px;
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
+        padding-left: var(--tainacan-one-column);
+        padding-right: var(--tainacan-one-column);
 
         @media screen and (min-width: 1024px) {
             overflow: visible;
@@ -1531,7 +1555,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin: 6px $page-side-padding;
+        margin: 6px var(--tainacan-one-column);
         border-radius: 3px;
         padding: 4px 12px;
         color: var(--tainacan-yellow2);
@@ -1568,17 +1592,36 @@
     }
 
     .table-container {
-        padding-left: $page-side-padding;
-        padding-right: $page-side-padding;
+        padding-left: var(--tainacan-one-column);
+        padding-right: var(--tainacan-one-column);
         min-height: 50vh;
     }
 
     .pagination-area {
-        margin-left: $page-side-padding;
-        margin-right: $page-side-padding;
+        margin-left: var(--tainacan-one-column);
+        margin-right: var(--tainacan-one-column);
     }
 
+    .floating-pagination {
+        min-height: 42px;
 
+        .pagination-area {
+            opacity: 0.75;
+            background: var(--tainacan-background-color);
+            position: fixed;
+            z-index: 99999;
+            padding-left: calc(var(--tainacan-one-column) + 0.75em);
+            padding-right: calc(var(--tainacan-one-column) + 0.75em);
+            padding-bottom: 6px;
+            bottom: -12px;
+            animation: appear-from-bottom 0.2s;
+            transition: bottom 0.3s, opacity 0.3s, position 0.3s;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
 
 </style>
 

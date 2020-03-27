@@ -471,8 +471,6 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     .tainacan-modal-title {
         margin-bottom: 24px;
 

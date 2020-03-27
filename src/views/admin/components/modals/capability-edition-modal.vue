@@ -124,8 +124,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    @import "../../scss/_variables.scss";
-
+ 
     .capabilities-edit-form {
         min-height: 120px;
         vertical-align: top;

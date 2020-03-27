@@ -36,7 +36,7 @@
                     label-width="120px">
                 <div class="columns">
                     <div class="column is-5">
-
+                
                         <!-- Hook for extra Form options -->
                         <template
                                 v-if="formHooks != undefined &&
@@ -361,7 +361,6 @@
                                 class="form-hook-region"
                                 v-html="formHooks['item']['end-left'].join('')"/>
                         </template>
-
                     </div>
                     <div class="column is-7">
 
@@ -517,7 +516,7 @@
                                 <div v-if="item != undefined && item.id != undefined">
                                     <br>
                                     <button
-                                            style="margin-left: calc(4.666667% + 12px)"
+                                            style="margin-left: calc(var(--tainacan-one-column) + 12px)"
                                             type="button"
                                             class="button is-secondary"
                                             @click.prevent="attachmentMediaFrame.openFrame($event)"
@@ -815,7 +814,7 @@ export default {
             isUpdatingValues: false,
             entityName: 'item',
             activeTab: 0,
-            isLoadingAttachments: false,
+            isLoadingAttachments: false
         }
     },
     computed: {
@@ -1419,10 +1418,8 @@ export default {
 
 <style lang="scss" scoped>
 
-    @import '../../scss/_variables.scss';
-
     .page-container {
-        padding: 25px 0px;
+        padding: var(--tainacan-container-padding) 0px;
 
         &>.tainacan-form {
             margin-bottom: 110px;
@@ -1433,7 +1430,7 @@ export default {
         }
 
         .tainacan-page-title {
-            padding: 0 $page-side-padding;
+            padding: 0 var(--tainacan-one-column);
             margin-bottom: 32px;
             display: flex;
             flex-wrap: wrap;
@@ -1463,12 +1460,12 @@ export default {
                 position: relative;
                 top: -2px;
             }
-            a.back-link{
+            a.back-link {
                 font-weight: 500;
                 float: right;
                 margin-top: 5px;
             }
-            hr{
+            hr {
                 margin: 3px 0px 4px 0px;
                 height: 1px;
                 background-color: var(--tainacan-secondary);
@@ -1477,13 +1474,13 @@ export default {
         }
 
         .tainacan-form > .columns {
-            margin-left: $page-side-padding;
-            margin-right: $page-side-padding;
+            margin-left: var(--tainacan-one-column);
+            margin-right: var(--tainacan-one-column);
         }
 
         .column.is-5 {
-            padding-left: $page-side-padding;
-            padding-right: $page-side-padding;
+            padding-left: var(--tainacan-one-column);
+            padding-right: var(--tainacan-one-column);
 
             @media screen and (max-width: 769px) {
                 max-width: 100%;
@@ -1491,7 +1488,7 @@ export default {
         }
         .column.is-7 {
             padding-left: 0;
-            padding-right: $page-side-padding;
+            padding-right: var(--tainacan-one-column);
 
             .columns {
                 flex-wrap: wrap;
@@ -1507,7 +1504,7 @@ export default {
             }
 
             @media screen and (max-width: 769px) {
-                padding-left: $page-side-padding;
+                padding-left: var(--tainacan-one-column);
                 max-width: 100%;
             }
         }
@@ -1535,7 +1532,7 @@ export default {
 
     .section-box {
         background-color: var(--tainacan-background-color);
-        padding: 0 $page-side-padding 0 0;
+        padding: 0 var(--tainacan-one-column) 0 0;
         margin-top: 14px;
         margin-bottom: 32px;
 
@@ -1641,7 +1638,7 @@ export default {
     }
 
     .footer {
-        padding: 18px $page-side-padding;
+        padding: 18px var(--tainacan-one-column);
         position: absolute;
         bottom: 0;
         z-index: 999999;

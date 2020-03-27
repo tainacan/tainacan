@@ -44,7 +44,7 @@
         .actions-area {
             position: relative;
             float: right;
-            top: -25px;
+            top: calc(-1 * var(--tainacan-container-padding));
             padding-right: 12px;
             //width: 80px;
             display: flex;
@@ -79,7 +79,7 @@
         }
         .tainacan-record-thumbnail {
             float: right;
-            margin: 0 0 25px 25px;
+            margin: 0 0 var(--tainacan-container-padding) var(--tainacan-container-padding);
         }
         img {
             width: 120px;
@@ -126,7 +126,7 @@
             transition: background-color 0.2s ease;
 
             .list-metadata {
-                padding: 25px;
+                padding: var(--tainacan-container-padding);
                 flex: 1;
                 font-size: 1em;
                 color: var(--tainacan-info-color);

@@ -1,7 +1,7 @@
 // Tainacan modals
 .modal .animation-content {
     background: none;
-    width: 91.6666667%;
+    width: calc(100% - (2 * var(--tainacan-one-column)));
     width: 91.6666667vw;
     max-height: 86%;
     max-height: 86vh;
@@ -59,14 +59,14 @@
     font-family: var(--tainacan-font-family, inherit);
     border-radius: 0px;
     background-color: var(--tainacan-background-color);
-    padding: 40px $page-side-padding;
+    padding: 40px var(--tainacan-one-column);
     padding: 40px 4.166666667vw;
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;
 
     @media only screen and (max-width: 768px) {
-        padding: 40px 8.333333%;
+        padding: 40px calc(2 * var(--tainacan-one-column));
         padding: 40px 8.333333vw;
     }
 
@@ -76,6 +76,7 @@
 
     nav {
         border: none !important;
+        margin-bottom: 0 !important;
     }
     
     figure {

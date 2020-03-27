@@ -186,7 +186,7 @@
                         objectType: this.$i18n.get('items'),
                         collectionID: this.collectionId
                     },
-                    width: 'calc(100% - 8.333333333%)',
+                    width: 'calc(100% - (2 * var(--tainacan-one-column)))',
                     trapFocus: true
                 }); 
 

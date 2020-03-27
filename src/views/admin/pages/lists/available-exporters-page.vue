@@ -58,8 +58,6 @@
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     .exporter-types-container {
         display: flex;
         flex-wrap: wrap;

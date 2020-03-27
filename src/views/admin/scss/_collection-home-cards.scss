@@ -11,7 +11,7 @@
     animation-duration: 0.5s;
 
     &>div {
-        width: calc(100% + 25px) !important;
+        width: calc(100% + var(--tainacan-container-padding)) !important;
 
         &>div>.tainacan-card:nth-child(3),
         &>div>.tainacan-card:nth-child(4),

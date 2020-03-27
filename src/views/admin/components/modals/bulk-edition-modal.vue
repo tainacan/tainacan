@@ -33,23 +33,29 @@
                                 v-for="(metadatum, index) in metadata">
                             <option
                                     :key="index"
-                                    v-if="metadatum.id"
+                                    v-if="metadatum.id && metadatum.metadata_type_object.component !== 'tainacan-compound' && metadatum.parent <= 0"
                                     :value="metadatum.id">
                                 {{ metadatum.name }}
                             </option>
-                            <option
+                            <optgroup 
+                                    v-if="metadatum.id && metadatum.metadata_type_object.component === 'tainacan-compound'"
                                     :key="index"
-                                    v-if="index === Object.keys(metadata).length-1"
-                                    value="status">
-                                {{ $i18n.get('label_status') }}
-                            </option>
-                            <option
-                                    :key="index"
-                                    v-if="index === Object.keys(metadata).length-1"
-                                    value="comments">
-                                {{ $i18n.get('label_allow_comments') }}
-                            </option>
+                                    :label="metadatum.name">
+                                <option 
+                                        v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects"
+                                        :key="childIndex"
+                                        v-if="childMetadatum.id"
+                                        :value="childMetadatum.id">
+                                    {{ childMetadatum.name }}
+                                </option>
+                            </optgroup>
                         </template>
+                        <option value="status">
+                            {{ $i18n.get('label_status') }}
+                        </option>
+                        <option value="comments">
+                            {{ $i18n.get('label_allow_comments') }}
+                        </option>
                     </b-select>
 
                     <b-select
@@ -83,15 +89,15 @@
                                 bulkEditionProcedures[criterion].action == editionActionsForMultiple.replace">
 
                         <component
+                                :is="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component"
                                 :forced-component-type="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
                                     .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                :item-metadatum="{ metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID) }"
                                 :allow-new="false"
                                 :allow-select-to-create="false"
                                 :maxtags="1"
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
-                                :is="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component"
-                                :item-metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID)}"
                                 class="tainacan-bulk-edition-field"
                                 @input="addToBulkEditionProcedures($event, 'oldValue', criterion)"
                         />
@@ -103,17 +109,17 @@
                         </div>
 
                         <component
+                                :is="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component"
                                 :forced-component-type="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
                                     .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                :item-metadatum="{ metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID) }"
                                 :allow-new="false"
                                 :allow-select-to-create="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
                                     .metadata_type_options.allow_new_terms === 'yes'"
                                 :maxtags="1"
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
-                                :disabled="bulkEditionProcedures[criterion].isDone"
-                                :is="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component"
-                                :item-metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID)}"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
+                                :disabled="bulkEditionProcedures[criterion].isDone"  
                                 @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
                         />
                     </template>
@@ -121,7 +127,7 @@
                     <!-- Not replace -->
                     <template
                             v-else-if="bulkEditionProcedures[criterion] &&
-                             bulkEditionProcedures[criterion].metadatumID == 'status'">
+                                bulkEditionProcedures[criterion].metadatumID == 'status'">
                         <b-select
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
@@ -139,7 +145,7 @@
 
                     <template
                             v-else-if="bulkEditionProcedures[criterion] &&
-                             bulkEditionProcedures[criterion].metadatumID == 'comments'">
+                                bulkEditionProcedures[criterion].metadatumID == 'comments'">
                         <b-select
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
@@ -157,28 +163,28 @@
 
                     <template
                             v-else-if="bulkEditionProcedures[criterion] &&
-                             bulkEditionProcedures[criterion].metadatumID &&
-                             bulkEditionProcedures[criterion].action &&
-                             bulkEditionProcedures[criterion].action != editionActionsForMultiple.clear">
+                                bulkEditionProcedures[criterion].metadatumID &&
+                                bulkEditionProcedures[criterion].action &&
+                                bulkEditionProcedures[criterion].action != editionActionsForMultiple.clear">
                         <component
+                                :is="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component"
                                 :forced-component-type="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
-                                 .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                    .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                :item-metadatum="{ metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID) }"
                                 :allow-new="false"
                                 :allow-select-to-create="getMetadataByID(bulkEditionProcedures[criterion].metadatumID)
-                                 .metadata_type_options.allow_new_terms === 'yes'"
+                                    .metadata_type_options.allow_new_terms === 'yes'"
                                 :maxtags="1"
-                                :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
-                                :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting"
-                                :is="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component"
-                                :item-metadatum="{metadatum: getMetadataByID(bulkEditionProcedures[criterion].metadatumID)}"
+                                :class="{ 'is-field-history': bulkEditionProcedures[criterion].isDone }"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
+                                :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting"
                                 @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
                         />
                     </template>
 
                     <div
                             :style="{
-                              marginRight: !bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting ? '-7.4px': 0
+                                marginRight: !bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting ? '-7.4px': 0
                             }"
                             class="field buttons-r-bulk">
 
@@ -235,10 +241,7 @@
                         </button>
 
                         <div v-if="bulkEditionProcedures[criterion].isExecuting">
-                            <b-icon
-                                    class="mdi-loader"
-                                    type="is-success"
-                                    icon="loading"/>
+                            <button class="button is-white is-loading" />
                         </div>
                     </div>
                 </div>
@@ -258,7 +261,7 @@
                     <button
                             @click="$eventBusSearch.loadItems(); $parent.close()"
                             :disabled="(Object.keys(bulkEditionProcedures).length &&
-                             bulkEditionProcedures[editionCriteria[editionCriteria.length-1]].isExecuting) || false"
+                                bulkEditionProcedures[editionCriteria[editionCriteria.length-1]].isExecuting) || false"
                             type="button"
                             class="button is-outlined">
                         {{ $i18n.get('close') }}
@@ -329,7 +332,7 @@
             }
         },
         created(){
-            if (this.collectionID){
+            if (this.collectionID) {
                 this.metadataIsLoading = true;
 
                 // Cancels previous Request
@@ -340,7 +343,8 @@
                     collectionId: this.collectionID,
                     isRepositoryLevel: false,
                     isContextEdit: true,
-                    includeDisabled: false
+                    includeDisabled: false,
+                    parent: 'any'
                 }).then((resp) => {
                         resp.request
                             .then(() => {
@@ -522,7 +526,7 @@
                     return element == criterion;
                 });
 
-                if(this.editionCriteria[criterionIndex]){
+                if (this.editionCriteria[criterionIndex]) {
                     this.editionCriteria.splice(criterionIndex, 1);
                     delete this.bulkEditionProcedures[criterion];
                     this.dones.splice(criterionIndex, 1)
@@ -539,14 +543,14 @@
 
                 return validEditionActions;
             },
-            getMetadataByID(id){
+            getMetadataByID(id) {
                 let found = this.metadata.find((element) => {
                     return element.id == id;
                 });
 
                 return found ? found : {};
             },
-            addToBulkEditionProcedures(value, key, criterion){
+            addToBulkEditionProcedures(value, key, criterion) {
                 if (Array.isArray(value))
                     value = value[0];
 
@@ -557,8 +561,6 @@
 </script>
 
 <style lang="scss">
-
-    @import '../../scss/_variables.scss';
 
     @media screen and (max-width: 768px) {
         .tainacan-bulk-edition-inline-fields {
@@ -577,10 +579,20 @@
 
     .this-tainacan-modal-content {
         min-height: 300px;
-    }
-
-    .this-tainacan-modal-content .form-submit {
-        padding: 42px 0 0.4em 0 !important;
+        
+        .button.is-white.is-loading {
+            cursor: inherit;
+            color: var(--tainacan-gray4) !important;
+        }
+        .is-pulled-right .is-success {
+            background-color: transparent !important;
+        }
+        .add-link {
+            font-size: 0.875em;
+        }
+        .form-submit {
+            padding: 42px 0 0.4em 0 !important;
+        }
     }
 
     .no-overflow-modal-card-body {
@@ -723,21 +735,4 @@
     .tainacan-add-edition-criterion-button-disabled {
         cursor: not-allowed !important;
     }
-
-    .mdi-loader {
-        -webkit-animation: spin 2s linear infinite; /* Safari */
-        animation: spin 2s linear infinite;
-    }
-
-    /* Safari */
-    @-webkit-keyframes spin {
-        0% { -webkit-transform: rotate(0deg); }
-        100% { -webkit-transform: rotate(360deg); }
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
 </style>

@@ -359,23 +359,23 @@
       .wp-block-tainacan-search-bar.is-style-stylish #tainacan-search-bar-block button:hover {
         background: transparent !important; }
   .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container:not(.is-aligned-right):not(.is-aligned-left) .tainacan-search-container {
-    width: calc(100% - 4.1667% - 53px);
+    width: calc(100% - var(--tainacan-one-column) - 53px);
     width: calc(100% - 4.1667vw - 53px);
     bottom: calc(-50% + 38px);
     position: absolute; }
   .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container:not(.is-aligned-right):not(.is-aligned-left) .search-bar-collection-header-title {
     margin-bottom: 26px; }
   .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container.is-aligned-right .tainacan-search-container {
-    width: calc(100% - 4.1667% - 26px);
+    width: calc(100% - var(--tainacan-one-column) - 26px);
     width: calc(100% - 4.1667vw - 26px);
     top: calc(-50% + 26px);
-    right: calc(4.1667% + 26px);
+    right: calc(var(--tainacan-one-column) + 26px);
     right: calc(4.1667vw + 26px);
     position: absolute; }
   .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container.is-aligned-left .tainacan-search-container {
     width: calc(100% - 1em - 26px);
     top: calc(-50% + 26px);
-    left: calc(4.1667% + 26px);
+    left: calc(var(--tainacan-one-column) + 26px);
     left: calc(4.1667vw + 26px);
     position: absolute; }
   .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block input#tainacan-search-bar-block_input {
@@ -389,7 +389,7 @@
       border-width: 3px !important; }
   @media only screen and (max-width: 768px) {
     .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container .tainacan-search-container {
-      width: calc(100% - 4.1667% - 53px) !important;
+      width: calc(100% - var(--tainacan-one-column) - 53px) !important;
       width: calc(100% - 4.1667vw - 53px) !important;
       bottom: calc(-50% + 38px) !important;
       position: absolute !important; }
@@ -410,7 +410,7 @@
     flex-wrap: wrap;
     align-items: center;
     flex-grow: 2;
-    padding: 0.5em 4.1667%;
+    padding: 0.5em var(--tainacan-one-column);
     padding: 0.5em 4.1667vw;
     text-align: center;
     text-decoration: none !important; }

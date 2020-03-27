@@ -520,8 +520,6 @@
 </script>
 <style lang="scss" scoped>
 
-    @import '../../scss/_variables.scss';
-
     .tab-content {
         overflow: visible !important;
     }
@@ -536,7 +534,7 @@
         margin-bottom: 76px;
     }
     .tainacan-form .column {
-        padding: 1em $page-side-padding;
+        padding: 1em var(--tainacan-one-column);
     }
     .tainacan-form .column:last-of-type {
         padding-left: 0;

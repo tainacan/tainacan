@@ -93,13 +93,11 @@
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     .exporter-types-container {
 
         .exporter-type {
             border-bottom: 1px solid var(--tainacan-gray2);
-            padding: 15px 8.3333333%;
+            padding: 15px calc(2 * var(--tainacan-one-column));
             cursor: pointer;
             transition: background-color 0.3s ease;
 

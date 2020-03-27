@@ -73,7 +73,7 @@
 		}
 
 		#filters-items-list {
-			padding: $page-small-side-padding;
+			padding: var(--tainacan-container-padding);
 		}
 	}
 	@media screen and (min-width: 769px) {

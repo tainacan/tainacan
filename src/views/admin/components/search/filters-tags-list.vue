@@ -45,6 +45,7 @@
                 'getFilterTags'
             ]),
             removeMetaQuery({ filterId, value, singleLabel, label, taxonomy, metadatumId }) {
+                this.$eventBusSearch.resetPageOnStore();
                 this.$eventBusSearch.removeMetaFromFilterTag({ 
                     filterId: filterId,
                     singleLabel: singleLabel,
@@ -55,7 +56,7 @@
                 });
             },
             clearAllFilters() {
-                // this.$eventBusSearch.clearAllFilters();
+                this.$eventBusSearch.resetPageOnStore();
                 for (let tag of this.filterTags) {
                     this.removeMetaQuery(tag);
                 }
@@ -66,11 +67,9 @@
 
 <style lang="scss" scoped>
 
-    @import "../../scss/_variables.scss";
-
     .filter-tags-list {
         width: 100%;
-        padding: 1em $page-side-padding 1em $page-side-padding;
+        padding: 1em var(--tainacan-one-column) 1em var(--tainacan-one-column);
         font-size: 0.75em;
 
         @media only screen and (max-width: 768px) { 

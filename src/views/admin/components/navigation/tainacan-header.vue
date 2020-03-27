@@ -227,7 +227,7 @@
             }
             .logo-area {
                 height: $header-height;
-                width: $side-menu-width;
+                width: 160px;
                 cursor: pointer;
 
                 &:focus {

@@ -134,23 +134,16 @@ $colors: map-merge($colors, $addColors);
 $size-small: 0.875em; // 0.75em on Bulma.
 $dropdown-mobile-breakpoint: $tablet;
 
-// Tainacan Header and side menus
+// Tainacan Header, Filters and Page 
 $header-height: 52px;
 $subheader-height: 42px;
-$side-menu-width: 160px;
 $filter-menu-width: 16.666666667%;
 $filter-menu-width-theme: 20%;
 $page-height: calc(100vh - 94px);
 
 // Overall Pages padding:
-$page-side-padding: 4.166666667%;//82px;
-$table-side-padding: 4.166666667%;
-$page-top-padding: 25px;
-$page-small-side-padding: 25px;
-$page-small-top-padding: 25px;
-
-$page-mobile-side-padding: 1em;
-$page-mobile-top-padding: 1em;
+$one-column: 4.166666667%;
+$container-padding: 25px;
 
 // Links
 $link: $secondary;
@@ -295,6 +288,14 @@ $modal-z: 9999999;
     to { 
         top: 48px;
         opacity: 1; 
+    }
+}
+@keyframes appear-from-bottom {
+    from { 
+        bottom: -48px;
+    }
+    to { 
+        bottom: -12px;
     }
 }
 @keyframes expand {
