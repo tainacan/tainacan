@@ -111,7 +111,6 @@
                     <help-button
                             :title="$i18n.getHelperTitle('metadata', 'display')"
                             :message="$i18n.getHelperMessage('metadata', 'display')"/>
-
                 </label>
 
                 <b-field>

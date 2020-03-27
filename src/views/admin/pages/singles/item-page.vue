@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <b-loading
                 :active.sync="isLoading"
                 :can-cancel="false"/>
@@ -266,7 +265,7 @@
                     </b-tabs>
                 </div>
             </div>
-            <div class="footer">
+            <footer class="footer">
                 <div class="form-submission-footer">
                     <router-link
                             v-if="item.current_user_can_edit && $route.query.recent == true"
@@ -307,7 +306,7 @@
                         <span>{{ $i18n.get('label_item_page_on_website') }}</span>
                     </a>
                 </div>
-            </div>
+            </footer>
         </div>
     </div>
 </template>

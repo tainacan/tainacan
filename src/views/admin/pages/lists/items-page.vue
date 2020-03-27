@@ -436,7 +436,8 @@
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
         <div 
                 id="items-list-area"
-                class="items-list-area">
+                class="items-list-area"
+                @mousemove="handleMouseMoveOverList">
 
             <!-- ADVANCED SEARCH -->
             <div
@@ -592,9 +593,11 @@
                 </section>
 
                 <!-- Pagination -->
-                <pagination
-                        :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
-                        v-if="totalItems > 0 && (advancedSearchResults || !openAdvancedSearch)"/>
+                <div ref="items-pagination">
+                    <pagination
+                            :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
+                            v-if="totalItems > 0 && (advancedSearchResults || !openAdvancedSearch)"/>
+                </div>
             </div>
         </div>
     </div>
@@ -1195,6 +1198,30 @@
                     }
                 });
             }, 500),
+            handleMouseMoveOverList: _.debounce( function($event) {
+
+                if (this.$refs['items-pagination']) {
+                    const bounding = this.$refs['items-pagination'].getBoundingClientRect();
+                    const isHidden = !(bounding.top >= 0 && bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight));
+                      
+                    if (isHidden && ($event.screenY + 150 >= window.screen.height)) {
+                        if (!(this.$refs['items-pagination'].classList.contains('floating-pagination'))) {
+                            this.$refs['items-pagination'].classList.add('floating-pagination');
+                            if (this.$refs['items-pagination'].children[0]) {
+                                this.$refs['items-pagination'].children[0].style.setProperty('width', 'calc(' + this.$refs['items-pagination'].clientWidth + 'px + 0.75em)');
+                                this.$refs['items-pagination'].children[0].style.setProperty('margin-left', '0px');
+                            }
+                        }
+                    } else {
+                        this.$refs['items-pagination'].classList.remove('floating-pagination')
+                        if (this.$refs['items-pagination'].children[0]) {
+                            this.$refs['items-pagination'].children[0].style.removeProperty('width');
+                            this.$refs['items-pagination'].children[0].style.removeProperty('margin');
+                        }
+                    }
+                }
+                
+            }, 1000),
             removeEventListeners() {
                 // Component
                 this.$off();
@@ -1575,7 +1602,26 @@
         margin-right: var(--tainacan-one-column);
     }
 
+    .floating-pagination {
+        min-height: 42px;
 
+        .pagination-area {
+            opacity: 0.75;
+            background: var(--tainacan-background-color);
+            position: fixed;
+            z-index: 99999;
+            padding-left: calc(var(--tainacan-one-column) + 0.75em);
+            padding-right: calc(var(--tainacan-one-column) + 0.75em);
+            padding-bottom: 6px;
+            bottom: -12px;
+            animation: appear-from-bottom 0.2s;
+            transition: bottom 0.3s, opacity 0.3s, position 0.3s;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
 
 </style>
 
