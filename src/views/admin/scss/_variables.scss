@@ -290,6 +290,14 @@ $modal-z: 9999999;
         opacity: 1; 
     }
 }
+@keyframes appear-from-bottom {
+    from { 
+        bottom: -48px;
+    }
+    to { 
+        bottom: -12px;
+    }
+}
 @keyframes expand {
     from { 
         max-height: 0; 
