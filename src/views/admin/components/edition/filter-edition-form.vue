@@ -47,6 +47,7 @@
                 <b-input
                         type="textarea" 
                         name="description" 
+                        :rows="3"
                         v-model="editForm.description" 
                         @focus="clearErrors('description')" />
             </b-field>
@@ -68,6 +69,9 @@
                             name="status" 
                             v-model="editForm.status"
                             native-value="publish">
+                        <span class="icon has-text-gray3">
+                            <i class="tainacan-icon tainacan-icon-public"/>
+                        </span>
                         {{ $i18n.get('publish_visibility') }}
                     </b-radio>
                     <br>
@@ -77,6 +81,9 @@
                             name="status" 
                             v-model="editForm.status"
                             native-value="private">
+                        <span class="icon has-text-gray3">
+                            <i class="tainacan-icon tainacan-icon-private"/>
+                        </span>
                         {{ $i18n.get('private_visibility') }}
                     </b-radio>
                 </div>
@@ -325,13 +332,23 @@ export default {
             column-count: 2;
             column-gap: 4em;
             column-rule: none;
-            padding-bottom: 1.5em;
+            padding-bottom: 0.5em;
 
             &>.field, &>section {
                 -webkit-column-break-inside: avoid;
                 page-break-inside: avoid;
                 break-inside: avoid;
             }
+            .field > .field:not(:last-child) {
+                margin-bottom: 0em;
+            }
+            .help-wrapper {
+                font-size: 1.25em;
+            }
+        }
+
+        .form-submit {
+            margin-bottom: 0.75em;
         }
     }
 

@@ -48,6 +48,7 @@
                 <b-input
                         type="textarea"
                         name="description"
+                        rows="3"
                         v-model="editForm.description"
                         @focus="clearErrors('description')"/>
             </b-field>
@@ -85,6 +86,9 @@
                             name="status"
                             v-model="editForm.status"
                             native-value="publish">
+                        <span class="icon has-text-gray3">
+                            <i class="tainacan-icon tainacan-icon-public"/>
+                        </span>
                         {{ $i18n.get('publish_visibility') }}
                     </b-radio>
                 </b-field>
@@ -95,6 +99,9 @@
                             name="status"
                             v-model="editForm.status"
                             native-value="private">
+                        <span class="icon has-text-gray3">
+                            <i class="tainacan-icon tainacan-icon-private"/>
+                        </span>
                         {{ $i18n.get('private_visibility') }}
                     </b-radio>
                 </b-field>
@@ -385,31 +392,43 @@
 
 <style lang="scss" scoped>
 
-    form#metadatumEditForm.inCollapse {
-        padding: 1.5em var(--tainacan-one-column) 0.5em var(--tainacan-one-column);
-        border-top: 1px solid var(--tainacan-gray2);
-        border-bottom: 1px solid var(--tainacan-gray2);
-        margin-top: 1.0em;
-        font-size: 1.1em;
-    }
-    form#metadatumEditForm .options-columns {
-        -moz-column-count: 2;
-        -moz-column-gap: 0;
-        -moz-column-rule: none;
-        -webkit-column-count: 2;
-        -webkit-column-gap: 0;
-        -webkit-column-rule: none;
-        column-count: 2;
-        column-gap: 4em;
-        column-rule: none;
-        padding-bottom: 1.5em;
+    form#metadatumEditForm {
 
-        &>.field, &>section {
-            -webkit-column-break-inside: avoid;
-            page-break-inside: avoid;
-            break-inside: avoid;
+        &.inCollapse {
+            padding: 1.5em var(--tainacan-one-column) 0.5em var(--tainacan-one-column);
+            border-top: 1px solid var(--tainacan-gray2);
+            border-bottom: 1px solid var(--tainacan-gray2);
+            margin-top: 1.0em;
+            font-size: 1.1em;
         }
-        
+        .options-columns {
+            -moz-column-count: 2;
+            -moz-column-gap: 0;
+            -moz-column-rule: none;
+            -webkit-column-count: 2;
+            -webkit-column-gap: 0;
+            -webkit-column-rule: none;
+            column-count: 2;
+            column-gap: 4em;
+            column-rule: none;
+            padding-bottom: 0.25em;
+
+            &>.field, &>section {
+                -webkit-column-break-inside: avoid;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            .field > .field:not(:last-child) {
+                margin-bottom: 0em;
+            }
+            .help-wrapper {
+                font-size: 1.25em;
+            }
+        }
+
+        .form-submit {
+            margin-bottom: 0.75em;
+        }
     }
 
 </style>
