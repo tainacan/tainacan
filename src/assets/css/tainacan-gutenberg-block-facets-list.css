@@ -394,6 +394,7 @@
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item a {
         color: #454647;
+        border: none;
         font-weight: bold;
         line-height: normal; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item img,

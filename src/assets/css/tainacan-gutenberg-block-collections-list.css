@@ -239,6 +239,7 @@
       .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item a,
       .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item a {
         color: #454647;
+        border: none;
         font-weight: bold;
         line-height: normal; }
       .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item img,

@@ -224,6 +224,7 @@
       .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item a,
       .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item a {
         color: #454647;
+        border: none;
         font-weight: bold;
         line-height: normal; }
       .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item img,

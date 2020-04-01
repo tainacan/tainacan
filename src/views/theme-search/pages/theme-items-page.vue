@@ -1294,9 +1294,9 @@
                 cursor: default;
             }
 
-            .button,
-            .button:hover,
-            .button:focus {
+            .button:not(.is-success),
+            .button:hover:not(.is-success),
+            .button:focus:not(.is-success) {
                 display: flex;
                 align-items: center;
                 color: var(--tainacan-input-color) !important;

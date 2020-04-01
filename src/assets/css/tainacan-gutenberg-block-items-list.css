@@ -239,6 +239,7 @@
       .wp-block-tainacan-items-list ul.items-list.items-layout-grid li.item-list-item a,
       .wp-block-tainacan-items-list ul.items-list-edit.items-layout-grid li.item-list-item a {
         color: #454647;
+        border: none;
         font-weight: bold;
         line-height: normal; }
         .wp-block-tainacan-items-list ul.items-list.items-layout-grid li.item-list-item a span,
