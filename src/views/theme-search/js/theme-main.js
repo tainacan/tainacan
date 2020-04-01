@@ -35,159 +35,167 @@ import routerTheme from './theme-router.js';
 import eventBusSearch from '../../admin/js/event-bus-search';
 import { I18NPlugin, UserPrefsPlugin, ConsolePlugin } from '../../admin/js/utilities';
 
-/* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
-if (typeof window.tainacan_extra_plugins != "undefined") {
-    for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins)) {
-        Vue.component(extraVuePluginName, extraVuePluginObject);
-    }
-}
-
-// Configure and Register Plugins
-Vue.use(Buefy, {
-    defaultTooltipAnimated: true
-});
-Vue.use(VTooltip);
-Vue.use(VueMasonry);
-Vue.use(I18NPlugin);
-Vue.use(UserPrefsPlugin);
-Vue.use(ConsolePlugin, {visual: false});
-
-/* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
-if (typeof window.tainacan_extra_components != "undefined") {
-    for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
-        Vue.component(extraVueComponentName, extraVueComponentObject);
-    }
-}
-
-Vue.component('tainacan-filter-item', TaincanFiltersList);
-
-/* Filters */
-Vue.component('tainacan-filter-numeric', FilterNumeric);
-Vue.component('tainacan-filter-date', FilterDate);
-Vue.component('tainacan-filter-selectbox', FilterSelectbox);
-Vue.component('tainacan-filter-autocomplete', FilterAutocomplete);
-Vue.component('tainacan-filter-checkbox', FilterCheckbox);
-Vue.component('tainacan-filter-taginput', FilterTaginput);
-Vue.component('tainacan-filter-taxonomy-checkbox', FilterTaxonomyCheckbox);
-Vue.component('tainacan-filter-taxonomy-taginput', FilterTaxonomyTaginput);
-Vue.component('tainacan-filter-date-interval', FilterDateInterval);
-Vue.component('tainacan-filter-numeric-interval', FilterNumericInterval);
-Vue.component('tainacan-filter-numeric-list-interval', FilterNumericListInterval);
-
-/* Main page component */
-Vue.component('theme-items-page', ThemeItemsPage);
-Vue.component('theme-search', ThemeSearch);
-
-// Oficial view modes
-Vue.component('view-mode-table', ViewModeTable);
-Vue.component('view-mode-cards', ViewModeCards);
-Vue.component('view-mode-records', ViewModeRecords);
-Vue.component('view-mode-masonry', ViewModeMasonry);
-Vue.component('view-mode-slideshow', ViewModeSlideshow);
-
-Vue.use(eventBusSearch, { store: store, router: routerTheme});
-
 document.addEventListener("DOMContentLoaded", () => {
-    new Vue({
-        el: '#tainacan-items-page',
-        store,
-        router: routerTheme,
-        data: {
-            termId: '',
-            taxonomy: '',
-            collectionId: '',
-            defaultViewMode: '',
-            enabledViewModes: {},
-            hideFilters: false,
-            hideHideFiltersButton: false,
-            hideSearch: false,
-            hideAdvancedSearch: false,
-            hideSortByButton: false,
-            hideItemsPerPageButton: false,
-            hideGoToPageButton: false,
-            showFiltersButtonInsideSearchControl: false,
-            startWithFiltersHidden: false,
-            filtersAsModal: false,
-            showInlineViewModeOptions: false,
-            showFullscreenWithViewModes: false
-        },
-        beforeMount () {
-            // Collection or Term source settings
-            if (this.$el.attributes['collection-id'] != undefined)
-                this.collectionId = this.$el.attributes['collection-id'].value;
-            if (this.$el.attributes['term-id'] != undefined)
-                this.termId = this.$el.attributes['term-id'].value;
-            if (this.$el.attributes['taxonomy'] != undefined)
-                this.taxonomy = this.$el.attributes['taxonomy'].value;
 
-            // View Mode settings
-            if (this.$el.attributes['default-view-mode'] != undefined)
-                this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
-            else
-                this.defaultViewMode = 'cards';
+    // Mount only if the div exists
+    if (document.getElementById('tainacan-items-page')) {
 
-            if (this.$el.attributes['enabled-view-modes'] != undefined)
-                this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
+        // Display Icons only once everything is loaded
+        function listen(evnt, elem, func) {
+            if (elem.addEventListener)  // W3C DOM
+                elem.addEventListener(evnt,func,false);
+            else if (elem.attachEvent) { // IE DOM
+                var r = elem.attachEvent("on"+evnt, func);
+                return r;
+            } else if (document.head) {
+                var iconHideStyle = document.createElement("style");
+                iconHideStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }'; 
+                document.head.appendChild(iconHideStyle);
+            } else {
+                var iconHideStyle = document.createElement("style");
+                iconHideStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }'; 
+                document.getElementsByTagName("head")[0].appendChild(iconHideStyle);
+            }
+        }
+
+        /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
+        if (typeof window.tainacan_extra_plugins != "undefined") {
+            for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins)) {
+                Vue.component(extraVuePluginName, extraVuePluginObject);
+            }
+        }
+
+        // Configure and Register Plugins
+        Vue.use(Buefy, {
+            defaultTooltipAnimated: true
+        });
+        Vue.use(VTooltip);
+        Vue.use(VueMasonry);
+        Vue.use(I18NPlugin);
+        Vue.use(UserPrefsPlugin);
+        Vue.use(ConsolePlugin, {visual: false});
+
+        /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
+        if (typeof window.tainacan_extra_components != "undefined") {
+            for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
+                Vue.component(extraVueComponentName, extraVueComponentObject);
+            }
+        }
+
+        Vue.component('tainacan-filter-item', TaincanFiltersList);
+
+        /* Filters */
+        Vue.component('tainacan-filter-numeric', FilterNumeric);
+        Vue.component('tainacan-filter-date', FilterDate);
+        Vue.component('tainacan-filter-selectbox', FilterSelectbox);
+        Vue.component('tainacan-filter-autocomplete', FilterAutocomplete);
+        Vue.component('tainacan-filter-checkbox', FilterCheckbox);
+        Vue.component('tainacan-filter-taginput', FilterTaginput);
+        Vue.component('tainacan-filter-taxonomy-checkbox', FilterTaxonomyCheckbox);
+        Vue.component('tainacan-filter-taxonomy-taginput', FilterTaxonomyTaginput);
+        Vue.component('tainacan-filter-date-interval', FilterDateInterval);
+        Vue.component('tainacan-filter-numeric-interval', FilterNumericInterval);
+        Vue.component('tainacan-filter-numeric-list-interval', FilterNumericListInterval);
+
+        /* Main page component */
+        Vue.component('theme-items-page', ThemeItemsPage);
+        Vue.component('theme-search', ThemeSearch);
+
+        // Oficial view modes
+        Vue.component('view-mode-table', ViewModeTable);
+        Vue.component('view-mode-cards', ViewModeCards);
+        Vue.component('view-mode-records', ViewModeRecords);
+        Vue.component('view-mode-masonry', ViewModeMasonry);
+        Vue.component('view-mode-slideshow', ViewModeSlideshow);
+
+        Vue.use(eventBusSearch, { store: store, router: routerTheme});
             
-            // Options related to hidding elements
-            if (this.$el.attributes['hide-filters'] != undefined)
-                this.hideFilters = this.$el.attributes['hide-filters'].value == 'true' ? true : false;
-            if (this.$el.attributes['hide-hide-filters-button'] != undefined)
-                this.hideHideFiltersButton = this.$el.attributes['hide-hide-filters-button'].value == 'true' ? true : false;
-            if (this.$el.attributes['hide-search'] != undefined)
-                this.hideSearch = this.$el.attributes['hide-search'].value == 'true' ? true : false;
-            if (this.$el.attributes['hide-advanced-search'] != undefined)
-                this.hideAdvancedSearch = this.$el.attributes['hide-advanced-search'].value == 'true' ? true : false;
-            if (this.$el.attributes['hide-sort-by-button'] != undefined)
-                this.hideSortByButton = this.$el.attributes['hide-sort-by-button'].value == 'true' ? true : false;
-            if (this.$el.attributes['hide-exposers-button'] != undefined)
-                this.hideExposersButton = this.$el.attributes['hide-exposers-button'].value == 'true' ? true : false
-            if (this.$el.attributes['hide-items-per-page-button'] != undefined)
-                this.hideItemsPerPageButton = this.$el.attributes['hide-items-per-page-button'].value == 'true' ? true : false;
-            if (this.$el.attributes['hide-go-to-page-button'] != undefined)
-                this.hideGoToPageButton = this.$el.attributes['hide-go-to-page-button'].value == 'true' ? true : false;
+        const VueItemsList = new Vue({
+            store,
+            router: routerTheme,
+            data: {
+                termId: '',
+                taxonomy: '',
+                collectionId: '',
+                defaultViewMode: '',
+                enabledViewModes: {},
+                hideFilters: false,
+                hideHideFiltersButton: false,
+                hideSearch: false,
+                hideAdvancedSearch: false,
+                hideSortByButton: false,
+                hideItemsPerPageButton: false,
+                hideGoToPageButton: false,
+                showFiltersButtonInsideSearchControl: false,
+                startWithFiltersHidden: false,
+                filtersAsModal: false,
+                showInlineViewModeOptions: false,
+                showFullscreenWithViewModes: false
+            },
+            beforeMount () {
+                console.log('antes de montar')
+                // Collection or Term source settings
+                if (this.$el.attributes['collection-id'] != undefined)
+                    this.collectionId = this.$el.attributes['collection-id'].value;
+                if (this.$el.attributes['term-id'] != undefined)
+                    this.termId = this.$el.attributes['term-id'].value;
+                if (this.$el.attributes['taxonomy'] != undefined)
+                    this.taxonomy = this.$el.attributes['taxonomy'].value;
 
-            // Other Tweaks
-            if (this.$el.attributes['show-filters-button-inside-search-control'] != undefined)
-                this.showFiltersButtonInsideSearchControl = this.$el.attributes['show-filters-button-inside-search-control'].value == 'true' ? true : false;
-            if (this.$el.attributes['start-with-filters-hidden'] != undefined)
-                this.startWithFiltersHidden = this.$el.attributes['start-with-filters-hidden'].value == 'true' ? true : false;
-            if (this.$el.attributes['filters-as-modal'] != undefined)
-                this.filtersAsModal = this.$el.attributes['filters-as-modal'].value == 'true' ? true : false;
-            if (this.$el.attributes['show-inline-view-mode-options'] != undefined)
-                this.showInlineViewModeOptions = this.$el.attributes['show-inline-view-mode-options'].value == 'true' ? true : false;
-            if (this.$el.attributes['show-fullscreen-with-view-modes'] != undefined)
-                this.showFullscreenWithViewModes = this.$el.attributes['show-fullscreen-with-view-modes'].value == 'true' ? true : false;
-        },
-        render: h => h(ThemeSearch)
-    });
-});
+                // View Mode settings
+                if (this.$el.attributes['default-view-mode'] != undefined)
+                    this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
+                else
+                    this.defaultViewMode = 'cards';
 
-// Initialize Ponyfill for Custom CSS properties
-cssVars({
-// Options...
-});
+                if (this.$el.attributes['enabled-view-modes'] != undefined)
+                    this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
+                
+                // Options related to hidding elements
+                if (this.$el.attributes['hide-filters'] != undefined)
+                    this.hideFilters = this.$el.attributes['hide-filters'].value == 'true' ? true : false;
+                if (this.$el.attributes['hide-hide-filters-button'] != undefined)
+                    this.hideHideFiltersButton = this.$el.attributes['hide-hide-filters-button'].value == 'true' ? true : false;
+                if (this.$el.attributes['hide-search'] != undefined)
+                    this.hideSearch = this.$el.attributes['hide-search'].value == 'true' ? true : false;
+                if (this.$el.attributes['hide-advanced-search'] != undefined)
+                    this.hideAdvancedSearch = this.$el.attributes['hide-advanced-search'].value == 'true' ? true : false;
+                if (this.$el.attributes['hide-sort-by-button'] != undefined)
+                    this.hideSortByButton = this.$el.attributes['hide-sort-by-button'].value == 'true' ? true : false;
+                if (this.$el.attributes['hide-exposers-button'] != undefined)
+                    this.hideExposersButton = this.$el.attributes['hide-exposers-button'].value == 'true' ? true : false
+                if (this.$el.attributes['hide-items-per-page-button'] != undefined)
+                    this.hideItemsPerPageButton = this.$el.attributes['hide-items-per-page-button'].value == 'true' ? true : false;
+                if (this.$el.attributes['hide-go-to-page-button'] != undefined)
+                    this.hideGoToPageButton = this.$el.attributes['hide-go-to-page-button'].value == 'true' ? true : false;
 
-// Display Icons only once everything is loaded
-function listen(evnt, elem, func) {
-    if (elem.addEventListener)  // W3C DOM
-        elem.addEventListener(evnt,func,false);
-    else if (elem.attachEvent) { // IE DOM
-         var r = elem.attachEvent("on"+evnt, func);
-         return r;
-    } else if (document.head) {
-        var iconHideStyle = document.createElement("style");
-        iconHideStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }'; 
-        document.head.appendChild(iconHideStyle);
-    } else {
-        var iconHideStyle = document.createElement("style");
-        iconHideStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }'; 
-        document.getElementsByTagName("head")[0].appendChild(iconHideStyle);
+                // Other Tweaks
+                if (this.$el.attributes['show-filters-button-inside-search-control'] != undefined)
+                    this.showFiltersButtonInsideSearchControl = this.$el.attributes['show-filters-button-inside-search-control'].value == 'true' ? true : false;
+                if (this.$el.attributes['start-with-filters-hidden'] != undefined)
+                    this.startWithFiltersHidden = this.$el.attributes['start-with-filters-hidden'].value == 'true' ? true : false;
+                if (this.$el.attributes['filters-as-modal'] != undefined)
+                    this.filtersAsModal = this.$el.attributes['filters-as-modal'].value == 'true' ? true : false;
+                if (this.$el.attributes['show-inline-view-mode-options'] != undefined)
+                    this.showInlineViewModeOptions = this.$el.attributes['show-inline-view-mode-options'].value == 'true' ? true : false;
+                if (this.$el.attributes['show-fullscreen-with-view-modes'] != undefined)
+                    this.showFullscreenWithViewModes = this.$el.attributes['show-fullscreen-with-view-modes'].value == 'true' ? true : false;
+            },
+            render: h => h(ThemeSearch)
+        });
+
+        VueItemsList.$mount('#tainacan-items-page');
+
+        listen("load", window, function() {
+            var iconsStyle = document.createElement("style");
+            iconsStyle.setAttribute('type', 'text/css');
+            iconsStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }';
+            document.head.appendChild(iconsStyle);
+        });
+
+        // Initialize Ponyfill for Custom CSS properties
+        cssVars({
+            // Options...
+        });
     }
-}
-listen("load", window, function() {
-    var iconsStyle = document.createElement("style");
-    iconsStyle.setAttribute('type', 'text/css');
-    iconsStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }';
-    document.head.appendChild(iconsStyle);
 });
