@@ -419,7 +419,7 @@ registerBlockType('tainacan/carousel-terms-list', {
                         }
                         
                         { terms.length ? (
-                            <div className="block-control">
+                            <div className="tainacan-block-control">
                                 <p>
                                     <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -445,6 +445,7 @@ registerBlockType('tainacan/carousel-terms-list', {
 
                 { !terms.length && !isLoading ? (
                     <Placeholder
+                        className="tainacan-block-placeholder"
                         icon={(
                             <img
                                 width={148}

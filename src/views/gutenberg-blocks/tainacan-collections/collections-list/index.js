@@ -277,7 +277,7 @@ registerBlockType('tainacan/collections-list', {
                             : null
                         }
                         { selectedCollectionsHTML.length ? (
-                            <div className="block-control">
+                            <div className="tainacan-block-control">
                                 <p>
                                     <svg width="24" height="24" viewBox="0 -5 12 16">
                                         <path
@@ -301,6 +301,7 @@ registerBlockType('tainacan/collections-list', {
 
                 { !selectedCollectionsHTML.length ? (
                     <Placeholder
+                        className="tainacan-block-placeholder"                        
                         icon={(
                             <img
                                 width={148}

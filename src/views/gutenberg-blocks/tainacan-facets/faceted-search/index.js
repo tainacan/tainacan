@@ -609,7 +609,7 @@ registerBlockType('tainacan/faceted-search', {
                 { isSelected ? 
                     (
                     <div>
-                        <div className="block-control">
+                        <div className="tainacan-block-control">
                             <p style={{ display: 'flex', alignItems: 'baseline' }}>
                                 <svg 
                                         xmlns="http://www.w3.org/2000/svg" 
@@ -653,6 +653,7 @@ registerBlockType('tainacan/faceted-search', {
 
                 { ( termId == undefined && listType == 'term' ) || ( collectionId == undefined && listType == 'collection' ) ? (
                     <Placeholder
+                        className="tainacan-block-placeholder"
                         icon={(
                             <img
                                 width={148}

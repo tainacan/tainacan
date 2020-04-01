@@ -569,7 +569,7 @@ registerBlockType('tainacan/facets-list', {
                         }
                         
                         { facets.length ? (
-                            <div className="block-control">
+                            <div className="tainacan-block-control">
                                 <p>
                                     <svg 
                                             xmlns="http://www.w3.org/2000/svg" 
@@ -623,6 +623,7 @@ registerBlockType('tainacan/facets-list', {
 
                 { !facets.length && !isLoading && !(searchString != undefined && searchString != '') ? (
                     <Placeholder
+                        className="tainacan-block-placeholder"
                         icon={(
                             <img
                                 width={148}

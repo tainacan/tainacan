@@ -1,7 +1,7 @@
-[data-align='full'] .block-control {
+[data-align='full'] .tainacan-block-control {
   width: calc(100% + 14px); }
 
-.block-control {
+.tainacan-block-control {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -13,25 +13,25 @@
   left: -14px;
   width: calc(100% + 28px);
   background: #f2f2f2; }
-  .block-control p {
+  .tainacan-block-control p {
     font-size: 0.875em !important;
     margin: 12px 1.5em !important;
     fill: #555758; }
-    .block-control p svg {
+    .tainacan-block-control p svg {
       top: 6px;
       margin-right: 0.75em;
       position: relative;
       fill: #555758; }
-  .block-control .components-base-control .components-base-control__field {
+  .tainacan-block-control .components-base-control .components-base-control__field {
     margin-bottom: 0; }
 
-.components-placeholder {
+.tainacan-block-placeholder.components-placeholder {
   align-items: center !important;
   margin-bottom: 0 !important;
   background: #f6f6f6; }
-  .components-placeholder .components-placeholder__label {
+  .tainacan-block-placeholder.components-placeholder .components-placeholder__label {
     margin-bottom: 0; }
-  .components-placeholder .components-placeholder__fieldset {
+  .tainacan-block-placeholder.components-placeholder .components-placeholder__fieldset {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -40,12 +40,12 @@
     max-width: 70%;
     flex-wrap: wrap;
     z-index: 1; }
-    .components-placeholder .components-placeholder__fieldset p {
+    .tainacan-block-placeholder.components-placeholder .components-placeholder__fieldset p {
       font-size: 1em !important;
       margin: 12px;
       color: #454647;
       fill: #555758; }
-      .components-placeholder .components-placeholder__fieldset p svg {
+      .tainacan-block-placeholder.components-placeholder .components-placeholder__fieldset p svg {
         margin-right: 1em;
         top: 4px;
         position: relative;

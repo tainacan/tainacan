@@ -1,9 +1,26 @@
-// COMMON TO MOST BLOCKS
+// CSS COMMON TO MOST TAINACAN BLOCKS
+
+// Grid mixin for display: grid compatibility
+@mixin display-grid {
+    flex-wrap: wrap;
+    display: flex;
+    display: -ms-grid;
+    display: grid;
+}
+@mixin grid-child ($col-start, $col-end, $row-start, $row-end) {
+    -ms-grid-column: $col-start;
+    -ms-grid-column-span: $col-end - $col-start;
+    -ms-grid-row: $row-start;
+    -ms-grid-row-span: $row-end - $row-start;
+    grid-column: #{$col-start}/#{$col-end};
+    grid-row: #{$row-start}/#{$row-end};
+}
+
 // Control and placeholder region ----------------------------------------------------
-[data-align='full'] .block-control {
+[data-align='full'] .tainacan-block-control {
     width: calc(100% + 14px);
 }
-.block-control {
+.tainacan-block-control {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -33,7 +50,7 @@
         margin-bottom: 0;
     }
 }
-.components-placeholder {
+.tainacan-block-placeholder.components-placeholder {
     align-items: center !important;
     margin-bottom: 0 !important;
     background: #f6f6f6;
@@ -65,22 +82,6 @@
             }
         }
     }
-}
-
-// Grid mixin for display: grid compatibility
-@mixin display-grid {
-    flex-wrap: wrap;
-    display: flex;
-    display: -ms-grid;
-    display: grid;
-}
-@mixin grid-child ($col-start, $col-end, $row-start, $row-end) {
-    -ms-grid-column: $col-start;
-    -ms-grid-column-span: $col-end - $col-start;
-    -ms-grid-row: $row-start;
-    -ms-grid-row-span: $row-end - $row-start;
-    grid-column: #{$col-start}/#{$col-end};
-    grid-row: #{$row-start}/#{$row-end};
 }
   
 // Generic style for selection modals ---------------------------

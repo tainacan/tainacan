@@ -462,7 +462,7 @@ registerBlockType('tainacan/search-bar', {
                         }
                         
                         { collectionId ? (
-                            <div className="block-control">
+                            <div className="tainacan-block-control">
                                 <p>
                                 <span class="icon">
                                     <i>
@@ -494,6 +494,7 @@ registerBlockType('tainacan/search-bar', {
 
                 { !collectionId ? (
                     <Placeholder
+                        className="tainacan-block-placeholder"
                         icon={(
                             <img
                                 width={148}
