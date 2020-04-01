@@ -7,6 +7,7 @@ Vue.use(VueRouter);
 const themeRoutes = [];
 
 export default new VueRouter ({
+    mode: 'history',
     themeRoutes,
     // set custom query resolver
     parseQuery(query) {
