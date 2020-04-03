@@ -1045,7 +1045,7 @@
                                 this.hasAnOpenModal = false;
                             },
                             hideCancel: true,
-                            showNeverShowAgainOption: offerCheckbox && tainacan_plugin.user_caps != undefined && tainacan_plugin.user_caps.length != undefined && tainacan_plugin.user_caps.length > 0,
+                            showNeverShowAgainOption: offerCheckbox && tainacan_plugin.user_caps != undefined && Object.keys(tainacan_plugin.user_caps).length != undefined && Object.keys(tainacan_plugin.user_caps).length > 0,
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
                         },
                         trapFocus: true
@@ -1294,9 +1294,9 @@
                 cursor: default;
             }
 
-            .button,
-            .button:hover,
-            .button:focus {
+            .button:not(.is-success),
+            .button:hover:not(.is-success),
+            .button:focus:not(.is-success) {
                 display: flex;
                 align-items: center;
                 color: var(--tainacan-input-color) !important;

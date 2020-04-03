@@ -1187,7 +1187,7 @@
                                 this.hasAnOpenModal = false;
                             },
                             hideCancel: true,
-                            showNeverShowAgainOption: offerCheckbox && tainacan_plugin.user_caps != undefined && tainacan_plugin.user_caps.length != undefined && tainacan_plugin.user_caps.length > 0,
+                            showNeverShowAgainOption: offerCheckbox && tainacan_plugin.user_caps != undefined && Object.keys(tainacan_plugin.user_caps).length != undefined && Object.keys(tainacan_plugin.user_caps).length > 0,
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
                         },
                         trapFocus: true

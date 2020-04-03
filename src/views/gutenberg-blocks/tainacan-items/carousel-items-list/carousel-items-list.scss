@@ -1,4 +1,4 @@
-@import '../../gutenberg-blocks-style.scss';
+@import '../../gutenberg-blocks-variables.scss';
 
 .wp-block-tainacan-carousel-items-list {
     margin: 2em auto;
@@ -10,7 +10,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: #555758;
+        color: var(--tainacan-block-gray4, $gray4);
     }
 
     // Skeleton loading
@@ -36,7 +36,7 @@
     }
     .skeleton {
         border-radius: 2px;
-        background: #f2f2f2;
+        background: var(--tainacan-block-gray1, $gray1);
 
         -webkit-animation: skeleton-animation 1.8s ease infinite;
         -moz-animation: skeleton-animation 1.8s ease infinite;
@@ -67,7 +67,7 @@
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            background-color: #454647;
+            background-color: var(--tainacan-block-gray5, $gray5);
 
             h3 { 
                 color: white; 
@@ -105,7 +105,7 @@
             position: relative;
             margin-left: -155px; 
             left: 82px;
-            background-color: #dbdbdb;
+            background-color: var(--tainacan-block-gray2, $gray2);
         }
         .collection-header-image {
             width: auto;
@@ -114,7 +114,7 @@
             flex-grow: 2;
             background-size: cover;
             background-position: center;
-            background-color: #dbdbdb;
+            background-color: var(--tainacan-block-gray2, $gray2);
         }
 
         @media only screen and (max-width: 1024px) { 
@@ -149,7 +149,7 @@
 
             a>span,
             a:hover>span {
-                color: black;
+                color: var(--tainacan-block-gray5, $gray5);
                 font-weight: bold;
                 text-decoration: none;
                 padding: 8px 16px;
@@ -170,7 +170,7 @@
         width: 100%;
         font-size: 0.875em;
         font-style: italic;
-        color: #898d8f;
+        color: var(--tainacan-block-gray4, $gray4);
         text-align: center;
         margin: 4px auto;
     }
@@ -187,7 +187,7 @@
         margin: 0 -4px;
 
         svg {
-            fill: #298596;
+            fill: var(--tainacan-block-primary, $primary);
         }
     }
 
@@ -233,7 +233,7 @@
             min-width: calc(14.285% - 32px);
 
             a { 
-                color: #454647; 
+                color: var(--tainacan-block-gray5, $gray5); 
                 font-weight: bold;
                 line-height: normal;
             }
@@ -246,14 +246,14 @@
             }
 
             &:hover a { 
-                color: #454647; 
+                color: var(--tainacan-block-gray5, $gray5); 
                 text-decoration: none;
             }
         
             button {
                 position: absolute !important;
                 background-color: rgba(255, 255, 255, 0.75);
-                color: #454647;
+                color: var(--tainacan-block-gray5, $gray5);
                 padding: 2px;
                 margin-left: 5px;
                 min-width: 14px;
@@ -273,13 +273,13 @@
                 opacity: 1;
                 right: -8px;
                 top: -8px;
-                border: 1px solid #cbcbcb;
+                border: 1px solid var(--tainacan-block-gray3, $gray3);
                 border-radius: 12px;
                 transition: opacity linear 0.15s, right linear 0.15s;
             }
             &:hover button:hover {
                 background-color: rgba(255, 255, 255, 1) !important;
-                border: 1px solid #cbcbcb !important;
+                border: 1px solid var(--tainacan-block-gray3, $gray3) !important;
             }
         }
     }

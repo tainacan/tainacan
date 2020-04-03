@@ -1,9 +1,22 @@
-// COMMON TO MOST BLOCKS
+// CSS COMMON TO MOST TAINACAN BLOCKS
+@import './gutenberg-blocks-variables.scss';
+
+// Custom Variables
+:root {
+    --tainacan-block-gray0: #{$gray0};
+    --tainacan-block-gray1: #{$gray1};
+    --tainacan-block-gray2: #{$gray2};
+    --tainacan-block-gray3: #{$gray3};
+    --tainacan-block-gray4: #{$gray4};
+    --tainacan-block-gray5: #{$gray5};
+    --tainacan-block-primary: #{$primary};
+}
+
 // Control and placeholder region ----------------------------------------------------
-[data-align='full'] .block-control {
+[data-align='full'] .tainacan-block-control {
     width: calc(100% + 14px);
 }
-.block-control {
+.tainacan-block-control {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -14,18 +27,18 @@
     top: -14px;
     left: -14px;
     width: calc(100% + 28px);
-    background: #f2f2f2;
+    background: var(--tainacan-block-gray1, $gray1);
 
     p {
         font-size: 0.875em !important; 
         margin: 12px 1.5em !important; 
-        fill: #555758;
+        fill: var(--tainacan-block-gray4, $gray4);
 
         svg {
             top: 6px;
             margin-right: 0.75em;
             position: relative;
-            fill: #555758;
+            fill: var(--tainacan-block-gray4, $gray4);
         }
     }
 
@@ -33,10 +46,10 @@
         margin-bottom: 0;
     }
 }
-.components-placeholder {
+.tainacan-block-placeholder.components-placeholder {
     align-items: center !important;
     margin-bottom: 0 !important;
-    background: #f6f6f6;
+    background: var(--tainacan-block-gray0, $gray0);
 
     .components-placeholder__label {
         margin-bottom: 0;
@@ -54,33 +67,17 @@
         p {
             font-size: 1em !important;
             margin: 12px;
-            color: #454647;
-            fill: #555758;
+            color: var(--tainacan-block-gray5, $gray5);
+            fill: var(--tainacan-block-gray4, $gray4);
 
             svg {
                 margin-right: 1em; 
                 top: 4px;
                 position: relative;
-                fill: #555758;
+                fill: var(--tainacan-block-gray4, $gray4);
             }
         }
     }
-}
-
-// Grid mixin for display: grid compatibility
-@mixin display-grid {
-    flex-wrap: wrap;
-    display: flex;
-    display: -ms-grid;
-    display: grid;
-}
-@mixin grid-child ($col-start, $col-end, $row-start, $row-end) {
-    -ms-grid-column: $col-start;
-    -ms-grid-column-span: $col-end - $col-start;
-    -ms-grid-row: $row-start;
-    -ms-grid-row-span: $row-end - $row-start;
-    grid-column: #{$col-start}/#{$col-end};
-    grid-row: #{$row-start}/#{$row-end};
 }
   
 // Generic style for selection modals ---------------------------
@@ -108,7 +105,7 @@
             width: calc(100% + 32px);
             margin-left: -16px !important;
             padding: 1.2em 1.2em !important;
-            border-top: 1px solid #cbcbcb;
+            border-top: 1px solid var(--tainacan-block-gray3, $gray3);
         }
     }
 
@@ -119,7 +116,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: #555758;
+        color: var(--tainacan-block-gray4, $gray4);
         .components-spineer { margin: 8px; }
     }
 
@@ -161,7 +158,7 @@
             }
             label.components-base-control__label {
                 font-weight: 500;
-                color: #454647;
+                color: var(--tainacan-block-gray5, $gray5);
                 font-size: 1em;
                 text-align: center;
             }
@@ -228,7 +225,7 @@
         justify-content: center;
         
         p {
-            color: #555758;
+            color: var(--tainacan-block-gray4, $gray4);
             margin-right: 12px;
             margin-top: 2px;
         }
@@ -243,7 +240,7 @@
 
         p {
             padding: 0 12px;
-            color: #454647;
+            color: var(--tainacan-block-gray5, $gray5);
         }
     }
 }
