@@ -1,0 +1,29 @@
+// Grid mixin for display: grid compatibility
+@mixin display-grid {
+    flex-wrap: wrap;
+    display: flex;
+    display: -ms-grid;
+    display: grid;
+}
+@mixin grid-child ($col-start, $col-end, $row-start, $row-end) {
+    -ms-grid-column: $col-start;
+    -ms-grid-column-span: $col-end - $col-start;
+    -ms-grid-row: $row-start;
+    -ms-grid-row-span: $row-end - $row-start;
+    grid-column: #{$col-start}/#{$col-end};
+    grid-row: #{$row-start}/#{$row-end};
+}
+
+// Gray, used mostly for information
+$gray0: #f6f6f6;
+$gray1: #f2f2f2;
+$gray2: #dbdbdb;
+$gray3: #cbcbcb;
+$gray4: #555758;
+$gray5: #454647;
+
+// The primary link and active color
+$primary: #298596;
+
+// Items grid thumbnail size
+$thumbnail-grid-item: 185px;

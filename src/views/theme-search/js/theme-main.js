@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 showFullscreenWithViewModes: false
             },
             beforeMount () {
-                console.log('antes de montar')
+                
                 // Collection or Term source settings
                 if (this.$el.attributes['collection-id'] != undefined)
                     this.collectionId = this.$el.attributes['collection-id'].value;

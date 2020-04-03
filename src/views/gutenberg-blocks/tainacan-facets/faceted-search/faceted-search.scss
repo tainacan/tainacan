@@ -1,4 +1,4 @@
-@import '../../gutenberg-blocks-style.scss';
+@import '../../gutenberg-blocks-variables.scss';
 
 .wp-block-tainacan-faceted-search {
     margin: 2em auto;
@@ -10,7 +10,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: #555758;
+        color: var(--tainacan-block-gray4, $gray4);
     }
 
     // Skeleton loading
@@ -36,7 +36,7 @@
     }
     .skeleton {
         border-radius: 2px;
-        background: #f2f2f2;
+        background: var(--tainacan-block-gray1, $gray1);
 
         -webkit-animation: skeleton-animation 1.8s ease infinite;
         -moz-animation: skeleton-animation 1.8s ease infinite;
@@ -47,7 +47,7 @@
         width: 100%;
         font-size: 0.875em;
         font-style: italic;
-        color: #898d8f;
+        color: var(--tainacan-block-gray4, $gray4);
         text-align: center;
         margin: 4px auto;
     }

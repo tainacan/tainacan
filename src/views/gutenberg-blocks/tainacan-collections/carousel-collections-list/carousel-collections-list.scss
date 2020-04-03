@@ -1,4 +1,4 @@
-@import '../../gutenberg-blocks-style.scss';
+@import '../../gutenberg-blocks-variables.scss';
 
 .components-panel__body .collection-carousel-view-modes {
     display: flex;
@@ -6,7 +6,7 @@
 
     button {
         background: transparent;
-        border: 1px solid #cbcbcb;
+        border: 1px solid var(--tainacan-block-gray3, $gray3);
         border-radius: 5px;
         padding: 2px;
         margin: 0;
@@ -40,7 +40,7 @@
                     flex-basis: 50%; 
                     width: 20px;
                     height: 20px;
-                    background: #555758;
+                    background: var(--tainacan-block-gray4, $gray4);
                     transition: background-color ease 0.5s; 
                 }
             }
@@ -52,7 +52,7 @@
                 display: block;
                 height: 40px;
                 width: 40px;
-                background: #555758;
+                background: var(--tainacan-block-gray4, $gray4);
                 margin: 4px auto 8px auto;
                 transition: background-color ease 0.5s;
             }
@@ -60,22 +60,22 @@
 
         label {
             font-size: 0.75em;
-            color: #555758;
+            color: var(--tainacan-block-gray4, $gray4);
         }
 
         &.is-active {
-            border: 2px solid #298596;
+            border: 2px solid var(--tainacan-block-primary, $primary);
             
             &.collection-carousel-view-mode-thumbnail div,
             &.collection-carousel-view-mode-grid div>div {
-                background-color: #298596;
+                background-color: var(--tainacan-block-primary, $primary);
             }    
         }
         &:hover {
             opacity: 0.9;
             border-width: 2px;
             button {
-                background: #f2f2f2;
+                background: var(--tainacan-block-gray1, $gray1);
             }
         }
 
@@ -92,7 +92,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        color: #555758;
+        color: var(--tainacan-block-gray4, $gray4);
     }
 
     // Skeleton loading
@@ -118,7 +118,7 @@
     }
     .skeleton {
         border-radius: 2px;
-        background: #f2f2f2;
+        background: var(--tainacan-block-gray1, $gray1);
 
         -webkit-animation: skeleton-animation 1.8s ease infinite;
         -moz-animation: skeleton-animation 1.8s ease infinite;
@@ -137,7 +137,7 @@
 
             a>span,
             a:hover>span {
-                color: black;
+                color: var(--tainacan-block-gray5);
                 font-weight: bold;
                 text-decoration: none;
                 padding: 8px 16px;
@@ -186,7 +186,7 @@
         width: 100%;
         font-size: 0.875em;
         font-style: italic;
-        color: #898d8f;
+        color: var(--tainacan-block-gray4, $gray4);
         text-align: center;
         margin: 4px auto;
     }
@@ -203,7 +203,7 @@
         margin: 0 -4px;
 
         svg {
-            fill: #298596;
+            fill: var(--tainacan-block-primary, $primary);
         }
     }
 
@@ -259,7 +259,7 @@
             }
 
             a { 
-                color: #454647; 
+                color: var(--tainacan-block-gray5, $gray5); 
                 font-weight: bold;
                 line-height: normal;
             }
@@ -271,14 +271,14 @@
             }
 
             &:hover a { 
-                color: #454647; 
+                color: var(--tainacan-block-gray5, $gray5); 
                 text-decoration: none;
             }
         
             button {
                 position: absolute !important;
                 background-color: rgba(255, 255, 255, 0.75);
-                color: #454647;
+                color: var(--tainacan-block-gray5, $gray5);
                 padding: 2px;
                 margin-left: 5px;
                 min-width: 14px;
@@ -298,13 +298,13 @@
                 opacity: 1;
                 right: -8px;
                 top: -8px;
-                border: 1px solid #cbcbcb;
+                border: 1px solid var(--tainacan-block-gray3, $gray3);
                 border-radius: 12px;
                 transition: opacity linear 0.15s, right linear 0.15s;
             }
             &:hover button:hover {
                 background-color: rgba(255, 255, 255, 1) !important;
-                border: 1px solid #cbcbcb !important;
+                border: 1px solid var(--tainacan-block-gray3, $gray3) !important;
             }
 
 

@@ -13,6 +13,9 @@ function tainacan_blocks_initialize() {
 }
 
 function tainacan_blocks_add_gutenberg_blocks_actions() {
+
+	add_action('init', 'tainacan_blocks_get_common_styles');
+
 	add_action('init', 'tainacan_blocks_register_tainacan_terms_list');
 	add_action('init', 'tainacan_blocks_register_tainacan_items_list');
 	add_action('init', 'tainacan_blocks_register_tainacan_dynamic_items_list');
@@ -54,7 +57,7 @@ function tainacan_blocks_register_tainacan_terms_list(){
 	wp_register_style(
 		'terms-list',
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-terms-list.css',
-		array('wp-edit-blocks')
+		array('wp-edit-blocks', 'tainacan-blocks-common-styles')
 	);
 
 	if (function_exists('register_block_type')) {
@@ -83,7 +86,7 @@ function tainacan_blocks_register_tainacan_facets_list(){
 	wp_register_style(
 		'facets-list',
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-facets-list.css',
-		array('wp-edit-blocks')
+		array('wp-edit-blocks', 'tainacan-blocks-common-styles')
 	);
 
 	if (function_exists('register_block_type')) {
@@ -107,7 +110,7 @@ function tainacan_blocks_register_tainacan_items_list(){
 	wp_register_style(
 		'items-list',
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-items-list.css',
-		array('wp-edit-blocks')
+		array('wp-edit-blocks', 'tainacan-blocks-common-styles')
 	);
 
 	if (function_exists('register_block_type')) {
@@ -136,7 +139,7 @@ function tainacan_blocks_register_tainacan_dynamic_items_list(){
 	wp_register_style(
 		'dynamic-items-list',
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-dynamic-items-list.css',
-		array('wp-edit-blocks')
+		array('wp-edit-blocks', 'tainacan-blocks-common-styles')
 	);
 
 	if (function_exists('register_block_type')) {
@@ -167,7 +170,7 @@ function tainacan_blocks_register_tainacan_faceted_search(){
 	wp_register_style(
 		'faceted-search',
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-faceted-search.css',
-		array('wp-edit-blocks')
+		array('wp-edit-blocks', 'tainacan-blocks-common-styles')
 	);
 
 	if (function_exists('register_block_type')) {
@@ -197,7 +200,7 @@ function tainacan_blocks_register_tainacan_carousel_items_list(){
 	wp_register_style(
 		'carousel-items-list',
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-carousel-items-list.css',
-		array('wp-edit-blocks')
+		array('wp-edit-blocks', 'tainacan-blocks-common-styles')
 	);
 
 	if (function_exists('register_block_type')) {
@@ -227,7 +230,7 @@ function tainacan_blocks_register_tainacan_carousel_terms_list(){
 	wp_register_style(
 		'carousel-terms-list',
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-carousel-terms-list.css',
-		array('wp-edit-blocks')
+		array('wp-edit-blocks', 'tainacan-blocks-common-styles')
 	);
 
 	if (function_exists('register_block_type')) {
@@ -257,7 +260,7 @@ function tainacan_blocks_register_tainacan_search_bar(){
 	wp_register_style(
 		'search-bar',
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-search-bar.css',
-		array('wp-edit-blocks')
+		array('wp-edit-blocks', 'tainacan-blocks-common-styles')
 	);
 
 	if (function_exists('register_block_type')) {
@@ -280,7 +283,7 @@ function tainacan_blocks_register_tainacan_collections_list(){
 	wp_register_style(
 		'collections-list',
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-collections-list.css',
-		array('wp-edit-blocks')
+		array('wp-edit-blocks', 'tainacan-blocks-common-styles')
 	);
 
 	if (function_exists('register_block_type')) {
@@ -309,7 +312,7 @@ function tainacan_blocks_register_tainacan_carousel_collections_list(){
 	wp_register_style(
 		'carousel-collections-list',
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-carousel-collections-list.css',
-		array('wp-edit-blocks')
+		array('wp-edit-blocks', 'tainacan-blocks-common-styles')
 	);
 
 	if (function_exists('register_block_type')) {
@@ -347,10 +350,20 @@ function tainacan_blocks_add_plugin_settings() {
 	wp_localize_script( 'carousel-terms-list', 'tainacan_blocks', $settings );
 	wp_localize_script( 'search-bar', 'tainacan_blocks', $settings );
 	wp_localize_script( 'faceted-search', 'tainacan_blocks', $settings );
-	// wp_localize_script( 'faceted-search-theme', 'tainacan_plugin', $settings );
-	wp_localize_script( 'faceted-search-theme', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params() );
-
 	wp_localize_script( 'collections-list', 'tainacan_blocks', $settings );
 	wp_localize_script( 'carousel-collections-list', 'tainacan_blocks', $settings );
 	wp_localize_script( 'facets-list', 'tainacan_blocks', $settings );
+
+	// The facet facteded search block uses a different settings object, the same used on the theme items list
+	wp_localize_script( 'faceted-search-theme', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params() );
+}
+
+function tainacan_blocks_get_common_styles() {
+	global $TAINACAN_BASE_URL;
+	
+	wp_enqueue_style(
+		'tainacan-blocks-common-styles',
+		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-common-styles.css',
+		array('wp-edit-blocks')
+	);
 }

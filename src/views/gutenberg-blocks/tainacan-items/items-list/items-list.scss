@@ -1,4 +1,4 @@
-@import '../../gutenberg-blocks-style.scss';
+@import '../../gutenberg-blocks-variables.scss';
 
 .wp-block-tainacan-items-list {
     margin: 2em auto;
@@ -54,7 +54,7 @@
             width: 185px;
 
             a { 
-                color: #454647; 
+                color: var(--tainacan-block-gray5, $gray5); 
                 border: none;
                 font-weight: bold;
                 line-height: normal;
@@ -78,7 +78,7 @@
             }
 
             &:hover a { 
-                color: #454647; 
+                color: var(--tainacan-block-gray5, $gray5); 
                 text-decoration: none;
             }
         }
@@ -90,7 +90,7 @@
         button {
             position: absolute !important;
             background-color: rgba(255, 255, 255, 0.75);
-            color: #454647;
+            color: var(--tainacan-block-gray5, $gray5);
             padding: 2px;
             margin-left: 5px;
             min-width: 14px;
@@ -110,13 +110,13 @@
             opacity: 1;
             right: -8px;
             top: -8px;
-            border: 1px solid #cbcbcb;
+            border: 1px solid var(--tainacan-block-gray3, $gray3);
             border-radius: 12px;
             transition: opacity linear 0.15s, right linear 0.15s;
         }
         &:hover button:hover {
             background-color: rgba(255, 255, 255, 1) !important;
-            border: 1px solid #cbcbcb !important;
+            border: 1px solid var(--tainacan-block-gray3, $gray3) !important;
         }
     }
     @media only screen and (max-width: 498px) { 
@@ -150,7 +150,7 @@
             width: calc(20% - 24px);
 
             a { 
-                color: #454647; 
+                color: var(--tainacan-block-gray5, $gray5); 
                 height: auto;
                 display: flex;
                 align-items: center;
@@ -171,7 +171,7 @@
             }
 
             &:hover a { 
-                color: #454647; 
+                color: var(--tainacan-block-gray5, $gray5); 
                 text-decoration: none;
             }
 

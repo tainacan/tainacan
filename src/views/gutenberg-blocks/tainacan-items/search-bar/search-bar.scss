@@ -1,4 +1,4 @@
-@import '../../gutenberg-blocks-style.scss';
+@import '../../gutenberg-blocks-variables.scss';
 
 .edit-post-sidebar div.components-toolbar {
     border: none;
@@ -17,7 +17,7 @@
             justify-content: center;
             align-items: stretch;
             margin: 0 auto;
-            border: 1px solid #dbdbdb;
+            border: 1px solid var(--tainacan-block-gray2, $gray2);
             transition: border-color ease 0.3s;
 
             &.is-aligned-left {
@@ -56,7 +56,7 @@
                 .icon {
                     height: 28px;                    
                     svg { 
-                        fill: #298596; 
+                        fill: var(--tainacan-block-primary, $primary); 
                     }
                 }
             }
@@ -120,12 +120,12 @@
                 &:active,
                 &:hover {
                     width: 100%;
-                    border-color: #cbcbcb;
+                    border-color: var(--tainacan-block-gray3, $gray3);
                     background:rgba(250, 250, 250, 1);
                     box-shadow: none;
                 }
                 &::placeholder {
-                    color: #cbcbcb;
+                    color: var(--tainacan-block-gray3, $gray3);
                 }
             }
 
@@ -140,7 +140,7 @@
 
                 .icon {
                     svg { 
-                        fill: #cbcbcb; 
+                        fill: var(--tainacan-block-gray3, $gray3); 
                         transition: fill 0.4s ease;
                     }
                 }
@@ -169,12 +169,12 @@
                     &:hover {
                         input,
                         input::placeholder { 
-                            color: #454647; 
+                            color: var(--tainacan-block-gray5, $gray5); 
                             border-width: 0;
                         }
                         button .icon {
                             svg { 
-                                fill: #cbcbcb !important; 
+                                fill: var(--tainacan-block-gray3, $gray3) !important; 
                             }
                         }
                     }
@@ -188,13 +188,13 @@
                         &:focus::placeholder,
                         &:active::placeholder,
                         &:hover::placeholder {
-                            color: #454647;
+                            color: var(--tainacan-block-gray5, $gray5);
                         }
 
                     }
                     button .icon {
                         svg { 
-                            fill: #dbdbdb !important; 
+                            fill: var(--tainacan-block-gray2, $gray2) !important; 
                         }
                     }
                 }
@@ -232,7 +232,7 @@
                 padding-left: 26px;
                 font-size: 1em;
                 border-width: 0;
-                background: #f2f2f2;
+                background: var(--tainacan-block-gray1, $gray1);
                 transition: width 0.5s ease-in, padding 0.5s ease-in;
 
                 &:focus,
@@ -343,7 +343,7 @@
         min-height: 125px;
         background-size: cover;
         background-position: center;
-        background-color: #dbdbdb;
+        background-color: var(--tainacan-block-gray2, $gray2);
     }
     .search-bar-collection-header-container {
         width: 100%;
