@@ -39,7 +39,8 @@
                             :sort="(openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel"
                             :handle="'.handle'" 
                             ghost-class="sortable-ghost"
-                            filter="not-sortable-item" 
+                            filter=".not-sortable-item"
+                            :prevent-on-filter="false"
                             :animation="250"> 
                         <div  
                                 class="active-filter-item" 
@@ -169,7 +170,8 @@
                                 v-if="availableMetadata.length > 0 && !isLoadingMetadatumTypes"
                                 v-model="availableMetadata"
                                 :sort="false"
-                                filter="not-sortable-item" 
+                                filter=".not-sortable-item"
+                                :prevent-on-filter="false" 
                                 :group="{ name:'filters', pull: !isSelectingFilterType, put: false, revertClone: true }"
                                 drag-class="sortable-drag">
                             <template v-for="(metadatum, index) in availableMetadata">

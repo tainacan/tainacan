@@ -26,6 +26,7 @@
                 ghost-class="sortable-ghost"
                 chosen-class="sortable-chosen"
                 filter=".not-sortable-item"
+                :prevent-on-filter="false"
                 :animation="250"> 
             <div 
                     class="active-metadatum-item"

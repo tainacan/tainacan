@@ -42,7 +42,8 @@
                                     :handle="'.handle'"
                                     ghost-class="sortable-ghost"
                                     chosen-class="sortable-chosen"
-                                    filter="not-sortable-item"
+                                    filter=".not-sortable-item"
+                                    :prevent-on-filter="false"
                                     :animation="250">
                                 <div    
                                         v-for="(metadatum, index) in activeMetadatumList.filter((meta) => meta != undefined && meta.parent == 0)"
