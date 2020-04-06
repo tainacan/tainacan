@@ -688,8 +688,6 @@ class Item extends Entity {
 				} else {
 					$output .= $embed;
 				}
-
-
 			}
 
 		}
@@ -705,5 +703,28 @@ class Item extends Entity {
 		$collection_id = $this->get_collection_id();
 		$id = $this->get_id();
 		return admin_url("?page=tainacan_admin#/collections/$collection_id/items/$id/edit");
+	}
+
+	/**
+	* Gets the Document url of this item
+	*/
+	public function get_document_download_url() {
+		$type = $this->get_document_type();
+
+		$link = null;
+
+		if ( $type == 'url' ) {
+			$link = $this->get_document();
+		} elseif ( $type == 'text' ) {
+			$link = $this->get_document();
+		} elseif ( $type == 'attachment' ) {
+			if ( wp_attachment_is_image($this->get_document()) ) {
+				$link = wp_get_attachment_url($this->get_document());
+			} else {
+				$link = wp_get_attachment_url($this->get_document());
+			}
+		}
+
+		return $link;
 	}
 }

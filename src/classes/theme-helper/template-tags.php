@@ -75,7 +75,20 @@ function tainacan_get_the_document() {
 		return;
 
 	return apply_filters('tainacan-get-the-document', $item->get_document_as_html(), $item);
+}
 
+function tainacan_the_item_document_download_link() {
+	$item = tainacan_get_item();
+
+	if (!$item)
+		return;
+
+	$link = $item->get_document_download_url();
+
+	if (!$link || $item->get_document_type() == 'text')
+		return;
+
+	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. $link . '" href="' . $link . '">' . __('Download', 'tainacan') . '</a>';
 }
 
 function tainacan_the_document() {
