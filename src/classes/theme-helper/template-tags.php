@@ -357,7 +357,7 @@ function tainacan_get_the_attachments($exclude = null) {
 	if (!$item)
 		return [];
 
-	return apply_filters('tainacan-get-the-attachments', $item->get_attachments(), $item);
+	return apply_filters('tainacan-get-the-attachments', $item->get_attachments($exclude), $item);
 
 }
 
