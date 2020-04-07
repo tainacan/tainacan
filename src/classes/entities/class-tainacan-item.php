@@ -697,6 +697,43 @@ class Item extends Entity {
 	}
 
 	/**
+	 * Gets the attachment as a html, can be iframe, image, audio...
+	 */
+	public function get_attachment_as_html($attachment, $img_size = 'large') {
+
+		$output = '';
+
+		if ( wp_attachment_is_image($attachment) ) {
+
+			$img = wp_get_attachment_image($attachment, $img_size);
+			$img_full = wp_get_attachment_url($attachment);
+
+			$image_attributes = wp_get_attachment_image_src($attachment, $img_size );
+			$img = "<img style='max-width: 100%;' src='" . $image_attributes[0] . "' />";
+
+			$output .= sprintf("<a href='%s' target='blank'>%s</a>", $img_full, $img);
+			
+		} else {
+
+			global $wp_embed;
+
+			$url = wp_get_attachment_url($attachment);
+
+			$embed = $wp_embed->autoembed($url);
+
+			if ( $embed == $url ) {
+				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
+			} else {
+				$output .= $embed;
+			}
+		}
+	
+		return $output;
+
+	}
+
+
+	/**
 	* Gets the url to the edit page for this item
 	*/
 	public function get_edit_url() {

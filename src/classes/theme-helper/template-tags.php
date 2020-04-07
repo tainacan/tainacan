@@ -96,6 +96,20 @@ function tainacan_the_document() {
 }
 
 /**
+ * Return HTML display-ready version of an attachment
+ */
+function tainacan_get_single_attachment_as_html($attachment_id) {
+
+	$item = tainacan_get_item();
+
+	if (!$attachment_id) {
+		return '';
+	}
+
+	echo $item->get_attachment_as_html($attachment_id);
+}
+
+/**
  * To be used inside The Loop
  *
  * Check whether the current item has a document or not
