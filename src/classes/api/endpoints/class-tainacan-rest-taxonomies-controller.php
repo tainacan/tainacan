@@ -137,6 +137,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 				*/
 				$item_arr['collections'] = [];
 				$item_arr['collections_ids'] = [];
+				$item_arr['metadata_by_collection'] = [];
 
 				$taxonomy = get_taxonomy( $item->get_db_identifier() );
 				if (is_object($taxonomy) && isset($taxonomy->object_type) && is_array($taxonomy->object_type)) {
@@ -146,6 +147,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 						if ( $tax_collection instanceof \Tainacan\Entities\Collection ) {
 							$item_arr['collections'][] = $tax_collection->_toArray();
 							$item_arr['collections_ids'][] = $tax_collection->get_id();
+							$item_arr['metadata_by_collection'][$tax_collection->get_id()] = $this->get_metadata_taxonomy_in_collection($item->get_id(), $tax_collection->get_id());
 						}
 
 					}
@@ -176,6 +178,28 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		}
 
 		return $item;
+	}
+
+	function get_metadata_taxonomy_in_collection($taxonomy_id, $collection_id) {
+		$args = [
+			'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+			'meta_query' => [
+				[
+					'key' => '_option_taxonomy_id',
+					'value' => $taxonomy_id
+				],
+				[
+					'compare'   => 'IN',
+					'key' => 'collection_id',
+					'value' => "$collection_id, default"
+				]
+			]
+		];
+		$metadata = Repositories\Metadata::get_instance()->fetch($args, 'OBJECT');
+		if (is_array($metadata) && !empty($metadata)) {
+			return $metadata[0]->_toArray();
+		}
+		return "";
 	}
 
 	/**
