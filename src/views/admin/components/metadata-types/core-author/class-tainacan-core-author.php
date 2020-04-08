@@ -18,7 +18,7 @@ class Core_Author extends Metadata_Type {
 		$this->set_primitive_type('integer');
 		$this->set_core(true);
 		$this->set_related_mapped_prop('author_id');
-		$this->set_component('tainacan-selectbox');
+		$this->set_component('tainacan-author');
 		$this->set_name( __('Core Author', 'tainacan') );
 		$this->set_description( __('The "Core Author" is a compulsory metadata automatically created for all collections by default.', 'tainacan') );
 	}

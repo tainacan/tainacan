@@ -19,6 +19,7 @@ import Numeric from '../components/metadata-types/numeric/Numeric.vue';
 import Date from '../components/metadata-types/date/Date.vue';
 import Relationship from '../components/metadata-types/relationship/Relationship.vue';
 import Taxonomy from '../components/metadata-types/taxonomy/Taxonomy.vue';
+import Author from '../components/metadata-types/core-author/Author.vue';
 
 import FormRelationship from '../components/metadata-types/relationship/FormRelationship.vue';
 import FormTaxonomy from '../components/metadata-types/taxonomy/FormTaxonomy.vue';
@@ -92,6 +93,7 @@ Vue.component('tainacan-numeric', Numeric);
 Vue.component('tainacan-date', Date);
 Vue.component('tainacan-relationship', Relationship);
 Vue.component('tainacan-taxonomy', Taxonomy);
+Vue.component('tainacan-author', Author);
 
 /* Metadata Option forms */
 Vue.component('tainacan-form-relationship', FormRelationship);

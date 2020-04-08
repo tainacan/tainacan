@@ -165,7 +165,7 @@ export const notApprove = ({commit}, activityId) => {
 
 };
 
-// Users for filtering
+// Users for filtering and core author metadata
 export const fetchUsers = ({ commit }, { search, page }) => {
     let endpoint = '/users?search=' + search;
 

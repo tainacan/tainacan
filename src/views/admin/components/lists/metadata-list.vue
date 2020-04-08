@@ -91,6 +91,11 @@
                                         metadatum.metadata_type_object.related_mapped_prop == 'description'">
                                     {{ $i18n.get('label_core_description') }}
                             </em>
+                            <em 
+                                    v-if="metadatum.metadata_type_object.core && 
+                                        metadatum.metadata_type_object.related_mapped_prop == 'author_id'">
+                                    {{ $i18n.get('label_core_author') }}
+                            </em>
                             <span 
                                 class="not-saved" 
                                 v-if="(editForms[metadatum.id] != undefined && editForms[metadatum.id].saved != true) || metadatum.status == 'auto-draft'">
