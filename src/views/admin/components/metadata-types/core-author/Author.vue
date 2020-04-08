@@ -8,7 +8,7 @@
             keep-first
             open-on-focus
             @input="fetchUsers"
-            @focus.once="($event) => fetchUsers($event.target.value)"
+            @focus.once="($event) => loadUsers($event.target.value)"
             @select="onSelect"
             :loading="isFetchingUsers"
             field="name"
@@ -60,7 +60,7 @@ export default {
         ...mapActions('activity', [
             'fetchUsers'
         ]),
-        fetchUsers: _.debounce(function (search) {
+        loadUsers: _.debounce(function (search) {
 
             // String update
             if (search != this.usersSearchQuery) {
@@ -102,7 +102,7 @@ export default {
                 });
         }, 500),
         fetchMoreUsers: _.debounce(function () {
-            this.fetchUsers(this.usersSearchQuery)
+            this.loadUsers(this.usersSearchQuery)
         }, 250),
     }
 }
