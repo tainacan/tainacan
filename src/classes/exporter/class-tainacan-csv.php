@@ -50,8 +50,9 @@ class CSV extends Exporter {
 					$line[]	= implode( $this->get_option('multivalued_delimiter'), $rel );
 				else 
 					$line[] = $rel;
-			} else
+			} else {
 				$line[] = $meta->get_value_as_string();
+			}
 			
 		}
 		
@@ -66,6 +67,14 @@ class CSV extends Exporter {
 		$line[] = $this->get_attachments_cell($item);
 		
 		$line[] = $item->get_comment_status();
+
+		$line[] = $item->get_author_name();
+		
+		$line[] = $item->get_creation_date();
+		
+		$line[] = $this->get_author_name_last_modification($item->get_id());
+
+		$line[] = $item->get_modification_date();
 		
 		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
 		
@@ -97,6 +106,26 @@ class CSV extends Exporter {
 		}, $attachments);
 		
 		return implode( $this->get_option('multivalued_delimiter'), $attachments_urls );
+	}
+
+	function get_author_name_last_modification($item_id) {
+		$logs = \Tainacan\Repositories\Logs::get_instance()->fetch([
+			'item_id'=>$item_id,
+			'paged'=>1,
+			'posts_per_page'=>1
+		]);
+		$response;
+
+		if($logs->have_posts()){
+			while ($logs->have_posts()){
+				$logs->the_post();
+
+				$log = new Entities\Log($logs->post);
+				$response = $log->get_user_name();
+			}
+			wp_reset_postdata();
+		}
+		return $response;
 	}
 
 	public function output_header() {
@@ -136,6 +165,10 @@ class CSV extends Exporter {
 		$line[] = 'special_document';
 		$line[] = 'special_attachments';
 		$line[] = 'special_comment_status';
+		$line[] = 'author_name';
+		$line[] = 'creation_date';
+		$line[] = 'user_last_modified';
+		$line[] = 'modification_date';
 		
 		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
 		

@@ -255,11 +255,7 @@ class REST_Items_Controller extends REST_Controller {
 
 			}
 
-			// \error_log("DEBUG-1:");
-			// \error_log(\json_encode($item_arr));
 			$item_arr = apply_filters('tainacan-api-items-prepare-for-response', $item_arr, $item, $request);
-			// \error_log("DEBUG-2:");
-			// \error_log(\json_encode($item_arr));
 
 			return $item_arr;
 		}
