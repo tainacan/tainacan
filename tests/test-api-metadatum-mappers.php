@@ -205,13 +205,13 @@ class TAINACAN_REST_Metadatum_Mappers_Controller extends TAINACAN_UnitApiTestCas
 		$dc = new \Tainacan\Mappers\Dublin_Core();
 		
 		$metadatum_mapper_request = new \WP_REST_Request('POST', $this->namespace . '/collections');
-	    $metadatum_mapper_request->set_body(json_encode([
+		$metadatum_mapper_request->set_body(json_encode([
 			\Tainacan\Mappers_Handler::MAPPER_PARAM => $dc->slug,
 			'name' => 'Test Collection'
 		]));
-	    $metadatum_mapper_response = $this->server->dispatch($metadatum_mapper_request);
-	    $this->assertEquals(201, $metadatum_mapper_response->get_status());
-	    $data = $metadatum_mapper_response->get_data();
+		$metadatum_mapper_response = $this->server->dispatch($metadatum_mapper_request);
+		$this->assertEquals(201, $metadatum_mapper_response->get_status());
+		$data = $metadatum_mapper_response->get_data();
 		
 		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch( $data['id'] );
 		
