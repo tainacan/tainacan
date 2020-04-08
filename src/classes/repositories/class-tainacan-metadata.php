@@ -19,7 +19,8 @@ class Metadata extends Repository {
 
 	public $core_metadata = [
 		'Tainacan\Metadata_Types\Core_Title',
-		'Tainacan\Metadata_Types\Core_Description'
+		'Tainacan\Metadata_Types\Core_Description',
+		'Tainacan\Metadata_Types\Core_Author'
 	];
 
 	private static $instance = null;
@@ -660,7 +661,7 @@ class Metadata extends Repository {
 	 * @return void
 	 * @throws \Exception
 	 */
-	public function maybe_update_core_metadata_meta_keys( Entities\Collection $collection_new, Entities\Collection $collection_old, Entities\Metadatum $old_title_metadatum, Entities\Metadatum $old_description_metadatum ) {
+	public function maybe_update_core_metadata_meta_keys( Entities\Collection $collection_new, Entities\Collection $collection_old, Entities\Metadatum $old_title_metadatum, Entities\Metadatum $old_description_metadatum, Entities\Metadatum $old_author_metadatum ) {
 
 		global $wpdb;
 
@@ -672,10 +673,13 @@ class Metadata extends Repository {
 			wp_delete_post( $old_description_metadatum->get_id(), true );
 			update_post_meta( $old_title_metadatum->get_id(), 'metadata_type', 'to_delete', $old_title_metadatum->get_metadata_type() );
 			wp_delete_post( $old_title_metadatum->get_id(), true );
+			update_post_meta( $old_author_metadatum->get_id(), 'metadata_type', 'to_delete', $old_author_metadatum->get_metadata_type() );
+			wp_delete_post( $old_author_metadatum->get_id(), true );
 		}
 
 		$new_title_metadatum       = $collection_new->get_core_title_metadatum();
 		$new_description_metadatum = $collection_new->get_core_description_metadatum();
+		$new_author_metadatum       = $collection_new->get_core_author_metadatum();
 
 		$sql_statement = $wpdb->prepare(
 			"UPDATE $wpdb->postmeta
@@ -697,6 +701,18 @@ class Metadata extends Repository {
 				FROM $wpdb->posts
 				WHERE post_type = %s
 			)", $new_description_metadatum->get_id(), $old_description_metadatum->get_id(), $item_post_type
+		);
+
+		$res = $wpdb->query( $sql_statement );
+
+		$sql_statement = $wpdb->prepare(
+			"UPDATE $wpdb->postmeta
+				SET meta_key = %s
+				WHERE meta_key = %s AND post_id IN (
+				SELECT ID
+				FROM $wpdb->posts
+				WHERE post_type = %s
+			)", $new_author_metadatum->get_id(), $old_author_metadatum->get_id(), $item_post_type
 		);
 
 		$res = $wpdb->query( $sql_statement );
@@ -727,6 +743,14 @@ class Metadata extends Repository {
 				'metadata_type'   => 'Tainacan\Metadata_Types\Core_Title',
 				'status'          => 'publish',
 				'display'		  => 'yes',
+			],
+			'core_author'       => [
+				'name'            => 'Author',
+				'description'     => 'Author',
+				'collection_id'   => $collection->get_id(),
+				'metadata_type'   => 'Tainacan\Metadata_Types\Core_Author',
+				'status'          => 'private',
+				'display'		  => 'no',
 			]
 		];
 
@@ -879,6 +903,33 @@ class Metadata extends Repository {
 				[
 					'key'   => 'metadata_type',
 					'value' => 'Tainacan\Metadata_Types\Core_Description',
+				]
+			],
+			'posts_per_page' => 1
+		] );
+
+		if ( is_array( $results ) && sizeof( $results ) == 1 && $results[0] instanceof \Tainacan\Entities\Metadatum ) {
+			return $results[0];
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get the Core Author Metadatum for a collection
+	 *
+	 * @param Entities\Collection $collection
+	 *
+	 * @return \Tainacan\Entities\Metadatum The Core Author Metadatum
+	 * @throws \Exception
+	 */
+	public function get_core_author_metadatum( Entities\Collection $collection ) {
+
+		$results = $this->fetch_by_collection( $collection, [
+			'meta_query'     => [
+				[
+					'key'   => 'metadata_type',
+					'value' => 'Tainacan\Metadata_Types\Core_Author',
 				]
 			],
 			'posts_per_page' => 1

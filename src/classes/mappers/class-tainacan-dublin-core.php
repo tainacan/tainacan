@@ -24,15 +24,16 @@ class Dublin_Core extends Mapper {
 			'label' => 'Coverage'
 		],
 		'dc:creator' => [
-			'label' => 'Creator'
+			'label' => 'Creator',
+			'core_metadatum' => 'author'
 		],
 		'dc:date' => [
 			'label' => 'Date',
-            'metadata_type' => 'date'
+			'metadata_type' => 'date'
 		],
 		'dc:description' => [
 			'label' => 'Description',
-		    'core_metadatum' => 'description'
+			'core_metadatum' => 'description'
 		],
 		'dc:format' => [
 			'label' => 'Format',
@@ -60,7 +61,7 @@ class Dublin_Core extends Mapper {
 		],
 		'dc:title' => [
 			'label' => 'Title',
-		    'core_metadatum' => 'title'
+			'core_metadatum' => 'title'
 		],
 		'dc:type' => [
 			'label' => 'Type'

@@ -385,6 +385,17 @@ class Item extends Entity {
 	}
 
 	/**
+	 * Define the author id
+	 *
+	 * @param [integer] $value
+	 *
+	 * @return void
+	 */
+	function set_author_id( $value ) {
+		$this->set_mapped_property( 'author_id', $value );
+	}
+
+	/**
 	 *
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::validate()
