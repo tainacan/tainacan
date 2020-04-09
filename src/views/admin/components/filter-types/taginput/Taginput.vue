@@ -15,7 +15,7 @@
                 @typing="search"
                 :aria-close-label="$i18n.get('remove_value')"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                :placeholder="(metadatumType == 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_add_items') : $i18n.get('info_type_to_add_metadata')"
+                :placeholder="getInputPlaceholder"
                 check-infinite-scroll
                 @infinite-scroll="searchMore">
             <template slot-scope="props">
@@ -46,7 +46,7 @@
 </template>
 
 <script>
-    import { tainacan as axios, isCancel } from '../../../js/axios';
+    import { tainacan as axios, isCancel, wp as wpAxios } from '../../../js/axios';
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../../../js/filter-types-mixin';
     import qs from 'qs';
 
@@ -62,6 +62,16 @@
                 searchOffset: 0,
                 searchNumber: 12,
                 totalFacets: 0
+            }
+        },
+        computed: {
+            getInputPlaceholder() {
+                if (this.metadatumType == 'Tainacan\\Metadata_Types\\Relationship') 
+                    return this.$i18n.get('info_type_to_add_items');
+                else if (this.metadatumType == 'Tainacan\\Metadata_Types\\Core_Author')
+                    return this.$i18n.get('info_type_to_add_users');  
+                else 
+                    return this.$i18n.get('info_type_to_add_metadata');
             }
         },
         watch: {
@@ -115,7 +125,7 @@
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
+                if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' || this.metadatumType === 'Tainacan\\Metadata_Types\\Core_Author' )
                     promise = this.getValuesRelationship( this.searchQuery, this.isRepositoryLevel, valuesToIgnore, this.searchOffset, this.searchNumber );
                 else
                     promise = this.getValuesPlainText( this.metadatumId, this.searchQuery, this.isRepositoryLevel, valuesToIgnore, this.searchOffset, this.searchNumber );
@@ -149,7 +159,7 @@
                 if (index >= 0) {
                     let metadata = this.query.metaquery[ index ];
 
-                    if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' ) {
+                    if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship') {
                         let query = qs.stringify({ postin: metadata.value, fetch_only: 'title,thumbnail', fetch_only_meta: '' });
                         let endpoint = '/items/';
 
@@ -167,6 +177,33 @@
                                                 label: item.title, 
                                                 value: item.id, 
                                                 img: item.thumbnail && item.thumbnail.thumbnail && item.thumbnail.thumbnail[0] ? item.thumbnail.thumbnail[0] : null 
+                                            });
+                                        }
+                                    }
+                                    this.$emit( 'sendValuesToTags', { 
+                                        label: this.selected.map((option) => option.label), 
+                                        value: this.selected.map((option) => option.value)
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                this.$console.log(error);
+                            });
+                    } else if (this.metadatumType === 'Tainacan\\Metadata_Types\\Core_Author') {
+                        let query = qs.stringify({ include: metadata.value });
+                        let endpoint = '/users/';
+
+                        wpAxios.get(endpoint + '?' + query)
+                            .then( res => {
+                                if (res.data) {
+                                    this.selected = [];
+                                    for (let user of res.data) {
+                                        let existingUser = this.selected.findIndex((anUser) => user.id == anUser.id);
+                                        if (existingUser < 0) {
+                                            this.selected.push({ 
+                                                label: user.name, 
+                                                value: user.id, 
+                                                img: user.avatar_urls && user.avatar_urls['24'] ? user.avatar_urls['24'] : null 
                                             });
                                         }
                                     }

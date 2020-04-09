@@ -178,7 +178,7 @@ export const dynamicFilterTypeMixin = {
                 return new Object ({
                     request:
                         new Promise((resolve, reject) => {
-                            axios.tainacan.get(url + '&fetch_only=thumbnail,title,id&' + qs.stringify(query_items))
+                            axios.tainacan.get(url + '&' + qs.stringify(query_items))
                                 .then(res => {
 
                                     this.isLoadingOptions = false;

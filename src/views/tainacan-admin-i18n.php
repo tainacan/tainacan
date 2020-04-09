@@ -645,6 +645,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_updated_at'                                => __( 'Updated at', 'tainacan' ),
 	'info_editing_metadata_values'                   => __( 'Editing metadata values...', 'tainacan' ),
 	'info_updating_metadata_values'                  => __( 'Updating metadata values...', 'tainacan' ),
+	'info_type_to_add_users'						 => __( 'Add users to filter...', 'tainacan' ),
 	'info_type_to_add_items'                         => __( 'Add items to filter...', 'tainacan' ),
 	'info_type_to_search_items'                      => __( 'Search items...', 'tainacan' ),
 	'info_type_to_add_terms'                         => __( 'Add terms to filter...', 'tainacan' ),
