@@ -168,7 +168,7 @@ function tainacan_get_the_collection_name() {
 		$name = $collection->get_name();
 	}
 	return apply_filters('tainacan-get-collection-name', $name, $collection);
-}
+}					
 
 /**
  * When visiting a collection archive or single, prints the collection name
@@ -200,6 +200,32 @@ function tainacan_get_the_collection_description() {
  */
 function tainacan_the_collection_description() {
 	echo tainacan_get_the_collection_description();
+}
+
+
+/**
+ * When visiting a collection archive or single, returns the collection url link
+ *
+ * @return string
+ */
+function tainacan_get_the_collection_url() {
+	$collection = tainacan_get_collection();
+	$url = '';
+	
+	if ( $collection ) {
+		$url = $collection->get_url();
+	}
+	return apply_filters('tainacan-get-collection-url', $url, $collection);
+}					
+
+
+/**
+ * When visiting a collection archive or single, prints the collection url link
+ *
+ * @return void
+ */
+function tainacan_the_collection_url() {
+	echo tainacan_get_the_collection_url();
 }
 
 /**
