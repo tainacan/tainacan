@@ -134,12 +134,7 @@
                             </a>
                             <a 
                                     v-if="metadatum.current_user_can_delete"
-                                    :style="{ visibility: 
-                                            metadatum.collection_id != collectionId ||
-                                                metadatum.metadata_type_object.related_mapped_prop == 'title' ||
-                                            metadatum.metadata_type_object.related_mapped_prop == 'description'
-                                            ? 'hidden' : 'visible'
-                                        }" 
+                                    :style="{ visibility: metadatum.collection_id != collectionId || metadatum.metadata_type_object.core ? 'hidden' : 'visible' }" 
                                     @click.prevent="removeMetadatum(metadatum)">
                                 <span
                                         v-tooltip="{

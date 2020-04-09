@@ -15,7 +15,7 @@ class Core_Author extends Metadata_Type {
 	function __construct(){
 		// call metadatum type constructor
 		parent::__construct();
-		$this->set_primitive_type('integer');
+		$this->set_primitive_type('user');
 		$this->set_core(true);
 		$this->set_related_mapped_prop('author_id');
 		$this->set_component('tainacan-author');

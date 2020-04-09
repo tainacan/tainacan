@@ -622,7 +622,7 @@
                     for (let metadatum of this.sortingMetadata) {
                         if (
                             ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug == 'creation_date' && (!metadatum.metadata_type_object || !metadatum.metadata_type_object.core)) && this.orderBy == 'date') ||
-                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date' && (metadatum.metadata_type_object != undefined && metadatum.metadata_type_object.core)) && this.orderBy == metadatum.metadata_type_object.related_mapped_prop) ||
+                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date' && (metadatum.metadata_type_object != undefined && metadatum.metadata_type_object.core)) && this.orderBy == (metadatum.metadata_type_object.related_mapped_prop == 'author_id' ? 'author' : metadatum.metadata_type_object.related_mapped_prop)) ||
                             ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date' && (!metadatum.metadata_type_object || !metadatum.metadata_type_object.core)) && this.orderBy == metadatum.slug) ||
                             ((this.orderBy == 'meta_value' || this.orderBy == 'meta_value_num') && this.getMetaKey() == metadatum.id)
                            )     
@@ -892,6 +892,15 @@
                                             metadata_type_object: {core: true, related_mapped_prop: 'description'},
                                             metadata_type: undefined,
                                             slug: 'description',
+                                            id: undefined,
+                                            display: true
+                                        }); 
+                                        metadata.push({
+                                            name: this.$i18n.get('label_author'),
+                                            metadatum: 'row_author',
+                                            metadata_type_object: {core: true, related_mapped_prop: 'author_id'},
+                                            metadata_type: undefined,
+                                            slug: 'author',
                                             id: undefined,
                                             display: true
                                         }); 

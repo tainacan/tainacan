@@ -97,7 +97,7 @@ export default {
                                     this.$route.query.metakey = orderBy.id;
                                     this.$route.query.metatype = 'DATETIME';
                                 } else if (orderBy.metadata_type_object.core) {
-                                    this.$route.query.orderby =  orderBy.metadata_type_object.related_mapped_prop;
+                                    this.$route.query.orderby = orderBy.metadata_type_object.related_mapped_prop == 'author_id' ? 'author' : orderBy.metadata_type_object.related_mapped_prop;
                                 } else {
                                     this.$route.query.orderby = 'meta_value';
                                     this.$route.query.metakey = orderBy.id;
