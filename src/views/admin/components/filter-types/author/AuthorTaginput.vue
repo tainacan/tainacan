@@ -39,7 +39,7 @@
             <template 
                     v-if="!isLoadingOptions" 
                     slot="empty">
-                {{ $i18n.get('info_no_options_found'	) }}
+                {{ $i18n.get('info_no_options_found') }}
             </template>
         </b-taginput>
     </div>
@@ -55,7 +55,7 @@
         data() {
             return {
                 results:'',
-                selected:[],
+                selected: [],
                 options: [],
                 relatedCollectionId: '',
                 searchQuery: '',

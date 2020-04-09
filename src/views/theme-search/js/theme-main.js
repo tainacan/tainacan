@@ -17,6 +17,7 @@ import FilterTaxonomyTaginput from '../../admin/components/filter-types/taxonomy
 import FilterDateInterval from '../../admin/components/filter-types/date-interval/DateInterval.vue';
 import FilterNumericInterval from '../../admin/components/filter-types/numeric-interval/NumericInterval.vue';
 import FilterNumericListInterval from '../../admin/components/filter-types/numeric-list-interval/NumericListInterval.vue';
+import FilterAuthorTaginput from '../../admin/components/filter-types/author/AuthorTaginput.vue';
 
 import TaincanFiltersList from '../../admin/components/filter-types/tainacan-filter-item.vue';
 import ThemeItemsPage from '../pages/theme-items-page.vue';
@@ -96,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Vue.component('tainacan-filter-date-interval', FilterDateInterval);
         Vue.component('tainacan-filter-numeric-interval', FilterNumericInterval);
         Vue.component('tainacan-filter-numeric-list-interval', FilterNumericListInterval);
+        Vue.component('tainacan-filter-author-taginput', FilterAuthorTaginput);
 
         /* Main page component */
         Vue.component('theme-items-page', ThemeItemsPage);

@@ -243,7 +243,7 @@ class Admin {
 
 		$maps = [
 			'collections' => $Tainacan_Collections->get_map(),
-			'metadata'      => $Tainacan_Metadata->get_map(),
+			'metadata'    => $Tainacan_Metadata->get_map(),
 			'filters'     => $Tainacan_Filters->get_map(),
 			'items'       => $Tainacan_Items->get_map(),
 			'taxonomies'  => $Tainacan_Taxonomies->get_map(),
