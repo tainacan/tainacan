@@ -2,15 +2,15 @@
     <b-autocomplete
             clearable
             :disabled="disabled"
-            :value="value"
+            :value="currentUser && currentUser.name ? currentUser.name : null"
             :data="users"
             :placeholder="$i18n.get('instruction_type_search_users')"
             keep-first
             open-on-focus
-            @input="fetchUsers"
+            @input="loadUsers"
             @focus.once="($event) => loadUsers($event.target.value)"
             @select="onSelect"
-            :loading="isFetchingUsers"
+            :loading="isFetchingUsers || isLoadingCurrentUser"
             field="name"
             icon="account"
             check-infinite-scroll
@@ -45,23 +45,37 @@ export default {
     data() {
         return {
             users: [],
+            isLoadingCurrentUser: false,
             isFetchingUsers: false,
             userId: null,
             usersSearchQuery: '',
             usersSearchPage: 1,
-            totalUsers: 0
+            totalUsers: 0,
+            currentUser: {}
         }
+    },
+    created() {
+        this.loadCurrentUser();
     },
     methods: {
         onSelect(value) {
-            console.log(value)
-            this.$emit('input', value);
+            this.$emit('input', value.id);
         },
         ...mapActions('activity', [
-            'fetchUsers'
+            'fetchUsers',
+            'fetchUser'
         ]),
+        loadCurrentUser() {
+            this.isLoadingCurrentUser = true;
+            this.fetchUser(this.value)
+                .then((res) => {
+                    this.currentUser = res.user;
+                    this.isLoadingCurrentUser = false;
+                })
+                .catch(() => this.isLoadingCurrentUser = false );
+        },
         loadUsers: _.debounce(function (search) {
-
+            console.log(search)
             // String update
             if (search != this.usersSearchQuery) {
                 this.usersSearchQuery = search;
