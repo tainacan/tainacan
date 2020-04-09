@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
     
 export default {
     props: {
@@ -75,7 +75,7 @@ export default {
                 .catch(() => this.isLoadingCurrentUser = false );
         },
         loadUsers: _.debounce(function (search) {
-            console.log(search)
+           
             // String update
             if (search != this.usersSearchQuery) {
                 this.usersSearchQuery = search;
