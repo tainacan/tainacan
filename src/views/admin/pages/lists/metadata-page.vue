@@ -109,6 +109,11 @@
                                                             metadatum.metadata_type_object.related_mapped_prop == 'description'">
                                                         {{ $i18n.get('label_core_description') }}
                                                 </em>
+                                                <em 
+                                                        v-if="metadatum.metadata_type_object.core && 
+                                                            metadatum.metadata_type_object.related_mapped_prop == 'author_id'">
+                                                        {{ $i18n.get('label_core_author') }}
+                                                </em>
                                                 <span 
                                                     class="not-saved" 
                                                     v-if="(editForms[metadatum.id] != undefined && editForms[metadatum.id].saved != true) || metadatum.status == 'auto-draft'">
@@ -152,12 +157,7 @@
                                                 </a>
                                                 <a 
                                                         v-if="metadatum.current_user_can_delete"
-                                                        :style="{ visibility: 
-                                                                metadatum.collection_id != collectionId ||
-                                                                    metadatum.metadata_type_object.related_mapped_prop == 'title' ||
-                                                                metadatum.metadata_type_object.related_mapped_prop == 'description'
-                                                                ? 'hidden' : 'visible'
-                                                            }" 
+                                                        :style="{ visibility: metadatum.collection_id != collectionId || metadatum.metadata_type_object.core ? 'hidden' : 'visible' }"
                                                         @click.prevent="removeMetadatum(metadatum)">
                                                     <span
                                                             v-tooltip="{
