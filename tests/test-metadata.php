@@ -165,8 +165,8 @@ class Metadata extends TAINACAN_UnitTestCase {
 		$retrieve_metadata_ids =  $Tainacan_Metadata->fetch_ids_by_collection( $collection_son, [] );
 
 		// should return 6
-		$this->assertEquals( 6, sizeof( $retrieve_metadata ) );
-		$this->assertEquals( 6, sizeof( $retrieve_metadata_ids ) );
+		$this->assertEquals( 7, sizeof( $retrieve_metadata ) );
+		$this->assertEquals( 7, sizeof( $retrieve_metadata_ids ) );
 	}
 
 	/**

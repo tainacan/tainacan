@@ -64,6 +64,9 @@ $repos = [
                 'name' => 'get_core_description_metadatum',
             ],
             [
+                'name' => 'get_core_author_metadatum',
+            ],
+            [
                 'name' => 'fetch_all_metadatum_values',
             ],
             [

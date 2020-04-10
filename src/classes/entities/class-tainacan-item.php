@@ -385,6 +385,17 @@ class Item extends Entity {
 	}
 
 	/**
+	 * Define the author id
+	 *
+	 * @param [integer] $value
+	 *
+	 * @return void
+	 */
+	function set_author_id( $value ) {
+		$this->set_mapped_property( 'author_id', $value );
+	}
+
+	/**
 	 *
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::validate()
@@ -688,8 +699,6 @@ class Item extends Entity {
 				} else {
 					$output .= $embed;
 				}
-
-
 			}
 
 		}
@@ -699,11 +708,71 @@ class Item extends Entity {
 	}
 
 	/**
+	 * Gets the attachment as a html, can be iframe, image, audio...
+	 */
+	public function get_attachment_as_html($attachment, $img_size = 'large') {
+
+		$output = '';
+
+		if ( wp_attachment_is_image($attachment) ) {
+
+			$img = wp_get_attachment_image($attachment, $img_size);
+			$img_full = wp_get_attachment_url($attachment);
+
+			$image_attributes = wp_get_attachment_image_src($attachment, $img_size );
+			$img = "<img style='max-width: 100%;' src='" . $image_attributes[0] . "' />";
+
+			$output .= sprintf("<a href='%s' target='blank'>%s</a>", $img_full, $img);
+			
+		} else {
+
+			global $wp_embed;
+
+			$url = wp_get_attachment_url($attachment);
+
+			$embed = $wp_embed->autoembed($url);
+
+			if ( $embed == $url ) {
+				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
+			} else {
+				$output .= $embed;
+			}
+		}
+	
+		return $output;
+
+	}
+
+
+	/**
 	* Gets the url to the edit page for this item
 	*/
 	public function get_edit_url() {
 		$collection_id = $this->get_collection_id();
 		$id = $this->get_id();
 		return admin_url("?page=tainacan_admin#/collections/$collection_id/items/$id/edit");
+	}
+
+	/**
+	* Gets the Document url of this item
+	*/
+	public function get_document_download_url() {
+		$type = $this->get_document_type();
+
+		$link = null;
+
+		if ( $type == 'url' ) {
+			$link = $this->get_document();
+		} elseif ( $type == 'text' ) {
+			$link = $this->get_document();
+		} elseif ( $type == 'attachment' ) {
+			if ( wp_attachment_is_image($this->get_document()) ) {
+				$link = wp_get_attachment_url($this->get_document());
+			} else {
+				$link = wp_get_attachment_url($this->get_document());
+			}
+		}
+
+		return $link;
 	}
 }

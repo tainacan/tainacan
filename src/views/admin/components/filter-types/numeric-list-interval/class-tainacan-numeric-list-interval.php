@@ -5,7 +5,7 @@ namespace Tainacan\Filter_Types;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Class TainacanMetadatumType
+ * Class TainacanFilterType
  */
 class Numeric_List_Interval extends Filter_Type {
 

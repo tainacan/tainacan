@@ -75,11 +75,38 @@ function tainacan_get_the_document() {
 		return;
 
 	return apply_filters('tainacan-get-the-document', $item->get_document_as_html(), $item);
+}
 
+function tainacan_the_item_document_download_link() {
+	$item = tainacan_get_item();
+
+	if (!$item)
+		return;
+
+	$link = $item->get_document_download_url();
+
+	if (!$link || $item->get_document_type() == 'text')
+		return;
+
+	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. $link . '" href="' . $link . '">' . __('Download', 'tainacan') . '</a>';
 }
 
 function tainacan_the_document() {
 	echo tainacan_get_the_document();
+}
+
+/**
+ * Return HTML display-ready version of an attachment
+ */
+function tainacan_get_single_attachment_as_html($attachment_id) {
+
+	$item = tainacan_get_item();
+
+	if (!$attachment_id) {
+		return '';
+	}
+
+	echo $item->get_attachment_as_html($attachment_id);
 }
 
 /**
@@ -141,7 +168,7 @@ function tainacan_get_the_collection_name() {
 		$name = $collection->get_name();
 	}
 	return apply_filters('tainacan-get-collection-name', $name, $collection);
-}
+}					
 
 /**
  * When visiting a collection archive or single, prints the collection name
@@ -173,6 +200,32 @@ function tainacan_get_the_collection_description() {
  */
 function tainacan_the_collection_description() {
 	echo tainacan_get_the_collection_description();
+}
+
+
+/**
+ * When visiting a collection archive or single, returns the collection url link
+ *
+ * @return string
+ */
+function tainacan_get_the_collection_url() {
+	$collection = tainacan_get_collection();
+	$url = '';
+	
+	if ( $collection ) {
+		$url = $collection->get_url();
+	}
+	return apply_filters('tainacan-get-collection-url', $url, $collection);
+}					
+
+
+/**
+ * When visiting a collection archive or single, prints the collection url link
+ *
+ * @return void
+ */
+function tainacan_the_collection_url() {
+	echo tainacan_get_the_collection_url();
 }
 
 /**
@@ -330,7 +383,7 @@ function tainacan_get_the_attachments($exclude = null) {
 	if (!$item)
 		return [];
 
-	return apply_filters('tainacan-get-the-attachments', $item->get_attachments(), $item);
+	return apply_filters('tainacan-get-the-attachments', $item->get_attachments($exclude), $item);
 
 }
 

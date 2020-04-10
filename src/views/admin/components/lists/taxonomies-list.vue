@@ -135,11 +135,11 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: (taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections) : $i18n.get('label_no_collections_using_taxonomy'),
+                                        content: (taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections, taxonomy.metadata_by_collection) : $i18n.get('label_no_collections_using_taxonomy'),
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"
-                                    v-html="(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections) : $i18n.get('label_no_collections_using_taxonomy')" />
+                                    v-html="(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections, taxonomy.metadata_by_collection) : $i18n.get('label_no_collections_using_taxonomy')" />
                         </td>
                         <!-- Actions -->
                         <td 
@@ -325,11 +325,11 @@
                     this.$router.push(this.$routerHelper.getTaxonomyEditPath(taxonomyId));
                 }
             },
-            renderListOfCollections(collections) {
+            renderListOfCollections(collections, metadata) {
                 let htmlList = '';
 
                 for (let i = 0; i < collections.length; i++) {
-                    htmlList += `<a target="_blank" href=${ this.adminUrl + 'admin.php?page=tainacan_admin#' + this.$routerHelper.getCollectionPath(collections[i].id)}>${collections[i].name}</a>`;
+                    htmlList += `<a target="_blank" href=${ this.adminUrl + 'admin.php?page=tainacan_admin#' + this.$routerHelper.getCollectionPath(collections[i].id)}>${collections[i].name}(${metadata[collections[i].id].name})</a>`;
                     if (collections.length > 2 && i < collections.length - 1) {
                         if (i < collections.length - 2)
                             htmlList += ', '

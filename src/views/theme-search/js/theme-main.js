@@ -153,33 +153,39 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 // Options related to hidding elements
                 if (this.$el.attributes['hide-filters'] != undefined)
-                    this.hideFilters = this.$el.attributes['hide-filters'].value == 'true' ? true : false;
+                    this.hideFilters = this.isParameterTrue('hide-filters');
                 if (this.$el.attributes['hide-hide-filters-button'] != undefined)
-                    this.hideHideFiltersButton = this.$el.attributes['hide-hide-filters-button'].value == 'true' ? true : false;
+                    this.hideHideFiltersButton = this.isParameterTrue('hide-hide-filters-button');
                 if (this.$el.attributes['hide-search'] != undefined)
-                    this.hideSearch = this.$el.attributes['hide-search'].value == 'true' ? true : false;
+                    this.hideSearch = this.isParameterTrue('hide-search');
                 if (this.$el.attributes['hide-advanced-search'] != undefined)
-                    this.hideAdvancedSearch = this.$el.attributes['hide-advanced-search'].value == 'true' ? true : false;
+                    this.hideAdvancedSearch = this.isParameterTrue('hide-advanced-search');
                 if (this.$el.attributes['hide-sort-by-button'] != undefined)
-                    this.hideSortByButton = this.$el.attributes['hide-sort-by-button'].value == 'true' ? true : false;
+                    this.hideSortByButton = this.isParameterTrue('hide-sort-by-button');
                 if (this.$el.attributes['hide-exposers-button'] != undefined)
-                    this.hideExposersButton = this.$el.attributes['hide-exposers-button'].value == 'true' ? true : false
+                    this.hideExposersButton = this.isParameterTrue('hide-exposers-button');
                 if (this.$el.attributes['hide-items-per-page-button'] != undefined)
-                    this.hideItemsPerPageButton = this.$el.attributes['hide-items-per-page-button'].value == 'true' ? true : false;
+                    this.hideItemsPerPageButton = this.isParameterTrue('hide-items-per-page-button');
                 if (this.$el.attributes['hide-go-to-page-button'] != undefined)
-                    this.hideGoToPageButton = this.$el.attributes['hide-go-to-page-button'].value == 'true' ? true : false;
+                    this.hideGoToPageButton = this.isParameterTrue('hide-go-to-page-button');
 
                 // Other Tweaks
                 if (this.$el.attributes['show-filters-button-inside-search-control'] != undefined)
-                    this.showFiltersButtonInsideSearchControl = this.$el.attributes['show-filters-button-inside-search-control'].value == 'true' ? true : false;
+                    this.showFiltersButtonInsideSearchControl = this.isParameterTrue('show-filters-button-inside-search-control');
                 if (this.$el.attributes['start-with-filters-hidden'] != undefined)
-                    this.startWithFiltersHidden = this.$el.attributes['start-with-filters-hidden'].value == 'true' ? true : false;
+                    this.startWithFiltersHidden = this.isParameterTrue('start-with-filters-hidden');
                 if (this.$el.attributes['filters-as-modal'] != undefined)
-                    this.filtersAsModal = this.$el.attributes['filters-as-modal'].value == 'true' ? true : false;
+                    this.filtersAsModal = this.isParameterTrue('filters-as-modal');
                 if (this.$el.attributes['show-inline-view-mode-options'] != undefined)
-                    this.showInlineViewModeOptions = this.$el.attributes['show-inline-view-mode-options'].value == 'true' ? true : false;
+                    this.showInlineViewModeOptions = this.isParameterTrue('show-inline-view-mode-options');
                 if (this.$el.attributes['show-fullscreen-with-view-modes'] != undefined)
-                    this.showFullscreenWithViewModes = this.$el.attributes['show-fullscreen-with-view-modes'].value == 'true' ? true : false;
+                    this.showFullscreenWithViewModes = this.isParameterTrue('show-fullscreen-with-view-modes');
+            },
+            methods: {
+                isParameterTrue(parameter) {
+                    const value = this.$el.attributes[parameter].value;
+                    return (value == true || value == 'true' || value == '1' || value == 1) ? true : false;
+                }
             },
             render: h => h(ThemeSearch)
         });

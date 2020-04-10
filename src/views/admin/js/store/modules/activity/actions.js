@@ -165,7 +165,7 @@ export const notApprove = ({commit}, activityId) => {
 
 };
 
-// Users for filtering
+// Users for filtering and core author metadata
 export const fetchUsers = ({ commit }, { search, page }) => {
     let endpoint = '/users?search=' + search;
 
@@ -174,11 +174,24 @@ export const fetchUsers = ({ commit }, { search, page }) => {
 
     return new Promise((resolve, reject) => {
         axios.wp.get(endpoint)
-        .then(res => {
-            resolve({ users: res.data, totalUsers: res.headers['x-wp-total'] } );
-        })
-        .catch(error => {
-            reject(error);
-        });
+            .then(res => {
+                resolve({ users: res.data, totalUsers: res.headers['x-wp-total'] } );
+            })
+            .catch(error => {
+                reject(error);
+            });
+    });
+};
+
+// Single user for core author metadata
+export const fetchUser = ({ commit }, userId) => {
+    return new Promise((resolve, reject) => {
+        axios.wp.get('/users/' + userId)
+            .then(res => {
+                resolve({ user: res.data });
+            })
+            .catch(error => {
+                reject(error);
+            });
     });
 };

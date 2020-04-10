@@ -4,7 +4,7 @@ namespace Tainacan\Filter_Types;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Class TainacanMetadatumType
+ * Class TainacanFilterType
  */
 class Checkbox extends Filter_Type {
 

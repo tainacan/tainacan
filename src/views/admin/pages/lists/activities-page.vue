@@ -272,7 +272,7 @@
             ProcessesList,
         },
         mixins: [ dateInter ],
-        data(){
+        data() {
             return {
                 isLoading: false,
                 totalActivities: 0,
@@ -524,7 +524,7 @@
                 }
 
                 // No need to load more
-                if (this.usersForFilteringSearchPage > 1 && this.users.length > this.totalPages*12)
+                if (this.usersForFilteringSearchPage > 1 && this.users.length > this.totalUsers)
                     return;
 
                 this.isFetchingUsers = true;

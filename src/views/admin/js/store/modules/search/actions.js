@@ -107,7 +107,7 @@ export const setOrderBy = ({ state, commit }, orderBy ) => {
         commit('setPostQueryAttribute', {  attr: 'metakey', value: orderBy.id } );
         commit('setPostQueryAttribute', {  attr: 'metatype', value: 'DATETIME' } );
     } else if (orderBy.metadata_type_object.core) {
-        commit('setPostQueryAttribute', {  attr: 'orderby', value: orderBy.metadata_type_object.related_mapped_prop } );
+        commit('setPostQueryAttribute', {  attr: 'orderby', value: orderBy.metadata_type_object.related_mapped_prop == 'author_id' ? 'author' : orderBy.metadata_type_object.related_mapped_prop } );
         commit('removePostQueryAttribute', 'metakey');
         commit('removePostQueryAttribute', 'metatype');
     } else {

@@ -4,13 +4,13 @@ namespace Tainacan\Filter_Types;
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /**
- * Class TainacanMetadatumType
+ * Class TainacanFilterType
  */
 class Taginput extends Filter_Type {
 
     function __construct(){
         $this->set_name( __('Tag Input', 'tainacan') );
-        $this->set_supported_types(['string','long_string','item']);
+        $this->set_supported_types(['string','long_string','item','user']);
         $this->set_component('tainacan-filter-taginput');
         $this->set_use_max_options(false);
         $this->set_preview_template('

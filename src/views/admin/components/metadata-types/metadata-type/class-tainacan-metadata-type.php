@@ -50,7 +50,7 @@ abstract class Metadata_Type  {
     /**
      * Indicates whether this is a core Metadatum Type or not
      *
-     * Core metadatum types are used by Title and description metadata. These metadata:
+     * Core metadatum types are used by Title, Description and Author metadata. These metadata:
      * * Can only be used once, they belong to the repository and can not be deleted
      * * Its values are saved in th wp_post table, and not as post_meta 
      * 

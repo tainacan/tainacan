@@ -240,7 +240,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         $this->assertTrue(is_array($item_metadatas));
 
         // notice for repository metadata
-        $this->assertEquals(3, sizeof($item_metadatas));
+        $this->assertEquals(4, sizeof($item_metadatas));
         //first 2 metadata are repository metadata
         $this->assertTrue( in_array('metadado', $names) );
         
