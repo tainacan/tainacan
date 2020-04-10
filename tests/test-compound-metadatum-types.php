@@ -223,6 +223,16 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		$this->assertEquals( 'Green', $compoundValue[1][$metadatum_child1->get_id()]->get_value() , 'First element of value should have "Red" value' );
 		$this->assertEquals( 'Yellow', $compoundValue[1][$metadatum_child2->get_id()]->get_value() , 'Second element of value should have "Blue" value' );
 
+		$item_metadata_removed = $Tainacan_Item_Metadata->remove_compound_value($i, $metadatum, $item_metadata3->get_parent_meta_id());
+		$compoundItem = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum);
+		$compoundValue = $compoundItem->get_value();
+		
+		$this->assertTrue( is_array($compoundValue), 'value of a compound should return array' );
+		$this->assertEquals( 1, sizeof($compoundValue), 'value should have 1 values' );
+
+		$this->assertEquals( 'Red', $compoundValue[0][$metadatum_child1->get_id()]->get_value() , 'First element of value should have "Red" value' );
+		$this->assertEquals( 'Blue', $compoundValue[0][$metadatum_child2->get_id()]->get_value() , 'Second element of value should have "Blue" value' );
+
 	}
 
 	function test_validations_taxonomy_in_multiple() {

@@ -208,7 +208,23 @@ class Item_Metadata extends Repository {
 			return add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_parent(), $current_value );
 		}
 
+	}
 
+	public function remove_compound_value(\Tainacan\Entities\Item $item, $metadatum_id, $parent_meta_id ) {
+		$post_id = $item->get_id();
+		$current_childrens = get_metadata_by_mid( 'post', $parent_meta_id );
+		if ( is_object( $current_childrens ) ) {
+			$current_childrens = $current_childrens->meta_value;
+		}
+
+		if ( ! is_array( $current_childrens ) ) {
+			$current_childrens = [];
+		}
+		foreach($current_childrens as $meta_children) {
+			delete_post_meta('post', $meta_children);
+		}
+		delete_metadata_by_mid('post', $parent_meta_id);
+		return $current_childrens;
 	}
 
 	/**

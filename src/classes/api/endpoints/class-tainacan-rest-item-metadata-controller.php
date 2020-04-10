@@ -47,7 +47,12 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 					'callback'            => array($this, 'update_item'),
 					'permission_callback' => array($this, 'update_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
-				)
+				),
+				array(
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array($this, 'delete_item'),
+					'permission_callback' => array($this, 'delete_item_permissions_check')
+				),
 			)
 		);
 		register_rest_route($this->namespace,  '/item/(?P<item_id>[\d]+)/'. $this->rest_base,
@@ -310,6 +315,56 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 
 		return $query_params;
 	}
+
+	/**
+	 * Verify if current user has permission to delete a item metadata value
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return bool|\WP_Error
+	 * @throws \Exception
+	 */
+	public function delete_item_permissions_check( $request ) {
+		if (isset($request['item_id'])) {
+			$item = $this->item_repository->fetch($request['item_id']);
+			$metadatum = $this->metadatum_repository->fetch( $request['metadatum_id'] );
+
+			if ( $item instanceof Entities\Item && $metadatum instanceof Entities\Metadatum ) {
+				if( $item->can_edit() && $metadatum->can_read() ) {
+					return true;
+				}
+				else {
+					// not yet implemented
+					// return 'publish' === $metadatum->get_status() && $metadatum->get_accept_suggestion();
+				}
+			}
+
+		}
+
+		return false;
+	}
+
+	public function delete_item( $request ) {
+		$body = json_decode( $request->get_body(), true );
+		if($body) {
+			$item_id  = $request['item_id'];
+			$metadatum_id = $request['metadatum_id'];
+			$parent_meta_id = isset( $body['parent_meta_id'] ) && $body['parent_meta_id'] > 0 ? $body['parent_meta_id'] : null;
+
+			if($parent_meta_id == null) {
+				return new \WP_REST_Response( [
+					'error_message' => __( 'Please verify, invalid value(s)', 'tainacan' ),
+					'errors'        => "operation permitted only compound metadata"
+				], 400 );
+			}
+
+			$item = $this->item_repository->fetch($request['item_id']);
+			$remove_item_metadata = $this->item_metadata_repository->remove_compound_value($item, $metadatum_id, $parent_meta_id);
+			
+			return new \WP_REST_Response(["item_metadata_removed" => $remove_item_metadata], 200);
+		}
+	}
+
 }
 
 ?>
