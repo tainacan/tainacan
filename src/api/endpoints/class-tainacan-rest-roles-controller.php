@@ -146,6 +146,10 @@ class REST_Roles_Controller extends REST_Controller {
 		}
 
 		if ($new_role instanceof \WP_Role) {
+
+			// every role should at least be able to read
+			$new_role->add_cap( 'read' );
+
 			return new \WP_REST_Response($this->_prepare_item_for_response($role_slug, $name, $new_role->capabilities, $request), 201);
 		}
 

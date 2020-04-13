@@ -483,6 +483,22 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 
 	}
 
+	function test_new_role_can_read() {
+
+		$request = new \WP_REST_Request('POST', $this->namespace . '/roles');
+
+		$request->set_query_params(['name' => 'New role']);
+
+		$create = $this->server->dispatch($request);
+
+		$this->assertEquals( 201, $create->get_status() );
+
+		$role = get_role('tainacan-new-role');
+
+		$this->assertTrue( $role->has_cap( 'read' ) );
+
+	}
+
 }
 
 ?>
