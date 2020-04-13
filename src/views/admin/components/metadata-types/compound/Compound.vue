@@ -1,6 +1,7 @@
 <template>
 <div class="child-metadata-inputs">
     <a
+            v-if="childItemMetadataGroups.length > 0"
             class="collapse-all"
             @click="toggleCollapseAllChildren()">
         {{ collapseAllChildren ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
@@ -14,7 +15,7 @@
     <transition name="filter-item">
         
         <transition-group
-            v-if="childItemMetadataGroups.length > 0"
+                v-if="childItemMetadataGroups.length > 0"
                 name="filter-item"
                 class="multiple-inputs">
             <template v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups">
@@ -29,7 +30,7 @@
                         @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"
                         :class="{ 'is-last-input': childIndex == childItemMetadata.length - 1}"/>
                 <a 
-                        v-if="groupIndex > 0" 
+                        v-if="isMultiple" 
                         @click="removeGroup(groupIndex)"
                         class="add-link"
                         :key="groupIndex">
@@ -78,7 +79,7 @@
         },
         computed: {
             isMultiple() {
-                return (this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple == 'yes') ? this.itemMetadatum.metadatum.multiple == 'yes' : false;
+                return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple == 'yes') ? this.itemMetadatum.metadatum.multiple == 'yes' : false;
             }
         },
         watch: {
@@ -92,7 +93,8 @@
 
                     const parentValues = this.isMultiple ? this.itemMetadatum.value : [ this.itemMetadatum.value ];
                     
-                    if (this.itemMetadatum.metadatum &&
+                    if (this.itemMetadatum &&
+                        this.itemMetadatum.metadatum &&
                         this.itemMetadatum.metadatum.metadata_type_options &&
                         this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
                     ) {
@@ -170,7 +172,7 @@
             }
         },
         mounted() {
-            if (!this.isMultiple && this.itemMetadatum.value.length <= 0)
+            if (!this.isMultiple && this.itemMetadatum && this.itemMetadatum.value && this.itemMetadatum.value.length <= 0)
                 this.addGroup();
         },
         methods: {
@@ -188,7 +190,8 @@
                 // Create a new placeholder parent_meta_id group here.
                 let newEmptyGroup = [];
 
-                if (this.itemMetadatum.metadatum &&
+                if (this.itemMetadatum &&
+                    this.itemMetadatum.metadatum &&
                     this.itemMetadatum.metadatum.metadata_type_options &&
                     this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
                 ) {
@@ -216,15 +219,11 @@
             },
             removeGroup(groupIndex) {
                 this.childItemMetadataGroups.splice(groupIndex, 1);
-                let updatedItemMetadatumValue = JSON.parse(JSON.stringify(this.itemMetadatum.value))
-                updatedItemMetadatumValue.splice(groupIndex, 1);
-
-                // If none is the case, the value is update request is sent to the API
-                eventBusItemMetadata.$emit('input', {
+                
+                eventBusItemMetadata.$emit('remove_group', {
                     itemId: this.itemMetadatum.item.id,
                     metadatumId: this.itemMetadatum.metadatum.id,
-                    values: updatedItemMetadatumValue,
-                    parentMetaId: this.itemMetadatum.parent_meta_id
+                    parentMetaId: this.itemMetadatum.value[groupIndex][0].parent_meta_id
                 });
             }
         }

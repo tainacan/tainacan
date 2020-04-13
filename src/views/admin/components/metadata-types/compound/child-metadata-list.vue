@@ -394,6 +394,7 @@
     section.field {
         padding: 0.5em 1em 0 1em;
         position: absolute;
+        width: 100%;
     }
     .children-icon {
         position: absolute;

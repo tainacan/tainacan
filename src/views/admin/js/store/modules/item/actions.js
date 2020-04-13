@@ -36,6 +36,18 @@ export const fetchItemMetadata = ({ commit }, item_id) => {
     });
 };
 
+export const deleteItemMetadataGroup = ({ commit }, { item_id, metadatum_id, parent_meta_id }) => {
+        
+    return new Promise((resolve) => {
+        axios.tainacan.delete(`/item/${item_id}/metadata/${metadatum_id}`, { data: { parent_meta_id: parent_meta_id } })
+            .then( (res) => {
+                commit('deleteChildItemMetadata', { parentMetadatumId: metadatum_id, parentMetaId: parent_meta_id });
+                commit('setLastUpdated');
+                resolve(res.data.item_metadata_removed);
+            });
+    });
+};
+
 export const cleanItemMetadata = ({ commit }) => {
     commit('cleanItemMetadata');
 };

@@ -63,7 +63,7 @@ export const cleanItemMetadata = (state) => {
 }
 
 export const setSingleMetadatum = (state, itemMetadatum) => {
-
+    
     if (itemMetadatum.metadatum.parent <= 0) {
         let index = state.itemMetadata.findIndex(anItemMetadatum => anItemMetadatum.metadatum.id == itemMetadatum.metadatum.id);
         if (index >= 0)
@@ -87,18 +87,18 @@ export const setSingleMetadatum = (state, itemMetadatum) => {
 
             if (currentParent.metadatum.multiple == 'yes') {
                 
-                let currrentChildMetadataGroupIndex = currentParentValues.findIndex((metadataGroup) => {
+                let currentChildMetadataGroupIndex = currentParentValues.findIndex((metadataGroup) => {
                     return metadataGroup.findIndex((metadatumValue) => {
                         return metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id;
                     }) >= 0;
                 });
                 
-                if (currrentChildMetadataGroupIndex >= 0) {
-                    let currrentChildMetadatumIndex = currentParentValues[currrentChildMetadataGroupIndex].findIndex((metadatumValue) => metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id && metadatumValue.metadatum_id == itemMetadatum.metadatum.id);
+                if (currentChildMetadataGroupIndex >= 0) {
+                    let currrentChildMetadatumIndex = currentParentValues[currentChildMetadataGroupIndex].findIndex((metadatumValue) => metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id && metadatumValue.metadatum_id == itemMetadatum.metadatum.id);
                     if (currrentChildMetadatumIndex >= 0)
-                        currentParentValues[currrentChildMetadataGroupIndex].splice(currrentChildMetadatumIndex, 1, childMetadatumValue);
+                        currentParentValues[currentChildMetadataGroupIndex].splice(currrentChildMetadatumIndex, 1, childMetadatumValue);
                     else
-                        currentParentValues[currrentChildMetadataGroupIndex].push(childMetadatumValue);
+                        currentParentValues[currentChildMetadataGroupIndex].push(childMetadatumValue);
                 } else {
                     currentParentValues.push([childMetadatumValue])
                 }
@@ -113,6 +113,26 @@ export const setSingleMetadatum = (state, itemMetadatum) => {
             currentParent.value = currentParentValues;
             Vue.set(state.itemMetadata, parentIndex, currentParent);
         }
+    }
+}
+
+export const deleteChildItemMetadata = (state, { parentMetadatumId, parentMetaId }) => {
+    
+    let parentIndex = state.itemMetadata.findIndex(anItemMetadatum => anItemMetadatum.metadatum.id == parentMetadatumId);
+        
+    if (parentIndex >= 0) {
+        let currentParent = JSON.parse(JSON.stringify(state.itemMetadata[parentIndex]));
+        let currentParentValues = currentParent.value;
+
+        let currentChildMetadataGroupIndex = currentParentValues.findIndex((metadataGroup) => {
+            return metadataGroup.findIndex((metadatumValue) => metadatumValue.parent_meta_id == parentMetaId) >= 0;
+        });
+
+        if (currentChildMetadataGroupIndex >= 0)
+            currentParentValues.splice(currentChildMetadataGroupIndex, 1);
+        
+        currentParent.value = currentParentValues;
+        Vue.set(state.itemMetadata, parentIndex, currentParent);
     }
 }
 

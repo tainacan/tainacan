@@ -121,10 +121,10 @@
         },
         computed: {
             metadatumComponent() {
-                return (this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.metadata_type_object.component) ? this.itemMetadatum.metadatum.metadata_type_object.component : '';
+                return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.metadata_type_object.component) ? this.itemMetadatum.metadatum.metadata_type_object.component : '';
             },
             isMultiple() {
-                return (this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple == 'yes') ? this.itemMetadatum.metadatum.multiple == 'yes' : false;
+                return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple == 'yes') ? this.itemMetadatum.metadatum.multiple == 'yes' : false;
             },
             isTextInputComponent() {
                 const array = ['tainacan-relationship','tainacan-taxonomy', 'tainacan-compound'];
@@ -135,7 +135,7 @@
             this.setInitialValues();
             eventBusItemMetadata.$on('updateErrorMessageOf#' + this.itemMetadatum.metadatum.id, (errors) => {
                 let updatedErrorMessage = '';
-                if (errors && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.id == errors.metadatum_id && errors.errors) {
+                if (errors && this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.id == errors.metadatum_id && errors.errors) {
                     for (let error of errors.errors) { 
                         for (let index of Object.keys(error))
                             updatedErrorMessage += error[index] + '\n';
@@ -145,15 +145,18 @@
             })
         },
         beforeDestroy() {
-            eventBusItemMetadata.$off('updateErrorMessageOf#' + this.itemMetadatum.metadatum.id);
+            if (this.itemMetadatum && this.itemMetadatum.metadatum)
+                eventBusItemMetadata.$off('updateErrorMessageOf#' + this.itemMetadatum.metadatum.id);
         },
         methods: {
             // 'this.values' is always an array for this component, even if it is single valued.
             setInitialValues() {
-                if (this.itemMetadatum.value instanceof Array)
-                    this.values = this.itemMetadatum.value.slice(0); // This way we garantee this.values is a copy of the contents of this.itemMetadatum.value, instead of a reference to it
-                else
-                    this.itemMetadatum.value == null || this.itemMetadatum.value == undefined ? this.values = [] : this.values.push(this.itemMetadatum.value);
+                if (this.itemMetadatum) {
+                    if (this.itemMetadatum.value instanceof Array)
+                        this.values = this.itemMetadatum.value.slice(0); // This way we garantee this.values is a copy of the contents of this.itemMetadatum.value, instead of a reference to it
+                    else
+                        this.itemMetadatum.value == null || this.itemMetadatum.value == undefined ? this.values = [] : this.values.push(this.itemMetadatum.value);
+                }
             },
             changeValue: _.debounce(function() {
                 this.performValueChange();

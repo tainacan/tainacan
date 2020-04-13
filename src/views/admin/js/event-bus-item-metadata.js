@@ -16,9 +16,11 @@ export const eventBusItemMetadata = new Vue({
     },
     created() {
         this.$on('input', this.updateValue);
+        this.$on('remove_group', this.removeItemMetadataGroup);
     },
     beforeUpdate() {
         this.$off('input', this.updateValue);
+        this.$on('remove_group', this.removeItemMetadataGroup);
     },
     methods : {
         updateValue({ itemId, metadatumId, values, parentMetaId }){
@@ -31,7 +33,7 @@ export const eventBusItemMetadata = new Vue({
                     let onlyValues = values.map((aValueObject) => aValueObject.value);
                     values = onlyValues;
                 }
-                console.log(values)
+                
                 this.$store.dispatch('item/updateItemMetadatum', { 
                     item_id: itemId, 
                     metadatum_id: metadatumId, 
@@ -64,6 +66,21 @@ export const eventBusItemMetadata = new Vue({
                         }
                         
                 });
+            }
+        },
+        removeItemMetadataGroup({ itemId, metadatumId, parentMetaId }) {
+            
+            this.$emit('isUpdatingValue', true);
+            
+            if (itemId && metadatumId && parentMetaId) {
+                
+                this.$store.dispatch('item/deleteItemMetadataGroup', { 
+                    item_id: itemId, 
+                    metadatum_id: metadatumId,
+                    parent_meta_id: parentMetaId
+                })
+                    .then(() => this.$emit('isUpdatingValue', false))
+                    .catch(() => this.$emit('isUpdatingValue', false));
             }
         },
         clearAllErrors() {
