@@ -294,6 +294,7 @@
         }
         .add-link {
             font-size: 0.75em;
+            margin-left: -1.25rem;
         }
         .multiple-inputs hr {
             background-color: var(--tainacan-gray2);
