@@ -206,16 +206,19 @@
     }
     
     .tainacan-compound-group {
+        text-align: left;
         margin-left: 2px;
         padding-left: 0.875em;
         border-left: 1px solid var(--tainacan-gray3);
 
         .tainacan-compound-metadatum .label {
+            text-align: left;
             margin-bottom: 0.25em;
             font-size: 1em;
             color: var(--tainacan-info-color);
         }
         .tainacan-compound-metadatum p {
+            text-align: left;
             margin-bottom: 0.75em;
             font-size: 1em;
         }

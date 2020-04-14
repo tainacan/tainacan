@@ -135,6 +135,74 @@ export default {
                 }
             }
         }
+
+        .column-large-width {
+            .tainacan-compound-group {
+                display: inline-block;
+                font-size: 1.125em;
+                margin-top: -0.25em;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                max-width: 100%;
+
+                & * {
+                    display: inline-block;
+                }
+                .label {
+                    font-size: 1em;
+                    color: var(--tainacan-info-color);
+                    &:not(:first-child)::before {
+                        content: ', ';
+                        font-size: 1em;
+                        font-weight: normal;
+                        color: var(--tainacan-info-color);
+                        display: inline-block;
+                        margin-right: 0.35em;
+                        margin-left: -0.15em;
+                    }
+                    &::after {
+                        content: ': ';
+                        font-size: 1em;
+                        color: var(--tainacan-info-color);
+                        display: inline-block;
+                        margin-right: 0.15em;
+                    }
+                }
+                p {
+                    font-size: 1em !important;
+                    line-height: 1.65em !important;
+                }
+            }
+        }
+        .metadata-value {
+                
+            .tainacan-compound-group {
+                margin-left: 2px;
+                padding-left: 0.875em;
+                border-left: 1px solid var(--tainacan-gray3);
+
+                .tainacan-compound-metadatum .label {
+                    margin-bottom: 0.25em;
+                    font-size: 1em;
+                    color: var(--tainacan-info-color);
+                }
+                .tainacan-compound-metadatum p {
+                    margin-bottom: 0.75em;
+                    font-size: 1em;
+                }
+                .multivalue-separator {
+                    display: block;
+                    max-height: 1px;
+                    width: 35px;
+                    background: var(--tainacan-gray3);
+                    content: none;
+                    color: transparent;
+                    margin: 1em auto;
+                }
+                
+            }
+        }
     }
     .loading-overlay {
         min-height: auto !important;

@@ -72,9 +72,10 @@
                                                                                                            column.metadata_type_object.primitive_type == 'float' ||
                                                                                                            column.metadata_type_object.primitive_type == 'int') : false,
                                         'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'term' || 
-                                                                                                            column.metadata_type_object.primitive_type == 'item' || 
-                                                                                                            column.metadata_type_object.primitive_type == 'compound') : false,
-                                        'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
+                                                                                                            column.metadata_type_object.primitive_type == 'item') : false,
+                                        'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' ||
+                                                                                                           column.metadata_type_object.related_mapped_prop == 'description' || 
+                                                                                                           column.metadata_type_object.primitive_type == 'compound') : false,
                                 }">
                             <div class="th-wrap">{{ column.name }}</div>
                         </th>
@@ -101,9 +102,10 @@
                                                                                                            column.metadata_type_object.primitive_type == 'int' ||
                                                                                                            column.metadata_type_object.primitive_type == 'float') : false,
                                         'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'item' || 
-                                                                                                            column.metadata_type_object.primitive_type == 'term' || 
-                                                                                                            column.metadata_type_object.primitive_type == 'compound') : false,
-                                        'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
+                                                                                                            column.metadata_type_object.primitive_type == 'term' ) : false,
+                                        'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' ||
+                                                                                                           column.metadata_type_object.primitive_type == 'compound' ||
+                                                                                                           column.metadata_type_object.related_mapped_prop == 'description') : false,
                                 }">
                             <a :href="item.url">
                                 <p
