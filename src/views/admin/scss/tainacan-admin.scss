@@ -148,6 +148,35 @@ a:hover {
 .hierarchy-separator {
     color: var(--tainacan-gray3);
 }
+
+.metadata-value {
+        
+    .tainacan-compound-group {
+        margin-left: 2px;
+        padding-left: 0.875em;
+        border-left: 1px solid var(--tainacan-gray3);
+
+        .tainacan-compound-metadatum .label {
+            margin-bottom: 0.25em;
+            font-size: 1em;
+            color: var(--tainacan-info-color);
+        }
+        .tainacan-compound-metadatum p {
+            margin-bottom: 0.75em;
+            font-size: 1em;
+        }
+        .multivalue-separator {
+            display: block;
+            max-height: 1px;
+            width: 35px;
+            background: var(--tainacan-gray3);
+            content: none;
+            color: transparent;
+            margin: 1em auto;
+        }
+        
+    }
+}
 .metadata-type-textarea,
 .metadata-type-compound {
     .multivalue-separator {
