@@ -104,7 +104,7 @@
             transition: background-color 0.3s ease;
 
             p {
-                line-height: 1.7;
+                line-height: 2;
                 font-size: 0.875em !important; 
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -144,12 +144,32 @@
                     font-size: 0.75em;
                     margin-bottom: 1em;
                     color: var(--tainacan-info-color);
+
+                    .tainacan-compound-group {
+                        margin-left: 2px;
+                        padding-left: 0.75em;
+                        border-left: 1px solid var(--tainacan-info-color);
+
+                        .tainacan-compound-metadatum .label {
+                            font-size: 1.125em;
+                            color: var(--tainacan-info-color);
+                        }
+                        .multivalue-separator {
+                            display: block;
+                            max-height: 1px;
+                            width: 35px;
+                            background: var(--tainacan-gray3);
+                            content: none;
+                            color: transparent;
+                            margin: 1em auto;
+                        }
+                        
+                    }
                 }
 
                 & span:last-of-type>.metadata-value {
                     margin-bottom: 0px;
                 }
-
             }
         }
     
