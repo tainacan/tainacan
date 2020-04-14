@@ -79,7 +79,10 @@ export const eventBusItemMetadata = new Vue({
                     metadatum_id: metadatumId,
                     parent_meta_id: parentMetaId
                 })
-                    .then(() => this.$emit('isUpdatingValue', false))
+                    .then((res) => {
+                        this.$emit('hasRemovedItemMetadataGroup', res)
+                        this.$emit('isUpdatingValue', false);
+                    })
                     .catch(() => this.$emit('isUpdatingValue', false));
             }
         },

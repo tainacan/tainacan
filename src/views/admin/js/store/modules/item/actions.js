@@ -43,7 +43,7 @@ export const deleteItemMetadataGroup = ({ commit }, { item_id, metadatum_id, par
             .then( (res) => {
                 commit('deleteChildItemMetadata', { parentMetadatumId: metadatum_id, parentMetaId: parent_meta_id });
                 commit('setLastUpdated');
-                resolve(res.data.item_metadata_removed);
+                resolve({ itemMetadataRemoved: res.data.item_metadata_removed, parentMetaId: parent_meta_id });
             });
     });
 };

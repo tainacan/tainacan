@@ -12,41 +12,44 @@
         </span>
     </a>
     
-    <transition name="filter-item">
-        
-        <transition-group
-                v-if="childItemMetadataGroups.length > 0"
-                name="filter-item"
-                class="multiple-inputs">
-            <template v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups">
-                <hr 
-                        v-if="groupIndex > 0"
-                        :key="groupIndex">
+    <div
+            v-if="childItemMetadataGroups.length > 0"
+            class="multiple-inputs">
+        <template v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups">
+            <hr 
+                    v-if="groupIndex > 0"
+                    :key="groupIndex">
+            
+            <template v-for="(childItemMetadatum, childIndex) of childItemMetadata">
+                <div 
+                        class="field skeleton"
+                        :key="groupIndex + '-' + childIndex"
+                        v-if="isRemovingGroup" />
                 <tainacan-form-item
-                        v-for="(childItemMetadatum, childIndex) of childItemMetadata"
-                        :key="childIndex"
+                        v-else
+                        :key="groupIndex + '-' + childIndex"
                         :item-metadatum="childItemMetadatum"
                         :is-collapsed="childItemMetadatum.collapse"
                         @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"
                         :class="{ 'is-last-input': childIndex == childItemMetadata.length - 1}"/>
-                <a 
-                        v-if="isMultiple" 
-                        @click="removeGroup(groupIndex)"
-                        class="add-link"
-                        :key="groupIndex">
-                    <span class="icon is-small">
-                        <i class="tainacan-icon has-text-secondary tainacan-icon-remove"/>
-                    </span>
-                    &nbsp;{{ $i18n.get('label_remove_value') }}
-                </a>
             </template>
-        </transition-group>
-        <p 
-                v-else
-                class="empty-label">
-            {{ $i18n.get('info_no_value_compound_metadata') }}
-        </p>
-    </transition>
+            <a 
+                    v-if="isMultiple" 
+                    @click="removeGroup(groupIndex)"
+                    class="add-link"
+                    :key="groupIndex">
+                <span class="icon is-small">
+                    <i class="tainacan-icon has-text-secondary tainacan-icon-remove"/>
+                </span>
+                &nbsp;{{ $i18n.get('label_remove_value') }}
+            </a>
+        </template>
+    </div>
+    <p 
+            v-else
+            class="empty-label">
+        {{ $i18n.get('info_no_value_compound_metadata') }}
+    </p>
 
     <a 
             v-if="isMultiple"
@@ -72,6 +75,7 @@
         },
         data() {
             return {
+                isRemovingGroup: false,
                 children: [],
                 collapseAllChildren: true,
                 childItemMetadataGroups: []
@@ -89,93 +93,102 @@
              */  
             'itemMetadatum.value': {
                 handler() {
-                    let currentChildItemMetadataGroups = [];
-
-                    const parentValues = this.isMultiple ? this.itemMetadatum.value : [ this.itemMetadatum.value ];
-                    
-                    if (this.itemMetadatum &&
-                        this.itemMetadatum.metadatum &&
-                        this.itemMetadatum.metadatum.metadata_type_options &&
-                        this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
-                    ) {
-                        
-                        // Here we load the values from the object, but must also create some
-                        if (parentValues && parentValues.length) {
-                            
-                            for (let groupIndex = 0; groupIndex < parentValues.length; groupIndex++) {
-                                const childItemMetadata = parentValues[groupIndex];
-                                let existingChildItemMetadata = [];
-
-                                if (childItemMetadata && childItemMetadata.length) {
-                                
-                                    // Loads the existing values
-                                    for (let childIndex = 0; childIndex < childItemMetadata.length; childIndex++) {
-                                        const childItemMetadatum = childItemMetadata[childIndex];
-                                        const childMetadatum = this.itemMetadatum.metadatum.metadata_type_options.children_objects.find((aMetadatum) => aMetadatum.id == childItemMetadatum.metadatum_id);
-                                        
-                                        existingChildItemMetadata.push({
-                                            item: this.itemMetadatum.item,
-                                            metadatum: childMetadatum,
-                                            parent_meta_id: childItemMetadatum.parent_meta_id,
-                                            value: childItemMetadatum.value,
-                                            value_as_html: childItemMetadatum.value_as_html,
-                                            value_as_string: childItemMetadatum.value_as_string,
-                                            collapse: this.childItemMetadataGroups[groupIndex] && this.childItemMetadataGroups[groupIndex][childIndex] ? this.childItemMetadataGroups[groupIndex][childIndex].collapse : (this.collapseAllChildren ? this.collapseAllChildren : false)
-                                        })
-                                    }
-                                    
-                                    // If some have empty childs, we need to create their input
-                                    if (childItemMetadata.length < this.itemMetadatum.metadatum.metadata_type_options.children_objects.length) {
-                                        const existingParentMetaIdIndex = childItemMetadata.findIndex((anItemMetadatum) => anItemMetadatum.parent_meta_id > 0);
-                                        
-                                        for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
-                                            
-                                            const existingValueIndex = childItemMetadata.findIndex((anItemMetadatum) => anItemMetadatum.metadatum_id == child.id);
-                                            if (existingValueIndex < 0) {
-                                                existingChildItemMetadata.push({
-                                                    item: this.itemMetadatum.item,
-                                                    metadatum: child,
-                                                    parent_meta_id: existingParentMetaIdIndex >= 0 ? childItemMetadata[existingParentMetaIdIndex].parent_meta_id : 0,
-                                                    value: '',
-                                                    value_as_html: '',
-                                                    value_as_string: '',
-                                                    collapse: this.collapseAllChildren ? this.collapseAllChildren : false
-                                                });
-                                            }
-                                        }
-                                    }
-                                } else {
-
-                                    // A new input for each type of child metadatum
-                                    for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
-                                        let childObject = {
-                                            item: this.itemMetadatum.item,
-                                            metadatum: child,
-                                            parent_meta_id: '0',
-                                            value: '',
-                                            value_as_html: '',
-                                            value_as_string: '',
-                                            collapse: this.collapseAllChildren ? this.collapseAllChildren : false
-                                        };
-                                        existingChildItemMetadata.push(childObject)
-                                    }
-                                }
-                                currentChildItemMetadataGroups.push(existingChildItemMetadata)
-                            }
-
-                        }
-                    }
-                    
-                    this.childItemMetadataGroups = currentChildItemMetadataGroups;
+                    this.createChildMetadataGroups();
                 },
                 immediate: true
             }
+        },
+        created() {
+            eventBusItemMetadata.$on('hasRemovedItemMetadataGroup', () => this.isRemovingGroup = false);
         },
         mounted() {
             if (!this.isMultiple && this.itemMetadatum && this.itemMetadatum.value && this.itemMetadatum.value.length <= 0)
                 this.addGroup();
         },
+        beforeDestroy() {
+            eventBusItemMetadata.$off('hasRemovedItemMetadataGroup', () => this.isRemovingGroup = false);
+        },
         methods: {
+            createChildMetadataGroups() {
+                let currentChildItemMetadataGroups = [];
+
+                const parentValues = this.isMultiple ? this.itemMetadatum.value : [ this.itemMetadatum.value ];
+                
+                if (this.itemMetadatum &&
+                    this.itemMetadatum.metadatum &&
+                    this.itemMetadatum.metadatum.metadata_type_options &&
+                    this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
+                ) {
+                    
+                    // Here we load the values from the object, but must also create some
+                    if (parentValues && parentValues.length) {
+                        
+                        for (let groupIndex = 0; groupIndex < parentValues.length; groupIndex++) {
+                            const childItemMetadata = parentValues[groupIndex];
+                            let existingChildItemMetadata = [];
+
+                            if (childItemMetadata && childItemMetadata.length) {
+                            
+                                // Loads the existing values
+                                for (let childIndex = 0; childIndex < childItemMetadata.length; childIndex++) {
+                                    const childItemMetadatum = childItemMetadata[childIndex];
+                                    const childMetadatum = this.itemMetadatum.metadatum.metadata_type_options.children_objects.find((aMetadatum) => aMetadatum.id == childItemMetadatum.metadatum_id);
+                                    
+                                    existingChildItemMetadata.push({
+                                        item: this.itemMetadatum.item,
+                                        metadatum: childMetadatum,
+                                        parent_meta_id: childItemMetadatum.parent_meta_id,
+                                        value: childItemMetadatum.value,
+                                        value_as_html: childItemMetadatum.value_as_html,
+                                        value_as_string: childItemMetadatum.value_as_string,
+                                        collapse: this.childItemMetadataGroups[groupIndex] && this.childItemMetadataGroups[groupIndex][childIndex] ? this.childItemMetadataGroups[groupIndex][childIndex].collapse : (this.collapseAllChildren ? this.collapseAllChildren : false)
+                                    })
+                                }
+                                
+                                // If some have empty childs, we need to create their input
+                                if (childItemMetadata.length < this.itemMetadatum.metadatum.metadata_type_options.children_objects.length) {
+                                    const existingParentMetaIdIndex = childItemMetadata.findIndex((anItemMetadatum) => anItemMetadatum.parent_meta_id > 0);
+                                    
+                                    for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
+                                        
+                                        const existingValueIndex = childItemMetadata.findIndex((anItemMetadatum) => anItemMetadatum.metadatum_id == child.id);
+                                        if (existingValueIndex < 0) {
+                                            existingChildItemMetadata.push({
+                                                item: this.itemMetadatum.item,
+                                                metadatum: child,
+                                                parent_meta_id: existingParentMetaIdIndex >= 0 ? childItemMetadata[existingParentMetaIdIndex].parent_meta_id : 0,
+                                                value: '',
+                                                value_as_html: '',
+                                                value_as_string: '',
+                                                collapse: this.collapseAllChildren ? this.collapseAllChildren : false
+                                            });
+                                        }
+                                    }
+                                }
+                            } else {
+
+                                // A new input for each type of child metadatum
+                                for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
+                                    let childObject = {
+                                        item: this.itemMetadatum.item,
+                                        metadatum: child,
+                                        parent_meta_id: '0',
+                                        value: '',
+                                        value_as_html: '',
+                                        value_as_string: '',
+                                        collapse: this.collapseAllChildren ? this.collapseAllChildren : false
+                                    };
+                                    existingChildItemMetadata.push(childObject)
+                                }
+                            }
+                            currentChildItemMetadataGroups.push(existingChildItemMetadata)
+                        }
+
+                    }
+                }
+                
+                this.childItemMetadataGroups = currentChildItemMetadataGroups;
+            },
             toggleCollapseAllChildren() {
                 this.collapseAllChildren = !this.collapseAllChildren;
 
@@ -212,14 +225,13 @@
                 // Sends value to api so we can obtain the parent_meta_id
                 eventBusItemMetadata.$emit('input', {
                     itemId: this.itemMetadatum.item.id,
-                    metadatumId: newEmptyGroup[newEmptyGroup.length - 1].metadatum.id,
-                    values: newEmptyGroup[newEmptyGroup.length - 1].value,
-                    parentMetaId: newEmptyGroup[newEmptyGroup.length - 1].parent_meta_id
+                    metadatumId: newEmptyGroup[0].metadatum.id,
+                    values: newEmptyGroup[0].value,
+                    parentMetaId: newEmptyGroup[0].parent_meta_id
                 });
             },
-            removeGroup(groupIndex) {
-                this.childItemMetadataGroups.splice(groupIndex, 1);
-                
+            removeGroup(groupIndex) {   
+                this.isRemovingGroup = true;        
                 eventBusItemMetadata.$emit('remove_group', {
                     itemId: this.itemMetadatum.item.id,
                     metadatumId: this.itemMetadatum.metadatum.id,
@@ -239,6 +251,10 @@
         padding-top: 5px;
         border-left: 1px solid var(--tainacan-gray2);
 
+        .skeleton {
+            width: 100%;
+            min-height: 60px;
+        }
         .collapse-all {
             margin-left: -8px;
             font-size: 0.75em;
