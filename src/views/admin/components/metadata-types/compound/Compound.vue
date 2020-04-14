@@ -22,9 +22,34 @@
             
             <template v-for="(childItemMetadatum, childIndex) of childItemMetadata">
                 <div 
-                        class="field skeleton"
+                        class="field"
                         :key="groupIndex + '-' + childIndex"
-                        v-if="isRemovingGroup" />
+                        v-if="isRemovingGroup">
+                    <span class="collapse-handle">
+                        <span class="icon">
+                            <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                        </span>
+                        <label class="label has-tooltip">
+                            {{ childItemMetadatum.metadatum.name }}
+                        </label>
+                        <span
+                            v-if="childItemMetadatum.metadatum.required == 'yes'"
+                            class="required-metadatum-asterisk">
+                            *
+                        </span>
+                        <span class="metadata-type">
+                            ({{ childItemMetadatum.metadatum.metadata_type_object.name }})
+                        </span>
+                        <help-button 
+                                :title="childItemMetadatum.metadatum.name"
+                                :message="childItemMetadatum.metadatum.description"/>
+                    </span> 
+                    <div 
+                            class="skeleton"
+                            :style="{ 
+                                minHeight: (childItemMetadatum.metadatum.metadata_type_object.component == 'tainacan-checkbox' || childItemMetadatum.metadatum.metadata_type_object.component == 'tainacan-taxonomycheckbox') ? '150px' : '30px'
+                            }" />
+                </div>
                 <tainacan-form-item
                         v-else
                         :key="groupIndex + '-' + childIndex"
@@ -253,7 +278,7 @@
 
         .skeleton {
             width: 100%;
-            min-height: 60px;
+            min-height: 30px;
         }
         .collapse-all {
             margin-left: -8px;
