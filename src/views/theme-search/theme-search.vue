@@ -119,6 +119,16 @@ export default {
             list-style: none;
         }
 
+        /* WordPress customize shortcut edit buttons are not appearing properly */
+        .customize-partial-edit-shortcut button,
+        .widget .customize-partial-edit-shortcut button {
+            opacity: 1;
+            animation: none;
+            left: 30px;
+            top: 2px;
+            pointer-events: auto;
+        }
+
         // We need this because bootstrap messes up with this class
         .dropdown-menu {
             display: block;
