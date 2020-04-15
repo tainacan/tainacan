@@ -228,6 +228,22 @@ function tainacan_the_collection_url() {
 	echo tainacan_get_the_collection_url();
 }
 
+
+/**
+ * get related to view modes
+ *
+ * @return array ['default_view_mode'=> [], '$enabled_view_modes'=> [] ]
+ */
+function tainacan_get_the_view_modes() {
+	$default_view_mode = apply_filters( 'tainacan-default-view-mode-for-themes', 'masonry' );
+	$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', ['table', 'cards', 'masonry', 'slideshow'] );
+	return [
+		'default_view_mode' => $default_view_mode,
+		'enabled_view_modes' => $enabled_view_modes
+	];
+}
+
+
 /**
  * Outputs the div used by Vue to render the Items List with a powerful faceted search
  *
@@ -260,8 +276,9 @@ function tainacan_the_faceted_search($args = array()) {
 	$props = ' ';
 	
 	// Loads info related to view modes
-	$default_view_mode = apply_filters( 'tainacan-default-view-mode-for-themes', 'masonry' );
-	$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', ['table', 'cards', 'masonry', 'slideshow'] );
+	$view_modes = tainacan_get_the_view_modes();
+	$default_view_mode = $view_modes['default_view_mode'];
+	$enabled_view_modes = $view_modes['enabled_view_modes'];
 
 	if( isset($args['default-view-mode']) ) {
 		$default_view_mode = $args['default-view-mode'];
