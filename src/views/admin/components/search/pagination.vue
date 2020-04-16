@@ -29,6 +29,7 @@
             </span>
         </div> 
         <div 
+                id="tainacanItemsPerPageButton"
                 v-if="!hideItemsPerPageButton"
                 class="items-per-page">
             <b-field 
@@ -64,6 +65,7 @@
             </b-field>
         </div>
         <div 
+                id="tainacanGoToPageButton"
                 v-if="!hideGoToPageButton"
                 class="go-to-page items-per-page">
             <b-field 

@@ -82,7 +82,8 @@
             <!-- Another option of the Button for hiding filters -->
             <div 
                     v-if="showFiltersButtonInsideSearchControl && !hideHideFiltersButton && !hideFilters && !openAdvancedSearch"
-                    class="search-control-item">
+                    class="search-control-item"
+                    id="tainacanFiltersButton">
                 <button 
                         class="button is-white"
                         :aria-label="$i18n.get('filters')"
@@ -202,6 +203,7 @@
                             {{ $i18n.get('info_by_inner') }}
                         </span>
                         <b-dropdown
+                                id="tainacanSortByDropdown"
                                 :mobile-modal="true"
                                 @input="onChangeOrderBy($event)"
                                 aria-role="list"
@@ -234,7 +236,8 @@
             <!-- View Modes Dropdown -->
             <div 
                     v-if="enabledViewModes.length > 1"
-                    class="search-control-item">
+                    class="search-control-item"
+                    id="tainacanViewModesSection">
                 <b-field>
                     <label 
                             class="label is-hidden-touch is-hidden-desktop-only"
@@ -301,7 +304,9 @@
             </div>
 
             <!-- Theme Full Screen mode, it's just a special view mode -->
-            <div class="search-control-item">
+            <div 
+                    id="tainacanFullScreenViewMode"
+                    class="search-control-item">
                 <button 
                         class="button is-white"
                         :aria-label="$i18n.get('label_slideshow')"
@@ -319,6 +324,7 @@
 
             <!-- Exposers or alternative links modal button -->
             <div 
+                    id="tainacanExposersButton"
                     v-if="!hideExposersButton"
                     class="search-control-item">
                 <button 
