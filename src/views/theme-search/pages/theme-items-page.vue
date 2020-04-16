@@ -545,6 +545,7 @@
             termId: Number,
             taxonomy: String,
             // View Mode settings
+            isForcedViewMode: Boolean,
             defaultViewMode: String,
             enabledViewModes: Object,
             // Hidding elements
@@ -716,9 +717,10 @@
 
             // Setting initial view mode on Theme
             let prefsViewMode = !this.isRepositoryLevel ? 'view_mode_' + this.collectionId : 'view_mode';
-            if (this.$userPrefs.get(prefsViewMode) == undefined)
+           
+            if (this.$userPrefs.get(prefsViewMode) == undefined || this.isForcedViewMode == true) {
                 this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
-            else {
+            } else {
                 const userPrefViewMode = this.$userPrefs.get(prefsViewMode);
 
                 let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == userPrefViewMode);

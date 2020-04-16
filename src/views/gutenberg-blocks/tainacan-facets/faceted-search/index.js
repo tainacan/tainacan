@@ -337,6 +337,26 @@ registerBlockType('tainacan/faceted-search', {
                                     } 
                                 }
                             />
+                             <BaseControl
+                                    id="defaultViewModeSelect"
+                                    label={ __('Forced default view mode', 'tainacan')}
+                                    help={ __('The default view mode to be forced against the one setted on the repository', 'tainacan') }>
+                                <SelectControl
+                                        label={ __('Default view mode', 'tainacan') }
+                                        hideLabelFromVision
+                                        value={ defaultViewMode }
+                                        options={
+                                            [{ value: 'none', label: __('Use current view mode settings', 'tainacan') }]
+                                                .concat(Object.entries(tainacan_plugin.registered_view_modes)
+                                                    .map(aViewMode => { return { label: aViewMode[1].label, value: aViewMode[0] }})
+                                                )
+                                        }
+                                        onChange={ (aViewMode) => {
+                                            defaultViewMode = aViewMode;
+                                            setAttributes({ defaultViewMode: aViewMode });
+                                        } }
+                                    />
+                            </BaseControl>
                         </PanelBody>
 
                         <PanelBody
@@ -932,7 +952,8 @@ registerBlockType('tainacan/faceted-search', {
                     term-id={ listType == 'term' ? termId : null }
                     taxonomy={ listType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
                     collection-id={ listType == 'collection' ? collectionId : null }  
-                    default-view-mode={ defaultViewMode }
+                    default-view-mode={ defaultViewMode == 'none' ? defaultViewMode : 'masonry' }
+                    is-forced-view-mode={ defaultViewMode == 'none' ? true : false }
                     enabled-view-modes={ enabledViewModes.toString() }  
                     hide-filters = { hideFilters.toString() }
                     hide-hide-filters-button= { hideHideFiltersButton.toString() }
