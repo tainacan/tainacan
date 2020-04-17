@@ -510,17 +510,17 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$current_user = $this->subscriber2; // force update current user object with new capabilities
 
 		$meta = tainacan_metadata()->fetch_by_collection($this->public_collection);
-		$this->AssertEquals(6, sizeof($meta));
+		$this->AssertEquals(5, sizeof($meta));
 		$meta = tainacan_metadata()->fetch_ids_by_collection($this->public_collection);
-		$this->AssertEquals(6, sizeof($meta));
+		$this->AssertEquals(5, sizeof($meta));
 
 		$this->subscriber2->add_cap( 'tnc_rep_read_private_metadata' );
 		$current_user = $this->subscriber2; // force update current user object with new capabilities
 
 		$meta = tainacan_metadata()->fetch_by_collection($this->public_collection);
-		$this->AssertEquals(7, sizeof($meta));
+		$this->AssertEquals(6, sizeof($meta));
 		$meta = tainacan_metadata()->fetch_ids_by_collection($this->public_collection);
-		$this->AssertEquals(7, sizeof($meta));
+		$this->AssertEquals(6, sizeof($meta));
 
 
 	}

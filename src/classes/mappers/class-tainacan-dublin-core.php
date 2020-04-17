@@ -25,7 +25,6 @@ class Dublin_Core extends Mapper {
 		],
 		'dc:creator' => [
 			'label' => 'Creator',
-			'core_metadatum' => 'author'
 		],
 		'dc:date' => [
 			'label' => 'Date',

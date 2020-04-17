@@ -348,7 +348,6 @@ class Collections extends Repository {
 		$this->old_collection       = $this->fetch( $collection->get_id() );
 		$this->old_core_title       = $collection->get_core_title_metadatum();
 		$this->old_core_description = $collection->get_core_description_metadatum();
-		$this->old_core_author      = $collection->get_core_author_metadatum();
 
 
 	}
@@ -361,10 +360,9 @@ class Collections extends Repository {
 		if ( $this->old_collection instanceof Entities\Collection &&
 			$this->old_collection->get_parent() != $collection->get_parent() &&
 			$this->old_core_title instanceof Entities\Metadatum &&
-			$this->old_core_description instanceof Entities\Metadatum && 
-			$this->old_core_author instanceof Entities\Metadatum
+			$this->old_core_description instanceof Entities\Metadatum
 		) {
-			$Tainacan_Metadata->maybe_update_core_metadata_meta_keys( $collection, $this->old_collection, $this->old_core_title, $this->old_core_description, $this->old_core_author);
+			$Tainacan_Metadata->maybe_update_core_metadata_meta_keys( $collection, $this->old_collection, $this->old_core_title, $this->old_core_description );
 		}
 	}
 

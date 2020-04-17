@@ -494,7 +494,7 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Get the two core metadata of the collection (title, description and author)
+	 * Get the two core metadata of the collection (title and description)
 	 *
 	 * @return array[\Tainacan\Entities\Metadatum]
 	 */
@@ -525,17 +525,6 @@ class Collection extends Entity {
 		$repo = \Tainacan\Repositories\Metadata::get_instance();
 
 		return $repo->get_core_description_metadatum($this);
-	}
-
-	/**
-	 * Get the Core Author Metadatum of the collection
-	 *
-	 * @return array[\Tainacan\Entities\Metadatum]
-	 */
-	function get_core_author_metadatum() {
-		$repo = \Tainacan\Repositories\Metadata::get_instance();
-
-		return $repo->get_core_author_metadatum($this);
 	}
 
 	/**
