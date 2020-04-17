@@ -347,11 +347,26 @@ class Item_Metadata extends Repository {
 					return $value->meta_value;
 				}
 			} else {
-				return get_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), $unique );
+				if( !metadata_exists('post', $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id()) ) {
+					return $this->get_default_value($item_metadata->get_metadatum());
+				} else {
+					return get_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), $unique );
+				}
 			}
 
 		}
 
+	}
+
+	private function get_default_value($metadatum) {
+		if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\User' ) {
+			$options = $metadatum->get_metadata_type_options();
+			if ( isset($options['default_author']) && $options['default_author'] = 'yes') {
+				return get_current_user_id();
+			}
+			return "";
+		}
+		return $metadatum->get_default_value();
 	}
 
 	/**

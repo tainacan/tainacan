@@ -36,6 +36,8 @@ class User extends Metadata_Type {
 	}
 
 	function user_exists($user) {
+		if ( empty($user) ) 
+			return true;
 		// if( !is_int($user) )
 		// 	return username_exists($user) !== false;
 
