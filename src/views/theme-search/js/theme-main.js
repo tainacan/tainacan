@@ -118,6 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 taxonomy: '',
                 collectionId: '',
                 defaultViewMode: '',
+                isForcedViewMode: false,
                 enabledViewModes: {},
                 hideFilters: false,
                 hideHideFiltersButton: false,
@@ -147,6 +148,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
                 else
                     this.defaultViewMode = 'cards';
+                    
+                if (this.$el.attributes['is-forced-view-mode'] != undefined)
+                    this.isForcedViewMode = new Boolean(this.$el.attributes['is-forced-view-mode'].value);
 
                 if (this.$el.attributes['enabled-view-modes'] != undefined)
                     this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');

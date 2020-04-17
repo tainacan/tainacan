@@ -223,14 +223,21 @@
                                 <b-dropdown-item
                                         v-for="(viewMode, index) in Object.keys(registeredViewModes)"
                                         :key="index"
-                                        class="control"
                                         custom
                                         aria-role="listitem">
                                     <b-checkbox
                                             v-if="registeredViewModes[viewMode] != undefined"
                                             @input="updateViewModeslist(viewMode)"
-                                            :value="checkIfViewModeEnabled(viewMode)">
-                                        {{ registeredViewModes[viewMode].label }}
+                                            :value="checkIfViewModeEnabled(viewMode)"
+                                            :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => registeredViewModes[aViewMode].full_screen != true).length <= 1">
+                                        <span 
+                                                class="gray-icon"
+                                                :class="{ 
+                                                    'has-text-secondary' : checkIfViewModeEnabled(viewMode),
+                                                    'has-text-gray4' : !checkIfViewModeEnabled(viewMode)  
+                                                }"
+                                                v-html="registeredViewModes[viewMode].icon"/>
+                                        <span>{{ registeredViewModes[viewMode].label }}</span>
                                     </b-checkbox>
                                 </b-dropdown-item>   
                             </b-dropdown>
@@ -256,7 +263,8 @@
                                     v-for="(viewMode, index) of form.enabled_view_modes"
                                     v-if="registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen != true"
                                     :key="index"
-                                    :value="viewMode">{{ registeredViewModes[viewMode].label }}
+                                    :value="viewMode">
+                                {{ registeredViewModes[viewMode].label }}
                             </option>
                         </b-select>
                     </b-field>
@@ -818,10 +826,16 @@ export default {
                 this.form.enabled_view_modes.splice(index, 1);
             else    
                 this.form.enabled_view_modes.push(viewMode);
+
+            // Puts a valid view mode as default if the current one is not in the list anymore.
+            if (!this.checkIfViewModeEnabled(this.form.default_view_mode)) {
+                const validViewModeIndex = this.form.enabled_view_modes.findIndex((aViewMode) => !this.registeredViewModes[aViewMode].full_screen);
+                if (validViewModeIndex >= 0)
+                    this.form.default_view_mode = this.form.enabled_view_modes[validViewModeIndex];
+            }
         },
         checkIfViewModeEnabled(viewMode) {
-            let index = this.form.enabled_view_modes.findIndex(aViewMode => aViewMode == viewMode);
-            return index > -1;
+            return this.form.enabled_view_modes.includes(viewMode);
         },
         fecthCoverPages: _.debounce(function(search) {
 

@@ -6,6 +6,7 @@
             :taxonomy="$root.taxonomy ? $root.taxonomy : null"
             :enabled-view-modes="$root.enabledViewModes" 
             :default-view-mode="$root.defaultViewMode"
+            :is-forced-view-mode="$root.isForcedViewMode"
             :hide-filters="$root.hideFilters ? $root.hideFilters : false"
             :hide-hide-filters-button="$root.hideHideFiltersButton ? $root.hideHideFiltersButton : false"
             :hide-search="$root.hideSearch ? $root.hideSearch : false"
@@ -117,6 +118,16 @@ export default {
         }
         ul {
             list-style: none;
+        }
+
+        /* WordPress customize shortcut edit buttons are not appearing properly */
+        .customize-partial-edit-shortcut button,
+        .widget .customize-partial-edit-shortcut button {
+            opacity: 1;
+            animation: none;
+            left: 30px;
+            top: 2px;
+            pointer-events: auto;
         }
 
         // We need this because bootstrap messes up with this class

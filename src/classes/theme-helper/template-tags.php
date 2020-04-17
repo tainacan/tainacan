@@ -236,10 +236,16 @@ function tainacan_the_collection_url() {
  */
 function tainacan_get_the_view_modes() {
 	$default_view_mode = apply_filters( 'tainacan-default-view-mode-for-themes', 'masonry' );
-	$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', ['table', 'cards', 'masonry', 'slideshow'] );
+	$registered_view_modes = \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes();
+	$registered_view_modes_slugs = [];
+	foreach ($registered_view_modes as $key => $value) {
+		array_push($registered_view_modes_slugs, $key);
+	}
+	$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', $registered_view_modes_slugs );
 	return [
 		'default_view_mode' => $default_view_mode,
-		'enabled_view_modes' => $enabled_view_modes
+		'enabled_view_modes' => $enabled_view_modes,
+		'registered_view_modes' => $registered_view_modes
 	];
 }
 

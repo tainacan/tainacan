@@ -234,7 +234,7 @@ class Admin {
 			'theme_collection_list_url' => get_post_type_archive_link( 'tainacan-collection' ),
 			'custom_header_support'  	=> get_theme_support('custom-header'),
 			'registered_view_modes'  	=> \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes(),
-		    'exposer_mapper_param'   => \Tainacan\Mappers_Handler::MAPPER_PARAM,
+		    'exposer_mapper_param'   	=> \Tainacan\Mappers_Handler::MAPPER_PARAM,
 			'exposer_type_param'     	=> \Tainacan\Exposers_Handler::TYPE_PARAM,
 			'repository_name'	 		=> get_bloginfo('name'),
 			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
