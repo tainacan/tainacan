@@ -347,9 +347,9 @@ registerBlockType('tainacan/faceted-search', {
                                         value={ defaultViewMode }
                                         options={
                                             [{ value: 'none', label: __('Use current view mode settings', 'tainacan') }]
-                                                .concat(Object.entries(tainacan_plugin.registered_view_modes)
-                                                    .map(aViewMode => { return { label: aViewMode[1].label, value: aViewMode[0] }})
-                                                )
+                                            .concat(Object.entries(tainacan_plugin.registered_view_modes)
+                                                .map(aViewMode => { return { label: aViewMode[1].label, value: aViewMode[0], disabled: aViewMode[1].full_screen }})
+                                            )
                                         }
                                         onChange={ (aViewMode) => {
                                             defaultViewMode = aViewMode;
