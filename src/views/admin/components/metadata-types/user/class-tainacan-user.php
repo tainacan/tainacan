@@ -98,6 +98,8 @@ class User extends Metadata_Type {
 	 */
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
+		if (empty($value)) 
+			return "";
 		$name = get_the_author_meta( 'display_name', $value );
 		return apply_filters("tainacan-item-get-author-name", $name, $this);
 	}
