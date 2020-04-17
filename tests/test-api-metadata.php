@@ -825,7 +825,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 		$data = $response->get_data();
 
-		$this->assertEquals(5, count($data['metadata_order']));
+		$this->assertEquals(4, count($data['metadata_order']));
 
 		wp_logout();
 		wp_set_current_user(0);

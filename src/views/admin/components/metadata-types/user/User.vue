@@ -45,6 +45,7 @@ export default {
     data() {
         return {
             users: [],
+            defaultAuthor: 'no',
             isLoadingCurrentUser: false,
             isFetchingUsers: false,
             userId: null,
