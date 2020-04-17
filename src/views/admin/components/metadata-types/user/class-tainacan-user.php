@@ -17,8 +17,9 @@ class User extends Metadata_Type {
 		parent::__construct();
 		$this->set_primitive_type('user');
 		$this->set_component('tainacan-user');
+		$this->set_form_component('tainacan-form-user');
 		$this->set_name( __('User', 'tainacan') );
-		$this->set_description( __('A registered user on wordpress', 'tainacan') );
+		$this->set_description( __('A registered user on WordPress', 'tainacan') );
 		$this->set_preview_template('
 			<div>
 				<div class="control is-clearfix">
@@ -28,24 +29,17 @@ class User extends Metadata_Type {
 		');
 	}
 
-	/**
-	 * generate the metadata for this metadatum type
-	 */
-	public function form() {
-
-	}
-
 	function user_exists($user) {
 		// if( !is_int($user) )
 		// 	return username_exists($user) !== false;
 
-    global $wpdb;
-    // Check cache:
-    if (wp_cache_get($user, 'users')) return true;
-    // Check database:
-		if ($wpdb->get_var($wpdb->prepare("SELECT EXISTS (SELECT 1 FROM $wpdb->users WHERE ID = %d)", $user)))
-			return true;
-		return false;
+		global $wpdb;
+		// Check cache:
+		if (wp_cache_get($user, 'users')) return true;
+		// Check database:
+			if ($wpdb->get_var($wpdb->prepare("SELECT EXISTS (SELECT 1 FROM $wpdb->users WHERE ID = %d)", $user)))
+				return true;
+			return false;
 	}
 	
 	/**
@@ -72,6 +66,18 @@ class User extends Metadata_Type {
 		}
 		return true;
 	}
+
+	/**
+     * @inheritdoc
+     */
+    public function get_form_labels(){
+        return [
+            'default_author' => [
+                'title' => __( 'Defaults to author user', 'tainacan' ),
+                'description' => __( 'This sets the default value of this metadata as the current item author.', 'tainacan' ),
+            ]
+        ];
+    }
 
 	public function validate_options( Metadatum $metadatum ) {
 		if ( !in_array($metadatum->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) ) {

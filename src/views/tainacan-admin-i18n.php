@@ -231,7 +231,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_inherited'                                => __( 'Inherited', 'tainacan' ),
 	'label_core_title'                               => __( 'Core Title', 'tainacan' ),
 	'label_core_description'                         => __( 'Core Description', 'tainacan' ),
-	'label_core_author'                              => __( 'Core Author', 'tainacan' ),
 	'label_sorting'                                  => __( 'Sorting', 'tainacan' ),
 	'label_sorting_direction'                        => __( 'Sorting direction', 'tainacan' ),
 	'label_sort'	                                 => __( 'Sort', 'tainacan' ),
@@ -460,6 +459,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_associated_roles'					 	 => __( 'Associated roles', 'tainacan' ),
 	'label_inherited_roles'						 	 => __( 'Inherited roles', 'tainacan' ),
 	'label_editing_capabilitiy'					 	 => __( 'Editing capabilitiy', 'tainacan' ),
+	'label_default_author_user'						 => __( 'Set the item author as default value', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

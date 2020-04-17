@@ -96,24 +96,10 @@
                                             </span>
                                             <span   
                                                     v-if="metadatum.id != undefined && metadatum.metadata_type_object"
-                                                    class="label-details">  
+                                                    class="label-details"
+                                                    :class="{ 'has-text-weight-bold': metadatum.metadata_type_object.core }">  
                                                 ({{ metadatum.metadata_type_object.name }}) 
                                                 <em v-if="metadatum.collection_id != collectionId">{{ $i18n.get('label_inherited') }}</em>
-                                                <em 
-                                                        v-if="metadatum.metadata_type_object.core && 
-                                                            metadatum.metadata_type_object.related_mapped_prop == 'title'">
-                                                        {{ $i18n.get('label_core_title') }}
-                                                </em>
-                                                <em 
-                                                        v-if="metadatum.metadata_type_object.core && 
-                                                            metadatum.metadata_type_object.related_mapped_prop == 'description'">
-                                                        {{ $i18n.get('label_core_description') }}
-                                                </em>
-                                                <em 
-                                                        v-if="metadatum.metadata_type_object.core && 
-                                                            metadatum.metadata_type_object.related_mapped_prop == 'author_id'">
-                                                        {{ $i18n.get('label_core_author') }}
-                                                </em>
                                                 <span 
                                                     class="not-saved" 
                                                     v-if="(editForms[metadatum.id] != undefined && editForms[metadatum.id].saved != true) || metadatum.status == 'auto-draft'">

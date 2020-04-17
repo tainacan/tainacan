@@ -9,7 +9,7 @@
             lang="en"
             :step="getStep"/>
 </template>
-itemMetadatum
+
 <script>
     export default {
         props: {

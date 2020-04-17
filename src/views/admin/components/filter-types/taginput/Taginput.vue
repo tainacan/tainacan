@@ -68,7 +68,7 @@
             getInputPlaceholder() {
                 if (this.metadatumType == 'Tainacan\\Metadata_Types\\Relationship') 
                     return this.$i18n.get('info_type_to_add_items');
-                else if (this.metadatumType == 'Tainacan\\Metadata_Types\\Core_Author')
+                else if (this.metadatumType == 'Tainacan\\Metadata_Types\\User')
                     return this.$i18n.get('info_type_to_add_users');  
                 else 
                     return this.$i18n.get('info_type_to_add_metadata');
@@ -125,7 +125,7 @@
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' || this.metadatumType === 'Tainacan\\Metadata_Types\\Core_Author' )
+                if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' || this.metadatumType === 'Tainacan\\Metadata_Types\\User' )
                     promise = this.getValuesRelationship( this.searchQuery, this.isRepositoryLevel, valuesToIgnore, this.searchOffset, this.searchNumber );
                 else
                     promise = this.getValuesPlainText( this.metadatumId, this.searchQuery, this.isRepositoryLevel, valuesToIgnore, this.searchOffset, this.searchNumber );
@@ -189,7 +189,7 @@
                             .catch(error => {
                                 this.$console.log(error);
                             });
-                    } else if (this.metadatumType === 'Tainacan\\Metadata_Types\\Core_Author') {
+                    } else if (this.metadatumType === 'Tainacan\\Metadata_Types\\User') {
                         let query = qs.stringify({ include: metadata.value });
                         let endpoint = '/users/';
 
