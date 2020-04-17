@@ -229,7 +229,7 @@
                                             v-if="registeredViewModes[viewMode] != undefined"
                                             @input="updateViewModeslist(viewMode)"
                                             :value="checkIfViewModeEnabled(viewMode)"
-                                            :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => registeredViewModes[aViewMode].full_screen != true).length <= 1">
+                                            :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => (registeredViewModes[aViewMode] && registeredViewModes[aViewMode].full_screen != true)).length <= 1">
                                         <span 
                                                 class="gray-icon"
                                                 :class="{ 
@@ -829,7 +829,7 @@ export default {
 
             // Puts a valid view mode as default if the current one is not in the list anymore.
             if (!this.checkIfViewModeEnabled(this.form.default_view_mode)) {
-                const validViewModeIndex = this.form.enabled_view_modes.findIndex((aViewMode) => !this.registeredViewModes[aViewMode].full_screen);
+                const validViewModeIndex = this.form.enabled_view_modes.findIndex((aViewMode) => (this.registeredViewModes[aViewMode] && !this.registeredViewModes[aViewMode].full_screen));
                 if (validViewModeIndex >= 0)
                     this.form.default_view_mode = this.form.enabled_view_modes[validViewModeIndex];
             }
