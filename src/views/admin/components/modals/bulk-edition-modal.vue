@@ -537,12 +537,7 @@
                 let validEditionActions = {};
                 
                 for (let [actionKey, action] of Object.entries(isMultiple ? this.editionActionsForMultiple : this.editionActionsForNotMultiple)) {
-                    if (   (metadatumID != 'status' &&
-                            metadatumID != 'comments' &&
-                            (this.getMetadataByID(metadatumID) && this.getMetadataByID(metadatumID).metadata_type_object && this.getMetadataByID(metadatumID).metadata_type_object.component !== 'tainacan-author')
-                            ) || 
-                            actionKey != 'clear'
-                        )
+                    if ((metadatumID != 'status' && metadatumID != 'comments') || actionKey != 'clear')
                         validEditionActions[actionKey] = action;
                 }
 

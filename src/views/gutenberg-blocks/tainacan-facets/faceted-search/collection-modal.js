@@ -20,6 +20,8 @@ export default class CollectionModal extends React.Component {
             collectionPage: 1,
             collectionOrderBy: 'date-desc',
             temporaryCollectionId: '',
+            temporaryCollectionDefaultViewMode: '',
+            temporaryCollectionEnabledViewModes: [],
             searchCollectionName: '',
             collections: [],
             collectionsRequestSource: undefined
@@ -37,6 +39,8 @@ export default class CollectionModal extends React.Component {
         this.setState({ 
             collectionId: this.props.existingCollectionId,
             temporaryCollectionId: this.props.existingCollectionId,
+            temporaryCollectionDefaultViewMode: this.props.existingCollectionDefaultViewMode,
+            temporaryCollectionEnabledViewModes: this.props.existingCollectionEnabledViewModes,
             collectionPage: 1
         });
 
@@ -83,7 +87,9 @@ export default class CollectionModal extends React.Component {
                 for (let collection of response.data) {
                     otherModalCollections.push({ 
                         name: collection.name, 
-                        id: collection.id
+                        id: collection.id,
+                        default_view_mode: collection.default_view_mode,
+                        enabled_view_modes: collection.enabled_view_modes 
                     });
                 }
 
@@ -100,10 +106,10 @@ export default class CollectionModal extends React.Component {
             });
     }
 
-    selectCollection(selectedCollectionId) {
-        this.setState({ collectionId: selectedCollectionId });
-        
-        this.props.onSelectCollection(selectedCollectionId);
+    selectCollection({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes }) {
+        collectionId = collectionId;
+        this.setState({ collectionId: collectionId });
+        this.props.onSelectCollection({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes });
     }
 
     fetchCollections(name) {
@@ -134,7 +140,12 @@ export default class CollectionModal extends React.Component {
 
         tainacan.get(endpoint, { cancelToken: aCollectionRequestSource.token })
             .then(response => {
-                let someCollections = response.data.map((collection) => ({ name: collection.name, id: collection.id + '' }));
+                let someCollections = response.data.map((collection) => ({ 
+                    name: collection.name, 
+                    id: collection.id + '',
+                    default_view_mode: collection.default_view_mode,
+                    enabled_view_modes: collection.enabled_view_modes 
+                }));
 
                 this.setState({ 
                     isLoadingCollections: false, 
@@ -215,7 +226,13 @@ export default class CollectionModal extends React.Component {
                                             })
                                         }
                                         onChange={ ( aCollectionId ) => { 
+                                            const selectedCollection = this.state.modalCollections.find((aCollection => aCollectionId == aCollection.id));
+                                            this.state.temporaryCollectionId = aCollectionId;
+                                            this.state.temporaryCollectionDefaultViewMode = selectedCollection.default_view_mode;
+                                            this.state.temporaryCollectionEnabledViewModes = selectedCollection.enabled_view_modes;
                                             this.setState({ temporaryCollectionId: aCollectionId });
+                                            this.setState({ temporaryCollectionDefaultViewMode: selectedCollection.default_view_mode });
+                                            this.setState({ temporaryCollectionEnabledViewModes: selectedCollection.enabled_view_modes });
                                         } } />
                                     }                                      
                                 </div>
@@ -241,7 +258,13 @@ export default class CollectionModal extends React.Component {
                                         })
                                     }
                                     onChange={ ( aCollectionId ) => { 
+                                        const selectedCollection = this.state.modalCollections.find((aCollection => aCollectionId == aCollection.id));
+                                        this.state.temporaryCollectionId = aCollectionId;
+                                        this.state.temporaryCollectionDefaultViewMode = selectedCollection.default_view_mode;
+                                        this.state.temporaryCollectionEnabledViewModes = selectedCollection.enabled_view_modes;
                                         this.setState({ temporaryCollectionId: aCollectionId });
+                                        this.setState({ temporaryCollectionDefaultViewMode: selectedCollection.default_view_mode });
+                                        this.setState({ temporaryCollectionEnabledViewModes: selectedCollection.enabled_view_modes });
                                     } } />
                                 }                                     
                             </div>
@@ -273,7 +296,11 @@ export default class CollectionModal extends React.Component {
                     <Button 
                         isPrimary
                         disabled={ this.state.temporaryCollectionId == undefined || this.state.temporaryCollectionId == null || this.state.temporaryCollectionId == ''}
-                        onClick={ () => this.selectCollection(this.state.temporaryCollectionId) }>
+                        onClick={ () => this.selectCollection({ 
+                            collectionId: this.state.temporaryCollectionId,
+                            collectionDefaultViewMode: this.state.temporaryCollectionDefaultViewMode,
+                            collectionEnabledViewModes: this.state.temporaryCollectionEnabledViewModes
+                        }) }>
                         {__('Use selected Collection', 'tainacan')}
                     </Button>
                     {
