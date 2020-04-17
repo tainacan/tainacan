@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { Button, ColorPicker, BaseControl, RangeControl, FontSizePicker, HorizontalRule, SelectControl, ToggleControl, Placeholder, PanelBody } = wp.components;
+const { Button, ColorPicker, BaseControl, CheckboxControl, RangeControl, FontSizePicker, HorizontalRule, SelectControl, ToggleControl, Placeholder, PanelBody } = wp.components;
 
 const { InspectorControls } = wp.editor;
 
@@ -46,7 +46,15 @@ registerBlockType('tainacan/faceted-search', {
         },
         enabledViewModes: {
             type: Array,
-            default: [ 'cards', 'masonry', 'table' ]
+            default: Object.keys(tainacan_plugin.registered_view_modes)
+        },
+        collectionDefaultViewMode: {
+            type: String,
+            default: 'masonry'
+        },
+        collectionEnabledViewModes: {
+            type: Array,
+            default: []
         },
         hideFilters: {
             type: Boolean,
@@ -185,6 +193,8 @@ registerBlockType('tainacan/faceted-search', {
             collectionId,
             defaultViewMode,
             enabledViewModes,
+            collectionDefaultViewMode,
+            collectionEnabledViewModes,
             hideFilters,
             hideHideFiltersButton,
             hideSearch,
@@ -340,7 +350,7 @@ registerBlockType('tainacan/faceted-search', {
                                     } 
                                 }
                             />
-                             <BaseControl
+                            <BaseControl
                                     id="defaultViewModeSelect"
                                     label={ __('Forced default view mode', 'tainacan')}
                                     help={ __('The default view mode to be forced against the one setted on the repository', 'tainacan') }>
@@ -360,6 +370,33 @@ registerBlockType('tainacan/faceted-search', {
                                         } }
                                     />
                             </BaseControl>
+                            
+                            <BaseControl
+                                    id="enabledViewModeCheckboxesList"
+                                    label={ __('Forced enabled view modes', 'tainacan') }
+                                    help={ __('Select the view modes that you wish to be available for user selection on the items list.', 'tainacan') }>
+                                
+                                { 
+                                    Object.entries(tainacan_plugin.registered_view_modes).map(aRegisteredViewMode => {
+                                        return  (
+                                        <CheckboxControl
+                                                label={ aRegisteredViewMode[1].label }
+                                                checked={ enabledViewModes.includes(aRegisteredViewMode[0]) }
+                                                onChange={ () => {
+                                                    let index = enabledViewModes.findIndex(aViewMode => aViewMode == aRegisteredViewMode[0]);
+                                                    if (index > -1)
+                                                        enabledViewModes.splice(index, 1);
+                                                    else    
+                                                        enabledViewModes.push(aRegisteredViewMode[0]);
+                                                    
+                                                    setAttributes({ enabledViewModes: enabledViewModes });
+                                                } }
+                                            /> 
+                                        )
+                                    })
+                                }
+                            </BaseControl>
+                            
                         </PanelBody>
 
                         <PanelBody
@@ -659,7 +696,17 @@ registerBlockType('tainacan/faceted-search', {
                                     ] }
                                     onChange={ ( aListType) => {
                                         listType = aListType;
-                                        setAttributes({ listType: aListType });
+
+                                        if (listType != 'collection') {
+                                            enabledViewModes = Object.keys(tainacan_plugin.registered_view_modes);
+                                            defaultViewMode = 'masonry';
+                                        }
+
+                                        setAttributes({ 
+                                            listType: aListType,
+                                            enabledViewModes: enabledViewModes,
+                                            defaultViewMode: defaultViewMode
+                                        });
                                     } }
                                 />
                                 &nbsp;
@@ -869,11 +916,19 @@ registerBlockType('tainacan/faceted-search', {
 
                 { isCollectionModalOpen ? 
                     <CollectionModal
-                        existingCollectionId={ collectionId } 
-                        onSelectCollection={ (selectedCollectionId) => {
-                            collectionId = selectedCollectionId;
+                        existingCollectionId={ collectionId }  
+                        existingCollectionDefaultViewMode={ collectionDefaultViewMode } 
+                        existingCollectionEnabledViewModes={ collectionEnabledViewModes }
+                        onSelectCollection={ ({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes }) => {
+                            collectionId = collectionId;
+                            collectionDefaultViewMode = collectionDefaultViewMode ? collectionDefaultViewMode : defaultViewMode;
+                            collectionEnabledViewModes = collectionEnabledViewModes && collectionEnabledViewModes.length ? collectionEnabledViewModes : enabledViewModes;
                             setAttributes({
                                 collectionId: collectionId, 
+                                collectionDefaultViewMode: collectionEnabledViewModes,
+                                defaultViewMode: collectionEnabledViewModes,
+                                collectionEnabledViewModes: collectionEnabledViewModes,
+                                enabledViewModes: collectionEnabledViewModes,
                                 isCollectionModalOpen: false
                             });
                         }}
@@ -891,9 +946,12 @@ registerBlockType('tainacan/faceted-search', {
                         }}
                         onSelectTerm={ (selectedTermId) => {
                             termId = selectedTermId;
+                            enabledViewModes = tainacan_plugin.registered_view_modes;
+                            
                             setAttributes({
                                 termId: selectedTermId, 
-                                isTermModalOpen: false
+                                isTermModalOpen: false,
+                                enabledViewModes: enabledViewModes
                             });
                         }}
                         onCancelSelection={ () => setAttributes({ isTermModalOpen: false }) }/> 
@@ -910,6 +968,8 @@ registerBlockType('tainacan/faceted-search', {
             collectionId,
             defaultViewMode,
             enabledViewModes,
+            collectionDefaultViewMode,
+            collectionEnabledViewModes,
             hideFilters,
             hideHideFiltersButton,
             hideSearch,
@@ -965,7 +1025,7 @@ registerBlockType('tainacan/faceted-search', {
                     term-id={ listType == 'term' ? termId : null }
                     taxonomy={ listType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
                     collection-id={ listType == 'collection' ? collectionId : null }  
-                    default-view-mode={ defaultViewMode == 'none' ? defaultViewMode : 'masonry' }
+                    default-view-mode={ defaultViewMode == 'none' ? defaultViewMode : (listType == 'collection' ? collectionDefaultViewMode : 'masonry') }
                     is-forced-view-mode={ defaultViewMode == 'none' ? true : false }
                     enabled-view-modes={ enabledViewModes.toString() }  
                     hide-filters = { hideFilters.toString() }
