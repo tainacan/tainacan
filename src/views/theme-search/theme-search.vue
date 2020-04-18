@@ -205,7 +205,7 @@ export default {
                 .multivalue-separator {
                     display: block;
                     max-height: 1px;
-                    width: 35px;
+                    width: 60px;
                     background: var(--tainacan-gray3);
                     content: none;
                     color: transparent;

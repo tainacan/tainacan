@@ -207,7 +207,7 @@ a:hover {
         .multivalue-separator {
             display: block;
             max-height: 1px;
-            width: 35px;
+            width: 60px;
             background: var(--tainacan-gray3);
             content: none;
             color: transparent;
@@ -221,7 +221,7 @@ a:hover {
     .multivalue-separator {
         display: block;
         max-height: 1px;
-        width: 35px;
+        width: 60px;
         background: var(--tainacan-gray3);
         content: none;
         color: transparent;
@@ -233,8 +233,8 @@ a:hover {
     margin-left: 15px;
     border-left: 1px solid var(--tainacan-gray2);
 
-    .tainacan-compound-metadatum {
-        margin-bottom: 0.5em;
+    .tainacan-metadatum {
+        margin-bottom: 0.75em;
 
         .label:not(:last-child) {
             margin-bottom: 0.3em;

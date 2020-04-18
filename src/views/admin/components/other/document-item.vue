@@ -74,6 +74,11 @@ export default {
                 -o-transition: all .3s;
                 transition: all .3s;
             }
+
+            iframe {
+                height: 640px;
+                height: 50vh;
+            }
         }
 
         figcaption {
