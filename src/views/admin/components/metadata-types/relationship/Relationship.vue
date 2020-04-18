@@ -4,9 +4,9 @@
                 expanded
                 :disabled="disabled"
                 :id="itemMetadatum.metadatum.metadata_type_object.component + '-' + itemMetadatum.metadatum.slug"
-                :value="selected"
                 size="is-small"
                 icon="magnify"
+                :value="selected"
                 @input="onInput"
                 @blur="onBlur"
                 :data="options"
@@ -53,11 +53,10 @@
             itemMetadatum: Object,
             maxtags: undefined,
             disabled: false,
-            allowNew: true,
+            allowNew: true
         },
         data() {
             return {
-                results:'',
                 selected:[],
                 options: [],
                 isLoading: false,
@@ -92,11 +91,6 @@
             }
         },
         methods: {
-            setResults(option){
-                if(!option)
-                    return;
-                this.results = option.value;
-            },
             onInput(newSelected) {
                 this.selected = newSelected;
                 this.$emit('input', newSelected.map((item) => item.value));

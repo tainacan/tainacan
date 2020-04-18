@@ -21,9 +21,59 @@ class User extends Metadata_Type {
 		$this->set_name( __('User', 'tainacan') );
 		$this->set_description( __('A registered user on WordPress', 'tainacan') );
 		$this->set_preview_template('
-			<div>
-				<div class="control is-clearfix">
-					user
+			<div class="taginput control is-expanded has-selected">
+				<div class="taginput-container is-small is-focusable">
+					<div class="tags has-addons">
+						<span class="tag is-small">
+							<span>' . __('User', 'tainacan') .' 1</span>
+						</span>
+						<a class="tag is-delete is-small"></a>
+					</div>
+					<div class="tags has-addons">
+						<span class="tag is-small">
+							<span>' . __('User', 'tainacan') .' 2</span>
+						</span>
+						<a class="tag is-delete is-small"></a>
+					</div>
+					<div class="autocomplete control">
+						<div class="control has-icons-left has-icons-right is-small">
+							<input type="text" autocomplete="off" id="tainacan-user-usuario" placeholder="Type to search users..." class="input is-small">
+							<span class="icon is-left is-small">
+								<i class="mdi mdi-account"></i>
+							</span>
+							<span class="icon is-right is-small is-clickable">
+								<i class="mdi mdi-alert-circle"></i>
+							</span>
+						</div>
+						<div class="dropdown-menu">
+							<div class="dropdown-content">
+								<a class="dropdown-item">
+									<div class="media">
+										<div class="media-left">
+											<img src="http://1.gravatar.com/avatar/194c59734d14b92b3b37825616fa1876?s=24&amp;d=mm&amp;r=g" width="16">
+										</div>
+										<div class="media-content"><span>' . __('User', 'tainacan') .' 3</span></div>
+									</div>
+								</a>
+								<a class="dropdown-item is-hovered">
+									<div class="media">
+										<div class="media-left">
+											<img src="http://1.gravatar.com/avatar/194c59734d14b92b3b37825616fa1876?s=24&amp;d=mm&amp;r=g" width="16">
+										</div>
+										<div class="media-content"><span>' . __('User', 'tainacan') .' 4</span></div>
+									</div>
+								</a>
+								<a class="dropdown-item">
+									<div class="media">
+										<div class="media-left">
+											<img src="http://1.gravatar.com/avatar/194c59734d14b92b3b37825616fa1876?s=24&amp;d=mm&amp;r=g" width="16">
+										</div>
+										<div class="media-content"><span>' . __('User', 'tainacan') .' 5</span></div>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		');

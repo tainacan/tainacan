@@ -30,18 +30,18 @@ class Taxonomy extends Metadata_Type {
 		$this->set_preview_template('
 			<div>
 				<div>
-					<p class="has-text-gray">'. __('Selected terms') . ': </p>
+					<p class="has-text-gray" style="font-size: 0.75em;">'. __('Selected terms') . ': </p>
 					<div class="field selected-tags is-grouped-multiline is-grouped">
 						<div>
 							<div class="tags has-addons">
-								<span class="tag"><span>'. __('Term') . ' 2</span></span>
-								<a class="tag is-delete"></a>
+								<span class="tag is-small"><span>'. __('Term') . ' 2</span></span>
+								<a class="tag is-delete is-small"></a>
 							</div>
 						</div>
 						<div>
 							<div class="tags has-addons">
-								<span class="tag"><span>'. __('Term') . ' 3</span></span>
-								<a class="tag is-delete"></a>
+								<span class="tag is-small"><span>'. __('Term') . ' 3</span></span>
+								<a class="tag is-delete is-small"></a>
 							</div>
 						</div>
 					</div>
