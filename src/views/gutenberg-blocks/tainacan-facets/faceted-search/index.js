@@ -228,6 +228,9 @@ registerBlockType('tainacan/faceted-search', {
             secondaryColor
         } = attributes;
 
+        const registeredViewModesEntries = Object.entries(tainacan_plugin.registered_view_modes);
+        const registeredViewModesKeys = Object.keys(tainacan_plugin.registered_view_modes);
+
         const fontSizes = [
             {
                 name: __( 'Tiny', 'tainacan' ),
@@ -268,6 +271,10 @@ registerBlockType('tainacan/faceted-search', {
             setAttributes( { 
                 isTermModalOpen: isTermModalOpen
             } );
+        }
+
+        function checkIfViewModeIsEnabled(viewMode) {
+            return enabledViewModes.includes(viewMode);
         }
 
         return (
@@ -360,8 +367,8 @@ registerBlockType('tainacan/faceted-search', {
                                         value={ defaultViewMode }
                                         options={
                                             [{ value: 'none', label: __('Use current view mode settings', 'tainacan') }]
-                                            .concat(Object.entries(tainacan_plugin.registered_view_modes)
-                                                .map(aViewMode => { return { label: aViewMode[1].label, value: aViewMode[0], disabled: aViewMode[1].full_screen }})
+                                            .concat(registeredViewModesEntries
+                                                .map(aViewMode => { return { label: aViewMode[1].label, value: aViewMode[0], disabled: !checkIfViewModeIsEnabled(aViewMode[0]) || aViewMode[1].full_screen }})
                                             )
                                         }
                                         onChange={ (aViewMode) => {
@@ -377,11 +384,12 @@ registerBlockType('tainacan/faceted-search', {
                                     help={ __('Select the view modes that you wish to be available for user selection on the items list.', 'tainacan') }>
                                 
                                 { 
-                                    Object.entries(tainacan_plugin.registered_view_modes).map(aRegisteredViewMode => {
+                                    registeredViewModesEntries.map(aRegisteredViewMode => {
                                         return  (
                                         <CheckboxControl
                                                 label={ aRegisteredViewMode[1].label }
-                                                checked={ enabledViewModes.includes(aRegisteredViewMode[0]) }
+                                                checked={ checkIfViewModeIsEnabled(aRegisteredViewMode[0]) }
+                                                disabled={ checkIfViewModeIsEnabled(aRegisteredViewMode[0]) && enabledViewModes.filter((aViewMode) => tainacan_plugin.registered_view_modes[aViewMode] && !tainacan_plugin.registered_view_modes[aViewMode].full_screen).length <= 1 }
                                                 onChange={ () => {
                                                     let index = enabledViewModes.findIndex(aViewMode => aViewMode == aRegisteredViewMode[0]);
                                                     if (index > -1)
@@ -389,7 +397,17 @@ registerBlockType('tainacan/faceted-search', {
                                                     else    
                                                         enabledViewModes.push(aRegisteredViewMode[0]);
                                                     
-                                                    setAttributes({ enabledViewModes: enabledViewModes });
+                                                     // Puts a valid view mode as default if the current one is not in the list anymore.
+                                                    if (!enabledViewModes.includes(defaultViewMode)) {
+                                                        const validViewModeIndex = enabledViewModes.findIndex((aViewMode) => (tainacan_plugin.registered_view_modes[aViewMode] && !tainacan_plugin.registered_view_modes[aViewMode].full_screen));
+                                                        if (validViewModeIndex >= 0)
+                                                            defaultViewMode = enabledViewModes[validViewModeIndex];
+                                                    }
+
+                                                    setAttributes({ 
+                                                        enabledViewModes: JSON.parse(JSON.stringify(enabledViewModes)),
+                                                        defaultViewMode: defaultViewMode 
+                                                    });
                                                 } }
                                             /> 
                                         )
@@ -698,7 +716,7 @@ registerBlockType('tainacan/faceted-search', {
                                         listType = aListType;
 
                                         if (listType != 'collection') {
-                                            enabledViewModes = Object.keys(tainacan_plugin.registered_view_modes);
+                                            enabledViewModes = registeredViewModesKeys;
                                             defaultViewMode = 'masonry';
                                         }
 
@@ -946,7 +964,7 @@ registerBlockType('tainacan/faceted-search', {
                         }}
                         onSelectTerm={ (selectedTermId) => {
                             termId = selectedTermId;
-                            enabledViewModes = tainacan_plugin.registered_view_modes;
+                            enabledViewModes = registeredViewModesKeys;
                             
                             setAttributes({
                                 termId: selectedTermId, 
