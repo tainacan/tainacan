@@ -147,11 +147,17 @@ class User extends Metadata_Type {
 	 * @return string
 	 */
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
-		$value = $item_metadata->get_value();
-		if (empty($value)) 
+		$values = $item_metadata->get_value();
+		if (empty($values))
 			return "";
-		$name = get_the_author_meta( 'display_name', $value );
-		return apply_filters("tainacan-item-get-author-name", $name, $this);
+		$values = is_array($values) ? $values: [$values];
+		$response = [];
+		$multivalue_separator = $item_metadata->get_multivalue_separator();
+		foreach($values as $value) {
+			$name = get_the_author_meta( 'display_name', $value );
+			$response[] = apply_filters("tainacan-item-get-author-name", $name, $this);
+		}
+		return implode($multivalue_separator, $response);
 	}
 	
 }
