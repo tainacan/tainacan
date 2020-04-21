@@ -305,6 +305,29 @@ class Bulk_Edit_Process extends Generic_Process {
 		return false;
 	}
 
+	private function copy_value(\Tainacan\Entities\Item $item) {
+		$metadatum_id = $this->bulk_edit_data['metadatum_id'];
+		$metadatum = $this->metadatum_repository->fetch($metadatum_id);
+		$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum );
+
+		$metadatum_id_copy_from = $this->bulk_edit_data['metadatum_id_copy_from'];
+
+		if ($metadatum_id_copy_from == 'create_by' && $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\User') {
+			$item_metadata->set_value( $item->get_author_id() );
+			return $this->save_item_metadata($item_metadata, $item);
+		} else {
+			$metadatum_copy_from = $this->metadatum_repository->fetch($metadatum_id_copy_from);
+			if ( $metadatum_copy_from->get_metadata_type() == $metadatum->get_metadata_type() ) {
+				$item_metadata_copy_from = new Entities\Item_Metadata_Entity( $item, $metadatum_copy_from );
+				$item_metadata->set_value($item_metadata_copy_from->get_value());
+				return $this->save_item_metadata($item_metadata, $item);
+			}
+		}
+		
+		$this->add_error_log( __('Not possible to copy permission for different types', 'tainacan') );
+		return false;
+	}
+
 	private function remove_value(\Tainacan\Entities\Item $item) {
 		$metadatum_id = $this->bulk_edit_data['metadatum_id'];
 		$metadatum = $this->metadatum_repository->fetch($metadatum_id);
@@ -440,6 +463,6 @@ class Bulk_Edit_Process extends Generic_Process {
 		$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serealize_erro->err) );
 
 		return false;
-}
+	}
 
 }
