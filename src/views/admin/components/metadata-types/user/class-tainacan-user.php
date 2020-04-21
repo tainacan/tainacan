@@ -53,16 +53,16 @@ class User extends Metadata_Type {
 	 */
 	public function validate(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
-		if ( is_array($values) ) {
-			foreach($values as $user) {
+		if ( is_array($value) ) {
+			foreach($value as $user) {
 				if ( !$this->user_exists($user) ) {
-					$this->add_error( sprintf(__('User does not exist %s.', 'tainacan'), $user ) );
+					$this->add_error( sprintf(__('User does not exist (ID: %s).', 'tainacan'), $user ) );
 					return false;
 				}
 			}
 		} else {
 			if ( !$this->user_exists($value) ) {
-				$this->add_error( sprintf( __('User does not exist %s.', 'tainacan'), $user ) );
+				$this->add_error( sprintf( __('User does not exist (ID: %s).', 'tainacan'), $value ) );
 				return false;
 			}
 		}
