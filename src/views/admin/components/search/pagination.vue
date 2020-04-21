@@ -42,24 +42,11 @@
                         aria-labelledby="items-per-page-select"
                         @input="onChangeItemsPerPage">
                     <option
+                            v-for="(itemsPerPageOption, index) of itemsPerPageOptions"
+                            :key="index"
                             v-if="maxItemsPerPage >= 12"
-                            value="12">
-                        12 &nbsp;
-                    </option>
-                    <option
-                            v-if="maxItemsPerPage >= 24"
-                            value="24">
-                        24 &nbsp;
-                    </option>
-                    <option 
-                            v-if="maxItemsPerPage >= 48"
-                            value="48">
-                        48 &nbsp;
-                    </option>
-                    <option 
-                            v-if="maxItemsPerPage >= 96"
-                            value="96">
-                        96 &nbsp;
+                            :value="itemsPerPageOption">
+                       {{ itemsPerPageOption }} &nbsp;
                     </option>
                 </b-select>
             </b-field>
@@ -143,6 +130,13 @@ export default {
         },
         totalPages(){
             return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
+        },
+        itemsPerPageOptions() {
+            const defaultItemsPerPageOptions = [12, 24, 48, 96];
+            if (!isNaN(this.itemsPerPage) && !defaultItemsPerPageOptions.includes(this.itemsPerPage))
+                defaultItemsPerPageOptions.push(this.itemsPerPage);
+            
+            return defaultItemsPerPageOptions.sort();
         }
     },
     watch: {

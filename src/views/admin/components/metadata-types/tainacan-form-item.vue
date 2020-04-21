@@ -127,7 +127,7 @@
                 return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple == 'yes') ? this.itemMetadatum.metadatum.multiple == 'yes' : false;
             },
             isTextInputComponent() {
-                const array = ['tainacan-relationship','tainacan-taxonomy', 'tainacan-compound'];
+                const array = ['tainacan-relationship','tainacan-taxonomy', 'tainacan-compound', 'tainacan-user'];
                 return !(array.indexOf(this.metadatumComponent) >= 0 );
             }
         },

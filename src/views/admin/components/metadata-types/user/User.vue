@@ -1,124 +1,166 @@
 <template>
-    <b-autocomplete
-            clearable
-            :disabled="disabled"
-            :value="currentUser && currentUser.name ? currentUser.name : null"
-            :data="users"
-            :placeholder="$i18n.get('instruction_type_search_users')"
-            keep-first
-            open-on-focus
-            @input="loadUsers"
-            @focus.once="($event) => loadUsers($event.target.value)"
-            @select="onSelect"
-            :loading="isFetchingUsers || isLoadingCurrentUser"
-            field="name"
-            icon="account"
-            check-infinite-scroll
-            @infinite-scroll="fetchMoreUsers">
-        <template slot-scope="props">
-            <div class="media">
-                <div
-                        v-if="props.option.avatar_urls && props.option.avatar_urls['24']"
-                        class="media-left">
-                    <img
-                            width="24"
-                            :src="props.option.avatar_urls['24']">
+    <div :class="{ 'is-flex': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
+        <b-taginput
+                expanded
+                :disabled="disabled"
+                :id="itemMetadatum.metadatum.metadata_type_object.component + '-' + itemMetadatum.metadatum.slug"
+                size="is-small"
+                icon="account"
+                :value="selected"
+                @input="onInput"
+                @blur="onBlur"
+                :data="options"
+                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? 100 : 1)"
+                autocomplete
+                attached
+                :placeholder="$i18n.get('instruction_type_search_users')"
+                keep-first
+                open-on-focus
+                :loading="isLoading || isLoading"
+                :aria-close-label="$i18n.get('remove_value')"
+                :class="{'has-selected': selected != undefined && selected != []}"
+                field="name"
+                @typing="search"
+                check-infinite-scroll
+                @infinite-scroll="searchMore">
+            <template slot-scope="props">
+                <div class="media">
+                    <div
+                            v-if="props.option.avatar_urls && props.option.avatar_urls['24']"
+                            class="media-left">
+                        <img
+                                width="24"
+                                :src="props.option.avatar_urls['24']">
+                    </div>
+                    <div class="media-content">
+                        {{ props.option.name }}
+                    </div>
                 </div>
-                <div class="media-content">
-                    {{ props.option.name }}
-                </div>
-            </div>
-        </template>
-        <template slot="empty">{{ $i18n.get('info_no_user_found') }}</template>
-    </b-autocomplete>
+            </template>
+            <template 
+                    v-if="!isLoading"
+                    slot="empty">
+                {{ $i18n.get('info_no_user_found') }}
+            </template>
+        </b-taginput>
+    </div>
 </template>
 
 <script>
+import { wp as wpAxios } from '../../../js/axios';
 import { mapActions } from 'vuex';
+import qs from 'qs';
     
 export default {
     props: {
-        metadatum: Object,
-        value: [String, Number, Array],
-        disabled: false
+        itemMetadatum: Object,
+        maxtags: undefined,
+        disabled: false,
+        allowNew: true,
     },
     data() {
         return {
-            users: [],
-            defaultAuthor: 'no',
-            isLoadingCurrentUser: false,
-            isFetchingUsers: false,
-            userId: null,
+            selected:[],
+            options: [],
+            isLoading: false,
             usersSearchQuery: '',
             usersSearchPage: 1,
-            totalUsers: 0,
-            currentUser: {}
+            totalUsers: 0
         }
     },
     created() {
-        this.loadCurrentUser();
+        this.loadCurrentUsers();
     },
     methods: {
-        onSelect(value) {
-            this.$emit('input', value.id);
-        },
         ...mapActions('activity', [
-            'fetchUsers',
-            'fetchUser'
+            'fetchUsers'
         ]),
-        loadCurrentUser() {
-            this.isLoadingCurrentUser = true;
-            this.fetchUser(this.value)
-                .then((res) => {
-                    this.currentUser = res.user;
-                    this.isLoadingCurrentUser = false;
-                })
-                .catch(() => this.isLoadingCurrentUser = false );
+        onInput(newSelected) {
+            this.selected = newSelected;
+            this.$emit('input', newSelected.map((user) => user.id));
         },
-        loadUsers: _.debounce(function (search) {
+        onBlur() {
+            this.$emit('blur');
+        },
+        loadCurrentUsers() {
+            this.isLoading = true;
+            let query = qs.stringify({ include: this.itemMetadatum.value });
+            let endpoint = '/users/';
+
+            wpAxios.get(endpoint + '?' + query)
+                .then((res) => {
+                    if (res.data.items) {
+                        for (let user of res.data) {
+                            this.selected.push({
+                                label: user.name,
+                                value: user.id,
+                                img:  user.avatar_urls && user.avatar_urls['24'] ? user.avatar_urls['24'] : ''
+                            }) ;
+                        }
+                    }
+                    this.isLoading = false;
+                })
+                .catch(() => this.isLoading = false );
+        },
+        search: _.debounce(function (search) {
            
             // String update
             if (search != this.usersSearchQuery) {
                 this.usersSearchQuery = search;
-                this.users = [];
+                this.options = [];
                 this.usersSearchPage = 1;
             } 
             
             // String cleared
             if (!search.length) {
                 this.usersSearchQuery = search;
-                this.users = [];
+                this.options = [];
                 this.usersSearchPage = 1;
             }
 
             // No need to load more
-            if (this.usersSearchPage > 1 && this.users.length > this.totalUsers)
+            if (this.usersSearchPage > 1 && this.options.length > this.totalUsers)
                 return;
 
-            this.isFetchingUsers = true;
+            // There is already one value set and is not multiple
+            if (this.selected.length > 0 && this.itemMetadatum.metadatum.multiple === 'no')
+                return;
 
-            this.fetchUsers({ search: this.usersSearchQuery, page: this.usersSearchPage })
-                .then((res) => {
-                    if (res.users) {
-                        for (let user of res.users)
-                            this.users.push(user); 
-                    }
-                    
-                    if (res.totalUsers)
-                        this.totalUsers = res.totalUsers;
+            if (this.usersSearchQuery !== '') {          
+                this.isLoading = true;
 
-                    this.usersSearchPage++;
-                    
-                    this.isFetchingUsers = false;
-                })
-                .catch((error) => {
-                    this.$console.error(error);
-                    this.isFetchingPages = false;
-                });
+                this.fetchUsers({ search: this.usersSearchQuery, page: this.usersSearchPage })
+                    .then((res) => {
+                        if (res.users) {
+                            for (let user of res.users)
+                                this.options.push(user); 
+                        }
+                        
+                        if (res.totalUsers)
+                            this.totalUsers = res.totalUsers;
+
+                        this.usersSearchPage++;
+                        
+                        this.isLoading = false;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isFetchingPages = false;
+                    });
+            }
         }, 500),
-        fetchMoreUsers: _.debounce(function () {
-            this.loadUsers(this.usersSearchQuery)
+        searchMore: _.debounce(function () {
+            this.search(this.usersSearchQuery)
         }, 250),
     }
 }
 </script>
+
+<style scoped>
+    .help.counter {
+        display: none;
+    }
+    div.is-flex {
+        justify-content: flex-start;
+    }
+</style>

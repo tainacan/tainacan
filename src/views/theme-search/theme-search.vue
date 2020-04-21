@@ -7,6 +7,7 @@
             :enabled-view-modes="$root.enabledViewModes" 
             :default-view-mode="$root.defaultViewMode"
             :is-forced-view-mode="$root.isForcedViewMode"
+            :default-items-per-page="$root.defaultItemsPerPage"
             :hide-filters="$root.hideFilters ? $root.hideFilters : false"
             :hide-hide-filters-button="$root.hideHideFiltersButton ? $root.hideHideFiltersButton : false"
             :hide-search="$root.hideSearch ? $root.hideSearch : false"
@@ -205,7 +206,7 @@ export default {
                 .multivalue-separator {
                     display: block;
                     max-height: 1px;
-                    width: 35px;
+                    width: 60px;
                     background: var(--tainacan-gray3);
                     content: none;
                     color: transparent;

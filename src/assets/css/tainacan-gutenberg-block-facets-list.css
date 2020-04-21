@@ -127,7 +127,7 @@
         .wp-block-tainacan-facets-list .facets-search-bar .search-button {
           order: 4;
           position: absolute;
-          margin-top: 37px; }
+          margin-top: 0.5em; }
         .wp-block-tainacan-facets-list .facets-search-bar input {
           width: 100% !important;
           order: 5;
@@ -364,7 +364,7 @@
         text-decoration: none; }
   .wp-block-tainacan-facets-list .show-more-button {
     margin: 12px auto;
-    padding: 0.25em;
+    padding: 0.2em 0.25em;
     display: block;
     background: var(--tainacan-block-primary, #298596);
     border: none;

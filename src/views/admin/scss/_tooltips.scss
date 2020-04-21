@@ -173,14 +173,29 @@
             width: 100%;
             .label { 
                 color: var(--tainacan-info-color);
-                font-size: 1em;
-                line-height: 2em;
+                font-size: 0.875em;
+                line-height: 1.875em;
             }
         }
-        .add-new-term {
+        .add-new-term,
+        .collapse-all {
             font-size: 0.75em;
             text-decoration: underline;
             margin: 0.875em 1.5em;
+        }
+        .selected-tags {
+            font-size: 0.75em;
+        }
+        .child-metadata-inputs {
+            margin-left: 5px;
+            padding-left: 16px;
+            padding-top: 2px;
+            border-left: 1px solid var(--tainacan-gray3);
+
+            .is-last-input {
+                margin-top: -14px;
+                margin-bottom: 10px;
+            }
         }
     }
 

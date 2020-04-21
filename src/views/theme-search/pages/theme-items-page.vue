@@ -558,6 +558,7 @@
             hideItemsPerPageButton: false,
             hideGoToPageButton: false,
             // Other Tweaks
+            defaultItemsPerPage: Number,
             showFiltersButtonInsideSearchControl: false,
             startWithFiltersHidden: false,
             filtersAsModal: false,
@@ -734,9 +735,13 @@
             let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
             if (existingViewModeIndex >= 0) {
                 if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
-                    this.$eventBusSearch.setItemsPerPage(12);
+                    this.$eventBusSearch.setItemsPerPage(12, true);
                 }
             }
+            
+            // If any default items per page is set, apply it
+            if (this.defaultItemsPerPage)
+                this.$eventBusSearch.setItemsPerPage(this.defaultItemsPerPage, true); 
 
             this.showItemsHiddingDueSortingDialog();
 
@@ -1443,7 +1448,7 @@
             .multivalue-separator {
                 display: block;
                 max-height: 1px;
-                width: 35px;
+                width: 60px;
                 background: var(--tainacan-gray3);
                 content: none;
                 color: transparent;

@@ -84,7 +84,7 @@
             span.label { 
                 color: white; 
                 font-weight: normal; 
-                font-size: 0.75em;
+                font-size: 0.5em;
             }
 
             &.only-collection-name {
@@ -155,7 +155,7 @@
             .search-button {
                 order: 4;
                 position: absolute;
-                margin-top: 37px;
+                margin-top: 0.75em;
             }
             input {
                 width: 100% !important;

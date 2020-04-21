@@ -150,7 +150,7 @@
             .search-button {
                 order: 4;
                 position: absolute;
-                margin-top: 37px;
+                margin-top: 0.5em;
             }
             input {
                 width: 100% !important;
@@ -436,7 +436,7 @@
 
     .show-more-button {
         margin: 12px auto;
-        padding: 0.25em;
+        padding: 0.2em 0.25em;
         display: block;
         background: var(--tainacan-block-primary, $primary);
         border: none;

@@ -21,9 +21,40 @@ class Compound extends Metadata_Type {
 		$this->set_component('tainacan-compound');
 		$this->set_form_component('tainacan-form-compound');
 		$this->set_preview_template('
-			<div>
-				<div class="control is-clearfix">
-						Compound
+			<div class="child-metadata-inputs">
+				<a class="collapse-all">
+					' . __('Collapse all', 'tainacan') . '
+					<span class="icon">
+						<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"></i>
+					</span>
+				</a>
+				<div class="multiple-inputs">
+					<div class="field">
+						<span class="collapse-handle">
+							<span class="icon">
+								<i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"></i>
+							</span>
+							<label class="label has-tooltip">' . __('Text', 'tainacan') . '</label>
+						</span>
+						<div>
+							<div class="control is-clearfix">
+								<input type="text" placeholder="' . __('Type here...') . '" autocomplete="on" id="tainacan-text-texto-simples" class="input">
+							</div>
+						</div>
+					</div>
+					<div class="field is-last-input">
+						<span class="collapse-handle">
+							<span class="icon">
+								<i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"></i>
+							</span>
+							<label class="label has-tooltip"> ' . __('Number', 'tainacan') . '</label>
+						</span>
+						<div>
+							<div class="control is-clearfix">
+								<input placeholder="3,1415" type="number" autocomplete="on" id="tainacan-numeric-numerico" step="0.01" class="input" lang="en">
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		');

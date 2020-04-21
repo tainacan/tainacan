@@ -355,43 +355,58 @@ class Theme_Helper {
 		return $image;
 	}
 
-	public function search_shortcode($atts) {
+	public function search_shortcode($args) {
+	
+		$props = ' ';
 		
-		$atts = shortcode_atts(
-			array(
-				'collection-id' => '',
-				'term-id' => '',
-				'taxonomy' => '',
-			),
-			$atts
-		);
-
 		// Loads info related to view modes
-		$default_view_mode = apply_filters( 'tainacan-default-view-mode-for-themes', 'masonry' );
-		$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', ['table', 'cards', 'masonry', 'slideshow'] );	
+		$view_modes = tainacan_get_the_view_modes();
+		$default_view_mode = $view_modes['default_view_mode'];
+		$enabled_view_modes = $view_modes['enabled_view_modes'];
 
-		$params = '';
+		if( isset($args['default-view-mode']) ) {
+			$default_view_mode = $args['default-view-mode'];
+			unset($args['default-view-mode']);
+		}
 
-		// If is a collection page
-		if (isset($atts['collection-id']) && $atts['collection-id'] != '') {
-			$params .= "collection-id=" . $atts['collection-id'];
-			$collection = new \Tainacan\Entities\Collection($atts['collection-id']);
+		if( isset($args['enabled-view-modes']) ) {
+			$enabled_view_modes = $args['enabled-view-modes'];
+			if ( !in_array($default_view_mode, $enabled_view_modes) ) {
+				$default_view_mode = $enabled_view_modes[0];
+			}
+			unset($args['enabled-view-modes']);
+		}
+
+		// If in a collection page
+		$collection_id = tainacan_get_collection_id();
+		if ($collection_id) {
+			$props .= 'collection-id="' . $collection_id . '" ';
+			$collection = new  \Tainacan\Entities\Collection($collection_id);
 			$default_view_mode = $collection->get_default_view_mode();
 			$enabled_view_modes = $collection->get_enabled_view_modes();
 		}
 
-		// If is a tainacan taxonomy
-		if (isset($atts['term-id']) && $atts['term-id'] != '' && isset($atts['taxonomy']) && $atts['taxonomy'] != '' ) {
-			$params .= "term-id=" . $atts['term-id'];
-			$params .= ' "taxonomy="' . $atts['taxonomy'];
+		// If in a tainacan taxonomy
+		$term = tainacan_get_term();
+		if ($term) {
+			$props .= 'term-id="' . $term->term_id . '" ';
+			$props .= 'taxonomy="' . $term->taxonomy . '" ';
 		}
 
-		$params .= ' default-view-mode="' . $default_view_mode . '" ';
-		$params .= ' enabled-view-modes="' . implode(',', $enabled_view_modes) . '" ';	
+		$props .= 'default-view-mode="' . $default_view_mode . '" ';
+		$props .= 'enabled-view-modes="' . implode(',', $enabled_view_modes) . '" ';
+
+		// Passes arguments to custom props
+		foreach ($args as $key => $value) {
+			if ($value == true || $value == 'true') {
+				$props .= $key . '="' . $value . '" ';
+			}
+		}
 
 		$this->enqueue_scripts(true);
 
-		return "<div id='tainacan-items-page' $params ></div>";
+		return "<div id='tainacan-items-page' $props ></div>";
+
 	}
 	
 	function get_items_list_slug() {
