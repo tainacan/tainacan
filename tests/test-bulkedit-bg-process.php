@@ -30,61 +30,61 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 		$this->collection = $collection;
 
 		$metadatum = $this->tainacan_entity_factory->create_entity(
-		    'metadatum',
-		    array(
-			    'name'   => 'metadado',
-			    'status' => 'publish',
-			    'collection' => $collection,
+			'metadatum',
+			array(
+				'name'   => 'metadado',
+				'status' => 'publish',
+				'collection' => $collection,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
-		    ),
-		    true
+			),
+			true
 		);
 
 		$this->metadatum = $metadatum;
 
 		$multiple_meta = $this->tainacan_entity_factory->create_entity(
-		    'metadatum',
-		    array(
-			    'name'   => 'multimetadado',
-			    'status' => 'publish',
-			    'collection' => $collection,
+			'metadatum',
+			array(
+				'name'   => 'multimetadado',
+				'status' => 'publish',
+				'collection' => $collection,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 				'multiple' => 'yes',
 				'required' => 'no'
-		    ),
-		    true
+			),
+			true
 		);
 
 		$this->multiple_meta = $multiple_meta;
 
 		$taxonomy = $this->tainacan_entity_factory->create_entity(
-        	'taxonomy',
-	        array(
-	        	'name'         => 'genero',
-		        'description'  => 'tipos de musica',
-		        'allow_insert' => 'yes',
+			'taxonomy',
+			array(
+				'name'         => 'genero',
+				'description'  => 'tipos de musica',
+				'allow_insert' => 'yes',
 				'status' => 'publish'
-	        ),
-	        true
+			),
+			true
 		);
 
 		$this->taxonomy = $taxonomy;
 
 		$category = $this->tainacan_entity_factory->create_entity(
-		    'metadatum',
-		    array(
-			    'name'   => 'category',
-			    'status' => 'publish',
-			    'collection' => $collection,
+			'metadatum',
+			array(
+				'name'   => 'category',
+				'status' => 'publish',
+				'collection' => $collection,
 				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
 				'metadata_type_options' => [
 					'allow_new_terms' => 'yes',
 					'taxonomy_id' => $taxonomy->get_id()
 				],
 				'multiple' => 'yes'
-		    ),
-		    true
-	    );
+			),
+			true
+		);
 
 		$this->category = $category;
 
@@ -1771,4 +1771,157 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(20, $items->found_posts);
 	}
 
+	/**
+	 * @group bulkedit-copy
+	 */
+	function test_copy_meta() {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		$metadatum_copy = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'metadado_copy',
+				'status' => 'publish',
+				'collection' => $this->collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+			),
+			true
+		);
+
+		$metadatum_owner = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'metadado_owner',
+				'status' => 'publish',
+				'collection' => $this->collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\User',
+				'metadata_type_options' => [
+					'default_author' => 'no'
+				]
+			),
+			true
+		);
+
+		$query = [
+			'meta_query' => [
+				[
+					'key' => $this->metadatum->get_id(),
+					'value' => 'even'
+				]
+			],
+			'posts_per_page' => -1
+		];
+
+		$process = $this->new_process(
+			[
+				'query' => $query,
+				'collection_id' => $this->collection->get_id()
+			],
+			[
+				"method"                  => 'copy_value',
+				"metadatum_id"            => $metadatum_copy->get_id(),
+				"metadatum_id_copy_from"  => $this->metadatum->get_id(),
+			]
+		);
+		$this->assertInternalType('int', $this->run_process($process));
+
+		$query = [
+			'meta_query' => [
+				[
+					'key' => $metadatum_copy->get_id(),
+					'value' => 'even'
+				]
+			],
+			'posts_per_page' => -1
+		];
+		$items = $Tainacan_Items->fetch($query);
+		$this->assertEquals(20, $items->found_posts);
+
+		$process = $this->new_process(
+			[
+				'query' => $query,
+				'collection_id' => $this->collection->get_id()
+			],
+			[
+				"method"                  => 'copy_value',
+				"metadatum_id"            => $metadatum_owner->get_id(),
+				"metadatum_id_copy_from"  => 'create_by',
+			]
+		);
+		$this->assertInternalType('int', $this->run_process($process));
+		$query = [
+			'meta_query' => [
+				[
+					'key' => $metadatum_owner->get_id(),
+					'value' => get_current_user_id()
+				]
+			],
+			'posts_per_page' => -1
+		];
+		$items = $Tainacan_Items->fetch($query);
+		$this->assertEquals(20, $items->found_posts);
+
+
+		$taxonomy_copy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => 'genero_copy',
+				'description'  => 'tipos de musica',
+				'allow_insert' => 'yes',
+				'status' => 'publish'
+			),
+			true
+		);
+		$multiple_meta_copy = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'multiple_meta_copy',
+				'status' => 'publish',
+				'collection' => $this->collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'allow_new_terms' => 'yes',
+					'taxonomy_id' => $taxonomy_copy->get_id()
+				],
+				'multiple' => 'yes'
+			),
+			true
+		);
+		$process = $this->new_process(
+			[
+				'items_ids' => $this->items_ids, // all
+				'collection_id' => $this->collection->get_id()
+			],
+			[
+				"method"                  => 'copy_value',
+				"metadatum_id"            => $multiple_meta_copy->get_id(),
+				"metadatum_id_copy_from"  => $this->category->get_id()
+			]
+		);
+		$this->assertInternalType('int', $this->run_process($process));
+
+
+		$query = [
+			'taxquery' => [
+				[
+					'taxonomy' => $this->taxonomy->get_db_identifier(),
+					'terms'    => 'good'
+				]
+				],
+			'posts_per_page' => -1
+		];
+		$items = $Tainacan_Items->fetch($query);
+		print_r($items->found_posts);
+
+		$query = [
+			'taxquery' => [
+				[
+					'taxonomy' => $taxonomy_copy->get_db_identifier(),
+					'terms'    => 'good'
+				]
+				],
+			'posts_per_page' => -1
+		];
+		$items_copy = $Tainacan_Items->fetch($query);
+		$this->assertEquals($items_copy->found_posts, $items->found_posts);
+	}
 }
