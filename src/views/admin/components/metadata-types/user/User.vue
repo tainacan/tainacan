@@ -83,23 +83,26 @@ export default {
             this.$emit('blur');
         },
         loadCurrentUsers() {
-            this.isLoading = true;
-            let query = qs.stringify({ include: this.itemMetadatum.value });
-            let endpoint = '/users/';
+            if ((Array.isArray(this.itemMetadatum.value) && this.itemMetadatum.value.length) || (!Array.isArray(this.itemMetadatum.value) && this.itemMetadatum.value)) {
+                
+                this.isLoading = true;
+                let query = qs.stringify({ include: this.itemMetadatum.value });
+                let endpoint = '/users/';
 
-            wpAxios.get(endpoint + '?' + query)
-                .then((res) => {
-                    for (let user of res.data) {
-                        this.selected.push({
-                            name: user.name,
-                            value: user.id,
-                            img:  user.avatar_urls && user.avatar_urls['24'] ? user.avatar_urls['24'] : ''
-                        }) ;
-                    }   
-                    
-                    this.isLoading = false;
-                })
-                .catch(() => this.isLoading = false );
+                wpAxios.get(endpoint + '?' + query)
+                    .then((res) => {
+                        for (let user of res.data) {
+                            this.selected.push({
+                                name: user.name,
+                                value: user.id,
+                                img:  user.avatar_urls && user.avatar_urls['24'] ? user.avatar_urls['24'] : ''
+                            }) ;
+                        }   
+                        
+                        this.isLoading = false;
+                    })
+                    .catch(() => this.isLoading = false );
+            }
         },
         search: _.debounce(function (search) {
            
