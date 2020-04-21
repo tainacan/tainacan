@@ -166,14 +166,20 @@ export const notApprove = ({commit}, activityId) => {
 };
 
 // Users for filtering and core author metadata
-export const fetchUsers = ({ commit }, { search, page }) => {
-    let endpoint = '/users?search=' + search;
+export const fetchUsers = ({ commit }, { search, page, exclude }) => {
+    let endpoint = '/users';
+    let params = {
+        search: search
+    };
 
     if (page)
-        endpoint += '&page=' + page;
+        params.page = page;
 
+    if (exclude)
+       params.exclude = exclude;
+       
     return new Promise((resolve, reject) => {
-        axios.wp.get(endpoint)
+        axios.wp.get(endpoint + '?' + qs.stringify(params))
             .then(res => {
                 resolve({ users: res.data, totalUsers: res.headers['x-wp-total'] } );
             })
