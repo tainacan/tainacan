@@ -20,6 +20,9 @@ class User extends Metadata_Type {
 		$this->set_form_component('tainacan-form-user');
 		$this->set_name( __('User', 'tainacan') );
 		$this->set_description( __('A registered user on WordPress', 'tainacan') );
+		$this->set_default_options([
+			'default_author' => 'no'
+		]);
 		$this->set_preview_template('
 			<div class="taginput control is-expanded has-selected">
 				<div class="taginput-container is-small is-focusable">
