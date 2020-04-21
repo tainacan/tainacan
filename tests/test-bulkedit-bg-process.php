@@ -1910,7 +1910,6 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			'posts_per_page' => -1
 		];
 		$items = $Tainacan_Items->fetch($query);
-		print_r($items->found_posts);
 
 		$query = [
 			'taxquery' => [
