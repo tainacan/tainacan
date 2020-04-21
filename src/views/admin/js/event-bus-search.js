@@ -236,14 +236,16 @@ export default {
                 resetPageOnStore() {
                     this.$store.dispatch('search/setPage', 1);
                 },
-                setItemsPerPage(itemsPerPage) {
+                setItemsPerPage(itemsPerPage, shouldNotUpdatePrefs) {
                     this.$store.dispatch('search/setItemsPerPage', itemsPerPage);
                     this.updateURLQueries();
 
-                    let prefsPerPage = this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page';
-                    if (this.$userPrefs.get(prefsPerPage) != itemsPerPage) {
-                        this.$userPrefs.set(prefsPerPage, itemsPerPage)
-                            .catch(() => {});
+                    if (shouldNotUpdatePrefs == undefined || shouldNotUpdatePrefs == false) {
+                        let prefsPerPage = this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page';
+                        if (this.$userPrefs.get(prefsPerPage) != itemsPerPage) {
+                            this.$userPrefs.set(prefsPerPage, itemsPerPage)
+                                .catch(() => {});
+                        }
                     }
                 },
                 setOrderBy(orderBy) { 

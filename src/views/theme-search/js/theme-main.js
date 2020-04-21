@@ -120,6 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 defaultViewMode: '',
                 isForcedViewMode: false,
                 enabledViewModes: {},
+                defaultItemsPerPage: '',
                 hideFilters: false,
                 hideHideFiltersButton: false,
                 hideSearch: false,
@@ -174,6 +175,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.hideGoToPageButton = this.isParameterTrue('hide-go-to-page-button');
 
                 // Other Tweaks
+                 if (this.$el.attributes['default-items-per-page'] != undefined)
+                    this.defaultItemsPerPage = this.$el.attributes['default-items-per-page'].value;
                 if (this.$el.attributes['show-filters-button-inside-search-control'] != undefined)
                     this.showFiltersButtonInsideSearchControl = this.isParameterTrue('show-filters-button-inside-search-control');
                 if (this.$el.attributes['start-with-filters-hidden'] != undefined)

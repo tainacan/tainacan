@@ -84,6 +84,10 @@ registerBlockType('tainacan/faceted-search', {
             type: Boolean,
             default: false
         },
+        defaultItemsPerPage: {
+            type: Number,
+            default: 12
+        },
         hideGoToPageButton: {
             type: Boolean,
             default: false
@@ -202,6 +206,7 @@ registerBlockType('tainacan/faceted-search', {
             hideSortByButton,
             hideExposersButton,
             hideItemsPerPageButton,
+            defaultItemsPerPage,
             hideGoToPageButton,
             showFiltersButtonInsideSearchControl,
             startWithFiltersHidden,
@@ -398,7 +403,7 @@ registerBlockType('tainacan/faceted-search', {
                                                         enabledViewModes.push(aRegisteredViewMode[0]);
                                                     
                                                      // Puts a valid view mode as default if the current one is not in the list anymore.
-                                                    if (!enabledViewModes.includes(defaultViewMode)) {
+                                                    if (defaultViewMode != 'none' && !enabledViewModes.includes(defaultViewMode)) {
                                                         const validViewModeIndex = enabledViewModes.findIndex((aViewMode) => (tainacan_plugin.registered_view_modes[aViewMode] && !tainacan_plugin.registered_view_modes[aViewMode].full_screen));
                                                         if (validViewModeIndex >= 0)
                                                             defaultViewMode = enabledViewModes[validViewModeIndex];
@@ -486,6 +491,17 @@ registerBlockType('tainacan/faceted-search', {
                                         setAttributes({ hideGoToPageButton: isChecked });
                                     } 
                                 }
+                            />
+                             <RangeControl
+                                label={__('Default number of items per page', 'tainacan')}
+                                value={ defaultItemsPerPage ? defaultItemsPerPage : 12 }
+                                onChange={ ( itemsPerPage ) => {
+                                    defaultItemsPerPage = itemsPerPage;
+                                    setAttributes( { defaultItemsPerPage: itemsPerPage } ) 
+                                    setContent();
+                                }}
+                                min={ 1 }
+                                max={ tainacan_plugin.api_max_items_per_page ? tainacan_plugin.api_max_items_per_page : 96 }
                             />
                         </PanelBody>
 
@@ -943,8 +959,8 @@ registerBlockType('tainacan/faceted-search', {
                             collectionEnabledViewModes = collectionEnabledViewModes && collectionEnabledViewModes.length ? collectionEnabledViewModes : enabledViewModes;
                             setAttributes({
                                 collectionId: collectionId, 
-                                collectionDefaultViewMode: collectionEnabledViewModes,
-                                defaultViewMode: collectionEnabledViewModes,
+                                collectionDefaultViewMode: collectionDefaultViewMode,
+                                defaultViewMode: collectionDefaultViewMode,
                                 collectionEnabledViewModes: collectionEnabledViewModes,
                                 enabledViewModes: collectionEnabledViewModes,
                                 isCollectionModalOpen: false
@@ -995,6 +1011,7 @@ registerBlockType('tainacan/faceted-search', {
             hideSortByButton,
             hideExposersButton,
             hideItemsPerPageButton,
+            defaultItemsPerPage,
             hideGoToPageButton,
             showFiltersButtonInsideSearchControl,
             startWithFiltersHidden,
@@ -1040,26 +1057,27 @@ registerBlockType('tainacan/faceted-search', {
                     }}
                     className={ className }>
                 <main 
-                    term-id={ listType == 'term' ? termId : null }
-                    taxonomy={ listType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
-                    collection-id={ listType == 'collection' ? collectionId : null }  
-                    default-view-mode={ defaultViewMode == 'none' ? defaultViewMode : (listType == 'collection' ? collectionDefaultViewMode : 'masonry') }
-                    is-forced-view-mode={ defaultViewMode == 'none' ? true : false }
-                    enabled-view-modes={ enabledViewModes.toString() }  
-                    hide-filters = { hideFilters.toString() }
-                    hide-hide-filters-button= { hideHideFiltersButton.toString() }
-                    hide-search = { hideSearch.toString() }
-                    hide-advanced-search = { hideAdvancedSearch.toString() }
-                    hide-sort-by-button = { hideSortByButton.toString() }
-                    hide-exposers-button = { hideExposersButton.toString() }
-                    hide-items-per-page-button = { hideItemsPerPageButton.toString() }
-                    hide-go-to-page-button = { hideGoToPageButton.toString() }
-                    show-filters-button-inside-search-control = { showFiltersButtonInsideSearchControl.toString() }
-                    start-with-filters-hidden = { startWithFiltersHidden.toString() }
-                    filters-as-modal = { filtersAsModal.toString() }
-                    show-inline-view-mode-options = { showInlineViewModeOptions.toString() }
-                    show-fullscreen-with-view-modes = { showFullscreenWithViewModes.toString() }
-                    id="tainacan-items-page">
+                        term-id={ listType == 'term' ? termId : null }
+                        taxonomy={ listType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
+                        collection-id={ listType == 'collection' ? collectionId : null }  
+                        default-view-mode={ defaultViewMode != 'none' ? defaultViewMode : (listType == 'collection' ? collectionDefaultViewMode : 'masonry') }
+                        is-forced-view-mode={ defaultViewMode == 'none' ? true : false }
+                        enabled-view-modes={ enabledViewModes.toString() }  
+                        hide-filters = { hideFilters.toString() }
+                        hide-hide-filters-button= { hideHideFiltersButton.toString() }
+                        hide-search = { hideSearch.toString() }
+                        hide-advanced-search = { hideAdvancedSearch.toString() }
+                        hide-sort-by-button = { hideSortByButton.toString() }
+                        hide-exposers-button = { hideExposersButton.toString() }
+                        hide-items-per-page-button = { hideItemsPerPageButton.toString() }
+                        default-items-per-page = { defaultItemsPerPage }
+                        hide-go-to-page-button = { hideGoToPageButton.toString() }
+                        show-filters-button-inside-search-control = { showFiltersButtonInsideSearchControl.toString() }
+                        start-with-filters-hidden = { startWithFiltersHidden.toString() }
+                        filters-as-modal = { filtersAsModal.toString() }
+                        show-inline-view-mode-options = { showInlineViewModeOptions.toString() }
+                        show-fullscreen-with-view-modes = { showFullscreenWithViewModes.toString() }
+                        id="tainacan-items-page">
                 </main>
             </div>
     }
