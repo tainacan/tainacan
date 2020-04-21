@@ -25,9 +25,9 @@ export const eventBusItemMetadata = new Vue({
     methods : {
         updateValue({ itemId, metadatumId, values, parentMetaId }){
             
-            this.$emit('isUpdatingValue', true);
-            
             if (itemId) {
+
+                this.$emit('isUpdatingValue', true);
 
                 if (values.length > 0 && values[0].value) {
                     let onlyValues = values.map((aValueObject) => aValueObject.value);
@@ -37,7 +37,7 @@ export const eventBusItemMetadata = new Vue({
                 this.$store.dispatch('item/updateItemMetadatum', { 
                     item_id: itemId, 
                     metadatum_id: metadatumId, 
-                    values: values[0] ? values[0] : values,
+                    values: Array.isArray(values[0])  ? values[0] : values,
                     parent_meta_id: parentMetaId ? parentMetaId : null
                 })
                     .then(() => { 

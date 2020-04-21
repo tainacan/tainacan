@@ -172,7 +172,7 @@
 
                     // Multivalored Metadata requires checking the whole array
                     case 'Array': {
-
+                        
                         let equal = [];
                         let currentValues = [];
 
@@ -181,7 +181,7 @@
                             currentValues = this.values.map(term => term.value)
                         else
                             currentValues = this.values;
-                        
+                            
                         for (let value of currentValues) {
                             let foundIndex = this.itemMetadatum.value.findIndex(element => value == element.id);
                             if (foundIndex >= 0)
@@ -205,7 +205,7 @@
                         if (this.values.length && this.values[0] == this.itemMetadatum.value)
                             return;
                 }
-
+                
                 // If none is the case, the value is update request is sent to the API
                 eventBusItemMetadata.$emit('input', {
                     itemId: this.itemMetadatum.item.id,
@@ -263,6 +263,9 @@
             margin-left: -42px;
             bottom: 0.1em;
             white-space: nowrap;
+        }
+        .add-link {
+            font-size: 0.75em;
         }
     }
 </style>
