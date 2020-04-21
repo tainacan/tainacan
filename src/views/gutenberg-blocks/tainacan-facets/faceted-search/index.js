@@ -72,6 +72,14 @@ registerBlockType('tainacan/faceted-search', {
             type: Boolean,
             default: false
         },
+        hideDisplayedMetadataButton: {
+            type: Boolean,
+            default: false
+        },
+        hideSortingArea: {
+            type: Boolean,
+            default: false
+        },
         hideSortByButton: {
             type: Boolean,
             default: false
@@ -89,6 +97,10 @@ registerBlockType('tainacan/faceted-search', {
             default: 12
         },
         hideGoToPageButton: {
+            type: Boolean,
+            default: false
+        },
+        hidePaginationArea: {
             type: Boolean,
             default: false
         },
@@ -203,9 +215,12 @@ registerBlockType('tainacan/faceted-search', {
             hideHideFiltersButton,
             hideSearch,
             hideAdvancedSearch,
+            hideDisplayedMetadataButton,
+            hideSortingArea,
             hideSortByButton,
             hideExposersButton,
             hideItemsPerPageButton,
+            hidePaginationArea,
             defaultItemsPerPage,
             hideGoToPageButton,
             showFiltersButtonInsideSearchControl,
@@ -313,9 +328,29 @@ registerBlockType('tainacan/faceted-search', {
                                 }
                             />
                             <ToggleControl
+                                label={__('Hide "Displayed metadata" button', 'tainacan')}
+                                help={ hideDisplayedMetadataButton ? __('Do not show "Displayed metadata" dropdown even if the view mode allows it', 'tainacan') : __('Toggle to show "Displayed metadata" dropdown if the view mode allows it', 'tainacan')}
+                                checked={ hideDisplayedMetadataButton }
+                                onChange={ ( isChecked ) => {
+                                        hideDisplayedMetadataButton = isChecked;
+                                        setAttributes({ hideDisplayedMetadataButton: isChecked });
+                                    } 
+                                }
+                            />
+                            <ToggleControl
+                                label={__('Hide sorting area', 'tainacan')}
+                                help={ hideSortingArea ? __('Do not show search sorting options', 'tainacan') : __('Toggle to show search sorting options', 'tainacan')}
+                                checked={ hideSortingArea }
+                                onChange={ ( isChecked ) => {
+                                        hideSortingArea = isChecked;
+                                        setAttributes({ hideSortingArea: isChecked });
+                                    }  
+                                }
+                            />
+                            <ToggleControl
                                 label={__('Hide "Sort By" button', 'tainacan')}
-                                help={ hideSortByButton ? __('Do not show "Sort By" button', 'tainacan') : __('Toggle to show "Sort By" button', 'tainacan')}
-                                checked={ hideSortByButton }
+                                help={ hideSortingArea || hideSortByButton ? __('Do not show "Sort By" button', 'tainacan') : __('Toggle to show "Sort By" button', 'tainacan')}
+                                checked={ hideSortingArea || hideSortByButton }
                                 onChange={ ( isChecked ) => {
                                         hideSortByButton = isChecked;
                                         setAttributes({ hideSortByButton: isChecked });
@@ -473,9 +508,19 @@ registerBlockType('tainacan/faceted-search', {
                                 initialOpen={ true }
                             >
                             <ToggleControl
+                                label={__('Hide pagination area', 'tainacan')}
+                                help={ hidePaginationArea ? __('Do not show search pagination options', 'tainacan') : __('Toggle to show search pagination options', 'tainacan')}
+                                checked={ hidePaginationArea }
+                                onChange={ ( isChecked ) => {
+                                        hidePaginationArea= isChecked;
+                                        setAttributes({ hidePaginationArea: isChecked });
+                                    }  
+                                }
+                            />
+                            <ToggleControl
                                 label={__('Hide "Items per Page" button', 'tainacan')}
-                                help={ hideItemsPerPageButton ? __('Do not show "Items per Page" button', 'tainacan') : __('Toggle to show "Items per Page" button', 'tainacan')}
-                                checked={ hideItemsPerPageButton }
+                                help={ hidePaginationArea || hideItemsPerPageButton ? __('Do not show "Items per Page" button', 'tainacan') : __('Toggle to show "Items per Page" button', 'tainacan')}
+                                checked={ hidePaginationArea || hideItemsPerPageButton }
                                 onChange={ ( isChecked ) => {
                                         hideItemsPerPageButton = isChecked;
                                         setAttributes({ hideItemsPerPageButton: isChecked });
@@ -484,8 +529,8 @@ registerBlockType('tainacan/faceted-search', {
                             />
                             <ToggleControl
                                 label={__('Hide "Go to Page" button', 'tainacan')}
-                                help={ hideGoToPageButton ? __('Do not show "Go to Page" button', 'tainacan') : __('Toggle to show "Go to Page" button', 'tainacan')}
-                                checked={ hideGoToPageButton }
+                                help={ hidePaginationArea || hideGoToPageButton ? __('Do not show "Go to Page" button', 'tainacan') : __('Toggle to show "Go to Page" button', 'tainacan')}
+                                checked={ hidePaginationArea || hideGoToPageButton }
                                 onChange={ ( isChecked ) => {
                                         hideGoToPageButton = isChecked;
                                         setAttributes({ hideGoToPageButton: isChecked });
@@ -827,8 +872,16 @@ registerBlockType('tainacan/faceted-search', {
                                     {
                                         showFiltersButtonInsideSearchControl && !hideHideFiltersButton ? <span class="fake-button"><div class="fake-icon"></div><div class="fake-text"></div></span> : null
                                     }
-                                    <span class="fake-button"><div class="fake-text"></div></span>
-                                    <span class="fake-button"> { !hideSortByButton ? <div class="fake-text"></div> : null }<div class="fake-icon"></div><div class="fake-text"></div></span>
+                                    { 
+                                        !hideDisplayedMetadataButton ?
+                                        <span class="fake-button"><div class="fake-text"></div></span>
+                                     :null
+                                    }
+                                    { 
+                                        !hideSortingArea ?
+                                        <span class="fake-button"> { !hideSortByButton ? <div class="fake-text"></div> : null }<div class="fake-icon"></div><div class="fake-text"></div></span>
+                                    :null 
+                                    }
                                     {
                                         !showInlineViewModeOptions ? 
                                             <span class="fake-button"><div class="fake-icon"></div><div class="fake-text"></div></span> 
@@ -933,6 +986,7 @@ registerBlockType('tainacan/faceted-search', {
                                                 </div>
                                             } ) }
                                         </div>
+                                        { !hidePaginationArea ?
                                         <div class="pagination">
                                             <span class="fake-text"></span>
                                             { !hideItemsPerPageButton ? <span class="fake-button"><div class="fake-text"></div></span> : null }
@@ -941,6 +995,7 @@ registerBlockType('tainacan/faceted-search', {
                                                 { Array(6).fill().map( () => <div class="fake-link"></div> ) }
                                             </div>
                                         </div>
+                                        : null }
                                     </div>
                                 </div>
                             </div>
@@ -1004,11 +1059,14 @@ registerBlockType('tainacan/faceted-search', {
             enabledViewModes,
             collectionDefaultViewMode,
             collectionEnabledViewModes,
+            hideDisplayedMetadataButton,
+            hideSortingArea,
             hideFilters,
             hideHideFiltersButton,
             hideSearch,
             hideAdvancedSearch,
             hideSortByButton,
+            hidePaginationArea,
             hideExposersButton,
             hideItemsPerPageButton,
             defaultItemsPerPage,
@@ -1067,7 +1125,11 @@ registerBlockType('tainacan/faceted-search', {
                         hide-hide-filters-button= { hideHideFiltersButton.toString() }
                         hide-search = { hideSearch.toString() }
                         hide-advanced-search = { hideAdvancedSearch.toString() }
+                        hide-displayed-metadata-button = { hideDisplayedMetadataButton.toString() }
+                        hide-pagination-area = { hidePaginationArea.toString() }
+                        hide-sorting-area = { hideSortingArea.toString() }
                         hide-sort-by-button = { hideSortByButton.toString() }
+                        hide-pagination-area = { hidePaginationArea.toString() }
                         hide-exposers-button = { hideExposersButton.toString() }
                         hide-items-per-page-button = { hideItemsPerPageButton.toString() }
                         default-items-per-page = { defaultItemsPerPage }

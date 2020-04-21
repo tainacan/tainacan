@@ -8,7 +8,10 @@
         <h3 
                 id="filters-label-landmark"
                 class="has-text-weight-semibold">
-            {{ $i18n.get('filters') }}
+            <span class="gray-icon is-hidden">
+                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
+            </span>
+            <span>{{ $i18n.get('filters') }}</span>
         </h3>
 
         <button

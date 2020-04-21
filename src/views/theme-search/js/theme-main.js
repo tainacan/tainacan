@@ -125,9 +125,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 hideHideFiltersButton: false,
                 hideSearch: false,
                 hideAdvancedSearch: false,
+                hideDisplayedMetadataButton: false,
                 hideSortByButton: false,
+                hideSortingArea: false,
                 hideItemsPerPageButton: false,
                 hideGoToPageButton: false,
+                hidePaginationArea: false,
                 showFiltersButtonInsideSearchControl: false,
                 startWithFiltersHidden: false,
                 filtersAsModal: false,
@@ -165,6 +168,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.hideSearch = this.isParameterTrue('hide-search');
                 if (this.$el.attributes['hide-advanced-search'] != undefined)
                     this.hideAdvancedSearch = this.isParameterTrue('hide-advanced-search');
+                if (this.$el.attributes['hide-displayed-metadata-button'] != undefined)
+                    this.hideDisplayedMetadataButton = this.isParameterTrue('hide-displayed-metadata-button');
+                if (this.$el.attributes['hide-sorting-area'] != undefined)
+                    this.hideSortingArea = this.isParameterTrue('hide-sorting-area');
                 if (this.$el.attributes['hide-sort-by-button'] != undefined)
                     this.hideSortByButton = this.isParameterTrue('hide-sort-by-button');
                 if (this.$el.attributes['hide-exposers-button'] != undefined)
@@ -173,6 +180,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.hideItemsPerPageButton = this.isParameterTrue('hide-items-per-page-button');
                 if (this.$el.attributes['hide-go-to-page-button'] != undefined)
                     this.hideGoToPageButton = this.isParameterTrue('hide-go-to-page-button');
+                if (this.$el.attributes['hide-pagination-area'] != undefined)
+                    this.hidePaginationArea = this.isParameterTrue('hide-pagination-area');
 
                 // Other Tweaks
                  if (this.$el.attributes['default-items-per-page'] != undefined)

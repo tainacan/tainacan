@@ -229,7 +229,8 @@
       margin-left: 6px;
       border-radius: 3px;
       display: flex;
-      align-items: center; }
+      align-items: center;
+      margin-right: auto; }
       .wp-block-tainacan-faceted-search .items-list-placeholder .fake-button .fake-text {
         background-color: var(--tainacan-input-color, rgba(200, 200, 200, 0.3));
         width: 95%;

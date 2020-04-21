@@ -97,7 +97,7 @@
 
             <!-- Displayed Metadata Dropdown -->
             <div    
-                    v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].dynamic_metadata)"
+                    v-if="!hideDisplayedMetadataButton && (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].dynamic_metadata)"
                     class="search-control-item">
                 <b-dropdown
                         v-tooltip="{
@@ -152,7 +152,9 @@
             </div>
 
             <!-- Change OrderBy Select and Order Button-->
-            <div class="search-control-item">
+            <div 
+                    v-show="!hideSortingArea"
+                    class="search-control-item sorting-area">
                 <b-field>
                     <label class="label">{{ $i18n.get('label_sort') }}</label>
                     <b-dropdown
@@ -509,6 +511,7 @@
         
                 <!-- Pagination -->
                 <pagination
+                        v-show="!hidePaginationArea"
                         :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
                         v-if="totalItems > 0 &&
                             ((registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
@@ -553,10 +556,13 @@
             hideHideFiltersButton: false,
             hideSearch: false,
             hideAdvancedSearch: false,
+            hideDisplayedMetadataButton: false,
+            hideSortingArea: false,
             hideSortByButton: false,
             hideExposersButton: false,
             hideItemsPerPageButton: false,
             hideGoToPageButton: false,
+            hidePaginationArea: false,
             // Other Tweaks
             defaultItemsPerPage: Number,
             showFiltersButtonInsideSearchControl: false,
