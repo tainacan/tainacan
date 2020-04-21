@@ -495,7 +495,7 @@ class CSV extends Importer {
         $attachments = explode( $this->get_option('multivalued_delimiter'), $column_value);
         if( $attachments ) {
             foreach( $attachments as $attachment ) {
-
+                if(empty($attachment)) continue;
                 if( filter_var($attachment, FILTER_VALIDATE_URL) ) {
                     $id = $TainacanMedia->insert_attachment_from_url($attachment, $item_inserted->get_id());
                     if(!$id) {
