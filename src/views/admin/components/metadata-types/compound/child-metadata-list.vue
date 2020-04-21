@@ -379,7 +379,7 @@
                 this.$router.push({ query: {}});
             },
             isAvailableChildMetadata(to, from, item) {
-                return !['tainacan-compound', 'tainacan-taxonomy', 'tainacan-relationship'].includes(item.id);
+                return !['tainacan-compound', 'tainacan-taxonomy'].includes(item.id);
             },
         }
     }
