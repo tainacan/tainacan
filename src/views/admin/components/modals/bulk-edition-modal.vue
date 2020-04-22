@@ -24,17 +24,17 @@
 
                     <b-select
                             :loading="metadataIsLoading"
-                            :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': !!bulkEditionProcedures[criterion].metadatumId}"
-                            :disabled="!!bulkEditionProcedures[criterion].metadatumId || metadataIsLoading"
+                            :class="{ 'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': !!bulkEditionProcedures[criterion].metadatum }"
+                            :disabled="!!bulkEditionProcedures[criterion].metadatum || metadataIsLoading"
                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
-                            @input="addToBulkEditionProcedures($event, 'metadatumId', criterion)">
+                            @input="addToBulkEditionProcedures($event, 'metadatum', criterion)">
                         <template 
                                 v-for="(metadatum, index) in metadata">
                             <option
                                     :key="index"
                                     v-if="metadatum.id && metadatum.metadata_type_object.component !== 'tainacan-compound' && metadatum.parent <= 0"
-                                    :value="metadatum.id">
+                                    :value="metadatum">
                                 {{ metadatum.name }}
                             </option>
                             <optgroup 
@@ -45,30 +45,32 @@
                                         v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects"
                                         :key="childIndex"
                                         v-if="childMetadatum.id"
-                                        :value="childMetadatum.id">
+                                        :value="childMetadatum">
                                     {{ childMetadatum.name }}
                                 </option>
                             </optgroup>
                         </template>
-                        <option value="status">
+                        <option :value="{ id: 'status' }">
                             {{ $i18n.get('label_status') }}
                         </option>
-                        <option value="comments">
+                        <option :value="{ id: 'comments' }">
                             {{ $i18n.get('label_allow_comments') }}
+                        </option>
+                        <option :value="{ id: 'created_by' }">
+                            {{ $i18n.get('label_created_by') }}
                         </option>
                     </b-select>
 
                     <b-select
                             :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': !!bulkEditionProcedures[criterion].action }"
-                            v-if="bulkEditionProcedures[criterion] &&
-                            bulkEditionProcedures[criterion].metadatumId"
+                            v-if="bulkEditionProcedures[criterion] && bulkEditionProcedures[criterion].metadatum"
                             :disabled="!!bulkEditionProcedures[criterion].action"
                             :value="bulkEditionProcedures[criterion].action ? bulkEditionProcedures[criterion].action : undefined"
                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                             :placeholder="$i18n.get('instruction_select_a_action')"
                             @input="addToBulkEditionProcedures($event, 'action', criterion)">
                         <option
-                                v-for="(edtAct, key) in getValidEditionActions(bulkEditionProcedures[criterion].metadatumId)"
+                                v-for="(edtAct, key) in getValidEditionActions(bulkEditionProcedures[criterion].metadatum)"
                                 :value="edtAct"
                                 :key="key">
                             {{ edtAct }}
@@ -85,14 +87,13 @@
                     <!-- Replace -->
                     <template
                             v-if="bulkEditionProcedures[criterion] &&
-                                bulkEditionProcedures[criterion].metadatumId &&
-                                bulkEditionProcedures[criterion].action == editionActionsForMultiple.replace">
+                                bulkEditionProcedures[criterion].metadatum &&
+                                bulkEditionProcedures[criterion].action == editionActions.replace">
 
                         <component
-                                :is="getMetadatumById(bulkEditionProcedures[criterion].metadatumId).metadata_type_object.component"
-                                :forced-component-type="getMetadatumById(bulkEditionProcedures[criterion].metadatumId)
-                                    .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
-                                :item-metadatum="{ metadatum: getMetadatumById(bulkEditionProcedures[criterion].metadatumId) }"
+                                :is="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component"
+                                :forced-component-type="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                :item-metadatum="{ metadatum: bulkEditionProcedures[criterion].metadatum }"
                                 :allow-new="false"
                                 :allow-select-to-create="false"
                                 :maxtags="1"
@@ -109,13 +110,11 @@
                         </div>
 
                         <component
-                                :is="getMetadatumById(bulkEditionProcedures[criterion].metadatumId).metadata_type_object.component"
-                                :forced-component-type="getMetadatumById(bulkEditionProcedures[criterion].metadatumId)
-                                    .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
-                                :item-metadatum="{ metadatum: getMetadatumById(bulkEditionProcedures[criterion].metadatumId) }"
+                                :is="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component"
+                                :forced-component-type="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                :item-metadatum="{ metadatum: bulkEditionProcedures[criterion].metadatum }"
                                 :allow-new="false"
-                                :allow-select-to-create="getMetadatumById(bulkEditionProcedures[criterion].metadatumId)
-                                    .metadata_type_options.allow_new_terms === 'yes'"
+                                :allow-select-to-create="bulkEditionProcedures[criterion].metadatum.metadata_type_options.allow_new_terms === 'yes'"
                                 :maxtags="1"
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
@@ -126,8 +125,7 @@
 
                     <!-- Not replace -->
                     <template
-                            v-else-if="bulkEditionProcedures[criterion] &&
-                                bulkEditionProcedures[criterion].metadatumId == 'status'">
+                            v-else-if="bulkEditionProcedures[criterion] && bulkEditionProcedures[criterion].metadatum && bulkEditionProcedures[criterion].metadatum.id == 'status'">
                         <b-select
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
@@ -144,8 +142,7 @@
                     </template>
 
                     <template
-                            v-else-if="bulkEditionProcedures[criterion] &&
-                                bulkEditionProcedures[criterion].metadatumId == 'comments'">
+                            v-else-if="bulkEditionProcedures[criterion] && bulkEditionProcedures[criterion].metadatum && bulkEditionProcedures[criterion].metadatum.id == 'comments'">
                         <b-select
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': bulkEditionProcedures[criterion].isDone}"
                                 :disabled="bulkEditionProcedures[criterion].isDone"
@@ -163,9 +160,9 @@
 
                     <template
                             v-else-if="bulkEditionProcedures[criterion] &&
-                                bulkEditionProcedures[criterion].metadatumId &&
+                                bulkEditionProcedures[criterion].metadatum &&
                                 bulkEditionProcedures[criterion].action &&
-                                bulkEditionProcedures[criterion].action == editionActionsForMultiple.copy">
+                                bulkEditionProcedures[criterion].action == editionActions.copy">
                         <b-select
                                 :loading="metadataIsLoading"
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': !!bulkEditionProcedures[criterion].metadatumIdCopyFrom }"
@@ -200,17 +197,15 @@
 
                     <template
                             v-else-if="bulkEditionProcedures[criterion] &&
-                                bulkEditionProcedures[criterion].metadatumId &&
+                                bulkEditionProcedures[criterion].metadatum &&
                                 bulkEditionProcedures[criterion].action &&
-                                bulkEditionProcedures[criterion].action != editionActionsForMultiple.clear">
+                                bulkEditionProcedures[criterion].action != editionActions.clear">
                         <component
-                                :is="getMetadatumById(bulkEditionProcedures[criterion].metadatumId).metadata_type_object.component"
-                                :forced-component-type="getMetadatumById(bulkEditionProcedures[criterion].metadatumId)
-                                    .metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
-                                :item-metadatum="{ metadatum: getMetadatumById(bulkEditionProcedures[criterion].metadatumId) }"
+                                :is="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component"
+                                :forced-component-type="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                :item-metadatum="{ metadatum: bulkEditionProcedures[criterion].metadatum }"
                                 :allow-new="false"
-                                :allow-select-to-create="getMetadatumById(bulkEditionProcedures[criterion].metadatumId)
-                                    .metadata_type_options.allow_new_terms === 'yes'"
+                                :allow-select-to-create="bulkEditionProcedures[criterion].metadatum.metadata_type_options.allow_new_terms === 'yes'"
                                 :maxtags="1"
                                 :class="{ 'is-field-history': bulkEditionProcedures[criterion].isDone }"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
@@ -262,7 +257,7 @@
                                 :disabled="!groupId"
                                 v-if="!bulkEditionProcedures[criterion].isDone &&
                                     !bulkEditionProcedures[criterion].isExecuting &&
-                                    bulkEditionProcedures[criterion].metadatumId &&
+                                    bulkEditionProcedures[criterion].metadatum &&
                                     bulkEditionProcedures[criterion].action"
                                 @click="executeBulkEditionProcedure(criterion)"
                                 class="button is-white is-pulled-right">
@@ -333,16 +328,11 @@
         data() {
             return {
                 editionCriteria: [1],
-                editionActionsForMultiple: {
+                editionActions: {
                     add: this.$i18n.get('add_value'),
                     redefine: this.$i18n.get('set_new_value'),
                     replace: this.$i18n.get('replace_value'),
                     remove: this.$i18n.get('remove_a_value'),
-                    clear: this.$i18n.get('clear_values'),
-                    copy: this.$i18n.get('copy_value')
-                },
-                editionActionsForNotMultiple: {
-                    redefine: this.$i18n.get('set_new_value'),
                     clear: this.$i18n.get('clear_values'),
                     copy: this.$i18n.get('copy_value')
                 },
@@ -435,23 +425,19 @@
             ]),
             finalizeProcedure(criterion){
 
-                let withError = false;
-
                 this.$set(this.bulkEditionProcedures[criterion], 'isDone', true);
 
-                let index = this.editionCriteria.indexOf(criterion);
-
-                this.dones[index] = !withError;
+                this.dones[this.editionCriteria.indexOf(criterion)] = true;
  
                 this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', false);
             },
             executeBulkEditionProcedure(criterion){
                 let procedure = this.bulkEditionProcedures[criterion];
 
-                if (procedure.action === this.editionActionsForMultiple.redefine) {
+                if (procedure.action === this.editionActions.redefine) {
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
 
-                    if (procedure.metadatumId === 'status'){
+                    if (procedure.metadatum.id === 'status'){
                         this.setStatusInBulk({
                             collectionId: this.collectionId,
                             groupId: this.groupId,
@@ -459,7 +445,7 @@
                         }).then(() => {
                             this.finalizeProcedure(criterion);
                         });
-                    } if(procedure.metadatumId === 'comments'){
+                    } if(procedure.metadatum.id === 'comments'){
                         this.setCommentStatusInBulk({
                             collectionId: this.collectionId,
                             groupId: this.groupId,
@@ -472,74 +458,74 @@
                             collectionId: this.collectionId,
                             groupId: this.groupId,
                             bodyParams: {
-                                metadatum_id: procedure.metadatumId,
+                                metadatum_id: procedure.metadatum.id,
                                 value: procedure.newValue
                             }
                         }).then(() => {
                             this.finalizeProcedure(criterion);
                         });
                     }
-                } else if (procedure.action === this.editionActionsForMultiple.add) {
+                } else if (procedure.action === this.editionActions.add) {
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
 
                     this.addValueInBulk({
                         collectionId: this.collectionId,
                         groupId: this.groupId,
                         bodyParams: {
-                            metadatum_id: procedure.metadatumId,
+                            metadatum_id: procedure.metadatum.id,
                             value: procedure.newValue,
                         }
                     }).then(() => {
                         this.finalizeProcedure(criterion);
                     });
-                } else if (procedure.action === this.editionActionsForMultiple.replace) {
+                } else if (procedure.action === this.editionActions.replace) {
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
 
                     this.replaceValueInBulk({
                         collectionId: this.collectionId,
                         groupId: this.groupId,
                         bodyParams: {
-                            metadatum_id: procedure.metadatumId,
+                            metadatum_id: procedure.metadatum.id,
                             old_value: procedure.oldValue,
                             new_value: procedure.newValue,
                         }
                     }).then(() => {
                         this.finalizeProcedure(criterion);
                     });
-                } else if (procedure.action === this.editionActionsForMultiple.remove) {
+                } else if (procedure.action === this.editionActions.remove) {
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
 
                     this.removeValueInBulk({
                         collectionId: this.collectionId,
                         groupId: this.groupId,
                         bodyParams: {
-                            metadatum_id: procedure.metadatumId,
+                            metadatum_id: procedure.metadatum.id,
                             value: procedure.newValue,
                         }
                     }).then(() => {
                         this.finalizeProcedure(criterion);
                     });
-                } else if (procedure.action === this.editionActionsForMultiple.clear) {
+                } else if (procedure.action === this.editionActions.clear) {
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
 
                     this.clearValuesInBulk({
                         collectionId: this.collectionId,
                         groupId: this.groupId,
                         bodyParams: {
-                            metadatum_id: procedure.metadatumId
+                            metadatum_id: procedure.metadatum.id
                         }
                     }).then(() => {
                         this.finalizeProcedure(criterion);
                     });
-                } else if (procedure.action === this.editionActionsForMultiple.copy) {
+                } else if (procedure.action === this.editionActions.copy) {
                     this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
 
                     this.copyValuesInBulk({
                         collectionId: this.collectionId,
                         groupId: this.groupId,
                         bodyParams: {
-                            metadatum_id: procedure.metadatumId,
-                            metadatum_id_copy_from: procedure.metadatumIdCopyFrom,
+                            metadatum_id: parseInt(procedure.metadatum.id),
+                            metadatum_id_copy_from: parseInt(procedure.metadatumIdCopyFrom),
                         }
                     }).then(() => {
                         this.finalizeProcedure(criterion);
@@ -581,37 +567,60 @@
                     this.dones.splice(criterionIndex, 1)
                 }
             },
-            getValidEditionActions(metadatumId) {
-                const isMultiple = this.getMetadatumById(metadatumId).multiple == 'yes';
-                let validEditionActions = {};
+            getValidEditionActions(metadatum) {
+                let validEditionActions = JSON.parse(JSON.stringify(this.editionActions));
                 
-                for (let [actionKey, action] of Object.entries(isMultiple ? this.editionActionsForMultiple : this.editionActionsForNotMultiple)) {
-                    if ((metadatumId != 'status' && metadatumId != 'comments') || actionKey != 'clear')
-                        validEditionActions[actionKey] = action;
+                for (let actionKey of Object.keys(this.editionActions)) {
+
+                    // Not multiple metadata have less options
+                    if (metadatum.multiple != 'yes' && (actionKey == 'add' || actionKey == 'replace' || actionKey == 'remove')) {
+                        delete validEditionActions[actionKey];
+                        continue;
+                    }
+
+                    // These special metadata are even more limited
+                    if ((metadatum.id == 'status' || metadatum.id == 'comments') && (actionKey == 'clear' || actionKey == 'copy')) {
+                        delete validEditionActions[actionKey];
+                        continue;
+                    } else if (metadatum.id == 'created_by' && (actionKey == 'clear' || actionKey == 'redefine')) {
+                        delete validEditionActions[actionKey];
+                        continue;
+                    }
+
+                    // For allowing copy, we also need to check more details of the metadata
+                    if (actionKey == 'copy' && metadatum.metadata_type_object) {
+                        const otherMetadatumOfSameTypeIndex = this.metadata.findIndex(otherMetadatum => {
+                            return (
+                                otherMetadatum.id != metadatum.id && 
+                                otherMetadatum.metadata_type_object.component == metadatum.metadata_type_object.component &&
+                                otherMetadatum.parent <= 0
+                            );
+                        });
+                        
+                        if (otherMetadatumOfSameTypeIndex < 0) {
+                            delete validEditionActions[actionKey];
+                        }
+                    }
                 }
 
                 return validEditionActions;
             },
-            getMetadatumById(id) {
-                let found = this.metadata.find((element) => {
-                    return element.id == id;
-                });
-
-                return found ? found : {};
-            },
             getAllowedMetadataForCopy(criterion) {
                 if (this.bulkEditionProcedures[criterion] &&
-                    this.bulkEditionProcedures[criterion].metadatumId &&
+                    this.bulkEditionProcedures[criterion].metadatum &&
                     this.bulkEditionProcedures[criterion].action &&
-                    this.bulkEditionProcedures[criterion].action == this.editionActionsForMultiple.copy) {
-                    const selectedMetadatum = this.getMetadatumById(this.bulkEditionProcedures[criterion].metadatumId);
-                    if (selectedMetadatum.metadata_type_object.component) {
+                    this.bulkEditionProcedures[criterion].action == this.editionActions.copy) {
+                    
+                    const selectedMetadatum = this.bulkEditionProcedures[criterion].metadatum;
+                    if (selectedMetadatum.metadata_type_object && selectedMetadatum.metadata_type_object.component) {
                         return this.metadata.filter((metadatum) => {
                             return (
                                 metadatum.metadata_type_object.component === selectedMetadatum.metadata_type_object.component &&
                                 metadatum.metadata_type_object.component === selectedMetadatum.metadata_type_object.component 
                             )
                         });
+                    } else if (selectedMetadatum.id == 'created_by') {
+                        return this.metadata.filter(metadatum => metadatum.metadata_type_object.component == 'tainacan-user' && metadatum.parent <= 0)
                     }
                 }
 
