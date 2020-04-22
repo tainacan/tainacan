@@ -332,6 +332,7 @@
             border-bottom-right-radius: 0;
             margin-right: -1px;
             font-weight: normal;
+            line-height: 20px;
         }
         .button {
             top: -3px;
