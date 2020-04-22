@@ -125,6 +125,25 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				),
 			)
 		);
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/copy_value',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'copy_value'),
+					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+					'args'                => [
+						'metadatum_id' => [
+							'type'        => 'integer',
+							'description' => __( 'The metadatum ID', 'tainacan' ),
+						],
+						'metadatum_id_copy_from' => [
+							'type'        => 'string/integer',
+							'description' => __( 'The metadatum ID to be copied', 'tainacan' ),
+						],
+					],
+				),
+			)
+		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/remove',
 			array(
 				array(
@@ -292,6 +311,10 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		return $this->generic_action('remove_value', $request);
 	}
 
+	public function copy_value($request) {
+		return $this->generic_action('copy_value', $request, []);
+	}
+
 	public function replace_value($request) {
 		return $this->generic_action('replace_value', $request, ['old_value', 'new_value']);
 	}
@@ -339,6 +362,12 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				], 400);
 			}
 
+			if ( $method == 'copy_value' && ( !isset($body['metadatum_id']) || !isset($body['metadatum_id_copy_from']) ) ) {
+				return new \WP_REST_Response([
+					'error_message' => __('You must specify a source Metadatum ID and a destination Metadatum ID for be copied.', 'tainacan'),
+				], 400);
+			}
+
 			foreach ($keys as $key) {
 				if (!isset($body[$key])) {
 					return new \WP_REST_Response([
@@ -358,6 +387,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				"method" 				=> $method,
 				"old_value"			=> isset($body['old_value']) ? $body['old_value'] : null,
 				"metadatum_id" 	=> isset($body['metadatum_id']) ? $body['metadatum_id'] : null,
+				"metadatum_id_copy_from" 	=> isset($body['metadatum_id_copy_from']) ? $body['metadatum_id_copy_from'] : null,
 			];
 			$process->set_bulk_edit_data($bulk_edit_data);
 			$bg_bulk = $Tainacan_Generic_Process_Handler->add_to_queue($process);
