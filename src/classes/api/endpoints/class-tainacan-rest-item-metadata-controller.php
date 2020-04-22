@@ -121,6 +121,10 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 
 		$item = $this->item_repository->fetch($item_id);
 
+		if( in_array($item->get_status(), ['auto-draft'] ) ) {
+			$this->item_metadata_repository->create_default_value_metadata($item);
+		}
+
 		$items_metadata = $item->get_metadata();
 
 		$prepared_item = [];
