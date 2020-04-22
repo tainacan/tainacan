@@ -347,26 +347,35 @@ class Item_Metadata extends Repository {
 					return $value->meta_value;
 				}
 			} else {
-				if( !metadata_exists('post', $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id()) ) {
-					return $this->get_default_value($item_metadata->get_metadatum());
-				} else {
-					return get_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), $unique );
-				}
+				return get_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), $unique );
 			}
 
 		}
 
 	}
 
-	private function get_default_value($metadatum) {
-		if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\User' ) {
-			$options = $metadatum->get_metadata_type_options();
-			if ( isset($options['default_author']) && $options['default_author'] = 'yes') {
-				return $metadatum->is_multiple() ? [get_current_user_id()] : get_current_user_id();
+	public function create_default_value_metadata(Entities\Item $item) {
+		$items_metadata = $item->get_metadata();
+		foreach ($items_metadata as $item_metadata) {
+			if( in_array($item->get_status(), ['auto-draft'] ) && !metadata_exists('post', $item->get_id(), $item_metadata->get_metadatum()->get_id()) ) {
+				$metadatum = $item_metadata->get_metadatum();
+				if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\User' ) {
+					$options = $metadatum->get_metadata_type_options();
+					if ( isset($options['default_author']) && $options['default_author'] = 'yes') {
+						$value = $metadatum->is_multiple() ? [strval(get_current_user_id())] : strval(get_current_user_id());
+						$item_metadata->set_value($value);
+						if ( $item_metadata->validate() ) {
+							if($item->can_edit()) {
+								$this->insert($item_metadata);
+							}
+						} else {
+							return false;
+						}
+					}
+				}
 			}
-			return "";
 		}
-		return $metadatum->get_default_value();
+		
 	}
 
 	/**

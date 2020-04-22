@@ -83,18 +83,18 @@ class User extends Metadata_Type {
 	}
 
 	function user_exists($user) {
-		if ( empty($user) ) 
-			return true;
-		// if( !is_int($user) )
-		// 	return username_exists($user) !== false;
+		if( !is_int($user) ) {
+			return false;
+		}
 
 		global $wpdb;
 		// Check cache:
 		if (wp_cache_get($user, 'users')) return true;
 		// Check database:
-			if ($wpdb->get_var($wpdb->prepare("SELECT EXISTS (SELECT 1 FROM $wpdb->users WHERE ID = %d)", $user)))
-				return true;
-			return false;
+		if ($wpdb->get_var($wpdb->prepare("SELECT EXISTS (SELECT 1 FROM $wpdb->users WHERE ID = %d)", $user)))
+			return true;
+
+		return false;
 	}
 	
 	/**
@@ -108,13 +108,13 @@ class User extends Metadata_Type {
 		$value = $item_metadata->get_value();
 		if ( is_array($value) ) {
 			foreach($value as $user) {
-				if ( !$this->user_exists($user) ) {
+				if ( !empty($user) && !$this->user_exists((int)$user) ) {
 					$this->add_error( sprintf(__('User does not exist (ID: %s).', 'tainacan'), $user ) );
 					return false;
 				}
 			}
 		} else {
-			if ( !$this->user_exists($value) ) {
+			if ( !empty($value) && !$this->user_exists((int)$value) ) {
 				$this->add_error( sprintf( __('User does not exist (ID: %s).', 'tainacan'), $value ) );
 				return false;
 			}
