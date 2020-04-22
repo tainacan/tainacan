@@ -165,6 +165,43 @@
                             v-else-if="bulkEditionProcedures[criterion] &&
                                 bulkEditionProcedures[criterion].metadatumID &&
                                 bulkEditionProcedures[criterion].action &&
+                                bulkEditionProcedures[criterion].action == editionActionsForMultiple.copy">
+                        <b-select
+                                :loading="metadataIsLoading"
+                                :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': !!bulkEditionProcedures[criterion].metadatumIdCopyFrom }"
+                                :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting && !!bulkEditionProcedures[criterion].metadatumIdCopyFrom || metadataIsLoading"
+                                class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
+                                :placeholder="$i18n.get('instruction_select_a_metadatum')"
+                                @input="addToBulkEditionProcedures($event, 'metadatumIdCopyFrom', criterion)">
+                            <template 
+                                    v-for="(metadatum, index) in metadata">
+                                <option
+                                        :key="index"
+                                        v-if="metadatum.id && metadatum.metadata_type_object.component !== 'tainacan-compound' && metadatum.parent <= 0"
+                                        :value="metadatum.id">
+                                    {{ metadatum.name }}
+                                </option>
+                                <optgroup 
+                                        v-if="metadatum.id && metadatum.metadata_type_object.component === 'tainacan-compound'"
+                                        :key="index"
+                                        :label="metadatum.name">
+                                    <option 
+                                            v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects"
+                                            :key="childIndex"
+                                            v-if="childMetadatum.id"
+                                            :value="childMetadatum.id">
+                                        {{ childMetadatum.name }}
+                                    </option>
+                                </optgroup>
+                            </template>
+                        </b-select>
+
+                    </template>
+
+                    <template
+                            v-else-if="bulkEditionProcedures[criterion] &&
+                                bulkEditionProcedures[criterion].metadatumID &&
+                                bulkEditionProcedures[criterion].action &&
                                 bulkEditionProcedures[criterion].action != editionActionsForMultiple.clear">
                         <component
                                 :is="getMetadataByID(bulkEditionProcedures[criterion].metadatumID).metadata_type_object.component"
@@ -306,11 +343,13 @@
                     redefine: this.$i18n.get('set_new_value'),
                     replace: this.$i18n.get('replace_value'),
                     remove: this.$i18n.get('remove_a_value'),
-                    clear: this.$i18n.get('clear_values')
+                    clear: this.$i18n.get('clear_values'),
+                    copy: this.$i18n.get('copy_value')
                 },
                 editionActionsForNotMultiple: {
                     redefine: this.$i18n.get('set_new_value'),
-                    clear: this.$i18n.get('clear_values')
+                    clear: this.$i18n.get('clear_values'),
+                    copy: this.$i18n.get('copy_value')
                 },
                 bulkEditionProcedures: {
                     1: {
@@ -389,7 +428,8 @@
                 'redefineValueInBulk',
                 'setStatusInBulk',
                 'setCommentStatusInBulk',
-                'removeValueInBulk'
+                'removeValueInBulk',
+                'copyValuesInBulk'
             ]),
             ...mapActions('metadata', [
                 'fetchMetadata'
@@ -491,6 +531,19 @@
                         groupID: this.groupID,
                         bodyParams: {
                             metadatum_id: procedure.metadatumID
+                        }
+                    }).then(() => {
+                        this.finalizeProcedure(criterion);
+                    });
+                } else if (procedure.action === this.editionActionsForMultiple.copy) {
+                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+
+                    this.copyValuesInBulk({
+                        collectionID: this.collectionID,
+                        groupID: this.groupID,
+                        bodyParams: {
+                            metadatum_id: procedure.metadatumID,
+                            metadatum_id_copy_from: procedure.metadatumIdCopyFrom,
                         }
                     }).then(() => {
                         this.finalizeProcedure(criterion);

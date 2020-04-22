@@ -231,6 +231,26 @@ export const deleteItemsInBulk = ({commit}, parameters) => {
         });
 };
 
+
+export const copyValuesInBulk = ({commit}, parameters) => {
+    let groupID = parameters.groupID;
+    let collectionID = parameters.collectionID;
+
+    /**
+     * @var bodyParams { metadatum_id, new_value } Object
+     * */
+    let bodyParams = parameters.bodyParams;
+
+    return axios.tainacan.post(`/collection/${collectionID}/bulk-edit/${groupID}/copy_value`, bodyParams)
+        .then(response => {
+            commit('setLastUpdated');
+            return response;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+};
+
 // SEQUENCE EDIT SPECIFIC
 export const fetchItemIdInSequence = ({commit}, { collectionId, sequenceId, itemPosition }) => {
 

@@ -312,7 +312,7 @@ class Bulk_Edit_Process extends Generic_Process {
 
 		$metadatum_id_copy_from = $this->bulk_edit_data['metadatum_id_copy_from'];
 
-		if ($metadatum_id_copy_from == 'create_by' && $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\User') {
+		if ($metadatum_id_copy_from == 'created_by' && $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\User') {
 			$item_metadata->set_value( $metadatum->is_multiple() ? [$item->get_author_id()] : $item->get_author_id() );
 			return $this->save_item_metadata($item_metadata, $item);
 		} else {

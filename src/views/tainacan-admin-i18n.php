@@ -81,6 +81,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'add_one_edition_criterion'                      => __( 'Add one edition criterion', 'tainacan' ),
 	'set_new_value'                                  => __( 'Set new value', 'tainacan' ),
 	'replace_value'                                  => __( 'Replace value', 'tainacan' ),
+	'copy_value'                                  => __( 'Copy value', 'tainacan' ),
 	'finish'                                         => __( 'Finish', 'tainacan' ),
 	'select_to_create'                               => __( 'select to create', 'tainacan' ),
 	'new_action'                                     => __( 'New action', 'tainacan' ),
