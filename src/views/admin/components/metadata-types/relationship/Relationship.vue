@@ -188,6 +188,9 @@
                 query['perpage'] = 12;
                 query['paged'] = this.page;
 
+                if (this.selected.length > 0)
+                    query['exclude'] = this.selected.map((item) => item.value);
+
                 return qs.stringify(query);
             }
         }

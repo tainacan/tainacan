@@ -213,7 +213,7 @@
                                             class="content">
                                         <component 
                                                 :is="itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ? 'div' : 'p'" 
-                                                v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                                v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span></p>`"/>
                                     </div>
                                 </div>
                             </div>

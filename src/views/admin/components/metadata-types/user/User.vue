@@ -77,30 +77,32 @@ export default {
         ]),
         onInput(newSelected) {
             this.selected = newSelected;
-            this.$emit('input', newSelected.map((user) => user.id));
+            this.$emit('input', newSelected.map((user) => user.id || user.value));
         },
         onBlur() {
             this.$emit('blur');
         },
         loadCurrentUsers() {
-            this.isLoading = true;
-            let query = qs.stringify({ include: this.itemMetadatum.value });
-            let endpoint = '/users/';
+            if ((Array.isArray(this.itemMetadatum.value) && this.itemMetadatum.value.length) || (!Array.isArray(this.itemMetadatum.value) && this.itemMetadatum.value)) {
+                
+                this.isLoading = true;
+                let query = qs.stringify({ include: this.itemMetadatum.value });
+                let endpoint = '/users/';
 
-            wpAxios.get(endpoint + '?' + query)
-                .then((res) => {
-                    if (res.data.items) {
+                wpAxios.get(endpoint + '?' + query)
+                    .then((res) => {
                         for (let user of res.data) {
                             this.selected.push({
-                                label: user.name,
+                                name: user.name,
                                 value: user.id,
                                 img:  user.avatar_urls && user.avatar_urls['24'] ? user.avatar_urls['24'] : ''
                             }) ;
-                        }
-                    }
-                    this.isLoading = false;
-                })
-                .catch(() => this.isLoading = false );
+                        }   
+                        
+                        this.isLoading = false;
+                    })
+                    .catch(() => this.isLoading = false );
+            }
         },
         search: _.debounce(function (search) {
            
@@ -128,12 +130,16 @@ export default {
 
             if (this.usersSearchQuery !== '') {          
                 this.isLoading = true;
-
-                this.fetchUsers({ search: this.usersSearchQuery, page: this.usersSearchPage })
+                
+                this.fetchUsers({ search: this.usersSearchQuery, page: this.usersSearchPage, exclude: this.selected.map((user) => user.value || user.id ) })
                     .then((res) => {
                         if (res.users) {
                             for (let user of res.users)
-                                this.options.push(user); 
+                                this.options.push({
+                                    name: user.name,
+                                    value: user.id,
+                                    img:  user.avatar_urls && user.avatar_urls['24'] ? user.avatar_urls['24'] : ''
+                                }); 
                         }
                         
                         if (res.totalUsers)
