@@ -132,11 +132,11 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'callback'            => array($this, 'copy_value'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
 					'args'                => [
-						'metadatum_id' => [
+						'metadatum_id_to' => [
 							'type'        => 'integer',
 							'description' => __( 'The metadatum ID', 'tainacan' ),
 						],
-						'metadatum_id_copy_from' => [
+						'metadatum_id_from' => [
 							'type'        => 'string/integer',
 							'description' => __( 'The metadatum ID to be copied', 'tainacan' ),
 						],
@@ -362,7 +362,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				], 400);
 			}
 
-			if ( $method == 'copy_value' && ( !isset($body['metadatum_id']) || !isset($body['metadatum_id_copy_from']) ) ) {
+			if ( $method == 'copy_value' && ( !isset($body['metadatum_id_to']) || !isset($body['metadatum_id_from']) ) ) {
 				return new \WP_REST_Response([
 					'error_message' => __('You must specify a source Metadatum ID and a destination Metadatum ID for be copied.', 'tainacan'),
 				], 400);
@@ -387,7 +387,8 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				"method" 				=> $method,
 				"old_value"			=> isset($body['old_value']) ? $body['old_value'] : null,
 				"metadatum_id" 	=> isset($body['metadatum_id']) ? $body['metadatum_id'] : null,
-				"metadatum_id_copy_from" 	=> isset($body['metadatum_id_copy_from']) ? $body['metadatum_id_copy_from'] : null,
+				"metadatum_id_to" 	=> isset($body['metadatum_id_to']) ? $body['metadatum_id_to'] : null,
+				"metadatum_id_from" 	=> isset($body['metadatum_id_from']) ? $body['metadatum_id_from'] : null,
 			];
 			$process->set_bulk_edit_data($bulk_edit_data);
 			$bg_bulk = $Tainacan_Generic_Process_Handler->add_to_queue($process);

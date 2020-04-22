@@ -1818,8 +1818,8 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			],
 			[
 				"method"                  => 'copy_value',
-				"metadatum_id"            => $metadatum_copy->get_id(),
-				"metadatum_id_copy_from"  => $this->metadatum->get_id(),
+				"metadatum_id_to"         => $metadatum_copy->get_id(),
+				"metadatum_id_from"       => $this->metadatum->get_id(),
 			]
 		);
 		$this->assertInternalType('int', $this->run_process($process));
@@ -1843,8 +1843,8 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			],
 			[
 				"method"                  => 'copy_value',
-				"metadatum_id"            => $metadatum_owner->get_id(),
-				"metadatum_id_copy_from"  => 'created_by',
+				"metadatum_id_to"         => $metadatum_owner->get_id(),
+				"metadatum_id_from"       => 'created_by',
 			]
 		);
 		$this->assertInternalType('int', $this->run_process($process));
@@ -1893,8 +1893,8 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			],
 			[
 				"method"                  => 'copy_value',
-				"metadatum_id"            => $multiple_meta_copy->get_id(),
-				"metadatum_id_copy_from"  => $this->category->get_id()
+				"metadatum_id_to"         => $multiple_meta_copy->get_id(),
+				"metadatum_id_from"       => $this->category->get_id()
 			]
 		);
 		$this->assertInternalType('int', $this->run_process($process));

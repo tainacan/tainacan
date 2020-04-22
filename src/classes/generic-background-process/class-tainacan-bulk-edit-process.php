@@ -306,21 +306,21 @@ class Bulk_Edit_Process extends Generic_Process {
 	}
 
 	private function copy_value(\Tainacan\Entities\Item $item) {
-		$metadatum_id = $this->bulk_edit_data['metadatum_id'];
-		$metadatum = $this->metadatum_repository->fetch($metadatum_id);
+		$metadatum_id_to = $this->bulk_edit_data['metadatum_id_to'];
+		$metadatum = $this->metadatum_repository->fetch($metadatum_id_to);
 		$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum );
 
-		$metadatum_id_copy_from = $this->bulk_edit_data['metadatum_id_copy_from'];
+		$metadatum_id_from = $this->bulk_edit_data['metadatum_id_from'];
 
-		if ($metadatum_id_copy_from == 'created_by' && $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\User') {
+		if ($metadatum_id_from == 'created_by' && $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\User') {
 			$item_metadata->set_value( $metadatum->is_multiple() ? [$item->get_author_id()] : $item->get_author_id() );
 			return $this->save_item_metadata($item_metadata, $item);
 		} else {
-			$metadatum_copy_from = $this->metadatum_repository->fetch($metadatum_id_copy_from);
-			if ( $metadatum_copy_from->get_metadata_type() == $metadatum->get_metadata_type() && 
-						( $metadatum_copy_from->is_multiple() == false || $metadatum_copy_from->is_multiple() == $metadatum->is_multiple() ) ) {
-				$item_metadata_copy_from = new Entities\Item_Metadata_Entity( $item, $metadatum_copy_from );
-				$item_metadata->set_value($item_metadata_copy_from->get_value());
+			$metadatum_from = $this->metadatum_repository->fetch($metadatum_id_from);
+			if ( $metadatum_from->get_metadata_type() == $metadatum->get_metadata_type() && 
+						( $metadatum_from->is_multiple() == false || $metadatum_from->is_multiple() == $metadatum->is_multiple() ) ) {
+				$item_metadata_from = new Entities\Item_Metadata_Entity( $item, $metadatum_from );
+				$item_metadata->set_value($item_metadata_from->get_value());
 				return $this->save_item_metadata($item_metadata, $item);
 			}
 		}
