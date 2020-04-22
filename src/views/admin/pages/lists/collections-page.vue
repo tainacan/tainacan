@@ -545,7 +545,7 @@ export default {
             }
             .gray-icon .icon i::before, 
             .gray-icon i::before {
-                max-width: 26px;
+                max-width: 1.25em;
             }
 
             .icon {

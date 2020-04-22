@@ -201,7 +201,7 @@
                     <template v-if="!hideSortByButton">
                         <span
                                 class="label"
-                                style="padding-left: 2px;">
+                                style="padding-left: 2px !important;">
                             {{ $i18n.get('info_by_inner') }}
                         </span>
                         <b-dropdown
@@ -337,7 +337,7 @@
                     <span class="gray-icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas"/>
                     </span>
-                    <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_view_as') }}</span>
+                    <span class="is-hidden-tablet-only is-hidden-desktop-only ">{{ $i18n.get('label_view_as') }}</span>
                 </button>
             </div>
         </div>
@@ -1321,6 +1321,10 @@
                 color: var(--tainacan-input-color) !important;
                 background: transparent;
             }
+
+            .button.is-white {
+                padding: 2px 10px !important;
+            }
             
             .field {
                 align-items: center;
@@ -1330,12 +1334,17 @@
             .gray-icon .icon {
                 color: var(--tainacan-info-color) !important;
                 padding-right: 10px;
+                justify-content: space-between;
+                &.is-small {
+                    width: 1em;
+                    height: 1em;
+                }
             }
             .gray-icon .icon i::before, 
             .gray-icon i::before {
                 font-size: 1.3125em !important;
                 color: var(--tainacan-info-color) !important;
-                max-width: 26px;
+                max-width: 1.25em;
             }
             
             .dropdown-menu {
