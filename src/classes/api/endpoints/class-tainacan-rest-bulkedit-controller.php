@@ -356,7 +356,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 				], 400);
 			}
 
-			if ( !in_array($method, ['set_status', 'set_comment_status']) && !isset($body['metadatum_id'])) {
+			if ( !in_array($method, ['set_status', 'set_comment_status', 'copy_value']) && !isset($body['metadatum_id'])) {
 				return new \WP_REST_Response([
 					'error_message' => __('You must specify a Metadatum ID.', 'tainacan'),
 				], 400);
