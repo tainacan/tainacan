@@ -82,7 +82,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'remove_bulk_edition'                       	 => __( 'Remove bulk edition criterion', 'tainacan' ),
 	'set_new_value'                                  => __( 'Set new value', 'tainacan' ),
 	'replace_value'                                  => __( 'Replace value', 'tainacan' ),
-	'copy_value'                                  	 => __( 'Copy value to', 'tainacan' ),
+	'copy_value'                                  	 => __( 'Copy value from', 'tainacan' ),
 	'finish'                                         => __( 'Finish', 'tainacan' ),
 	'select_to_create'                               => __( 'select to create', 'tainacan' ),
 	'new_bulk_edition_criterion'                     => __( 'New bulk edition criterion', 'tainacan' ),

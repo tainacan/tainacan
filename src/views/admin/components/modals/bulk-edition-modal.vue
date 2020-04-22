@@ -57,9 +57,6 @@
                             <option :value="{ id: 'comments' }">
                                 {{ $i18n.get('label_allow_comments') }}
                             </option>
-                            <option :value="{ id: 'created_by' }">
-                                {{ $i18n.get('label_created_by') }}
-                            </option>
                         </b-select>
 
                         <!-- SECOND FIELD - ACTION -------------------------- -->
@@ -83,7 +80,7 @@
                         <!-- THIRD FIELD - DYNAMIC INPUTS -->
                         <transition name="filter-item">
                             <template v-if="bulkEditionProcedures[criterion] && bulkEditionProcedures[criterion].metadatum && bulkEditionProcedures[criterion].action"> 
-                                <!-- Replace -->
+             
                                 <template v-if="bulkEditionProcedures[criterion].action == editionActions.replace">
                                     <component
                                             :is="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component"
@@ -118,7 +115,6 @@
                                     />
                                 </template>
 
-                                <!-- Not replace -->
                                 <template
                                         v-else-if="bulkEditionProcedures[criterion].metadatum.id == 'status'">
                                     <b-select
@@ -161,28 +157,32 @@
                                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
                                             @input="addToBulkEditionProcedures($event, 'metadatumIdCopyFrom', criterion)">
                                         <template 
-                                                v-for="(metadatum, index) in getAllowedMetadataForCopy(criterion)">
+                                                v-for="(metadatumForCopy, index) in getAllowedMetadataForCopy(criterion)">
                                             <option
                                                     :key="index"
-                                                    v-if="metadatum.id && metadatum.metadata_type_object.component !== 'tainacan-compound' && metadatum.parent <= 0"
-                                                    :value="metadatum.id">
-                                                {{ metadatum.name }}
+                                                    v-if="metadatumForCopy.id && metadatumForCopy.metadata_type_object.component !== 'tainacan-compound' && metadatumForCopy.parent <= 0"
+                                                    :value="metadatumForCopy.id">
+                                                {{ metadatumForCopy.name }}
                                             </option>
                                             <optgroup 
-                                                    v-if="metadatum.id && metadatum.metadata_type_object.component === 'tainacan-compound'"
+                                                    v-if="metadatumForCopy.id && metadatumForCopy.metadata_type_object.component === 'tainacan-compound'"
                                                     :key="index"
-                                                    :label="metadatum.name">
+                                                    :label="metadatumForCopy.name">
                                                 <option 
-                                                        v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects"
+                                                        v-for="(childmetadatumForCopy, childIndex) of metadatumForCopy.metadata_type_options.children_objects"
                                                         :key="childIndex"
-                                                        v-if="childMetadatum.id"
-                                                        :value="childMetadatum.id">
-                                                    {{ childMetadatum.name }}
+                                                        v-if="childMetadatumForCopy.id"
+                                                        :value="childMetadatumForCopy.id">
+                                                    {{ childMetadatumForCopy.name }}
                                                 </option>
                                             </optgroup>
                                         </template>
+                                        <option 
+                                                v-if="bulkEditionProcedures[criterion].metadatum.metadata_type_object && bulkEditionProcedures[criterion].metadatum.metadata_type_object.component == 'tainacan-user'"
+                                                value="created_by">
+                                            {{ $i18n.get('label_created_by') }}
+                                        </option>
                                     </b-select>
-
                                 </template>
 
                                 <template v-else-if="bulkEditionProcedures[criterion].action != editionActions.clear">
@@ -514,8 +514,8 @@
                         collectionId: this.collectionId,
                         groupId: this.groupId,
                         bodyParams: {
-                            metadatum_id: parseInt(procedure.metadatum.id),
-                            metadatum_id_copy_from: parseInt(procedure.metadatumIdCopyFrom),
+                            metadatum_id_to: parseInt(procedure.metadatum.id),
+                            metadatum_id_from: procedure.metadatumIdCopyFrom,
                         }
                     }).then(() => {
                         this.finalizeProcedure(criterion);
@@ -572,12 +572,11 @@
                     if ((metadatum.id == 'status' || metadatum.id == 'comments') && (actionKey == 'clear' || actionKey == 'copy')) {
                         delete validEditionActions[actionKey];
                         continue;
-                    } else if (metadatum.id == 'created_by' && (actionKey == 'clear' || actionKey == 'redefine')) {
-                        delete validEditionActions[actionKey];
-                        continue;
                     }
 
                     // For allowing copy, we also need to check more details of the metadata
+                    // We only offer copy when there is another metadataum of same type, that is not a child component;
+                    // The exception are User metadatum, as we can also copy values from created_by
                     if (actionKey == 'copy' && metadatum.metadata_type_object) {
                         const otherMetadatumOfSameTypeIndex = this.metadata.findIndex(otherMetadatum => {
                             return (
@@ -587,7 +586,7 @@
                             );
                         });
                         
-                        if (otherMetadatumOfSameTypeIndex < 0) {
+                        if (otherMetadatumOfSameTypeIndex < 0 && metadatum.metadata_type_object.component != 'tainacan-user') {
                             delete validEditionActions[actionKey];
                         }
                     }
@@ -605,12 +604,10 @@
                     if (selectedMetadatum.metadata_type_object && selectedMetadatum.metadata_type_object.component) {
                         return this.metadata.filter((metadatum) => {
                             return (
-                                metadatum.metadata_type_object.component === selectedMetadatum.metadata_type_object.component &&
-                                metadatum.metadata_type_object.component === selectedMetadatum.metadata_type_object.component 
+                                metadatum.metadata_type_object.id != selectedMetadatum.metadata_type_object.id &&
+                                metadatum.metadata_type_object.component == selectedMetadatum.metadata_type_object.component 
                             )
                         });
-                    } else if (selectedMetadatum.id == 'created_by') {
-                        return this.metadata.filter(metadatum => metadatum.metadata_type_object.component == 'tainacan-user' && metadatum.parent <= 0)
                     }
                 }
 
