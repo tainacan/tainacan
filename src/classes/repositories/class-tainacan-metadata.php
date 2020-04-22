@@ -1045,7 +1045,7 @@ class Metadata extends Repository {
 				$search_q = $wpdb->prepare("AND meta_value IN ( SELECT ID FROM $wpdb->posts WHERE post_title LIKE %s )", '%' . $search . '%');
 			} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ) {
 				$search_q = $wpdb->prepare("AND t.name LIKE %s", '%' . $search . '%');
-			} if( $metadatum_type === 'Tainacan\Metadata_Types\User' ) {
+			} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\User' ) {
 				$search_q = $wpdb->prepare("AND meta_value IN ( SELECT ID FROM $wpdb->users WHERE display_name LIKE %s )", '%' . $search . '%');
 			} else {
 				$search_q = $wpdb->prepare("AND meta_value LIKE %s", '%' . $search . '%');
