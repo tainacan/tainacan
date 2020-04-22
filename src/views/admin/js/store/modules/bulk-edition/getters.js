@@ -1,4 +1,4 @@
-export const getGroupID = state => {
+export const getGroupId = state => {
     return state.group.id;
 };
 
