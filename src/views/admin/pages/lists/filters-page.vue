@@ -209,7 +209,14 @@
                                             }"
                                             class="tainacan-icon" />
                                     </span>  
-                                    <span class="metadatum-name">
+                                    <span 
+                                            v-tooltip="{
+                                                content: metadatum.name + (metadatum.parent_name ? (' (' + $i18n.get('info_child_of') + ' ' + metadatum.parent_name + ')') : ''),
+                                                autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                placement: 'auto-start'
+                                            }"
+                                            class="metadatum-name">
                                         {{ metadatum.name }}
                                         <span   
                                             v-if="metadatum.parent_name"
@@ -1051,8 +1058,7 @@ export default {
                     font-weight: bold;
                     margin-left: 0.4em;
                     display: inline-block;
-                    max-width: 180px;
-                    width: 60%;
+                    width: calc(100% - 80px);
                 }
                 &:after,
                 &:before {
