@@ -89,6 +89,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'undo'                                           => __( 'Undo', 'tainacan' ),
 	'delete'                                    	 => __( 'Delete', 'tainacan' ),
 	'skip'	                                    	 => __( 'Skip', 'tainacan' ),
+	'add'	                                    	 => __( 'Add', 'tainacan' ),
 
 	// Wordpress CommentsStatus
 	'comments_status_open'                           => __( 'Open', 'tainacan' ),

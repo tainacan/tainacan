@@ -855,7 +855,11 @@ export default {
             this.isLoading = true;
 
             // Obtains current Item ID from Sequence
-            this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.sequenceId, itemPosition: this.itemPosition  })
+            this.fetchItemIdInSequence({
+                    collectionId: this.collectionId,
+                    sequenceId: this.sequenceId,
+                    itemPosition: this.itemPosition
+                })
                 .then(() => {
                     this.itemId = this.itemIdInSequence;
                     this.loadExistingItem();
@@ -903,7 +907,11 @@ export default {
             this.$userPrefs.set('sequence_' + this.sequenceId + '_position', this.itemPosition);
 
             // Obtains current Item ID from Sequence
-            this.fetchItemIdInSequence({ collectionId: this.collectionId, sequenceId: this.sequenceId, itemPosition: this.itemPosition  })
+            this.fetchItemIdInSequence({
+                    collectionId: this.collectionId,
+                    sequenceId: this.sequenceId,
+                    itemPosition: this.itemPosition
+                })
                 .then(() => {
                     this.itemId = this.itemIdInSequence;
                     this.loadExistingItem();
@@ -980,7 +988,6 @@ export default {
         ]),
         ...mapActions('bulkedition', [
             'fetchItemIdInSequence',
-            'fetchGroup',
 			'fetchSequenceGroup'
         ]),
         ...mapGetters('bulkedition', [

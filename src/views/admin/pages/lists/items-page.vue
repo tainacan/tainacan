@@ -111,7 +111,8 @@
                     <button
                             class="button is-secondary"
                             slot="trigger">
-                        <span>{{ $i18n.getFrom('items','add_new') }}</span>
+                        <span class="is-hidden-touch">{{ $i18n.getFrom('items','add_new') }}</span>
+                        <span class="is-hidden-desktop">{{ $i18n.get('add') }}</span>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                         </span>
@@ -228,7 +229,8 @@
                         <button
                                 :aria-label="$i18n.get('label_sorting_direction')"
                                 class="button is-white"
-                                slot="trigger">
+                                slot="trigger"
+                                style="padding-right: 3px !important;">
                             <span class="icon is-small gray-icon">
                                 <i 
                                         :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
@@ -405,7 +407,7 @@
                     <span class="gray-icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas"/>
                     </span>
-                    <span class="is-hidden-mobile">{{ $i18n.get('label_view_as') }}</span>
+                    <span class="is-hidden-tablet-only is-hidden-desktop-only">{{ $i18n.get('label_view_as') }}</span>
                 </button>
             </div>
 
@@ -1488,6 +1490,9 @@
                 display: flex;
                 align-items: center;
             }
+            .button.is-white {
+                padding: 2px 10px !important;
+            }
             
             .field {
                 align-items: center;
@@ -1502,7 +1507,7 @@
             .gray-icon i::before {
                 font-size: 1.3125em !important;
                 color: var(--tainacan-info-color) !important;
-                max-width: 26px;
+                max-width: 1.25em;
             }
             
             .view-mode-icon {

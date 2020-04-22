@@ -1007,7 +1007,7 @@ export default {
             'untrashItemsInBulk'
         ]),
         ...mapGetters('bulkedition', [
-            'getGroupID'
+            'getGroupId'
         ]),
         ...mapActions('item', [
             'fetchItem'
@@ -1042,7 +1042,7 @@ export default {
                     totalItems: Object.keys(this.queryAllItemsSelected).length ? this.totalItems : this.selectedItems.length,
                     selectedForBulk: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems,
                     objectType: this.$i18n.get('items'),
-                    collectionID: this.$route.params.collectionId,
+                    collectionId: this.$route.params.collectionId,
                 },
                 width: 'calc(100% - (2 * var(--tainacan-one-column)))',
                 trapFocus: true
@@ -1051,9 +1051,9 @@ export default {
         sequenceEditSelectedItems() {
             this.createSequenceEditGroup({
                 object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems,
-                collectionID: this.collectionId
+                collectionId: this.collectionId
             }).then(() => {
-                let sequenceId = this.getGroupID();
+                let sequenceId = this.getGroupId();
                 this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
             });
         },
@@ -1101,14 +1101,14 @@ export default {
                         this.$emit('updateIsLoading', this.isLoading);
 
                         this.createEditGroup({
-                            collectionID: this.collectionId,
+                            collectionId: this.collectionId,
                             object: [itemId]
                         }).then(() => {
-                            let groupID = this.getGroupID();
+                            let groupId = this.getGroupId();
 
                             this.untrashItemsInBulk({
-                                collectionID: this.collectionId,
-                                groupID: groupID
+                                collectionId: this.collectionId,
+                                groupId: groupId
                             }).then(() => {
                                 this.$eventBusSearch.loadItems();
                             });
@@ -1155,14 +1155,14 @@ export default {
                         this.$emit('updateIsLoading', this.isLoading);
 
                         this.createEditGroup({
-                            collectionID: this.collectionId,
+                            collectionId: this.collectionId,
                             object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems
                         }).then(() => {
-                            let groupID = this.getGroupID();
+                            let groupId = this.getGroupId();
 
                             this.untrashItemsInBulk({
-                                collectionID: this.collectionId,
-                                groupID: groupID
+                                collectionId: this.collectionId,
+                                groupId: groupId
                             }).then(() => {
                                 this.$eventBusSearch.loadItems();
                             });
@@ -1185,22 +1185,22 @@ export default {
                         this.$emit('updateIsLoading', this.isLoading);
 
                         this.createEditGroup({
-                            collectionID: this.collectionId,
+                            collectionId: this.collectionId,
                             object: Object.keys(this.queryAllItemsSelected).length ? this.queryAllItemsSelected : this.selectedItems
                         }).then(() => {
-                            let groupID = this.getGroupID();
+                            let groupId = this.getGroupId();
 
                             if (this.isOnTrash) {
                                 this.deleteItemsInBulk({
-                                    collectionID: this.collectionId,
-                                    groupID: groupID
+                                    collectionId: this.collectionId,
+                                    groupId: groupId
                                 }).then(() => {
                                     this.$eventBusSearch.loadItems();
                                 });
                             } else {
                                 this.trashItemsInBulk({
-                                    collectionID: this.collectionId,
-                                    groupID: groupID
+                                    collectionId: this.collectionId,
+                                    groupId: groupId
                                 }).then(() => {
                                     this.$eventBusSearch.loadItems();
                                 });

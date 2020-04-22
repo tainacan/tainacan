@@ -134,8 +134,7 @@
             ]),
             ...mapActions('bulkedition', [
                 'createEditGroup',
-                'createSequenceEditGroup',
-                'setStatusInBulk'
+                'createSequenceEditGroup'
             ]),
             generateCopies() {
                 this.isLoading = true;
@@ -164,7 +163,7 @@
                 this.isCreatingSequenceEditGroup = true;
                 this.createSequenceEditGroup({
                     object: onlyItemIds,
-                    collectionID: this.collectionId
+                    collectionId: this.collectionId
                 }).then((group) => {
                     let sequenceId = group.id;
                     this.isCreatingSequenceEditGroup = false;
@@ -184,7 +183,7 @@
                         totalItems: onlyItemIds.length,
                         selectedForBulk: onlyItemIds,
                         objectType: this.$i18n.get('items'),
-                        collectionID: this.collectionId
+                        collectionId: this.collectionId
                     },
                     width: 'calc(100% - (2 * var(--tainacan-one-column)))',
                     trapFocus: true
