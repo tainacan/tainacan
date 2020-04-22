@@ -362,7 +362,7 @@ class Item_Metadata extends Repository {
 		if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\User' ) {
 			$options = $metadatum->get_metadata_type_options();
 			if ( isset($options['default_author']) && $options['default_author'] = 'yes') {
-				return get_current_user_id();
+				return $metadatum->is_multiple() ? [get_current_user_id()] : get_current_user_id();
 			}
 			return "";
 		}
