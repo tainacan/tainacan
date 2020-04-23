@@ -16,14 +16,16 @@
             <b-dropdown
                     :mobile-modal="true"
                     :disabled="localTerms.length <= 0 || isLoadingTerms || isEditingTerm"
-                    @input="onChangeOrder(order == 'asc' ? 'desc' : 'asc')"
+                    @input="onChangeOrder"
                     aria-role="list"
                     trap-focus>
                 <button
                             :aria-label="$i18n.get('label_sorting_direction')"
                             class="button is-white"
                             slot="trigger">
-                    <span class="icon is-small gray-icon">
+                    <span 
+                            style="margin-top: -2px;"
+                            class="icon is-small gray-icon">
                         <i 
                                 :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
                                 class="tainacan-icon tainacan-icon-1-25em"/>
@@ -256,10 +258,12 @@ export default {
             'getTerms'
         ]),
         onChangeOrder(newOrder) {
-            this.offset = 0;
-            this.order = newOrder;
-            this.clearTerms();
-            this.searchTerms(0);
+            if (this.order != newOrder) {
+                this.offset = 0;
+                this.order = newOrder;
+                this.clearTerms();
+                this.searchTerms(0);
+            }
         },
         addNewTerm(parent) {
 

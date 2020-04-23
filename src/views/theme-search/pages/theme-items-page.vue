@@ -159,7 +159,7 @@
                     <label class="label">{{ $i18n.get('label_sort') }}</label>
                     <b-dropdown
                             :mobile-modal="true"
-                            @input="onChangeOrder()"
+                            @input="onChangeOrder"
                             aria-role="list"
                             trap-focus>
                         <button
@@ -808,8 +808,9 @@
                 this.$eventBusSearch.setOrderBy(metadatum);
                 this.showItemsHiddingDueSortingDialog();
             },
-            onChangeOrder() {
-                this.order == 'DESC' ? this.$eventBusSearch.setOrder('ASC') : this.$eventBusSearch.setOrder('DESC');
+            onChangeOrder(newOrder) {
+                if (newOrder != this.order)
+                    this.$eventBusSearch.setOrder(newOrder);
             },
             onChangeViewMode(viewMode) {
                 // We need to load metadata again as fetch_only might change from view mode

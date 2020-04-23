@@ -62,14 +62,16 @@
                 <b-dropdown
                         :mobile-modal="true"
                         :disabled="collections.length <= 0 || isLoading"
-                        @input="onChangeOrder(order == 'asc' ? 'desc' : 'asc')"
+                        @input="onChangeOrder"
                         aria-role="list"
                         trap-focus>
                     <button
                             :aria-label="$i18n.get('label_sorting_direction')"
                             class="button is-white"
                             slot="trigger">
-                        <span class="icon is-small gray-icon">
+                        <span 
+                                style="margin-top: -2px;"
+                                class="icon is-small gray-icon">
                             <i 
                                     :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
                                     class="tainacan-icon tainacan-icon-1-125em"/>
@@ -407,16 +409,12 @@ export default {
         onChangeOrder(newOrder) {
             if (newOrder != this.order) { 
                 this.$userPrefs.set('collections_order', newOrder)
-                    .then((newOrder) => {
-                        this.order = newOrder;
-                    })
                     .catch(() => {
                         this.$console.log("Error settings user prefs for collections order")
                     });
-
+                this.order = newOrder;
+                this.loadCollections();
             }
-            this.order = newOrder;
-            this.loadCollections()
         },
         onChangeOrderBy(newOrderBy) {
             if (newOrderBy != this.orderBy) { 

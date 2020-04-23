@@ -24,14 +24,16 @@
                     <b-dropdown
                             :mobile-modal="true"
                             :disabled="taxonomies.length <= 0 || isLoading"
-                            @input="onChangeOrder(order == 'asc' ? 'desc' : 'asc')"
+                            @input="onChangeOrder"
                             aria-role="list"
                             trap-focus>
                         <button
                                 :aria-label="$i18n.get('label_sorting_direction')"
                                 class="button is-white"
                                 slot="trigger">
-                            <span class="icon is-small gray-icon">
+                            <span 
+                                    style="margin-top: -2px;"
+                                    class="icon is-small gray-icon">
                                 <i 
                                         :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
                                         class="tainacan-icon tainacan-icon-1-125em"/>
@@ -310,16 +312,12 @@
             onChangeOrder(newOrder) {
                 if (newOrder != this.order) { 
                     this.$userPrefs.set('taxonomies_order', newOrder)
-                        .then((newOrder) => {
-                            this.order = newOrder;
-                        })
                         .catch(() => {
                             this.$console.log("Error settings user prefs for taxonomies order")
                         });
-
+                    this.order = newOrder;
+                    this.load();
                 }
-                this.order = newOrder;
-                this.load();
             },
             onChangeOrderBy(newOrderBy) {
                 if (newOrderBy != this.orderBy) { 

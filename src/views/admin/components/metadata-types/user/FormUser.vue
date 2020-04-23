@@ -38,3 +38,9 @@
         }
     }
 </script>
+
+<style scoped>
+    .help-wrapper {
+        font-size: 1.25em;
+    }
+</style>

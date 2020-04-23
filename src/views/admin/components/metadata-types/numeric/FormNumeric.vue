@@ -96,4 +96,7 @@
     section{
         margin-bottom: 10px;
     }
+    .help-wrapper {
+        font-size: 1.25em;
+    }
 </style>
