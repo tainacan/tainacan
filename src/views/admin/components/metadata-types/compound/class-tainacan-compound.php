@@ -189,23 +189,24 @@ class Compound extends Metadata_Type {
 			}
 			
 		} else {
-			
-			foreach ( $value as $meta ) {
+			$return .= '<div class="tainacan-compound-group">';
+									
+				foreach ( $value as $meta ) {
 
-				if ( $meta->get_value_as_html() != '' ) {
+					if ( $meta->get_value_as_html() != '' ) {
 
-					$return .= '<div class="tainacan-metadatum">';
+						$return .= '<div class="tainacan-metadatum">';
+						
+						if ( $meta instanceof Item_Metadata_Entity ) {
+							$return .= '<label class="label">' . $meta->get_metadatum()->get_name() . "</label>\n";
+							$return .= '<p>' . $meta->get_value_as_html() . '</p>';
+						}
+						
+						$return .= '</div>' . "\n\n";
+					}	
 					
-					if ( $meta instanceof Item_Metadata_Entity ) {
-						$return .= '<label class="label">' . $meta->get_metadatum()->get_name() . "</label>\n";
-						$return .= '<p>' . $meta->get_value_as_html() . '</p>';
-					}
-					
-					$return .= '</div>' . "\n\n";
-				}	
-				
-			}
-			
+				}
+			$return .= '</div>' . "\n\n";
 		}
 		
 		return $return;
