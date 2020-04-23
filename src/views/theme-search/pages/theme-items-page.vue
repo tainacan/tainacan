@@ -957,7 +957,8 @@
                                                 metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
                                                 metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
                                                 metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship' &&
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Compound'
+                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Compound' &&
+                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\User'
                                             ) {
                                                 this.sortingMetadata.push(metadatum);
                                             }
@@ -1017,7 +1018,10 @@
                                         if (metadatum.display !== 'never' &&
                                             metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
                                             metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship') {
+                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship' &&
+                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Compound' &&
+                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\User'
+                                            ) {
                                                 this.sortingMetadata.push(metadatum);
                                         }
                                     }
