@@ -5,7 +5,7 @@
             :type="errorMessage ? 'is-danger' : ''">
         <span   
                 class="collapse-handle"
-                @click="$emit('changeCollapse', errorMessage ? true : isCollapsed)">
+                @click="$emit('changeCollapse', errorMessage ? true : !isCollapsed )">
             <span class="icon">
                 <i 
                         :class="{
