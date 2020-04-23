@@ -288,11 +288,14 @@ export default {
         @media screen and (max-width: 769px) {
             width: 100% !important;
             max-width: 100% !important;
-            height: 85px;
-            max-height: 85px;
             padding: 0;
             top: 206px;
             margin-bottom: 0px !important;
+
+            .level {
+                width: 100%;
+                display: flex;
+            }
             
             .level-left {
                 margin-left: 0px !important;

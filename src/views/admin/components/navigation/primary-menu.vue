@@ -13,16 +13,7 @@
                             tag="a"
                             :to="$routerHelper.getCollectionsPath()">
                         <span v-if="!isMenuCompressed">{{ $i18n.get('repository') }}</span>
-                        <span
-                                v-if="isMenuCompressed"
-                                v-tooltip="{                                     
-                                    offset: 4,
-                                    content: isMenuCompressed ? $i18n.get('repository') : '',
-                                    autoHide: true,
-                                    classes: ['tooltip', 'repository-tooltip'],
-                                    placement: 'auto'
-                                }"
-                                class="icon">
+                        <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-repository"/>
                         </span>
                     </router-link>
@@ -32,15 +23,7 @@
                             tag="a"
                             :to="$routerHelper.getCollectionsPath()"
                             :class="activeRoute == 'CollectionsPage' || $route.params.collectionId != undefined ? 'is-active':''">
-                        <span
-                                v-tooltip="{                                     
-                                    offset: 4,
-                                    content: isMenuCompressed ? $i18n.getFrom('collections', 'name') : '',
-                                    autoHide: true,
-                                    classes: ['tooltip', 'repository-tooltip'],
-                                    placement: 'auto'
-                                }"
-                                class="icon">
+                        <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-collections"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
@@ -51,15 +34,7 @@
                             tag="a"
                             :to="$routerHelper.getItemsPath()"
                             :class="activeRoute == 'ItemsPage' ? 'is-active':''">
-                        <span
-                                v-tooltip="{                                     
-                                    offset: 4,
-                                    content: isMenuCompressed ? $i18n.getFrom('items', 'name') : '',
-                                    autoHide: true,
-                                    classes: ['tooltip', 'repository-tooltip'],
-                                    placement: 'auto'
-                                }"
-                                class="icon">
+                        <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
@@ -71,15 +46,7 @@
                             tag="a"
                             to="/metadata"
                             :class="activeRoute == 'MetadataPage' ? 'is-active':''">
-                        <span
-                                v-tooltip="{                                     
-                                    offset: 4,
-                                    content: isMenuCompressed ? $i18n.get('metadata') : '',
-                                    autoHide: true,
-                                    classes: ['tooltip', 'repository-tooltip'],
-                                    placement: 'auto'
-                                }"
-                                class="icon">
+                        <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('metadata') }}</span>
@@ -90,15 +57,7 @@
                             tag="a"
                             to="/filters"
                             :class="activeRoute == 'FiltersPage' ? 'is-active':''">
-                        <span
-                                v-tooltip="{                                     
-                                    offset: 4,
-                                    content: isMenuCompressed ? $i18n.getFrom('filters', 'name') : '',
-                                    autoHide: true,
-                                    classes: ['tooltip', 'repository-tooltip'],
-                                    placement: 'auto'
-                                }"
-                                class="icon">
+                        <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
@@ -109,15 +68,7 @@
                             tag="a"
                             to="/taxonomies"
                             :class="activeRoute == 'Page' ? 'is-active':''">
-                        <span
-                                v-tooltip="{                                    
-                                    offset: 4,
-                                    content: isMenuCompressed ? $i18n.getFrom('taxonomies', 'name') : '',
-                                    autoHide: true,
-                                    classes: ['tooltip', 'repository-tooltip'],
-                                    placement: 'auto'
-                                }"
-                                class="icon">
+                        <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-taxonomies"/>
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('taxonomies', 'name') }}</span>
@@ -128,15 +79,7 @@
                             tag="a"
                             to="/activities"
                             :class="activeRoute == 'ActivitiesPage' ? 'is-active':''">
-                        <span
-                                v-tooltip="{                                     
-                                    offset: 4,
-                                    content: isMenuCompressed ? $i18n.get('activities') : '',
-                                    autoHide: true,
-                                    classes: ['tooltip', 'repository-tooltip'],
-                                    placement: 'auto'
-                                }"
-                                class="icon">
+                        <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('activities') }}</span>
@@ -147,15 +90,7 @@
                             tag="a"
                             :to="this.$routerHelper.getCapabilitiesPath()"
                             :class="activeRoute == 'CapabilitiesPage' ? 'is-active':''">
-                        <span
-                                v-tooltip="{                                     
-                                    offset: 4,
-                                    content: isMenuCompressed ? $i18n.get('capabilities') : '',
-                                    autoHide: true,
-                                    classes: ['tooltip', 'repository-tooltip'],
-                                    placement: 'auto'
-                                }"
-                                class="icon">
+                        <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-capability"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('capabilities') }}</span>
@@ -170,17 +105,9 @@
                                 activeRoute == 'ImporterEditionForm' ||
                                 activeRoute == 'ImporterCreationForm' ||
                                 activeRoute == 'ImporterMappingForm' ) ? 'is-active':''">
-                        <span
-                                v-tooltip="{                                     
-                                    offset: 4,
-                                    content: isMenuCompressed ? $i18n.get('importers') : '',
-                                    autoHide: true,
-                                    classes: ['tooltip', 'repository-tooltip'],
-                                    placement: 'auto'
-                                }"
-                                class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-importers"/>
-                        </span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-importers"/>
+                            </span>
                         <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                     </router-link>
                 </li>
@@ -191,15 +118,7 @@
                             :class="(
                                 activeRoute == 'ExportersPage' ||
                                 activeRoute == 'ExporterEditionForm') ? 'is-active':''">
-                        <span
-                                v-tooltip="{
-                                    offset: 4,
-                                    content: isMenuCompressed ? $i18n.get('exporters') : '',
-                                    autoHide: true,
-                                    classes: ['tooltip', 'repository-tooltip'],
-                                    placement: 'auto'
-                                }"
-                                class="icon">
+                        <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-export"/>
                         </span>
                         <span class="menu-text">{{ $i18n.get('exporters') }}</span>
@@ -346,12 +265,19 @@ export default {
                 padding-top: 0px;
             }
             ul {
+                max-height: $header-height;
                 flex-flow: wrap;
                 display: flex;
                 align-items: stretch;
                 justify-content: space-evenly;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                overflow-y: hidden;
                 .separator, .repository-label {
                     display: none;
+                }
+                li {
+                    height: $header-height;
                 }
                 a {
                     padding: 0.8em !important;
