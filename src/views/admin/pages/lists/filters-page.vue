@@ -628,7 +628,7 @@ export default {
             this.sendFilter({
                 collectionId: this.collectionId, 
                 metadatumId: this.choosenMetadatum.id,
-                name: this.choosenMetadatum.name,
+                name: this.choosenMetadatum.parent_name ? this.choosenMetadatum.name + ' (' + this.choosenMetadatum.parent_name + ')' : this.choosenMetadatum.name,
                 filterType: this.selectedFilterType.className,
                 status: 'auto-draft', 
                 isRepositoryLevel: this.isRepositoryLevel,
