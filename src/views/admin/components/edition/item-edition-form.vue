@@ -1561,7 +1561,10 @@ export default {
                         cursor: pointer;
                     }
                 }
-                p { color: var(--tainacan-secondary); }
+                p { 
+                    color: var(--tainacan-secondary); 
+                    font-size: 0.8125em;
+                }
             }
         }
     }
@@ -1597,10 +1600,10 @@ export default {
     #button-delete-document {
 
         border-radius: 100px !important;
-        max-height: 30px !important;
-        max-width: 30px !important;
-        min-height: 30px !important;
-        min-width: 30px !important;
+        max-height: 2.125em !important;
+        max-width: 2.125em !important;
+        min-height: 2.125em !important;
+        min-width: 2.125em !important;
         padding: 0 !important;
         z-index: 99;
         margin-left: 12px !important;
@@ -1640,7 +1643,7 @@ export default {
         .thumbnail-buttons-row {
             position: relative;
             left: 90px;
-            bottom: 22px;
+            bottom: 1.0em;
         }
     }
 

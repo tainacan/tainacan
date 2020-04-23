@@ -1361,8 +1361,8 @@
         min-width: 180px;
         min-height: 100%;
         height: auto;
-        max-height: calc(100% - 94px);
-        max-height: calc(100vh - 94px);
+        max-height: calc(100% - 5.875em);
+        max-height: calc(100vh - 5.875em);
         float: left;
         overflow-y: auto;
         overflow-x: hidden;

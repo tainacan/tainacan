@@ -2,8 +2,7 @@
 // This garantees that any component inside a .repository-level-page
 // will have a blue color instead of a turquoise.
 .repository-level-page {
-
-    margin-top: 94px; 
+    margin-top: 5.875em; 
     height: $page-height !important;
 
     @media screen and (max-width: 769px) {

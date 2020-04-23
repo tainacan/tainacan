@@ -576,6 +576,7 @@
                 }
                 p {
                     color: var(--tainacan-secondary);
+                    font-size: 0.8125em;
                 }
             }
         }

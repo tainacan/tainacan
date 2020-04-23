@@ -328,6 +328,7 @@ export default {
     .term-item {
         padding: 0 0 0 1.75em;
         min-height: 40px;
+        height: 3.125em;
         display: flex; 
         position: relative;
         align-items: center;
@@ -352,7 +353,7 @@ export default {
         .children-icon {
             color: var(--tainacan-blue2);
             position: absolute;
-            left: -21px;
+            left: -1.3125em;
             top: 1px;
             font-size: 1.5em;
         }
@@ -395,6 +396,7 @@ export default {
             color: var(--tainacan-danger);
         }
         .controls { 
+            height: 3.125em;
             visibility: hidden;
             opacity: 0.0;
             display: flex;
@@ -434,8 +436,8 @@ export default {
                 border-style: solid;
                 border-color: transparent transparent transparent var(--tainacan-gray1);
                 border-left-width: 24px;
-                border-top-width: 20px;
-                border-bottom-width: 20px;
+                border-top-width: 1.25em;
+                border-bottom-width: 1.25em;
                 top: 0;
             }
             &:hover:before {

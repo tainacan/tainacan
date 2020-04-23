@@ -62,7 +62,7 @@
                                             placement: 'auto-start'
                                         }"
                                         class="icon grip-icon">
-                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/>
                                 </span>
                                 <span 
                                         v-tooltip="{
@@ -192,7 +192,7 @@
                                                 placement: 'auto-start'
                                             }" 
                                             class="icon grip-icon">
-                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/>
                                     </span>
                                     <span 
                                             v-tooltip="{
@@ -876,7 +876,7 @@ export default {
                 background-color: var(--tainacan-white);
                 padding: 0.7em 0.9em;
                 margin: 4px;
-                min-height: 40px;
+                min-height: 2.8571em;
                 position: relative;
                 display: block; 
                 transition: top 0.1s ease;
@@ -994,7 +994,7 @@ export default {
                 display: block;
                 padding: 0.7em 0.9em;
                 margin: 4px;
-                height: 40px;
+                height: 2.8571em;
                 position: relative;
 
                 .grip-icon { 
@@ -1035,7 +1035,7 @@ export default {
                 background-color: var(--tainacan-white);
                 cursor: pointer;
                 left: 0;
-                height: 40px;
+                height: 2.8571em;
                 position: relative;
                 border: 1px solid var(--tainacan-gray2);
                 border-radius: 1px;
@@ -1074,16 +1074,16 @@ export default {
                     top: -1px;
                     border-color: transparent white transparent transparent;
                     border-right-width: 16px;
-                    border-top-width: 20px;
-                    border-bottom-width: 20px;
+                    border-top-width: 1.4286em;
+                    border-bottom-width: 1.4286em;
                     left: -19px;
                 }
                 &:before {
                     top: -1px;
                     border-color: transparent var(--tainacan-gray2) transparent transparent;
                     border-right-width: 16px;
-                    border-top-width: 20px;
-                    border-bottom-width: 20px;
+                    border-top-width: 1.4286em;
+                    border-bottom-width: 1.4286em;
                     left: -20px;
                 }
                 .label-details {

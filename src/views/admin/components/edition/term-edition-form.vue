@@ -543,10 +543,10 @@
             #button-edit-header {
 
                 border-radius: 100px !important;
-                max-height: 30px !important;
-                max-width: 30px !important;
-                min-height: 30px !important;
-                min-width: 30px !important;
+                max-height: 2.125em !important;
+                max-width: 2.125em !important;
+                min-height: 2.125em !important;
+                min-width: 2.125em !important;
                 padding: 0 !important;
                 z-index: 99;
                 margin-left: 10px !important;
@@ -563,7 +563,7 @@
                 
             .thumbnail-buttons-row {
                 text-align: right;
-                top: -15px;
+                top: -0.9375em;
                 position: relative;
             }
         }

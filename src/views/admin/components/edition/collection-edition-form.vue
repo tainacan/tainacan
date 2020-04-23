@@ -976,10 +976,10 @@ export default {
     #button-delete-thumbnail, 
     #button-delete-header-image {
         border-radius: 100px !important;
-        max-height: 30px !important;
-        max-width: 30px !important;
-        min-height: 30px !important;
-        min-width: 30px !important;
+        max-height: 2.125em !important;
+        max-width: 2.125em !important;
+        min-height: 2.125em !important;
+        min-width: 2.125em !important;
         padding: 0 !important;
         z-index: 99;
         margin-left: 12px !important;
@@ -994,14 +994,14 @@ export default {
         }
     }
     .header-field {  
-        padding-top: 1.5em;
+        padding-top: 24px;
 
         .image-placeholder {
             position: absolute;
             left: 10%;
             right: 10%;
             top: 35%;
-            font-size: 2.0em;
+            font-size: 1em;
             font-weight: bold;
             z-index: 99;
             text-align: center;
@@ -1019,7 +1019,7 @@ export default {
         }
     }
     .thumbnail-field {  
-        padding: 1.5em;
+        padding: 24px;
         // margin-top: 16px;
         // margin-bottom: 38px;
 
@@ -1046,7 +1046,7 @@ export default {
         .thumbnail-buttons-row {
             position: relative;
             left: 90px;
-            bottom: 20px;
+            bottom: 1.0em;
         }
     }
     .switch {

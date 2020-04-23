@@ -110,11 +110,11 @@
 
     .is-secondary-content {
         padding: 0px !important;
-        margin: 94px auto 0 auto;
+        margin: 5.875em auto 0 auto;
         position: relative;
         overflow-y: hidden;
         overflow-x: hidden;
-        height: calc(100% - 94px);
+        height: calc(100% - 5.875em);
 
         @media screen and (max-width: 769px) {
             overflow-y: visible;
@@ -131,11 +131,11 @@
     #menu-compress-button {
         position: absolute;
         z-index: 999;
-        top: 192px;
+        top: calc(11.125em + 12px);
         left: 0px;
-        max-width: 25px;
-        height: 25px;
-        width: 25px;
+        max-width: 1.5625em;
+        height: 1.5625em;
+        width: 1.5625em;
         border: none;
         background-color: var(--tainacan-blue5);
         color: var(--tainacan-white);

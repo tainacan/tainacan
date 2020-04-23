@@ -212,10 +212,11 @@
 
         .level-left {
             margin-left: -12px;
+            max-height: 3.25em;
+            overflow: hidden;
             
             .home-area { 
-                font-size: 1.5em;
-                width: 50px;
+                width: $header-height;
                 height: $header-height;
                 background-color: var(--tainacan-gray1);
                 padding-bottom: 0.4em;
@@ -224,17 +225,20 @@
                 &:hover {
                     background-color: var(--tainacan-gray2);
                 }
+                a {
+                    font-size: 1.5em;
+                }
             }
             .logo-area {
                 height: $header-height;
-                width: 160px;
+                width: 10em;
                 cursor: pointer;
 
                 &:focus {
                     box-shadow: none;
                 }
                 .tainacan-logo {
-                    height: 24px;
+                    height: 1.5em;
                     padding: 0px;
                     // margin-left: 19px;
                 }

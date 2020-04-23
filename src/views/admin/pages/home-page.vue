@@ -215,7 +215,7 @@ export default {
     .home-page {
         margin-top: $header-height;
         background-color: var(--tainacan-white);
-        height: calc(100% - 52px);
+        height: calc(100% - 3.25em);
         padding: var(--tainacan-container-padding) calc(2 * var(--tainacan-one-column)) !important;
         width: 100vw;
 
@@ -230,6 +230,7 @@ export default {
             &.home-section-collection {
                 position: relative;
                 margin-left: 52px;
+                margin-bottom: 80px;
             }
 
             .section-connector {
@@ -257,22 +258,24 @@ export default {
                 margin-bottom: 0.5em;
                 display: flex;
                 align-items: center;
-                height: 52px;
+                height: $header-height;
 
                 .home-section-icon {
                     background-color: var(--tainacan-white);
                     padding: 0.75em;
-                    height: 52px;
-                    width: 52px;
-                    font-size: 1.875em;
+                    height: $header-height;
+                    width: $header-height;
                     text-align: center;
                     z-index: 9;
                     display: flex;
                     align-items: center;
                     justify-content: center;
 
-                    .icon:hover {
-                        cursor: pointer;
+                    .icon {
+                        font-size: 1.875em;
+                        &:hover {
+                            cursor: pointer;
+                        }
                     }
                 }
 

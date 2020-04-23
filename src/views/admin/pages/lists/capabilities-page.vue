@@ -195,8 +195,8 @@
     @import '../../scss/_variables.scss';
 
     .sub-header {
-        min-height: $subheader-height;
-        height: $header-height;
+        min-height: $header-height;
+        height: auto;
         padding-left: 0;
         padding-right: 0;
         border-bottom: 1px solid #ddd;
@@ -208,6 +208,7 @@
 
         .header-item {
             margin-bottom: 0 !important;
+            min-height: 2em;
 
             &:first-child {
                 margin-right: auto;

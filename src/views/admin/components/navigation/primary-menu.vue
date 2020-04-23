@@ -222,13 +222,18 @@ export default {
 
 <style lang="scss" scoped>
 
+    @import "../../scss/_variables.scss";
+
     #primary-menu {
         background-color: var(--tainacan-blue4);
-        padding: 52px 0px 0px 0px;
+        padding: $header-height 0px 0px 0px;
+        max-height: 100%;
+        max-height: 100vh;
+        overflow: auto;
+        z-index: 101;
+        max-width: 10em;
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear;
-        max-width: 160px;
-        z-index: 101;
 
         a:hover {
             text-decoration: none;
@@ -238,7 +243,8 @@ export default {
             padding-top: 0px;
         }
         .repository-label {
-            max-height: 42px;
+            max-height: $subheader-height;
+            height: $subheader-height;
             background-color: var(--tainacan-blue5);
             font-weight: bold;
             font-size: 1em;
@@ -267,6 +273,7 @@ export default {
             margin: 24px 0;
         }
         li {
+            height: $subheader-height;
             a { 
                 color: var(--tainacan-white);
                 white-space: nowrap;
@@ -280,6 +287,7 @@ export default {
                 .icon {
                     height: auto;
                     width: auto;
+                    min-width: calc(2.625em - 30px);
                     // i, i::before {
                     //     font-size: 1.125em !important;
                     // }
@@ -304,7 +312,7 @@ export default {
                 box-shadow: none;
             }
             .menu-text {
-                padding-left: 0.7em;
+                padding-left: 0.5em;
                 opacity: 1;
                 top: 1px;
                 position: relative;
@@ -319,7 +327,7 @@ export default {
         }
 
         &.is-compressed {
-            max-width: 50px;
+            max-width: $header-height;
             .menu-text {
                 visibility: hidden;
                 opacity: 0;
@@ -332,7 +340,7 @@ export default {
         @media screen and (max-width: 769px) {
             width: 100% !important;
             max-width: 100% !important;
-            padding-top: 52px;
+            padding-top: $header-height;
 
             .menu {
                 padding-top: 0px;

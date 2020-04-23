@@ -34,7 +34,7 @@
                             <span class="icon is-small gray-icon">
                                 <i 
                                         :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                        class="tainacan-icon tainacan-icon-18px"/>
+                                        class="tainacan-icon tainacan-icon-1-125em"/>
                             </span>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -48,7 +48,7 @@
                                 aria-role="listitem"
                                 style="padding-bottom: 0.45em">
                             <span class="icon is-small gray-icon">
-                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
+                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortdescending"/>
                             </span>
                             {{ $i18n.get('label_descending') }}
                         </b-dropdown-item>
@@ -60,7 +60,7 @@
                                 aria-role="listitem"
                                 style="padding-bottom: 0.45em">
                             <span class="icon is-small gray-icon">
-                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
+                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortascending"/>
                             </span>
                             {{ $i18n.get('label_ascending') }}
                         </b-dropdown-item>
@@ -138,7 +138,7 @@
                                         v-if="$statusHelper.hasIcon(statusOption.slug)"
                                         class="icon has-text-gray">
                                     <i 
-                                            class="tainacan-icon tainacan-icon-18px"
+                                            class="tainacan-icon tainacan-icon-1-125em"
                                             :class="$statusHelper.getIcon(statusOption.slug)"
                                             />
                                 </span>
@@ -387,8 +387,8 @@
     @import '../../scss/_variables.scss';
 
     .sub-header {
-        min-height: $subheader-height;
-        height: $header-height;
+        min-height: $header-height;
+        height: auto;
         padding-left: 0;
         padding-right: 0;
         border-bottom: 1px solid #ddd;
@@ -400,6 +400,7 @@
 
         .header-item {
             margin-bottom: 0 !important;
+            min-height: 2em;
 
             &:first-child {
                 margin-right: auto;

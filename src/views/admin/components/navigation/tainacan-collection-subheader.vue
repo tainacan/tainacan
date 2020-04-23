@@ -192,7 +192,7 @@ export default {
         .back-button {
             padding: 0;
             margin: 0;
-            height: 42px;
+            height: $subheader-height;
             width: var(--tainacan-one-column);
             min-width: var(--tainacan-one-column);
             color: var(--tainacan-white);
@@ -206,7 +206,7 @@ export default {
                 color: var(--tainacan-white);
                 background-color: transparent !important;
                 border: none;
-                height: 42px !important;
+                height: $subheader-height !important;
                 .icon {
                     margin-top: -2px;
                     font-size: 22px;
@@ -216,6 +216,7 @@ export default {
 
         li {
             margin-right: 0px;
+            height: $subheader-height;
             transition: background-color 0.2s ease;
             // transition: max-width 0.4s ease-in , width 0.4s ease-in ;
             // -webkit-transition: max-width 0.4s ease-in, width 0.4s ease-in ;

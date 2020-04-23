@@ -124,6 +124,10 @@ a:hover {
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
+
+    &>p {
+        font-size: 0.8125em;
+    }
 }
 // Used for pages with collection subheader
 .page-container-small {
