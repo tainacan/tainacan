@@ -46,7 +46,7 @@ export const eventBusItemMetadata = new Vue({
                         if (index >= 0)
                             this.errors.splice( index, 1);
                         
-                        this.$emit('updateErrorMessageOf#' + metadatumId, this.errors[index]);
+                        this.$emit('updateErrorMessageOf#' + parentMetaId ? parentMetaId + metadatumId : metadatumId, this.errors[index]);
                     })
                     .catch((error) => {
                         this.$emit('isUpdatingValue', false);
@@ -57,12 +57,12 @@ export const eventBusItemMetadata = new Vue({
                             messages.push(error[index]);
                         
                         if ( index >= 0) {
-                            Vue.set( this.errors, index, { metadatum_id: metadatumId, errors: messages });
+                            Vue.set( this.errors, index, { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages });
                             this.$emit('updateErrorMessage', this.errors[index]);
                         } else {
-                            this.errors.push( { metadatum_id: metadatumId, errors: messages } );
+                            this.errors.push( { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } );
 
-                            this.$emit('updateErrorMessageOf#' + metadatumId, this.errors[0]);
+                            this.$emit('updateErrorMessageOf#' + parentMetaId ? parentMetaId + metadatumId : metadatumId, this.errors[0]);
                         }
                         
                 });

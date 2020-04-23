@@ -1048,7 +1048,10 @@ export default {
                 if (errors.errors) {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){
-                            eventBusItemMetadata.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                            eventBusItemMetadata.errors.push({ 
+                                metadatum_id: metadatum,
+                                errors: error[metadatum]
+                            });
                         }   
                     }
                     this.formErrorMessage = errors.error_message;
@@ -1146,7 +1149,10 @@ export default {
             .catch((errors) => {
                 for (let error of errors.errors) {
                     for (let metadatum of Object.keys(error)){
-                       eventBusItemMetadata.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                        eventBusItemMetadata.errors.push({ 
+                            metadatum_id: metadatum, 
+                            errors: error[metadatum]
+                        });
                     }
                 }
                 this.formErrorMessage = errors.error_message;
@@ -1178,7 +1184,10 @@ export default {
                 .catch((errors) => {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){
-                            eventBusItemMetadata.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                            eventBusItemMetadata.errors.push({ 
+                                metadatum_id: metadatum, 
+                                errors: error[metadatum]
+                            });
                         }
                     }
                     this.formErrorMessage = errors.error_message;
@@ -1209,7 +1218,10 @@ export default {
             .catch((errors) => {
                 for (let error of errors.errors) {
                     for (let metadatum of Object.keys(error)){
-                        eventBusItemMetadata.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                        eventBusItemMetadata.errors.push({
+                            metadatum_id: metadatum,
+                            errors: error[metadatum]
+                        });
                     }
                 }
                 this.formErrorMessage = errors.error_message;
