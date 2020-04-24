@@ -42,7 +42,7 @@ export const eventBusItemMetadata = new Vue({
                 })
                     .then(() => { 
                         this.$emit('isUpdatingValue', false);
-                        let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId );
+                        let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ));
                         if (index >= 0)
                             this.errors.splice( index, 1);
                         
