@@ -242,10 +242,12 @@
                 </button>
             </div>
             <div class="control">
-                <button
+                <b-button
+                        :loading="isLoading"
                         class="button is-success"
-                        type="submit">{{ $i18n.get('save') }}
-                </button>
+                        native-type="submit">
+                    {{ $i18n.get('save') }}
+                </b-button>
             </div>
         </div>
         <p class="help is-danger">{{ formErrorMessage }}</p>
@@ -274,7 +276,8 @@
                 formErrors: {},
                 formErrorMessage: '',
                 closedByForm: false,
-                entityName: 'metadatum'
+                entityName: 'metadatum',
+                isUpdating: false
             }
         },
         created() {
@@ -313,7 +316,7 @@
                 if ((metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
                     
                     this.fillExtraFormData(this.editForm);
-
+                    this.isUpdating = true;
                     this.updateMetadatum({
                         collectionId: this.collectionId,
                         metadatumId: metadatum.id,
@@ -325,12 +328,14 @@
                             this.editForm = {};
                             this.formErrors = {};
                             this.formErrorMessage = '';
+                            this.isUpdating = false;
                             this.closedByForm = true;
 
                             this.$root.$emit('metadatumUpdated', this.isRepositoryLevel);
                             this.$emit('onEditionFinished');
                         })
                         .catch((errors) => {
+                            this.isUpdating = false;
                             for (let error of errors.errors) {
                                 for (let attribute of Object.keys(error))
                                     this.formErrors[attribute] = error[attribute];
@@ -350,6 +355,7 @@
                         formObj[key] = value;
 
                     this.fillExtraFormData(formObj);
+                    this.isUpdating = true;
                     this.updateMetadatum({
                         collectionId: this.collectionId,
                         metadatumId: metadatum.id,
@@ -361,12 +367,15 @@
                             this.editForm = {};
                             this.formErrors = {};
                             this.formErrorMessage = '';
+                            this.isUpdating = false;
                             this.closedByForm = true;
 
                             this.$root.$emit('metadatumUpdated', this.isRepositoryLevel);
                             this.$emit('onEditionFinished');
                         })
                         .catch((errors) => {
+                            this.isUpdating = false;
+
                             for (let error of errors.errors) {
                                 for (let attribute of Object.keys(error))
                                     this.formErrors[attribute] = error[attribute];

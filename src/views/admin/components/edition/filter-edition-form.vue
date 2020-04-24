@@ -184,9 +184,12 @@
                         slot="trigger">{{ $i18n.get('cancel') }}</button>
             </div>
             <div class="control">
-                <button 
+                <b-button 
+                        :loading="isLoading"
                         class="button is-success" 
-                        type="submit">{{ $i18n.get('save') }}</button>
+                        native-type="submit">
+                    {{ $i18n.get('save') }}
+                </b-button>
             </div>
         </div>
         <p class="help is-danger">{{ formErrorMessage }}</p>
@@ -213,7 +216,8 @@ export default {
             formErrorMessage: '',
             closedByForm: false,
             showEditMaxOptions: false,
-            entityName: 'filter'
+            entityName: 'filter',
+            isLoading: false
         }
     }, 
 
@@ -250,17 +254,20 @@ export default {
         saveEdition(filter) {
 
             if ((filter.filter_type_object && filter.filter_type_object.form_component) || filter.edit_form == '') {
-
+                
+                this.isLoading = true;
                 // this.fillExtraFormData(this.editForm);
                 this.updateFilter({ filterId: filter.id, index: this.index, options: this.editForm})
                     .then(() => {
                         this.editForm = {};
                         this.formErrors = {};
                         this.formErrorMessage = '';
+                        this.isLoading = false;
                         this.closedByForm = true;
                         this.$emit('onEditionFinished');
                     })
                     .catch((errors) => {
+                        this.isLoading = false;
                         for (let error of errors.errors) {     
                             for (let attribute of Object.keys(error))
                                 this.formErrors[attribute] = error[attribute];
@@ -281,15 +288,18 @@ export default {
                 }
 
                 this.fillExtraFormData(formObj);
+                this.isLoading = true;
                 this.updateFilter({ filterId: filter.id, index: this.index, options: formObj})
                     .then(() => {
                         this.editForm = {};
                         this.formErrors = {};
                         this.formErrorMessage = '';
+                        this.isLoading = false;
                         this.closedByForm = true;
                         this.$emit('onEditionFinished');
                     })
                     .catch((errors) => {
+                        this.isLoading = false;
                         for (let error of errors.errors) {     
                             for (let attribute of Object.keys(error))
                                 this.formErrors[attribute] = error[attribute];
