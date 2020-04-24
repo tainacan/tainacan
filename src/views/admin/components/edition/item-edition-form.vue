@@ -1023,6 +1023,9 @@ export default {
             else
                 promise = this.updateItem(data);
 
+            // Clear errors so we don't have them duplicated from api
+            eventBusItemMetadata.errors = [];
+
             promise.then(updatedItem => {
 
                 this.item = updatedItem;
@@ -1035,7 +1038,7 @@ export default {
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
-
+                
                 this.isLoading = false;
 
                 if (!this.isOnSequenceEdit) {
@@ -1084,6 +1087,9 @@ export default {
                 { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
                 { path: '', label: this.$i18n.get('new') }
             ]);
+
+            // Clear errors so we don't have them duplicated from api
+            eventBusItemMetadata.errors = [];
 
             // Creates draft Item
             this.form.comment_status = this.form.comment_status == 'open' ? 'open' : 'closed';
