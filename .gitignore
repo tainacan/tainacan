@@ -11,6 +11,7 @@ src/vendor
 node_modules
 npm-debug.log
 src/assets/js/*.js
+src/assets/js/*.js.LICENSE
 src/assets/*.js
 last-js-build.md5
 last-sass-build.md5
