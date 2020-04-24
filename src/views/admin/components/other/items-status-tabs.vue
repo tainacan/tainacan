@@ -31,7 +31,7 @@
                             v-if="$statusHelper.hasIcon(statusOption.slug)"
                             class="icon has-text-gray">
                         <i 
-                                class="tainacan-icon tainacan-icon-18px"
+                                class="tainacan-icon tainacan-icon-1-125em"
                                 :class="$statusHelper.getIcon(statusOption.slug)"
                                 />
                     </span>
