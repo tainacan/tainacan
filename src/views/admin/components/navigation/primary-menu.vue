@@ -13,7 +13,9 @@
                             tag="a"
                             :to="$routerHelper.getCollectionsPath()">
                         <span v-if="!isMenuCompressed">{{ $i18n.get('repository') }}</span>
-                        <span class="icon">
+                        <span 
+                                v-else
+                                class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-repository"/>
                         </span>
                     </router-link>
