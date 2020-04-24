@@ -23,7 +23,7 @@ export const deleteMetadatum = ( state, metadatum ) => {
     }
 }
 
-export const setSingleMetadatum = (state, {metadatum, index}) => {
+export const setSingleMetadatum = (state, {metadatum, index, isRepositoryLevel}) => {
     if (metadatum.parent && metadatum.parent >= 0) {
         const existingParentIndex = state.metadata.findIndex((aMetadatum) => aMetadatum.id == metadatum.parent);
         
@@ -47,13 +47,23 @@ export const setSingleMetadatum = (state, {metadatum, index}) => {
             Vue.set(state.metadata, existingParentIndex, existingParent)
         }    
     } else {
-        if (index != undefined && index != null)
-            Vue.set( state.metadata, index, metadatum);
-        else {
+        
+        if (isRepositoryLevel) {
             const existingIndex = state.metadata.findIndex((aMetadatum) => aMetadatum.id == metadatum.id);
             if (existingIndex >= 0)
                 Vue.set( state.metadata, existingIndex, metadatum)
-        } 
+            else
+                state.metadata.unshift(metadatum)
+        } else {        
+            if (index != undefined && index != null)
+                Vue.set( state.metadata, index, metadatum);
+            else {
+                const existingIndex = state.metadata.findIndex((aMetadatum) => aMetadatum.id == metadatum.id);
+                
+                if (existingIndex >= 0)
+                    Vue.set( state.metadata, existingIndex, metadatum)
+            } 
+        }
     }
 }
 
