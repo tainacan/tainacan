@@ -1,7 +1,7 @@
 <template>
     <b-input
             :disabled="disabled"
-            :id="itemMetadatum.metadatum.metadata_type_object.component + '-' + itemMetadatum.metadatum.slug"
+            :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
             :value="value"
             @input="onInput($event)"
             @blur="onBlur"/>

@@ -2,7 +2,7 @@
     <b-select
             expanded
             :disabled="disabled"
-            :id="itemMetadatum.metadatum.metadata_type_object.component + '-' + itemMetadatum.metadatum.slug"
+            :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
             :placeholder="$i18n.get('label_selectbox_init')"
             :value="value"
             @input="onSelected($event)">

@@ -518,6 +518,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_the_amount_of_copies'		 => __( 'Select the amount of copies of the item that you want to create', 'tainacan'),
 	'instruction_select_a_interval'		 			 => __( 'Select an interval', 'tainacan'),
 	'instruction_select_title_mapping'				 => __( 'Before runnning import, consider selecting the title source metadata', 'tainacan'),
+	'instruction_click_error_to_go_to_metadata'		 => __( 'Click on the error to go to the metadata:', 'tainacan'),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every published item, including those visible only to editors.', 'tainacan' ),

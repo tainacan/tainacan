@@ -142,7 +142,7 @@
                     }
                 }
                 this.errorMessage = updatedErrorMessage;
-            })
+            });
         },
         beforeDestroy() {
             if (this.itemMetadatum && this.itemMetadatum.metadatum)

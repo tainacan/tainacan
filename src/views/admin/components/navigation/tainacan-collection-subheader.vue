@@ -192,7 +192,6 @@ export default {
         .back-button {
             padding: 0;
             margin: 0;
-            height: $subheader-height;
             width: var(--tainacan-one-column);
             min-width: var(--tainacan-one-column);
             color: var(--tainacan-white);

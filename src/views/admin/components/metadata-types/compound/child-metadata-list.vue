@@ -351,7 +351,7 @@
                 // Scroll to opened metadata form
                 this.$nextTick(() => { 
                     if (this.$refs['metadatum-handler-' + metadatum.id] && this.$refs['metadatum-handler-' + metadatum.id][0])
-                        this.$refs['metadatum-handler-' + metadatum.id][0].scrollIntoView(true);
+                        this.$refs['metadatum-handler-' + metadatum.id][0].scrollIntoView({ behavior: 'smooth', block: 'start' });
                 });
 
                 // First time opening

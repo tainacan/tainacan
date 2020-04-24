@@ -31,7 +31,7 @@
         </p>
         <div 
                 class="metadata-taxonomy-list"
-                :id="itemMetadatum.metadatum.metadata_type_object.component + '-' + itemMetadatum.metadatum.slug">
+                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')">
             <template v-for="(option, index) in options">
                 <b-checkbox
                         :key="index"

@@ -1,7 +1,6 @@
 <template>
     <div :class="{ 'repository-level-page page-container': isRepositoryLevel }">
-        <tainacan-title 
-                    :bread-crumb-items="[{ path: '', label: this.$i18n.get('filters') }]"/>
+        <tainacan-title :bread-crumb-items="[{ path: '', label: this.$i18n.get('filters') }]"/>
         
         <template v-if="isRepositoryLevel">
             <p>{{ $i18n.get('info_repository_filters_inheritance') }}</p>

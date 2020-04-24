@@ -56,7 +56,8 @@
                         :item-metadatum="childItemMetadatum"
                         :is-collapsed="childItemMetadatum.collapse"
                         @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"
-                        :class="{ 'is-last-input': childIndex == childItemMetadata.length - 1}"/>
+                        :class="{ 'is-last-input': childIndex == childItemMetadata.length - 1}"
+                    />
             </template>
             <a 
                     v-if="isMultiple" 

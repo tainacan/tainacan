@@ -571,18 +571,23 @@
                         v-if="isOnSequenceEdit">
                     {{ $i18n.get('label_sequence_editing_item') + " " + itemPosition + " " + $i18n.get('info_of') + " " + ((group != null && group.items_count != undefined) ? group.items_count : '') + "." }}
                 </p>
-                <p v-if="!isUpdatingValues">
-                    {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
-                    <span class="help is-danger">{{ formErrorMessage }}</span>
-                </p>
-                <p
-                        class="update-warning"
-                        v-if="isUpdatingValues">
-                    <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating"/>
+                <p class="footer-message">
+                    <span 
+                            v-if="isUpdatingValues"
+                            class="update-warning">
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating"/>
+                        </span>
+                        <span>{{ $i18n.get('info_updating_metadata_values') }}</span>
                     </span>
-                    {{ $i18n.get('info_updating_metadata_values') }}
-                    <span class="help is-danger">{{ formErrorMessage }}</span>
+                    <span v-else>{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}</span>
+
+                    <span class="help is-danger">
+                        {{ formErrorMessage }}
+                        <item-metadatum-errors-tooltip 
+                                v-if="formErrors.length"
+                                :form-errors="formErrors" />
+                    </span>
                 </p>
             </div>
             <div
@@ -770,13 +775,15 @@ import DocumentItem from '../other/document-item.vue';
 import CustomDialog from '../other/custom-dialog.vue';
 import AttachmentsList from '../lists/attachments-list.vue';
 import { formHooks } from '../../js/mixins';
+import ItemMetadatumErrorsTooltip from '../other/item-metadatum-errors-tooltip.vue';
 
 export default {
     name: 'ItemEditionForm',
     components: {
         FileItem,
         DocumentItem,
-        AttachmentsList
+        AttachmentsList,
+        ItemMetadatumErrorsTooltip
     },
     mixins: [ formHooks ],
     data(){
@@ -814,7 +821,7 @@ export default {
             isUpdatingValues: false,
             entityName: 'item',
             activeTab: 0,
-            isLoadingAttachments: false
+            isLoadingAttachments: false,
         }
     },
     computed: {
@@ -835,6 +842,9 @@ export default {
         },
         totalAttachments() {
             return this.getTotalAttachments();
+        },
+        formErrors() {
+           return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
         }
     },
     watch: {
@@ -930,7 +940,7 @@ export default {
         });
         eventBusItemMetadata.$on('hasErrorsOnForm', (hasErrors) => {
             if (hasErrors)
-                this.formErrorMessage = this.$i18n.get('info_errors_in_form');
+                this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
             else
                 this.formErrorMessage = '';
         });
@@ -1683,13 +1693,15 @@ export default {
             to { color: var(--tainacan-info-color); }
         }
 
+        .footer-message {
+            display: flex;
+            align-items: center;
+        }
         .update-warning {
             color: var(--tainacan-blue5);
             animation-name: blink;
             animation-duration: 0.5s;
             animation-delay: 0.5s;
-            align-items: center;
-            display: flex;
         }
 
         .update-info-section {
