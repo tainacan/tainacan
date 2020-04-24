@@ -73,7 +73,7 @@
                                             </span>
                                             <span 
                                                     v-tooltip="{
-                                                        content: (metadatum.collection_id == 'default') || isRepositoryLevel ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
+                                                        content: (metadatum.collection_id == 'default') || isRepositoryLevel ? $i18n.get('label_repository_metadatum') : $i18n.get('label_collection_metadatum'),
                                                         autoHide: true,
                                                         classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                         placement: 'auto-start'

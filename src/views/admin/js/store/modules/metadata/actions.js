@@ -161,7 +161,13 @@ export const updateCollectionMetadataOrder = ({ commit }, {collectionId, metadat
     });
 }
 
-export const updateChildMetadataOrder = ({ commit }, {collectionId, parentMetadatumId, childMetadataOrder }) => {
+export const updateChildMetadataOrder = ({ commit }, {isRepositoryLevel, collectionId, parentMetadatumId, childMetadataOrder }) => {
+    let endpoint = '';
+    
+    if (isRepositoryLevel)
+        endpoint = '/metadata/' + parentMetadatumId; 
+    else
+        endpoint = '/collection/' + collectionId + '/metadata/' + parentMetadatumId; 
 
     const body = {
         'metadata_type_options': {
@@ -170,7 +176,7 @@ export const updateChildMetadataOrder = ({ commit }, {collectionId, parentMetada
     }
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.put('/collection/' + collectionId + '/metadata/' + parentMetadatumId + '?context=edit', body)
+        axios.tainacan.put(endpoint + '?context=edit', body)
             .then(res => {
                 resolve(res.data);
             }).catch(error => {

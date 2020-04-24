@@ -21,7 +21,7 @@
                 class="active-metadata-area child-metadata-area"
                 @change="handleChange"
                 :group="{ name:'metadata', pull: false, put: isAvailableChildMetadata }"
-                :sort="(openedMetadatumId == '' || openedMetadatumId == undefined) && !isRepositoryLevel"
+                :sort="(openedMetadatumId == '' || openedMetadatumId == undefined)"
                 :handle="'.handle'"
                 ghost-class="sortable-ghost"
                 chosen-class="sortable-chosen"
@@ -31,7 +31,7 @@
             <div 
                     class="active-metadatum-item"
                     :class="{
-                        'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
+                        'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
                         'not-focusable-item': openedMetadatumId == metadatum.id,
                         'inherited-metadatum': (metadatum.collection_id != collectionId && metadatum.parent == 0) || isRepositoryLevel
                     }" 
@@ -41,9 +41,9 @@
                         :ref="'metadatum-handler-' + metadatum.id"
                         class="handle">
                     <span 
-                            :style="{ opacity: !(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder) ? '1.0' : '0.0' }"
+                            :style="{ opacity: !( metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder) ? '1.0' : '0.0' }"
                             v-tooltip="{
-                                content: isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
+                                content: metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
                                 autoHide: true,
                                 classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                 placement: 'auto-start'
@@ -53,7 +53,7 @@
                     </span>
                     <span 
                             v-tooltip="{
-                                content: (metadatum.collection_id == 'default') || isRepositoryLevel ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
+                                content: (metadatum.collection_id == 'default') || isRepositoryLevel ? $i18n.get('label_repository_metadatum') : $i18n.get('label_collection_metadatum'),
                                 autoHide: true,
                                 classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                 placement: 'auto-start'
@@ -266,8 +266,7 @@
                 } else if (event.removed) {
                     this.removeMetadatum(event.removed.element);
                 } else if (event.moved) {
-                    if (!this.isRepositoryLevel)
-                        this.updateMetadataOrder();
+                    this.updateMetadataOrder();
                 }
             },
             updateMetadataOrder() {
@@ -277,7 +276,8 @@
                         metadataOrder.push({ 'id': metadatum.id });
            
                 this.isUpdatingMetadataOrder = true;
-                this.updateChildMetadataOrder({ 
+                this.updateChildMetadataOrder({
+                    isRepositoryLevel: this.isRepositoryLevel, 
                     collectionId: this.collectionId,
                     parentMetadatumId: this.parent.id,
                     childMetadataOrder: metadataOrder
@@ -296,8 +296,7 @@
                     parent: this.parent.id
                 })
                 .then((metadatum) => {
-                    if (!this.isRepositoryLevel)
-                        this.updateMetadataOrder();
+                    this.updateMetadataOrder();
 
                     this.toggleMetadatumEdition(metadatum.id)
                     this.hightlightedMetadatum = '';
@@ -321,10 +320,7 @@
                                     isRepositoryLevel: this.isRepositoryLevel
                                 })
                                 .then(() => {
-                                    if (!this.isRepositoryLevel)
-                                        this.updateMetadataOrder();
-                                    else 
-                                        this.$root.$emit('metadatumUpdated', this.isRepositoryLevel);
+                                    this.updateMetadataOrder();
                                 })
                                 .catch(() => {
                                     this.$console.log("Error deleting metadatum.")
