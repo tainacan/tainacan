@@ -83,7 +83,20 @@ class Compound extends Metadata_Type {
 
 		if( $metadatum_type_object instanceof \Tainacan\Metadata_Types\Compound ) {
 			$options = $metadatum->get_metadata_type_options();
-			
+
+			if( isset( $options['parent'] ) ) {
+				$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+				$childrens = $Tainacan_Metadata->fetch( ['parent' => $options['parent'] ], "OBJECT" );
+				foreach ($childrens as $child) {
+					if ($child->get_status() != $metadatum->get_status()) {
+						$child->set_status( $metadatum->get_status() );
+						if( $child->validate() ) {
+							$Tainacan_Metadata->update( $child );
+						}
+					}
+				}
+			}
+
 			if( isset( $options['parent'] ) )
 				 return;
 			
