@@ -58,7 +58,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 
     .help-wrapper {
         position: absolute;
