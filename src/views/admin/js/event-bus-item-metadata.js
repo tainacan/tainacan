@@ -9,9 +9,9 @@ export const eventBusItemMetadata = new Vue({
     watch: {
         errors() {
             this.$emit('hasErrorsOnForm', this.errors.length > 0);
-
+            
             for (let error of this.errors)
-                this.$emit('updateErrorMessageOf#' + error.metadatum_id, error);
+                this.$emit('updateErrorMessageOf#' + error.metadatum_id + (error.parent_meta_id ? error.parent_meta_id : ''), error);
         }
     },
     created() {
@@ -48,20 +48,19 @@ export const eventBusItemMetadata = new Vue({
                         
                         this.$emit('updateErrorMessageOf#' + parentMetaId ? parentMetaId + metadatumId : metadatumId, this.errors[index]);
                     })
-                    .catch((error) => {
+                    .catch(({ error_message, error, item_metadata }) => {
                         this.$emit('isUpdatingValue', false);
-                        let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId );
+                        let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ));
                         let messages = [];
 
                         for (let index in error)
                             messages.push(error[index]);
-                        
+
                         if ( index >= 0) {
                             Vue.set( this.errors, index, { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages });
-                            this.$emit('updateErrorMessage', this.errors[index]);
+                            this.$emit('updateErrorMessageOf#' + parentMetaId ? parentMetaId + metadatumId : metadatumId, this.errors[index]);
                         } else {
                             this.errors.push( { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } );
-
                             this.$emit('updateErrorMessageOf#' + parentMetaId ? parentMetaId + metadatumId : metadatumId, this.errors[0]);
                         }
                         

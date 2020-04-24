@@ -51,7 +51,9 @@ export default {
         },
         loadMetadataElements() {
             this.formErrors.map((error) => {
-                this.metadataElements.push(document.getElementById('tainacan-item-metadatum_id-' + error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')));
+                this.metadataElements.push(
+                    document.getElementById('tainacan-item-metadatum_id-' + error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : ''))
+                );
             });
         }
     }

@@ -135,7 +135,8 @@
             this.setInitialValues();
             eventBusItemMetadata.$on('updateErrorMessageOf#' + this.itemMetadatum.parent_meta_id ? this.itemMetadatum.parent_meta_id + this.itemMetadatum.metadatum.id : this.itemMetadatum.metadatum.id, (errors) => {
                 let updatedErrorMessage = '';
-                if (errors && this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.id == errors.metadatum_id && errors.errors) {
+                
+                if (errors && errors.errors && this.itemMetadatum && this.itemMetadatum.metadatum && (this.itemMetadatum.parent_meta_id ? (this.itemMetadatum.parent_meta_id == errors.parent_meta_id && this.itemMetadatum.metadatum.id == errors.metadatum_id) : this.itemMetadatum.metadatum.id == errors.metadatum_id)) {
                     for (let error of errors.errors) { 
                         for (let index of Object.keys(error))
                             updatedErrorMessage += error[index] + '\n';

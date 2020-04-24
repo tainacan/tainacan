@@ -16,7 +16,11 @@ export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values,
                 resolve(itemMetadatum)
             })
             .catch( error => {
-                reject(error.response.data.errors);
+                reject({
+                    error: error.response.data.errors,
+                    error_message: error.response.data.error_message,
+                    item_metadata: error.response.data.item_metadata
+                });
             })
     });
 };
