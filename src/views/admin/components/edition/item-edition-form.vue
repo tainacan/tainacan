@@ -332,7 +332,7 @@
                                         </span>
                                     </a>
                                     <a
-                                            v-if="item.thumbnail.thumbnail != undefined && item.thumbnail.thumbnail != false"
+                                            v-if="item.thumbnail && item.thumbnail.thumbnail != undefined && item.thumbnail.thumbnail != false"
                                             id="button-delete-thumbnail"
                                             class="button is-rounded is-secondary"
                                             :aria-label="$i18n.get('label_button_delete_thumb')"

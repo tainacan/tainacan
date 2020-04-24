@@ -17,8 +17,8 @@
                             v-for="(error, index) of formErrors"
                             :key="index">
                         <a 
-                                v-if="metadataElements[index]"
-                                @click="metadataElements[index].scrollIntoView({ behavior: 'smooth', block: 'center' })">
+                                v-if="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')]"
+                                @click="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')].scrollIntoView({ behavior: 'smooth', block: 'center' })">
                             {{ getErrorMessage(error.errors) }}
                         </a>
                         <p v-else>{{ getErrorMessage(error.errors) }}</p>
@@ -37,7 +37,7 @@ export default {
     },
     data() {
         return {
-            metadataElements: []
+            metadataElements: {}
         } 
     },
     methods: {
@@ -50,10 +50,9 @@ export default {
             return metadatumErrorMessage;
         },
         loadMetadataElements() {
+            this.metadataElements = {};
             this.formErrors.map((error) => {
-                this.metadataElements.push(
-                    document.getElementById('tainacan-item-metadatum_id-' + error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : ''))
-                );
+                this.metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')] = document.getElementById('tainacan-item-metadatum_id-' + error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : ''));
             });
         }
     }

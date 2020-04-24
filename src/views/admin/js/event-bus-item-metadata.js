@@ -10,8 +10,8 @@ export const eventBusItemMetadata = new Vue({
         errors() {
             this.$emit('hasErrorsOnForm', this.errors.length > 0);
             
-            for (let error of this.errors)
-                this.$emit('updateErrorMessageOf#' + error.metadatum_id + (error.parent_meta_id ? error.parent_meta_id : ''), error);
+            for (let error of this.errors) 
+                this.$emit('updateErrorMessageOf#' + (error.metadatum_id + (error.parent_meta_id ? '-' + error.parent_meta_id : '')), error);
         }
     },
     created() {
@@ -46,7 +46,7 @@ export const eventBusItemMetadata = new Vue({
                         if (index >= 0)
                             this.errors.splice( index, 1);
                         
-                        this.$emit('updateErrorMessageOf#' + parentMetaId ? parentMetaId + metadatumId : metadatumId, this.errors[index]);
+                        this.$emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[index]);
                     })
                     .catch(({ error_message, error, item_metadata }) => {
                         this.$emit('isUpdatingValue', false);
@@ -58,10 +58,10 @@ export const eventBusItemMetadata = new Vue({
 
                         if ( index >= 0) {
                             Vue.set( this.errors, index, { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages });
-                            this.$emit('updateErrorMessageOf#' + parentMetaId ? parentMetaId + metadatumId : metadatumId, this.errors[index]);
+                            this.$emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[index]);
                         } else {
                             this.errors.push( { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } );
-                            this.$emit('updateErrorMessageOf#' + parentMetaId ? parentMetaId + metadatumId : metadatumId, this.errors[0]);
+                            this.$emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[0]);
                         }
                         
                 });
