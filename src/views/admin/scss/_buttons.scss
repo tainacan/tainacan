@@ -53,7 +53,7 @@ button.link-style:active {
     &.is-outlined {
         color: var(--tainacan-secondary);
         background-color: transparent !important;
-        border-color: var(--tainacan-input-color) !important;
+        border-color: var(--tainacan-input-border-color) !important;
     }
     &.is-outlined:hover {
         color: var(--tainacan-secondary) !important;

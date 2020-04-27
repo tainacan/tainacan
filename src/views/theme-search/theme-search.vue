@@ -151,6 +151,14 @@ export default {
             }
         }
 
+        .date-filter-container,
+        .numeric-filter-container {
+            @media screen and (min-width: 1366px) {
+                flex-wrap: nowrap !important;
+                height: auto !important;
+            }
+        }
+
         .column-large-width {
             .tainacan-compound-group {
                 display: inline-block;

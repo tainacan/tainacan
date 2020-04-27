@@ -1,6 +1,7 @@
 .tags {
     font-family: var(--tainacan-font-family, inherit);
     border: solid 1px var(--tainacan-input-border-color) !important;
+    background-color: var(--tainacan-input-background-color);
     border-radius: 20px;
     flex-wrap: nowrap;
     margin-bottom: 0.375em !important;
@@ -12,7 +13,7 @@
     animation-duration: 0.3s;
 
     .tag {
-        background-color: var(--tainacan-white);
+        background-color: var(--tainacan-input-background-color);
         margin-bottom: 0 !important;
         margin-right: 4px !important;
         max-width: calc(100% - 21px);
@@ -31,7 +32,7 @@
             border-radius: 50px !important;
             margin-right: 0px !important;
             color: var(--tainacan-info-color);
-            background-color: var(--tainacan-white);
+            background-color: var(--tainacan-input-background-color);
             transition: border-width 0.15s linear, background-color 0.15s linear;
 
             &:after,
