@@ -1082,7 +1082,7 @@
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
                         this.isMobile = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
                         
-                        if (this.isMobile || this.startWithFiltersHidden)
+                        if (this.isMobile || this.startWithFiltersHidden || this.openAdvancedSearch)
                             this.isFiltersModalActive = false;
                         else
                             this.isFiltersModalActive = true;

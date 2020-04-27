@@ -1206,7 +1206,7 @@
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
                         const isMobile = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
                         
-                        if (isMobile) {
+                        if (isMobile || this.openAdvancedSearch) {
                             this.isFiltersModalActive = false;
                         } else {
                             this.isFiltersModalActive = true;

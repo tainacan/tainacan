@@ -103,7 +103,7 @@
 	&.is-filters-menu-open {
 		
 		.items-list-area {
-			width: calc(100% - var(--tainacan-filter-menu-width-theme));
+			max-width: calc(100% - var(--tainacan-filter-menu-width-theme));
 		}
 		.filters-menu {
 			padding-top: 12px;
