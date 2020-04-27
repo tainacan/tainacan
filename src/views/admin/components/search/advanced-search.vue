@@ -571,6 +571,10 @@
 
 <style lang="scss">
 
+    #advanced-search-container {
+        width: 100%;
+    }
+
     .loading-overlay {
         min-height: 200px;
     }
