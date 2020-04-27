@@ -18,6 +18,7 @@ button.link-style:active {
 }
 .button {
     border-radius: 6px !important;
+    min-height: 2.125em;
     font-weight: normal;
     text-transform: inherit;
     font-family: var(--tainacan-font-family, inherit);

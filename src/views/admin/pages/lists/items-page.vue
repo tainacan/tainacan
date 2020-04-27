@@ -74,7 +74,9 @@
             </button>
 
             <!-- Text simple search -->
-            <div class="search-control-item">
+            <div 
+                    v-if="!openAdvancedSearch"
+                    class="search-control-item">
                 <div 
                         role="search"
                         class="search-area">

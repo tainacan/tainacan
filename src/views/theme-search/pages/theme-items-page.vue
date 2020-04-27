@@ -53,7 +53,7 @@
 
             <!-- Text simple search -->
             <div 
-                    v-if="!hideSearch"
+                    v-if="!hideSearch && !openAdvancedSearch"
                     class="search-control-item">
                 <div 
                         role="search" 
