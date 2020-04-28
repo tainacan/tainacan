@@ -65,6 +65,12 @@
             flex-shrink: 1;
             order: -1;
         }
+        p.control:first-child .button {
+            border-right: none;
+        }
+        p.control:last-child .button {
+            border-left: none;
+        }
         button, 
         input {
             height: auto !important;
