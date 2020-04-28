@@ -322,6 +322,9 @@ export default {
 
         .popup-list {
             background-color: var(--tainacan-white);
+            border: 1px solid var(--tainacan-gray1);
+            border-top: none;
+            border-bottom: none;
             color: var(--tainacan-black);
             overflow-y: auto;
             overflow-x: hidden;
