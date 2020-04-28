@@ -141,8 +141,6 @@
             }
 
             th {
-                position: sticky;
-                position: -webkit-sticky;
                 background-color: var(--tainacan-background-color);
                 border: 0px solid transparent;
                 border-bottom: 1px solid var(--tainacan-input-border-color);
@@ -200,7 +198,7 @@
                             white-space: nowrap;
                             max-height: 1.125em;
                         }
-                        a:hover {
+                        a {
                             text-decoration: none !important;
                         }   
                     }
