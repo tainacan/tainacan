@@ -130,13 +130,13 @@
     import { mapActions } from 'vuex';
 
     import ActivityDetailsModal from '../modals/activity-details-modal.vue';
-    import ThreeStateToggleButton from '../other/three-state-toggle-button.vue';
+//    import ThreeStateToggleButton from '../other/three-state-toggle-button.vue';
 
     export default {
         name: 'ActivitiesList',
-        components: {
+        /*components: {
             ThreeStateToggleButton
-        },
+        },*/
         props: {
             isLoading: false,
             totalActivities: 0,

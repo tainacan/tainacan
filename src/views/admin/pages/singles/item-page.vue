@@ -326,7 +326,6 @@
             FileItem,
             DocumentItem,
             ActivitiesPage,
-            ExposersModal,
             AttachmentsList
         },
         mixins: [formHooks],

@@ -629,8 +629,7 @@
             FiltersItemsList,
             ItemsStatusTabs,
             Pagination,
-            AdvancedSearch,
-            ExposersModal
+            AdvancedSearch
         },
         props: {
             collectionId: Number
