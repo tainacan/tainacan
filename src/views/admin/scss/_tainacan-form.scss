@@ -75,10 +75,14 @@
         button.is-primary:focus,
         button.is-primary:active {
             border: 1px solid var(--tainacan-input-border-color);
-            background-color: var(--tainacan-primary) !important;
+            background-color: var(--tainacan-input-background-color) !important;
             color: var(--tainacan-secondary) !important;
-            padding: 0.25em 0.6em !important;
+            padding: 0.26em 0.6em !important;
             border-radius: 0 !important;
+
+            &:hover {
+                background-color: var(--tainacan-primary) !important;
+            }
 
             .mdi::before {
                 display: inline-block;
@@ -100,6 +104,7 @@
             .mdi-minus::before {
                 content: "minus" !important;
             } 
+            
         }
     }
     .radio, .checkbox {
