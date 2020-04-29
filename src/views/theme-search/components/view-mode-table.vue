@@ -23,8 +23,8 @@
                     tabindex="0">
                 <thead>
                     <th 
-                            v-for="(column, index) in displayedMetadata"
-                            :key="index"
+                            v-for="(column, metadatumIndex) in displayedMetadata"
+                            :key="metadatumIndex"
                             v-if="column.display"
                             class="column-default-width"
                             :class="{
@@ -45,10 +45,10 @@
                             :key="item"
                             v-for="item in 12">
                         <td 
-                                v-for="(column, index) in displayedMetadata"
-                                :key="index"
+                                v-for="(column, metadatumIndex) in displayedMetadata"
+                                :key="metadatumIndex"
                                 v-if="column.display"
-                                :class="{ 'thumbnail-cell': index == 0 }"
+                                :class="{ 'thumbnail-cell': metadatumIndex == 0 }"
                                 class="column-default-width skeleton"/>
                     </tr>
                 </tbody>
@@ -88,8 +88,8 @@
                         
                         <!-- Item Displayed Metadata -->
                         <td 
-                                :key="index"    
-                                v-for="(column, index) in displayedMetadata"
+                                :key="metadatumIndex"    
+                                v-for="(column, metadatumIndex) in displayedMetadata"
                                 v-if="column.display"
                                 class="column-default-width"
                                 :class="{

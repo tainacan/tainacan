@@ -203,7 +203,6 @@ export default {
         return {
             collections: [],
             collectionItems: {},
-            collection: undefined,
             collectionsRequestSource: undefined,
             isLoading: false,
             isLoadingCollection: false,

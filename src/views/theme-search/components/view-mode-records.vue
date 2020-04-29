@@ -57,8 +57,8 @@
                                     autoHide: false,
                                     placement: 'auto-start'
                                 }"
-                                v-for="(column, index) in displayedMetadata"
-                                :key="index"
+                                v-for="(column, metadatumIndex) in displayedMetadata"
+                                :key="metadatumIndex"
                                 class="metadata-title"
                                 v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
                                 v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                                                 
@@ -80,8 +80,8 @@
                                             class="skeleton"/>
                                 </div>
                                 <span 
-                                        v-for="(column, index) in displayedMetadata"
-                                        :key="index"
+                                        v-for="(column, metadatumIndex) in displayedMetadata"
+                                        :key="metadatumIndex"
                                         :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }"
                                         v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
                                     <h3 class="metadata-label">{{ column.name }}</h3>

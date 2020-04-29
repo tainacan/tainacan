@@ -70,7 +70,6 @@ export default {
             isRepositoryLevel: true,
             pageTitle: '',
             activeRouteName: '',
-            breadCrumbItem: {},
             childrenBreadCrumbItems: []
         }
     },

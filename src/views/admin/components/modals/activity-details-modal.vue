@@ -174,9 +174,9 @@
                                 <div
                                         class="tainacan-attachments-in-modal"
                                         v-if="diff.new.length">
-                                    <template v-for="(attachment, index) in diff.new">
+                                    <template v-for="(attachment, attachmentIndex) in diff.new">
                                         <file-item 
-                                                :key="index"
+                                                :key="attachmentIndex"
                                                 :modal-on-click="false"
                                                 :show-name="true"
                                                 :file="{ 

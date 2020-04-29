@@ -194,7 +194,6 @@ export default {
         return {
             terms: [],
             termItems: {},
-            term: undefined,
             termsRequestSource: undefined,
             isLoading: false,
             isLoadingTerm: false,

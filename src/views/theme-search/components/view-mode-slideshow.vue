@@ -237,15 +237,15 @@
                             id="tainacan-slide-container">
                         <swiper-slide 
                                 role="listitem"
-                                :ref="'thumb-' + item.id"
+                                :ref="'thumb-' + slideItem.id"
                                 :key="index"
-                                v-for="(item, index) of slideItems"
+                                v-for="(slideItem, index) of slideItems"
                                 class="tainacan-slide-item"
                                 :class="{'active-item': slideIndex == index}">
                             <img 
-                                    :alt="$i18n.get('label_thumbnail') + ': ' + item.title"
+                                    :alt="$i18n.get('label_thumbnail') + ': ' + slideItem.title"
                                     class="thumnail" 
-                                    :src="item['thumbnail']['tainacan-small'] ? item['thumbnail']['tainacan-small'][0] : (item['thumbnail'].thumbnail ? item['thumbnail'].thumbnail[0] : thumbPlaceholderPath)">  
+                                    :src="slideItem['thumbnail']['tainacan-small'] ? slideItem['thumbnail']['tainacan-small'][0] : (slideItem['thumbnail'].thumbnail ? slideItem['thumbnail'].thumbnail[0] : thumbPlaceholderPath)">  
                             
                         </swiper-slide>
                         <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->

@@ -25,7 +25,6 @@ module.exports = {
         'vue/prop-name-casing': 'off',
         'vue/no-confusing-v-for-v-if': 'off',
         'vue/no-use-v-if-with-v-for': 'off',
-        'vue/no-template-shadow': 'off',
         'vue/require-default-prop': 'off' // https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/require-default-prop.md
     },
     globals: {

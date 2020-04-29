@@ -68,15 +68,15 @@
                                 {{ $i18n.get('label_create_metadatum') }}
                             </option>
                             <option
-                                    v-for="(metadatum, index) of collectionMetadata"
-                                    :key="index"
-                                    :value="metadatum.id"
-                                    :disabled="checkIfMetadatumIsAvailable(metadatum.id)">
+                                    v-for="(collectionMetadatum, metadatumIndex) of collectionMetadata"
+                                    :key="metadatumIndex"
+                                    :value="collectionMetadatum.id"
+                                    :disabled="checkIfMetadatumIsAvailable(collectionMetadatum.id)">
                                 <span class="metadatum-name">
-                                    {{ metadatum.name }}
+                                    {{ collectionMetadatum.name }}
                                 </span>
                                 <span class="label-details">  
-                                    ({{ metadatum.metadata_type_object.name }}) <em>{{ (metadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
+                                    ({{ collectionMetadatum.metadata_type_object.name }}) <em>{{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
                                 </span>
                             </option>
                         </b-select>

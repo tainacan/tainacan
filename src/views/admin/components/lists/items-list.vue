@@ -649,8 +649,8 @@
                                         :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">
                             </div>
                             <span
-                                    v-for="(column, index) in tableMetadata"
-                                    :key="index"
+                                    v-for="(column, metadatumIndex) in tableMetadata"
+                                    :key="metadatumIndex"
                                     :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
                                     v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'description')">
                                 <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
@@ -659,8 +659,8 @@
                                         class="metadata-value"/>
                             </span>
                             <span
-                                    v-for="(column, index) in tableMetadata"
-                                    :key="index"
+                                    v-for="(column, metadatumIndex) in tableMetadata"
+                                    :key="metadatumIndex"
                                     :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
                                     v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
                                 <h3 class="metadata-label">{{ column.name }}</h3>
@@ -669,8 +669,8 @@
                                         class="metadata-value"/>
                             </span>
                             <span
-                                    v-for="(column, index) in tableMetadata"
-                                    :key="index"
+                                    v-for="(column, metadatumIndex) in tableMetadata"
+                                    :key="metadatumIndex"
                                     v-if="(column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
                                 <h3 class="metadata-label">{{ column.name }}</h3>
                                 <p
