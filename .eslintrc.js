@@ -19,7 +19,6 @@ module.exports = {
         'vue/html-closing-bracket-spacing': 'off',
         'vue/html-closing-bracket-newline': 'off',
         'vue/require-prop-type-constructor': 'off',
-        'vue/return-in-computed-property': 'off',
         'vue/singleline-html-element-content-newline': 'off',
         'vue/multiline-html-element-content-newline': 'off',
         'vue/prop-name-casing': 'off',

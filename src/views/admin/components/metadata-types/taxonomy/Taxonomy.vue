@@ -57,6 +57,8 @@
                         this.itemMetadatum.metadatum.metadata_type_options.input_type
                         )
                     return this.itemMetadatum.metadatum.metadata_type_options.input_type;
+                else
+                    return '';
             }
         },
         watch: {

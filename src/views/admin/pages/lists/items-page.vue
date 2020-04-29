@@ -714,6 +714,7 @@
                             return metadatum.name;
                     }
                 }
+                return '';
             }
         },
         watch: {
