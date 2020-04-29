@@ -33,8 +33,9 @@ module.exports = {
         block_faceted_search: './src/views/gutenberg-blocks/tainacan-facets/faceted-search/index.js',
         
         block_carousel_terms_list: './src/views/gutenberg-blocks/tainacan-terms/carousel-terms-list/index.js',
-        block_carousel_terms_list_theme: './src/views/gutenberg-blocks/tainacan-terms/carousel-terms-list/carousel-terms-list-theme.js'
+        block_carousel_terms_list_theme: './src/views/gutenberg-blocks/tainacan-terms/carousel-terms-list/carousel-terms-list-theme.js',
 
+        tainacan_blocks_category_icon: './src/views/gutenberg-blocks/tainacan-blocks-category-icon.js'
     },
     output: {
         path: path.resolve(__dirname, './src/assets/js/'),

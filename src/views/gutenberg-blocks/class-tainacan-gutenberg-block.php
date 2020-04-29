@@ -30,6 +30,7 @@ function tainacan_blocks_add_gutenberg_blocks_actions() {
 	add_action('init', 'tainacan_blocks_add_plugin_settings');
 	
 	add_filter('block_categories', 'tainacan_blocks_register_categories', 10, 2);
+	add_action('init', 'tainacan_blocks_register_category_icon');
 }
 
 function tainacan_blocks_register_categories($categories, $post){
@@ -365,5 +366,15 @@ function tainacan_blocks_get_common_styles() {
 		'tainacan-blocks-common-styles',
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-common-styles.css',
 		array('wp-edit-blocks')
+	);
+}
+
+function tainacan_blocks_register_category_icon() {
+	global $TAINACAN_BASE_URL;
+	
+	wp_enqueue_script(
+		'tainacan-blocks-register-category-icon',
+		$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_category_icon.js',
+		array('wp-blocks')
 	);
 }
