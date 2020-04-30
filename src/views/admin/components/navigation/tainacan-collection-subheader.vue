@@ -208,7 +208,7 @@ export default {
                 height: $subheader-height !important;
                 .icon {
                     margin-top: -2px;
-                    font-size: 22px;
+                    font-size: 1.5em;
                 }
             }
         }
@@ -246,7 +246,7 @@ export default {
                 color: var(--tainacan-white);
                 text-align: center;
                 white-space: nowrap;
-                padding: 9px 11px;
+                padding: 6px 11px;
                 min-width: 50px;
                 line-height: 22px;
                 border-radius: 0px;
