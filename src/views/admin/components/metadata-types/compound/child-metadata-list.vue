@@ -33,6 +33,7 @@
                     :class="{
                         'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
                         'not-focusable-item': openedMetadatumId == metadatum.id,
+                        'disabled-metadatum': parent.enabled == false,
                         'inherited-metadatum': (metadatum.collection_id != collectionId && metadatum.parent == 0) || isRepositoryLevel
                     }" 
                     v-for="(metadatum, index) in childrenMetadata"
@@ -64,7 +65,8 @@
                                 'tainacan-icon-collections': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
                                 'tainacan-icon-repository': (metadatum.collection_id == 'default') || isRepositoryLevel,
                                 'has-text-turquoise5': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
-                                'has-text-blue5': (metadatum.collection_id == 'default' || isRepositoryLevel)
+                                'has-text-blue5': (metadatum.collection_id == 'default' || isRepositoryLevel),
+                                'has-text-gray3': !parent.enabled
                             }"
                             class="tainacan-icon" />
                     </span>  
