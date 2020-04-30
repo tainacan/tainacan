@@ -601,11 +601,11 @@
                     this.bulkEditionProcedures[criterion].action == this.editionActions.copy) {
                     
                     const selectedMetadatum = this.bulkEditionProcedures[criterion].metadatum;
-                    if (selectedMetadatum.metadata_type_object && selectedMetadatum.metadata_type_object.component) {
-                        return this.metadata.filter((metadatum) => {
+                    if (selectedMetadatum.metadata_type_object && selectedMetadatum.metadata_type) {
+                        return JSON.parse(JSON.stringify(this.metadata)).filter((metadatum) => {
                             return (
-                                metadatum.metadata_type_object.id != selectedMetadatum.metadata_type_object.id &&
-                                metadatum.metadata_type_object.component == selectedMetadatum.metadata_type_object.component 
+                                metadatum.id != selectedMetadatum.id &&
+                                metadatum.metadata_type == selectedMetadatum.metadata_type 
                             )
                         });
                     }
