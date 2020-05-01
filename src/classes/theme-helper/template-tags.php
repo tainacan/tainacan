@@ -91,6 +91,17 @@ function tainacan_the_item_document_download_link() {
 	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. $link . '" href="' . $link . '">' . __('Download', 'tainacan') . '</a>';
 }
 
+
+function tainacan_the_item_attachment_download_link($attachment_id) {
+
+	if ( !$attachment_id || !wp_get_attachment_url($attachment_id) )
+		return;
+
+	$link = wp_get_attachment_url($attachment_id);
+
+	return '<a name="' . __('Download the item attachment', 'tainacan') . '" download="'. $link . '" href="' . $link . '">' . __('Download', 'tainacan') . '</a>';
+}
+
 function tainacan_the_document() {
 	echo tainacan_get_the_document();
 }
