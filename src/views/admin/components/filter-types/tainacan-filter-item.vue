@@ -93,6 +93,7 @@
 <style lang="scss">
 
     .filter-item-forms {
+        break-inside: avoid;
 
         .collapse-trigger {
             margin-left: -5px;

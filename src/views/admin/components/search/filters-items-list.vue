@@ -35,7 +35,7 @@
         <div            
                 v-if="!isLoadingFilters &&
                     ((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
-                class="extra-margin">
+                class="filters-components-list">
 
             <!-- TERM ITEMS PAGE FILTERS -->
             <template v-if="taxonomy && taxonomyFilters">
@@ -464,7 +464,7 @@
         align-items: center;
         font-size: 0.75em !important;
     }
-    .extra-margin {
+    .filters-components-list {
         margin-bottom: 64px;
     }
     .collection-name {
