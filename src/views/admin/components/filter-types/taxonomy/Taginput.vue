@@ -62,10 +62,7 @@
             isLoadingItems() {
                 this.isLoadingOptions = this.isLoadingItems;
             },
-            'query.taxquery'() {
-                this.updateSelectedValues();
-            },
-            'query.metaquery'() {
+            'query'() {
                 this.updateSelectedValues();
             }
         },

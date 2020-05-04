@@ -76,10 +76,7 @@
               if ( val && this.dateEnd === null)
                   this.dateEnd =  new Date();
             },
-            'query.metaquery'() {
-                this.updateSelectedValues();
-            },
-            'query.taxquery'() {
+            'query'() {
                 this.updateSelectedValues();
             }
         },

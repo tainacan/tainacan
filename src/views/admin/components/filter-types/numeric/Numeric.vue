@@ -97,10 +97,7 @@
             }
         },
         watch: {
-            'query.metaquery'() {
-                this.updateSelectedValues();
-            },
-            'query.taxquery'() {
+            'query'() {
                 this.updateSelectedValues();
             }
         },

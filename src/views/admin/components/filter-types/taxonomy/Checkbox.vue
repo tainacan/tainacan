@@ -89,10 +89,7 @@
             isLoadingItems() {
                 this.isLoadingOptions = this.isLoadingItems;
             },
-            'query.metaquery'() {
-                this.loadOptions();
-            },
-            'query.taxquery'() {
+            'query'() {
                 this.loadOptions();
             }
         },    

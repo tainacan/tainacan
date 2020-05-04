@@ -144,12 +144,9 @@
             }
         },
         watch: {
-            'query.metaquery'() {
+            'query'() {
                 this.updateSelectedValues();
             },
-            'query.taxquery'() {
-                this.updateSelectedValues();
-            }
         },
         mounted() {
             this.updateSelectedValues();

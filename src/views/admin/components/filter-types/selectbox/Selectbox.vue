@@ -37,11 +37,7 @@
             }
         },
         watch: {
-            'query.metaquery'() {
-                if (!this.isUsingElasticSearch)
-                    this.loadOptions();
-            },
-            'query.taxquery'() {
+            'query'() {
                 if (!this.isUsingElasticSearch)
                     this.loadOptions();
             },
