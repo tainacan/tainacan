@@ -44,9 +44,36 @@
 	background: var(--tainacan-white);
 	width: 100%;
 
+	#filters-modal .modal-close {
+		right: var(--tainacan-one-column) !important;
+		right: 4.1666667vw !important;
+	}
+
+	.modal-content {
+		padding: 42px 4.1666667vw !important;
+	
+		.filters-components-list {
+			column-count: 3;
+			column-gap: 3em;
+			column-rule: 1px solid var(--tainacan-gray2);
+		}
+	}
+
+	@media screen and (max-width: 1024px) {
+		.modal-content { 
+			.filters-components-list {
+				column-count: 2;
+			}
+		}
+	}
+
 	@media screen and (max-width: 768px) {
 		.modal-content { 
-            margin-right: 0px !important;
+			margin-right: 0px !important;
+			
+			.filters-components-list {
+				column-count: 1;
+			}
 		}
 	}
 }

@@ -294,7 +294,7 @@
                 <b-field>
                     <label 
                             class="label is-hidden-touch is-hidden-desktop-only"
-                            style="margin-right: -10px;">
+                            :style="{ marginRight: showInlineViewModeOptions ? '' : '-10px'}">
                         {{ $i18n.get('label_visualization') + ':&nbsp; ' }}
                     </label>
                     <label 

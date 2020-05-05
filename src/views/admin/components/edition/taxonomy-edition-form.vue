@@ -22,6 +22,7 @@
                                         :label="$i18n.get('label_name')"
                                         :type="editFormErrors['name'] != undefined ? 'is-danger' : ''"
                                         :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
+                                    <span class="required-metadatum-asterisk">*</span>
                                     <help-button 
                                             :title="$i18n.getHelperTitle('taxonomies', 'name')" 
                                             :message="$i18n.getHelperMessage('taxonomies', 'name')"/>
@@ -179,6 +180,11 @@
                                         @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                             </div>
                             <p 
+                                    style="margin: 0 12px;"
+                                    class="help is-danger">
+                                {{ formErrorMessage }}
+                            </p>
+                            <p 
                                     v-if="updatedAt != undefined"
                                     class="updated-at">
                                 {{ ($i18n.get('info_updated_at') + ' ' + updatedAt) }}
@@ -191,7 +197,6 @@
                                         class="button is-success">{{ $i18n.get('save') }}</button>
                             </div>
                         </div>
-                        <p class="help is-danger">{{ formErrorMessage }}</p>
                     </form>
 
                     <div v-if="!isLoading && (($route.name == 'TaxonomyCreationForm' && !$userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyEditionForm' && taxonomy && taxonomy.current_user_can_edit != undefined && !taxonomy.current_user_can_edit))">
