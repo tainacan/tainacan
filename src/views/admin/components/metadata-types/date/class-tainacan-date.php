@@ -77,6 +77,8 @@ class Date extends Metadata_Type {
 			$suffix = $item_metadata->get_multivalue_suffix();
 			$separator = $item_metadata->get_multivalue_separator();
 			foreach ( $value as $el ) {
+				if( empty( $el ) ) 
+					continue;
 				$return .= $prefix;
 				$return .= mysql2date(get_option('date_format'), ($el));
 				$return .= $suffix;
@@ -85,6 +87,8 @@ class Date extends Metadata_Type {
 					$return .= $separator;
 			}
 		} else {
+			if( empty( $value ) )
+				return "";
 			$return = mysql2date(get_option('date_format'), ($value));
 		}
 		return $return;
