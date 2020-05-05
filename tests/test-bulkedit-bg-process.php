@@ -625,7 +625,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			'meta_query' => [
 				[
 					'key' => $this->metadatum->get_id(),
-					'value' => ''
+					'compare' => 'NOT EXISTS'
 				]
 			],
 			'posts_per_page' => -1
@@ -638,7 +638,7 @@ class BulkEditBgProcess extends TAINACAN_UnitApiTestCase {
 			'meta_query' => [
 				[
 					'key' => $this->metadatum->get_id(),
-					'value' => ''
+					'compare' => 'NOT EXISTS'
 				]
 			],
 			'posts_per_page' => -1
