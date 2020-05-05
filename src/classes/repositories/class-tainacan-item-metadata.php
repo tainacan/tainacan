@@ -60,8 +60,9 @@ class Item_Metadata extends Repository {
 			return $item_metadata;
 		} else {
 			if ( $unique ) {
-
-				if ( is_int( $item_metadata->get_meta_id() ) ) {
+				if( empty( $item_metadata->get_value() ) ) {
+					delete_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id() );
+				} elseif ( is_int( $item_metadata->get_meta_id() ) ) {
 					update_metadata_by_mid( 'post', $item_metadata->get_meta_id(), wp_slash( $item_metadata->get_value() ) );
 				} else {
 
@@ -87,6 +88,9 @@ class Item_Metadata extends Repository {
 					$values = $item_metadata->get_value();
 
 					foreach ( $values as $value ) {
+						if( empty($value) || $value == "" ) {
+							continue;
+						}
 						add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), wp_slash( $value ) );
 					}
 				}
@@ -210,7 +214,28 @@ class Item_Metadata extends Repository {
 
 	}
 
-	public function remove_compound_value(\Tainacan\Entities\Item $item, $metadatum_id, $parent_meta_id ) {
+	public function delete_metadata( \Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+		do_action( 'tainacan-pre-delete', $item_metadata, true );
+		do_action( 'tainacan-pre-delete-Item_Metadata_Entity', $item_metadata, true );
+
+		$metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
+		if ( $metadata_type->get_primitive_type() == 'term' ) {
+			$item_metadata->set_value([]);
+			$this->save_terms_metadatum_value( $item_metadata );
+		} elseif ( $metadata_type->get_primitive_type() == 'compound' ) {
+			$this->remove_compound_value($item_metadata->get_item(), $item_metadata->get_metadatum(), $item_metadata->get_parent_meta_id() );
+		} else {
+			delete_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id() );
+		}
+
+		if ( $item_metadata ) {
+			do_action( 'tainacan-deleted', $item_metadata, true );
+			do_action( 'tainacan-deleted-Item_Metadata_Entity', $item_metadata, true );
+		}
+		return $item_metadata;
+	}
+
+	public function remove_compound_value(\Tainacan\Entities\Item $item, $metadatum, $parent_meta_id ) {
 		$post_id = $item->get_id();
 		$current_childrens = get_metadata_by_mid( 'post', $parent_meta_id );
 		if ( is_object( $current_childrens ) ) {

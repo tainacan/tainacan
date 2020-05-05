@@ -354,18 +354,27 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 			$item_id  = $request['item_id'];
 			$metadatum_id = $request['metadatum_id'];
 			$parent_meta_id = isset( $body['parent_meta_id'] ) && $body['parent_meta_id'] > 0 ? $body['parent_meta_id'] : null;
+		
+			$item  = $this->item_repository->fetch( $item_id );
+			$metadatum = $this->metadatum_repository->fetch( $metadatum_id );
 
-			if($parent_meta_id == null) {
+			$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum, null, $parent_meta_id);
+
+			if($item->can_edit()) {
+				$deleted_item_metadata = $this->item_metadata_repository->delete_metadata( $item_metadata );
+
+				$prepared_item =  $this->prepare_item_for_response($deleted_item_metadata, $request);
+				$prepared_item['metadatum']['metadata_type_object'] = $deleted_item_metadata->get_metadatum()->get_metadata_type_object()->_toArray();
+				$prepared_item['parent_meta_id'] = ( $parent_meta_id && $parent_meta_id > 0) ? $parent_meta_id : $deleted_item_metadata->get_parent_meta_id();
+				
+				return new \WP_REST_Response( $prepared_item, 200 );
+			}
+			else {
 				return new \WP_REST_Response( [
-					'error_message' => __( 'Please verify, invalid value(s)', 'tainacan' ),
-					'errors'        => "operation permitted only compound metadata"
+					'error_message' => __( 'you can not be update the item', 'tainacan' ),
+					'errors'        => "operation not permitted"
 				], 400 );
 			}
-
-			$item = $this->item_repository->fetch($request['item_id']);
-			$remove_item_metadata = $this->item_metadata_repository->remove_compound_value($item, $metadatum_id, $parent_meta_id);
-			
-			return new \WP_REST_Response(["item_metadata_removed" => $remove_item_metadata], 200);
 		}
 	}
 
