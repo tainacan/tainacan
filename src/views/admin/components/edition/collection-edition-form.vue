@@ -463,7 +463,7 @@
                             type="button"
                             @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                 </div>
-                
+                <p class="help is-danger">{{ formErrorMessage }}</p>
                 <div 
                         style="margin-left: auto;"
                         class="control">
@@ -487,7 +487,7 @@
                             class="button is-success">{{ $i18n.get('finish') }}</button>
                 </div>
             </div>
-            <p class="help is-danger">{{ formErrorMessage }}</p> 
+            <br> 
         </form>
 
         <div v-if="!isLoading && ((isNewCollection && !$userCaps.hasCapability('tnc_rep_edit_collections')) || (!isNewCollection && collection && collection.current_user_can_edit != undefined && collection.current_user_can_edit == false))">
@@ -711,48 +711,49 @@ export default {
             this.fillExtraFormData(data);
 
             this.updateCollection({collection_id: this.collectionId, collection: data })
-            .then(updatedCollection => {    
-                
-                this.collection = updatedCollection;
+                .then(updatedCollection => {    
+                    
+                    this.collection = updatedCollection;
 
-                // Fills hook forms with it's real values 
-                this.updateExtraFormData(this.collection);
-                
-                // Fill this.form data with current data.
-                this.form.name = this.collection.name;
-                this.form.slug = this.collection.slug;
-                this.form.description = this.collection.description;
-                this.form.status = this.collection.status;
-                this.form.cover_page_id = this.collection.cover_page_id;
-                this.form.enable_cover_page = this.collection.enable_cover_page;
-                this.form.enabled_view_modes = this.collection.enabled_view_modes.map((viewMode) => viewMode.viewMode);
-                this.form.default_view_mode = this.collection.default_view_mode;
-                this.form.allow_comments = this.collection.allow_comments;
-                
-                this.isLoading = false;
-                this.formErrorMessage = '';
-                this.editFormErrors = {};
+                    // Fills hook forms with it's real values 
+                    this.updateExtraFormData(this.collection);
+                    
+                    // Fill this.form data with current data.
+                    this.form.name = this.collection.name;
+                    this.form.slug = this.collection.slug;
+                    this.form.description = this.collection.description;
+                    this.form.status = this.collection.status;
+                    this.form.cover_page_id = this.collection.cover_page_id;
+                    this.form.enable_cover_page = this.collection.enable_cover_page;
+                    this.form.enabled_view_modes = this.collection.enabled_view_modes.map((viewMode) => viewMode.viewMode);
+                    this.form.default_view_mode = this.collection.default_view_mode;
+                    this.form.allow_comments = this.collection.allow_comments;
+                    
+                    this.isLoading = false;
+                    this.formErrorMessage = '';
+                    this.editFormErrors = {};
 
-                if (this.fromImporter)
-                    this.$router.go(-1);
-                else {
-                    if (goTo == 'metadata')
-                        this.$router.push(this.$routerHelper.getCollectionMetadataPath(this.collectionId));
-                    else if (goTo == 'filters')
-                        this.$router.push(this.$routerHelper.getCollectionFiltersPath(this.collectionId));
-                    else
-                        this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
-                }
-            })
-            .catch((errors) => {
-                for (let error of errors.errors) {     
-                    for (let attribute of Object.keys(error))
-                        this.editFormErrors[attribute] = error[attribute];
-                }
-                this.formErrorMessage = errors.error_message;
+                    if (this.fromImporter)
+                        this.$router.go(-1);
+                    else {
+                        if (goTo == 'metadata')
+                            this.$router.push(this.$routerHelper.getCollectionMetadataPath(this.collectionId));
+                        else if (goTo == 'filters')
+                            this.$router.push(this.$routerHelper.getCollectionFiltersPath(this.collectionId));
+                        else
+                            this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+                    }
+                })
+                .catch((errors) => {
+                    
+                    for (let error of errors.errors) {     
+                        for (let attribute of Object.keys(error))
+                            this.editFormErrors[attribute] = error[attribute];
+                    }
+                    this.formErrorMessage = errors.error_message;
 
-                this.isLoading = false;
-            });
+                    this.isLoading = false;
+                });     
         },
         createNewCollection() {
             // Puts loading on Draft Collection creation
