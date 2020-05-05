@@ -746,6 +746,11 @@ class Collection extends Entity {
 			return true;
 		}
 
+		if( $this->is_cover_page_enabled() && !is_numeric( $this->get_cover_page_id() ) ) {
+			$this->add_error($this->get_id(), __('cover page is enabled, please inform the page', 'tainacan'));
+			return false;
+		}
+
 		return parent::validate();
 
 	}
