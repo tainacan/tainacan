@@ -560,8 +560,8 @@ export default {
             border-style: solid;
             border-color: transparent transparent transparent var(--tainacan-gray1);
             border-left-width: 24px;
-            border-top-width: 1.25em;
-            border-bottom-width: 1.25em;
+            border-top-width: 1.55em;
+            border-bottom-width: 1.55em;
             top: 0;
         }
         &:hover:before {
