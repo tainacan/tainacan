@@ -1254,7 +1254,7 @@
                     }
                 }
                 
-            }, 900),
+            }, 750),
             removeEventListeners() {
                 // Component
                 this.$off();

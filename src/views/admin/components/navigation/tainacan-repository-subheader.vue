@@ -113,7 +113,7 @@ export default {
                 component: AvailableExportersModal,
                 hasModalCard: true,
                 props: {
-                    sourceCollection: this.collectionId,
+                    sourceCollection: this.collection.id,
                     hideWhenManualCollection: true
                 },
                 trapFocus: true
