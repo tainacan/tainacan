@@ -26,7 +26,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             // Sets a flag to inform components that an empty sate is or not due to filtering
             let hasFiltered = false;
             let advancedSearchResults = false;
-
+            
             if ( (postQueries.metaquery != undefined &&
                 (Object.keys(postQueries.metaquery).length > 0 ||
                 postQueries.metaquery.length > 0)) || (postQueries.taxquery != undefined &&
@@ -35,12 +35,9 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 
                 hasFiltered = true;
                         
-                if(postQueries.advancedSearch){
+                if (postQueries.advancedSearch)
                     advancedSearchResults = postQueries.advancedSearch;
-                }
-                
             }
-            
             let query = qs.stringify(postQueries);
 
             // Guarantees at least empty fetch_only are passed in case none is found

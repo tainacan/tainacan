@@ -33,7 +33,6 @@ export default {
 
                 this.$root.$on('searchAdvanced', advancedSearchQuery => {
                     this.$store.dispatch('search/setPage', 1);
-
                     this.searchAdvanced(advancedSearchQuery);
 
                     this.updateURLQueries();
@@ -353,7 +352,7 @@ export default {
                             resp.request.then((res) => {
                                 this.$emit( 'isLoadingItems', false);
                                 this.$emit( 'hasFiltered', res.hasFiltered);
-                                
+
                                 if (res.advancedSearchResults){
                                     this.$emit('advancedSearchResults', res.advancedSearchResults);
                                 }
