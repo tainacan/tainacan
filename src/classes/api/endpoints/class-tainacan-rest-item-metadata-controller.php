@@ -203,7 +203,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 				$item_metadata->set_value( $value );
 			} elseif(is_array($value)) {
 				$item_metadata->set_value(implode(' ', $value));
-			} else{
+			} else {
 				$item_metadata->set_value($value);
 			}
 
