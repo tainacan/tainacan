@@ -56,7 +56,17 @@ class Item_Metadata extends Repository {
 		if ( $metadata_type->get_primitive_type() == 'term' ) {
 			$this->save_terms_metadatum_value( $item_metadata );
 		} elseif ( $metadata_type->get_primitive_type() == 'compound' ) {
-			// do nothing. Compound values are updated when its child metadata are updated
+			// Create a post_metadata with value [] to compound metadata or return if it already exists 
+			// to use as parent_meta_id for child metadata
+			global $wpdb;
+			$compounds = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s and meta_value = ''", $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id() ), ARRAY_A );
+			if( is_array($compounds) && !empty($compounds) ) {
+				$meta_id = $compounds[0]['meta_id'];
+				$item_metadata->set_parent_meta_id($meta_id);
+			} else {
+				$meta_id = add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), '' );
+				$item_metadata->set_parent_meta_id($meta_id);
+			}
 			return $item_metadata;
 		} else {
 			if ( $unique ) {
