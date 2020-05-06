@@ -92,7 +92,7 @@
                             icon-right-clickable
                             @icon-right-click="updateSearch()" />
                     <a
-                            @click="openAdvancedSearch = !openAdvancedSearch"
+                            @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
                             style="font-size: 0.75em;"
                             class="has-text-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
                 </div>
@@ -721,13 +721,12 @@
             displayedMetadata() {
                 this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
             },
-            openAdvancedSearch(newValue){
+            openAdvancedSearch(newValue) {
                 if (newValue == false){
                     this.$eventBusSearch.$emit('closeAdvancedSearch');
                     this.advancedSearchResults = false;
                     this.isFiltersModalActive = true;
                 } else {
-                    this.$eventBusSearch.clearAllFilters();
                     this.isFiltersModalActive = false;
                 }
             },
@@ -780,8 +779,8 @@
                     this.prepareMetadata();
                 }
             });
-
-            if(this.$route.query && this.$route.query.advancedSearch) {
+            
+            if (this.$route.query && this.$route.query.advancedSearch) {
                 this.openAdvancedSearch = this.$route.query.advancedSearch;
             }
 
@@ -1255,7 +1254,7 @@
                     }
                 }
                 
-            }, 900),
+            }, 750),
             removeEventListeners() {
                 // Component
                 this.$off();

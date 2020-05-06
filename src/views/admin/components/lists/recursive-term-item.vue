@@ -327,8 +327,7 @@ export default {
     // Term Item
     .term-item {
         padding: 0 0 0 1.75em;
-        min-height: 40px;
-        height: 3.125em;
+        min-height: 2.5em;
         display: flex; 
         position: relative;
         align-items: center;
@@ -436,8 +435,8 @@ export default {
                 border-style: solid;
                 border-color: transparent transparent transparent var(--tainacan-gray1);
                 border-left-width: 24px;
-                border-top-width: 1.25em;
-                border-bottom-width: 1.25em;
+                border-top-width: 1.55em;
+                border-bottom-width: 1.55em;
                 top: 0;
             }
             &:hover:before {

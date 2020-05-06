@@ -122,7 +122,7 @@
                         @icon-right-click="updateSearch()" />
                     <a
                             v-if="!hideAdvancedSearch"
-                            @click="openAdvancedSearch = !openAdvancedSearch"
+                            @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
                             style="font-size: 0.75em;"
                             class="has-text-secondary is-pulled-right">
                         {{ $i18n.get('advanced_search') }}
@@ -656,7 +656,6 @@
                     this.advancedSearchResults = false;
                     this.isFiltersModalActive = !this.startWithFiltersHidden;
                 } else {
-                    this.$eventBusSearch.clearAllFilters();
                     this.isFiltersModalActive = false;
                 }
             },

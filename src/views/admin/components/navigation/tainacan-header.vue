@@ -144,7 +144,8 @@
         },
         created(){
             this.$root.$on('closeAdvancedSearchShortcut', () => {
-                this.$refs.advancedSearchShortcut.toggle();
+                if (this.$refs.advancedSearchShortcut)
+                    this.$refs.advancedSearchShortcut.toggle();
             });
             this.$root.$on('openProcessesPopup', () => {
                 this.showProcesses = true;

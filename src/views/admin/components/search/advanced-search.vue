@@ -184,7 +184,7 @@
                                 v-if="advancedSearchQuery.taxquery[searchCriterion] && advancedSearchQuery.taxquery[searchCriterion].terms"
                                 type="is-white"
                                 class="is-rounded"
-                                @close="removeThis(searchCriterion)"
+                                @close="removeThis(searchCriterion); searchAdvanced();"
                                 attached 
                                 closable>
                                 {{ advancedSearchQuery.taxquery[searchCriterion].terms }}
@@ -193,7 +193,7 @@
                                 v-else-if="advancedSearchQuery.metaquery[searchCriterion] && advancedSearchQuery.metaquery[searchCriterion].value"
                                 type="is-white"
                                 class="is-rounded"
-                                @close="removeThis(searchCriterion)"
+                                @close="removeThis(searchCriterion); searchAdvanced();"
                                 attached
                                 :loading="isFetching" 
                                 closable>
@@ -274,11 +274,13 @@
             }
         },
         watch: {
-          isDoSearch() {
-              this.searchAdvanced();
-          }
+            isDoSearch() {
+                if (this.isDoSearch)
+                    this.searchAdvanced();
+            }
         },
         mounted() {
+            
             this.$root.$on('metadatumUpdated', (isRepositoryLevel) => {
 
                 if (isRepositoryLevel) {
@@ -373,8 +375,14 @@
                 if (relationIndex != -1) 
                     keys.splice(relationIndex, 1);
 
-                for(let k of keys)
+                for (let k of keys)
                     this.searchCriteria.push(k);
+            }
+
+            // If we're coming from a preset advanced search, execute it!
+            if (this.searchCriteria.length && !this.isHeader) {
+                this.$eventBusSearch.updateStoreFromURL();
+                this.searchAdvanced();
             }
         },
         beforeDestroy() {
@@ -411,6 +419,7 @@
                     delete this.advancedSearchQuery.taxquery[searchCriterion];
                 else if (this.advancedSearchQuery.metaquery[searchCriterion])
                     delete this.advancedSearchQuery.metaquery[searchCriterion];
+
             },
             addSearchCriteria() {
                 let aleatoryKey = Math.floor(Math.random() * (1000 - 2 + 1)) + 2;
@@ -490,7 +499,6 @@
                 if (this.advancedSearchQuery.hasOwnProperty('relation') && Object.keys(this.advancedSearchQuery).length <= 3)
                     delete this.advancedSearchQuery.relation;
 
-                this.$eventBusSearch.$emit('searchAdvanced', this.advancedSearchQuery);
                 
                 if (Object.keys(this.advancedSearchQuery.metaquery).length > 0) {
 
@@ -505,6 +513,9 @@
                         }
                     }
                 }
+
+                this.$eventBusSearch.$emit('searchAdvanced', this.advancedSearchQuery);
+                
             },
             parseDateToNavigatorLanguage(date) {
                 if (date && date.length === this.dateMask.length) {
