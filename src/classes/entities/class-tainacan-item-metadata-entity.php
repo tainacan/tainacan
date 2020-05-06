@@ -57,7 +57,6 @@ class Item_Metadata_Entity extends Entity {
 							$item->get_id(),
 							$metadatum->get_id() 
 					), ARRAY_A );
-					error_log("FIND" . json_encode($item_metadata));
 					if( is_array($item_metadata) && !empty($item_metadata) ) {
 						$meta_id = (int)$item_metadata[0]['meta_id'];
 						$this->set_meta_id($meta_id);
