@@ -327,8 +327,7 @@ export default {
     // Term Item
     .term-item {
         padding: 0 0 0 1.75em;
-        min-height: 40px;
-        height: 3.125em;
+        min-height: 2.5em;
         display: flex; 
         position: relative;
         align-items: center;
