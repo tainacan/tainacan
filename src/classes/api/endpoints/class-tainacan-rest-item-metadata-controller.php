@@ -291,7 +291,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 			$endpoint_args['parent_meta_id'] = [
 				'type'        => 'array/string/object/integer',
 				'items'       => ['type' => 'array/string/object/integer'],
-				'description' => __('The parent meta ID for group children item metadatas')
+				'description' => __('The parent meta ID for the item metadata children group')
 			];
 		}
 
