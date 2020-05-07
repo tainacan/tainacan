@@ -40,8 +40,12 @@ class Term_Exporter extends Exporter {
 
         if ( is_array($files) && isset($files['csvvocabularyexporter.csv'])) {
             $file = $files['csvvocabularyexporter.csv'];
-
-            $message = __('Your CSV file is ready! Access it in the link below:', 'tainacan');
+            $taxonomie = \Tainacan\Repositories\Taxonomies::get_instance()->fetch_by_db_identifier( $this->get_option('select_taxonomy') );
+            if ( !empty($taxonomie) ) {
+                $message = __('target taxonomie:', 'tainacan');
+                $message .= " <b>" . $taxonomie->get_name() . "</b><br/>";
+            }
+            $message .= __('Your CSV file is ready! Access it in the link below:', 'tainacan');
             $message .= '<br/><br/>';
             $message .= '<a href="' . $file['url'] . '">Download</a>';
 
