@@ -94,9 +94,9 @@ export const setSingleMetadatum = (state, itemMetadatum) => {
                 });
                 
                 if (currentChildMetadataGroupIndex >= 0) {
-                    let currrentChildMetadatumIndex = currentParentValues[currentChildMetadataGroupIndex].findIndex((metadatumValue) => metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id && metadatumValue.metadatum_id == itemMetadatum.metadatum.id);
-                    if (currrentChildMetadatumIndex >= 0)
-                        currentParentValues[currentChildMetadataGroupIndex].splice(currrentChildMetadatumIndex, 1, childMetadatumValue);
+                    let currentChildMetadatumIndex = currentParentValues[currentChildMetadataGroupIndex].findIndex((metadatumValue) => metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id && metadatumValue.metadatum_id == itemMetadatum.metadatum.id);
+                    if (currentChildMetadatumIndex >= 0)
+                        currentParentValues[currentChildMetadataGroupIndex].splice(currentChildMetadatumIndex, 1, childMetadatumValue);
                     else
                         currentParentValues[currentChildMetadataGroupIndex].push(childMetadatumValue);
                 } else {
@@ -104,9 +104,10 @@ export const setSingleMetadatum = (state, itemMetadatum) => {
                 }
                 
             } else {
-                let currrentChildMetadatumIndex = currentParentValues.findIndex((metadatumValue) => metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id && metadatumValue.metadatum_id == itemMetadatum.metadatum.id);
-                if (currrentChildMetadatumIndex >= 0)
-                    currentParentValues.splice(currrentChildMetadatumIndex, 1, childMetadatumValue);
+                let currentChildMetadatumIndex = currentParentValues.findIndex((metadatumValue) => metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id && metadatumValue.metadatum_id == itemMetadatum.metadatum.id);
+                
+                if (currentChildMetadatumIndex >= 0)
+                    currentParentValues.splice(currentChildMetadatumIndex, 1, childMetadatumValue);
                 else
                     currentParentValues.push(childMetadatumValue);
             }

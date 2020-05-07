@@ -70,6 +70,14 @@
                 &nbsp;{{ $i18n.get('label_remove_value') }}
             </a>
         </template>
+        <transition name="filter-item">
+            <span 
+                    v-if="isCreatingGroup"
+                    style="width: 100%;"
+                    class="icon has-text-success loading-icon">
+                <div class="control has-icons-right is-loading is-clearfix" />
+            </span>
+        </transition>
     </div>
     <p 
             v-else
@@ -84,10 +92,7 @@
         <span class="icon is-small">
             <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
         </span>
-        &nbsp;{{ $i18n.get('label_add_value') }}&nbsp;
-        <span class="icon">
-            <i class="tainacan-icon has-text-secondary tainacan-icon-loading"/>
-        </span>
+        &nbsp;{{ $i18n.get('label_add_value') }}  
     </a>
 
 </div>
@@ -209,7 +214,6 @@
                             }
                             currentChildItemMetadataGroups.push(existingChildItemMetadata)
                         }
-
                     }
                 }
                 
