@@ -84,9 +84,9 @@
             class="empty-label">
         {{ $i18n.get('info_no_value_compound_metadata') }}
     </p>
-
     <a 
             v-if="isMultiple"
+            :disabled="childItemMetadataGroups.length > 0 && !someValueOnLastInput"
             @click="addGroup"
             class="is-block add-link">
         <span class="icon is-small">
@@ -119,6 +119,9 @@
         computed: {
             isMultiple() {
                 return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple == 'yes') ? this.itemMetadatum.metadatum.multiple == 'yes' : false;
+            },
+            someValueOnLastInput() {
+                return this.childItemMetadataGroups && this.childItemMetadataGroups[this.childItemMetadataGroups.length - 1] && this.childItemMetadataGroups[this.childItemMetadataGroups.length - 1].findIndex((childItemMetadatum) => childItemMetadatum.value) >= 0;
             }
         },
         watch: {
