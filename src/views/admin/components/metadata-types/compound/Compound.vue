@@ -223,7 +223,7 @@
                         this.childItemMetadataGroups[i][j].collapse = this.collapseAllChildren;
             },
             onChangeCollapse(event, groupIndex, index) {
-                this.childItemMetadataGroups[groupIndex][index].collapse = !event;
+                this.childItemMetadataGroups[groupIndex][index].collapse = event;
             },
             addGroup() {
 
