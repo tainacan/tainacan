@@ -38,9 +38,31 @@ class Item_Metadata_Entity extends Entity {
 		if (!is_null($meta_id) && is_int($meta_id)) {
 			$this->set_meta_id($meta_id);
 		}
-		
+
 		if (!is_null($parent_meta_id) && is_int($parent_meta_id)) {
 			$this->set_parent_meta_id($parent_meta_id);
+
+			//set the meta_id according to item metadatum and parent_meta_id
+			$childrens = get_metadata_by_mid( 'post', $parent_meta_id );
+			if ( is_object( $childrens ) ) {
+				$childrens = $childrens->meta_value;
+				if ( is_array($childrens) && !empty($childrens) ) {
+					$childrens_in = implode(',', $childrens);
+					global $wpdb;
+					$item_metadata = $wpdb->get_results( $wpdb->prepare(
+						"SELECT * FROM $wpdb->postmeta
+							WHERE post_id = %d AND 
+										meta_key = %s AND
+										meta_id IN ($childrens_in)",
+							$item->get_id(),
+							$metadatum->get_id() 
+					), ARRAY_A );
+					if( is_array($item_metadata) && !empty($item_metadata) ) {
+						$meta_id = (int)$item_metadata[0]['meta_id'];
+						$this->set_meta_id($meta_id);
+					}
+				}
+			}
 		}
 	}
 	
