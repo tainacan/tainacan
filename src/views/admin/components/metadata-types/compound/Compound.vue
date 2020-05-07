@@ -255,22 +255,29 @@
                                 value: '',
                                 value_as_html: '',
                                 value_as_string: '',
-                                collapse: false
+                                collapse: true
                             };
                             newEmptyGroup.push(childObject)
                         }
-                    }   
+                    } 
                     
-                    this.isCreatingGroup = true;
+                    this.childItemMetadataGroups.push(newEmptyGroup);
+                    
+                    this.isCreatingGroup = false;
                 });
             },
             removeGroup(groupIndex) {   
-                this.isRemovingGroup = true;        
-                eventBusItemMetadata.$emit('remove_group', {
-                    itemId: this.itemMetadatum.item.id,
-                    metadatumId: this.itemMetadatum.metadatum.id,
-                    parentMetaId: this.itemMetadatum.value[groupIndex][0].parent_meta_id
-                });
+                
+                if (this.itemMetadatum.value && this.itemMetadatum.value[groupIndex] && this.itemMetadatum.value[groupIndex][0]) {
+                    this.isRemovingGroup = true;        
+                    eventBusItemMetadata.$emit('remove_group', {
+                        itemId: this.itemMetadatum.item.id,
+                        metadatumId: this.itemMetadatum.metadatum.id,
+                        parentMetaId: this.itemMetadatum.value[groupIndex][0].parent_meta_id
+                    });
+                } else {
+                    this.childItemMetadataGroups.splice(groupIndex, 1);
+                }
             }
         }
     }

@@ -102,6 +102,7 @@ export const setSingleMetadatum = (state, itemMetadatum) => {
                 } else {
                     currentParentValues.push([childMetadatumValue])
                 }
+                
             } else {
                 let currrentChildMetadatumIndex = currentParentValues.findIndex((metadatumValue) => metadatumValue.parent_meta_id == itemMetadatum.parent_meta_id && metadatumValue.metadatum_id == itemMetadatum.metadatum.id);
                 if (currrentChildMetadatumIndex >= 0)
@@ -130,8 +131,8 @@ export const deleteChildItemMetadata = (state, { parentMetadatumId, parentMetaId
 
         if (currentChildMetadataGroupIndex >= 0)
             currentParentValues.splice(currentChildMetadataGroupIndex, 1);
-        
-        currentParent.value = currentParentValues;
+            
+        currentParent.value = JSON.parse(JSON.stringify(currentParentValues));
         Vue.set(state.itemMetadata, parentIndex, currentParent);
     }
 }
