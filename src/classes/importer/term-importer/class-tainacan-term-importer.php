@@ -216,4 +216,19 @@ class Term_Importer extends Importer {
 		return false;
 	}
 
+	/**
+	* Called when the process is finished. returns the final message to the user with a
+	* short description of what happened. May contain HTML code and links
+	*
+	* @return string
+	*/
+	public function get_output() {
+		$taxonomie = \Tainacan\Repositories\Taxonomies::get_instance()->fetch_by_db_identifier( $this->get_transient('new_taxonomy') );
+		if ( !empty($taxonomie) ) {
+			$message = __('target taxonomie:', 'tainacan');
+			$message .= " <b>" . $taxonomie->get_name() . "</b><br/>";
+		}
+		return $message;
+	}
+
 }
