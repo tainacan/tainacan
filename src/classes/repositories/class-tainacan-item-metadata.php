@@ -111,7 +111,7 @@ class Item_Metadata extends Repository {
 		do_action( 'tainacan-insert', $item_metadata );
 		do_action( 'tainacan-insert-Item_Metadata_Entity', $item_metadata );
 
-		$new_entity = new Entities\Item_Metadata_Entity( $item_metadata->get_item(), $item_metadata->get_metadatum() );
+		$new_entity = new Entities\Item_Metadata_Entity( $item_metadata->get_item(), $item_metadata->get_metadatum(), $item_metadata->get_meta_id(), $item_metadata->get_parent_meta_id() );
 
 		if ( isset( $added_compound ) && is_int( $added_compound ) ) {
 			$new_entity->set_parent_meta_id( $added_compound );
