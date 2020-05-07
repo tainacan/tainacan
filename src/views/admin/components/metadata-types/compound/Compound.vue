@@ -131,10 +131,6 @@
         created() {
             eventBusItemMetadata.$on('hasRemovedItemMetadataGroup', () => this.isRemovingGroup = false);
         },
-        mounted() {
-            if (!this.isMultiple && this.itemMetadatum && this.itemMetadatum.value && this.itemMetadatum.value.length <= 0)
-                this.addGroup();
-        },
         beforeDestroy() {
             eventBusItemMetadata.$off('hasRemovedItemMetadataGroup', () => this.isRemovingGroup = false);
         },
