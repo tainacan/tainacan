@@ -40,6 +40,27 @@ export const fetchItemMetadata = ({ commit }, item_id) => {
     });
 };
 
+
+// Actions related to Item's metadata
+export const fetchCompoundFirstParentMetaId = ({ commit }, { item_id, metadatum_id }) => {
+   
+    return new Promise((resolve, reject) => {
+        axios.tainacan.patch(`/item/${item_id}/metadata/${metadatum_id}`, { value: [] })
+            .then( res => {
+                const parentMetaId = res.data.parent_meta_id;
+                resolve(parentMetaId);
+            })
+            .catch( error => {
+                reject({
+                    error: error.response.data.errors,
+                    error_message: error.response.data.error_message,
+                    item_metadata: error.response.data.item_metadata
+                });
+            })
+    });
+};
+
+
 export const deleteItemMetadataGroup = ({ commit }, { item_id, metadatum_id, parent_meta_id }) => {
         
     return new Promise((resolve) => {

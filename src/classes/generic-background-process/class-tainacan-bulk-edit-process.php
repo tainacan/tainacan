@@ -325,7 +325,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			}
 		}
 		
-		$this->add_error_log( __('Not possible to copy permission for different types', 'tainacan') );
+		$this->add_error_log( __('Not possible to copy metadata values of different types', 'tainacan') );
 		return false;
 	}
 
