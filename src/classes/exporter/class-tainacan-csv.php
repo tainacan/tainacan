@@ -179,6 +179,15 @@ class CSV extends Exporter {
 	public function output_footer() {
 		return false;
 	}
+
+	private function get_collections_names() {
+		$collections_names = [];
+		foreach($this->collections as $col) {
+			$collection = \Tainacan\Repositories\Collections::get_instance()->fetch( (int) $col['id'], 'OBJECT' );
+			$collections_names[] = $collection->get_name();
+		}
+		return $collections_names;
+	}
 	
 	/** 
 	* When exporter is finished, gets the final output 
@@ -188,8 +197,9 @@ class CSV extends Exporter {
 		
 		if ( is_array($files) && isset($files['csvexporter.csv'])) {
 			$file = $files['csvexporter.csv'];
-			
-			$message = __('Your CSV file is ready! Access it in the link below:', 'tainacan');
+			$message = __('target collections:', 'tainacan');
+			$message .= " <b>" . implode(", ", $this->get_collections_names() ) . "</b><br/>";
+			$message .= __('Your CSV file is ready! Access it in the link below:', 'tainacan');
 			$message .= '<br/><br/>';
 			$message .= '<a href="' . $file['url'] . '">Download</a>';
 			
