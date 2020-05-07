@@ -84,7 +84,10 @@
         <span class="icon is-small">
             <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
         </span>
-        &nbsp;{{ $i18n.get('label_add_value') }}
+        &nbsp;{{ $i18n.get('label_add_value') }}&nbsp;
+        <span class="icon">
+            <i class="tainacan-icon has-text-secondary tainacan-icon-loading"/>
+        </span>
     </a>
 
 </div>
@@ -102,6 +105,7 @@
         data() {
             return {
                 isRemovingGroup: false,
+                isCreatingGroup: false,
                 children: [],
                 collapseAllChildren: true,
                 childItemMetadataGroups: []
@@ -226,34 +230,38 @@
                 this.childItemMetadataGroups[groupIndex][index].collapse = !event;
             },
             addGroup() {
-                // Create a new placeholder parent_meta_id group here.
-                let newEmptyGroup = [];
 
-                if (this.itemMetadatum &&
-                    this.itemMetadatum.metadatum &&
-                    this.itemMetadatum.metadatum.metadata_type_options &&
-                    this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
-                ) {
-                    for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
-                        let childObject = {
-                            item: this.itemMetadatum.item,
-                            metadatum: child,
-                            parent_meta_id: 0,
-                            value: '',
-                            value_as_html: '',
-                            value_as_string: '',
-                            collapse: false
-                        };
-                        newEmptyGroup.push(childObject)
-                    }
-                }
-
+                this.isCreatingGroup = true;
+                
                 // Sends value to api so we can obtain the parent_meta_id
-                eventBusItemMetadata.$emit('input', {
+                eventBusItemMetadata.fetchCompoundFirstParentMetaId({
                     itemId: this.itemMetadatum.item.id,
-                    metadatumId: newEmptyGroup[0].metadatum.id,
-                    values: newEmptyGroup[0].value,
-                    parentMetaId: newEmptyGroup[0].parent_meta_id
+                    metadatumId: this.itemMetadatum.metadatum.id
+                }).then((parentMetaId) => {
+
+                    // Create a new placeholder parent_meta_id group here.
+                    let newEmptyGroup = [];
+
+                    if (this.itemMetadatum &&
+                        this.itemMetadatum.metadatum &&
+                        this.itemMetadatum.metadatum.metadata_type_options &&
+                        this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
+                    ) {
+                        for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
+                            let childObject = {
+                                item: this.itemMetadatum.item,
+                                metadatum: child,
+                                parent_meta_id: parentMetaId,
+                                value: '',
+                                value_as_html: '',
+                                value_as_string: '',
+                                collapse: false
+                            };
+                            newEmptyGroup.push(childObject)
+                        }
+                    }   
+                    
+                    this.isCreatingGroup = true;
                 });
             },
             removeGroup(groupIndex) {   

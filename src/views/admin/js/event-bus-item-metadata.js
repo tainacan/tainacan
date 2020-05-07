@@ -87,6 +87,9 @@ export const eventBusItemMetadata = new Vue({
         },
         clearAllErrors() {
            this.errors = [];
+        },
+        fetchCompoundFirstParentMetaId({ itemId, metadatumId }) {
+            return this.$store.dispatch('item/fetchCompoundFirstParentMetaId', { item_id: itemId, metadatum_id: metadatumId });
         }
     }
 });
