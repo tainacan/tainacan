@@ -862,4 +862,26 @@ class CSV extends Importer {
         }
     }
 
+    private function get_collections_names() {
+        $collections_names = [];
+        foreach($this->collections as $col) {
+            $collection = \Tainacan\Repositories\Collections::get_instance()->fetch( (int) $col['id'], 'OBJECT' );
+            $collections_names[] = $collection->get_name();
+        }
+        return $collections_names;
+    }
+
+    /**
+    * Called when the process is finished. returns the final message to the user with a
+    * short description of what happened. May contain HTML code and links
+    *
+    * @return string
+    */
+    public function get_output() {
+
+        $message = __('target collections:', 'tainacan');
+        $message .= " <b>" . implode(", ", $this->get_collections_names() ) . "</b><br/>";
+        return $message;
+    }
+
 }
