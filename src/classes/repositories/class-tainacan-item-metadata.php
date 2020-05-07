@@ -62,7 +62,7 @@ class Item_Metadata extends Repository {
 			$compounds = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s and meta_value = ''", $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id() ), ARRAY_A );
 			if( is_array($compounds) && !empty($compounds) ) {
 				$meta_id = $compounds[0]['meta_id'];
-				$item_metadata->set_parent_meta_id($meta_id);
+				$item_metadata->set_parent_meta_id((int)$meta_id);
 			} else {
 				$meta_id = add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), '' );
 				$item_metadata->set_parent_meta_id($meta_id);
@@ -360,8 +360,9 @@ class Item_Metadata extends Repository {
 			$return_value = [];
 
 			if ( is_array( $rows ) ) {
-
 				foreach ( $rows as $row ) {
+					if ( empty($row['meta_value']) )
+						continue;
 					$value = $this->extract_compound_value( maybe_unserialize( $row['meta_value'] ), $item_metadata->get_item(), $row['meta_id'] );
 					if ( $unique ) {
 						$return_value = $value;
