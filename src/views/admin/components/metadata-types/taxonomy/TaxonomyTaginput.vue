@@ -46,7 +46,7 @@
         props: {
             itemMetadatum: Object,
             value: [ Number, String, Array ],
-            allowNew: true,
+            allowNew: Boolean,
             taxonomyId: Number,
             disabled: false,
             allowSelectToCreate: false,
