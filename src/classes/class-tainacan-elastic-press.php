@@ -649,7 +649,7 @@ class Elastic_Press {
 				$taxonomy_slug = $description_types[2];
 				$taxonomy_id = Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($taxonomy_slug);
 				foreach ($aggregation[$key]['buckets'] as $term) {
-					$term_id = $term['key'];
+					$term_id = intval($term['key']);
 					$term_object = \Tainacan\Repositories\Terms::get_instance()->fetch($term_id, $taxonomy_slug);
 					$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $term_id);
 					$total_children = $wpdb->get_var($count_query);
