@@ -175,54 +175,30 @@ class Compound extends Metadata_Type {
 			return $return;
 		
 		if ( $item_metadata->is_multiple() ) {
-
-			if ( sizeof($value) > 0 ) {
-				
-				$return .= '<div class="tainacan-compound-group">';
-				$count = 0;
-
-				foreach ( $value as $compound_element ) {
-					$count++;
-
-					if ( sizeof($compound_element) > 0 ) {
-					
-						$return .= '<div class="tainacan-compound-metadatum">';
-					
-						foreach ( $compound_element as $meta ) {
-							if ( $meta instanceof Item_Metadata_Entity && $meta->get_value_as_html() != '' ) {
-								$return .= '<label class="label">' . $meta->get_metadatum()->get_name() . "</label>\n";
-								$return .= '<p>' . $meta->get_value_as_html() . '</p>' . "\n\n";
-							}
+			$elements = [];
+			foreach ( $value as $compound_element ) {
+				if ( !empty($compound_element) ) {
+					$metadata_value = '';
+					foreach ( $compound_element as $meta ) {
+						if ( $meta instanceof Item_Metadata_Entity && $meta->get_value_as_html() != '' ) {
+							$metadata_value .= '<label class="label">' . $meta->get_metadatum()->get_name() . '</label> <p>' . $meta->get_value_as_html() . "</p> \n";
 						}
-						
-						if ($count < sizeof($compound_element)) {
-							$return .= '</div>' . "\n" . $separator . "\n";
-						} else {
-							$return .= '</div>';
-						}
-					}	
+					}
+					$elements[] = '<div class="tainacan-compound-metadatum">' . $metadata_value . "</div> \n" ;
 				}
-				
-				$return .= '</div>' . "\n\n";
 			}
-			
+			$return .= '<div class="tainacan-compound-group">' . implode($separator, $elements) . '</div>';
 		} else {
 			$return .= '<div class="tainacan-compound-group">';
-									
 				foreach ( $value as $meta ) {
-
 					if ( $meta->get_value_as_html() != '' ) {
-
 						$return .= '<div class="tainacan-metadatum">';
-						
 						if ( $meta instanceof Item_Metadata_Entity ) {
 							$return .= '<label class="label">' . $meta->get_metadatum()->get_name() . "</label>\n";
 							$return .= '<p>' . $meta->get_value_as_html() . '</p>';
 						}
-						
 						$return .= '</div>' . "\n\n";
 					}	
-					
 				}
 			$return .= '</div>' . "\n\n";
 		}
