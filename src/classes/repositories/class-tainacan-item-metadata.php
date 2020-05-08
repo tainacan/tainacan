@@ -381,6 +381,8 @@ class Item_Metadata extends Repository {
 				$value = get_metadata_by_mid( 'post', $item_metadata->get_meta_id() );
 				if ( is_object( $value ) && isset( $value->meta_value ) ) {
 					return $value->meta_value;
+				} else {
+					return "";
 				}
 			} else {
 				return get_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), $unique );
