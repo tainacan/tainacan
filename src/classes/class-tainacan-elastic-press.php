@@ -727,13 +727,13 @@ class Elastic_Press {
 				$buckets = ($has_include == false ? $aggregation['buckets'] : $aggregation[$key]['buckets']);
 				foreach ($buckets as $term) {
 					if ($has_include) {
-						$term_id = $term['key'];
+						$term_id = intval($term['key']);
 						$doc_count = $term['doc_count'];
 					} else {
-						$term_id = $term['key'][$key];
+						$term_id = intval($term['key'][$key]);
 						$doc_count = $term['doc_count'];
 					}
-					if ($term_id == '') continue;
+					if ($term_id === 0) continue;
 
 					$term_object = \Tainacan\Repositories\Terms::get_instance()->fetch($term_id, $taxonomy_slug);
 					$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $term_id);
