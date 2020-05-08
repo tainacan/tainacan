@@ -71,7 +71,10 @@ class Item_Metadata extends Repository {
 		} else {
 			if ( $unique ) {
 				if( empty( $item_metadata->get_value() ) ) {
-					delete_metadata_by_mid( 'post', $item_metadata->get_meta_id() );
+					if ( $item_metadata->get_metadatum()->get_parent() > 0 )
+						delete_metadata_by_mid( 'post', $item_metadata->get_meta_id() );
+					else
+						delete_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id() );
 				} elseif ( is_int( $item_metadata->get_meta_id() ) ) {
 					update_metadata_by_mid( 'post', $item_metadata->get_meta_id(), wp_slash( $item_metadata->get_value() ) );
 				} else {
