@@ -162,50 +162,44 @@
                             let existingChildItemMetadata = [];
 
                             if (childItemMetadata && childItemMetadata.length) {
-                            
-                                // Loads the existing values
-                                for (let childIndex = 0; childIndex < childItemMetadata.length; childIndex++) {
-                                    const childItemMetadatum = childItemMetadata[childIndex];
-                                    const childMetadatum = this.itemMetadatum.metadatum.metadata_type_options.children_objects.find((aMetadatum) => aMetadatum.id == childItemMetadatum.metadatum_id);
-                                    
-                                    existingChildItemMetadata.push({
-                                        item: this.itemMetadatum.item,
-                                        metadatum: childMetadatum,
-                                        parent_meta_id: childItemMetadatum.parent_meta_id,
-                                        value: childItemMetadatum.value,
-                                        value_as_html: childItemMetadatum.value_as_html,
-                                        value_as_string: childItemMetadatum.value_as_string,
-                                        collapse: this.childItemMetadataGroups[groupIndex] && this.childItemMetadataGroups[groupIndex][childIndex] ? this.childItemMetadataGroups[groupIndex][childIndex].collapse : (this.collapseAllChildren ? this.collapseAllChildren : false)
-                                    })
-                                }
-                                
-                                // If some have empty childs, we need to create their input
-                                if (childItemMetadata.length < this.itemMetadatum.metadatum.metadata_type_options.children_objects.length) {
-                                    const existingParentMetaIdIndex = childItemMetadata.findIndex((anItemMetadatum) => anItemMetadatum.parent_meta_id > 0);
-                                    
-                                    for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
-                                        
-                                        const existingValueIndex = childItemMetadata.findIndex((anItemMetadatum) => anItemMetadatum.metadatum_id == child.id);
-                                        if (existingValueIndex < 0) {
-                                            existingChildItemMetadata.push({
-                                                item: this.itemMetadatum.item,
-                                                metadatum: child,
-                                                parent_meta_id: existingParentMetaIdIndex >= 0 ? childItemMetadata[existingParentMetaIdIndex].parent_meta_id : 0,
-                                                value: '',
-                                                value_as_html: '',
-                                                value_as_string: '',
-                                                collapse: this.collapseAllChildren ? this.collapseAllChildren : false
-                                            });
-                                        }
+                                   
+                                for (let childMetadatum of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
+                                                                           
+                                    const childItemMetadatumIndex = childItemMetadata.findIndex((aChildItemMetadatum) => childMetadatum.id == aChildItemMetadatum.metadatum_id);
+                                    // Loads the existing values
+                                    if (childItemMetadatumIndex >= 0) {
+                                        const childItemMetadatum = childItemMetadata[childItemMetadatumIndex];
+                                        existingChildItemMetadata.push({
+                                            item: this.itemMetadatum.item,
+                                            metadatum: childMetadatum,
+                                            parent_meta_id: childItemMetadatum.parent_meta_id,
+                                            value: childItemMetadatum.value,
+                                            value_as_html: childItemMetadatum.value_as_html,
+                                            value_as_string: childItemMetadatum.value_as_string,
+                                            collapse: this.childItemMetadataGroups[groupIndex] && this.childItemMetadataGroups[groupIndex][childItemMetadatumIndex] ? this.childItemMetadataGroups[groupIndex][childItemMetadatumIndex].collapse : (this.collapseAllChildren ? this.collapseAllChildren : false)
+                                        })
+                                    // Creates inputs for non existing ones
+                                    } else {
+                                        const existingParentMetaIdIndex = childItemMetadata.findIndex((aChildItemMetadatum) => aChildItemMetadatum.parent_meta_id > 0);
+                                        existingChildItemMetadata.push({
+                                            item: this.itemMetadatum.item,
+                                            metadatum: childMetadatum,
+                                            parent_meta_id: existingParentMetaIdIndex >= 0 ? childItemMetadata[existingParentMetaIdIndex].parent_meta_id : 0,
+                                            value: '',
+                                            value_as_html: '',
+                                            value_as_string: '',
+                                            collapse: this.collapseAllChildren ? this.collapseAllChildren : false
+                                        });
                                     }
                                 }
+
                             } else {
 
                                 // A new input for each type of child metadatum
-                                for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
+                                for (let childMetadatum of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
                                     let childObject = {
                                         item: this.itemMetadatum.item,
-                                        metadatum: child,
+                                        metadatum: childMetadatum,
                                         parent_meta_id: '0',
                                         value: '',
                                         value_as_html: '',
@@ -250,10 +244,10 @@
                         this.itemMetadatum.metadatum.metadata_type_options &&
                         this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
                     ) {
-                        for (let child of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
+                        for (let childMetadatum of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
                             let childObject = {
                                 item: this.itemMetadatum.item,
-                                metadatum: child,
+                                metadatum: childMetadatum,
                                 parent_meta_id: parentMetaId,
                                 value: '',
                                 value_as_html: '',
