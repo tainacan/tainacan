@@ -175,6 +175,7 @@
                                     <child-metadata-list
                                             v-if="metadatum.metadata_type_object && metadatum.metadata_type_object.component == 'tainacan-compound'"
                                             :parent.sync="metadatum"
+                                            :is-parent-multiple="metadatum.multiple == 'yes' || (editForms[metadatum.id] && editForms[metadatum.id].multiple == 'yes')"
                                             :is-repository-level="isRepositoryLevel" />
                                 </div>
                             </draggable> 

@@ -157,7 +157,7 @@
                 <label class="label is-inline-block">{{ $i18n.get('label_insert_options') }}</label>
                 
                 <b-field
-                        v-if="editedMetadatum.metadata_type_object.component != 'tainacan-compound'"
+                        v-if="editedMetadatum.metadata_type_object.component != 'tainacan-compound' && (editedMetadatum.parent == 0 || (editedMetadatum.parent != 0 && !isParentMultiple))"
                         :type="formErrors['required'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
                     <b-checkbox
@@ -267,7 +267,8 @@
             originalMetadatum: Object,
             isRepositoryLevel: false,
             collectionId: '',
-            isOnModal: false
+            isOnModal: false,
+            isParentMultiple: false
         },
         data() {
             return {

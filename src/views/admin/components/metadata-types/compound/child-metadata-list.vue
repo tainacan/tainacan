@@ -157,7 +157,8 @@
                                 @onErrorFound="formWithErrors = metadatum.id"
                                 :index="index"
                                 :original-metadatum="metadatum"
-                                :edited-metadatum="editForms[metadatum.id]"/>
+                                :edited-metadatum="editForms[metadatum.id]"
+                                :is-parent-multiple="isParentMultiple"/>
                     </div>
                 </transition>
             </div>
@@ -176,7 +177,8 @@
         },
         props: {
             isRepositoryLevel: Boolean,
-            parent: Object
+            parent: Object,
+            isParentMultiple: Boolean
         },
         data() {
             return {
@@ -190,9 +192,6 @@
                 metadataSearchCancel: undefined,
                 childrenMetadata: []
             }
-        },
-        computed: {
-            
         },
         watch: {
             '$route.query': {
