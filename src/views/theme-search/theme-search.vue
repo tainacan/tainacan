@@ -36,7 +36,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
     // TAINACAN Variables
     @import "../admin/scss/_variables.scss";
