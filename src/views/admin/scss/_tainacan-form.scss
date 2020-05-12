@@ -90,6 +90,7 @@
             color: var(--tainacan-secondary) !important;
             padding: 0.25em 0.6em !important;
             border-radius: 0 !important;
+            min-height: 100%;
 
             &:hover {
                 background-color: var(--tainacan-primary) !important;

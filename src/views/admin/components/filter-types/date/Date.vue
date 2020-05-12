@@ -247,8 +247,9 @@
             flex-grow: 2;
 
             .dropdown-trigger button {
-                padding: 0 0.5em !important;
+                padding: 2px 0.5em !important;
                 height: auto !important;
+                font-size: 1em !important;
                 min-height: 100%;
 
                 i:not(.tainacan-icon-arrowdown) {
