@@ -364,23 +364,23 @@ class Theme_Helper {
 		$default_view_mode = $view_modes['default_view_mode'];
 		$enabled_view_modes = $view_modes['enabled_view_modes'];
 
-		if( isset($args['default-view-mode']) ) {
-			$default_view_mode = $args['default-view-mode'];
-			unset($args['default-view-mode']);
+		if( isset($args['default_view_mode']) ) {
+			$default_view_mode = $args['default_view_mode'];
+			unset($args['default_view_mode']);
 		}
 
-		if( isset($args['enabled-view-modes']) ) {
-			$enabled_view_modes = $args['enabled-view-modes'];
+		if( isset($args['enabled_view_modes']) ) {
+			$enabled_view_modes = $args['enabled_view_modes'];
 			if ( !in_array($default_view_mode, $enabled_view_modes) ) {
 				$default_view_mode = $enabled_view_modes[0];
 			}
-			unset($args['enabled-view-modes']);
+			unset($args['enabled_view_modes']);
 		}
 
 		// If in a collection page
 		$collection_id = tainacan_get_collection_id();
 		if ($collection_id) {
-			$props .= 'collection-id="' . $collection_id . '" ';
+			$props .= 'collection_id="' . $collection_id . '" ';
 			$collection = new  \Tainacan\Entities\Collection($collection_id);
 			$default_view_mode = $collection->get_default_view_mode();
 			$enabled_view_modes = $collection->get_enabled_view_modes();
@@ -389,12 +389,12 @@ class Theme_Helper {
 		// If in a tainacan taxonomy
 		$term = tainacan_get_term();
 		if ($term) {
-			$props .= 'term-id="' . $term->term_id . '" ';
+			$props .= 'term_id="' . $term->term_id . '" ';
 			$props .= 'taxonomy="' . $term->taxonomy . '" ';
 		}
 
-		$props .= 'default-view-mode="' . $default_view_mode . '" ';
-		$props .= 'enabled-view-modes="' . implode(',', $enabled_view_modes) . '" ';
+		$props .= 'default_view_mode="' . $default_view_mode . '" ';
+		$props .= 'enabled_view_modes="' . implode(',', $enabled_view_modes) . '" ';
 
 		// Passes arguments to custom props
 		foreach ($args as $key => $value) {
@@ -402,6 +402,9 @@ class Theme_Helper {
 				$props .= $key . '="' . $value . '" ';
 			}
 		}
+
+		// Converts underscore php notation to html hiphen notation
+		$props = str_replace('_', '-', $props);
 
 		$this->enqueue_scripts(true);
 
@@ -482,7 +485,7 @@ class Theme_Helper {
 	 * 		@type string		$thumbnail			Full URL to an thumbnail that represents the view mode. Displayed in admin.
 	 * 		@type string		$icon 				HTML that outputs an icon that represents the view mode. Displayed in front end.
 	 * 		@type bool			$show_pagination	Wether to display or not pagination controls. Default true.
-	 * 		@type bool			$full-screen		Wether the view mode will display full screen or not. Default false.
+	 * 		@type bool			$full_screen		Wether the view mode will display full screen or not. Default false.
 	 * 		@type bool			$dynamic_metadata	Wether to display or not (and use or not) the "displayed metadata" selector. Default false.
 	 * 		
 	 * 

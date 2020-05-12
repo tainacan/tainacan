@@ -272,26 +272,26 @@ function tainacan_get_the_view_modes() {
  * @param array $args {
 	 *     Optional. Array of arguments.
 	 *
-	 * 	   @type bool 	$hide-filters								Completely hide filter sidebar or modal
-	 * 	   @type bool 	$hide-hide-filters-button					Hides the button resonsible for collpasing filters sidebar on desktop
-	 * 	   @type bool 	$hide-search								Hides the complete search bar, including advanced search link
-	 * 	   @type bool 	$hide-advanced-search						Hides only the advanced search link
-	 *	   @type bool	$hide-displayed-metadata-dropdown			Hides the "Displayed metadata" dropdown even if the current view modes allows it	
-	 * 	   @type bool	$hide-sorting-area							Completely hides all sorting controls	
-	 * 	   @type bool 	$hide-sort-by-button						Hides the button where user can select the metadata to sort by items (keeps the sort direction)
-	 *	   @type bool	$hide-exposers-button						Hides the "View as..." button, a.k.a. Exposers modal
-	 * 	   @type bool 	$hide-items-per-page-button					Hides the button for selecting amount of items loaded per page
-	 * 	   @type bool 	$hide-go-to-page-button						Hides the button for skiping to a specific page
-	 *	   @type bool	$hide-pagination-area						Completely hides pagination controls
-	 *	   @type int	$default-items-per-page						Default number of items per page loaded
-	 * 	   @type bool 	$show-filters-button-inside-search-control	Display the "hide filters" button inside of the search control instead of floating
-	 * 	   @type bool 	$start-with-filters-hidden					Loads the filters list hidden from start
-	 * 	   @type bool 	$filters-as-modal							Display the filters as a modal instead of a collapsable region on desktop
-	 * 	   @type bool 	$show-inline-view-mode-options				Display view modes as inline icon buttons instead of the dropdown
-	 * 	   @type bool 	$show-fullscreen-with-view-modes			Lists fullscreen viewmodes alongside with other view modes istead of separatelly
-	 * 	   @type string $default-view-mode							The default view mode
-	 * 	   @type bool	$is-forced-view-mode						Ignores user prefs to always render the choosen default view mode
-	 *	   @type string[] $enabled-view-modes						The list os enable view modes to display
+	 * 	   @type bool 	$hide_filters								Completely hide filter sidebar or modal
+	 * 	   @type bool 	$hide_hide_filters_button					Hides the button resonsible for collpasing filters sidebar on desktop
+	 * 	   @type bool 	$hide_search								Hides the complete search bar, including advanced search link
+	 * 	   @type bool 	$hide_advanced_search						Hides only the advanced search link
+	 *	   @type bool	$hide_displayed_metadata_dropdown			Hides the "Displayed metadata" dropdown even if the current view modes allows it	
+	 * 	   @type bool	$hide_sorting_area							Completely hides all sorting controls	
+	 * 	   @type bool 	$hide_sort_by_button						Hides the button where user can select the metadata to sort by items (keeps the sort direction)
+	 *	   @type bool	$hide_exposers_button						Hides the "View as..." button, a.k.a. Exposers modal
+	 * 	   @type bool 	$hide_items_per_page_button					Hides the button for selecting amount of items loaded per page
+	 * 	   @type bool 	$hide_go_to_page_button						Hides the button for skiping to a specific page
+	 *	   @type bool	$hide_pagination_area						Completely hides pagination controls
+	 *	   @type int	$default_items_per_page						Default number of items per page loaded
+	 * 	   @type bool 	$show_filters_button_inside_search_control	Display the "hide filters" button inside of the search control instead of floating
+	 * 	   @type bool 	$start_with_filters_hidden					Loads the filters list hidden from start
+	 * 	   @type bool 	$filters_as_modal							Display the filters as a modal instead of a collapsable region on desktop
+	 * 	   @type bool 	$show_inline_view_mode_options				Display view modes as inline icon buttons instead of the dropdown
+	 * 	   @type bool 	$show_fullscreen_with_view_modes			Lists fullscreen viewmodes alongside with other view modes istead of separatelly
+	 * 	   @type string $default_view_mode							The default view mode
+	 * 	   @type bool	$is_forced_view_mode						Ignores user prefs to always render the choosen default view mode
+	 *	   @type string[] $enabled_view_modes						The list os enable view modes to display
  * @return string  The HTML div to be used for rendering the items list vue component
  */
 function tainacan_the_faceted_search($args = array()) {
@@ -303,24 +303,24 @@ function tainacan_the_faceted_search($args = array()) {
 	$default_view_mode = $view_modes['default_view_mode'];
 	$enabled_view_modes = $view_modes['enabled_view_modes'];
 
-	if( isset($args['default-view-mode']) ) {
-		$default_view_mode = $args['default-view-mode'];
-		unset($args['default-view-mode']);
+	if( isset($args['default_view_mode']) ) {
+		$default_view_mode = $args['default_view_mode'];
+		unset($args['default_view_mode']);
 	}
 
-	if( isset($args['enabled-view-modes']) ) {
-		$enabled_view_modes = $args['enabled-view-modes'];
+	if( isset($args['enabled_view_modes']) ) {
+		$enabled_view_modes = $args['enabled_view_modes'];
 		if ( !in_array($default_view_mode, $enabled_view_modes) ) {
 			$default_view_mode = $enabled_view_modes[0];
 		}
-		unset($args['enabled-view-modes']);
+		unset($args['enabled_view_modes']);
 	}
 
 	// If in a collection page
 	$collection_id = tainacan_get_collection_id();
 	if ($collection_id) {
 
-		$props .= 'collection-id="' . $collection_id . '" ';
+		$props .= 'collection_id="' . $collection_id . '" ';
 		$collection = new  \Tainacan\Entities\Collection($collection_id);
 		$default_view_mode = $collection->get_default_view_mode();
 		$enabled_view_modes = $collection->get_enabled_view_modes();
@@ -329,12 +329,12 @@ function tainacan_the_faceted_search($args = array()) {
 	// If in a tainacan taxonomy
 	$term = tainacan_get_term();
 	if ($term) {
-		$props .= 'term-id="' . $term->term_id . '" ';
+		$props .= 'term_id="' . $term->term_id . '" ';
 		$props .= 'taxonomy="' . $term->taxonomy . '" ';
 	}
 
-	$props .= 'default-view-mode="' . $default_view_mode . '" ';
-	$props .= 'enabled-view-modes="' . implode(',', $enabled_view_modes) . '" ';
+	$props .= 'default_view_mode="' . $default_view_mode . '" ';
+	$props .= 'enabled_view_modes="' . implode(',', $enabled_view_modes) . '" ';
 
 	// Passes arguments to custom props
 	foreach ($args as $key => $value) {
@@ -342,6 +342,9 @@ function tainacan_the_faceted_search($args = array()) {
 			$props .= $key . '="' . $value . '" ';
 		}
 	}
+
+	// Converts underscore php notation to html hiphen notation
+	$props = str_replace('_', '-', $props);
 
 	echo "<main id='tainacan-items-page' $props ></main>";
 
