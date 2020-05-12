@@ -4,6 +4,7 @@ import Buefy from 'buefy';
 import VTooltip from 'v-tooltip';
 import VueMasonry from 'vue-masonry-css';
 import cssVars from 'css-vars-ponyfill';
+import qs from 'qs';
 
 // Filters
 import FilterNumeric from '../../admin/components/filter-types/numeric/Numeric.vue';
@@ -139,6 +140,14 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             beforeMount () {
                 
+                // Loads params if passed previously 
+                if (this.$route.hash && this.$route.hash.split('#/?') && this.$route.hash.split('#/?')[1]) {
+                    const existingQueries = qs.parse(this.$route.hash.split('#/?')[1]); 
+
+                    for (let key of Object.keys(existingQueries))
+                        this.$route.query[key] = existingQueries[key];
+                }
+
                 // Collection or Term source settings
                 if (this.$el.attributes['collection-id'] != undefined)
                     this.collectionId = this.$el.attributes['collection-id'].value;
