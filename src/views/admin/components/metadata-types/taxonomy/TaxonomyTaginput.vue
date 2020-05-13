@@ -35,6 +35,13 @@
                     slot="empty">
                 {{ $i18n.get('info_no_terms_found') }}
             </template>
+            <template 
+                    v-if="allowNew"
+                    slot="footer">
+                 <a @click="$emit('showAddNewTerm', searchName)">
+                    {{ $i18n.get('label_new_term') + ' "' + searchName + '"' }}
+                </a>
+            </template>
         </b-taginput>
     </div>
 </template>

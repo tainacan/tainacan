@@ -8,16 +8,32 @@
                 :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNew"
                 :taxonomy-id="taxonomyId"
-                :item-metadatum="itemMetadatum"/>
-        <add-new-term
-                v-if="allowNew"
-                :component-type="getComponent"
-                :taxonomy-id="taxonomyId"
                 :item-metadatum="itemMetadatum"
-                :value="valueComponent"
-                @newTerm="reload"/>
+                @showAddNewTerm="($event) => { forcedNewTermName = $event; showNewTermForm = true; }" />
+        <div class="add-new-term">
+            <a
+                    @click="showNewTermForm = true"
+                    class="add-link">
+                <span class="icon is-small">
+                    <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                </span>
+                &nbsp;{{ $i18n.get('label_new_term') }}
+            </a>
+            <transition name="filter-item">
+                <add-new-term
+                        v-if="allowNew && showNewTermForm"
+                        :component-type="getComponent"
+                        :taxonomy-id="taxonomyId"
+                        :item-metadatum="itemMetadatum"
+                        :value="valueComponent"
+                        :forced-name="forcedNewTermName"
+                        @newTerm="reload"
+                        @closeForm="showNewTermForm = false" />
+            </transition>
+        </div>
     </div>
 </template>
+
 <script>
     import TainacanTaxonomyRadio from './TaxonomyRadio.vue'
     import TainacanTaxonomyCheckbox from './TaxonomyCheckbox.vue'
@@ -45,7 +61,9 @@
                 taxonomyId: '',
                 taxonomy: '',
                 terms:[],
-                allowNew: false
+                allowNew: false,
+                showNewTermForm: false,
+                forcedNewTermName: ''
             }
         },
         computed: {
@@ -97,3 +115,10 @@
         }
     }
 </script>
+
+<style scoped>
+    .add-new-term {
+        margin: 6px 0;
+        font-size: 0.75em;
+    }
+</style>
