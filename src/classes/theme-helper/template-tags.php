@@ -339,7 +339,7 @@ function tainacan_the_faceted_search($args = array()) {
 	// Passes arguments to custom props
 	foreach ($args as $key => $value) {
 		if ($value == true || $value == 'true') {
-			$props .= str_replace('_', '-', $key); . '="' . $value . '" ';
+			$props .= str_replace('_', '-', $key) . '="' . $value . '" ';
 		}
 	}
 
