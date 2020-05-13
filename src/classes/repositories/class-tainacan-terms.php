@@ -226,7 +226,7 @@ class Terms extends Repository {
 
 		if ( is_array( $args ) && ! empty( $cpt ) ) { // if an array of arguments is
 			$args['taxonomy'] = $cpt;
-			$args['exclude'] = $args['post__not_in'];
+			if( isset( $args['post__not_in'] ) ) $args['exclude'] = $args['post__not_in'];
 			$terms  = get_terms( $args );
 			$return = [];
 
