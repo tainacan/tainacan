@@ -1,4 +1,5 @@
 <template>
+<!--
     <div>
         <p 
                 v-if="value instanceof Array ? value.length > 0 : (value != undefined && value != '')"
@@ -61,6 +62,26 @@
             </a>
         </div>
     </div>
+
+    -->
+    <checkbox-radio-modal
+            :is-modal="false"
+            :is-filter="false"
+            :parent="0"
+            :taxonomy_id="taxonomyId"
+            :selected="!value ? [] : value"
+            :metadatum-id="itemMetadatum.metadatum.id"
+            :taxonomy="taxonomy"
+            :collection-id="itemMetadatum.metadatum.collection_id"
+            :is-taxonomy="true"
+            :query="''"
+            :metadatum="itemMetadatum.metadatum"
+            :is-checkbox="true"
+            @input="(selected) => {
+                value = selected;
+                $emit('input', value);
+            }"
+        />
 </template>
 
 <script>
@@ -69,6 +90,9 @@
     import CheckboxRadioModal from '../../modals/checkbox-radio-modal.vue';
 
     export default {
+        components: {
+            CheckboxRadioModal
+        },
         props: {
             value: [ Number, String, Array ],
             disabled: false,

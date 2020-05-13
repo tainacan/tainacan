@@ -1,36 +1,40 @@
 <template>
     <div 
-            autofocus
-            role="dialog"
-            class="tainacan-modal-content"
-            tabindex="-1"
-            aria-modal
+            :autofocus="isModal"
+            :role="isModal ? 'dialog' : ''"
+            :class="{ 'tainacan-modal-content': isModal }"
+            :tabindex="isModal ? -1 : 0"
+            :aria-modal="isModal"
             ref="checkboxRadioModal">
-        <header class="tainacan-modal-title">
+        <header 
+                v-if="isModal"
+                class="tainacan-modal-title">
             <h2 v-if="isFilter">{{ $i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
             <h2 v-else>{{ $i18n.get('metadatum') }} <em>{{ metadatum.name }}</em></h2>
             <hr>
         </header>
         <div class="tainacan-form">
-            <div class="is-clearfix tainacan-checkbox-search-section">
-                <input
-                        autocomplete="on"
-                        :placeholder="$i18n.get('instruction_search')"
-                        :aria-label="$i18n.get('instruction_search')"
-                        v-model="optionName"
-                        @input="autoComplete"
-                        class="input">
-                <span class="icon is-right">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search" />
-                </span>
-            </div>
-
             <b-tabs
-                    v-if="!isSearching"
                     animated
                     @input="fetchSelectedLabels()"
                     v-model="activeTab">
                 <b-tab-item :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
+                    
+                    <!-- Search input -->
+                    <div class="is-clearfix tainacan-checkbox-search-section">
+                        <input
+                                autocomplete="on"
+                                :placeholder="$i18n.get('instruction_search')"
+                                :aria-label="$i18n.get('instruction_search')"
+                                v-model="optionName"
+                                @input="autoComplete"
+                                class="input">
+                        <span class="icon is-right">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search" />
+                        </span>
+                    </div>
+
+                    <!-- Non-hierarchical lists -->
                     <div
                             v-if="!isSearching && !isTaxonomy"
                             class="modal-card-body tainacan-checkbox-list-container">
@@ -82,6 +86,7 @@
                         </a>
                     </div>
 
+                    <!-- Hierarchical lists -->
                     <div
                             v-if="!isSearching && isTaxonomy"
                             class="modal-card-body tainacan-finder-columns-container">
@@ -154,6 +159,52 @@
                                 :is-full-page="false"
                                 :active.sync="isColumnLoading"/>
                     </div>
+
+                    <!-- Search Results -->
+                    <div
+                            v-if="isSearching"
+                            class="modal-card-body tainacan-search-results-container">
+                        <ul class="tainacan-modal-checkbox-search-results-body">
+                            <li
+                                    class="tainacan-li-search-results"
+                                    v-for="(option, key) in searchResults"
+                                    :key="key">
+                                <label 
+                                        v-if="isCheckbox"
+                                        class="b-checkbox checkbox">
+                                    <input                                     
+                                            v-model="selected"
+                                            :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
+                                            type="checkbox"> 
+                                    <span class="check" /> 
+                                    <span class="control-label">
+                                        <span class="checkbox-label-text">{{ `${ option.name ? limitChars(option.name) : (option.label ? limitChars(option.label) : '') }` }}</span> 
+                                        <span 
+                                                v-if="isFilter && option.total_items != undefined"
+                                                class="has-text-gray">
+                                            &nbsp;{{ "(" + option.total_items + ")" }}
+                                        </span>
+                                    </span>
+                                </label>
+                                <b-radio
+                                        v-else
+                                        v-model="selected"
+                                        :native-value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.value)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))">
+                                    {{ `${ option.name ? limitChars(option.name) : (option.label ? limitChars(option.label) : '') }` }}
+                                    <span 
+                                            v-if="isFilter && option.total_items != undefined"
+                                            class="has-text-gray">
+                                        &nbsp;{{ "(" + option.total_items + ")" }}
+                                    </span>
+                                </b-radio>
+                            </li>
+                            <b-loading
+                                    :is-full-page="false"
+                                    :active.sync="isLoadingSearch"/>
+                        </ul>
+                    </div>
+
+                    <!-- Bradcrumb navigation -->
                     <nav
                             v-if="!isSearching && isTaxonomy"
                             style="margin-top: 6px;"
@@ -176,10 +227,10 @@
                             </li>
                         </ul>
                     </nav>
+                    
                 </b-tab-item>
 
-                <b-tab-item
-                        :label="isTaxonomy ? $i18n.get('label_selected_terms') : $i18n.get('label_selected_metadatum_values')">
+                <b-tab-item :label="isTaxonomy ? $i18n.get('label_selected_terms') : $i18n.get('label_selected_metadatum_values')">
 
                     <div class="modal-card-body tainacan-tags-container">
                         <b-field
@@ -193,6 +244,7 @@
                                         v-if="selected instanceof Array ? true : selected != ''"
                                         attached
                                         closable
+                                        :class="isModal ? '' : 'is-small'"
                                         @close="selected instanceof Array ? selected.splice(index, 1) : selected = ''">
                                     {{ (isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term }}
                                 </b-tag>
@@ -211,50 +263,9 @@
             <!--<pre>{{ searchResults }}</pre>-->
             <!--<pre>{{ selectedTagsName }}</pre>-->
 
-            <div
-                    v-if="isSearching"
-                    class="modal-card-body tainacan-search-results-container">
-                <ul class="tainacan-modal-checkbox-search-results-body">
-                    <li
-                            class="tainacan-li-search-results"
-                            v-for="(option, key) in searchResults"
-                            :key="key">
-                        <label 
-                                v-if="isCheckbox"
-                                class="b-checkbox checkbox is-small">
-                            <input                                     
-                                    v-model="selected"
-                                    :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
-                                    type="checkbox"> 
-                            <span class="check" /> 
-                            <span class="control-label">
-                                <span class="checkbox-label-text">{{ `${ option.name ? limitChars(option.name) : (option.label ? limitChars(option.label) : '') }` }}</span> 
-                                <span 
-                                        v-if="isFilter && option.total_items != undefined"
-                                        class="has-text-gray">
-                                    &nbsp;{{ "(" + option.total_items + ")" }}
-                                </span>
-                            </span>
-                        </label>
-                        <b-radio
-                                v-else
-                                v-model="selected"
-                                :native-value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.value)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))">
-                            {{ `${ option.name ? limitChars(option.name) : (option.label ? limitChars(option.label) : '') }` }}
-                            <span 
-                                    v-if="isFilter && option.total_items != undefined"
-                                    class="has-text-gray">
-                                &nbsp;{{ "(" + option.total_items + ")" }}
-                            </span>
-                        </b-radio>
-                    </li>
-                    <b-loading
-                            :is-full-page="false"
-                            :active.sync="isSearchingLoading"/>
-                </ul>
-            </div>
-
-            <footer class="field is-grouped form-submit">
+            <footer 
+                    v-if="isModal"
+                    class="field is-grouped form-submit">
                 <div class="control">
                     <button
                             class="button is-outlined"
@@ -305,6 +316,10 @@
             isCheckbox: {
                 type: Boolean,
                 default: true,
+            },
+            isModal: {
+                type: Boolean,
+                default: true,
             }
         },
         data() {
@@ -324,7 +339,7 @@
                 maxNumOptionsCheckboxFinderColumns: 100,
                 checkboxListOffset: 0,
                 isCheckboxListLoading: false,
-                isSearchingLoading: false,
+                isLoadingSearch: false,
                 noMorePage: 0,
                 maxTextToShow: 47,
                 activeTab: 0,
@@ -333,6 +348,11 @@
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
                 previousLastTerms: [],
                 lastTermOnFisrtPage: null
+            }
+        },
+        watch: {
+            selected() {
+                this.$emit('input', this.selected);
             }
         },
         updated(){
@@ -464,7 +484,7 @@
                 promise.request
                     .then((res) => {
                         this.isCheckboxListLoading = false;
-                        this.isSearchingLoading = false;
+                        this.isLoadingSearch = false;
 
                         if (this.isUsingElasticSearch) {
                                                         
@@ -487,14 +507,14 @@
                 this.getOptionsValuesCancel = promise.source;
             },
             autoComplete: _.debounce( function () {
+                
                 this.isSearching = !!this.optionName.length;
 
-                if(!this.isSearching){
+                if (!this.isSearching)
                     return;
-                }
 
-                if(this.isTaxonomy) {
-                    this.isSearchingLoading = true;
+                if (this.isTaxonomy) {
+                    this.isLoadingSearch = true;
                     let query_items = { 'current_query': this.query };
 
                     let query = `?order=asc&number=${this.maxNumSearchResultsShow}&search=${this.optionName}&` + qs.stringify(query_items);
@@ -504,19 +524,18 @@
 
                     let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
 
-                    if(this.collectionId == 'default'){
-                        route = `/facets/${this.metadatumId}${query}`
-                    }
+                    if (this.collectionId == 'default')
+                        route = `/facets/${this.metadatumId}${query}`;
 
                     axios.get(route)
                         .then((res) => {
                             this.searchResults = res.data.values;
-                            this.isSearchingLoading = false;
+                            this.isLoadingSearch = false;
                         }).catch((error) => {
                         this.$console.log(error);
                     });
                 } else {
-                    this.isSearchingLoading = true;
+                    this.isLoadingSearch = true;
 
                     this.getOptions(0);
                 }
@@ -710,7 +729,7 @@
                         value: this.selected,
                     });
                 } else {
-                    this.$emit('input', this.selected)
+                    this.$emit('input', this.selected);
                 }
 
                 this.$emit('appliedCheckBoxModal');
@@ -720,6 +739,10 @@
 </script>
 
 <style lang="scss" scoped>
+
+    .tainacan-modal-title {
+        margin-bottom: 16px;
+    }
 
     .breadcrumb {
         background-color: var(--tainacan-white) !important;
@@ -893,7 +916,7 @@
     }
 
     .tainacan-checkbox-search-section {
-        margin-bottom: var(--tainacan-container-padding);
+        margin-bottom: 0;
         display: flex;
         align-items: center;
         position: relative;
@@ -952,13 +975,17 @@
     }
 
     .tainacan-search-results-container {
-        padding: 0 20px !important;
+        padding: 0.7em 20px !important;
         min-height: 253px;
     }
 
     .tainacan-tags-container {
         padding: 0 20px !important;
         min-height: 253px;
+
+        .tags.is-small {
+            font-size: 0.875em;
+        }
     }
 
     .tainacan-modal-checkbox-search-results-body {
