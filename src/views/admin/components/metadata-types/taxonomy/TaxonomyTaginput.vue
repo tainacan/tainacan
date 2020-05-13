@@ -38,7 +38,7 @@
             <template 
                     v-if="allowNew"
                     slot="footer">
-                 <a @click="$emit('showAddNewTerm', searchName)">
+                 <a @click="$emit('showAddNewTerm', { name: searchName })">
                     {{ $i18n.get('label_new_term') + ' "' + searchName + '"' }}
                 </a>
             </template>
@@ -125,7 +125,8 @@
                     all: true,
                     order: 'asc',
                     offset: this.offset,
-                    number: 12
+                    number: 12,
+                    exclude: this.selected.map((aSelected) => aSelected.value )
                 }).then((res) => {
                     
                     for (let term of res.terms)

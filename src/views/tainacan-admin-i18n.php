@@ -121,6 +121,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'title_filter_page'                              => __( 'Filter', 'tainacan' ),
 	'title_taxonomy_page'                            => __( 'Taxonomy', 'tainacan' ),
 	'title_term_edition'                             => __( 'Term edition', 'tainacan' ),
+	'title_term_creation'                            => __( 'Create a new term', 'tainacan' ),
 	'title_activity_page'                            => __( 'Activity', 'tainacan' ),
 	'title_create_collection'                        => __( 'Collection Creation', 'tainacan' ),
 	'title_create_taxonomy_page'                     => __( 'Taxonomy Creation', 'tainacan' ),
