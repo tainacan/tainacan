@@ -147,7 +147,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 						if ( $tax_collection instanceof \Tainacan\Entities\Collection ) {
 							$item_arr['collections'][] = $tax_collection->_toArray();
 							$item_arr['collections_ids'][] = $tax_collection->get_id();
-							$item_arr['metadata_by_collection'][$tax_collection->get_id()] = $this->get_metadata_taxonomy_in_collection($item->get_id(), $tax_collection->get_id());
+							$item_arr['metadata_by_collection'][$tax_collection->get_id()] = $this->get_metadata_taxonomy_in_collection($item->get_id(), $tax_collection->get_id(), $tax_collection->get_parent());
 						}
 
 					}
@@ -180,7 +180,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		return $item;
 	}
 
-	function get_metadata_taxonomy_in_collection($taxonomy_id, $collection_id) {
+	function get_metadata_taxonomy_in_collection($taxonomy_id, $collection_id, $collection_parent_id = null) {
 		$args = [
 			'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
 			'meta_query' => [
@@ -191,7 +191,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 				[
 					'compare'   => 'IN',
 					'key' => 'collection_id',
-					'value' => "$collection_id, default"
+					'value' => $collection_parent_id ? "$collection_id, $collection_parent_id, default" : "$collection_id, default"
 				]
 			]
 		];
