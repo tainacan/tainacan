@@ -19,6 +19,14 @@
                 </span>
                 &nbsp;{{ $i18n.get('label_new_term') }}
             </a>
+            <a
+                    @click="openTermCreationModal"
+                    class="add-link">
+                <span class="icon is-small">
+                    <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                </span>
+                &nbsp;{{ $i18n.get('label_new_term') }}
+            </a>
             <transition name="filter-item">
                 <add-new-term
                         v-if="allowNew && showNewTermForm"
@@ -35,10 +43,11 @@
 </template>
 
 <script>
-    import TainacanTaxonomyRadio from './TaxonomyRadio.vue'
-    import TainacanTaxonomyCheckbox from './TaxonomyCheckbox.vue'
-    import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue'
-    import AddNewTerm from  './AddNewTerm.vue'
+    import TainacanTaxonomyRadio from './TaxonomyRadio.vue';
+    import TainacanTaxonomyCheckbox from './TaxonomyCheckbox.vue';
+    import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue';
+    import AddNewTerm from  './AddNewTerm.vue';
+    import TermEditionForm from '../../edition/term-edition-form.vue';
 
     export default {
         components: {
@@ -111,6 +120,23 @@
                     this.valueComponent = $event.values;
                     this.$emit('update-taxonomy-inputs', $event)
                 }
+            },
+            openTermCreationModal() {
+                this.$buefy.modal.open({
+                    parent: this,
+                    component: TermEditionForm,
+                    props: {
+                        taxonomyId: this.taxonomyId,
+                        editForm: { name: this.forcedName ? this.forcedName : '' }
+                    },
+                    events: {
+                        onEditionFinished: ($event) => this.reload($event),
+                        onEditionCanceled: () => this.$console.log('Edition canceled'),
+                        onErrorFound: ($event) => this.console.log('Form with errors: ' + $event)
+                    },
+                    trapFocus: true
+                });
+            
             }
         }
     }
