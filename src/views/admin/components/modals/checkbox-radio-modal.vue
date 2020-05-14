@@ -13,15 +13,23 @@
             <h2 v-else>{{ $i18n.get('metadatum') }} <em>{{ metadatum.name }}</em></h2>
             <hr>
         </header>
-        <div class="tainacan-form">
+
+        <div 
+                :style="isModal ? '' : 'margin-top: 12px'"
+                class="tainacan-form">
             <b-tabs
+                    :size="isModal ? '' : 'is-small'"
                     animated
                     @input="fetchSelectedLabels()"
                     v-model="activeTab">
-                <b-tab-item :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
+                <b-tab-item 
+                        :style="{ margin: isModal ? '0' : '0 -1.5rem' }"
+                        :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
                     
                     <!-- Search input -->
-                    <div class="is-clearfix tainacan-checkbox-search-section">
+                    <div 
+                            :class="!isModal && isSearchInputHidden ? 'hidden-search-input' : ''"
+                            class="is-clearfix tainacan-checkbox-search-section">
                         <input
                                 autocomplete="on"
                                 :placeholder="$i18n.get('instruction_search')"
@@ -29,8 +37,11 @@
                                 v-model="optionName"
                                 @input="autoComplete"
                                 class="input">
-                        <span class="icon is-right">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search" />
+                        <span 
+                                :class="isModal ? '' : 'has-text-gray'"
+                                class="icon is-right"
+                                @click="isSearchInputHidden = !isSearchInputHidden">
+                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-search" />
                         </span>
                     </div>
 
@@ -347,21 +358,25 @@
                 isSelectedTermsLoading: false,
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
                 previousLastTerms: [],
-                lastTermOnFisrtPage: null
+                lastTermOnFisrtPage: null,
+                isSearchInputHidden: true
             }
         },
         watch: {
             selected() {
-                this.$emit('input', this.selected);
+                if (this.isModal)
+                    this.$emit('input', this.selected);
             }
         },
         updated(){
-            if(!this.isSearching){
+            if (!this.isSearching)
                 this.highlightHierarchyPath();
-            }
         },
         created() {
-            if(this.isTaxonomy) {
+            if (!this.isModal)
+                this.maxNumOptionsCheckboxFinderColumns = 10;
+
+            if (this.isTaxonomy) {
                 this.getOptionChildren();
             } else {
                 this.isCheckboxListLoading = true;
@@ -419,15 +434,14 @@
                 }
             },
             saveSelectedTagName(value, label){
-                if (!this.selectedTagsName[value]) {
+                if (!this.selectedTagsName[value])
                     this.$set(this.selectedTagsName, `${value}`, label);
-                }
             },
             limitChars(label){
-                if (label.length > this.maxTextToShow){
+                if (label.length > this.maxTextToShow)
                     return label.slice(0, this.maxTextToShow)+'...';
-                }
-                return label;
+                else
+                    return label;
             },
             previousPage() {
 
@@ -458,11 +472,10 @@
 
                 if (!this.noMorePage && !this.isUsingElasticSearch) {
                     // LIMIT 0, 20 / LIMIT 19, 20 / LIMIT 39, 20 / LIMIT 59, 20
-                    if (this.checkboxListOffset === this.maxNumOptionsCheckboxList){
+                    if (this.checkboxListOffset === this.maxNumOptionsCheckboxList)
                         this.checkboxListOffset += this.maxNumOptionsCheckboxList - 1;
-                    } else {
+                    else
                         this.checkboxListOffset += this.maxNumOptionsCheckboxList;
-                    }
                 }
 
                 this.isCheckboxListLoading = true;
@@ -541,7 +554,7 @@
                 }
             }, 500),
             highlightHierarchyPath(){
-                for(let [index, el] of this.hierarchicalPath.entries()){
+                for (let [index, el] of this.hierarchicalPath.entries()) {
                     let htmlEl = this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`][0].$el;
 
                     if(index == this.hierarchicalPath.length-1){
@@ -579,8 +592,8 @@
                 this.highlightHierarchyPath();
             },
             removeHighlightNotSelectedLevels(){
-                for(let el of this.hierarchicalPath){
-                    if(this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`][0]) {
+                for (let el of this.hierarchicalPath) {
+                    if (this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`][0]) {
                         let htmlEl = this.$refs[`${el.column}.${el.element}-tainacan-li-checkbox-model`][0].$el;
 
                         htmlEl.classList.remove('tainacan-li-checkbox-last-active');
@@ -589,9 +602,8 @@
                 }
             },
             removeLevelsAfter(key){
-                if(key != undefined){
+                if (key != undefined)
                     this.finderColumns.splice(key+1);
-                }
             },
             createColumn(res, column) {
                 let children = res.data.values;
@@ -613,24 +625,22 @@
                     }
                 }
 
-                if (first != undefined) {
+                if (first != undefined)
                     this.finderColumns.splice(first, 1, { children: children, lastTerm: res.data.last_term });
-                } else {
+                else
                     this.finderColumns.push({ children: children, lastTerm: res.data.last_term });
-                }
             },
             appendMore(options, key, lastTerm) {
-                for (let option of options) {
+                for (let option of options)
                     this.finderColumns[key].children.push(option);
-                }
+                
                 this.finderColumns[key].lastTerm = lastTerm;
             },
             getOptionChildren(option, key, index) {
                 let query_items = { 'current_query': this.query };
 
-                if(key != undefined) {
+                if (key != undefined)
                     this.addToHierarchicalPath(key, index, option);
-                }
 
                 let parent = 0;
 
@@ -646,9 +656,8 @@
 
                 let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
 
-                if (this.collectionId == 'default'){
+                if (this.collectionId == 'default')
                     route = `/facets/${this.metadatumId}${query}`
-                }
                 
                 axios.get(route)
                     .then(res => {
@@ -683,9 +692,8 @@
 
                     let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
 
-                    if (this.collectionId == 'default'){
+                    if (this.collectionId == 'default')
                         route = `/facets/${this.metadatumId}${query}`
-                    }
 
                     axios.get(route)
                         .then(res => {
@@ -879,7 +887,7 @@
         overflow: auto;
         padding: 0 !important;
         min-height: 232px;
-        max-height: 35vh;
+        max-height: 40vh;
 
         &:focus {
             outline: none;
@@ -921,6 +929,31 @@
         align-items: center;
         position: relative;
 
+        &.hidden-search-input {
+            input {
+                min-width: 0px;
+                width: 0px;
+                padding: 0;
+                height: 0;
+                margin-left: auto;
+                opacity: 0;
+            }
+            .icon {
+                background: var(--tainacan-input-background-color);
+                border: 1px solid var(--tainacan-input-border-color);
+                padding: 14px;
+                top: -0.75em;
+
+                &:hover {
+                    color: var(--tainacan-secondary) !important;
+                }
+            }
+        }
+
+        input {
+            transition: width .5s ease, padding .3s ease, height .3s ease, margin-left .5s ease, opacity .3s ease;
+        }
+
         .icon {
             pointer-events: all;
             color: var(--tainacan-blue5);
@@ -930,6 +963,7 @@
             width: 30px !important;
             position: absolute;
             right: 0;
+            transition: top .3s ease, padding .3s ease, border .3s ease, right .3s ease;
         }
     }
 
@@ -982,6 +1016,11 @@
     .tainacan-tags-container {
         padding: 0 20px !important;
         min-height: 253px;
+
+        .control {
+            margin-bottom: 0.25rem;
+            margin-right: 0.25rem;
+        }
 
         .tags.is-small {
             font-size: 0.875em;
