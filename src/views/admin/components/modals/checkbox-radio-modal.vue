@@ -374,7 +374,7 @@
         },
         created() {
             if (!this.isModal)
-                this.maxNumOptionsCheckboxFinderColumns = 10;
+                this.maxNumOptionsCheckboxFinderColumns = 12;
 
             if (this.isTaxonomy) {
                 this.getOptionChildren();

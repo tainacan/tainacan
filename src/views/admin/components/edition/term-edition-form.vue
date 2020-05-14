@@ -185,7 +185,7 @@
                 <transition name="fade">
                     <p
                             class="checkboxes-warning"
-                            v-show="showCheckboxesWarning == true">
+                            v-show="isModal != true && showCheckboxesWarning == true">
                         {{ $i18n.get('info_warning_changing_parent_term') }}
                     </p>
                 </transition>
