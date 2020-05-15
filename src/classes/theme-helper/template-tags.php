@@ -320,7 +320,7 @@ function tainacan_the_faceted_search($args = array()) {
 	$collection_id = tainacan_get_collection_id();
 	if ($collection_id) {
 
-		$props .= 'collection_id="' . $collection_id . '" ';
+		$props .= 'collection-id="' . $collection_id . '" ';
 		$collection = new  \Tainacan\Entities\Collection($collection_id);
 		$default_view_mode = $collection->get_default_view_mode();
 		$enabled_view_modes = $collection->get_enabled_view_modes();
@@ -329,22 +329,19 @@ function tainacan_the_faceted_search($args = array()) {
 	// If in a tainacan taxonomy
 	$term = tainacan_get_term();
 	if ($term) {
-		$props .= 'term_id="' . $term->term_id . '" ';
+		$props .= 'term-id="' . $term->term_id . '" ';
 		$props .= 'taxonomy="' . $term->taxonomy . '" ';
 	}
 
-	$props .= 'default_view_mode="' . $default_view_mode . '" ';
-	$props .= 'enabled_view_modes="' . implode(',', $enabled_view_modes) . '" ';
+	$props .= 'default-view-mode="' . $default_view_mode . '" ';
+	$props .= 'enabled-view-modes="' . implode(',', $enabled_view_modes) . '" ';
 
 	// Passes arguments to custom props
 	foreach ($args as $key => $value) {
 		if ($value == true || $value == 'true') {
-			$props .= $key . '="' . $value . '" ';
+			$props .= str_replace('_', '-', $key) . '="' . $value . '" ';
 		}
 	}
-
-	// Converts underscore php notation to html hiphen notation
-	$props = str_replace('_', '-', $props);
 
 	echo "<main id='tainacan-items-page' $props ></main>";
 

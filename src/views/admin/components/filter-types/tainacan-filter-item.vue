@@ -206,7 +206,9 @@
                 right: 0;
             }
             @media screen and (min-width: 768px) {
-
+                .dropdown-trigger input {
+                    font-size: 0.75em !important;
+                }
                 .datepicker-header {
 
                     .dropdown-menu {
