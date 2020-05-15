@@ -61,13 +61,12 @@
                 if ($event.target.value != '') {
                     let dateISO = '';
                     
-                    if ($event && $event instanceof Date) {
+                    if ($event && $event instanceof Date)
                         dateISO = moment(this.dateValue, this.dateFormat).toISOString() ? moment(this.dateValue, this.dateFormat).toISOString().split('T')[0] : false;
-                    } else if($event.target.value && $event.target.value.length === this.dateMask.length) {
+                    else if ($event.target.value && $event.target.value.length === this.dateMask.length)
                         dateISO = moment(this.dateValue, this.dateFormat).toISOString() ? moment($event.target.value,  this.dateFormat).toISOString().split('T')[0] : false;
-                    }
 
-                    if(dateISO == false){
+                    if (dateISO == false){
                         this.isInvalidDate = true;
                         return;
                     } else {

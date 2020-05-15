@@ -50,7 +50,7 @@
                                 @input="addToAdvancedSearchQuery($event, 'metadatum', searchCriterion)">
                             <template v-for="(metadatum, metadatumIndex) in metadata">
                                 <option
-                                        v-if="metadatum.metadata_type_object.component !== 'tainacan-relationship' && metadatum.metadata_type_object.component !== 'tainacan-compound' && metadatum.parent <= 0"
+                                        v-if="metadatum.metadata_type_object.component !== 'tainacan-user' && metadatum.metadata_type_object.component !== 'tainacan-relationship' && metadatum.metadata_type_object.component !== 'tainacan-compound' && metadatum.parent <= 0"
                                         :value="`${metadatum.id}-${metadatum.metadata_type_options.taxonomy}-${metadatum.metadata_type_object.primitive_type}`"
                                         :key="metadatumIndex">
                                     {{ metadatum.name }}
@@ -79,23 +79,23 @@
                             class="column">
                         <b-input
                                 v-if="advancedSearchQuery.metaquery[searchCriterion] &&
-                                 advancedSearchQuery.metaquery[searchCriterion].ptype != 'date'"
+                                    advancedSearchQuery.metaquery[searchCriterion].ptype != 'date'"
                                 :type="advancedSearchQuery.metaquery[searchCriterion].ptype == 'int' ||
-                                 advancedSearchQuery.metaquery[searchCriterion].ptype == 'float' ? 'number' : 'text'"
+                                    advancedSearchQuery.metaquery[searchCriterion].ptype == 'float' ? 'number' : 'text'"
                                 step="any"
                                 @input="addValueToAdvancedSearchQuery($event, 'value', searchCriterion)"
                                 :value="advancedSearchQuery.metaquery[searchCriterion].value"
                         />
                         <input
                                 v-else-if="advancedSearchQuery.metaquery[searchCriterion] &&
-                                advancedSearchQuery.metaquery[searchCriterion].ptype == 'date'"
+                                    advancedSearchQuery.metaquery[searchCriterion].ptype == 'date'"
                                 class="input"
-                                :value="parseDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion].value)"
+                                :value="parseValidDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion].value)"
                                 v-mask="dateMask"
                                 @focus="addValueToAdvancedSearchQueryWithoutDelay($event, '', searchCriterion)"
                                 @input="addValueToAdvancedSearchQueryWithoutDelay($event, 'value', searchCriterion)"
                                 :placeholder="dateFormat" 
-                                type="text">
+                                type="text" >
                         <b-input
                                 v-else-if="advancedSearchQuery.taxquery[searchCriterion]"
                                 :value="advancedSearchQuery.taxquery[searchCriterion].terms"
@@ -113,11 +113,11 @@
                             class="column">
                         <b-select
                                 v-if="advancedSearchQuery.taxquery[searchCriterion] ||
-                                 advancedSearchQuery.metaquery[searchCriterion] ? true : false"
+                                    advancedSearchQuery.metaquery[searchCriterion] ? true : false"
                                 @input="addToAdvancedSearchQuery($event, 'comparator', searchCriterion)"
                                 :value="advancedSearchQuery.taxquery[searchCriterion] ?
-                                 advancedSearchQuery.taxquery[searchCriterion].operator :
-                                 (advancedSearchQuery.metaquery[searchCriterion] ? advancedSearchQuery.metaquery[searchCriterion].compare : '')">
+                                    advancedSearchQuery.taxquery[searchCriterion].operator :
+                                    (advancedSearchQuery.metaquery[searchCriterion] ? advancedSearchQuery.metaquery[searchCriterion].compare : '')">
 
                             <option 
                                     v-for="(comparator, key) in getComparators(searchCriterion)"
@@ -508,7 +508,7 @@
                             
                             setTimeout(() => {
                                 if (value.includes('-'))
-                                    this.$set(this.advancedSearchQuery.metaquery[metaquery], 'value', this.parseDateToNavigatorLanguage(value));
+                                    this.$set(this.advancedSearchQuery.metaquery[metaquery], 'value', this.parseValidDateToNavigatorLanguage(value));
                             }, 200);
                         }
                     }
@@ -517,13 +517,11 @@
                 this.$eventBusSearch.$emit('searchAdvanced', this.advancedSearchQuery);
                 
             },
-            parseDateToNavigatorLanguage(date) {
+            parseValidDateToNavigatorLanguage(date) {
                 if (date && date.length === this.dateMask.length) {
-                    date = new Date(date.replace(/-/g, '/'));
-                    return moment(date, moment.ISO_8601).format(this.dateFormat);
-                } else {
+                    return (moment(date, this.dateFormat).toISOString() && moment(date, this.dateFormat).toISOString().split('T') && moment(date, this.dateFormat).toISOString().split('T')[0]) ? this.parseDateToNavigatorLanguage(moment(date, this.dateFormat).toISOString().split('T')[0]) : this.parseDateToNavigatorLanguage(date);
+                } else
                     return date;
-                }
             },
             addToAdvancedSearchQuery(value, type, searchCriterion) {
                 if (!value)
