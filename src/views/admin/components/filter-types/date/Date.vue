@@ -72,7 +72,7 @@
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('instruction_select_a_date')"
                 v-model="value"
-                @input="($event) => { resetPage(); emit($event) }"
+                @input="($event) => { resetPage(); emit($event); }"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
@@ -170,10 +170,11 @@
                         while (textValue.split('-')[0].length < 4)
                             textValue = '0' + textValue;
                         
-                        this.value = new Date(textValue);
-
+                        const dateValue = new Date(textValue.replace(/-/g, '/'));
+                        this.value = moment(dateValue, moment.ISO_8601).toDate();
+                        
                         this.$emit('sendValuesToTags', { 
-                            label: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat), 
+                            label: this.comparator + ' ' + this.parseDateToNavigatorLanguage(textValue), 
                             value: textValue
                         });
                     }
@@ -182,7 +183,7 @@
                     this.value = null;
                 }
             },
-            dateFormatter(dateObject) { 
+            dateFormatter(dateObject) {
                 return moment(dateObject, moment.ISO_8601).format(this.dateFormat);
             },
             dateParser(dateString) { 
@@ -208,7 +209,7 @@
 
                 while (valueQuery.split('-')[0].length < 4)
                     valueQuery = '0' + valueQuery;
-
+                    
                 this.$emit('input', {
                     filter: 'date',
                     type: 'DATE',
@@ -221,7 +222,6 @@
                     label: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat), 
                     value: valueQuery
                 });
-                
             },
             onChangeComparator(newComparator) {
                 this.comparator = newComparator;
