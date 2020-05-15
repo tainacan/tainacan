@@ -352,7 +352,7 @@
             moment.locale(locale);
 
             let localeData = moment.localeData();
-            this.dateFormat = localeData.longDateFormat('lll');
+            this.dateFormat = localeData.longDateFormat('LLL');
 
             if (this.$route.query.highlight) {
                 this.highlightedProcess = this.$route.query.highlight;
