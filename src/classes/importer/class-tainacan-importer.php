@@ -960,7 +960,7 @@ abstract class Importer {
             $taxonomy->set_status('publish');
             $taxonomy->set_allow_insert('yes');
 
-            if($taxonomy->validate()){
+            if( $taxonomy->validate() ){
                 $inserted_tax = $taxonomy_repo->insert( $taxonomy );
                 $newMetadatum->set_metadata_type_options([
                     'taxonomy_id' => $inserted_tax->get_id(),

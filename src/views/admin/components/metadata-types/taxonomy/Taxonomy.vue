@@ -1,6 +1,7 @@
 <template>
     <div>
-        <component
+        <taxonomy-tag-input
+                v-if="getComponent == 'tainacan-taxonomy-tag-input'"
                 :disabled="disabled"
                 :is="getComponent"
                 :maxtags="maxtags"
@@ -10,6 +11,22 @@
                 :taxonomy-id="taxonomyId"
                 :item-metadatum="itemMetadatum"
                 @showAddNewTerm="openTermCreationModal" />
+        <checkbox-radio-modal
+                v-else
+                :is-modal="false"
+                :is-filter="false"
+                :parent="0"
+                :taxonomy_id="taxonomyId"
+                :selected="!valueComponent ? [] : valueComponent"
+                :metadatum-id="itemMetadatum.metadatum.id"
+                :taxonomy="taxonomy"
+                :collection-id="itemMetadatum.metadatum.collection_id"
+                :is-taxonomy="true"
+                :query="''"
+                :metadatum="itemMetadatum.metadatum"
+                :is-checkbox="getComponent == 'tainacan-taxonomy-checkbox'"
+                @input="(selected) => valueComponent = selected"
+            />
         <div 
                 v-if="allowNew"
                 class="add-new-term">
@@ -27,17 +44,15 @@
 </template>
 
 <script>
-    import TainacanTaxonomyRadio from './TaxonomyRadio.vue';
-    import TainacanTaxonomyCheckbox from './TaxonomyCheckbox.vue';
     import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue';
     import TermEditionForm from '../../edition/term-edition-form.vue';
+    import CheckboxRadioModal from '../../modals/checkbox-radio-modal.vue';
     import { tainacan as axios } from '../../../js/axios.js';
 
     export default {
         components: {
-            TainacanTaxonomyRadio,
-            TainacanTaxonomyCheckbox,
-            TainacanTaxonomyTagInput
+            TainacanTaxonomyTagInput,
+            CheckboxRadioModal
         },
         props: {
             itemMetadatum: Object,
@@ -114,7 +129,7 @@
                         })
                     } else {
                         val = val ? val : [];
-                        val.push( this.componentType == ('tainacan-taxonomy-checkbox' || 'tainacan-taxonomy-radio') ? term.id : {'label': term.name, 'value': term.id} );
+                        val.push( this.getComponent == ('tainacan-taxonomy-checkbox' || 'tainacan-taxonomy-radio') ? term.id : {'label': term.name, 'value': term.id} );
                         axios.patch(`/item/${this.itemMetadatum.item.id}/metadata/${this.itemMetadatum.metadatum.id}`, {
                             values: val,
                         }).then(() => {

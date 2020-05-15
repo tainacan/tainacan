@@ -364,7 +364,7 @@
         },
         watch: {
             selected() {
-                if (this.isModal)
+                if (!this.isModal)
                     this.$emit('input', this.selected);
             }
         },
@@ -373,16 +373,16 @@
                 this.highlightHierarchyPath();
         },
         created() {
-            if (!this.isModal)
-                this.maxNumOptionsCheckboxFinderColumns = 12;
-
-            if (this.isTaxonomy) {
-                this.getOptionChildren();
-            } else {
-                this.isCheckboxListLoading = true;
-
-                this.getOptions(0);
-            }
+            this.initializeValues();
+            this.$parent.$on('update-taxonomy-inputs', ($event) => { 
+                if ($event.taxonomyId == this.taxonomy_id && $event.metadatumId == this.metadatumId) {
+                    this.finderColumns = [];
+                    this.hierarchicalPath = [];
+                    this.isSearching = false;
+                    this.searchResults = [];
+                    this.initializeValues();
+                }
+            });
         },
         mounted() {
             if (this.$refs.checkboxRadioModal)
@@ -394,6 +394,17 @@
                 this.getOptionsValuesCancel.cancel('Get options request canceled.');
         },
         methods: {
+            initializeValues() {
+                if (!this.isModal)
+                    this.maxNumOptionsCheckboxFinderColumns = 12;
+
+                if (this.isTaxonomy) {
+                    this.getOptionChildren();
+                } else {
+                    this.isCheckboxListLoading = true;
+                    this.getOptions(0);
+                }
+            },
             shouldShowMoreButton(key) {
                 return this.totalRemaining[key].remaining === true || (this.finderColumns[key].children.length < this.totalRemaining[key].remaining);
             },
@@ -603,13 +614,13 @@
             },
             removeLevelsAfter(key){
                 if (key != undefined)
-                    this.finderColumns.splice(key+1);
+                    this.finderColumns.splice(key + 1, 1);
             },
             createColumn(res, column) {
                 let children = res.data.values;
 
                 this.totalRemaining = Object.assign({}, this.totalRemaining, {
-                    [`${column == undefined ? 0 : column+1}`]: {
+                    [`${column == undefined ? 0 : column + 1}`]: {
                         remaining: this.isUsingElasticSearch ? (children.length > 0 ? res.data.last_term == children[children.length - 1].value : false) : res.headers['x-wp-total'],
                     }
                 });
