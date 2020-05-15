@@ -33,7 +33,7 @@ export const dateInter = {
         moment.locale(locale);
 
         let localeData = moment.localeData();
-        this.dateFormat = localeData.longDateFormat('L');
+        this.dateFormat = localeData.longDateFormat('L') ? localeData.longDateFormat('L') : (localeData._abbr == 'pt_BR' ? 'DD/MM/YYYY' : 'YYYY-MM-DD');
         this.dateMask = this.dateFormat.replace(/[\w]/g, '#');
     },
     data() {

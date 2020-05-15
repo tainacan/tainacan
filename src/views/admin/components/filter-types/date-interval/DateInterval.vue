@@ -125,9 +125,11 @@
                 if (index >= 0) {
                     let metadata = this.query.metaquery[ index ];
                     
-                    if (metadata.value && metadata.value.length > 0){
-                        this.dateInit = new Date(metadata.value[0]);
-                        this.dateEnd = new Date(metadata.value[1]);
+                    if (metadata.value && metadata.value.length > 0) {
+                        const dateValueInit = new Date(metadata.value[0].replace(/-/g, '/'));
+                        this.dateInit = moment(dateValueInit, moment.ISO_8601).toDate();
+                        const dateValueEnd = new Date(metadata.value[1].replace(/-/g, '/'));
+                        this.dateEnd = moment(dateValueEnd, moment.ISO_8601).toDate();
                     }
 
                     if (metadata.value[0] != undefined && metadata.value[1] != undefined)
@@ -178,5 +180,8 @@
 <style scoped>
     .field {
         margin-bottom: 0.125em !important;
+    }
+    .dropdown-trigger input {
+        font-size: 0.75em;
     }
 </style>
