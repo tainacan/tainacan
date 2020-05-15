@@ -320,7 +320,20 @@ class Bulk_Edit_Process extends Generic_Process {
 			if ( $metadatum_from->get_metadata_type() == $metadatum->get_metadata_type() && 
 						( $metadatum_from->is_multiple() == false || $metadatum_from->is_multiple() == $metadatum->is_multiple() ) ) {
 				$item_metadata_from = new Entities\Item_Metadata_Entity( $item, $metadatum_from );
-				$item_metadata->set_value($item_metadata_from->get_value());
+				
+				$value = $item_metadata_from->get_value();
+				if ( $metadata_type = $metadatum->get_metadata_type_object()->get_primitive_type() == 'term' ) {
+					if ( $metadatum_from->is_multiple() ) {
+						$temp = [];
+						foreach ( $value as $term ) {
+							$temp[] = $term->get_name();
+						}
+						$value = $temp;
+					} elseif ( $value instanceof \Tainacan\Entities\Term ) {
+						$value = $value->get_name();
+					}
+				}
+				$item_metadata->set_value($value);
 				return $this->save_item_metadata($item_metadata, $item);
 			}
 		}
