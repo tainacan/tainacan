@@ -193,6 +193,10 @@
     }
 
     .dropdown-trigger {
+        input {
+            font-size: 0.875em;
+            height: auto;
+        }
         span.icon>i.mdi-calendar-today::before{
             display: inline-block;
             font: "TainacanIcons" normal normal normal 20px/1;

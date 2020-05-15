@@ -189,7 +189,7 @@ export default {
         moment.locale(locale);
 
         let localeData = moment.localeData();
-        this.dateFormat = localeData.longDateFormat('lll');
+        this.dateFormat = localeData.longDateFormat('LLL');
 
         this.fetchProcesses({
             page: 1,
