@@ -605,7 +605,8 @@
                         return JSON.parse(JSON.stringify(this.metadata)).filter((metadatum) => {
                             return (
                                 metadatum.id != selectedMetadatum.id &&
-                                metadatum.metadata_type == selectedMetadatum.metadata_type 
+                                metadatum.metadata_type == selectedMetadatum.metadata_type &&
+                                (selectedMetadatum.multiple == 'yes' || (metadatum.multiple != 'yes' && selectedMetadatum.multiple != 'yes'))
                             )
                         });
                     }
