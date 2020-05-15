@@ -247,7 +247,8 @@
                                     v-if="!bulkEditionProcedures[criterion].isDone &&
                                         !bulkEditionProcedures[criterion].isExecuting &&
                                         bulkEditionProcedures[criterion].metadatum &&
-                                        bulkEditionProcedures[criterion].action"
+                                        bulkEditionProcedures[criterion].action && 
+                                        (bulkEditionProcedures[criterion].action != editionActions.copy || (bulkEditionProcedures[criterion].action == editionActions.copy && !!bulkEditionProcedures[criterion].metadatumIdCopyFrom))"
                                     @click="executeBulkEditionProcedure(criterion)"
                                     class="button is-white is-pulled-right">
                                 <span 
