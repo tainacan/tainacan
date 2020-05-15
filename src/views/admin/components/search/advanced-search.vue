@@ -50,7 +50,7 @@
                                 @input="addToAdvancedSearchQuery($event, 'metadatum', searchCriterion)">
                             <template v-for="(metadatum, metadatumIndex) in metadata">
                                 <option
-                                        v-if="metadatum.metadata_type_object.component !== 'tainacan-relationship' && metadatum.metadata_type_object.component !== 'tainacan-compound' && metadatum.parent <= 0"
+                                        v-if="metadatum.metadata_type_object.component !== 'tainacan-user' && metadatum.metadata_type_object.component !== 'tainacan-relationship' && metadatum.metadata_type_object.component !== 'tainacan-compound' && metadatum.parent <= 0"
                                         :value="`${metadatum.id}-${metadatum.metadata_type_options.taxonomy}-${metadatum.metadata_type_object.primitive_type}`"
                                         :key="metadatumIndex">
                                     {{ metadatum.name }}
@@ -519,8 +519,7 @@
             },
             parseValidDateToNavigatorLanguage(date) {
                 if (date && date.length === this.dateMask.length) {
-                    const validated = moment(date, this.dateFormat).toISOString() ? this.parseDateToNavigatorLanguage(moment(date, this.dateFormat).toISOString().split('T')[0]) : this.parseDateToNavigatorLanguage(date);
-                    return validated;
+                    return (moment(date, this.dateFormat).toISOString() && moment(date, this.dateFormat).toISOString().split('T') && moment(date, this.dateFormat).toISOString().split('T')[0]) ? this.parseDateToNavigatorLanguage(moment(date, this.dateFormat).toISOString().split('T')[0]) : this.parseDateToNavigatorLanguage(date);
                 } else
                     return date;
             },
