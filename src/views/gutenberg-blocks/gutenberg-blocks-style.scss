@@ -1,0 +1,246 @@
+// CSS COMMON TO MOST TAINACAN BLOCKS
+@import './gutenberg-blocks-variables.scss';
+
+// Custom Variables
+:root {
+    --tainacan-block-gray0: #{$gray0};
+    --tainacan-block-gray1: #{$gray1};
+    --tainacan-block-gray2: #{$gray2};
+    --tainacan-block-gray3: #{$gray3};
+    --tainacan-block-gray4: #{$gray4};
+    --tainacan-block-gray5: #{$gray5};
+    --tainacan-block-primary: #{$primary};
+}
+
+// Control and placeholder region ----------------------------------------------------
+[data-align='full'] .tainacan-block-control {
+    width: calc(100% + 14px);
+}
+.tainacan-block-control {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    position: relative;
+    top: -14px;
+    left: -14px;
+    width: calc(100% + 28px);
+    background: var(--tainacan-block-gray1, $gray1);
+
+    p {
+        font-size: 0.875em !important; 
+        margin: 12px 1.5em !important; 
+        fill: var(--tainacan-block-gray4, $gray4);
+
+        svg {
+            top: 6px;
+            margin-right: 0.75em;
+            position: relative;
+            fill: var(--tainacan-block-gray4, $gray4);
+        }
+    }
+
+    .components-base-control .components-base-control__field {
+        margin-bottom: 0;
+    }
+}
+.tainacan-block-placeholder.components-placeholder {
+    align-items: center !important;
+    margin-bottom: 0 !important;
+    background: var(--tainacan-block-gray0, $gray0);
+
+    .components-placeholder__label {
+        margin-bottom: 0;
+    }
+    .components-placeholder__fieldset {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: baseline;
+        width: 100%;
+        max-width: 70%;
+        flex-wrap: wrap;
+        z-index: 1;
+
+        p {
+            font-size: 1em !important;
+            margin: 12px;
+            color: var(--tainacan-block-gray5, $gray5);
+            fill: var(--tainacan-block-gray4, $gray4);
+
+            svg {
+                margin-right: 1em; 
+                top: 4px;
+                position: relative;
+                fill: var(--tainacan-block-gray4, $gray4);
+            }
+        }
+    }
+}
+  
+// Generic style for selection modals ---------------------------
+.wp-block-tainacan-modal {
+    width: 50%;
+
+    @media only screen and (max-width: 1024px) {  width: 75% }
+    @media only screen and (max-width: 768px) { width: 100%; }
+
+    // Iframe for dynamic modal
+    &.dynamic-modal {
+        width: 90%;
+        height: 90%;
+        width: 80vw;
+        height: 80vh;
+
+        iframe {
+            width: calc(100% + 32px);
+            height: calc(100% - 128px);
+            margin-left: -16px;
+        }
+
+        .modal-footer-area {
+            height: 68px;
+            width: calc(100% + 32px);
+            margin-left: -16px !important;
+            padding: 1.2em 1.2em !important;
+            border-top: 1px solid var(--tainacan-block-gray3, $gray3);
+        }
+    }
+
+    // Spinner
+    .spinner-container {
+        min-height: 56px;
+        padding: 1em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--tainacan-block-gray4, $gray4);
+        .components-spineer { margin: 8px; }
+    }
+
+    .components-modal__header .components-button.has-icon,
+    .components-modal__header .components-icon-button {
+        padding-right: 0;
+
+        &:hover {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+    }
+
+    hr {
+        margin: 5px 0.75em;
+    }
+
+    .components-select-control__input {
+        padding: 4px 8px !important;
+        margin: 0 !important;
+        line-height: 1em;
+    }
+
+    .modal-search-area {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 6px;
+
+        .components-base-control {
+            width: 60%;
+
+            @media only screen and (max-width: 1024px) {  width: 95% }
+            &:nth-child(2) {
+                flex-shrink: 2;
+            }
+            .components-base-control__field {
+                flex-wrap: wrap;
+            }
+            label.components-base-control__label {
+                font-weight: 500;
+                color: var(--tainacan-block-gray5, $gray5);
+                font-size: 1em;
+                text-align: center;
+            }
+            input.components-text-control__input {
+                padding: 5px 8px;
+                height: 28px;
+            }
+        }
+    }
+
+    .modal-radio-area-label {
+        font-weight: 500;
+        margin-left: 1.75em;
+    }
+
+    .modal-checkbox-list,
+    .modal-radio-list .components-base-control__field {
+        padding: 0;
+        @include display-grid;
+        -ms-grid-columns: 250px 250px;
+        grid-template-columns: repeat(auto-fill, 250px);
+        grid-gap: 0px;
+        justify-content: space-evenly;
+        list-style-type: none;
+        margin: 10px;
+        padding: 2px;
+        max-height: 37vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        .components-base-control {
+            overflow: hidden;
+            padding-left: 1px;
+        }
+
+        svg.components-checkbox-control__checked {
+            fill: black;
+        }
+    
+        .modal-checkbox-list-item,
+        .components-radio-control__option {
+            display: flex;
+            justify-content: flex-start;
+
+            img {
+                width: 24px;
+                height: 24px;
+                margin-right: 10px;
+            }
+            label {
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                display: inline-block;
+                max-width: 85%;
+
+                @media only screen and (max-width: 768px) { max-width: 80%; }
+            }
+        }
+    }
+    .modal-loadmore-section {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        
+        p {
+            color: var(--tainacan-block-gray4, $gray4);
+            margin-right: 12px;
+            margin-top: 2px;
+        }
+    }
+    .modal-footer-area {
+        border-top: 1px solid #e2e4e7;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: 16px 16px 0 16px;
+        margin: 0 -16px;
+
+        p {
+            padding: 0 12px;
+            color: var(--tainacan-block-gray5, $gray5);
+        }
+    }
+}

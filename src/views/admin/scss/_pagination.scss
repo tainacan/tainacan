@@ -1,0 +1,153 @@
+.pagination-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 1em !important;
+    font-weight: normal !important;
+    border-top: 1px solid var(--tainacan-input-border-color);
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-left: var(--tainacan-one-column);
+    margin-right: var(--tainacan-one-column);
+    margin-bottom: 12px;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+    color: var(--tainacan-info-color);
+
+    @media screen and (max-width: 768px) {
+        flex-wrap: wrap;
+    }
+
+    .field-body {
+        align-items: center;
+    }
+
+    .button {
+        color: var(--tainacan-input-color) !important;
+    }
+
+    .shown-items { 
+        font-size: 0.85em; 
+    }
+
+    .go-to-page .dropdown-menu {
+        min-width: 3.5em;
+
+        .dropdown-content{
+            max-height: 160px;
+            overflow: scroll;
+            padding: 0;
+        }
+    }
+    
+    .items-per-page { 
+        flex-grow: 1;
+        margin-top: 0.5em;
+
+        @media screen and (max-width: 768px) {
+            flex-grow: 2;
+            text-align: center;
+            
+            .field { 
+                display: inline-flex; 
+                align-items: center;
+            }
+        }
+
+        .field-label {
+            flex-grow: 5;
+            margin-right: 0.5em;
+            padding-top: 0.3em;
+
+            .label {
+                font-size: 0.85em !important;
+                font-weight: normal !important;
+                margin-bottom: 0;
+                color: var(--tainacan-info-color);
+            }
+        }
+        .select {
+            select {
+                font-size: 0.85em;
+                border: none !important;
+            } 
+        }
+    }
+
+    .pagination { 
+        font-size: 1em;
+
+        &.is-small {
+            top: -3px;
+            position: relative;
+            border: none;
+        }
+
+        ul {
+            margin-bottom: 0px;
+            margin-top: -4px;
+            padding: 0px;
+            li {
+                margin: 0.5em 0 0 0.2em;
+            }
+        }
+
+        &.is-small {
+            font-size: 0.85em;
+        }
+
+        a[disabled="disabled"] {
+            color: var(--tainacan-info-color);
+        }
+        .pagination-list {
+            flex-wrap: nowrap;
+            font-size: 1em;
+        }
+        .pagination-link, .pagination-previous, .pagination-next {
+            background-color: transparent;
+            color: var(--tainacan-secondary);
+            border: none;
+            align-items: inherit;
+        }
+        .pagination-link:active {
+            box-shadow: none;
+        }
+        .pagination-link.is-current {
+            color: var(--tainacan-info-color) !important;
+        }
+        .pagination-link::after:not(:last-child) {
+            content: ',';
+            color: var(--tainacan-info-color);
+        }
+        .mdi::before {
+            display: inline-block;
+            font: normal normal normal 20px/1 "TainacanIcons";
+            font-size: inherit;
+            text-rendering: auto;
+            vertical-align: middle;
+            line-height: inherit;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-transform: none !important;
+            letter-spacing: normal !important;
+        }
+        .mdi-chevron-left::before {
+            content: "arrowleft" !important;
+            transform: none !important;
+        }
+        .mdi-chevron-right::before {
+            content: "arrowright" !important;
+            transform: none !important;
+        }
+        .mdi-24px::before {
+            font-size: 1.875em !important;
+        }
+        
+        @media screen and (max-width: 768px) {
+             &.is-small { top: 0px; }
+            .pagination-list { order: 2; }
+            .pagination-next { order: 3; }
+        }
+        
+    }
+}

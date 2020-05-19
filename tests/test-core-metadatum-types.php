@@ -33,8 +33,7 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
         $metadatum = $collection->get_core_title_metadatum();
         
         $metadatumDescription = $collection->get_core_description_metadatum();
-        
-        
+
         $i = $this->tainacan_entity_factory->create_entity(
            'item',
            array(
@@ -56,7 +55,7 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
        $checkItem = $Tainacan_Items->fetch($i->get_id());
        
        $this->assertEquals('changed title', $checkItem->get_title());
-       
+
        $check_item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($checkItem, $metadatum);
        $this->assertEquals('changed title', $check_item_metadata->get_value());
        
@@ -87,7 +86,8 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
 
        $this->assertEquals(1, sizeof($checkMeta));
        $this->assertEquals('changed description', $checkMeta[0]->get_description());
-       
+
+
     }
 
     function test_validate_required_title() {
@@ -253,19 +253,25 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
 		    array(
 		    	'title'       => 'Son of son',
 		    	'description' => 'Desc of son of son',
-		    	'collection'  => $collection_son,
+                'collection'  => $collection_son,
 			    'status' => 'publish'
 		    ),
 		    true
 	    );
 
-	    $item_metadatum_title = $this->tainacan_item_metadata_factory->create_item_metadata($collection_son_item,
-		    $core_metadata_son[1], 'Son of son');
+	    $item_metadatum_title = $this->tainacan_item_metadata_factory->create_item_metadata(
+			$collection_son_item,
+			$core_metadata_son[1],
+			'Son of son'
+		);
 
-	    $item_metadatum_desc = $this->tainacan_item_metadata_factory->create_item_metadata($collection_son_item, $core_metadata_son[0],
-		    'Desc of son of son');
+		$item_metadatum_desc = $this->tainacan_item_metadata_factory->create_item_metadata(
+			$collection_son_item,
+			$core_metadata_son[0],
+			'Desc of son of son'
+		);
 
-	    $this->assertEquals($core_metadata_son[0]->get_id(), $item_metadatum_desc->get_metadatum()->get_id());
+        $this->assertEquals($core_metadata_son[0]->get_id(), $item_metadatum_desc->get_metadatum()->get_id());
 	    $this->assertEquals($core_metadata_son[1]->get_id(), $item_metadatum_title->get_metadatum()->get_id());
 
 	    $this->assertNotEquals($core_metadata_parent[0]->get_id(), $item_metadatum_desc->get_metadatum()->get_id());

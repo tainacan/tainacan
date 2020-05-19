@@ -56,12 +56,26 @@ class Item_Metadata extends Repository {
 		if ( $metadata_type->get_primitive_type() == 'term' ) {
 			$this->save_terms_metadatum_value( $item_metadata );
 		} elseif ( $metadata_type->get_primitive_type() == 'compound' ) {
-			// do nothing. Compound values are updated when its child metadata are updated
+			// Create a post_metadata with value [] to compound metadata or return if it already exists 
+			// to use as parent_meta_id for child metadata
+			global $wpdb;
+			$compounds = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s and meta_value = ''", $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id() ), ARRAY_A );
+			if( is_array($compounds) && !empty($compounds) ) {
+				$meta_id = $compounds[0]['meta_id'];
+				$item_metadata->set_parent_meta_id((int)$meta_id);
+			} else {
+				$meta_id = add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), '' );
+				$item_metadata->set_parent_meta_id($meta_id);
+			}
 			return $item_metadata;
 		} else {
 			if ( $unique ) {
-
-				if ( is_int( $item_metadata->get_meta_id() ) ) {
+				if( empty( $item_metadata->get_value() ) ) {
+					if ( $item_metadata->get_metadatum()->get_parent() > 0 )
+						delete_metadata_by_mid( 'post', $item_metadata->get_meta_id() );
+					else
+						delete_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id() );
+				} elseif ( is_int( $item_metadata->get_meta_id() ) ) {
 					update_metadata_by_mid( 'post', $item_metadata->get_meta_id(), wp_slash( $item_metadata->get_value() ) );
 				} else {
 
@@ -87,6 +101,9 @@ class Item_Metadata extends Repository {
 					$values = $item_metadata->get_value();
 
 					foreach ( $values as $value ) {
+						if( empty($value) || $value == "" ) {
+							continue;
+						}
 						add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), wp_slash( $value ) );
 					}
 				}
@@ -97,7 +114,7 @@ class Item_Metadata extends Repository {
 		do_action( 'tainacan-insert', $item_metadata );
 		do_action( 'tainacan-insert-Item_Metadata_Entity', $item_metadata );
 
-		$new_entity = new Entities\Item_Metadata_Entity( $item_metadata->get_item(), $item_metadata->get_metadatum() );
+		$new_entity = new Entities\Item_Metadata_Entity( $item_metadata->get_item(), $item_metadata->get_metadatum(), $item_metadata->get_meta_id(), $item_metadata->get_parent_meta_id() );
 
 		if ( isset( $added_compound ) && is_int( $added_compound ) ) {
 			$new_entity->set_parent_meta_id( $added_compound );
@@ -208,7 +225,44 @@ class Item_Metadata extends Repository {
 			return add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_parent(), $current_value );
 		}
 
+	}
 
+	public function delete_metadata( \Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+		do_action( 'tainacan-pre-delete', $item_metadata, true );
+		do_action( 'tainacan-pre-delete-Item_Metadata_Entity', $item_metadata, true );
+
+		$metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
+		if ( $metadata_type->get_primitive_type() == 'term' ) {
+			$item_metadata->set_value([]);
+			$this->save_terms_metadatum_value( $item_metadata );
+		} elseif ( $metadata_type->get_primitive_type() == 'compound' ) {
+			$this->remove_compound_value($item_metadata->get_item(), $item_metadata->get_metadatum(), $item_metadata->get_parent_meta_id() );
+		} else {
+			delete_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id() );
+		}
+
+		if ( $item_metadata ) {
+			do_action( 'tainacan-deleted', $item_metadata, true );
+			do_action( 'tainacan-deleted-Item_Metadata_Entity', $item_metadata, true );
+		}
+		return $item_metadata;
+	}
+
+	public function remove_compound_value(\Tainacan\Entities\Item $item, $metadatum, $parent_meta_id ) {
+		$post_id = $item->get_id();
+		$current_childrens = get_metadata_by_mid( 'post', $parent_meta_id );
+		if ( is_object( $current_childrens ) ) {
+			$current_childrens = $current_childrens->meta_value;
+		}
+
+		if ( ! is_array( $current_childrens ) ) {
+			$current_childrens = [];
+		}
+		foreach($current_childrens as $meta_children) {
+			delete_post_meta('post', $meta_children);
+		}
+		delete_metadata_by_mid('post', $parent_meta_id);
+		return $current_childrens;
 	}
 
 	/**
@@ -309,8 +363,9 @@ class Item_Metadata extends Repository {
 			$return_value = [];
 
 			if ( is_array( $rows ) ) {
-
 				foreach ( $rows as $row ) {
+					if ( empty($row['meta_value']) )
+						continue;
 					$value = $this->extract_compound_value( maybe_unserialize( $row['meta_value'] ), $item_metadata->get_item(), $row['meta_id'] );
 					if ( $unique ) {
 						$return_value = $value;
@@ -329,6 +384,8 @@ class Item_Metadata extends Repository {
 				$value = get_metadata_by_mid( 'post', $item_metadata->get_meta_id() );
 				if ( is_object( $value ) && isset( $value->meta_value ) ) {
 					return $value->meta_value;
+				} else {
+					return "";
 				}
 			} else {
 				return get_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), $unique );
@@ -336,6 +393,30 @@ class Item_Metadata extends Repository {
 
 		}
 
+	}
+
+	public function create_default_value_metadata(Entities\Item $item) {
+		$items_metadata = $item->get_metadata();
+		foreach ($items_metadata as $item_metadata) {
+			if( in_array($item->get_status(), ['auto-draft'] ) && !metadata_exists('post', $item->get_id(), $item_metadata->get_metadatum()->get_id()) ) {
+				$metadatum = $item_metadata->get_metadatum();
+				if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\User' ) {
+					$options = $metadatum->get_metadata_type_options();
+					if ( isset($options['default_author']) && $options['default_author'] = 'yes') {
+						$value = $metadatum->is_multiple() ? [strval(get_current_user_id())] : strval(get_current_user_id());
+						$item_metadata->set_value($value);
+						if ( $item_metadata->validate() ) {
+							if($item->can_edit()) {
+								$this->insert($item_metadata);
+							}
+						} else {
+							return false;
+						}
+					}
+				}
+			}
+		}
+		
 	}
 
 	/**
@@ -358,7 +439,7 @@ class Item_Metadata extends Repository {
 				$post_meta_object = get_metadata_by_mid( 'post', $id );
 				if ( is_object( $post_meta_object ) ) {
 					$metadatum                            = new Entities\Metadatum( $post_meta_object->meta_key );
-					$return_value[ $metadatum->get_id() ] = new Entities\Item_Metadata_Entity( $item, $metadatum, $id, $compound_meta_id );
+					$return_value[ $metadatum->get_id() ] = new Entities\Item_Metadata_Entity( $item, $metadatum, $id, (int)$compound_meta_id );
 				}
 
 			}

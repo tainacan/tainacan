@@ -1,0 +1,251 @@
+// These tooltips are customized versions of V-Tooltip 
+// Tooltips:
+.b-tooltip::after {
+    box-shadow: none;
+    &.is-primary {
+        background: var(--tainacan-primary);
+    }
+}
+.b-tooltip::before {
+    box-shadow: none;
+    &.is-primary {
+        background: var(--tainacan-primary);
+    }
+}
+.repository-tooltip {
+    .tooltip-inner {
+        background: var(--tainacan-blue1) !important;
+    }
+    .tooltip-arrow {
+        border-color: var(--tainacan-blue1) !important;
+    }
+}
+.tooltip {
+    font-size: 0.6875em;
+    font-family: var(--tainacan-font-family, inherit);
+    z-index: 999999999;
+    display: block !important;
+
+    &::after {
+        box-shadow: none;
+    }
+
+    .tooltip-inner {
+        background: var(--tainacan-primary);
+        color: var(--tainacan-info-color);
+        font-size: 1em;
+        border-radius: 5px;
+        padding: 10px 14px;
+        max-width: 280px;
+        max-height: 200px;
+        overflow-x: auto;
+    }
+    .tooltip-arrow {
+        width: 0;
+        height: 0;
+        border-style: solid;
+        position: absolute;
+        margin: 5px;
+        border-color: var(--tainacan-primary);
+        z-index: 1;
+    }
+    &[x-placement^="top"] {
+        margin-bottom: 5px;
+        .tooltip-arrow {
+            border-width: 5px 8px 0 8px;
+            border-left-color: transparent !important;
+            border-right-color: transparent !important;
+            border-bottom-color: transparent !important;
+            bottom: -5px;
+            left: calc(50% - 5px);
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+    }
+    &[x-placement^="bottom"] {
+        margin-top: 5px;
+        .tooltip-arrow {
+            border-width: 0 8px 5px 8px;
+            border-left-color: transparent !important;
+            border-right-color: transparent !important;
+            border-top-color: transparent !important;
+            top: -5px;
+            left: calc(50% - 5px);
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+    }
+    &[x-placement^="right"] {
+        margin-left: 5px;
+        .tooltip-arrow {
+            border-width: 8px 5px 8px 0;
+            border-left-color: transparent !important;
+            border-top-color: transparent !important;
+            border-bottom-color: transparent !important;
+            left: -5px;
+            top: calc(50% - 5px);
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+    &[x-placement^="left"] {
+        margin-right: 5px;
+        .tooltip-arrow {
+            border-width: 8px 0 8px 5px;
+            border-top-color: transparent !important;
+            border-right-color: transparent !important;
+            border-bottom-color: transparent !important;
+            right: -5px;
+            top: calc(50% - 5px);
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+    &[aria-hidden='true'] {
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity .15s, visibility .15s;
+    }
+    &[aria-hidden='false'] {
+        visibility: visible;
+        opacity: 1;
+        transition: opacity .15s;
+    }
+
+    // Metadata type Preview tooltips
+    &.metadata-type-preview-tooltip[x-placement^="bottom"] {
+        top: -19px !important;
+    }
+    &.metadata-type-preview-tooltip[x-placement^="bottom"] .tooltip-inner {
+        max-height: initial !important;
+    }
+    &.metadata-type-preview-tooltip[x-placement^="bottom"] .tooltip-arrow {
+            border-width: 8px 10px 0px 10px !important;
+            border-left-color: transparent !important;
+            border-right-color: transparent !important;
+            border-bottom-color: transparent !important;
+            border-top-color: var(--tainacan-primary) !important;
+            top: initial !important;
+            bottom: -5px !important;
+    }
+    .metadata-type-preview {
+        background: var(--tainacan-primary);
+        padding: 0px 8px;
+        border-radius: 3px;
+        width: 200px;
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        cursor: none;
+        flex-wrap: wrap;
+        font-size: 1.25em;
+
+        .metadata-type-label {
+            font-weight: 600;
+            color: var(--tainacan-turquoise4);
+            width: 100%;
+            font-size: 1em;
+            margin-bottom: 6px;
+            margin-left: -18px;
+        }
+
+        input, select, textarea, 
+        .input, .tags, .tag  {
+            pointer-events: none;
+            cursor: none;
+            background-color: rgba(255,255,255,0.60) !important;
+        }
+        .autocomplete>.control, .autocomplete>.control>input, .dropdown-content {
+            background-color: #f7fcfd !important;
+        }
+        .taginput {
+            margin-bottom: 100px;
+        }
+        input[type="checkbox"]:checked + .check  {
+            background: rgba(255,255,255,0.60) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:rgb(69,70,71)' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E") no-repeat center center !important
+        }
+        textarea {
+            min-height: 70px;
+        }
+        .field {
+            width: 100%;
+            .label { 
+                color: var(--tainacan-info-color);
+                font-size: 0.875em;
+                line-height: 1.875em;
+            }
+        }
+        .add-new-term,
+        .collapse-all {
+            font-size: 0.75em;
+            text-decoration: underline;
+            margin: 0.875em 1.5em;
+        }
+        .selected-tags {
+            font-size: 0.75em;
+        }
+        .child-metadata-inputs {
+            margin-left: 5px;
+            padding-left: 16px;
+            padding-top: 2px;
+            border-left: 1px solid var(--tainacan-gray3);
+
+            .is-last-input {
+                margin-top: -14px;
+                margin-bottom: 10px;
+            }
+        }
+    }
+
+    // Metadata type textarea has different separators in different spots on interface
+    & .multivalue-separator {
+        color: var(--tainacan-info-color);
+        margin: 0 8px;    
+    }
+    & .hierarchy-separator {
+        color: var(--tainacan-info-color);
+    }
+    &.metadata-type-textarea,
+    &.metadata-type-compound {
+        .multivalue-separator {
+            display: block;
+            max-height: 1px;
+            width: 35px;
+            background: var(--tainacan-info-color);
+            content: none;
+            color: transparent;
+            margin: 1em auto;
+        }
+    }
+    
+    .tainacan-compound-group {
+        text-align: left;
+        margin-left: 2px;
+        padding-left: 0.875em;
+        border-left: 1px solid var(--tainacan-gray2);
+
+        .tainacan-compound-metadatum .label {
+            text-align: left;
+            margin-bottom: 0.25em;
+            font-size: 1em;
+            color: var(--tainacan-info-color);
+        }
+        .tainacan-compound-metadatum p {
+            text-align: left;
+            margin-bottom: 0.75em;
+            font-size: 1em;
+        }
+        .multivalue-separator {
+            display: block;
+            max-height: 1px;
+            width: 35px;
+            background: var(--tainacan-gray2);
+            content: none;
+            color: transparent;
+            margin: 1em auto 1em -0.875em;
+        }
+        
+    }
+}

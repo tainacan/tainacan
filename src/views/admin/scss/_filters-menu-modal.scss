@@ -1,0 +1,45 @@
+#filters-modal { 
+    padding: 0;
+
+    &.is-fullscreen {
+        z-index: 9999;
+    }
+
+    .modal-content {
+        padding: 24px 18px var(--tainacan-one-column);
+        padding: 24px 18px 24px 4.1666667vw;
+        margin: 0;
+        height: 100%;
+        max-height: 100%;
+        max-width: 100% !important;
+        overflow-y: auto;
+        overflow-x: hidden;
+        border-radius: 0;
+        border: none;
+
+        h3 {
+            font-size: 1em;
+            color: var(--tainacan-heading-color);
+        }
+    }
+
+    .modal-close {
+        top: 32px;
+        right: calc((2 * var(--tainacan-one-column)) + 28px);
+        background-color: var(--tainacan-background-color);
+
+        &::before, &::after {
+            background-color: var(--tainacan-secondary);
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+
+        .modal-content {
+            background-color: var(--tainacan-background-color);
+            margin: 0 12% 0 0;
+            margin: 0 12vw 0 0;
+            padding: var(--tainacan-container-padding);
+       }
+    }
+}

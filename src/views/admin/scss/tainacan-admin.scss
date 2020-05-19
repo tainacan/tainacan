@@ -1,0 +1,259 @@
+// TAINACAN ICON FONT
+@import "../../../assets/css/tainacanicons.css";
+
+// Tainacan custom colors and bulma's core
+@import "./_variables.scss";
+
+// Import Bulma and Buefy styles
+@import "../../../assets/css/materialdesignicons.css";
+@import "../../../../node_modules/bulma/bulma.sass";
+@import "../../../../node_modules/buefy/src/scss/buefy.scss";
+
+// Import Tainacan custom styles
+@import "../scss/_tainacan-form.scss";
+@import "../scss/_control.scss";
+@import "../scss/_buttons.scss";
+@import "../scss/_selects.scss";
+@import "../scss/_inputs.scss";
+@import "../scss/_checkboxes.scss";
+@import "../scss/_upload.scss";
+@import "../scss/_radios.scss";
+@import "../scss/_switches.scss";
+@import "../scss/_dropdown-and-autocomplete.scss";
+@import "../scss/_tabs.scss";
+@import "../scss/_tables.scss";
+@import "../scss/_tooltips.scss";
+@import "../scss/_pagination.scss";
+@import "../scss/_modals.scss";
+@import "../scss/_tags.scss";
+@import "../scss/_notices.scss";
+@import "../scss/_filters-menu-modal.scss";
+@import "../scss/_repository-level-overrides.scss";
+@import "../scss/_iframe_read_mode_overrides.scss";
+@import "../scss/_custom_variables.scss";
+
+// Clears wordpress content
+html {
+    overflow-y: hidden;
+}
+body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, body.tainacan-admin-page #wp-auth-check-wrap {
+    display: none;
+}
+#tainacan-admin-app {
+    background: var(--tainacan-background-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    z-index: 999999;
+    overflow-y: auto;
+    margin: 0px !important; 
+    font-family: var(--tainacan-font-family, $family-sans-serif);
+    font-size: 1em;
+}
+
+// Scrollbars
+#tainacan-admin-app * {
+    // For Firefox
+    scrollbar-color: var(--tainacan-gray3) transparent;
+    scrollbar-width: thin;
+
+    // For Chromium and related
+    &::-webkit-scrollbar {
+        width: 0.4em;
+    }
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--tainacan-gray3);
+    }
+}
+
+// Tainacan Loading
+.tainacan-icon {
+    opacity: 0; // Will make it 1 once window.load is done; 
+}
+.loading-overlay {
+    z-index: 9999999999;
+    min-height: auto !important;
+}
+.loading-overlay .loading-icon::after {
+    background-image: url('../../assets/images/tainacan_loading.gif');
+    border: none;
+    border-radius: 0;
+    animation: none;
+    height: 46px;
+    width: 46px;
+    background-size: initial;
+}
+.loading-overlay.is-full-page .loading-icon::after {
+    height: 46px;
+    width: 46px;
+    background-size: initial;
+    top: calc(50% - var(--tainacan-container-padding));
+    left: calc(50% - var(--tainacan-container-padding));
+}
+
+// Link (hover is the same color as secondary
+a:hover {
+    color: var(--tainacan-secondary);
+    text-decoration: underline;
+}
+.add-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 1em; 
+    margin: 3px 0 6px 0;
+    &.disabled {
+        pointer-events: none;
+        cursor: default;
+        color: var(--tainacan-gray2) !important;
+
+        .icon {
+            color: var(--tainacan-gray2) !important;
+        }
+    }
+    .tainacan-icon::before {
+        font-size: 0.875em;
+    }
+}
+
+// Generic page container
+.page-container {
+    padding: var(--tainacan-container-padding) var(--tainacan-one-column);
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &>p {
+        font-size: 0.8125em;
+    }
+}
+// Used for pages with collection subheader
+.page-container-small {
+    height: calc(100% - 42px);
+    overflow-y: auto;
+    transition: height 0.6s;
+}
+// Used for pages with subheader in mobile
+.page-container-narrow {
+    padding: var(--tainacan-container-padding);
+    
+    @media screen and (max-width: 769px) {
+        padding: 1em;
+    }
+}
+
+// Metadata type textarea has different separators in different spots on interface
+.multivalue-separator {
+    color: var(--tainacan-gray3);
+    margin: 0 8px;    
+}
+.hierarchy-separator {
+    color: var(--tainacan-gray3);
+}
+
+.column-large-width {
+    .tainacan-compound-group {
+        display: inline-block;
+        font-size: 1.125em;
+        margin-top: -0.25em;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        max-width: 100%;
+
+        & * {
+            display: inline-block;
+        }
+        .label {
+            font-size: 1em;
+            color: var(--tainacan-info-color);
+            &:not(:first-child)::before {
+                content: ', ';
+                font-size: 1em;
+                font-weight: normal;
+                color: var(--tainacan-info-color);
+                display: inline-block;
+                margin-right: 0.35em;
+                margin-left: -0.15em;
+            }
+            &::after {
+                content: ': ';
+                font-size: 1em;
+                color: var(--tainacan-info-color);
+                display: inline-block;
+                margin-right: 0.15em;
+            }
+        }
+        p {
+            font-size: 1em !important;
+            line-height: 1.25em !important;
+        }
+    }
+}
+
+.metadata-value {
+    .tainacan-compound-group {
+        margin-left: 2px;
+        padding-left: 0.875em;
+        border-left: 1px solid var(--tainacan-gray2);
+
+        .tainacan-compound-metadatum .label {
+            margin-bottom: 0.25em;
+            font-size: 1em;
+            color: var(--tainacan-info-color);
+        }
+        .tainacan-compound-metadatum p {
+            margin-bottom: 0.75em;
+            font-size: 1em;
+        }
+        .multivalue-separator {
+            display: block;
+            max-height: 1px;
+            width: 60px;
+            background: var(--tainacan-gray2);
+            content: none;
+            color: transparent;
+            margin: 1em auto 1em -0.875em;
+        }
+        
+    }
+}
+.metadata-type-textarea,
+.metadata-type-compound {
+    .multivalue-separator {
+        display: block;
+        max-height: 1px;
+        width: 60px;
+        background: var(--tainacan-gray3);
+        content: none;
+        color: transparent;
+        margin: 1em auto;
+    }
+}
+.metadata-type-compound {
+    padding-left: 15px;
+    margin-left: 15px;
+    border-left: 1px solid var(--tainacan-gray2);
+
+    .tainacan-metadatum {
+        margin-bottom: 0.75em;
+
+        .label:not(:last-child) {
+            margin-bottom: 0.3em;
+        }
+        p:not(:last-child) {
+            margin-bottom: 0.75em;
+        }
+    }
+}
+
+// Buefy notices (toast, snackbar...)
+.notices {
+    z-index: 99999999999999 !important;
+}
+
+audio, video {
+    width: 100%;
+}

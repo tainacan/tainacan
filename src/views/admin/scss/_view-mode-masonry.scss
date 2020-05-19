@@ -1,0 +1,124 @@
+.tainacan-masonry-container {
+    min-height: 50vh;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    justify-content: space-evenly;
+    animation-name: appear;   
+    animation-duration: 0.5s;
+
+    .selected-masonry-item {
+        background-color: var(--tainacan-turquoise1);
+    }
+
+    .tainacan-masonry-item {
+        background-color: var(--tainacan-item-background-color);
+        display: block;
+        width: 100%;
+        flex-basis: 0;
+        margin-bottom: var(--tainacan-container-padding);
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+            background-color: var(--tainacan-item-heading-hover-background-color);
+        }
+
+        .masonry-item-checkbox {
+            position: absolute;
+            margin-top: 8px;
+            margin-left: 1em;
+        }
+        .actions-area {
+            position: relative;
+            float: right;
+            width: 100%;
+            height: 0px;
+            display: flex;
+            justify-content: flex-end;
+            visibility: hidden;
+            overflow: hidden;
+            opacity: 0;
+            padding: 2px 8px;
+            transition: visibility 0.2s, opacity 0.2s;
+            margin-top: 0px;
+            background-color: var(--tainacan-item-heading-hover-background-color);
+            transition: visibility 0.2s ease, opacity 0.2s ease, height 0.2s ease, margin-top 0.2s ease;
+
+            a {
+                margin-left: 12px;
+                opacity: 0;
+                transition: opacity 0.3s ease-in;
+            }
+        }
+        &:hover .actions-area { 
+            visibility: visible;
+            opacity: 1.0;
+            height: 32px;
+            margin-top: -30px;
+            background-color: var(--tainacan-item-heading-hover-background-color) !important;
+
+            a {
+                opacity: 1;
+            }
+        }
+        &.selected-grid-item {
+            .actions-area {
+                background-color: var(--tainacan-turquoise1);
+            }
+        }
+
+        .tainacan-masonry-item-thumbnail {
+            background-size: cover;
+            background-color: var(--tainacan-gray0);
+            background-blend-mode: multiply;
+            border-radius: 0px;
+            // transition: background-color 0.3s;
+
+            &:hover {
+                cursor: pointer;
+                // background-color: var(--tainacan-white);
+            } 
+        
+            img {
+                width: 100%;
+                height: auto;    
+                transition: height 0.2s ease;
+                display: block;
+            }
+            img:not(.skeleton) {
+                visibility: hidden;
+            }
+
+            // Masonry skeleton is white due to 
+            // background-blend-mode
+            .skeleton {
+                background: var(--tainacan-background-color);
+                color: transparent !important;
+            }
+        }
+
+        .metadata-title {
+            flex-shrink: 0;
+            margin: 0px 6px 0px 24px;
+            padding: 10px 1em;
+            min-height: 41px;
+            cursor: pointer;
+
+            p { 
+                font-size: 0.875em !important;
+                color: var(--tainacan-heading-color) !important; 
+                text-align: left !important;
+                margin-bottom: 0 !important;
+                word-break: break-word;
+                margin: 0;
+            }
+        } 
+    
+    }
+}
+
+

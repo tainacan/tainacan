@@ -1,0 +1,69 @@
+// IFRAME MODE AND READ MODE
+// Used on gutenberg blocks, hiding content not relevant to be rendered inside iframe
+#tainacan-admin-app.tainacan-admin-iframe-mode {
+    #primary-menu,
+    #menu-compress-button,
+    #tainacan-header,
+    #tainacan-repository-subheader,
+    #tainacan-subheader {
+        display: none;
+        visibility: hidden;
+    }
+    #repository-container .is-secondary-content {
+        margin-top: 0;
+        height: 100%;
+        
+        .page-container-small {
+            height: 100%;
+
+            #item-creation-options-dropdown,
+            .tabs,
+            #items-list-results .selection-control {
+                display: none;
+                visibility: hidden;
+            }
+
+            @media screen and (min-width: 769px) {
+                #filters-modal {
+                    padding-left: 0em;
+                }
+            }
+        }
+    }
+    #items-list-area {
+        .tainacan-record {
+            .metadata-title { min-height: 68px; }
+        }
+        .tainacan-card {
+            .metadata-title { margin-bottom: 0; }
+        }
+    }
+}
+#tainacan-admin-app.tainacan-admin-read-mode {
+
+    #items-list-area {
+        .tainacan-table {
+            tr:hover { background-color: transparent !important; cursor: default; }
+        }
+        .tainacan-card {
+            &:hover { background-color: transparent !important; cursor: default; }
+            .metadata-title { padding-left: 1.5em !important; margin-bottom: 0; }
+            &:hover .metadata-title { background-color: transparent !important }
+        }
+        .tainacan-grid-item {
+            &:hover, &:hover .metadata-title { background-color: transparent; cursor: default; }
+            a { cursor: default; }
+            .metadata-title { margin-left: 6px !important; padding-left: 6px !important; }
+        }
+        .tainacan-record {
+            &:hover .media { background-color: var(--tainacan-gray0) !important; cursor: default; }
+            .metadata-title { padding-left: 1.5em !important; margin-bottom: -0.75em; }
+            &:hover .metadata-title { background-color: var(--tainacan-gray0) !important; cursor: default; }
+        }
+        .tainacan-masonry-item {
+            &:hover { background-color: transparent; cursor: default; }
+            &:hover .tainacan-masonry-item-thumbnail { cursor: default; }
+            .metadata-title { margin-left: 6px; }
+        }
+    }
+}

@@ -73,7 +73,7 @@ class Collection extends Entity {
 		$array_collection['thumbnail']         = $this->get_thumbnail();
 		$array_collection['header_image']      = $this->get_header_image();
 		$array_collection['author_name']       = $this->get_author_name();
-		$array_collection['url']               = get_permalink( $this->get_id() );
+		$array_collection['url']               = $this->get_url();
 		$array_collection['creation_date']     = $this->get_date_i18n( explode( ' ', $array_collection['creation_date'] )[0] );
 		$array_collection['modification_date'] = $this->get_date_i18n( explode( ' ', $array_collection['modification_date'] )[0] );
 
@@ -303,7 +303,7 @@ class Collection extends Entity {
 	 * @return mixed|null
 	 */
 	function get_url() {
-		return $this->get_mapped_property( 'url' );
+		return get_permalink( $this->get_id() );
 	}
 
 	/**
@@ -744,6 +744,11 @@ class Collection extends Entity {
 			'private'
 		] ) ) ) {
 			return true;
+		}
+
+		if( $this->is_cover_page_enabled() && !is_numeric( $this->get_cover_page_id() ) ) {
+			$this->add_error('cover_page_id', __('cover page is enabled, please inform the page', 'tainacan'));
+			return false;
 		}
 
 		return parent::validate();

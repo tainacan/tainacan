@@ -1,0 +1,391 @@
+.dropdown, .autocomplete {
+    .dropdown-trigger{
+        .button {
+            border: none;
+            align-items: center;
+            .icon {
+                color: var(--tainacan-secondary);
+                align-items: center;
+            }
+            .gray-icon {
+                padding-right: 0 !important;
+            }
+        }
+        .button.is-primary, .button.is-secondary, .button.is-success {
+            .icon {
+                color: var(--taincan-background-color);
+            }
+        }
+        .dropdown.is-disabled {
+            cursor: default;
+        }
+    }
+    .dropdown-menu {
+        font-size: 1em;
+        padding: 0px;
+        margin-top: 0;
+        border-radius: 0px;
+        min-width: 6em;
+        border: none;
+        z-index: 99;
+        
+        .dropdown-content {
+            padding: 0px 0px 1px 0px;
+            border-radius: 0px !important;
+            max-height: 240px;
+            overflow-y: auto;
+            box-shadow: none;
+            background-color: var(--tainacan-background-color);
+            border: 1px solid var(--tainacan-input-border-color);
+
+            .dropdown-item {
+                display: block;
+                text-decoration: none;
+                padding: 0.57em 1em;
+                font-size: 0.825em;
+                color: var(--tainacan-input-color) !important;
+                border: none;
+                transition: background-color 0.3s ease;
+
+                label { margin-bottom: 0; }
+                &.control { font-size: 0.8125em !important; }
+                .b-checkbox { width: 100% };
+                &:hover { background-color: var(--tainacan-input-border-color); }
+                .is-small { color: var(--tainacan-info-color); }
+                &.is-active { background-color: var(--tainacan-primary); }
+
+                .media {
+                    align-items: center;
+                
+                    .media-left {
+                        margin-right: 0.5em;
+                        display: flex;
+                    }
+                    .media-content {
+                        display: flex;
+                        width: 80%;
+
+                        .ellipsed-text {
+                            overflow-x: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            margin-right: 3px;
+                        }
+                    }
+                }
+            }
+        } 
+    }
+    &.is-mobile-modal {
+        @media screen and (max-width: 768px) {
+            .dropdown-content {
+                max-height: 100vh;
+            }
+            .dropdown-menu {
+                border-radius: 4px;
+                .dropdown-item {
+                    padding: 0.75em !important;
+                }
+            }  
+        }
+    }
+}
+
+// This dropdown has a particular way of dealing with scroll
+.metadata-options-dropdown {
+    .dropdown-content {
+        max-height: unset !important;
+    }
+}
+.taginput.is-expanded {
+    width: 100%;
+}
+
+.taginput-container {
+    padding: 0px !important;
+    background-color: transparent !important;
+
+    &:focus, &:active {
+        border: none !important;
+    }
+    .input { 
+        margin-bottom: 0px !important; 
+        text-overflow: ellipsis;
+        background-color: var(--tainacan-input-background-color);
+    }
+    .input.has-selected, .input:focus, .input:active {
+        background-color: var(--tainacan-input-background-color);
+        border: 1px solid var(--tainacan-input-border-color) !important;
+    }
+    .tags {
+        margin:  0.17em 0.25em 0.08em 0.25em !important;
+        display: inline-flex;
+    }
+    .tag {
+        background: var(--tainacan-background-color);
+        padding-right: 0;
+        padding-left: 0.6em;
+
+        &.is-delete {
+            color: var(--tainacan-info-color);
+            &::after {
+                height: 47% !important;
+                width: 1px !important;
+            } 
+            &::before {
+                width: 47% !important;
+                height: 1px !important;
+            } 
+            &:hover, &:focus {
+                background-color: var(--tainacan-background-color);
+                color: var(--tainacan-label-color);
+            }
+        }
+    }
+    .autocomplete .icon {
+        height: 100% !important;
+    }
+}
+.selected-list-box {
+    padding: 4px 6px 0px 6px;
+    border-color: var(--tainacan-input-border-color);
+    border-width: 0px 1px 1px 1px;
+    border-style: solid;
+    background-color: var(--tainacan-background-color);
+    display: flex;
+    font-size: 0.75em;
+
+    .tags {
+        margin: 4px 6px 0px 6px;
+    }
+    .tag {
+        background: var(--tainacan-background-color);
+        padding-right: 0;
+        padding-left: 0.5em;
+
+        &.is-delete {
+            color: var(--tainacan-info-color);
+            &::after {
+                height: 30% !important;
+                width: 1px !important;
+            } 
+            &::before {
+                width: 30% !important;
+                height: 1px !important;
+            } 
+            &:hover, &:focus {
+                background-color: var(--tainacan-background-color);
+                color: var(--tainacan-label-color);
+            }
+        }
+    }
+}
+
+.datepicker {
+    width: 100%;
+
+    .datepicker-content {
+        height: auto;
+        
+        input {
+            height: auto;
+        }
+    }
+
+    .dropdown-trigger {
+        input {
+            font-size: 0.875em;
+            height: auto;
+        }
+        span.icon>i.mdi-calendar-today::before{
+            display: inline-block;
+            font: "TainacanIcons" normal normal normal 20px/1;
+            font-size: inherit;
+            text-rendering: auto;
+            vertical-align: middle;
+            line-height: inherit;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            content: 'calendar';
+            text-transform: none !important;
+            letter-spacing: normal !important;
+        }
+    }
+
+    & .dropdown.is-mobile-modal {
+        @media screen and (max-width: 768px) {
+            .field.has-addons {
+                font-size: 1.125em;
+            } 
+        }
+    }
+
+    .dropdown-menu {
+        background: transparent;
+        border: none;
+        
+        .dropdown-item {
+            background-color: var(--tainacan-background-color) !important;
+        }
+    }
+
+    .datepicker-header {
+
+        .pagination {
+            a>span>i:before {
+                display: inline-block;
+                font: normal normal normal 20px/1 "TainacanIcons";
+                font-size: inherit;
+                text-rendering: auto;
+                vertical-align: middle;
+                line-height: inherit;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                text-transform: none !important;
+                letter-spacing: normal !important;
+                color: var(--tainacan-secondary);
+            }
+
+            .pagination-previous {
+                border: none;
+                flex-grow: 0;
+
+                &>span>i:before {
+                    content: 'previous';
+                    font-size: 1.25em;
+                }
+            }
+
+            .pagination-next {
+                border: none;
+                flex-grow: 0;
+
+                &>span>i:before {
+                    content: 'next';
+                    font-size: 1.25em;
+                }
+            }
+        }
+    }
+
+    .datepicker-table {
+        padding: 0;
+        margin: 0px;
+        width: 100%;
+        
+        .datepicker-cell {
+            border: none !important;
+            padding: 0.5em 0.75em;
+
+            &.is-selectable.is-first-hovered,
+            &.is-selectable.is-last-hovered {
+                color: var(--tainacan-info-color) !important;
+                background-color: var(--tainacan-gray3) !important;
+            }
+            &.is-today,
+            &.is-today:hover {
+                color: var(--tainacan-info-color) !important;
+                background-color: var(--tainacan-primary);
+            }
+            &.is-selected,
+            &.is-selected:hover {
+                color: var(--tainacan-white) !important;
+                background-color: var(--tainacan-turquoise5) !important;
+            }
+        }
+
+        .datepicker-months {
+            width: auto;
+
+            .datepicker-cell {
+                height: 2em;
+                width: 50%;
+                padding: 0.3em 0.25em !important;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                display: block;
+            }
+        }
+    }
+
+    @media screen and (min-width: 768px) {
+
+        .datepicker-header {
+            margin-bottom: 0.5em;
+            padding-top: 0.15em;
+            padding-bottom: 0.5em;
+            
+            .pagination {
+                font-size: 1.1em;
+                flex-wrap: wrap;
+            
+                .pagination-list {
+                    margin-bottom: 0.5em;
+
+                    .field.has-addons {
+                        width: 100% !important;
+
+                        .control {
+                            select { 
+                                border: none !important; 
+                                min-height: 26px;
+                            }
+                        }
+                        .control:first-child {
+                            margin-right: 1px;
+                            .select {
+                                border-right: 1px solid var(--tainacan-input-border-color);
+                                margin-right: 1px;
+                            }
+                        }
+                    }
+                }
+
+                .pagination-previous {
+                    margin: 0;
+                    height: 1.5em;
+                    padding: 0;
+                    order: 3;
+                    min-height: 24px;
+                    margin-bottom: 0.35em;
+                }
+
+                .pagination-next {
+                    margin: 0;
+                    height: 1.5em; 
+                    padding: 0;
+                    min-height: 24px;
+                    margin-bottom: 0.35em;
+                }
+            }
+        }
+
+        .dropdown-item {
+            padding: 0.8em !important;
+        }
+
+        .dropdown-menu {
+            min-width: 100% !important;
+        }
+
+
+        .datepicker-table {
+            margin-bottom: 0px;
+        }
+        
+        .select {
+            select {
+                display: unset;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+        }
+
+        .dropdown-content { 
+            border-radius: 2px !important;
+            padding: 0px;
+            max-height: inherit !important;
+        }
+    }
+}

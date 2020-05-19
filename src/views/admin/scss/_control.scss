@@ -1,0 +1,49 @@
+// This used to be inside the TainacanForm class but there are meny places where this settings might be desirable.
+.control {
+    font-size: 1em;
+
+    .is-clickable {
+        pointer-events: auto !important;
+        cursor: pointer;
+    }
+    &.has-icons-right,
+    &.has-icons-left {
+        .icon {
+            height: 100%;
+            .mdi::before {
+                color: var(--tainacan-info-color);
+                display: inline-block;
+                font: normal normal normal 20px/1 "TainacanIcons";
+                font-size: inherit;
+                text-rendering: auto;
+                vertical-align: middle;
+                line-height: inherit;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                font-size: 1.25em;
+                text-transform: none !important;
+                letter-spacing: normal !important;
+            }
+            .mdi-alert-circle::before {
+                content: "close";
+                color: inherit;
+            }
+            .mdi-magnify::before {
+                content: 'search';
+            }
+            .mdi-close-circle::before {
+                content: 'close';
+                font-size: 1em;
+            }
+            .mdi-account::before {
+                content: 'user';
+            }
+            .mdi-calendar-today::before {
+                content: 'calendar';
+            }
+        }
+    }
+    &.has-icons-right .icon .mdi-magnify::before {
+        color: var(--tainacan-blue5);
+    }
+}

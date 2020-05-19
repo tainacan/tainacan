@@ -1,0 +1,39 @@
+// Tabs 
+.tabs {
+    font-size: 1em;
+    font-family: var(--tainacan-font-family, inherit);
+
+    ul {
+        border-bottom-color: var(--tainacan-input-border-color);
+        margin-bottom: 0;
+    }
+    li {
+        overflow-y: hidden;
+    }
+    a {
+        font-size: 0.8125em;
+        color: var(--tainacan-black) !important;
+        padding: 0.5em 1.45em;
+        border-bottom: 4px solid transparent;
+        transition: border-bottom-color ease 0.3s;
+        cursor: pointer !important;
+
+        &:hover{
+            border-bottom-color: transparent;
+            text-decoration: none;
+        }
+    }
+    li.is-active a {
+        border-bottom-color: var(--tainacan-turquoise5);
+        color: var(--tainacan-black) !important;
+    }
+    .icon:first-child {
+        margin-right: 0.2em;
+        margin-left: -3px;
+    }
+}
+.b-tabs {
+    .tab-content {         
+        padding: 0.75em 1.5em;  
+    }
+}

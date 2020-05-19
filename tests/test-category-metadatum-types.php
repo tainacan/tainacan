@@ -746,6 +746,57 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 		$this->assertTrue( $taxCheck instanceof \Tainacan\Entities\Taxonomy );
 		$this->assertEquals($tax->get_id(), $taxCheck->get_id());
 
-    }
+	}
+
+	function test_set_metadata_to_not_allow_new_terms_after_taxonomy_is_set_to_it() {
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_ItemMetadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'test',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$tax = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'tax_test',
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'meta',
+		 		'description' => 'description',
+				'collection' => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+					'allow_new_terms' => 'yes'
+				]
+			),
+			true
+		);
+
+		$tax->set_allow_insert('no');
+		$tax->validate();
+		$Tainacan_Taxonomies->insert($tax);
+
+		$checkMeta = $Tainacan_Metadata->fetch( $metadatum->get_id() );
+
+		$this->assertEquals('no', $checkMeta->get_metadata_type_options()['allow_new_terms']);
+
+
+
+	}
 
 }

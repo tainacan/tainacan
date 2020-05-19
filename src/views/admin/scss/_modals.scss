@@ -1,0 +1,194 @@
+// Tainacan modals
+.modal .animation-content {
+    background: none;
+    width: calc(100% - (2 * var(--tainacan-one-column)));
+    width: 91.6666667vw;
+    max-height: 86%;
+    max-height: 86vh;
+    overflow: auto;
+    border-radius: 0;
+
+    @media screen and (max-width: 769px) {
+        max-height: 95%;
+        max-height: 95vh;
+    }
+}
+.modal.is-full-screen > .animation-content, 
+.modal.is-full-screen > .animation-content > .modal-card {
+    background-color: transparent;
+}
+.modal .modal-close {
+    z-index: 99999;
+    @media only screen and (max-width: 768px) {
+        &:before, &:after { background-color: #298596; }
+    }
+}
+
+.tainacan-modal-title {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    h1, h2 {
+        font-size: 1.25em;
+        font-weight: normal;
+        font-weight: 500;
+        color: var(--tainacan-heading-color);
+        display: inline-block;
+        width: 90%;
+        margin-right: auto;
+        margin-bottom: 0px;
+        margin: 0 auto 0 0;
+    }
+    a.back-link{
+        font-weight: 500;
+        float: right;
+        margin-top: 5px;
+    }
+    hr{
+        margin: 3px 0 4px 0;
+        height: 1px;
+        background-color: var(--tainacan-secondary);
+        border-top: 0;
+        width: 100%;
+    }
+}
+.tainacan-modal-content {
+    font-family: var(--tainacan-font-family, inherit);
+    border-radius: 0px;
+    background-color: var(--tainacan-background-color);
+    padding: 40px var(--tainacan-one-column);
+    padding: 40px 4.166666667vw;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    @media only screen and (max-width: 768px) {
+        padding: 40px calc(2 * var(--tainacan-one-column));
+        padding: 40px 8.333333vw;
+    }
+
+    .modal-card-body {
+        background-color: var(--tainacan-background-color);
+    }
+
+    nav {
+        border: none !important;
+        margin-bottom: 0 !important;
+    }
+    
+    figure {
+        margin: 0;
+        text-align: center;
+    }
+    .attachment {
+        width: 100%;
+    }
+
+    .form-submit {
+        padding: 40px 0em 0.4em 0em !important;
+    }
+
+    @media only screen and (max-width: 768px) {
+        max-height: 100%;
+        max-height: 100vh;
+        display: block;
+    }
+}
+// Bulma modals customized for Tainacan (custom-dialog.vue)
+.dialog {
+
+    .modal-background {
+        background-color: rgba(0, 0, 0, 0.70);
+    }
+    .modal-card {
+        background-color: var(--tainacan-background-color);
+        color: var(--tainacan-secondary);
+        border-radius: 10px;
+        flex-wrap: wrap;
+        flex-direction: row;
+        padding: 35px;
+        margin: 0 auto !important;
+
+        .modal-card-head, .modal-card-body, .modal-card-foot {
+            background-color: var(--tainacan-background-color);
+            color: var(--tainacan-gray5);
+            border: none;
+            padding-bottom: 12px;
+        } 
+        .modal-custom-icon {
+            background-color: var(--tainacan-gray1);
+            border-radius: 50px;
+            height: 80px;
+            width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-card-head {
+            h1 { 
+                color: var(--tainacan-heading-color); 
+            }
+            font-weight: normal;
+            padding: 0;
+            margin-bottom: 12px;
+        }
+        .modal-card-body {
+            background: var(--tainacan-background-color);
+            padding: 0px 0px 12px 20px;
+            width: 50%;
+            font-size: 0.875em;
+        }
+        .modal-card-foot {
+            justify-content: space-between;
+            padding: 12px 0px 0px 0px;
+            width: 100%;
+
+            .button {
+                border-radius: 6px !important;
+                font-weight: normal;
+                padding: 2px 15px !important;
+                margin-top: 0px !important;
+                margin-bottom: 0px !important;
+                height: inherit !important;
+                box-shadow: none !important;
+                display: inline-flex !important;
+                cursor: pointer;
+                height: auto !important;
+                line-height: 1.25em !important;
+                font-size: 0.875em !important;
+            }
+            .button.is-success {
+                border: none;
+            }
+            .button:not(.is-success):not(.is-secondary) {
+                background-color: var(--tainacan-background-color);
+                color: var(--tainacan-secondary);
+                border: 1px solid var(--tainacan-gray4);
+            }
+        }
+    }
+}
+
+// WordPress Media Modal customization
+.wp-core-ui {
+    a:focus{ box-shadow: none; }
+}
+.media-modal-backdrop {
+    z-index: 9999999 !important;
+}
+.media-modal {
+    left: 100px;
+    top: 100px;
+    bottom: 100px;
+    right: 100px;
+    background-color: var(--tainacan-background-color);
+    z-index: 99999999999 !important;
+
+    .media-toolbar button.button:not(.is-small):not(.is-medium):not(.is-large){
+        margin-top: 1em !important;
+        font-size: 0.875rem !important;
+    }
+}

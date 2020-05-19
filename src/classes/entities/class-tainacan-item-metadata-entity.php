@@ -17,7 +17,7 @@ class Item_Metadata_Entity extends Entity {
 	protected $repository = 'Item_Metadata';
 	
 	protected
-        $item,
+		$item,
 		$metadatum,
 		$parent_meta_id,
 		$meta_id,
@@ -30,21 +30,41 @@ class Item_Metadata_Entity extends Entity {
 	 * @param Metadatum  $metadatum   Metadatum Entity
 	 * @param int $meta_id ID for a specific meta row 
 	 */
-    function __construct(Item $item = null, Metadatum $metadatum = null, $meta_id = null, $parent_meta_id = null) {
-        
-        $this->set_item($item);
-        $this->set_metadatum($metadatum);
-		
+	function __construct(Item $item = null, Metadatum $metadatum = null, $meta_id = null, $parent_meta_id = null) {
+
+		$this->set_item($item);
+		$this->set_metadatum($metadatum);
+
 		if (!is_null($meta_id) && is_int($meta_id)) {
 			$this->set_meta_id($meta_id);
 		}
-		
+
 		if (!is_null($parent_meta_id) && is_int($parent_meta_id)) {
 			$this->set_parent_meta_id($parent_meta_id);
+
+			//set the meta_id according to item metadatum and parent_meta_id
+			$childrens = get_metadata_by_mid( 'post', $parent_meta_id );
+			if ( is_object( $childrens ) ) {
+				$childrens = $childrens->meta_value;
+				if ( is_array($childrens) && !empty($childrens) ) {
+					$childrens_in = implode(',', $childrens);
+					global $wpdb;
+					$item_metadata = $wpdb->get_results( $wpdb->prepare(
+						"SELECT * FROM $wpdb->postmeta
+							WHERE post_id = %d AND 
+										meta_key = %s AND
+										meta_id IN ($childrens_in)",
+							$item->get_id(),
+							$metadatum->get_id() 
+					), ARRAY_A );
+					if( is_array($item_metadata) && !empty($item_metadata) ) {
+						$meta_id = (int)$item_metadata[0]['meta_id'];
+						$this->set_meta_id($meta_id);
+					}
+				}
+			}
 		}
-		
-		
-    }
+	}
 	
 	/**
 	 * Gets the string used before each value when concatenating multiple values 
@@ -178,13 +198,30 @@ class Item_Metadata_Entity extends Entity {
 	 */
 	public function get_value_as_array() {
 		$value = $this->get_value();
+		$primitive_type = $this->get_metadatum()->get_metadata_type_object()->get_primitive_type();
 		
 		if ( $this->is_multiple() ) {
-			
 			$return = [];
 			
 			foreach ($value as $v) {
-				if ( $v instanceof Term || $v instanceof ItemMetadataEntity ) {
+				if( is_array($v) ) {
+					$options = $this->get_metadatum()->get_metadata_type_object()->get_options();
+					$order = $options['children_order'];
+					$compounds = [];
+					$compounds_not_ordinate = [];
+					foreach ($v as $metadatum_id => $itemMetadata) {
+						if ( $itemMetadata instanceof Item_Metadata_Entity ) {
+							$index = array_search( $metadatum_id, array_column( $order, 'id' ) );
+							if ( $index !== false ) {
+								$compounds[$index] = array_merge( ['metadatum_id' => $metadatum_id], $itemMetadata->_toArray() );
+							} else {
+								$compounds_not_ordinate[] = array_merge( ['metadatum_id' => $metadatum_id], $itemMetadata->_toArray() );
+							}
+						}
+					}
+					ksort( $compounds );
+					$return[] = array_merge($compounds, $compounds_not_ordinate);
+				} else if ( $v instanceof Term || $v instanceof Item_Metadata_Entity ) {
 					$return[] = $v->_toArray();
 				} else {
 					$return[] = $v;
@@ -195,7 +232,41 @@ class Item_Metadata_Entity extends Entity {
 			
 			$return = '';
 			
-			if ( $value instanceof Term || $value instanceof ItemMetadataEntity ) {
+			if( $primitive_type === 'compound' ) {
+				$compounds = [];
+				$compounds_not_ordinate = [];
+				$options = $this->get_metadatum()->get_metadata_type_object()->get_options();
+				$order = $options['children_order'];
+
+				//dealing with categories
+				if( isset( $options['children_objects'] ) ) {
+					foreach ( $options['children_objects'] as $child ) {
+						$metadata = new Metadatum( $child['id'] );
+						$itemMetadata = new self( $this->get_item(), $metadata );
+						$child_primitive_type = $metadata->get_metadata_type_object()->get_primitive_type();
+						if ( $itemMetadata instanceof Item_Metadata_Entity && $child_primitive_type === 'term' ) {
+							$compounds[] = array_merge( ['metadatum_id' => $child['id']], $itemMetadata->_toArray() );
+						}
+					}
+				}
+
+				if( is_array($value) ) {
+					foreach ($value as $itemMetadata) {
+						$child_primitive_type = $itemMetadata->get_metadatum()->get_metadata_type_object()->get_primitive_type();
+						if ( $itemMetadata instanceof Item_Metadata_Entity && $child_primitive_type !== 'term' ) {
+							$metadatum_id = $itemMetadata->get_metadatum()->get_id();
+							$index = array_search( $metadatum_id, array_column( $order, 'id' ) );
+							if ( $index !== false ) {
+								$compounds[$index] = array_merge( ['metadatum_id' => $metadatum_id], $itemMetadata->_toArray() );
+							} else {
+								$compounds_not_ordinate[] = array_merge( ['metadatum_id' => $metadatum_id], $itemMetadata->_toArray() );
+							}
+						}
+					}
+				}
+				ksort( $compounds );
+				$return = array_merge($compounds, $compounds_not_ordinate);
+			} else if ( $value instanceof Term || $value instanceof Item_Metadata_Entity ) {
 				$return = $value->_toArray();
 			} else {
 				$return = $value;
@@ -214,11 +285,11 @@ class Item_Metadata_Entity extends Entity {
 	 * 
 	 * @return array the representation of this object as an array
 	 */
-    public function  _toArray( $formatted_values = true, $cascade = false ){
+	public function  _toArray( $formatted_values = true, $cascade = false ){
 		$as_array = [];
 		
 		$as_array['value'] = $this->get_value_as_array();
-		
+		$as_array['parent_meta_id'] = $this->get_parent_meta_id();
 		if ( $formatted_values ) {
 			$as_array['value_as_html'] = $this->get_value_as_html();
 			$as_array['value_as_string'] = $this->get_value_as_string();
@@ -230,7 +301,7 @@ class Item_Metadata_Entity extends Entity {
 		
 		if ( $cascade ) {
 			$as_array['item']  = $this->get_item()->_toArray();
-		    $as_array['metadatum'] = $this->get_metadatum()->_toArray();
+			$as_array['metadatum'] = $this->get_metadatum()->_toArray();
 		}
 	    
 
@@ -395,7 +466,7 @@ class Item_Metadata_Entity extends Entity {
      *
      * @return boolean
      */
-    function validate() {   
+    function validate() {
         $value = $this->get_value();
         $metadatum = $this->get_metadatum();
         $item = $this->get_item();
@@ -437,10 +508,35 @@ class Item_Metadata_Entity extends Entity {
                 
                 // if its required, at least one must be filled
                 $one_filled = false;
-                $valid = true;
-                foreach($value as $val) {
-                    if (!empty($val))
-                        $one_filled = true;
+								$valid = true;
+								$dupe_array = array();
+								foreach($value as $val) {
+									if (!empty($val))
+										$one_filled = true;
+									
+									if ($this->is_collection_key()) {
+										if (++$dupe_array[$val] > 1) {
+											$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
+											return false;
+										}
+										
+										$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+										$test = $Tainacan_Items->fetch([
+											'meta_query' => [
+												[
+													'key'   => $this->metadatum->get_id(),
+													'value' => $val
+												]
+											],
+											'post__not_in' => [$item->get_id()]
+										], $item->get_collection());
+				
+										if ($test->have_posts()) {
+												// translators: %s = metadatum name. ex: Register ID is a collection key and there is another item with the same value
+											$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
+											return false;
+										}
+									}
                 }
                 
                 if ($this->is_required() && !$one_filled) {
@@ -456,7 +552,7 @@ class Item_Metadata_Entity extends Entity {
                 }
                 
                 $this->set_as_valid();
-                return true;   
+                return true;
             } else {
                 // translators: %s = metadatum name. ex: Title is invalid
                 $this->add_error( 'invalid', sprintf( __('%s is invalid', 'tainacan'), $metadatum->get_name() ) );
@@ -491,7 +587,7 @@ class Item_Metadata_Entity extends Entity {
             }
 
             $this->set_as_valid();
-            return true;   
+            return true;
         }   
     }
 }

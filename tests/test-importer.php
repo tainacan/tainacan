@@ -263,19 +263,19 @@ class ImporterTests extends TAINACAN_UnitTestCase {
         $file = fopen($file_name, 'w');
 
         // save the column headers
-        fputcsv($file, array('Column 1', 'Column 2', 'Column 3', 'Column 4', 'Column 5'));
+        fputcsv($file, array('author', 'Column 1', 'Column 2', 'Column 3', 'Column 4', 'Column 5'));
 
         // Sample data
         $data = array(
-            array('Data 11', 'Data 12', 'Data 13||TESTE', 'Data 14', 'Data 15>>DATA 151'),
-            array('Data 21', 'Data 22', 'this
+            array(get_current_user_id(), 'Data 11', 'Data 12', 'Data 13||TESTE', 'Data 14', 'Data 15>>DATA 151'),
+            array(get_current_user_id(), 'Data 21', 'Data 22', 'this
             is
             having
             multiple
             lines', 'Data 24', 'Data 25'),
-            array('Data 31', 'Data 32', utf8_decode( 'Data 33||Rééço' ), 'Data 34', 'Data 35'),
-            array('Data 41', 'Data 42', 'Data 43||limbbo', 'Data 44', 'Data 45'),
-            array('Data 51', 'Data 52', 'Data 53', 'Data 54', 'Data 55>>DATA551')
+            array(get_current_user_id(), 'Data 31', 'Data 32', utf8_decode( 'Data 33||Rééço' ), 'Data 34', 'Data 35'),
+            array(get_current_user_id(), 'Data 41', 'Data 42', 'Data 43||limbbo', 'Data 44', 'Data 45'),
+            array(get_current_user_id(), 'Data 51', 'Data 52', 'Data 53', 'Data 54', 'Data 55>>DATA551')
         );
 
         // save each row of the data
@@ -296,7 +296,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
         // get metadata to mapping
         $headers =  $importer_instance->get_source_metadata();
-        $this->assertEquals( $headers[4], 'Column 5' );
+        $this->assertEquals( $headers[5], 'Column 5' );
 
         // inserting the collection
         $collection = $this->tainacan_entity_factory->create_entity(
@@ -368,13 +368,18 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 
         //create a random mapping
         $map = [];
-        foreach ( $metadata as $index => $metadatum ){
-            if( $index === 0){
+        $index = 1;
+        foreach ( $metadata as $metadatum ){
+            if ($metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Core_Author') {
+                $map[$metadatum->get_id()] = $headers[0];
+                continue;
+            }
+            if( $index === 1){
                 $map['create_metadata'] = $headers[$index];
             } else {
                 $map[$metadatum->get_id()] = $headers[$index];
             }
-
+            $index++;
         }
 
 		$collection_definition['mapping'] = $map;

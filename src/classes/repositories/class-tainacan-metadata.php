@@ -41,6 +41,7 @@ class Metadata extends Repository {
 		add_filter( 'pre_delete_post', array( &$this, 'force_delete_core_metadata' ), 10, 3 );
 
 		add_action('tainacan-insert-tainacan-taxonomy', [$this, 'hook_taxonomies_saved_as_private']);
+		add_action('tainacan-insert-tainacan-taxonomy', [$this, 'hook_taxonomies_saved_not_allow_insert_new_terms']);
 
 	}
 
@@ -433,9 +434,14 @@ class Metadata extends Repository {
 				'compare' => 'IN',
 			);
 
-			$args = array_merge( [
-				'parent' => 0
-			], $args );
+			if( !isset( $args['parent']) ) {
+				$args = array_merge( [
+					'parent' => 0
+				], $args );
+			}
+
+			if( $args['parent'] === 'all ')
+				unset( $args['parent'] );
 
 			$args['meta_query'] = $original_meta_q;
 			$args['meta_query'][] = $meta_query;
@@ -726,7 +732,7 @@ class Metadata extends Repository {
 				'metadata_type'   => 'Tainacan\Metadata_Types\Core_Title',
 				'status'          => 'publish',
 				'display'		  => 'yes',
-			]
+			],
 		];
 
 	}
@@ -890,6 +896,7 @@ class Metadata extends Repository {
 		return false;
 	}
 
+
 	/**
 	 * create a metadatum entity and insert by an associative array ( attribute => value )
 	 *
@@ -1038,6 +1045,8 @@ class Metadata extends Repository {
 				$search_q = $wpdb->prepare("AND meta_value IN ( SELECT ID FROM $wpdb->posts WHERE post_title LIKE %s )", '%' . $search . '%');
 			} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\Taxonomy' ) {
 				$search_q = $wpdb->prepare("AND t.name LIKE %s", '%' . $search . '%');
+			} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\User' ) {
+				$search_q = $wpdb->prepare("AND meta_value IN ( SELECT ID FROM $wpdb->users WHERE display_name LIKE %s )", '%' . $search . '%');
 			} else {
 				$search_q = $wpdb->prepare("AND meta_value LIKE %s", '%' . $search . '%');
 			}
@@ -1081,7 +1090,7 @@ class Metadata extends Repository {
 						FROM
 						$wpdb->terms t INNER JOIN $wpdb->term_taxonomy tt ON t.term_id = tt.term_id
 						LEFT JOIN (
-							SELECT DISTINCT term_taxonomy_id FROM $wpdb->term_relationships 
+							SELECT DISTINCT term_taxonomy_id FROM $wpdb->term_relationships
 								INNER JOIN ($items_query) as posts ON $wpdb->term_relationships.object_id = posts.ID
 						) as tr ON tt.term_taxonomy_id = tr.term_taxonomy_id
 						WHERE tt.taxonomy = %s ORDER BY t.name ASC", $taxonomy_slug
@@ -1240,6 +1249,9 @@ class Metadata extends Repository {
 						continue;
 					}
 					$label = $_post->post_title;
+				} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\User' ) {
+					$name = get_the_author_meta( 'display_name', $label );
+					$label = apply_filters("tainacan-item-get-author-name", $name);
 				}
 
 				$total_items = null;
@@ -1496,13 +1508,13 @@ class Metadata extends Repository {
 				$taxonomy_id = $taxonomy->get_id();
 
 				$args = [
-					'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy', 
+					'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
 					'meta_query' => [
 						[
-							'key' => '_option_taxonomy_id', 
+							'key' => '_option_taxonomy_id',
 							'value' => $taxonomy_id
 						]
-					], 
+					],
 					'post_status' => $stati
 				];
 				$metadata = $this->fetch($args, 'OBJECT');
@@ -1521,4 +1533,49 @@ class Metadata extends Repository {
 		}
 
 	}
+
+	/**
+	 * When a taxonomy is saved disabling allow_insert. All related metadata should set allow_new_terms to 'no'
+	 *
+	 * @param \Tainacan\Entities\Taxonomy $taxonomy
+	 * @return void
+	 */
+	public function hook_taxonomies_saved_not_allow_insert_new_terms($taxonomy) {
+
+		if ( $taxonomy instanceof Entities\Taxonomy && 'no' === $taxonomy->get_allow_insert() ) {
+
+			$taxonomy_id = $taxonomy->get_id();
+
+			$args = [
+				'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'meta_query' => [
+					[
+						'key' => '_option_taxonomy_id',
+						'value' => $taxonomy_id
+					],
+					[
+						'key' => '_option_allow_new_terms',
+						'value' => 'yes'
+					]
+				],
+				'post_status' => 'any',
+			];
+
+			$metadata = $this->fetch($args, 'OBJECT');
+
+			foreach ($metadata as $meta) {
+				$options = $meta->get_metadata_type_options();
+				$options['allow_new_terms'] = 'no';
+
+				$meta->set_metadata_type_options( $options );
+				if ( $meta->validate() ) {
+					$this->insert($meta);
+				}
+
+			}
+
+		}
+
+	}
+
 }

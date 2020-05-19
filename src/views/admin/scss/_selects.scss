@@ -1,0 +1,65 @@
+.select {
+    padding-top: 0px !important;
+    
+    &, 
+    &:not(.is-multiple) {
+        height: auto;
+    }
+    &.is-small select {
+        min-height: 24px !important;
+    }
+    select {
+        background: transparent; // WordPress 5.3 adds arrows here
+        border: none;
+        border-radius: 1px !important;
+        font-weight: normal;
+        font-size: 0.875em !important;
+        font-family: var(--tainacan-font-family, inherit);
+        line-height: 1.5em;
+        height: auto !important;
+        padding: calc(0.375em - 1px) 20px calc(0.375em - 1px) 10px !important;
+        margin-top: 0px !important;
+        margin-bottom: 0px !important;
+        color: var(--tainacan-input-color);
+        option:checked, option:hover {
+            background: var(--tainacan-input-border-color) !important;
+        }
+        &:focus, &:active {
+            box-shadow: none !important;
+            text-decoration: none !important;
+        }
+        &[disabled=disabled] {
+            background: var(--tainacan-gray1) !important;
+        }
+        &:hover {
+            color: var(--tainacan-input-color) !important;
+        }
+        
+    }
+    &:not(.is-loading)::after {
+        content: "arrowdown" !important;
+        font: normal normal normal 20px/1 "TainacanIcons";
+        border: none !important;
+        transform: none !important;
+        right: 10px !important;
+        color: var(--tainacan-secondary) !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        margin-top: -0.275em !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        font-size: 1.2em;
+        line-height: 1.5em;
+    }  
+    &.is-loading.is-small::after {
+        font-size: 0.875em;
+    }
+    optgroup,
+    optgroup[label],
+    optgroup::before {
+        color: var(--tainacan-gray2);
+        font-weight: normal;
+        font-style: italic;
+    }     
+}

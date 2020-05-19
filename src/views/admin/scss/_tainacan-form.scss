@@ -1,0 +1,209 @@
+// Input components used in forms are gray in Tainacan
+.tainacan-form {
+    color: var(--tainacan-input-color);
+    width: 100%;
+    padding: 0;
+
+    .form-submit {
+        justify-content: space-between !important;
+        padding: 12px 0px ;
+        margin-bottom: 0px;
+        width: 100%;
+
+        .button {
+            border-width: 1px;
+            padding: 2px 30px !important;
+        }
+        &.has-only-save {
+            justify-content: end !important;
+        }
+    }
+    .field:not(:last-child) {
+        margin-bottom: 1.5em;
+    }
+    .field>.field:not(:last-child) {
+        margin-bottom: 0.5em;
+    }
+    .label { 
+        font-weight: bold;
+        text-transform: inherit;
+        font-size: 0.875em; 
+        color: var(--tainacan-label-color);
+        display: inline-block;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        vertical-align: top;
+    }
+    .section-label>label {
+        cursor: default;
+    }
+    .required-metadatum-asterisk {
+        color: var(--tainacan-label-color);
+        position: relative;
+        top: -3px;
+        
+        &.is-danger {
+            color: var(--tainacan-danger);
+        }
+    }
+    .input, .textarea { 
+        &.is-danger {
+          background-color: var(--tainacan-red1);  
+        }
+    }
+    a[disabled] {
+        opacity: 0.5;
+        user-select: none;
+        pointer-events: none;
+    }
+    .b-numberinput {
+        height: auto;
+        padding: 0 !important;
+        
+        .control {
+            margin-right: 0 !important;
+            margin-bottom: 0;
+            margin-top: 0;
+        }
+        div.control {
+            flex-shrink: 1;
+            order: -1;
+        }
+        p.control:first-child .button {
+            border-right: none;
+        }
+        p.control:last-child .button {
+            border-left: none;
+        }
+        button, 
+        input {
+            height: auto !important;
+            text-align: start;
+        }
+        button.is-primary,
+        button.is-primary:hover,
+        button.is-primary:focus,
+        button.is-primary:active {
+            border: 1px solid var(--tainacan-input-border-color);
+            background-color: var(--tainacan-input-background-color) !important;
+            color: var(--tainacan-secondary) !important;
+            padding: 0.25em 0.6em !important;
+            border-radius: 0 !important;
+            min-height: 100%;
+
+            &:hover {
+                background-color: var(--tainacan-primary) !important;
+            }
+
+            .mdi::before {
+                display: inline-block;
+                font: normal normal normal 20px/1 "TainacanIcons";
+                font-size: inherit;
+                text-rendering: auto;
+                vertical-align: middle;
+                line-height: inherit;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                transform: none !important;
+                text-transform: none !important;
+                letter-spacing: normal !important;
+                font-size: 1.3em;
+            }
+            .mdi-plus::before {
+                content: "plus" !important;
+            } 
+            .mdi-minus::before {
+                content: "minus" !important;
+            } 
+            
+        }
+    }
+    .radio, .checkbox {
+        align-items: center;
+        margin-bottom: 5px;
+
+        width: 100%;
+        
+        &.is-danger {
+            border-color: var(--tainacan-danger);
+        }   
+    }
+    .control-label { // The value part in checkbox, radio and switches
+        color: var(--tainacan-input-color);
+        padding-left: 0.8em;
+        font-size: 0.81em;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    .select {
+        select {
+            color: var(--tainacan-input-color);
+            background-color: var(--tainacan-input-background-color) !important;
+            border: 1px solid var(--tainacan-input-border-color) !important;
+            &:focus>option:checked, &:focus>option:hover {
+                background-color: var(--tainacan-turquoise1) !important;
+            }
+            &[disabled=disabled] {
+                border: 1px solid var(--tainacan-gray1) !important;
+            }
+        } 
+    }
+    .hidden-select-arrow .select::after {
+        color: transparent !important;
+    }   
+    .dropdown {
+        width: 100%;
+        .dropdown-trigger { width: 100% }
+        .button {
+            justify-content: space-between;
+            width: 100%;
+            border: 1px solid var(--tainacan-input-border-color) !important;
+            border-radius: 0 !important;
+            padding: 2px 14px 2px 18px !important
+        }
+    }
+    .two-columns-dropdown {
+        &>.dropdown-menu>.dropdown-content {
+            display: flex;
+            flex-wrap: wrap;
+
+            .dropdown-item {
+                width: 50%;
+                font-size: 0.875em;
+            }
+        }
+    }
+    .upload-draggable {
+        color: var(--tainacan-info-color);
+        transition: color 0.2s background-color 0.2s;
+        border-radius: 0 !important;
+        border-color: var(--tainacan-input-border-color);
+        padding: 1.25em;
+    }
+    .autocomplete {
+        .dropdown-menu {
+            width: 100%;
+        }
+        .dropdown-item {
+            white-space: initial !important;
+        }
+    }
+
+    .form-hook-region {
+        background-color: var(--tainacan-gray1);
+        padding: 1em 1.875em 2em 1.875em;
+
+        h4 {
+            font-weight: 600;
+            color: var(--tainacan-turquoise5);
+            margin-bottom: 6px;
+        }
+        hr {
+            margin-top: 8px;
+            height: 1px;
+            background-color: var(--tainacan-turquoise5);
+        }
+    }
+}
