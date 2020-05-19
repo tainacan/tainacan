@@ -12,6 +12,7 @@ node_modules
 npm-debug.log
 src/assets/js/*.js
 src/assets/js/*.js.LICENSE
+src/assets/js/*.js.LICENSE.txt
 src/assets/*.js
 last-js-build.md5
 last-sass-build.md5
@@ -23,7 +24,6 @@ src/assets/css/tainacan-admin.css.map
 src/assets/js/report.html
 src/assets/report.html
 .vscode
-src/pdf-viewer/pdfjs-dist
 report.txt
 .tmp
 demosaved.csv

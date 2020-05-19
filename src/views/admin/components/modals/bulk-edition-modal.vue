@@ -247,7 +247,8 @@
                                     v-if="!bulkEditionProcedures[criterion].isDone &&
                                         !bulkEditionProcedures[criterion].isExecuting &&
                                         bulkEditionProcedures[criterion].metadatum &&
-                                        bulkEditionProcedures[criterion].action"
+                                        bulkEditionProcedures[criterion].action && 
+                                        (bulkEditionProcedures[criterion].action != editionActions.copy || (bulkEditionProcedures[criterion].action == editionActions.copy && !!bulkEditionProcedures[criterion].metadatumIdCopyFrom))"
                                     @click="executeBulkEditionProcedure(criterion)"
                                     class="button is-white is-pulled-right">
                                 <span 
@@ -605,7 +606,8 @@
                         return JSON.parse(JSON.stringify(this.metadata)).filter((metadatum) => {
                             return (
                                 metadatum.id != selectedMetadatum.id &&
-                                metadatum.metadata_type == selectedMetadatum.metadata_type 
+                                metadatum.metadata_type == selectedMetadatum.metadata_type &&
+                                (selectedMetadatum.multiple == 'yes' || (metadatum.multiple != 'yes' && selectedMetadatum.multiple != 'yes'))
                             )
                         });
                     }
