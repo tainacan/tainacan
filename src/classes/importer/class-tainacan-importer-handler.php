@@ -86,7 +86,7 @@ class Importer_Handler {
 
 	function enqueue_scripts() {
 	 	global $TAINACAN_BASE_URL;
-	 	wp_enqueue_script('import_term_csv_script', $TAINACAN_BASE_URL . '/importer/term-importer/js/term.js', false, TAINACAN_VERSION, true);
+	 	wp_enqueue_script('import_term_csv_script', $TAINACAN_BASE_URL . '/classes/importer/term-importer/js/term.js', false, TAINACAN_VERSION, true);
 	}
 	
 	function add_to_queue(\Tainacan\Importer\Importer $importer_object) {

@@ -2,9 +2,9 @@
 Contributors: andrebenedito, daltonmartins, fabianobn, jacsonp, leogermani, weryques, wetah, eduardohumberto, ravipassos, jessicafpx, marinagiolo, omarceloavila, vnmedeiros, tainacan
 Tags: museums, libraries, archives, GLAM, collections, repository
 Requires at least: 4.8
-Tested up to: 5.3https://profiles.wordpress.org/tainacan/
+Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 0.15.2
+Stable tag: 0.16
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -32,15 +32,15 @@ Tainacan is an open-source, powerful and flexible repository platform for WordPr
 
 After installation, you will see a new menu item in your admin panel called "Tainacan". Click on it to open the Tainacan admin interface.
 
-To get an overview of the main concepts of Tainacan, please visit [this page](https://tainacan.github.io/tainacan-wiki//#/general-concepts).
+To get an overview of the main concepts of Tainacan, please visit [this page](https://tainacan.github.io/tainacan-wiki/#/general-concepts).
 
 = Create a collection =
 
-Click "New Collection" to create a new collection, use a mapping standard or import using one of our importers.
+Click "New Collection" to create a new collection, use a mapping standard or import it using one of our importers.
 
 = Configure your collection =
 
-Navigate the top menu to set your collection up. Create the metadata that items in this collection will have, and choose, from these metadata, which ones are going to be used as a filter.
+Navigate to the top menu to set your collection up. Create the metadata that items in this collection will have, and choose, from these metadata, which ones are going to be used as a filter.
 
 = Add items =
 
@@ -50,7 +50,7 @@ Back to the "Items" screen, click "Add new" to create a new item.
 
 Through this admin interface you can manage your collection and browse its item using the faceted search interface or advanced search interface.
 
-If you want to visit your collections in the public side of your site, using your current theme, visit http://your-site/tainacan-collection and you will get the list of your collections.
+If you want to visit your collections in the public side of your site, using your current theme, visit http://your-site/collections and you will get the list of your collections.
 
 = Set up Taxonomies =
 
