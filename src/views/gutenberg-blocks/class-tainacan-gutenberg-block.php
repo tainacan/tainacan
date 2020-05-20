@@ -154,12 +154,13 @@ function tainacan_blocks_register_tainacan_dynamic_items_list(){
 
 function tainacan_blocks_register_tainacan_faceted_search(){
 	global $TAINACAN_BASE_URL;
+	global $TAINACAN_VERSION;
 
 	wp_register_script(
-		'faceted-search-theme',
+		'tainacan-search',
 		$TAINACAN_BASE_URL . '/assets/js/theme_search.js',
-		['underscore']
-		//array('wp-components')
+		['underscore'],
+		TAINACAN_VERSION
 	);
 
 	wp_register_script(
@@ -178,7 +179,7 @@ function tainacan_blocks_register_tainacan_faceted_search(){
 		register_block_type( 'tainacan/faceted-search', array(
 			'editor_script' => 'faceted-search',
 			'style'         => 'faceted-search',
-			'script'		=> 'faceted-search-theme'
+			'script'		=> 'tainacan-search'
 		) );
 	}
 }
@@ -356,7 +357,7 @@ function tainacan_blocks_add_plugin_settings() {
 	wp_localize_script( 'facets-list', 'tainacan_blocks', $settings );
 
 	// The facet facteded search block uses a different settings object, the same used on the theme items list
-	wp_localize_script( 'faceted-search-theme', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params() );
+	wp_localize_script( 'tainacan-search', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params() );
 }
 
 function tainacan_blocks_get_common_styles() {

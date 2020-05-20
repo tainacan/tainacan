@@ -78,75 +78,80 @@
     --tainacan-container-padding: #{$container-padding};
 }
 
-// Some Bulma classes will work with SASS but not with CSS variables
-.has-text-primary, 
-.has-text-primary:hover, 
-.has-text-primary:focus,
-.has-text-secondary, 
-.has-text-secondary:hover, 
-.has-text-secondary:focus {
-    color: var(--tainacan-secondary) !important;
-}
-.has-text-turquoise5, 
-.has-text-turquoise5:hover, 
-.has-text-turquoise5:focus {
-    color: var(--tainacan-turquoise5) !important;
-}
-.has-text-blue5, 
-.has-text-blue5:hover, 
-.has-text-blue5:focus {
-    color: var(--tainacan-blue5) !important;
-}
-.has-text-blue4, 
-.has-text-blue4:hover, 
-.has-text-blue4:focus {
-    color: var(--tainacan-blue4) !important;
-}
-.has-text-gray, 
-.has-text-gray:hover, 
-.has-text-gray:focus {
-    color: var(--tainacan-info-color) !important;
-}
-.has-text-gray3, 
-.has-text-gray3:hover, 
-.has-text-gray3:focus {
-    color: var(--tainacan-gray3) !important;
-}
-.has-text-gray4, 
-.has-text-gray4:hover, 
-.has-text-gray4:focus {
-    color: var(--tainacan-gray4) !important;
-}
-.has-text-gray5, 
-.has-text-gray5:hover, 
-.has-text-gray5:focus {
-    color: var(--tainacan-gray4) !important;
-}
-.has-text-danger, 
-.has-text-danger:hover, 
-.has-text-danger:focus {
-    color: var(--tainacan-danger) !important;
-}
-.has-text-success, 
-.has-text-success:hover, 
-.has-text-success:focus {
-    color: var(--tainacan-success) !important;
-}
-.is-success, 
-.is-success:hover, 
-.is-success:focus {
-    background-color: var(--tainacan-success) !important;
-    color: var(--tainacan-white) !important;
-}
-.is-white, 
-.is-white:hover, 
-.is-white:focus {
-    background-color: var(--tainacan-white) !important;
-    color: var(--tainacan-black) !important;
-}
+#tainacan-admin-app,
+.theme-items-list,
+.tainacan-modal-content {
 
-a,
-a:hover,
-a:focus {
-    color: var(--tainacan-secondary);
+    // Some Bulma classes will work with SASS but not with CSS variables
+    .has-text-primary, 
+    .has-text-primary:hover, 
+    .has-text-primary:focus,
+    .has-text-secondary, 
+    .has-text-secondary:hover, 
+    .has-text-secondary:focus {
+        color: var(--tainacan-secondary) !important;
+    }
+    .has-text-turquoise5, 
+    .has-text-turquoise5:hover, 
+    .has-text-turquoise5:focus {
+        color: var(--tainacan-turquoise5) !important;
+    }
+    .has-text-blue5, 
+    .has-text-blue5:hover, 
+    .has-text-blue5:focus {
+        color: var(--tainacan-blue5) !important;
+    }
+    .has-text-blue4, 
+    .has-text-blue4:hover, 
+    .has-text-blue4:focus {
+        color: var(--tainacan-blue4) !important;
+    }
+    .has-text-gray, 
+    .has-text-gray:hover, 
+    .has-text-gray:focus {
+        color: var(--tainacan-info-color) !important;
+    }
+    .has-text-gray3, 
+    .has-text-gray3:hover, 
+    .has-text-gray3:focus {
+        color: var(--tainacan-gray3) !important;
+    }
+    .has-text-gray4, 
+    .has-text-gray4:hover, 
+    .has-text-gray4:focus {
+        color: var(--tainacan-gray4) !important;
+    }
+    .has-text-gray5, 
+    .has-text-gray5:hover, 
+    .has-text-gray5:focus {
+        color: var(--tainacan-gray4) !important;
+    }
+    .has-text-danger, 
+    .has-text-danger:hover, 
+    .has-text-danger:focus {
+        color: var(--tainacan-danger) !important;
+    }
+    .has-text-success, 
+    .has-text-success:hover, 
+    .has-text-success:focus {
+        color: var(--tainacan-success) !important;
+    }
+    .is-success, 
+    .is-success:hover, 
+    .is-success:focus {
+        background-color: var(--tainacan-success) !important;
+        color: var(--tainacan-white) !important;
+    }
+    .is-white, 
+    .is-white:hover, 
+    .is-white:focus {
+        background-color: transparent !important;
+        color: var(--tainacan-black) !important;
+    }
+
+    a,
+    a:hover,
+    a:focus {
+        color: var(--tainacan-secondary);
+    }
 }
