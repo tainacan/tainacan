@@ -620,6 +620,7 @@ class CSV extends Importer {
 
 		$updating_item = false;
 
+        $Tainacan_Item_Metadata->disable_logs();
 		if ( is_numeric($this->get_transient('item_id')) ) {
 			$item = $Tainacan_Items->fetch( (int) $this->get_transient('item_id') );
 		} else {
@@ -635,7 +636,7 @@ class CSV extends Importer {
 				$this->add_log('item will be updated ID:' . $item->get_id() );
 				$updating_item = true;
 				// When creating a new item, disable log for each metadata to speed things up
-				$Tainacan_Item_Metadata->disable_logs();
+				$Tainacan_Item_Metadata->enable_logs();
 			} else {
 				$this->add_log('item with ID ' . $this->get_transient('item_id') . ' not found. Unable to update. Creating a new one.' );
 				$item = new Entities\Item();
