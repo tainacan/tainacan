@@ -41,6 +41,23 @@
                 {{ $i18n.get('info_no_item_found') }}
             </template>
         </b-taginput>
+        <a
+                @click="createNewItemModal = !createNewItemModal"
+                class="add-link">
+            <span class="icon is-small">
+                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+            </span>
+            &nbsp;{{ $i18n.getFrom('items','add_new') }}
+        </a>
+        <b-modal 
+                :width="1200"
+                :active.sync="createNewItemModal">
+            <iframe 
+                    width="100%"
+                    height="600px"
+                    :src="adminFullURL + $routerHelper.getNewItemPath(collectionId) + '?iframemode=true'" />
+        </b-modal>
+        
     </div>
 </template>
 
@@ -66,7 +83,9 @@
                 itemsFound: [],
                 searchQuery: '',
                 totalItems: 0,
-                page: 1
+                page: 1,
+                createNewItemModal: false,
+                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#'
             }
         },
         created() {

@@ -956,7 +956,7 @@
                 background: var(--tainacan-input-background-color);
                 border: 1px solid var(--tainacan-input-border-color);
                 padding: 14px;
-                top: -0.75em;
+                top: calc(-0.75em + 1px);
 
                 &:hover {
                     color: var(--tainacan-secondary) !important;

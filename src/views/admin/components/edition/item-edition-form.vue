@@ -27,6 +27,7 @@
             </a>
             <hr>
         </div>
+        
         <transition
                 mode="out-in"
                 :name="(isOnSequenceEdit && sequenceRightDirection != undefined) ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
@@ -882,7 +883,7 @@ export default {
             this.fetchSequenceGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
         }
     },
-    created(){
+    created() {
         // Obtains collection ID
         this.cleanItemMetadata();
         eventBusItemMetadata.clearAllErrors();
@@ -891,12 +892,12 @@ export default {
         this.form.collectionId = this.collectionId;
 
         // CREATING NEW SINGLE ITEM
-        if (this.$route.fullPath.split("/").pop() == "new") {
+        if (this.$route.path.split("/").pop() == "new") {
             this.isCreatingNewItem = true;
             this.createNewItem();
 
         // EDITING EXISTING ITEM
-        } else if (this.$route.fullPath.split("/").pop() == "edit") {
+        } else if (this.$route.path.split("/").pop() == "edit") {
             this.isLoading = true;
 
             // Obtains current Item ID from URL
