@@ -120,7 +120,7 @@
                                             placement: 'auto-start'
                                         }"
                                         :aria-label="column.name + ': ' + (item.title != undefined && item.title != '' ? item.title : $i18n.get('label_value_not_informed'))"
-                                        v-if="collectionId == undefined &&
+                                        v-if="!collectionId &&
                                             column.metadata_type_object != undefined && 
                                             column.metadata_type_object.related_mapped_prop == 'title'"
                                         v-html="`<span class='sr-only'>` + column.name + ': </span>' + (item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)"/>
@@ -135,7 +135,7 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        v-if="collectionId == undefined &&
+                                        v-if="!collectionId &&
                                             column.metadata_type_object != undefined && 
                                             column.metadata_type_object.related_mapped_prop == 'description'"
                                         v-html="`<span class='sr-only'>` + column.name + ': </span>' + (item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)"/>
@@ -181,7 +181,7 @@
 export default {
     name: 'ViewModeTable',
     props: {
-        collectionId: Number,
+        collectionId: undefined,
         displayedMetadata: Array,
         items: Array,
         isLoading: false

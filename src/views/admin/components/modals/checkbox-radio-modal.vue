@@ -766,6 +766,9 @@
     .breadcrumb {
         background-color: var(--tainacan-white) !important;
 
+        ul {
+            list-style: none;
+        }
         li + li::before {
             content: ">" !important;
         }

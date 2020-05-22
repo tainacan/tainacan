@@ -1,0 +1,551 @@
+
+// Animations for Slide Menu
+@keyframes slide-menu-in {
+    from {
+        -ms-transform: translate(-100%, 0); /* IE 9 */
+        -webkit-transform: translate(-100%, 0); /* Safari */
+        transform: translate(-100%, 0);
+    }
+    to {
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes slide-menu-out {
+    from {
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        -ms-transform: translate(-100%, 0); /* IE 9 */
+        -webkit-transform: translate(-100%, 0); /* Safari */
+        transform: translate(-100%, 0);
+    }
+}
+
+@keyframes appear {
+    from {
+        opacity: 0.0;
+        visibility: hidden;
+    }
+    to {
+        opacity: 1.0;
+        visibility: visible;
+    }
+}
+
+@keyframes disappear {
+    from {
+        opacity: 0.3;
+        visibility: visible;
+    }
+    to {
+        opacity: 0.0;
+        visibility: hidden;
+    }
+}
+
+.slide-menu-enter-active {
+    animation-name: slide-menu-in;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-out;   
+    
+    .modal-background {
+        animation-name: appear;
+        animation-duration: 0.6s;
+        animation-timing-function: ease-out;
+    } 
+}
+.slide-menu-leave-active {
+    animation-name: slide-menu-out;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in;    
+
+    .modal-background {
+        opacity: 0.0;
+        animation-name: disappear;
+        animation-duration: 0.2s;
+        animation-timing-function: ease-in;
+    } 
+}
+
+// Animations for background processes popup and url copy popup
+@keyframes appear-from-top-tooltip {
+    from { 
+        top: 24px;
+        opacity: 0; 
+    }
+    to { 
+        top: 48px;
+        opacity: 1; 
+    }
+}
+@keyframes appear-from-top {
+    from { 
+        top: -48px;
+    }
+    to { 
+        top: 0px; 
+    }
+}
+@keyframes appear-from-bottom {
+    from { 
+        bottom: -48px;
+    }
+    to { 
+        bottom: -12px;
+    }
+}
+@keyframes expand {
+    from { 
+        max-height: 0; 
+    }
+    to { 
+        max-height: 222px; 
+    }
+}
+
+// Animations for Item Appear in Items List
+@keyframes item-appear {
+    from {
+        opacity: 0;
+        visibility: hidden;
+        transform: translate(0, 12px);
+    }
+    to {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(0, 0px);
+    }
+}
+
+// Filter Item Collapse 
+@keyframes filter-item-in {
+    from {
+        opacity: 0;
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+        -ms-transform: translate(0%, -30%); /* IE 9 */
+        -webkit-transform: translate(0%, -30%); /* Safari */
+        transform: translate(0%, -30%);
+    }
+    to {
+        height: 35px;
+        max-height: 35px;
+        min-height: 35px;
+        opacity: 1;        
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes filter-item-out {
+    from {
+        height: 35px;
+        max-height: 35px;
+        min-height: 35px;
+        opacity: 1;
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+        opacity: 0;
+        -ms-transform: translate(0%, -30%); /* IE 9 */
+        -webkit-transform: translate(0%, -30%); /* Safari */
+        transform: translate(0%, -30%);
+    }
+}
+
+.filter-item-enter-active {
+    overflow: hidden;
+    animation-name: filter-item-in;
+    animation-duration: 0.1s;
+    animation-timing-function: ease;   
+}
+.filter-item-leave-active {   
+    overflow: hidden; 
+    animation-name: filter-item-out;
+    animation-duration: 0.1s;
+    animation-timing-function: ease;   
+}
+
+// Filter and Metadata Form Collapse 
+@keyframes form-collapse-in {
+    from {
+        opacity: 0;
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+        // -ms-transform: translate(0%, -30%); /* IE 9 */
+        // -webkit-transform: translate(0%, -30%); /* Safari */
+        // transform: translate(0%, -30%);
+    }
+    to {
+        height: 300px;
+        max-height: 300px;
+        min-height: 300px;
+        opacity: 1;        
+        // -ms-transform: translate(0, 0); /* IE 9 */
+        // -webkit-transform: translate(0, 0); /* Safari */
+        // transform: translate(0, 0);
+    }
+}
+
+@keyframes form-collapse-out {
+    from {
+        height: 300px;
+        max-height: 300px;
+        min-height: 300px;
+        //opacity: 1;
+        // -ms-transform: translate(0, 0); /* IE 9 */
+        // -webkit-transform: translate(0, 0); /* Safari */
+        // transform: translate(0, 0);
+    }
+    to {
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+       //opacity: 0;
+        // -ms-transform: translate(0%, -30%); /* IE 9 */
+        // -webkit-transform: translate(0%, -30%); /* Safari */
+        // transform: translate(0%, -30%);
+    }
+}
+
+.form-collapse-enter-active {
+    overflow: hidden;
+    animation-name: form-collapse-in;
+    animation-duration: 0.2s;
+    animation-timing-function: ease;   
+}
+.form-collapse-leave-active {
+    overflow: hidden;
+    animation-name: form-collapse-out;
+    animation-duration: 0.15s;
+    animation-timing-function: ease;   
+}
+
+// Capababilities Form Collapse 
+@keyframes form-capabilities-in {
+    from {
+        opacity: 0;
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+        // -ms-transform: translate(0%, -30%); /* IE 9 */
+        // -webkit-transform: translate(0%, -30%); /* Safari */
+        // transform: translate(0%, -30%);
+    }
+    to {
+        height: 120px;
+        max-height: 120px;
+        min-height: 120px;
+        opacity: 1;        
+        // -ms-transform: translate(0, 0); /* IE 9 */
+        // -webkit-transform: translate(0, 0); /* Safari */
+        // transform: translate(0, 0);
+    }
+}
+
+@keyframes form-capabilities-out {
+    from {
+        height: 120px;
+        max-height: 120px;
+        min-height: 120px;
+        //opacity: 1;
+        // -ms-transform: translate(0, 0); /* IE 9 */
+        // -webkit-transform: translate(0, 0); /* Safari */
+        // transform: translate(0, 0);
+    }
+    to {
+        height: 0px;
+        max-height: 0px;
+        min-height: 0px;
+       //opacity: 0;
+        // -ms-transform: translate(0%, -30%); /* IE 9 */
+        // -webkit-transform: translate(0%, -30%); /* Safari */
+        // transform: translate(0%, -30%);
+    }
+}
+
+.form-capabilities-enter-active {
+    overflow: hidden;
+    animation-name: form-capabilities-in;
+    animation-duration: 0.2s;
+    animation-timing-function: ease;   
+}
+.form-capabilities-leave-active {
+    overflow: hidden;
+    animation-name: form-capabilities-out;
+    animation-duration: 0.15s;
+    animation-timing-function: ease;   
+}
+
+// Filters menu 
+@keyframes filters-menu-in {
+    from {
+        opacity: 0;
+        width: 0px;
+        max-width: 0px;
+        min-width: 0px;
+        -ms-transform: translate(-30%, 0%); /* IE 9 */
+        -webkit-transform: translate(-30%, 0%); /* Safari */
+        transform: translate(-30%, 0%);
+    }
+    to {
+        height: 180px;
+        max-width: 180px;
+        min-width: 180px;
+        opacity: 1;        
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes filters-menu-out {
+    from {
+        width: 180px;
+        max-width: 180px;
+        min-width: 180px;
+        opacity: 1;
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        width: 0px;
+        max-width: 0px;
+        min-width: 0px;
+        opacity: 0;
+        -ms-transform: translate(-30%, 0%); /* IE 9 */
+        -webkit-transform: translate(-30%, 0%); /* Safari */
+        transform: translate(-30%, 0%);
+    }
+}
+
+.filters-menu-enter-active {
+    animation-name: filters-menu-in;
+    animation-duration: 0.2s;
+    animation-timing-function: ease;   
+}
+.filters-menu-leave-active {
+    animation-name: filters-menu-out;
+    animation-duration: 0.2s;
+    animation-timing-function: ease;   
+}
+
+// Slide
+@keyframes slide-left-in {
+    from {
+        opacity: 0;
+        -ms-transform: translate(-5%, 0%) scale(0.95); /* IE 9 */
+        -webkit-transform: translate(-5%, 0%) scale(0.95); /* Safari */
+        transform: translate(-5%, 0%) scale(0.95);
+    }
+    to {
+        opacity: 1;        
+        -ms-transform: translate(0, 0) scale(1); /* IE 9 */
+        -webkit-transform: translate(0, 0) scale(1); /* Safari */
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+@keyframes slide-left-out {
+    from {
+        opacity: 1;
+        -ms-transform: translate(0, 0) scale(1); /* IE 9 */
+        -webkit-transform: translate(0, 0) scale(1); /* Safari */
+        transform: translate(0, 0) scale(1);
+    }
+    to {
+        opacity: 0;
+        -ms-transform: translate(10%, 0%) scale(0.95); /* IE 9 */
+        -webkit-transform: translate(10%, 0%) scale(0.95); /* Safari */
+        transform: translate(10%, 0%) scale(0.95);
+    }
+}
+
+.slide-left-enter-active {
+    animation-name: slide-left-in;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;   
+}
+.slide-left-leave-active {
+    animation-name: slide-left-out;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;   
+}
+
+@keyframes slide-right-in {
+    from {
+        opacity: 0;
+        -ms-transform: translate(10%, 0%) scale(0.95); /* IE 9 */
+        -webkit-transform: translate(10%, 0%) scale(0.95); /* Safari */
+        transform: translate(10%, 0%) scale(0.95);
+    }
+    to {
+        opacity: 1;        
+        -ms-transform: translate(0, 0) scale(1); /* IE 9 */
+        -webkit-transform: translate(0, 0) scale(1); /* Safari */
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+@keyframes slide-right-out {
+    from {
+        opacity: 1;
+        -ms-transform: translate(0, 0) scale(1); /* IE 9 */
+        -webkit-transform: translate(0, 0) scale(1); /* Safari */
+        transform: translate(0, 0) scale(1);
+    }
+    to {
+        opacity: 0;
+        -ms-transform: translate(-5%, 0%) scale(0.95); /* IE 9 */
+        -webkit-transform: translate(-5%, 0%) scale(0.95); /* Safari */
+        transform: translate(-5%, 0%) scale(0.95);
+    }
+}
+
+.slide-right-enter-active {
+    animation-name: slide-right-in;
+    animation-duration: 0.3s;
+    animation-timing-function: ease;   
+}
+.slide-right-leave-active {
+    animation-name: slide-right-out;
+    animation-duration: 0.3s;
+    animation-timing-function: ease;   
+}
+
+// Sequence page
+
+// Slide
+@keyframes page-left-in {
+    from {
+        opacity: 0;
+        -ms-transform: translate(-5%, 0%); /* IE 9 */
+        -webkit-transform: translate(-5%, 0%); /* Safari */
+        transform: translate(-5%, 0%);
+    }
+    to {
+        opacity: 1;        
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes page-left-out {
+    from {
+        opacity: 1;
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        opacity: 0;
+        -ms-transform: translate(10%, 0%); /* IE 9 */
+        -webkit-transform: translate(10%, 0%); /* Safari */
+        transform: translate(10%, 0%);
+    }
+}
+
+.page-left-enter-active {
+    animation-name: page-left-in;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;   
+}
+.page-left-leave-active {
+    animation-name: page-left-out;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;   
+}
+
+@keyframes page-right-in {
+    from {
+        opacity: 0;
+        -ms-transform: translate(10%, 0%); /* IE 9 */
+        -webkit-transform: translate(10%, 0%); /* Safari */
+        transform: translate(10%, 0%);
+    }
+    to {
+        opacity: 1;        
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes page-right-out {
+    from {
+        opacity: 1;
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        opacity: 0;
+        -ms-transform: translate(-5%, 0%); /* IE 9 */
+        -webkit-transform: translate(-5%, 0%); /* Safari */
+        transform: translate(-5%, 0%);
+    }
+}
+
+.page-right-enter-active {
+    animation-name: page-right-in;
+    animation-duration: 0.3s;
+    animation-timing-function: ease;   
+}
+.page-right-leave-active {
+    animation-name: page-right-out;
+    animation-duration: 0.3s;
+    animation-timing-function: ease;   
+}
+
+// SKELETON GRADIENT ANIMATIONS
+@-webkit-keyframes skeleton-animation {
+    0%{opacity: 1.0}
+    50%{opacity: 0.2}
+    100%{opacity: 1.0}
+}
+@-moz-keyframes skeleton-animation {
+    0%{opacity: 1.0}
+    50%{opacity: 0.2}
+    100%{opacity: 1.0}
+}
+@-o-keyframes skeleton-animation {
+    0%{opacity: 1.0}
+    50%{opacity: 0.2}
+    100%{opacity: 1.0}
+}
+@keyframes skeleton-animation {
+    0%{opacity: 1.0}
+    50%{opacity: 0.2}
+    100%{opacity: 1.0}
+}
+
+// .skeleton:nth-child(even) {
+//     background: linear-gradient(105deg, #f0f0f0, #fbfbfb, #eeeeee);
+// }
+// .skeleton:nth-child(odd) {
+//     background: linear-gradient(235deg, #f0f0f0, #fbfbfb, #eeeeee);   
+// }
+.skeleton {
+    border-radius: 2px;
+    background: var(--tainacan-skeleton-color);
+
+    -webkit-animation: skeleton-animation 1.8s ease infinite;
+    -moz-animation: skeleton-animation 1.8s ease infinite;
+    -o-animation: skeleton-animation 1.8s ease infinite;
+    animation: skeleton-animation 1.8s ease infinite;
+}
