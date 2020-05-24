@@ -48,6 +48,11 @@ class Elastic_Press {
 		add_filter( 'ep_config_mapping', [$this, 'elasticpress_config_mapping'], 10, 1 );
 		add_filter( 'ep_post_sync_args', [$this, 'ep_post_sync_args'], 10, 2 );
 
+		add_filter( 'ep_formatted_args', function ( $formatted_args ) {
+			$formatted_args['track_total_hits'] = true;
+			return $formatted_args;
+		 } );
+		 
 		// add_action('ep_add_query_log', function($query) { //using to DEBUG
 		// 	error_log("DEGUG:");
 		// 	error_log($query["args"]["body"]);
