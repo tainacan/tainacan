@@ -445,7 +445,7 @@ class Elastic_Press {
 				if (!empty($filter['include'])) {
 					$custom_filter_include = $custom_filter;
 					$custom_filter_include['bool']['must'][] = ["bool" => [ "must"=> [ [ "terms" => ["$field.term_id" => $filter['include'] ] ] ] ] ];
-					$terms_id_inlcude = \implode($filter['include'], ",");
+					$terms_id_inlcude = \implode( ",", $filter['include']);
 					$aggs[$id.'.include'] = [
 						"filter" => $custom_filter_include,
 						"aggs"	=> array(
@@ -479,7 +479,7 @@ class Elastic_Press {
 					$custom_filter_include = $custom_filter;
 					$custom_filter_include['bool']['must'][] = ["bool" => [ "must"=> [ [ "terms" => ["$field" => $filter['include'] ] ] ] ] ];
 					$meta_label = explode(".",$id)[1] . '.' . explode(".",$id)[2];
-					$meta_id_inlcude = "'" . \implode($filter['include'], "','") . "'";
+					$meta_id_inlcude = "'" . \implode("','", $filter['include']) . "'";
 					$aggs[$id.'.include'] = [
 						"filter" => $custom_filter_include,
 						"aggs"	=> array(
