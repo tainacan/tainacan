@@ -140,8 +140,8 @@
             if (this.collection.id == this.collectionId)
                 this.currentUserCanEditItems = this.collection.current_user_can_edit_items;
             else {
-                axios.tainacan.get('/collections/' + this.collectionId + '?fetch_only=name,url,allow_comments&context=edit')
-                    .then(res => this.currentUserCanEditItems = res.data.current_user_can_edit_items)
+                axios.get('/collections/' + this.collectionId + '?fetch_only=name,url,allow_comments&context=edit')
+                    .then(res => this.currentUserCanEditItems = res.data.current_user_can_edit_items )
                     .catch(() => this.currentUserCanEditItems = false );
             }
         },
