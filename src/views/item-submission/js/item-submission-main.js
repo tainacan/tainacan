@@ -95,8 +95,14 @@ document.addEventListener("DOMContentLoaded", () => {
             
         const VueItemSubmission = new Vue({
             store,
-            data: {},
-            beforeMount () {},
+            data: {
+                collectionId: ''
+            },
+            beforeMount () {
+                // Collection source settings
+                if (this.$el.attributes['collection-id'] != undefined)
+                    this.collectionId = this.$el.attributes['collection-id'].value;
+            },
             methods: {
                 isParameterTrue(parameter) {
                     const value = this.$el.attributes[parameter].value;

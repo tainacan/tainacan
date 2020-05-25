@@ -1,5 +1,7 @@
 <template>
-    <item-submission-form class="tainacan-item-submission-form" />
+    <item-submission-form 
+            :collection-id="$root.collectionId"
+            class="tainacan-item-submission-form" />
 </template>
 
 <script>
