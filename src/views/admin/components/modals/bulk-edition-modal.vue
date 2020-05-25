@@ -80,8 +80,12 @@
                         <!-- THIRD FIELD - DYNAMIC INPUTS -->
                         <transition name="filter-item">
                             <template v-if="bulkEditionProcedures[criterion] && bulkEditionProcedures[criterion].metadatum && bulkEditionProcedures[criterion].action"> 
-             
-                                <template v-if="bulkEditionProcedures[criterion].action == editionActions.replace">
+                                
+                                <!-- This has do be a 'div' as the transition animation only renders one child -->
+                                <div 
+                                        style="margin-left: 12px; display: flex;"
+                                        v-if="bulkEditionProcedures[criterion].action == editionActions.replace">
+                                    
                                     <component
                                             :is="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component"
                                             :forced-component-type="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
@@ -113,7 +117,7 @@
                                             :disabled="bulkEditionProcedures[criterion].isDone"  
                                             @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
                                     />
-                                </template>
+                                </div>
 
                                 <template
                                         v-else-if="bulkEditionProcedures[criterion].metadatum.id == 'status'">
