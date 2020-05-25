@@ -7,6 +7,7 @@ module.exports = {
     entry: {
         admin: './src/views/admin/js/main.js',
         theme_search: './src/views/theme-search/js/theme-main.js',
+        item_submission: './src/views/item-submission/js/item-submission-main.js',
         roles: './src/views/roles/js/roles-main.js',
 
         block_terms_list: './src/views/gutenberg-blocks/tainacan-terms/terms-list/index.js',
