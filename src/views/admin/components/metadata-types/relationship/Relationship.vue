@@ -20,7 +20,8 @@
                 field="label"
                 @typing="search"
                 check-infinite-scroll
-                @infinite-scroll="searchMore">
+                @infinite-scroll="searchMore"
+                :has-counter="false">
             <template slot-scope="props">
                 <div class="media">
                     <div 
@@ -40,14 +41,23 @@
                     slot="empty">
                 {{ $i18n.get('info_no_item_found') }}
             </template>
+            <template
+                    v-if="currentUserCanEditItems && !$route.query.iframemode" 
+                    slot="footer">
+                 <a @click="createNewItemModal = true">
+                    {{ $i18n.get('label_crate_new_item') + ' "' + searchQuery + '"' }}
+                </a>
+            </template>
         </b-taginput>
         <a
+                v-if="currentUserCanEditItems"
+                :disabled="$route.query.iframemode"
                 @click="createNewItemModal = !createNewItemModal"
                 class="add-link">
             <span class="icon is-small">
                 <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
             </span>
-            &nbsp;{{ $i18n.getFrom('items','add_new') }}
+            &nbsp;{{ $i18n.get('label_crate_new_item') }}
         </a>
         <b-modal 
                 :width="1200"
@@ -56,7 +66,7 @@
                     :id="newItemFrame"
                     width="100%"
                     style="height: 85vh"
-                    :src="adminFullURL + $routerHelper.getNewItemPath(collectionId) + '?iframemode=true'" />
+                    :src="adminFullURL + $routerHelper.getNewItemPath(collectionId) + '?iframemode=true&newitemtitle=' + searchQuery" />
         </b-modal>
         
     </div>
@@ -64,6 +74,7 @@
 
 <script>
     import { tainacan as axios } from '../../../js/axios';
+    import { mapGetters } from 'vuex';
     import qs from 'qs';
 
     export default {       
@@ -86,11 +97,26 @@
                 totalItems: 0,
                 page: 1,
                 createNewItemModal: false,
-                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#'
+                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#',
+                currentUserCanEditItems: false
+            }
+        },
+        computed: {
+            collection() {
+                return this.getCollection();
+            }
+        },
+        watch: {
+            createNewItemModal() {
+                if (this.createNewItemModal)
+                    window.addEventListener('message', this.createNewItemFromModal, false);
+                else
+                    window.removeEventListener('message', this.createNewItemFromModal);
             }
         },
         created() {
             this.collectionId = ( this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.collection_id ) ? this.itemMetadatum.metadatum.metadata_type_options.collection_id : '';
+            
             if (this.itemMetadatum.value && (Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value.length > 0 : true )) {
                 let query = qs.stringify({ postin: ( Array.isArray( this.itemMetadatum.value ) ) ? this.itemMetadatum.value : [ this.itemMetadatum.value ]  });
                 query += this.itemMetadatum.metadatum.metadata_type_options.search ? '&fetch_only_meta=' + this.itemMetadatum.metadatum.metadata_type_options.search : '';
@@ -109,19 +135,20 @@
                         this.$console.log(error);
                     });
             }
-        },
-        watch: {
-            createNewItemModal() {
-                if (this.createNewItemModal) {
-                    window.addEventListener('messageFromIframe', (event) => {
-                        let message = event.message ? 'message' : 'data';
-                        let data = event[message];
-                        console.log('yess', data);
-                    }, false);
-                }
+
+            // Checks if current user can edit itens on the related collection to offer modal
+            if (this.collection.id == this.collectionId)
+                this.currentUserCanEditItems = this.collection.current_user_can_edit_items;
+            else {
+                axios.tainacan.get('/collections/' + this.collectionId + '?fetch_only=name,url,allow_comments&context=edit')
+                    .then(res => this.currentUserCanEditItems = res.data.current_user_can_edit_items)
+                    .catch(() => this.currentUserCanEditItems = false );
             }
         },
         methods: {
+            ...mapGetters('collection', [
+                'getCollection'
+            ]),
             onInput(newSelected) {
                 this.selected = newSelected;
                 this.$emit('input', newSelected.map((item) => item.value));
@@ -223,16 +250,34 @@
                     query['exclude'] = this.selected.map((item) => item.value);
 
                 return qs.stringify(query);
+            },
+            createNewItemFromModal(event) {
+                const message = event.message ? 'message' : 'data';
+                const data = event[message];
+
+                if (data.type == 'itemCreationMessage') {
+                    this.createNewItemModal = false;
+
+                    if (data.itemId) {
+                        this.searchQuery = '';
+                        this.selected.push({
+                            label: data.itemTitle,
+                            value: data.itemId,
+                            img: data.itemThumbnail ? data.itemThumbnail : ''
+                        });
+                        this.onInput(this.selected);
+                    }
+                }  
             }
         }
     }
 </script>
 
-<style>
-    .help.counter {
-        display: none;
-    }
+<style scoped>
     div.is-flex {
         justify-content: flex-start;
+    }
+    .add-link {
+        font-size: 0.75em;
     }
 </style>

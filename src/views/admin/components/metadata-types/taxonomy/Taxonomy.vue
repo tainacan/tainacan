@@ -10,7 +10,8 @@
                 :allow-new="allowNew"
                 :taxonomy-id="taxonomyId"
                 :item-metadatum="itemMetadatum"
-                @showAddNewTerm="openTermCreationModal" />
+                @showAddNewTerm="openTermCreationModal"
+                :has-counter="false" />
         <checkbox-radio-modal
                 v-else
                 :is-modal="false"

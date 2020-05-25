@@ -22,7 +22,8 @@
                 field="name"
                 @typing="search"
                 check-infinite-scroll
-                @infinite-scroll="searchMore">
+                @infinite-scroll="searchMore"
+                :has-counter="false">
             <template slot-scope="props">
                 <div class="media">
                     <div
@@ -163,9 +164,6 @@ export default {
 </script>
 
 <style scoped>
-    .help.counter {
-        display: none;
-    }
     div.is-flex {
         justify-content: flex-start;
     }

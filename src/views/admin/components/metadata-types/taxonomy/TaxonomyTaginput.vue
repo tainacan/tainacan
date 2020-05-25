@@ -22,7 +22,8 @@
                 autocomplete
                 @typing="loadTerms"
                 check-infinite-scroll
-                @infinite-scroll="loadMoreTerms">
+                @infinite-scroll="loadMoreTerms"
+                :has-counter="false">
             <template slot-scope="props">
                 <div class="media">
                     <div class="media-content">

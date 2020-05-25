@@ -21,6 +21,7 @@
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>
             <a
+                    v-if="!$route.query.iframemode"
                     @click="$router.go(-1)"
                     class="back-link has-text-secondary">
                 {{ $i18n.get('back') }}
@@ -1006,8 +1007,6 @@ export default {
             'getGroup'
         ]),
         onSubmit(status, sequenceDirection) {
-            
-            parent.postMessage('messageFromIframe', '*');
 
             // Puts loading on Item edition
             this.isLoading = true;
@@ -1045,19 +1044,31 @@ export default {
                 
                 this.isLoading = false;
 
-                if (!this.isOnSequenceEdit) {
-                    if (this.form.status != 'trash') {
-                        if (previousStatus == 'auto-draft')
-                            this.$router.push({ path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), query: { recent: true } });
-                        else
-                            this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
-                    } else
-                        this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
+                if (!this.$route.query.iframemode) {
+
+                    if (!this.isOnSequenceEdit) {
+                        if (this.form.status != 'trash') {
+                            if (previousStatus == 'auto-draft')
+                                this.$router.push({ path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), query: { recent: true } });
+                            else
+                                this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
+                        } else
+                            this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
+                    } else {
+                        if (sequenceDirection == 'next')
+                            this.onNextInSequence();
+                        else if (sequenceDirection == 'previous')
+                            this.onPrevInSequence();
+                    }
+
                 } else {
-                    if (sequenceDirection == 'next')
-                        this.onNextInSequence();
-                    else if (sequenceDirection == 'previous')
-                        this.onPrevInSequence();
+                    parent.postMessage({ 
+                            type: 'itemCreationMessage',
+                            itemId: this.item.id,
+                            itemTitle: this.item.title,
+                            itemThumbnail: this.item.thumbnail
+                        },
+                        tainacan_plugin.admin_url);
                 }
             })
             .catch((errors) => {
@@ -1080,7 +1091,17 @@ export default {
             });
         },
         onDiscard() {
-            this.$router.go(-1);
+            if (!this.$route.query.iframemode)
+                this.$router.go(-1);
+            else
+                parent.postMessage({ 
+                        type: 'itemCreationMessage',
+                        itemId: null,
+                        itemTitle: null,
+                        itemThumbnail: null
+                    },
+                    tainacan_plugin.admin_url);
+
         },
         createNewItem() {
             // Puts loading on Draft Item creation
@@ -1097,7 +1118,12 @@ export default {
 
             // Creates draft Item
             this.form.comment_status = this.form.comment_status == 'open' ? 'open' : 'closed';
-            let data = {collection_id: this.form.collectionId, status: 'auto-draft', comment_status: this.form.comment_status};
+            let data = { collection_id: this.form.collectionId, status: 'auto-draft', comment_status: this.form.comment_status };
+
+            // If a parameter was passed with a suggestion of item title, use it
+            if (this.$route.query.newitemtitle)
+                data.title = this.$route.query.newitemtitle;
+
             this.fillExtraFormData(data);
             this.sendItem(data).then(res => {
 
