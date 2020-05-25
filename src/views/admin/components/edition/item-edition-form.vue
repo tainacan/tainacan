@@ -1006,6 +1006,9 @@ export default {
             'getGroup'
         ]),
         onSubmit(status, sequenceDirection) {
+            
+            parent.postMessage('messageFromIframe', '*');
+
             // Puts loading on Item edition
             this.isLoading = true;
             this.sequenceRightDirection = undefined;

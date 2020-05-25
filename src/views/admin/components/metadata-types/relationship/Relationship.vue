@@ -53,8 +53,9 @@
                 :width="1200"
                 :active.sync="createNewItemModal">
             <iframe 
+                    :id="newItemFrame"
                     width="100%"
-                    height="600px"
+                    style="height: 85vh"
                     :src="adminFullURL + $routerHelper.getNewItemPath(collectionId) + '?iframemode=true'" />
         </b-modal>
         
@@ -107,6 +108,17 @@
                     .catch(error => {
                         this.$console.log(error);
                     });
+            }
+        },
+        watch: {
+            createNewItemModal() {
+                if (this.createNewItemModal) {
+                    window.addEventListener('messageFromIframe', (event) => {
+                        let message = event.message ? 'message' : 'data';
+                        let data = event[message];
+                        console.log('yess', data);
+                    }, false);
+                }
             }
         },
         methods: {

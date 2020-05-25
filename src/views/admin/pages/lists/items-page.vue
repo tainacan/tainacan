@@ -479,7 +479,7 @@
 
             <!-- STATUS TABS, only on Admin -------- -->
             <items-status-tabs 
-                    v-if="!openAdvancedSearch"
+                    v-if="!openAdvancedSearch && !$route.query.iframemode"
                     :is-repository-level="isRepositoryLevel"/>
 
             <!-- FILTERS TAG LIST-->
