@@ -393,7 +393,7 @@ export default {
 
                 a { 
                     width: 100%;
-                    color: var(--tainacan-blue5); 
+                    color: var(--tainacan-blue5) !important; 
                     display: flex;
                     flex-wrap: wrap;
                     flex-direction: column;
