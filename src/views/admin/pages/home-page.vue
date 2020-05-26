@@ -302,7 +302,7 @@ export default {
                 &.repository-section-header {
                     border-bottom: 1px solid var(--tainacan-blue5);
                     a {
-                        color: var(--tainacan-blue5);
+                        color: var(--tainacan-blue5) !important;
                     }
                     .home-section-icon {
                         background-color: var(--tainacan-blue5);
