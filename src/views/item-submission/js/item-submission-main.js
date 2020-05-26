@@ -22,9 +22,10 @@ import ItemSubmissionForm from '../pages/item-submission-form.vue';
 import ItemSubmission from '../item-submission.vue';
 
 // Remaining imports
+import TainacanFormItem from '../../admin/components/metadata-types/tainacan-form-item.vue';
 import HelpButton from '../../admin/components/other/help-button.vue';
 import store from '../../admin/js/store/store';
-import { I18NPlugin, UserPrefsPlugin, ConsolePlugin, StatusHelperPlugin, CommentsStatusHelperPlugin } from '../../admin/js/utilities';
+import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin, CommentsStatusHelperPlugin } from '../../admin/js/utilities';
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -64,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Vue.use(I18NPlugin);
         Vue.use(UserPrefsPlugin);
         Vue.use(StatusHelperPlugin);
+        Vue.use(RouterHelperPlugin);
         Vue.use(ConsolePlugin, {visual: false});
         Vue.use(VueTheMask);
         Vue.use(CommentsStatusHelperPlugin);
@@ -91,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Vue.component('item-submission', ItemSubmission);
 
         /* Others */
+        Vue.component('tainacan-form-item', TainacanFormItem);
         Vue.component('help-button', HelpButton);
             
         const VueItemSubmission = new Vue({

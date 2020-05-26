@@ -65,7 +65,7 @@ export default {
 
 		initFrame: function() {
 
-			var l10n = _wpMediaViewsL10n;
+			var l10n = wp.media.view.l10n = typeof _wpMediaViewsL10n === 'undefined' ? {} : _wpMediaViewsL10n;
 
 			// Same of WordPress wp.media.controller.CustomizeImageCropper, but without `wp_customize: on`
 			var customImageCropper = wp.media.controller.Cropper.extend({
@@ -154,7 +154,7 @@ export default {
 		
 		initFrame: function() {
 
-			var l10n = _wpMediaViewsL10n;	
+			var l10n = wp.media.view.l10n = typeof _wpMediaViewsL10n === 'undefined' ? {} : _wpMediaViewsL10n;
 			
 			// Same of WordPress wp.media.controller.CustomizeImageCropper, but without `wp_customize: on`
 			var customImageCropper = wp.media.controller.Cropper.extend({
