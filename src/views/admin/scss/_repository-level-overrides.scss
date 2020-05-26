@@ -82,7 +82,7 @@
         }
     }
     .dropdown-trigger {
-        .button .icon {
+        .button:not(.is-secondary) .icon {
             color: var(--tainacan-blue5);
         }
     }
