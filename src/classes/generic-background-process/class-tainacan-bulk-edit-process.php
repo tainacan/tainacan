@@ -322,7 +322,7 @@ class Bulk_Edit_Process extends Generic_Process {
 				$item_metadata_from = new Entities\Item_Metadata_Entity( $item, $metadatum_from );
 				
 				$value = $item_metadata_from->get_value();
-				if ( $metadata_type = $metadatum->get_metadata_type_object()->get_primitive_type() == 'term' ) {
+				if ( $metadatum->get_metadata_type_object()->get_primitive_type() == 'term' ) {
 					if ( $metadatum_from->is_multiple() ) {
 						$temp = [];
 						foreach ( $value as $term ) {
@@ -362,10 +362,20 @@ class Bulk_Edit_Process extends Generic_Process {
 			$metadatum = $item_metadata->get_metadatum();
 			if($metadatum->get_id() == $metadatum_id) {
 				$values = is_array($item_metadata->get_value()) ? $item_metadata->get_value() : [$item_metadata->get_value()];
-				$pos = array_search($value, $values);
-				unset($values[$pos]);
-				$item_metadata->set_value( $values );
-				return $this->save_item_metadata($item_metadata, $item);
+				if ( $metadatum->get_metadata_type_object()->get_primitive_type() == 'term' ) {
+					$values = array_filter($values, function ($term) use ($value) {
+						return is_string($value) ? $term != $value : $term->get_id() != $value;
+					});
+					$item_metadata->set_value( $metadatum->is_multiple() ? $values : $new_term );
+					return $this->save_item_metadata($item_metadata, $item);
+				} else {
+					$pos = array_search($value, $values);
+					if ($pos !== false) {
+						unset($values[$pos]);
+						$item_metadata->set_value( $values );
+						return $this->save_item_metadata($item_metadata, $item);
+					}
+				}
 			}
 		}
 		return false;
@@ -393,11 +403,24 @@ class Bulk_Edit_Process extends Generic_Process {
 			$metadatum = $item_metadata->get_metadatum();
 			if($metadatum->get_id() == $metadatum_id) {
 				$values = is_array($item_metadata->get_value()) ? $item_metadata->get_value() : [$item_metadata->get_value()];
-				$pos = array_search($old_value, $values);
-				if ($pos !== false) {
-					$values[$pos] = $new_value;
-					$item_metadata->set_value( $metadatum->is_multiple() ? $values : $values[$pos] );
+				
+				if ( $metadatum->get_metadata_type_object()->get_primitive_type() == 'term' ) {
+					$new_term = is_string($new_value) ? $new_value : \Tainacan\Repositories\Terms::get_instance()->fetch($new_value, $metadatum->get_metadata_type_object()->get_taxonomy());
+					$values = array_map( function ($term) use ($old_value, $new_term) {
+						return is_string($old_value) ?
+							($term == $old_value ? $new_term : $term) :
+							($term->get_id() == $old_value ? $new_term : $term);
+					}, $values );
+					
+					$item_metadata->set_value( $metadatum->is_multiple() ? $values : $new_term );
 					return $this->save_item_metadata($item_metadata, $item);
+				} else {
+					$pos = array_search($old_value, $values);
+					if ($pos !== false) {
+						$values[$pos] = $new_value;
+						$item_metadata->set_value( $metadatum->is_multiple() ? $values : $values[$pos] );
+						return $this->save_item_metadata($item_metadata, $item);
+					}
 				}
 				return false;
 			}
