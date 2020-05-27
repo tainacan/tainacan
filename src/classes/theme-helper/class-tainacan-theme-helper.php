@@ -369,7 +369,9 @@ class Theme_Helper {
 			}
 		}
 
-		wp_enqueue_script('tainacan-item-submission', $TAINACAN_BASE_URL . '/assets/js/item_submission.js' , ['underscore', 'media-editor', 'media-views', 'customize-controls'] , TAINACAN_VERSION);
+		wp_enqueue_media();
+		wp_enqueue_script('jcrop');
+		wp_enqueue_script('tainacan-item-submission', $TAINACAN_BASE_URL . '/assets/js/item_submission.js' , ['underscore', 'jcrop', 'media-editor', 'media-views', 'customize-controls'] , TAINACAN_VERSION);
 		wp_localize_script('tainacan-item-submission', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
 
 		return "<div id='tainacan-item-submission-form' $props ></div>";
