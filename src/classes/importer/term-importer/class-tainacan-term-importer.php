@@ -225,7 +225,7 @@ class Term_Importer extends Importer {
 	public function get_output() {
 		$taxonomie = \Tainacan\Repositories\Taxonomies::get_instance()->fetch_by_db_identifier( $this->get_transient('new_taxonomy') );
 		if ( !empty($taxonomie) ) {
-			$message = __('target taxonomie:', 'tainacan');
+			$message = __('target taxonomy:', 'tainacan');
 			$message .= " <b>" . $taxonomie->get_name() . "</b><br/>";
 		}
 		return $message;
