@@ -229,7 +229,6 @@ registerBlockType('tainacan/faceted-search', {
             showInlineViewModeOptions,
             showFullscreenWithViewModes,
             listType,
-            isCollectionModalOpen,
             isTermModalOpen,
             backgroundColor,
             baseFontSize,

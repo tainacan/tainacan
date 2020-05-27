@@ -946,13 +946,12 @@ export default {
 
 <style lang="scss" scoped>
 
-    .tainacan-form .field:not(:last-child) {
-        margin-bottom: 0.5em;
+    .tainacan-form {
+        background-color: var(--tainacan-background-color);
     }
 
-    .tainacan-form > .columns {
-        margin-left: var(--tainacan-one-column);
-        margin-right: var(--tainacan-one-column);
+    .tainacan-form .field:not(:last-child) {
+        margin-bottom: 0.5em;
     }
 
     .column.is-5 {
@@ -1004,7 +1003,6 @@ export default {
     }
 
     .section-box {
-        background-color: var(--tainacan-background-color);
         padding: 0 var(--tainacan-one-column) 0 0;
         margin-top: 14px;
         margin-bottom: 32px;
