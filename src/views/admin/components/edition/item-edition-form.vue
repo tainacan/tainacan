@@ -1517,7 +1517,7 @@ export default {
             }
             .status-tag {
                 color: var(--tainacan-white);
-                background: var(--tainacan-turquoise5);
+                background: var(--tainacan-secondary);
                 padding: 0.15em 0.5em;
                 font-size: 0.75em;
                 margin: 0 1em 0 0;
@@ -1615,7 +1615,7 @@ export default {
                     color: var(--tainacan-secondary);
                     margin-bottom: 6px;
                     &:hover {
-                        background-color: var(--tainacan-turquoise2);
+                        background-color: var(--tainacan-primary);
                         cursor: pointer;
                     }
                 }
@@ -1754,7 +1754,7 @@ export default {
 
         .sequence-progress {
             height: 5px;
-            background: var(--tainacan-turquoise5);
+            background: var(--tainacan-secondary);
             width: 0%;
             position: absolute;
             top: 0;
@@ -1772,7 +1772,7 @@ export default {
 
         .sequence-button {
             background-color: transparent;
-            color: var(--tainacan-turquoise5);
+            color: var(--tainacan-secondary);
             border: none;
 
             .icon {
@@ -1783,7 +1783,7 @@ export default {
             &:focus,
             &:active {
                 background-color: transparent !important;
-                color: var(--tainacan-turquoise5) !important;
+                color: var(--tainacan-secondary) !important;
             }
         }
     }

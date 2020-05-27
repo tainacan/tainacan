@@ -49,8 +49,7 @@ export default {
     }
     .help-tooltip {
         z-index: 99999999999999999999;
-        color: var(--tainacan-turquoise5);
-        background-color: var(--tainacan-turquoise2);
+        background-color: var(--tainacan-primary);
         border: none;
         display: block;
         border-radius: 5px;
@@ -70,6 +69,7 @@ export default {
             h5 {
                 font-size: 0.875em;
                 font-weight: bold;
+                color: var(--tainacan-secondary);
             }
         }
 
@@ -82,6 +82,7 @@ export default {
                 white-space: normal !important;
                 overflow: visible !important;
                 max-height: 100% !important;
+                color: var(--tainacan-secondary);
             }
         }
 
@@ -95,7 +96,7 @@ export default {
             border-style: solid;
         }
         &:before {
-            border-color: var(--tainacan-turquoise2) transparent transparent transparent;
+            border-color: var(--tainacan-primary) transparent transparent transparent;
             border-right-width: 15px;
             border-top-width: 12px;
             border-left-width: 15px;

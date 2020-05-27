@@ -1023,7 +1023,7 @@ export default {
                     color: var(--tainacan-secondary);
                     margin-bottom: 6px;
                     &:hover {
-                        background-color: var(--tainacan-turquoise2);
+                        background-color: var(--tainacan-primary);
                         cursor: pointer;
                     }
                 }
@@ -1110,6 +1110,7 @@ export default {
             color: var(--tainacan-info-color);
             top: 70px;
             max-width: 90px;
+            background: transparent;
         }
 
         .thumbnail-buttons-row {
