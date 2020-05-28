@@ -99,12 +99,23 @@ document.addEventListener("DOMContentLoaded", () => {
         const VueItemSubmission = new Vue({
             store,
             data: {
-                collectionId: ''
+                collectionId: '',
+                hideFileModalButton: false,
+                hideTextModalButton: false,
+                hideLinkModalButton: false
             },
             beforeMount () {
                 // Collection source settings
                 if (this.$el.attributes['collection-id'] != undefined)
                     this.collectionId = this.$el.attributes['collection-id'].value;
+
+                // Elements shown on form
+                if (this.$el.attributes['hide-file-modal-button'] != undefined)
+                    this.hideFileModalButton = this.isParameterTrue('hide-file-modal-button');
+                if (this.$el.attributes['hide-text-modal-button'] != undefined)
+                    this.hideTextModalButton = this.isParameterTrue('hide-text-modal-button');
+                if (this.$el.attributes['hide-link-modal-button'] != undefined)
+                    this.hideLinkModalButton = this.isParameterTrue('hide-link-modal-button');
             },
             methods: {
                 isParameterTrue(parameter) {

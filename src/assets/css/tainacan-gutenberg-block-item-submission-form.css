@@ -153,9 +153,9 @@
         max-width: 4em; }
     .wp-block-tainacan-item-submission-form .item-submission-form-placeholder .documents-section {
       display: flex;
-      justify-content: space-between;
       padding: 0.5em; }
       .wp-block-tainacan-item-submission-form .item-submission-form-placeholder .documents-section .fake-circle {
+        margin-right: 1.75em;
         display: flex;
         justify-content: center;
         align-items: center;

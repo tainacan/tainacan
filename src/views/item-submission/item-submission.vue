@@ -1,7 +1,10 @@
 <template>
     <item-submission-form 
             :collection-id="$root.collectionId"
-            class="tainacan-item-submission-form" />
+            class="tainacan-item-submission-form"
+            :hide-file-modal-button="$root.hideFileModalButton ? $root.hideFileModalButton : false"
+            :hide-text-modal-button="$root.hideTextModalButton ? $root.hideTextModalButton : false"
+            :hide-link-modal-button="$root.hideLinkModalButton ? $root.hideLinkModalButton : false" />
 </template>
 
 <script>

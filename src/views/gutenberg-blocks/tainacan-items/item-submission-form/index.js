@@ -34,6 +34,18 @@ registerBlockType('tainacan/item-submission-form', {
             type: Boolean,
             default: false
         },
+        hideFileModalButton: {
+            type: Boolean,
+            default: false
+        },
+        hideTextModalButton: {
+            type: Boolean,
+            default: false
+        },
+        hideLinkModalButton: {
+            type: Boolean,
+            default: false
+        },
         backgroundColor: {
             type: String,
             default: '#ffffff'
@@ -80,6 +92,9 @@ registerBlockType('tainacan/item-submission-form', {
         let {
             collectionId,
             isCollectionModalOpen,
+            hideFileModalButton,
+            hideTextModalButton,
+            hideLinkModalButton,
             baseFontSize,
             backgroundColor,
             inputColor,
@@ -131,6 +146,40 @@ registerBlockType('tainacan/item-submission-form', {
 
                 <div>
                     <InspectorControls>
+                        <PanelBody
+                                title={__('Colors and Sizes', 'tainacan')}
+                                initialOpen={ true } >
+                            <ToggleControl
+                                    label={__('Hide the file submission button', 'tainacan')}
+                                    help={ hideFileModalButton ? __('Do not show the button for uploading a file document', 'tainacan') : __('Toggle to show the button to upload a file document.', 'tainacan')}
+                                    checked={ hideFileModalButton }
+                                    onChange={ ( isChecked ) => {
+                                            hideFileModalButton = isChecked;
+                                            setAttributes({ hideFileModalButton: isChecked });
+                                        }  
+                                    }
+                                />
+                            <ToggleControl
+                                    label={__('Hide the text submission button', 'tainacan')}
+                                    help={ hideTextModalButton ? __('Do not show the button for setting a text as document', 'tainacan') : __('Toggle to show the button to set a text as document.', 'tainacan')}
+                                    checked={ hideTextModalButton }
+                                    onChange={ ( isChecked ) => {
+                                            hideTextModalButton = isChecked;
+                                            setAttributes({ hideTextModalButton: isChecked });
+                                        }  
+                                    }
+                                />
+                            <ToggleControl
+                                label={__('Hide the link submission button', 'tainacan')}
+                                help={ hideLinkModalButton ? __('Do not show the button for setting a link as document', 'tainacan') : __('Toggle to show the button to set a link as document.', 'tainacan')}
+                                checked={ hideLinkModalButton }
+                                onChange={ ( isChecked ) => {
+                                        hideLinkModalButton = isChecked;
+                                        setAttributes({ hideLinkModalButton: isChecked });
+                                    }  
+                                }
+                            />
+                        </PanelBody>
                         <PanelBody
                                     title={__('Colors and Sizes', 'tainacan')}
                                     initialOpen={ false }
@@ -339,12 +388,19 @@ registerBlockType('tainacan/item-submission-form', {
                                     class="item-submission-form-placeholder">
                                 <div class="form-columns">
                                     <div>
-                                        <span class="fake-text section-label"></span>
-                                        <div class="documents-section">
-                                            <span class="fake-circle"><span class="fake-icon"></span></span>
-                                            <span class="fake-circle"><span class="fake-icon"></span></span>
-                                            <span class="fake-circle"><span class="fake-icon"></span></span>
-                                        </div>
+                                        { 
+                                            (!hideFileModalButton || !hideTextModalButton || !hideLinkModalButton) ? 
+                                            (
+                                            <div>
+                                                <span class="fake-text section-label"></span>
+                                                <div class="documents-section">
+                                                    { hideFileModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
+                                                    { hideTextModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
+                                                    { hideLinkModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
+                                                </div>
+                                            </div>
+                                            ) : null 
+                                        }
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <span class="fake-text section-label"></span>
                                             <div class="thumbnail-section">
@@ -416,6 +472,9 @@ registerBlockType('tainacan/item-submission-form', {
         const {
             collectionId,
             backgroundColor,
+            hideFileModalButton,
+            hideTextModalButton,
+            hideLinkModalButton,
             baseFontSize,
             inputColor,
             inputBackgroundColor,
@@ -442,7 +501,10 @@ registerBlockType('tainacan/item-submission-form', {
                     className={ className }>
             <div 
                     id="tainacan-item-submission-form"
-                    collection-id={ collectionId }>
+                    collection-id={ collectionId }
+                    hide-file-modal-button={ hideFileModalButton.toString() }
+                    hide-text-modal-button={ hideTextModalButton.toString() }
+                    hide-link-modal-button={ hideLinkModalButton.toString() }>
             </div>
         </div>
     }
