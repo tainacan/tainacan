@@ -492,7 +492,7 @@ registerBlockType('tainacan/faceted-search', {
                             />
                             <ToggleControl
                                 label={__('Filters as a Modal', 'tainacan')}
-                                help={ filtersAsModal ? __('Render the filters area as modal instead of a side panel" button', 'tainacan') : __('Toggle to show filters list as a side panel instead of a modal', 'tainacan')}
+                                help={ filtersAsModal ? __('Render the filters area as modal instead of a side panel', 'tainacan') : __('Toggle to show filters list as a side panel instead of a modal', 'tainacan')}
                                 checked={ filtersAsModal }
                                 onChange={ ( isChecked ) => {
                                         filtersAsModal = isChecked;

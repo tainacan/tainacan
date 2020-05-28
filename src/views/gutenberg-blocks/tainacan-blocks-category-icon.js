@@ -1,6 +1,5 @@
 ( function() {
     var el = wp.element.createElement;
-    var SVG = wp.primitives.SVG;
     var path4 = el( 'path', { 
         d: 'm 11.27478,8.73457 c 1.688519,0.44936 3.333166,1.08401 4.86423,1.92899 C 17.304261,9.35093 18.355283,7.77611 18.494128,5.97784 18.606604,4.68205 18.01681,3.38652 17.0326,2.55334 16.089243,1.69008 14.73247,1.35339 13.487742,1.61188 11.913591,1.91741 10.544771,2.85442 9.3686674,3.90688 10.203337,5.42539 10.830349,7.06078 11.27478,8.73457 Z',
         fill: '#a5cdd7',
@@ -48,6 +47,7 @@
     } );
     var g1 = el('g', { transform: 'translate(-85.490815,-209.14412)' });
     var g2 = el('g', { transform: 'translate(-85.490815,-209.14412)' });    
-    var svgIcon = el( SVG, { width: 20, height: 20, viewBox: '0 0 20 20'}, path4, path6, path8, path10, path12, path14, path16, path18, path20, g1, g2);
+    var svgIcon = el( 'svg', { width: 20, height: 20, viewBox: '0 0 20 20'}, path4, path6, path8, path10, path12, path14, path16, path18, path20, g1, g2);
+    
     wp.blocks.updateCategory( 'tainacan-blocks', { icon: svgIcon } );
 } )();

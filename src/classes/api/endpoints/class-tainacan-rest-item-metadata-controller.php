@@ -371,7 +371,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 			}
 			else {
 				return new \WP_REST_Response( [
-					'error_message' => __( 'you can not be update the item', 'tainacan' ),
+					'error_message' => __( 'you are not allowed to update the item', 'tainacan' ),
 					'errors'        => "operation not permitted"
 				], 400 );
 			}
