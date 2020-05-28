@@ -336,7 +336,51 @@ registerBlockType('tainacan/item-submission-form', {
                                         '--tainacan-primary': primaryColor,
                                         '--tainacan-secondary': secondaryColor
                                     }}
-                                    class="items-list-placeholder">
+                                    class="item-submission-form-placeholder">
+                                <div class="form-columns">
+                                    <div>
+                                        <span class="fake-text section-label"></span>
+                                        <div class="documents-section">
+                                            <span class="fake-circle"><span class="fake-icon"></span></span>
+                                            <span class="fake-circle"><span class="fake-icon"></span></span>
+                                            <span class="fake-circle"><span class="fake-icon"></span></span>
+                                        </div>
+                                        <span class="fake-text section-label"></span>
+                                        <div class="thumbnail-section">
+                                            <div 
+                                                    style={{ 
+                                                        backgroundImage: tainacan_plugin ? 'url("' + tainacan_plugin.base_url + '/assets/images/placeholder_square.png")' : '' 
+                                                    }}
+                                                    class="fake-image"></div>
+                                        </div>
+                                        <span class="fake-text section-label"></span>
+                                        <div class="attachments-section">
+                                            <div class="fake-image"></div>
+                                            <div class="fake-image"></div>
+                                            <div class="fake-image"></div>
+                                            <div class="fake-image"></div>
+                                        </div>
+                                        <span class="fake-text section-label"></span>
+                                        <div class="fake-switch"><span class="fake-icon"></span><span class="fake-text"></span></div>
+                                        
+                                    </div>
+                                    <div style={{ flexGrow: '1' }}>
+                                        <span class="fake-text section-label"></span>
+                                        <div class="metadata-section">
+                                            { Array(12).fill().map( () => {
+                                                return <div class="fake-metadata">
+                                                    <span class="fake-text"></span>
+                                                    <span class="fake-input"></span>
+                                                </div>
+                                            } )}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-footer">
+                                    <span class="fake-text"></span>
+                                    <span class="fake-button outline"><span class="fake-text"></span></span>
+                                    <span class="fake-button"><span class="fake-text"></span></span>
+                                </div>
                             </div>
                         </div>
                         
