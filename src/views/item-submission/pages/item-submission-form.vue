@@ -262,71 +262,73 @@
                     </template>
 
                     <!-- Thumbnail -------------------------------- -->
-                    <div class="section-label">
-                        <label>{{ $i18n.get('label_thumbnail') }}</label>
-                        <help-button
-                                :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
-                                :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
+                    <template v-if="!hideThumbnailSection">
+                        <div class="section-label">
+                            <label>{{ $i18n.get('label_thumbnail') }}</label>
+                            <help-button
+                                    :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
+                                    :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
 
-                    </div>
-                    <div 
-                            v-if="!isLoading"
-                            class="section-box section-thumbnail">
-                        <div class="thumbnail-field">
-                            <file-item
-                                    v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
-                                    :show-name="false"
-                                    :modal-on-click="false"
-                                    :size="178"
-                                    :file="{
-                                        media_type: 'image',
-                                        thumbnails: { 'tainacan-medium': [ item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] ] },
-                                        title: $i18n.get('label_thumbnail'),
-                                        description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + item.thumbnail.full[0] + `'/>` 
-                                    }"/>
-                            <figure
-                                    v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
-                                    class="image">
-                                <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
-                                <img
-                                        :alt="$i18n.get('label_thumbnail')"
-                                        :src="thumbPlaceholderPath">
-                            </figure>
-                            <div class="thumbnail-buttons-row">
-                                <a
-                                        class="button is-rounded is-secondary"
-                                        id="button-edit-thumbnail"
-                                        :aria-label="$i18n.get('label_button_edit_thumb')"
-                                        @click.prevent="thumbnailMediaFrame.openFrame($event)">
+                        </div>
+                        <div 
+                                v-if="!isLoading"
+                                class="section-box section-thumbnail">
+                            <div class="thumbnail-field">
+                                <file-item
+                                        v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
+                                        :show-name="false"
+                                        :modal-on-click="false"
+                                        :size="178"
+                                        :file="{
+                                            media_type: 'image',
+                                            thumbnails: { 'tainacan-medium': [ item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] ] },
+                                            title: $i18n.get('label_thumbnail'),
+                                            description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + item.thumbnail.full[0] + `'/>` 
+                                        }"/>
+                                <figure
+                                        v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
+                                        class="image">
+                                    <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
+                                    <img
+                                            :alt="$i18n.get('label_thumbnail')"
+                                            :src="thumbPlaceholderPath">
+                                </figure>
+                                <div class="thumbnail-buttons-row">
+                                    <a
+                                            class="button is-rounded is-secondary"
+                                            id="button-edit-thumbnail"
+                                            :aria-label="$i18n.get('label_button_edit_thumb')"
+                                            @click.prevent="thumbnailMediaFrame.openFrame($event)">
+                                        <span
+                                                v-tooltip="{
+                                                    content: $i18n.get('edit'),
+                                                    autoHide: true,
+                                                    placement: 'bottom'
+                                                }"
+                                                class="icon">
+                                            <i class="tainacan-icon tainacan-icon-edit"/>
+                                        </span>
+                                    </a>
+                                    <a
+                                            v-if="item.thumbnail && item.thumbnail.thumbnail != undefined && item.thumbnail.thumbnail != false"
+                                            id="button-delete-thumbnail"
+                                            class="button is-rounded is-secondary"
+                                            :aria-label="$i18n.get('label_button_delete_thumb')"
+                                            @click="deleteThumbnail()">
                                     <span
                                             v-tooltip="{
-                                                content: $i18n.get('edit'),
+                                                content: $i18n.get('delete'),
                                                 autoHide: true,
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-edit"/>
+                                        <i class="tainacan-icon tainacan-icon-delete"/>
                                     </span>
-                                </a>
-                                <a
-                                        v-if="item.thumbnail && item.thumbnail.thumbnail != undefined && item.thumbnail.thumbnail != false"
-                                        id="button-delete-thumbnail"
-                                        class="button is-rounded is-secondary"
-                                        :aria-label="$i18n.get('label_button_delete_thumb')"
-                                        @click="deleteThumbnail()">
-                                <span
-                                        v-tooltip="{
-                                            content: $i18n.get('delete'),
-                                            autoHide: true,
-                                            placement: 'bottom'
-                                        }"
-                                        class="icon">
-                                    <i class="tainacan-icon tainacan-icon-delete"/>
-                                </span>
-                                </a>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </template>
 
                     <!-- Hook for extra Form options -->
                     <template
@@ -340,39 +342,40 @@
                     </template>
 
                     <!-- Attachments ------------------------------------------ -->
-                    <template slot="header">
-                        <span class="icon has-text-gray4">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
-                        </span>
-                        <span>
-                            {{ $i18n.get('label_attachments') }}
-                            <span
-                                    v-if="totalAttachments != null && totalAttachments != undefined"
-                                    class="has-text-gray">
-                                ({{ totalAttachments }})
+                    <template v-if="!hideAttachmentsSection">
+                        <template slot="header">
+                            <span class="icon has-text-gray4">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
                             </span>
-                        </span>
+                            <span>
+                                {{ $i18n.get('label_attachments') }}
+                                <span
+                                        v-if="totalAttachments != null && totalAttachments != undefined"
+                                        class="has-text-gray">
+                                    ({{ totalAttachments }})
+                                </span>
+                            </span>
+                        </template>
+
+                        <div v-if="item != undefined && item.id != undefined">
+                            <br>
+                            <button
+                                    style="margin-left: calc(var(--tainacan-one-column) + 12px)"
+                                    type="button"
+                                    class="button is-secondary"
+                                    @click.prevent="attachmentMediaFrame.openFrame($event)"
+                                    :disabled="isLoadingAttachments">
+                                {{ $i18n.get("label_edit_attachments") }}
+                            </button>
+                            <attachments-list
+                                    v-if="item != undefined && item.id != undefined"
+                                    :item="item"
+                                    :is-editable="true"
+                                    :is-loading.sync="isLoadingAttachments"
+                                    @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"
+                                    @onDeleteAttachment="deleteAttachment($event)"/>
+                        </div>
                     </template>
-
-                    <div v-if="item != undefined && item.id != undefined">
-                        <br>
-                        <button
-                                style="margin-left: calc(var(--tainacan-one-column) + 12px)"
-                                type="button"
-                                class="button is-secondary"
-                                @click.prevent="attachmentMediaFrame.openFrame($event)"
-                                :disabled="isLoadingAttachments">
-                            {{ $i18n.get("label_edit_attachments") }}
-                        </button>
-                        <attachments-list
-                                v-if="item != undefined && item.id != undefined"
-                                :item="item"
-                                :is-editable="true"
-                                :is-loading.sync="isLoadingAttachments"
-                                @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"
-                                @onDeleteAttachment="deleteAttachment($event)"/>
-                    </div>
-
                 </div>
                 <div class="column is-7">
 
@@ -514,7 +517,9 @@ export default {
         collectionId: String,
         hideFileModalButton: Boolean,
         hideTextModalButton: Boolean,
-        hideLinkModalButton: Boolean
+        hideLinkModalButton: Boolean,
+        hideThumbnailSection: Boolean,
+        hideAttachmentsSection: Boolean
     },
     data(){
         return {
