@@ -345,15 +345,22 @@ registerBlockType('tainacan/item-submission-form', {
                                             <span class="fake-circle"><span class="fake-icon"></span></span>
                                             <span class="fake-circle"><span class="fake-icon"></span></span>
                                         </div>
-                                        <span class="fake-text section-label"></span>
-                                        <div class="thumbnail-section">
-                                            <div 
-                                                    style={{ 
-                                                        backgroundImage: tainacan_plugin ? 'url("' + tainacan_plugin.base_url + '/assets/images/placeholder_square.png")' : '' 
-                                                    }}
-                                                    class="fake-image"></div>
+                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                            <span class="fake-text section-label"></span>
+                                            <div class="thumbnail-section">
+                                                <div 
+                                                        style={{ 
+                                                            backgroundImage: tainacan_plugin ? 'url("' + tainacan_plugin.base_url + '/assets/images/placeholder_square.png")' : '' 
+                                                        }}
+                                                        class="fake-image"></div>
+                                                <span class="fake-button"><span class="fake-icon"></span></span>
+                                            </div>
                                         </div>
-                                        <span class="fake-text section-label"></span>
+                                        <span 
+                                                style={{ position: 'relative' }}
+                                                class="fake-text section-label">
+                                            <div class="fake-tooltip"><div class="fake-link"></div></div>
+                                        </span>
                                         <div class="attachments-section">
                                             <div class="fake-image"></div>
                                             <div class="fake-image"></div>
@@ -365,7 +372,8 @@ registerBlockType('tainacan/item-submission-form', {
                                         
                                     </div>
                                     <div style={{ flexGrow: '1' }}>
-                                        <span class="fake-text section-label"></span>
+                                        <div class="fake-text section-label"></div>
+                                        <div class="fake-link"></div>
                                         <div class="metadata-section">
                                             { Array(12).fill().map( () => {
                                                 return <div class="fake-metadata">

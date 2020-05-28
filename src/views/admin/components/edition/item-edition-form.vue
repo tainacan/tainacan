@@ -1583,7 +1583,7 @@ export default {
         label {
             font-size: 1em !important;
             font-weight: 500 !important;
-            color: var(--tainacan-gray5) !important;
+            color: var(--tainacan-label-color) !important;
             line-height: 1.2em;
         }
     }
