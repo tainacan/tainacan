@@ -176,7 +176,7 @@
                         v-if="tab != 'processes' && totalActivities > 0">
                     <div class="shown-items">
                         {{
-                            $i18n.get('info_showing_activities') +
+                            $i18n.get('info_showing_activities') + ' ' +
                             (activitiesPerPage * (activitiesPage - 1) + 1) +
                             $i18n.get('info_to') +
                             getLastActivityNumber() +

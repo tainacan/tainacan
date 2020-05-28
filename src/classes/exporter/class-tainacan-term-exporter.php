@@ -42,7 +42,7 @@ class Term_Exporter extends Exporter {
             $file = $files['csvvocabularyexporter.csv'];
             $taxonomie = \Tainacan\Repositories\Taxonomies::get_instance()->fetch_by_db_identifier( $this->get_option('select_taxonomy') );
             if ( !empty($taxonomie) ) {
-                $message = __('target taxonomie:', 'tainacan');
+                $message = __('target taxonomy:', 'tainacan');
                 $message .= " <b>" . $taxonomie->get_name() . "</b><br/>";
             }
             $message .= __('Your CSV file is ready! Access it in the link below:', 'tainacan');

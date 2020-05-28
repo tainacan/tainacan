@@ -52,6 +52,10 @@
                 width: 130px !important;
                 height: 130px !important;
             }
+
+            .media .list-metadata p.metadata-description {
+                max-height: 9.125em !important;
+            }
         }
 
         &:hover {
@@ -164,7 +168,7 @@
                     font-size: 0.75em !important;
                     overflow: hidden;
                     margin-bottom: 1em;
-                    max-height: 152px;
+                    max-height: 12.125em;
                 }
 
                 .metadata-author-creation {

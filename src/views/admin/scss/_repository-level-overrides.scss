@@ -1,7 +1,7 @@
 // Repository-level pages
 // This garantees that any component inside a .repository-level-page
 // will have a blue color instead of a turquoise.
-.repository-level-page {
+#tainacan-admin-app .repository-level-page {
     margin-top: 5.875em; 
     height: $page-height !important;
 
@@ -82,7 +82,7 @@
         }
     }
     .dropdown-trigger {
-        .button .icon {
+        .button:not(.is-secondary) .icon {
             color: var(--tainacan-blue5);
         }
     }
