@@ -581,7 +581,9 @@ export default {
 </script>
 
 <style lang="scss">
-
+    #tainacan-admin-app .metadata-list-page .available-metadata-area .available-metadatum-item:hover .icon {
+        color: white !important;
+    }
     .metadata-list-page {
         padding-bottom: 0;
 

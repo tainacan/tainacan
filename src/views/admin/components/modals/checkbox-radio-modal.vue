@@ -724,6 +724,9 @@
     .breadcrumb {
         background-color: var(--tainacan-white) !important;
 
+        ul {
+            list-style: none;
+        }
         li + li::before {
             content: ">" !important;
         }
@@ -990,6 +993,7 @@
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
+            line-height: 1.45em;
         }
     }
 

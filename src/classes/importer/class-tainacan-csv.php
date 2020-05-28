@@ -311,70 +311,68 @@ class CSV extends Importer {
 			</div>
 		</div>
 
-		<div class="field">
-			<label class="label"><?php _e('File Encoding', 'tainacan'); ?></label>
-			<span class="help-wrapper">
-					<a class="help-button has-text-secondary">
-						<span class="icon is-small">
-							 <i class="tainacan-icon tainacan-icon-help" ></i>
-						 </span>
-					</a>
-					<div class="help-tooltip">
-						<div class="help-tooltip-header">
-							<h5><?php _e('File Encoding', 'tainacan'); ?></h5>
-						</div>
-						<div class="help-tooltip-body">
-							<p><?php _e('The encoding of the CSV file.', 'tainacan'); ?></p>
-						</div>
-					</div>
-			</span>
-			<div class="control is-clearfix">
-				<div class="select">
-					<select name="encode">
-						<option value="utf8" <?php selected($this->get_option('encode'), 'utf8'); ?> >UTF-8</option>
-						<option value="iso88591" <?php selected($this->get_option('encode'), 'iso88591'); ?> >ISO-88591</option>
-					</select>
-				</div>
-			</div>
-		</div>
+        <div class="field is-grouped">
+		    <div class="field is-expanded">
+                <label class="label"><?php _e('File Encoding', 'tainacan'); ?></label>
+                <span class="help-wrapper">
+                        <a class="help-button has-text-secondary">
+                            <span class="icon is-small">
+                                <i class="tainacan-icon tainacan-icon-help" ></i>
+                            </span>
+                        </a>
+                        <div class="help-tooltip">
+                            <div class="help-tooltip-header">
+                                <h5><?php _e('File Encoding', 'tainacan'); ?></h5>
+                            </div>
+                            <div class="help-tooltip-body">
+                                <p><?php _e('The encoding of the CSV file.', 'tainacan'); ?></p>
+                            </div>
+                        </div>
+                </span>
+                <div class="control is-clearfix">
+                    <div class="select">
+                        <select name="encode">
+                            <option value="utf8" <?php selected($this->get_option('encode'), 'utf8'); ?> >UTF-8</option>
+                            <option value="iso88591" <?php selected($this->get_option('encode'), 'iso88591'); ?> >ISO-88591</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
 
-        <div class="field">
-			<label class="label"><?php _e('Repeated Item', 'tainacan'); ?></label>
-			<span class="help-wrapper">
-					<a class="help-button has-text-secondary">
-						<span class="icon is-small">
-							 <i class="tainacan-icon tainacan-icon-help" ></i>
-						 </span>
-					</a>
-					<div class="help-tooltip">
-						<div class="help-tooltip-header">
-							<h5><?php _e('Repeated Item', 'tainacan'); ?></h5>
-						</div>
-						<div class="help-tooltip-body">
-							<p><?php _e('Choose the action when a repeated item is found', 'tainacan'); ?></p>
-						</div>
-					</div>
-			</span>
-			<div class="control is-clearfix">
-				<div class="select">
-					<select name="repeated_item">
-						<option value="update" <?php selected($this->get_option('repeated_item'), 'update'); ?> >Update</option>
-						<option value="ignore" <?php selected($this->get_option('repeated_item'), 'ignore'); ?> >Ignore</option>
-					</select>
-				</div>
-			</div>
-		</div>
+            <div class="field is-expanded">
+                <label class="label"><?php _e('Repeated Item', 'tainacan'); ?></label>
+                <span class="help-wrapper">
+                        <a class="help-button has-text-secondary">
+                            <span class="icon is-small">
+                                <i class="tainacan-icon tainacan-icon-help" ></i>
+                            </span>
+                        </a>
+                        <div class="help-tooltip">
+                            <div class="help-tooltip-header">
+                                <h5><?php _e('Repeated Item', 'tainacan'); ?></h5>
+                            </div>
+                            <div class="help-tooltip-body">
+                                <p><?php _e('Choose the action when a repeated item is found', 'tainacan'); ?></p>
+                            </div>
+                        </div>
+                </span>
+                <div class="control is-clearfix">
+                    <div class="select">
+                        <select name="repeated_item">
+                            <option value="update" <?php selected($this->get_option('repeated_item'), 'update'); ?> >Update</option>
+                            <option value="ignore" <?php selected($this->get_option('repeated_item'), 'ignore'); ?> >Ignore</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 		<div class="field">
 			<label class="label"><?php _e('Importing attachments', 'tainacan'); ?></label>
 			<p>
-			<?php echo nl2br(__("If you also have files you want to import, that are related to the items in your CSV, you can use some special columns in your csv to do so.\n
-			There are two special columns you can use: <b>special_document</b>, which will set the Document of your item, and <b>special_attachments</b> to add one or many attachments.\n
-			The values for the special_document must be prepended with 'url:'', 'file:'' or 'text:'. This will indicate the Document Type.\n
-			The values for the special_attachments is just a list of files. If you want to add many attachments, use the separator you set in the Multivalued Delimiter option.\n
-			In either case, you can point to a file using a full URL, or just a file name. In this last case, you should set the option below to tell Tainacan where to find the files in your server. You can then upload them directly (via FTP for example) and tainacan will add them to your items.\n
-			", 'tainacan')); ?>
-			</p>
+			<?php echo nl2br(__('Check the documentation to learn how to set up your .csv file correctly for importing files <a href="https://tainacan.github.io/tainacan-wiki/#/importers?id=importador-csv-items">on this link.</a>', 'tainacan')); ?>
+            </p>
+            <br>
 			<label class="label"><?php _e('Server path', 'tainacan'); ?></label>
 			<span class="help-wrapper">
 					<a class="help-button has-text-secondary">
@@ -620,6 +618,7 @@ class CSV extends Importer {
 
 		$updating_item = false;
 
+        $Tainacan_Item_Metadata->disable_logs();
 		if ( is_numeric($this->get_transient('item_id')) ) {
 			$item = $Tainacan_Items->fetch( (int) $this->get_transient('item_id') );
 		} else {
@@ -635,7 +634,7 @@ class CSV extends Importer {
 				$this->add_log('item will be updated ID:' . $item->get_id() );
 				$updating_item = true;
 				// When creating a new item, disable log for each metadata to speed things up
-				$Tainacan_Item_Metadata->disable_logs();
+				$Tainacan_Item_Metadata->enable_logs();
 			} else {
 				$this->add_log('item with ID ' . $this->get_transient('item_id') . ' not found. Unable to update. Creating a new one.' );
 				$item = new Entities\Item();
@@ -855,6 +854,19 @@ class CSV extends Importer {
                 }
 
                 $this->save_mapping( $collection['id'], $collection['mapping'] );
+                
+                $coll = \Tainacan\Repositories\Collections::get_instance()->fetch($collection['id']);
+                $metadata_order = array_map(
+                    function($meta) { return ["enabled"=>true, "id"=>$meta]; },
+                    array_keys( $collection['mapping'] )
+                );
+                $coll->set_metadata_order( $metadata_order );
+                if ( $coll->validate() ) {
+                    \Tainacan\Repositories\Collections::get_instance()->update( $coll );
+                } else {
+                    $this->add_error_log( __("Don't save metadata order collection.", 'tainacan') );
+                }
+
             }
 
             $this->remove_collection($collection['id']);

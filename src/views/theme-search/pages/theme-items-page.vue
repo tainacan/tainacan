@@ -405,7 +405,8 @@
                 animation="slide-menu"
                 :trap-focus="filtersAsModal"
                 full-screen
-                :custom-class="'tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')">
+                :custom-class="'tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"
+                :can-cancel="hideHideFiltersButton ? ['x', 'outside'] : ['x', 'escape', 'outside']">
             <filters-items-list
                     :autofocus="filtersAsModal"
                     :tabindex="filtersAsModal ? -1 : 0"

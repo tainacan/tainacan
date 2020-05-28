@@ -45,7 +45,7 @@
                         v-for="(item, index) of items"
                         class="tainacan-record">
                     <!-- <div :href="item.url"> -->
-                        <!-- Title -->           
+                        <!-- Title -->
                         <p 
                                 v-tooltip="{
                                     delay: {
@@ -60,8 +60,9 @@
                                 v-for="(column, metadatumIndex) in displayedMetadata"
                                 :key="metadatumIndex"
                                 class="metadata-title"
-                                v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />                                                 
+                                v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                v-html="item.metadata != undefined && collectionId ? renderMetadata(item.metadata, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)" />                 
+               
 
                         <!-- Remaining metadata -->  
                         <div class="media">
