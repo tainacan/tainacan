@@ -44,6 +44,7 @@ export default {
     @import "../admin/scss/_buttons.scss"; 
     @import "../admin/scss/_inputs.scss";
     @import "../admin/scss/_checkboxes.scss";
+    @import "../admin/scss/_radios.scss";
     @import "../admin/scss/_switches.scss";
     @import "../admin/scss/_pagination.scss";
     @import "../admin/scss/_tags.scss";
