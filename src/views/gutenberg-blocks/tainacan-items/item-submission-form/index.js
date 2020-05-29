@@ -54,6 +54,10 @@ registerBlockType('tainacan/item-submission-form', {
             type: Boolean,
             default: false
         },
+        hideCollapses: {
+            type: Boolean,
+            default: false
+        },
         backgroundColor: {
             type: String,
             default: '#ffffff'
@@ -105,6 +109,7 @@ registerBlockType('tainacan/item-submission-form', {
             hideLinkModalButton,
             hideThumbnailSection,
             hideAttachmentsSection,
+            hideCollapses,
             baseFontSize,
             backgroundColor,
             inputColor,
@@ -206,6 +211,16 @@ registerBlockType('tainacan/item-submission-form', {
                                 onChange={ ( isChecked ) => {
                                         hideAttachmentsSection = isChecked;
                                         setAttributes({ hideAttachmentsSection: isChecked });
+                                    }  
+                                }
+                            />
+                            <ToggleControl
+                                label={__('Hide the metadata collapses', 'tainacan')}
+                                help={ hideCollapses ? __('Do not show collapsable controls for each metadatum.', 'tainacan') : __('Toggle to show collapsable controls on each metadatum.', 'tainacan')}
+                                checked={ hideCollapses }
+                                onChange={ ( isChecked ) => {
+                                        hideCollapses = isChecked;
+                                        setAttributes({ hideCollapses: isChecked });
                                     }  
                                 }
                             />
@@ -472,7 +487,8 @@ registerBlockType('tainacan/item-submission-form', {
                                         <div class="fake-link"></div>
                                         <div class="metadata-section">
                                             { Array(12).fill().map( () => {
-                                                return <div class="fake-metadata">
+                                                return <div class={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
+                                                    { !hideCollapses ? <span class="fake-collapse-arrow"></span> : null }
                                                     <span class="fake-text"></span>
                                                     <span class="fake-input"></span>
                                                 </div>
@@ -517,6 +533,7 @@ registerBlockType('tainacan/item-submission-form', {
             hideLinkModalButton,
             hideThumbnailSection,
             hideAttachmentsSection,
+            hideCollapses,
             baseFontSize,
             inputColor,
             inputBackgroundColor,
@@ -548,7 +565,8 @@ registerBlockType('tainacan/item-submission-form', {
                     hide-text-modal-button={ hideTextModalButton.toString() }
                     hide-link-modal-button={ hideLinkModalButton.toString() }
                     hide-thumbnail-section={ hideThumbnailSection.toString() }
-                    hide-attachments-section={ hideAttachmentsSection.toString() }>
+                    hide-attachments-section={ hideAttachmentsSection.toString() }
+                    hide-collapses={ hideCollapses.toString() }>
             </div>
         </div>
     }

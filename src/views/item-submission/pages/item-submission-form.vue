@@ -425,6 +425,7 @@
                     </template>
 
                     <a
+                            v-if="!hideCollapses"
                             class="collapse-all"
                             @click="toggleCollapseAll()">
                         {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
@@ -438,7 +439,7 @@
                             v-for="(itemMetadatum, index) of metadatumList"
                             :key="index"
                             :item-metadatum="itemMetadatum"
-                            :is-collapsed="metadataCollapses[index]"
+                            :hide-collapses="hideCollapses"
                             @changeCollapse="onChangeCollapse($event, index)"/>
 
                     <!-- Hook for extra Form options -->
@@ -519,7 +520,8 @@ export default {
         hideTextModalButton: Boolean,
         hideLinkModalButton: Boolean,
         hideThumbnailSection: Boolean,
-        hideAttachmentsSection: Boolean
+        hideAttachmentsSection: Boolean,
+        hideCollapses: Boolean
     },
     data(){
         return {

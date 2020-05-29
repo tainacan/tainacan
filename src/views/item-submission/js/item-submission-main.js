@@ -104,7 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 hideTextModalButton: false,
                 hideLinkModalButton: false,
                 hideThumbnailSection: false,
-                hideAttachmentsSection: false
+                hideAttachmentsSection: false,
+                hideCollapses: false
             },
             beforeMount () {
                 // Collection source settings
@@ -121,7 +122,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (this.$el.attributes['hide-thumbnail-section'] != undefined)
                     this.hideThumbnailSection = this.isParameterTrue('hide-thumbnail-section');
                 if (this.$el.attributes['hide-attachments-section'] != undefined)
-                    this.hideAttachmentsSection = this.isParameterTrue('hide-attachments-section')
+                    this.hideAttachmentsSection = this.isParameterTrue('hide-attachments-section');
+                if (this.$el.attributes['hide-collapses'] != undefined)
+                    this.hideCollapses = this.isParameterTrue('hide-collapses');
             },
             methods: {
                 isParameterTrue(parameter) {

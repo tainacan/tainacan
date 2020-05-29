@@ -1,12 +1,15 @@
 <template>
     <b-field
+            :class="hideCollapses ? 'has-collapses-hidden' : ''"
             :addons="false"
             :message="errorMessage"
             :type="errorMessage ? 'is-danger' : ''">
         <span   
                 class="collapse-handle"
-                @click="$emit('changeCollapse', errorMessage ? true : !isCollapsed )">
-            <span class="icon">
+                @click="!hideCollapses ? $emit('changeCollapse', errorMessage ? true : !isCollapsed ) : ''">
+            <span 
+                    v-if="!hideCollapses"
+                    class="icon">
                 <i 
                         :class="{
                             'tainacan-icon-arrowdown' : isCollapsed || errorMessage,
@@ -42,7 +45,7 @@
         </span>
         <transition name="filter-item">
             <div   
-                    v-show="isCollapsed || errorMessage"
+                    v-show="hideCollapses || (isCollapsed || errorMessage)"
                     v-if="isTextInputComponent">
                 <component 
                         :is="metadatumComponent"
@@ -91,7 +94,7 @@
         <!-- Non-textual metadata such as taxonomy, relationship and compound manage multiple state in different ways -->
         <transition name="filter-item">
             <div 
-                    v-show="isCollapsed"
+                    v-show="hideCollapses || isCollapsed"
                     v-if="!isTextInputComponent">
                 <component
                         :is="metadatumComponent"
@@ -111,7 +114,8 @@
         name: 'TainacanFormItem',
         props: {
             itemMetadatum: Object,
-            isCollapsed: true
+            isCollapsed: true,
+            hideCollapses: false
         },
         data(){
             return {
@@ -236,8 +240,17 @@
     }
 
     .field {
-        border-bottom: 1px solid var(--tainacan-gray2);
+        border-bottom: 1px solid var(--tainacan-input-border-color);
         padding: 10px var(--tainacan-container-padding);
+
+        &.has-collapses-hidden {
+            border-bottom: none;
+            padding: 10px !important;
+
+            .collapse-handle {
+                margin-left: -15px;
+            }
+        }
 
         .label {
             font-size: 0.875em;

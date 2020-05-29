@@ -6,7 +6,8 @@
             :hide-text-modal-button="$root.hideTextModalButton ? $root.hideTextModalButton : false"
             :hide-link-modal-button="$root.hideLinkModalButton ? $root.hideLinkModalButton : false"
             :hide-thumbnail-section="$root.hideThumbnailSection ? $root.hideThumbnailSection : false"
-            :hide-attachments-section="$root.hideAttachmentsSection? $root.hideAttachmentsSection : false" />
+            :hide-attachments-section="$root.hideAttachmentsSection? $root.hideAttachmentsSection : false"
+            :hide-collapses="$root.hideCollapses? $root.hideCollapses : false" />
 </template>
 
 <script>
