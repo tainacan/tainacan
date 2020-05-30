@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { SnackbarProgrammatic as Snackbar } from 'buefy';
-import { DialogProgrammatic as Dialog } from 'buefy';
+import { ModalProgrammatic as Modal } from 'buefy';
+import CustomDialog from '../components/other/custom-dialog.vue'
 
 // Simpler version of the i18n plugin to translate error feedbac messages
 const i18nGet = function (key) {
@@ -12,53 +13,59 @@ const taiancanErrorHandler = function(error){
     if (error.response && error.response.status) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
-        let errorMessage = '';
-        let errorMessageDetail = '';
-        let duration = 5000;
-        switch(error.response.status) {
-            case 400:
-            case 401:
-            case 403:
-            case 404:
-            case 408:
-            case 500:
-            case 502:
-            case 503:
-            case 504:
-            case 511:
-                errorMessage = i18nGet('error_' + error.response.status);
-                errorMessageDetail = i18nGet('error_' + error.response.status + '_detail');
-                break;
-            default:
-                errorMessage = i18nGet('error_other');
-                errorMessageDetail = i18nGet('error_other_detail');
-                break;
+        
+        if (error.response.status) {
+            let errorMessage = '';
+            let errorMessageDetail = '';
+            let duration = 5000;
+            switch(error.response.status) {
+                case 400:
+                case 401:
+                case 403:
+                case 404:    
+                case 408:
+                case 500:
+                case 502:
+                case 503:
+                case 504:
+                case 511:
+                    errorMessage = i18nGet('error_' + error.response.status);
+                    errorMessageDetail = i18nGet('error_' + error.response.status + '_detail') + (error.response.config && error.response.config.url ? (' <br><br><strong>' + i18nGet('label_request_details') + ':</strong> <code>' + error.response.config.url + '</code>') : '');
+                    break;
+                default:
+                    errorMessage = i18nGet('error_other');
+                    break;
+            }
+            Snackbar.open({
+                message: errorMessage,
+                type: 'is-danger',
+                duration: duration,
+                actionText: errorMessageDetail != '' ? i18nGet('label_know_more') : null,
+                onAction: () => {
+                    Modal.open({
+                        component: CustomDialog,
+                        props: {
+                            title: i18nGet('label_error') + ' ' + error.response.status + '!',
+                            message: errorMessageDetail,
+                            hideCancel: true
+                        },
+                        ariaRole: 'alertdialog',
+                        ariaModal: true
+                    });
+                }
+            });
+        } else {
+            console.log('Taiancan Error Handler: ', error.response);
         }
 
-        Snackbar.open({
-            message: errorMessage,
-            type: 'is-danger',
-            duration: duration,
-            actionText: i18nGet('label_know_more'),
-            onAction: () => {
-                Dialog.alert({
-                    title: i18nGet('label_error') + ' ' + error.response.status + '!',
-                    message: errorMessageDetail,
-                    type: 'is-secondary',
-                    ariaRole: 'alertdialog',
-                    ariaModal: true
-                });
-            }
-        });
-
-    } else if (error.request) {
+    } else if ('Taiancan Error Handler: ', error.request) {
         // The request was made but no response was received
         // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
         // http.ClientRequest in node.js
-        console.log(error.request);
+        console.log('Taiancan Error Handler: ', error.request);
     } else {
         // Something happened in setting up the request that triggered an Error
-        console.log('Error', error.message);
+        console.log('Taiancan Error Handler: ', error.message);
     }
     return Promise.reject(error);
 }

@@ -137,7 +137,7 @@ export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
 export const fetchCollections = ({commit} , { page, collectionsPerPage, status, contextEdit, order, orderby, search }) => {
     
     return new Promise((resolve, reject) => {
-        let endpoint = '/collectionss?paged='+page+'&perpage='+collectionsPerPage;
+        let endpoint = '/collections?paged='+page+'&perpage='+collectionsPerPage;
 
         if (contextEdit)
             endpoint = endpoint  + '&context=edit';
