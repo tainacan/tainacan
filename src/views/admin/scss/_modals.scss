@@ -112,6 +112,10 @@
         padding: 35px;
         margin: 0 auto !important;
 
+        .modal-card-title {
+            max-width: 100%;
+        }
+
         .modal-card-head, .modal-card-body, .modal-card-foot {
             background-color: var(--tainacan-background-color);
             color: var(--tainacan-gray5);

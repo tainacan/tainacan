@@ -753,6 +753,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'datepicker_short_saturday'			=> __( 'Sa', 'tainacan' ),
 
 	/* Errors displayed on the interface botom notifications */
+	'error_connectivity_label' => __('Connectivity issue', 'tainacan'),
+	'error_connectivity' => __('It is possible that you are disconnected or the server is not working properly.', 'tainacan'),
 	'error_400'	  => __('Some request went wrong due to invalid syntax.', 'tainacan'),
 	'error_401'	  => __('You must authenticate to get access this information. Try logging again on the WordPress Admin panel.', 'tainacan'),
 	'error_403'	  => __('It seems that you are not allowed to acess this content.', 'tainacan'),
@@ -764,6 +766,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'error_504'	  => __('The server communication exceeded the expected timeout. Try contact the administrator.', 'tainacan'),
 	'error_511'	  => __('You must authenticate to get access this information. Try logging again on the WordPress Admin panel.', 'tainacan'),
 	'error_other' => __('Something went wrong here. You may want to try again or contact the Administrator.', 'tainacan'),
+	'error_connectivity_detail' => __('The WordPress Heartbit API sends requests periodically to the server to update some information. The latest request failed for some reason. It can be the case of a lost connection or bad communication between the browser and the server.', 'tainacan'),
 	'error_400_detail'	 => __('The server could not understand the request due to invalid syntax. This is possibily an issue with Tainacan and should be informed to developers.', 'tainacan'),
 	'error_401_detail'	 => __('You must authenticate to get access this information. Even if you have access to the Tainacan admin panel, it may be the case that your session cookies were lost. Try reloading the page or logging again on the WordPress Admin panel.', 'tainacan'),
 	'error_403_detail'	 => __('It seems that you are not allowed to acess this content. Your user might have a role with insufficient capabilities. If that is not the case, check if you are correctly logged in on the WordPress Admin panel.', 'tainacan'),
