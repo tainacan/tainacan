@@ -112,7 +112,7 @@ export default class CollectionsModal extends React.Component {
         if (this.state.collectionsPage <= 1)
             currentModalCollections = [];
 
-        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionsPage;
+        let endpoint = '/collections/?orderby=title&order=asc&status=publish&perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionsPage;
         
         this.setState({ 
             isLoadingCollections: true, 
@@ -158,7 +158,7 @@ export default class CollectionsModal extends React.Component {
             isLoadingCollections: true
         });
 
-        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage;
+        let endpoint = '/collections/?orderby=title&status=publish&order=asc&perpage=' + this.state.collectionsPerPage;
 
         if (name != undefined && name != '')
             endpoint += '&search=' + name;

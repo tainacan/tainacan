@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     selectedItems: [],
                     loadStrategy: 'search',
                     maxItemsNumber: 12,
-                    maxItemsPerScreen: 6,
+                    maxItemsPerScreen: 7,
                     arrowsPosition: 'around',
                     largeArrows: false,
                     autoPlay: false,

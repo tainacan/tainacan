@@ -52,6 +52,10 @@ registerBlockType('tainacan/carousel-collections-list', {
             type: Number,
             value: undefined
         },
+        maxCollectionsPerScreen: {
+            type: Number,
+            value: 6
+        },
         isLoading: {
             type: Boolean,
             value: false
@@ -63,6 +67,10 @@ registerBlockType('tainacan/carousel-collections-list', {
         arrowsPosition: {
             type: String,
             value: 'search'
+        },
+        largeArrows: {
+            type: Boolean,
+            value: false
         },
         autoPlay: {
             type: Boolean,
@@ -83,6 +91,10 @@ registerBlockType('tainacan/carousel-collections-list', {
         showCollectionThumbnail: {
             type: Boolean,
             value: false
+        },
+        cropImagesToSquare: {
+            type: Boolean,
+            value: true
         },
         collection: {
             type: Object,
@@ -113,6 +125,9 @@ registerBlockType('tainacan/carousel-collections-list', {
             isModalOpen,
             itemsRequestSource,
             selectedCollections,
+            largeArrows,
+            cropImagesToSquare,
+            maxCollectionsPerScreen,
             isLoading,
             arrowsPosition,
             autoPlay,
@@ -129,7 +144,7 @@ registerBlockType('tainacan/carousel-collections-list', {
             return (
                 <li 
                     key={ collection.id }
-                    className={ 'collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid' : '')}>   
+                    className={ 'collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid ' : '') + (maxCollectionsPerScreen ? ' max-collections-per-screen-' + maxCollectionsPerScreen : '') }>   
                     <IconButton
                         onClick={ () => removeItemOfId(collection.id) }
                         icon="no-alt"
@@ -183,9 +198,9 @@ registerBlockType('tainacan/carousel-collections-list', {
                             :
                             <img
                                 src={ 
-                                    collection.thumbnail && collection.thumbnail['tainacan-medium'][0] && collection.thumbnail['tainacan-medium'][0] 
+                                    collection.thumbnail && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
                                         ?
-                                    collection.thumbnail['tainacan-medium'][0] 
+                                    collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
                                         :
                                     (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
                                         ?    
@@ -291,18 +306,6 @@ registerBlockType('tainacan/carousel-collections-list', {
                                 title={__('Carousel', 'tainacan')}
                                 initialOpen={ true }
                             >
-                            <div>
-                                {/* <ToggleControl
-                                            label={__('Show collection\'s thumbnail', 'tainacan')}
-                                            help={ !showCollectionThumbnail ? __('Toggle to show items grid instead of collection\'s thumbnail', 'tainacan') : __('Do not show collection\'s thumbnail instead of items grid', 'tainacan')}
-                                            checked={ showCollectionThumbnail ? showCollectionThumbnail : false }
-                                            onChange={ ( isChecked ) => {
-                                                    showCollectionThumbnail = isChecked;
-                                                    setAttributes({ showCollectionThumbnail: showCollectionThumbnail });
-                                                    setContent();
-                                                } 
-                                            }
-                                        /> */}
                                 <BaseControl
                                         id="collection-carousel-view-modes"
                                         label={ __('Collection layout', 'tainacan')}>
@@ -335,6 +338,31 @@ registerBlockType('tainacan/carousel-collections-list', {
                                         </button>    
                                     </div>
                                 </BaseControl>
+                                <RangeControl
+                                        label={ __('Maximum collections per slide on screen', 'tainacan') }
+                                        help={ (showCollectionThumbnail && maxCollectionsPerScreen <= 4) ? __('Warning: with such a small number of collections per slide, the image size is greater, thus the cropped version of the thumbnail won\'t be used.', 'tainacan') : null }
+                                        value={ maxCollectionsPerScreen ? maxCollectionsPerScreen : 6 }
+                                        onChange={ ( aMaxCollectionsPerScreen ) => {
+                                            maxCollectionsPerScreen = aMaxCollectionsPerScreen;
+                                            setAttributes( { maxCollectionsPerScreen: aMaxCollectionsPerScreen } );
+                                            setContent(); 
+                                        }}
+                                        min={ 1 }
+                                        max={ 9 }
+                                    />
+                                { showCollectionThumbnail ? 
+                                    <ToggleControl
+                                            label={__('Crop Images', 'tainacan')}
+                                            help={ cropImagesToSquare && maxCollectionsPerScreen > 4 ? __('Do not use square cropeed version of the collection thumbnail.', 'tainacan') : __('Toggle to use square cropped version of the collection thumbnail.', 'tainacan') }
+                                            checked={ cropImagesToSquare && maxCollectionsPerScreen > 4 }
+                                            onChange={ ( isChecked ) => {
+                                                    cropImagesToSquare = isChecked;
+                                                    setAttributes({ cropImagesToSquare: cropImagesToSquare });
+                                                    setContent();
+                                                } 
+                                            }
+                                        />
+                                : null }
                                 <ToggleControl
                                         label={__('Hide name', 'tainacan')}
                                         help={ !hideName ? __('Toggle to hide collection\'s name', 'tainacan') : __('Do not hide collection\'s name', 'tainacan')}
@@ -393,7 +421,16 @@ registerBlockType('tainacan/carousel-collections-list', {
 
                                         setAttributes({ arrowsPosition: arrowsPosition }); 
                                     }}/>
-                            </div>                           
+                                <ToggleControl
+                                    label={__('Large arrows', 'tainacan')}
+                                    help={ !largeArrows ? __('Toggle to display arrows bigger than the default size.', 'tainacan') : __('Do not show arrows bigger than the default size.', 'tainacan')}
+                                    checked={ largeArrows }
+                                    onChange={ ( isChecked ) => {
+                                            largeArrows = isChecked;
+                                            setAttributes({ largeArrows: largeArrows });
+                                        } 
+                                    }
+                                />                       
                         </PanelBody>
                     </InspectorControls>
                 </div>
@@ -481,14 +518,14 @@ registerBlockType('tainacan/carousel-collections-list', {
                         }
                         {  collections.length ? ( 
                             <div
-                                    className={'collections-list-edit-container ' + (arrowsPosition ? 'has-arrows-' + arrowsPosition : '')}>
+                                    className={'collections-list-edit-container ' + (arrowsPosition ? 'has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }>
                                 <button 
                                         class="swiper-button-prev" 
                                         slot="button-prev"
                                         style={{ cursor: 'not-allowed' }}>
                                     <svg
-                                            width="42"
-                                            height="42"
+                                            width={ largeArrows ? 60 : 42 }
+                                            height={ largeArrows ? 60 : 42 }
                                             viewBox="0 0 24 24">
                                         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                                         <path
@@ -504,8 +541,8 @@ registerBlockType('tainacan/carousel-collections-list', {
                                         slot="button-next"
                                         style={{ cursor: 'not-allowed' }}>
                                     <svg
-                                            width="42"
-                                            height="42"
+                                            width={ largeArrows ? 60 : 42 }
+                                            height={ largeArrows ? 60 : 42 }
                                             viewBox="0 0 24 24">
                                         <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                                         <path
@@ -527,6 +564,9 @@ registerBlockType('tainacan/carousel-collections-list', {
             blockId,
             selectedCollections,
             arrowsPosition,
+            largeArrows,
+            cropImagesToSquare,
+            maxCollectionsPerScreen,
             maxCollectionsNumber,
             autoPlay,
             autoPlaySpeed,
@@ -542,7 +582,10 @@ registerBlockType('tainacan/carousel-collections-list', {
                     auto-play-speed={ autoPlaySpeed }
                     loop-slides={ '' + loopSlides }
                     hide-name={ '' + hideName }
+                    large-arrows={ '' + largeArrows }
+                    crop-images-to-square={ '' + cropImagesToSquare }
                     max-collections-number={ maxCollectionsNumber }
+                    max-collections-per-screen={ maxCollectionsPerScreen }
                     tainacan-api-root={ tainacan_blocks.root }
                     tainacan-base-url={ tainacan_blocks.base_url }
                     show-collection-thumbnail={ '' + showCollectionThumbnail }
@@ -551,6 +594,112 @@ registerBlockType('tainacan/carousel-collections-list', {
                 </div>
     },
     deprecated: [
+        {
+            attributes: {
+                content: {
+                    type: 'array',
+                    source: 'children',
+                    selector: 'div'
+                },
+                collections: {
+                    type: Array,
+                    default: []
+                },
+                isModalOpen: {
+                    type: Boolean,
+                    default: false
+                },
+                selectedCollections: {
+                    type: Array,
+                    default: []
+                },
+                itemsRequestSource: {
+                    type: String,
+                    default: undefined
+                },
+                maxCollectionsNumber: {
+                    type: Number,
+                    value: undefined
+                },
+                isLoading: {
+                    type: Boolean,
+                    value: false
+                },
+                isLoadingCollection: {
+                    type: Boolean,
+                    value: false
+                },
+                arrowsPosition: {
+                    type: String,
+                    value: 'search'
+                },
+                autoPlay: {
+                    type: Boolean,
+                    value: false
+                },
+                autoPlaySpeed: {
+                    type: Number,
+                    value: 3
+                },
+                loopSlides: {
+                    type: Boolean,
+                    value: false
+                },
+                hideName: {
+                    type: Boolean,
+                    value: true
+                },
+                showCollectionThumbnail: {
+                    type: Boolean,
+                    value: false
+                },
+                collection: {
+                    type: Object,
+                    value: undefined
+                },
+                blockId: {
+                    type: String,
+                    default: undefined
+                },
+                collectionBackgroundColor: {
+                    type: String,
+                    default: "#454647"
+                },
+                collectionTextColor: {
+                    type: String,
+                    default: "#ffffff"
+                }
+            },
+            save({ attributes, className }){
+                const {
+                    content, 
+                    blockId,
+                    selectedCollections,
+                    arrowsPosition,
+                    maxCollectionsNumber,
+                    autoPlay,
+                    autoPlaySpeed,
+                    loopSlides,
+                    hideName,
+                    showCollectionThumbnail
+                } = attributes;
+                return <div 
+                            className={ className }
+                            selected-collections={ JSON.stringify(selectedCollections.map((collection) => { return collection.id })) }
+                            arrows-position={ arrowsPosition }
+                            auto-play={ '' + autoPlay }
+                            auto-play-speed={ autoPlaySpeed }
+                            loop-slides={ '' + loopSlides }
+                            hide-name={ '' + hideName }
+                            max-collections-number={ maxCollectionsNumber }
+                            tainacan-api-root={ tainacan_blocks.root }
+                            tainacan-base-url={ tainacan_blocks.base_url }
+                            show-collection-thumbnail={ '' + showCollectionThumbnail }
+                            id={ 'wp-block-tainacan-carousel-collections-list_' + blockId }>
+                                { content }
+                        </div>
+            },
+        },
         {
             save({ attributes, className }){
                 const {
