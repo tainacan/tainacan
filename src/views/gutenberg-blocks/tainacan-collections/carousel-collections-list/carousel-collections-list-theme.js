@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
                     this.selectedCollections = this.$el.attributes['selected-collections'] != undefined ? JSON.parse(this.$el.attributes['selected-collections'].value) : undefined;
                     this.maxItemsNumber = this.$el.attributes['max-collections-number'] != undefined ? this.$el.attributes['max-collections-number'].value : undefined;
-                    this.maxCollectionsPerScreen = this.$el.attributes['max-collections-per-screen'] != undefined ? this.$el.attributes['max-collections-per-screen'].value : undefined;
+                    this.maxCollectionsPerScreen = this.$el.attributes['max-collections-per-screen'] != undefined ? this.$el.attributes['max-collections-per-screen'].value : 6;
                     this.arrowsPosition = this.$el.attributes['arrows-position'] != undefined ? this.$el.attributes['arrows-position'].value : undefined;
                     this.autoPlay = this.$el.attributes['auto-play'] != undefined ? this.$el.attributes['auto-play'].value == 'true' : false;
                     this.largeArrows = this.$el.attributes['large-arrows'] != undefined ? this.$el.attributes['large-arrows'].value == 'true' : false;
