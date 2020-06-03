@@ -339,7 +339,7 @@ registerBlockType('tainacan/carousel-collections-list', {
                                     </div>
                                 </BaseControl>
                                 <RangeControl
-                                        label={ __('Maximum collections per slide on screen', 'tainacan') }
+                                        label={ __('Maximum collections per slide on a wide screen', 'tainacan') }
                                         help={ (showCollectionThumbnail && maxCollectionsPerScreen <= 4) ? __('Warning: with such a small number of collections per slide, the image size is greater, thus the cropped version of the thumbnail won\'t be used.', 'tainacan') : null }
                                         value={ maxCollectionsPerScreen ? maxCollectionsPerScreen : 6 }
                                         onChange={ ( aMaxCollectionsPerScreen ) => {

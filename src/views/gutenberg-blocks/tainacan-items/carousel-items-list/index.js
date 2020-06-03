@@ -406,7 +406,7 @@ registerBlockType('tainacan/carousel-items-list', {
                             >
                             <div>
                                 <RangeControl
-                                        label={ __('Maximum items per slide on screen', 'tainacan') }
+                                        label={ __('Maximum items per slide on a wide screen', 'tainacan') }
                                         help={ maxItemsPerScreen <= 4 ? __('Warning: with such a small number of items per slide, the image size is greater, thus the cropped version of the thumbnail won\'t be used.', 'tainacan') : null }
                                         value={ maxItemsPerScreen ? maxItemsPerScreen : 7 }
                                         onChange={ ( aMaxItemsPerScreen ) => {

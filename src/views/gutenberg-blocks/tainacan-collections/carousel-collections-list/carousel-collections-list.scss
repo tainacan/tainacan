@@ -137,7 +137,7 @@
 
             a>span,
             a:hover>span {
-                color: var(--tainacan-block-gray5);
+                color: var(--tainacan-block-gray5, $gray5);
                 font-weight: bold;
                 text-decoration: none;
                 padding: 8px 16px;
@@ -463,7 +463,7 @@
     }
     @media only screen and (max-width: 1118px) { 
         
-        ul.collections-edit li.collection-list-item { 
+        ul.collections-list-edit li.collection-list-item { 
             width: calc(33.333% - 32px); 
             min-width: calc(33.333% - 32px); 
 
