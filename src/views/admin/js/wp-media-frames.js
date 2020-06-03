@@ -19,15 +19,27 @@ export default {
 				states: [
 					new wp.media.controller.Library({
 						title:     this.params.button_labels.frame_title,
-						library:   wp.media.query({
+						library: wp.media.query({
 							status:  null,
 							type:    null,
-							uploadedTo: wp.media.view.settings.post.id
+							uploadedTo: wp.media.view.settings.post.id,
+							orderby: 'menuOrder',
+							order: 'DESC'
+						}),
+						selection: wp.media.query({
+							status:  null,
+							type:    null,
+							uploadedTo: wp.media.view.settings.post.id,
+							orderby: 'menuOrder',
+							order: 'DESC'
 						}),
 						uploader: true,
 						multiple:  true,
 						date:      false,
-						uploadedTo: wp.media.view.settings.post.id
+						uploadedTo: wp.media.view.settings.post.id,
+						describe: true,
+						sortable: true,
+						syncSelection: true
 					})
 				]
 			});

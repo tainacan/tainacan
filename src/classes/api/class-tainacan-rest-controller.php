@@ -358,7 +358,8 @@ class REST_Controller extends \WP_REST_Controller {
 				'include_slugs',
 				'title',
 				'meta_value',
-				'meta_value_num'
+				'meta_value_num',
+				'menu_order'
 			),
 		);
 
