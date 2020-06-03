@@ -2,7 +2,7 @@
     <div :class="className">
         <div v-if="!isLoading">
             <div  
-                    :class="'tainacan-carousel has-arrows-' + arrowsPosition"
+                    :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') "
                     v-if="collections.length > 0">
                 <swiper 
                         role="list"
@@ -20,9 +20,9 @@
                                 target="_blank">
                             <img
                                 :src=" 
-                                    collection.thumbnail && collection.thumbnail['tainacan-medium'][0] && collection.thumbnail['tainacan-medium'][0] 
+                                    collection.thumbnail && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
                                         ?
-                                    collection.thumbnail['tainacan-medium'][0] 
+                                    collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
                                         :
                                     (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
                                         ?    
@@ -30,8 +30,23 @@
                                         : 
                                     `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
                                 "
+                                :data-src=" 
+                                    collection.thumbnail && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
+                                        ?
+                                    collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
+                                        :
+                                    (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
+                                        ?    
+                                    collection.thumbnail['thumbnail'][0] 
+                                        : 
+                                    `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
+                                "
+                                :class="maxCollectionsPerScreen <= 4 ? 'swiper-lazy' : ''"
                                 :alt="collection.name ? collection.name : $root.__('Thumbnail', 'tainacan')">
                             <span v-if="!hideName">{{ collection.name ? collection.name : '' }}</span>
+                            <div 
+                                    v-if="maxCollectionsPerScreen <= 4"
+                                    class="swiper-lazy-preloader swiper-lazy-preloader-white"/>
                         </a>
                         <a 
                                 v-else
@@ -87,10 +102,10 @@
                         class="swiper-button-prev" 
                         :id="blockId + '-prev'" 
                         slot="button-prev"
-                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
+                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
                     <svg
-                            width="42"
-                            height="42"
+                            :width="largeArrows ? 60 : 42"
+                            :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
                         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                         <path
@@ -102,10 +117,10 @@
                         class="swiper-button-next" 
                         :id="blockId + '-next'" 
                         slot="button-next"
-                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
+                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
                     <svg
-                            width="42"
-                            height="42"
+                            :width="largeArrows ? 60 : 42"
+                            :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
                         <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                         <path
@@ -122,7 +137,7 @@
             <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
         <div v-else-if="isLoading && !autoPlay && !loopSlides">
-            <div :class="'tainacan-carousel has-arrows-' + arrowsPosition">
+            <div :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') ">
                 <swiper 
                         role="list"
                         ref="myCollectionSwiper"
@@ -142,10 +157,10 @@
                         class="swiper-button-prev" 
                         :id="blockId + '-prev'" 
                         slot="button-prev"
-                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
+                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
                     <svg
-                            width="42"
-                            height="42"
+                            :width="largeArrows ? 60 : 42"
+                            :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
                         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                         <path
@@ -157,10 +172,10 @@
                         class="swiper-button-next" 
                         :id="blockId + '-next'" 
                         slot="button-next"
-                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
+                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
                     <svg
-                            width="42"
-                            height="42"
+                            :width="largeArrows ? 60 : 42"
+                            :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
                         <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                         <path
@@ -193,7 +208,10 @@ export default {
         autoPlay: false,
         autoPlaySpeed: Number,
         loopSlides: Boolean,
+        maxCollectionsPerScreen: Number,
         hideName: Boolean,
+        largeArrows: Boolean,
+        cropImagesToSquare: Boolean,
         showCollectionThumbnail: Boolean,
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
@@ -212,6 +230,7 @@ export default {
             paged: undefined,
             totalCollections: 0,
             swiperOptions: {
+                lazy: this.maxCollectionsPerScreen <= 4,
                 watchOverflow: true,
                 mousewheel: true,
                 observer: true,
@@ -242,6 +261,17 @@ export default {
     created() {
         this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
         this.fetchCollections();
+
+         if (!isNaN(this.maxCollectionsPerScreen)) {
+            this.swiperOptions.breakpoints = {
+                498:  { slidesPerView: this.maxCollectionsPerScreen - 5 > 0 ? this.maxCollectionsPerScreen - 5 : 1 }, 
+                768:  { slidesPerView: this.maxCollectionsPerScreen - 4 > 0 ? this.maxCollectionsPerScreen - 4 : 1 },
+                1024: { slidesPerView: this.maxCollectionsPerScreen - 3 > 0 ? this.maxCollectionsPerScreen - 3 : 1 },
+                1366: { slidesPerView: this.maxCollectionsPerScreen - 2 > 0 ? this.maxCollectionsPerScreen - 2 : 1 },
+                1600: { slidesPerView: this.maxCollectionsPerScreen - 1 > 0 ? this.maxCollectionsPerScreen - 1 : 1 },
+            }
+            this.swiperOptions.slidesPerView = this.maxCollectionsPerScreen;
+        }
     },
     methods: {
         fetchCollections() {

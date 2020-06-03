@@ -465,6 +465,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_editing_capabilitiy'					 	 => __( 'Editing capabilitiy', 'tainacan' ),
 	'label_default_author_user'						 => __( 'Set the item author as default value', 'tainacan' ),
 	'label_crate_new_item'							 => __( 'Create new item', 'tainacan' ),
+	'label_know_more'								 => __( 'Know more', 'tainacan' ),
+	'label_request_details'							 => __( 'Request details', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -748,7 +750,33 @@ return apply_filters( 'tainacan-admin-i18n', [
 	/* translators: This refers to the short label that will appear on datepickers for Friday */
 	'datepicker_short_friday'			=> __( 'F', 'tainacan' ),
 	/* translators: This refers to the short label that will appear on datepickers for Saturday */
-	'datepicker_short_saturday'			=> __( 'Sa', 'tainacan' )
+	'datepicker_short_saturday'			=> __( 'Sa', 'tainacan' ),
 
+	/* Errors displayed on the interface botom notifications */
+	'error_connectivity_label' => __('Connectivity issue', 'tainacan'),
+	'error_connectivity' => __('It is possible that you are disconnected or the server is not working properly.', 'tainacan'),
+	'error_400'	  => __('Some request went wrong due to invalid syntax.', 'tainacan'),
+	'error_401'	  => __('You must authenticate to get access this information. Try logging again on the WordPress Admin panel.', 'tainacan'),
+	'error_403'	  => __('It seems that you are not allowed to acess this content.', 'tainacan'),
+	'error_404'	  => __('A wrong request was made or this information does not exist.', 'tainacan'),
+	'error_408'	  => __('This request exceeded the server expected timeout.', 'tainacan'),
+	'error_500'	  => __('An internal server error occurred. Try to contact the administrator.', 'tainacan'),
+	'error_502'	  => __('A communication error between servers went wrong. Try to contact the administrator.', 'tainacan'),
+	'error_503'	  => __('Some service is not available now. Try again later and if it persists, contact the administrator.', 'tainacan'),
+	'error_504'	  => __('The server communication exceeded the expected timeout. Try contact the administrator.', 'tainacan'),
+	'error_511'	  => __('You must authenticate to get access this information. Try logging again on the WordPress Admin panel.', 'tainacan'),
+	'error_other' => __('Something went wrong here. You may want to try again or contact the Administrator.', 'tainacan'),
+	'error_connectivity_detail' => __('The WordPress Heartbit API sends requests periodically to the server to update some information. The latest request failed for some reason. It can be the case of a lost connection or bad communication between the browser and the server.', 'tainacan'),
+	'error_400_detail'	 => __('The server could not understand the request due to invalid syntax. This is possibily an issue with Tainacan and should be informed to developers.', 'tainacan'),
+	'error_401_detail'	 => __('You must authenticate to get access this information. Even if you have access to the Tainacan admin panel, it may be the case that your session cookies were lost. Try reloading the page or logging again on the WordPress Admin panel.', 'tainacan'),
+	'error_403_detail'	 => __('It seems that you are not allowed to acess this content. Your user might have a role with insufficient capabilities. If that is not the case, check if you are correctly logged in on the WordPress Admin panel.', 'tainacan'),
+	'error_404_detail'	 => __('A wrong request was made or this information does not exist. This can either mean some connection error occurred just now or the content that you are looking for was requested wrongly. In that case, it might be worthy to inform Tainacan developers about the issue.', 'tainacan'),
+	'error_408_detail'	 => __('This request exceeded the server expected timeout. This can be caused by a slow connection or connectivity issues. If it is not somehting noticeable in other pages, try to contact the administrator.', 'tainacan'),
+	'error_500_detail'	 => __('An internal server error occurred. This error can occur for a variety of reasons, and a more detailed description shall be find on the server logs. Try to contact the administrator and provide information of the moment when the error ocurred.', 'tainacan'),
+	'error_502_detail'	 => __('This error response means that the server, while working as a gateway to get a response needed to handle the request, got an invalid response. Try to contact the administrator.', 'tainacan'),
+	'error_503_detail'	 => __('The server might be unavaiblable due to multiple access, some instability or connection issues. Try again later and if it persists, contact the administrator.', 'tainacan'),
+	'error_504_detail'	 => __('This error response is given when the server is acting as a gateway and cannot get a response in time. Try contact the administrator.', 'tainacan'),
+	'error_511_detail'	 => __('You must authenticate to get access this information. Even if you have access to the Tainacan admin panel, it may be the case that your session cookies were lost. Try reloading the page or logging again on the WordPress Admin panel.', 'tainacan'),
+	'error_other_detail' => __('Something went wrong here. You may want to try again or contact the Administrator.', 'tainacan')
 ] );
 ?>
