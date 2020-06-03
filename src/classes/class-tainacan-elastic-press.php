@@ -61,10 +61,10 @@ class Elastic_Press {
 
 	function elasticpress_config_mapping( $mapping ) {
 		$name_field = 'relationship_label';
-		$array_dynamic_templates = $mapping["mappings"]["post"]["dynamic_templates"];
+		$array_dynamic_templates = $mapping["mappings"]["dynamic_templates"];
 		foreach ($array_dynamic_templates as $key => $dynamic_templates) {
 			if ( isset($dynamic_templates['template_meta_types'] )) {
-				$mapping["mappings"]["post"]["dynamic_templates"][$key]['template_meta_types']["mapping"]["properties"][$name_field] = ['type' => 'keyword', 'normalizer' => 'lowerasciinormalizer'];
+				$mapping["mappings"]["dynamic_templates"][$key]['template_meta_types']["mapping"]["properties"][$name_field] = ['type' => 'keyword', 'normalizer' => 'lowerasciinormalizer'];
 				// $mapping["mappings"]["post"]["dynamic_templates"][$key]['template_meta_types']["mapping"]["properties"][$name_field] =
 				// 	['type' => 'nested',
 				// 	 'properties' => [
@@ -72,7 +72,10 @@ class Elastic_Press {
 				// 		 //,'description' => ['type'=>'text']
 				// 		]
 				// 	];
+			} elseif( isset($dynamic_templates['template_terms'] ) ) {
+				$mapping["mappings"]["dynamic_templates"][$key]['template_terms']['mapping']['properties']['term_name.id'] = ['type' => 'keyword', 'normalizer' => 'lowerasciinormalizer'];
 			}
+			
 		}
 		return $mapping;
 	}
@@ -103,6 +106,14 @@ class Elastic_Press {
 						$description = '';
 						$post_args['meta'][$meta_id][0][$name_field] = $title;
 						//$post_args['meta'][$meta_id][0][$name_field]['description'] = $description;
+					}
+				}
+			}
+
+			if( isset($post_args['terms']) && !empty($post_args['terms']) ) {
+				foreach($post_args['terms'] as $key => $terms_doc) {
+					for($i = 0; $i < sizeof($terms_doc); $i++) {
+						$post_args['terms'][$key][$i]['term_name.id'] = $terms_doc[$i]['name'] . '.' . $terms_doc[$i]['term_id'] . '.parent=' . $terms_doc[$i]['parent'] ;
 					}
 				}
 			}
@@ -422,7 +433,7 @@ class Elastic_Press {
 						 	$temp[] = $item;
 						}
 					}
-				} elseif ( isset($item['term'])) {
+				} elseif ( isset($item['terms']) || isset($item['term']) ) {
 					$temp[] = $item;
 				}
 			}
@@ -436,12 +447,17 @@ class Elastic_Press {
 					"aggs"	=> array(
 						$id => array(
 							"terms"=>array(
-								//"size" => $filter['max_options'],
-								"script" => [
-									"lang" 	=> "painless",
-									"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
-									//"source"=> "def c= [''];if(!params._source.terms.empty && params._source.$field != null){ for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
-								]
+								"order" => ["_key" => "asc" ],
+								"include" => "(.)*parent=$parent",
+								"field" => "$field.term_name.id"
+								// "script" => [
+								// 	"lang" 	=> "painless",
+								// 	//"source" => "List l = new ArrayList(doc['$field.term_name.id']); if (l == null) { return []; } return l"
+								// 	//"source" => "if ( doc.containsKey('$field.parent') ) { List l = params._source.$field; if (l == null) { return []; } List result = new ArrayList(); for(int i = 0; i < l.length; ++i) { if(l[i].parent == 0) { result.add( l[i]['term_name.id'] ); } } return result; } return [];"
+								// 	//"source" => "if (doc.containsKey('$field.parent')) { List l = new ArrayList(doc['$field.term_id']);  for (int i = 0; i < l.length; ++i) { if (doc['$field.parent'][i] != $parent) { l.remove( i ); } } return l; } return [];"
+								// 	//"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
+								// 	//"source"=> "def c= [''];if(!params._source.terms.empty && params._source.$field != null){ for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
+								// ]
 							)
 						)
 					)
@@ -450,18 +466,23 @@ class Elastic_Press {
 				if (!empty($filter['include'])) {
 					$custom_filter_include = $custom_filter;
 					$custom_filter_include['bool']['must'][] = ["bool" => [ "must"=> [ [ "terms" => ["$field.term_id" => $filter['include'] ] ] ] ] ];
-					$terms_id_inlcude = \implode( ",", $filter['include']);
+					$terms_id_inlcude = \implode( "|", $filter['include']);
 					$aggs[$id.'.include'] = [
 						"filter" => $custom_filter_include,
 						"aggs"	=> array(
 							$id.'.include' => array(
 								"terms"=>array(
-									"script" => [
-										"lang" 	=> "painless",
-										"source" => "def c= ['']; for (int i = 0; i < doc['$field.term_id'].length; ++i) { if( [$terms_id_inlcude].contains(doc['$field.term_id'][i]) ) { c.add(doc['$field.term_id'][i]); } } return c;"
-										//"source"=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if( [$terms_id_inlcude].contains(term.term_id) ) { c.add(term.term_id); }}} return c;"
-									]
+									"order" => ["_key" => "asc" ],
+									"field" => "$field.term_name.id",
+									"include" => "(.)*.($terms_id_inlcude).parent=$parent"
 								)
+								// "terms"=>array(
+								// 	"script" => [
+								// 		"lang" 	=> "painless",
+								// 		"source" => "def c= ['']; for (int i = 0; i < doc['$field.term_id'].length; ++i) { if( [$terms_id_inlcude].contains(doc['$field.term_id'][i]) ) { c.add(doc['$field.term_name.id'][i]); } } return c;"
+								// 		//"source"=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if( [$terms_id_inlcude].contains(term.term_id) ) { c.add(term.term_id); }}} return c;"
+								// 	]
+								// )
 							)
 						)
 					];
@@ -654,13 +675,14 @@ class Elastic_Press {
 				$taxonomy_slug = $description_types[2];
 				$taxonomy_id = Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($taxonomy_slug);
 				foreach ($aggregation[$key]['buckets'] as $term) {
-					$term_id = intval($term['key']);
+					$temp = explode('.', $term['key']);
+					$term_id = intval( $temp[count($temp)-2] );
 					$term_object = \Tainacan\Repositories\Terms::get_instance()->fetch($term_id, $taxonomy_slug);
 					$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $term_id);
 					$total_children = $wpdb->get_var($count_query);
 					$fct = [
 						"type" 						=> "Taxonomy",
-						"value" 					=> $term['key'],
+						"value" 					=> $term_id,
 						"taxonomy" 				=> $taxonomy_slug,
 						"taxonomy_id"			=> $taxonomy_id,
 						"total_children"	=> $total_children,
