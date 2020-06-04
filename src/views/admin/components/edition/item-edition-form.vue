@@ -525,6 +525,16 @@
                                             :disabled="isLoadingAttachments">
                                         {{ $i18n.get("label_edit_attachments") }}
                                     </button>
+                                    <!--
+                                    <button
+                                            style="margin-left: calc(var(--tainacan-one-column) + 12px)"
+                                            type="button"
+                                            class="button is-secondary"
+                                            @click.prevent="openNewAttachmentsMediaFrame"
+                                            :disabled="isLoadingAttachments">
+                                        {{ $i18n.get("label_edit_attachments") + ' 2' }}
+                                    </button>
+                                    -->
                                     <attachments-list
                                             v-if="item != undefined && item.id != undefined"
                                             :item="item"
@@ -990,7 +1000,8 @@ export default {
         ...mapGetters('item',[
             'getItemMetadata',
             'getTotalAttachments',
-            'getLastUpdated'
+            'getLastUpdated',
+            'getAttachments'
         ]),
         ...mapActions('collection', [
             'deleteItem',
@@ -1377,6 +1388,17 @@ export default {
                 }
             );
 
+        },
+        openNewAttachmentsMediaFrame() {
+            const newAttachmentMediaFrame = new wpMediaFrames.customAttachmentsControl({ 
+                value: this.getAttachments().map((attachment) => attachment.id),
+                button_labels: {
+                    frame_title: this.$i18n.get('instruction_select_files_to_attach_to_item'),
+                    frame_button: this.$i18n.get('label_attach_to_item'),
+                },
+                relatedPostId: this.itemId
+            });
+            newAttachmentMediaFrame.openModal();
         },
         toggleCollapseAll() {
             this.collapseAll = !this.collapseAll;
