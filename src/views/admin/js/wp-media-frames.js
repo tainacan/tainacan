@@ -3,10 +3,13 @@ export default {
 
 		constructor(props) {
 			this.props = props;
-			console.log(this.props)
-			this.buildAndSetGalleryFrame();
 
-			this.initializeListeners();
+			wp.media.view.settings.post = {
+				id: this.props.relatedPostId,
+				wp_customize: 'off'
+			}
+
+			this.buildAndSetGalleryFrame();
 		}
 
 		getGalleryDetailsMediaFrame() {
@@ -43,7 +46,7 @@ export default {
 									click() {
 										const controller = this.controller,
 											state = controller.state();
-		
+										
 										controller.close();
 										state.trigger(
 											'update',
@@ -61,76 +64,45 @@ export default {
 				},
 		
 				/**
-				 * Handle the edit state requirements of selected media item.
-				 *
-				 * @return {void}
-				 */
-				editState() {
-					const selection = this.state( 'gallery' ).get( 'selection' );
-					const view = new wp.media.view.EditImage( {
-						model: selection.single(),
-						controller: this,
-					} ).render();
-		
-					// Set the view to the EditImage frame using the selected image.
-					this.content.set( view );
-		
-					// After bringing in the frame, load the actual editor via an ajax call.
-					view.loadEditor();
-				},
-		
-				/**
 				 * Create the default states.
 				 *
 				 * @return {void}
 				 */
 				createStates: function createStates() {
 					this.on( 'toolbar:create:main-gallery', this.galleryToolbar, this );
-					this.on( 'content:render:edit-image', this.editState, this );
 		
 					this.states.add( [
-						new wp.media.controller.Library( {
-							id: 'gallery',
-							title: 'título do frame',
-							priority: 40,
-							toolbar: 'main-gallery',
-							filterable: 'uploaded',
-							multiple: 'add',
-							editable: false,
-		
-							library: wp.media.query( this.options.library),
-						} ),
-						new wp.media.controller.EditImage( {
-							model: this.options.editImage,
-						} ),
-		
 						new wp.media.controller.GalleryEdit( {
 							library: this.options.selection,
 							editing: this.options.editing,
 							menu: 'gallery',
 							displaySettings: false,
 							multiple: true,
+							filterable: false,
+							searchable: false
 						} ),
-		
-						new wp.media.controller.GalleryAdd(),
+						new wp.media.controller.GalleryAdd({
+							library: wp.media.query( {
+								uploadedTo: wp.media.view.settings.post.id,
+								orderby: 'menuOrder',
+								order: 'DESC',
+								posts_per_page: -1,
+								query: true
+							} ),
+							multiple: true,
+							filterable: false,
+							searchable: false
+						}),
 					] );
 				},
 			} );
 		};
 
-		initializeListeners() {
-			// When an image is selected in the media frame...
-			this.frame.on( 'select', this.onSelect );
-			this.frame.on( 'update', this.onUpdate );
-			this.frame.on( 'open', this.onOpen );
-			this.frame.on( 'onclose', this.onClose );
-		}
-
-		getAttachmentsCollection( ids ) {
+		getAttachmentsCollection() {
 			return wp.media.query( {
-				order: 'ASC',
-				orderby: 'post__in',
-				post__in: ids,
+				uploadedTo: wp.media.view.settings.post.id,
+				orderby: 'menuOrder',
+				order: 'DESC',
 				posts_per_page: -1,
 				query: true
 			} );
@@ -142,73 +114,59 @@ export default {
 		 * @return {void}
 		 */
 		buildAndSetGalleryFrame() {
-			const {
-				addToGallery = false,
-				value = [],
-				multiple = true
-			} = this.props;
-
-			// If the value did not changed there is no need to rebuild the frame,
-			// we can continue to use the existing one.
-			if ( value === this.lastGalleryValue ) {
-				return;
-			}
-
-			this.lastGalleryValue = value;
 
 			// If a frame already existed remove it.
-			if ( this.frame ) {
+			if ( this.frame )
 				this.frame.remove();
-			}
-			let currentState;
-			if ( addToGallery ) {
-				currentState = 'gallery-library';
-			} else {
-				currentState = value && value.length ? 'gallery-edit' : 'gallery';
-			}
-			if ( ! this.GalleryDetailsMediaFrame ) {
+			
+			if ( ! this.GalleryDetailsMediaFrame )
 				this.GalleryDetailsMediaFrame = this.getGalleryDetailsMediaFrame();
-			}
-			const attachments = this.getAttachmentsCollection( value );
+			
+			const attachments = this.getAttachmentsCollection( );
 			const selection = new wp.media.model.Selection( attachments.models, {
 				props: attachments.props.toJSON(),
 				multiple: true,
 			} );
+
 			this.frame = new this.GalleryDetailsMediaFrame( {
-				state: currentState,
+				state: this.props.existingAttachments && this.props.existingAttachments.length ? 'gallery-edit' : 'gallery-library',
 				multiple: true,
-				selection,
-				editing: value && value.length ? true : false,
+				selection: selection,
+				editing: this.props.existingAttachments && this.props.existingAttachments.length ? true : false,
 			} );
 			wp.media.frame = this.frame;
-			this.initializeListeners();
+
+			this.frame.on( 'select', (selected) => this.onSelect(selected));
+			this.frame.on( 'update', (selected) => this.onUpdate(selected));
+			this.frame.on( 'onclose', () => this.onClose() );
 		}
 
 		onUpdate( selections ) {
-			const { onSelect, multiple = true } = this.props;
 			const state = this.frame.state();
 			const selectedImages = selections || state.get( 'selection' );
 
-			if ( ! selectedImages || ! selectedImages.models.length ) {
+			if ( ! selectedImages || ! selectedImages.models.length )
 				return;
-			}
 
-			if ( multiple ) {
-				onSelect( selectedImages.models.map( ( model ) => model.toJSON() ));
-			} else {
-				onSelect( selectedImages.models[ 0 ].toJSON() );
-			}
+			this.props.onSelect( selectedImages.models.map( ( model ) => model.toJSON() ));
 		}
 
 		onSelect() {
-			const { onSelect, multiple = true } = this.props;
 			// Get media attachment details from the frame state
-			const attachment = this.frame.state().get( 'selection' ).toJSON();
-			onSelect( multiple ? attachment : attachment[ 0 ] );
+			const attachments = this.frame.state().get( 'selection' ).toJSON();
+			this.props.onSelect( attachments );
 		}
 
+		onClose() {
+			const { onClose } = this.props;
+	
+			if ( onClose )
+				onClose();
+		}
 
-		updateCollection() {
+		openModal() {
+			this.buildAndSetGalleryFrame();
+			
 			const frameContent = this.frame.content.get();
 			if ( frameContent && frameContent.collection ) {
 				const collection = frameContent.collection;
@@ -224,28 +182,9 @@ export default {
 				// request items
 				collection.more();
 			}
-		}
-
-		onOpen() {
-			this.updateCollection();
-			if ( ! this.props.value ) {
-				return;
-			}
 			// load the images so they are available in the media modal.
-			this.getAttachmentsCollection( Array.isArray(this.props.value) ? this.props.value : [this.props.value] ).more();
-		}
+			this.getAttachmentsCollection().more();
 
-		onClose() {
-			const { onClose } = this.props;
-	
-			if ( onClose ) {
-				onClose();
-			}
-		}
-
-		openModal() {
-			this.buildAndSetGalleryFrame();
-			
 			this.frame.open();
 		}
 	},  

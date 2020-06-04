@@ -16,7 +16,7 @@ button.link-style:active {
         text-decoration: underline;
     }
 }
-.button:not(.media-frame-menu-toggle) {
+.button:not(.media-frame-menu-toggle):not(.media-button) {
     border-radius: 6px !important;
     min-height: 2.125em;
     font-weight: normal;
