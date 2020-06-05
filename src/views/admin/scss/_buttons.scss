@@ -16,7 +16,7 @@ button.link-style:active {
         text-decoration: underline;
     }
 }
-.button:not(.media-frame-menu-toggle):not(.media-button) {
+.button:not(.media-frame-menu-toggle):not(.media-button):not(.browser) {
     border-radius: 6px !important;
     min-height: 2.125em;
     font-weight: normal;
@@ -78,13 +78,13 @@ button.link-style:active {
         background-color: transparent !important;
         opacity: 0.85;
     }
-}
-.button.is-small {
-    height: 1.625em !important;
-    line-height: 0.75em;
-}
-.button:not(.is-small):not(.is-medium):not(.is-large) {
-    height: 1.875em !important;
-    font-size: 0.875em !important;
-    line-height: 1.5em;
+    &.is-small {
+        height: 1.625em !important;
+        line-height: 0.75em;
+    }
+    &:not(.is-small):not(.is-medium):not(.is-large) {
+        height: 1.875em !important;
+        font-size: 0.875em !important;
+        line-height: 1.5em;
+    }
 }

@@ -243,7 +243,7 @@ export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId,
     commit('cleanAttachments');
     commit('setTotalAttachments', null);
 
-    let endpoint = '/items/' + itemId + '/attachments?order=DESC&orderby=menu_order&perpage=' + attachmentsPerPage + '&paged=' + page;
+    let endpoint = '/items/' + itemId + '/attachments?order=ASC&orderby=menu_order&perpage=' + attachmentsPerPage + '&paged=' + page;
 
     if (documentId && !isNaN(documentId))
         endpoint += '&exclude=' + documentId;

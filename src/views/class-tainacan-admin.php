@@ -176,7 +176,9 @@ class Admin {
 		$settings = $this->get_admin_js_localization_params();
 
 		wp_localize_script( 'tainacan-admin', 'tainacan_plugin', $settings );
-		wp_enqueue_media();
+		wp_enqueue_media(
+			// [ 'post' => 131528 ]
+		);
 		wp_enqueue_script('underscore');
 		wp_enqueue_script('jcrop');
 		wp_enqueue_script( 'customize-controls' );

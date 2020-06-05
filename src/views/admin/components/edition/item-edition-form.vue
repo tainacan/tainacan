@@ -525,7 +525,7 @@
                                             :disabled="isLoadingAttachments">
                                         {{ $i18n.get("label_edit_attachments") }}
                                     </button>
-                                    
+<!--                                     
                                     <button
                                             style="margin-left: calc(var(--tainacan-one-column) + 12px)"
                                             type="button"
@@ -534,7 +534,7 @@
                                             :disabled="isLoadingAttachments">
                                         {{ $i18n.get("label_edit_attachments") + ' 2' }}
                                     </button>
-                                    
+                                     -->
                                     <attachments-list
                                             v-if="item != undefined && item.id != undefined"
                                             :item="item"
@@ -1378,6 +1378,7 @@ export default {
                         frame_button: this.$i18n.get('label_attach_to_item'),
                     },
                     relatedPostId: this.itemId,
+                    document: this.item.document, 
                     onSave: () => {
                         // Fetch current existing attachments
                         this.isLoadingAttachments = true;
@@ -1389,20 +1390,27 @@ export default {
             );
 
         },
-        openNewAttachmentsMediaFrame() {
-            const newAttachmentMediaFrame = new wpMediaFrames.customAttachmentsControl({ 
-                existingAttachments: this.getAttachments().map((attachment) => attachment.id),
-                button_labels: {
-                    frame_title: this.$i18n.get('instruction_select_files_to_attach_to_item'),
-                    frame_button: this.$i18n.get('label_attach_to_item'),
-                },
-                relatedPostId: this.itemId,
-                onSelect: (selected) => {
-                    console.log(selected)
-                }
-            });
-            setTimeout(() => newAttachmentMediaFrame.openModal(), 1000);
-        },
+        // openNewAttachmentsMediaFrame() {
+        //     const newAttachmentMediaFrame = new wpMediaFrames.customAttachmentsControl({ 
+        //         existingAttachments: this.getAttachments().map((attachment) => attachment.id),
+        //         button_labels: {
+        //             frame_title: this.$i18n.get('instruction_select_files_to_attach_to_item'),
+        //             frame_button_new: this.$i18n.get('label_attach_to_item'),
+        //             frame_button_update: this.$i18n.get('finish')
+        //         },
+        //         relatedPostId: this.itemId,
+        //         onSelect: (selected) => {
+        //             console.log(selected);
+        //              // Fetch current existing attachments
+        //             this.isLoadingAttachments = true;
+        //             this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+        //                 .then(() => this.isLoadingAttachments = false)
+        //                 .catch(() => this.isLoadingAttachments = false);
+                    
+        //         }
+        //     });
+        //     setTimeout(() => newAttachmentMediaFrame.openModal(), 1000);
+        // },
         toggleCollapseAll() {
             this.collapseAll = !this.collapseAll;
 
@@ -1430,8 +1438,6 @@ export default {
             });
         },
         loadExistingItem() {
-            // Initializes Media Frames now that itemId exists
-            this.initializeMediaFrames();
 
             this.fetchItem({
                 itemId: this.itemId,
@@ -1483,10 +1489,13 @@ export default {
 
                 this.loadMetadata();
                 this.setLastUpdated(this.item.modification_date);
-            });
 
-            // Fetch current existing attachments
-            this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
+                // Fetch current existing attachments now that item.document
+                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
+
+                // Initializes Media Frames now that itemId and item.document exists
+                this.initializeMediaFrames();
+            });
         },
         onNextInSequence() {
             this.sequenceRightDirection = true;
