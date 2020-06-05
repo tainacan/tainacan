@@ -245,8 +245,9 @@ export default {
 		 */
 		initFrame: function() {
 
-			wp.media.model.settings.post = {
-				id: parseInt(this.params.relatedPostId)
+			wp.media.view.settings.post = {
+				id: parseInt(this.params.relatedPostId),
+				wp_customize: 'off'
 			}
 			
 			this.frame = wp.media({
@@ -254,28 +255,20 @@ export default {
 					new wp.media.controller.Library({
 						title: this.params.button_labels.frame_title,
 						library: wp.media.query({
-							uploadedTo: wp.media.model.settings.post.id,
+							uploadedTo: wp.media.view.settings.post.id,
 							orderby: 'menuOrder',
-							order: 'ASC',
-							exclude: !isNaN(this.params.document) ? this.params.document : null
-						}),
-						selection: wp.media.query({
-							uploadedTo: wp.media.model.settings.post.id,
-							orderby: 'menuOrder',
-							order: 'ASC',
-							exclude: !isNaN(this.params.document) ? this.params.document : null
+							order: 'ASC'
 						}),
 						toolbar: 'main-gallery',
 						describe: true,
 						autoSelect: true,
-						multiple:  false,
 						sortable: true,
 						filterable: 'unattached',
 					})
 				]
 			});
 			
-			this.frame.$el.addClass( 'tainacan-item-attachments-modal-class' );
+			this.frame.$el.addClass( 'tainacan-item-attachments-modal' );
 
 			this.frame.on( 'toolbar:create:main-gallery', this.galleryToolbar, this.frame );
 
@@ -283,7 +276,7 @@ export default {
                  // Get the attachment from the modal frame.
                 var attachments = this.frame.state().get( 'selection' ).toJSON();
 				
-				wp.media.model.settings.post.id = {
+				wp.media.view.settings.post.id = {
 					id: this.params.relatedPostId
 				}
 																																																
@@ -367,7 +360,7 @@ export default {
 					})
 				]
 			});
-
+			this.frame.$el.addClass( 'tainacan-thumbnail-modal' );
 			this.frame.on( 'select', this.onSelect, this );
 			this.frame.on( 'cropped', this.onCropped, this );
 			this.frame.on( 'skippedcrop', this.onSkippedCrop, this );
@@ -467,7 +460,7 @@ export default {
 			});
 
 			//this.frame.state('cropper').set( 'canSkipCrop', true );
-
+			this.frame.$el.addClass( 'tainacan-header-image-modal' );
 			this.frame.on( 'select', this.onSelect, this );
 			this.frame.on( 'cropped', this.onCropped, this );
 			this.frame.on( 'skippedcrop', this.onSkippedCrop, this );
@@ -507,7 +500,7 @@ export default {
 					})
 				]
 			});
-
+			this.frame.$el.addClass( 'tainacan-document-modal' );
 			// When a file is selected, run a callback.
 			this.frame.on( 'select', () => {
 				

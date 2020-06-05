@@ -191,11 +191,38 @@
     background-color: var(--tainacan-background-color);
     z-index: 99999999999 !important;
 
-    .media-toolbar button.button:not(.is-small):not(.is-medium):not(.is-large){
-        margin-top: 1em !important;
-        font-size: 0.875rem !important;
+    .media-toolbar {
+        font-size: 16px;
+        .button {
+            margin-top: 15px !important;
+            line-height: 2.30769231 !important;
+        }
+    }
+    .tainacan-document-modal, 
+    .tainacan-header-image-modal,
+    .tainacan-thumbnail-modal,
+    .tainacan-item-attachments-modal {
+        .media-toolbar button.button:not(.is-small):not(.is-medium):not(.is-large){
+            margin-top: 1em !important;
+            font-size: 0.875rem !important;
+        }
+        .button-primary:hover {
+            background: #0071a1 !important;
+        }
+        .upload-ui .button-hero {
+            color: #0071a1 !important;
+            font-size: 14px !important;
+        }
+        .upload-ui .button-hero:hover {
+            color: #0071a1 !important;
+            background: #f1f1f1 !important;
+            font-size: 14px !important;
+        }
+        .media-frame-menu-toggle {
+            display: none !important;
+        }
     }
 }
-.tainacan-item-attachments-modal-class button.check {
+.media-modal .tainacan-item-attachments-modal button.check {
     display: none !important;
 }
