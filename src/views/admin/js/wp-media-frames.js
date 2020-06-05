@@ -245,9 +245,8 @@ export default {
 		 */
 		initFrame: function() {
 
-			wp.media.view.settings.post = {
-				id: parseInt(this.params.relatedPostId),
-				wp_customize: 'off'
+			wp.media.model.settings.post = {
+				id: parseInt(this.params.relatedPostId)
 			}
 			
 			this.frame = wp.media({
