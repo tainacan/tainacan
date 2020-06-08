@@ -667,11 +667,8 @@ class Item extends Entity {
 
 			if ( wp_attachment_is_image($this->get_document()) ) {
 
-				$img = wp_get_attachment_image($this->get_document(), $img_size);
-				$img_full = wp_get_attachment_url($this->get_document());
-
-				$image_attributes = wp_get_attachment_image_src( $this->get_document(), $img_size );
-                $img = "<img style='max-width: 100%;' src='" . $image_attributes[0] . "' />";
+				$img_full = wp_get_attachment_url($this->get_document());			
+				$img = wp_get_attachment_image( $this->get_document(), $img_size );
 
 				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $img_full, $img);
 
@@ -707,9 +704,6 @@ class Item extends Entity {
 
 			$img = wp_get_attachment_image($attachment, $img_size);
 			$img_full = wp_get_attachment_url($attachment);
-
-			$image_attributes = wp_get_attachment_image_src($attachment, $img_size );
-			$img = "<img style='max-width: 100%;' src='" . $image_attributes[0] . "' />";
 
 			$output .= sprintf("<a href='%s' target='blank'>%s</a>", $img_full, $img);
 			

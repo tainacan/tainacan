@@ -334,8 +334,8 @@ class Media {
 
 		if ( wp_attachment_is_image($att_id) ) {
 
-			$img = wp_get_attachment_url($attachment->ID, 'large');
-			$output .= "<img style='max-width: 100%;' src='" . $img . "' />";
+			$img = wp_get_attachment_image($attachment->ID, 'large');
+			$output .= $img;
 
 		} else {
 
