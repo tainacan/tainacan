@@ -257,10 +257,11 @@ export default {
 						library: wp.media.query({
 							uploadedTo: wp.media.view.settings.post.id,
 							orderby: 'menuOrder',
-							order: 'ASC'
+							order: 'ASC',
+	 						posts_per_page: -1,
+			 				query: true
 						}),
 						toolbar: 'main-gallery',
-						describe: true,
 						autoSelect: true,
 						sortable: true,
 						filterable: 'unattached',
