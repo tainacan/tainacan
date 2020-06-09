@@ -75,14 +75,21 @@
         }
         .tainacan-list-thumbnail {
             float: left;
-            margin: 0 var(--tainacan-container-padding) var(--tainacan-container-padding) 0;
+            margin: 0 var(--tainacan-container-padding) 0 0;
         }
         img {
-            width: 210px;
+            width: 200px;
             height: auto;
             border-radius: 0px;
             position: relative;
             z-index: 1;
+
+            @media screen and (max-width: 1024px) {
+                width: 120px;
+            }
+            @media screen and (max-width: 768px) {
+                width: 100%;
+            }
         }
         .skeleton {
             width: 120px;
@@ -121,6 +128,10 @@
             display: flex;
             transition: background-color 0.2s ease;
 
+            @media screen and (max-width: 768px) {
+                flex-direction: column;
+            }
+
             .list-metadata {
                 padding: 0 var(--tainacan-container-padding) var(--tainacan-container-padding) var(--tainacan-container-padding);
                 flex: 1;
@@ -128,10 +139,42 @@
                 color: var(--tainacan-info-color);
                 overflow: hidden;
                 width: 100%;
-                column-count: 3;
+                -moz-column-count: 5;
+                -moz-column-gap: 2em;
+                -moz-column-rule: none;
+                -webkit-column-count: 5;
+                -webkit-column-gap: 2em;
+                -webkit-column-rule: none;
+                column-count: 5;
+                column-gap: 2em;
+                column-rule: none;
+
+                @media screen and (max-width: 1920px) {
+                    -moz-column-count: 4;
+                    -webkit-column-count: 4;
+                    column-count: 4;
+                }
+                @media screen and (max-width: 1600px) {
+                    -moz-column-count: 3;
+                    -webkit-column-count: 3;
+                    column-count: 3;
+                }
+                @media screen and (max-width: 1280px) {
+                    -moz-column-count: 2;
+                    -webkit-column-count: 2;
+                    column-count: 2;
+                }
+                @media screen and (max-width: 768px) {
+                    -moz-column-count: 1;
+                    -webkit-column-count: 1;
+                    column-count: 1;
+                }
 
                 &>span {
+                    -webkit-column-break-inside: avoid;
+                    page-break-inside: avoid;
                     break-inside: avoid;
+                    display: block;
                 }
             
                 .metadata-label {
@@ -139,12 +182,18 @@
                     font-size: 0.75em;
                     font-weight: 700;
                     color: var(--tainacan-info-color);
+                    -webkit-column-break-inside: avoid;
+                    page-break-inside: avoid;
+                    break-inside: avoid;
                 }
 
                 .metadata-value {
                     font-size: 0.75em;
                     margin-bottom: 1em;
                     color: var(--tainacan-info-color);
+                    -webkit-column-break-inside: auto;
+                    page-break-inside: auto;
+                    break-inside: auto;
                 }
 
                 & span:last-of-type>.metadata-value {
