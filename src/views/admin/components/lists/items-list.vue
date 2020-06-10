@@ -1103,23 +1103,44 @@
                             :ref="'thumb-' + item.id"
                             :key="index"
                             v-for="(item, index) of items"
+                            class="tainacan-slide-thumbnail"
                             :class="{ 'selected-slide': getSelectedItemChecked(item.id) == true, 'active-item': slideIndex == index }">
-                        <!-- Item thumbnail -->
-                        <div class="tainacan-slide-thumbnail">
-                            <img
-                                    :alt="$i18n.get('label_thumbnail')"
-                                    v-if="item.thumbnail != undefined"
-                                    :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : thumbPlaceholderPath)">
-                        </div>
+                        <!-- Item thumbnail -->                        
+                        <img
+                                :alt="$i18n.get('label_thumbnail')"
+                                v-if="item.thumbnail != undefined"
+                                :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : thumbPlaceholderPath)">
                     </swiper-slide>
 
                     <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
                     <div    
+                            style="background-image: none;"
                             class="swiper-button-prev" 
-                            slot="button-prev"/>
+                            slot="button-prev">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('previous'),
+                                    autoHide: true,
+                                    placement: 'auto'
+                                }"
+                                class="icon is-large has-text-secondary">
+                            <icon class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
+                        </span> 
+                    </div>
                     <div 
+                            style="background-image: none;"
                             class="swiper-button-next" 
-                            slot="button-next"/>
+                            slot="button-next">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('next'),
+                                    autoHide: true,
+                                    placement: 'auto'
+                                }"
+                                class="icon is-large has-text-secondary">
+                            <icon class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
+                        </span> 
+                    </div>
                 </swiper>
 
             </div>
@@ -1161,14 +1182,17 @@ export default {
             cursorPosY: -1,
             contextMenuItem: null,
             slideIndex: 0,
+            goingRight: true,
             swiperOption: {
                 mousewheel: true,
                 keyboard: true,
+                observer: true,
                 preventInteractionOnTransition: true,
                 allowClick: true,
                 allowTouchMove: true, 
-                slidesPerView: 12,
+                slidesPerView: 18,
                 slidesPerGroup: 1,
+                centeredSlides: true,
                 spaceBetween: 12,
                 slideToClickedSlide: true,
                 navigation: {
@@ -1230,7 +1254,23 @@ export default {
         allItemsOnPageSelected(value) {
             if (!value)
                 this.queryAllItemsSelected = {};
-        }
+        },
+        slideIndex:{
+            handler(val, oldVal) { 
+                if (this.slideIndex < 0) {
+                    this.slideIndex = 0;
+                } else {
+                    // Handles direction information, used by animations
+                    if (oldVal == undefined)
+                        this.goingRight = undefined;    
+                    else if (val < oldVal || (this.slideIndex == 0 && this.page == 1))
+                        this.goingRight = false;
+                    else    
+                        this.goingRight = true;
+                }
+            },
+            immediate: true
+        } 
     },
     mounted() {
         this.cleanSelectedItems();
@@ -1530,7 +1570,6 @@ export default {
         onSlideChange() {
             if (this.$refs.mySwiper.swiper != undefined)
                 this.slideIndex = this.$refs.mySwiper.swiper.activeIndex;
-            console.log(this.slideIndex)
         }
     }
 }
