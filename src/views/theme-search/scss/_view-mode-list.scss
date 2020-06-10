@@ -20,7 +20,7 @@
     }
 
     .tainacan-list {
-        background-color: var(--tainacan-item-background-color);
+        background-color: rgba(126, 126, 126, 0.05);
         padding: 0px;
         flex-basis: 100%;
         margin: 0 auto 30px auto;
@@ -75,10 +75,14 @@
         }
         .tainacan-list-thumbnail {
             float: left;
-            margin: 0 var(--tainacan-container-padding) 0 0;
+            margin: 0 0.875em 0 0;
+
+            @media screen and (max-width: 768px) {
+                margin: 0 0.875em 0.875em 0.875em;
+            }
         }
         img {
-            width: 200px;
+            width: 170px;
             height: auto;
             border-radius: 0px;
             position: relative;

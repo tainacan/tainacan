@@ -23,10 +23,11 @@
                 <div 
                         :key="item"
                         v-for="item in 12"
+                        style="min-height: 200px"
                         class="skeleton tainacan-list" />
             </div>
             
-            <!-- RECORDS VIEW MODE -->
+            <!-- LIST VIEW MODE -->
             <div
                     role="list"
                     v-if="!isLoading && items.length > 0"
@@ -37,6 +38,7 @@
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-list">
+
                     <!-- Title -->
                     <p 
                             v-tooltip="{
@@ -58,7 +60,7 @@
 
                     <!-- Remaining metadata -->  
                     <div class="media">
-                        <div 
+                         <div 
                                 class="tainacan-list-thumbnail"
                                 v-if="item.thumbnail != undefined">
                             <img 
