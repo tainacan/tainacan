@@ -1,0 +1,150 @@
+.tainacan-slides-container {
+    min-height: 50vh;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    justify-content: space-evenly;
+    animation-name: appear;
+    animation-duration: 0.5s;
+
+    .selected-slide {
+        background-color: var(--tainacan-turquoise1);
+        .metadata-title {
+            background-color: var(--tainacan-turquoise2);
+        }
+        .media {
+            background-color: var(--tainacan-turquoise1);
+        }
+    }
+
+    .tainacan-slide {
+        display: flex;
+        width: 100%;
+        margin: var(--tainacan-container-padding) 0;
+        max-height: calc(45vh + 40px);
+        
+        &:hover {
+            background-color: var(--tainacan-item-hover-background-color) !important;
+        }
+
+        .slide-checkbox {
+            position: absolute;
+            margin-left: 1.0em;
+            margin-top: 7px;
+        }
+        .actions-area {
+            position: relative;
+            float: right;
+            top: calc(-1 * var(--tainacan-container-padding));
+            padding-right: 12px;
+            //width: 80px;
+            display: flex;
+            justify-content: space-between;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.2s, opacity 0.3s ease, top 0.2s ease;
+
+            a {
+                margin-left: 12px;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+        }
+        &:hover .actions-area {
+            visibility: visible;
+            opacity: 1.0;
+            top: -7px;
+
+            a {
+                opacity: 1;
+            }
+        }
+
+        .tainacan-slide-item {
+            img {
+                max-height: 45vh;
+            }
+        }
+        .tainacan-slide-thumbnail {
+            img {
+                width: 120px;
+                height: auto;
+            }
+        }
+        .skeleton {
+            width: 120px;
+        }
+        .metadata-title {
+            flex-shrink: 0;
+            padding: 0.5em 4.75em 0.5em 2.75em;
+            margin-bottom: -27px;
+            min-height: 40px;
+            font-size: 0.875em !important; 
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            color: var(--tainacan-heading-color);
+            transition: background-color 0.3s ease;
+
+            p {
+                line-height: 1.8;
+                font-size: 1.0em !important; 
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                margin: 0;
+                transition: background-color 0.3s;
+            }
+        }
+        &:hover .metadata-title {
+            background-color: var(---tainacan-item-heading-hover-background-color) !important;
+        }
+        &:hover .aside-item {
+            background-color: var(--tainacan-item-hover-background-color) !important;
+        }
+
+        .aside-item {
+            max-height: calc(45vh + 40px);
+            width: 100%;
+            display: flex;
+            transition: background-color 0.2s ease;
+            position: relative;
+            top: 0;
+            overflow-y: auto;
+
+            .list-metadata {
+                padding: var(--tainacan-container-padding);
+                flex: 1;
+                font-size: 1em;
+                color: var(--tainacan-info-color);
+                width: 100%;
+            
+                .metadata-label {
+                    margin: 0 0 0.5em 0;
+                    font-size: 0.75em;
+                    font-weight: 700;
+                    color: var(--tainacan-info-color);
+                }
+
+                .metadata-value {
+                    font-size: 0.75em;
+                    margin-bottom: 1em;
+                    color: var(--tainacan-info-color);
+                }
+
+                & span:last-of-type>.metadata-value {
+                    margin-bottom: 0px;
+                }
+            }
+        }
+    
+        #tainacan-slide-container {
+            width: 100%;
+        }
+    
+    }
+}
+
+

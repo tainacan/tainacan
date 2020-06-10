@@ -909,6 +909,220 @@
                     </tr>
                 </tbody>
             </table>
+
+            <!-- SLIDES VIEW MODE -->
+            <div
+                    role="list"
+                    class="tainacan-slides-container"
+                    v-if="viewMode == 'slides'">
+                <transition 
+                    mode="out-in"
+                    :name="goingRight ? 'slide-right' : 'slide-left'" >
+                    <div
+                            role="listitem"
+                            :key="index"
+                            v-for="(item, index) of items"
+                            v-if="index == slideIndex"
+                            :class="{ 'selected-slide': getSelectedItemChecked(item.id) == true }"
+                            class="tainacan-slide">
+
+                        <div class="item-area">
+
+                            <!-- Checkbox -->
+                            <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
+                            <div
+                                    v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)"
+                                    :class="{ 'is-selecting': isSelectingItems }"
+                                    class="slide-checkbox">
+                                <label
+                                        tabindex="0"
+                                        class="b-checkbox checkbox is-small">
+                                    <input
+                                            type="checkbox"
+                                            :checked="getSelectedItemChecked(item.id)"
+                                            @input="setSelectedItemChecked(item.id)">
+                                        <span class="check" />
+                                        <span class="control-label" />
+                                </label>
+                            </div>
+
+                            <!-- Title -->
+                            <div
+                                    class="metadata-title"
+                                    :style="{
+                                        'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '1.5em !important' : '2.75em',    
+                                        'margin-bottom': item.current_user_can_edit || $route.query.iframemode ? '-27px' : '0px'
+                                    }">
+                                <p 
+                                        v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
+                                            content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                            html: true,
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
+                                        v-for="(column, columnIndex) in tableMetadata"
+                                        :key="columnIndex"
+                                        v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                        @click.left="onClickItem($event, item)"
+                                        @click.right="onRightClickItem($event, item)"
+                                        v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />
+                                <p
+                                        v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
+                                            content: item.title != undefined ? item.title : '',
+                                            html: true,
+                                            autoHide: false,
+                                            placement: 'auto-start'
+                                        }"
+                                        v-for="(column, columnIndex) in tableMetadata"
+                                        :key="columnIndex"
+                                        v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                        @click.left="onClickItem($event, item)"
+                                        @click.right="onRightClickItem($event, item)"
+                                        v-html="item.title != undefined ? item.title : ''" />
+                            </div>
+
+                            <!-- Actions -->
+                            <div
+                                    v-if="item.current_user_can_edit && !$route.query.iframemode"
+                                    class="actions-area"
+                                    :label="$i18n.get('label_actions')">
+                                <a
+                                        v-if="!isOnTrash"
+                                        id="button-edit"
+                                        :aria-label="$i18n.getFrom('items','edit_item')"
+                                        @click.prevent.stop="goToItemEditPage(item)">
+                                    <span
+                                            v-tooltip="{
+                                                content: $i18n.get('edit'),
+                                                autoHide: true,
+                                                placement: 'auto'
+                                            }"
+                                            class="icon">
+                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                    </span>
+                                </a>
+                                <a
+                                        :aria-lavel="$i18n.get('label_button_untrash')"
+                                        @click.prevent.stop="untrashOneItem(item.id)"
+                                        v-if="isOnTrash">
+                                    <span
+                                            v-tooltip="{
+                                                content: $i18n.get('label_recover_from_trash'),
+                                                autoHide: true,
+                                                placement: 'auto'
+                                            }"
+                                            class="icon">
+                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
+                                    </span>
+                                </a>
+                                <a
+                                        v-if="item.current_user_can_delete"
+                                        id="button-delete" 
+                                        :aria-label="$i18n.get('label_button_delete')" 
+                                        @click.prevent.stop="deleteOneItem(item.id)">
+                                    <span
+                                            v-tooltip="{
+                                                content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
+                                                autoHide: true,
+                                                placement: 'auto'
+                                            }"
+                                            class="icon">
+                                        <i
+                                                :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
+                                                class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                    </span>
+                                </a>
+                            </div>
+
+                            <!-- Item thumbnail -->
+                            <div class="tainacan-slide-item">
+                                <img
+                                        :alt="$i18n.get('label_thumbnail')"
+                                        v-if="item.thumbnail != undefined"
+                                        :src="item['thumbnail']['full'] ? item['thumbnail']['full'][0] : (item['thumbnail'].full ? item['thumbnail'].full[0] : thumbPlaceholderPath)">
+                            </div>
+                        </div>
+
+                        <!-- Remaining metadata -->
+                        <div
+                                class="aside-item"
+                                @click.left="onClickItem($event, item)"
+                                @click.right="onRightClickItem($event, item)">
+                            <div class="list-metadata media-body">
+
+                                <span
+                                        v-for="(column, metadatumIndex) in tableMetadata"
+                                        :key="metadatumIndex"
+                                        :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
+                                        v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'description')">
+                                    <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
+                                    <p
+                                            v-html="item.description != undefined ? item.description : ''"
+                                            class="metadata-value"/>
+                                </span>
+                                <span
+                                        v-for="(column, metadatumIndex) in tableMetadata"
+                                        :key="metadatumIndex"
+                                        :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
+                                        v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
+                                    <h3 class="metadata-label">{{ column.name }}</h3>
+                                    <p
+                                            v-html="renderMetadata(item.metadata, column)"
+                                            class="metadata-value"/>
+                                </span>
+                                <span
+                                        v-for="(column, metadatumIndex) in tableMetadata"
+                                        :key="metadatumIndex"
+                                        v-if="(column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
+                                    <h3 class="metadata-label">{{ column.name }}</h3>
+                                    <p
+                                            v-html="column.metadatum == 'row_creation' ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
+                                            class="metadata-value"/>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </transition>
+
+                <swiper 
+                        role="list"
+                        @slideChange="onSlideChange()"
+                        ref="mySwiper"
+                        :options="swiperOption"
+                        id="tainacan-slide-container">
+                    <swiper-slide
+                            role="listitem"
+                            :ref="'thumb-' + item.id"
+                            :key="index"
+                            v-for="(item, index) of items"
+                            :class="{ 'selected-slide': getSelectedItemChecked(item.id) == true, 'active-item': slideIndex == index }">
+                        <!-- Item thumbnail -->
+                        <div class="tainacan-slide-thumbnail">
+                            <img
+                                    :alt="$i18n.get('label_thumbnail')"
+                                    v-if="item.thumbnail != undefined"
+                                    :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : thumbPlaceholderPath)">
+                        </div>
+                    </swiper-slide>
+
+                    <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
+                    <div    
+                            class="swiper-button-prev" 
+                            slot="button-prev"/>
+                    <div 
+                            class="swiper-button-next" 
+                            slot="button-next"/>
+                </swiper>
+
+            </div>
         </div>
     </div>
 </template>
@@ -918,10 +1132,16 @@ import { mapActions, mapGetters } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
 import ItemCopyDialog from '../other/item-copy-dialog.vue';
 import BulkEditionModal from '../modals/bulk-edition-modal.vue';
+import 'swiper/dist/css/swiper.css';
+import { swiper, swiperSlide } from 'vue-awesome-swiper';
 import { dateInter } from "../../js/mixins";
 
 export default {
     name: 'ItemsList',
+    components: {
+        swiper,
+        swiperSlide,
+    },
     mixins: [ dateInter ],
     props: {
         collectionId: undefined,
@@ -939,7 +1159,33 @@ export default {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             cursorPosX: -1,
             cursorPosY: -1,
-            contextMenuItem: null
+            contextMenuItem: null,
+            slideIndex: 0,
+            swiperOption: {
+                mousewheel: true,
+                keyboard: true,
+                preventInteractionOnTransition: true,
+                allowClick: true,
+                allowTouchMove: true, 
+                slidesPerView: 12,
+                slidesPerGroup: 1,
+                spaceBetween: 12,
+                slideToClickedSlide: true,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev'
+                },
+                breakpoints: {
+                    320: { slidesPerView: 4 },
+                    480: { slidesPerView: 6 },
+                    640: { slidesPerView: 8 },
+                    768: { slidesPerView: 10 },
+                    1024: { slidesPerView: 14 },
+                    1366: { slidesPerView: 16 },
+                    1406: { slidesPerView: 18 },
+                    1600: { slidesPerView: 20 }
+                }
+            },
         }
     },
     computed: {
@@ -1280,6 +1526,11 @@ export default {
         getLimitedDescription(description) {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
+        },
+        onSlideChange() {
+            if (this.$refs.mySwiper.swiper != undefined)
+                this.slideIndex = this.$refs.mySwiper.swiper.activeIndex;
+            console.log(this.slideIndex)
         }
     }
 }
@@ -1292,6 +1543,8 @@ export default {
     @import "../../scss/_view-mode-masonry.scss";
     @import "../../scss/_view-mode-grid.scss";
     @import "../../scss/_view-mode-records.scss";
+    @import "../../scss/_view-mode-slides.scss";
+
 
     .selection-control {
 

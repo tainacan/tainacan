@@ -402,6 +402,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_descending'		                 	 	 => __( 'Descending', 'tainacan' ),
 	'label_ascending'			                 	 => __( 'Ascending', 'tainacan' ),
 	'label_slideshow'			                 	 => __( 'Slideshow', 'tainacan' ),
+	'label_slides'				                 	 => __( 'Slides', 'tainacan' ),
 	'label_items_list'			                 	 => __( 'Items List', 'tainacan' ),
 	'label_list_pagination'			                 => __( 'List pagination', 'tainacan' ),
 	'label_sort_visualization'		                 => __( 'Sorting and visualization control', 'tainacan' ),

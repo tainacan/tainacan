@@ -329,7 +329,8 @@
                                                     'tainacan-icon-viewcards' : adminViewMode == 'cards',
                                                     'tainacan-icon-viewminiature' : adminViewMode == 'grid',
                                                     'tainacan-icon-viewrecords' : adminViewMode == 'records',
-                                                    'tainacan-icon-viewmasonry' : adminViewMode == 'masonry'}"
+                                                    'tainacan-icon-viewmasonry' : adminViewMode == 'masonry',
+                                                    'tainacan-icon-viewgallery' : adminViewMode == 'slides'}"
                                             class="tainacan-icon tainacan-icon-1-25em"/>
                                 </span>
                             </span>
@@ -392,6 +393,17 @@
                                 <i class="tainacan-icon tainacan-icon-viewmasonry"/>
                             </span>
                             <span>{{ $i18n.get('label_masonry') }}</span>
+                        </b-dropdown-item>
+                        <b-dropdown-item 
+                                aria-controls="items-list-results"
+                                role="button"
+                                :class="{ 'is-active': adminViewMode == 'slides' }"
+                                :value="'slides'"
+                                aria-role="listitem">
+                            <span class="icon gray-icon">
+                                <i class="tainacan-icon tainacan-icon-viewgallery"/>
+                            </span>
+                            <span>{{ $i18n.get('label_slides') }}</span>
                         </b-dropdown-item>
                     </b-dropdown>
                 </b-field>
@@ -807,7 +819,8 @@
                     existingViewMode == 'table' || 
                     existingViewMode == 'records' || 
                     existingViewMode == 'grid' || 
-                    existingViewMode == 'masonry')
+                    existingViewMode == 'masonry' ||
+                    existingViewMode == 'slides')
                     this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
                 else
                     this.$eventBusSearch.setInitialAdminViewMode('table');
@@ -964,7 +977,7 @@
                                 this.sortingMetadata = [];
 
                                 // Decides if custom meta will be loaded with item.
-                                let shouldLoadMeta = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == undefined;
+                                let shouldLoadMeta = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == 'slides' || this.adminViewMode == undefined;
                                 
                                 if (shouldLoadMeta) {
                                     
