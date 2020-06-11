@@ -50,6 +50,13 @@ class Elastic_Press {
 
 		add_filter( 'ep_formatted_args', function ( $formatted_args ) {
 			$formatted_args['track_total_hits'] = true;
+			//https://www.elasticpress.io/blog/2019/02/custom-search-with-elasticpress-how-to-limit-results-to-full-text-matches/
+			if ( ! empty( $formatted_args['query']['bool']['should'] ) ) {
+				$formatted_args['query']['bool']['must'] = $formatted_args['query']['bool']['should'];
+				$formatted_args['query']['bool']['must'][0]['multi_match']['operator'] = 'AND';
+				unset( $formatted_args['query']['bool']['should'] );
+				unset( $formatted_args["query"]["bool"]["must"][0]["multi_match"]["type"] );
+			}
 			return $formatted_args;
 		 } );
 		 
