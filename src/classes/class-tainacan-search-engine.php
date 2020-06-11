@@ -149,10 +149,10 @@ class Search_Engine {
 		$seperator = '';
 		$not_exact = empty($this->query_instance->query_vars['exact']);
 		$terms = $this->get_search_terms();
-		$fields = implode(", ' || ', ", $search_query_fields);
+		$fields = implode(", ", $search_query_fields);
 		foreach ( $terms as $term ) {
 			$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
-			$searchQuery .= "{$seperator}CONCAT_WS( $fields ) LIKE $esc_term";
+			$searchQuery .= "{$seperator}CONCAT_WS(' || ', $fields ) LIKE $esc_term";
 			$seperator = ' OR ';
 		}
 		$searchQuery .= ')';
