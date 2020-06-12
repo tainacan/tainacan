@@ -622,9 +622,6 @@ class Item extends Entity {
 
 			$fto = $item_meta->get_metadatum()->get_metadata_type_object();
 
-			$before = str_replace('$type', $fto->get_slug(), $args['before']);
-			$return .= $before;
-
 			if ( $fto->get_core() ) {
 				if ( $args['exclude_core'] ) {
 					continue;
@@ -634,6 +631,9 @@ class Item extends Entity {
 					continue;
 				}
 			}
+
+			$before = str_replace('$type', $fto->get_slug(), $args['before']);
+			$return .= $before;
 
 			if ($item_meta->has_value() || !$args['hide_empty']) {
 				$return .= $args['before_title'] . $item_meta->get_metadatum()->get_name() . $args['after_title'];

@@ -193,7 +193,6 @@
                     this.selected = metadata.terms;
                 } else {
                     this.selected = [];
-                    return false;
                 }
 
                 let onlyLabels = [];
