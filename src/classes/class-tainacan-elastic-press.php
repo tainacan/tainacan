@@ -273,7 +273,7 @@ class Elastic_Press {
 			}
 		}
 		
-		add_filter('ep_formatted_args', array($this, "prepare_request")); //filtro para os argumentos já no formato a ser enviado para o elasticpress.
+		add_filter('ep_formatted_args', array($this, "prepare_request"), 10, 2); //filtro para os argumentos já no formato a ser enviado para o elasticpress.
 		return $args;
 	}
 
@@ -284,7 +284,7 @@ class Elastic_Press {
 	 *
 	 * @return \Array with formatted array of args.
 	 */
-	public function prepare_request($formatted_args) {
+	public function prepare_request($formatted_args, $args) {
 		switch ($this->aggregation_type) {
 			case 'items':
 				$formatted_args = $this->prepare_request_for_items($formatted_args);
@@ -316,6 +316,19 @@ class Elastic_Press {
 			}
 			$formatted_args['sort'] = $new_sort;
 		}
+
+		if ( is_user_logged_in() && ! isset($args['post_status']) ) {
+			if ( isset( $formatted_args['post_filter']['bool']['must'] ) ) {
+				$post_filter = $formatted_args['post_filter']['bool']['must'];
+				foreach($post_filter as $idx => $filter) {
+					if( isset( $filter['terms']['post_status'] ) ) {
+						$formatted_args['post_filter']['bool']['must'][$idx]['terms']['post_status']=["private", "publish"];
+						break;
+					}
+				}
+			}
+		}
+
 		return $formatted_args;
 	}
 
