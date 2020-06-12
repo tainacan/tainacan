@@ -1,6 +1,7 @@
 .tainacan-slides-container {
     min-height: 50vh;
     padding: 0;
+    overflow: hidden;
     display: flex;
     flex-wrap: wrap;
     flex-grow: 1;
@@ -26,6 +27,12 @@
         max-height: calc(40vh + 40px);
         height: calc(40vh + 40px);
         
+        @media screen and (max-width: 768px) {
+            flex-wrap: wrap;
+            max-height: 100%;
+            height: 100%;
+        }
+
         &:hover {
             background-color: var(--tainacan-item-hover-background-color) !important;
         }
@@ -110,11 +117,16 @@
             max-height: calc(40vh + 40px);
             height: calc(40vh + 40px);
             width: 100%;
-            display: flex;
             transition: background-color 0.2s ease;
             position: relative;
             top: 0;
             overflow-y: auto;
+
+            @media screen and (max-width: 768px) {
+                flex-wrap: wrap;
+                max-height: 100%;
+                height: 100%;
+            }
 
             .list-metadata {
                 padding: calc(2* var(--tainacan-container-padding));
@@ -173,37 +185,42 @@
                 }
             }
         }
-    
-        #tainacan-slide-container {
-            padding: 0 var(--tainacan-one-column);
-            display: flex;
-            flex-wrap: nowrap;
-            overflow: hidden;
-            flex-grow: 1;
-            flex-shrink: 1;
-            justify-content: space-evenly;
-            animation-name: item-appear;
-            animation-duration: 0.5s;
+    }
+    #tainacan-slide-container {
+        padding: 12px var(--tainacan-one-column) 0 var(--tainacan-one-column);
+        display: flex;
+        flex-wrap: nowrap;
+        overflow: hidden;
+        flex-grow: 1;
+        flex-shrink: 1;
+        justify-content: space-evenly;
+        animation-name: item-appear;
+        animation-duration: 0.5s;
+        margin: 0;
+        width: 100%;
 
-            .tainacan-slide-thumbnail {
-                &.active-item img {
-                    border-bottom: 4px solid var(--tainacan-secondary);
-                }
-                &:hover img{
-                    border-bottom: 4px solid var(--tainacan-gray2);
-                }
-    
-                img {
-                    width: 100%;//85px;
-                    height: auto;
-                    border-radius: 0px;
-                    padding: 0 0 6px 0;
-                    border-bottom: 4px solid transparent; 
-                    transition: border-bottom 0.4s;
-                }
+        .tainacan-icon {
+            text-shadow: -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white;
+        }
+
+        .tainacan-slide-thumbnail {
+            &.active-item img {
+                border-bottom: 4px solid var(--tainacan-secondary);
+            }
+            &:hover img{
+                border-bottom: 4px solid var(--tainacan-gray2);
+                cursor: pointer;
+            }
+
+            img {
+                width: 100%;//85px;
+                height: auto;
+                border-radius: 0px;
+                padding: 0 0 6px 0;
+                border-bottom: 4px solid transparent; 
+                transition: border-bottom 0.4s;
             }
         }
-    
     }
 }
 
