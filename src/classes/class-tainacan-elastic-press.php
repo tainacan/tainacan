@@ -285,6 +285,17 @@ class Elastic_Press {
 	 * @return \Array with formatted array of args.
 	 */
 	public function prepare_request($formatted_args, $args) {
+		if ( is_user_logged_in() && ! isset($args['post_status']) ) {
+			if ( isset( $formatted_args['post_filter']['bool']['must'] ) ) {
+				$post_filter = $formatted_args['post_filter']['bool']['must'];
+				foreach($post_filter as $idx => $filter) {
+					if( isset( $filter['terms']['post_status'] ) ) {
+						$formatted_args['post_filter']['bool']['must'][$idx]['terms']['post_status']=["private", "publish"];
+						break;
+					}
+				}
+			}
+		}
 		switch ($this->aggregation_type) {
 			case 'items':
 				$formatted_args = $this->prepare_request_for_items($formatted_args);
@@ -316,19 +327,6 @@ class Elastic_Press {
 			}
 			$formatted_args['sort'] = $new_sort;
 		}
-
-		if ( is_user_logged_in() && ! isset($args['post_status']) ) {
-			if ( isset( $formatted_args['post_filter']['bool']['must'] ) ) {
-				$post_filter = $formatted_args['post_filter']['bool']['must'];
-				foreach($post_filter as $idx => $filter) {
-					if( isset( $filter['terms']['post_status'] ) ) {
-						$formatted_args['post_filter']['bool']['must'][$idx]['terms']['post_status']=["private", "publish"];
-						break;
-					}
-				}
-			}
-		}
-
 		return $formatted_args;
 	}
 
@@ -494,7 +492,8 @@ class Elastic_Press {
 								"terms"=>array(
 									"order" => ["_key" => "asc" ],
 									"field" => "$field.term_name.id",
-									"include" => "(.)*.($terms_id_inlcude).parent=$parent"
+									"include" => "(.)*.($terms_id_inlcude).parent=$parent",
+									"min_doc_count" => 0
 								)
 								// "terms"=>array(
 								// 	"script" => [
