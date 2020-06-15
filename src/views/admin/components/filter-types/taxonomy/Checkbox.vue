@@ -82,9 +82,12 @@
                 if (!isEqual)
                     this.onSelect();
             },
-            facetsFromItemSearch() {
-                if (this.isUsingElasticSearch)
-                    this.loadOptions();
+            facetsFromItemSearch: {
+                handler() {
+                    if (this.isUsingElasticSearch)
+                        this.loadOptions();
+                },
+                immediate: true
             },
             isLoadingItems: {
                 handler() {
