@@ -54,24 +54,13 @@
             filter: Object,
             query: Object,
             isRepositoryLevel: Boolean,
-            open: true
+            open: true,
+            isLoadingItems: true,
         },
         data() {
             return {
-                isLoadingItems: Boolean,
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
-        },
-        mounted() {
-            if (this.isUsingElasticSearch) {
-                this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
-                    this.isLoadingItems = isLoadingItems;
-                });
-            }
-        },
-        beforeDestroy() {
-            if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems');
         },
         methods: {
             onInput(inputEvent) {
