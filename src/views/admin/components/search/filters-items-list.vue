@@ -72,6 +72,7 @@
                     </div>
                     <template v-if="taxonomyFilter.length > 0">
                         <tainacan-filter-item
+                                :is-loading-items="isLoadingItems"
                                 v-show="!isMenuCompressed"        
                                 :query="getQuery"
                                 v-for="(filter, filterIndex) in taxonomyFilter"
@@ -118,6 +119,7 @@
                     </div>
                     <template v-if="taxonomyFilter.length > 0">
                         <tainacan-filter-item
+                                :is-loading-items="isLoadingItems"
                                 v-show="!isMenuCompressed"        
                                 :query="getQuery"
                                 v-for="(filter, filterIndex) in taxonomyFilter"
@@ -171,6 +173,7 @@
                     </div>
                     <template v-if="repositoryCollectionFilter.length > 0">
                         <tainacan-filter-item
+                                :is-loading-items="isLoadingItems"
                                 v-show="!isMenuCompressed"        
                                 :query="getQuery"
                                 v-for="(filter, filterIndex) in repositoryCollectionFilter"
@@ -217,6 +220,7 @@
                     </div>
                     <template v-if="repositoryCollectionFilter.length > 0">
                         <tainacan-filter-item
+                                :is-loading-items="isLoadingItems"
                                 v-show="!isMenuCompressed"        
                                 :query="getQuery"
                                 v-for="(filter, filterIndex) in repositoryCollectionFilter"
@@ -238,6 +242,7 @@
             <!-- COLLECTION ITEMS PAGE FILTERS -->
             <template v-else>
                 <tainacan-filter-item
+                        :is-loading-items="isLoadingItems"
                         v-show="!isMenuCompressed"        
                         :query="getQuery"
                         v-for="(filter, index) in filters"
@@ -286,6 +291,7 @@
         },
         data() {
             return {
+                isLoadingItems: true,
                 isLoadingFilters: false,
                 collapseAll: false,
                 taxonomyFiltersCollectionNames: {},
@@ -293,6 +299,7 @@
                 collectionNameSearchCancel: undefined,
                 filtersSearchCancel: undefined,
                 repositoryFiltersSearchCancel: undefined,
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
         },
         computed: {
@@ -368,6 +375,11 @@
                  */
                 this.prepareFilters();
             });
+            if (this.isUsingElasticSearch) {
+                this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
+                    this.isLoadingItems = isLoadingItems;
+                });
+            }
         },
         beforeDestroy() {
             // Cancels previous collection name Request
@@ -383,6 +395,9 @@
                 this.filtersSearchCancel.cancel('Filters search Canceled.');
 
             this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
+
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$off('isLoadingItems');
      
         },
         methods: {

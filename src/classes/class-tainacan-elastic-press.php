@@ -225,6 +225,7 @@ class Elastic_Press {
 					$col = $Tainacan_Collections->fetch_by_db_identifier($cpt);
 					$_filters = $Tainacan_Filters->fetch_by_collection($col, ['posts_per_page' => -1]);
 					foreach ($_filters as $filter) {
+						if ($filter == null || $filter->get_metadatum() == null) continue;
 						$include = [];
 						$filter_id = $filter->get_id();
 						$metadata_type = $filter->get_metadatum()->get_metadata_type();
