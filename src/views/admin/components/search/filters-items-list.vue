@@ -451,7 +451,7 @@
                 }
 
                 // On repository level we also fetch collection filters
-                if (this.isRepositoryLevel) {
+                if (!this.taxonomy && this.isRepositoryLevel) {
                     
                     // Cancels previous Request
                     if (this.repositoryFiltersSearchCancel != undefined)

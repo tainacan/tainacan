@@ -848,8 +848,7 @@
                 'getMetadata'
             ]),
             ...mapActions('filter', [
-                'fetchFilters',
-                'fetchRepositoryCollectionFilters'
+                'fetchFilters'
             ]),
             ...mapGetters('filter', [
                 'getFilters',
