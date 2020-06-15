@@ -291,7 +291,7 @@
         },
         data() {
             return {
-                isLoadingItems: false,
+                isLoadingItems: true,
                 isLoadingFilters: false,
                 collapseAll: false,
                 taxonomyFiltersCollectionNames: {},

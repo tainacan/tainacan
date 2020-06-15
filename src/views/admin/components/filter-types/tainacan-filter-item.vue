@@ -55,7 +55,7 @@
             query: Object,
             isRepositoryLevel: Boolean,
             open: true,
-            isLoadingItems: false,
+            isLoadingItems: true,
         },
         data() {
             return {

@@ -86,8 +86,11 @@
                 if (this.isUsingElasticSearch)
                     this.loadOptions();
             },
-            isLoadingItems() {
-                this.isLoadingOptions = this.isLoadingItems;
+            isLoadingItems: {
+                handler() {
+                    this.isLoadingOptions = this.isLoadingItems;
+                },
+                immediate: true
             },
             'query'() {
                 this.loadOptions();

@@ -48,8 +48,11 @@ export const dynamicFilterTypeMixin = {
         }
     },
     watch: {
-        isLoadingItems() {
-            this.isLoadingOptions = this.isLoadingItems;
+        isLoadingItems: {
+            handler() {
+                this.isLoadingOptions = this.isLoadingItems;
+            },
+            immediate: true
         }
     },
     methods: {
