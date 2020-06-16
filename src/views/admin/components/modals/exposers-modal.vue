@@ -418,7 +418,7 @@ export default {
                 let successful = document.execCommand('copy');
                 let msg = successful ? 'successful' : 'unsuccessful';
                 this.$console.log('Fallback: Copying text command was ' + msg);
-                if (msg == 'sucessful') {
+                if (msg == 'successful') {
                     this.$buefy.toast.open({
                         duration: 3000,
                         message: this.$i18n.get('info_url_copied'),
