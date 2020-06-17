@@ -79,20 +79,20 @@ function tainacan_blocks_register_tainacan_facets_list(){
 		$TAINACAN_BASE_URL . '/assets/js/block_facets_list_theme.js',
 		array('wp-components')
 	);
+	wp_set_script_translations('facets-list-theme', 'tainacan');
 
 	wp_register_script(
 		'facets-list',
 		$TAINACAN_BASE_URL . '/assets/js/block_facets_list.js',
 		array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-editor')
 	);
+	wp_set_script_translations('facets-list', 'tainacan');
 
 	wp_register_style(
 		'facets-list',
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-facets-list.css',
 		array('wp-edit-blocks', 'tainacan-blocks-common-styles')
 	);
-
-	wp_set_script_translations('facets-list', 'tainacan');
 
 	if (function_exists('register_block_type')) {
 		register_block_type( 'tainacan/facets-list', array(
@@ -134,15 +134,15 @@ function tainacan_blocks_register_tainacan_dynamic_items_list(){
 	wp_enqueue_script(
 		'dynamic-items-list-theme',
 		$TAINACAN_BASE_URL . '/assets/js/block_dynamic_items_list_theme.js',
-		array('wp-components')
+		array('wp-components', 'wp-i18n')
 	);
+	wp_set_script_translations('dynamic-items-list-theme', 'tainacan');
 
 	wp_register_script(
 		'dynamic-items-list',
 		$TAINACAN_BASE_URL . '/assets/js/block_dynamic_items_list.js',
 		array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-editor')
 	);
-
 	wp_set_script_translations('dynamic-items-list', 'tainacan');
 
 	wp_register_style(
@@ -202,13 +202,13 @@ function tainacan_blocks_register_tainacan_carousel_items_list(){
 		$TAINACAN_BASE_URL . '/assets/js/block_carousel_items_list_theme.js',
 		array('wp-components')
 	);
+	wp_set_script_translations('carousel-items-list-theme', 'tainacan');
 
 	wp_register_script(
 		'carousel-items-list',
 		$TAINACAN_BASE_URL . '/assets/js/block_carousel_items_list.js',
 		array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-editor')
 	);
-
 	wp_set_script_translations('carousel-items-list', 'tainacan');
 
 	wp_register_style(
@@ -234,13 +234,13 @@ function tainacan_blocks_register_tainacan_carousel_terms_list(){
 		$TAINACAN_BASE_URL . '/assets/js/block_carousel_terms_list_theme.js',
 		array('wp-components')
 	);
+	wp_set_script_translations('carousel-terms-list-theme', 'tainacan');
 
 	wp_register_script(
 		'carousel-terms-list',
 		$TAINACAN_BASE_URL . '/assets/js/block_carousel_terms_list.js',
 		array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-editor')
 	);
-
 	wp_set_script_translations('carousel-terms-list', 'tainacan');
 
 	wp_register_style(
@@ -322,13 +322,13 @@ function tainacan_blocks_register_tainacan_carousel_collections_list(){
 		$TAINACAN_BASE_URL . '/assets/js/block_carousel_collections_list_theme.js',
 		array('wp-components')
 	);
+	wp_set_script_translations('carousel-collections-list-theme', 'tainacan');
 
 	wp_register_script(
 		'carousel-collections-list',
 		$TAINACAN_BASE_URL . '/assets/js/block_carousel_collections_list.js',
 		array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-editor')
 	);
-
 	wp_set_script_translations('carousel-collections-list', 'tainacan');
 
 	wp_register_style(
