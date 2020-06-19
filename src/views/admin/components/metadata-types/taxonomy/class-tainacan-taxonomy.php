@@ -85,10 +85,14 @@ class Taxonomy extends Metadata_Type {
             'input_type' => [
                 'title' => __( 'Input type', 'tainacan' ),
                 'description' => __( 'The html type of the terms list ', 'tainacan' ),
+			],
+			'expanded_options_list' => [
+                'title' => __( 'Expanded checkbox list', 'tainacan' ),
+                'description' => __( 'Check this option if you are displaying a checkbox or radio input type and wish the options list to always be expanded ', 'tainacan' ),
             ],
             'allow_new_terms' => [
                 'title' => __( 'Allow new terms', 'tainacan' ),
-                'description' => __( 'Allows to create new terms', 'tainacan' ),
+                'description' => __( 'Allows to create new terms directly on the item form.', 'tainacan' ),
             ]
         ];
     }
