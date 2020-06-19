@@ -27,27 +27,38 @@
                         :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
                     
                     <!-- Search input -->
-                    <div 
-                            :class="!isModal && isSearchInputHidden ? 'hidden-search-input' : ''"
-                            class="is-clearfix tainacan-checkbox-search-section">
-                        <input
+                    <b-field class="is-clearfix tainacan-checkbox-search-section">
+                        <p 
+                                v-if="!isModal && !shouldBeginWithListExpanded"
+                                class="control">
+                            <b-button 
+                                    :class="{ 'is-active': expandResultsSection }"
+                                    class="button"
+                                    @click="toggleResultsSection()">
+                                <span 
+                                        class="icon is-left has-text-gray">
+                                    <i 
+                                            class="tainacan-icon tainacan-icon-1-25em"
+                                            :class="isTaxonomy ? 'tainacan-icon-taxonomies' : 'tainacan-icon-view-table'"/>
+                                </span>
+                            </b-button>
+                        </p>
+                        <b-input
+                                expanded
                                 autocomplete="on"
-                                :placeholder="$i18n.get('instruction_search')"
-                                :aria-label="$i18n.get('instruction_search')"
+                                :placeholder="isModal || expandResultsSection ? $i18n.get('instruction_search') : $i18n.get('instruction_click_to_see_or_search')"
+                                :aria-label="isModal || expandResultsSection ? $i18n.get('instruction_search') : $i18n.get('instruction_click_to_see_or_search')"
                                 v-model="optionName"
                                 @input="autoComplete"
-                                class="input">
-                        <span 
-                                :class="isModal ? '' : 'has-text-gray'"
-                                class="icon is-right"
-                                @click="isSearchInputHidden = !isSearchInputHidden">
-                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-search" />
-                        </span>
-                    </div>
+                                @focus="!shouldBeginWithListExpanded && !expandResultsSection ? toggleResultsSection() : null"
+                                icon-right="magnify"
+                                type="search" />
+                    </b-field>
 
                     <!-- Non-hierarchical lists -->
                     <div
                             v-if="!isSearching && !isTaxonomy"
+                            :style="{ height: (isModal || expandResultsSection) ? '253px' : '0px' }"
                             class="modal-card-body tainacan-checkbox-list-container">
                         <a
                                 v-if="isUsingElasticSearch ? lastTermOnFisrtPage != checkboxListOffset : checkboxListOffset"
@@ -100,7 +111,8 @@
                     <!-- Hierarchical lists -->
                     <div
                             v-if="!isSearching && isTaxonomy"
-                            class="modal-card-body tainacan-finder-columns-container">
+                            class="modal-card-body tainacan-finder-columns-container"
+                            :style="{ height: (isModal || expandResultsSection) ? '253px' : '0px' }">
                         <ul
                                 class="tainacan-finder-column"
                                 v-for="(finderColumn, key) in finderColumns"
@@ -174,6 +186,7 @@
                     <!-- Search Results -->
                     <div
                             v-if="isSearching"
+                            :style="{ height: (isModal || expandResultsSection) ? '253px' : '0px' }"
                             class="modal-card-body tainacan-search-results-container">
                         <ul class="tainacan-modal-checkbox-search-results-body">
                             <li
@@ -217,7 +230,7 @@
 
                     <!-- Bradcrumb navigation -->
                     <nav
-                            v-if="!isSearching && isTaxonomy"
+                            v-if="!isSearching && isTaxonomy && (isModal || expandResultsSection)"
                             style="margin-top: 6px;"
                             class="breadcrumb is-small has-succeeds-separator"
                             aria-label="breadcrumbs">
@@ -359,7 +372,12 @@
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
                 previousLastTerms: [],
                 lastTermOnFisrtPage: null,
-                isSearchInputHidden: true
+                expandResultsSection: false
+            }
+        },
+        computed: {
+            shouldBeginWithListExpanded() {
+                return this.isTaxonomy && this.metadatum && this.metadatum.metadata_type_options && this.metadatum.metadata_type_options.expanded_options_list;
             }
         },
         watch: {
@@ -373,7 +391,11 @@
                 this.highlightHierarchyPath();
         },
         created() {
-            this.initializeValues();
+            if (this.isModal || this.shouldBeginWithListExpanded)
+                this.initializeValues();
+
+            this.expandResultsSection = this.shouldBeginWithListExpanded;
+            
             this.$parent.$on('update-taxonomy-inputs', ($event) => { 
                 if ($event.taxonomyId == this.taxonomy_id && $event.metadatumId == this.metadatumId) {
                     this.finderColumns = [];
@@ -385,7 +407,7 @@
             });
         },
         mounted() {
-            if (this.$refs.checkboxRadioModal)
+            if (this.isModal && this.$refs.checkboxRadioModal)
                 this.$refs.checkboxRadioModal.focus()
         },
         beforeDestroy() {
@@ -647,6 +669,19 @@
                 
                 this.finderColumns[key].lastTerm = lastTerm;
             },
+            toggleResultsSection() {
+                if (!this.isModal) { 
+                    if (!this.expandResultsSection)
+                        this.initializeValues();
+
+                    this.expandResultsSection = !this.expandResultsSection;
+
+                    if (!this.expandResultsSection) {
+                        this.isSearching = false;
+                        this.optionName = '';
+                    }
+                }
+            },
             getOptionChildren(option, key, index) {
                 let query_items = { 'current_query': this.query };
 
@@ -808,6 +843,7 @@
             
             .tab-content {
                 padding: 0.5em;
+                transition: height 0.2s ease;
             }
         }
     }
@@ -896,12 +932,14 @@
 
     .tainacan-finder-columns-container {
         background-color: var(--tainacan-white);
-        border: solid 1px var(--tainacan-gray1);
+        border: 1px solid var(--tainacan-gray1);
+        border-top: 0px;
+        margin-top: -1px;
         display: flex;
         overflow: auto;
         padding: 0 !important;
-        min-height: 232px;
         max-height: 40vh;
+        transition: heigth 0.5s ease, min-height 0.5s ease;
 
         &:focus {
             outline: none;
@@ -939,51 +977,27 @@
 
     .tainacan-checkbox-search-section {
         margin-bottom: 0;
-        display: flex;
-        align-items: center;
-        position: relative;
+        .input .icon .mdi::before {
+            color: var(--tainacan-input-color);
+        }
+        .button {
+            border-radius: 0 !important;
+            min-height: 100%;
+            border: 1px solid var(--tainacan-input-border-color);
+            transition: background 0.2s ease;
+        }
+        .button.is-active {
+            background-color: var(--tainacan-primary);
 
-        &.hidden-search-input {
-            input {
-                min-width: 0px;
-                width: 0px;
-                padding: 0;
-                height: 0;
-                margin-left: auto;
-                opacity: 0;
+            .tainacan-icon::before {
+                color: var(--tainacan-secondary)
             }
-            .icon {
-                background: var(--tainacan-input-background-color);
-                border: 1px solid var(--tainacan-input-border-color);
-                padding: 14px;
-                top: calc(-0.75em + 1px);
-
-                &:hover {
-                    color: var(--tainacan-secondary) !important;
-                }
-            }
-        }
-
-        input {
-            transition: width .5s ease, padding .3s ease, height .3s ease, margin-left .5s ease, opacity .3s ease;
-        }
-
-        .icon {
-            pointer-events: all;
-            color: var(--tainacan-blue5);
-            cursor: pointer;
-            height: 27px;
-            font-size: 1.125em;
-            width: 30px !important;
-            position: absolute;
-            right: 0;
-            transition: top .3s ease, padding .3s ease, border .3s ease, right .3s ease;
-        }
+        } 
     }
 
     .tainacan-checkbox-list-container {
         padding: 0 20px !important;
-        min-height: 253px;
+        min-height: 232px;
         display: flex;
         align-items: center;
         padding-right: 0 !important;
@@ -1024,12 +1038,11 @@
 
     .tainacan-search-results-container {
         padding: 0.7em 20px !important;
-        min-height: 253px;
     }
 
     .tainacan-tags-container {
-        padding: 0 20px !important;
-        min-height: 253px;
+        padding: 0px !important;
+        display: inline;
 
         .control {
             margin-bottom: 0.25rem;
