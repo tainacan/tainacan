@@ -1151,6 +1151,16 @@ export default {
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
 
+                // If a parameter was passed with a suggestion of item title, also send a patch to item metadata
+                if (this.$route.query.newitemtitle) {
+                    eventBusItemMetadata.$emit('input', {
+                        itemId: this.itemId,
+                        metadatumId: this.$route.query.newmetadatumid,
+                        values: this.$route.query.newitemtitle,
+                        parentMetaId: 0
+                    });
+                }
+
                 // Loads metadata and attachments
                 this.loadMetadata();
                 this.isLoadingAttachments = true;
