@@ -467,6 +467,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_crate_new_item'							 => __( 'Create new item', 'tainacan' ),
 	'label_know_more'								 => __( 'Know more', 'tainacan' ),
 	'label_request_details'							 => __( 'Request details', 'tainacan' ),
+	'label_terms_without_parent'					 => __( 'Terms without parent', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

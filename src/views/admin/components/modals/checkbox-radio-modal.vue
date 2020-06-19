@@ -109,79 +109,83 @@
                     </div>
 
                     <!-- Hierarchical lists -->
-                    <div
+                    <transition-group
                             v-if="!isSearching && isTaxonomy"
                             class="modal-card-body tainacan-finder-columns-container"
-                            :style="{ height: (isModal || expandResultsSection) ? '253px' : '0px' }">
-                        <ul
-                                class="tainacan-finder-column"
+                            :style="{ height: (isModal || expandResultsSection) ? '253px' : '0px' }"
+                            name="page-left">
+                        <div 
                                 v-for="(finderColumn, key) in finderColumns"
-                                :key="key">
-                            <b-field
-                                    role="li"
-                                    :addons="false"
-                                    v-if="finderColumn.children.length"
-                                    class="tainacan-li-checkbox-modal"
-                                    v-for="(option, index) in finderColumn.children"
-                                    :id="`${key}.${index}-tainacan-li-checkbox-model`"
-                                    :ref="`${key}.${index}-tainacan-li-checkbox-model`"
-                                    :key="index">
-                                <label 
-                                        v-if="isCheckbox"
-                                        class="b-checkbox checkbox">
-                                    <input 
+                                class="tainacan-finder-column"
+                                :key="finderColumn.label + '-' + key">
+                            <p class="column-label">
+                                {{ finderColumn.label ? finderColumn.label : $i18n.get('label_terms_without_parent') }}
+                            </p>
+                            <ul v-if="finderColumn.children.length">
+                                <b-field
+                                        :addons="false"
+                                        class="tainacan-li-checkbox-modal"
+                                        v-for="(option, index) in finderColumn.children"
+                                        :id="`${key}.${index}-tainacan-li-checkbox-model`"
+                                        :ref="`${key}.${index}-tainacan-li-checkbox-model`"
+                                        :key="index">
+                                    <label 
+                                            v-if="isCheckbox"
+                                            class="b-checkbox checkbox">
+                                        <input 
+                                                v-model="selected"
+                                                :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
+                                                type="checkbox"> 
+                                        <span class="check" /> 
+                                        <span class="control-label">
+                                            <span class="checkbox-label-text">{{ `${option.label}` }}</span> 
+                                            <span 
+                                                    v-if="isFilter && option.total_items != undefined"
+                                                    class="has-text-gray">
+                                                &nbsp;{{ "(" + option.total_items + ")" }}
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <b-radio
+                                            v-else
                                             v-model="selected"
-                                            :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
-                                            type="checkbox"> 
-                                    <span class="check" /> 
-                                    <span class="control-label">
-                                        <span class="checkbox-label-text">{{ `${option.label}` }}</span> 
+                                            :native-value="(isNaN(Number(option.value)) ? option.value : Number(option.value))">
+                                        {{ `${option.label}` }}
                                         <span 
                                                 v-if="isFilter && option.total_items != undefined"
                                                 class="has-text-gray">
                                             &nbsp;{{ "(" + option.total_items + ")" }}
                                         </span>
-                                    </span>
-                                </label>
-                                <b-radio
-                                        v-else
-                                        v-model="selected"
-                                        :native-value="(isNaN(Number(option.value)) ? option.value : Number(option.value))">
-                                    {{ `${option.label}` }}
-                                    <span 
-                                            v-if="isFilter && option.total_items != undefined"
-                                            class="has-text-gray">
-                                        &nbsp;{{ "(" + option.total_items + ")" }}
-                                    </span>
-                                </b-radio>
-                                <a
-                                        v-if="option.total_children > 0"
-                                        @click="getOptionChildren(option, key, index)">
-                                    <span class="icon is-pulled-right">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright"/>
-                                    </span>
-                                </a>
-                            </b-field>
-                            <li v-if="finderColumn.children.length">
-                                <div
-                                        v-if="shouldShowMoreButton(key)"
-                                        @click="getMoreOptions(finderColumn, key)"
-                                        class="tainacan-show-more">
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore"/>
-                                    </span>
-                                </div>
-                                <div 
-                                        class="warning-no-more-terms"
-                                        v-else>
-                                    {{ isUsingElasticSearch ? $i18n.get('info_no_more_terms_found') : '' }}
-                                </div>
-                            </li>
-                        </ul>
-                        <b-loading
-                                :is-full-page="false"
-                                :active.sync="isColumnLoading"/>
-                    </div>
+                                    </b-radio>
+                                    <a
+                                            v-if="option.total_children > 0"
+                                            @click="getOptionChildren(option, key, index)">
+                                        <span class="icon is-pulled-right">
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright"/>
+                                        </span>
+                                    </a>
+                                </b-field>
+                                <li v-if="finderColumn.children.length">
+                                    <div
+                                            v-if="shouldShowMoreButton(key)"
+                                            @click="getMoreOptions(finderColumn, key)"
+                                            class="tainacan-show-more">
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore"/>
+                                        </span>
+                                    </div>
+                                    <div 
+                                            class="warning-no-more-terms"
+                                            v-else>
+                                        {{ isUsingElasticSearch ? $i18n.get('info_no_more_terms_found') : '' }}
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </transition-group>
+                    <b-loading
+                            :is-full-page="false"
+                            :active.sync="isColumnLoading"/>
 
                     <!-- Search Results -->
                     <div
@@ -638,7 +642,7 @@
                 if (key != undefined)
                     this.finderColumns.splice(key + 1, 1);
             },
-            createColumn(res, column) {
+            createColumn(res, column, label) {
                 let children = res.data.values;
 
                 this.totalRemaining = Object.assign({}, this.totalRemaining, {
@@ -659,9 +663,9 @@
                 }
 
                 if (first != undefined)
-                    this.finderColumns.splice(first, 1, { children: children, lastTerm: res.data.last_term });
+                    this.finderColumns.splice(first, 1, { label: label, children: children, lastTerm: res.data.last_term });
                 else
-                    this.finderColumns.push({ children: children, lastTerm: res.data.last_term });
+                    this.finderColumns.push({ label: label, children: children, lastTerm: res.data.last_term });
             },
             appendMore(options, key, lastTerm) {
                 for (let option of options)
@@ -683,6 +687,7 @@
                 }
             },
             getOptionChildren(option, key, index) {
+
                 let query_items = { 'current_query': this.query };
 
                 if (key != undefined)
@@ -708,7 +713,7 @@
                 axios.get(route)
                     .then(res => {
                         this.removeLevelsAfter(key);
-                        this.createColumn(res, key);
+                        this.createColumn(res, key, option ? option.label : null);
 
                         this.isColumnLoading = false;
                     })
@@ -947,15 +952,25 @@
     }
 
     .tainacan-finder-column {
-        border-right: solid 1px var(--tainacan-gray1);
-        max-height: 400px;
+        border-right: solid 1px var(--tainacan-gray1);        
         max-width: 25%;
-        min-height: inherit;
         min-width: 200px;
-        overflow-y: auto;
-        list-style: none;
         margin: 0;
         padding: 0em;
+
+        ul {
+            max-height: calc(253px - 20px - 0.7em);
+            min-height: inherit;
+            overflow-y: auto;
+            list-style: none;
+        }
+
+        .column-label {
+            color: var(--tainacan-label-color);
+            font-weight: bold;
+            padding: 0.35em 0.75em;
+            border-bottom: 1px solid var(--tainacan-gray1);
+        }
     }
 
     ul {
