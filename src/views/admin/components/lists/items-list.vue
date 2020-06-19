@@ -913,7 +913,7 @@
             <!-- LIST VIEW MODE -->
             <div
                     role="list"
-                    v-if="!isLoading && items.length > 0"
+                    v-if="viewMode == 'list'"
                     class="tainacan-list-container">
                 <div 
                         role="listitem"
@@ -1716,7 +1716,7 @@ export default {
     @import "../../scss/_view-mode-slides.scss";
 
     .selection-control {
-
+        margin-bottom: 6px;
         padding: 6px 0px 0px 12px;
         background: var(--tainacan-white);
         height: 40px;
