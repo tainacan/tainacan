@@ -330,6 +330,7 @@
                                                     'tainacan-icon-viewminiature' : adminViewMode == 'grid',
                                                     'tainacan-icon-viewrecords' : adminViewMode == 'records',
                                                     'tainacan-icon-viewmasonry' : adminViewMode == 'masonry',
+                                                    'tainacan-icon-viewrecords' : adminViewMode == 'list',
                                                     'tainacan-icon-viewgallery' : adminViewMode == 'slides'}"
                                             class="tainacan-icon tainacan-icon-1-25em"/>
                                 </span>
@@ -393,6 +394,17 @@
                                 <i class="tainacan-icon tainacan-icon-viewmasonry"/>
                             </span>
                             <span>{{ $i18n.get('label_masonry') }}</span>
+                        </b-dropdown-item>
+                        <b-dropdown-item 
+                                aria-controls="items-list-results"
+                                role="button"
+                                :class="{ 'is-active': adminViewMode == 'list' }"
+                                :value="'list'"
+                                aria-role="listitem">
+                            <span class="icon gray-icon">
+                                <i class="tainacan-icon tainacan-icon-viewrecords"/>
+                            </span>
+                            <span>{{ $i18n.get('label_list') }}</span>
                         </b-dropdown-item>
                         <b-dropdown-item 
                                 aria-controls="items-list-results"
@@ -565,7 +577,7 @@
                               totalItems > 0 &&
                               ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                         :collection-id="collectionId"
-                        :table-metadata="displayedMetadata"
+                        :displayed-metadata="displayedMetadata"
                         :items="items"
                         :total-items="totalItems"
                         :is-loading="showLoading"
@@ -818,6 +830,7 @@
                 if (existingViewMode == 'cards' || 
                     existingViewMode == 'table' || 
                     existingViewMode == 'records' || 
+                    existingViewMode == 'list' || 
                     existingViewMode == 'grid' || 
                     existingViewMode == 'masonry' ||
                     existingViewMode == 'slides')
@@ -977,7 +990,7 @@
                                 this.sortingMetadata = [];
 
                                 // Decides if custom meta will be loaded with item.
-                                let shouldLoadMeta = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == 'slides' || this.adminViewMode == undefined;
+                                let shouldLoadMeta = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == 'list' || this.adminViewMode == 'slides' || this.adminViewMode == undefined;
                                 
                                 if (shouldLoadMeta) {
                                     

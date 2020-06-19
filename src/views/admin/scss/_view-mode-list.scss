@@ -9,7 +9,7 @@
     animation-name: appear;
     animation-duration: 0.5s;
 
-    .selected-record {
+    .selected-list-item {
         background-color: var(--tainacan-turquoise1);
         .metadata-title {
             background-color: var(--tainacan-turquoise2);
@@ -34,7 +34,7 @@
             background-color: var(--tainacan-item-hover-background-color) !important;
         }
 
-        .record-checkbox {
+        .list-checkbox {
             position: absolute;
             margin-left: 1.0em;
             margin-top: 7px;
@@ -101,24 +101,16 @@
         .metadata-title {
             flex-shrink: 0;
             padding: 0.5em 4.75em 0.5em 2.75em;
+            margin: 0;
             margin-bottom: -27px;
             min-height: 40px;
+            line-height: 1.75em;
             font-size: 0.875em !important; 
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
             color: var(--tainacan-heading-color);
             transition: background-color 0.3s ease;
-
-            p {
-                line-height: 1.8;
-                font-size: 1.0em !important; 
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-                margin: 0;
-                transition: background-color 0.3s;
-            }
         }
         &:hover .metadata-title {
             background-color: var(---tainacan-item-heading-hover-background-color) !important;

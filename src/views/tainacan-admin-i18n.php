@@ -295,6 +295,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_cards'                                    => __( 'Cards', 'tainacan' ),
 	'label_records'                                  => __( 'Records', 'tainacan' ),
 	'label_masonry'                                  => __( 'Masonry', 'tainacan' ),
+	'label_list'	                                 => __( 'List', 'tainacan' ),
 	'label_visualization'                            => __( 'Visualization', 'tainacan' ),
 	/* translators: This should be a short term for `visualization` such as `view on` referring to the view modes dropdown */
 	'label_view_on'				                     => __( 'View on', 'tainacan' ),
