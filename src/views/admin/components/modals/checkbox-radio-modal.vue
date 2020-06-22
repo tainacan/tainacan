@@ -138,7 +138,12 @@
                                                 type="checkbox"> 
                                         <span class="check" /> 
                                         <span class="control-label">
-                                            <span class="checkbox-label-text">{{ `${option.label}` }}</span> 
+                                            <span 
+                                                    v-tooltip="{
+                                                        content: option.label,
+                                                        autoHide: false,
+                                                    }" 
+                                                    class="checkbox-label-text">{{ `${option.label}` }}</span> 
                                             <span 
                                                     v-if="isFilter && option.total_items != undefined"
                                                     class="has-text-gray">
@@ -147,6 +152,10 @@
                                         </span>
                                     </label>
                                     <b-radio
+                                            v-tooltip="{
+                                                content: option.label,
+                                                autoHide: false,
+                                            }" 
                                             v-else
                                             v-model="selected"
                                             :native-value="(isNaN(Number(option.value)) ? option.value : Number(option.value))">
@@ -160,6 +169,13 @@
                                     <a
                                             v-if="option.total_children > 0"
                                             @click="getOptionChildren(option, key, index)">
+                                        <span v-if="finderColumns.length <= 1 ">{{ option.total_children + ' ' + $i18n.get('label_children_terms') }}</span>
+                                        <span 
+                                                v-tooltip="{
+                                                    content: option.total_children + ' ' + $i18n.get('label_children_terms'),
+                                                    autoHide: false,
+                                                }" 
+                                                v-else>{{ option.total_children }}</span>
                                         <span class="icon is-pulled-right">
                                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright"/>
                                         </span>
@@ -231,30 +247,6 @@
                                     :active.sync="isLoadingSearch"/>
                         </ul>
                     </div>
-
-                    <!-- Bradcrumb navigation -->
-                    <nav
-                            v-if="!isSearching && isTaxonomy && (isModal || expandResultsSection)"
-                            style="margin-top: 6px;"
-                            class="breadcrumb is-small has-succeeds-separator"
-                            aria-label="breadcrumbs">
-                        <ul>
-                            <li
-                                    v-for="(pathItem, pi) in hierarchicalPath"
-                                    :class="{'is-active': pi === hierarchicalPath.length-1}"
-                                    :key="pi">
-                                <a
-                                        @click="getOptionChildren(pathItem.option, pathItem.column, pathItem.element)">
-                                    {{ pathItem.option.label }}
-                                    <span 
-                                            v-if="isFilter && pathItem.option.total_items != undefined"
-                                            class="has-text-gray">
-                                        &nbsp;{{ "(" + pathItem.option.total_items + ")" }}
-                                    </span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
                     
                 </b-tab-item>
 
@@ -262,6 +254,7 @@
 
                     <div class="modal-card-body tainacan-tags-container">
                         <b-field
+                                v-if="selected.length > 0 && !isSelectedTermsLoading"
                                 grouped
                                 group-multiline>
                             <div
@@ -278,13 +271,28 @@
                                 </b-tag>
                             </div>
                         </b-field>
+                        <section 
+                                v-if="selected.length <= 0 && !isSelectedTermsLoading"
+                                class="section">
+                            <div class="content has-text-grey has-text-centered">
+                                <p>
+                                    <span class="icon is-medium">
+                                        <i  
+                                                class="tainacan-icon tainacan-icon-30px"
+                                                :class="{ 'tainacan-icon-terms': isTaxonomy, 'tainacan-icon-metadata': !isTaxonomy }"/>
+                                    </span>
+                                </p>
+                                <p>{{ isTaxonomy ? $i18n.get('label_no_terms_selected') : $i18n.get('label_nothing_selected') }}</p>
+                            </div>
+                        </section>
                         <b-loading
                                 :is-full-page="false"
                                 :active.sync="isSelectedTermsLoading"/>
                     </div>
                 </b-tab-item>
             </b-tabs>
-            <!--<pre>{{ hierarchicalPath }}</pre>-->
+            <!-- <pre>{{ hierarchicalPath }}</pre>
+            <pre>{{ finderColumns }}</pre> -->
             <!--<pre>{{ totalRemaining }}</pre>-->
             <!--<pre>{{ selected }}</pre>-->
             <!--<pre>{{ options }}</pre>-->
@@ -640,7 +648,7 @@
             },
             removeLevelsAfter(key){
                 if (key != undefined)
-                    this.finderColumns.splice(key + 1, 1);
+                    this.finderColumns.length = key + 1;
             },
             createColumn(res, column, label) {
                 let children = res.data.values;
@@ -687,7 +695,7 @@
                 }
             },
             getOptionChildren(option, key, index) {
-
+                
                 let query_items = { 'current_query': this.query };
 
                 if (key != undefined)
@@ -891,10 +899,12 @@
         flex-grow: 0;
         flex-shrink: 1;
         max-width: calc(50% - (2 * var(--tainacan-one-column)));
+        padding: 0 0.5em;
 
         .b-checkbox, .b-radio {
             max-width: 81%;
             margin-right: 10px;
+            margin-bottom: 0;
         }
 
         &:hover {
@@ -905,13 +915,15 @@
     .tainacan-li-checkbox-modal {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         padding: 0;
 
         .b-checkbox, .b-radio {
-            max-width: 81%;
+            max-width: 100%;
             margin-left: 0.7em;
             margin-bottom: 0;
             height: 24px;
+            overflow: hidden;
         }
 
         &:hover {
@@ -928,6 +940,7 @@
 
         .b-checkbox, .b-radio {
             margin-right: 10px;
+            margin-bottom: 0;
         }
 
         &:hover {
@@ -955,6 +968,7 @@
         border-right: solid 1px var(--tainacan-gray1);        
         flex-basis: auto;
         flex-grow: 1;
+        min-width: 200px;
         margin: 0;
         padding: 0em;
 
@@ -962,11 +976,22 @@
             max-height: calc(253px - 20px - 0.7em);
             min-height: inherit;
             overflow-y: auto;
+            overflow-x: hidden;
             list-style: none;
+        }
+        a {
+            font-size: 0.75em;
+            white-space: nowrap;
+            display: flex;
+            .tainacan-icon {
+                font-size: 1.5em;
+            }
         }
 
         .column-label {
             color: var(--tainacan-label-color);
+            display: block;
+            font-size: 0.75em;
             font-weight: bold;
             padding: 0.35em 0.75em;
             position: relative;
@@ -1082,7 +1107,7 @@
     }
 
     .tainacan-search-results-container {
-        padding: 0.7em 20px !important;
+        padding: 0.15em 20px !important;
     }
 
     .tainacan-tags-container {
