@@ -68,14 +68,14 @@
         <b-field
                 v-if="taxonomy_id && taxonomies.length && (input_type == 'tainacan-taxonomy-checkbox' || input_type == 'tainacan-taxonomy-radio')" 
                 :addons="false"
-                :label="$i18n.getHelperTitle('tainacan-taxonomy', 'expanded_options_list')">
+                :label="$i18n.getHelperTitle('tainacan-taxonomy', 'visible_options_list')">
             <b-switch
                     size="is-small" 
-                    v-model="expanded_options_list"
+                    v-model="visible_options_list"
                     @input="emitValues()" />
             <help-button
-                    :title="$i18n.getHelperTitle('tainacan-taxonomy', 'expanded_options_list')"
-                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'expanded_options_list')"/>
+                    :title="$i18n.getHelperTitle('tainacan-taxonomy', 'visible_options_list')"
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'visible_options_list')"/>
         </b-field>
         <b-field
                 v-if="taxonomy_id && taxonomies.length && taxonomies.find((taxonomy) => taxonomy.id == taxonomy_id).allow_insert == 'yes'" 
@@ -111,7 +111,7 @@
                 taxonomy_id: '',
                 loading: true,
                 allow_new_terms: 'yes',
-                expanded_options_list: false, 
+                visible_options_list: false, 
                 input_type: 'tainacan-taxonomy-radio',
                 multiple_types: {},
                 single_types: {},
@@ -184,7 +184,7 @@
                     this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-taxonomy-checkbox' );
                 }
 
-                this.expanded_options_list = ( this.value.expanded_options_list ) ? this.value.expanded_options_list : false;
+                this.visible_options_list = ( this.value.visible_options_list ) ? this.value.visible_options_list : false;
             }
 
             this.isReady = true;
@@ -226,7 +226,7 @@
                     taxonomy_id: this.taxonomy_id,
                     input_type: this.input_type,
                     allow_new_terms: this.allow_new_terms,
-                    expanded_options_list: this.expanded_options_list
+                    visible_options_list: this.visible_options_list
                 })
             }
         }

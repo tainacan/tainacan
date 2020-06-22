@@ -381,7 +381,7 @@
         },
         computed: {
             shouldBeginWithListExpanded() {
-                return this.isTaxonomy && this.metadatum && this.metadatum.metadata_type_options && this.metadatum.metadata_type_options.expanded_options_list;
+                return this.isTaxonomy && this.metadatum && this.metadatum.metadata_type_options && this.metadatum.metadata_type_options.visible_options_list;
             }
         },
         watch: {
@@ -953,8 +953,8 @@
 
     .tainacan-finder-column {
         border-right: solid 1px var(--tainacan-gray1);        
-        max-width: 25%;
-        min-width: 200px;
+        flex-basis: auto;
+        flex-grow: 1;
         margin: 0;
         padding: 0em;
 
@@ -969,8 +969,41 @@
             color: var(--tainacan-label-color);
             font-weight: bold;
             padding: 0.35em 0.75em;
+            position: relative;
             border-bottom: 1px solid var(--tainacan-gray1);
         }
+
+        &:not(:first-child) .column-label {
+            padding-left: calc(0.75em + 12px);
+
+            &::after,
+            &::before {
+                content: '';
+                display: block;
+                position: absolute;
+                right: 100%;
+                width: 0;
+                height: 0;
+                border-style: solid;
+            }
+            &::after {
+                top: 0px;
+                border-color: transparent transparent transparent white;
+                border-left-width: 12px;
+                border-top-width: calc(1.15em + 1px);
+                border-bottom-width: calc(1.15em + 0px);
+                left: -3px;
+            }
+            &::before {
+                top: 0px;
+                border-color: transparent transparent transparent var(--tainacan-gray1);
+                border-left-width: 12px;
+                border-top-width: calc(1.15em + 1px);
+                border-bottom-width: calc(1.15em + 0px);
+                left: -1px;
+            }
+        }
+        
     }
 
     ul {
@@ -982,9 +1015,6 @@
         -webkit-margin-before: 0;
     }
 
-    .tainacan-li-checkbox-modal:first-child {
-        margin-top: 0.7em;
-    }
 
     .field:not(:last-child) {
         margin-bottom: 0 !important;
