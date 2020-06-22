@@ -86,7 +86,12 @@
                                             type="checkbox"> 
                                     <span class="check" /> 
                                     <span class="control-label">
-                                        <span class="checkbox-label-text">{{ `${ (option.label? limitChars(option.label) : '') }` }}</span> 
+                                        <span 
+                                                v-tooltip="{
+                                                    content: option.label + ((isFilter && option.total_items != undefined) ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
+                                                    autoHide: false,
+                                                }" 
+                                                class="checkbox-label-text">{{ `${ (option.label ? option.label : '') }` }}</span> 
                                         <span 
                                             v-if="isFilter && option.total_items != undefined"
                                             class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
@@ -140,7 +145,7 @@
                                         <span class="control-label">
                                             <span 
                                                     v-tooltip="{
-                                                        content: option.label,
+                                                        content: option.label + ((isFilter && option.total_items != undefined) ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
                                                         autoHide: false,
                                                     }" 
                                                     class="checkbox-label-text">{{ `${option.label}` }}</span> 
@@ -222,7 +227,12 @@
                                             type="checkbox"> 
                                     <span class="check" /> 
                                     <span class="control-label">
-                                        <span class="checkbox-label-text">{{ `${ option.name ? limitChars(option.name) : (option.label ? limitChars(option.label) : '') }` }}</span> 
+                                        <span 
+                                                v-tooltip="{
+                                                    content: (option.name ? option.name : option.label) + ((isFilter && option.total_items != undefined) ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
+                                                    autoHide: false,
+                                                }"
+                                                class="checkbox-label-text">{{ `${ option.name ? option.name : (option.label ? option.label : '') }` }}</span> 
                                         <span 
                                                 v-if="isFilter && option.total_items != undefined"
                                                 class="has-text-gray">
@@ -231,10 +241,14 @@
                                     </span>
                                 </label>
                                 <b-radio
+                                        v-tooltip="{
+                                            content: (option.name ? option.name : option.label) + ((isFilter && option.total_items != undefined) ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
+                                            autoHide: false,
+                                        }"
                                         v-else
                                         v-model="selected"
                                         :native-value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.value)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))">
-                                    {{ `${ option.name ? limitChars(option.name) : (option.label ? limitChars(option.label) : '') }` }}
+                                    {{ `${ option.name ? option.name : (option.label ? option.label : '') }` }}
                                     <span 
                                             v-if="isFilter && option.total_items != undefined"
                                             class="has-text-gray">
@@ -377,7 +391,6 @@
                 isCheckboxListLoading: false,
                 isLoadingSearch: false,
                 noMorePage: 0,
-                maxTextToShow: 47,
                 activeTab: 0,
                 selectedTagsName: {},
                 isSelectedTermsLoading: false,
@@ -481,12 +494,6 @@
             saveSelectedTagName(value, label){
                 if (!this.selectedTagsName[value])
                     this.$set(this.selectedTagsName, `${value}`, label);
-            },
-            limitChars(label){
-                if (label.length > this.maxTextToShow)
-                    return label.slice(0, this.maxTextToShow)+'...';
-                else
-                    return label;
             },
             previousPage() {
 
@@ -902,9 +909,10 @@
         padding: 0 0.5em;
 
         .b-checkbox, .b-radio {
-            max-width: 81%;
+            max-width: 100%;
             margin-right: 10px;
             margin-bottom: 0;
+            overflow: hidden;
         }
 
         &:hover {
@@ -939,7 +947,7 @@
         padding-left: 0.5em;
 
         .b-checkbox, .b-radio {
-            margin-right: 10px;
+            margin-right: 0px;
             margin-bottom: 0;
         }
 
@@ -968,9 +976,11 @@
         border-right: solid 1px var(--tainacan-gray1);        
         flex-basis: auto;
         flex-grow: 1;
+        max-width: 600px;
         min-width: 200px;
         margin: 0;
         padding: 0em;
+        transition: width 0.2s ease;
 
         ul {
             max-height: calc(253px - 20px - 0.7em);
