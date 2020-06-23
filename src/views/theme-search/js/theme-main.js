@@ -30,6 +30,7 @@ import ViewModeRecords from '../components/view-mode-records.vue';
 import ViewModeMasonry from '../components/view-mode-masonry.vue';
 import ViewModeSlideshow from '../components/view-mode-slideshow.vue';
 import ViewModeList from '../components/view-mode-list.vue';
+import ViewModeSlides from '../components/view-mode-slides.vue';
 
 // Remaining imports
 import store from '../../admin/js/store/store';
@@ -110,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Vue.component('view-mode-masonry', ViewModeMasonry);
         Vue.component('view-mode-slideshow', ViewModeSlideshow);
         Vue.component('view-mode-list', ViewModeList);
+        Vue.component('view-mode-slides', ViewModeSlides);
 
         Vue.use(eventBusSearch, { store: store, router: routerTheme});
             

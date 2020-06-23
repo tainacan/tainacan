@@ -1046,8 +1046,8 @@
                     class="tainacan-slides-container"
                     v-if="viewMode == 'slides'">
                 <transition 
-                    mode="out-in"
-                    :name="goingRight ? 'slide-right' : 'slide-left'" >
+                        mode="out-in"
+                        :name="goingRight ? 'slide-right' : 'slide-left'" >
                     <div
                             role="listitem"
                             :key="index"
