@@ -229,10 +229,11 @@
                                     <span class="control-label">
                                         <span 
                                                 v-tooltip="{
-                                                    content: (option.name ? option.name : option.label) + ((isFilter && option.total_items != undefined) ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
+                                                    content: (option.name ? option.name : (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label)) + ((isFilter && option.total_items != undefined) ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
                                                     autoHide: false,
                                                 }"
-                                                class="checkbox-label-text">{{ `${ option.name ? option.name : (option.label ? option.label : '') }` }}</span> 
+                                                class="checkbox-label-text"
+                                                v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" /> 
                                         <span 
                                                 v-if="isFilter && option.total_items != undefined"
                                                 class="has-text-gray">
@@ -807,6 +808,9 @@
                 }
 
                 this.$emit('appliedCheckBoxModal');
+            },
+            renderHierarchicalPath(hierachyPath, label) {
+                return '<span class="hierarchical-path">' + hierachyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span><strong>' + label + '</strong>';
             }
         }
     }
@@ -842,11 +846,7 @@
         }
 
         .tainacan-modal-checkbox-search-results-body {
-            flex-wrap: nowrap !important;
-        }
-
-        .tainacan-li-search-results {
-            max-width: calc(100% - (2 * var(--tainacan-one-column))) !important;
+            column-count: 1;
         }
 
         .tainacan-li-checkbox-list {
@@ -905,7 +905,7 @@
     .tainacan-li-search-results {
         flex-grow: 0;
         flex-shrink: 1;
-        max-width: calc(50% - (2 * var(--tainacan-one-column)));
+        width: 100%;
         padding: 0 0.5em;
 
         .b-checkbox, .b-radio {
@@ -1136,9 +1136,7 @@
 
     .tainacan-modal-checkbox-search-results-body {
         list-style: none;
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
+        column-count: 2;
         max-height: 253px;
     }
 
