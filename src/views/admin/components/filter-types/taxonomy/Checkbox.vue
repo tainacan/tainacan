@@ -43,6 +43,17 @@
                 class="no-options-placeholder">
             {{ $i18n.get('info_no_options_avialable_filtering') }}
         </p>
+        <!--<checkbox-radio-modal
+                :is-modal="false" 
+                :filter="filter"
+                :taxonomy_id="taxonomyId"
+                :selected="selected"
+                :metadatum-id="metadatumId"
+                :taxonomy="taxonomy"
+                :collection-id="collectionId"
+                :is-taxonomy="true"
+                :query="query"
+                @applied-checkbox-modal="() => loadOptions()" />-->
     </div>
 </template>
 
@@ -54,7 +65,10 @@
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
     
     export default {
-        mixins: [ filterTypeMixin ], 
+        components: {
+            CheckboxRadioModal
+        }, 
+        mixins: [ filterTypeMixin ],
         props: {
             isRepositoryLevel: Boolean,
             currentCollectionId: String

@@ -313,9 +313,11 @@
             <!--<pre>{{ selectedTagsName }}</pre>-->
 
             <footer 
-                    v-if="isModal"
+                    v-if="isModal || isFilter"
                     class="field is-grouped form-submit">
-                <div class="control">
+                <div 
+                        v-if="isModal"
+                        class="control">
                     <button
                             class="button is-outlined"
                             type="button"
@@ -406,7 +408,7 @@
         },
         watch: {
             selected() {
-                if (!this.isModal)
+                if (!this.isModal && !this.isFilter)
                     this.$emit('input', this.selected);
             }
         },
@@ -780,7 +782,8 @@
                 }
             },
             applyFilter() {
-                this.$parent.close();
+                if (this.isModal)
+                    this.$parent.close();
 
                 this.$eventBusSearch.resetPageOnStore();
 
@@ -847,7 +850,7 @@
 
         .b-tabs {
             margin-bottom: 0 !important;
-            
+
             .tab-content {
                 transition: height 0.2s ease;
                 padding: 0.5em var(--tainacan-one-column) !important;
