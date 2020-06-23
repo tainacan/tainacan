@@ -1169,7 +1169,7 @@ class Metadata extends Repository {
 			} else {
 				$pages = ceil( $total / $number );
 			}
-
+			$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 			$values = [];
 			foreach ($results as $r) {
 
@@ -1204,7 +1204,8 @@ class Metadata extends Repository {
 					'taxonomy_id' => $taxonomy_id,
 					'parent' => $r->parent,
 					'total_items' => $total_items,
-					'type' => 'Taxonomy'
+					'type' => 'Taxonomy',
+					'hierarchy_path' => get_term_parents_list($r->term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false])
 				];
 
 			}
