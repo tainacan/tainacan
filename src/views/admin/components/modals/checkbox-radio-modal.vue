@@ -211,7 +211,7 @@
                     <!-- Search Results -->
                     <div
                             v-if="isSearching"
-                            :style="{ height: (isModal || expandResultsSection) ? '253px' : '0px' }"
+                            :style="{ height: (isModal || expandResultsSection) ? 'auto' : '0px' }"
                             class="modal-card-body tainacan-search-results-container">
                         <ul class="tainacan-modal-checkbox-search-results-body">
                             <li
@@ -228,10 +228,6 @@
                                     <span class="check" /> 
                                     <span class="control-label">
                                         <span 
-                                                v-tooltip="{
-                                                    content: (option.name ? option.name : (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label)) + ((isFilter && option.total_items != undefined) ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
-                                                    autoHide: false,
-                                                }"
                                                 class="checkbox-label-text"
                                                 v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" /> 
                                         <span 
@@ -249,7 +245,9 @@
                                         v-else
                                         v-model="selected"
                                         :native-value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.value)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))">
-                                    {{ `${ option.name ? option.name : (option.label ? option.label : '') }` }}
+                                    <span 
+                                                class="checkbox-label-text"
+                                                v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" />
                                     <span 
                                             v-if="isFilter && option.total_items != undefined"
                                             class="has-text-gray">
@@ -269,7 +267,7 @@
 
                     <div class="modal-card-body tainacan-tags-container">
                         <b-field
-                                v-if="selected.length > 0 && !isSelectedTermsLoading"
+                                v-if="(selected instanceof Array ? selected.length > 0 : selected) && !isSelectedTermsLoading"
                                 grouped
                                 group-multiline>
                             <div
@@ -282,12 +280,12 @@
                                         closable
                                         :class="isModal ? '' : 'is-small'"
                                         @close="selected instanceof Array ? selected.splice(index, 1) : selected = ''">
-                                    {{ (isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term }}
+                                       <span v-html="(isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
                                 </b-tag>
                             </div>
                         </b-field>
                         <section 
-                                v-if="selected.length <= 0 && !isSelectedTermsLoading"
+                                v-if="(selected instanceof Array ? selected.length <= 0 : !selected) && !isSelectedTermsLoading"
                                 class="section">
                             <div class="content has-text-grey has-text-centered">
                                 <p>
@@ -309,7 +307,7 @@
             <!-- <pre>{{ hierarchicalPath }}</pre>
             <pre>{{ finderColumns }}</pre> -->
             <!--<pre>{{ totalRemaining }}</pre>-->
-            <!--<pre>{{ selected }}</pre>-->
+            <!-- <pre>{{ selected }}</pre> -->
             <!--<pre>{{ options }}</pre>-->
             <!--<pre>{{ searchResults }}</pre>-->
             <!--<pre>{{ selectedTagsName }}</pre>-->
@@ -467,7 +465,7 @@
                     axios.get(`/taxonomy/${this.taxonomy_id}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
                         .then((res) => {
                             for (const term of res.data)
-                                this.saveSelectedTagName(term.id, term.name);
+                                this.saveSelectedTagName(term.id, term.name, term.url);
 
                             this.isSelectedTermsLoading = false;
                         })
@@ -482,7 +480,7 @@
                     axios.get(`/items/?${qs.stringify({ fetch_only: 'title', postin: selected})}`)
                         .then((res) => {
                             for (const item of res.data)
-                                this.saveSelectedTagName(item.id, item.title);
+                                this.saveSelectedTagName(item.id, item.title, item.url);
 
                             this.isSelectedTermsLoading = false;
                         })
@@ -492,9 +490,9 @@
                         });
                 }
             },
-            saveSelectedTagName(value, label){
+            saveSelectedTagName(value, label, link){
                 if (!this.selectedTagsName[value])
-                    this.$set(this.selectedTagsName, `${value}`, label);
+                    this.$set(this.selectedTagsName, `${value}`, link ? ('<a href=' + link + ' target="_blank">' + label + '</a>') : label );
             },
             previousPage() {
 
@@ -810,7 +808,7 @@
                 this.$emit('appliedCheckBoxModal');
             },
             renderHierarchicalPath(hierachyPath, label) {
-                return '<span class="hierarchical-path">' + hierachyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span><strong>' + label + '</strong>';
+                return '<span style="color: var(--tainacan-info-color);">' + hierachyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + label;
             }
         }
     }
@@ -820,17 +818,6 @@
 
     .tainacan-modal-title {
         margin-bottom: 16px;
-    }
-
-    .breadcrumb {
-        background-color: var(--tainacan-white) !important;
-
-        ul {
-            list-style: none;
-        }
-        li + li::before {
-            content: ">" !important;
-        }
     }
 
     @media screen and (max-width: 768px) {
@@ -862,8 +849,8 @@
             margin-bottom: 0 !important;
             
             .tab-content {
-                padding: 0.5em;
                 transition: height 0.2s ease;
+                padding: 0.5em var(--tainacan-one-column) !important;
             }
         }
     }
@@ -913,6 +900,12 @@
             margin-right: 10px;
             margin-bottom: 0;
             overflow: hidden;
+            align-items: baseline;
+        
+            .control-label .checkbox-label-text {
+                white-space: normal;
+                line-height: 1.45em;
+            }
         }
 
         &:hover {
@@ -988,11 +981,14 @@
             overflow-y: auto;
             overflow-x: hidden;
             list-style: none;
+            margin: 0;
+            padding-left: 0;
         }
         a {
             font-size: 0.75em;
             white-space: nowrap;
             display: flex;
+            align-items: center;
             .tainacan-icon {
                 font-size: 1.5em;
             }
@@ -1003,7 +999,8 @@
             display: block;
             font-size: 0.75em;
             font-weight: bold;
-            padding: 0.35em 0.75em;
+            padding: 0.45em 0.75em;
+            margin: 0;
             position: relative;
             border-bottom: 1px solid var(--tainacan-gray1);
         }
@@ -1025,16 +1022,16 @@
                 top: 0px;
                 border-color: transparent transparent transparent white;
                 border-left-width: 12px;
-                border-top-width: calc(1.15em + 1px);
-                border-bottom-width: calc(1.15em + 0px);
+                border-top-width: calc(1.2em + 1px);
+                border-bottom-width: calc(1.2em + 0px);
                 left: -3px;
             }
             &::before {
                 top: 0px;
                 border-color: transparent transparent transparent var(--tainacan-gray1);
                 border-left-width: 12px;
-                border-top-width: calc(1.15em + 1px);
-                border-bottom-width: calc(1.15em + 0px);
+                border-top-width: calc(1.2em + 1px);
+                border-bottom-width: calc(1.2em + 0px);
                 left: -1px;
             }
         }
@@ -1117,10 +1114,11 @@
     }
 
     .tainacan-search-results-container {
-        padding: 0.15em 20px !important;
+        padding: 0.25em !important;
     }
 
     .tainacan-tags-container {
+        min-height: 64px;
         padding: 0px !important;
         display: inline;
 
@@ -1137,7 +1135,6 @@
     .tainacan-modal-checkbox-search-results-body {
         list-style: none;
         column-count: 2;
-        max-height: 253px;
     }
 
     .tainacan-li-no-children {
