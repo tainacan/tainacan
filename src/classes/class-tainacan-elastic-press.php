@@ -687,6 +687,7 @@ class Elastic_Press {
 		if( empty($aggregations) )
 			return $formated_aggs;
 
+		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 		foreach($aggregations as $key => $aggregation) {
 			$description_types = \explode(".", $key);
 			$filter_id = $description_types[0];
@@ -708,7 +709,8 @@ class Elastic_Press {
 						"total_children"	=> $total_children,
 						"total_items"			=> $term['doc_count'],
 						"label" 					=> $term_object->get('name'),
-						"parent"					=> $term_object->get('parent')
+						"parent"					=> $term_object->get('parent'),
+						'hierarchy_path' => get_term_parents_list($term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false])
 					];
 					if (isset($description_types[3])) {
 						array_unshift($formated_aggs[$filter_id], $fct);
@@ -762,6 +764,7 @@ class Elastic_Press {
 		if( empty($aggregations) )
 			return $formated_aggs;
 
+		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 		foreach($aggregations as $key => $aggregation) {
 			$description_types = \explode(".", $key);
 			if($description_types[0] == 'taxonomy') {
@@ -794,7 +797,8 @@ class Elastic_Press {
 						"total_children"	=> $total_children,
 						"total_items"			=> $term['doc_count'],
 						"label" 					=> $term_object->get('name'),
-						"parent"					=> $term_object->get('parent')
+						"parent"					=> $term_object->get('parent'),
+						'hierarchy_path' => get_term_parents_list($term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false])
 					];
 					if ($has_include) {
 						array_unshift($formated_aggs['values'], $fct);
