@@ -1,41 +1,54 @@
 <template>
     <div 
-            :style="{ 'height': isLoadingOptions ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
-            :class="{ 'skeleton': isLoadingOptions }"
+            :style="{ 'height': isLoadingOptions && !filtersAsModal ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
+            :class="{ 'skeleton': isLoadingOptions && !filtersAsModal }"
             class="block">
-        <div
-                v-for="(option, index) in options.slice(0, filter.max_options)"
-                v-if="!isLoadingOptions"
-                :key="index"
-                class="metadatum">
-            <label 
-                    v-if="index <= filter.max_options - 1"
-                    class="b-checkbox checkbox is-small">
-                <input 
-                        v-model="selected"
-                        :value="option.value"
-                        @input="resetPage()"
-                        type="checkbox"> 
-                    <span class="check" /> 
-                    <span class="control-label">
-                        <span class="checkbox-label-text">{{ option.label }}</span> 
-                        <span 
-                                v-if="option.total_items != undefined"
-                                class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
-                    </span>
-            </label>
-            <button
-                    class="view-all-button link-style"
-                    v-if="option.showViewAllButton && index == options.slice(0, filter.max_options).length - 1"
-                    @click="openCheckboxModal(option.parent)"> 
-                {{ $i18n.get('label_view_all') }}
-            </button>
-        </div>
-        <p 
-                v-if="isLoadingOptions == false && options.length != undefined && options.length <= 0"
-                class="no-options-placeholder">
-            {{ $i18n.get('info_no_options_avialable_filtering') }}
-        </p>
+        <template v-if="!filtersAsModal">
+            <div
+                    v-for="(option, index) in options.slice(0, filter.max_options)"
+                    v-if="!isLoadingOptions"
+                    :key="index"
+                    class="metadatum">
+                <label 
+                        v-if="index <= filter.max_options - 1"
+                        class="b-checkbox checkbox is-small">
+                    <input 
+                            v-model="selected"
+                            :value="option.value"
+                            @input="resetPage()"
+                            type="checkbox"> 
+                        <span class="check" /> 
+                        <span class="control-label">
+                            <span class="checkbox-label-text">{{ option.label }}</span> 
+                            <span 
+                                    v-if="option.total_items != undefined"
+                                    class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
+                        </span>
+                </label>
+                <button
+                        class="view-all-button link-style"
+                        v-if="option.showViewAllButton && index == options.slice(0, filter.max_options).length - 1"
+                        @click="openCheckboxModal(option.parent)"> 
+                    {{ $i18n.get('label_view_all') }}
+                </button>
+            </div>
+            <p 
+                    v-if="isLoadingOptions == false && options.length != undefined && options.length <= 0"
+                    class="no-options-placeholder">
+                {{ $i18n.get('info_no_options_avialable_filtering') }}
+            </p>
+        </template>
+        <template v-else>
+            <checkbox-radio-modal
+                    :is-modal="false" 
+                    :filter="filter"
+                    :selected="selected"
+                    :metadatum-id="metadatumId"
+                    :collection-id="collectionId"
+                    :metadatum_type="metadatumType"
+                    :is-repository-level="isRepositoryLevel"
+                    :query="query" />
+        </template>
     </div>
 </template>
 
@@ -45,7 +58,11 @@
     import CheckboxRadioModal from '../../../components/modals/checkbox-radio-modal.vue';
 
     export default {
+        components: { CheckboxRadioModal },
         mixins: [filterTypeMixin, dynamicFilterTypeMixin],
+        props: {
+            filtersAsModal: Boolean
+        },
         data(){
             return {
                 options: [],
@@ -71,7 +88,7 @@
             }
         },
         mounted() {
-            if (!this.isUsingElasticSearch)
+            if (!this.isUsingElasticSearch && !this.filtersAsModal)
                 this.loadOptions();
         },
         methods: {
@@ -161,9 +178,6 @@
                     trapFocus: true
                 });
             },
-            updatesIsLoading(isLoadingOptions) {
-                this.isLoadingOptions = isLoadingOptions;
-            }
         }
     }
 </script>

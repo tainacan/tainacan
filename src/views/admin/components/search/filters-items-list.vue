@@ -31,6 +31,12 @@
         </button>
 
         <br>
+
+        <filters-tags-list
+                style="padding: 1em 0;"
+                class="filter-tags-list"
+                v-if="filtersAsModal && hasFiltered" />
+
         <br>
         <div            
                 v-if="!isLoadingFilters &&
@@ -79,7 +85,8 @@
                                 :key="filterIndex"
                                 :filter="filter"
                                 :open="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"/>
+                                :is-repository-level="key == 'repository-filters'"
+                                :filters-as-modal="filtersAsModal"/>
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -126,7 +133,8 @@
                                 :key="filterIndex"
                                 :filter="filter"
                                 :open="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"/>
+                                :is-repository-level="key == 'repository-filters'"
+                                :filters-as-modal="filtersAsModal"/>
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -180,7 +188,8 @@
                                 :key="filterIndex"
                                 :filter="filter"
                                 :open="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"/>
+                                :is-repository-level="key == 'repository-filters'"
+                                :filters-as-modal="filtersAsModal"/>
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -227,7 +236,8 @@
                                 :key="filterIndex"
                                 :filter="filter"
                                 :open="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"/>
+                                :is-repository-level="key == 'repository-filters'"
+                                :filters-as-modal="filtersAsModal"/>
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -249,7 +259,8 @@
                         :key="index"
                         :filter="filter"
                         :open="!collapseAll"
-                        :is-repository-level="isRepositoryLevel"/>
+                        :is-repository-level="isRepositoryLevel"
+                        :filters-as-modal="filtersAsModal"/>
             </template>
         </div>
         <section
@@ -278,16 +289,20 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex';
+    import FiltersTagsList from './filters-tags-list.vue';
     import CollectionsFilter from '../other/collection-filter.vue';
 
     export default {
         components: {
-            CollectionsFilter
+            CollectionsFilter,
+            FiltersTagsList
         },
         props: {
             collectionId: String,
             isRepositoryLevel: Boolean,
-            taxonomy: String
+            taxonomy: String,
+            filtersAsModal: Boolean,
+            hasFiltered: Boolean
         },
         data() {
             return {
@@ -368,7 +383,6 @@
         },
         mounted() {
             this.prepareFilters();
-
             this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', () => {
                 /* This condition is to prevent an incorrect fetch by filter or metadata when we come from items
                  * at collection level to items page at repository level

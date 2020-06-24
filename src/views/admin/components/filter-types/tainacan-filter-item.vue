@@ -1,6 +1,7 @@
 <template>
     <b-field
-            class="filter-item-forms">
+            class="filter-item-forms"
+            :style="{ columnSpan: filtersAsModal && filter.filter_type_object && filter.filter_type_object.component && (filter.filter_type_object.component == 'tainacan-filter-taxonomy-checkbox' || filter.filter_type_object.component == 'tainacan-filter-checkbox') ? 'all' : 'unset'}">
         <b-collapse
                 class="show" 
                 :open.sync="open"
@@ -41,7 +42,8 @@
                         :is-loading-items.sync="isLoadingItems"
                         :current-collection-id="$eventBusSearch.collectionId"
                         @input="onInput"
-                        @sendValuesToTags="onSendValuesToTags" />
+                        @sendValuesToTags="onSendValuesToTags" 
+                        :filters-as-modal="filtersAsModal"/>
             </div>
         </b-collapse>
     </b-field>
@@ -56,6 +58,7 @@
             isRepositoryLevel: Boolean,
             open: true,
             isLoadingItems: true,
+            filtersAsModal: Boolean
         },
         data() {
             return {
@@ -83,6 +86,11 @@
 
     .filter-item-forms {
         break-inside: avoid;
+
+        &:not(:last-child) {
+            margin-bottom: 0;
+            padding-bottom: 1.5em;
+        }
 
         .collapse-trigger {
             margin-left: -5px;

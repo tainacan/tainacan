@@ -162,6 +162,7 @@
 
         @media screen and (min-width: 769px) and (max-width: 1500px) {
             flex-wrap: wrap;
+            align-items: center;
             height: 60px;
         }
         

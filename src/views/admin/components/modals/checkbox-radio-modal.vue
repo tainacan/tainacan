@@ -18,10 +18,11 @@
                 :style="isModal ? '' : 'margin-top: 12px'"
                 class="tainacan-form">
             <b-tabs
-                    :size="isModal ? '' : 'is-small'"
+                    size="is-small"
                     animated
                     @input="fetchSelectedLabels()"
-                    v-model="activeTab">
+                    v-model="activeTab"
+                    :class="{ 'hidden-tabs-section': !isModal && isFilter }">
                 <b-tab-item 
                         :style="{ margin: isModal ? '0' : '0 -1.5rem' }"
                         :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
@@ -58,7 +59,7 @@
                     <!-- Non-hierarchical lists -->
                     <div
                             v-if="!isSearching && !isTaxonomy"
-                            :style="{ height: (isModal || expandResultsSection) ? '253px' : '0px' }"
+                            :style="{ height: (isModal || expandResultsSection) ? 'auto' : '0px' }"
                             class="modal-card-body tainacan-checkbox-list-container">
                         <a
                                 v-if="isUsingElasticSearch ? lastTermOnFisrtPage != checkboxListOffset : checkboxListOffset"
@@ -71,9 +72,9 @@
                         </a>
                         <ul
                                 :class="{
-                            'tainacan-modal-checkbox-list-body-dynamic-m-l': !checkboxListOffset,
-                            'tainacan-modal-checkbox-list-body-dynamic-m-r': noMorePage,
-                        }"
+                                    'tainacan-modal-checkbox-list-body-dynamic-m-l': !checkboxListOffset,
+                                    'tainacan-modal-checkbox-list-body-dynamic-m-r': noMorePage,
+                                }"
                                 class="tainacan-modal-checkbox-list-body">
                             <li
                                     class="tainacan-li-checkbox-list"
@@ -174,7 +175,11 @@
                                     <a
                                             v-if="option.total_children > 0"
                                             @click="getOptionChildren(option, key, index)">
-                                        <span v-if="finderColumns.length <= 1 ">{{ option.total_children + ' ' + $i18n.get('label_children_terms') }}</span>
+                                        <span 
+                                                class="is-hidden-mobile"
+                                                v-if="finderColumns.length <= 1 ">
+                                            {{ option.total_children + ' ' + $i18n.get('label_children_terms') }}
+                                        </span>
                                         <span 
                                                 v-tooltip="{
                                                     content: option.total_children + ' ' + $i18n.get('label_children_terms'),
@@ -314,7 +319,8 @@
 
             <footer 
                     v-if="isModal || isFilter"
-                    class="field is-grouped form-submit">
+                    class="field is-grouped"
+                    :class="{ 'form-submit': isModal && isFilter }">
                 <div 
                         v-if="isModal"
                         class="control">
@@ -403,7 +409,7 @@
         },
         computed: {
             shouldBeginWithListExpanded() {
-                return this.isTaxonomy && this.metadatum && this.metadatum.metadata_type_options && this.metadatum.metadata_type_options.visible_options_list;
+                return  this.isFilter || (this.isTaxonomy && this.metadatum && this.metadatum.metadata_type_options && this.metadatum.metadata_type_options.visible_options_list);
             }
         },
         watch: {
@@ -784,6 +790,8 @@
             applyFilter() {
                 if (this.isModal)
                     this.$parent.close();
+                else    
+                    this.initializeValues();
 
                 this.$eventBusSearch.resetPageOnStore();
 
@@ -847,15 +855,22 @@
     .tainacan-modal-content {
         width: auto;
         min-height: 550px;
+    }
 
-        .b-tabs {
-            margin-bottom: 0 !important;
+    /deep/ .tabs {
+        margin-bottom: 0 !important;
 
-            .tab-content {
-                transition: height 0.2s ease;
-                padding: 0.5em var(--tainacan-one-column) !important;
-            }
+        ul {
+            padding: none;
         }
+    }
+    .hidden-tabs-section /deep/ .tabs {
+        display: none;
+        visibility: hidden;
+    }
+    .tab-content {
+        transition: height 0.2s ease;
+        padding: 0.5em var(--tainacan-one-column) !important;
     }
 
     .tainacan-modal-title {
@@ -1057,6 +1072,9 @@
 
     .tainacan-checkbox-search-section {
         margin-bottom: 0;
+        .control {
+            margin: 0;
+        }
         .input .icon .mdi::before {
             color: var(--tainacan-input-color);
         }

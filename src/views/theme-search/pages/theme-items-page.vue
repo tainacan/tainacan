@@ -139,8 +139,10 @@
                         class="button is-white"
                         :aria-label="$i18n.get('filters')"
                         @click="isFiltersModalActive = !isFiltersModalActive">
-                    <span class="gray-icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
+                    <span 
+                            :class="{ 'has-text-secondary': hasFiltered }"
+                            class="gray-icon">
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
                     </span>
                     <span class="is-hidden-touch">{{ $i18n.get('filters') }}</span>
                 </button>
@@ -415,7 +417,9 @@
                     id="filters-items-list"
                     :taxonomy="taxonomy"
                     :collection-id="collectionId"
-                    :is-repository-level="isRepositoryLevel"/>
+                    :is-repository-level="isRepositoryLevel"
+                    :filters-as-modal="filtersAsModal"
+                    :has-filtered="hasFiltered" />
         </b-modal>
 
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
@@ -426,7 +430,8 @@
             <!-- FILTERS TAG LIST-->
             <filters-tags-list
                     class="filter-tags-list"
-                    v-if="!hideFilters &&
+                    v-if="!filtersAsModal &&
+                        !hideFilters &&
                         hasFiltered && 
                         !openAdvancedSearch &&
                         !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
@@ -1351,6 +1356,10 @@
                 font-size: 1.3125em !important;
                 color: var(--tainacan-info-color) !important;
                 max-width: 1.25em;
+            }
+            .has-text-secondary.gray-icon .icon i::before, 
+            .has-text-secondary.gray-icon i::before {
+                color: var(--tainacan-secondary) !important;
             }
             
             .dropdown-menu {
