@@ -15,17 +15,15 @@
         .metadata-title {
             background-color: var(--tainacan-turquoise2);
         }
-        .media {
-            background-color: var(--tainacan-turquoise1);
-        }
     }
 
     .tainacan-slide {
         display: flex;
+        flex-direction: column;    
         width: 100%;
         margin: var(--tainacan-container-padding) 0;
-        max-height: calc(40vh + 40px);
-        height: calc(40vh + 40px);
+        max-height: calc(40vh + 2.5em);
+        height: calc(40vh + 2.5em);
         
         @media screen and (max-width: 768px) {
             flex-wrap: wrap;
@@ -36,7 +34,15 @@
         &:hover {
             background-color: var(--tainacan-item-hover-background-color) !important;
         }
-
+        .item-heading {
+            min-height: 2.5em;
+        }
+        .item-area {
+            display: flex;
+            width: 100%;
+            max-height: 40vh;
+            height: 40vh;
+        }
         .slide-checkbox {
             position: absolute;
             margin-left: 1.0em;
@@ -71,6 +77,7 @@
         }
 
         .tainacan-slide-item {
+            flex-shrink: 0;
             img {
                 max-height: 40vh;
             }
@@ -111,15 +118,11 @@
         &:hover .metadata-title {
             background-color: var(---tainacan-item-heading-hover-background-color) !important;
         }
-        &:hover .aside-item {
-            background-color: var(--tainacan-item-hover-background-color) !important;
-        }
 
         .aside-item {
-            max-height: calc(40vh + 40px);
-            height: calc(40vh + 40px);
+            max-height: 40vh;
+            height: 40vh;
             width: 100%;
-            transition: background-color 0.2s ease;
             position: relative;
             top: 0;
             overflow-y: auto;
@@ -131,42 +134,27 @@
             }
 
             .list-metadata {
-                padding: 40px calc(2* var(--tainacan-container-padding));
+                padding: 0 calc(2* var(--tainacan-container-padding)) 40px calc(2* var(--tainacan-container-padding));
                 flex: 1;
                 font-size: 1em;
                 color: var(--tainacan-info-color);
                 width: 100%;
-                -moz-column-count: 4;
+                -moz-column-width: 250px;
                 -moz-column-gap: 2em;
-                -moz-column-rule: none;
-                -webkit-column-count: 4;
+                -webkit-column-width: 250px;
                 -webkit-column-gap: 2em;
-                -webkit-column-rule: none;
-                column-count: 4;
+                column-width: 250px;
                 column-gap: 2em;
-                column-rule: none;
-
-                @media screen and (max-width: 1920px) {
-                    -moz-column-count: 3;
-                    -webkit-column-count: 3;
-                    column-count: 3;
-                }
-                @media screen and (max-width: 1600px) {
-                    -moz-column-count: 2;
-                    -webkit-column-count: 2;
-                    column-count: 2;
-                }
-                @media screen and (max-width: 1280px) {
-                    -moz-column-count: 1;
-                    -webkit-column-count: 1;
-                    column-count: 1;
-                }
 
                 &>span {
                     -webkit-column-break-inside: avoid;
                     page-break-inside: avoid;
                     break-inside: avoid;
                     display: block;
+
+                    &>p {
+                        break-inside: avoid;
+                    }
                 }
             
                 .metadata-label {
@@ -206,7 +194,7 @@
         }
 
         .tainacan-slide-thumbnail {
-            &.active-item img {
+            &.swiper-slide-active img {
                 border-bottom: 4px solid var(--tainacan-secondary);
             }
             &:hover img{
@@ -222,6 +210,12 @@
                 border-bottom: 4px solid transparent; 
                 transition: border-bottom 0.4s;
             }
+        }
+    }
+    .swiper-button-page .icon {
+        display: flex;
+        i {
+            width: 20px;
         }
     }
 }

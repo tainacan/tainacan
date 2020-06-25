@@ -144,7 +144,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon is-large">
-                            <icon class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
+                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
                         </span> 
                     </button>
                     <div     
@@ -196,7 +196,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon is-large has-text-turoquoise5">
-                            <icon class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
+                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
                         </span>
                     </button>
                 </section>
@@ -278,7 +278,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon is-medium has-text-white">
-                            <icon class="tainacan-icon tainacan-icon-1-25em tainacan-icon-previous"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-previous"/>
                         </span>
                     </button>
                     <button 
@@ -293,7 +293,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon is-medium has-text-white">
-                            <icon class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                         </span>
                     </button>
                 </div>

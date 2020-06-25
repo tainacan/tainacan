@@ -21,8 +21,6 @@
                     v-if="isLoading"                  
                     class="tainacan-slides-container">
                 <div 
-                        :key="item"
-                        v-for="item in 12"
                         style="min-height: 200px"
                         class="skeleton tainacan-slide" />
             </div>
@@ -39,9 +37,8 @@
                             v-for="(item, index) of items"
                             v-if="index == slideIndex"
                             class="tainacan-slide">
-
-                        <div class="item-area">
-
+                        
+                        <div class="item-heading">
                             <!-- Title -->
                             <div class="metadata-title">
                                 <p 
@@ -75,57 +72,79 @@
                                         :key="columnIndex"
                                         v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
                                         @click="goToItemPage(item)"
-                                        v-html="item.title != undefined ? item.title : ''" />
-                            </div>
-
-                            <!-- Item thumbnail -->
-                            <div class="tainacan-slide-item">
-                                <img
-                                        :alt="$i18n.get('label_thumbnail')"
-                                        v-if="item.thumbnail != undefined"
-                                        :src="item['thumbnail']['full'] ? item['thumbnail']['full'][0] : (item['thumbnail'].full ? item['thumbnail'].full[0] : thumbPlaceholderPath)">
+                                        v-html="(item.title != undefined && item.title != '') ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`" />
                             </div>
                         </div>
 
-                        <!-- Remaining metadata -->
-                        <div
-                                class="aside-item"
-                                @click="goToItemPage(item)">
-                            <div class="list-metadata media-body">
+                        <div class="item-area">
 
-                                <span
-                                        v-for="(column, metadatumIndex) in displayedMetadata"
-                                        :key="metadatumIndex"
-                                        :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
-                                        v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'description')">
-                                    <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
-                                    <p
-                                            v-html="item.description != undefined ? item.description : ''"
-                                            class="metadata-value"/>
-                                </span>
-                                <span
-                                        v-for="(column, metadatumIndex) in displayedMetadata"
-                                        :key="metadatumIndex"
-                                        :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
-                                        v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
-                                    <h3 class="metadata-label">{{ column.name }}</h3>
-                                    <p
-                                            v-html="renderMetadata(item.metadata, column)"
-                                            class="metadata-value"/>
-                                </span>
-                                <span
-                                        v-for="(column, metadatumIndex) in displayedMetadata"
-                                        :key="metadatumIndex"
-                                        v-if="(column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
-                                    <h3 class="metadata-label">{{ column.name }}</h3>
-                                    <p
-                                            v-html="column.metadatum == 'row_creation' ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
-                                            class="metadata-value"/>
-                                </span>
+                            <!-- Item thumbnail -->
+                            <div 
+                                    v-if="item['thumbnail']['full'] && item['thumbnail']['full'][0]"
+                                    class="tainacan-slide-item">
+                                <img
+                                        :alt="$i18n.get('label_thumbnail')"
+                                        v-if="item.thumbnail != undefined"
+                                        :src="item['thumbnail']['full'] ? item['thumbnail']['full'][0] : (item['thumbnail'].full ? item['thumbnail'].full[0] : '')">
+                            </div>
+                            
+
+                            <!-- Remaining metadata -->
+                            <div
+                                    class="aside-item"
+                                    @click="goToItemPage(item)">
+                                <div class="list-metadata media-body">
+
+                                    <span
+                                            v-for="(column, metadatumIndex) in displayedMetadata"
+                                            :key="metadatumIndex"
+                                            :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
+                                            v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'description')">
+                                        <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
+                                        <p
+                                                v-html="item.description != undefined ? item.description : ''"
+                                                class="metadata-value"/>
+                                    </span>
+                                    <span
+                                            v-for="(column, metadatumIndex) in displayedMetadata"
+                                            :key="metadatumIndex"
+                                            :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
+                                            v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
+                                        <h3 class="metadata-label">{{ column.name }}</h3>
+                                        <p
+                                                v-html="renderMetadata(item.metadata, column)"
+                                                class="metadata-value"/>
+                                    </span>
+                                    <span
+                                            v-for="(column, metadatumIndex) in displayedMetadata"
+                                            :key="metadatumIndex"
+                                            v-if="(column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
+                                        <h3 class="metadata-label">{{ column.name }}</h3>
+                                        <p
+                                                v-html="column.metadatum == 'row_creation' ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
+                                                class="metadata-value"/>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </transition>
+
+                <div 
+                        v-tooltip="{
+                                content: $i18n.get('label_next_page'),
+                                autoHide: true,
+                                placement: 'auto'
+                            }"
+                        class="swiper-button-prev swiper-button-page" 
+                        :class="{ 'swiper-button-disabled': page <= 1 }"
+                        style="background-image: none;"
+                        @click="previousPage()">
+                    <span class="icon is-large has-text-secondary">
+                        <i class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
+                        <i class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
+                    </span> 
+                </div>
 
                 <swiper 
                         role="list"
@@ -158,7 +177,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon is-large has-text-secondary">
-                            <icon class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
+                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
                         </span> 
                     </div>
                     <div 
@@ -167,15 +186,31 @@
                             slot="button-next">
                         <span
                                 v-tooltip="{
-                                    content: $i18n.get('next'),
+                                    content: $i18n.get('label_next_page'),
                                     autoHide: true,
                                     placement: 'auto'
                                 }"
                                 class="icon is-large has-text-secondary">
-                            <icon class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
+                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
                         </span> 
                     </div>
                 </swiper>
+
+                <div 
+                        v-tooltip="{
+                                content: $i18n.get('label_next_page'),
+                                autoHide: true,
+                                placement: 'auto'
+                            }"
+                        class="swiper-button-next swiper-button-page"
+                        :class="{ 'swiper-button-disabled': page >= totalPages }"
+                        style="background-image: none;" 
+                        @click="nextPage()">
+                    <span class="icon is-large has-text-secondary">
+                        <i class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
+                        <i class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
+                    </span> 
+                </div>
 
             </div>
 
@@ -185,6 +220,7 @@
 
 <script>
 import 'swiper/dist/css/swiper.css';
+import { mapGetters } from 'vuex';
 import { swiper, swiperSlide } from 'vue-awesome-swiper';
 
 export default {
@@ -234,6 +270,14 @@ export default {
             },
         }
     },
+    computed: {
+        page() {
+            return this.getPage();
+        },
+        totalPages() {
+            return this.getTotalPages();
+        }
+    },
     watch: {
         slideIndex:{
             handler(val, oldVal) { 
@@ -253,6 +297,11 @@ export default {
         } 
     },
     methods: {
+         ...mapGetters('search', [
+            'getTotalPages',
+            'getPage',
+            'getItemsPerPage'
+        ]),
         goToItemPage(item) {
             window.location.href = item.url;   
         },
@@ -268,6 +317,14 @@ export default {
         onSlideChange() {
             if (this.$refs.mySwiper.swiper != undefined)
                 this.slideIndex = this.$refs.mySwiper.swiper.activeIndex;
+        },
+        nextPage() {
+            if (this.page < this.totalPages)
+                this.$eventBusSearch.setPage(this.page + 1)
+        },
+        previousPage() {
+            if (this.page > 1)
+                this.$eventBusSearch.setPage(this.page + 1)
         }
     }
 }
