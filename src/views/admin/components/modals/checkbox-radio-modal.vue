@@ -587,11 +587,13 @@
 
                 if (this.isTaxonomy) {
                     this.isLoadingSearch = true;
+
                     let query_items = { 'current_query': this.query };
-
-                    let query = `?order=asc&number=${this.maxNumSearchResultsShow}&search=${this.optionName}&` + qs.stringify(query_items);
-
-                    if (!this.isFilter)
+                    let query = `?order=asc&number=${this.maxNumSearchResultsShow}&search=${this.optionName}`;
+                    
+                    if (this.isFilter)
+                        query += ('&' + qs.stringify(query_items));
+                    else
                         query += '&hideempty=0';
 
                     let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
@@ -720,9 +722,11 @@
                 if (option)
                     parent = option.value;
 
-                let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0&` + qs.stringify(query_items);
+                let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0`;
 
-                if (!this.isFilter)
+                if (this.isFilter)
+                    query += ('&' + qs.stringify(query_items));
+                else
                     query += '&hideempty=0';
 
                 this.isColumnLoading = true;
@@ -753,9 +757,11 @@
                     let offset = finderColumn.children.length;
                     let query_items = { 'current_query': this.query };
 
-                    let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}&` + qs.stringify(query_items);
+                    let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}`;
 
-                    if (!this.isFilter)
+                    if (this.isFilter)
+                        query += ('&' + qs.stringify(query_items));
+                    else
                         query += '&hideempty=0';
 
                     if (finderColumn.lastTerm)
