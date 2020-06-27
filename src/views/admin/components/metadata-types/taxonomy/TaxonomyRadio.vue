@@ -201,12 +201,12 @@
                         parent: 0,
                         taxonomy_id: this.taxonomyId,
                         selected: !this.value ? [] : this.value,
-                        metadatumId: this.itemMetadatum.id,
+                        metadatumId: this.itemMetadatum.metadatum.id,
                         taxonomy: this.taxonomy,
-                        collectionId: this.itemMetadatum.collection_id,
+                        collectionId: this.itemMetadatum.metadatum.collection_id,
                         isTaxonomy: true,
                         query: '',
-                        metadatum: this.itemMetadatum,
+                        metadatum: this.itemMetadatum.metadatum,
                         isCheckbox: false
                     },
                     events: {
