@@ -184,9 +184,6 @@
                                 this.prepareOptionsForTaxonomy(this.facetsFromItemSearch[facet]);
                             else
                                 this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]));
-                            
-                            if (this.isUsingElasticSearch)
-                                this.isLoadingOptions = false;
                         }    
                     }
                 }

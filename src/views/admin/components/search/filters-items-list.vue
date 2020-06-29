@@ -287,11 +287,11 @@
         props: {
             collectionId: String,
             isRepositoryLevel: Boolean,
-            taxonomy: String
+            taxonomy: String,
+            isLoadingItems: Boolean
         },
         data() {
             return {
-                isLoadingItems: true,
                 isLoadingFilters: false,
                 collapseAll: false,
                 taxonomyFiltersCollectionNames: {},
@@ -375,11 +375,6 @@
                  */
                 this.prepareFilters();
             });
-            if (this.isUsingElasticSearch) {
-                this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
-                    this.isLoadingItems = isLoadingItems;
-                });
-            }
         },
         beforeDestroy() {
             // Cancels previous collection name Request
@@ -395,9 +390,6 @@
                 this.filtersSearchCancel.cancel('Filters search Canceled.');
 
             this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
-
-            if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems');
      
         },
         methods: {

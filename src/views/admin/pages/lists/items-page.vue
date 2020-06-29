@@ -429,6 +429,7 @@
                 aria-role="dialog"
                 custom-class="tainacan-form filters-menu">
             <filters-items-list
+                    :is-loading-items="isLoadingItems"
                     autofocus="true"
                     tabindex="-1"
                     aria-modal
