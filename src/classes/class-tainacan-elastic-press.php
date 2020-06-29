@@ -60,10 +60,10 @@ class Elastic_Press {
 			return $formatted_args;
 		 } );
 		 
-		// add_action('ep_add_query_log', function($query) { //using to DEBUG
-		// 	error_log("DEGUG:");
-		// 	error_log($query["args"]["body"]);
-		// });
+		add_action('ep_add_query_log', function($query) { //using to DEBUG
+			error_log("DEGUG:");
+			error_log($query["args"]["body"]);
+		});
 	}
 
 	function elasticpress_config_mapping( $mapping ) {

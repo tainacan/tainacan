@@ -9,8 +9,7 @@
         <header 
                 v-if="isModal"
                 class="tainacan-modal-title">
-            <h2 v-if="isFilter">{{ $i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
-            <h2 v-else>{{ $i18n.get('metadatum') }} <em>{{ metadatum.name }}</em></h2>
+            <h2>{{ $i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
             <hr>
         </header>
 
@@ -22,36 +21,20 @@
                     animated
                     @input="fetchSelectedLabels()"
                     v-model="activeTab"
-                    :class="{ 'hidden-tabs-section': !isModal && isFilter }">
+                    :class="{ 'hidden-tabs-section': !isModal }">
                 <b-tab-item 
                         :style="{ margin: isModal ? '0' : '0 -1.5rem' }"
                         :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
                     
                     <!-- Search input -->
                     <b-field class="is-clearfix tainacan-checkbox-search-section">
-                        <p 
-                                v-if="!isModal && !shouldBeginWithListExpanded"
-                                class="control">
-                            <b-button 
-                                    :class="{ 'is-active': expandResultsSection }"
-                                    class="button"
-                                    @click="toggleResultsSection()">
-                                <span 
-                                        class="icon is-left has-text-gray">
-                                    <i 
-                                            class="tainacan-icon tainacan-icon-1-25em"
-                                            :class="isTaxonomy ? 'tainacan-icon-taxonomies' : 'tainacan-icon-view-table'"/>
-                                </span>
-                            </b-button>
-                        </p>
                         <b-input
                                 expanded
                                 autocomplete="on"
-                                :placeholder="isModal || expandResultsSection ? $i18n.get('instruction_search') : $i18n.get('instruction_click_to_see_or_search')"
-                                :aria-label="isModal || expandResultsSection ? $i18n.get('instruction_search') : $i18n.get('instruction_click_to_see_or_search')"
+                                :placeholder="$i18n.get('instruction_search')"
+                                :aria-label="$i18n.get('instruction_search')"
                                 v-model="optionName"
                                 @input="autoComplete"
-                                @focus="!shouldBeginWithListExpanded && !expandResultsSection ? toggleResultsSection() : null"
                                 icon-right="magnify"
                                 type="search" />
                     </b-field>
@@ -59,7 +42,7 @@
                     <!-- Non-hierarchical lists -->
                     <div
                             v-if="!isSearching && !isTaxonomy"
-                            :style="{ height: (isModal || expandResultsSection) ? 'auto' : '0px' }"
+                            :style="{ height: isModal ? 'auto' : '0px' }"
                             class="modal-card-body tainacan-checkbox-list-container">
                         <a
                                 v-if="isUsingElasticSearch ? lastTermOnFisrtPage != checkboxListOffset : checkboxListOffset"
@@ -89,12 +72,12 @@
                                     <span class="control-label">
                                         <span 
                                                 v-tooltip="{
-                                                    content: option.label + ((isFilter && option.total_items != undefined) ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
+                                                    content: option.label + (option.total_items != undefined ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
                                                     autoHide: false,
                                                 }" 
                                                 class="checkbox-label-text">{{ `${ (option.label ? option.label : '') }` }}</span> 
                                         <span 
-                                            v-if="isFilter && option.total_items != undefined"
+                                            v-if="option.total_items != undefined"
                                             class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
                                     </span>
                                 </label>
@@ -118,7 +101,7 @@
                     <transition-group
                             v-if="!isSearching && isTaxonomy"
                             class="modal-card-body tainacan-finder-columns-container"
-                            :style="{ height: (isModal || expandResultsSection) ? '253px' : '0px' }"
+                            :style="{ height: isModal ? 'auto' : '0px' }"
                             name="page-left">
                         <div 
                                 v-for="(finderColumn, key) in finderColumns"
@@ -146,12 +129,12 @@
                                         <span class="control-label">
                                             <span 
                                                     v-tooltip="{
-                                                        content: option.label + ((isFilter && option.total_items != undefined) ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
+                                                        content: option.label + (option.total_items != undefined ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
                                                         autoHide: false,
                                                     }" 
                                                     class="checkbox-label-text">{{ `${option.label}` }}</span> 
                                             <span 
-                                                    v-if="isFilter && option.total_items != undefined"
+                                                    v-if="option.total_items != undefined"
                                                     class="has-text-gray">
                                                 &nbsp;{{ "(" + option.total_items + ")" }}
                                             </span>
@@ -167,7 +150,7 @@
                                             :native-value="(isNaN(Number(option.value)) ? option.value : Number(option.value))">
                                         {{ `${option.label}` }}
                                         <span 
-                                                v-if="isFilter && option.total_items != undefined"
+                                                v-if="option.total_items != undefined"
                                                 class="has-text-gray">
                                             &nbsp;{{ "(" + option.total_items + ")" }}
                                         </span>
@@ -216,7 +199,7 @@
                     <!-- Search Results -->
                     <div
                             v-if="isSearching"
-                            :style="{ height: (isModal || expandResultsSection) ? 'auto' : '0px' }"
+                            :style="{ height: isModal ? 'auto' : '0px' }"
                             class="modal-card-body tainacan-search-results-container">
                         <ul class="tainacan-modal-checkbox-search-results-body">
                             <li
@@ -236,7 +219,7 @@
                                                 class="checkbox-label-text"
                                                 v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" /> 
                                         <span 
-                                                v-if="isFilter && option.total_items != undefined"
+                                                v-if="option.total_items != undefined"
                                                 class="has-text-gray">
                                             &nbsp;{{ "(" + option.total_items + ")" }}
                                         </span>
@@ -244,7 +227,7 @@
                                 </label>
                                 <b-radio
                                         v-tooltip="{
-                                            content: (option.name ? option.name : option.label) + ((isFilter && option.total_items != undefined) ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
+                                            content: (option.name ? option.name : option.label) + (option.total_items != undefined ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
                                             autoHide: false,
                                         }"
                                         v-else
@@ -254,7 +237,7 @@
                                                 class="checkbox-label-text"
                                                 v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" />
                                     <span 
-                                            v-if="isFilter && option.total_items != undefined"
+                                            v-if="option.total_items != undefined"
                                             class="has-text-gray">
                                         &nbsp;{{ "(" + option.total_items + ")" }}
                                     </span>
@@ -318,9 +301,8 @@
             <!--<pre>{{ selectedTagsName }}</pre>-->
 
             <footer 
-                    v-if="isModal || isFilter"
                     class="field is-grouped"
-                    :class="{ 'form-submit': isModal && isFilter }">
+                    :class="{ 'form-submit': isModal }">
                 <div 
                         v-if="isModal"
                         class="control">
@@ -351,10 +333,6 @@
         name: 'CheckboxRadioFilterInput',
         mixins: [ dynamicFilterTypeMixin ],
         props: {
-            isFilter: {
-                type: Boolean,
-                default: true
-            },
             filter: '',
             parent: Number,
             taxonomy_id: Number,
@@ -403,19 +381,7 @@
                 isSelectedTermsLoading: false,
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
                 previousLastTerms: [],
-                lastTermOnFisrtPage: null,
-                expandResultsSection: false
-            }
-        },
-        computed: {
-            shouldBeginWithListExpanded() {
-                return  this.isFilter || (this.isTaxonomy && this.metadatum && this.metadatum.metadata_type_options && this.metadatum.metadata_type_options.visible_options_list);
-            }
-        },
-        watch: {
-            selected() {
-                if (!this.isModal && !this.isFilter)
-                    this.$emit('input', this.selected);
+                lastTermOnFisrtPage: null
             }
         },
         updated(){
@@ -423,18 +389,12 @@
                 this.highlightHierarchyPath();
         },
         created() {
-            if (this.isModal || this.shouldBeginWithListExpanded)
-                this.initializeValues();
-
-            if (!this.isFilter)
-                this.isUsingElasticSearch = false;
+            this.initializeValues();
                 
             if (this.isTaxonomy)
                 this.getOptionChildren();
             else
                 this.isCheckboxListLoading = true;
-            
-            this.expandResultsSection = this.shouldBeginWithListExpanded;
             
             this.$parent.$on('update-taxonomy-inputs', ($event) => { 
                 if ($event.taxonomyId == this.taxonomy_id && $event.metadatumId == this.metadatumId) {
@@ -597,12 +557,7 @@
                     this.isLoadingSearch = true;
 
                     let query_items = { 'current_query': this.query };
-                    let query = `?order=asc&number=${this.maxNumSearchResultsShow}&search=${this.optionName}`;
-                    
-                    if (this.isFilter)
-                        query += ('&' + qs.stringify(query_items));
-                    else
-                        query += '&hideempty=0';
+                    let query = `?order=asc&number=${this.maxNumSearchResultsShow}&search=${this.optionName}&${qs.stringify(query_items)}`;
 
                     let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
 
@@ -706,19 +661,6 @@
                 
                 this.finderColumns[key].lastTerm = lastTerm;
             },
-            toggleResultsSection() {
-                if (!this.isModal) { 
-                    if (!this.expandResultsSection)
-                        this.initializeValues();
-
-                    this.expandResultsSection = !this.expandResultsSection;
-
-                    if (!this.expandResultsSection) {
-                        this.isSearching = false;
-                        this.optionName = '';
-                    }
-                }
-            },
             getOptionChildren(option, key, index) {
                 
                 let query_items = { 'current_query': this.query };
@@ -731,12 +673,7 @@
                 if (option)
                     parent = option.value;
 
-                let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0`;
-
-                if (this.isFilter)
-                    query += ('&' + qs.stringify(query_items));
-                else
-                    query += '&hideempty=0';
+                let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0&${qs.stringify(query_items)}`
 
                 this.isColumnLoading = true;
 
@@ -766,12 +703,7 @@
                     let offset = finderColumn.children.length;
                     let query_items = { 'current_query': this.query };
 
-                    let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}`;
-
-                    if (this.isFilter)
-                        query += ('&' + qs.stringify(query_items));
-                    else
-                        query += '&hideempty=0';
+                    let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}&${qs.stringify(query_items)}`
 
                     if (finderColumn.lastTerm)
                         query += '&last_term=' + encodeURIComponent(finderColumn.lastTerm)
@@ -810,7 +742,7 @@
 
                 this.$eventBusSearch.resetPageOnStore();
 
-                if (this.isTaxonomy && this.isFilter) {
+                if (this.isTaxonomy) {
                     this.$eventBusSearch.$emit('input', {
                         filter: 'checkbox',
                         taxonomy: this.taxonomy,
@@ -819,7 +751,7 @@
                         collection_id: this.collectionId ? this.collectionId : this.filter.collection_id,
                         terms: this.selected
                     });         
-                } else if(this.isFilter) {
+                } else {
                     this.$eventBusSearch.$emit('input', {
                         filter: 'checkbox',
                         compare: 'IN',
@@ -827,8 +759,6 @@
                         collection_id: this.collectionId ? this.collectionId : this.filter.collection_id,
                         value: this.selected,
                     });
-                } else {
-                    this.$emit('input', this.selected);
                 }
 
                 this.$emit('appliedCheckBoxModal');

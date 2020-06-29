@@ -15,7 +15,6 @@
         <checkbox-radio-metadata-input
                 v-else
                 :is-modal="false"
-                :is-filter="false"
                 :parent="0"
                 :taxonomy_id="taxonomyId"
                 :selected="!valueComponent ? [] : valueComponent"
@@ -23,7 +22,6 @@
                 :taxonomy="taxonomy"
                 :collection-id="itemMetadatum.metadatum.collection_id"
                 :is-taxonomy="true"
-                :query="''"
                 :metadatum="itemMetadatum.metadatum"
                 :is-checkbox="getComponent == 'tainacan-taxonomy-checkbox'"
                 @input="(selected) => valueComponent = selected"
