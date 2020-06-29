@@ -133,6 +133,9 @@ export const dynamicFilterTypeMixin = {
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
                             this.prepareOptionsForPlainText(this.facetsFromItemSearch[facet], search, valuesToIgnore, isInCheckboxModal);
+
+                            if (this.isUsingElasticSearch)
+                                this.isLoadingOptions = false;
                         }
                     }   
                     resolve();
@@ -210,6 +213,9 @@ export const dynamicFilterTypeMixin = {
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
                             this.prepareOptionsForRelationship(this.facetsFromItemSearch[facet], search, valuesToIgnore, isInCheckboxModal);
+
+                            if (this.isUsingElasticSearch)
+                                this.isLoadingOptions = false;
                         }    
                     }
                     resolve();
