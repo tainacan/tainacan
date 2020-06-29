@@ -302,11 +302,11 @@
             isRepositoryLevel: Boolean,
             taxonomy: String,
             filtersAsModal: Boolean,
-            hasFiltered: Boolean
+            hasFiltered: Boolean,
+            isLoadingItems: Boolean
         },
         data() {
             return {
-                isLoadingItems: true,
                 isLoadingFilters: false,
                 collapseAll: false,
                 taxonomyFiltersCollectionNames: {},
@@ -465,7 +465,7 @@
                 }
 
                 // On repository level we also fetch collection filters
-                if (this.isRepositoryLevel) {
+                if (!this.taxonomy && this.isRepositoryLevel) {
                     
                     // Cancels previous Request
                     if (this.repositoryFiltersSearchCancel != undefined)

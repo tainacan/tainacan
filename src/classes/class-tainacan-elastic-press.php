@@ -365,12 +365,21 @@ class Elastic_Press {
 		$itemsRepo = \Tainacan\Repositories\Items::get_instance();
 		$items = $itemsRepo->fetch($args['items_filter'], $args['collection_id'], 'WP_Query');
 		$items_aggregations = $this->last_aggregations; //if elasticPress active
+
+		$last_term = [];
+		if(isset($items_aggregations['last_term'])) {
+			$value = explode('.', $items_aggregations['last_term']);
+			$last_term = [
+				'value' => sizeof($value) > 1 ? $value[sizeof($value)-2] : $value[0],
+				'es_term' => $items_aggregations['last_term']
+			];
+		}
 		
 		return [
 			// 'total' => count($items_aggregations),
 			// 'pages' => '0', //TODO get a total of pages
-			'values' => isset($items_aggregations['values']) ? $items_aggregations['values'] : [] ,
-			'last_term' => isset($items_aggregations['last_term']) ? $items_aggregations['last_term'] : ''
+			'values' => isset($items_aggregations['values']) ? $items_aggregations['values'] : [],
+			'last_term' => $last_term
 		];
 	}
 
@@ -606,9 +615,11 @@ class Elastic_Press {
 						"sources" => [
 							$id => [
 								"terms" => [
+									"order" => "asc",
 									"script" => [
 										"lang"		=> "painless",
-										"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
+										"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_name.id'][i]; }}",
+										//"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
 										//"source"	=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 									]
 								]
@@ -780,7 +791,8 @@ class Elastic_Press {
 						$term_id = intval($term['key']);
 						$doc_count = $term['doc_count'];
 					} else {
-						$term_id = intval($term['key'][$key]);
+						$temp = explode('.', $term['key'][$key]);
+						$term_id = intval( $temp[count($temp)-2] );
 						$doc_count = $term['doc_count'];
 					}
 					if ($term_id === 0) continue;

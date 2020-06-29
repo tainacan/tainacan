@@ -27,11 +27,6 @@ function tnc_enable_dev_wp_interface() {
     return defined('TNC_ENABLE_DEV_WP_INTERFACE') && true === TNC_ENABLE_DEV_WP_INTERFACE ? true : false;
 }
 
-function tainacan_load_plugin_textdomain() {
-    load_plugin_textdomain( 'tainacan', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
-}
-add_action( 'plugins_loaded', 'tainacan_load_plugin_textdomain' );
-
 add_action( 'after_setup_theme', function() {
 	add_image_size( 'tainacan-small', 40, 40, true );
 	add_image_size( 'tainacan-medium', 275, 275, true );

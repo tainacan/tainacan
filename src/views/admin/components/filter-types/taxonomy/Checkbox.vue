@@ -98,13 +98,19 @@
                 if (!isEqual)
                     this.onSelect();
             },
-            facetsFromItemSearch() {
-                if (this.isUsingElasticSearch)
-                    this.loadOptions();
-            },
-            isLoadingItems() {
-                if (!this.filtersAsModal)
+            facetsFromItemSearch: {
+                handler() {
+                    if (this.isUsingElasticSearch)
+                        this.loadOptions();
+                },
+                immediate: true
+            },                
+            isLoadingItems: {
+                handler() {
+                    if (!this.filtersAsModal)
                     this.isLoadingOptions = this.isLoadingItems;
+                },
+                immediate: true
             },
             'query'() {
                 this.loadOptions();
