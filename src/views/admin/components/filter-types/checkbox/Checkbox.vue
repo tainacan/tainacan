@@ -39,7 +39,7 @@
             </p>
         </template>
         <template v-else>
-            <checkbox-radio-modal
+            <checkbox-radio-filter-input
                     :is-modal="false" 
                     :filter="filter"
                     :selected="selected"
@@ -55,10 +55,10 @@
 <script>
     import { isCancel } from '../../../js/axios';
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../../../js/filter-types-mixin';
-    import CheckboxRadioModal from '../../../components/modals/checkbox-radio-modal.vue';
+    import CheckboxRadioFilterInput from '../../../components/other/checkbox-radio-filter-input.vue';
 
     export default {
-        components: { CheckboxRadioModal },
+        components: { CheckboxRadioFilterInput },
         mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         props: {
             filtersAsModal: Boolean
@@ -157,7 +157,7 @@
             openCheckboxModal() {
                 this.$buefy.modal.open({
                     parent: this,
-                    component: CheckboxRadioModal,
+                    component: CheckboxRadioFilterInput,
                     props: {
                         //parent: parent,
                         filter: this.filter,

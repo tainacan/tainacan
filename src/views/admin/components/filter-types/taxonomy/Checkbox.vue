@@ -46,7 +46,7 @@
             </p>
         </template>
         <template v-else>
-            <checkbox-radio-modal
+            <checkbox-radio-filter-input
                     :is-modal="false" 
                     :filter="filter"
                     :taxonomy_id="taxonomyId"
@@ -64,11 +64,11 @@
     import qs from 'qs';
     import { tainacan as axios, CancelToken, isCancel } from '../../../js/axios';
     import { mapGetters } from 'vuex';
-    import CheckboxRadioModal from '../../../components/modals/checkbox-radio-modal.vue';
+    import CheckboxRadioFilterInput from '../../../components/other/checkbox-radio-filter-input.vue';
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
     
     export default {
-        components: { CheckboxRadioModal },
+        components: { CheckboxRadioFilterInput },
         mixins: [ filterTypeMixin ],
         props: {
             isRepositoryLevel: Boolean,
@@ -285,7 +285,7 @@
             openCheckboxModal(parent) {
                 this.$buefy.modal.open({
                     parent: this,
-                    component: CheckboxRadioModal,
+                    component: CheckboxRadioFilterInput,
                     props: {
                         parent: parent,
                         filter: this.filter,

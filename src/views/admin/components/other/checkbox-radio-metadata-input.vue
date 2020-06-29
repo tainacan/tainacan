@@ -5,7 +5,7 @@
             :class="{ 'tainacan-modal-content': isModal }"
             :tabindex="isModal ? -1 : 0"
             :aria-modal="isModal"
-            ref="checkboxRadioModal">
+            ref="CheckboxRadioMetadataInput">
         <header 
                 v-if="isModal"
                 class="tainacan-modal-title">
@@ -348,7 +348,7 @@
     import { dynamicFilterTypeMixin } from '../../js/filter-types-mixin';
 
     export default {
-        name: 'CheckboxFilterModal',
+        name: 'CheckboxRadioMetadataInput',
         mixins: [ dynamicFilterTypeMixin ],
         props: {
             isFilter: {
@@ -439,8 +439,8 @@
             });
         },
         mounted() {
-            if (this.isModal && this.$refs.checkboxRadioModal)
-                this.$refs.checkboxRadioModal.focus()
+            if (this.isModal && this.$refs.CheckboxRadioMetadataInput)
+                this.$refs.CheckboxRadioMetadataInput.focus()
         },
         beforeDestroy() {
             // Cancels previous Request

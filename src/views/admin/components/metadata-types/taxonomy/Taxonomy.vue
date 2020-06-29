@@ -12,7 +12,7 @@
                 :item-metadatum="itemMetadatum"
                 @showAddNewTerm="openTermCreationModal"
                 :has-counter="false" />
-        <checkbox-radio-modal
+        <checkbox-radio-metadata-input
                 v-else
                 :is-modal="false"
                 :is-filter="false"
@@ -47,13 +47,13 @@
 <script>
     import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue';
     import TermEditionForm from '../../edition/term-edition-form.vue';
-    import CheckboxRadioModal from '../../modals/checkbox-radio-modal.vue';
+    import CheckboxRadioMetadataInput from '../../other/checkbox-radio-metadata-input.vue';
     import { tainacan as axios } from '../../../js/axios.js';
 
     export default {
         components: {
             TainacanTaxonomyTagInput,
-            CheckboxRadioModal
+            CheckboxRadioMetadataInput
         },
         props: {
             itemMetadatum: Object,
