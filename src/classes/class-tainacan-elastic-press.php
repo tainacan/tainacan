@@ -370,7 +370,11 @@ class Elastic_Press {
 			// 'total' => count($items_aggregations),
 			// 'pages' => '0', //TODO get a total of pages
 			'values' => isset($items_aggregations['values']) ? $items_aggregations['values'] : [] ,
-			'last_term' => isset($items_aggregations['last_term']) ? $items_aggregations['last_term'] : ''
+			'last_term' => isset($items_aggregations['last_term']) ? 
+				[
+					'label' => explode('.', $items_aggregations['last_term'])[0], 
+					'es_term'=>$items_aggregations['last_term']
+				] : ''
 		];
 	}
 
