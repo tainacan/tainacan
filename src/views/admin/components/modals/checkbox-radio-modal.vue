@@ -343,7 +343,7 @@
         created() {
             if (!this.isFilter)
                 this.isUsingElasticSearch = false;
-
+                
             if(this.isTaxonomy) {
                 this.getOptionChildren();
             } else {
@@ -471,7 +471,7 @@
 
                         if (this.isUsingElasticSearch) {
                                                         
-                            this.checkboxListOffset = res.data.last_term;
+                            this.checkboxListOffset = res.data.last_term.es_term;
 
                             if (!this.lastTermOnFisrtPage || this.lastTermOnFisrtPage == this.checkboxListOffset) {
                                 this.lastTermOnFisrtPage = this.checkboxListOffset;
@@ -582,7 +582,7 @@
 
                 this.totalRemaining = Object.assign({}, this.totalRemaining, {
                     [`${column == undefined ? 0 : column+1}`]: {
-                        remaining: this.isUsingElasticSearch ? (children.length > 0 ? res.data.last_term != '' : false) : res.headers['x-wp-total'],
+                        remaining: this.isUsingElasticSearch ? (children.length > 0 ? res.data.last_term.value == children[children.length - 1].value : false) : res.headers['x-wp-total'],
                     }
                 });
                 
@@ -598,9 +598,9 @@
                 }
 
                 if (first != undefined) {
-                    this.finderColumns.splice(first, 1, { children: children, lastTerm: res.data.last_term });
+                    this.finderColumns.splice(first, 1, { children: children, lastTerm: res.data.last_term.es_term });
                 } else {
-                    this.finderColumns.push({ children: children, lastTerm: res.data.last_term });
+                    this.finderColumns.push({ children: children, lastTerm: res.data.last_term.es_term });
                 }
             },
             appendMore(options, key, lastTerm) {
@@ -673,11 +673,11 @@
 
                     axios.get(route)
                         .then(res => {
-                            this.appendMore(res.data.values, key, res.data.last_term);
+                            this.appendMore(res.data.values, key, res.data.last_term.es_term);
 
                             this.totalRemaining = Object.assign({}, this.totalRemaining, {
                                 [`${key}`]: {
-                                    remaining: this.isUsingElasticSearch ? (res.data.values.length > 0 ? (res.data.last_term == res.data.values[res.data.values.length - 1].value) : false) : res.headers['x-wp-total'],
+                                    remaining: this.isUsingElasticSearch ? (res.data.values.length > 0 ? (res.data.last_term.value == res.data.values[res.data.values.length - 1].value) : false) : res.headers['x-wp-total'],
                                 }
                             });
 
