@@ -341,6 +341,9 @@
             }
         },
         created() {
+            if (!this.isFilter)
+                this.isUsingElasticSearch = false;
+
             if(this.isTaxonomy) {
                 this.getOptionChildren();
             } else {
@@ -579,10 +582,10 @@
 
                 this.totalRemaining = Object.assign({}, this.totalRemaining, {
                     [`${column == undefined ? 0 : column+1}`]: {
-                        remaining: this.isUsingElasticSearch ? (children.length > 0 ? res.data.last_term == children[children.length - 1].value : false) : res.headers['x-wp-total'],
+                        remaining: this.isUsingElasticSearch ? (children.length > 0 ? res.data.last_term != '' : false) : res.headers['x-wp-total'],
                     }
                 });
-
+                
                 let first = undefined;
 
                 if (children.length > 0) {
