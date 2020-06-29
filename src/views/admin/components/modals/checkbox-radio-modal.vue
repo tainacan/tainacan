@@ -661,7 +661,7 @@
                         query += '&hideempty=0';
 
                     if (finderColumn.lastTerm)
-                        query += '&last_term=' + finderColumn.lastTerm
+                        query += '&last_term=' + encodeURIComponent(finderColumn.lastTerm)
 
                     this.isColumnLoading = true;
 
