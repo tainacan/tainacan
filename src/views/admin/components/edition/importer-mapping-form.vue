@@ -51,35 +51,102 @@
                             class="source-metadatum"
                             v-for="(sourceMetadatum, index) of importerSourceInfo.source_metadata"
                             :key="index">
-                        <p>{{ sourceMetadatum }}</p>
-                        <b-select
-                                v-if="collectionMetadata != undefined &&
-                                    collectionMetadata.length > 0 &&
-                                    !isFetchingCollectionMetadata"
-                                :value="checkCurrentSelectedCollectionMetadatum(sourceMetadatum)"
-                                @input="onSelectCollectionMetadata($event, sourceMetadatum)"
-                                :placeholder="$i18n.get('label_select_metadatum')">
-                            <option :value="undefined">
-                                {{ $i18n.get('label_select_metadatum') }}
-                            </option>
-                            <option
-                                    v-if="collection && collection.current_user_can_edit_metadata"
-                                    :value="'create_metadata' + index">
-                                {{ $i18n.get('label_create_metadatum') }}
-                            </option>
-                            <option
-                                    v-for="(collectionMetadatum, metadatumIndex) of collectionMetadata"
-                                    :key="metadatumIndex"
-                                    :value="collectionMetadatum.id"
-                                    :disabled="checkIfMetadatumIsAvailable(collectionMetadatum.id)">
-                                <span class="metadatum-name">
-                                    {{ collectionMetadatum.name }}
-                                </span>
-                                <span class="label-details">  
-                                    ({{ collectionMetadatum.metadata_type_object.name }}) <em>{{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
-                                </span>
-                            </option>
-                        </b-select>
+                        <template v-if="typeof sourceMetadatum == 'string'">
+                            <p>{{ sourceMetadatum }}</p>
+                            <b-select
+                                    v-if="collectionMetadata != undefined &&
+                                        collectionMetadata.length > 0 &&
+                                        !isFetchingCollectionMetadata"
+                                    :value="checkCurrentSelectedCollectionMetadatum(sourceMetadatum)"
+                                    @input="onSelectCollectionMetadata($event, sourceMetadatum)"
+                                    :placeholder="$i18n.get('label_select_metadatum')">
+                                <option :value="undefined">
+                                    {{ $i18n.get('label_select_metadatum') }}
+                                </option>
+                                <option
+                                        v-if="collection && collection.current_user_can_edit_metadata"
+                                        :value="'create_metadata' + index">
+                                    {{ $i18n.get('label_create_metadatum') }}
+                                </option>
+                                <option
+                                        v-for="(collectionMetadatum, metadatumIndex) of collectionMetadata"
+                                        :key="metadatumIndex"
+                                        :value="collectionMetadatum.id"
+                                        :disabled="checkIfMetadatumIsAvailable(collectionMetadatum.id)">
+                                    <span class="metadatum-name">
+                                        {{ collectionMetadatum.name }}
+                                    </span>
+                                    <span class="label-details">  
+                                        ({{ collectionMetadatum.metadata_type_object.name }}) <em>{{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
+                                    </span>
+                                </option>
+                            </b-select>
+                        </template>
+                        <template v-else-if="typeof sourceMetadatum == 'object' && Object.entries(sourceMetadatum)[0]">
+                            <p>{{ Object.entries(sourceMetadatum)[0][0] }}</p>
+                            <b-select
+                                    v-if="collectionMetadata != undefined &&
+                                        collectionMetadata.length > 0 &&
+                                        !isFetchingCollectionMetadata"
+                                    :value="checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0])"
+                                    @input="onSelectCollectionMetadata($event, Object.entries(sourceMetadatum)[0][0])"
+                                    :placeholder="$i18n.get('label_select_metadatum')">
+                                <option :value="undefined">
+                                    {{ $i18n.get('label_select_metadatum') }}
+                                </option>
+                                <option
+                                        v-if="collection && collection.current_user_can_edit_metadata"
+                                        :value="'create_metadata' + index">
+                                    {{ $i18n.get('label_create_metadatum') }}
+                                </option>
+                                <option
+                                        v-for="(collectionMetadatum, metadatumIndex) of collectionMetadata"
+                                        :key="metadatumIndex"
+                                        :value="collectionMetadatum.id"
+                                        :disabled="!checkIfMetadatumIsCompound(collectionMetadatum) || checkIfMetadatumIsAvailable(collectionMetadatum.id)">
+                                    <span class="metadatum-name">
+                                        {{ collectionMetadatum.name }}
+                                    </span>
+                                    <span class="label-details">  
+                                        ({{ collectionMetadatum.metadata_type_object.name }}) <em>{{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
+                                    </span>
+                                </option>
+                            </b-select>
+                            <div 
+                                    :class="{ 'disabled-child-source-metadadum': !checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0]) }"
+                                    class="child-source-metadatum">
+                                <div
+                                        class="source-metadatum"
+                                        v-for="(childSourceMetadatum, childIndex) of Object.entries(sourceMetadatum)[0][1]"
+                                        :key="childIndex">
+                                    <p>{{ childSourceMetadatum }}</p>
+                                    <b-select
+                                            v-if="collectionMetadata != undefined &&
+                                                collectionMetadata.length > 0 &&
+                                                !isFetchingCollectionMetadata"
+                                            :disabled="!checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0])"
+                                            :value="checkCurrentSelectedCollectionMetadatum(childSourceMetadatum)"
+                                            @input="onSelectCollectionMetadata($event, childSourceMetadatum)"
+                                            :placeholder="$i18n.get('label_select_metadatum')">
+                                        <option :value="undefined">
+                                            {{ $i18n.get('label_select_metadatum') }}
+                                        </option>
+                                        <option
+                                                v-for="(collectionMetadatum, metadatumIndex) of collectionMetadata"
+                                                :key="metadatumIndex"
+                                                :value="collectionMetadatum.id"
+                                                :disabled="checkIfMetadatumIsAvailable(collectionMetadatum.id)">
+                                            <span class="metadatum-name">
+                                                {{ collectionMetadatum.name }}
+                                            </span>
+                                            <span class="label-details">  
+                                                ({{ collectionMetadatum.metadata_type_object.name }}) <em>{{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
+                                            </span>
+                                        </option>
+                                    </b-select>
+                                </div>
+                            </div>
+                        </template>
                         <p v-if="collectionMetadata == undefined || collectionMetadata.length <= 0">{{ $i18n.get('info_select_collection_to_list_metadata') }}</p>
                     </div>
                     <div
@@ -461,6 +528,9 @@ export default {
 
             return false;
         },
+        checkIfMetadatumIsCompound(metadatum) {
+            return metadatum.metadata_type_object && metadatum.metadata_type_object.component && metadatum.metadata_type_object.component == 'tainacan-compound';
+        },
         checkCurrentSelectedCollectionMetadatum(sourceMetadatum) {
             for (let key in this.mappedCollection['mapping']) {
                 if (this.mappedCollection['mapping'][key] == sourceMetadatum)
@@ -687,6 +757,40 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
+        
+        &>p {
+            font-weight: normal;
+            transition: font-weight 0.1s ease;
+        }
+
+        &:hover {
+            &>p {
+                font-weight: bold;
+            }
+        }
+    }
+
+    .child-source-metadatum {
+        flex-basis: 100%;
+        border-left: 1px solid var(--tainacan-gray2);
+        padding-left: 1.5em;
+        opacity: 1;
+        transition: border-left 0.2s ease, opacity 0.2s ease;
+
+        .source-metadatum {
+            border-bottom: none;
+            margin-bottom: 0;
+            margin-top: 2px;
+            padding-top: 8px;
+            padding-bottom: 0px;
+            border-top: 1px solid var(--tainacan-gray2);
+        }
+
+        &.disabled-child-source-metadadum {
+            border-left: 1px solid var(--tainacan-gray1);
+            opacity: 0.70;
+        }
     }
 
     .is-inline .control{
