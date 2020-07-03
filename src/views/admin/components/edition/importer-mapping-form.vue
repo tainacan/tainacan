@@ -29,219 +29,214 @@
                 class="tainacan-form" 
                 label-width="120px"
                 v-if="importer != undefined && importer != null">
-
+            <p>{{ $i18n.get('info_metadata_mapping_helper') }}</p>
+            <br>
+            
             <!-- Metadata Mapping -->
-            <b-field
-                    v-if="importer.manual_mapping"
-                    :addons="false" 
-                    :label="$i18n.get('label_metadata_mapping')">
-                <help-button 
-                        :title="$i18n.get('label_metadata_mapping')" 
-                        :message="$i18n.get('info_metadata_mapping_helper')"/>
-   
-                <div 
-                        v-if="importerSourceInfo != undefined && 
-                              importerSourceInfo != null &&
-                              !isLoading">
-                    <template v-if="importerSourceInfo.source_metadata.length > 0 || (importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0)">
-                        <p class="mapping-header-label is-pulled-left">{{ $i18n.get('label_from_source_collection') }}</p>
-                        <p class="mapping-header-label is-pulled-right">{{ $i18n.get('label_to_target_collection') }}</p>
+            <div 
+                    v-if="importerSourceInfo != undefined && 
+                            importerSourceInfo != null &&
+                            !isLoading">
+                <template v-if="importerSourceInfo.source_metadata.length > 0 || (importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0)">
+                    <p class="mapping-header-label is-pulled-left">{{ $i18n.get('label_from_source_collection') }}</p>
+                    <p class="mapping-header-label is-pulled-right">{{ $i18n.get('label_to_target_collection') }}</p>
+                </template>
+                <div
+                        class="source-metadatum"
+                        v-for="(sourceMetadatum, index) of importerSourceInfo.source_metadata"
+                        :key="index">
+                    <template v-if="typeof sourceMetadatum == 'string'">
+                        <p>{{ sourceMetadatum }}</p>
+                        <b-select
+                                v-if="collectionMetadata != undefined &&
+                                    collectionMetadata.length > 0 &&
+                                    !isFetchingCollectionMetadata"
+                                :value="checkCurrentSelectedCollectionMetadatum(sourceMetadatum)"
+                                @input="onSelectCollectionMetadata($event, sourceMetadatum)"
+                                :placeholder="$i18n.get('label_select_metadatum')">
+                            <option :value="null">
+                                {{ $i18n.get('label_select_metadatum') }}
+                            </option>
+                            <option
+                                    v-if="collection && collection.current_user_can_edit_metadata"
+                                    :value="'create_metadata' + index">
+                                {{ $i18n.get('label_create_metadatum') }}
+                            </option>
+                            <option
+                                    v-for="(collectionMetadatum, metadatumIndex) of collectionMetadata"
+                                    :key="metadatumIndex"
+                                    :value="collectionMetadatum.id"
+                                    v-if="!checkIfMetadatumIsChild(collectionMetadatum)"
+                                    :disabled="checkIfMetadatumIsAvailable(collectionMetadatum.id)">
+                                <span class="metadatum-name">
+                                    {{ collectionMetadatum.name }}
+                                </span>
+                                <span class="label-details">  
+                                    ({{ collectionMetadatum.metadata_type_object.name }}) <em>{{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
+                                </span>
+                            </option>
+                        </b-select>
                     </template>
-                    <div
-                            class="source-metadatum"
-                            v-for="(sourceMetadatum, index) of importerSourceInfo.source_metadata"
-                            :key="index">
-                        <template v-if="typeof sourceMetadatum == 'string'">
-                            <p>{{ sourceMetadatum }}</p>
-                            <b-select
-                                    v-if="collectionMetadata != undefined &&
-                                        collectionMetadata.length > 0 &&
-                                        !isFetchingCollectionMetadata"
-                                    :value="checkCurrentSelectedCollectionMetadatum(sourceMetadatum)"
-                                    @input="onSelectCollectionMetadata($event, sourceMetadatum)"
-                                    :placeholder="$i18n.get('label_select_metadatum')">
-                                <option :value="undefined">
-                                    {{ $i18n.get('label_select_metadatum') }}
-                                </option>
-                                <option
-                                        v-if="collection && collection.current_user_can_edit_metadata"
-                                        :value="'create_metadata' + index">
-                                    {{ $i18n.get('label_create_metadatum') }}
-                                </option>
-                                <option
-                                        v-for="(collectionMetadatum, metadatumIndex) of collectionMetadata"
-                                        :key="metadatumIndex"
-                                        :value="collectionMetadatum.id"
-                                        :disabled="checkIfMetadatumIsAvailable(collectionMetadatum.id)">
-                                    <span class="metadatum-name">
-                                        {{ collectionMetadatum.name }}
-                                    </span>
-                                    <span class="label-details">  
-                                        ({{ collectionMetadatum.metadata_type_object.name }}) <em>{{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
-                                    </span>
-                                </option>
-                            </b-select>
-                        </template>
-                        <template v-else-if="typeof sourceMetadatum == 'object' && Object.entries(sourceMetadatum)[0]">
-                            <p>{{ Object.entries(sourceMetadatum)[0][0] }}</p>
-                            <b-select
-                                    v-if="collectionMetadata != undefined &&
-                                        collectionMetadata.length > 0 &&
-                                        !isFetchingCollectionMetadata"
-                                    :value="checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0])"
-                                    @input="onSelectCollectionMetadata($event, Object.entries(sourceMetadatum)[0][0])"
-                                    :placeholder="$i18n.get('label_select_metadatum')">
-                                <option :value="undefined">
-                                    {{ $i18n.get('label_select_metadatum') }}
-                                </option>
-                                <option
-                                        v-if="collection && collection.current_user_can_edit_metadata"
-                                        :value="'create_metadata' + index">
-                                    {{ $i18n.get('label_create_metadatum') }}
-                                </option>
-                                <option
-                                        v-for="(collectionMetadatum, metadatumIndex) of collectionMetadata"
-                                        :key="metadatumIndex"
-                                        :value="collectionMetadatum.id"
-                                        :disabled="!checkIfMetadatumIsCompound(collectionMetadatum) || checkIfMetadatumIsAvailable(collectionMetadatum.id)">
-                                    <span class="metadatum-name">
-                                        {{ collectionMetadatum.name }}
-                                    </span>
-                                    <span class="label-details">  
-                                        ({{ collectionMetadatum.metadata_type_object.name }}) <em>{{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
-                                    </span>
-                                </option>
-                            </b-select>
-                            <div 
-                                    :class="{ 'disabled-child-source-metadadum': !checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0]) }"
-                                    class="child-source-metadatum">
-                                <div
-                                        class="source-metadatum"
-                                        v-for="(childSourceMetadatum, childIndex) of Object.entries(sourceMetadatum)[0][1]"
-                                        :key="childIndex">
-                                    <p>{{ childSourceMetadatum }}</p>
-                                    <b-select
-                                            v-if="collectionMetadata != undefined &&
-                                                collectionMetadata.length > 0 &&
-                                                !isFetchingCollectionMetadata"
-                                            :disabled="!checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0])"
-                                            :value="checkCurrentSelectedCollectionMetadatum(childSourceMetadatum)"
-                                            @input="onSelectCollectionMetadata($event, childSourceMetadatum)"
-                                            :placeholder="$i18n.get('label_select_metadatum')">
-                                        <option :value="undefined">
-                                            {{ $i18n.get('label_select_metadatum') }}
-                                        </option>
-                                        <option
-                                                v-for="(collectionMetadatum, metadatumIndex) of collectionMetadata"
-                                                :key="metadatumIndex"
-                                                :value="collectionMetadatum.id"
-                                                :disabled="checkIfMetadatumIsAvailable(collectionMetadatum.id)">
-                                            <span class="metadatum-name">
-                                                {{ collectionMetadatum.name }}
-                                            </span>
-                                            <span class="label-details">  
-                                                ({{ collectionMetadatum.metadata_type_object.name }}) <em>{{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
-                                            </span>
-                                        </option>
-                                    </b-select>
-                                </div>
-                            </div>
-                        </template>
-                        <p v-if="collectionMetadata == undefined || collectionMetadata.length <= 0">{{ $i18n.get('info_select_collection_to_list_metadata') }}</p>
-                    </div>
-                    <div
-                            v-if="importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0"
-                            class="source-metadatum"
-                            :key="specialFieldIndex"
-                            v-for="(specialField, specialFieldIndex) of importerSourceInfo.source_special_fields">
-                        <p style="font-style: italic">{{ specialField }}</p>
-                        <p>{{ $i18n.get('info_special_fields_mapped_default') }}</p>
-                    </div>
-                    <p v-if="importerSourceInfo.source_metadata.length <= 0">{{ $i18n.get('info_no_metadata_source_file') }}<br></p>
-                    <p v-if="(!importerSourceInfo.source_special_fields || importerSourceInfo.source_special_fields.length <= 0)">{{ $i18n.get('info_no_special_fields_available') }}<br></p>
-                    <b-modal 
-                            @close="onMetadatumEditionCanceled()"
-                            :active.sync="isNewMetadatumModalActive"
-                            trap-focus
-                            aria-modal
-                            aria-role="dialog">
+                    <template v-else-if="typeof sourceMetadatum == 'object' && Object.entries(sourceMetadatum)[0]">
+                        <p>{{ Object.entries(sourceMetadatum)[0][0] }}</p>
+                        <b-select
+                                v-if="collectionMetadata != undefined &&
+                                    collectionMetadata.length > 0 &&
+                                    !isFetchingCollectionMetadata"
+                                :value="checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true)"
+                                @input="onSelectCollectionMetadata($event, Object.entries(sourceMetadatum)[0][0], true)"
+                                :placeholder="$i18n.get('label_select_metadatum')">
+                            <option :value="null">
+                                {{ $i18n.get('label_select_metadatum') }}
+                            </option>
+                            <option
+                                    v-if="collection && collection.current_user_can_edit_metadata"
+                                    :value="'create_metadata' + index">
+                                {{ $i18n.get('label_create_metadatum') }}
+                            </option>
+                            <option
+                                    v-for="(collectionMetadatum, metadatumIndex) of collectionMetadata"
+                                    :key="metadatumIndex"
+                                    :value="collectionMetadatum.id"
+                                    v-if="!checkIfMetadatumIsChild(collectionMetadatum)"
+                                    :disabled="!checkIfMetadatumIsCompound(collectionMetadatum) || checkIfMetadatumIsAvailable(collectionMetadatum.id)">
+                                <span class="metadatum-name">
+                                    {{ collectionMetadatum.name }}
+                                </span>
+                                <span class="label-details">  
+                                    ({{ collectionMetadatum.metadata_type_object.name }}) <em>{{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
+                                </span>
+                            </option>
+                        </b-select>
                         <div 
-                                autofocus="true"
-                                tabindex="-1"
-                                role="dialog"
-                                aria-modal>
-                            <b-loading 
-                                    :is-full-page="isFullPage" 
-                                    :active.sync="isLoadingMetadatumTypes"/>
-                            <div 
-                                    v-if="selectedMetadatumType == undefined && !isEditingMetadatum"
-                                    class="tainacan-modal-content">
-                                <div class="tainacan-modal-title">
-                                    <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
-                                    <hr>
-                                </div>
-                                <section class="tainacan-form">
-                                    <div class="metadata-types-container">
-                                        <div
-                                                class="metadata-type"
-                                                v-for="(metadatumType, index) of metadatumTypes"
-                                                :key="index"
-                                                @click="onSelectMetadatumType(metadatumType)">
-                                            <h4>{{ metadatumType.name }}</h4>           
-                                        </div>
-                                    </div>
-                                    <div class="field is-grouped form-submit">
-                                        <div class="control">
-                                            <button
-                                                    id="button-cancel-importer-edition"
-                                                    class="button is-outlined"
-                                                    type="button"
-                                                    @click="onMetadatumEditionCanceled(); isNewMetadatumModalActive = false">
-                                                {{ $i18n.get('cancel') }}</button>
-                                        </div>
-                                    </div>
-                                </section>
-                            </div>
-                            <div 
-                                    v-if="isEditingMetadatum"
-                                    class="tainacan-modal-content">
-                                <div class="tainacan-modal-title">
-                                    <h2>{{ $i18n.get('instruction_configure_new_metadatum') }}</h2>
-                                    <a 
-                                            class="back-link" 
-                                            @click="isEditingMetadatum = false">
-                                        {{ $i18n.get('back') }}
-                                    </a>
-                                    <hr>
-                                </div>
-                                <metadatum-edition-form
-                                        :collection-id="collectionId"
-                                        :is-repository-level="false"
-                                        @onEditionFinished="onMetadatumEditionFinished()"
-                                        @onEditionCanceled="onMetadatumEditionCanceled()"
-                                        :index="0"
-                                        :original-metadatum="metadatum"
-                                        :edited-metadatum="editedMetadatum"
-                                        :is-on-modal="true"/>
+                                :class="{ 'disabled-child-source-metadatum': [undefined, null, false, 'create_metadata' + index].includes(checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true)) }"
+                                class="child-source-metadatum">
+                            <div
+                                    class="source-metadatum"
+                                    v-for="(childSourceMetadatum, childIndex) of Object.entries(sourceMetadatum)[0][1]"
+                                    :key="childIndex">
+                                <p>{{ childSourceMetadatum }}</p>
+                                <b-select
+                                        v-if="collectionMetadata != undefined &&
+                                            collectionMetadata.length > 0 &&
+                                            !isFetchingCollectionMetadata"
+                                        :disabled="[undefined, null, false, 'create_metadata' + index].includes(checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true))"
+                                        :value="checkCurrentSelectedCollectionChildMetadatum(childSourceMetadatum)"
+                                        @input="onSelectCollectionChildMetadata($event, childSourceMetadatum, checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true))"
+                                        :placeholder="$i18n.get('label_select_metadatum')">
+                                    <option :value="null">
+                                        {{ $i18n.get('label_select_metadatum') }}
+                                    </option>
+                                    <option
+                                            v-for="(collectionMetadatum, metadatumIndex) of getChildOfSelectedCompoundMetadata(sourceMetadatum)"
+                                            :key="metadatumIndex"
+                                            :value="collectionMetadatum.id"
+                                            :disabled="checkIfMetadatumIsAvailable(collectionMetadatum.id)">
+                                        <span class="metadatum-name">
+                                            {{ collectionMetadatum.name }}
+                                        </span>
+                                        <span class="label-details">  
+                                            ({{ collectionMetadatum.metadata_type_object.name }}) <em>{{ (collectionMetadatum.collection_id != collectionId) ? $i18n.get('label_inherited') : '' }}</em>
+                                        </span>
+                                    </option>
+                                </b-select>
                             </div>
                         </div>
-                    </b-modal>
-                    <a
-                            v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
-                            style="font-size: 0.875em;"
-                            class="is-inline is-pulled-right add-link has-text-secondary"
-                            @click="createNewMetadatum()">
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-add"/>
-                        </span>
-                        {{ $i18n.get('label_add_more_metadata') }}</a>
+                    </template>
+                    <p v-if="collectionMetadata == undefined || collectionMetadata.length <= 0">{{ $i18n.get('info_select_collection_to_list_metadata') }}</p>
                 </div>
-                <div 
-                        v-if="importerSourceInfo == undefined || 
-                            importerSourceInfo == null">
-                    <p>{{ $i18n.get('info_upload_a_source_to_see_metadata') }}</p>
+                <div
+                        v-if="importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0"
+                        class="source-metadatum"
+                        :key="specialFieldIndex"
+                        v-for="(specialField, specialFieldIndex) of importerSourceInfo.source_special_fields">
+                    <p style="font-style: italic">{{ specialField }}</p>
+                    <p>{{ $i18n.get('info_special_fields_mapped_default') }}</p>
                 </div>
-            </b-field>
+                <p v-if="importerSourceInfo.source_metadata.length <= 0">{{ $i18n.get('info_no_metadata_source_file') }}<br></p>
+                <p v-if="(!importerSourceInfo.source_special_fields || importerSourceInfo.source_special_fields.length <= 0)">{{ $i18n.get('info_no_special_fields_available') }}<br></p>
+                <b-modal 
+                        @close="onMetadatumEditionCanceled()"
+                        :active.sync="isNewMetadatumModalActive"
+                        trap-focus
+                        aria-modal
+                        aria-role="dialog">
+                    <div 
+                            autofocus="true"
+                            tabindex="-1"
+                            role="dialog"
+                            aria-modal>
+                        <b-loading 
+                                :is-full-page="isFullPage" 
+                                :active.sync="isLoadingMetadatumTypes"/>
+                        <div 
+                                v-if="selectedMetadatumType == undefined && !isEditingMetadatum"
+                                class="tainacan-modal-content">
+                            <div class="tainacan-modal-title">
+                                <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
+                                <hr>
+                            </div>
+                            <section class="tainacan-form">
+                                <div class="metadata-types-container">
+                                    <div
+                                            class="metadata-type"
+                                            v-for="(metadatumType, index) of metadatumTypes"
+                                            :key="index"
+                                            @click="onSelectMetadatumType(metadatumType)">
+                                        <h4>{{ metadatumType.name }}</h4>           
+                                    </div>
+                                </div>
+                                <div class="field is-grouped form-submit">
+                                    <div class="control">
+                                        <button
+                                                id="button-cancel-importer-edition"
+                                                class="button is-outlined"
+                                                type="button"
+                                                @click="onMetadatumEditionCanceled(); isNewMetadatumModalActive = false">
+                                            {{ $i18n.get('cancel') }}</button>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        <div 
+                                v-if="isEditingMetadatum"
+                                class="tainacan-modal-content">
+                            <div class="tainacan-modal-title">
+                                <h2>{{ $i18n.get('instruction_configure_new_metadatum') }}</h2>
+                                <a 
+                                        class="back-link" 
+                                        @click="isEditingMetadatum = false">
+                                    {{ $i18n.get('back') }}
+                                </a>
+                                <hr>
+                            </div>
+                            <metadatum-edition-form
+                                    :collection-id="collectionId"
+                                    :is-repository-level="false"
+                                    @onEditionFinished="onMetadatumEditionFinished()"
+                                    @onEditionCanceled="onMetadatumEditionCanceled()"
+                                    :index="0"
+                                    :original-metadatum="metadatum"
+                                    :edited-metadatum="editedMetadatum"
+                                    :is-on-modal="true"/>
+                        </div>
+                    </div>
+                </b-modal>
+                <a
+                        v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
+                        style="font-size: 0.875em;"
+                        class="is-inline is-pulled-right add-link has-text-secondary"
+                        @click="createNewMetadatum()">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-add"/>
+                    </span>
+                    {{ $i18n.get('label_add_more_metadata') }}</a>
+            </div>
+            <div 
+                    v-if="importerSourceInfo == undefined || 
+                        importerSourceInfo == null">
+                <p>{{ $i18n.get('info_upload_a_source_to_see_metadata') }}</p>
+            </div>
 
             <!-- Form submit -------------------------------- --> 
             <div class="field is-grouped form-submit">
@@ -489,11 +484,13 @@ export default {
             this.fetchMetadata({
                 collectionId: this.collectionId, 
                 isRepositoryLevel: false, 
-                isContextEdit: false 
+                isContextEdit: false,
+                parent: 'any' 
             }).then((resp) => {
                 resp.request
                     .then((metadata) => {
                         this.collectionMetadata = JSON.parse(JSON.stringify(metadata));
+                        
                         this.isFetchingCollectionMetadata = false;
 
                         this.fetchMappingImporter({ collection: this.collectionId, sessionId: this.sessionId })
@@ -531,12 +528,31 @@ export default {
         checkIfMetadatumIsCompound(metadatum) {
             return metadatum.metadata_type_object && metadatum.metadata_type_object.component && metadatum.metadata_type_object.component == 'tainacan-compound';
         },
-        checkCurrentSelectedCollectionMetadatum(sourceMetadatum) {
+        checkCurrentSelectedCollectionMetadatum(sourceMetadatum, isCompound) {
             for (let key in this.mappedCollection['mapping']) {
                 if (this.mappedCollection['mapping'][key] == sourceMetadatum)
                     return key;
+                if (isCompound && Object.keys(this.mappedCollection['mapping'][key]) && Object.keys(this.mappedCollection['mapping'][key])[0] && Object.keys(this.mappedCollection['mapping'][key])[0] == sourceMetadatum)
+                    return key;
             }
             return undefined;
+        },
+        checkCurrentSelectedCollectionChildMetadatum(sourceMetadatum, parent) {
+            if (this.mappedCollection['mapping'][parent] && Object.values(this.mappedCollection['mapping'][parent]) && Object.values(this.mappedCollection['mapping'][parent])[0]) {
+                let parentMappings = Object.values(this.mappedCollection['mapping'][parent])[0]
+                for (let key in parentMappings) {
+                    if (parentMappings[key] == sourceMetadatum)
+                        return key;
+                }
+                return undefined;
+            }
+            return undefined;
+        },
+        checkIfMetadatumIsChild(metadatum) {
+            return metadatum.parent && metadatum.parent > 0;
+        },
+        getChildOfSelectedCompoundMetadata(sourceMetadatum) {
+            return this.collectionMetadata.filter((metadatum) => metadatum.parent == this.checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true));
         },
         onRunImporter(skipTitleCheck) {
 
@@ -576,18 +592,48 @@ export default {
                     this.$console.log(errors);
                 });
         },
-        onSelectCollectionMetadata(selectedMetadatum, sourceMetadatum) {
+        onSelectCollectionChildMetadata(selectedMetadatum, sourceMetadatum, parent) {
+           
+            if (this.mappedCollection['mapping'][parent] && Object.values(this.mappedCollection['mapping'][parent]) && Object.values(this.mappedCollection['mapping'][parent])[0]) {
+                let parentMappings = Object.values(this.mappedCollection['mapping'][parent])[0]
+
+                let removedKey = '';
+                for (let key in parentMappings) {
+                    if (parentMappings[key] == sourceMetadatum)
+                        removedKey = key;
+                }
+
+                if (removedKey != '')
+                    delete parentMappings[removedKey];
+                    
+                parentMappings[selectedMetadatum] = sourceMetadatum;
+
+                // Necessary for causing reactivity to re-check if metadata remains available
+                this.collectionMetadata.push("");
+                this.collectionMetadata.pop();
+            }
+        },
+        onSelectCollectionMetadata(selectedMetadatum, sourceMetadatum, isCompound) {
      
             let removedKey = '';
             for (let key in this.mappedCollection['mapping']) {
-                if(this.mappedCollection['mapping'][key] == sourceMetadatum)
+                if (this.mappedCollection['mapping'][key] == sourceMetadatum)
+                    removedKey = key;
+                if (isCompound && Object.keys(this.mappedCollection['mapping'][key]) && Object.keys(this.mappedCollection['mapping'][key])[0] && Object.keys(this.mappedCollection['mapping'][key])[0] == sourceMetadatum)
                     removedKey = key;
             }
 
             if (removedKey != '')
                 delete this.mappedCollection['mapping'][removedKey];
-                
-            this.mappedCollection['mapping'][selectedMetadatum] = sourceMetadatum;
+
+            let mappingValue = '';
+            if (isCompound) {
+                mappingValue = {} 
+                mappingValue[sourceMetadatum] = {};
+            } else {
+                mappingValue = sourceMetadatum;
+            }
+            this.mappedCollection['mapping'][selectedMetadatum] = mappingValue;
 
             // Necessary for causing reactivity to re-check if metadata remains available
             this.collectionMetadata.push("");
@@ -641,7 +687,8 @@ export default {
              this.fetchMetadata({
                 collectionId: this.collectionId, 
                 isRepositoryLevel: false, 
-                isContextEdit: false 
+                isContextEdit: false,
+                parent: 'any' 
             }).then((resp) => {
                 resp.request
                     .then((metadata) => {
@@ -749,7 +796,7 @@ export default {
     }
 
     .source-metadatum {
-        padding: 2px 0;
+        padding: 2px 0 2px 8px;
         min-height: 35px;
         border-bottom: 1px solid var(--tainacan-gray2);
         width: 100%;
@@ -774,7 +821,7 @@ export default {
     .child-source-metadatum {
         flex-basis: 100%;
         border-left: 1px solid var(--tainacan-gray2);
-        padding-left: 1.5em;
+        padding-left: 1em;
         opacity: 1;
         transition: border-left 0.2s ease, opacity 0.2s ease;
 
@@ -787,7 +834,7 @@ export default {
             border-top: 1px solid var(--tainacan-gray2);
         }
 
-        &.disabled-child-source-metadadum {
+        &.disabled-child-source-metadatum {
             border-left: 1px solid var(--tainacan-gray1);
             opacity: 0.70;
         }
@@ -802,7 +849,9 @@ export default {
 
     .mapping-header-label {
         color: var(--tainacan-info-color);
-        margin: 12px 0 6px 0;
+        font-size: 0.875em;
+        font-weight: bold;
+        margin: 18px 0 6px 0;
     }
 
     .modal .animation-content {
