@@ -51,7 +51,13 @@ class CSV extends Importer {
                             $this->set_option('item_comment_status_index', $index);
                         }
                     } else {
-                        $columns[] = $rawColumn;
+                        if ( preg_match ('/.*\|compound\(.*\)/', $rawColumn ) ) {
+                            $data = preg_split("/[()]+/", $rawColumn, -1, PREG_SPLIT_NO_EMPTY);
+                            $parent = $data[0] . ( isset($data[2]) ? $data[2] : '' );
+                            $columns[] = [$parent => explode($this->get_option('delimiter'), $data[1])];
+                        } else {
+                            $columns[] = $rawColumn;
+                        }
                     }
                 }
                 return $columns;
