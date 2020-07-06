@@ -25,12 +25,23 @@
             </nav>
 
         </div>
+
+        <b-loading 
+                :active.sync="isLoading" 
+                :can-cancel="false"/>
+
         <form 
                 class="tainacan-form" 
                 label-width="120px"
                 v-if="importer != undefined && importer != null">
             <p>{{ $i18n.get('info_metadata_mapping_helper') }}</p>
             <br>
+
+
+            <b-loading 
+                    :is-full-page="false"
+                    :active.sync="isLoadingSourceInfo" 
+                    :can-cancel="false"/>
             
             <!-- Metadata Mapping -->
             <div 
@@ -128,7 +139,7 @@
                                             collectionMetadata.length > 0 &&
                                             !isFetchingCollectionMetadata"
                                         :disabled="[undefined, null, false, 'create_metadata' + index].includes(checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true))"
-                                        :value="checkCurrentSelectedCollectionChildMetadatum(childSourceMetadatum)"
+                                        :value="checkCurrentSelectedCollectionChildMetadatum(childSourceMetadatum, checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true))"
                                         @input="onSelectCollectionChildMetadata($event, childSourceMetadatum, checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true))"
                                         :placeholder="$i18n.get('label_select_metadatum')">
                                     <option :value="null">
@@ -346,10 +357,6 @@
                 </div>
             </form>
         </b-modal>
-
-        <b-loading 
-                :active.sync="isLoading" 
-                :can-cancel="false"/>
     </div>
 </template>
 
@@ -367,6 +374,7 @@ export default {
             importerId: Number,
             importer: null,
             isLoading: false,
+            isLoadingSourceInfo: false,
             isLoadingRun: false,
             mappedCollection: {
                 'id': Number,
@@ -465,15 +473,18 @@ export default {
                     this.importer = JSON.parse(JSON.stringify(res));
 
                     this.isLoading = false;
+                    this.isLoadingSourceInfo = true;
 
                     this.fetchImporterSourceInfo(this.sessionId)
                         .then(importerSourceInfo => {    
                             this.importerSourceInfo = importerSourceInfo;
                             this.mappedCollection['total_items'] = this.importerSourceInfo.source_total_items;
-
+                            
+                            this.isLoadingSourceInfo = false;
                             this.loadMetadata();
                         })
                         .catch((errors) => {
+                            this.isLoadingSourceInfo = false;
                             this.$console.log(errors);
                         });
                     
@@ -545,6 +556,7 @@ export default {
             return undefined;
         },
         checkCurrentSelectedCollectionChildMetadatum(sourceMetadatum, parent) {
+            
             if (this.mappedCollection['mapping'][parent] && Object.values(this.mappedCollection['mapping'][parent]) && Object.values(this.mappedCollection['mapping'][parent])[0]) {
                 let parentMappings = Object.values(this.mappedCollection['mapping'][parent])[0]
                 for (let key in parentMappings) {
