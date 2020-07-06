@@ -11,55 +11,12 @@
                 class="tainacan-form" 
                 label-width="120px"
                 v-if="importer != undefined && importer != null">
-            <div class="columns is-gapless">
-                <div 
-                        v-if="importer.options_form != undefined && importer.options_form != null && importer.options_form != ''"
-                        class="column">
-                    <!-- Importer custom options -->
-                    <form id="importerOptionsForm">
-                        <div v-html="importer.options_form"/>
-                    </form>
-                </div>
-                <div 
+            <div 
                         v-if="importer.manual_collection || importer.accepts.file || importer.accepts.url"
-                        class="column">
-                    <!-- Target collection selection -------------------------------- --> 
-                    <b-field
-                            v-if="importer.manual_collection"
-                            :addons="false" 
-                            :label="$i18n.get('label_target_collection')">
-                        <help-button 
-                                :title="$i18n.get('label_target_collection')" 
-                                :message="$i18n.get('info_target_collection_helper')"/>
-                        <br>
-                        <div class="is-inline">
-                            <b-select
-                                    expanded
-                                    id="tainacan-select-target-collection"
-                                    :value="collectionId"
-                                    @input="onSelectCollection($event)"
-                                    :loading="isFetchingCollections"
-                                    :placeholder="$i18n.get('instruction_select_a_target_collection')">
-                                <option
-                                        v-for="collection of collections"
-                                        v-if="collection.current_user_can_edit_items"
-                                        :key="collection.id"
-                                        :value="collection.id">{{ collection.name }}
-                                </option>
-                            </b-select>
-                            <router-link
-                                    v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
-                                    tag="a" 
-                                    style="font-size: 0.875em;"
-                                    class="add-link"     
-                                    :to="{ path: $routerHelper.getNewCollectionPath(), query: { fromImporter: true }}">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-add"/>
-                                </span>
-                                {{ $i18n.get('new_blank_collection') }}
-                            </router-link>
-                        </div>
-                    </b-field>
+                        class="columns">
+
+                <div class="column">
+
                     <!-- File Source input -->
                     <b-field
                             v-if="importer.accepts.file"
@@ -104,6 +61,11 @@
                                 </span>
                             </a>
                         </div>
+                        <div 
+                                class="control selected-source-file"
+                                v-if="importerFile == undefined && importer.tmp_file">
+                            <p>{{ $i18n.get('label_select_file') + ': ' + importer.tmp_file }}</p>
+                        </div>
                     </b-field>
 
                     <!-- URL source input -------------------------------- --> 
@@ -118,10 +80,69 @@
                                 id="tainacan-url-link-source"
                                 v-model="url"/>  
                     </b-field>
-                            
-                    
                 </div>
+
+                <div 
+                        v-if="importer.manual_collection"
+                        style="margin-top: 2em;"
+                        class="column is-narrow">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-pointer tainacan-icon-36px has-text-gray2" />
+                    </span>
+                </div>
+
+                <div 
+                        v-if="importer.manual_collection"
+                        class="column">
+                    <!-- Target collection selection -------------------------------- --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_target_collection')">
+                        <help-button 
+                                :title="$i18n.get('label_target_collection')" 
+                                :message="$i18n.get('info_target_collection_helper')"/>
+                        <br>
+                        <div class="is-inline">
+                            <b-select
+                                    expanded
+                                    id="tainacan-select-target-collection"
+                                    :value="collectionId"
+                                    @input="onSelectCollection($event)"
+                                    :loading="isFetchingCollections"
+                                    :placeholder="$i18n.get('instruction_select_a_target_collection')">
+                                <option
+                                        v-for="collection of collections"
+                                        v-if="collection.current_user_can_edit_items"
+                                        :key="collection.id"
+                                        :value="collection.id">{{ collection.name }}
+                                </option>
+                            </b-select>
+                            <router-link
+                                    v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
+                                    tag="a" 
+                                    style="font-size: 0.875em;"
+                                    class="add-link"     
+                                    :to="{ path: $routerHelper.getNewCollectionPath(), query: { fromImporter: true }}">
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-add"/>
+                                </span>
+                                {{ $i18n.get('new_blank_collection') }}
+                            </router-link>
+                        </div>
+                    </b-field>
+                </div>
+                        
             </div>
+
+            <hr v-if="(importer.manual_collection || importer.accepts.file || importer.accepts.url) && (importer.options_form != undefined && importer.options_form != null && importer.options_form != '')">
+
+            <div v-if="importer.options_form != undefined && importer.options_form != null && importer.options_form != ''">
+                <!-- Importer custom options -->
+                <form id="importerOptionsForm">
+                    <div v-html="importer.options_form"/>
+                </form>
+            </div>
+
             <!-- Form submit -------------------------------- --> 
             <div class="columns is-gapless field is-grouped form-submit">
                 <div class="control">
@@ -168,6 +189,7 @@
                 </div>
             </div>
         </form>
+        
         <b-loading 
                 :active.sync="isLoading" 
                 :can-cancel="false"/>
@@ -286,7 +308,7 @@ export default {
         },
         onUploadFile() {
             return new Promise((resolve, reject) => {
-               this.updateImporterFile({ sessionId: this.sessionId, file: (this.importerFile.length != undefined && this.importerFile.length > 0) ? this.importerFile[0] : this.importerFile})
+               this.updateImporterFile({ sessionId: this.sessionId, file: (this.importerFile && this.importerFile.length != undefined && this.importerFile.length > 0) ? this.importerFile[0] : this.importerFile})
                 .then(updatedImporter => {    
                     this.importer = updatedImporter;
                     resolve();
@@ -436,13 +458,9 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    .columns.is-gapless {
+    /deep/ .columns {
         padding-left: var(--tainacan-one-column);
         padding-right: var(--tainacan-one-column);
-
-        .column:not(:first-child) {
-            margin-left: var(--tainacan-one-column);
-        }
     }
 
     .field {
@@ -474,7 +492,7 @@ export default {
         display: inline;
     }
     .drop-inner{
-        padding: 1em 3em;
+        padding: 0.25em 0.5em;
     }
 
     .mapping-header-label {
@@ -498,13 +516,16 @@ export default {
 
     .selected-source-file {
         border: 1px solid var(--tainacan-gray2);
-        padding: 2px 10px;
-        font-size: .75em;
+        padding: calc(0.375em - 1px) 10px !important;
+        font-size: .875em;
+        line-height: 1.5em;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
-
+    hr {
+        margin: 0.5rem 0 1.5rem 0;
+    }
 
 </style>
 
