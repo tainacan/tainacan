@@ -37,10 +37,17 @@
                     v-if="importerSourceInfo != undefined && 
                             importerSourceInfo != null &&
                             !isLoading">
-                <template v-if="importerSourceInfo.source_metadata.length > 0 || (importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0)">
-                    <p class="mapping-header-label is-pulled-left">{{ $i18n.get('label_from_source_collection') }}</p>
-                    <p class="mapping-header-label is-pulled-right">{{ $i18n.get('label_to_target_collection') }}</p>
-                </template>
+                <div 
+                        class="mapping-header"
+                        v-if="importerSourceInfo.source_metadata.length > 0 || (importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0)">
+                    <p>{{ $i18n.get('label_from_source_collection') }}</p>
+                    <hr>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-pointer" />
+                    </span>
+                    <hr>
+                    <p>{{ $i18n.get('label_to_target_collection') }}</p>
+                </div>
                 <div
                         class="source-metadatum"
                         v-for="(sourceMetadatum, index) of importerSourceInfo.source_metadata"
@@ -847,11 +854,33 @@ export default {
         padding: 1em 3em;
     }
 
-    .mapping-header-label {
+    .mapping-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         color: var(--tainacan-info-color);
         font-size: 0.875em;
         font-weight: bold;
         margin: 18px 0 6px 0;
+
+        p {
+            white-space: nowrap;
+        }
+        hr {
+            width: 100%;
+            margin-left: 12px;
+            margin-right: 12px;
+            height: 1px;
+        }
+
+        @media screen and (max-width: 768px) {
+            p {
+                white-space: normal;
+            }
+            hr {
+                display: none;
+            }
+        }
     }
 
     .modal .animation-content {
