@@ -140,7 +140,7 @@
                                             !isFetchingCollectionMetadata"
                                         :disabled="[undefined, null, false, 'create_metadata' + index].includes(checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true))"
                                         :value="checkCurrentSelectedCollectionChildMetadatum(childSourceMetadatum, checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true))"
-                                        @input="onSelectCollectionChildMetadata($event, childSourceMetadatum, checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true))"
+                                        @input="onSelectCollectionChildMetadata($event, childSourceMetadatum, checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true), Object.entries(sourceMetadatum)[0][0])"
                                         :placeholder="$i18n.get('label_select_metadatum')">
                                     <option :value="null">
                                         {{ $i18n.get('label_select_metadatum') }}
@@ -149,7 +149,7 @@
                                             v-for="(collectionMetadatum, metadatumIndex) of getChildOfSelectedCompoundMetadata(sourceMetadatum)"
                                             :key="metadatumIndex"
                                             :value="collectionMetadatum.id"
-                                            :disabled="checkIfMetadatumIsAvailable(collectionMetadatum.id)">
+                                            :disabled="checkIfChildMetadatumIsAvailable(collectionMetadatum.id, checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true), Object.entries(sourceMetadatum)[0][0])">
                                         <span class="metadatum-name">
                                             {{ collectionMetadatum.name }}
                                         </span>
@@ -543,6 +543,16 @@ export default {
 
             return false;
         },
+        checkIfChildMetadatumIsAvailable(metadatumId, parentId, parentSource) {
+            if (this.mappedCollection['mapping'][parentId] && 
+                this.mappedCollection['mapping'][parentId][parentSource] &&
+                this.mappedCollection['mapping'][parentId][parentSource][metadatumId] &&
+                this.importerSourceInfo != undefined &&
+                this.importerSourceInfo != null)
+                    return true;
+            else
+                return false;
+        },
         checkIfMetadatumIsCompound(metadatum) {
             return metadatum.metadata_type_object && metadatum.metadata_type_object.component && metadatum.metadata_type_object.component == 'tainacan-compound';
         },
@@ -611,23 +621,24 @@ export default {
                     this.$console.log(errors);
                 });
         },
-        onSelectCollectionChildMetadata(selectedMetadatum, sourceMetadatum, parent) {
-           
-            if (this.mappedCollection['mapping'][parent] && Object.values(this.mappedCollection['mapping'][parent]) && Object.values(this.mappedCollection['mapping'][parent])[0]) {
-                let parentMappings = Object.values(this.mappedCollection['mapping'][parent])[0]
+        onSelectCollectionChildMetadata(selectedMetadatum, sourceMetadatum, parentId, parentSource) {
+            
+            if (this.mappedCollection['mapping'][parentId] && this.mappedCollection['mapping'][parentId] && this.mappedCollection['mapping'][parentId][parentSource]) {
+                let parentMappings = Array.isArray(this.mappedCollection['mapping'][parentId][parentSource]) ? {} : this.mappedCollection['mapping'][parentId][parentSource];
 
                 let removedKey = '';
                 for (let key in parentMappings) {
                     if (parentMappings[key] == sourceMetadatum)
                         removedKey = key;
                 }
-
                 if (removedKey != '')
                     delete parentMappings[removedKey];
-                    
-                parentMappings[selectedMetadatum] = sourceMetadatum;
+                
+                if (selectedMetadatum)
+                    parentMappings[selectedMetadatum] = sourceMetadatum;
 
-                // Necessary for causing reactivity to re-check if metadata remains available
+                this.mappedCollection['mapping'][parentId][parentSource] = parentMappings;
+                    // Necessary for causing reactivity to re-check if metadata remains available
                 this.collectionMetadata.push("");
                 this.collectionMetadata.pop();
             }
