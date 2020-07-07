@@ -31,7 +31,7 @@ class Background_Importer extends Background_Process {
 		$data = $batch->data;
 		$key = $batch->key;
 		
-		define('TAINACAN_DOING_IMPORT', true);
+		if (!defined('TAINACAN_DOING_IMPORT')) define('TAINACAN_DOING_IMPORT', true);
 		
 		$className = $data['class_name'];
 		if (class_exists($className)) {
