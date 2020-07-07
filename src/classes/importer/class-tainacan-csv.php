@@ -741,7 +741,7 @@ class CSV extends Importer {
                         foreach($values as $compoundValue) {
                             $tmp = [];
                             foreach($children_mapping as $tainacan_children_metadatum_id => $tainacan_children_header) {
-                                $metadatumChildren = $Tainacan_Metadata->fetch( $tainacan_children_metadatum_id );
+                                $metadatumChildren = $Tainacan_Metadata->fetch( $tainacan_children_metadatum_id, 'OBJECT' );
                                 $compoundItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatumChildren);
                                 $compoundItemMetadata->set_value($compoundValue[$tainacan_children_header]);
                                 $tmp[] = $compoundItemMetadata;
@@ -944,10 +944,13 @@ class CSV extends Importer {
 
                     if( !is_numeric($metadatum_id) ) {
                         $metadatum = $this->create_new_metadata( $header, $collection['id']);
-
-                        if( is_object($metadatum) ){
+                        if( is_object($metadatum) && $metadatum instanceof \Tainacan\Entities\Metadatum ){
                             unset($collection['mapping'][$metadatum_id]);
                             $collection['mapping'][$metadatum->get_id()] = $header;
+                        } elseif ( is_array($metadatum) && sizeof($metadatum) == 2) {
+                            $parent_header = key($header);
+                            unset($collection['mapping'][$metadatum_id]);
+                            $collection['mapping'][$metadatum[0]->get_id()] = [$parent_header=>$metadatum[1]];
                         }
 
                     }
