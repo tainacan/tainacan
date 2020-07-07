@@ -111,7 +111,16 @@ class CSV extends Importer {
      */
     public function process_item( $index, $collection_definition ) {
         $processedItem = [];
-		$headers = $this->raw_source_metadata();
+        $compoundHeaders = [];
+        $headers = array_map(function ($header) use (&$compoundHeaders) {
+            if ( preg_match ('/.*\|compound\(.*\)/', $header ) ) {
+                $data = preg_split("/[()]+/", $header, -1, PREG_SPLIT_NO_EMPTY);
+                $header = $data[0] . ( isset($data[2]) ? $data[2] : '' );
+                $compoundHeaders[$header] = $data[1];
+                return $header;
+            }
+            return $header;
+        }, $this->raw_source_metadata()); 
 
 		$item_line = (int) $index + 2;
 
@@ -163,9 +172,9 @@ class CSV extends Importer {
         foreach ( $collection_definition['mapping'] as $metadatum_id => $header) {
             $column = null;
             foreach ( $headers as $indexRaw => $headerRaw ) {
-               if( $headerRaw === $header ) {
+                if( (is_array($header) && $headerRaw === key($header)) || ($headerRaw === $header) ) {
                     $column = $indexRaw;
-               }
+                }
             }
 
             if(is_null($column))
@@ -174,10 +183,33 @@ class CSV extends Importer {
             $valueToInsert = $this->handle_encoding( $values[ $column ] );
 
             $metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
-            $processedItem[ $header ] = ( $metadatum->is_multiple() ) ?
-                explode( $this->get_option('multivalued_delimiter'), $valueToInsert) : $valueToInsert;
-        }
+            if( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' ) {
+                $valueToInsert = $metadatum->is_multiple()
+                    ? explode( $this->get_option('multivalued_delimiter'), $valueToInsert)
+                    : [$valueToInsert];
 
+                $key = key($header);
+                $returnValue = [];
+                foreach($valueToInsert as $index => $metadatumValue) {
+                    $childrenHeaders = str_getcsv($compoundHeaders[$key], $this->get_option('delimiter'), $this->get_option('enclosure'));
+                    $childrenValue = str_getcsv($metadatumValue, $this->get_option('delimiter'), $this->get_option('enclosure'));
+                    
+                    if ( sizeof($childrenHeaders) != sizeof($childrenValue) ) {
+                        $this->add_error_log(' Mismatch count headers childrens and row columns ');
+                        return false;
+                    }
+                    $tmp = [];
+                    foreach($childrenValue as $i => $value ) {
+                        $tmp[ $childrenHeaders[$i] ] = $value;
+                    }
+                    $returnValue[] = $tmp;
+                }
+                $processedItem[ $key ] = $returnValue;
+            } else {
+                $processedItem[ $header ] = ( $metadatum->is_multiple() ) ?
+                    explode( $this->get_option('multivalued_delimiter'), $valueToInsert) : $valueToInsert;
+            }
+        }
         if( !empty( $this->get_option('document_index') ) ) $processedItem['special_document'] = '';
         if( !empty( $this->get_option('attachment_index') ) ) $processedItem['special_attachments'] = '';
         if( !empty( $this->get_option('item_status_index') ) ) $processedItem['special_item_status'] = '';
@@ -664,7 +696,10 @@ class CSV extends Importer {
                     continue;
                 }
 
-                $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
+                foreach($collection_definition['mapping'] as $id => $value) {
+                    if( (is_array($value) && key($value) == $metadatum_source) || ($value == $metadatum_source) )
+                        $tainacan_metadatum_id = $id;
+                }
                 $metadatum = $Tainacan_Metadata->fetch( $tainacan_metadatum_id );
 
                 if( $this->is_empty_value( $values ) ) continue;
@@ -687,6 +722,19 @@ class CSV extends Importer {
                             }
                             $singleItemMetadata->set_value( $terms );
                         }
+                    } elseif( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' ) {
+                        $children_mapping = $collection_definition['mapping'][$tainacan_metadatum_id][$metadatum_source];
+                        $singleItemMetadata = [];
+                        foreach($values as $compoundValue) {
+                            $tmp = [];
+                            foreach($children_mapping as $tainacan_children_metadatum_id => $tainacan_children_header) {
+                                $metadatumChildren = $Tainacan_Metadata->fetch( $tainacan_children_metadatum_id );
+                                $compoundItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatumChildren);
+                                $compoundItemMetadata->set_value($compoundValue[$tainacan_children_header]);
+                                $tmp[] = $compoundItemMetadata;
+                            }
+                            $singleItemMetadata[] = $tmp;
+                        }
                     } else {
                         $singleItemMetadata->set_value( $values );
                     }
@@ -708,13 +756,33 @@ class CSV extends Importer {
             }
 
             foreach ( $itemMetadataArray as $itemMetadata ) {
-                $itemMetadata->set_item( $insertedItem );  // *I told you
-                if( $itemMetadata->validate() ) {
-                    $result = $Tainacan_Item_Metadata->insert( $itemMetadata );
-                } else {
-                    $this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name() . " in item " . $insertedItem->get_title());
-                    $this->add_error_log($itemMetadata->get_errors());
-                    continue;
+                if($itemMetadata instanceof Entities\Item_Metadata_Entity ) {
+                    $itemMetadata->set_item( $insertedItem );  // *I told you
+                    if( $itemMetadata->validate() ) {
+                        $result = $Tainacan_Item_Metadata->insert( $itemMetadata );
+                    } else {
+                        $this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name() . " in item " . $insertedItem->get_title());
+                        $this->add_error_log($itemMetadata->get_errors());
+                        continue;
+                    }
+                } elseif ( is_array($itemMetadata) ) {
+                    if($updating_item == true) {
+                        $this->deleteAllValuesCompoundItemMetadata($insertedItem, $itemMetadata[0][0]->get_metadatum()->get_parent());
+                    }
+                    foreach($itemMetadata as $compoundItemMetadata) {
+                        $parent_meta_id = null;
+                        foreach($compoundItemMetadata as $itemChildren) {
+                            $itemChildren->set_parent_meta_id($parent_meta_id);
+                            if( $itemChildren->validate() ) {
+                                $item_children_metadata = $Tainacan_Item_Metadata->insert($itemChildren);
+                                $parent_meta_id = $item_children_metadata->get_parent_meta_id();
+                            } else {
+                                $this->add_error_log('Error saving value for ' . $itemChildren->get_metadatum()->get_name() . " in item " . $insertedItem->get_title());
+                                $this->add_error_log($itemChildren->get_errors());
+                                continue;
+                            }
+                        }
+                    }
                 }
 
                 //if( $result ){
@@ -743,6 +811,19 @@ class CSV extends Importer {
         } else {
             $this->add_error_log(  'Collection not set');
             return false;
+        }
+    }
+
+    private function deleteAllValuesCompoundItemMetadata($item, $compoundMetadataID) {
+        $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+        $compound_metadata = $Tainacan_Metadata->fetch($compoundMetadataID, 'OBJECT');
+        $compound_item_metadata = new Entities\Item_Metadata_Entity($item, $compound_metadata);
+        $compound_item_metadata_value = $compound_item_metadata->get_value();
+        foreach($compound_item_metadata_value as $item_metadata_value) {
+            foreach ($item_metadata_value as $itemMetadata) {
+                $Tainacan_Item_Metadata->remove_compound_value($item, $compound_metadata, $itemMetadata->get_parent_meta_id());
+            }
         }
     }
 
