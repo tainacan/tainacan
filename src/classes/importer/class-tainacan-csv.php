@@ -283,154 +283,167 @@ class CSV extends Importer {
     public function options_form() {
 		ob_start();
 	   ?>
-		<div class="field">
-			<label class="label"><?php _e('CSV Delimiter', 'tainacan'); ?></label>
-			<span class="help-wrapper">
-					<a class="help-button has-text-secondary">
-						<span class="icon is-small">
-							 <i class="tainacan-icon tainacan-icon-help" ></i>
-						 </span>
-					</a>
-					<div class="help-tooltip">
-						<div class="help-tooltip-header">
-							<h5><?php _e('CSV Delimiter', 'tainacan'); ?></h5>
-						</div>
-						<div class="help-tooltip-body">
-							<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
-						</div>
-					</div>
-			</span>
-			<div class="control is-clearfix">
-				<input class="input" type="text" name="delimiter" value="<?php echo esc_attr($this->get_option('delimiter')); ?>">
-			</div>
-		</div>
-
-		<div class="field">
-			<label class="label"><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></label>
-			<span class="help-wrapper">
-					<a class="help-button has-text-secondary">
-						<span class="icon is-small">
-							 <i class="tainacan-icon tainacan-icon-help" ></i>
-						 </span>
-					</a>
-					<div class="help-tooltip">
-						<div class="help-tooltip-header">
-							<h5><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></h5>
-						</div>
-						<div class="help-tooltip-body">
-							<p><?php _e('The character used to separate each value inside a cell with multiple values (e.g. ||). Note that the target metadatum must accept multiple values.', 'tainacan'); ?></p>
-						</div>
-					</div>
-			</span>
-			<div class="control is-clearfix">
-				<input class="input" type="text" name="multivalued_delimiter" value="<?php echo $this->get_option('multivalued_delimiter'); ?>">
-			</div>
-		</div>
-
-		<div class="field">
-			<label class="label"><?php _e('Enclosure', 'tainacan'); ?></label>
-			<span class="help-wrapper">
-					<a class="help-button has-text-secondary">
-						<span class="icon is-small">
-							 <i class="tainacan-icon tainacan-icon-help" ></i>
-						 </span>
-					</a>
-					<div class="help-tooltip">
-						<div class="help-tooltip-header">
-							<h5><?php _e('Enclosure', 'tainacan'); ?></h5>
-						</div>
-						<div class="help-tooltip-body">
-							<p><?php _e('The character that wraps the content of each cell in your CSV. (e.g. ")', 'tainacan'); ?></p>
-						</div>
-					</div>
-			</span>
-			<div class="control is-clearfix">
-				<input class="input" type="text" name="enclosure" value="<?php echo $this->get_option('enclosure'); ?>">
-			</div>
-		</div>
-
-        <div class="field is-grouped">
-		    <div class="field is-expanded">
-                <label class="label"><?php _e('File Encoding', 'tainacan'); ?></label>
-                <span class="help-wrapper">
-                        <a class="help-button has-text-secondary">
-                            <span class="icon is-small">
-                                <i class="tainacan-icon tainacan-icon-help" ></i>
-                            </span>
-                        </a>
-                        <div class="help-tooltip">
-                            <div class="help-tooltip-header">
-                                <h5><?php _e('File Encoding', 'tainacan'); ?></h5>
+       	<div class="columns is-multiline">
+			<div class="column">
+                <div class="field">
+                    <label class="label"><?php _e('CSV Delimiter', 'tainacan'); ?></label>
+                    <span class="help-wrapper">
+                            <a class="help-button has-text-secondary">
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-help" ></i>
+                                </span>
+                            </a>
+                            <div class="help-tooltip">
+                                <div class="help-tooltip-header">
+                                    <h5><?php _e('CSV Delimiter', 'tainacan'); ?></h5>
+                                </div>
+                                <div class="help-tooltip-body">
+                                    <p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
+                                </div>
                             </div>
-                            <div class="help-tooltip-body">
-                                <p><?php _e('The encoding of the CSV file.', 'tainacan'); ?></p>
+                    </span>
+                    <div class="control is-clearfix">
+                        <input class="input" type="text" name="delimiter" value="<?php echo esc_attr($this->get_option('delimiter')); ?>">
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="label"><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></label>
+                    <span class="help-wrapper">
+                            <a class="help-button has-text-secondary">
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-help" ></i>
+                                </span>
+                            </a>
+                            <div class="help-tooltip">
+                                <div class="help-tooltip-header">
+                                    <h5><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></h5>
+                                </div>
+                                <div class="help-tooltip-body">
+                                    <p><?php _e('The character used to separate each value inside a cell with multiple values (e.g. ||). Note that the target metadatum must accept multiple values.', 'tainacan'); ?></p>
+                                </div>
                             </div>
-                        </div>
-                </span>
-                <div class="control is-clearfix">
-                    <div class="select">
-                        <select name="encode">
-                            <option value="utf8" <?php selected($this->get_option('encode'), 'utf8'); ?> >UTF-8</option>
-                            <option value="iso88591" <?php selected($this->get_option('encode'), 'iso88591'); ?> >ISO-88591</option>
-                        </select>
+                    </span>
+                    <div class="control is-clearfix">
+                        <input class="input" type="text" name="multivalued_delimiter" value="<?php echo $this->get_option('multivalued_delimiter'); ?>">
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="label"><?php _e('Enclosure', 'tainacan'); ?></label>
+                    <span class="help-wrapper">
+                            <a class="help-button has-text-secondary">
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-help" ></i>
+                                </span>
+                            </a>
+                            <div class="help-tooltip">
+                                <div class="help-tooltip-header">
+                                    <h5><?php _e('Enclosure', 'tainacan'); ?></h5>
+                                </div>
+                                <div class="help-tooltip-body">
+                                    <p><?php _e('The character that wraps the content of each cell in your CSV. (e.g. ")', 'tainacan'); ?></p>
+                                </div>
+                            </div>
+                    </span>
+                    <div class="control is-clearfix">
+                        <input class="input" type="text" name="enclosure" value="<?php echo $this->get_option('enclosure'); ?>">
                     </div>
                 </div>
             </div>
 
-            <div class="field is-expanded">
-                <label class="label"><?php _e('Repeated Item', 'tainacan'); ?></label>
-                <span class="help-wrapper">
-                        <a class="help-button has-text-secondary">
-                            <span class="icon is-small">
-                                <i class="tainacan-icon tainacan-icon-help" ></i>
-                            </span>
-                        </a>
-                        <div class="help-tooltip">
-                            <div class="help-tooltip-header">
-                                <h5><?php _e('Repeated Item', 'tainacan'); ?></h5>
+            <div class="column">
+                <div class="field is-expanded">
+                    <label class="label"><?php _e('File Encoding', 'tainacan'); ?></label>
+                    <span class="help-wrapper">
+                            <a class="help-button has-text-secondary">
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-help" ></i>
+                                </span>
+                            </a>
+                            <div class="help-tooltip">
+                                <div class="help-tooltip-header">
+                                    <h5><?php _e('File Encoding', 'tainacan'); ?></h5>
+                                </div>
+                                <div class="help-tooltip-body">
+                                    <p><?php _e('The encoding of the CSV file.', 'tainacan'); ?></p>
+                                </div>
                             </div>
-                            <div class="help-tooltip-body">
-                                <p><?php _e('Choose the action when a repeated item is found', 'tainacan'); ?></p>
-                            </div>
+                    </span>
+                    <div class="control is-clearfix">
+                        <div class="select is-fullwidth">
+                            <select name="encode">
+                                <option value="utf8" <?php selected($this->get_option('encode'), 'utf8'); ?> >UTF-8</option>
+                                <option value="iso88591" <?php selected($this->get_option('encode'), 'iso88591'); ?> >ISO-88591</option>
+                            </select>
                         </div>
-                </span>
-                <div class="control is-clearfix">
-                    <div class="select">
-                        <select name="repeated_item">
-                            <option value="update" <?php selected($this->get_option('repeated_item'), 'update'); ?> >Update</option>
-                            <option value="ignore" <?php selected($this->get_option('repeated_item'), 'ignore'); ?> >Ignore</option>
-                        </select>
                     </div>
                 </div>
             </div>
         </div>
 
-		<div class="field">
-			<label class="label"><?php _e('Importing attachments', 'tainacan'); ?></label>
-			<p>
-			<?php echo nl2br(__('Check the documentation to learn how to set up your .csv file correctly for importing files <a href="https://tainacan.github.io/tainacan-wiki/#/importers?id=importador-csv-items">on this link.</a>', 'tainacan')); ?>
-            </p>
-            <br>
-			<label class="label"><?php _e('Server path', 'tainacan'); ?></label>
-			<span class="help-wrapper">
-					<a class="help-button has-text-secondary">
-						<span class="icon is-small">
-							 <i class="tainacan-icon tainacan-icon-help" ></i>
-						 </span>
-					</a>
-					<div class="help-tooltip">
-						<div class="help-tooltip-header">
-							<h5><?php _e('Server path', 'tainacan'); ?></h5>
-						</div>
-						<div class="help-tooltip-body">
-							<p><?php _e("When using CSV special field to add documents or attachments that you've uploaded to the server, inform the full path to the folder here (e.g. /home/user/files/)", 'tainacan'); ?></p>
-						</div>
-					</div>
-			</span>
-			<div class="control is-clearfix">
-				<input class="input" type="text" name="server_path" value="<?php echo $this->get_option('server_path'); ?>">
-			</div>
-		</div>
+        <div class="columns">
+
+            <div class="column">
+                <div class="field is-expanded">
+                    <label class="label"><?php _e('Repeated Item', 'tainacan'); ?></label>
+                    <span class="help-wrapper">
+                            <a class="help-button has-text-secondary">
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-help" ></i>
+                                </span>
+                            </a>
+                            <div class="help-tooltip">
+                                <div class="help-tooltip-header">
+                                    <h5><?php _e('Repeated Item', 'tainacan'); ?></h5>
+                                </div>
+                                <div class="help-tooltip-body">
+                                    <p><?php _e('Choose the action when a repeated item is found', 'tainacan'); ?></p>
+                                </div>
+                            </div>
+                    </span>
+                    <div class="control is-clearfix">
+                        <div class="select is-fullwidth">
+                            <select name="repeated_item">
+                                <option value="update" <?php selected($this->get_option('repeated_item'), 'update'); ?> ><?php _e('Update', 'tainacan'); ?></option>
+                                <option value="ignore" <?php selected($this->get_option('repeated_item'), 'ignore'); ?> ><?php _e('Ignore', 'tainacan'); ?></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column is-three-quarters">
+                <div class="field is-expanded">
+                    <label class="label"><?php _e('Server path', 'tainacan'); ?></label>
+                    <span class="help-wrapper">
+                        <a class="help-button has-text-secondary">
+                            <span class="icon is-small">
+                                <i class="tainacan-icon tainacan-icon-help" ></i>
+                            </span>
+                        </a>
+                        <div class="help-tooltip">
+                            <div class="help-tooltip-header">
+                                <h5><?php _e('Server path', 'tainacan'); ?></h5>
+                            </div>
+                            <div class="help-tooltip-body">
+                                <p><?php _e("When using CSV special field to add documents or attachments that you've uploaded to the server, inform the full path to the folder here (e.g. /home/user/files/)", 'tainacan'); ?></p>
+                            </div>
+                        </div>
+                    </span>
+                    <div class="control is-clearfix">
+                        <input class="input" type="text" name="server_path" value="<?php echo $this->get_option('server_path'); ?>">
+                    </div>
+                    <p class="help">
+                        <strong><?php _e('Importing attachments', 'tainacan'); ?>: </strong><?php echo nl2br(__('Check the documentation to learn how to set up your .csv file correctly for importing files <a href="https://tainacan.github.io/tainacan-wiki/#/importers?id=importador-csv-items">on this link.</a>', 'tainacan')); ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+		
 
 	   <?php
 

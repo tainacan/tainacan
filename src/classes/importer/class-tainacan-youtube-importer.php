@@ -378,47 +378,54 @@ class Youtube_Importer extends Importer {
     public function options_form(){
         ob_start();
         ?>
-        <div class="field">
-            <label class="label"><?php _e('API Key', 'tainacan'); ?></label>
-            
-			
-			<p>
-				<?php printf(
-					# translators %s are for opening and closing the link
-					__('In order to import videos from Youtube you need to create a project and get an API Key from the %sGoogle Developers Console%s.', 'tainacan'),
-					# translator you may get the link to the console in the current language. e.g. https://console.developers.google.com/?hl=pt-br
-					sprintf('<a target="_blank" href="%s">', __('https://console.developers.google.com', 'tainacan') ),
-					'</a>'
-				); ?>
-			</p>
-			<br/>
-			<p>
-				<?php _e('Get your API Key and paste it below:', 'tainacan'); ?>
-			</p>
-			
-            <div class="control is-clearfix">
-                <input class="input" type="text" name="api_id" value="<?php echo $this->get_option('api_id'); ?>">
+        <div class="columns">
+            <div class="column">
+                <div class="field">
+                    <label class="label"><?php _e('API Key', 'tainacan'); ?></label>
+                    
+                    
+                    <p>
+                        <?php printf(
+                            # translators %s are for opening and closing the link
+                            __('In order to import videos from Youtube you need to create a project and get an API Key from the %sGoogle Developers Console%s.', 'tainacan'),
+                            # translator you may get the link to the console in the current language. e.g. https://console.developers.google.com/?hl=pt-br
+                            sprintf('<a target="_blank" href="%s">', __('https://console.developers.google.com', 'tainacan') ),
+                            '</a>'
+                        ); ?>
+                    </p>
+                    <br/>
+                    <p>
+                        <?php _e('Get your API Key and paste it below:', 'tainacan'); ?>
+                    </p>
+                    
+                    <div class="control is-clearfix">
+                        <input class="input" type="text" name="api_id" value="<?php echo $this->get_option('api_id'); ?>">
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="field">
+                    <label class="label"><?php _e('Supported URLs', 'tainacan'); ?></label>
+                    
+                    <p>
+                        <?php _e('The following URL types are supported:', 'tainacan'); ?>
+                        <br/><br/>
+                        <?php _e('User profile', 'tainacan'); ?> - 
+                        <?php _e('Example: ', 'tainacan'); ?> <code>https://www.youtube.com/user/username</code>
+                        <br/>
+                        <?php _e('Playlists', 'tainacan'); ?> - 
+                        <?php _e('Example: ', 'tainacan'); ?> <code>https://www.youtube.com/playlist?123456</code>
+                        <br/>
+                        <?php _e('Channels', 'tainacan'); ?> - 
+                        <?php _e('Example: ', 'tainacan'); ?> <code>https://www.youtube.com/channel/123456</code>
+                        <br/>
+                        <?php _e('Videos', 'tainacan'); ?> - 
+                        <?php _e('Example: ', 'tainacan'); ?> <code>https://www.youtube.com/watch?v=123456</code>
+                        
+                    </p>
+                </div>
             </div>
         </div>
-        
-        <label class="label"><?php _e('Supported URLs', 'tainacan'); ?></label>
-        
-        <p>
-			<?php _e('The following URL types are supported:', 'tainacan'); ?>
-			<br/><br/>
-			<?php _e('User profile', 'tainacan'); ?> - 
-			<?php _e('Example: ', 'tainacan'); ?> https://www.youtube.com/user/username
-			<br/>
-			<?php _e('Playlists', 'tainacan'); ?> - 
-			<?php _e('Example: ', 'tainacan'); ?> https://www.youtube.com/playlist?123456
-			<br/>
-			<?php _e('Channels', 'tainacan'); ?> - 
-			<?php _e('Example: ', 'tainacan'); ?> https://www.youtube.com/channel/123456
-			<br/>
-			<?php _e('Videos', 'tainacan'); ?> - 
-			<?php _e('Example: ', 'tainacan'); ?> https://www.youtube.com/watch?v=123456
-			
-		</p>
 
         <?php
 

@@ -102,7 +102,7 @@
                                     collectionMetadata.length > 0 &&
                                     !isFetchingCollectionMetadata"
                                 :value="checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true)"
-                                @input="onSelectCollectionMetadata($event, Object.entries(sourceMetadatum)[0][0], true)"
+                                @input="onSelectCollectionMetadata($event, Object.entries(sourceMetadatum)[0][0], true, Object.entries(sourceMetadatum)[0][1])"
                                 :placeholder="$i18n.get('label_select_metadatum')">
                             <option :value="null">
                                 {{ $i18n.get('label_select_metadatum') }}
@@ -632,8 +632,7 @@ export default {
                 this.collectionMetadata.pop();
             }
         },
-        onSelectCollectionMetadata(selectedMetadatum, sourceMetadatum, isCompound) {
-     
+        onSelectCollectionMetadata(selectedMetadatum, sourceMetadatum, isCompound, childSourceMetadata) {
             let removedKey = '';
             for (let key in this.mappedCollection['mapping']) {
                 if (this.mappedCollection['mapping'][key] == sourceMetadatum)
@@ -648,7 +647,8 @@ export default {
             let mappingValue = '';
             if (isCompound) {
                 mappingValue = {} 
-                mappingValue[sourceMetadatum] = {};
+                mappingValue[sourceMetadatum] = childSourceMetadata;
+                
             } else {
                 mappingValue = sourceMetadatum;
             }
