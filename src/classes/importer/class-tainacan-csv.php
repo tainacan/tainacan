@@ -195,7 +195,7 @@ class CSV extends Importer {
                     $childrenValue = str_getcsv($metadatumValue, $this->get_option('delimiter'), $this->get_option('enclosure'));
                     
                     if ( sizeof($childrenHeaders) != sizeof($childrenValue) ) {
-                        $this->add_error_log(' Mismatch count headers childrens and row columns ');
+                        $this->add_error_log('Mismatch count headers childrens and row columns. file value:' . $metadatumValue);
                         return false;
                     }
                     $tmp = [];

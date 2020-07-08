@@ -109,9 +109,7 @@ class CSV extends Exporter {
 				return $result;
 			}, $initial_values);
 			
-			$temp = implode($delimiter, $assoc_arr);
-			$array_meta[] = $temp;
-			//$array_meta[] = "${enclosure}${temp}${enclosure}";
+			$array_meta[] = $this->str_putcsv($assoc_arr, $delimiter, $enclosure);
 		}
 		return implode($multivalued_delimiter, $array_meta);
 	}
@@ -266,11 +264,11 @@ class CSV extends Exporter {
 		}
 	}
 
-	function str_putcsv($item, $delimiter = ',', $enclosure = '"') {
+	function str_putcsv($input, $delimiter = ',', $enclosure = '"') {
 		// Open a memory "file" for read/write...
 		$fp = fopen('php://temp', 'r+');
 		
-		fputcsv($fp, $item, $delimiter, $enclosure);
+		fputcsv($fp, $input, $delimiter, $enclosure);
 		rewind($fp);
 		//Getting detailed stats to check filesize:
 		$fstats = fstat($fp);
