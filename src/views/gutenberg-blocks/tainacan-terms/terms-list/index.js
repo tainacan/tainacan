@@ -19,6 +19,11 @@ registerBlockType('tainacan/terms-list', {
     category: 'tainacan-blocks',
     keywords: [ __( 'Tainacan', 'tainacan' ), __( 'terms', 'tainacan' ), __( 'taxonomy', 'tainacan' ) ],
     description: __('Expose terms from your Tainacan taxonomies', 'tainacan'),
+    example: {
+        attributes: {
+            content: 'preview'
+        }
+    },
     attributes: {
         selectedTermsObject: {
             type: 'array',
@@ -198,7 +203,13 @@ registerBlockType('tainacan/terms-list', {
             }
         ];
 
-        return (
+        return content == 'preview' ? 
+            <div className={className}>
+                <img
+                        width="100%"
+                        src={ `${tainacan_blocks.base_url}/assets/images/terms-list.png` } />
+            </div>
+        : (
             <div className={className}>
 
                 <div>

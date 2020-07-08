@@ -27,6 +27,11 @@ registerBlockType('tainacan/facets-list', {
     category: 'tainacan-blocks',
     keywords: [ __( 'facets', 'tainacan' ), __( 'search', 'tainacan' ), __( 'terms', 'tainacan' ) ],
     description: __('List facets from a Tainacan Collection or Repository', 'tainacan'),
+    example: {
+        attributes: {
+            content: 'preview'
+        }
+    },
     attributes: {
         content: {
             type: 'array',
@@ -363,7 +368,13 @@ registerBlockType('tainacan/facets-list', {
             }
         ];
 
-        return (
+        return content == 'preview' ? 
+            <div className={className}>
+                <img
+                        width="100%"
+                        src={ `${tainacan_blocks.base_url}/assets/images/facets-list.png` } />
+            </div>
+        : (
             <div className={className}>
 
                 <div>

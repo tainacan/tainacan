@@ -26,6 +26,11 @@ registerBlockType('tainacan/carousel-collections-list', {
     category: 'tainacan-blocks',
     keywords: [ __( 'collections', 'tainacan' ), __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ) ],
     description: __('List collections on a Carousel, using search or collection selection.', 'tainacan'),
+    example: {
+        attributes: {
+            content: 'preview'
+        }
+    },
     attributes: {
         content: {
             type: 'array',
@@ -296,7 +301,13 @@ registerBlockType('tainacan/carousel-collections-list', {
         if(content && content.length && content[0].type)
             setContent();
 
-        return (
+        return content == 'preview' ? 
+                <div className={className}>
+                    <img
+                            width="100%"
+                            src={ `${tainacan_blocks.base_url}/assets/images/carousel-collections-list.png` } />
+                </div>
+            : (
             <div className={className}>
 
                 <div>

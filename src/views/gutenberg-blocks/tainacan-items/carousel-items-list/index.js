@@ -26,6 +26,11 @@ registerBlockType('tainacan/carousel-items-list', {
     category: 'tainacan-blocks',
     keywords: [ __( 'items', 'tainacan' ), __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ) ],
     description: __('List items on a Carousel, using search or item selection.', 'tainacan'),
+    example: {
+        attributes: {
+            content: 'preview'
+        }
+    },
     attributes: {
         content: {
             type: 'array',
@@ -335,10 +340,16 @@ registerBlockType('tainacan/carousel-items-list', {
         if(content && content.length && content[0].type)
             setContent();
 
-        return (
+        return content == 'preview' ? 
+                <div className={className}>
+                    <img
+                            width="100%"
+                            src={ `${tainacan_blocks.base_url}/assets/images/carousel-items-list.png` } />
+                </div>
+            : (
             <div className={className}>
 
-                <div>
+                   <div>
                     <InspectorControls>
                         
                         <PanelBody
@@ -358,7 +369,7 @@ registerBlockType('tainacan/carousel-items-list', {
                                 />
                                 { showCollectionHeader ?
                                     <div style={{ margin: '6px' }}>
-
+                                                            
                                         <ToggleControl
                                             label={__('Display "Collection" label', 'tainacan')}
                                             help={ !showCollectionLabel ? __('Toggle to show "Collection" label above header', 'tainacan') : __('Do not show "Collection" label', 'tainacan')}
@@ -649,7 +660,6 @@ registerBlockType('tainacan/carousel-items-list', {
                     </div>
                     : null
                 }
-
                 { !items.length && !isLoading ? (
                     <Placeholder
                         className="tainacan-block-placeholder"
@@ -737,7 +747,9 @@ registerBlockType('tainacan/carousel-items-list', {
                         ):null
                         }
                     </div>
+        
                 }
+                
             </div>
         );
     },

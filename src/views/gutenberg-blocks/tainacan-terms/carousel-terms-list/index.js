@@ -26,6 +26,11 @@ registerBlockType('tainacan/carousel-terms-list', {
     category: 'tainacan-blocks',
     keywords: [ __( 'terms', 'tainacan' ), __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ),  __( 'taxonomy', 'tainacan' ) ],
     description: __('List terms on a Carousel, showing their thumbnails or a preview of items.', 'tainacan'),
+    example: {
+        attributes: {
+            content: 'preview'
+        }
+    },
     attributes: {
         content: {
             type: 'array',
@@ -286,7 +291,13 @@ registerBlockType('tainacan/carousel-terms-list', {
         if(content && content.length && content[0].type)
             setContent();
 
-        return (
+        return content == 'preview' ? 
+                <div className={className}>
+                    <img
+                            width="100%"
+                            src={ `${tainacan_blocks.base_url}/assets/images/carousel-terms-list.png` } />
+                </div>
+            : (
             <div className={className}>
 
                 <div>

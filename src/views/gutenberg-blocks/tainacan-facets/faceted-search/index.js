@@ -27,6 +27,11 @@ registerBlockType('tainacan/faceted-search', {
     category: 'tainacan-blocks',
     keywords: [ __( 'facets', 'tainacan' ), __( 'search', 'tainacan' ), __( 'items', 'tainacan' ) ],
     description: __('A full items list faceted search from either the repository, a collection or a term.', 'tainacan'),
+    example: {
+        attributes: {
+            listType: 'preview'
+        }
+    },
     attributes: {
         termId: {
             type: String,
@@ -297,7 +302,13 @@ registerBlockType('tainacan/faceted-search', {
             return enabledViewModes.includes(viewMode);
         }
 
-        return (
+        return ( listType == 'preview' ? 
+                <div className={className}>
+                    <img
+                            width="100%"
+                            src={ `${tainacan_blocks.base_url}/assets/images/faceted-search.png` } />
+                </div>
+            : (
             <div className={className}>
 
                 <div>
@@ -1048,6 +1059,7 @@ registerBlockType('tainacan/faceted-search', {
                 }
 
             </div>
+            )
         );
     },
     save({ attributes, className }){

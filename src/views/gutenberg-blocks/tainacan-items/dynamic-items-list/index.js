@@ -26,6 +26,11 @@ registerBlockType('tainacan/dynamic-items-list', {
     category: 'tainacan-blocks',
     keywords: [ __( 'items', 'tainacan' ), __( 'search', 'tainacan' ), __( 'collection', 'tainacan' ) ],
     description: __('Dynamically list items from a Tainacan items search', 'tainacan'),
+    example: {
+        attributes: {
+            content: 'preview'
+        }
+    },
     attributes: {
         content: {
             type: 'array',
@@ -465,7 +470,13 @@ registerBlockType('tainacan/dynamic-items-list', {
             }
         ];
 
-        return (
+        return content == 'preview' ? 
+                <div className={className}>
+                    <img
+                            width="100%"
+                            src={ `${tainacan_blocks.base_url}/assets/images/dynamic-items-list.png` } />
+                </div>
+            : (
             <div className={className}>
 
                 <div>

@@ -20,6 +20,11 @@ registerBlockType('tainacan/collections-list', {
     category: 'tainacan-blocks',
     keywords: [ __( 'Tainacan', 'tainacan' ), __( 'collections', 'tainacan' ), __( 'repository', 'tainacan' ) ],
     description: __('Expose collections from your Tainacan repository', 'tainacan'),
+    example: {
+        attributes: {
+            content: 'preview'
+        }
+    },
     attributes: {
         selectedCollectionsObject: {
             type: 'array',
@@ -203,7 +208,13 @@ registerBlockType('tainacan/collections-list', {
             }
         ];
 
-        return (
+        return content == 'preview' ? 
+            <div className={className}>
+                <img
+                        width="100%"
+                        src={ `${tainacan_blocks.base_url}/assets/images/collections-list.png` } />
+            </div>
+        : (
             <div className={className}>
 
                 <div>

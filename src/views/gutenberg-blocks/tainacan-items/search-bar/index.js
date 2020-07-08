@@ -29,6 +29,11 @@ registerBlockType('tainacan/search-bar', {
     category: 'tainacan-blocks',
     keywords: [ __( 'items', 'tainacan' ), __( 'search', 'tainacan' ), __( 'bar', 'tainacan' ) ],
     description: __('Set up a custom search bar to redirect to an item\'s list', 'tainacan'),
+    example: {
+        attributes: {
+            content: 'preview'
+        }
+    },
     attributes: {
         content: {
             type: 'array',
@@ -299,7 +304,13 @@ registerBlockType('tainacan/search-bar', {
             },
         ]; 
 
-        return (
+        return content == 'preview' ? 
+            <div className={className}>
+                <img
+                        width="100%"
+                        src={ `${tainacan_blocks.base_url}/assets/images/search-bar.png` } />
+            </div>
+        : (
             <div className={className}>
 
                 <div>
