@@ -41,8 +41,12 @@ class CSV extends Importer {
 					if( strpos($rawColumn,'special_') === 0 ) {
 						if( $rawColumn === 'special_document' ) {
 							$this->set_option('document_index', $index);
-						} else if( $rawColumn === 'special_attachments' ) {
+						} else if( $rawColumn === 'special_attachments' || 
+											 $rawColumn === 'special_attachments|APPEND' || 
+											 $rawColumn === 'special_attachments|REPLACE' ) {
 							$this->set_option('attachment_index', $index);
+							$attachment_type = explode('|', $rawColumn);
+							$this->set_option('attachment_operation_type', sizeof($attachment_type)==2?$attachment_type[1]:'APPEND');
 						} else if( $rawColumn === 'special_item_status' ) {
 							$this->set_option('item_status_index', $index);
 						} else if( $rawColumn === 'special_item_id' ) {
@@ -535,6 +539,25 @@ class CSV extends Importer {
 	private function handle_attachment( $column_value, $item_inserted) {
 		$TainacanMedia = \Tainacan\Media::get_instance();
 		$this->items_repo->disable_logs();
+
+		switch ($this->get_option('attachment_operation_type')) {
+			case 'APPEND':
+				$this->add_log('Attachment APPEND file ');
+				break;
+			case 'REPLACE':
+				$this->add_log('Attachment REPLACE file ');
+				$args['post_parent'] = $item_inserted->get_id();
+				$args['post_type'] = 'attachment';
+				$args['post_status'] = 'any';
+				$args['post__not_in'] = [$item_inserted->get_document()];
+				$posts_query  = new \WP_Query();
+				$query_result = $posts_query->query( $args );
+				foreach ( $query_result as $post ) {
+					wp_delete_attachment( $post->ID, true );
+				}
+				break;
+		}
+
 		$attachments = explode( $this->get_option('multivalued_delimiter'), $column_value);
 		if( $attachments ) {
 			foreach( $attachments as $attachment ) {
