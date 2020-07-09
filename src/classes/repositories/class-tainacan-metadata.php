@@ -1111,7 +1111,6 @@ class Metadata extends Repository {
 					}
 				}
 			} else {
-				$args['count_items'] = false;
 				$parent_q = $wpdb->prepare("AND tt.parent = %d", $args['parent_id']);
 				if ($search_q) {
 					$parent_q = '';

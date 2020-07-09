@@ -122,8 +122,9 @@ class Taxonomy extends Metadata_Type {
 			}
 		}
 
+		$collections = $metadatum->get_collection_id() == 'default' ? [] : [$metadatum->get_collection_id(), 'default'];
 		$taxonomy_metadata = $Tainacan_Metadata->fetch([
-			'collection_id' => [$metadatum->get_collection_id(), 'default'],
+			'collection_id' => $collections,
 			'metadata_type' => 'Tainacan\\Metadata_Types\\Taxonomy'
 		], 'OBJECT');
 
@@ -143,24 +144,28 @@ class Taxonomy extends Metadata_Type {
 		
 		$collection_ancestors = get_post_ancestors( $metadatum->get_collection_id() );
 		$descendants = $this->get_collection_children( $metadatum->get_collection_id() );
-		$taxonomy_metadata = $Tainacan_Metadata->fetch([
-			'collection_id' =>  array_merge($collection_ancestors, $descendants),
-			'metadata_type' => 'Tainacan\\Metadata_Types\\Taxonomy'
-		], 'OBJECT');
-
-		$taxonomy_metadata = array_map(function ($metadatum_map) {
-			$fto = $metadatum_map->get_metadata_type_object();
-			return [ $metadatum_map->get_id() => $fto->get_option('taxonomy_id') ];
-		}, $taxonomy_metadata);
-
-		if( is_array( $taxonomy_metadata ) ){
-			foreach ($taxonomy_metadata as $metadatum_id => $taxonomy_metadatum) {
-				if ( is_array( $taxonomy_metadatum ) && key($taxonomy_metadatum) != $metadatum->get_id()
-					&& in_array($this->get_option('taxonomy_id'), $taxonomy_metadatum)) {
-					return ['taxonomy_id' => __('You can not have 2 taxonomy metadata using the same taxonomy in a ancestors or descendants collection.', 'tainacan')];
+		$collections_id = array_merge($collection_ancestors, $descendants);
+		if (!empty($collections_id)) {
+			$taxonomy_metadata = $Tainacan_Metadata->fetch([
+				'collection_id' =>  $collections_id,
+				'metadata_type' => 'Tainacan\\Metadata_Types\\Taxonomy'
+			], 'OBJECT');
+	
+			$taxonomy_metadata = array_map(function ($metadatum_map) {
+				$fto = $metadatum_map->get_metadata_type_object();
+				return [ $metadatum_map->get_id() => $fto->get_option('taxonomy_id') ];
+			}, $taxonomy_metadata);
+	
+			if( is_array( $taxonomy_metadata ) ){
+				foreach ($taxonomy_metadata as $metadatum_id => $taxonomy_metadatum) {
+					if ( is_array( $taxonomy_metadatum ) && key($taxonomy_metadatum) != $metadatum->get_id()
+						&& in_array($this->get_option('taxonomy_id'), $taxonomy_metadatum)) {
+						return ['taxonomy_id' => __('You can not have 2 taxonomy metadata using the same taxonomy in a ancestors or descendants collection.', 'tainacan')];
+					}
 				}
 			}
 		}
+		
 
 		return true;
 
