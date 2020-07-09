@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar } = wp.components;
+const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar, PanelBody, ToolbarButton } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -11,7 +11,7 @@ import CollectionsModal from './collections-modal.js';
 registerBlockType('tainacan/collections-list', {
     title: __('Tainacan Collections List', 'tainacan'),
     icon:
-        <svg width="24" height="24" viewBox="0 -5 12 16">
+        <svg width="24" height="24" viewBox="0 -3 12 16">
             <path
                 fill="var(--tainacan-block-primary, $primary)"
                 d="M10,8.8v1.3H1.2C0.6,10.1,0,9.5,0,8.8V2.5h1.3v6.3H10z M6.9,0H3.8C3.1,0,2.5,0.6,2.5,1.3l0,5c0,0.7,0.6,1.2,1.3,1.2h7.5
@@ -196,13 +196,13 @@ registerBlockType('tainacan/collections-list', {
         const layoutControls = [
             {
                 icon: 'grid-view',
-                title: __( 'Grid View' ),
+                title: __( 'Grid View', 'tainacan' ),
                 onClick: () => updateLayout('grid'),
                 isActive: layout === 'grid',
             },
             {
                 icon: 'list-view',
-                title: __( 'List View' ),
+                title: __( 'List View', 'tainacan' ),
                 onClick: () => updateLayout('list'),
                 isActive: layout === 'list',
             }
@@ -220,12 +220,29 @@ registerBlockType('tainacan/collections-list', {
                 <div>
                     <BlockControls>
                         <Toolbar controls={ layoutControls } />
+                        { selectedCollectionsHTML.length ?
+                            <Toolbar>
+                                <ToolbarButton onClick={ openCollectionsModal } >
+                                    <p>
+                                        <svg width="24" height="24" viewBox="0 -5 12 16">
+                                            <path
+                                                d="M10,8.8v1.3H1.2C0.6,10.1,0,9.5,0,8.8V2.5h1.3v6.3H10z M6.9,0H3.8C3.1,0,2.5,0.6,2.5,1.3l0,5c0,0.7,0.6,1.2,1.3,1.2h7.5
+                                                c0.7,0,1.3-0.6,1.3-1.2V2.5c0-0.7-0.6-1.2-1.3-1.2H8.2L6.9,0z"/>       
+                                        </svg>
+                                    </p>&nbsp;
+                                    {  __( 'Select collections', 'tainacan' ) }
+                                </ToolbarButton>
+                            </Toolbar>
+                        : null }
                     </BlockControls>
                 </div>
 
                 <div>
                     <InspectorControls>
-                        <div style={{ marginTop: '24px' }}>
+                        <PanelBody
+                                title={ __('List settings', 'tainacan') }
+                                initialOpen={ true }
+                            >
                             { layout == 'list' ? 
                                 <ToggleControl
                                     label={__('Image', 'tainacan')}
@@ -266,7 +283,7 @@ registerBlockType('tainacan/collections-list', {
                                     </div>
                                 </div>
                             : null }
-                        </div>
+                        </PanelBody>
                     </InspectorControls>
                 </div>
 
@@ -286,25 +303,6 @@ registerBlockType('tainacan/collections-list', {
                                 }}
                                 onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
                             : null
-                        }
-                        { selectedCollectionsHTML.length ? (
-                            <div className="tainacan-block-control">
-                                <p>
-                                    <svg width="24" height="24" viewBox="0 -5 12 16">
-                                        <path
-                                            d="M10,8.8v1.3H1.2C0.6,10.1,0,9.5,0,8.8V2.5h1.3v6.3H10z M6.9,0H3.8C3.1,0,2.5,0.6,2.5,1.3l0,5c0,0.7,0.6,1.2,1.3,1.2h7.5
-                                            c0.7,0,1.3-0.6,1.3-1.2V2.5c0-0.7-0.6-1.2-1.3-1.2H8.2L6.9,0z"/>       
-                                    </svg>
-                                    {__('Expose collections from your Tainacan repository', 'tainacan')}
-                                </p>
-                                <Button
-                                    isPrimary
-                                    type="submit"
-                                    onClick={ () => openCollectionsModal() }>
-                                    {__('Select collections', 'tainacan')}
-                                </Button>   
-                            </div>
-                            ): null
                         }
                     </div>
                     ) : null
