@@ -13,39 +13,6 @@
 }
 
 // Control and placeholder region ----------------------------------------------------
-[data-align='full'] .tainacan-block-control {
-    width: calc(100% + 14px);
-}
-.tainacan-block-control {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 5px;
-    position: relative;
-    top: -14px;
-    left: -14px;
-    width: calc(100% + 28px);
-    background: var(--tainacan-block-gray1, $gray1);
-
-    p {
-        font-size: 0.875em !important; 
-        margin: 12px 1.5em !important; 
-        fill: var(--tainacan-block-gray4, $gray4);
-
-        svg {
-            top: 6px;
-            margin-right: 0.75em;
-            position: relative;
-            fill: var(--tainacan-block-gray4, $gray4);
-        }
-    }
-
-    .components-base-control .components-base-control__field {
-        margin-bottom: 0;
-    }
-}
 .tainacan-block-placeholder.components-placeholder {
     align-items: center !important;
     margin-bottom: 0 !important;
