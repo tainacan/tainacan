@@ -2,9 +2,9 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, ColorPicker, ColorPalette, BaseControl, PanelBody, Toolbar, ToolbarButton } = wp.components;
 
-const { InspectorControls } = wp.editor;
+const { InspectorControls, BlockControls } = wp.editor;
 
 import CarouselItemsModal from './carousel-items-modal.js';
 import tainacan from '../../js/axios.js';
@@ -349,8 +349,42 @@ registerBlockType('tainacan/carousel-items-list', {
             : (
             <div className={className}>
 
-                   <div>
-                    <InspectorControls>
+                { items.length ?
+                    <BlockControls>
+                        <Toolbar>
+                            { loadStrategy != 'search' ? 
+                                <ToolbarButton onClick={ () => openCarouseltemsModal('selection')  } >
+                                    <p>
+                                        <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                height="24px"
+                                                width="24px">
+                                            <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
+                                        </svg>
+                                    </p>&nbsp;
+                                    { __('Add more items', 'tainacan') }
+                                </ToolbarButton>
+                                :
+                                <ToolbarButton onClick={ () => openCarouseltemsModal('search') } >
+                                    <p>
+                                        <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                height="24px"
+                                                width="24px">
+                                            <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
+                                        </svg>
+                                    </p>&nbsp;
+                                    { __('Configure a search', 'tainacan') } 
+                                </ToolbarButton>
+                            }
+                        </Toolbar>
+                    </BlockControls>
+                : null }
+
+                <div>
+                   <InspectorControls>
                         
                         <PanelBody
                                 title={__('Collection header', 'tainacan')}
@@ -578,34 +612,6 @@ registerBlockType('tainacan/carousel-items-list', {
                             : null
                         }
                         
-                        { items.length ? (
-                            <div className="tainacan-block-control">
-                                <p>
-                                    <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            height="24px"
-                                            width="24px">
-                                        <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
-                                    </svg>
-                                    {__('List items on a Carousel', 'tainacan')}
-                                </p>
-                                <Button
-                                    isPrimary
-                                    type="submit"
-                                    onClick={ () => openCarouseltemsModal('selection') }>
-                                    {__('Add more items', 'tainacan')}
-                                </Button> 
-                                <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
-                                <Button
-                                    isPrimary
-                                    type="submit"
-                                    onClick={ () => openCarouseltemsModal('search') }>
-                                    {__('Configure a search', 'tainacan')}
-                                </Button>    
-                            </div>
-                            ): null
-                        }
                     </div>
                     ) : null
                 }

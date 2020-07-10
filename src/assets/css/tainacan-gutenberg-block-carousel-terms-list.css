@@ -159,7 +159,8 @@
     font-style: italic;
     color: var(--tainacan-block-gray4, #555758);
     text-align: center;
-    margin: 4px auto; }
+    margin: 0 auto;
+    padding: 8px 2px 2px 2px; }
   .wp-block-tainacan-carousel-terms-list .swiper-button-prev, .wp-block-tainacan-carousel-terms-list .swiper-button-next {
     top: calc(50% - 42px);
     bottom: initial;

@@ -46,7 +46,7 @@
     justify-content: center;
     align-items: baseline;
     width: 100%;
-    max-width: 70%;
+    max-width: 85%;
     flex-wrap: wrap;
     z-index: 1; }
     .tainacan-block-placeholder.components-placeholder .components-placeholder__fieldset p {
@@ -59,6 +59,8 @@
         top: 4px;
         position: relative;
         fill: var(--tainacan-block-gray4, #555758); }
+    .tainacan-block-placeholder.components-placeholder .components-placeholder__fieldset .components-button {
+      margin: 0; }
 
 .wp-block-tainacan-modal {
   width: 50%; }

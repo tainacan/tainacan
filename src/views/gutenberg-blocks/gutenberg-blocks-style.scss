@@ -60,7 +60,7 @@
         justify-content: center;
         align-items: baseline;
         width: 100%;
-        max-width: 70%;
+        max-width: 85%;
         flex-wrap: wrap;
         z-index: 1;
 
@@ -76,6 +76,9 @@
                 position: relative;
                 fill: var(--tainacan-block-gray4, $gray4);
             }
+        }
+        .components-button {
+            margin: 0;
         }
     }
 }
