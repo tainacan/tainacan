@@ -50,7 +50,7 @@
     height: 80vh; }
     .wp-block-tainacan-modal.dynamic-modal iframe {
       width: calc(100% + 32px);
-      height: calc(100% - 128px);
+      height: calc(100% - 132px);
       margin-left: -16px; }
     .wp-block-tainacan-modal.dynamic-modal .modal-footer-area {
       height: 68px;
