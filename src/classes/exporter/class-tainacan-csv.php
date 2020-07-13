@@ -95,11 +95,10 @@ class CSV extends Exporter {
 		foreach($metadata_type_options['children_order'] as $order) {
 			$initial_values[$order['id']] = "";
 		}
-		$values = $meta->get_value();
+		$values = ($meta->get_metadatum()->is_multiple() ? $meta->get_value(): [$meta->get_value()]);
 		$array_meta = [];
 		foreach($values as $value) {
-
-			$assoc_arr = array_reduce($value, function ($result, $item) {
+			$assoc_arr = array_reduce( $value, function ($result, $item) {
 				$metadatum_id = $item->get_metadatum()->get_id();
 				if ($item->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Relationship') {
 					$result[$metadatum_id] = $item->get_value();

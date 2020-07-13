@@ -23,8 +23,15 @@ class REST_Exporters_Controller extends REST_Controller {
 			@session_start(); // @ avoids Warnings when running phpunit tests
 		}
 		parent::__construct();
+		add_action('init', array(&$this, 'init_objects'), 11);
 	}
 
+	/**
+	 * Initialize objects after post_type register
+	 */
+	public function init_objects() {
+		$this->collections_repository = Repositories\Collections::get_instance();
+	}
 
 	/**
 	* Register the collections route and their endpoints
@@ -143,10 +150,6 @@ class REST_Exporters_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)) {
-			$attributes = [];
-			foreach ($body as $att => $value) {
-				$attributes[$att] = $value;
-			}
 			global $Tainacan_Exporter_Handler;
 			$exporter = $Tainacan_Exporter_Handler->get_exporter_instance_by_session_id($session_id);
 			
@@ -154,6 +157,9 @@ class REST_Exporters_Controller extends REST_Controller {
 				foreach ($body as $att => $value) {
 					if ($att == 'collection') {
 						if (is_array($value) && isset($value['id'])) {
+							$collection = $this->collections_repository->fetch($value['id']);
+							$total_items = wp_count_posts( $collection->get_db_identifier(), 'readable' );
+							$value['total_items'] = ($total_items->publish + $total_items->private);
 							$exporter->add_collection($value);
 							continue;
 						} else {
