@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody, Toolbar, ToolbarButton } = wp.components;
+const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -312,7 +312,7 @@ registerBlockType('tainacan/carousel-collections-list', {
 
                 { collections.length ?
                     <BlockControls>
-                        <Toolbar>
+                        <ToolbarGroup>
                             <ToolbarButton onClick={ () => openCarouselModal() } >
                                 <p>
                                     <svg
@@ -325,7 +325,7 @@ registerBlockType('tainacan/carousel-collections-list', {
                                 </p>&nbsp;
                                 { __('Add more collections', 'tainacan') } 
                             </ToolbarButton>
-                        </Toolbar>
+                        </ToolbarGroup>
                     </BlockControls>
                 : null }
 

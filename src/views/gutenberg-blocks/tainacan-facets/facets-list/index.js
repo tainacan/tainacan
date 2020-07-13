@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { BaseControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ToolbarButton, PanelBody } = wp.components;
+const { BaseControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ToolbarGroup, ToolbarButton, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -381,7 +381,7 @@ registerBlockType('tainacan/facets-list', {
                     <BlockControls>
                         <Toolbar controls={ layoutControls } />
                         { facets.length ? (
-                            <Toolbar>
+                            <ToolbarGroup>
                                 <ToolbarButton onClick={ () => openMetadataModal() }>
                                     <p>
                                         <svg 
@@ -394,7 +394,7 @@ registerBlockType('tainacan/facets-list', {
                                     </p>&nbsp;
                                     {__('Select facets', 'tainacan')}
                                 </ToolbarButton>    
-                            </Toolbar>
+                            </ToolbarGroup>
                             ): null
                         }
                     </BlockControls>

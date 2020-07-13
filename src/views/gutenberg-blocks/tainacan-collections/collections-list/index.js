@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar, PanelBody, ToolbarButton } = wp.components;
+const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar, ToolbarGroup, PanelBody, ToolbarButton } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -221,7 +221,7 @@ registerBlockType('tainacan/collections-list', {
                     <BlockControls>
                         <Toolbar controls={ layoutControls } />
                         { selectedCollectionsHTML.length ?
-                            <Toolbar>
+                            <ToolbarGroup>
                                 <ToolbarButton onClick={ openCollectionsModal } >
                                     <p>
                                         <svg width="24" height="24" viewBox="0 -5 12 16">
@@ -232,7 +232,7 @@ registerBlockType('tainacan/collections-list', {
                                     </p>&nbsp;
                                     {  __( 'Select collections', 'tainacan' ) }
                                 </ToolbarButton>
-                            </Toolbar>
+                            </ToolbarGroup>
                         : null }
                     </BlockControls>
                 </div>

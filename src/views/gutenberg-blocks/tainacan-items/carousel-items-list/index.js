@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, ColorPicker, ColorPalette, BaseControl, PanelBody, Toolbar, ToolbarButton } = wp.components;
+const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, ColorPicker, ColorPalette, BaseControl, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -351,7 +351,7 @@ registerBlockType('tainacan/carousel-items-list', {
 
                 { items.length ?
                     <BlockControls>
-                        <Toolbar>
+                        <ToolbarGroup>
                             { loadStrategy != 'search' ? 
                                 <ToolbarButton onClick={ () => openCarouseltemsModal('selection')  } >
                                     <p>
@@ -379,7 +379,7 @@ registerBlockType('tainacan/carousel-items-list', {
                                     { __('Configure a search', 'tainacan') } 
                                 </ToolbarButton>
                             }
-                        </Toolbar>
+                        </ToolbarGroup>
                     </BlockControls>
                 : null }
 

@@ -1,10 +1,26 @@
 const { registerBlockType } = wp.blocks;
-
 const { __ } = wp.i18n;
 
-const { Button, ColorPicker, BaseControl, CheckboxControl, RangeControl, FontSizePicker, HorizontalRule, SelectControl, ToggleControl, Placeholder, PanelBody } = wp.components;
+const { 
+    Button,
+    ColorPicker,
+    BaseControl,
+    CheckboxControl,
+    RangeControl,
+    FontSizePicker,
+    HorizontalRule,
+    SelectControl,
+    ToggleControl,
+    Placeholder,
+    PanelBody,
+    ToolbarGroup,
+    Dropdown,
+    ToolbarButton,
+    MenuGroup,
+    MenuItemsChoice
+} = wp.components;
 
-const { InspectorControls } = wp.editor;
+const { InspectorControls, BlockControls } = wp.editor;
 
 import CollectionModal from './collection-modal.js';
 import TermModal from './term-modal.js';
@@ -284,6 +300,21 @@ registerBlockType('tainacan/faceted-search', {
             },
         ];
 
+        const listTypeChoices = [
+            {
+                value: 'collection',
+                label: __('a Collection', 'tainacan'),
+            },
+            {
+                value: 'term',
+                label: __('a Taxonomy Term', 'tainacan'),
+            },
+            {
+                value: 'repository',
+                label: __('the Repository', 'tainacan'),
+            },
+        ];
+
         function openCollectionModal() {
             isCollectionModalOpen = true;
             setAttributes( { 
@@ -302,6 +333,28 @@ registerBlockType('tainacan/faceted-search', {
             return enabledViewModes.includes(viewMode);
         }
 
+        function onUpdateListType( aListType, props) {
+            listType = aListType;
+
+            if (listType != 'collection') {
+                enabledViewModes = registeredViewModesKeys;
+                defaultViewMode = 'masonry';
+            }
+
+            setAttributes({ 
+                listType: aListType,
+                enabledViewModes: enabledViewModes,
+                defaultViewMode: defaultViewMode
+            });
+
+            if (listType == 'term')
+                openTermModal();
+            else if (listType == 'collection')
+                openCollectionModal()
+            else
+                return;
+        }
+
         return ( listType == 'preview' ? 
                 <div className={className}>
                     <img
@@ -310,6 +363,37 @@ registerBlockType('tainacan/faceted-search', {
                 </div>
             : (
             <div className={className}>
+
+                <div>
+                    <BlockControls>
+                        { !( termId == undefined && listType == 'term' ) && !( collectionId == undefined && listType == 'collection' ) ?
+                        <ToolbarGroup>
+                            <Dropdown
+                                contentClassName="wp-block-tainacan__dropdown"
+                                renderToggle={ ( { isOpen, onToggle } ) => (
+                                    <ToolbarButton
+                                        onClick={ onToggle }
+                                        aria-expanded={ isOpen }>
+                                            { __('Items list source', 'tainacan')  } 
+                                    </ToolbarButton>
+                                ) }
+                                renderContent={ ( { onToggle } ) => (
+                                    <MenuGroup>
+                                        <MenuItemsChoice
+                                            choices={ listTypeChoices }
+                                            value={ listType } 
+                                            onSelect={ (value) => {
+                                                onUpdateListType(value);
+                                                onToggle(); 
+                                            }}>
+                                        </MenuItemsChoice>
+                                    </MenuGroup>
+                                ) }
+                            />
+                        </ToolbarGroup>
+                        :null }
+                    </BlockControls>
+                </div>
 
                 <div>
                     <InspectorControls>
@@ -780,37 +864,29 @@ registerBlockType('tainacan/faceted-search', {
                             </svg>
                             {__('Show a complete items list with faceted search from: ', 'tainacan')}
                         </p>
-                        <SelectControl
-                                label={ __('Items list source', 'tainacan') }
-                                hideLabelFromVision
-                                value={ listType }
-                                options={ [
-                                    { label: __('a Collection', 'tainacan'), value: 'collection' },
-                                    { label: __('a Taxonomy Term', 'tainacan'), value: 'term' },
-                                    { label: __('the Repository', 'tainacan'), value: 'repository' },
-                                ] }
-                                onChange={ ( aListType) => {
-                                    listType = aListType;
-
-                                    if (listType != 'collection') {
-                                        enabledViewModes = registeredViewModesKeys;
-                                        defaultViewMode = 'masonry';
-                                    }
-
-                                    setAttributes({ 
-                                        listType: aListType,
-                                        enabledViewModes: enabledViewModes,
-                                        defaultViewMode: defaultViewMode
-                                    });
-                                } }
+                        <Dropdown
+                                contentClassName="wp-block-tainacan__dropdown"
+                                renderToggle={ ( { isOpen, onToggle } ) => (
+                                    <Button
+                                        isPrimary
+                                        onClick={ onToggle }
+                                        aria-expanded={ isOpen }>
+                                           { __('Items list source', 'tainacan') }
+                                    </Button>
+                                ) }
+                                renderContent={ ( { onToggle } ) => (
+                                    <MenuGroup>
+                                        <MenuItemsChoice
+                                            choices={ listTypeChoices }
+                                            value={ listType } 
+                                            onSelect={ (value) => {
+                                                onUpdateListType(value);
+                                                onToggle(); 
+                                            }}>
+                                        </MenuItemsChoice>
+                                    </MenuGroup>
+                                ) }
                             />
-                        &nbsp;
-                        <Button
-                            isPrimary
-                            type="submit"
-                            onClick={ () => listType == 'term' ? openTermModal() : openCollectionModal() }>
-                            { listType == 'term' ? __('Select a Term', 'tainacan') : __('Select a Collection', 'tainacan') }
-                        </Button>
                            
                     </Placeholder>
                     ) :

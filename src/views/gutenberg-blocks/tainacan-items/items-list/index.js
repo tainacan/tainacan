@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar, PanelBody, ToolbarButton } = wp.components;
+const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar, ToolbarGroup, PanelBody, ToolbarButton } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -226,7 +226,7 @@ registerBlockType('tainacan/items-list', {
                     <BlockControls>
                         <Toolbar controls={ layoutControls } />
                         { selectedItemsHTML.length ?
-                            <Toolbar>
+                            <ToolbarGroup>
                                 <ToolbarButton onClick={ openItemsModal } >
                                     <p>
                                         <svg width="24" height="24" viewBox="0 -2 12 16">
@@ -237,7 +237,7 @@ registerBlockType('tainacan/items-list', {
                                     </p>&nbsp;
                                     {  __( 'Add more items', 'tainacan' ) }
                                 </ToolbarButton>
-                            </Toolbar>
+                            </ToolbarGroup>
                         : null }
                     </BlockControls>
                 </div>

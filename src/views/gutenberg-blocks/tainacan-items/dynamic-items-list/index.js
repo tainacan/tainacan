@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ToolbarButton, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ToolbarGroup, ToolbarButton, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -483,7 +483,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                     <BlockControls>
                         <Toolbar controls={ layoutControls } />
                         { items.length ? 
-                            <Toolbar>
+                            <ToolbarGroup>
                                 <ToolbarButton onClick={ openDynamicItemsModal }>
                                     <p>
                                         <svg
@@ -496,7 +496,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                                     </p>&nbsp;
                                     {__('Configure search', 'tainacan')}  
                                 </ToolbarButton>
-                            </Toolbar>
+                            </ToolbarGroup>
                         : null }
                     </BlockControls>
                 </div>

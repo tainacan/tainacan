@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { IconButton, Button, ToggleControl, Placeholder, Toolbar, PanelBody, ToolbarButton } = wp.components;
+const { IconButton, Button, ToggleControl, Placeholder, Toolbar, ToolbarGroup, PanelBody, ToolbarButton } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -216,7 +216,7 @@ registerBlockType('tainacan/terms-list', {
                     <BlockControls>
                         <Toolbar controls={ layoutControls } />
                         { selectedTermsHTML.length ?
-                            <Toolbar>
+                            <ToolbarGroup>
                                 <ToolbarButton onClick={ openTermsModal } >
                                     <p>
                                         <svg width="24" height="24" viewBox="0 -3 12 17">
@@ -226,7 +226,7 @@ registerBlockType('tainacan/terms-list', {
                                     </p>&nbsp;
                                     {  __( 'Select terms', 'tainacan' ) }
                                 </ToolbarButton>
-                            </Toolbar>
+                            </ToolbarGroup>
                         : null }
                     </BlockControls>
                 </div>
