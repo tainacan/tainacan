@@ -119,6 +119,10 @@ class Media {
 
 				# Exceute the download - note we DO NOT put the result into a variable!
 				curl_exec($ch);
+				if (curl_errno($ch)) {
+					$error_msg = curl_error($ch);
+					throw new \Exception( "[save_remote_file]:" . $error_msg);
+				}
 
 				# Close CURL
 				curl_close($ch);
