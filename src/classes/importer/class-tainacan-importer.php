@@ -936,7 +936,7 @@ abstract class Importer {
                 $children_compound = $this->create_new_metadata($children_metadata_description, $collection_id, $parent_compound->get_id());
                 if ( $children_compound == false )
                     return false;
-                    $children_mapping[$children_compound->get_id()] = $children_metadata_description;
+                $children_mapping[$children_compound->get_id()] = $children_metadata_description;
             }
             return [$parent_compound, $children_mapping];
         }

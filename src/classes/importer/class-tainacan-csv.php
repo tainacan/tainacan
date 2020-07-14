@@ -965,15 +965,18 @@ class CSV extends Importer {
 
 					if( !is_numeric($metadatum_id) ) {
 						$metadatum = $this->create_new_metadata( $header, $collection['id']);
+						if ( $metadatum == false ) {
+							$this->add_error_log( __("Error on creating metadata metadata, please review the metadata description.", 'tainacan') );
+							$this->abort();
+							return false;
+						}
 						if( is_object($metadatum) && $metadatum instanceof \Tainacan\Entities\Metadatum ){
-							unset($collection['mapping'][$metadatum_id]);
 							$collection['mapping'][$metadatum->get_id()] = $header;
 						} elseif ( is_array($metadatum) && sizeof($metadatum) == 2) {
 							$parent_header = key($header);
-							unset($collection['mapping'][$metadatum_id]);
 							$collection['mapping'][$metadatum[0]->get_id()] = [$parent_header=>$metadatum[1]];
 						}
-
+						unset($collection['mapping'][$metadatum_id]);
 					}
 				}
 
@@ -995,6 +998,7 @@ class CSV extends Importer {
 
 			$this->remove_collection($collection['id']);
 			$this->collections[] = $collection;
+			return true;
 		}
 	}
 
