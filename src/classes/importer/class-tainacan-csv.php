@@ -83,7 +83,7 @@ class CSV extends Importer {
 			if( $rawColumns ) {
 				foreach( $rawColumns as $index => $rawColumn ) {
 					if( strpos($rawColumn,'special_') === 0 ) {
-						if( in_array( $rawColumn, ['special_document', 'special_attachments', 'special_item_status', 'special_item_id', 'special_comment_status'] ) ) {
+						if( in_array( $rawColumn, ['special_document', 'special_attachments', 'special_item_status', 'special_item_id', 'special_comment_status', 'special_attachments|APPEND', 'special_attachments|REPLACE'] ) ) {
 							$columns[] = $rawColumn;
 						}
 					}
