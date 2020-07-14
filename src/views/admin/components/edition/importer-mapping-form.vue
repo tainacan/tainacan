@@ -260,15 +260,16 @@
             <div class="field is-grouped form-submit">
                 <div class="control">
                     <button
-                            id="button-cancel-collection-creation"
+                            id="button-cancel-importer-mapping"
                             class="button is-outlined"
                             type="button"
                             @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                 </div>
+                <p class="help is-danger">{{ formErrorMessage }}</p>
                 <div class="control">
                     <button
                             :disabled="sessionId == undefined || importer == undefined"
-                            id="button-submit-collection-creation"
+                            id="button-submit-importer-mapping"
                             @click.prevent="onRunImporter"
                             :class="{'is-loading': isLoadingRun }"
                             class="button is-success">{{ $i18n.get('run') }}</button>
@@ -397,7 +398,8 @@ export default {
             backgroundProcess: undefined,
             metadataSearchCancel: undefined,
             showTitlePromptModal: false,
-            selectedTitle: undefined
+            selectedTitle: undefined,
+            formErrorMessage: ''
         }
     },
     computed: {
@@ -464,6 +466,7 @@ export default {
             
             // Puts loading on Draft Importer creation
             this.isLoading = true;
+            this.formErrorMessage = '';
 
             // Creates draft Importer
             this.fetchImporter(this.sessionId)
@@ -474,6 +477,7 @@ export default {
 
                     this.isLoading = false;
                     this.isLoadingSourceInfo = true;
+                    this.formErrorMessage = '';
 
                     this.fetchImporterSourceInfo(this.sessionId)
                         .then(importerSourceInfo => {    
@@ -485,11 +489,15 @@ export default {
                         })
                         .catch((errors) => {
                             this.isLoadingSourceInfo = false;
+                            this.formErrorMessage = errors.error_message;
                             this.$console.log(errors);
                         });
                     
                 })
-                .catch(error => this.$console.error(error));
+                .catch(error => {
+                    this.$console.error(error);
+                    this.formErrorMessage = error.error_message;
+                });
         },
         loadMetadata() {
             // Generates options for metadata listing
@@ -505,6 +513,9 @@ export default {
                 isContextEdit: false,
                 parent: 'any' 
             }).then((resp) => {
+                
+                this.formErrorMessage = '';
+
                 resp.request
                     .then((metadata) => {
                         this.collectionMetadata = JSON.parse(JSON.stringify(metadata));
@@ -519,6 +530,7 @@ export default {
                     })
                     .catch((error) => {
                         this.$console.error(error);
+                        this.formErrorMessage = error.error_message;
                         this.isFetchingCollectionMetadata = false;
                     });
                     
@@ -598,6 +610,8 @@ export default {
             }
         
             this.isLoadingRun = true;
+            this.formErrorMessage = '';
+
             this.updateImporterCollection({ sessionId: this.sessionId, collection: this.mappedCollection })
                 .then(updatedImporter => {    
                     this.importer = updatedImporter;
@@ -606,10 +620,14 @@ export default {
                 .catch((errors) => {
                     this.isLoadingRun = false;
                     this.$console.log(errors);
+
+                    this.formErrorMessage = errors.error_message;
                 });
 
         },
         finishRunImporter() {
+            this.formErrorMessage = '';
+
             this.runImporter(this.sessionId)
                 .then(backgroundProcess => {
                     this.backgroundProcess = backgroundProcess;
@@ -619,9 +637,13 @@ export default {
                 .catch((errors) => {
                     this.isLoadingRun = false;
                     this.$console.log(errors);
+
+                    this.formErrorMessage = errors.error_message;
                 });
         },
         onSelectCollectionChildMetadata(selectedMetadatum, sourceMetadatum, parentId, parentSource) {
+
+            this.formErrorMessage = '';
             
             if (this.mappedCollection['mapping'][parentId] && this.mappedCollection['mapping'][parentId] && this.mappedCollection['mapping'][parentId][parentSource]) {
                 let parentMappings = Array.isArray(this.mappedCollection['mapping'][parentId][parentSource]) ? {} : this.mappedCollection['mapping'][parentId][parentSource];
@@ -644,6 +666,9 @@ export default {
             }
         },
         onSelectCollectionMetadata(selectedMetadatum, sourceMetadatum, isCompound, childSourceMetadata) {
+
+            this.formErrorMessage = '';
+
             let removedKey = '';
             for (let key in this.mappedCollection['mapping']) {
                 if (this.mappedCollection['mapping'][key] == sourceMetadatum)
@@ -670,6 +695,9 @@ export default {
             this.collectionMetadata.pop();
         },
         onSelectMetadatumType(newMetadatum) {
+            
+            this.formErrorMessage = '';
+
             this.sendMetadatum({
                 collectionId: this.collectionId, 
                 name: newMetadatum.name, metadatumType: 

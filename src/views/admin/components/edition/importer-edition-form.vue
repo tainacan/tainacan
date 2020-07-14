@@ -147,7 +147,7 @@
             <div class="columns is-gapless field is-grouped form-submit">
                 <div class="control">
                     <button
-                            id="button-cancel-collection-creation"
+                            id="button-cancel-importer-creation"
                             class="button is-outlined"
                             type="button"
                             @click="cancelBack">{{ $i18n.get('cancel') }}</button>
@@ -165,7 +165,7 @@
                                     (importer.accepts.file && !importer.accepts.url && !importerFile) || 
                                     (!importer.accepts.file && importer.accepts.url && !url) ||
                                     (importer.accepts.file && importer.accepts.url && !importerFile && !url)"
-                            id="button-submit-collection-creation"
+                            id="button-submit-importer-creation"
                             @click.prevent="onFinishImporter()"
                             :class="{'is-loading': isLoadingRun }"
                             class="button is-success">{{ $i18n.get('run') }}</button>
