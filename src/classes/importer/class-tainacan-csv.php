@@ -689,7 +689,7 @@ class CSV extends Importer {
 		$Tainacan_Item_Metadata->disable_logs();
 		if ( is_numeric($this->get_transient('item_id')) ) {
 			$item = $Tainacan_Items->fetch( (int) $this->get_transient('item_id') );
-			if($item->get_collection()->get_id() != $collection->get_id()) {
+			if($item instanceof Entities\Item && ($item->get_collection() == null || $item->get_collection()->get_id() != $collection->get_id() ) ) {
 				$this->add_log('item with ID ' . $this->get_transient('item_id') . ' not found in collection ' . $collection->get_name() );
 				$item = new Entities\Item();
 			}
