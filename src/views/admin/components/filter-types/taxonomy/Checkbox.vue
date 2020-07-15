@@ -82,12 +82,18 @@
                 if (!isEqual)
                     this.onSelect();
             },
-            facetsFromItemSearch() {
-                if (this.isUsingElasticSearch)
-                    this.loadOptions();
+            facetsFromItemSearch: {
+                handler() {
+                    if (this.isUsingElasticSearch)
+                        this.loadOptions();
+                },
+                immediate: true
             },
-            isLoadingItems() {
-                this.isLoadingOptions = this.isLoadingItems;
+            isLoadingItems: {
+                handler() {
+                    this.isLoadingOptions = this.isLoadingItems;
+                },
+                immediate: true
             },
             'query'() {
                 this.loadOptions();

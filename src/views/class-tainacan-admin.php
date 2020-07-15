@@ -104,6 +104,7 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 
 		wp_enqueue_script( 'tainacan-roles', $TAINACAN_BASE_URL . '/assets/js/roles.js', ['underscore', 'wp-i18n'], TAINACAN_VERSION, true );
+		wp_set_script_translations('tainacan-roles', 'tainacan');
 
 		$settings = $this->get_admin_js_localization_params();
 		wp_localize_script( 'tainacan-roles', 'tainacan_plugin', $settings );

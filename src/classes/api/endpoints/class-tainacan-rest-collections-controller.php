@@ -256,7 +256,7 @@ class REST_Collections_Controller extends REST_Controller {
 			}
 
 			// Clear private metadata from metadata_order
-			if ( is_array( $item_arr['metadata_order'] ) && ! current_user_can( 'tnc_col_' . $item->get_id() . '_read_private_metadata' ) ) {
+			if ( isset($item_arr['metadata_order']) && is_array( $item_arr['metadata_order'] ) && ! current_user_can( 'tnc_col_' . $item->get_id() . '_read_private_metadata' ) ) {
 
 				$metadata = $item->get_metadata();
 				$meta_ids = array_map(
@@ -275,7 +275,7 @@ class REST_Collections_Controller extends REST_Controller {
 			}
 
 			// Clear private filters from filters_order
-			if ( is_array( $item_arr['filters_order'] ) && ! current_user_can( 'tnc_col_' . $item->get_id() . '_read_private_filters' ) ) {
+			if ( isset($item_arr['filters_order']) && is_array( $item_arr['filters_order'] ) && ! current_user_can( 'tnc_col_' . $item->get_id() . '_read_private_filters' ) ) {
 
 				$filters = $item->get_filters();
 				$filters_ids = array_map(

@@ -48,8 +48,11 @@ export const dynamicFilterTypeMixin = {
         }
     },
     watch: {
-        isLoadingItems() {
-            this.isLoadingOptions = this.isLoadingItems;
+        isLoadingItems: {
+            handler() {
+                this.isLoadingOptions = this.isLoadingItems;
+            },
+            immediate: true
         }
     },
     methods: {
@@ -128,9 +131,10 @@ export const dynamicFilterTypeMixin = {
             } else {
                 let callback = new Promise((resolve) => {
                     for (const facet in this.facetsFromItemSearch) {
-                        if (facet == this.filter.id)
+                        if (facet == this.filter.id) {
                             this.prepareOptionsForPlainText(this.facetsFromItemSearch[facet], search, valuesToIgnore, isInCheckboxModal);
-                        }   
+                        }
+                    }   
                     resolve();
                 });
                 return new Object ({

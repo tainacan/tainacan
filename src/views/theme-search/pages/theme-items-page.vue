@@ -408,6 +408,7 @@
                 :custom-class="'tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"
                 :can-cancel="hideHideFiltersButton ? ['x', 'outside'] : ['x', 'escape', 'outside']">
             <filters-items-list
+                    :is-loading-items="isLoadingItems"
                     :autofocus="filtersAsModal"
                     :tabindex="filtersAsModal ? -1 : 0"
                     :aria-modal="filtersAsModal"

@@ -923,10 +923,23 @@ abstract class Importer {
      * @return bool
      * @throws \Exception
      */
-    public function create_new_metadata( $metadata_description, $collection_id){
+    public function create_new_metadata( $metadata_description, $collection_id, $parent_id = null){
         $taxonomy_repo = \Tainacan\Repositories\Taxonomies::get_instance();
         $metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
 
+        if(is_array($metadata_description)) {
+            $parent_metadata_description = key($metadata_description);
+            $parent_compound = $this->create_new_metadata($parent_metadata_description, $collection_id);
+            if($parent_compound == false) return false;
+            $children_mapping = [];
+            foreach($metadata_description[$parent_metadata_description] as $children_metadata_description) {
+                $children_compound = $this->create_new_metadata($children_metadata_description, $collection_id, $parent_compound->get_id());
+                if ( $children_compound == false )
+                    return false;
+                $children_mapping[$children_compound->get_id()] = $children_metadata_description;
+            }
+            return [$parent_compound, $children_mapping];
+        }
         $properties =  array_filter( explode('|', $metadata_description) );
 
         if( is_array($properties) && count($properties) < 2 ){
@@ -953,6 +966,14 @@ abstract class Importer {
         $type = ucfirst($type);
         $newMetadatum->set_metadata_type('Tainacan\Metadata_Types\\'.$type);
         $newMetadatum->set_collection_id( (isset($collection_id)) ? $collection_id : 'default');
+        $newMetadatum->set_status('auto-draft');
+        if($newMetadatum->validate()) {
+            $newMetadatum = $metadata_repo->insert( $newMetadatum );
+        } else {
+            $this->add_log('Error creating metadata ' . $name . ' in collection ' . $collection_id);
+            $this->add_log($newMetadatum->get_errors());
+            return false;
+        }
         $newMetadatum->set_status('publish');
 
         if( strcmp(strtolower($type), "taxonomy") === 0 ){
@@ -1001,12 +1022,16 @@ abstract class Importer {
             $newMetadatum->set_collection_key('no');
         }
 
+        if(isset($parent_id) && $parent_id != null) {
+            $newMetadatum->set_parent($parent_id);
+        }
+
         if($newMetadatum->validate()){
             $inserted_metadata = $metadata_repo->insert( $newMetadatum );
 
             $this->add_log('Metadata created: ' . $inserted_metadata->get_name());
             return $inserted_metadata;
-        } else{
+        } else {
             $this->add_log('Error creating metadata ' . $name . ' in collection ' . $collection_id);
             $this->add_log($newMetadatum->get_errors());
 

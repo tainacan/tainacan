@@ -72,6 +72,7 @@
                     </div>
                     <template v-if="taxonomyFilter.length > 0">
                         <tainacan-filter-item
+                                :is-loading-items="isLoadingItems"
                                 v-show="!isMenuCompressed"        
                                 :query="getQuery"
                                 v-for="(filter, filterIndex) in taxonomyFilter"
@@ -118,6 +119,7 @@
                     </div>
                     <template v-if="taxonomyFilter.length > 0">
                         <tainacan-filter-item
+                                :is-loading-items="isLoadingItems"
                                 v-show="!isMenuCompressed"        
                                 :query="getQuery"
                                 v-for="(filter, filterIndex) in taxonomyFilter"
@@ -171,6 +173,7 @@
                     </div>
                     <template v-if="repositoryCollectionFilter.length > 0">
                         <tainacan-filter-item
+                                :is-loading-items="isLoadingItems"
                                 v-show="!isMenuCompressed"        
                                 :query="getQuery"
                                 v-for="(filter, filterIndex) in repositoryCollectionFilter"
@@ -217,6 +220,7 @@
                     </div>
                     <template v-if="repositoryCollectionFilter.length > 0">
                         <tainacan-filter-item
+                                :is-loading-items="isLoadingItems"
                                 v-show="!isMenuCompressed"        
                                 :query="getQuery"
                                 v-for="(filter, filterIndex) in repositoryCollectionFilter"
@@ -238,6 +242,7 @@
             <!-- COLLECTION ITEMS PAGE FILTERS -->
             <template v-else>
                 <tainacan-filter-item
+                        :is-loading-items="isLoadingItems"
                         v-show="!isMenuCompressed"        
                         :query="getQuery"
                         v-for="(filter, index) in filters"
@@ -282,7 +287,8 @@
         props: {
             collectionId: String,
             isRepositoryLevel: Boolean,
-            taxonomy: String
+            taxonomy: String,
+            isLoadingItems: Boolean
         },
         data() {
             return {
@@ -293,6 +299,7 @@
                 collectionNameSearchCancel: undefined,
                 filtersSearchCancel: undefined,
                 repositoryFiltersSearchCancel: undefined,
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
         },
         computed: {
@@ -436,7 +443,7 @@
                 }
 
                 // On repository level we also fetch collection filters
-                if (this.isRepositoryLevel) {
+                if (!this.taxonomy && this.isRepositoryLevel) {
                     
                     // Cancels previous Request
                     if (this.repositoryFiltersSearchCancel != undefined)

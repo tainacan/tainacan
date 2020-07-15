@@ -41,9 +41,12 @@
                 if (!this.isUsingElasticSearch)
                     this.loadOptions();
             },
-            facetsFromItemSearch() {
-                if (this.isUsingElasticSearch)
-                    this.loadOptions();
+            facetsFromItemSearch: {
+                handler() {
+                    if (this.isUsingElasticSearch)
+                        this.loadOptions();
+                },
+                immediate: true
             }
         },
         mounted(){           

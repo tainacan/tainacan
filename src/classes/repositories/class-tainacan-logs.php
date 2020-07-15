@@ -309,41 +309,44 @@ class Logs extends Repository {
 		$entity_post = get_post($attachment_post->post_parent);
 
 		if ( $entity_post ) {
-
-			$entity = Repository::get_entity_by_post( $entity_post );
-
-			if ( $entity ) {
-				
-				$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
-				
-				$log = new Entities\Log();
-				
-				if ( $entity instanceof Entities\Collection ) {
-					$collection_id = $entity->get_id();
-					$log->set_title( sprintf(__( 'File attached to Collection "%s" was removed', 'tainacan'), $entity->get_name() ) );
+			try {
+				$entity = Repository::get_entity_by_post( $entity_post );
+			
+				if ( $entity ) {
+					
+					$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
+					
+					$log = new Entities\Log();
+					
+					if ( $entity instanceof Entities\Collection ) {
+						$collection_id = $entity->get_id();
+						$log->set_title( sprintf(__( 'File attached to Collection "%s" was removed', 'tainacan'), $entity->get_name() ) );
+					}
+					if ( $entity instanceof Entities\Item ) {
+						$log->set_item_id($entity->get_id());
+						$log->set_title( sprintf( __( 'File attached to Item "%s" was removed' , 'tainacan'), $entity->get_title() ) );
+					}
+					
+					$object_type = get_class($entity);
+					$object_id = $entity->get_id();
+					
+					$preapred = [
+						'id'          => $attachment_id,
+						'title'       => $attachment_post->post_title,
+						'description' => $attachment_post->post_content,
+					];
+					
+					$log->set_collection_id($collection_id);
+					$log->set_object_type($object_type);
+					$log->set_object_id($object_id);
+					$log->set_old_value($preapred);
+					$log->set_action('delete-attachment');
+					
+					$this->current_attachment_delete_log = $log;
+					
 				}
-				if ( $entity instanceof Entities\Item ) {
-					$log->set_item_id($entity->get_id());
-					$log->set_title( sprintf( __( 'File attached to Item "%s" was removed' , 'tainacan'), $entity->get_title() ) );
-				}
-				
-				$object_type = get_class($entity);
-				$object_id = $entity->get_id();
-				
-				$preapred = [
-					'id'          => $attachment_id,
-					'title'       => $attachment_post->post_title,
-					'description' => $attachment_post->post_content,
-				];
-				
-				$log->set_collection_id($collection_id);
-				$log->set_object_type($object_type);
-				$log->set_object_id($object_id);
-				$log->set_old_value($preapred);
-				$log->set_action('delete-attachment');
-				
-				$this->current_attachment_delete_log = $log;
-				
+			} catch (\Exception $e) {
+				error_log("[pre_delete_attachment]:" . $e->getMessage());
 			}
 			
 		}
