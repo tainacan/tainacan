@@ -46,19 +46,23 @@ class Media {
 	 * @return Int|false    Attachment ID. False on failure
 	 */
 	public function insert_attachment_from_url($url, $post_id = null) {
-		$filename = $this->save_remote_file($url);
+		try {
+			$filename = $this->save_remote_file($url);
 
-		if( !file_exists($filename) ) {
+			if( !file_exists($filename) ) {
+				return false;
+			}
+
+			$file = file_get_contents($filename);
+
+			if (false === $file) {
+				return false;
+			}
+
+			return $this->insert_attachment_from_blob($file, basename($url), $post_id);
+		} catch (\Exception $e) {
 			return false;
 		}
-
-		$file = file_get_contents($filename);
-
-		if (false === $file) {
-			return false;
-		}
-
-		return $this->insert_attachment_from_blob($file, basename($url), $post_id);
 
 	}
 
@@ -121,6 +125,10 @@ class Media {
 				curl_exec($ch);
 				if (curl_errno($ch)) {
 					$error_msg = curl_error($ch);
+					# Close CURL
+					curl_close($ch);
+					# Close the file pointer
+					fclose(self::$file_handle);
 					throw new \Exception( "[save_remote_file]:" . $error_msg);
 				}
 
