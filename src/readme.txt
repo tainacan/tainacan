@@ -4,7 +4,7 @@ Tags: museums, libraries, archives, GLAM, collections, repository
 Requires at least: 4.8
 Tested up to: 5.4
 Requires PHP: 5.6
-Stable tag: 0.16.2
+Stable tag: 0.16.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 

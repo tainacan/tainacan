@@ -586,7 +586,7 @@
                 }
             }
             .actions-cell {
-                width: 46px;
+                width: 52px;
             }
             .actions-container {
                 align-items: center;

@@ -95,11 +95,10 @@ class CSV extends Exporter {
 		foreach($metadata_type_options['children_order'] as $order) {
 			$initial_values[$order['id']] = "";
 		}
-		$values = $meta->get_value();
+		$values = ($meta->get_metadatum()->is_multiple() ? $meta->get_value(): [$meta->get_value()]);
 		$array_meta = [];
 		foreach($values as $value) {
-
-			$assoc_arr = array_reduce($value, function ($result, $item) {
+			$assoc_arr = array_reduce( $value, function ($result, $item) {
 				$metadatum_id = $item->get_metadatum()->get_id();
 				if ($item->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Relationship') {
 					$result[$metadatum_id] = $item->get_value();
@@ -109,9 +108,7 @@ class CSV extends Exporter {
 				return $result;
 			}, $initial_values);
 			
-			$temp = implode($delimiter, $assoc_arr);
-			$array_meta[] = $temp;
-			//$array_meta[] = "${enclosure}${temp}${enclosure}";
+			$array_meta[] = $this->str_putcsv($assoc_arr, $delimiter, $enclosure);
 		}
 		return implode($multivalued_delimiter, $array_meta);
 	}
@@ -266,11 +263,11 @@ class CSV extends Exporter {
 		}
 	}
 
-	function str_putcsv($item, $delimiter = ',', $enclosure = '"') {
+	function str_putcsv($input, $delimiter = ',', $enclosure = '"') {
 		// Open a memory "file" for read/write...
 		$fp = fopen('php://temp', 'r+');
 		
-		fputcsv($fp, $item, $delimiter, $enclosure);
+		fputcsv($fp, $input, $delimiter, $enclosure);
 		rewind($fp);
 		//Getting detailed stats to check filesize:
 		$fstats = fstat($fp);

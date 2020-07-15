@@ -618,7 +618,8 @@ class Elastic_Press {
 									"order" => "asc",
 									"script" => [
 										"lang"		=> "painless",
-										"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_name.id'][i]; }}",
+										"source" => "if ( doc.containsKey('$field.term_name.id') ) {List l = new ArrayList(doc['$field.term_name.id']); l.removeIf(item->!item.endsWith('.parent=$parent')); return l;} return[];"
+										//"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_name.id'][i]; }}",
 										//"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
 										//"source"	=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 									]
