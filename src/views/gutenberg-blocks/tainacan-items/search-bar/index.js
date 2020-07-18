@@ -17,7 +17,7 @@ registerBlockType('tainacan/search-bar', {
                 height="24px"
                 width="24px">
             <path 
-                fill="var(--tainacan-block-primary, $primary)"
+                fill="#298596"
                 d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
                 c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
                 c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
@@ -163,7 +163,9 @@ registerBlockType('tainacan/search-bar', {
                                     style={{ color: collectionTextColor ? collectionTextColor : '' }}
                                     class="search-bar-collection-header-title">
                                     { showCollectionLabel ? <span class="label">{ __('Collection', 'tainacan') }</span> : null }
-                                    <h3 style={{ fontSize: collectionTextSize ? collectionTextSize + 'rem' : '2rem' }}>
+                                    <h3 
+                                        class="has-text-color"
+                                        style={{ fontSize: collectionTextSize ? collectionTextSize + 'rem' : '2rem' }}>
                                         { collectionName ? collectionName : '' }
                                     </h3>
                                 </div>
@@ -557,7 +559,9 @@ registerBlockType('tainacan/search-bar', {
                                     style={{ color: collectionTextColor ? collectionTextColor : '' }}
                                     class="search-bar-collection-header-title">
                                     { showCollectionLabel ? <span class="label">{ __('Collection', 'tainacan') }</span> : null }
-                                    <h3 style={{ fontSize: collectionTextSize ? collectionTextSize + 'rem' : '2rem' }}>
+                                    <h3 
+                                        class="has-text-color"
+                                        style={{ fontSize: collectionTextSize ? collectionTextSize + 'rem' : '2rem' }}>
                                         { collectionName ? collectionName : '' }
                                     </h3>
                                 </div>
