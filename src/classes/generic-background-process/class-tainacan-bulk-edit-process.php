@@ -181,24 +181,13 @@ class Bulk_Edit_Process extends Generic_Process {
 	}
 
 	private function bulk_list_get_item($count) {
-		$args = [
-			'perpage' => 1,
-			'offset' => $count,
-			'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash'),
-			'meta_query' => array(
-				array(
-					'key' => $this->meta_key,
-					'value' => $this->get_group_id(),
-					'compare' => '=',
-				)
-			)
-		];
-		$item = $this->items_repository->fetch($args, [], 'WP_Query');
-		$this->set_current_step_total($item->found_posts);
-		if ($item->have_posts()) {
-			$item->the_post();
-			$item = new \Tainacan\Entities\Item($item->post);
-			return $item;
+		global $wpdb;
+		$results = $wpdb->get_results( "select post_id, meta_key from $wpdb->postmeta where meta_key = '{$this->meta_key}' AND meta_value = '" . $this->get_group_id() . "' ORDER BY post_id DESC LIMIT $count, 1", ARRAY_A );
+		foreach($results as $meta) {
+			$item = $this->items_repository->fetch((int)$meta['post_id'], [], 'OBJECT');
+			if($item instanceof \Tainacan\Entities\Item) {
+				return $item;
+			}
 		}
 		return false;
 	}
