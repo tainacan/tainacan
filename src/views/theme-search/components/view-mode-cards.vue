@@ -37,7 +37,7 @@
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-card"
-                        :href="item.url">                                
+                        :href="getItemLink(item.url)">                                
                     <!-- Title -->
                     <div class="metadata-title">
                         <p 
@@ -112,32 +112,20 @@
 </template>
 
 <script>
+import { viewModesMixin } from '../js/view-modes-mixin.js';
 
 export default {
     name: 'ViewModeCards',
+    mixins: [
+        viewModesMixin
+    ],
     props: {
         collectionId: Number,
         displayedMetadata: Array,
         items: Array,
-        isLoading: false,
-        shouldUseSmallCard: false
-    },
-    data () {
-        return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png'
-        }
+        isLoading: false
     },
     methods: {
-        renderMetadata(itemMetadata, column) {
-
-            let metadata = itemMetadata[column.slug] != undefined ? itemMetadata[column.slug] : false;
-
-            if (!metadata) {
-                return '';
-            } else {
-                return metadata.value_as_html;
-            }
-        },
         getLimitedDescription(description) {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 155 : 330;
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
