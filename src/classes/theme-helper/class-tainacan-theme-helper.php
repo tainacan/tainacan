@@ -648,57 +648,40 @@ class Theme_Helper {
 
 		// Adjusts the args to obtain only on one item per request with the correct offset
 		$args = $_GET;
-		
-		$curent_perpage = 12;
-		if (isset($args['perpage'])) {
-			$current_perpage = (int)$args['perpage'];
-		}
-		$args['posts_per_page'] = '1';
+		$current_perpage = isset($args['perpage']) ? (int)$args['perpage'] : 12;
+		$current_page    = isset($args['paged'])   ? (int)$args['paged']   : 1;
 
-		$current_page = 1;
-		if (isset($args['paged'])) {
-			$current_page = (int)$args['paged'];
-		}
-
-		// Fetches Previous Item
-		$args['paged'] = (($current_page - 1) * $curent_perpage) + $index - 1;
-
+		$args['perpage'] = '1';
+		$args['paged'] = (($current_page - 1) * $current_perpage) + $index - 1; // Fetches Previous Item
 		if ($args['paged'] > 0) {
 			$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
-			
 			if ($items && $items->found_posts && $items->have_posts()) {
-				while ( $items->have_posts() ) {
-					$items->the_post();
-					$item = new Entities\Item($items->post);
-	
-					if (!empty($item)) {
-						$adjacent_items['previous'] = [
-							'url' => get_permalink( $item->get_id() ),
-							'title' => $item->get_title(),
-							'thumbnail' => $item->get_thumbnail()
-						];
-					}
-				}
-			}
-		}
-
-		// Fetches Next Item
-		$args['paged'] = (($current_page - 1) * $curent_perpage) + $index + 1;
-
-		$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
-		
-		if ($items && $items->found_posts && $items->have_posts()) {
-			while ( $items->have_posts() ) {
 				$items->the_post();
 				$item = new Entities\Item($items->post);
 
 				if (!empty($item)) {
-					$adjacent_items['next'] = [
+					$adjacent_items['previous'] = [
 						'url' => get_permalink( $item->get_id() ),
 						'title' => $item->get_title(),
 						'thumbnail' => $item->get_thumbnail()
 					];
 				}
+			}
+		}
+
+		// Fetches Next Item
+		$args['paged'] = (($current_page - 1) * $current_perpage) + $index + 1;
+		$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
+		if ($items && $items->found_posts && $items->have_posts()) {
+			$items->the_post();
+			$item = new Entities\Item($items->post);
+
+			if (!empty($item)) {
+				$adjacent_items['next'] = [
+					'url' => get_permalink( $item->get_id() ),
+					'title' => $item->get_title(),
+					'thumbnail' => $item->get_thumbnail()
+				];
 			}
 		}
 		
