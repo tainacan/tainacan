@@ -629,7 +629,7 @@ class Theme_Helper {
 	 * @return array containing the next and previous item
 	 */
 
-	public function get_adjacent_items($index) {
+	public function get_adjacent_items() {
 
 		// Array with the link results. If nothing goes well here we just don't have any link :(
 		$adjacent_items = [
@@ -648,14 +648,17 @@ class Theme_Helper {
 
 		// Adjusts the args to obtain only on one item per request with the correct offset
 		$args = $_GET;
-		$current_perpage = isset($args['perpage']) ? (int)$args['perpage'] : 12;
-		$current_page    = isset($args['paged'])   ? (int)$args['paged']   : 1;
+		$args['posts_per_page'] = '1';
 
-		$args['perpage'] = '1';
-		$args['paged'] = (($current_page - 1) * $current_perpage) + $index - 1; // Fetches Previous Item
-		if ($args['paged'] > 0) {
+		if (isset($args['pos'])) {
+
+			$current_position = (int)$args['pos'];
+			unset($args['pos']);
+
+			$args['paged'] = $current_position - 1;
 			$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
-			if ($items && $items->found_posts && $items->have_posts()) {
+
+			if ($items) {
 				$items->the_post();
 				$item = new Entities\Item($items->post);
 
@@ -667,24 +670,24 @@ class Theme_Helper {
 					];
 				}
 			}
-		}
 
-		// Fetches Next Item
-		$args['paged'] = (($current_page - 1) * $current_perpage) + $index + 1;
-		$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
-		if ($items && $items->found_posts && $items->have_posts()) {
-			$items->the_post();
-			$item = new Entities\Item($items->post);
+			// Fetches Next Item
+			$args['paged'] = $current_position + 1;
+			$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
 
-			if (!empty($item)) {
-				$adjacent_items['next'] = [
-					'url' => get_permalink( $item->get_id() ),
-					'title' => $item->get_title(),
-					'thumbnail' => $item->get_thumbnail()
-				];
+			if ($items) {
+				$items->the_post();
+				$item = new Entities\Item($items->post);
+
+				if (!empty($item)) {
+					$adjacent_items['next'] = [
+						'url' => get_permalink( $item->get_id() ),
+						'title' => $item->get_title(),
+						'thumbnail' => $item->get_thumbnail()
+					];
+				}
 			}
 		}
-		
 		return $adjacent_items;
 	}
 	

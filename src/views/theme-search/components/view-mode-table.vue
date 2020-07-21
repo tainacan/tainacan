@@ -107,7 +107,7 @@
                                                                                                            column.metadata_type_object.primitive_type == 'compound' ||
                                                                                                            column.metadata_type_object.related_mapped_prop == 'description') : false,
                                 }">
-                            <a :href="getItemLink(item.url)">
+                            <a :href="getItemLink(item.url, index)">
                                 <p
                                         v-tooltip="{
                                             delay: {

@@ -37,7 +37,7 @@
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-card"
-                        :href="getItemLink(item.url)">                                
+                        :href="getItemLink(item.url, index)">                                
                     <!-- Title -->
                     <div class="metadata-title">
                         <p 

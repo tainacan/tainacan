@@ -43,7 +43,7 @@
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-masonry-item" 
-                        :href="getItemLink(item.url)">
+                        :href="getItemLink(item.url, index)">
 
                     <!-- Title -->
                     <div class="metadata-title">

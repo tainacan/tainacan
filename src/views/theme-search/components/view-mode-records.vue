@@ -40,11 +40,11 @@
                     class="tainacan-records-container">
                 <a 
                         role="listitem"
-                        :href="getItemLink(item.url)"
+                        :href="getItemLink(item.url, index)"
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-record">
-                    <!-- <div :href="getItemLink(item.url)"> -->
+                    <!-- <div :href="getItemLink(item.url, index)"> -->
                         <!-- Title -->
                         <p 
                                 v-tooltip="{

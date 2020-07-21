@@ -18,10 +18,11 @@ export const viewModesMixin = {
         }
     },
     methods: {
-        getItemLink(itemUrl) {
-            if (this.queries)
+        getItemLink(itemUrl, index) {
+            if (this.queries) {
+                this.queries['pos'] = ((this.queries['paged'] - 1) * this.queries['perpage']) + index;
                 return itemUrl + '?' + qs.stringify(this.queries);
-            
+            }
             return itemUrl;
         },
         renderMetadata(itemMetadata, metadatum) {
