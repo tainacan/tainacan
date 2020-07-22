@@ -648,44 +648,48 @@ class Theme_Helper {
 
 		// Adjusts the args to obtain only on one item per request with the correct offset
 		$args = $_GET;
-		$args['posts_per_page'] = '1';
-
+		
 		if (isset($args['pos'])) {
-
-			$current_position = (int)$args['pos'];
+			$args['posts_per_page'] = '1';
+			$current_position = (int)$args['pos'] + 1;
 			unset($args['pos']);
 
-			$args['paged'] = $current_position - 1;
-			$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
+			// Fetch Previous Item
+			if($current_position > 1) {
+				$args['paged'] = $current_position - 1;
+				$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
 
-			if ($items) {
-				$items->the_post();
-				$item = new Entities\Item($items->post);
+				if ($items->have_posts()) {
+					$items->the_post();
+					$item = new Entities\Item($items->post);
 
-				if (!empty($item)) {
-					$adjacent_items['previous'] = [
-						'url' => get_permalink( $item->get_id() ),
-						'title' => $item->get_title(),
-						'thumbnail' => $item->get_thumbnail()
-					];
+					if (!empty($item)  && $item instanceof \Tainacan\Entities\Item) {
+						$adjacent_items['previous'] = [
+							'url' => get_permalink( $item->get_id() ) . '?' . http_build_query(array_merge($_GET, ['pos'=> $current_position-2])),
+							'title' => $item->get_title(),
+							'thumbnail' => $item->get_thumbnail()
+						];
+					}
+					\wp_reset_postdata();
 				}
 			}
 
-			// Fetches Next Item
+			// Fetch Next Item
 			$args['paged'] = $current_position + 1;
 			$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
 
-			if ($items) {
+			if ($items->have_posts()) {
 				$items->the_post();
 				$item = new Entities\Item($items->post);
 
-				if (!empty($item)) {
+				if (!empty($item) && $item instanceof \Tainacan\Entities\Item) {
 					$adjacent_items['next'] = [
-						'url' => get_permalink( $item->get_id() ),
+						'url' => get_permalink( $item->get_id() ) . '?' . http_build_query(array_merge($_GET, ['pos'=> $current_position])),
 						'title' => $item->get_title(),
 						'thumbnail' => $item->get_thumbnail()
 					];
 				}
+				\wp_reset_postdata();
 			}
 		}
 		return $adjacent_items;
