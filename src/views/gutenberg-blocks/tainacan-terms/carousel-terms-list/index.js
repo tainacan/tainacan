@@ -2,9 +2,9 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody } = wp.components;
+const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
 
-const { InspectorControls } = wp.editor;
+const { InspectorControls, BlockControls } = wp.editor;
 
 import TermsModal from '../terms-list/terms-modal.js';
 import tainacan from '../../js/axios.js';
@@ -20,12 +20,17 @@ registerBlockType('tainacan/carousel-terms-list', {
                 height="24px"
                 width="24px">
             <path
-                fill="var(--tainacan-block-primary, $primary)"
+                fill="#298596"
                 d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'terms', 'tainacan' ), __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ),  __( 'taxonomy', 'tainacan' ) ],
     description: __('List terms on a Carousel, showing their thumbnails or a preview of items.', 'tainacan'),
+    example: {
+        attributes: {
+            content: 'preview'
+        }
+    },
     attributes: {
         content: {
             type: 'array',
@@ -286,8 +291,33 @@ registerBlockType('tainacan/carousel-terms-list', {
         if(content && content.length && content[0].type)
             setContent();
 
-        return (
+        return content == 'preview' ? 
+                <div className={className}>
+                    <img
+                            width="100%"
+                            src={ `${tainacan_blocks.base_url}/assets/images/carousel-terms-list.png` } />
+                </div>
+            : (
             <div className={className}>
+
+                { terms.length ?
+                    <BlockControls>
+                        <ToolbarGroup>
+                            <ToolbarButton onClick={ () => openCarouselModal() } >
+                                <p>
+                                    <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            height="24px"
+                                            width="24px">
+                                        <path d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
+                                    </svg>
+                                </p>&nbsp;
+                                { __('Add more terms', 'tainacan') } 
+                            </ToolbarButton>
+                        </ToolbarGroup>
+                    </BlockControls>
+                : null }
 
                 <div>
                     <InspectorControls>
@@ -437,27 +467,6 @@ registerBlockType('tainacan/carousel-terms-list', {
                                 : null
                         }
                         
-                        { terms.length ? (
-                            <div className="tainacan-block-control">
-                                <p>
-                                    <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            height="24px"
-                                            width="24px">
-                                        <path d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
-                                    </svg>
-                                    {__('List terms on a Carousel', 'tainacan')}
-                                </p>
-                                <Button
-                                    isPrimary
-                                    type="submit"
-                                    onClick={ () => openCarouselModal() }>
-                                    {__('Add more terms', 'tainacan')}
-                                </Button> 
-                            </div>
-                            ): null
-                        }
                     </div>
                     ) : null
                 }

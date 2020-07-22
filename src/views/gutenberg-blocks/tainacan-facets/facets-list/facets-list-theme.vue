@@ -266,7 +266,7 @@ export default {
  
                     this.isLoading = false;
                     this.totalFacets = Number(response.headers['x-wp-total']);
-                    this.lastTerm = response.data.values.length > 0 ? response.data.last_term : '';
+                    this.lastTerm = response.data.values.length > 0 ? response.data.last_term.es_term : '';
 
                 }).catch(() => { 
                     this.isLoading = false;

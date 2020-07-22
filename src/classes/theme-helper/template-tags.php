@@ -182,6 +182,19 @@ function tainacan_get_the_collection_name() {
 }					
 
 /**
+ * When visiting an item single page containing a search query, returns the previous and next items
+ *
+ * @return array containing next and previous items with basic url, title and thumbnail information
+ */
+function tainacan_get_adjacent_items() {
+	if ( is_single() ) {
+		return \Tainacan\Theme_Helper::get_instance()->get_adjacent_items();
+	}
+	return false;
+}
+
+
+/**
  * When visiting a collection archive or single, prints the collection name
  *
  * @return void

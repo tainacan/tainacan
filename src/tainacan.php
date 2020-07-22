@@ -4,13 +4,13 @@ Plugin Name: Tainacan
 Plugin URI: https://tainacan.org/
 Description: Open source, powerfull and flexible repository platform for WordPress. Manage and publish you digital collections as easily as publishing a post to your blog, while having all the tools of a professional respository platform.
 Author: Tainacan.org
-Version: 0.16.2
+Version: 0.16.3
 Text Domain: tainacan
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-const TAINACAN_VERSION = '0.16.2';
+const TAINACAN_VERSION = '0.16.3';
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 $TAINACAN_BASE_URL = plugins_url('', __FILE__);
@@ -26,11 +26,6 @@ require_once('migrations.php');
 function tnc_enable_dev_wp_interface() {
     return defined('TNC_ENABLE_DEV_WP_INTERFACE') && true === TNC_ENABLE_DEV_WP_INTERFACE ? true : false;
 }
-
-function tainacan_load_plugin_textdomain() {
-    load_plugin_textdomain( 'tainacan', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
-}
-add_action( 'plugins_loaded', 'tainacan_load_plugin_textdomain' );
 
 add_action( 'after_setup_theme', function() {
 	add_image_size( 'tainacan-small', 40, 40, true );

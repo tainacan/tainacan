@@ -2,9 +2,9 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody } = wp.components;
+const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
 
-const { InspectorControls } = wp.editor;
+const { InspectorControls, BlockControls } = wp.editor;
 
 import CarouselCollectionsModal from './carousel-collections-modal.js';
 import tainacan from '../../js/axios.js';
@@ -20,12 +20,17 @@ registerBlockType('tainacan/carousel-collections-list', {
                 height="24px"
                 width="24px">
             <path
-                fill="var(--tainacan-block-primary, $primary)"
+                fill="#298596"
                 d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'collections', 'tainacan' ), __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ) ],
     description: __('List collections on a Carousel, using search or collection selection.', 'tainacan'),
+    example: {
+        attributes: {
+            content: 'preview'
+        }
+    },
     attributes: {
         content: {
             type: 'array',
@@ -296,8 +301,33 @@ registerBlockType('tainacan/carousel-collections-list', {
         if(content && content.length && content[0].type)
             setContent();
 
-        return (
+        return content == 'preview' ? 
+                <div className={className}>
+                    <img
+                            width="100%"
+                            src={ `${tainacan_blocks.base_url}/assets/images/carousel-collections-list.png` } />
+                </div>
+            : (
             <div className={className}>
+
+                { collections.length ?
+                    <BlockControls>
+                        <ToolbarGroup>
+                            <ToolbarButton onClick={ () => openCarouselModal() } >
+                                <p>
+                                    <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            height="24px"
+                                            width="24px">
+                                        <path d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
+                                    </svg>
+                                </p>&nbsp;
+                                { __('Add more collections', 'tainacan') } 
+                            </ToolbarButton>
+                        </ToolbarGroup>
+                    </BlockControls>
+                : null }
 
                 <div>
                     <InspectorControls>
@@ -453,27 +483,6 @@ registerBlockType('tainacan/carousel-collections-list', {
                             : null
                         }
                         
-                        { collections.length ? (
-                            <div className="tainacan-block-control">
-                                <p>
-                                    <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            height="24px"
-                                            width="24px">
-                                        <path d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
-                                    </svg>
-                                    {__('List collections on a Carousel', 'tainacan')}
-                                </p>
-                                <Button
-                                    isPrimary
-                                    type="submit"
-                                    onClick={ () => openCarouselModal() }>
-                                    {__('Add more collections', 'tainacan')}
-                                </Button> 
-                            </div>
-                            ): null
-                        }
                     </div>
                     ) : null
                 }

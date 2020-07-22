@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ToolbarGroup, ToolbarButton, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -20,12 +20,17 @@ registerBlockType('tainacan/dynamic-items-list', {
                 height="24px"
                 width="24px">
             <path
-                fill="var(--tainacan-block-primary, $primary)"
+                fill="#298596"
                 d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'items', 'tainacan' ), __( 'search', 'tainacan' ), __( 'collection', 'tainacan' ) ],
     description: __('Dynamically list items from a Tainacan items search', 'tainacan'),
+    example: {
+        attributes: {
+            content: 'preview'
+        }
+    },
     attributes: {
         content: {
             type: 'array',
@@ -447,30 +452,52 @@ registerBlockType('tainacan/dynamic-items-list', {
         const layoutControls = [
             {
                 icon: 'grid-view',
-                title: __( 'Grid View' ),
+                title: __( 'Grid View', 'tainacan' ),
                 onClick: () => updateLayout('grid'),
                 isActive: layout === 'grid',
             },
             {
                 icon: 'list-view',
-                title: __( 'List View' ),
+                title: __( 'List View', 'tainacan' ),
                 onClick: () => updateLayout('list'),
                 isActive: layout === 'list',
             },
             {
                 icon: 'layout',
-                title: __( 'Mosaic View' ),
+                title: __( 'Mosaic View', 'tainacan' ),
                 onClick: () => updateLayout('mosaic'),
                 isActive: layout === 'mosaic',
             }
         ];
 
-        return (
+        return content == 'preview' ? 
+                <div className={className}>
+                    <img
+                            width="100%"
+                            src={ `${tainacan_blocks.base_url}/assets/images/dynamic-items-list.png` } />
+                </div>
+            : (
             <div className={className}>
 
                 <div>
                     <BlockControls>
                         <Toolbar controls={ layoutControls } />
+                        { items.length ? 
+                            <ToolbarGroup>
+                                <ToolbarButton onClick={ openDynamicItemsModal }>
+                                    <p>
+                                        <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                height="24px"
+                                                width="24px">
+                                            <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
+                                        </svg>
+                                    </p>&nbsp;
+                                    {__('Configure search', 'tainacan')}  
+                                </ToolbarButton>
+                            </ToolbarGroup>
+                        : null }
                     </BlockControls>
                 </div>
 
@@ -708,27 +735,6 @@ registerBlockType('tainacan/dynamic-items-list', {
                             : null
                         }
                         
-                        { items.length ? (
-                            <div className="tainacan-block-control">
-                                <p>
-                                    <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            height="24px"
-                                            width="24px">
-                                        <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
-                                    </svg>
-                                    {__('Dynamically list items from a Tainacan items search', 'tainacan')}
-                                </p>
-                                <Button
-                                    isPrimary
-                                    type="submit"
-                                    onClick={ () => openDynamicItemsModal() }>
-                                    {__('Configure search', 'tainacan')}
-                                </Button>    
-                            </div>
-                            ): null
-                        }
                     </div>
                     ) : null
                 }

@@ -564,16 +564,15 @@ class Item extends Entity {
 				}
 
 				$mto = $metadatum_object->get_metadata_type_object();
-				$before = str_replace('$type', $mto->get_slug(), $args['before']);
-				$return .= $before;
 
 				$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($this, $metadatum_object);
 				if ($item_meta->has_value() || !$args['hide_empty']) {
+					$before = str_replace('$type', $mto->get_slug(), $args['before']);
+					$return .= $before;
 					$return .= $args['before_title'] . $metadatum_object->get_name() . $args['after_title'];
 					$return .= $args['before_value'] . $item_meta->get_value_as_html() . $args['after_value'];
+					$return .= $args['after'];
 				}
-
-				$return .= $args['after'];
 
 			}
 
@@ -632,16 +631,14 @@ class Item extends Entity {
 				}
 			}
 
-			$before = str_replace('$type', $fto->get_slug(), $args['before']);
-			$return .= $before;
-
 			if ($item_meta->has_value() || !$args['hide_empty']) {
+				$before = str_replace('$type', $fto->get_slug(), $args['before']);
+				$return .= $before;
 				$return .= $args['before_title'] . $item_meta->get_metadatum()->get_name() . $args['after_title'];
 				$return .= $args['before_value'] . $item_meta->get_value_as_html() . $args['after_value'];
+				$return .= $args['after'];
+
 			}
-
-			$return .= $args['after'];
-
 		}
 
 		return $return;

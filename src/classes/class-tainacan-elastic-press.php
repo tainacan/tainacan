@@ -60,10 +60,10 @@ class Elastic_Press {
 			return $formatted_args;
 		 } );
 		 
-		// add_action('ep_add_query_log', function($query) { //using to DEBUG
-		// 	error_log("DEGUG:");
-		// 	error_log($query["args"]["body"]);
-		// });
+		add_action('ep_add_query_log', function($query) { //using to DEBUG
+			error_log("DEGUG:");
+			error_log($query["args"]["body"]);
+		});
 	}
 
 	function elasticpress_config_mapping( $mapping ) {
@@ -365,12 +365,21 @@ class Elastic_Press {
 		$itemsRepo = \Tainacan\Repositories\Items::get_instance();
 		$items = $itemsRepo->fetch($args['items_filter'], $args['collection_id'], 'WP_Query');
 		$items_aggregations = $this->last_aggregations; //if elasticPress active
+
+		$last_term = [];
+		if(isset($items_aggregations['last_term'])) {
+			$value = explode('.', $items_aggregations['last_term']);
+			$last_term = [
+				'value' => sizeof($value) > 1 ? $value[sizeof($value)-2] : $value[0],
+				'es_term' => $items_aggregations['last_term']
+			];
+		}
 		
 		return [
 			// 'total' => count($items_aggregations),
 			// 'pages' => '0', //TODO get a total of pages
-			'values' => isset($items_aggregations['values']) ? $items_aggregations['values'] : [] ,
-			'last_term' => isset($items_aggregations['last_term']) ? $items_aggregations['last_term'] : ''
+			'values' => isset($items_aggregations['values']) ? $items_aggregations['values'] : [],
+			'last_term' => $last_term
 		];
 	}
 
@@ -606,9 +615,12 @@ class Elastic_Press {
 						"sources" => [
 							$id => [
 								"terms" => [
+									"order" => "asc",
 									"script" => [
 										"lang"		=> "painless",
-										"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
+										"source" => "if ( doc.containsKey('$field.term_name.id') ) {List l = new ArrayList(doc['$field.term_name.id']); l.removeIf(item->!item.endsWith('.parent=$parent')); return l;} return[];"
+										//"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_name.id'][i]; }}",
+										//"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
 										//"source"	=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 									]
 								]
@@ -687,6 +699,7 @@ class Elastic_Press {
 		if( empty($aggregations) )
 			return $formated_aggs;
 
+		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 		foreach($aggregations as $key => $aggregation) {
 			$description_types = \explode(".", $key);
 			$filter_id = $description_types[0];
@@ -708,7 +721,8 @@ class Elastic_Press {
 						"total_children"	=> $total_children,
 						"total_items"			=> $term['doc_count'],
 						"label" 					=> $term_object->get('name'),
-						"parent"					=> $term_object->get('parent')
+						"parent"					=> $term_object->get('parent'),
+						'hierarchy_path' => get_term_parents_list($term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false])
 					];
 					if (isset($description_types[3])) {
 						array_unshift($formated_aggs[$filter_id], $fct);
@@ -762,6 +776,7 @@ class Elastic_Press {
 		if( empty($aggregations) )
 			return $formated_aggs;
 
+		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 		foreach($aggregations as $key => $aggregation) {
 			$description_types = \explode(".", $key);
 			if($description_types[0] == 'taxonomy') {
@@ -777,7 +792,8 @@ class Elastic_Press {
 						$term_id = intval($term['key']);
 						$doc_count = $term['doc_count'];
 					} else {
-						$term_id = intval($term['key'][$key]);
+						$temp = explode('.', $term['key'][$key]);
+						$term_id = intval( $temp[count($temp)-2] );
 						$doc_count = $term['doc_count'];
 					}
 					if ($term_id === 0) continue;
@@ -794,7 +810,8 @@ class Elastic_Press {
 						"total_children"	=> $total_children,
 						"total_items"			=> $term['doc_count'],
 						"label" 					=> $term_object->get('name'),
-						"parent"					=> $term_object->get('parent')
+						"parent"					=> $term_object->get('parent'),
+						'hierarchy_path' => get_term_parents_list($term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false])
 					];
 					if ($has_include) {
 						array_unshift($formated_aggs['values'], $fct);

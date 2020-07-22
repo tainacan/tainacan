@@ -40,69 +40,74 @@ class Term_Importer extends Importer {
 	public function options_form() {
 		ob_start();
 		?>
-			<div class="field">
-				<label class="label"><?php _e('CSV Delimiter', 'tainacan'); ?></label>
-				<span class="help-wrapper">
-					<a class="help-button has-text-secondary">
-						<span class="icon is-small">
-							<i class="tainacan-icon tainacan-icon-help" ></i>
+			<div class="columns">
+				<div class="column">
+					<div class="field">
+						<label class="label"><?php _e('CSV Delimiter', 'tainacan'); ?></label>
+						<span class="help-wrapper">
+							<a class="help-button has-text-secondary">
+								<span class="icon is-small">
+									<i class="tainacan-icon tainacan-icon-help" ></i>
+								</span>
+							</a>
+							<div class="help-tooltip">
+								<div class="help-tooltip-header">
+									<h5><?php _e('CSV Delimiter', 'tainacan'); ?></h5>
+								</div>
+								<div class="help-tooltip-body">
+									<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
+								</div>
+							</div>
 						</span>
-					</a>
-					<div class="help-tooltip">
-						<div class="help-tooltip-header">
-							<h5><?php _e('CSV Delimiter', 'tainacan'); ?></h5>
-						</div>
-						<div class="help-tooltip-body">
-							<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
+						<div class="control is-clearfix">
+							<input class="input" type="text" name="delimiter" value="<?php echo $this->get_option('delimiter'); ?>">
 						</div>
 					</div>
-				</span>
-				<div class="control is-clearfix">
-					<input class="input" type="text" name="delimiter" value="<?php echo $this->get_option('delimiter'); ?>">
 				</div>
-			</div>
 
-			<div class="field import_term_csv_taxonomies">
-				<label class="label"><?php _e('Target taxonomy:', 'tainacan'); ?></label>
-				<span class="help-wrapper">
-					<a class="help-button has-text-secondary">
-						<span class="icon is-small">
-							<i class="tainacan-icon tainacan-icon-help" ></i>
+				<div class="column">
+					<div class="field import_term_csv_taxonomies">
+						<label class="label"><?php _e('Target taxonomy:', 'tainacan'); ?></label>
+						<span class="help-wrapper">
+							<a class="help-button has-text-secondary">
+								<span class="icon is-small">
+									<i class="tainacan-icon tainacan-icon-help" ></i>
+								</span>
+							</a>
+							<div class="help-tooltip">
+								<div class="help-tooltip-header">
+									<h5><?php _e('Existing Taxonomy', 'tainacan'); ?></h5>
+								</div>
+								<div class="help-tooltip-body">
+									<p><?php _e('Inform the taxonomy you want to import the terms to.', 'tainacan'); ?></p>
+									<p><?php _e('Select an existing taxonomy or create a new one on the fly.', 'tainacan'); ?></p>
+								</div>
+							</div>
 						</span>
-					</a>
-					<div class="help-tooltip">
-						<div class="help-tooltip-header">
-							<h5><?php _e('Existing Taxonomy', 'tainacan'); ?></h5>
-						</div>
-						<div class="help-tooltip-body">
-							<p><?php _e('Inform the taxonomy you want to import the terms to.', 'tainacan'); ?></p>
-							<p><?php _e('Select an existing taxonomy or create a new one on the fly.', 'tainacan'); ?></p>
-						</div>
-					</div>
-				</span>
-				<div class="control is-clearfix">
-					<div class="select">
-						<select name="select_taxonomy" class="select_taxonomy">
-							<option value="" selected><?php _e('Create a new taxonomy', 'tainacan'); ?></option>
-						<?php
-							$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
-							$taxonomies  = $Tainacan_Taxonomies->fetch( ['nopaging' => true], 'OBJECT' );
-							foreach( $taxonomies as $taxonomie) {
-								?>
-								<option value="<?php echo $taxonomie->get_db_identifier();?>"><?php echo $taxonomie->get_name() ?> </option>
+						<div class="control is-clearfix">
+							<div class="select is-fullwidth">
+								<select name="select_taxonomy" class="select_taxonomy">
+									<option value="" selected><?php _e('Create a new taxonomy', 'tainacan'); ?></option>
 								<?php
-							}
-						?>
-						</select>
+									$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
+									$taxonomies  = $Tainacan_Taxonomies->fetch( ['nopaging' => true], 'OBJECT' );
+									foreach( $taxonomies as $taxonomie) {
+										?>
+										<option value="<?php echo $taxonomie->get_db_identifier();?>"><?php echo $taxonomie->get_name() ?> </option>
+										<?php
+									}
+								?>
+								</select>
 
+							</div>
+
+							<input class="input new_taxonomy" type="text" name="new_taxonomy" value="<?php echo $this->get_option('new_taxonomy'); ?>" placeholder="<?php _e('New taxonomy name', 'tainacan'); ?>" >
+
+						</div>
 					</div>
-
-					<input class="input new_taxonomy" type="text" name="new_taxonomy" value="<?php echo $this->get_option('new_taxonomy'); ?>" placeholder="<?php _e('New taxonomy name', 'tainacan'); ?>" >
-
 				</div>
-
+			
 			</div>
-
 		<?php
 		return ob_get_clean();
 	}

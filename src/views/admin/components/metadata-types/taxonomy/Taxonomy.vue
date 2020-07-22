@@ -12,10 +12,9 @@
                 :item-metadatum="itemMetadatum"
                 @showAddNewTerm="openTermCreationModal"
                 :has-counter="false" />
-        <checkbox-radio-modal
+        <checkbox-radio-metadata-input
                 v-else
                 :is-modal="false"
-                :is-filter="false"
                 :parent="0"
                 :taxonomy_id="taxonomyId"
                 :selected="!valueComponent ? [] : valueComponent"
@@ -23,7 +22,6 @@
                 :taxonomy="taxonomy"
                 :collection-id="itemMetadatum.metadatum.collection_id"
                 :is-taxonomy="true"
-                :query="''"
                 :metadatum="itemMetadatum.metadatum"
                 :is-checkbox="getComponent == 'tainacan-taxonomy-checkbox'"
                 @input="(selected) => valueComponent = selected"
@@ -47,13 +45,13 @@
 <script>
     import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue';
     import TermEditionForm from '../../edition/term-edition-form.vue';
-    import CheckboxRadioModal from '../../modals/checkbox-radio-modal.vue';
+    import CheckboxRadioMetadataInput from '../../other/checkbox-radio-metadata-input.vue';
     import { tainacan as axios } from '../../../js/axios.js';
 
     export default {
         components: {
             TainacanTaxonomyTagInput,
-            CheckboxRadioModal
+            CheckboxRadioMetadataInput
         },
         props: {
             itemMetadatum: Object,

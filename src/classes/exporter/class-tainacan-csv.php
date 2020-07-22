@@ -50,6 +50,8 @@ class CSV extends Exporter {
 					$line[]	= implode( $this->get_option('multivalued_delimiter'), $rel );
 				else 
 					$line[] = $rel;
+			} elseif ($meta->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Compound') {
+				$line[] = $this->get_compound_metadata_cell($meta);
 			} else {
 				$line[] = $meta->get_value_as_string();
 			}
@@ -82,7 +84,35 @@ class CSV extends Exporter {
 		$this->append_to_file('csvexporter.csv', $line_string."\n");
 		
 	}
-	
+
+	function get_compound_metadata_cell($meta) {
+		$enclosure = $this->get_option('enclosure');
+		$delimiter = $this->get_option('delimiter');
+		$multivalued_delimiter = $this->get_option('multivalued_delimiter');
+
+		$metadata_type_options = $meta->get_metadatum()->get_metadata_type_options();
+		$initial_values = [];
+		foreach($metadata_type_options['children_order'] as $order) {
+			$initial_values[$order['id']] = "";
+		}
+		$values = ($meta->get_metadatum()->is_multiple() ? $meta->get_value(): [$meta->get_value()]);
+		$array_meta = [];
+		foreach($values as $value) {
+			$assoc_arr = array_reduce( $value, function ($result, $item) {
+				$metadatum_id = $item->get_metadatum()->get_id();
+				if ($item->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Relationship') {
+					$result[$metadatum_id] = $item->get_value();
+				} else {
+					$result[$metadatum_id] = $item->get_value_as_string();
+				}
+				return $result;
+			}, $initial_values);
+			
+			$array_meta[] = $this->str_putcsv($assoc_arr, $delimiter, $enclosure);
+		}
+		return implode($multivalued_delimiter, $array_meta);
+	}
+
 	function get_document_cell($item) {
 		$type = $item->get_document_type();
 		if ($type == 'attachment') $type = 'file';
@@ -128,6 +158,39 @@ class CSV extends Exporter {
 		return $response;
 	}
 
+	private function get_description_title_meta($meta) {
+		$meta_type =  explode('\\', $meta->get_metadata_type()) ;
+		$meta_type = strtolower($meta_type[sizeof($meta_type)-1]);
+
+		if($meta_type == 'compound') {
+			$enclosure = $this->get_option('enclosure');
+			$delimiter = $this->get_option('delimiter');
+			$metadata_type_options = $meta->get_metadata_type_options();
+			$desc_childrens = [];
+			foreach($metadata_type_options['children_objects'] as $children) {
+				$children_meta_type = explode('\\', $children['metadata_type']);
+				$children_meta_type = strtolower($children_meta_type[sizeof($children_meta_type)-1]);
+				$children_meta_type .=  ($children['collection_key'] === 'yes' ? '|collection_key_yes' : '');
+				$desc_childrens[] = $children['name'] . '|' . $children_meta_type;
+			}
+			$meta_type .= "(" .  implode($delimiter, $desc_childrens)  . ")";
+			$desc_title_meta = 
+				$meta->get_name() .
+				('|' . $meta_type) .
+				($meta->is_multiple() ? '|multiple': '') .
+				('|display_' . $meta->get_display());
+		} else {
+			$desc_title_meta = 
+				$meta->get_name() .
+				('|' . $meta_type) .
+				($meta->is_multiple() ? '|multiple': '') .
+				($meta->is_required() ? '|required': '') .
+				('|display_' . $meta->get_display()) .
+				($meta->is_collection_key() ? '|collection_key_yes' : '');
+		}
+		return $desc_title_meta;
+	}
+
 	public function output_header() {
 		
 		$mapper = $this->get_current_mapper();
@@ -145,17 +208,7 @@ class CSV extends Exporter {
 				
 				$metadata = $collection->get_metadata();
 				foreach ($metadata as $meta) {
-					$meta_type =  explode('\\', $meta->get_metadata_type()) ;
-					$meta_type = strtolower($meta_type[sizeof($meta_type)-1]);
-
-					$desc_title_meta = 
-						$meta->get_name() .
-						('|' . $meta_type) .
-						($meta->is_multiple() ? '|multiple': '') .
-						($meta->is_required() ? '|required': '') .
-						('|display_' . $meta->get_display()) .
-						($meta->is_collection_key() ? '|collection_key_yes' : '');
-
+					$desc_title_meta = $this->get_description_title_meta($meta);
 					$line[] = $desc_title_meta;
 				}
 			}
@@ -210,11 +263,11 @@ class CSV extends Exporter {
 		}
 	}
 
-	function str_putcsv($item, $delimiter = ',', $enclosure = '"') {
+	function str_putcsv($input, $delimiter = ',', $enclosure = '"') {
 		// Open a memory "file" for read/write...
 		$fp = fopen('php://temp', 'r+');
 		
-		fputcsv($fp, $item, $delimiter, $enclosure);
+		fputcsv($fp, $input, $delimiter, $enclosure);
 		rewind($fp);
 		//Getting detailed stats to check filesize:
 		$fstats = fstat($fp);

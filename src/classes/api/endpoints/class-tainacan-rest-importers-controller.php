@@ -203,7 +203,12 @@ class REST_Importers_Controller extends REST_Controller {
                     
                     if ($att == 'collection') {
                         if (is_array($value) && isset($value['id'])) {
-                            $importer->add_collection($value);
+                            if ($importer->add_collection($value) === false ) {
+                                return new \WP_REST_Response([
+                                    'error_message' => __('Error on creating metadata, please review the metadata description', 'tainacan' ),
+                                    'session_id' => $session_id
+                                ], 400);
+                            }
                             continue;
                         } else {
                             return new \WP_REST_Response([

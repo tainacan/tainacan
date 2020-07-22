@@ -7,33 +7,6 @@
   --tainacan-block-gray5: #454647;
   --tainacan-block-primary: #298596; }
 
-[data-align='full'] .tainacan-block-control {
-  width: calc(100% + 14px); }
-
-.tainacan-block-control {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
-  position: relative;
-  top: -14px;
-  left: -14px;
-  width: calc(100% + 28px);
-  background: var(--tainacan-block-gray1, #f2f2f2); }
-  .tainacan-block-control p {
-    font-size: 0.875em !important;
-    margin: 12px 1.5em !important;
-    fill: var(--tainacan-block-gray4, #555758); }
-    .tainacan-block-control p svg {
-      top: 6px;
-      margin-right: 0.75em;
-      position: relative;
-      fill: var(--tainacan-block-gray4, #555758); }
-  .tainacan-block-control .components-base-control .components-base-control__field {
-    margin-bottom: 0; }
-
 .tainacan-block-placeholder.components-placeholder {
   align-items: center !important;
   margin-bottom: 0 !important;
@@ -46,7 +19,7 @@
     justify-content: center;
     align-items: baseline;
     width: 100%;
-    max-width: 70%;
+    max-width: 85%;
     flex-wrap: wrap;
     z-index: 1; }
     .tainacan-block-placeholder.components-placeholder .components-placeholder__fieldset p {
@@ -59,6 +32,8 @@
         top: 4px;
         position: relative;
         fill: var(--tainacan-block-gray4, #555758); }
+    .tainacan-block-placeholder.components-placeholder .components-placeholder__fieldset .components-button {
+      margin: 0; }
 
 .wp-block-tainacan-modal {
   width: 50%; }
@@ -75,7 +50,7 @@
     height: 80vh; }
     .wp-block-tainacan-modal.dynamic-modal iframe {
       width: calc(100% + 32px);
-      height: calc(100% - 128px);
+      height: calc(100% - 132px);
       margin-left: -16px; }
     .wp-block-tainacan-modal.dynamic-modal .modal-footer-area {
       height: 68px;
@@ -195,7 +170,7 @@
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    padding: 16px 16px 0 16px;
+    padding: 15px 16px 0 16px;
     margin: 0 -16px; }
     .wp-block-tainacan-modal .modal-footer-area p {
       padding: 0 12px;

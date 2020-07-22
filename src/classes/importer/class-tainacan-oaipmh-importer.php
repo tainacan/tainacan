@@ -839,29 +839,33 @@ class Oaipmh_Importer extends Importer {
     public function options_form(){
         ob_start();
         ?>
-        <div class="field">
-            <label class="label"><?php _e('Create set as', 'tainacan'); ?></label>
-            <span class="help-wrapper">
-					<a class="help-button has-text-secondary">
-						<span class="icon is-small">
-							 <i class="tainacan-icon tainacan-icon-help" ></i>
-						 </span>
-					</a>
-					<vdiv class="help-tooltip">
-						<div class="help-tooltip-header">
-							<h5><?php _e('Create set as', 'tainacan'); ?></h5>
-						</div>
-						<div class="help-tooltip-body">
-							<p><?php _e('Choose the action to manipulate sets', 'tainacan'); ?></p>
-						</div>
-					</vdiv>
-			</span>
-            <div class="control is-clearfix">
-                <div class="select">
-                    <select name="using_set">
-                        <option value="collection" <?php selected($this->get_option('using_set'), 'collection'); ?> ><?php _e('Collections', 'tainacan'); ?></option>
-                        <option value="taxonomy" <?php selected($this->get_option('using_set'), 'taxonomy'); ?> ><?php _e('Taxonomies', 'tainacan'); ?></option>
-                    </select>
+        <div class="columns">
+            <div class="column">
+                <div class="field">
+                    <label class="label"><?php _e('Create set as', 'tainacan'); ?></label>
+                    <span class="help-wrapper">
+                            <a class="help-button has-text-secondary">
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-help" ></i>
+                                </span>
+                            </a>
+                            <vdiv class="help-tooltip">
+                                <div class="help-tooltip-header">
+                                    <h5><?php _e('Create set as', 'tainacan'); ?></h5>
+                                </div>
+                                <div class="help-tooltip-body">
+                                    <p><?php _e('Choose the action to manipulate sets', 'tainacan'); ?></p>
+                                </div>
+                            </vdiv>
+                    </span>
+                    <div class="control is-clearfix">
+                        <div class="select">
+                            <select name="using_set">
+                                <option value="collection" <?php selected($this->get_option('using_set'), 'collection'); ?> ><?php _e('Collections', 'tainacan'); ?></option>
+                                <option value="taxonomy" <?php selected($this->get_option('using_set'), 'taxonomy'); ?> ><?php _e('Taxonomies', 'tainacan'); ?></option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -18,7 +18,7 @@
             </label>
 
             <div
-                    v-if="collections && collections.length"
+                    v-if="collections && collections.length > 1"
                     class="block">
                 <div
                         v-for="(collection, key) in collections"

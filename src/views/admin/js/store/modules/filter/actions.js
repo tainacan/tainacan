@@ -231,7 +231,7 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, taxonomyId ) => {
                 if (taxonomy.collections_ids != undefined && taxonomy.collections_ids.length != undefined) {
                     
                     let amountOfCollectionsLoaded = 0;
-
+                    console.log(taxonomy.collections_ids)
                     for (let collectionId of taxonomy.collections_ids ) {
                 
                         let endpoint = '';

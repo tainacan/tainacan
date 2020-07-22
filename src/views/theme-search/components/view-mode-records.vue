@@ -40,11 +40,11 @@
                     class="tainacan-records-container">
                 <a 
                         role="listitem"
-                        :href="item.url"
+                        :href="getItemLink(item.url, index)"
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-record">
-                    <!-- <div :href="item.url"> -->
+                    <!-- <div :href="getItemLink(item.url, index)"> -->
                         <!-- Title -->
                         <p 
                                 v-tooltip="{
@@ -99,8 +99,13 @@
 </template>
 
 <script>
+import { viewModesMixin } from '../js/view-modes-mixin.js';
+
 export default {
     name: 'ViewModeRecords',
+    mixins: [
+        viewModesMixin
+    ],
     props: {
         collectionId: Number,
         displayedMetadata: Array,
@@ -110,7 +115,6 @@ export default {
     },
     data () {
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             masonryCols: {default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}
         }
     },
@@ -159,19 +163,6 @@ export default {
         window.removeEventListener('resize', this.recalculateContainerWidth);
     },
     methods: {
-        goToItemPage(item) {
-            window.location.href = item.url;   
-        },
-        renderMetadata(itemMetadata, column) {
-
-            let metadata = (itemMetadata != undefined && itemMetadata[column.slug] != undefined) ? itemMetadata[column.slug] : false;
-
-            if (!metadata) {
-                return '';
-            } else {
-                return metadata.value_as_html;
-            }
-        },
         randomHeightForRecordsItem() {
             let min = (70*this.amountOfDisplayedMetadata)*0.8;
             let max = (70*this.amountOfDisplayedMetadata)*1.2;

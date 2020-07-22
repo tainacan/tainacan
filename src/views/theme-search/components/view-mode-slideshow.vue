@@ -308,6 +308,7 @@ import axios from '../../admin/js/axios';
 import 'swiper/dist/css/swiper.css';
 import { swiper, swiperSlide } from 'vue-awesome-swiper';
 import CircularCounter from './circular-counter.vue';
+import { viewModesMixin } from '../js/view-modes-mixin.js';
  
 export default {
     name: 'ViewModeSlideshow',
@@ -316,6 +317,9 @@ export default {
         swiperSlide,
         CircularCounter
     },
+    mixins: [
+        viewModesMixin
+    ],
     props: {
         collectionId: Number,
         displayedMetadata: Array,
@@ -365,8 +369,7 @@ export default {
                     1406: { slidesPerView: 14 },
                     1600: { slidesPerView: 16 }
                 }
-            },
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png'
+            }
         }
     },
     computed: {
@@ -619,16 +622,6 @@ export default {
                             this.$console.log( error );
                         });
                 }
-            }
-        },
-        renderMetadata(itemMetadata, column) {
-
-            let metadata = itemMetadata[column.slug] != undefined ? itemMetadata[column.slug] : false;
-
-            if (!metadata) {
-                return '';
-            } else {
-                return metadata.value_as_html;
             }
         },
         closeSlideViewMode() {
