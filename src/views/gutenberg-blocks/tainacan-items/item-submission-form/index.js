@@ -2,9 +2,9 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { Button, ColorPicker, BaseControl, CheckboxControl, RangeControl, FontSizePicker, HorizontalRule, SelectControl, ToggleControl, Placeholder, PanelBody } = wp.components;
+const { Button, ColorPicker, BaseControl, CheckboxControl, RangeControl, FontSizePicker, HorizontalRule, SelectControl, ToggleControl, Placeholder, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
 
-const { InspectorControls } = wp.editor;
+const { InspectorControls, BlockControls } = wp.editor;
 
 import CollectionModal from '../../tainacan-facets/faceted-search/collection-modal.js';
 
@@ -18,7 +18,7 @@ registerBlockType('tainacan/item-submission-form', {
                 width="24px">
             <g transform="matrix(0.86395091,0,0,0.86395091,1.6325891,-234.22601)">
                 <path
-                        fill="var(--tainacan-block-primary, $primary)"
+                        fill="#298596"
                         d="m 4.7336928,273.04197 c -1.5846271,-0.0613 -2.8453477,1.48564 -2.646643,3.01801 0.00883,6.16098 -0.017679,12.32284 0.013295,18.48327 0.1053115,1.51106 1.6131262,2.57443 3.0680826,2.39726 4.7229361,0 9.4458716,0 14.1688076,0 1.566507,-0.002 2.76553,-1.53973 2.576794,-3.05227 0,-4.29703 0,-8.59406 0,-12.89109 -2.651301,-2.65173 -5.302603,-5.30345 -7.953904,-7.95518 -3.075478,0 -6.1509548,0 -9.2264322,0 z m 7.9716892,1.99261 c 2.405349,2.42821 4.810699,4.85642 7.216048,7.28463 -2.42821,0 -4.85642,0 -7.28463,0 0.02286,-2.42821 0.04572,-4.85642 0.06858,-7.28463 z "/>
             </g>
         </svg>,
