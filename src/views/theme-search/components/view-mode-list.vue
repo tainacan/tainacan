@@ -34,7 +34,7 @@
                     class="tainacan-list-container">
                 <a 
                         role="listitem"
-                        :href="item.url"
+                        :href="getItemLink(item.url, index)"
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-list">
@@ -87,39 +87,19 @@
 </template>
 
 <script>
+import { viewModesMixin } from '../js/view-modes-mixin.js';
+
 export default {
     name: 'ViewModeRecords',
+    mixins: [
+        viewModesMixin
+    ],
     props: {
         collectionId: Number,
         displayedMetadata: Array,
         items: Array,
         isLoading: false,
         isFiltersMenuCompressed: Boolean
-    },
-    data () {
-        return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png'
-        }
-    },
-    computed: {
-        amountOfDisplayedMetadata() {
-            return this.displayedMetadata.filter((metadata) => metadata.display).length;
-        }
-    },
-    methods: {
-        goToItemPage(item) {
-            window.location.href = item.url;   
-        },
-        renderMetadata(itemMetadata, column) {
-
-            let metadata = (itemMetadata != undefined && itemMetadata[column.slug] != undefined) ? itemMetadata[column.slug] : false;
-
-            if (!metadata) {
-                return '';
-            } else {
-                return metadata.value_as_html;
-            }
-        }
     }
 }
 </script>

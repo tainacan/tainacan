@@ -222,9 +222,13 @@
 import 'swiper/dist/css/swiper.css';
 import { mapGetters } from 'vuex';
 import { swiper, swiperSlide } from 'vue-awesome-swiper';
+import { viewModesMixin } from '../js/view-modes-mixin.js';
 
 export default {
     name: 'ViewModeSlides',
+    mixins: [
+        viewModesMixin
+    ],
     components: {
         swiper,
         swiperSlide,
@@ -238,7 +242,6 @@ export default {
     },
     data () {
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             slideIndex: 0,
             goingRight: true,
             swiperOption: {
@@ -304,15 +307,6 @@ export default {
         ]),
         goToItemPage(item) {
             window.location.href = item.url;   
-        },
-        renderMetadata(itemMetadata, column) {
-            let metadata = (itemMetadata != undefined && itemMetadata[column.slug] != undefined) ? itemMetadata[column.slug] : false;
-
-            if (!metadata) {
-                return '';
-            } else {
-                return metadata.value_as_html;
-            }
         },
         onSlideChange() {
             if (this.$refs.mySwiper.swiper != undefined)
