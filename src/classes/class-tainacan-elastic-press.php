@@ -50,21 +50,28 @@ class Elastic_Press {
 
 		add_filter( 'ep_formatted_args', function ( $formatted_args ) {
 			$formatted_args['track_total_hits'] = true;
+			//https://www.elasticpress.io/blog/2019/02/custom-search-with-elasticpress-how-to-limit-results-to-full-text-matches/
+			if ( ! empty( $formatted_args['query']['bool']['should'] ) ) {
+				$formatted_args['query']['bool']['must'] = $formatted_args['query']['bool']['should'];
+				$formatted_args['query']['bool']['must'][0]['multi_match']['operator'] = 'AND';
+				unset( $formatted_args['query']['bool']['should'] );
+				unset( $formatted_args["query"]["bool"]["must"][0]["multi_match"]["type"] );
+			}
 			return $formatted_args;
 		 } );
 		 
-		// add_action('ep_add_query_log', function($query) { //using to DEBUG
-		// 	error_log("DEGUG:");
-		// 	error_log($query["args"]["body"]);
-		// });
+		add_action('ep_add_query_log', function($query) { //using to DEBUG
+			error_log("DEGUG:");
+			error_log($query["args"]["body"]);
+		});
 	}
 
 	function elasticpress_config_mapping( $mapping ) {
 		$name_field = 'relationship_label';
-		$array_dynamic_templates = $mapping["mappings"]["post"]["dynamic_templates"];
+		$array_dynamic_templates = $mapping["mappings"]["dynamic_templates"];
 		foreach ($array_dynamic_templates as $key => $dynamic_templates) {
 			if ( isset($dynamic_templates['template_meta_types'] )) {
-				$mapping["mappings"]["post"]["dynamic_templates"][$key]['template_meta_types']["mapping"]["properties"][$name_field] = ['type' => 'keyword', 'normalizer' => 'lowerasciinormalizer'];
+				$mapping["mappings"]["dynamic_templates"][$key]['template_meta_types']["mapping"]["properties"][$name_field] = ['type' => 'keyword', 'normalizer' => 'lowerasciinormalizer'];
 				// $mapping["mappings"]["post"]["dynamic_templates"][$key]['template_meta_types']["mapping"]["properties"][$name_field] =
 				// 	['type' => 'nested',
 				// 	 'properties' => [
@@ -72,7 +79,10 @@ class Elastic_Press {
 				// 		 //,'description' => ['type'=>'text']
 				// 		]
 				// 	];
+			} elseif( isset($dynamic_templates['template_terms'] ) ) {
+				$mapping["mappings"]["dynamic_templates"][$key]['template_terms']['mapping']['properties']['term_name.id'] = ['type' => 'keyword', 'normalizer' => 'lowerasciinormalizer'];
 			}
+			
 		}
 		return $mapping;
 	}
@@ -103,6 +113,14 @@ class Elastic_Press {
 						$description = '';
 						$post_args['meta'][$meta_id][0][$name_field] = $title;
 						//$post_args['meta'][$meta_id][0][$name_field]['description'] = $description;
+					}
+				}
+			}
+
+			if( isset($post_args['terms']) && !empty($post_args['terms']) ) {
+				foreach($post_args['terms'] as $key => $terms_doc) {
+					for($i = 0; $i < sizeof($terms_doc); $i++) {
+						$post_args['terms'][$key][$i]['term_name.id'] = $terms_doc[$i]['name'] . '.' . $terms_doc[$i]['term_id'] . '.parent=' . $terms_doc[$i]['parent'] ;
 					}
 				}
 			}
@@ -207,6 +225,7 @@ class Elastic_Press {
 					$col = $Tainacan_Collections->fetch_by_db_identifier($cpt);
 					$_filters = $Tainacan_Filters->fetch_by_collection($col, ['posts_per_page' => -1]);
 					foreach ($_filters as $filter) {
+						if ($filter == null || $filter->get_metadatum() == null) continue;
 						$include = [];
 						$filter_id = $filter->get_id();
 						$metadata_type = $filter->get_metadatum()->get_metadata_type();
@@ -255,7 +274,7 @@ class Elastic_Press {
 			}
 		}
 		
-		add_filter('ep_formatted_args', array($this, "prepare_request")); //filtro para os argumentos já no formato a ser enviado para o elasticpress.
+		add_filter('ep_formatted_args', array($this, "prepare_request"), 10, 2); //filtro para os argumentos já no formato a ser enviado para o elasticpress.
 		return $args;
 	}
 
@@ -266,7 +285,18 @@ class Elastic_Press {
 	 *
 	 * @return \Array with formatted array of args.
 	 */
-	public function prepare_request($formatted_args) {
+	public function prepare_request($formatted_args, $args) {
+		if ( is_user_logged_in() && ! isset($args['post_status']) ) {
+			if ( isset( $formatted_args['post_filter']['bool']['must'] ) ) {
+				$post_filter = $formatted_args['post_filter']['bool']['must'];
+				foreach($post_filter as $idx => $filter) {
+					if( isset( $filter['terms']['post_status'] ) ) {
+						$formatted_args['post_filter']['bool']['must'][$idx]['terms']['post_status']=["private", "publish"];
+						break;
+					}
+				}
+			}
+		}
 		switch ($this->aggregation_type) {
 			case 'items':
 				$formatted_args = $this->prepare_request_for_items($formatted_args);
@@ -335,12 +365,21 @@ class Elastic_Press {
 		$itemsRepo = \Tainacan\Repositories\Items::get_instance();
 		$items = $itemsRepo->fetch($args['items_filter'], $args['collection_id'], 'WP_Query');
 		$items_aggregations = $this->last_aggregations; //if elasticPress active
+
+		$last_term = [];
+		if(isset($items_aggregations['last_term'])) {
+			$value = explode('.', $items_aggregations['last_term']);
+			$last_term = [
+				'value' => sizeof($value) > 1 ? $value[sizeof($value)-2] : $value[0],
+				'es_term' => $items_aggregations['last_term']
+			];
+		}
 		
 		return [
 			// 'total' => count($items_aggregations),
 			// 'pages' => '0', //TODO get a total of pages
-			'values' => isset($items_aggregations['values']) ? $items_aggregations['values'] : [] ,
-			'last_term' => isset($items_aggregations['last_term']) ? $items_aggregations['last_term'] : ''
+			'values' => isset($items_aggregations['values']) ? $items_aggregations['values'] : [],
+			'last_term' => $last_term
 		];
 	}
 
@@ -422,7 +461,7 @@ class Elastic_Press {
 						 	$temp[] = $item;
 						}
 					}
-				} elseif ( isset($item['term'])) {
+				} elseif ( isset($item['terms']) || isset($item['term']) ) {
 					$temp[] = $item;
 				}
 			}
@@ -436,12 +475,17 @@ class Elastic_Press {
 					"aggs"	=> array(
 						$id => array(
 							"terms"=>array(
-								//"size" => $filter['max_options'],
-								"script" => [
-									"lang" 	=> "painless",
-									"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
-									//"source"=> "def c= [''];if(!params._source.terms.empty && params._source.$field != null){ for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
-								]
+								"order" => ["_key" => "asc" ],
+								"include" => "(.)*parent=$parent",
+								"field" => "$field.term_name.id"
+								// "script" => [
+								// 	"lang" 	=> "painless",
+								// 	//"source" => "List l = new ArrayList(doc['$field.term_name.id']); if (l == null) { return []; } return l"
+								// 	//"source" => "if ( doc.containsKey('$field.parent') ) { List l = params._source.$field; if (l == null) { return []; } List result = new ArrayList(); for(int i = 0; i < l.length; ++i) { if(l[i].parent == 0) { result.add( l[i]['term_name.id'] ); } } return result; } return [];"
+								// 	//"source" => "if (doc.containsKey('$field.parent')) { List l = new ArrayList(doc['$field.term_id']);  for (int i = 0; i < l.length; ++i) { if (doc['$field.parent'][i] != $parent) { l.remove( i ); } } return l; } return [];"
+								// 	//"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
+								// 	//"source"=> "def c= [''];if(!params._source.terms.empty && params._source.$field != null){ for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
+								// ]
 							)
 						)
 					)
@@ -450,18 +494,24 @@ class Elastic_Press {
 				if (!empty($filter['include'])) {
 					$custom_filter_include = $custom_filter;
 					$custom_filter_include['bool']['must'][] = ["bool" => [ "must"=> [ [ "terms" => ["$field.term_id" => $filter['include'] ] ] ] ] ];
-					$terms_id_inlcude = \implode( ",", $filter['include']);
+					$terms_id_inlcude = \implode( "|", $filter['include']);
 					$aggs[$id.'.include'] = [
 						"filter" => $custom_filter_include,
 						"aggs"	=> array(
 							$id.'.include' => array(
 								"terms"=>array(
-									"script" => [
-										"lang" 	=> "painless",
-										"source" => "def c= ['']; for (int i = 0; i < doc['$field.term_id'].length; ++i) { if( [$terms_id_inlcude].contains(doc['$field.term_id'][i]) ) { c.add(doc['$field.term_id'][i]); } } return c;"
-										//"source"=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if( [$terms_id_inlcude].contains(term.term_id) ) { c.add(term.term_id); }}} return c;"
-									]
+									"order" => ["_key" => "asc" ],
+									"field" => "$field.term_name.id",
+									"include" => "(.)*.($terms_id_inlcude).parent=$parent",
+									"min_doc_count" => 0
 								)
+								// "terms"=>array(
+								// 	"script" => [
+								// 		"lang" 	=> "painless",
+								// 		"source" => "def c= ['']; for (int i = 0; i < doc['$field.term_id'].length; ++i) { if( [$terms_id_inlcude].contains(doc['$field.term_id'][i]) ) { c.add(doc['$field.term_name.id'][i]); } } return c;"
+								// 		//"source"=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if( [$terms_id_inlcude].contains(term.term_id) ) { c.add(term.term_id); }}} return c;"
+								// 	]
+								// )
 							)
 						)
 					];
@@ -565,9 +615,12 @@ class Elastic_Press {
 						"sources" => [
 							$id => [
 								"terms" => [
+									"order" => "asc",
 									"script" => [
 										"lang"		=> "painless",
-										"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
+										"source" => "if ( doc.containsKey('$field.term_name.id') ) {List l = new ArrayList(doc['$field.term_name.id']); l.removeIf(item->!item.endsWith('.parent=$parent')); return l;} return[];"
+										//"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_name.id'][i]; }}",
+										//"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
 										//"source"	=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
 									]
 								]
@@ -646,6 +699,7 @@ class Elastic_Press {
 		if( empty($aggregations) )
 			return $formated_aggs;
 
+		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 		foreach($aggregations as $key => $aggregation) {
 			$description_types = \explode(".", $key);
 			$filter_id = $description_types[0];
@@ -654,19 +708,21 @@ class Elastic_Press {
 				$taxonomy_slug = $description_types[2];
 				$taxonomy_id = Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($taxonomy_slug);
 				foreach ($aggregation[$key]['buckets'] as $term) {
-					$term_id = intval($term['key']);
+					$temp = explode('.', $term['key']);
+					$term_id = intval( $temp[count($temp)-2] );
 					$term_object = \Tainacan\Repositories\Terms::get_instance()->fetch($term_id, $taxonomy_slug);
 					$count_query = $wpdb->prepare("SELECT COUNT(term_id) FROM $wpdb->term_taxonomy WHERE parent = %d", $term_id);
 					$total_children = $wpdb->get_var($count_query);
 					$fct = [
 						"type" 						=> "Taxonomy",
-						"value" 					=> $term['key'],
+						"value" 					=> $term_id,
 						"taxonomy" 				=> $taxonomy_slug,
 						"taxonomy_id"			=> $taxonomy_id,
 						"total_children"	=> $total_children,
 						"total_items"			=> $term['doc_count'],
 						"label" 					=> $term_object->get('name'),
-						"parent"					=> $term_object->get('parent')
+						"parent"					=> $term_object->get('parent'),
+						'hierarchy_path' => get_term_parents_list($term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false])
 					];
 					if (isset($description_types[3])) {
 						array_unshift($formated_aggs[$filter_id], $fct);
@@ -720,6 +776,7 @@ class Elastic_Press {
 		if( empty($aggregations) )
 			return $formated_aggs;
 
+		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 		foreach($aggregations as $key => $aggregation) {
 			$description_types = \explode(".", $key);
 			if($description_types[0] == 'taxonomy') {
@@ -735,7 +792,8 @@ class Elastic_Press {
 						$term_id = intval($term['key']);
 						$doc_count = $term['doc_count'];
 					} else {
-						$term_id = intval($term['key'][$key]);
+						$temp = explode('.', $term['key'][$key]);
+						$term_id = intval( $temp[count($temp)-2] );
 						$doc_count = $term['doc_count'];
 					}
 					if ($term_id === 0) continue;
@@ -752,7 +810,8 @@ class Elastic_Press {
 						"total_children"	=> $total_children,
 						"total_items"			=> $term['doc_count'],
 						"label" 					=> $term_object->get('name'),
-						"parent"					=> $term_object->get('parent')
+						"parent"					=> $term_object->get('parent'),
+						'hierarchy_path' => get_term_parents_list($term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false])
 					];
 					if ($has_include) {
 						array_unshift($formated_aggs['values'], $fct);

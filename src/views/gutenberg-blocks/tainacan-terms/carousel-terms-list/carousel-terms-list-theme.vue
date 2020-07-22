@@ -2,7 +2,7 @@
     <div :class="className">
         <div v-if="!isLoading">
             <div  
-                    :class="'tainacan-carousel has-arrows-' + arrowsPosition"
+                    :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '')"
                     v-if="terms.length > 0">
                 <swiper 
                         role="list"
@@ -77,10 +77,10 @@
                         class="swiper-button-prev" 
                         :id="blockId + '-prev'" 
                         slot="button-prev"
-                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
+                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
                     <svg
-                            width="42"
-                            height="42"
+                            :width="largeArrows ? 60 : 42"
+                            :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
                         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                         <path
@@ -92,10 +92,10 @@
                         class="swiper-button-next" 
                         :id="blockId + '-next'" 
                         slot="button-next"
-                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
+                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
                     <svg
-                            width="42"
-                            height="42"
+                            :width="largeArrows ? 60 : 42"
+                            :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
                         <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                         <path
@@ -112,7 +112,7 @@
             <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
         <div v-else-if="isLoading && !autoPlay && !loopSlides">
-            <div :class="'tainacan-carousel has-arrows-' + arrowsPosition">
+            <div :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') ">
                 <swiper 
                         role="list"
                         ref="myTermSwiper"
@@ -132,10 +132,10 @@
                         class="swiper-button-prev" 
                         :id="blockId + '-prev'" 
                         slot="button-prev"
-                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
+                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
                     <svg
-                            width="42"
-                            height="42"
+                            :width="largeArrows ? 60 : 42"
+                            :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
                         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                         <path
@@ -147,10 +147,10 @@
                         class="swiper-button-next" 
                         :id="blockId + '-next'" 
                         slot="button-next"
-                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - 42px)'">
+                        :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
                     <svg
-                            width="42"
-                            height="42"
+                            :width="largeArrows ? 60 : 42"
+                            :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
                         <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                         <path
@@ -183,7 +183,9 @@ export default {
         autoPlay: false,
         autoPlaySpeed: Number,
         loopSlides: Boolean,
+        maxTermsPerScreen: Number,
         hideName: Boolean,
+        largeArrows: Boolean,
         showTermThumbnail: Boolean,
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
@@ -233,6 +235,17 @@ export default {
     created() {
         this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
         this.fetchTerms();
+
+        if (!isNaN(this.maxTermsPerScreen)) {
+            this.swiperOptions.breakpoints = {
+                498:  { slidesPerView: this.maxTermsPerScreen - 5 > 0 ? this.maxTermsPerScreen - 5 : 1 }, 
+                768:  { slidesPerView: this.maxTermsPerScreen - 4 > 0 ? this.maxTermsPerScreen - 4 : 1 },
+                1024: { slidesPerView: this.maxTermsPerScreen - 3 > 0 ? this.maxTermsPerScreen - 3 : 1 },
+                1366: { slidesPerView: this.maxTermsPerScreen - 2 > 0 ? this.maxTermsPerScreen - 2 : 1 },
+                1600: { slidesPerView: this.maxTermsPerScreen - 1 > 0 ? this.maxTermsPerScreen - 1 : 1 },
+            }
+            this.swiperOptions.slidesPerView = this.maxTermsPerScreen;
+        }
     },
     methods: {
         fetchTerms() {

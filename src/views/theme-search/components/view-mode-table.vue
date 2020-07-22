@@ -107,7 +107,7 @@
                                                                                                            column.metadata_type_object.primitive_type == 'compound' ||
                                                                                                            column.metadata_type_object.related_mapped_prop == 'description') : false,
                                 }">
-                            <a :href="item.url">
+                            <a :href="getItemLink(item.url, index)">
                                 <p
                                         v-tooltip="{
                                             delay: {
@@ -146,7 +146,7 @@
                                                 hide: 300,
                                             },
                                             classes: [ column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '' ],
-                                            content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
+                                            content: renderMetadataWithLabel(item.metadata, column) != '' ? renderMetadataWithLabel(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
                                             html: true,
                                             autoHide: false,
                                             placement: 'auto-start'
@@ -158,7 +158,7 @@
                                             column.metadatum !== 'row_author' &&
                                             column.metadatum !== 'row_title' &&
                                             column.metadatum !== 'row_description'"
-                                        v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                        v-html="renderMetadataWithLabel(item.metadata, column) != '' ? renderMetadataWithLabel(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
 
                                 <span v-if="column.metadatum == 'row_thumbnail'">
                                     <img 
@@ -177,22 +177,21 @@
 </template>
 
 <script>
+import { viewModesMixin } from '../js/view-modes-mixin.js';
 
 export default {
     name: 'ViewModeTable',
+    mixins: [
+        viewModesMixin
+    ],
     props: {
         collectionId: undefined,
         displayedMetadata: Array,
         items: Array,
         isLoading: false
     },
-    data () {
-        return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png'
-        }
-    },
     methods: {
-        renderMetadata(itemMetadata, column) {
+        renderMetadataWithLabel(itemMetadata, column) {
 
             let metadata = (itemMetadata != undefined && itemMetadata[column.slug] != undefined) ? itemMetadata[column.slug] : false;
 

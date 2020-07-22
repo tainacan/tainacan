@@ -66,6 +66,18 @@
 
         </b-field>
         <b-field
+                v-if="taxonomy_id && taxonomies.length && (input_type == 'tainacan-taxonomy-checkbox' || input_type == 'tainacan-taxonomy-radio')" 
+                :addons="false"
+                :label="$i18n.getHelperTitle('tainacan-taxonomy', 'visible_options_list')">
+            <b-switch
+                    size="is-small" 
+                    v-model="visible_options_list"
+                    @input="emitValues()" />
+            <help-button
+                    :title="$i18n.getHelperTitle('tainacan-taxonomy', 'visible_options_list')"
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'visible_options_list')"/>
+        </b-field>
+        <b-field
                 v-if="taxonomy_id && taxonomies.length && taxonomies.find((taxonomy) => taxonomy.id == taxonomy_id).allow_insert == 'yes'" 
                 :addons="false"
                 :label="$i18n.get('label_taxonomy_allow_new_terms')">
@@ -99,6 +111,7 @@
                 taxonomy_id: '',
                 loading: true,
                 allow_new_terms: 'yes',
+                visible_options_list: false, 
                 input_type: 'tainacan-taxonomy-radio',
                 multiple_types: {},
                 single_types: {},
@@ -170,6 +183,8 @@
                     let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
                     this.setInputType( ( hasValue ) ? this.value.input_type : 'tainacan-taxonomy-checkbox' );
                 }
+
+                this.visible_options_list = ( this.value.visible_options_list ) ? this.value.visible_options_list : false;
             }
 
             this.isReady = true;
@@ -210,7 +225,8 @@
                 this.$emit('input',{
                     taxonomy_id: this.taxonomy_id,
                     input_type: this.input_type,
-                    allow_new_terms: this.allow_new_terms
+                    allow_new_terms: this.allow_new_terms,
+                    visible_options_list: this.visible_options_list
                 })
             }
         }
@@ -219,6 +235,9 @@
 
 <style scoped>
     .help-wrapper {
-        font-size: 1.25em;
+        font-size: 1em;
+    }
+    .switch.is-small {
+        margin-top: -0.5em;
     }
 </style>

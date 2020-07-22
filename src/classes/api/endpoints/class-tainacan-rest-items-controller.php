@@ -308,6 +308,7 @@ class REST_Items_Controller extends REST_Controller {
 		$args['post_parent'] = $item_id;
 		$args['post_type'] = 'attachment';
 		$args['post_status'] = 'any';
+		
 		unset($args['perm']);
 
 		$posts_query  = new \WP_Query();

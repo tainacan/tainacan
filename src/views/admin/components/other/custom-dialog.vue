@@ -30,7 +30,7 @@
                         {{ title }}
                     </h1>
                 </header>
-                {{ message }}
+                <span v-html="message" />
                 <div v-if="showNeverShowAgainOption">
                     <b-checkbox
                             @input="changeNeverShowMessageAgain($event)"

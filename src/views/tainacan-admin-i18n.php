@@ -153,6 +153,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_clear_filters'                            => __( 'Clear filters', 'tainacan' ),
 	'label_and'                                      => __( 'and', 'tainacan' ),
 	'label_selected'                                 => __( 'Selected', 'tainacan' ),
+	'label_nothing_selected'                         => __( 'Nothing selected', 'tainacan' ),
 	'label_relationship_new_search'                  => __( 'New Search', 'tainacan' ),
 	'label_relationship_items_found'                 => __( 'Items found', 'tainacan' ),
 	'label_menu'                                     => __( 'Menu', 'tainacan' ),
@@ -251,6 +252,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_display_default'                          => __( 'Display by default', 'tainacan' ),
 	'label_display_never'                            => __( 'Never displayed', 'tainacan' ),
 	'label_not_display'                              => __( 'Not display by default', 'tainacan' ),
+	'label_no_terms_selected'                        => __( 'No terms selected', 'tainacan' ),
 	'label_attach_to_item'                           => __( 'Attach to item', 'tainacan' ),
 	'label_document'                                 => __( 'Document', 'tainacan' ),
 	'label_document_empty'                           => __( 'Empty document', 'tainacan' ),
@@ -258,6 +260,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_text'                                     => __( 'Text', 'tainacan' ),
 	'label_url'                                      => __( 'URL', 'tainacan' ),
 	'label_select_file'                              => __( 'Select File', 'tainacan' ),
+	'label_selected_file'                              => __( 'Selected file', 'tainacan' ),
 	'label_expand_all'                               => __( 'Expand all', 'tainacan' ),
 	'label_collapse_all'                             => __( 'Collapse all', 'tainacan' ),
 	'label_view_term'                                => __( 'View Term', 'tainacan' ),
@@ -307,7 +310,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_create_metadatum'                         => __( 'Create metadatum', 'tainacan' ),
 	'label_select_metadatum_type'                    => __( 'Select a metadatum type', 'tainacan' ),
 	'label_add_more_metadata'                        => __( 'Add more metadata', 'tainacan' ),
-	'label_from_source_collection'                   => __( 'From source collection', 'tainacan' ),
+	'label_from_source_collection'                   => __( 'From source file', 'tainacan' ),
 	'label_to_target_collection'                     => __( 'To target collection', 'tainacan' ),
 	'label_add_value'                                => __( 'Add value', 'tainacan' ),
 	'label_remove_value'                             => __( 'Remove value', 'tainacan' ),
@@ -466,6 +469,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_default_author_user'						 => __( 'Set the item author as default value', 'tainacan' ),
 	'label_crate_new_item'							 => __( 'Create new item', 'tainacan' ),
 	'label_submit'									 => __( 'Submit', 'tainacan' ),
+	'label_know_more'								 => __( 'Know more', 'tainacan' ),
+	'label_request_details'							 => __( 'Request details', 'tainacan' ),
+	'label_terms_without_parent'					 => __( 'Terms without parent', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -522,6 +528,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_a_interval'		 			 => __( 'Select an interval', 'tainacan'),
 	'instruction_select_title_mapping'				 => __( 'Before runnning import, consider selecting the title source metadata', 'tainacan'),
 	'instruction_click_error_to_go_to_metadata'		 => __( 'Click on the error to go to the metadata:', 'tainacan'),
+	'instruction_click_to_see_or_search'			 => __( 'Click to see options or type to search...', 'tainacan'),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every published item, including those visible only to editors.', 'tainacan' ),
@@ -749,7 +756,33 @@ return apply_filters( 'tainacan-admin-i18n', [
 	/* translators: This refers to the short label that will appear on datepickers for Friday */
 	'datepicker_short_friday'			=> __( 'F', 'tainacan' ),
 	/* translators: This refers to the short label that will appear on datepickers for Saturday */
-	'datepicker_short_saturday'			=> __( 'Sa', 'tainacan' )
+	'datepicker_short_saturday'			=> __( 'Sa', 'tainacan' ),
 
+	/* Errors displayed on the interface botom notifications */
+	'error_connectivity_label' => __('Connectivity issue', 'tainacan'),
+	'error_connectivity' => __('It is possible that you are disconnected or the server is not working properly.', 'tainacan'),
+	'error_400'	  => __('Some request went wrong due to invalid syntax.', 'tainacan'),
+	'error_401'	  => __('You must authenticate to get access this information. Try logging again on the WordPress Admin panel.', 'tainacan'),
+	'error_403'	  => __('It seems that you are not allowed to acess this content.', 'tainacan'),
+	'error_404'	  => __('A wrong request was made or this information does not exist.', 'tainacan'),
+	'error_408'	  => __('This request exceeded the server expected timeout.', 'tainacan'),
+	'error_500'	  => __('An internal server error occurred. Try to contact the administrator.', 'tainacan'),
+	'error_502'	  => __('A communication error between servers went wrong. Try to contact the administrator.', 'tainacan'),
+	'error_503'	  => __('Some service is not available now. Try again later and if it persists, contact the administrator.', 'tainacan'),
+	'error_504'	  => __('The server communication exceeded the expected timeout. Try contact the administrator.', 'tainacan'),
+	'error_511'	  => __('You must authenticate to get access this information. Try logging again on the WordPress Admin panel.', 'tainacan'),
+	'error_other' => __('Something went wrong here. You may want to try again or contact the Administrator.', 'tainacan'),
+	'error_connectivity_detail' => __('The WordPress Heartbit API sends requests periodically to the server to update some information. The latest request failed for some reason. It can be the case of a lost connection or bad communication between the browser and the server.', 'tainacan'),
+	'error_400_detail'	 => __('The server could not understand the request due to invalid syntax. This is possibily an issue with Tainacan and should be informed to developers.', 'tainacan'),
+	'error_401_detail'	 => __('You must authenticate to get access this information. Even if you have access to the Tainacan admin panel, it may be the case that your session cookies were lost. Try reloading the page or logging again on the WordPress Admin panel.', 'tainacan'),
+	'error_403_detail'	 => __('It seems that you are not allowed to acess this content. Your user might have a role with insufficient capabilities. If that is not the case, check if you are correctly logged in on the WordPress Admin panel.', 'tainacan'),
+	'error_404_detail'	 => __('A wrong request was made or this information does not exist. This can either mean some connection error occurred just now or the content that you are looking for was requested wrongly. In that case, it might be worthy to inform Tainacan developers about the issue.', 'tainacan'),
+	'error_408_detail'	 => __('This request exceeded the server expected timeout. This can be caused by a slow connection or connectivity issues. If it is not somehting noticeable in other pages, try to contact the administrator.', 'tainacan'),
+	'error_500_detail'	 => __('An internal server error occurred. This error can occur for a variety of reasons, and a more detailed description shall be find on the server logs. Try to contact the administrator and provide information of the moment when the error ocurred.', 'tainacan'),
+	'error_502_detail'	 => __('This error response means that the server, while working as a gateway to get a response needed to handle the request, got an invalid response. Try to contact the administrator.', 'tainacan'),
+	'error_503_detail'	 => __('The server might be unavaiblable due to multiple access, some instability or connection issues. Try again later and if it persists, contact the administrator.', 'tainacan'),
+	'error_504_detail'	 => __('This error response is given when the server is acting as a gateway and cannot get a response in time. Try contact the administrator.', 'tainacan'),
+	'error_511_detail'	 => __('You must authenticate to get access this information. Even if you have access to the Tainacan admin panel, it may be the case that your session cookies were lost. Try reloading the page or logging again on the WordPress Admin panel.', 'tainacan'),
+	'error_other_detail' => __('Something went wrong here. You may want to try again or contact the Administrator.', 'tainacan')
 ] );
 ?>

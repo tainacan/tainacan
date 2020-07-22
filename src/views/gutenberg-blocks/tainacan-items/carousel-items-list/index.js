@@ -2,9 +2,9 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, ColorPicker, ColorPalette, BaseControl, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
 
-const { InspectorControls } = wp.editor;
+const { InspectorControls, BlockControls } = wp.editor;
 
 import CarouselItemsModal from './carousel-items-modal.js';
 import tainacan from '../../js/axios.js';
@@ -20,12 +20,17 @@ registerBlockType('tainacan/carousel-items-list', {
                 height="24px"
                 width="24px">
             <path
-                fill="var(--tainacan-block-primary, $primary)"
+                fill="#298596"
                 d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'items', 'tainacan' ), __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ) ],
     description: __('List items on a Carousel, using search or item selection.', 'tainacan'),
+    example: {
+        attributes: {
+            content: 'preview'
+        }
+    },
     attributes: {
         content: {
             type: 'array',
@@ -60,6 +65,10 @@ registerBlockType('tainacan/carousel-items-list', {
             type: Number,
             value: undefined
         },
+        maxItemsPerScreen: {
+            type: Number,
+            value: 7
+        },
         isLoading: {
             type: Boolean,
             value: false
@@ -75,6 +84,10 @@ registerBlockType('tainacan/carousel-items-list', {
         arrowsPosition: {
             type: String,
             value: 'search'
+        },
+        largeArrows: {
+            type: Boolean,
+            value: false
         },
         autoPlay: {
             type: Boolean,
@@ -99,6 +112,10 @@ registerBlockType('tainacan/carousel-items-list', {
         showCollectionLabel: {
             type: Boolean,
             value: false
+        },
+        cropImagesToSquare: {
+            type: Boolean,
+            value: true
         },
         collection: {
             type: Object,
@@ -131,14 +148,17 @@ registerBlockType('tainacan/carousel-items-list', {
             searchURL,
             itemsRequestSource,
             maxItemsNumber,
+            maxItemsPerScreen,
             selectedItems,
             isLoading,
             loadStrategy,
             arrowsPosition,
+            largeArrows,
             autoPlay,
             autoPlaySpeed,
             loopSlides,
             hideTitle,
+            cropImagesToSquare,
             showCollectionHeader,
             showCollectionLabel,
             isLoadingCollection,
@@ -154,7 +174,7 @@ registerBlockType('tainacan/carousel-items-list', {
             return (
                 <li 
                     key={ item.id }
-                    className="item-list-item">   
+                    className={ 'item-list-item ' + (maxItemsPerScreen ? 'max-itens-per-screen-' + maxItemsPerScreen : '') }>   
                     { loadStrategy == 'selection' ?
                         <IconButton
                             onClick={ () => removeItemOfId(item.id) }
@@ -168,9 +188,9 @@ registerBlockType('tainacan/carousel-items-list', {
                         target="_blank">
                         <img
                             src={ 
-                                item.thumbnail && item.thumbnail['tainacan-medium'][0] && item.thumbnail['tainacan-medium'][0] 
+                                item.thumbnail && item.thumbnail[maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] && item.thumbnail[maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
                                     ?
-                                item.thumbnail['tainacan-medium'][0] 
+                                item.thumbnail[maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
                                     :
                                 (item.thumbnail && item.thumbnail['thumbnail'][0] && item.thumbnail['thumbnail'][0]
                                     ?    
@@ -320,11 +340,51 @@ registerBlockType('tainacan/carousel-items-list', {
         if(content && content.length && content[0].type)
             setContent();
 
-        return (
+        return content == 'preview' ? 
+                <div className={className}>
+                    <img
+                            width="100%"
+                            src={ `${tainacan_blocks.base_url}/assets/images/carousel-items-list.png` } />
+                </div>
+            : (
             <div className={className}>
 
+                { items.length ?
+                    <BlockControls>
+                        <ToolbarGroup>
+                            { loadStrategy != 'search' ? 
+                                <ToolbarButton onClick={ () => openCarouseltemsModal('selection')  } >
+                                    <p>
+                                        <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                height="24px"
+                                                width="24px">
+                                            <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
+                                        </svg>
+                                    </p>&nbsp;
+                                    { __('Add more items', 'tainacan') }
+                                </ToolbarButton>
+                                :
+                                <ToolbarButton onClick={ () => openCarouseltemsModal('search') } >
+                                    <p>
+                                        <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                height="24px"
+                                                width="24px">
+                                            <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
+                                        </svg>
+                                    </p>&nbsp;
+                                    { __('Configure a search', 'tainacan') } 
+                                </ToolbarButton>
+                            }
+                        </ToolbarGroup>
+                    </BlockControls>
+                : null }
+
                 <div>
-                    <InspectorControls>
+                   <InspectorControls>
                         
                         <PanelBody
                                 title={__('Collection header', 'tainacan')}
@@ -343,7 +403,7 @@ registerBlockType('tainacan/carousel-items-list', {
                                 />
                                 { showCollectionHeader ?
                                     <div style={{ margin: '6px' }}>
-
+                                                            
                                         <ToggleControl
                                             label={__('Display "Collection" label', 'tainacan')}
                                             help={ !showCollectionLabel ? __('Toggle to show "Collection" label above header', 'tainacan') : __('Do not show "Collection" label', 'tainacan')}
@@ -390,6 +450,29 @@ registerBlockType('tainacan/carousel-items-list', {
                                 initialOpen={ true }
                             >
                             <div>
+                                <RangeControl
+                                        label={ __('Maximum items per slide on a wide screen', 'tainacan') }
+                                        help={ maxItemsPerScreen <= 4 ? __('Warning: with such a small number of items per slide, the image size is greater, thus the cropped version of the thumbnail won\'t be used.', 'tainacan') : null }
+                                        value={ maxItemsPerScreen ? maxItemsPerScreen : 7 }
+                                        onChange={ ( aMaxItemsPerScreen ) => {
+                                            maxItemsPerScreen = aMaxItemsPerScreen;
+                                            setAttributes( { maxItemsPerScreen: aMaxItemsPerScreen } );
+                                            setContent(); 
+                                        }}
+                                        min={ 1 }
+                                        max={ 9 }
+                                    />
+                                <ToggleControl
+                                        label={__('Crop Images', 'tainacan')}
+                                        help={ cropImagesToSquare && maxItemsPerScreen > 4 ? __('Do not use square cropeed version of the item thumbnail.', 'tainacan') : __('Toggle to use square cropped version of the item thumbnail.', 'tainacan') }
+                                        checked={ cropImagesToSquare && maxItemsPerScreen > 4 }
+                                        onChange={ ( isChecked ) => {
+                                                cropImagesToSquare = isChecked;
+                                                setAttributes({ cropImagesToSquare: cropImagesToSquare });
+                                                setContent();
+                                            } 
+                                        }
+                                    />
                                 <ToggleControl
                                         label={__('Hide title', 'tainacan')}
                                         help={ !hideTitle ? __('Toggle to hide item\'s title', 'tainacan') : __('Do not hide item\'s title', 'tainacan')}
@@ -448,6 +531,16 @@ registerBlockType('tainacan/carousel-items-list', {
 
                                         setAttributes({ arrowsPosition: arrowsPosition }); 
                                     }}/>
+                                <ToggleControl
+                                    label={__('Large arrows', 'tainacan')}
+                                    help={ !largeArrows ? __('Toggle to display arrows bigger than the default size.', 'tainacan') : __('Do not show arrows bigger than the default size.', 'tainacan')}
+                                    checked={ largeArrows }
+                                    onChange={ ( isChecked ) => {
+                                            largeArrows = isChecked;
+                                            setAttributes({ largeArrows: largeArrows });
+                                        } 
+                                    }
+                                />
                             </div>                           
                         </PanelBody>
 
@@ -519,34 +612,6 @@ registerBlockType('tainacan/carousel-items-list', {
                             : null
                         }
                         
-                        { items.length ? (
-                            <div className="tainacan-block-control">
-                                <p>
-                                    <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            height="24px"
-                                            width="24px">
-                                        <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
-                                    </svg>
-                                    {__('List items on a Carousel', 'tainacan')}
-                                </p>
-                                <Button
-                                    isPrimary
-                                    type="submit"
-                                    onClick={ () => openCarouseltemsModal('selection') }>
-                                    {__('Add more items', 'tainacan')}
-                                </Button> 
-                                <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
-                                <Button
-                                    isPrimary
-                                    type="submit"
-                                    onClick={ () => openCarouseltemsModal('search') }>
-                                    {__('Configure a search', 'tainacan')}
-                                </Button>    
-                            </div>
-                            ): null
-                        }
                     </div>
                     ) : null
                 }
@@ -601,7 +666,6 @@ registerBlockType('tainacan/carousel-items-list', {
                     </div>
                     : null
                 }
-
                 { !items.length && !isLoading ? (
                     <Placeholder
                         className="tainacan-block-placeholder"
@@ -649,14 +713,14 @@ registerBlockType('tainacan/carousel-items-list', {
                         }
                         {  items.length ? (
                             <div
-                                    className={'items-list-edit-container has-arrows-' + arrowsPosition}>
+                                    className={'items-list-edit-container ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }>
                                 <button 
                                         class="swiper-button-prev" 
                                         slot="button-prev"
                                         style={{ cursor: 'not-allowed' }}>
                                     <svg
-                                            width="42"
-                                            height="42"
+                                            width={ largeArrows ? 60 : 42 }
+                                            height={ largeArrows ? 60 : 42 }
                                             viewBox="0 0 24 24">
                                         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                                         <path
@@ -668,7 +732,7 @@ registerBlockType('tainacan/carousel-items-list', {
                                     style={{ 
                                         marginTop: showCollectionHeader ? '1.5rem' : '0px'
                                     }}
-                                    className={'items-list-edit'}>
+                                    className={ 'items-list-edit' }>
                                     { items }
                                 </ul>
                                 <button 
@@ -676,8 +740,8 @@ registerBlockType('tainacan/carousel-items-list', {
                                         slot="button-next"
                                         style={{ cursor: 'not-allowed' }}>
                                     <svg
-                                            width="42"
-                                            height="42"
+                                            width={ largeArrows ? 60 : 42 }
+                                            height={ largeArrows ? 60 : 42 }
                                             viewBox="0 0 24 24">
                                         <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                                         <path
@@ -689,7 +753,9 @@ registerBlockType('tainacan/carousel-items-list', {
                         ):null
                         }
                     </div>
+        
                 }
+                
             </div>
         );
     },
@@ -701,12 +767,15 @@ registerBlockType('tainacan/carousel-items-list', {
             searchURL,
             selectedItems,
             arrowsPosition,
+            largeArrows,
             loadStrategy,
             maxItemsNumber,
+            maxItemsPerScreen,
             autoPlay,
             autoPlaySpeed,
             loopSlides,
             hideTitle,
+            cropImagesToSquare,
             showCollectionHeader,
             showCollectionLabel,
             collectionBackgroundColor,
@@ -723,15 +792,154 @@ registerBlockType('tainacan/carousel-items-list', {
                     auto-play-speed={ autoPlaySpeed }
                     loop-slides={ '' + loopSlides }
                     hide-title={ '' + hideTitle }
+                    large-arrows={ '' + largeArrows }
+                    crop-images-to-square={ '' + cropImagesToSquare }
                     show-collection-header={ '' + showCollectionHeader }
                     show-collection-label={ '' + showCollectionLabel }
                     collection-background-color={ collectionBackgroundColor }
                     collection-text-color={ collectionTextColor }
                     max-items-number={ maxItemsNumber }
+                    max-items-per-screen={ maxItemsPerScreen }
                     tainacan-api-root={ tainacan_blocks.root }
                     tainacan-base-url={ tainacan_blocks.base_url }
                     id={ 'wp-block-tainacan-carousel-items-list_' + blockId }>
                         { content }
                 </div>
-    }
+    },
+    deprecated: [
+        {
+            attributes: {
+                content: {
+                    type: 'array',
+                    source: 'children',
+                    selector: 'div'
+                },
+                collectionId: {
+                    type: String,
+                    default: undefined
+                },
+                items: {
+                    type: Array,
+                    default: []
+                },
+                isModalOpen: {
+                    type: Boolean,
+                    default: false
+                },
+                searchURL: {
+                    type: String,
+                    default: undefined
+                },
+                selectedItems: {
+                    type: Array,
+                    default: []
+                },
+                itemsRequestSource: {
+                    type: String,
+                    default: undefined
+                },
+                maxItemsNumber: {
+                    type: Number,
+                    value: undefined
+                },
+                isLoading: {
+                    type: Boolean,
+                    value: false
+                },
+                isLoadingCollection: {
+                    type: Boolean,
+                    value: false
+                },
+                loadStrategy: {
+                    type: String,
+                    value: 'search'
+                },
+                arrowsPosition: {
+                    type: String,
+                    value: 'search'
+                },
+                autoPlay: {
+                    type: Boolean,
+                    value: false
+                },
+                autoPlaySpeed: {
+                    type: Number,
+                    value: 3
+                },
+                loopSlides: {
+                    type: Boolean,
+                    value: false
+                },
+                hideTitle: {
+                    type: Boolean,
+                    value: true
+                },
+                showCollectionHeader: {
+                    type: Boolean,
+                    value: false
+                },
+                showCollectionLabel: {
+                    type: Boolean,
+                    value: false
+                },
+                collection: {
+                    type: Object,
+                    value: undefined
+                },
+                blockId: {
+                    type: String,
+                    default: undefined
+                },
+                collectionBackgroundColor: {
+                    type: String,
+                    default: "#454647"
+                },
+                collectionTextColor: {
+                    type: String,
+                    default: "#ffffff"
+                }
+            },
+            save({ attributes, className }){
+                const {
+                    content, 
+                    blockId,
+                    collectionId,  
+                    searchURL,
+                    selectedItems,
+                    arrowsPosition,
+                    loadStrategy,
+                    maxItemsNumber,
+                    autoPlay,
+                    autoPlaySpeed,
+                    loopSlides,
+                    hideTitle,
+                    showCollectionHeader,
+                    showCollectionLabel,
+                    collectionBackgroundColor,
+                    collectionTextColor
+                } = attributes;
+                return <div 
+                            className={ className }
+                            search-url={ searchURL }
+                            selected-items={ JSON.stringify(selectedItems) }
+                            arrows-position={ arrowsPosition }
+                            load-strategy={ loadStrategy }
+                            collection-id={ collectionId }  
+                            auto-play={ '' + autoPlay }
+                            auto-play-speed={ autoPlaySpeed }
+                            loop-slides={ '' + loopSlides }
+                            hide-title={ '' + hideTitle }
+                            show-collection-header={ '' + showCollectionHeader }
+                            show-collection-label={ '' + showCollectionLabel }
+                            collection-background-color={ collectionBackgroundColor }
+                            collection-text-color={ collectionTextColor }
+                            max-items-number={ maxItemsNumber }
+                            tainacan-api-root={ tainacan_blocks.root }
+                            tainacan-base-url={ tainacan_blocks.base_url }
+                            id={ 'wp-block-tainacan-carousel-items-list_' + blockId }>
+                                { content }
+                        </div>
+            }
+        }
+    ]
 });

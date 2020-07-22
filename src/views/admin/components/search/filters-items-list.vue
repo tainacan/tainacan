@@ -31,6 +31,12 @@
         </button>
 
         <br>
+
+        <filters-tags-list
+                style="padding: 1em 0;"
+                class="filter-tags-list"
+                v-if="filtersAsModal && hasFiltered" />
+
         <br>
         <div            
                 v-if="!isLoadingFilters &&
@@ -72,13 +78,15 @@
                     </div>
                     <template v-if="taxonomyFilter.length > 0">
                         <tainacan-filter-item
+                                :is-loading-items="isLoadingItems"
                                 v-show="!isMenuCompressed"        
                                 :query="getQuery"
                                 v-for="(filter, filterIndex) in taxonomyFilter"
                                 :key="filterIndex"
                                 :filter="filter"
                                 :open="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"/>
+                                :is-repository-level="key == 'repository-filters'"
+                                :filters-as-modal="filtersAsModal"/>
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -118,13 +126,15 @@
                     </div>
                     <template v-if="taxonomyFilter.length > 0">
                         <tainacan-filter-item
+                                :is-loading-items="isLoadingItems"
                                 v-show="!isMenuCompressed"        
                                 :query="getQuery"
                                 v-for="(filter, filterIndex) in taxonomyFilter"
                                 :key="filterIndex"
                                 :filter="filter"
                                 :open="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"/>
+                                :is-repository-level="key == 'repository-filters'"
+                                :filters-as-modal="filtersAsModal"/>
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -171,13 +181,15 @@
                     </div>
                     <template v-if="repositoryCollectionFilter.length > 0">
                         <tainacan-filter-item
+                                :is-loading-items="isLoadingItems"
                                 v-show="!isMenuCompressed"        
                                 :query="getQuery"
                                 v-for="(filter, filterIndex) in repositoryCollectionFilter"
                                 :key="filterIndex"
                                 :filter="filter"
                                 :open="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"/>
+                                :is-repository-level="key == 'repository-filters'"
+                                :filters-as-modal="filtersAsModal"/>
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -217,13 +229,15 @@
                     </div>
                     <template v-if="repositoryCollectionFilter.length > 0">
                         <tainacan-filter-item
+                                :is-loading-items="isLoadingItems"
                                 v-show="!isMenuCompressed"        
                                 :query="getQuery"
                                 v-for="(filter, filterIndex) in repositoryCollectionFilter"
                                 :key="filterIndex"
                                 :filter="filter"
                                 :open="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"/>
+                                :is-repository-level="key == 'repository-filters'"
+                                :filters-as-modal="filtersAsModal"/>
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -238,13 +252,15 @@
             <!-- COLLECTION ITEMS PAGE FILTERS -->
             <template v-else>
                 <tainacan-filter-item
+                        :is-loading-items="isLoadingItems"
                         v-show="!isMenuCompressed"        
                         :query="getQuery"
                         v-for="(filter, index) in filters"
                         :key="index"
                         :filter="filter"
                         :open="!collapseAll"
-                        :is-repository-level="isRepositoryLevel"/>
+                        :is-repository-level="isRepositoryLevel"
+                        :filters-as-modal="filtersAsModal"/>
             </template>
         </div>
         <section
@@ -273,16 +289,21 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex';
+    import FiltersTagsList from './filters-tags-list.vue';
     import CollectionsFilter from '../other/collection-filter.vue';
 
     export default {
         components: {
-            CollectionsFilter
+            CollectionsFilter,
+            FiltersTagsList
         },
         props: {
             collectionId: String,
             isRepositoryLevel: Boolean,
-            taxonomy: String
+            taxonomy: String,
+            filtersAsModal: Boolean,
+            hasFiltered: Boolean,
+            isLoadingItems: Boolean
         },
         data() {
             return {
@@ -293,6 +314,7 @@
                 collectionNameSearchCancel: undefined,
                 filtersSearchCancel: undefined,
                 repositoryFiltersSearchCancel: undefined,
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
             }
         },
         computed: {
@@ -361,13 +383,17 @@
         },
         mounted() {
             this.prepareFilters();
-
             this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', () => {
                 /* This condition is to prevent an incorrect fetch by filter or metadata when we come from items
                  * at collection level to items page at repository level
                  */
                 this.prepareFilters();
             });
+            if (this.isUsingElasticSearch) {
+                this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
+                    this.isLoadingItems = isLoadingItems;
+                });
+            }
         },
         beforeDestroy() {
             // Cancels previous collection name Request
@@ -383,6 +409,9 @@
                 this.filtersSearchCancel.cancel('Filters search Canceled.');
 
             this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
+
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$off('isLoadingItems');
      
         },
         methods: {
@@ -436,7 +465,7 @@
                 }
 
                 // On repository level we also fetch collection filters
-                if (this.isRepositoryLevel) {
+                if (!this.taxonomy && this.isRepositoryLevel) {
                     
                     // Cancels previous Request
                     if (this.repositoryFiltersSearchCancel != undefined)

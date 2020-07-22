@@ -66,7 +66,7 @@
                     :id="newItemFrame"
                     width="100%"
                     style="height: 85vh"
-                    :src="adminFullURL + $routerHelper.getNewItemPath(collectionId) + '?iframemode=true&newitemtitle=' + searchQuery" />
+                    :src="adminFullURL + $routerHelper.getNewItemPath(collectionId) + '?iframemode=true&newmetadatumid=' + itemMetadatum.metadatum.metadata_type_options.search + '&newitemtitle=' + searchQuery" />
         </b-modal>
         
     </div>

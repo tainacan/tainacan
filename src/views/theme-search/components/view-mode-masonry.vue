@@ -43,7 +43,7 @@
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-masonry-item" 
-                        :href="item.url">
+                        :href="getItemLink(item.url, index)">
 
                     <!-- Title -->
                     <div class="metadata-title">
@@ -68,9 +68,13 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { viewModesMixin } from '../js/view-modes-mixin.js';
 
 export default {
     name: 'ViewModeMasonry',
+    mixins: [
+        viewModesMixin
+    ],
     props: {
         collectionId: Number,
         displayedMetadata: Array,
@@ -81,7 +85,6 @@ export default {
     },
     data () {
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             itemColumnWidth: Number,
             containerWidthDiscount: Number,
             masonryCols: {default: 6, 1919: 5, 1407: 4, 1215: 3, 1023: 3, 767: 2, 343: 1}
@@ -130,19 +133,6 @@ export default {
         ...mapGetters('search', [
             'getItemsPerPage',
         ]),
-        goToItemPage(item) {
-            window.location.href = item.url;   
-        },
-        renderMetadata(itemMetadata, column) {
-
-            let metadata = itemMetadata[column.slug] != undefined ? itemMetadata[column.slug] : false;
-
-            if (!metadata) {
-                return '';
-            } else {
-                return metadata.value_as_html;
-            }
-        },
         randomHeightForMasonryItem() {
             let min = 120;
             let max = 380;

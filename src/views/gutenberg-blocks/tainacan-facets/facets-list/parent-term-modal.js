@@ -80,7 +80,7 @@ export default class ParentTermModal extends React.Component {
                     modalFacets: otherModalFacets,
                     totalModalFacets: response.headers['x-wp-total'],
                     offset: this.state.offset + response.data.values.length, 
-                    lastTerm: response.data.last_term
+                    lastTerm: response.data.last_term.es_term
                 });
             
                 return otherModalFacets;

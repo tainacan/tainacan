@@ -202,7 +202,7 @@ class Private_Files {
 
 			$file_path = \str_replace( '/', $this->dir_separator, str_replace($base_upload_url, '', $requested_uri) );
 
-			$file = $upload_dir['basedir'] . $file_path;
+			$file = urldecode($upload_dir['basedir'] . $file_path);
 
 			$existing_file = false;
 
@@ -262,9 +262,10 @@ class Private_Files {
 	 * private uploads folder prefix from the attachments URLs
 	 */
 	function image_get_intermediate_size($data, $post_id, $size) {
-
-		$data['path'] = str_replace($this->dir_separator . $this->get_private_folder_prefix(), $this->dir_separator, $data['path']);
-		$data['url'] = str_replace('/' . $this->get_private_folder_prefix(), '/', $data['url']);
+		if(isset($data['path']))
+			$data['path'] = str_replace($this->dir_separator . $this->get_private_folder_prefix(), $this->dir_separator, $data['path']);
+		if(isset($data['url']))
+			$data['url'] = str_replace('/' . $this->get_private_folder_prefix(), '/', $data['url']);
 
 		return $data;
 

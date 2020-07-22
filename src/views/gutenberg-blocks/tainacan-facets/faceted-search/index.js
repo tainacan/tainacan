@@ -1,10 +1,26 @@
 const { registerBlockType } = wp.blocks;
-
 const { __ } = wp.i18n;
 
-const { Button, ColorPicker, BaseControl, CheckboxControl, RangeControl, FontSizePicker, HorizontalRule, SelectControl, ToggleControl, Placeholder, PanelBody } = wp.components;
+const { 
+    Button,
+    ColorPicker,
+    BaseControl,
+    CheckboxControl,
+    RangeControl,
+    FontSizePicker,
+    HorizontalRule,
+    SelectControl,
+    ToggleControl,
+    Placeholder,
+    PanelBody,
+    ToolbarGroup,
+    Dropdown,
+    ToolbarButton,
+    MenuGroup,
+    MenuItemsChoice
+} = wp.components;
 
-const { InspectorControls } = wp.editor;
+const { InspectorControls, BlockControls } = wp.editor;
 
 import CollectionModal from './collection-modal.js';
 import TermModal from './term-modal.js';
@@ -20,13 +36,18 @@ registerBlockType('tainacan/faceted-search', {
             <g transform="matrix(0.2891908,0,0,0.2891908,-30.465367,-38.43427)">
                 <path 
                         transform="matrix(0.26458333,0,0,0.26458333,104.32258,131.88168)"
-                        fill="var(--tainacan-block-primary, $primary)"
+                        fill="#298596"
                         d="M 16.662109,14.712891 V 24.927734 H 84.753906 V 14.712891 Z m 6.810547,17.021484 v 9.748047 c 6.857764,2.272819 11.798639,8.605281 11.798828,16.078125 -7.56e-4,2.313298 -0.496344,4.586348 -1.421875,6.693359 l 8.375,8.375 -3.365234,3.367188 H 77.945312 V 31.734375 Z m 17.019532,10.216797 h 20.429687 v 10.21289 H 40.492188 Z m -22.835938,3.84375 a 9.1779065,9.1779065 0 0 0 -0.916016,0.03906 11.753475,11.753475 0 0 0 1.671875,23.445313 11.455635,11.455635 0 0 0 6.466797,-1.910156 l 1.908203,1.910156 2.88086,2.982422 3.820312,3.716797 3.347657,-3.347657 -3.851563,-3.855468 -2.847656,-2.845703 -1.941407,-1.941407 a 11.455635,11.455635 0 0 0 1.941407,-6.433593 11.723603,11.723603 0 0 0 -6.697266,-10.583985 11.422139,11.422139 0 0 0 -5.027344,-1.136719 9.1779065,9.1779065 0 0 0 -0.755859,-0.03906 z m 0.755859,6.736328 a 5.0244015,5.0244015 0 0 1 5.027344,5.025391 v 0.101562 a 5.0244015,5.0244015 0 0 1 -0.269531,1.570313 4.9574094,4.9574094 0 0 1 -4.757813,3.351562 5.0244015,5.0244015 0 0 1 -1.671875,-9.746094 4.6559456,4.6559456 0 0 1 1.671875,-0.302734 z m 6.376953,20.601562 c -0.431168,0.183308 -0.872311,0.335613 -1.316406,0.484376 v 2.378906 h 4.179688 z "/>
             </g>
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'facets', 'tainacan' ), __( 'search', 'tainacan' ), __( 'items', 'tainacan' ) ],
     description: __('A full items list faceted search from either the repository, a collection or a term.', 'tainacan'),
+    example: {
+        attributes: {
+            listType: 'preview'
+        }
+    },
     attributes: {
         termId: {
             type: String,
@@ -278,6 +299,21 @@ registerBlockType('tainacan/faceted-search', {
             },
         ];
 
+        const listTypeChoices = [
+            {
+                value: 'collection',
+                label: __('a Collection', 'tainacan'),
+            },
+            {
+                value: 'term',
+                label: __('a Taxonomy Term', 'tainacan'),
+            },
+            {
+                value: 'repository',
+                label: __('the Repository', 'tainacan'),
+            },
+        ];
+
         function openCollectionModal() {
             isCollectionModalOpen = true;
             setAttributes( { 
@@ -296,8 +332,67 @@ registerBlockType('tainacan/faceted-search', {
             return enabledViewModes.includes(viewMode);
         }
 
-        return (
+        function onUpdateListType( aListType, props) {
+            listType = aListType;
+
+            if (listType != 'collection') {
+                enabledViewModes = registeredViewModesKeys;
+                defaultViewMode = 'masonry';
+            }
+
+            setAttributes({ 
+                listType: aListType,
+                enabledViewModes: enabledViewModes,
+                defaultViewMode: defaultViewMode
+            });
+
+            if (listType == 'term')
+                openTermModal();
+            else if (listType == 'collection')
+                openCollectionModal()
+            else
+                return;
+        }
+
+        return ( listType == 'preview' ? 
+                <div className={className}>
+                    <img
+                            width="100%"
+                            src={ `${tainacan_blocks.base_url}/assets/images/faceted-search.png` } />
+                </div>
+            : (
             <div className={className}>
+
+                <div>
+                    <BlockControls>
+                        { !( termId == undefined && listType == 'term' ) && !( collectionId == undefined && listType == 'collection' ) ?
+                        <ToolbarGroup>
+                            <Dropdown
+                                contentClassName="wp-block-tainacan__dropdown"
+                                renderToggle={ ( { isOpen, onToggle } ) => (
+                                    <ToolbarButton
+                                        onClick={ onToggle }
+                                        aria-expanded={ isOpen }>
+                                            { __('Items list source', 'tainacan')  } 
+                                    </ToolbarButton>
+                                ) }
+                                renderContent={ ( { onToggle } ) => (
+                                    <MenuGroup>
+                                        <MenuItemsChoice
+                                            choices={ listTypeChoices }
+                                            value={ listType } 
+                                            onSelect={ (value) => {
+                                                onUpdateListType(value);
+                                                onToggle(); 
+                                            }}>
+                                        </MenuItemsChoice>
+                                    </MenuGroup>
+                                ) }
+                            />
+                        </ToolbarGroup>
+                        :null }
+                    </BlockControls>
+                </div>
 
                 <div>
                     <InspectorControls>
@@ -744,66 +839,6 @@ registerBlockType('tainacan/faceted-search', {
                     </InspectorControls>
                 </div>
 
-                { isSelected ? 
-                    (
-                    <div>
-                        <div className="tainacan-block-control">
-                            <p style={{ display: 'flex', alignItems: 'baseline' }}>
-                                <svg 
-                                        xmlns="http://www.w3.org/2000/svg" 
-                                        viewBox="0 0 6.3499998 6.3499998"
-                                        height="24px"
-                                        width="24px">
-                                    <g transform="matrix(0.2891908,0,0,0.2891908,-30.465367,-38.43427)">
-                                        <path 
-                                                transform="matrix(0.26458333,0,0,0.26458333,104.32258,131.88168)"
-                                                fill="var(--tainacan-block-primary, $primary)"
-                                                d="M 16.662109,14.712891 V 24.927734 H 84.753906 V 14.712891 Z m 6.810547,17.021484 v 9.748047 c 6.857764,2.272819 11.798639,8.605281 11.798828,16.078125 -7.56e-4,2.313298 -0.496344,4.586348 -1.421875,6.693359 l 8.375,8.375 -3.365234,3.367188 H 77.945312 V 31.734375 Z m 17.019532,10.216797 h 20.429687 v 10.21289 H 40.492188 Z m -22.835938,3.84375 a 9.1779065,9.1779065 0 0 0 -0.916016,0.03906 11.753475,11.753475 0 0 0 1.671875,23.445313 11.455635,11.455635 0 0 0 6.466797,-1.910156 l 1.908203,1.910156 2.88086,2.982422 3.820312,3.716797 3.347657,-3.347657 -3.851563,-3.855468 -2.847656,-2.845703 -1.941407,-1.941407 a 11.455635,11.455635 0 0 0 1.941407,-6.433593 11.723603,11.723603 0 0 0 -6.697266,-10.583985 11.422139,11.422139 0 0 0 -5.027344,-1.136719 9.1779065,9.1779065 0 0 0 -0.755859,-0.03906 z m 0.755859,6.736328 a 5.0244015,5.0244015 0 0 1 5.027344,5.025391 v 0.101562 a 5.0244015,5.0244015 0 0 1 -0.269531,1.570313 4.9574094,4.9574094 0 0 1 -4.757813,3.351562 5.0244015,5.0244015 0 0 1 -1.671875,-9.746094 4.6559456,4.6559456 0 0 1 1.671875,-0.302734 z m 6.376953,20.601562 c -0.431168,0.183308 -0.872311,0.335613 -1.316406,0.484376 v 2.378906 h 4.179688 z "/>
-                                    </g>
-                                </svg>
-                                {__('Show items list from: ', 'tainacan')}
-                                &nbsp;
-                                <SelectControl
-                                    label={ __('Items list source', 'tainacan') }
-                                    hideLabelFromVision
-                                    value={ listType }
-                                    options={ [
-                                        { label: __('a Collection', 'tainacan'), value: 'collection' },
-                                        { label: __('a Taxonomy Term', 'tainacan'), value: 'term' },
-                                        { label: __('the Repository', 'tainacan'), value: 'repository' },
-                                    ] }
-                                    onChange={ ( aListType) => {
-                                        listType = aListType;
-
-                                        if (listType != 'collection') {
-                                            enabledViewModes = registeredViewModesKeys;
-                                            defaultViewMode = 'masonry';
-                                        }
-
-                                        setAttributes({ 
-                                            listType: aListType,
-                                            enabledViewModes: enabledViewModes,
-                                            defaultViewMode: defaultViewMode
-                                        });
-                                    } }
-                                />
-                                &nbsp;
-                                { 
-                                    (listType == 'collection' && collectionId != undefined) || (listType == 'term' && termId != undefined) ?
-                                        <Button
-                                            isPrimary
-                                            type="submit"
-                                            onClick={ () => listType == 'term' ? openTermModal() : openCollectionModal() }>
-                                            { listType == 'term' ? __('Change Term', 'tainacan') : __('Change Collection', 'tainacan') }
-                                        </Button>
-                                    : null
-                                }
-                            </p>  
-                        </div>
-                    </div>
-                    ) : null
-                }
-
                 { ( termId == undefined && listType == 'term' ) || ( collectionId == undefined && listType == 'collection' ) ? (
                     <Placeholder
                         className="tainacan-block-placeholder"
@@ -822,18 +857,35 @@ registerBlockType('tainacan/faceted-search', {
                                 <g transform="matrix(0.2891908,0,0,0.2891908,-30.465367,-38.43427)">
                                     <path 
                                             transform="matrix(0.26458333,0,0,0.26458333,104.32258,131.88168)"
-                                            fill="var(--tainacan-block-primary, $primary)"
+                                            fill="#298596"
                                             d="M 16.662109,14.712891 V 24.927734 H 84.753906 V 14.712891 Z m 6.810547,17.021484 v 9.748047 c 6.857764,2.272819 11.798639,8.605281 11.798828,16.078125 -7.56e-4,2.313298 -0.496344,4.586348 -1.421875,6.693359 l 8.375,8.375 -3.365234,3.367188 H 77.945312 V 31.734375 Z m 17.019532,10.216797 h 20.429687 v 10.21289 H 40.492188 Z m -22.835938,3.84375 a 9.1779065,9.1779065 0 0 0 -0.916016,0.03906 11.753475,11.753475 0 0 0 1.671875,23.445313 11.455635,11.455635 0 0 0 6.466797,-1.910156 l 1.908203,1.910156 2.88086,2.982422 3.820312,3.716797 3.347657,-3.347657 -3.851563,-3.855468 -2.847656,-2.845703 -1.941407,-1.941407 a 11.455635,11.455635 0 0 0 1.941407,-6.433593 11.723603,11.723603 0 0 0 -6.697266,-10.583985 11.422139,11.422139 0 0 0 -5.027344,-1.136719 9.1779065,9.1779065 0 0 0 -0.755859,-0.03906 z m 0.755859,6.736328 a 5.0244015,5.0244015 0 0 1 5.027344,5.025391 v 0.101562 a 5.0244015,5.0244015 0 0 1 -0.269531,1.570313 4.9574094,4.9574094 0 0 1 -4.757813,3.351562 5.0244015,5.0244015 0 0 1 -1.671875,-9.746094 4.6559456,4.6559456 0 0 1 1.671875,-0.302734 z m 6.376953,20.601562 c -0.431168,0.183308 -0.872311,0.335613 -1.316406,0.484376 v 2.378906 h 4.179688 z "/>
                                 </g>
                             </svg>
-                            {__('Show a complete items list with faceted search.', 'tainacan')}
+                            {__('Show a complete items list with faceted search from: ', 'tainacan')}
                         </p>
-                        <Button
-                            isPrimary
-                            type="submit"
-                            onClick={ () => listType == 'term' ? openTermModal() : openCollectionModal() }>
-                            { listType == 'term' ? __('Select a Term', 'tainacan') : __('Select a Collection', 'tainacan') }
-                        </Button>
+                        <Dropdown
+                                contentClassName="wp-block-tainacan__dropdown"
+                                renderToggle={ ( { isOpen, onToggle } ) => (
+                                    <Button
+                                        isPrimary
+                                        onClick={ onToggle }
+                                        aria-expanded={ isOpen }>
+                                           { __('Items list source', 'tainacan') }
+                                    </Button>
+                                ) }
+                                renderContent={ ( { onToggle } ) => (
+                                    <MenuGroup>
+                                        <MenuItemsChoice
+                                            choices={ listTypeChoices }
+                                            value={ listType } 
+                                            onSelect={ (value) => {
+                                                onUpdateListType(value);
+                                                onToggle(); 
+                                            }}>
+                                        </MenuItemsChoice>
+                                    </MenuGroup>
+                                ) }
+                            />
                            
                     </Placeholder>
                     ) :
@@ -1047,6 +1099,7 @@ registerBlockType('tainacan/faceted-search', {
                 }
 
             </div>
+            )
         );
     },
     save({ attributes, className }){

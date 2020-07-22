@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar } = wp.components;
+const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar, ToolbarGroup, PanelBody, ToolbarButton } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -13,13 +13,18 @@ registerBlockType('tainacan/items-list', {
     icon:
         <svg width="24" height="24" viewBox="0 -2 12 16">
             <path
-                fill="var(--tainacan-block-primary, $primary)"                
+                fill="#298596"                
                 d="M8.8,1.2H1.2V10H0V1.2C0,0.6,0.6,0,1.2,0h7.5V1.2z M3.8,2.5c-0.7,0-1.2,0.6-1.2,1.3v8.8c0,0.7,0.6,1.2,1.2,1.2h6.9
                 c0.7,0,1.2-0.6,1.2-1.2V6.3L8.1,2.5H3.8z M7.5,3.4L11,6.9H7.5V3.4z"/>       
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'Tainacan', 'tainacan' ), __( 'items', 'tainacan' ), __( 'collection', 'tainacan' ) ],
     description: __('Expose items from your Tainacan collections', 'tainacan'),
+    example: {
+        attributes: {
+            content: 'preview'
+        }
+    },
     attributes: {
         selectedItemsObject: {
             type: 'array',
@@ -196,30 +201,53 @@ registerBlockType('tainacan/items-list', {
         const layoutControls = [
             {
                 icon: 'grid-view',
-                title: __( 'Grid View' ),
+                title: __( 'Grid View', 'tainacan' ),
                 onClick: () => updateLayout('grid'),
                 isActive: layout === 'grid',
             },
             {
                 icon: 'list-view',
-                title: __( 'List View' ),
+                title: __( 'List View', 'tainacan' ),
                 onClick: () => updateLayout('list'),
                 isActive: layout === 'list',
             }
         ];
 
-        return (
+        return content == 'preview' ? 
+                <div className={className}>
+                    <img
+                            width="100%"
+                            src={ `${tainacan_blocks.base_url}/assets/images/items-list.png` } />
+                </div>
+            :  (
             <div className={className}>
 
                 <div>
                     <BlockControls>
                         <Toolbar controls={ layoutControls } />
+                        { selectedItemsHTML.length ?
+                            <ToolbarGroup>
+                                <ToolbarButton onClick={ openItemsModal } >
+                                    <p>
+                                        <svg width="24" height="24" viewBox="0 -2 12 16">
+                                            <path
+                                                d="M8.8,1.2H1.2V10H0V1.2C0,0.6,0.6,0,1.2,0h7.5V1.2z M3.8,2.5c-0.7,0-1.2,0.6-1.2,1.3v8.8c0,0.7,0.6,1.2,1.2,1.2h6.9
+                                                c0.7,0,1.2-0.6,1.2-1.2V6.3L8.1,2.5H3.8z M7.5,3.4L11,6.9H7.5V3.4z"/>       
+                                        </svg>
+                                    </p>&nbsp;
+                                    {  __( 'Add more items', 'tainacan' ) }
+                                </ToolbarButton>
+                            </ToolbarGroup>
+                        : null }
                     </BlockControls>
                 </div>
 
                 <div>
                     <InspectorControls>
-                        <div style={{ marginTop: '24px' }}>
+                        <PanelBody
+                                title={ __('List settings', 'tainacan') }
+                                initialOpen={ true }
+                            >
                             { layout == 'list' ? 
                                 <ToggleControl
                                     label={__('Image', 'tainacan')}
@@ -260,7 +288,7 @@ registerBlockType('tainacan/items-list', {
                                     </div>
                                 </div>
                             : null }
-                        </div>
+                        </PanelBody>
                     </InspectorControls>
                 </div>
 
@@ -284,25 +312,6 @@ registerBlockType('tainacan/items-list', {
                                 }}
                                 onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
                             : null
-                        }
-                        { selectedItemsHTML.length ? (
-                            <div className="tainacan-block-control">
-                                <p>
-                                    <svg width="24" height="24" viewBox="0 -2 12 16">
-                                        <path
-                                            d="M8.8,1.2H1.2V10H0V1.2C0,0.6,0.6,0,1.2,0h7.5V1.2z M3.8,2.5c-0.7,0-1.2,0.6-1.2,1.3v8.8c0,0.7,0.6,1.2,1.2,1.2h6.9
-                                            c0.7,0,1.2-0.6,1.2-1.2V6.3L8.1,2.5H3.8z M7.5,3.4L11,6.9H7.5V3.4z"/>       
-                                    </svg>
-                                    {__('Expose items from your Tainacan collections', 'tainacan')}
-                                </p>
-                                <Button
-                                    isPrimary
-                                    type="submit"
-                                    onClick={ () => openItemsModal() }>
-                                    {__('Add more items', 'tainacan')}
-                                </Button>    
-                            </div>
-                            ): null
                         }
                     </div>
                     ) : null
