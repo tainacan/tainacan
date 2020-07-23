@@ -637,19 +637,19 @@ class Theme_Helper {
 			'previous' => null
 		];
 
-		// Defines where are we getting items from
-		$entity = false;
-
-		if ($collection_id = tainacan_get_collection_id()) {
-			$entity = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
-		} elseif ($term = tainacan_get_term()) {
-			$entity = \Tainacan\Repositories\Terms::get_instance()->fetch($term->term_id, $term->taxonomy);
-		}
-
 		// Adjusts the args to obtain only on one item per request with the correct offset
 		$args = $_GET;
 		
+		// Defines where are we getting items from
+		$entity = [];
+		if (isset($args['source_list']) && $args['source_list'] == 'collection' && $collection_id = tainacan_get_collection_id()) {
+			$entity = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
+		}
+		unset($args['source_list']);
+
 		if (isset($args['pos'])) {
+
+			// Sets Page based on position
 			$args['posts_per_page'] = '1';
 			$current_position = (int)$args['pos'] + 1;
 			unset($args['pos']);
