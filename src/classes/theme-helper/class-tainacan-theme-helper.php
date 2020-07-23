@@ -628,6 +628,133 @@ class Theme_Helper {
 	 * 
 	 * @return array containing the next and previous item
 	 */
+	protected function contains_array($array, $query){
+		foreach ($array as $index => $value){
+			// Not will pass named meta query, which use reserved names
+			if(is_array($value) && !key_exists($index, $query)){
+				return true;
+			}
+		}
+	}
+
+	private function prepare_meta($mapped, $request, $query, $mapped_v, $args){
+		$request_meta_query = $request[$mapped];
+
+		// if the meta/date/taxquery has a root relation
+        if( isset( $request_meta_query['relation']) )
+            $args[ $mapped_v ]['relation'] = $request_meta_query['relation'];
+
+		// If is a multidimensional array (array of array)
+		if($this->contains_array($request_meta_query, $query)) {
+
+			foreach ( $request_meta_query as $index1 => $a ) {
+
+				foreach ( $query as $mapped_meta => $meta_v ) {
+					if ( isset( $a[ $meta_v ] ) ) {
+						$args[ $mapped_v ][ $index1 ][ $meta_v ] = $request[ $mapped ][ $index1 ][ $meta_v ];
+					}
+				}
+
+			}
+
+		} else {
+			foreach ( $query as $mapped_meta => $meta_v ) {
+				if(isset($request[$mapped][$meta_v])) {
+					$args[ $mapped_v ][ $meta_v ] = $request[ $mapped ][ $meta_v ];
+				}
+			}
+		}
+
+		return $args;
+	}
+
+	function prepare_filters($request){
+		$queries = [
+			'name'         => 'title',
+			'title'        => 'title',
+			'id'           => 'p',
+			'authorid'     => 'author',
+			'authorname'   => 'author_name',
+			'search'       => 's',
+			'searchterm'   => 'search',
+			'status'       => 'post_status',
+			'offset'       => 'offset',
+			'metaquery'    => 'meta_query',
+			'datequery'    => 'date_query',
+			'taxquery'     => 'tax_query',
+			'order'        => 'order',
+			'orderby'      => 'orderby',
+			'metakey'      => 'meta_key',
+			'metavalue'    => 'meta_value',
+			'metavaluenum' => 'meta_value_num',
+			'metacompare'  => 'meta_compare',
+			'hideempty'    => 'hide_empty',
+			'perpage'      => 'posts_per_page',
+			'number'	   => 'number',
+			'parent'	   => 'parent',
+			'paged'        => 'paged',
+			'postin'       => 'post__in',
+			'relation'     => 'relation',
+			'nopaging'     => 'nopaging',
+			'metatype'     => 'meta_type',
+			'hierarchical' => 'hierarchical',
+			'exclude'      => 'post__not_in',
+			'excludetree'  => 'exclude_tree',
+			'include'      => 'include'
+		];
+
+		$meta_query = [
+			'key'       	=> 'key',
+			'value'     	=> 'value',
+			'compare'   	=> 'compare',
+			'relation'  	=> 'relation',
+			'metadatumtype' => 'type',
+		];
+
+		$date_query = [
+			'year'      => 'year',
+			'month'     => 'month',
+			'day'       => 'day',
+			'week'      => 'week',
+			'hour'      => 'hour',
+			'minute'    => 'minute',
+			'second'    => 'second',
+			'compare'   => 'compare',
+			'dayofweek' => 'dayofweek',
+			'inclusive' => 'inclusive',
+			'before'    => 'before',
+			'after'     => 'after',
+		];
+
+		$tax_query = [
+			'taxonomy'  => 'taxonomy',
+			'metadatum' => 'field',
+			'terms'     => 'terms',
+			'operator'  => 'operator',
+			'relation'  => 'relation',
+		];
+
+		$args = [];
+
+		foreach ($queries as $mapped => $mapped_v){
+			if(isset($request[$mapped])){
+				if($mapped === 'metaquery'){
+					$args = $this->prepare_meta($mapped, $request, $meta_query, $mapped_v, $args);
+				} elseif($mapped === 'datequery'){
+					$args = $this->prepare_meta($mapped, $request, $date_query, $mapped_v, $args);
+				} elseif($mapped === 'taxquery'){
+					$args = $this->prepare_meta($mapped, $request, $tax_query, $mapped_v, $args);
+				}
+				else {
+					$args[ $mapped_v ] = $request[ $mapped ];
+				}
+			}
+		}
+
+		$args['perm'] = 'readable';
+
+		return apply_filters('tainacan-api-prepare-items-args', $args, $request);
+	}
 
 	public function get_adjacent_items() {
 
@@ -650,15 +777,16 @@ class Theme_Helper {
 		if (isset($args['pos'])) {
 
 			// Sets Page based on position
-			$args['posts_per_page'] = '1';
+			$args['perpage'] = '1';
 			$current_position = (int)$args['pos'] + 1;
 			unset($args['pos']);
+			$args = $this->prepare_filters($args);
 
 			// Fetch Previous Item
 			if($current_position > 1) {
 				$args['paged'] = $current_position - 1;
 				$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
-
+				
 				if ($items->have_posts()) {
 					$items->the_post();
 					$item = new Entities\Item($items->post);
@@ -692,6 +820,7 @@ class Theme_Helper {
 				\wp_reset_postdata();
 			}
 		}
+
 		return $adjacent_items;
 	}
 	
