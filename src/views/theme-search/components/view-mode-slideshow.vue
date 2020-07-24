@@ -305,16 +305,16 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import axios from '../../admin/js/axios';
-import 'swiper/dist/css/swiper.css';
-import { swiper, swiperSlide } from 'vue-awesome-swiper';
+import 'swiper/css/swiper.min.css';
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 import CircularCounter from './circular-counter.vue';
 import { viewModesMixin } from '../js/view-modes-mixin.js';
  
 export default {
     name: 'ViewModeSlideshow',
     components: {
-        swiper,
-        swiperSlide,
+        Swiper,
+        SwiperSlide,
         CircularCounter
     },
     mixins: [
@@ -422,14 +422,14 @@ export default {
                     if (this.goingRight == undefined && updatedSlideIndex == 0) {
                         this.slideIndex = -1; // Used to force reload of index when page has not loaded slideItems yet
                     } else {   
-                        if (this.$refs.mySwiper != undefined && this.$refs.mySwiper.swiper != undefined) {
-                            // if (updatedSlideIndex != undefined && this.$refs.mySwiper.swiper.slides[updatedSlideIndex] != undefined) 
-                                // this.$refs.mySwiper.swiper.slides[updatedSlideIndex].click();
+                        if (this.$refs.mySwiper != undefined && this.$refs.mySwiper.$swiper != undefined) {
+                            // if (updatedSlideIndex != undefined && this.$refs.mySwiper.$swiper.slides[updatedSlideIndex] != undefined) 
+                                // this.$refs.mySwiper.$swiper.slides[updatedSlideIndex].click();
                             
-                            this.$refs.mySwiper.swiper.activeIndex = this.slideIndex;
+                            this.$refs.mySwiper.$swiper.activeIndex = this.slideIndex;
                             this.slideIndex = updatedSlideIndex;
                                                 
-                            // console.log("Após: " + this.slideIndex + " " + this.$refs.mySwiper.swiper.activeIndex);
+                            // console.log("Após: " + this.slideIndex + " " + this.$refs.mySwiper.$swiper.activeIndex);
                         }
                     
                     }
@@ -455,25 +455,25 @@ export default {
                     this.loadCurrentItem();
                     
                     // Handles requesting new page of items, either to left or right
-                    if (this.$refs.mySwiper != undefined && this.$refs.mySwiper.swiper != undefined) {
+                    if (this.$refs.mySwiper != undefined && this.$refs.mySwiper.$swiper != undefined) {
 
-                        if (this.slideIndex != this.$refs.mySwiper.swiper.activeIndex) {
-                            if (this.slideIndex != undefined && this.$refs.mySwiper.swiper.slides[this.slideIndex] != undefined) 
-                                this.$refs.mySwiper.swiper.slides[this.slideIndex].click();
+                        if (this.slideIndex != this.$refs.mySwiper.$swiper.activeIndex) {
+                            if (this.slideIndex != undefined && this.$refs.mySwiper.$swiper.slides[this.slideIndex] != undefined) 
+                                this.$refs.mySwiper.$swiper.slides[this.slideIndex].click();
 
                             this.readjustedSlideIndex = this.slideIndex;
-                            this.$refs.mySwiper.swiper.activeIndex = this.slideIndex + 0;
+                            this.$refs.mySwiper.$swiper.activeIndex = this.slideIndex + 0;
 
                         } else if (this.slideItems.length > 0) {
-                            if (this.$refs.mySwiper.swiper.activeIndex == this.slideItems.length - 1 && this.page < this.totalPages) { 
+                            if (this.$refs.mySwiper.$swiper.activeIndex == this.slideItems.length - 1 && this.page < this.totalPages) { 
                                 oldVal == undefined ? this.$eventBusSearch.setPage(this.page + 1) : this.$eventBusSearch.setPage(this.maxPage + 1);
-                            } else if (this.$refs.mySwiper.swiper.activeIndex == 0 && this.page > 1 && this.slideItems.length < this.totalItems) {
+                            } else if (this.$refs.mySwiper.$swiper.activeIndex == 0 && this.page > 1 && this.slideItems.length < this.totalItems) {
                                 oldVal == undefined ? this.$eventBusSearch.setPage(this.page - 1) : this.$eventBusSearch.setPage(this.minPage - 1);
                             }
                         }
 
                         // Handles pausing auto play when reaches the end of the list.
-                        if (this.$refs.mySwiper.swiper.activeIndex == this.slideItems.length - 1 && this.page == this.totalPages)
+                        if (this.$refs.mySwiper.$swiper.activeIndex == this.slideItems.length - 1 && this.page == this.totalPages)
                             this.isPlaying = false;
                     }
                 }
@@ -483,8 +483,8 @@ export default {
         isPlaying() {
             if (this.isPlaying) {
                 this.intervalId = setInterval(() => {
-                    if (this.$refs.mySwiper.swiper != undefined)
-                        this.$refs.mySwiper.swiper.navigation.nextEl.click();
+                    if (this.$refs.mySwiper.$swiper != undefined)
+                        this.$refs.mySwiper.$swiper.navigation.nextEl.click();
                 }, this.slideTimeout);
             } else {
                 clearInterval(this.intervalId);
@@ -494,9 +494,8 @@ export default {
     mounted() {
         this.minPage = this.page;
         this.maxPage = this.page;
-
-        if (this.$refs.mySwiper.swiper != undefined) {
-            this.$refs.mySwiper.swiper.initialSlide = this.slideIndex;
+        if (this.$refs.mySwiper.$swiper != undefined) {
+            this.$refs.mySwiper.$swiper.initialSlide = this.slideIndex;
         }
 
         // Adds clipped class to root html
@@ -505,8 +504,8 @@ export default {
     },
     beforeDestroy() {
         clearInterval(this.intervalId);
-        if (this.$refs.mySwiper.swiper)
-            this.$refs.mySwiper.swiper.destroy();
+        if (this.$refs.mySwiper.$swiper)
+            this.$refs.mySwiper.$swiper.destroy();
 
         // Remove clipped class from root html
         document.documentElement.classList.remove('is-clipped');
@@ -533,14 +532,14 @@ export default {
         },
         onSlideChange() {
 
-            if (this.$refs.mySwiper.swiper != undefined)
-                this.slideIndex = this.$refs.mySwiper.swiper.activeIndex;
+            if (this.$refs.mySwiper.$swiper != undefined)
+                this.slideIndex = this.$refs.mySwiper.$swiper.activeIndex;
 
             this.$nextTick(() => {
                 if (this.readjustedSlideIndex != undefined) {
 
-                    if (this.slideIndex != undefined && this.$refs.mySwiper.swiper.slides[this.readjustedSlideIndex] != undefined) 
-                        this.$refs.mySwiper.swiper.slides[this.readjustedSlideIndex].click();
+                    if (this.slideIndex != undefined && this.$refs.mySwiper.$swiper.slides[this.readjustedSlideIndex] != undefined) 
+                        this.$refs.mySwiper.$swiper.slides[this.readjustedSlideIndex].click();
 
                     this.readjustedSlideIndex = undefined;
                 }
@@ -548,12 +547,12 @@ export default {
      
         },
         nextSlide() { 
-            if (this.$refs.mySwiper.swiper != undefined)
-                this.$refs.mySwiper.swiper.slideNext();    
+            if (this.$refs.mySwiper.$swiper != undefined)
+                this.$refs.mySwiper.$swiper.slideNext();    
         },
         prevSlide() {
-            if (this.$refs.mySwiper.swiper != undefined)
-                this.$refs.mySwiper.swiper.slidePrev();
+            if (this.$refs.mySwiper.$swiper != undefined)
+                this.$refs.mySwiper.$swiper.slidePrev();
         },
         nextGroupOfSlides() { 
             let screenWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
@@ -566,11 +565,11 @@ export default {
             else if (screenWidth > 1366 && screenWidth <= 1600) amountToSkip = 6;
             else if (screenWidth > 1600) amountToSkip = 7;
             
-            if (this.$refs.mySwiper.swiper != undefined) {
-                if (this.slideIndex != undefined && this.$refs.mySwiper.swiper.slides[this.slideIndex + amountToSkip] != undefined)
-                    this.$refs.mySwiper.swiper.slideTo(this.slideIndex + amountToSkip);  
+            if (this.$refs.mySwiper.$swiper != undefined) {
+                if (this.slideIndex != undefined && this.$refs.mySwiper.$swiper.slides[this.slideIndex + amountToSkip] != undefined)
+                    this.$refs.mySwiper.$swiper.slideTo(this.slideIndex + amountToSkip);  
                 else      
-                    this.$refs.mySwiper.swiper.slideTo(this.$refs.mySwiper.swiper.slides.length - 1)                  
+                    this.$refs.mySwiper.$swiper.slideTo(this.$refs.mySwiper.$swiper.slides.length - 1)                  
             }
         },
         prevGroupOfSlides() {
@@ -584,11 +583,11 @@ export default {
             else if (screenWidth > 1366 && screenWidth <= 1600) amountToSkip = 6;
             else if (screenWidth > 1600) amountToSkip = 7;
             
-            if (this.$refs.mySwiper.swiper != undefined) {
-                if (this.slideIndex != undefined && this.$refs.mySwiper.swiper.slides[this.slideIndex - amountToSkip] != undefined)
-                    this.$refs.mySwiper.swiper.slideTo(this.slideIndex - amountToSkip); 
+            if (this.$refs.mySwiper.$swiper != undefined) {
+                if (this.slideIndex != undefined && this.$refs.mySwiper.$swiper.slides[this.slideIndex - amountToSkip] != undefined)
+                    this.$refs.mySwiper.$swiper.slideTo(this.slideIndex - amountToSkip); 
                 else
-                    this.$refs.mySwiper.swiper.slideTo(0);
+                    this.$refs.mySwiper.$swiper.slideTo(0);
             } 
         },
         loadCurrentItem() {
