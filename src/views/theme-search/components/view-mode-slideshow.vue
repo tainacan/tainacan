@@ -232,6 +232,7 @@
                     <swiper 
                             role="list"
                             @slideChange="onSlideChange()"
+                            @ready="onSwiperReady()"
                             ref="mySwiper"
                             :options="swiperOption"
                             id="tainacan-slide-container">
@@ -433,7 +434,6 @@ export default {
                         }
                     
                     }
-
                 }
             },
             immediate: true
@@ -494,9 +494,6 @@ export default {
     mounted() {
         this.minPage = this.page;
         this.maxPage = this.page;
-        if (this.$refs.mySwiper.$swiper != undefined) {
-            this.$refs.mySwiper.$swiper.initialSlide = this.slideIndex;
-        }
 
         // Adds clipped class to root html
         document.documentElement.scrollTo(0,0);
@@ -544,7 +541,6 @@ export default {
                     this.readjustedSlideIndex = undefined;
                 }
             });
-     
         },
         nextSlide() { 
             if (this.$refs.mySwiper.$swiper != undefined)
@@ -589,6 +585,9 @@ export default {
                 else
                     this.$refs.mySwiper.$swiper.slideTo(0);
             } 
+        },
+        onSwiperReady() {
+            this.$refs.mySwiper.$swiper.initialSlide = 0;
         },
         loadCurrentItem() {
             if ((this.slideItems && this.slideItems[this.slideIndex] && this.slideItems[this.slideIndex].id != undefined)) {
