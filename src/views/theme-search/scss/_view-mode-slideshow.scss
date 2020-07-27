@@ -290,7 +290,12 @@
         white-space: nowrap;
         overflow: hidden;
     }
-
+    .item-page-link {
+        margin-left: 1em;
+        margin-top: 0.25em;
+        margin-right: auto;
+        font-size: 0.875em;
+    }
     .play-button {
         cursor: pointer;
         border: 0;
@@ -409,7 +414,8 @@
         .tainacan-slide-item {    
             cursor: pointer;
 
-            &.active-item img {
+            &.active-item img,
+            &.swiper-slide-active img {
                 border-bottom: 4px solid var(--tainacan-turquoise5);
             }
             &:hover img{
