@@ -1,6 +1,27 @@
 <template>
 
     <div :class="{ 'hide-controls': hideControls }">
+
+        <!-- ITEM PAGE BUTTON -->
+        <a
+                v-tooltip="{
+                    delay: {
+                        show: 500,
+                        hide: 300,
+                    },
+                    content: $i18n.get('label_item_page'),
+                    autoHide: false,
+                    placement: 'auto-start'
+                }"  
+                id="item-page-button"
+                v-if="slideItems && swiper && swiper.activeIndex != undefined && slideItems[swiper.activeIndex]"
+                :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
+                :href="getItemLink(slideItems[swiper.activeIndex].url, swiper.activeIndex)">
+            <span class="icon">
+                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+            </span>
+        </a>
+
         <!-- CLOSE BUTTON -->
         <button
                 v-tooltip="{
@@ -122,6 +143,7 @@
             <br>
 
         </aside>
+
         <div 
                 :class="{ 'fullscreen-spaced-to-right': !isMetadataCompressed }">
             <div class="table-wrapper">
@@ -206,11 +228,6 @@
                             @click.prevent="onHideControls()"
                             class="slide-title-area">
                         <h1>{{ slideItems[swiper.activeIndex].title }}</h1>
-                        <a 
-                                class="item-page-link"
-                                :href="getItemLink(slideItems[swiper.activeIndex].url, swiper.activeIndex)">
-                            {{ $i18n.get('label_item_page', 'tainacan') }}
-                        </a>
                         <button 
                                 :disabled="(swiper.activeIndex == slideItems.length - 1 && page == totalPages)"
                                 class="play-button"
@@ -257,10 +274,14 @@ import { mapActions, mapGetters } from 'vuex';
 import axios from '../../admin/js/axios';
 import 'swiper/css/swiper.min.css';
 import Swiper from 'swiper';
+import CircularCounter from './circular-counter.vue';
 import { viewModesMixin } from '../js/view-modes-mixin.js';
  
 export default {
     name: 'ViewModeSlideshow',
+    components: {
+        CircularCounter
+    },
     mixins: [
         viewModesMixin
     ],
@@ -323,7 +344,6 @@ export default {
                     for (let newItem of ((this.goingRight === true || this.goingRight === undefined) ? JSON.parse(JSON.stringify(this.items)) : JSON.parse(JSON.stringify(this.items)).reverse())) {
                         let existingItemIndex = this.slideItems.findIndex(anItem => anItem.id == newItem.id);
                         if (existingItemIndex < 0) {
-                            console.log('Going right:' + this.goingRight + ' updatedIndex: ' + updatedSlideIndex  + ' activeIndex: ' + this.swiper.activeIndex)
                             if ( this.goingRight === true || this.goingRight === undefined) {
                                 this.swiper.virtual.appendSlide(newItem);
                                 //this.slideItems.push(newItem);
@@ -367,7 +387,7 @@ export default {
             mousewheel: true,
             keyboard: true,
             preventInteractionOnTransition: true,
-            slidesPerView: 18,
+            slidesPerView: 24,
             spaceBetween: 12,
             centeredSlides: true,
             centerInsufficientSlides: true,
@@ -380,7 +400,10 @@ export default {
                 1024: { slidesPerView: 10 },
                 1366: { slidesPerView: 12 },
                 1406: { slidesPerView: 14 },
-                1600: { slidesPerView: 16 }
+                1600: { slidesPerView: 16 },
+                1920: { slidesPerView: 18 },
+                2160: { slidesPerView: 20 },
+                2400: { slidesPerView: 22 }
             },
             virtual: {
                 slides: self.slideItems,
@@ -443,7 +466,7 @@ export default {
                 this.swiper.slidePrev();
         },
         updateSliderBasedOnIndex(currentIndex, previousIndex) {
-            console.log(previousIndex + ' -> ' + currentIndex);
+
              if (currentIndex < 0) {
                 this.moveToClikedSlide(0);
             } else {
@@ -474,7 +497,6 @@ export default {
             }
         },
         loadCurrentItem() {
-            console.log('load ', this.swiper.activeIndex, this.slideItems[this.swiper.activeIndex])
             if ((this.slideItems && this.slideItems[this.swiper.activeIndex] && this.slideItems[this.swiper.activeIndex].id != undefined)) {
 
                 this.isLoadingItem = true;

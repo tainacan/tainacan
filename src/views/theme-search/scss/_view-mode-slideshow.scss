@@ -1,6 +1,7 @@
-#close-fullscren-button {
+#close-fullscren-button,
+#item-page-button {
     border-radius: 50px;
-    color: var(--tainacan-white);
+    color: var(--tainacan-white) !important;
     background-color: transparent;
     border: none;
     position: absolute;
@@ -12,7 +13,11 @@
 
     &:focus, &:active {
         outline: none;
+        color: var(--tainacan-white) !important;
     }
+}
+#item-page-button  {
+    right: 3rem;
 }
 .metadata-menu {
     background-color: var(--tainacan-black);
@@ -378,8 +383,8 @@
     background-color: rgba(0,0,0,0.5);
     position: relative;
     transition: opacity 0.3s, visibility 0.3s, display 0.3s;
-    height: 115px;
-    min-height: 115px;
+    height: 120px;
+    min-height: 120px;
     padding: 0.75em 0;
 
     .loading-icon {
@@ -389,7 +394,17 @@
         z-index: 9;
     }
 
-    #tainacan-slide-container {        
+    #tainacan-slide-container {
+        padding: 0 var(--tainacan-one-column);
+        display: flex;
+        flex-wrap: nowrap;
+        overflow: hidden;
+        flex-grow: 1;
+        flex-shrink: 1;
+        justify-content: space-evenly;
+        animation-name: item-appear;
+        animation-duration: 0.5s;
+        
 
         .selected-record {
             background-color: var(--tainacan-turquoise1);
