@@ -145,7 +145,9 @@
         </aside>
 
         <div 
-                :class="{ 'fullscreen-spaced-to-right': !isMetadataCompressed }">
+                :class="{ 'fullscreen-spaced-to-right': !isMetadataCompressed }"
+                @keyup.left.prevent="swiper.activeIndex > 0 ? prevSlide() : null"
+                @keyup.right.prevent="swiper.activeIndex < slideItems.length - 1 ? nextSlide() : null">
             <div class="table-wrapper">
 
                 <!-- SLIDE MAIN VIEW-->
@@ -248,6 +250,8 @@
                                     :time="slideTimeout/1000" />
                         </button>
                     </section>
+
+                    <!-- The Swiper slider itself -->
                     <div   
                             id="tainacan-slide-container"
                             class="swiper-container">
@@ -313,7 +317,6 @@ export default {
             isMetadataCompressed: true,
             minPage: 1,
             maxPage: 1,
-            readjustedSlideIndex: 0,
             preloadedItem: {}
         }
     },
@@ -382,6 +385,7 @@ export default {
         document.documentElement.scrollTo(0,0);
         document.documentElement.classList.add('is-clipped');
 
+        // Builds Swiper component
         const self = this;
         this.swiper = new Swiper('.swiper-container', {
             mousewheel: true,
@@ -408,12 +412,13 @@ export default {
             virtual: {
                 slides: self.slideItems,
                 renderSlide(slideItem) {
-                    return `<div role="listitem" class="swiper-slide tainacan-slide-item">
-                                <img 
-                                        alt="` + self.$i18n.get('label_thumbnail') + ': ' + slideItem.title + `"
-                                        class="thumbnail" 
-                                        src="` + (slideItem['thumbnail']['tainacan-medium'] ? slideItem['thumbnail']['tainacan-medium'][0] : (slideItem['thumbnail']['medium']? slideItem['thumbnail']['medium'][0] : self.thumbPlaceholderPath)) + `">  
-                            </div>`;
+                    return 
+                        `<div role="listitem" class="swiper-slide tainacan-slide-item">
+                            <img 
+                                    alt="` + self.$i18n.get('label_thumbnail') + ': ' + slideItem.title + `"
+                                    class="thumbnail" 
+                                    src="` + (slideItem['thumbnail']['tainacan-medium'] ? slideItem['thumbnail']['tainacan-medium'][0] : (slideItem['thumbnail']['medium']? slideItem['thumbnail']['medium'][0] : self.thumbPlaceholderPath)) + `">  
+                        </div>`;
                 },
                 addSlidesBefore: 2,
                 addSlidesAfter: 2
@@ -421,14 +426,14 @@ export default {
         });
     },
     beforeDestroy() {
+        // Remove clipped class from root html
+        document.documentElement.classList.remove('is-clipped');
+
         clearInterval(this.intervalId);
         if (this.swiper) {
             this.swiper.virtual.removeAllSlides();
             this.swiper.destroy();
         }
-
-        // Remove clipped class from root html
-        document.documentElement.classList.remove('is-clipped');
     },
     methods: {
         ...mapActions('item', [
