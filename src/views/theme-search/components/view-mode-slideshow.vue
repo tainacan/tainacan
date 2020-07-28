@@ -385,6 +385,9 @@ export default {
         document.documentElement.scrollTo(0,0);
         document.documentElement.classList.add('is-clipped');
 
+        // Adds keyup and keydown event listeners
+        window.addEventListener('keyup', this.handleKeyboardKeys);
+
         // Builds Swiper component
         const self = this;
         this.swiper = new Swiper('.swiper-container', {
@@ -428,6 +431,9 @@ export default {
         // Remove clipped class from root html
         document.documentElement.classList.remove('is-clipped');
 
+        // Removes keyup and keydown event listeners
+        window.removeEventListener('keyup', this.handleKeyboardKeys);
+
         clearInterval(this.intervalId);
         if (this.swiper) {
             this.swiper.virtual.removeAllSlides();
@@ -468,6 +474,21 @@ export default {
         prevSlide() {
             if (this.swiper)
                 this.swiper.slidePrev();
+        },
+        handleKeyboardKeys(event) {
+
+            // Keys up and down toggle controls display
+            if (event.keyCode === 38 || event.keyCode === 40 )
+                this.onHideControls();
+            
+            // Space toggles play state
+            if (event.keyCode === 32 && !(this.swiper.activeIndex == this.slideItems.length - 1 && this.page == this.totalPages))
+                this.isPlaying = !this.isPlaying;
+
+            // ESC leaves the fullscreen viewmode
+            if (event.keyCode === 27)
+                this.closeSlideViewMode(); 
+            
         },
         updateSliderBasedOnIndex(currentIndex, previousIndex) {
 
