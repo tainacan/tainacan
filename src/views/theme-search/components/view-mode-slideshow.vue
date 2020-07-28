@@ -232,7 +232,6 @@
                         </button>
                     </section>
                     <div   
-                            ref="mySwiper"
                             id="tainacan-slide-container"
                             class="swiper-container">
                         <div 
@@ -319,17 +318,18 @@ export default {
         isLoading: {
             handler(val, oldValue) {
                 if (val === false && oldValue === true && this.swiper && this.items && this.items.length) {
-                    let updatedSlideIndex = this.swiper.activeIndex != undefined ? (this.swiper.activeIndex + 0) : 0;
+                    let updatedSlideIndex = this.swiper.activeIndex != undefined ? (JSON.parse(JSON.stringify(this.swiper.activeIndex)) + 0) : 0;
         
-                    for (let newItem of ((this.goingRight === true) ? JSON.parse(JSON.stringify(this.items)) : JSON.parse(JSON.stringify(this.items)).reverse())) {
+                    for (let newItem of ((this.goingRight === true || this.goingRight === undefined) ? JSON.parse(JSON.stringify(this.items)) : JSON.parse(JSON.stringify(this.items)).reverse())) {
                         let existingItemIndex = this.slideItems.findIndex(anItem => anItem.id == newItem.id);
                         if (existingItemIndex < 0) {
-                            if ( this.goingRight) {
-                                // this.swiper.virtual.appendSlide(newItem);
-                                this.slideItems.push(newItem);
+                            console.log('Going right:' + this.goingRight + ' updatedIndex: ' + updatedSlideIndex  + ' activeIndex: ' + this.swiper.activeIndex)
+                            if ( this.goingRight === true || this.goingRight === undefined) {
+                                this.swiper.virtual.appendSlide(newItem);
+                                //this.slideItems.push(newItem);
                             } else {
-                                // this.swiper.virtual.prependSlide(newItem);
-                                this.slideItems.unshift(newItem);
+                                this.swiper.virtual.prependSlide(newItem);
+                                //this.slideItems.unshift(newItem);
                             }
                         }
                     }
@@ -339,10 +339,7 @@ export default {
                         this.isPlaying = false;
                     
                     this.swiper.virtual.update();
-                    
-                    this.moveToClikedSlide(updatedSlideIndex);
                     this.updateSliderBasedOnIndex(updatedSlideIndex);
-
                 }
             },
             immediate: true
@@ -371,12 +368,10 @@ export default {
             keyboard: true,
             preventInteractionOnTransition: true,
             slidesPerView: 18,
-            slidesPerGroup: 1,
             spaceBetween: 12,
-            allowClick: true,
             centeredSlides: true,
+            centerInsufficientSlides: true,
             slideToClickedSlide: true,
-            initialSlide: 0,
             breakpoints: {
                 320: { slidesPerView: 4 },
                 480: { slidesPerView: 5 },
@@ -467,11 +462,12 @@ export default {
                 if (this.swiper) {
 
                     if (this.slideItems.length > 0) {
-
-                        if (this.swiper.activeIndex == this.slideItems.length - 1 && this.page < this.totalPages) { 
+                        if (this.swiper.activeIndex == this.slideItems.length - 1 && (previousIndex == undefined ? this.page < this.totalPages : this.page < this.totalPages)) { 
                             previousIndex == undefined ? this.$eventBusSearch.setPage(this.page + 1) : this.$eventBusSearch.setPage(this.maxPage + 1);
+                            this.goingRight = true;
                         } else if (this.swiper.activeIndex == 0 && this.page > 1 && this.slideItems.length < this.totalItems) {
                             previousIndex == undefined ? this.$eventBusSearch.setPage(this.page - 1) : this.$eventBusSearch.setPage(this.minPage - 1);
+                            this.goingRight = false;
                         }
                     }
                 }
