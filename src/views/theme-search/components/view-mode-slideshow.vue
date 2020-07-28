@@ -412,8 +412,7 @@ export default {
             virtual: {
                 slides: self.slideItems,
                 renderSlide(slideItem) {
-                    return 
-                        `<div role="listitem" class="swiper-slide tainacan-slide-item">
+                    return `<div role="listitem" class="swiper-slide tainacan-slide-item">
                             <img 
                                     alt="` + self.$i18n.get('label_thumbnail') + ': ' + slideItem.title + `"
                                     class="thumbnail" 
@@ -472,7 +471,7 @@ export default {
         },
         updateSliderBasedOnIndex(currentIndex, previousIndex) {
 
-             if (currentIndex < 0) {
+            if (currentIndex < 0) {
                 this.moveToClikedSlide(0);
             } else {
                 // Handles direction information, used by animations
