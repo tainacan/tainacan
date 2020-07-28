@@ -21,9 +21,9 @@
     }
 }
 .tooltip {
-    font-size: 0.6875em;
-    font-family: var(--tainacan-font-family, inherit);
-    z-index: 999999999;
+    font-size: 0.6875em !important;
+    font-family: var(--tainacan-font-family, inherit) !important;
+    z-index: 999999999 !important;
     display: block !important;
 
     &::after {

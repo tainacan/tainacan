@@ -84,6 +84,8 @@
 
 .wp-block-tainacan-carousel-collections-list {
     margin: 2em auto;
+    --swiper-navigation-color: var(--tainacan-block-primary, $primary);
+    --swiper-theme-color: var(--tainacan-block-primary, $primary);
 
     // Spinner
     .spinner-container {
@@ -205,6 +207,13 @@
 
         svg {
             fill: var(--tainacan-block-primary, $primary);
+        }
+        &:after,
+        &::before {
+            font-family: "TainacanIcons";
+        }
+        &.swiper-button-prev::after {
+            content: "previous";
         }
     }
 
