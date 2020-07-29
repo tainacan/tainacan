@@ -1023,7 +1023,9 @@ export default {
         margin-bottom: 32px;
 
         ul {
+            padding: 0;
             display: flex;
+            flex-wrap: wrap;
             
             li {
                 margin-left: 0.25em;

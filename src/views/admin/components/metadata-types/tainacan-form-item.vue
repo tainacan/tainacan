@@ -250,6 +250,10 @@
             .collapse-handle {
                 margin-left: -15px;
             }
+
+            .child-metadata-inputs {
+                margin-left: 0.25em;
+            }
         }
 
         .label {

@@ -921,7 +921,7 @@
             background-color: var(--tainacan-blue1);
         }
     }
-
+    
     .tainacan-li-search-results {
         flex-grow: 0;
         flex-shrink: 1;

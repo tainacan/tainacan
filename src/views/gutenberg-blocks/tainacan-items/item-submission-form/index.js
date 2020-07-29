@@ -200,7 +200,7 @@ registerBlockType('tainacan/item-submission-form', {
                 <div>
                     <InspectorControls>
                         <PanelBody
-                                title={__('Colors and Sizes', 'tainacan')}
+                                title={__('Form elements', 'tainacan')}
                                 initialOpen={ true } >
                             <ToggleControl
                                     label={__('Hide the file submission button', 'tainacan')}

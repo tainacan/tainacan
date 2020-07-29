@@ -9,7 +9,7 @@
         </a>
         <div class="help-tooltip">
             <div class="help-tooltip-header">
-                <h5>{{ title }}</h5>
+                <h5 class="has-text-color">{{ title }}</h5>
             </div>
             <div class="help-tooltip-body">
                 <p v-html="(message != '' && message != undefined) ? message : $i18n.get('info_no_description_provided')"/>
