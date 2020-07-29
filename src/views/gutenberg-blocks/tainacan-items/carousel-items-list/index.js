@@ -170,6 +170,16 @@ registerBlockType('tainacan/carousel-items-list', {
         // Obtains block's client id to render it on save function
         setAttributes({ blockId: clientId });
         
+        // Sets some defaults that were not working
+        if (maxItemsPerScreen === undefined) {
+            maxItemsPerScreen = 7;
+            setAttributes({ maxItemsPerScreen: maxItemsPerScreen });
+        }
+        if (cropImagesToSquare === undefined) {  
+            cropImagesToSquare = true;    
+            setAttributes({ cropImagesToSquare: cropImagesToSquare });
+        }
+
         function prepareItem(item) {
             return (
                 <li 
@@ -781,6 +791,7 @@ registerBlockType('tainacan/carousel-items-list', {
             collectionBackgroundColor,
             collectionTextColor
         } = attributes;
+        
         return <div 
                     className={ className }
                     search-url={ searchURL }

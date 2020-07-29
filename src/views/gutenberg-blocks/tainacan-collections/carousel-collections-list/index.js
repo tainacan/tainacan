@@ -25,7 +25,7 @@ registerBlockType('tainacan/carousel-collections-list', {
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'collections', 'tainacan' ), __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ) ],
-    description: __('List collections on a Carousel, using search or collection selection.', 'tainacan'),
+    description: __('List collections on a Carousel, displaying either its thumbnail or a preview of its items.', 'tainacan'),
     example: {
         attributes: {
             content: 'preview'
@@ -144,6 +144,16 @@ registerBlockType('tainacan/carousel-collections-list', {
 
         // Obtains block's client id to render it on save function
         setAttributes({ blockId: clientId });
+
+        // Sets some defaults that were not working
+        if (maxCollectionsPerScreen === undefined) {
+            maxCollectionsPerScreen = 6;
+            setAttributes({ maxCollectionsPerScreen: maxCollectionsPerScreen });
+        }
+        if (cropImagesToSquare === undefined) {  
+            cropImagesToSquare = true;    
+            setAttributes({ cropImagesToSquare: cropImagesToSquare });
+        }   
         
         function prepareItem(collection, collectionItems) {
             return (

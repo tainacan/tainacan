@@ -192,12 +192,9 @@
         svg {
             fill: var(--tainacan-block-primary, $primary);
         }
-        &:after,
+        &::after,
         &::before {
-            font-family: "TainacanIcons";
-        }
-        &.swiper-button-prev::after {
-            content: "previous";
+            content: none !important;
         }
     }
 

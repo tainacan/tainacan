@@ -145,6 +145,12 @@ registerBlockType('tainacan/carousel-terms-list', {
         // Obtains block's client id to render it on save function
         setAttributes({ blockId: clientId });
         
+        // Sets some defaults that were not working
+        if (maxTermsPerScreen === undefined) {
+            maxTermsPerScreen = 6;
+            setAttributes({ maxTermsPerScreen: maxTermsPerScreen });
+        }
+
         function prepareItem(term, termItems) {
             return (
                 <li 
