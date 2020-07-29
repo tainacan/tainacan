@@ -191,14 +191,14 @@
 <script>
 import axios from 'axios';
 import qs from 'qs';
-import 'swiper/dist/css/swiper.css';
-import { swiper, swiperSlide } from 'vue-awesome-swiper';
+import 'swiper/css/swiper.min.css';
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 
 export default {
     name: "CarouselCollectionsListTheme",
     components: {
-        swiper,
-        swiperSlide
+        Swiper,
+        SwiperSlide
     },
     props: {
         blockId: String,

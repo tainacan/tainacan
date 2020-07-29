@@ -644,7 +644,6 @@ class Theme_Helper {
 	 * 
 	 * @return array containing the next and previous item
 	 */
-
 	public function get_adjacent_items() {
 
 		// Array with the link results. If nothing goes well here we just don't have any link :(
@@ -653,57 +652,63 @@ class Theme_Helper {
 			'previous' => null
 		];
 
-		// Defines where are we getting items from
-		$entity = false;
-
-		if ($collection_id = tainacan_get_collection_id()) {
-			$entity = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
-		} elseif ($term = tainacan_get_term()) {
-			$entity = \Tainacan\Repositories\Terms::get_instance()->fetch($term->term_id, $term->taxonomy);
-		}
-
 		// Adjusts the args to obtain only on one item per request with the correct offset
 		$args = $_GET;
-		$args['posts_per_page'] = '1';
+		
+		// Defines where are we getting items from
+		$entity = [];
+		if (isset($args['source_list']) && $args['source_list'] == 'collection' && $collection_id = tainacan_get_collection_id()) {
+			$entity = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
+		}
+		unset($args['source_list']);
 
 		if (isset($args['pos'])) {
 
-			$current_position = (int)$args['pos'];
+			// Sets Page based on position
+			$args['perpage'] = '1';
+			$current_position = (int)$args['pos'] + 1;
 			unset($args['pos']);
+			$args = (new \Tainacan\API\EndPoints\REST_Items_Controller())->process_request_filters($args);
 
-			$args['paged'] = $current_position - 1;
-			$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
+			// Fetch Previous Item
+			if($current_position > 1) {
+				$args['paged'] = $current_position - 1;
+				$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
+				
+				if ($items->have_posts()) {
+					$items->the_post();
+					$item = new Entities\Item($items->post);
 
-			if ($items) {
-				$items->the_post();
-				$item = new Entities\Item($items->post);
-
-				if (!empty($item)) {
-					$adjacent_items['previous'] = [
-						'url' => get_permalink( $item->get_id() ),
-						'title' => $item->get_title(),
-						'thumbnail' => $item->get_thumbnail()
-					];
+					if (!empty($item)  && $item instanceof \Tainacan\Entities\Item) {
+						$adjacent_items['previous'] = [
+							'url' => get_permalink( $item->get_id() ) . '?' . http_build_query(array_merge($_GET, ['pos'=> $current_position-2])),
+							'title' => $item->get_title(),
+							'thumbnail' => $item->get_thumbnail()
+						];
+					}
+					\wp_reset_postdata();
 				}
 			}
 
-			// Fetches Next Item
+			// Fetch Next Item
 			$args['paged'] = $current_position + 1;
 			$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
 
-			if ($items) {
+			if ($items->have_posts()) {
 				$items->the_post();
 				$item = new Entities\Item($items->post);
 
-				if (!empty($item)) {
+				if (!empty($item) && $item instanceof \Tainacan\Entities\Item) {
 					$adjacent_items['next'] = [
-						'url' => get_permalink( $item->get_id() ),
+						'url' => get_permalink( $item->get_id() ) . '?' . http_build_query(array_merge($_GET, ['pos'=> $current_position])),
 						'title' => $item->get_title(),
 						'thumbnail' => $item->get_thumbnail()
 					];
 				}
+				\wp_reset_postdata();
 			}
 		}
+
 		return $adjacent_items;
 	}
 	

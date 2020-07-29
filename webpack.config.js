@@ -137,7 +137,7 @@ if (production === true) {
     module.exports.resolve = {
         alias: {
             'vue$': 'vue/dist/vue.min',
-            'swiper$': 'swiper/dist/js/swiper.min.js'
+            'Swiper$': 'swiper/js/swiper.min.js'
         }
     }
 } else {
@@ -162,7 +162,7 @@ if (production === true) {
         alias: {
             //'vue$': 'vue/dist/vue.esm' // uncomment this and comment the above to use vue dev tools (can cause type error)
             'vue$': 'vue/dist/vue.min',
-            'swiper$': 'swiper/dist/js/swiper.min.js'
+            'Swiper$': 'swiper/js/swiper.min.js'
         }
     }
 }
