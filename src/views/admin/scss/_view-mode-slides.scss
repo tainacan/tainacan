@@ -17,6 +17,10 @@
         }
     }
 
+    .swiper-button-prev::after,
+    .swiper-button-next::after {
+        content: none;
+    }
     .tainacan-slide {
         display: flex;
         flex-direction: column;    

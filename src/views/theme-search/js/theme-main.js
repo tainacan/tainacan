@@ -30,7 +30,6 @@ import ViewModeRecords from '../components/view-mode-records.vue';
 import ViewModeMasonry from '../components/view-mode-masonry.vue';
 import ViewModeSlideshow from '../components/view-mode-slideshow.vue';
 import ViewModeList from '../components/view-mode-list.vue';
-import ViewModeSlides from '../components/view-mode-slides.vue';
 
 // Remaining imports
 import store from '../../admin/js/store/store';

@@ -107,14 +107,6 @@ class Theme_Helper {
 			'type' => 'component',
 			'implements_skeleton' => true
 		]);
-		$this->register_view_mode('slides', [
-			'label' => __('Slides', 'tainacan'),
-			'dynamic_metadata' => true,
-			'description' => 'A slides view, that does not opens fullscreen as the slideshow',
-			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-25em"></i></span>',
-			'type' => 'component',
-			'implements_skeleton' => true
-		]);
 	}
 	
 	public function enqueue_scripts($force = false) {

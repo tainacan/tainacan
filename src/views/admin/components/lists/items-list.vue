@@ -1288,15 +1288,15 @@ import { mapActions, mapGetters } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
 import ItemCopyDialog from '../other/item-copy-dialog.vue';
 import BulkEditionModal from '../modals/bulk-edition-modal.vue';
-import 'swiper/dist/css/swiper.css';
-import { swiper, swiperSlide } from 'vue-awesome-swiper';
+import 'swiper/css/swiper.min.css';
+import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 import { dateInter } from "../../js/mixins";
 
 export default {
     name: 'ItemsList',
     components: {
-        swiper,
-        swiperSlide,
+        Swiper,
+        SwiperSlide,
     },
     mixins: [ dateInter ],
     props: {
@@ -1703,8 +1703,8 @@ export default {
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
         },
         onSlideChange() {
-            if (this.$refs.mySwiper.swiper != undefined)
-                this.slideIndex = this.$refs.mySwiper.swiper.activeIndex;
+            if (this.$refs.mySwiper.$swiper != undefined)
+                this.slideIndex = this.$refs.mySwiper.$swiper.activeIndex;
         }
     }
 }
