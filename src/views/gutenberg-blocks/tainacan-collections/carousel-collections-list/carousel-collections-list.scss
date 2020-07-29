@@ -269,6 +269,8 @@
         overflow-x: scroll;
         list-style: none;
         margin: 0 36px;
+        scroll-snap-type: x mandatory;
+        scroll-padding-left: 10px;
 
         li.collection-list-item {
             position: relative;
@@ -276,6 +278,8 @@
             margin: 16px 32px 16px 0px;
             width: calc(16.666% - 32px); 
             min-width: calc(16.666% - 32px);
+            scroll-snap-align: start;
+            scroll-margin: 0 16px;
 
             &.collection-list-item-grid {
                 margin: 16px;
