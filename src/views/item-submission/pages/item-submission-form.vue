@@ -440,6 +440,7 @@
                             :key="index"
                             :item-metadatum="itemMetadatum"
                             :hide-collapses="hideCollapses"
+                            :is-collapsed="metadataCollapses[index]"
                             @changeCollapse="onChangeCollapse($event, index)"/>
 
                     <!-- Hook for extra Form options -->
@@ -733,6 +734,7 @@ export default {
                     this.metadataCollapses[i] = true;
                 }                
                 this.isLoading = false;
+                console.log(this.metadataCollapses)
             });
         },
         setFileDocument(event) {
