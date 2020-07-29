@@ -459,9 +459,8 @@ function tainacan_register_view_mode($slug, $args = []) {
 function tainacan_get_item($post_id = 0) {
 	$post = get_post( $post_id );
 
-	if (!$post) {
+	if (!$post)
 		return null;
-	}
 
 	$theme_helper = \Tainacan\Theme_Helper::get_instance();
 

@@ -2,6 +2,8 @@
 
 .wp-block-tainacan-carousel-items-list {
     margin: 2em auto;
+    --swiper-navigation-color: var(--tainacan-block-primary, $primary);
+    --swiper-theme-color: var(--tainacan-block-primary, $primary);
 
     // Spinner
     .spinner-container {
@@ -190,6 +192,10 @@
         svg {
             fill: var(--tainacan-block-primary, $primary);
         }
+        &::after,
+        &::before {
+            content: none !important;
+        }
     }
 
     // Carousel placeholder on editor side  ----------------------------------------------------
@@ -243,6 +249,8 @@
         overflow-x: scroll;
         list-style: none;
         margin: 0 36px;
+        scroll-snap-type: x mandatory;
+        scroll-padding-left: 10px;
 
         li.item-list-item {
             position: relative;
@@ -250,6 +258,8 @@
             margin: 16px;
             width: calc(14.285% - 32px); 
             min-width: calc(14.285% - 32px);
+            scroll-snap-align: start;
+            scroll-margin: 0 16px;
 
             a { 
                 color: var(--tainacan-block-gray5, $gray5); 

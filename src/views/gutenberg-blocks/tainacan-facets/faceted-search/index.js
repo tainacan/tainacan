@@ -370,11 +370,21 @@ registerBlockType('tainacan/faceted-search', {
                             <Dropdown
                                 contentClassName="wp-block-tainacan__dropdown"
                                 renderToggle={ ( { isOpen, onToggle } ) => (
-                                    <ToolbarButton
-                                        onClick={ onToggle }
-                                        aria-expanded={ isOpen }>
-                                            { __('Items list source', 'tainacan')  } 
-                                    </ToolbarButton>
+                                    tainacan_blocks.wp_version < '5.5' ?
+                                        <Button
+                                            style={{ whiteSpace: 'nowrap' }}
+                                            onClick={ onToggle }
+                                            aria-expanded={ isOpen }>
+                                                { __('Items list source', 'tainacan')  }
+                                                <span class="components-dropdown-menu__indicator"></span> 
+                                        </Button>
+                                        :
+                                        <ToolbarButton
+                                            onClick={ onToggle }
+                                            aria-expanded={ isOpen }>
+                                                { __('Items list source', 'tainacan')  }
+                                                <span class="components-dropdown-menu__indicator"></span>  
+                                        </ToolbarButton>
                                 ) }
                                 renderContent={ ( { onToggle } ) => (
                                     <MenuGroup>

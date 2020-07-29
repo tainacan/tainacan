@@ -949,6 +949,10 @@ class REST_Items_Controller extends REST_Controller {
 		return $schema;
 
 	}
+
+	function process_request_filters($args) {
+		return $this->prepare_filters($args);
+	}
 }
 
 ?>
