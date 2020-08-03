@@ -1,6 +1,8 @@
 <template>
-
-    <div :class="{ 'hide-controls': hideControls }">
+    <div 
+            :class="{ 
+                'hide-controls': hideControls
+            }">
 
         <!-- ITEM PAGE BUTTON -->
         <a
@@ -299,7 +301,8 @@ export default {
         },
         isLoading: Boolean,
         totalItems: Number,
-        hideControls: true
+        hideControls: true,
+        initialPosition: 0
     },  
     data () {
         return {
@@ -342,8 +345,8 @@ export default {
         isLoading: {
             handler(val, oldValue) {
                 if (val === false && oldValue === true && this.swiper && this.items && this.items.length) {
-                    let updatedSlideIndex = this.swiper.activeIndex != undefined ? (JSON.parse(JSON.stringify(this.swiper.activeIndex)) + 0) : 0;
-        
+                    let updatedSlideIndex = (this.swiper.activeIndex != undefined ? (JSON.parse(JSON.stringify(this.swiper.activeIndex)) + 0) : 0);
+
                     for (let newItem of ((this.goingRight === true || this.goingRight === undefined) ? JSON.parse(JSON.stringify(this.items)) : JSON.parse(JSON.stringify(this.items)).reverse())) {
                         let existingItemIndex = this.slideItems.findIndex(anItem => anItem.id == newItem.id);
                         if (existingItemIndex < 0) {
@@ -363,6 +366,11 @@ export default {
                     
                     this.swiper.virtual.update();
                     this.updateSliderBasedOnIndex(updatedSlideIndex);
+
+                    if (this.initialPosition != null && this.initialPosition != undefined) {
+                        this.moveToClikedSlide(this.initialPosition);
+                        this.initialPosition = null;
+                    }
                 }
             },
             immediate: true

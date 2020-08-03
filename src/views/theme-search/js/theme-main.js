@@ -110,7 +110,6 @@ document.addEventListener("DOMContentLoaded", () => {
         Vue.component('view-mode-masonry', ViewModeMasonry);
         Vue.component('view-mode-slideshow', ViewModeSlideshow);
         Vue.component('view-mode-list', ViewModeList);
-        Vue.component('view-mode-slides', ViewModeSlides);
 
         Vue.use(eventBusSearch, { store: store, router: routerTheme});
             
