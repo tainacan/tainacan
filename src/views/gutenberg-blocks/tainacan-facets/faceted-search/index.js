@@ -147,7 +147,7 @@ registerBlockType('tainacan/faceted-search', {
         },
         listType: {
             type: String,
-            default: 'collection'
+            default: ''
         },
         isCollectionModalOpen: {
             type: Boolean,
@@ -350,7 +350,7 @@ registerBlockType('tainacan/faceted-search', {
             if (listType == 'term')
                 openTermModal();
             else if (listType == 'collection')
-                openCollectionModal()
+                openCollectionModal();
             else
                 return;
         }
@@ -367,40 +367,66 @@ registerBlockType('tainacan/faceted-search', {
                 <div>
                     <BlockControls>
                         { !( termId == undefined && listType == 'term' ) && !( collectionId == undefined && listType == 'collection' ) ?
-                        <ToolbarGroup>
-                            <Dropdown
-                                contentClassName="wp-block-tainacan__dropdown"
-                                renderToggle={ ( { isOpen, onToggle } ) => (
-                                    tainacan_blocks.wp_version < '5.5' ?
+                            tainacan_blocks.wp_version < '5.4' ?
+                                <Dropdown
+                                    contentClassName="wp-block-tainacan__dropdown"
+                                    renderToggle={ ( { isOpen, onToggle } ) => 
                                         <Button
-                                            style={{ whiteSpace: 'nowrap' }}
+                                            style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2', height: '100%' }}
                                             onClick={ onToggle }
                                             aria-expanded={ isOpen }>
                                                 { __('Items list source', 'tainacan')  }
                                                 <span class="components-dropdown-menu__indicator"></span> 
                                         </Button>
-                                        :
-                                        <ToolbarButton
-                                            onClick={ onToggle }
-                                            aria-expanded={ isOpen }>
-                                                { __('Items list source', 'tainacan')  }
-                                                <span class="components-dropdown-menu__indicator"></span>  
-                                        </ToolbarButton>
-                                ) }
-                                renderContent={ ( { onToggle } ) => (
-                                    <MenuGroup>
-                                        <MenuItemsChoice
-                                            choices={ listTypeChoices }
-                                            value={ listType } 
-                                            onSelect={ (value) => {
-                                                onUpdateListType(value);
-                                                onToggle(); 
-                                            }}>
-                                        </MenuItemsChoice>
-                                    </MenuGroup>
-                                ) }
-                            />
-                        </ToolbarGroup>
+                                    }
+                                    renderContent={ ( { onToggle } ) => (
+                                        <MenuGroup>
+                                            <MenuItemsChoice
+                                                choices={ listTypeChoices }
+                                                value={ listType }
+                                                onSelect={ (value) => {
+                                                    onUpdateListType(value);
+                                                    onToggle(); 
+                                                }}>
+                                            </MenuItemsChoice>
+                                        </MenuGroup>
+                                    ) }
+                                />
+                                :
+                                <ToolbarGroup>
+                                    <Dropdown
+                                        contentClassName="wp-block-tainacan__dropdown"
+                                        renderToggle={ ( { isOpen, onToggle } ) => (
+                                            tainacan_blocks.wp_version < '5.5' ?
+                                                <Button
+                                                    style={{ whiteSpace: 'nowrap' }}
+                                                    onClick={ onToggle }
+                                                    aria-expanded={ isOpen }>
+                                                        { __('Items list source', 'tainacan')  }
+                                                        <span class="components-dropdown-menu__indicator"></span> 
+                                                </Button>
+                                                :
+                                                <ToolbarButton
+                                                    onClick={ onToggle }
+                                                    aria-expanded={ isOpen }>
+                                                        { __('Items list source', 'tainacan')  }
+                                                        <span class="components-dropdown-menu__indicator"></span>  
+                                                </ToolbarButton>
+                                        ) }
+                                        renderContent={ ( { onToggle } ) => (
+                                            <MenuGroup>
+                                                <MenuItemsChoice
+                                                    choices={ listTypeChoices }
+                                                    value={ listType } 
+                                                    onSelect={ (value) => {
+                                                        onUpdateListType(value);
+                                                        onToggle(); 
+                                                    }}>
+                                                </MenuItemsChoice>
+                                            </MenuGroup>
+                                        ) }
+                                    />
+                                </ToolbarGroup>
                         :null }
                     </BlockControls>
                 </div>
@@ -850,7 +876,7 @@ registerBlockType('tainacan/faceted-search', {
                     </InspectorControls>
                 </div>
 
-                { ( termId == undefined && listType == 'term' ) || ( collectionId == undefined && listType == 'collection' ) ? (
+                { listType == '' || ( termId == undefined && listType == 'term' ) || ( collectionId == undefined && listType == 'collection' ) ? (
                     <Placeholder
                         className="tainacan-block-placeholder"
                         icon={(
