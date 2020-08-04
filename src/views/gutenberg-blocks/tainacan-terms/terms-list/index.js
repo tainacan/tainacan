@@ -216,29 +216,40 @@ registerBlockType('tainacan/terms-list', {
                     <BlockControls>
                         <Toolbar controls={ layoutControls } />
                         { selectedTermsHTML.length ?
-                            <ToolbarGroup>
-                                { tainacan_blocks.wp_version < '5.5' ?
-                                    <Button style={{ whiteSpace: 'nowrap' }} onClick={ openTermsModal } >
-                                        <p>
-                                            <svg width="24" height="24" viewBox="0 -3 12 17">
-                                                <path
-                                                    d="M 4.4,2.5 H 0 V 0 h 4.4 l 1.2,1.3 z m -1.9,5 v 3.1 H 5 v 1.2 H 1.3 v -8 H 2.5 V 6.3 H 5 V 7.6 H 2.5 Z m 8.2,0.7 H 6.3 V 5.7 h 4.4 l 1.2,1.2 z M 11.9,11.3 10.7,10 H 6.3 v 2.5 h 4.4 z"/>       
-                                            </svg>
-                                        </p>&nbsp;
-                                        {  __( 'Select terms', 'tainacan' ) }
-                                    </Button>
-                                    :
-                                    <ToolbarButton onClick={ openTermsModal } >
-                                        <p>
-                                            <svg width="24" height="24" viewBox="0 -3 12 17">
-                                                <path
-                                                    d="M 4.4,2.5 H 0 V 0 h 4.4 l 1.2,1.3 z m -1.9,5 v 3.1 H 5 v 1.2 H 1.3 v -8 H 2.5 V 6.3 H 5 V 7.6 H 2.5 Z m 8.2,0.7 H 6.3 V 5.7 h 4.4 l 1.2,1.2 z M 11.9,11.3 10.7,10 H 6.3 v 2.5 h 4.4 z"/>       
-                                            </svg>
-                                        </p>&nbsp;
-                                        {  __( 'Select terms', 'tainacan' ) }
-                                    </ToolbarButton>
-                                }
-                            </ToolbarGroup>
+                            tainacan_blocks.wp_version < '5.4' ?
+                                <Button style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2' }} onClick={ openTermsModal } >
+                                    <p style={{ margin: 0 }}>
+                                        <svg width="24" height="24" viewBox="0 -3 12 17">
+                                            <path
+                                                d="M 4.4,2.5 H 0 V 0 h 4.4 l 1.2,1.3 z m -1.9,5 v 3.1 H 5 v 1.2 H 1.3 v -8 H 2.5 V 6.3 H 5 V 7.6 H 2.5 Z m 8.2,0.7 H 6.3 V 5.7 h 4.4 l 1.2,1.2 z M 11.9,11.3 10.7,10 H 6.3 v 2.5 h 4.4 z"/>       
+                                        </svg>
+                                    </p>&nbsp;
+                                    {  __( 'Select terms', 'tainacan' ) }
+                                </Button>
+                                : 
+                                <ToolbarGroup>
+                                    { tainacan_blocks.wp_version < '5.5' ?
+                                        <Button style={{ whiteSpace: 'nowrap' }} onClick={ openTermsModal } >
+                                            <p>
+                                                <svg width="24" height="24" viewBox="0 -3 12 17">
+                                                    <path
+                                                        d="M 4.4,2.5 H 0 V 0 h 4.4 l 1.2,1.3 z m -1.9,5 v 3.1 H 5 v 1.2 H 1.3 v -8 H 2.5 V 6.3 H 5 V 7.6 H 2.5 Z m 8.2,0.7 H 6.3 V 5.7 h 4.4 l 1.2,1.2 z M 11.9,11.3 10.7,10 H 6.3 v 2.5 h 4.4 z"/>       
+                                                </svg>
+                                            </p>&nbsp;
+                                            {  __( 'Select terms', 'tainacan' ) }
+                                        </Button>
+                                        :
+                                        <ToolbarButton onClick={ openTermsModal } >
+                                            <p>
+                                                <svg width="24" height="24" viewBox="0 -3 12 17">
+                                                    <path
+                                                        d="M 4.4,2.5 H 0 V 0 h 4.4 l 1.2,1.3 z m -1.9,5 v 3.1 H 5 v 1.2 H 1.3 v -8 H 2.5 V 6.3 H 5 V 7.6 H 2.5 Z m 8.2,0.7 H 6.3 V 5.7 h 4.4 l 1.2,1.2 z M 11.9,11.3 10.7,10 H 6.3 v 2.5 h 4.4 z"/>       
+                                                </svg>
+                                            </p>&nbsp;
+                                            {  __( 'Select terms', 'tainacan' ) }
+                                        </ToolbarButton>
+                                    }
+                                </ToolbarGroup>
                         : null }
                     </BlockControls>
                 </div>
