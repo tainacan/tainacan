@@ -599,6 +599,7 @@
                 hasAnOpenModal: false,
                 hasAnOpenAlert: true,                
                 metadataSearchCancel: undefined,
+                latestNonFullscreenViewMode: '',
                 isMobile: false,
                 initialItemPosition: null
             }
@@ -831,15 +832,19 @@
 
                 // We need to load metadata again as fetch_only might change from view mode
                 this.prepareMetadata();
-                this.$eventBusSearch.setViewMode(viewMode);
 
                 // For view modes such as slides, we force pagination to request only 12 per page
                 let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(aViewMode => aViewMode == viewMode);
                 if (existingViewModeIndex >= 0) {
-                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
+                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination)
                         this.$eventBusSearch.setItemsPerPage(24, true);
-                    }
+                    
+                    if (this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].full_screen)
+                        this.latestNonFullscreenViewMode = this.viewMode;
                 }
+
+                // Finally sets the new view mode
+                this.$eventBusSearch.setViewMode(viewMode);
             },
             onChangeDisplayedMetadata() {
                 let fetchOnlyMetadatumIds = [];

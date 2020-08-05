@@ -473,7 +473,7 @@ export default {
             this.hideControls = !this.hideControls;
         },
         closeSlideViewMode() {
-            this.$parent.onChangeViewMode(this.$parent.defaultViewMode);
+            this.$parent.onChangeViewMode(this.$parent.latestNonFullscreenViewMode ? this.$parent.latestNonFullscreenViewMode : this.$parent.defaultViewMode);
         },
         moveToClikedSlide(index) {
             if (this.swiper)
