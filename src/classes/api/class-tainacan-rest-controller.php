@@ -117,6 +117,7 @@ class REST_Controller extends \WP_REST_Controller {
 			'inclusive' => 'inclusive',
 			'before'    => 'before',
 			'after'     => 'after',
+			'column'    => 'column',
 		];
 
 		$tax_query = [
