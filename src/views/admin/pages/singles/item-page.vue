@@ -259,6 +259,7 @@
                             </template>
                             
                             <activities-page
+                                    v-if="activeTab == 2"
                                     :is-loading.sync="isLoadingAttachments"
                                     @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"/>
                         </b-tab-item>
