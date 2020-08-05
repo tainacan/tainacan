@@ -38,6 +38,13 @@ class Media {
 		return $vars;
 	}
 
+	private function flush_buffers(){
+		ob_end_flush();
+		ob_flush();
+		flush();
+		ob_start();
+	}
+
 	/**
 	 * Insert an attachment from an URL address.
 	 *
@@ -52,7 +59,7 @@ class Media {
 			if( !file_exists($filename) ) {
 				return false;
 			}
-
+			$this->flush_buffers();
 			$file = file_get_contents($filename);
 
 			if (false === $file) {
@@ -78,7 +85,7 @@ class Media {
 		if( !file_exists($filename) ) {
 			return false;
 		}
-
+		$this->flush_buffers();
 		return $this->insert_attachment_from_blob(file_get_contents($filename), basename($filename), $post_id);
 
 	}
