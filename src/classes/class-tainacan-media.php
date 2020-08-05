@@ -39,10 +39,10 @@ class Media {
 	}
 
 	private function flush_buffers(){
-		ob_end_flush();
-		ob_flush();
+		if( ob_get_level() > 0 ) {
+			ob_flush();
+		}
 		flush();
-		ob_start();
 	}
 
 	/**
