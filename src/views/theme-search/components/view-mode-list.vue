@@ -40,23 +40,36 @@
                         class="tainacan-list">
 
                     <!-- Title -->
-                    <p 
-                            v-tooltip="{
-                                delay: {
-                                    show: 500,
-                                    hide: 300,
-                                },
-                                content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
-                                html: true,
-                                autoHide: false,
-                                placement: 'auto-start'
-                            }"
-                            v-for="(column, metadatumIndex) in displayedMetadata"
-                            :key="metadatumIndex"
-                            class="metadata-title"
-                            v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                            v-html="item.metadata != undefined && collectionId ? renderMetadata(item.metadata, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)" />                 
-            
+                    <div class="metadata-title">
+                        <p 
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
+                                    content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                    html: true,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"
+                                v-for="(column, metadatumIndex) in displayedMetadata"
+                                :key="metadatumIndex"
+                                v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                v-html="item.metadata != undefined && collectionId ? renderMetadata(item.metadata, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)" />                 
+                        <span 
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 100,
+                                    },
+                                    content: $i18n.get('label_see_on_slideshow'),
+                                    placement: 'auto-start'
+                                }"          
+                                @click.prevent="starSlideshowFromHere(index)"
+                                class="icon slideshow-icon">
+                            <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                        </span> 
+                    </div>
 
                     <!-- Remaining metadata -->  
                     <div class="media">
@@ -109,7 +122,7 @@ export default {
     @import "../../admin/scss/view-mode-list.scss";
 
     .tainacan-list-container .tainacan-list .metadata-title {
-        padding: 0.6em 0.875em;
+        padding: 0.5em 0.875em;
         margin-bottom: 0px;
     }
 </style>

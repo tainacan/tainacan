@@ -472,6 +472,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_know_more'								 => __( 'Know more', 'tainacan' ),
 	'label_request_details'							 => __( 'Request details', 'tainacan' ),
 	'label_terms_without_parent'					 => __( 'Terms without parent', 'tainacan' ),
+	'label_see_on_slideshow'						 => __( 'See on slideshow', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

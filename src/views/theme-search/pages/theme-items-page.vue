@@ -514,6 +514,7 @@
                         :is-filters-menu-compressed="!hideFilters && !isFiltersModalActive"
                         :total-items="totalItems"
                         :is-loading="showLoading"
+                        :initial-item-position="initialItemPosition"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
         
                 <!-- Pagination -->
@@ -598,7 +599,8 @@
                 hasAnOpenModal: false,
                 hasAnOpenAlert: true,                
                 metadataSearchCancel: undefined,
-                isMobile: false
+                isMobile: false,
+                initialItemPosition: null
             }
         },
         computed: {
@@ -723,6 +725,11 @@
                  */
                 this.prepareMetadata();
             });
+
+            this.$on('start-slideshow-from-item', (index) => {
+                this.onChangeViewMode('slideshow');
+                this.initialItemPosition = index;
+            });
         },
         mounted() {
             this.prepareMetadata();
@@ -819,6 +826,9 @@
                     this.$eventBusSearch.setOrder(newOrder);
             },
             onChangeViewMode(viewMode) {
+                // Resets inital position in case it was defined before
+                this.initialItemPosition = null;
+
                 // We need to load metadata again as fetch_only might change from view mode
                 this.prepareMetadata();
                 this.$eventBusSearch.setViewMode(viewMode);

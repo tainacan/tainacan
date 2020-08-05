@@ -302,7 +302,7 @@ export default {
         isLoading: Boolean,
         totalItems: Number,
         hideControls: true,
-        initialPosition: 0
+        initialItemPosition: null
     },  
     data () {
         return {
@@ -338,7 +338,7 @@ export default {
     watch: {
         'swiper.activeIndex': {
             handler(currentIndex, previousIndex) { 
-                this.updateSliderBasedOnIndex(currentIndex, previousIndex)
+                this.updateSliderBasedOnIndex(currentIndex, previousIndex);
             },
             immediate: true
         }, 
@@ -366,11 +366,6 @@ export default {
                     
                     this.swiper.virtual.update();
                     this.updateSliderBasedOnIndex(updatedSlideIndex);
-
-                    if (this.initialPosition != null && this.initialPosition != undefined) {
-                        this.moveToClikedSlide(this.initialPosition);
-                        this.initialPosition = null;
-                    }
                 }
             },
             immediate: true
@@ -401,6 +396,7 @@ export default {
         this.swiper = new Swiper('.swiper-container', {
             mousewheel: true,
             keyboard: true,
+            observer: true,
             preventInteractionOnTransition: true,
             slidesPerView: 24,
             spaceBetween: 12,
@@ -433,6 +429,14 @@ export default {
                 addSlidesBefore: 2,
                 addSlidesAfter: 2
             },
+            on: {
+                observerUpdate: function () {
+                    if (self.initialItemPosition != null && self.initialItemPosition != undefined) {
+                        self.moveToClikedSlide(self.initialItemPosition);
+                        self.initialItemPosition = null;
+                    }
+                }
+            }
         });
     },
     beforeDestroy() {

@@ -940,25 +940,26 @@
                     </div>
 
                     <!-- Title -->
-                    <p 
-                            v-tooltip="{
-                                delay: {
-                                    show: 500,
-                                    hide: 300,
-                                },
-                                content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
-                                html: true,
-                                autoHide: false,
-                                placement: 'auto-start'
-                            }"
-                            @click.left="onClickItem($event, item)"
-                            @click.right="onRightClickItem($event, item)"
-                            v-for="(column, metadatumIndex) in displayedMetadata"
-                            :key="metadatumIndex"
-                            class="metadata-title"
-                            v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                            v-html="item.metadata != undefined && collectionId ? renderMetadata(item.metadata, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)" />                 
-            
+                    <div class="metadata-title">
+                        <p 
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
+                                    content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                    html: true,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"
+                                @click.left="onClickItem($event, item)"
+                                @click.right="onRightClickItem($event, item)"
+                                v-for="(column, metadatumIndex) in displayedMetadata"
+                                :key="metadatumIndex"
+                                v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                v-html="item.metadata != undefined && collectionId ? renderMetadata(item.metadata, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)" />                 
+                    </div>
+
                     <!-- Actions -->
                     <div
                             v-if="item.current_user_can_edit && !$route.query.iframemode"

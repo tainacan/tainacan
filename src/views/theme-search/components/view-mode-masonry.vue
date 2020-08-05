@@ -47,7 +47,20 @@
 
                     <!-- Title -->
                     <div class="metadata-title">
-                        <p>{{ item.title != undefined ? item.title : '' }}</p>                             
+                        <p>{{ item.title != undefined ? item.title : '' }}</p>
+                        <span 
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 100,
+                                    },
+                                    content: $i18n.get('label_see_on_slideshow'),
+                                    placement: 'auto-start'
+                                }"          
+                                @click.prevent="starSlideshowFromHere(index)"
+                                class="icon slideshow-icon">
+                            <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                        </span>                             
                     </div>
 
                     <!-- Thumbnail -->

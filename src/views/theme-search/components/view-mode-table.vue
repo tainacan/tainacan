@@ -79,6 +79,11 @@
                                 }">
                             <div class="th-wrap">{{ column.name }}</div>
                         </th>
+
+                        <th class="actions-header">
+                            &nbsp;
+                            <!-- nothing to show on header for actions cell-->
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -169,6 +174,28 @@
                                 </span> 
                             </a>
                         </td>
+
+
+                        <!-- Actions -->
+                        <td 
+                                class="actions-cell"
+                                :label="$i18n.get('label_actions')">
+                            <div class="actions-container">
+                                <span 
+                                        v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 100,
+                                            },
+                                            content: $i18n.get('label_see_on_slideshow'),
+                                            placement: 'auto-start'
+                                        }"          
+                                        @click.prevent="starSlideshowFromHere(index)"
+                                        class="icon slideshow-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                                </span> 
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -205,3 +232,20 @@ export default {
 }
 </script>
 
+<style lang="scss" scoped>
+    
+    tr .actions-cell {
+        opacity: 0;
+        .slideshow-icon {
+            transform: scale(0.25);
+            transition: transform 0.2s ease;
+        }
+    }
+    tr:hover .actions-cell {
+        opacity: 1;
+        .slideshow-icon {
+            transform: scale(1.0);  
+        }
+    }
+
+</style>
