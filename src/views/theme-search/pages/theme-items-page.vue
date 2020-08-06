@@ -755,7 +755,7 @@
             let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
             if (existingViewModeIndex >= 0) {
                 if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
-                    this.$eventBusSearch.setItemsPerPage(24, true);
+                    this.$eventBusSearch.setItemsPerPage(12, true);
                 }
             }
             
@@ -837,7 +837,7 @@
                 let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(aViewMode => aViewMode == viewMode);
                 if (existingViewModeIndex >= 0) {
                     if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination)
-                        this.$eventBusSearch.setItemsPerPage(24, true);
+                        this.$eventBusSearch.setItemsPerPage(12, true);
                     
                     if (this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].full_screen)
                         this.latestNonFullscreenViewMode = this.viewMode;

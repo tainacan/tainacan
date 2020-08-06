@@ -320,7 +320,8 @@ export default {
             isMetadataCompressed: true,
             minPage: 1,
             maxPage: 1,
-            preloadedItem: {}
+            preloadedItem: {},
+            itemPosition: null
         }
     },
     computed: {
@@ -364,7 +365,6 @@ export default {
                     if (updatedSlideIndex == this.slideItems.length - 1 && this.page == this.totalPages)
                         this.isPlaying = false;
                     
-                    this.swiper.virtual.update();
                     this.updateSliderBasedOnIndex(updatedSlideIndex);
                 }
             },
@@ -390,6 +390,8 @@ export default {
 
         // Adds keyup and keydown event listeners
         window.addEventListener('keyup', this.handleKeyboardKeys);
+
+        // Passes props to data value of initial position, as we will modify it
 
         // Builds Swiper component
         const self = this;
@@ -431,9 +433,9 @@ export default {
             },
             on: {
                 observerUpdate: function () {
-                    if (self.initialItemPosition != null && self.initialItemPosition != undefined) {
-                        self.moveToClikedSlide(self.initialItemPosition);
-                        self.initialItemPosition = null;
+                    if (self.itemPosition != null && self.itemPosition != undefined) {
+                        this.slideTo(self.itemPosition);
+                        self.itemPosition = null;
                     }
                 }
             }
@@ -448,7 +450,6 @@ export default {
 
         clearInterval(this.intervalId);
         if (this.swiper) {
-            this.swiper.virtual.removeAllSlides();
             this.swiper.destroy();
         }
     },

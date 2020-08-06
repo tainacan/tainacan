@@ -2,12 +2,12 @@
 #item-page-button {
     border-radius: 50px;
     color: var(--tainacan-white) !important;
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.5);
     border: none;
     position: absolute;
     top: 0;
     right: 0;
-    padding: 1em;
+    padding: 0.75em;
     cursor: pointer;
     z-index: 9999999999;
 
@@ -17,7 +17,7 @@
     }
 }
 #item-page-button  {
-    right: 3rem;
+    right: 3.5rem;
 }
 .metadata-menu {
     background-color: var(--tainacan-black);
