@@ -247,7 +247,9 @@
                         
                             <attachments-list
                                     v-if="item != undefined && item.id != undefined"
-                                    :item="item" />    
+                                    :item="item"
+                                    :is-loading.sync="isLoadingAttachments"
+                                    @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading" />    
                         </b-tab-item>
 
                         <b-tab-item>
@@ -258,9 +260,7 @@
                                 <span>{{ $i18n.get('activities') }}</span>
                             </template>
                             
-                            <activities-page
-                                    :is-loading.sync="isLoadingAttachments"
-                                    @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"/>
+                            <activities-page v-if="activeTab == 2"/>
                         </b-tab-item>
                     </b-tabs>
                 </div>
@@ -337,8 +337,7 @@
                 open: true,
                 thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
                 urls_open: false,
-                activeTab: 0,
-                isLoadingAttachments: false
+                activeTab: 0
             }
         },
         computed: {
