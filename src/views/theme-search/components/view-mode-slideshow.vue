@@ -392,6 +392,7 @@ export default {
         window.addEventListener('keyup', this.handleKeyboardKeys);
 
         // Passes props to data value of initial position, as we will modify it
+        this.itemPosition = this.initialItemPosition;
 
         // Builds Swiper component
         const self = this;
