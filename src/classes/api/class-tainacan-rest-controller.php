@@ -477,7 +477,7 @@ class REST_Controller extends \WP_REST_Controller {
 				),
 			),
 			'datequery'    => array(
-				'description' => __('Limits the result set to items that were created in some specific date'),
+				'description' => __('Limits the result set to items that were created or modified in some specific date'),
 				'type'        => 'array/object',
 				'items'       => array(
 					'keys' => array(
@@ -542,6 +542,10 @@ class REST_Controller extends \WP_REST_Controller {
 						'after'     => array(
 							'type'        => 'string/array',
 							'description' => __('Date to retrieve posts after. Accepts strtotime()-compatible string, or array of year, month, day '),
+						),
+						'column'     => array(
+							'type'        => 'string',
+							'description' => __('Posts column to query against, possible values: post_date, post_date_gmt, post_modified, post_modified_gmt. Default: ‘post_date’.'),
 						),
 					),
 					'type'      => 'array'
