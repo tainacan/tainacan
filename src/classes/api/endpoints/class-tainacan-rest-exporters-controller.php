@@ -159,7 +159,7 @@ class REST_Exporters_Controller extends REST_Controller {
 						if (is_array($value) && isset($value['id'])) {
 							$collection = $this->collections_repository->fetch($value['id']);
 							$total_items = wp_count_posts( $collection->get_db_identifier(), 'readable' );
-							$value['total_items'] = ($total_items->publish + $total_items->private);
+							$value['total_items'] = ($total_items->publish + $total_items->private + $total_items->draft);
 							$exporter->add_collection($value);
 							continue;
 						} else {
