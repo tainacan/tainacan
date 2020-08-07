@@ -37,7 +37,7 @@ export const viewModesMixin = {
                 return metadata.value_as_html;
         },
         starSlideshowFromHere(index) {
-            this.$parent.$emit('start-slideshow-from-item', index);
+            this.$router.replace({ query: {...this.$route.query, ...{'initial-position': index } }})
         }
     }
 }

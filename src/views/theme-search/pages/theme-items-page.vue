@@ -727,7 +727,7 @@
                 this.prepareMetadata();
             });
 
-            this.$on('start-slideshow-from-item', (index) => {
+            this.$eventBusSearch.$on('start-slideshow-from-item', (index) => {
                 this.onChangeViewMode('slideshow');
                 this.initialItemPosition = index;
             });
