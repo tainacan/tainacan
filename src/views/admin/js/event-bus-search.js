@@ -133,8 +133,8 @@ export default {
                                 this.$userPrefs.set(viewModeKey, 'table');
                             }
                         }
-                        if (this.$route.query['initial-position'] != null && this.$route.query['initial-position'] != undefined && this.$route.query['initial-position'] != false)
-                            this.$emit('start-slideshow-from-item', this.$route.query['initial-position']);
+                        if (this.$route.query.view_mode != ['slideshow'] && this.$route.query['slideshow-from'] != null && this.$route.query['slideshow-from'] != undefined && this.$route.query['slideshow-from'] != false)
+                            this.$emit('start-slideshow-from-item', this.$route.query['slideshow-from']);
 
                         // Admin View Modes
                         if (this.$route.name != null && this.$route.name != undefined  && 

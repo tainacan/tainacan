@@ -728,6 +728,7 @@
             });
 
             this.$eventBusSearch.$on('start-slideshow-from-item', (index) => {
+                this.latestNonFullscreenViewMode = JSON.parse(JSON.stringify(this.viewMode));
                 this.onChangeViewMode('slideshow');
                 this.initialItemPosition = index;
             });
@@ -827,6 +828,7 @@
                     this.$eventBusSearch.setOrder(newOrder);
             },
             onChangeViewMode(viewMode) {
+
                 // Resets inital position in case it was defined before
                 this.initialItemPosition = null;
 
@@ -838,11 +840,9 @@
                 if (existingViewModeIndex >= 0) {
                     if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination)
                         this.$eventBusSearch.setItemsPerPage(12, true);
-                    
-                    if (this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].full_screen)
-                        this.latestNonFullscreenViewMode = this.viewMode;
                 }
 
+                console.log('---< ' + this.latestNonFullscreenViewMode, this.viewMode, viewMode)
                 // Finally sets the new view mode
                 this.$eventBusSearch.setViewMode(viewMode);
             },

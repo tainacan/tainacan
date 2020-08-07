@@ -475,6 +475,10 @@ export default {
             this.hideControls = !this.hideControls;
         },
         closeSlideViewMode() {
+            let currentQuery = this.$route.query;
+            delete currentQuery['slideshow-from'];
+            this.$router.replace({ query: currentQuery });
+            console.log(this.$parent.latestNonFullscreenViewMode)
             this.$parent.onChangeViewMode(this.$parent.latestNonFullscreenViewMode ? this.$parent.latestNonFullscreenViewMode : this.$parent.defaultViewMode);
         },
         moveToClikedSlide(index) {
