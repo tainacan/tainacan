@@ -54,6 +54,7 @@
                             {{ item.title != undefined ? item.title : '' }}
                         </p>                 
                         <span 
+                                v-if="isSlideshowViewModeEnabled"
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
@@ -132,12 +133,6 @@ export default {
     mixins: [
         viewModesMixin
     ],
-    props: {
-        collectionId: Number,
-        displayedMetadata: Array,
-        items: Array,
-        isLoading: false
-    },
     methods: {
         getLimitedDescription(description) {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 155 : 330;

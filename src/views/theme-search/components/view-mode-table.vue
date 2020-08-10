@@ -80,7 +80,9 @@
                             <div class="th-wrap">{{ column.name }}</div>
                         </th>
 
-                        <th class="actions-header">
+                        <th 
+                                v-if="isSlideshowViewModeEnabled"
+                                class="actions-header">
                             &nbsp;
                             <!-- nothing to show on header for actions cell-->
                         </th>
@@ -175,9 +177,9 @@
                             </a>
                         </td>
 
-
                         <!-- Actions -->
                         <td 
+                                v-if="isSlideshowViewModeEnabled"
                                 class="actions-cell"
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
@@ -211,12 +213,6 @@ export default {
     mixins: [
         viewModesMixin
     ],
-    props: {
-        collectionId: undefined,
-        displayedMetadata: Array,
-        items: Array,
-        isLoading: false
-    },
     methods: {
         renderMetadataWithLabel(itemMetadata, column) {
 

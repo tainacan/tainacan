@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (this.$el.attributes['enabled-view-modes'] != undefined)
                     this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
-                
+               
                 // Options related to hidding elements
                 if (this.$el.attributes['hide-filters'] != undefined)
                     this.hideFilters = this.isParameterTrue('hide-filters');

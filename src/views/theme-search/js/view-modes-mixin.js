@@ -3,8 +3,22 @@ import qs from 'qs';
 export const viewModesMixin = {
     data() {
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png'
+            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
+            isSlideshowViewModeEnabled: false
         }
+    },
+    props: {
+        collectionId: Number,
+        displayedMetadata: Array,
+        items:  {
+            type: Array,
+            default: () => [],
+            required: true
+        },
+        isLoading: false,
+        totalItems: Number,
+        isFiltersMenuCompressed: Boolean,
+        enabledViewModes: Array
     },
     computed: {
         queries() {
@@ -16,6 +30,9 @@ export const viewModesMixin = {
             }
             return currentQueries
         }
+    },
+    mounted() {
+        this.isSlideshowViewModeEnabled = this.enabledViewModes.findIndex((viewMode) => viewMode == 'slideshow') >= 0;
     },
     methods: {
         getItemLink(itemUrl, index) {

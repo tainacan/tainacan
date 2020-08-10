@@ -63,6 +63,7 @@
                                 v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
                                 v-html="item.metadata != undefined && collectionId ? renderMetadata(item.metadata, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)" />                 
                         <span 
+                                v-if="isSlideshowViewModeEnabled"
                                 v-tooltip="{
                                     delay: {
                                         show: 500,
@@ -119,13 +120,6 @@ export default {
     mixins: [
         viewModesMixin
     ],
-    props: {
-        collectionId: Number,
-        displayedMetadata: Array,
-        items: Array,
-        isLoading: false,
-        isFiltersMenuCompressed: Boolean
-    },
     data () {
         return {
             masonryCols: {default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}

@@ -292,16 +292,6 @@ export default {
         viewModesMixin
     ],
     props: {
-        collectionId: Number,
-        displayedMetadata: Array,
-        items:  {
-            type: Array,
-            default: () => [],
-            required: true
-        },
-        isLoading: Boolean,
-        totalItems: Number,
-        hideControls: true,
         initialItemPosition: null
     },  
     data () {
@@ -313,10 +303,12 @@ export default {
             swiper: {},
             goingRight: true,
             isPlaying: false,
+            hideControls: true,
             slideTimeout: 5000, 
             intervalId: 0, 
             collapseAll: false,
             isLoadingItem: true,
+            itemRequestCancel: undefined,
             isMetadataCompressed: true,
             minPage: 1,
             maxPage: 1,
@@ -478,7 +470,6 @@ export default {
             let currentQuery = this.$route.query;
             delete currentQuery['slideshow-from'];
             this.$router.replace({ query: currentQuery });
-            console.log(this.$parent.latestNonFullscreenViewMode)
             this.$parent.onChangeViewMode(this.$parent.latestNonFullscreenViewMode ? this.$parent.latestNonFullscreenViewMode : this.$parent.defaultViewMode);
         },
         moveToClikedSlide(index) {
@@ -549,13 +540,21 @@ export default {
                     this.replaceItem(this.preloadedItem);
                     this.$nextTick(() => this.isLoadingItem = false);
                 } else {
+                    // Cancels previous Request
+                    if (this.itemRequestCancel != undefined)
+                        this.itemRequestCancel.cancel('Item search Canceled.');
+
                     // Loads current item
                     this.fetchItem({ itemId: this.slideItems[this.swiper.activeIndex].id, contextEdit: true })
-                        .then(() => {
-                            this.isLoadingItem = false;
-                        })
-                        .catch(() => {
-                            this.isLoadingItem = false;
+                        .then((resp) => {
+                            resp.request.then(() => {
+                                this.isLoadingItem = false;
+                            })
+                            .catch(() => {
+                                this.isLoadingItem = false;
+                            });
+                            // Item resquest token for cancelling
+                            this.itemRequestCancel = resp.source;
                         });
                 }
 

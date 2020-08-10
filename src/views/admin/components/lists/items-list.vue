@@ -1141,9 +1141,6 @@ export default {
         ...mapGetters('bulkedition', [
             'getGroupId'
         ]),
-        ...mapActions('item', [
-            'fetchItem'
-        ]),
         ...mapActions('search', [
             'setSeletecItems',
             'cleanSelectedItems',

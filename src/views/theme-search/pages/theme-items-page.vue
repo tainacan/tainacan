@@ -514,6 +514,7 @@
                         :is-filters-menu-compressed="!hideFilters && !isFiltersModalActive"
                         :total-items="totalItems"
                         :is-loading="showLoading"
+                        :enabled-view-modes="enabledViewModes"
                         :initial-item-position="initialItemPosition"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
         
@@ -736,7 +737,7 @@
         mounted() {
             this.prepareMetadata();
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
-
+            
             // Setting initial view mode on Theme
             let prefsViewMode = !this.isRepositoryLevel ? 'view_mode_' + this.collectionId : 'view_mode';
            
@@ -842,7 +843,6 @@
                         this.$eventBusSearch.setItemsPerPage(12, true);
                 }
 
-                console.log('---< ' + this.latestNonFullscreenViewMode, this.viewMode, viewMode)
                 // Finally sets the new view mode
                 this.$eventBusSearch.setViewMode(viewMode);
             },
