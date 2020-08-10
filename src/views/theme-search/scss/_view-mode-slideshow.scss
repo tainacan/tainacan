@@ -2,12 +2,12 @@
 #item-page-button {
     border-radius: 50px;
     color: var(--tainacan-white) !important;
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.5);
     border: none;
     position: absolute;
     top: 0;
     right: 0;
-    padding: 1em;
+    padding: 0.75em;
     cursor: pointer;
     z-index: 9999999999;
 
@@ -17,7 +17,7 @@
     }
 }
 #item-page-button  {
-    right: 3rem;
+    right: 3.5rem;
 }
 .metadata-menu {
     background-color: var(--tainacan-black);
@@ -439,49 +439,47 @@
     }
 }
 .hide-controls {
-    // @media screen and (max-width: 768px) {
-        .slide-control-arrow {
-            visibility: hidden;
-            opacity: 0;
-        }
-        .arrow-right {
-            margin-right: 0%;
-        }
-        .arrow-left {
-            margin-left: 0%;
-        }
-        #metadata-compress-button {
-            visibility: hidden;
-            opacity: 0;
-            left: -20px;
-        }
-        .slide-title-area,
-        .tainacan-slides-list {
-            visibility: hidden;
-            opacity: 0;
-        }
-        .tainacan-slide-main-view {
-            min-height: 100vh;
+    .slide-control-arrow {
+        visibility: hidden;
+        opacity: 0;
+    }
+    .arrow-right {
+        margin-right: 0%;
+    }
+    .arrow-left {
+        margin-left: 0%;
+    }
+    #metadata-compress-button {
+        visibility: hidden;
+        opacity: 0;
+        left: -20px;
+    }
+    .slide-title-area,
+    .tainacan-slides-list {
+        visibility: hidden;
+        opacity: 0;
+    }
+    .tainacan-slide-main-view {
+        min-height: 100vh;
 
-            .slide-main-content {
-                &>div, 
-                &>div audio,
-                &>div img,
-                &>div video,
-                &>div.tainacan-embed-container {
-                    max-height: 95vh;
-                }
-            }
-        
-        }
-        .empty-document {
-            max-height: 95vh;
-            img {
-                width: auto;
+        .slide-main-content {
+            &>div, 
+            &>div audio,
+            &>div img,
+            &>div video,
+            &>div.tainacan-embed-container {
+                max-height: 95vh;
             }
         }
-        @media screen and (max-width: 768px) {
-            .empty-document img { width: 100% !important; }
+    
+    }
+    .empty-document {
+        max-height: 95vh;
+        img {
+            width: auto;
         }
-    // }
+    }
+    @media screen and (max-width: 768px) {
+        .empty-document img { width: 100% !important; }
+    }
 }

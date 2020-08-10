@@ -1,6 +1,8 @@
 <template>
-
-    <div :class="{ 'hide-controls': hideControls }">
+    <div 
+            :class="{ 
+                'hide-controls': hideControls
+            }">
 
         <!-- ITEM PAGE BUTTON -->
         <a
@@ -166,7 +168,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon is-large">
-                            <icon class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
+                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
                         </span> 
                     </button>
                     <div     
@@ -218,7 +220,7 @@
                                     placement: 'auto'
                                 }"
                                 class="icon is-large has-text-turoquoise5">
-                            <icon class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
+                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
                         </span>
                     </button>
                 </section>
@@ -290,16 +292,7 @@ export default {
         viewModesMixin
     ],
     props: {
-        collectionId: Number,
-        displayedMetadata: Array,
-        items:  {
-            type: Array,
-            default: () => [],
-            required: true
-        },
-        isLoading: Boolean,
-        totalItems: Number,
-        hideControls: true
+        initialItemPosition: null
     },  
     data () {
         return {
@@ -310,14 +303,17 @@ export default {
             swiper: {},
             goingRight: true,
             isPlaying: false,
+            hideControls: true,
             slideTimeout: 5000, 
             intervalId: 0, 
             collapseAll: false,
             isLoadingItem: true,
+            itemRequestCancel: undefined,
             isMetadataCompressed: true,
             minPage: 1,
             maxPage: 1,
-            preloadedItem: {}
+            preloadedItem: {},
+            itemPosition: null
         }
     },
     computed: {
@@ -335,15 +331,15 @@ export default {
     watch: {
         'swiper.activeIndex': {
             handler(currentIndex, previousIndex) { 
-                this.updateSliderBasedOnIndex(currentIndex, previousIndex)
+                this.updateSliderBasedOnIndex(currentIndex, previousIndex);
             },
             immediate: true
         }, 
         isLoading: {
             handler(val, oldValue) {
                 if (val === false && oldValue === true && this.swiper && this.items && this.items.length) {
-                    let updatedSlideIndex = this.swiper.activeIndex != undefined ? (JSON.parse(JSON.stringify(this.swiper.activeIndex)) + 0) : 0;
-        
+                    let updatedSlideIndex = (this.swiper.activeIndex != undefined ? (JSON.parse(JSON.stringify(this.swiper.activeIndex)) + 0) : 0);
+
                     for (let newItem of ((this.goingRight === true || this.goingRight === undefined) ? JSON.parse(JSON.stringify(this.items)) : JSON.parse(JSON.stringify(this.items)).reverse())) {
                         let existingItemIndex = this.slideItems.findIndex(anItem => anItem.id == newItem.id);
                         if (existingItemIndex < 0) {
@@ -361,7 +357,6 @@ export default {
                     if (updatedSlideIndex == this.slideItems.length - 1 && this.page == this.totalPages)
                         this.isPlaying = false;
                     
-                    this.swiper.virtual.update();
                     this.updateSliderBasedOnIndex(updatedSlideIndex);
                 }
             },
@@ -388,11 +383,15 @@ export default {
         // Adds keyup and keydown event listeners
         window.addEventListener('keyup', this.handleKeyboardKeys);
 
+        // Passes props to data value of initial position, as we will modify it
+        this.itemPosition = this.initialItemPosition;
+
         // Builds Swiper component
         const self = this;
         this.swiper = new Swiper('.swiper-container', {
             mousewheel: true,
             keyboard: true,
+            observer: true,
             preventInteractionOnTransition: true,
             slidesPerView: 24,
             spaceBetween: 12,
@@ -425,6 +424,14 @@ export default {
                 addSlidesBefore: 2,
                 addSlidesAfter: 2
             },
+            on: {
+                observerUpdate: function () {
+                    if (self.itemPosition != null && self.itemPosition != undefined) {
+                        this.slideTo(self.itemPosition);
+                        self.itemPosition = null;
+                    }
+                }
+            }
         });
     },
     beforeDestroy() {
@@ -436,7 +443,6 @@ export default {
 
         clearInterval(this.intervalId);
         if (this.swiper) {
-            this.swiper.virtual.removeAllSlides();
             this.swiper.destroy();
         }
     },
@@ -461,7 +467,10 @@ export default {
             this.hideControls = !this.hideControls;
         },
         closeSlideViewMode() {
-            this.$parent.onChangeViewMode(this.$parent.defaultViewMode);
+            let currentQuery = this.$route.query;
+            delete currentQuery['slideshow-from'];
+            this.$router.replace({ query: currentQuery });
+            this.$parent.onChangeViewMode(this.$parent.latestNonFullscreenViewMode ? this.$parent.latestNonFullscreenViewMode : this.$parent.defaultViewMode);
         },
         moveToClikedSlide(index) {
             if (this.swiper)
@@ -531,13 +540,21 @@ export default {
                     this.replaceItem(this.preloadedItem);
                     this.$nextTick(() => this.isLoadingItem = false);
                 } else {
+                    // Cancels previous Request
+                    if (this.itemRequestCancel != undefined)
+                        this.itemRequestCancel.cancel('Item search Canceled.');
+
                     // Loads current item
                     this.fetchItem({ itemId: this.slideItems[this.swiper.activeIndex].id, contextEdit: true })
-                        .then(() => {
-                            this.isLoadingItem = false;
-                        })
-                        .catch(() => {
-                            this.isLoadingItem = false;
+                        .then((resp) => {
+                            resp.request.then(() => {
+                                this.isLoadingItem = false;
+                            })
+                            .catch(() => {
+                                this.isLoadingItem = false;
+                            });
+                            // Item resquest token for cancelling
+                            this.itemRequestCancel = resp.source;
                         });
                 }
 

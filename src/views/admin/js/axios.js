@@ -9,7 +9,7 @@ const i18nGet = function (key) {
     return (string !== undefined && string !== null && string !== '' ) ? string : "ERROR: Invalid i18n key!";
 };
 
-const taiancanErrorHandler = function(error){
+const tainacanErrorHandler = function(error){
     if (error.response && error.response.status) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
@@ -55,17 +55,17 @@ const taiancanErrorHandler = function(error){
                 }
             });
         } else {
-            console.log('Taiancan Error Handler: ', error.response);
+            console.log('Tainacan Error Handler: ', error.response);
         }
 
-    } else if ('Taiancan Error Handler: ', error.request) {
+    } else if ('Tainacan Error Handler: ', error.request) {
         // The request was made but no response was received
         // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
         // http.ClientRequest in node.js
-        console.log('Taiancan Error Handler: ', error.request);
+        console.log('Tainacan Error Handler: ', error.request);
     } else {
         // Something happened in setting up the request that triggered an Error
-        console.log('Taiancan Error Handler: ', error.message);
+        console.log('Tainacan Error Handler: ', error.message);
     }
     return Promise.reject(error);
 }
@@ -79,7 +79,7 @@ if (tainacan_plugin.nonce) {
 }
 tainacan.interceptors.response.use(
     (response) => response,
-    (error) => taiancanErrorHandler(error)
+    (error) => tainacanErrorHandler(error)
 );
 
 // WordPress JSON API axios
@@ -91,7 +91,7 @@ if (tainacan_plugin.nonce) {
 }
 wp.interceptors.response.use(
     (response) => response,
-    (error) => taiancanErrorHandler(error)
+    (error) => tainacanErrorHandler(error)
 );
 
 export const CancelToken = axios.CancelToken;

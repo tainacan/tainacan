@@ -97,16 +97,27 @@ export const fetchItem = ({ commit }, { itemId, contextEdit, fetchOnly } ) => {
     if (fetchOnly != undefined)
         endpoint += '&fetch_only=' + fetchOnly;
 
-    return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
-        .then(res => {
-            let item = res.data;
-            commit('setItem', item);
-            resolve( res.data );
-        })
-        .catch(error => {
-            reject( error );
-        });
+    const source = axios.CancelToken.source();
+        
+    return Object({ 
+        request: new Promise((resolve, reject) => {
+            axios.tainacan.get(endpoint,{
+                cancelToken: source.token
+            })
+                .then(res => {
+                    let item = res.data;
+                    commit('setItem', item);
+                    resolve( res.data );
+                })
+                .catch((thrown) => {
+                    if (axios.isCancel(thrown)) {
+                        console.log('Request canceled: ', thrown.message);
+                    } else {
+                        reject(thrown);
+                    }
+                }); 
+        }),
+        source: source
     });
 };
 
