@@ -105,7 +105,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 hideLinkModalButton: false,
                 hideThumbnailSection: false,
                 hideAttachmentsSection: false,
-                hideCollapses: false
+                hideCollapses: false,
+                enabledMetadata: []
             },
             beforeMount () {
                 // Collection source settings
@@ -125,6 +126,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.hideAttachmentsSection = this.isParameterTrue('hide-attachments-section');
                 if (this.$el.attributes['hide-collapses'] != undefined)
                     this.hideCollapses = this.isParameterTrue('hide-collapses');
+
+                // List of metadata
+                if (this.$el.attributes['enabled-metadata'] != undefined && this.$el.attributes['enabled-metadata'].value)
+                    this.enabledMetadata = this.$el.attributes['enabled-metadata'].value.split(',');
             },
             methods: {
                 isParameterTrue(parameter) {

@@ -2,10 +2,11 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { Button, ColorPicker, BaseControl, CheckboxControl, RangeControl, FontSizePicker, HorizontalRule, SelectControl, ToggleControl, Placeholder, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
+const { Button, ColorPicker, BaseControl, CheckboxControl, FontSizePicker, HorizontalRule, Spinner, ToggleControl, Placeholder, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
+import tainacan from '../../js/axios.js';
 import CollectionModal from '../../tainacan-facets/faceted-search/collection-modal.js';
 
 registerBlockType('tainacan/item-submission-form', {
@@ -93,6 +94,18 @@ registerBlockType('tainacan/item-submission-form', {
         secondaryColor: {
             type: String,
             default: '#298596'
+        },
+        enabledMetadata: {
+            type: Array,
+            default: []
+        },
+        collectionMetadata: {
+            type: Array,
+            default: []
+        },
+        isLoadingCollectionMetadata: {
+            type: Boolean,
+            default: false
         }
     },
     supports: {
@@ -118,7 +131,10 @@ registerBlockType('tainacan/item-submission-form', {
             labelColor,
             infoColor,
             primaryColor,
-            secondaryColor
+            secondaryColor,
+            isLoadingCollectionMetadata,
+            collectionMetadata,
+            enabledMetadata
         } = attributes;
 
         const fontSizes = [
@@ -154,6 +170,34 @@ registerBlockType('tainacan/item-submission-form', {
             setAttributes( { 
                 isCollectionModalOpen: isCollectionModalOpen
             } );
+        }
+
+        function toggleIsEnabledMetadatum(isEnabled, index) {
+
+            enabledMetadata.splice(index, 1, isEnabled);
+
+            setAttributes({
+                enabledMetadata: JSON.parse(JSON.stringify(enabledMetadata))
+            });
+        }
+
+        function loadCollectionMetadata(selectedCollectionId) {
+            isLoadingCollectionMetadata = true;
+            setAttributes({ isLoadingCollectionMetadata, isLoadingCollectionMetadata });
+
+            tainacan.get('/collection/' + selectedCollectionId + '/metadata/?nopaging=1&include_disabled=false&parent=0')
+                .then(response => {
+                    collectionMetadata = response.data;
+                    enabledMetadata = new Array(response.data.length).fill(true);
+
+                    isLoadingCollectionMetadata = false;
+
+                    setAttributes({ 
+                        isLoadingCollectionMetadata : isLoadingCollectionMetadata,
+                        collectionMetadata: collectionMetadata,
+                        enabledMetadata: enabledMetadata
+                    });
+                });
         }
 
         return (
@@ -198,6 +242,38 @@ registerBlockType('tainacan/item-submission-form', {
                 : null }
 
                 <div>
+                    <InspectorControls>
+                            <PanelBody
+                                    title={__('Metadata Input', 'tainacan')}
+                                    initialOpen={ true } >
+                                { !isLoadingCollectionMetadata ? 
+                                    <BaseControl
+                                        id="metadata-checkbox-list"
+                                        label={ __('Metadata input shown on the list', 'tainacan') }
+                                        help={ __('Uncheck the metadata that you do not want to be shown on the form', 'tainacan') }
+                                    >
+                                    <ul id="metadata-checkbox-list">
+                                        { enabledMetadata.length ? 
+                                            enabledMetadata.map((isMetadatumEnabled, index) => {
+                                                return (
+                                                    <li>
+                                                        <CheckboxControl 
+                                                            label={ collectionMetadata[index].name }
+                                                            checked={ isMetadatumEnabled ? true : false }
+                                                            help={ collectionMetadata[index].metadata_type_object.name + (collectionMetadata[index].collection_id != collectionId ? (' (' + __('Inherited', 'tainacan') + ')' ) : '') }
+                                                            onChange={  (isEnabled) => toggleIsEnabledMetadatum(isEnabled, index) }
+                                                        />
+                                                    </li>
+                                                )
+                                            })
+                                            :
+                                        <p>{ __('No public metadata was found in this collection', 'tainacan') }</p> 
+                                        }
+                                    </ul>    
+                                    </BaseControl>
+                                : <Spinner /> }
+                            </PanelBody>
+                    </InspectorControls>
                     <InspectorControls>
                         <PanelBody
                                 title={__('Form elements', 'tainacan')}
@@ -407,7 +483,7 @@ registerBlockType('tainacan/item-submission-form', {
                                     width="24px">
                                 <g transform="matrix(0.86395091,0,0,0.86395091,1.6325891,-234.22601)">
                                     <path
-                                            fill="var(--tainacan-block-primary, $primary)"
+                                            fill="#298596"
                                             d="m 4.7336928,273.04197 c -1.5846271,-0.0613 -2.8453477,1.48564 -2.646643,3.01801 0.00883,6.16098 -0.017679,12.32284 0.013295,18.48327 0.1053115,1.51106 1.6131262,2.57443 3.0680826,2.39726 4.7229361,0 9.4458716,0 14.1688076,0 1.566507,-0.002 2.76553,-1.53973 2.576794,-3.05227 0,-4.29703 0,-8.59406 0,-12.89109 -2.651301,-2.65173 -5.302603,-5.30345 -7.953904,-7.95518 -3.075478,0 -6.1509548,0 -9.2264322,0 z m 7.9716892,1.99261 c 2.405349,2.42821 4.810699,4.85642 7.216048,7.28463 -2.42821,0 -4.85642,0 -7.28463,0 0.02286,-2.42821 0.04572,-4.85642 0.06858,-7.28463 z "/>
                                 </g>
                             </svg>
@@ -494,13 +570,24 @@ registerBlockType('tainacan/item-submission-form', {
                                         <div class="fake-text section-label"></div>
                                         <div class="fake-link"></div>
                                         <div class="metadata-section">
-                                            { Array(12).fill().map( () => {
-                                                return <div class={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
-                                                    { !hideCollapses ? <span class="fake-collapse-arrow"></span> : null }
-                                                    <span class="fake-text"></span>
-                                                    <span class="fake-input"></span>
-                                                </div>
-                                            } )}
+                                            { enabledMetadata.length ? 
+                                                enabledMetadata.map( (isEnabled) => {
+                                                    return isEnabled ? 
+                                                        <div class={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
+                                                            { !hideCollapses ? <span class="fake-collapse-arrow"></span> : null }
+                                                            <span class="fake-text"></span>
+                                                            <span class="fake-input"></span>
+                                                        </div>
+                                                    : null
+                                                }) : 
+                                                Array(12).fill().map( () => {
+                                                    return <div class={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
+                                                        { !hideCollapses ? <span class="fake-collapse-arrow"></span> : null }
+                                                        <span class="fake-text"></span>
+                                                        <span class="fake-input"></span>
+                                                    </div>
+                                                })
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -524,6 +611,7 @@ registerBlockType('tainacan/item-submission-form', {
                                 collectionId: collectionId,
                                 isCollectionModalOpen: false
                             });
+                            loadCollectionMetadata(collectionId);
                         }}
                         onCancelSelection={ () => setAttributes({ isCollectionModalOpen: false }) }/> 
                     : null
@@ -549,7 +637,8 @@ registerBlockType('tainacan/item-submission-form', {
             labelColor,
             infoColor,
             primaryColor,
-            secondaryColor
+            secondaryColor,
+            enabledMetadata
         } = attributes;
         
         return <div 
@@ -574,7 +663,8 @@ registerBlockType('tainacan/item-submission-form', {
                     hide-link-modal-button={ hideLinkModalButton.toString() }
                     hide-thumbnail-section={ hideThumbnailSection.toString() }
                     hide-attachments-section={ hideAttachmentsSection.toString() }
-                    hide-collapses={ hideCollapses.toString() }>
+                    hide-collapses={ hideCollapses.toString() }
+                    enabled-metadata={ enabledMetadata.toString() }>
             </div>
         </div>
     }

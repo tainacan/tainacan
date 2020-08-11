@@ -435,13 +435,15 @@
                                     class="tainacan-icon tainacan-icon-1-25em"/>
                         </span>
                     </a>
-                    <tainacan-form-item
-                            v-for="(itemMetadatum, index) of metadatumList"
-                            :key="index"
-                            :item-metadatum="itemMetadatum"
-                            :hide-collapses="hideCollapses"
-                            :is-collapsed="metadataCollapses[index]"
-                            @changeCollapse="onChangeCollapse($event, index)"/>
+                    <template v-for="(itemMetadatum, index) of metadatumList">
+                        <tainacan-form-item
+                                :key="index"
+                                v-if="enabledMetadata[index] == 'true'"
+                                :item-metadatum="itemMetadatum"
+                                :hide-collapses="hideCollapses"
+                                :is-collapsed="metadataCollapses[index]"
+                                @changeCollapse="onChangeCollapse($event, index)"/>
+                    </template>
 
                     <!-- Hook for extra Form options -->
                     <template
@@ -522,7 +524,8 @@ export default {
         hideLinkModalButton: Boolean,
         hideThumbnailSection: Boolean,
         hideAttachmentsSection: Boolean,
-        hideCollapses: Boolean
+        hideCollapses: Boolean,
+        enabledMetadata: Array
     },
     data(){
         return {
