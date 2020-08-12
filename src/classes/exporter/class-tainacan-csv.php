@@ -139,23 +139,12 @@ class CSV extends Exporter {
 	}
 
 	function get_author_name_last_modification($item_id) {
-		$logs = \Tainacan\Repositories\Logs::get_instance()->fetch([
-			'item_id'=>$item_id,
-			'paged'=>1,
-			'posts_per_page'=>1
-		]);
-		$response;
-
-		if($logs->have_posts()){
-			while ($logs->have_posts()){
-				$logs->the_post();
-
-				$log = new Entities\Log($logs->post);
-				$response = $log->get_user_name();
-			}
-			wp_reset_postdata();
+		$last_id = get_post_meta( $item_id, '_user_edit_lastr', true );
+		if ( $last_id ) {
+			$last_user = get_userdata( $last_id );
+ 			return apply_filters( 'the_modified_author', $last_user->display_name );
 		}
-		return $response;
+		return "";
 	}
 
 	private function get_description_title_meta($meta) {
