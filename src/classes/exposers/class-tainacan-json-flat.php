@@ -55,7 +55,7 @@ class JSON_flat extends Exposer {
 				function(&$meta, $meta_key) {
 					$meta = array(
 						'label' => $meta['name'],
-						'value' => $meta['value_as_string']
+						'value' => addslashes( $meta['value_as_string'] )
 					); 
 				}
 			);
