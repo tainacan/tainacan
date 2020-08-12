@@ -52,7 +52,21 @@
                                     placement: 'auto-start'
                                 }">
                             {{ item.title != undefined ? item.title : '' }}
-                        </p>                            
+                        </p>                 
+                        <span 
+                                v-if="isSlideshowViewModeEnabled"
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 100,
+                                    },
+                                    content: $i18n.get('label_see_on_slideshow'),
+                                    placement: 'auto-start'
+                                }"          
+                                @click.prevent="starSlideshowFromHere(index)"
+                                class="icon slideshow-icon">
+                            <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                        </span>              
                     </div>
                     <!-- Remaining metadata -->  
                     <div class="media">
@@ -119,12 +133,6 @@ export default {
     mixins: [
         viewModesMixin
     ],
-    props: {
-        collectionId: Number,
-        displayedMetadata: Array,
-        items: Array,
-        isLoading: false
-    },
     methods: {
         getLimitedDescription(description) {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 155 : 330;

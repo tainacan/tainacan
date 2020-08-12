@@ -47,7 +47,21 @@
 
                     <!-- Title -->
                     <div class="metadata-title">
-                        <p>{{ item.title != undefined ? item.title : '' }}</p>                             
+                        <p>{{ item.title != undefined ? item.title : '' }}</p>
+                        <span 
+                                v-if="isSlideshowViewModeEnabled"
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 100,
+                                    },
+                                    content: $i18n.get('label_see_on_slideshow'),
+                                    placement: 'auto-start'
+                                }"          
+                                @click.prevent="starSlideshowFromHere(index)"
+                                class="icon slideshow-icon">
+                            <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                        </span>                             
                     </div>
 
                     <!-- Thumbnail -->
@@ -67,7 +81,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import { viewModesMixin } from '../js/view-modes-mixin.js';
 
 export default {
@@ -75,14 +88,6 @@ export default {
     mixins: [
         viewModesMixin
     ],
-    props: {
-        collectionId: Number,
-        displayedMetadata: Array,
-        items: Array,
-        isLoading: false,
-        itemsPerPage: Number,
-        isFiltersMenuCompressed: Boolean
-    },
     data () {
         return {
             itemColumnWidth: Number,
@@ -130,9 +135,6 @@ export default {
         window.removeEventListener('resize', this.recalculateItemsHeight);
     },
     methods: {
-        ...mapGetters('search', [
-            'getItemsPerPage',
-        ]),
         randomHeightForMasonryItem() {
             let min = 120;
             let max = 380;

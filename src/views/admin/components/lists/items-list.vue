@@ -559,7 +559,7 @@
                                     autoHide: false,
                                     placement: 'auto-start'
                                 }"
-                                v-for="(column, columnIndex) in tableMetadata"
+                                v-for="(column, columnIndex) in displayedMetadata"
                                 :key="columnIndex"
                                 v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
                                 @click.left="onClickItem($event, item)"
@@ -576,7 +576,7 @@
                                     autoHide: false,
                                     placement: 'auto-start'
                                 }"
-                                v-for="(column, columnIndex) in tableMetadata"
+                                v-for="(column, columnIndex) in displayedMetadata"
                                 :key="columnIndex"
                                 v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
                                 @click.left="onClickItem($event, item)"
@@ -649,7 +649,7 @@
                                         :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">
                             </div>
                             <span
-                                    v-for="(column, metadatumIndex) in tableMetadata"
+                                    v-for="(column, metadatumIndex) in displayedMetadata"
                                     :key="metadatumIndex"
                                     :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
                                     v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'description')">
@@ -659,7 +659,7 @@
                                         class="metadata-value"/>
                             </span>
                             <span
-                                    v-for="(column, metadatumIndex) in tableMetadata"
+                                    v-for="(column, metadatumIndex) in displayedMetadata"
                                     :key="metadatumIndex"
                                     :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
                                     v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
@@ -669,7 +669,7 @@
                                         class="metadata-value"/>
                             </span>
                             <span
-                                    v-for="(column, metadatumIndex) in tableMetadata"
+                                    v-for="(column, metadatumIndex) in displayedMetadata"
                                     :key="metadatumIndex"
                                     v-if="(column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
                                 <h3 class="metadata-label">{{ column.name }}</h3>
@@ -697,7 +697,7 @@
                         </th>
                         <!-- Displayed Metadata -->
                         <th
-                                v-for="(column, index) in tableMetadata"
+                                v-for="(column, index) in displayedMetadata"
                                 :key="index"
                                 v-if="column.display"
                                 class="column-default-width"
@@ -744,7 +744,7 @@
                         <!-- Item Displayed Metadata -->
                         <td
                                 :key="columnIndex"
-                                v-for="(column, columnIndex) in tableMetadata"
+                                v-for="(column, columnIndex) in displayedMetadata"
                                 v-if="column.display"
                                 class="column-default-width"
                                 :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea',
@@ -909,6 +909,138 @@
                     </tr>
                 </tbody>
             </table>
+
+            <!-- LIST VIEW MODE -->
+            <div
+                    role="list"
+                    v-if="viewMode == 'list'"
+                    class="tainacan-list-container">
+                <div 
+                        role="listitem"
+                        :href="item.url"
+                        :key="index"
+                        v-for="(item, index) of items"
+                        class="tainacan-list"
+                        :class="{ 'selected-list-item': getSelectedItemChecked(item.id) == true }">
+
+                    <div
+                            v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            :class="{ 'is-selecting': isSelectingItems }"
+                            class="list-checkbox">
+                        <label
+                                tabindex="0"
+                                class="b-checkbox checkbox is-small">
+                            <input
+                                    type="checkbox"
+                                    :checked="getSelectedItemChecked(item.id)"
+                                    @input="setSelectedItemChecked(item.id)">
+                                <span class="check" />
+                                <span class="control-label" />
+                        </label>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="metadata-title">
+                        <p 
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
+                                    content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                    html: true,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"
+                                @click.left="onClickItem($event, item)"
+                                @click.right="onRightClickItem($event, item)"
+                                v-for="(column, metadatumIndex) in displayedMetadata"
+                                :key="metadatumIndex"
+                                v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                v-html="item.metadata != undefined && collectionId ? renderMetadata(item.metadata, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)" />                 
+                    </div>
+
+                    <!-- Actions -->
+                    <div
+                            v-if="item.current_user_can_edit && !$route.query.iframemode"
+                            class="actions-area"
+                            :label="$i18n.get('label_actions')">
+                        <a
+                                v-if="!isOnTrash"
+                                id="button-edit"
+                                :aria-label="$i18n.getFrom('items','edit_item')"
+                                @click.prevent.stop="goToItemEditPage(item)">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('edit'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                            </span>
+                        </a>
+                        <a
+                                :aria-lavel="$i18n.get('label_button_untrash')"
+                                @click.prevent.stop="untrashOneItem(item.id)"
+                                v-if="isOnTrash">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('label_recover_from_trash'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
+                            </span>
+                        </a>
+                        <a
+                                v-if="item.current_user_can_delete"
+                                id="button-delete" 
+                                :aria-label="$i18n.get('label_button_delete')" 
+                                @click.prevent.stop="deleteOneItem(item.id)">
+                            <span
+                                    v-tooltip="{
+                                        content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
+                                <i
+                                        :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
+                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                            </span>
+                        </a>
+                    </div>
+
+                    <!-- Remaining metadata -->  
+                    <div 
+                            @click.left="onClickItem($event, item)"
+                            @click.right="onRightClickItem($event, item)"
+                            class="media">
+                         <div 
+                                class="tainacan-list-thumbnail"
+                                v-if="item.thumbnail != undefined">
+                            <img 
+                                    :alt="$i18n.get('label_thumbnail')"
+                                    :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">  
+                        </div>
+                        <div class="list-metadata media-body">
+                            <span 
+                                    v-for="(column, metadatumIndex) in displayedMetadata"
+                                    :key="metadatumIndex"
+                                    :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }"
+                                    v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
+                                <h3 class="metadata-label">{{ column.name }}</h3>
+                                <p      
+                                        v-html="renderMetadata(item.metadata, column)"
+                                        class="metadata-value"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </template>
@@ -925,7 +1057,7 @@ export default {
     mixins: [ dateInter ],
     props: {
         collectionId: undefined,
-        tableMetadata: Array,
+        displayedMetadata: Array,
         items: Array,
         isLoading: false,
         isOnTrash: false,
@@ -1008,9 +1140,6 @@ export default {
         ]),
         ...mapGetters('bulkedition', [
             'getGroupId'
-        ]),
-        ...mapActions('item', [
-            'fetchItem'
         ]),
         ...mapActions('search', [
             'setSeletecItems',
@@ -1292,9 +1421,10 @@ export default {
     @import "../../scss/_view-mode-masonry.scss";
     @import "../../scss/_view-mode-grid.scss";
     @import "../../scss/_view-mode-records.scss";
+    @import "../../scss/_view-mode-list.scss";
 
     .selection-control {
-
+        margin-bottom: 6px;
         padding: 6px 0px 0px 12px;
         background: var(--tainacan-white);
         height: 40px;

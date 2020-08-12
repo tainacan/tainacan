@@ -15,12 +15,6 @@
         grid-template-columns: repeat(auto-fill, 100%);
     }
 
-    .selected-card {
-        background-color: var(--tainacan-turquoise1);
-        .metadata-title {
-            background-color: var(--tainacan-turquoise2);
-        }
-    }
     .tainacan-card {
         background-color: var(--tainacan-item-background-color);
         padding: 0px;
@@ -33,6 +27,13 @@
         cursor: pointer;
         text-decoration: none !important;
         transition: background-color 0.2s ease;
+
+        &.selected-card {
+            background-color: var(--tainacan-turquoise1);
+            .metadata-title {
+                background-color: var(--tainacan-turquoise2);
+            }
+        }
 
         @media screen and (max-width: 480px) {
             max-width: 100%;
@@ -66,11 +67,13 @@
             position: absolute;
             margin-left: 1.0em;
             margin-top: 7px;
+            z-index: 9;
         }
         .actions-area {
             position: relative;
             float: right;
             top: calc(-1 * var(--tainacan-container-padding));
+            bottom: 0;
             padding-right: 12px;
             display: flex;
             justify-content: space-between;
@@ -128,6 +131,7 @@
             padding: 0.6em 5em 0.5em 2.75em;
             margin-bottom: -26px;
             min-height: 40px;
+            position: relative;
             font-size: 1em !important; 
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -144,17 +148,30 @@
                 margin-top: 0;
                 margin-bottom: 0;
             }
+            .slideshow-icon {
+                color: var(--tainacan-info-color); 
+                position: absolute;
+                right: 7px;
+                top: 7px;
+                transform: scale(0.0);
+                transition: transform 0.2s ease;
+            }
         }
-        &:hover .metadata-title {
-            background-color: var(--tainacan-item-heading-hover-background-color) !important;
-            p { text-decoration: none !important; }
+        &:hover,
+        &:focus {
+            .metadata-title {
+                background-color: var(--tainacan-item-heading-hover-background-color) !important;
+                p { text-decoration: none !important; }
+                .slideshow-icon {
+                    transform: scale(1.0);
+                }
+            }
         }
 
         .media {
             width: 100%;
             display: flex;
             margin: 0 !important;
-            background-color: var(--tainacan-item-background-color);
 
             .list-metadata {
                 padding: 0.75em 1.375em;

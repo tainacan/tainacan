@@ -333,6 +333,7 @@
             return {
                 collectionId: Number,
                 itemId: Number,
+                itemRequestCancel: undefined,
                 isLoading: false,
                 open: true,
                 thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
@@ -365,18 +366,27 @@
             // Puts loading on Item Loading
             this.isLoading = true;
 
+            // Cancels previous Request
+            if (this.itemRequestCancel != undefined)
+                this.itemRequestCancel.cancel('Item search Canceled.');
+
             // Obtains Item
             this.fetchItem({ 
                 itemId: this.itemId,
                 contextEdit: true,    
                 fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html'       
             })
-            .then((item) => {
-                this.$root.$emit('onCollectionBreadCrumbUpdate', [
-                    {path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items')},
-                    {path: '', label: item.title}
-                ]);
-                this.loadMetadata();
+             .then((resp) => {
+                resp.request.then((item) => {
+                    this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                        {path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items')},
+                        {path: '', label: item.title}
+                    ]);
+                    this.loadMetadata();
+                });
+
+                // Item resquest token for cancelling
+                this.itemRequestCancel = resp.source;
             });
 
         },
