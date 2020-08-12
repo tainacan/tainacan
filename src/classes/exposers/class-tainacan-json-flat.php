@@ -64,8 +64,8 @@ class JSON_flat extends Exposer {
 				'data' => $item_data,
 				'url' => $item['url'],
 				'thumbnail' => isset($item['thumbnail']) ? $item['thumbnail'] : false,
-				'creation_date' => $item['creation_date'],
-				'modification_date' => $item['modification_date']
+				'creation_date' => isset($item['creation_date']) ? $item['creation_date'] : '',
+				'modification_date' =>  isset($item['modification_date']) ? $item['modification_date'] : ''
 			];
 		}, $items);
 
