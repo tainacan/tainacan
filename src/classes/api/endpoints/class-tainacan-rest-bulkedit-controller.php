@@ -57,7 +57,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 							'description' => __( 'The metadatum ID', 'tainacan' ),
 						],
 						'value' => [
-							'type'        => 'string/integer',
+							'type'        => ['string', 'integer'],
 							'description' => __( 'The value to be added', 'tainacan' ),
 						],
 					],
@@ -118,7 +118,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 							'description' => __( 'The metadatum ID', 'tainacan' ),
 						],
 						'value' => [
-							'type'        => 'string/integer/array',
+							'type'        => ['string', 'integer', 'array'],
 							'description' => __( 'The value to be set', 'tainacan' ),
 						],
 					],
@@ -137,7 +137,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 							'description' => __( 'The metadatum ID', 'tainacan' ),
 						],
 						'metadatum_id_from' => [
-							'type'        => 'string/integer',
+							'type'        => ['string', 'integer'],
 							'description' => __( 'The metadatum ID to be copied', 'tainacan' ),
 						],
 					],
@@ -156,7 +156,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 							'description' => __( 'The metadatum ID', 'tainacan' ),
 						],
 						'value' => [
-							'type'        => 'string/integer',
+							'type'        => ['string', 'integer'],
 							'description' => __( 'The value to be added', 'tainacan' ),
 						],
 					],
@@ -175,11 +175,11 @@ class REST_Bulkedit_Controller extends REST_Controller {
 							'description' => __( 'The metadatum ID', 'tainacan' ),
 						],
 						'old_value' => [
-							'type'        => 'string/integer',
+							'type'        => ['string', 'integer'],
 							'description' => __( 'The value to search for', 'tainacan' ),
 						],
 						'new_value' => [
-							'type'        => 'string/integer',
+							'type'        => ['string', 'integer'],
 							'description' => __( 'The value to be set', 'tainacan' ),
 						],
 					],
@@ -433,7 +433,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		];
 
 		$query_params['use_query'] = [
-			'type'        => 'bool',
+			'type'        => 'boolean',
 			'description' => __( 'Whether to use the current query to select posts', 'tainacan' ),
 		];
 

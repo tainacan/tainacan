@@ -131,7 +131,7 @@ class Metadata extends Repository {
 			'cardinality'           => [
 				'map'         => 'meta',
 				'title'       => __( 'Cardinality', 'tainacan' ),
-				'type'        => 'string/number',
+				'type'        => ['string', 'number'],
 				'description' => __( 'Number of multiples possible metadata', 'tainacan' ),
 				'on_error'    => __( 'This number of multiples metadata is not allowed', 'tainacan' ),
 				'validation'  => v::numeric()->positive(),
@@ -154,22 +154,22 @@ class Metadata extends Repository {
 			'metadata_type_options' => [ // not showed in form
 				'map'         => 'meta',
 				'title'       => __( 'Metadata type options', 'tainacan' ),
-				'type'        => 'array/object/string',
-				'items'       => [ 'type' => 'array/string/integer/object' ],
+				'type'        => ['array', 'object', 'string'],
+				'items'       => [ 'type' => ['array', 'string', 'integer', 'object'] ],
 				'description' => __( 'Specific options for metadata type', 'tainacan' ),
 				// 'validation' => ''
 			],
 			'collection_id'         => [ // not showed in form
 				'map'         => 'meta',
 				'title'       => __( 'Collection', 'tainacan' ),
-				'type'        => 'integer/string',
+				'type'        => ['integer', 'string'],
 				'description' => __( 'The collection ID', 'tainacan' ),
 				//'validation' => ''
 			],
 			'accept_suggestion'     => [
 				'map'         => 'meta',
 				'title'       => __( 'Metadata Value Accepts Suggestions', 'tainacan' ),
-				'type'        => 'bool',
+				'type'        => 'boolean',
 				'description' => __( 'Allow community to suggest different values for the metadata', 'tainacan' ),
 				'default'     => false,
 				'validation'  => v::boolType()
@@ -177,8 +177,8 @@ class Metadata extends Repository {
 			'exposer_mapping'       => [
 				'map'         => 'meta',
 				'title'       => __( 'Relationship metadata mapping', 'tainacan' ),
-				'type'        => 'array/object/string',
-				'items'       => [ 'type' => 'array/string/integer/object' ],
+				'type'        => ['array', 'object', 'string'],
+				'items'       => [ 'type' => ['array', 'string', 'integer', 'object'] ],
 				'description' => __( 'The metadata mapping options. Metadata can be configured to match another type of data distribution.', 'tainacan' ),
 				'on_error'    => __( 'Invalid Metadata Mapping', 'tainacan' ),
 				//'validation' =>  v::arrayType(),
@@ -187,7 +187,7 @@ class Metadata extends Repository {
 			'display'               => [
 				'map'         => 'meta',
 				'title'       => __( 'Display', 'tainacan' ),
-				'type'        => __( 'string' ),
+				'type'        => 'string',
 				'validation'  => v::stringType()->in( [ 'yes', 'no', 'never' ] ),
 				'description' => __( 'Display by default on listing or do not display or never display.', 'tainacan' ),
 				'default'     => 'no'
@@ -195,7 +195,7 @@ class Metadata extends Repository {
 			'semantic_uri'          => [
 				'map'         => 'meta',
 				'title'       => __( 'The semantic metadatum description URI' ),
-				'type'        => __( 'url' ),
+				'type'        => 'string',
 				'validation'  => v::optional( v::url() ),
 				'description' => __( 'The semantic metadatum description URI like: ', 'tainacan' ) . 'https://schema.org/URL',
 				'default'     => ''

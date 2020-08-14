@@ -282,15 +282,15 @@ class REST_Item_Metadata_Controller extends REST_Controller {
             );
 		} elseif ($method === \WP_REST_Server::EDITABLE) {
 			$endpoint_args['values'] = [
-				'type'        => 'array/string/object/integer',
+				'type'        => ['array', 'string', 'object', 'integer'],
 				'items'       => [
-					'type' => 'array/string/object/integer'
+					'type' => ['array', 'string', 'object', 'integer']
 				],
 				'description' => __('The value(s) of item metadata')
 			];
 			$endpoint_args['parent_meta_id'] = [
-				'type'        => 'array/string/object/integer',
-				'items'       => ['type' => 'array/string/object/integer'],
+				'type'        => ['array', 'string', 'object', 'integer'],
+				'items'       => ['type' => ['array', 'string', 'object', 'integer'] ],
 				'description' => __('The parent meta ID for the item metadata children group')
 			];
 		}
