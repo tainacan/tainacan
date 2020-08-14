@@ -476,7 +476,7 @@ class REST_Controller extends \WP_REST_Controller {
 							'description' => __('Custom metadata type. Possible values are NUMERIC, BINARY, CHAR, DATE, DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. Default value is CHAR. You can also specify precision and scale for the DECIMAL and NUMERIC types (for example, DECIMAL(10,5) or NUMERIC(10) are valid). The type DATE works with the compare value BETWEEN only if the date is stored at the format YYYY-MM-DD and tested with this format.'),
 						),
 					),
-					'type'            => 'array'
+					'type'            => ['array', 'object']
 				),
 			),
 			'datequery'    => array(
@@ -551,7 +551,7 @@ class REST_Controller extends \WP_REST_Controller {
 							'description' => __('Posts column to query against, possible values: post_date, post_date_gmt, post_modified, post_modified_gmt. Default: ‘post_date’.'),
 						),
 					),
-					'type'      => 'array'
+					'type'      => ['array', 'object']
 				),
 			),
 			'taxquery'     => array(
@@ -600,7 +600,7 @@ class REST_Controller extends \WP_REST_Controller {
 							)
 						),
 					),
-					'type'     => 'array'
+					'type'     => ['array', 'object']
 				),
 			),
 		);
