@@ -303,7 +303,7 @@ export default {
             swiper: {},
             goingRight: true,
             isPlaying: false,
-            hideControls: true,
+            hideControls: false,
             slideTimeout: 5000, 
             intervalId: 0, 
             collapseAll: false,
@@ -390,7 +390,6 @@ export default {
         const self = this;
         this.swiper = new Swiper('.swiper-container', {
             mousewheel: true,
-            keyboard: true,
             observer: true,
             preventInteractionOnTransition: true,
             slidesPerView: 24,
@@ -491,11 +490,17 @@ export default {
                 this.onHideControls();
             
             // Space toggles play state
-            if (event.keyCode === 32 && !(this.swiper.activeIndex == this.slideItems.length - 1 && this.page == this.totalPages))
+            else if (event.keyCode === 32 && !(this.swiper.activeIndex == this.slideItems.length - 1 && this.page == this.totalPages))
                 this.isPlaying = !this.isPlaying;
+            
+            // Next and previous arrows navigate
+            else if (event.keyCode === 39)
+                this.nextSlide();
+            else if (event.keyCode === 37)
+                this.prevSlide();
 
             // ESC leaves the fullscreen viewmode
-            if (event.keyCode === 27)
+            else if (event.keyCode === 27)
                 this.closeSlideViewMode(); 
             
         },
