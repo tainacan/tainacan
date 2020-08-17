@@ -93,10 +93,8 @@
                 visibility: hidden;
             }
 
-            // Masonry skeleton is white due to 
-            // background-blend-mode
             .skeleton {
-                background: var(--tainacan-background-color);
+                background: var(--tainacan-skeleton-color);
                 color: transparent !important;
             }
         }
