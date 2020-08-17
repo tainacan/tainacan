@@ -56,8 +56,8 @@ class Filters extends Repository {
 			'filter_type_options' => [
 				'map'         => 'meta',
 				'title'       => __( 'Filter type options', 'tainacan' ),
-				'type'        => 'array/object/string',
-				'items'       => [ 'type' => 'array/string/integer/object' ],
+				'type'        => ['array', 'object', 'string'],
+				'items'       => [ 'type' => ['array', 'string', 'integer', 'object'] ],
 				'description' => __( 'The filter type options', 'tainacan' ),
 				'validation'  => ''
 			],
@@ -71,14 +71,14 @@ class Filters extends Repository {
 			'collection_id'       => [
 				'map'         => 'meta',
 				'title'       => __( 'Collection', 'tainacan' ),
-				'type'        => 'integer/string',
+				'type'        => ['integer', 'string'],
 				'description' => __( 'The collection ID', 'tainacan' ),
 				'validation'  => ''
 			],
 			'color'               => [
 				'map'         => 'meta',
 				'title'       => __( 'Color', 'tainacan' ),
-				'type'        => 'integer/string',
+				'type'        => ['integer', 'string'],
 				'description' => __( 'Filter color', 'tainacan' ),
 				'validation'  => ''
 			],
@@ -92,7 +92,7 @@ class Filters extends Repository {
 			'max_options'         => [
 				'map'         => 'meta',
 				'title'       => __( 'Max of options', 'tainacan' ),
-				'type'        => 'integer/string',
+				'type'        => ['integer', 'string'],
 				'description' => __( 'The max number of options to be showed in filter sidebar.', 'tainacan' ),
 				'validation'  => '',
 				'default'     => 4

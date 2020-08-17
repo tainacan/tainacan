@@ -70,11 +70,11 @@ class REST_Exporters_Controller extends REST_Controller {
 						'description' => __( 'The e-mail to be used by the export to send a message when the process ends', 'tainacan' ),
 					],
 					'collection' => [
-						'type'        => 'array/object',
+						'type'        => ['array', 'object'],
 						'description' => __( 'The array describing the collection as expected by the exporter', 'tainacan' ),
 					],
 					'options' => [
-						'type'        => 'array/object',
+						'type'        => ['array', 'object'],
 						'description' => __( 'The exporter options', 'tainacan' ),
 					]
 				],

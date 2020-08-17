@@ -65,7 +65,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 							)
 						),
 						'fetch_only' => array(
-							'type'        => 'string/array',
+							'type'        => ['string', 'array'],
 							'description' => __( 'Fetch only specific attribute. The specifics attributes are the same in schema.', 'tainacan' ),
 						)
 					)

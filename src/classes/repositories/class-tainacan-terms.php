@@ -91,7 +91,7 @@ class Terms extends Repository {
 			'hide_empty'      => [
 				'map'         => 'hide_empty',
 				'title'       => __( 'Hide empty', 'tainacan' ),
-				'type'        => 'bool',
+				'type'        => 'boolean',
 				'description' => __( 'Hide empty terms', 'tainacan' )
 			]
 		] );
