@@ -156,6 +156,7 @@ export default {
             @media screen and (min-width: 1366px) {
                 flex-wrap: nowrap !important;
                 height: auto !important;
+                align-items: stretch;
             }
         }
 

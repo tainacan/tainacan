@@ -100,18 +100,38 @@
 .taginput.is-expanded {
     width: 100%;
 }
-
+.input:focus,
+.textarea:focus,
+.taginput .taginput-container.is-focusable:focus,
+.select select:focus,
+.is-focused.input,
+.is-focused.textarea,
+.taginput .is-focused.taginput-container.is-focusable,
+.select select.is-focused,
+.input:active,
+.textarea:active,
+.taginput .taginput-container.is-focusable:active,
+.select select:active,
+.is-active.input,
+.is-active.textarea,
+.taginput .is-active.taginput-container.is-focusable,
+.select select.is-active {
+    box-shadow: none;
+}
 .taginput-container {
     padding: 0px !important;
     background-color: transparent !important;
 
     &:focus, &:active {
-        border: none !important;
+        border: 1px solid transparent !important;
     }
     .input { 
         margin-bottom: 0px !important; 
         text-overflow: ellipsis;
         background-color: var(--tainacan-input-background-color);
+        &:hover {
+            border: none !important;
+        }
     }
     .input.has-selected, .input:focus, .input:active {
         background-color: var(--tainacan-input-background-color);
