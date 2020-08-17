@@ -772,6 +772,7 @@
         }
 
         .tainacan-bulk-edition-field {
+            flex-direction: column;
             flex-grow: 1;
             flex-shrink: 1;
             text-align: center;

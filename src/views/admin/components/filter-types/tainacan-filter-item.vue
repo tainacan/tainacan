@@ -89,13 +89,13 @@
 
         &:not(:last-child) {
             margin-bottom: 0;
-            padding-bottom: 1.5em;
+            padding-bottom: 0.75em;
         }
 
         .collapse-trigger {
-            margin-left: -5px;
+            margin-left: -7px;
             .icon {
-                margin-right: 12px;
+                margin-right: 5px;
             }
             .collapse-label {
                 display: inline-block;
@@ -205,6 +205,7 @@
             @media screen and (min-width: 768px) {
                 .dropdown-trigger input {
                     font-size: 0.75em !important;
+                    line-height: 1.75em;
                 }
                 .datepicker-header {
 

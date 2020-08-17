@@ -52,72 +52,74 @@
                     :data="mapperMetadata"
                     :loading="isMapperMetadataLoading">
 
-                <template slot-scope="props">
-                    <b-table-column
-                            field="label"
-                            :label="$i18n.get('label_mapper_metadata')">
-                        {{ props.row.label }}
-                    </b-table-column>
+                <b-table-column
+                        v-slot="props"
+                        field="label"
+                        :label="$i18n.get('label_mapper_metadata')">
+                    {{ props.row.label }}
+                </b-table-column>
 
-                    <b-table-column
-                            field="slug"
-                            :label="$i18n.get('metadatum')">
-                        <b-select
-                                :name="'mappers-metadatum-select-' + props.row.slug"
-                                v-model="props.row.selected"
-                                @input="onSelectMetadatumForMapperMetadata">
-                            <option
-                                    value="">
-                                {{ $i18n.get('instruction_select_a_metadatum') }}
-                            </option>
-                            <option
-                                v-for="(metadatum, index) in activeMetadatumList"
-                                :key="index"
-                                :value="metadatum.id"
-                                :disabled="isMetadatumSelected(metadatum.id)">
-                                {{ metadatum.name }}
-                            </option>
-                        </b-select>
-                    </b-table-column>
-                    <b-table-column
-                            field="isCustom"
-                            label="">
-                        <a 
-                                :style="{ visibility: 
-                                        props.row.isCustom
-                                        ? 'visible' : 'hidden'
-                                    }" 
-                                @click.prevent="editMetadatumCustomMapper(props.row)">
-                            <span
-                                    v-tooltip="{
-                                        content: $i18n.get('edit'),
-                                        autoHide: true,
-                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
-                                        placement: 'auto-start'
-                                    }"
-                                    class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
-                            </span>
-                        </a>
-                        <a 
-                                :style="{ visibility: 
-                                        props.row.isCustom
-                                        ? 'visible' : 'hidden'
-                                    }" 
-                                @click.prevent="removeMetadatumCustomMapper(props.row)">
-                            <span
-                                    v-tooltip="{
-                                        content: $i18n.get('delete'),
-                                        autoHide: true,
-                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
-                                        placement: 'auto-start'
-                                    }"
-                                    class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
-                            </span>
-                        </a>
-                    </b-table-column>
-                </template>
+                <b-table-column
+                        v-slot="props"
+                        field="slug"
+                        :label="$i18n.get('metadatum')">
+                    <b-select
+                            :name="'mappers-metadatum-select-' + props.row.slug"
+                            v-model="props.row.selected"
+                            @input="onSelectMetadatumForMapperMetadata">
+                        <option
+                                value="">
+                            {{ $i18n.get('instruction_select_a_metadatum') }}
+                        </option>
+                        <option
+                            v-for="(metadatum, index) in activeMetadatumList"
+                            :key="index"
+                            :value="metadatum.id"
+                            :disabled="isMetadatumSelected(metadatum.id)">
+                            {{ metadatum.name }}
+                        </option>
+                    </b-select>
+                </b-table-column>
+                <b-table-column
+                        v-slot="props"
+                        field="isCustom"
+                        label="">
+                    <a 
+                            :style="{ visibility: 
+                                    props.row.isCustom
+                                    ? 'visible' : 'hidden'
+                                }" 
+                            @click.prevent="editMetadatumCustomMapper(props.row)">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('edit'),
+                                    autoHide: true,
+                                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    placement: 'auto-start'
+                                }"
+                                class="icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                        </span>
+                    </a>
+                    <a 
+                            :style="{ visibility: 
+                                    props.row.isCustom
+                                    ? 'visible' : 'hidden'
+                                }" 
+                            @click.prevent="removeMetadatumCustomMapper(props.row)">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('delete'),
+                                    autoHide: true,
+                                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    placement: 'auto-start'
+                                }"
+                                class="icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                        </span>
+                    </a>
+                </b-table-column>
+
             </b-table>
         </section>
         <section

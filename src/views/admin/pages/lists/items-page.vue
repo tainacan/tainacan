@@ -222,7 +222,7 @@
             <!-- Change OrderBy Select and Order Button-->
             <div class="search-control-item">
                 <b-field>
-                    <label class="label">{{ $i18n.get('label_sort') }}</label>
+                    <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
                     <b-dropdown
                             :mobile-modal="true"
                             @input="onChangeOrder"
@@ -1499,6 +1499,7 @@
             .label {
                 color: var(--tainacan-label-color);
                 font-size: 0.875em;
+                line-height: 1.75em;
                 font-weight: normal;
                 margin-top: 2px;
                 margin-bottom: 2px;

@@ -159,6 +159,7 @@
     .numeric-filter-container {
         display: flex;
         height: auto;
+        align-items: stretch;
 
         @media screen and (min-width: 769px) and (max-width: 1500px) {
             flex-wrap: wrap;
