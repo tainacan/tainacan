@@ -1,5 +1,7 @@
 #close-fullscren-button,
-#item-page-button {
+#item-page-button,
+#metedata-panel-button,
+#gallery-help-button {
     border-radius: 50px;
     color: var(--tainacan-white) !important;
     background-color: rgba(0, 0, 0, 0.5);
@@ -19,6 +21,12 @@
 #item-page-button  {
     right: 3.5rem;
 }
+#metedata-panel-button {
+    right: 7rem;
+}
+#gallery-help-button {
+    right: 10.5rem;
+}
 .metadata-menu {
     background-color: var(--tainacan-black);
     position: absolute;
@@ -28,7 +36,7 @@
     min-height: 100%;
     height: 100%;
     padding: var(--tainacan-one-column) var(--tainacan-container-padding) var(--tainacan-one-column) var(--tainacan-one-column);
-    float: left;
+    float: right;
     overflow-y: auto;
     overflow-x: hidden;
     visibility: visible;
@@ -45,6 +53,7 @@
     }
     @media screen and (min-width: 769px) {
         top: 0px !important;
+        right: 0;
     }
 
     .metadata-menu-header {
@@ -142,7 +151,7 @@
     position: absolute;
     z-index: 99;
     top: 123px;
-    left: 0;
+    right: 0;
     max-width: 1.625em;
     height: 1.625em;
     width: 1.625em;
@@ -150,8 +159,8 @@
     background-color: var(--tainacan-gray5);
     color: var(--tainacan-white);
     padding: 0;
-    border-top-right-radius: 2px;
-    border-bottom-right-radius: 2px;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
     cursor: pointer;
     transition: top 0.3s, left 0.3s, opacity 0.3s, visibility 0.3s;
 
@@ -180,13 +189,13 @@
     }
 }
 
-.fullscreen-spaced-to-right {
+.fullscreen-spaced-to-left {
     .table-wrapper { 
-        margin-left: 20.83%;
+        margin-right: 20.83%;
         width: calc(100vw - 20.83%) !important;
     };
-    .tainacan-slide-main-view .arrow-left {
-        left: 20.83% !important;
+    .tainacan-slide-main-view .arrow-right {
+        right: 20.83% !important;
     }
     .tainacan-slide-main-view .slide-main-content {
         width: calc(100vw - 20.83%) !important;
@@ -194,11 +203,11 @@
 
     @media screen and (max-width: 768px) {
         .table-wrapper { 
-            margin-left: 0;
+            margin-right: 0;
             width: 100vw !important;
         };
-        .tainacan-slide-main-view .arrow-left {
-            left: 0 !important;
+        .tainacan-slide-main-view .arrow-right {
+            right: 0 !important;
             margin-left: 0;
         }
         .tainacan-slide-main-view .slide-main-content {
@@ -256,13 +265,13 @@
 
             p {
                 position: absolute;
-                margin: calc(40vh - 4em) auto;
+                margin: calc(50vh - 2em) auto;
                 width: 100%;
             }
             @media screen and (max-width: 1024px) and (min-width: 768px) {
                 font-size: 3em;
                 p {
-                    margin: calc(40vh - 1em) auto;
+                    margin: calc(50vh - 0.5em) auto;
                 }
             }
             @media screen and (max-width: 768px) {

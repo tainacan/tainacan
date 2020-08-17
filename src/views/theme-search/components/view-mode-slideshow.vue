@@ -4,6 +4,44 @@
                 'hide-controls': hideControls
             }">
 
+        <!-- HELP BUTTON -->
+        <button
+                v-tooltip="{
+                    delay: {
+                        show: 500,
+                        hide: 300,
+                    },
+                    content: $i18n.get('label_gallery_help'),
+                    autoHide: false,
+                    placement: 'auto-start'
+                }"  
+                id="gallery-help-button"
+                class="is-hidden-mobile"
+                @click="openGalleryHelpModal">
+            <span class="icon">
+                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-help"/>
+            </span>
+        </button>
+
+        <!-- METADATA BUTTON -->
+        <button
+                v-tooltip="{
+                    delay: {
+                        show: 500,
+                        hide: 300,
+                    },
+                    content: isMetadataCompressed ? $i18n.get('label_show_metadata') : $i18n.get('label_hide_metadata'),
+                    autoHide: false,
+                    placement: 'auto-start'
+                }"  
+                id="metedata-panel-button"
+                :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
+                @click="isMetadataCompressed = !isMetadataCompressed">
+            <span class="icon">
+                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/>
+            </span>
+        </button>
+
         <!-- ITEM PAGE BUTTON -->
         <a
                 v-tooltip="{
@@ -58,96 +96,13 @@
                 @click="isMetadataCompressed = !isMetadataCompressed">
             <span class="icon">
                 <i 
-                        :class="{ 'tainacan-icon-arrowright' : isMetadataCompressed, 'tainacan-icon-arrowleft' : !isMetadataCompressed }"
+                        :class="{ 'tainacan-icon-arrowleft' : isMetadataCompressed, 'tainacan-icon-arrowright' : !isMetadataCompressed }"
                         class="tainacan-icon tainacan-icon-1-25em"/>
             </span>
         </button>
 
-        <aside
-                v-if="!isMetadataCompressed"
-                class="metadata-menu tainacan-form">
-
-            <div class="metadata-menu-header is-hidden-tablet">
-                <h2>{{ item.title }}</h2>
-                <button
-                        id="close-metadata-button"
-                        @click="isMetadataCompressed = true">
-                    <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close"/>
-                    </span>
-                </button>
-                <hr>
-            </div>
-
-            <h3 class="has-text-white has-text-weight-semibold">{{ $i18n.get('metadata') }}</h3>
-            
-            <a
-                    v-if="!isLoadingItem && Object.keys(item.metadata).length > 0"
-                    style="font-size: 0.75em;"
-                    class="collapse-all"
-                    @click="collapseAll = !collapseAll">
-                {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                <span class="icon">
-                    <i 
-                            :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll}"
-                            class="tainacan-icon tainacan-icon-1-25em"/>
-                </span>
-            </a>
-
-            <span 
-                    v-if="isLoadingItem"
-                    style="width: 100%;"
-                    class="icon is-large loading-icon">
-                <div class="is-large control has-icons-right is-loading is-clearfix" />
-            </span>
-
-            <div
-                    v-for="(metadatum, index) of item.metadata"
-                    v-if="metadatum.value_as_html != undefined && metadatum.value_as_html != ''"
-                    :key="index"
-                    class="field">
-                <b-collapse 
-                        aria-id="metadata-collapse-for-slideshow"
-                        :open="!collapseAll">
-                    <label
-                            class="label has-text-white"
-                            slot="trigger"
-                            slot-scope="props">
-                        <span class="icon">
-                            <i 
-                                    :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open}"
-                                    class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
-                        </span>
-                        <span 
-                                v-tooltip="{
-                                    delay: {
-                                        show: 500,
-                                        hide: 300,
-                                    },
-                                    content: metadatum.name,
-                                    autoHide: false,
-                                    placement: 'auto-start'
-                                }"  
-                                class="ellipsed-text">
-                            {{ metadatum.name }}
-                        </span>
-                    </label>
-                    <div class="content">
-                        <p  
-                            class="has-text-white"
-                            v-html="metadatum.value_as_html"/>
-                    </div>
-                </b-collapse>
-
-            </div>
-
-            <br>
-            <br>
-
-        </aside>
-
         <div 
-                :class="{ 'fullscreen-spaced-to-right': !isMetadataCompressed }"
+                :class="{ 'fullscreen-spaced-to-left': !isMetadataCompressed }"
                 @keyup.left.prevent="swiper.activeIndex > 0 ? prevSlide() : null"
                 @keyup.right.prevent="swiper.activeIndex < slideItems.length - 1 ? nextSlide() : null">
             <div class="table-wrapper">
@@ -272,6 +227,89 @@
                 </div>
             </div> 
         </div>
+
+        <aside
+                v-if="!isMetadataCompressed"
+                class="metadata-menu tainacan-form">
+
+            <div class="metadata-menu-header is-hidden-tablet">
+                <h2>{{ item.title }}</h2>
+                <button
+                        id="close-metadata-button"
+                        @click="isMetadataCompressed = true">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close"/>
+                    </span>
+                </button>
+                <hr>
+            </div>
+
+            <h3 class="has-text-white has-text-weight-semibold">{{ $i18n.get('metadata') }}</h3>
+            
+            <a
+                    v-if="!isLoadingItem && Object.keys(item.metadata).length > 0"
+                    style="font-size: 0.75em;"
+                    class="collapse-all"
+                    @click="collapseAll = !collapseAll">
+                {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                <span class="icon">
+                    <i 
+                            :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll}"
+                            class="tainacan-icon tainacan-icon-1-25em"/>
+                </span>
+            </a>
+
+            <span 
+                    v-if="isLoadingItem"
+                    style="width: 100%;"
+                    class="icon is-large loading-icon">
+                <div class="is-large control has-icons-right is-loading is-clearfix" />
+            </span>
+
+            <div
+                    v-for="(metadatum, index) of item.metadata"
+                    v-if="metadatum.value_as_html != undefined && metadatum.value_as_html != ''"
+                    :key="index"
+                    class="field">
+                <b-collapse 
+                        aria-id="metadata-collapse-for-slideshow"
+                        :open="!collapseAll">
+                    <label
+                            class="label has-text-white"
+                            slot="trigger"
+                            slot-scope="props">
+                        <span class="icon">
+                            <i 
+                                    :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open}"
+                                    class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                        </span>
+                        <span 
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 300,
+                                    },
+                                    content: metadatum.name,
+                                    autoHide: false,
+                                    placement: 'auto-start'
+                                }"  
+                                class="ellipsed-text">
+                            {{ metadatum.name }}
+                        </span>
+                    </label>
+                    <div class="content">
+                        <p  
+                            class="has-text-white"
+                            v-html="metadatum.value_as_html"/>
+                    </div>
+                </b-collapse>
+
+            </div>
+
+            <br>
+            <br>
+
+        </aside>
     </div>
 </template>
 
@@ -281,6 +319,7 @@ import axios from '../../admin/js/axios';
 import 'swiper/css/swiper.min.css';
 import Swiper from 'swiper';
 import CircularCounter from './circular-counter.vue';
+import GalleryHelpModal from './gallery-help-modal.vue'
 import { viewModesMixin } from '../js/view-modes-mixin.js';
  
 export default {
@@ -376,10 +415,6 @@ export default {
         this.minPage = this.page;
         this.maxPage = this.page;
 
-        // Adds clipped class to root html
-        document.documentElement.scrollTo(0,0);
-        document.documentElement.classList.add('is-clipped');
-
         // Adds keyup and keydown event listeners
         window.addEventListener('keyup', this.handleKeyboardKeys);
 
@@ -432,6 +467,10 @@ export default {
                 }
             }
         });
+
+        // Adds clipped class to root html
+        document.documentElement.scrollTo(0,0);
+        document.documentElement.classList.add('is-clipped');
     },
     beforeDestroy() {
         // Remove clipped class from root html
@@ -576,6 +615,18 @@ export default {
                 }
             }
         },
+        openGalleryHelpModal() {
+            this.$buefy.modal.open({
+                component: GalleryHelpModal,
+                width: 680,
+                ariaRole: 'alertdialog',
+                ariaModal: true,
+                customClass: 'gallery-help-modal',
+                onCancel: () => {
+                    setTimeout(() => document.documentElement.classList.add('is-clipped'), 500); 
+                }
+            });
+        }
     }
 }
 </script>
