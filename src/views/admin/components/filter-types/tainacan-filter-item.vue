@@ -42,7 +42,8 @@
                         :is-loading-items.sync="isLoadingItems"
                         :current-collection-id="$eventBusSearch.collectionId"
                         @input="onInput"
-                        @sendValuesToTags="onSendValuesToTags" 
+                        @sendValuesToTags="onSendValuesToTags"
+                        @updateParentCollapse="onFilterUpdateParentCollapse" 
                         :filters-as-modal="filtersAsModal"/>
             </div>
         </b-collapse>
@@ -77,6 +78,9 @@
                     taxonomy: $event.taxonomy,
                     metadatumId: this.filter.metadatum_id
                 });
+            },
+            onFilterUpdateParentCollapse(open) {
+                this.open = open;
             }
         }
     }
