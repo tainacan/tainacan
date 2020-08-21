@@ -200,10 +200,13 @@
                 } else {
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
-                            if (Array.isArray(this.facetsFromItemSearch[facet]))
+                            if (Array.isArray(this.facetsFromItemSearch[facet])) {
                                 this.prepareOptionsForTaxonomy(this.facetsFromItemSearch[facet]);
-                            else
+                                this.$emit('updateParentCollapse', this.facetsFromItemSearch[facet].length > 0 );
+                            } else {
                                 this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]));
+                                this.$emit('updateParentCollapse', Object.values(this.facetsFromItemSearch[facet]).length > 0 );
+                            }
                         }    
                     }
                 }

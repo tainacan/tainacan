@@ -80,7 +80,9 @@
                 });
             },
             onFilterUpdateParentCollapse(open) {
-                this.open = open;
+                const componentsThatShouldCollapseIfEmpty = ['tainacan-filter-taxonomy-checkbox', 'tainacan-filter-selectbox', 'tainacan-filter-checkbox'];
+                if (componentsThatShouldCollapseIfEmpty.includes(this.filter.filter_type_object.component))
+                    this.open = open;
             }
         }
     }
