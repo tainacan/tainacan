@@ -253,10 +253,11 @@ class Media {
 			$imagick = new \Imagick();
 			$imagick->setResolution(72,72);
 			$imagick->readImage($filepath . '[0]');
-			//$imagick->setIteratorIndex(0);
 			$imagick->setImageFormat('jpg');
+			$imagick->getImageBlob();
+			$imagick = $imagick->mergeImageLayers(\Imagick::LAYERMETHOD_FLATTEN);
 			$this->THROW_EXCPTION_ON_FATAL_ERROR = false;
-			return $imagick->getImageBlob();
+			return $imagick;
 		} catch(\Exception $e) {
 			return null;
 		} catch (\Error $ex) {
