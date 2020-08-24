@@ -59,7 +59,7 @@ notifications:
   email:
     on_success: never
     on_failure: always
-  webhooks: http://rocketchat.tainacan.org/hooks/aGNphX9asdhsg8jCg/yv4b6fL9FHJ3Yw5sFA9yhatZNxmJi5QgkQwgKzqLdzxbNtgm
+  webhooks: https://outlook.office.com/webhook/97d79f61-0a43-4507-b3a4-a3e49ee326af@ec359ba1-630b-4d2b-b833-c8e6d48f8059/TravisCI/34eedbb413764c7c8419770568fde8b0/fc57ac3f-1d1d-4b56-998e-a856914f54f0
 env:
   global:
   - secure: LnUpxgHL/Qgpbg20mRErlnwb8tvNs6f7uPRe9c82UuMP69uDZeD3K5GNzL6u0Y+C/zNHk7tCnUszDC7FtQAij6qi72HHW2zz4zVJ+DFI3b+hx7+rSKsjtbnJChTbknSu3rW+yHYRTIUZJQ/Tg6thDLKzU0a4VRb+ickDpRYLyP+Cf4+xs7rwAhjiboMNIGXahrCpnbhctmOhRgZaHvfnPB9prRs5lOCCBQqSwMmjEo7OJeCCUjfpU5xq3EjUEzwjzzBlSf3240PS/LOBFr2iGF30VT9LDTb1iUZU1gTcaxaK+/EjKLG/wtcH8TOaLJpsksbnMkSTrG3ICblXl1G4Itu8IHzLgOmWoiWIVXZ4y17aYyj/y7YZtX+fjB6qs9RG5ZnSpHkSDEni8CCC8Ltf9jVSkLEust/bNLgkd02hJ4xtVxOaoBYEh3hcylJ/co8BTDdbNyT3BwrFc4f2jfRh5DYzyrKaTG5IJAT2BfyjD/BsxBE3EgIuJFja1zVJKMcuCmogDiHi6sb0zhF+LbLy0nXqvysTrMEYbDppVYQloz3BKb2v2m/jc89G7v8AjnvwTUgj64PUj+p10ngfIA+FHPILLtd/fNm0zRIRDqSfE7rpGZo9EoZ9jq0wVSmy0DK8kFTX+9RFW8xYmFnTgB3beKWqdK9CAqXEeeD3ABejXTc=
