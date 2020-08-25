@@ -350,6 +350,7 @@ class REST_Filters_Controller extends REST_Controller {
 			foreach ($extra_metadata as $extra_meta) {
 				$item_arr[$extra_meta] = get_post_meta($item_arr['id'], $extra_meta, true);
 			}
+			$item_arr['inherited'] = $item_arr['collection_id'] != $request['collection_id'];
 
 			return $item_arr;
 		}
