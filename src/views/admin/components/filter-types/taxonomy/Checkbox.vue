@@ -157,8 +157,7 @@
                     if (this.isRepositoryLevel)
                         route = `/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
                     else {
-                        console.log(this.collectionId, this.currentCollectionId);
-                        if ((this.collectionId == 'default' && this.currentCollectionId) || (this.filter.inherited && this.currentCollectionId))
+                        if ((this.collectionId == 'default' || this.filter.inherited) && this.currentCollectionId)
                             route = `/collection/${this.currentCollectionId}/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
                         else
                             route = `/collection/${this.collectionId}/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
