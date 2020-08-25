@@ -33,6 +33,7 @@
                 <span class="collapse-label">{{ filter.name }}</span>
             </button>
             <div :id="'filter-input-id-' + filter.id">
+                <pre>{{ $eventBusSearch.collectionId }}</pre>
                 <component
                         :is="filter.filter_type_object ? filter.filter_type_object.component : null"
                         :filter="filter"
