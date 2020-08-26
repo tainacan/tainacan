@@ -104,6 +104,7 @@
                             :label="$i18n.get('label_cover_page')"
                             :type="editFormErrors['cover_page_id'] != undefined ? 'is-danger' : ''" 
                             :message="editFormErrors['cover_page_id'] != undefined ? editFormErrors['cover_page_id'] : ''">
+                        &nbsp;
                         <b-switch
                                 id="tainacan-checkbox-cover-page" 
                                 size="is-small"
@@ -196,6 +197,22 @@
                             {{ $i18n.get('label_create_new_page') }}</a>                        
                     </b-field>
 
+                    <!-- Hide Items Thumbnail on Lists ------------------------ --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.getHelperTitle('collections', 'hide_items_thubmnail_on_lists')">
+                        &nbsp;
+                        <b-switch
+                                id="tainacan-checkbox-comment-status" 
+                                size="is-small"
+                                true-value="yes" 
+                                false-value="no"
+                                v-model="form.hide_items_thubmnail_on_lists" />
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'hide_items_thubmnail_on_lists')" 
+                                :message="$i18n.getHelperMessage('collections', 'hide_items_thubmnail_on_lists')"/>
+                    </b-field>
+
                     <!-- Enabled View Modes ------------------------------- --> 
                     <div class="field">
                         <label class="label">{{ $i18n.get('label_view_modes_available') }}</label>
@@ -267,21 +284,6 @@
                                 {{ registeredViewModes[viewMode].label }}
                             </option>
                         </b-select>
-                    </b-field>
-
-                    <!-- Comment Status ------------------------ --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_allow_comments')">
-                        <b-switch
-                                id="tainacan-checkbox-comment-status" 
-                                size="is-small"
-                                true-value="open" 
-                                false-value="closed"
-                                v-model="form.allow_comments" />
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'allow_comments')" 
-                                :message="$i18n.getHelperMessage('collections', 'allow_comments')"/>
                     </b-field>
 
                     <!-- Hook for extra Form options -->
@@ -440,6 +442,22 @@
                                 @focus="clearErrors('slug')"/>
                     </b-field>
 
+                    <!-- Comment Status ------------------------ --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_allow_comments')">
+                        &nbsp;
+                        <b-switch
+                                id="tainacan-checkbox-comment-status" 
+                                size="is-small"
+                                true-value="open" 
+                                false-value="closed"
+                                v-model="form.allow_comments" />
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'allow_comments')" 
+                                :message="$i18n.getHelperMessage('collections', 'allow_comments')"/>
+                    </b-field>
+
                     <!-- Hook for extra Form options -->
                     <template 
                             v-if="formHooks != undefined && 
@@ -537,7 +555,8 @@ export default {
                 files:[],
                 enabled_view_modes: [],
                 default_view_mode: [],
-                allow_comments: ''
+                allow_comments: '',
+                hide_items_thubmnail_on_lists: ''
             },
             thumbnail: {},
             cover: {},
@@ -559,12 +578,30 @@ export default {
             isFetchingCollections: true,
             thumbnailMediaFrame: undefined,
             headerImageMediaFrame: undefined,
-            registeredViewModes: tainacan_plugin.registered_view_modes,
             viewModesList: [],
             fromImporter: '',
+            registeredViewModes: tainacan_plugin.registered_view_modes,
             newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page',
             isUpdatingSlug: false,
             entityName: 'collection'
+        }
+    },
+    watch: {
+        'form.hide_items_thubmnail_on_lists' (newValue) {
+            if (newValue == 'yes') {
+                const validViewModes = {};
+                Object.keys(tainacan_plugin.registered_view_modes).forEach((viewModeKey) => {
+                    if (!tainacan_plugin.registered_view_modes[viewModeKey]['requires_thumbnail']) 
+                        validViewModes[viewModeKey] = tainacan_plugin.registered_view_modes[viewModeKey];
+                });
+                this.registeredViewModes = validViewModes;
+              
+                this.form.enabled_view_modes = this.form.enabled_view_modes.filter((aViewMode) => this.registeredViewModes[aViewMode] != undefined );
+
+                this.updateDefaultViewModeBasedOnEnabled();                
+            } else {
+                this.registeredViewModes = tainacan_plugin.registered_view_modes;
+            }
         }
     },
     mounted(){
@@ -609,6 +646,7 @@ export default {
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes.reduce((result, viewMode) => { typeof viewMode == 'string' ? result.push(viewMode) : null; return result }, [])));
                 this.form.allow_comments = this.collection.allow_comments;
+                this.form.hide_items_thubmnail_on_lists = this.collection.hide_items_thubmnail_on_lists;
 
                 // Generates CoverPage from current cover_page_id info
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
@@ -706,7 +744,8 @@ export default {
                 parent: this.form.parent,
                 enabled_view_modes: this.form.enabled_view_modes,
                 default_view_mode: this.form.default_view_mode,
-                allow_comments: this.form.allow_comments
+                allow_comments: this.form.allow_comments,
+                hide_items_thubmnail_on_lists: this.form.hide_items_thubmnail_on_lists
             };
             this.fillExtraFormData(data);
 
@@ -728,6 +767,7 @@ export default {
                     this.form.enabled_view_modes = this.collection.enabled_view_modes.map((viewMode) => viewMode.viewMode);
                     this.form.default_view_mode = this.collection.default_view_mode;
                     this.form.allow_comments = this.collection.allow_comments;
+                    this.form.hide_items_thubmnail_on_lists = this.collection.hide_items_thubmnail_on_lists;
                     
                     this.isLoading = false;
                     this.formErrorMessage = '';
@@ -781,6 +821,7 @@ export default {
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = [];
                 this.form.allow_comments = this.collection.allow_comments;
+                this.form.hide_items_thubmnail_on_lists = this.collection.hide_items_thubmnail_on_lists;
 
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'publish';
@@ -828,6 +869,9 @@ export default {
             else    
                 this.form.enabled_view_modes.push(viewMode);
 
+            this.updateDefaultViewModeBasedOnEnabled();
+        },
+        updateDefaultViewModeBasedOnEnabled() {
             // Puts a valid view mode as default if the current one is not in the list anymore.
             if (!this.checkIfViewModeEnabled(this.form.default_view_mode)) {
                 const validViewModeIndex = this.form.enabled_view_modes.findIndex((aViewMode) => (this.registeredViewModes[aViewMode] && !this.registeredViewModes[aViewMode].full_screen));

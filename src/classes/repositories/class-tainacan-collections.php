@@ -194,8 +194,16 @@ class Collections extends Repository {
 		        'description' => __( 'Collection items comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
 		        'default'     => 'open',
 		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
-		    ]
-
+			],
+			'hide_items_thubmnail_on_lists' => [
+				'map'         => 'meta',
+				'title'       => __( 'Hide items thumbnail on lists', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Enable this option to never display the item thumbnail on the items list. This is ment for collections made of mainly textual content.', 'tainacan' ),
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+				'default'     => 'no'
+			],
 		] );
 	}
 

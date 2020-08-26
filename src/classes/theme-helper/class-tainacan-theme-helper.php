@@ -64,7 +64,8 @@ class Theme_Helper {
 			'dynamic_metadata' => true,
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewtable tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
-			'implements_skeleton' => true
+			'implements_skeleton' => true,
+			'requires_thumbnail' => false
 		]);
 		$this->register_view_mode('cards', [
 			'label' => __('Cards', 'tainacan'),
@@ -72,7 +73,8 @@ class Theme_Helper {
 			'description' => 'A cards view, displaying title, description, author name and creation date.',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewcards tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
-			'implements_skeleton' => true
+			'implements_skeleton' => true,
+			'requires_thumbnail' => false
 		]);
 		$this->register_view_mode('records', [
 			'label' => __('Records', 'tainacan'),
@@ -80,7 +82,8 @@ class Theme_Helper {
 			'description' => 'A records view, similiar to cards, but flexible for metadata',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewrecords tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
-			'implements_skeleton' => true
+			'implements_skeleton' => true,
+			'requires_thumbnail' => false
 		]);
 		$this->register_view_mode('masonry', [
 			'label' => __('Masonry', 'tainacan'),
@@ -105,7 +108,8 @@ class Theme_Helper {
 			'description' => 'A list view, similiar to the records, but full width',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewrecords tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
-			'implements_skeleton' => true
+			'implements_skeleton' => true,
+			'requires_thumbnail' => false
 		]);
 	}
 	
@@ -477,22 +481,23 @@ class Theme_Helper {
 	 * @param array|string $args {
 	 * 		Optional. Array of arguments
 	 * 
-	 * 		@type string 		$label				Label, visible to users. Default to $slug
-	 * 		@type string		$description		Description, visible only to editors in the admin. Default none.
-	 * 		@type string		$type 				Type. Accepted values are 'template' or 'component'. Defautl 'template'
-	 * 		@type string		$template			Full path  to the template file to be used. Required if $type is set to template.
-	 * 												Default: theme-path/tainacan/view-mode-{$slug}.php
-	 * 		@type string		$component			Component tag name. The web component js must be included and must accept two props:
-	 * 													* items - the list of items to be rendered
-	 * 													* displayed-metadata - list of metadata to be displayed
-	 * 												Default view-mode-{$slug}
-	 * 		@type string		$thumbnail			Full URL to an thumbnail that represents the view mode. Displayed in admin.
-	 * 		@type string		$icon 				HTML that outputs an icon that represents the view mode. Displayed in front end.
-	 * 		@type bool			$show_pagination	Wether to display or not pagination controls. Default true.
-	 * 		@type bool			$full_screen		Wether the view mode will display full screen or not. Default false.
-	 * 		@type bool			$dynamic_metadata	Wether to display or not (and use or not) the "displayed metadata" selector. Default false.
-	 * 		
-	 * 
+	 * 		@type string 		$label				 Label, visible to users. Default to $slug
+	 * 		@type string		$description		 Description, visible only to editors in the admin. Default none.
+	 * 		@type string		$type 				 Type. Accepted values are 'template' or 'component'. Defautl 'template'
+	 * 		@type string		$template			 Full path  to the template file to be used. Required if $type is set to template.
+	 * 												 Default: theme-path/tainacan/view-mode-{$slug}.php
+	 * 		@type string		$component			 Component tag name. The web component js must be included and must accept two props:
+	 * 												 	* items - the list of items to be rendered
+	 * 												 	* displayed-metadata - list of metadata to be displayed
+	 * 												 Default view-mode-{$slug}
+	 * 		@type string		$thumbnail			 Full URL to an thumbnail that represents the view mode. Displayed in admin.
+	 * 		@type string		$icon 				 HTML that outputs an icon that represents the view mode. Displayed in front end.
+	 * 		@type bool			$show_pagination	 Wether to display or not pagination controls. Default true.
+	 * 		@type bool			$full_screen		 Wether the view mode will display full screen or not. Default false.
+	 * 		@type bool			$dynamic_metadata	 Wether to display or not (and use or not) the "displayed metadata" selector. Default false.
+	 * 		@type bool			$implements_skeleton Wether the view mode has its own strategy for disaplying loading state.
+	 * 		@type string		$skeleton_template	 If the view mode is a template, this is the html of its loading state.
+	 * 		@type bool			$required_thumbnail	 Wether the view mode considers essential that the item thumbnail is available, even if it is a placeholder.
 	 * }
 	 * 
 	 * @return void
@@ -511,8 +516,8 @@ class Theme_Helper {
 			'full_screen' => false,
 			'dynamic_metadata' => false,
 			'implements_skeleton' => false,
-			'skeleton_template' => ''
-
+			'skeleton_template' => '',
+			'requires_thumbnail' => true
 		);
 		$args = wp_parse_args($args, $defaults);
 
