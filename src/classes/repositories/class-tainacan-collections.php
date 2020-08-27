@@ -195,7 +195,7 @@ class Collections extends Repository {
 		        'default'     => 'open',
 		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 			],
-			'hide_items_thubmnail_on_lists' => [
+			'hide_items_thumbnail_on_lists' => [
 				'map'         => 'meta',
 				'title'       => __( 'Hide items thumbnail on lists', 'tainacan' ),
 				'type'        => 'string',

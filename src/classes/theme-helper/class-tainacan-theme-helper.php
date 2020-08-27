@@ -395,6 +395,10 @@ class Theme_Helper {
 			$collection = new  \Tainacan\Entities\Collection($collection_id);
 			$default_view_mode = $collection->get_default_view_mode();
 			$enabled_view_modes = $collection->get_enabled_view_modes();
+
+					
+			// Gets hideItemsThumbnail info from collection setting
+			$args['hide-items-thumbnail'] = $collection->get_hide_items_thumbnail_on_lists() == 'yes' ? true : false;
 		}
 
 		// If in a tainacan taxonomy

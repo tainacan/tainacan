@@ -35,7 +35,7 @@ class Collection extends Entity {
 	    $header_image,
         $comment_status,
 		$allow_comments,
-		$hide_items_thubmnail_on_lists;
+		$hide_items_thumbnail_on_lists;
 
     /**
 	 * {@inheritDoc}
@@ -545,12 +545,12 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Get the state of $hide_items_thubmnail_on_lists to decide if it should always display item thumbnails, even being placeholders
+	 * Get the state of $hide_items_thumbnail_on_lists to decide if it should always display item thumbnails, even being placeholders
 	 *
 	 * @return string
 	 */
-	function get_hide_items_thubmnail_on_lists() {
-		return $this->get_mapped_property( 'hide_items_thubmnail_on_lists' );
+	function get_hide_items_thumbnail_on_lists() {
+		return $this->get_mapped_property( 'hide_items_thumbnail_on_lists' );
 	}
 
 	/**
@@ -743,14 +743,14 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Set the state of $hide_items_thubmnail_on_lists
+	 * Set the state of $hide_items_thumbnail_on_lists
 	 *
 	 * @param string $value
 	 *
 	 * @return void
 	 */
-	function set_hide_items_thubmnail_on_lists( $value ) {
-		$this->set_mapped_property( 'hide_items_thubmnail_on_lists', $value );
+	function set_hide_items_thumbnail_on_lists( $value ) {
+		$this->set_mapped_property( 'hide_items_thumbnail_on_lists', $value );
 	}
 
 	/**

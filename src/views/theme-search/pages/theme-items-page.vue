@@ -568,6 +568,7 @@
             hideDisplayedMetadataButton: false,
             hideSortingArea: false,
             hideSortByButton: false,
+            hideItemsThumbnail: false,
             hideExposersButton: false,
             hideItemsPerPageButton: false,
             hideGoToPageButton: false,
@@ -905,16 +906,18 @@
                                     let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).replace(/,null/g, '').split(',') : [];
                                     let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
 
-                                    let thumbnailMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true;
+                                    let thumbnailMetadatumDisplay = this.hideItemsThumbnail ? null : (prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true);
 
-                                    metadata.push({
-                                        name: this.$i18n.get('label_thumbnail'),
-                                        metadatum: 'row_thumbnail',
-                                        metadata_type: undefined,
-                                        slug: 'thumbnail',
-                                        id: undefined,
-                                        display: thumbnailMetadatumDisplay
-                                    });
+                                    if (this.hideItemsThumbnail != true) {
+                                        metadata.push({
+                                            name: this.$i18n.get('label_thumbnail'),
+                                            metadatum: 'row_thumbnail',
+                                            metadata_type: undefined,
+                                            slug: 'thumbnail',
+                                            id: undefined,
+                                            display: thumbnailMetadatumDisplay
+                                        });
+                                    }
 
                                     // Repository Level always shows core metadata
                                     if (this.isRepositoryLevel) {
@@ -1021,7 +1024,8 @@
                                 // Loads only basic attributes necessary to view modes that do not allow custom meta
                                 } else {
                             
-                                    this.$eventBusSearch.addFetchOnly('thumbnail,creation_date,title,description', true, '');
+                                    const basicAttributes = this.hideItemsThumbnail ? 'creation_date,title,description' : 'thumbnail,creation_date,title,description';
+                                    this.$eventBusSearch.addFetchOnly(basicAttributes, true, '');
                                     
                                     if (this.isRepositoryLevel) {
                                         this.sortingMetadata.push({

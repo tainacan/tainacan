@@ -200,7 +200,7 @@ export const fetchCollection = ({ commit, }, id) => {
 
 export const fetchCollectionBasics = ({ commit }, {collectionId, isContextEdit }) => {
     return new Promise((resolve, reject) => { 
-        let endpoint = '/collections/' + collectionId + '?fetch_only=name,url,allow_comments,hide_items_thubmnail_on_lists';
+        let endpoint = '/collections/' + collectionId + '?fetch_only=name,url,allow_comments,hide_items_thumbnail_on_lists';
         if (isContextEdit)
             endpoint += '&context=edit';
         

@@ -361,7 +361,7 @@
                             <span>{{ $i18n.get('label_cards') }}</span>
                         </b-dropdown-item>
                         <b-dropdown-item
-                                v-if="collection && collection.hide_items_thubmnail_on_lists != 'yes'" 
+                                v-if="collection && collection.hide_items_thumbnail_on_lists != 'yes'" 
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'grid' }"
@@ -384,7 +384,7 @@
                             <span>{{ $i18n.get('label_records') }}</span>
                         </b-dropdown-item>
                         <b-dropdown-item 
-                                v-if="collection && collection.hide_items_thubmnail_on_lists != 'yes'"
+                                v-if="collection && collection.hide_items_thumbnail_on_lists != 'yes'"
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'masonry' }"
@@ -823,7 +823,7 @@
                     existingViewMode == 'list' || 
                     existingViewMode == 'grid' || 
                     existingViewMode == 'masonry') {
-                    if ((prefsAdminViewMode == 'masonry' || prefsAdminViewMode == 'grid') && this.colleciton.hide_items_thubmnail_on_lists == 'yes')
+                    if ((prefsAdminViewMode == 'masonry' || prefsAdminViewMode == 'grid') && this.colleciton.hide_items_thumbnail_on_lists == 'yes')
                         this.$eventBusSearch.setInitialAdminViewMode('table');
                     else
                         this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
@@ -993,9 +993,9 @@
                                     let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).replace(/,null/g, '').split(',') : [];
                                     let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
 
-                                    let thumbnailMetadatumDisplay = this.collection.hide_items_thubmnail_on_lists == 'yes' ? null : (prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true);
+                                    let thumbnailMetadatumDisplay = this.collection.hide_items_thumbnail_on_lists == 'yes' ? null : (prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true);
                                     
-                                    if (!this.collection.hide_items_thubmnail_on_lists == 'yes') {
+                                    if (!this.collection.hide_items_thumbnail_on_lists == 'yes') {
                                         metadata.push({
                                             name: this.$i18n.get('label_thumbnail'),
                                             metadatum: 'row_thumbnail',
@@ -1139,7 +1139,7 @@
                                 // Loads only basic attributes necessary to view modes that do not allow custom meta
                                 } else {
                                     
-                                    const basicAttributes = this.collection.hide_items_thubmnail_on_lists == 'yes' ? 'creation_date,author_name,title,description' : 'thumbnail,creation_date,author_name,title,description';
+                                    const basicAttributes = this.collection.hide_items_thumbnail_on_lists == 'yes' ? 'creation_date,author_name,title,description' : 'thumbnail,creation_date,author_name,title,description';
                                     this.$eventBusSearch.addFetchOnly(basicAttributes, true, '');
 
                                     if (this.isRepositoryLevel) {
