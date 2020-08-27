@@ -328,9 +328,8 @@
                                             :class="{'tainacan-icon-viewtable' : ( adminViewMode == 'table' || adminViewMode == undefined),
                                                     'tainacan-icon-viewcards' : adminViewMode == 'cards',
                                                     'tainacan-icon-viewminiature' : adminViewMode == 'grid',
-                                                    'tainacan-icon-viewrecords' : adminViewMode == 'records',
-                                                    'tainacan-icon-viewmasonry' : adminViewMode == 'masonry',
-                                                    'tainacan-icon-viewrecords' : adminViewMode == 'list'}"
+                                                    'tainacan-icon-viewrecords' : adminViewMode == 'records' || adminViewMode == 'list',
+                                                    'tainacan-icon-viewmasonry' : adminViewMode == 'masonry' }"
                                             class="tainacan-icon tainacan-icon-1-25em"/>
                                 </span>
                             </span>
@@ -361,7 +360,8 @@
                             </span>
                             <span>{{ $i18n.get('label_cards') }}</span>
                         </b-dropdown-item>
-                        <b-dropdown-item 
+                        <b-dropdown-item
+                                v-if="collection && collection.hide_items_thubmnail_on_lists != 'yes'" 
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'grid' }"
@@ -384,6 +384,7 @@
                             <span>{{ $i18n.get('label_records') }}</span>
                         </b-dropdown-item>
                         <b-dropdown-item 
+                                v-if="collection && collection.hide_items_thubmnail_on_lists != 'yes'"
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'masonry' }"
@@ -821,10 +822,14 @@
                     existingViewMode == 'records' || 
                     existingViewMode == 'list' || 
                     existingViewMode == 'grid' || 
-                    existingViewMode == 'masonry')
-                    this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
-                else
+                    existingViewMode == 'masonry') {
+                    if ((prefsAdminViewMode == 'masonry' || prefsAdminViewMode == 'grid') && this.colleciton.hide_items_thubmnail_on_lists == 'yes')
+                        this.$eventBusSearch.setInitialAdminViewMode('table');
+                    else
+                        this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
+                } else {
                     this.$eventBusSearch.setInitialAdminViewMode('table');
+                }
             }
             
 
@@ -988,17 +993,18 @@
                                     let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).replace(/,null/g, '').split(',') : [];
                                     let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
 
-                                    let thumbnailMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true;
+                                    let thumbnailMetadatumDisplay = this.collection.hide_items_thubmnail_on_lists == 'yes' ? null : (prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true);
                                     
-                                    metadata.push({
-                                        name: this.$i18n.get('label_thumbnail'),
-                                        metadatum: 'row_thumbnail',
-                                        metadata_type: undefined,
-                                        slug: 'thumbnail',
-                                        id: undefined,
-                                        display: thumbnailMetadatumDisplay
-                                    });
-
+                                    if (!this.collection.hide_items_thubmnail_on_lists == 'yes') {
+                                        metadata.push({
+                                            name: this.$i18n.get('label_thumbnail'),
+                                            metadatum: 'row_thumbnail',
+                                            metadata_type: undefined,
+                                            slug: 'thumbnail',
+                                            id: undefined,
+                                            display: thumbnailMetadatumDisplay
+                                        });
+                                    }
                                     // Repository Level always shows core metadata
                                     if (this.isRepositoryLevel) {
                                         metadata.push({
@@ -1132,8 +1138,9 @@
 
                                 // Loads only basic attributes necessary to view modes that do not allow custom meta
                                 } else {
-                            
-                                    this.$eventBusSearch.addFetchOnly('thumbnail,creation_date,author_name,title,description', true, '');
+                                    
+                                    const basicAttributes = this.collection.hide_items_thubmnail_on_lists == 'yes' ? 'creation_date,author_name,title,description' : 'thumbnail,creation_date,author_name,title,description';
+                                    this.$eventBusSearch.addFetchOnly(basicAttributes, true, '');
 
                                     if (this.isRepositoryLevel) {
                                         this.sortingMetadata.push({
