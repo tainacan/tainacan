@@ -376,7 +376,7 @@ registerBlockType('tainacan/faceted-search', {
 
             if (listType != 'collection') {
                 enabledViewModes = registeredViewModesKeys;
-                defaultViewMode = hideItemsThumbnail ? 'records' : 'masonry';
+                defaultViewMode = hideItemsThumbnail ? 'table' : 'masonry';
             }
 
             setAttributes({ 
@@ -1259,7 +1259,7 @@ registerBlockType('tainacan/faceted-search', {
                         term-id={ listType == 'term' ? termId : null }
                         taxonomy={ listType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
                         collection-id={ listType == 'collection' ? collectionId : null }  
-                        default-view-mode={ defaultViewMode != 'none' ? defaultViewMode : (listType == 'collection' ? collectionDefaultViewMode : 'masonry') }
+                        default-view-mode={ defaultViewMode != 'none' ? defaultViewMode : (listType == 'collection' ? collectionDefaultViewMode : (hideItemsThumbnail ? 'table' : 'masonry') ) }
                         is-forced-view-mode={ defaultViewMode == 'none' ? true : false }
                         enabled-view-modes={ enabledViewModes.toString() }  
                         hide-filters = { hideFilters.toString() }
