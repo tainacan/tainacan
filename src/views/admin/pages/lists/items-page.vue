@@ -822,17 +822,12 @@
                     existingViewMode == 'records' || 
                     existingViewMode == 'list' || 
                     existingViewMode == 'grid' || 
-                    existingViewMode == 'masonry') {
-                    if ((prefsAdminViewMode == 'masonry' || prefsAdminViewMode == 'grid') && this.colleciton.hide_items_thumbnail_on_lists == 'yes')
-                        this.$eventBusSearch.setInitialAdminViewMode('table');
-                    else
+                    existingViewMode == 'masonry')
                         this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
-                } else {
+                else
                     this.$eventBusSearch.setInitialAdminViewMode('table');
-                }
             }
             
-
             this.showItemsHiddingDueSortingDialog();
 
             // Watches window resize to adjust filter's top position and compression on mobile 

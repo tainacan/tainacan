@@ -595,17 +595,21 @@ export default {
                         validViewModes[viewModeKey] = tainacan_plugin.registered_view_modes[viewModeKey];
                 });
                 this.registeredViewModes = validViewModes;
-              
+                
                 this.form.enabled_view_modes = this.form.enabled_view_modes.filter((aViewMode) => this.registeredViewModes[aViewMode] != undefined );
 
-                this.updateDefaultViewModeBasedOnEnabled();                
+                this.updateDefaultViewModeBasedOnEnabled();           
+                
+                // Setting initial view mode
+                if (this.$userPrefs.get('admin_view_mode_' + this.collectionId) == 'masonry' || this.$userPrefs.get('admin_view_mode_' + this.collectionId) == 'grid')
+                    this.$userPrefs.set('admin_view_mode_' + this.collectionId, 'table');
+
             } else {
                 this.registeredViewModes = tainacan_plugin.registered_view_modes;
             }
         }
     },
     mounted(){
-
         this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('settings') }]);
 
         if (this.$route.query.fromImporter != undefined) 
@@ -709,9 +713,8 @@ export default {
             'fetchAllCollectionNames'
         ]),
         updateSlug: _.debounce(function() {
-            if(!this.form.name || this.form.name.length <= 0){
+            if (!this.form.name || this.form.name.length <= 0)
                 return;
-            }
 
             this.isUpdatingSlug = true;
 
