@@ -1,9 +1,11 @@
 <template>
-    <b-field class="filter-item-forms">
+    <b-field 
+            v-if="collections && collections.length"
+            class="filter-item-forms">
         <b-collapse
                 aria-id="collection-filters-collapse"
                 class="show"
-                :open="open"
+                :open="collections.length != 1 ? open : false"
                 animation="filter-item">
             <label
                     class="label"
@@ -18,15 +20,16 @@
             </label>
 
             <div
-                    v-if="collections && collections.length > 1"
+                    v-if="collections.length > 1"
                     class="block">
                 <div
                         v-for="(collection, key) in collections"
                         :key="key"
                         class="control">
                     <b-checkbox
+                            :disabled="collections.length == 1"
                             v-model="collectionsIdsToFilter"
-                            :native-value="collection.id"
+                            :native-value="collections.length == 1 ? collection.id : true"
                             @input="applyFilter">
                         {{ collection.name }}
                     </b-checkbox>
@@ -35,9 +38,17 @@
             <div 
                     v-else
                     class="block">
-                <p class="has-text-gray">
-                    {{ $i18n.get('info_no_collection_created') }}
-                </p>
+                <div
+                        v-for="(collection, key) in collections"
+                        :key="key"
+                        class="control">
+                    <b-checkbox
+                            v-model="fakeTrueValue"
+                            :disabled="true"
+                            :native-value="true">
+                        {{ collection.name }}
+                    </b-checkbox>
+                </div>
             </div>
         </b-collapse>
     </b-field>
@@ -55,7 +66,8 @@
         data(){
             return {
                 inputs: [],
-                collectionsIdsToFilter: []
+                collectionsIdsToFilter: [],
+                fakeTrueValue: true
             }
         },
         computed: {
