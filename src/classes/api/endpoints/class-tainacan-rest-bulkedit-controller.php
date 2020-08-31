@@ -433,7 +433,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		];
 
 		$query_params['use_query'] = [
-			'type'        => 'boolean',
+			'type'        => ['boolean', 'object'],
 			'description' => __( 'Whether to use the current query to select posts', 'tainacan' ),
 		];
 
