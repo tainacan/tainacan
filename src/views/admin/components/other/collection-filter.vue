@@ -27,9 +27,8 @@
                         :key="key"
                         class="control">
                     <b-checkbox
-                            :disabled="collections.length == 1"
                             v-model="collectionsIdsToFilter"
-                            :native-value="collections.length == 1 ? collection.id : true"
+                            :native-value="collection.id"
                             @input="applyFilter">
                         {{ collection.name }}
                     </b-checkbox>
