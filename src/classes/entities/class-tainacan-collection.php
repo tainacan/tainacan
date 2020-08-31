@@ -34,7 +34,8 @@ class Collection extends Entity {
         $header_image_id,
 	    $header_image,
         $comment_status,
-        $allow_comments;
+		$allow_comments,
+		$hide_items_thumbnail_on_lists;
 
     /**
 	 * {@inheritDoc}
@@ -544,6 +545,15 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * Get the state of $hide_items_thumbnail_on_lists to decide if it should always display item thumbnails, even being placeholders
+	 *
+	 * @return string
+	 */
+	function get_hide_items_thumbnail_on_lists() {
+		return $this->get_mapped_property( 'hide_items_thumbnail_on_lists' );
+	}
+
+	/**
 	 * Set the collection name
 	 *
 	 * @param [string] $value
@@ -730,6 +740,17 @@ class Collection extends Entity {
 	 */
 	public function set_allow_comments( $value ) {
 	    $this->set_mapped_property('allow_comments', $value );
+	}
+
+	/**
+	 * Set the state of $hide_items_thumbnail_on_lists
+	 *
+	 * @param string $value
+	 *
+	 * @return void
+	 */
+	function set_hide_items_thumbnail_on_lists( $value ) {
+		$this->set_mapped_property( 'hide_items_thumbnail_on_lists', $value );
 	}
 
 	/**

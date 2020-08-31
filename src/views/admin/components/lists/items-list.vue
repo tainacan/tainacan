@@ -450,6 +450,7 @@
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)">
                         <div
+                                v-if="collection && collection.hide_items_thumbnail_on_lists != 'yes'"
                                 :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }"
                                 class="card-thumbnail">
                             <img

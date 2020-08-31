@@ -129,6 +129,15 @@
                     flex-wrap: wrap;
                     justify-content: space-evenly;
                     align-content: flex-start;
+
+                    &.items-without-thumbnail {
+                        .fake-item-thumb {
+                            display: none;
+                        }
+                        .fake-item-description {
+                            left: 0;
+                        }
+                    }
                 }
 
                 .pagination {

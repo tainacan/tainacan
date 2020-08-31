@@ -71,6 +71,7 @@
                     <!-- Remaining metadata -->  
                     <div class="media">
                         <div 
+                                v-if="!shouldHideItemsThumbnail"
                                 :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }"
                                 class="card-thumbnail">
                             <img 
@@ -133,10 +134,19 @@ export default {
     mixins: [
         viewModesMixin
     ],
+    data() {
+        return {
+            shouldHideItemsThumbnail: this.$root.hideItemsThumbnail
+        }
+    },
+    computed: {
+        descriptionMaxCharacter() {
+            return (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? (this.shouldHideItemsThumbnail ? 185 : 155) : (this.shouldHideItemsThumbnail ? 480 : 330);
+        }
+    },
     methods: {
         getLimitedDescription(description) {
-            let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 155 : 330;
-            return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
+            return description.length > this.descriptionMaxCharacter ? description.substring(0, this.descriptionMaxCharacter - 3) + '...' : description;
         }
     }
 }

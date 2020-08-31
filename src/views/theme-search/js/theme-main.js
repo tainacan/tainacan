@@ -131,6 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 hideDisplayedMetadataButton: false,
                 hideSortByButton: false,
                 hideSortingArea: false,
+                hideItemsThumbnail: false,
                 hideItemsPerPageButton: false,
                 hideGoToPageButton: false,
                 hidePaginationArea: false,
@@ -183,6 +184,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.hideDisplayedMetadataButton = this.isParameterTrue('hide-displayed-metadata-button');
                 if (this.$el.attributes['hide-sorting-area'] != undefined)
                     this.hideSortingArea = this.isParameterTrue('hide-sorting-area');
+                if (this.$el.attributes['hide-items-thumbnail'] != undefined)
+                    this.hideItemsThumbnail = this.isParameterTrue('hide-items-thumbnail');
                 if (this.$el.attributes['hide-sort-by-button'] != undefined)
                     this.hideSortByButton = this.isParameterTrue('hide-sort-by-button');
                 if (this.$el.attributes['hide-exposers-button'] != undefined)

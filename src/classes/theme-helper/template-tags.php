@@ -317,6 +317,7 @@ function tainacan_is_view_mode_enabled($view_mode_slug) {
 	 *	   @type bool	$hide_displayed_metadata_dropdown			Hides the "Displayed metadata" dropdown even if the current view modes allows it	
 	 * 	   @type bool	$hide_sorting_area							Completely hides all sorting controls	
 	 * 	   @type bool 	$hide_sort_by_button						Hides the button where user can select the metadata to sort by items (keeps the sort direction)
+	 * 	   @type bool 	$hide_items_thumbnail						Forces the thumbnail to be hiden on every listing. This setting also disables view modes that contain the 'requires-thumbnail' attr. By default is false or inherited from collection setting
 	 *	   @type bool	$hide_exposers_button						Hides the "View as..." button, a.k.a. Exposers modal
 	 * 	   @type bool 	$hide_items_per_page_button					Hides the button for selecting amount of items loaded per page
 	 * 	   @type bool 	$hide_go_to_page_button						Hides the button for skiping to a specific page
@@ -361,8 +362,11 @@ function tainacan_the_faceted_search($args = array()) {
 		$collection = new  \Tainacan\Entities\Collection($collection_id);
 		$default_view_mode = $collection->get_default_view_mode();
 		$enabled_view_modes = $collection->get_enabled_view_modes();
+		
+		// Gets hideItemsThumbnail info from collection setting
+		$args['hide-items-thumbnail'] = $collection->get_hide_items_thumbnail_on_lists() == 'yes' ? true : false;
 	}
-
+	
 	// If in a tainacan taxonomy
 	$term = tainacan_get_term();
 	if ($term) {
