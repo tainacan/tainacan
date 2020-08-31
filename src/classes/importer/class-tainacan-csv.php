@@ -562,7 +562,7 @@ class CSV extends Importer {
 		if( $attachments ) {
 			foreach( $attachments as $attachment ) {
 				if(empty($attachment)) continue;
-				if( isset(parse_url($correct_value)['scheme'] ) ) {
+				if(isset(parse_url($attachment)['scheme'])) {
 					$id = $TainacanMedia->insert_attachment_from_url($attachment, $item_inserted->get_id());
 					if(!$id) {
 						$this->add_error_log('Error in Attachment file imported from URL ' . $attachment);
