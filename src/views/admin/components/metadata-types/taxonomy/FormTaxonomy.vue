@@ -93,9 +93,7 @@
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'allow_new_terms')"
                     :message="$i18n.getHelperMessage('tainacan-taxonomy', 'allow_new_terms')"/>
         </b-field>
-        <b-field 
-                v-if="collections.length" 
-                :addons="false">
+        <b-field :addons="false">
             <label class="label">
                 {{ $i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collections') }}
                 <help-button
@@ -106,7 +104,7 @@
                     :value="getSelectedTaxonomyCollections()"
                     autocomplete
                     :open-on-focus="true"
-                    :data="collections.filter((collection) => !link_filtered_by_collections.includes(collection.id))"
+                    :data="collections.filter((collection) => !link_filtered_by_collections.includes(collection.id) && (collectionSearchString ? (collection.name.toLowerCase().indexOf(collectionSearchString.toLowerCase()) >= 0) : true) )"
                     field="name"
                     @input="updateSelectedCollections"
                     @focus="clear()"
@@ -114,7 +112,8 @@
                     :aria-close-label="$i18n.get('remove_value')"
                     :class="{'has-selected': link_filtered_by_collections != undefined && link_filtered_by_collections != []}"
                     :placeholder="$i18n.get('instruction_select_one_or_more_collections')"
-                    @typing="filterCollections">
+                    @typing="filterCollections"
+                    :loading="loadingCollections">
                 <template slot-scope="props">
                     <div class="media">
                         <div
@@ -153,7 +152,7 @@
                 isReady: false,
                 taxonomies: [],
                 taxonomy_id: '',
-                loading: true,
+                loading: false,
                 allow_new_terms: 'yes',
                 link_filtered_by_collections: [],
                 visible_options_list: false, 
@@ -163,7 +162,8 @@
                 taxonomyType:'',
                 taxonomyMessage: '',
                 collections: [],
-                loadedCollections: []
+                collectionSearchString: '',
+                loadingCollections: false
             }
         },
         computed: {
@@ -246,37 +246,30 @@
                 this.taxonomyType = type;
                 this.taxonomyMessage = message;
             },
-            fetchCollections(){
+            fetchCollections() {
+                this.loadingCollections = true;
+
                 return axios.get('/collections?nopaging=1')
                     .then(res => {
-                        let collections = res.data;
-                        this.loading = false;
-
-                        if (collections)
-                            this.collections = collections;
-                        else
-                            this.collections = [];
-
-                        this.loadedCollections = this.collections;
+                        this.collections = res.data ? res.data : [];
+                        this.loadingCollections = false;
                     })
                     .catch(error => {
                         this.$console.log(error);
+                        this.loadingCollections = false;
                     });
             },
             fetchTaxonomies(){
-                return axios.get('/taxonomies?nopaging=1&order=asc&orderby=title')
-                    .then(res => {
-                        let taxonomies = res.data;
-                        this.loading = false;
+                this.loading = true;
 
-                        if( taxonomies ){
-                            this.taxonomies = taxonomies;
-                        } else {
-                            this.taxonomies = [];
-                        }
+                return axios.get('/taxonomies?nopaging=1&order=asc&orderby=title&context=edit&nopaging=1&fetch_only=name,id,thumbnail')
+                    .then(res => {
+                        this.taxonomies = res.data ? res.data : [];
+                        this.loading = false;
                     })
                     .catch(error => {
                         this.$console.log(error);
+                        this.loading = false;
                     });
             },
             labelNewTerms(){
@@ -305,12 +298,7 @@
                 return [];
             },
             filterCollections(searchString) {
-                this.collections.filter((option) => {
-                    return option.name
-                        .toString()
-                        .toLowerCase()
-                        .indexOf(searchString.toLowerCase()) >= 0
-                })
+                this.collectionSearchString = searchString;
             }
         }
     }
