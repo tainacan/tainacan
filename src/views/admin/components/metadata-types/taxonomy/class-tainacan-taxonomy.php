@@ -21,7 +21,7 @@ class Taxonomy extends Metadata_Type {
 		
 		$this->set_default_options([
 			'allow_new_terms' => 'no',
-			'link_filtered_by_collection' => []
+			'link_filtered_by_collections' => []
 		]);
 
 		$this->set_form_component('tainacan-form-taxonomy');
@@ -97,9 +97,9 @@ class Taxonomy extends Metadata_Type {
 				'title' => __( 'Allow new terms', 'tainacan' ),
 				'description' => __( 'Allows to create new terms directly on the item form.', 'tainacan' ),
 			],
-			'link_filtered_by_collection' => [
-				'title' => __( 'Link filtered by collection', 'tainacan' ),
-				'description' => __( 'Links to items list filtered by current collection instead of repository level term items page.', 'tainacan' ),
+			'link_filtered_by_collections' => [
+				'title' => __( 'Link filtered by collections', 'tainacan' ),
+				'description' => __( 'Links to term items list filtered by certain collections instead of repository level term items page.', 'tainacan' ),
 			]
 		];
 	}
@@ -227,7 +227,7 @@ class Taxonomy extends Metadata_Type {
 	
 	public function term_to_html($return, $term) {
 		
-		$collections = $this->get_option( 'link_filtered_by_collection' );
+		$collections = $this->get_option( 'link_filtered_by_collections' );
 
 		if ( !empty( $collections ) ) {
 			$return = '';

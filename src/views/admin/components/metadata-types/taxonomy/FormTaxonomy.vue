@@ -69,6 +69,7 @@
                 v-if="taxonomy_id && taxonomies.length && (input_type == 'tainacan-taxonomy-checkbox' || input_type == 'tainacan-taxonomy-radio')" 
                 :addons="false"
                 :label="$i18n.getHelperTitle('tainacan-taxonomy', 'visible_options_list')">
+                &nbsp;
             <b-switch
                     size="is-small" 
                     v-model="visible_options_list"
@@ -81,6 +82,7 @@
                 v-if="taxonomy_id && taxonomies.length && taxonomies.find((taxonomy) => taxonomy.id == taxonomy_id).allow_insert == 'yes'" 
                 :addons="false"
                 :label="$i18n.get('label_taxonomy_allow_new_terms')">
+                &nbsp;
             <b-switch
                     size="is-small" 
                     v-model="allow_new_terms"
@@ -91,19 +93,48 @@
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'allow_new_terms')"
                     :message="$i18n.getHelperMessage('tainacan-taxonomy', 'allow_new_terms')"/>
         </b-field>
-        <!-- <b-field
-                :addons="false"
-                :label="$i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collection')">
-            <b-switch
-                    size="is-small" 
-                    v-model="link_filtered_by_collection"
-                    @input="emitValues()"
-                    true-value="yes"
-                    false-value="no" />
-            <help-button
-                    :title="$i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collection')"
-                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'link_filtered_by_collection')"/>
-        </b-field> -->
+        <b-field 
+                v-if="collections.length" 
+                :addons="false">
+            <label class="label">
+                {{ $i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collections') }}
+                <help-button
+                    :title="$i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collections')"
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'link_filtered_by_collections')"/>
+            </label>
+            <b-taginput
+                    :value="getSelectedTaxonomyCollections()"
+                    autocomplete
+                    :open-on-focus="true"
+                    :data="collections.filter((collection) => !link_filtered_by_collections.includes(collection.id))"
+                    field="name"
+                    @input="updateSelectedCollections"
+                    @focus="clear()"
+                    attached
+                    :aria-close-label="$i18n.get('remove_value')"
+                    :class="{'has-selected': link_filtered_by_collections != undefined && link_filtered_by_collections != []}"
+                    :placeholder="$i18n.get('instruction_select_one_or_more_collections')"
+                    @typing="filterCollections">
+                <template slot-scope="props">
+                    <div class="media">
+                        <div
+                                v-if="props.option.thumbnail && props.option.thumbnail.thumbnail && props.option.thumbnail.thumbnail[0]"
+                                class="media-left">
+                            <img 
+                                    width="24"
+                                    :alt="$i18n.get('label_thumbnail')"
+                                    :src="props.option.thumbnail.thumbnail[0]" >
+                        </div>
+                        <div class="media-content">
+                            {{ props.option.name }}
+                        </div>
+                    </div>
+                </template>
+                <template slot="empty">
+                    {{ $i18n.get('info_no_options_found') }}
+                </template>
+            </b-taginput>
+        </b-field>
 
     </section>
 </template>
@@ -124,13 +155,15 @@
                 taxonomy_id: '',
                 loading: true,
                 allow_new_terms: 'yes',
-                link_filtered_by_collection: 'no',
+                link_filtered_by_collections: [],
                 visible_options_list: false, 
                 input_type: 'tainacan-taxonomy-radio',
                 multiple_types: {},
                 single_types: {},
                 taxonomyType:'',
-                taxonomyMessage: ''
+                taxonomyMessage: '',
+                collections: [],
+                loadedCollections: []
             }
         },
         computed: {
@@ -178,6 +211,7 @@
         },
         created(){
             this.fetchTaxonomies();
+            this.fetchCollections();
 
             this.single_types['tainacan-taxonomy-radio'] = 'Radio';
             this.multiple_types['tainacan-taxonomy-tag-input'] = 'Tag Input';
@@ -199,6 +233,7 @@
                 }
 
                 this.visible_options_list = ( this.value.visible_options_list ) ? this.value.visible_options_list : false;
+                this.link_filtered_by_collections = ( this.value.link_filtered_by_collections ) ? this.value.link_filtered_by_collections : [];
             }
 
             this.isReady = true;
@@ -211,8 +246,24 @@
                 this.taxonomyType = type;
                 this.taxonomyMessage = message;
             },
-            fetchTaxonomies(){
+            fetchCollections(){
+                return axios.get('/collections?nopaging=1')
+                    .then(res => {
+                        let collections = res.data;
+                        this.loading = false;
 
+                        if (collections)
+                            this.collections = collections;
+                        else
+                            this.collections = [];
+
+                        this.loadedCollections = this.collections;
+                    })
+                    .catch(error => {
+                        this.$console.log(error);
+                    });
+            },
+            fetchTaxonomies(){
                 return axios.get('/taxonomies?nopaging=1&order=asc&orderby=title')
                     .then(res => {
                         let taxonomies = res.data;
@@ -240,7 +291,25 @@
                     taxonomy_id: this.taxonomy_id,
                     input_type: this.input_type,
                     allow_new_terms: this.allow_new_terms,
-                    visible_options_list: this.visible_options_list
+                    visible_options_list: this.visible_options_list,
+                    link_filtered_by_collections: this.link_filtered_by_collections
+                })
+            },
+            updateSelectedCollections(selectedCollections) {
+               this.link_filtered_by_collections = selectedCollections.map(collection => collection.id);
+               this.emitValues();
+            },
+            getSelectedTaxonomyCollections() {
+                if (this.link_filtered_by_collections && this.link_filtered_by_collections.length)
+                    return this.collections.filter((collection) => this.link_filtered_by_collections.includes(collection.id));
+                return [];
+            },
+            filterCollections(searchString) {
+                this.collections.filter((option) => {
+                    return option.name
+                        .toString()
+                        .toLowerCase()
+                        .indexOf(searchString.toLowerCase()) >= 0
                 })
             }
         }
