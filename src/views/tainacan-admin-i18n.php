@@ -534,6 +534,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_title_mapping'				 => __( 'Before runnning import, consider selecting the title source metadata', 'tainacan'),
 	'instruction_click_error_to_go_to_metadata'		 => __( 'Click on the error to go to the metadata:', 'tainacan'),
 	'instruction_click_to_see_or_search'			 => __( 'Click to see options or type to search...', 'tainacan'),
+	'instruction_select_one_or_more_collections'	 => __( 'Select one or more collections', 'tainacan'),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every published item, including those visible only to editors.', 'tainacan' ),
