@@ -91,6 +91,19 @@
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'allow_new_terms')"
                     :message="$i18n.getHelperMessage('tainacan-taxonomy', 'allow_new_terms')"/>
         </b-field>
+        <!-- <b-field
+                :addons="false"
+                :label="$i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collection')">
+            <b-switch
+                    size="is-small" 
+                    v-model="link_filtered_by_collection"
+                    @input="emitValues()"
+                    true-value="yes"
+                    false-value="no" />
+            <help-button
+                    :title="$i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collection')"
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'link_filtered_by_collection')"/>
+        </b-field> -->
 
     </section>
 </template>
@@ -111,6 +124,7 @@
                 taxonomy_id: '',
                 loading: true,
                 allow_new_terms: 'yes',
+                link_filtered_by_collection: 'no',
                 visible_options_list: false, 
                 input_type: 'tainacan-taxonomy-radio',
                 multiple_types: {},
