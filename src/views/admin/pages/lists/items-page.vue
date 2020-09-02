@@ -990,7 +990,7 @@
 
                                     let thumbnailMetadatumDisplay = this.collection.hide_items_thumbnail_on_lists == 'yes' ? null : (prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true);
                                     
-                                    if (!this.collection.hide_items_thumbnail_on_lists == 'yes') {
+                                    if (this.collection.hide_items_thumbnail_on_lists != 'yes') {
                                         metadata.push({
                                             name: this.$i18n.get('label_thumbnail'),
                                             metadatum: 'row_thumbnail',
