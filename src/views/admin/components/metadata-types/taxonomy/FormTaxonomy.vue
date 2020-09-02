@@ -249,7 +249,7 @@
             fetchCollections() {
                 this.loadingCollections = true;
 
-                return axios.get('/collections?nopaging=1')
+                return axios.get('/collections?nopaging=1&context=edit&nopaging=1&fetch_only=name,id,thumbnail')
                     .then(res => {
                         this.collections = res.data ? res.data : [];
                         this.loadingCollections = false;
@@ -262,7 +262,7 @@
             fetchTaxonomies(){
                 this.loading = true;
 
-                return axios.get('/taxonomies?nopaging=1&order=asc&orderby=title&context=edit&nopaging=1&fetch_only=name,id,thumbnail')
+                return axios.get('/taxonomies?nopaging=1&order=asc&orderby=title')
                     .then(res => {
                         this.taxonomies = res.data ? res.data : [];
                         this.loading = false;
