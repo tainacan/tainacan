@@ -774,6 +774,70 @@ class Metadata extends Repository {
 	}
 
 	/**
+	 * @param Entities\Collection $collection
+	 * @param bool $force if true will register control metadata even if collection is auto draft
+	 *
+	 * @return bool
+	 * @throws \ErrorException
+	 * @throws \Exception
+	 */
+	public function register_control_metadata( Entities\Collection $collection, $force = false ) {
+
+		if ( $force !== true && $collection->get_status() == 'auto-draft' ) {
+			return;
+		}
+
+		$metadata = $this->fetch_by_collection( $collection, [
+			'meta_query' => [
+				[
+					'key'     => 'metadata_type',
+					'value'   => [ 'Tainacan\Metadata_Types\Control' ],
+					'compare' => 'IN'
+				]
+			],
+			'include_disabled' => true
+		] ); 
+
+		$data_control_metadata = [
+			'document_type' => [
+				'name'            => 'DocumentType',
+				'description'     => 'The item main document type',
+				'collection_id'   => $collection->get_id(),
+				'metadata_type'   => 'Tainacan\Metadata_Types\Control',
+				'status'          => 'publish',
+				'display'		  => 'no',
+				'metadata_type_options' => [ 'control_metadatum' => 'document_type' ]
+			],
+			'collection_id'       => [
+				'name'            => 'CollectionID',
+				'description'     => 'The item collection ID',
+				'collection_id'   => $collection->get_id(),
+				'metadata_type'   => 'Tainacan\Metadata_Types\Control',
+				'status'          => 'publish',
+				'display'		  => 'no',
+				'metadata_type_options' => [ 'control_metadatum' => 'collection_id' ]
+			],
+		];
+
+		foreach ( $data_control_metadata as $index => $data_control_metadatum ) {
+			if ( empty( $metadata ) ) {
+				$this->insert_array_metadatum( $data_control_metadatum );
+			} else {
+				$exists = false;
+				foreach ( $metadata as $metadatum ) {
+					if ( $metadatum->get_metadata_type() === $data_control_metadatum['metadata_type'] ) {
+						$exists = true;
+					}
+				}
+
+				if ( ! $exists ) {
+					$this->insert_array_metadatum( $data_control_metadatum );
+				}
+			}
+		}
+	}
+
+	/**
 	 * block user from remove core metadata
 	 *
 	 * @param $before  wordpress pass a null value
@@ -912,7 +976,6 @@ class Metadata extends Repository {
 			$set_ = 'set_' . $attribute;
 			$metadatum->$set_( $value );
 		}
-
 		if ( $metadatum->validate() ) {
 			$metadatum = $this->insert( $metadatum );
 
