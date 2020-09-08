@@ -261,7 +261,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_text'                                     => __( 'Text', 'tainacan' ),
 	'label_url'                                      => __( 'URL', 'tainacan' ),
 	'label_select_file'                              => __( 'Select File', 'tainacan' ),
-	'label_selected_file'                              => __( 'Selected file', 'tainacan' ),
+	'label_selected_file'                            => __( 'Selected file', 'tainacan' ),
 	'label_expand_all'                               => __( 'Expand all', 'tainacan' ),
 	'label_collapse_all'                             => __( 'Collapse all', 'tainacan' ),
 	'label_view_term'                                => __( 'View Term', 'tainacan' ),

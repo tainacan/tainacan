@@ -15,7 +15,7 @@ class Control extends Metadata_Type {
     function __construct(){
         // call metadatum type constructor
         parent::__construct();
-        $this->set_primitive_type('string');
+        $this->set_primitive_type('control');
         $this->set_component('tainacan-text');
         $this->set_name( __('Control Type', 'tainacan') );
         $this->set_description( __('A special metadata type, used to map certain item properties such as collection id and document type to metadata in order to easily create filters.', 'tainacan') );
@@ -73,6 +73,138 @@ class Control extends Metadata_Type {
         }
 		
 		return true;
+		
+    }
+    
+    	/**
+	 * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as an html string
+	 * @param  Item_Metadata_Entity $item_metadata 
+	 * @return string The HTML representation of the value, containing one or multiple items names, linked to the item page
+	 */
+	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+		
+        $return = '';
+        
+        switch ( $this->get_option('control_metadatum') ) {
+            case 'document_type':
+                $return = $this->get_document_as_html( $item_metadata );
+            break;
+
+            case 'collection_id':
+                $return = $this->get_collection_as_html( $item_metadata );
+            break;
+            
+            default:
+                // What the hell am I doing here?
+            break;
+        }
+		
+		return $return;
+		
+    }
+
+    private function get_document_as_html( $item_metadata ) {
+
+        $value = $item_metadata->get_value();
+
+        switch ($value) {
+            case 'attachment':
+                return __( 'File', 'tainacan' );
+            break;
+            
+            case 'text':
+                return __( 'Text', 'tainacan' );
+            break;
+            
+            case 'url':
+                return __( 'URL', 'tainacan' );
+            break;
+
+            default: 
+                return $value;
+        }
+    }
+    
+    private function get_collection_as_html( $item_metadata ) {
+
+        $value = $item_metadata->get_value();
+        	
+        try {
+            
+            $collection = \Tainacan\Repositories\Collections::get_instance()->fetch( (int) $value );
+            if ( $collection instanceof \Tainacan\Entities\Collection ) {
+                $label = $collection->get_name();
+                $link = $collection->get_url();
+
+                $return = "<a data-linkto='collection' data-id='$value' href='$link'>";
+				$return.= $label;
+                $return .= "</a>";
+                
+                return $return;
+            }
+            
+        } catch (\Exception $e) {
+            // Collection not found 
+        }
+		
+    }
+	
+	private function get_item_html($item) {
+		
+		$return = '';
+		$id = $item->get_id();
+		
+		$search_meta_id = $this->get_option('search');
+		
+		if ( $id && $search_meta_id ) {
+			
+			$link = get_permalink( (int) $id );
+			
+			$search_meta_id = $this->get_option('search');
+			
+			$metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch((int) $search_meta_id);
+			
+			$label = '';
+			
+			if ($metadatum instanceof \Tainacan\Entities\Metadatum) {
+				$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
+				$label = $item_meta->get_value_as_string();
+			}
+			
+			if ( empty($label) ) {
+				$label = $item->get_title();
+			}
+			
+			if (is_string($link)) {
+				
+				$return = "<a data-linkto='item' data-id='$id' href='$link'>";
+				$return.= $label;
+				$return .= "</a>";
+				
+			}
+			
+		}
+
+		return $return;
+		
+	}
+	
+	/**
+	 * Get related Collection object 
+	 * @return \Tainacan\Entities\Collection|false The Collection object or false
+	 */
+	public function get_collection() {
+		
+		$collection_id = $this->get_option('collection_id');
+		
+		if ( is_numeric($collection_id) ) {
+			$collection = \Tainacan\Repositories\Collections::get_instance()->fetch( (int) $collection_id );
+			if ( $collection instanceof \Tainacan\Entities\Collection ) {
+				return $collection;
+			}
+		}
+		
+		return false;
 		
 	}
     
