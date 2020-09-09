@@ -24,7 +24,6 @@ class Control extends Metadata_Type {
             'control_metadatum' => 'document_type'
         ]);
         add_action( 'tainacan-api-item-updated', [&$this, 'update_control_metadatum'], 10, 2 );
-        add_filter( 'tainacan-item-get-control-metadatum', [&$this, 'get_control_metadatum_value'], 10, 2 );
     }
 
     public function update_control_metadatum( \Tainacan\Entities\Item $item, $attributes) {
@@ -76,41 +75,57 @@ class Control extends Metadata_Type {
 		return true;
 		
     }
-    
-    	/**
-	 * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as an html string
-	 * @param  Item_Metadata_Entity $item_metadata 
-	 * @return string The HTML representation of the value, containing one or multiple items names, linked to the item page
-	 */
-	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
-		
-		return $this->get_control_metadatum_value($item_metadata->get_value(), $this->get_option('control_metadatum') );
-    }
 
-    public function get_control_metadatum_value($value, $control_metadatum) {
-
+    public function get_control_metadatum_value($value, $control_metadatum, $format) {
         $return = '';
         
         switch ( $control_metadatum ) {
             case 'document_type':
-                $return = $this->get_document_as_html( $value );
+                $return = ($format == 'html' ? $this->get_document_as_html( $value ) : $this->get_document_as_string( $value ));
             break;
 
             case 'collection_id':
-                $return = $this->get_collection_as_html( $value );
+                $return = ($format == 'html' ? $this->get_collection_as_html( $value ) : $this->get_collection_as_string( $value ));
             break;
             
             default:
                 // What the hell am I doing here?
             break;
         }
-		
 		return $return;
+    }
+    
+    /**
+	 * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as an html string
+	 * @param  Item_Metadata_Entity $item_metadata 
+	 * @return string The HTML representation of the value, containing one or multiple items names, linked to the item page
+	 */
+	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		
+        $value = $item_metadata->get_value();
+        $control_metadatum = $this->get_option('control_metadatum');
+        
+        return $this->get_control_metadatum_value($value, $control_metadatum, 'html');
+    }
+
+    /**
+	 * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as a string
+	 * @param  Item_Metadata_Entity $item_metadata 
+	 * @return string The String representation of the value, containing one or multiple items names, linked to the item page
+	 */
+	public function get_value_as_string(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+		
+        $value = $item_metadata->get_value();
+        $control_metadatum = $this->get_option('control_metadatum');
+        
+		return $this->get_control_metadatum_value($value, $control_metadatum, 'string');
     }
 
     private function get_document_as_html( $value ) {
+        return $this->get_document_as_string( $value );
+    }
 
+    public function get_document_as_string( $value ) {
         switch ($value) {
             case 'attachment':
                 return __( 'File', 'tainacan' );
@@ -130,20 +145,26 @@ class Control extends Metadata_Type {
     }
     
     private function get_collection_as_html( $value ) { 	
-
-        
         $collection = \Tainacan\Repositories\Collections::get_instance()->fetch( (int) $value );
         if ( $collection instanceof \Tainacan\Entities\Collection ) {
             $label = $collection->get_name();
             $link = $collection->get_url();
-            error_log($label);
             $return = "<a data-linkto='collection' data-id='$value' href='$link'>";
             $return.= $label;
             $return .= "</a>";
             
             return $return;
         }
-		
+		return null;
+    }
+
+    private function get_collection_as_string( $value ) { 	
+        $collection = \Tainacan\Repositories\Collections::get_instance()->fetch( (int) $value );
+        if ( $collection instanceof \Tainacan\Entities\Collection ) {
+            $label = $collection->get_name();
+            return $label;
+        }
+        return null;
     }
     
 }

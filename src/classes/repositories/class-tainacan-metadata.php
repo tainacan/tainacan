@@ -1313,7 +1313,8 @@ class Metadata extends Repository {
 					}
 					$label = $_post->post_title;
 				} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\Control' ) {
-					$label = apply_filters("tainacan-item-get-control-metadatum", $r, $metadatum_options['control_metadatum'] );
+					$metadata_type_object = $metadatum->get_metadata_type_object();
+					$label = $metadata_type_object->get_control_metadatum_value($r, $metadatum_options['control_metadatum'], 'string' );
 				} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\User' ) {
 					$name = get_the_author_meta( 'display_name', $label );
 					$label = apply_filters("tainacan-item-get-author-name", $name);
