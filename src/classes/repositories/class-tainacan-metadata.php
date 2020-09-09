@@ -1313,39 +1313,7 @@ class Metadata extends Repository {
 					}
 					$label = $_post->post_title;
 				} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\Control' ) {
-					switch( $metadatum_options['control_metadatum'] ) {
-						case 'document_type':
-							switch ($r) {
-								case 'attachment':
-									$label = __( 'File', 'tainacan' );
-								break;
-								
-								case 'text':
-									$label = __( 'Text', 'tainacan' );
-								break;
-								
-								case 'url':
-									$label = __( 'URL', 'tainacan' );
-								break;
-					
-								default: 
-									$label = $value;
-							}
-						break;
-
-						case 'collection_id':
-							$_post = get_post($r);
-							if ( ! $_post instanceof \WP_Post) {
-								continue;
-							}
-							$label = $_post->post_title;
-						break;
-						
-						default:
-							// What the hell am I doing here?
-						break;
-					}
-					
+					$label = apply_filters("tainacan-item-get-control-metadatum", $r, $metadatum_options['control_metadatum'] );
 				} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\User' ) {
 					$name = get_the_author_meta( 'display_name', $label );
 					$label = apply_filters("tainacan-item-get-author-name", $name);
