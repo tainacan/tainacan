@@ -764,10 +764,12 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$response = $this->server->dispatch($requestC);
 		$data = $response->get_data();
-		$this->assertEquals(3, count($data));
+		$this->assertEquals(5, count($data));
 		$this->assertNotEquals($metadatumB->get_id(), $data[0]['id']);
 		$this->assertNotEquals($metadatumB->get_id(), $data[1]['id']);
 		$this->assertNotEquals($metadatumB->get_id(), $data[2]['id']);
+		$this->assertNotEquals($metadatumB->get_id(), $data[3]['id']);
+		$this->assertNotEquals($metadatumB->get_id(), $data[4]['id']);
 	}
 
 	public function test_private_meta_ids_not_in_metadata_order(){
@@ -825,7 +827,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 		$data = $response->get_data();
 
-		$this->assertEquals(4, count($data['metadata_order']));
+		$this->assertEquals(6, count($data['metadata_order']));
 
 		wp_logout();
 		wp_set_current_user(0);
@@ -835,11 +837,12 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 		$data = $response->get_data();
 
-		$this->assertEquals(3, count($data['metadata_order']));
+		$this->assertEquals(5, count($data['metadata_order']));
 		$this->assertNotEquals($metadatumB->get_id(), $data['metadata_order'][0]['id']);
 		$this->assertNotEquals($metadatumB->get_id(), $data['metadata_order'][1]['id']);
 		$this->assertNotEquals($metadatumB->get_id(), $data['metadata_order'][2]['id']);
-
+		$this->assertNotEquals($metadatumB->get_id(), $data['metadata_order'][3]['id']);
+		$this->assertNotEquals($metadatumB->get_id(), $data['metadata_order'][4]['id']);
 	}
 
 	/**

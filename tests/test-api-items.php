@@ -380,7 +380,7 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 		$data = $response->get_data()['items'];
 
 		$this->assertEquals( 2, sizeof($data) );
-		$this->assertEquals( 5, sizeof($data[0]['metadata']) );
+		$this->assertEquals( 7, sizeof($data[0]['metadata']) );
 
 		// Fetch only as admin
 		$request = new \WP_REST_Request(
