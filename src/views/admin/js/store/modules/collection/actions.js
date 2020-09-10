@@ -38,8 +38,6 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 if (postQueries.advancedSearch)
                     advancedSearchResults = postQueries.advancedSearch;
             }
-            if (postQueries.s != undefined && postQueries.s != null)
-                postQueries.search = postQueries.s;
                 
             let query = qs.stringify(postQueries);
 

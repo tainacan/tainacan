@@ -184,7 +184,7 @@ registerBlockType('tainacan/search-bar', {
                                                 style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
                                                 id="tainacan-search-bar-block_input"
                                                 label={ __('Search', 'tainacan')}
-                                                name='search'
+                                                name='s'
                                                 placeholder={ placeholderText }
                                             /> 
                                             <button 
@@ -229,7 +229,7 @@ registerBlockType('tainacan/search-bar', {
                                     style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
                                     id="tainacan-search-bar-block_input"
                                     label={ __('Search', 'tainacan')}
-                                    name='search'
+                                    name='s'
                                     placeholder={ placeholderText }
                                 /> 
                                 <button 
@@ -621,7 +621,7 @@ registerBlockType('tainacan/search-bar', {
                                                 style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
                                                 id="tainacan-search-bar-block_input"
                                                 label={ __('Search', 'tainacan')}
-                                                name='search'
+                                                name='s'
                                                 placeholder={ placeholderText }
                                             /> 
                                             <button 
@@ -667,7 +667,7 @@ registerBlockType('tainacan/search-bar', {
                                     style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
                                     id="tainacan-search-bar-block_input"
                                     label={ __('Search', 'tainacan')}
-                                    name='search'
+                                    name='s'
                                     placeholder={ placeholderText }
                                 /> 
                                 <button 
