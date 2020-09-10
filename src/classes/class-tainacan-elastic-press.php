@@ -102,7 +102,7 @@ class Elastic_Press {
 
 			$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 			$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
-
+			
 			$metadatas = $Tainacan_Item_Metadata->fetch($item, 'OBJECT', [ 'post__in' => $ids_meta, 'order' => 'id', 'metadata_type' => 'Tainacan\Metadata_Types\Relationship' ] );
 			
 			if ( is_array( $metadatas ) ) {

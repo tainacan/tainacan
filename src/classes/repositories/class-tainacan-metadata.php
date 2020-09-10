@@ -326,16 +326,25 @@ class Metadata extends Repository {
 				return [];
 			}
 		} elseif ( is_array( $args ) ) {
-
+			 
 			$args = array_merge( [
 				'posts_per_page' => - 1,
+				'meta_query' => [
+					[
+						'key'     => 'metadata_type',
+						'value'   => 'Tainacan\Metadata_Types\Control',
+						'compare' => 'NOT IN'
+					]
+				]
 			], $args );
-
+			
 			$args = $this->parse_fetch_args( $args );
 
 			$args['post_type'] = Entities\Metadatum::get_post_type();
 
 			$args = apply_filters( 'tainacan_fetch_args', $args, 'metadata' );
+
+			error_log(json_encode($args));
 
 			$wp_query = new \WP_Query( $args );
 
@@ -644,15 +653,11 @@ class Metadata extends Repository {
 
 		do_action( 'register_metadata_types' );
 
-		if ( $output === 'NAME' ) {
-			foreach ( $this->metadata_types as $metadata_type ) {
-				$return[] = str_replace( 'Tainacan\Metadata_Types\\', '', $metadata_type );
+		return array_filter($this->metadata_types, function($metadata_type) {
+			if ( $metadata_type != 'Tainacan\Metadata_Types\Control') {
+				return $output === 'NAME' ? str_replace( 'Tainacan\Metadata_Types\\', '', $metadata_type ) : $metadata_type;
 			}
-
-			return $return;
-		}
-
-		return $this->metadata_types;
+		});
 	}
 
 
@@ -802,19 +807,19 @@ class Metadata extends Repository {
 			'document_type' => [
 				'name'            => 'DocumentType',
 				'description'     => 'The item main document type',
-				'collection_id'   => $collection->get_id(),
+				'collection_id'   => 'default',
 				'metadata_type'   => 'Tainacan\Metadata_Types\Control',
 				'status'          => 'publish',
-				'display'		  => 'no',
+				'display'		  => 'never',
 				'metadata_type_options' => [ 'control_metadatum' => 'document_type' ]
 			],
 			'collection_id'       => [
 				'name'            => 'CollectionID',
 				'description'     => 'The item collection ID',
-				'collection_id'   => $collection->get_id(),
+				'collection_id'   => 'default',
 				'metadata_type'   => 'Tainacan\Metadata_Types\Control',
 				'status'          => 'publish',
-				'display'		  => 'no',
+				'display'		  => 'never',
 				'metadata_type_options' => [ 'control_metadatum' => 'collection_id' ]
 			],
 		];
