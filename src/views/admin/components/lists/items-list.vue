@@ -16,7 +16,7 @@
 
                 <span
                         style="margin-left: 10px"
-                        v-if="allItemsOnPageSelected && items.length > 1">
+                        v-if="totalPages > 1 && allItemsOnPageSelected && items.length > 1">
                     <b-checkbox
                             v-model="isAllItemsSelected">
                         {{ $i18n.getWithVariables('label_select_all_%s_items', [totalItems]) }}
@@ -1100,7 +1100,13 @@ export default {
                     return false;
             }
             return true;
-        }
+        },
+        itemsPerPage(){
+            return this.getItemsPerPage();
+        },
+        totalPages(){
+            return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
+        },
     },
     watch: {
         isAllItemsSelected(value) {
@@ -1152,7 +1158,8 @@ export default {
             'getOrder',
             'getOrderBy',
             'getSelectedItems',
-            'getHighlightedItem'
+            'getHighlightedItem',
+            'getItemsPerPage'
         ]),
         setSelectedItemChecked(itemId) {
             if (this.selectedItems.find((item) => item == itemId) != undefined)
