@@ -413,9 +413,9 @@ export const fetchAllCollectionNames = ({ commit }, collectionsIds) => {
 };
 
 // Send Files to Item Bulk Addition
-export const sendFile = ( { commit }, file ) => {
+export const sendFile = ( { commit }, {itemId, file } ) => {
     return new Promise(( resolve, reject ) => {
-        axios.wp.post('/media/', file, {
+        axios.wp.post('/media/?post=' + itemId, file, {
             headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
         })
             .then( res => {
