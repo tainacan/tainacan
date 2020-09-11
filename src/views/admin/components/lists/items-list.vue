@@ -23,7 +23,7 @@
                     </b-checkbox>
                 </span>
             </div>
-
+            <pre>{{ firstSelectedIndex }}</pre>
             <div class="field">
                 <b-dropdown
                         :mobile-modal="true"
@@ -1078,7 +1078,7 @@ export default {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             cursorPosX: -1,
             cursorPosY: -1,
-            contextMenuItem: null
+            contextMenuItem: null,
         }
     },
     computed: {
@@ -1093,6 +1093,9 @@ export default {
                 this.$eventBusSearch.setSelectedItemsForIframe(this.getSelectedItems());
 
             return this.getSelectedItems();
+        },
+        firstSelectedIndex() {
+            return (this.selectedItems && this.selectedItems.length) ? this.items.findIndex((anItem) => this.selectedItems[0] == anItem.id) : null;
         },
         isSelectingItems () {
             return this.selectedItems.length > 0;
@@ -1167,8 +1170,9 @@ export default {
         setSelectedItemChecked(itemId) {
             if (this.selectedItems.find((item) => item == itemId) != undefined)
                 this.removeSelectedItem(itemId);
-            else
+            else {
                 this.addSelectedItem(itemId);
+            }
         },
         getSelectedItemChecked(itemId) {
             return this.selectedItems.find(item => item == itemId) != undefined;
@@ -1371,8 +1375,26 @@ export default {
             this.clearContextMenu();
         },
         onClickItem($event, item) {
-            if ($event.ctrlKey || $event.shiftKey) {
+            if ($event.ctrlKey) {
                 this.setSelectedItemChecked(item.id);
+            } else if ($event.shiftKey) {
+
+                if (this.firstSelectedIndex != null) {
+                    const lastFirstSelectedIndex = this.firstSelectedIndex;
+                    const lastSelectedIndex = this.items.findIndex((anItem) => anItem.id == item.id);
+
+                    this.cleanSelectedItems();
+                    if (lastFirstSelectedIndex > lastSelectedIndex) {
+                        for (let i = lastFirstSelectedIndex; i >= lastSelectedIndex; i--)
+                            this.setSelectedItemChecked(this.items[i].id);
+                    } else {
+                        for (let i = lastFirstSelectedIndex; i <= lastSelectedIndex; i++)
+                            this.setSelectedItemChecked(this.items[i].id);
+                    }
+                } else {
+                    this.setSelectedItemChecked(item.id);
+                }
+
             } else {
                 if (this.$route.query.iframemode && !this.$route.query.readmode) {
                     this.setSelectedItemChecked(item.id)
