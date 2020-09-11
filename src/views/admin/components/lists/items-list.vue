@@ -36,7 +36,7 @@
                     <button
                             class="button is-white"
                             slot="trigger">
-                        <span>{{ $i18n.get('label_bulk_actions') }}</span>
+                        <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
                         </span>
@@ -66,6 +66,12 @@
                             @click="untrashSelectedItems()"
                             aria-role="listitem">
                         {{ $i18n.get('label_untrash_selected_items') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            :disabled="isAllItemsSelected"
+                            @click="$parent.openExposersModal(selectedItems)"
+                            aria-role="listitem">
+                        {{ $i18n.get('label_view_selected_items_as') }}
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
@@ -1081,9 +1087,6 @@ export default {
         },
         highlightedItem () {
             return this.getHighlightedItem();
-        },
-        selectedItemsFromStore() {
-            return this.getSelectedItems();
         },
         selectedItems () {
             if (this.$route.query.iframemode)
