@@ -1,13 +1,13 @@
-	<?php
+<?php
 
-	namespace Tainacan\Metadata_Types;
+namespace Tainacan\Metadata_Types;
 
-	defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-	/**
-	 * Class TainacanMetadatumType
-	 */
-	class Relationship extends Metadata_Type {
+/**
+ * Class TainacanMetadatumType
+ */
+class Relationship extends Metadata_Type {
 
 	function __construct(){
 		// call metadatum type constructor
@@ -236,4 +236,4 @@
 		}
 		return $opt;
 	}
-	}
+}
