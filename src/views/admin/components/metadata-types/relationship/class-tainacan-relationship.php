@@ -217,6 +217,23 @@ class Relationship extends Metadata_Type {
 		
 		return false;
 		
+}	
+
+	/**
+	 * Gets the options for this metadatum types, including default values for options
+	 * that were not set yet.
+	 * @return array Metadatum type options
+	 */
+	public function get_options() {
+		$opt = parent::get_options();
+		if ( isset($opt['search']) && !empty($opt['search']) ) {
+			$search_id = $opt['search'];
+			$metadata = \Tainacan\Repositories\Metadata::get_instance()->fetch($search_id, 'OBJECT');
+			if ($metadata->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy') {
+				$taxonomy_id = $metadata->get_metadata_type_options()['taxonomy_id'];
+				return array_merge(['search_by_tax' => $taxonomy_id], $opt);
+			}
+		}
+		return $opt;
 	}
-	
 }
