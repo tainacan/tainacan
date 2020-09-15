@@ -477,7 +477,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_gallery_help'							 => __( 'Help with the gallery view mode', 'tainacan' ),
 	'label_space_key'								 => __( 'SPACE', 'tainacan' ),
 	'label_esc_key'								 	 => __( 'ESC', 'tainacan' ),
-
+	'label_view_selected_items_as'					 => __( 'View selected items as...', 'tainacan' ),
+	'label_actions_for_the_selection'				 => __( 'Actions for the selection', 'tainacan' ),
+	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),

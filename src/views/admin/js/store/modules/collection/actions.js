@@ -38,6 +38,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 if (postQueries.advancedSearch)
                     advancedSearchResults = postQueries.advancedSearch;
             }
+                
             let query = qs.stringify(postQueries);
 
             // Guarantees at least empty fetch_only are passed in case none is found
@@ -412,9 +413,9 @@ export const fetchAllCollectionNames = ({ commit }, collectionsIds) => {
 };
 
 // Send Files to Item Bulk Addition
-export const sendFile = ( { commit }, file ) => {
+export const sendFile = ( { commit }, {itemId, file } ) => {
     return new Promise(( resolve, reject ) => {
-        axios.wp.post('/media/', file, {
+        axios.wp.post('/media/?post=' + itemId, file, {
             headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
         })
             .then( res => {

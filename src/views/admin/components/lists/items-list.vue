@@ -16,14 +16,14 @@
 
                 <span
                         style="margin-left: 10px"
-                        v-if="allItemsOnPageSelected && items.length > 1">
+                        v-if="totalPages > 1 && allItemsOnPageSelected && items.length > 1">
                     <b-checkbox
                             v-model="isAllItemsSelected">
                         {{ $i18n.getWithVariables('label_select_all_%s_items', [totalItems]) }}
                     </b-checkbox>
                 </span>
             </div>
-
+            <pre>{{ firstSelectedIndex }}</pre>
             <div class="field">
                 <b-dropdown
                         :mobile-modal="true"
@@ -36,7 +36,7 @@
                     <button
                             class="button is-white"
                             slot="trigger">
-                        <span>{{ $i18n.get('label_bulk_actions') }}</span>
+                        <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
                         </span>
@@ -66,6 +66,12 @@
                             @click="untrashSelectedItems()"
                             aria-role="listitem">
                         {{ $i18n.get('label_untrash_selected_items') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            :disabled="isAllItemsSelected"
+                            @click="$parent.openExposersModal(selectedItems)"
+                            aria-role="listitem">
+                        {{ $i18n.get('label_view_selected_items_as') }}
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
@@ -1072,7 +1078,7 @@ export default {
             thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             cursorPosX: -1,
             cursorPosY: -1,
-            contextMenuItem: null
+            contextMenuItem: null,
         }
     },
     computed: {
@@ -1082,14 +1088,14 @@ export default {
         highlightedItem () {
             return this.getHighlightedItem();
         },
-        selectedItemsFromStore() {
-            return this.getSelectedItems();
-        },
         selectedItems () {
             if (this.$route.query.iframemode)
                 this.$eventBusSearch.setSelectedItemsForIframe(this.getSelectedItems());
 
             return this.getSelectedItems();
+        },
+        firstSelectedIndex() {
+            return (this.selectedItems && this.selectedItems.length) ? this.items.findIndex((anItem) => this.selectedItems[0] == anItem.id) : null;
         },
         isSelectingItems () {
             return this.selectedItems.length > 0;
@@ -1100,7 +1106,13 @@ export default {
                     return false;
             }
             return true;
-        }
+        },
+        itemsPerPage(){
+            return this.getItemsPerPage();
+        },
+        totalPages(){
+            return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
+        },
     },
     watch: {
         isAllItemsSelected(value) {
@@ -1152,13 +1164,15 @@ export default {
             'getOrder',
             'getOrderBy',
             'getSelectedItems',
-            'getHighlightedItem'
+            'getHighlightedItem',
+            'getItemsPerPage'
         ]),
         setSelectedItemChecked(itemId) {
             if (this.selectedItems.find((item) => item == itemId) != undefined)
                 this.removeSelectedItem(itemId);
-            else
+            else {
                 this.addSelectedItem(itemId);
+            }
         },
         getSelectedItemChecked(itemId) {
             return this.selectedItems.find(item => item == itemId) != undefined;
@@ -1361,8 +1375,26 @@ export default {
             this.clearContextMenu();
         },
         onClickItem($event, item) {
-            if ($event.ctrlKey || $event.shiftKey) {
+            if ($event.ctrlKey) {
                 this.setSelectedItemChecked(item.id);
+            } else if ($event.shiftKey) {
+
+                if (this.firstSelectedIndex != null) {
+                    const lastFirstSelectedIndex = this.firstSelectedIndex;
+                    const lastSelectedIndex = this.items.findIndex((anItem) => anItem.id == item.id);
+
+                    this.cleanSelectedItems();
+                    if (lastFirstSelectedIndex > lastSelectedIndex) {
+                        for (let i = lastFirstSelectedIndex; i >= lastSelectedIndex; i--)
+                            this.setSelectedItemChecked(this.items[i].id);
+                    } else {
+                        for (let i = lastFirstSelectedIndex; i <= lastSelectedIndex; i++)
+                            this.setSelectedItemChecked(this.items[i].id);
+                    }
+                } else {
+                    this.setSelectedItemChecked(item.id);
+                }
+
             } else {
                 if (this.$route.query.iframemode && !this.$route.query.readmode) {
                     this.setSelectedItemChecked(item.id)

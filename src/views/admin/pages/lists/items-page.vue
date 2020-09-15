@@ -890,14 +890,15 @@
                     trapFocus: true
                 });
             },
-            openExposersModal() {
+            openExposersModal(selectedItems) {
                 this.$buefy.modal.open({
                     parent: this,
                     component: ExposersModal,
                     hasModalCard: true,
                     props: { 
                         collectionId: this.collectionId,
-                        totalItems: this.totalItems
+                        totalItems: this.totalItems,
+                        selectedItems: selectedItems
                     },
                     trapFocus: true
                 })
