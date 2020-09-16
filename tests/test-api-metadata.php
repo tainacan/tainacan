@@ -136,7 +136,7 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 
 		$data = $response_defaults->get_data();
 
-		$this->assertCount(1, $data);
+		$this->assertCount(3, $data);
 
 		$this->assertEquals('default', $data[0]['collection_id']);
 		$this->assertEquals('Data 2', $data[0]['name']);
