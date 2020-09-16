@@ -9,34 +9,34 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Collection extends Entity {
 
-    protected
-        $diplay_name,
-        $full,
-        $_thumbnail_id,
-        $modification_date,
-        $creation_date,
-        $author_id,
-        $url,
-        $name,
-        $slug,
-        $order,
-        $parent,
-        $description,
-        $default_order,
-        $default_orderby,
-        $columns,
+	protected
+		$diplay_name,
+		$full,
+		$_thumbnail_id,
+		$modification_date,
+		$creation_date,
+		$author_id,
+		$url,
+		$name,
+		$slug,
+		$order,
+		$parent,
+		$description,
+		$default_order,
+		$default_orderby,
+		$columns,
 		$default_view_mode,
 		$enabled_view_modes,
-        $metadata_order,
-        $filters_order,
-        $enable_cover_page,
-        $cover_page_id,
-        $header_image_id,
-	    $header_image,
-        $comment_status,
-        $allow_comments;
+		$metadata_order,
+		$filters_order,
+		$enable_cover_page,
+		$cover_page_id,
+		$header_image_id,
+		$header_image,
+		$comment_status,
+		$allow_comments;
 
-    /**
+	/**
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::post_type
 	 * @var string
@@ -130,7 +130,7 @@ class Collection extends Entity {
 				'revisions',
 				'page-attributes',
 				'post-formats',
-			    'comments'
+				'comments'
 			]
 		);
 
@@ -226,7 +226,7 @@ class Collection extends Entity {
 		return apply_filters("tainacan-collection-get-attachments", $attachments, $exclude, $this);
 	}
 
-    /**
+	/**
 	 * @return string
 	 */
 	function get_author_name() {
@@ -241,11 +241,11 @@ class Collection extends Entity {
 
 		$sizes = get_intermediate_image_sizes();
 
-        array_unshift($sizes, 'full');
+		array_unshift($sizes, 'full');
 
-        foreach ( $sizes as $size ) {
-            $thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
-        }
+		foreach ( $sizes as $size ) {
+			$thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
+		}
 
 		return apply_filters("tainacan-collection-get-thumbnail", $thumbs, $this);
 	}
@@ -270,10 +270,10 @@ class Collection extends Entity {
 	 */
 
 	function get__thumbnail_id() {
-        $_thumbnail_id = $this->get_mapped_property("_thumbnail_id");
-        if ( isset( $_thumbnail_id ) ) {
-            return $_thumbnail_id;
-        }
+		$_thumbnail_id = $this->get_mapped_property("_thumbnail_id");
+		if ( isset( $_thumbnail_id ) ) {
+			return $_thumbnail_id;
+		}
 
 		return get_post_thumbnail_id( $this->get_id() );
 	}
@@ -429,8 +429,8 @@ class Collection extends Entity {
 	 * @return boolean
 	 */
 	function is_cover_page_enabled() {
-        return $this->get_enable_cover_page() === 'yes';
-    }
+		return $this->get_enable_cover_page() === 'yes';
+	}
 
 	/**
 	 * Get enable cover page attribute
@@ -532,7 +532,7 @@ class Collection extends Entity {
 	 * @return string "open"|"closed"
 	 */
 	public function get_comment_status() {
-	    return $this->get_mapped_property('comment_status');
+		return $this->get_mapped_property('comment_status');
 	}
 
 	/**
@@ -540,7 +540,7 @@ class Collection extends Entity {
 	 * @return bool
 	 */
 	public function get_allow_comments() {
-	    return $this->get_mapped_property('allow_comments');
+		return $this->get_mapped_property('allow_comments');
 	}
 
 	/**
@@ -720,7 +720,7 @@ class Collection extends Entity {
 	 * @param $value string "open"|"closed"
 	 */
 	public function set_comment_status( $value ) {
-	    $this->set_mapped_property('comment_status', $value);
+		$this->set_mapped_property('comment_status', $value);
 	}
 
 	/**
@@ -729,7 +729,7 @@ class Collection extends Entity {
 	 * @param $value bool
 	 */
 	public function set_allow_comments( $value ) {
-	    $this->set_mapped_property('allow_comments', $value );
+		$this->set_mapped_property('allow_comments', $value );
 	}
 
 	/**
