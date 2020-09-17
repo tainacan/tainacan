@@ -68,7 +68,7 @@ class Taxonomies extends Repository {
 			'enabled_post_types'    => [
 				'map'         => 'meta_multi',
 				'title'       => __( 'Enabled for post types', 'tainacan' ),
-				'type'        => 'array/string',
+				'type'        => ['array', 'string'],
 				'description' => __( 'Also enable this taxonomy for other WordPress post types', 'tainacan' ),
 				'on_error'    => __( 'Error enabling this taxonomy for post types', 'tainacan' ),
 				'validation'  => '',

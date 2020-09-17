@@ -803,6 +803,7 @@ export default {
             pageTitle: '',
             itemId: Number,
             item: {},
+            itemRequestCancel: undefined,
             collectionId: Number,
             sequenceId: Number,
             itemPosition: Number,
@@ -1449,62 +1450,71 @@ export default {
         },
         loadExistingItem() {
 
+            // Cancels previous Request
+            if (this.itemRequestCancel != undefined)
+                this.itemRequestCancel.cancel('Item search Canceled.');
+
             this.fetchItem({
                 itemId: this.itemId,
                 contextEdit: true,
                 fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html'
             })
-            .then(res => {
-                this.item = res;
+            .then((resp) => {
+                resp.request.then((res) => {
+                    this.item = res;
 
-                // Checks if user has permission to edit
-                if (!this.item.current_user_can_edit)
-                    this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+                    // Checks if user has permission to edit
+                    if (!this.item.current_user_can_edit)
+                        this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
 
-                // Updates Collection BreadCrumb
-                if (this.isOnSequenceEdit) {
-                    this.$root.$emit('onCollectionBreadCrumbUpdate', [
-                        { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
-                        { path: '', label: this.$i18n.get('sequence') },
-                        { path: '', label: this.item.title },
-                        { path: '', label: this.$i18n.get('edit') }
-                    ]);
-                } else {
-                    this.$root.$emit('onCollectionBreadCrumbUpdate', [
-                        { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
-                        { path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), label: this.item.title },
-                        { path: '', label: this.$i18n.get('edit') }
-                    ]);
-                }
+                    // Updates Collection BreadCrumb
+                    if (this.isOnSequenceEdit) {
+                        this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                            { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
+                            { path: '', label: this.$i18n.get('sequence') },
+                            { path: '', label: this.item.title },
+                            { path: '', label: this.$i18n.get('edit') }
+                        ]);
+                    } else {
+                        this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                            { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
+                            { path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), label: this.item.title },
+                            { path: '', label: this.$i18n.get('edit') }
+                        ]);
+                    }
 
-                // Fills hook forms with it's real values
-                this.$nextTick()
-                    .then(() => {
-                        this.updateExtraFormData(this.item);
-                    });
+                    // Fills hook forms with it's real values
+                    this.$nextTick()
+                        .then(() => {
+                            this.updateExtraFormData(this.item);
+                        });
 
-                // Fill this.form data with current data.
-                this.form.status = this.item.status;
-                this.form.document = this.item.document;
-                this.form.document_type = this.item.document_type;
-                this.form.comment_status = this.item.comment_status;
+                    // Fill this.form data with current data.
+                    this.form.status = this.item.status;
+                    this.form.document = this.item.document;
+                    this.form.document_type = this.item.document_type;
+                    this.form.comment_status = this.item.comment_status;
 
-                if (this.form.document_type != undefined && this.form.document_type == 'url')
-                    this.urlLink = this.form.document;
-                if (this.form.document_type != undefined && this.form.document_type == 'text')
-                    this.textContent = this.form.document;
+                    if (this.form.document_type != undefined && this.form.document_type == 'url')
+                        this.urlLink = this.form.document;
+                    if (this.form.document_type != undefined && this.form.document_type == 'text')
+                        this.textContent = this.form.document;
 
-                if (this.item.status == 'publish' || this.item.status == 'private')
-                    this.visibility = this.item.status;
+                    if (this.item.status == 'publish' || this.item.status == 'private')
+                        this.visibility = this.item.status;
 
-                this.loadMetadata();
-                this.setLastUpdated(this.item.modification_date);
+                    this.loadMetadata();
+                    this.setLastUpdated(this.item.modification_date);
 
-                // Fetch current existing attachments now that item.document
-                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
+                    // Fetch current existing attachments now that item.document
+                    this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
 
-                // Initializes Media Frames now that itemId and item.document exists
-                this.initializeMediaFrames();
+                    // Initializes Media Frames now that itemId and item.document exists
+                    this.initializeMediaFrames();
+                });
+
+                // Item resquest token for cancelling
+                this.itemRequestCancel = resp.source;
             });
         },
         onNextInSequence() {

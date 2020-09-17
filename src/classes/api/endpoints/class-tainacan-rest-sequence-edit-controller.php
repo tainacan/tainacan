@@ -192,6 +192,7 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 		];
 
 		$query_params['use_query'] = [
+			'type'        => ['boolean', 'object'],
 			'description' => __( 'The query used to define the items in the group', 'tainacan' ),
 		];
 

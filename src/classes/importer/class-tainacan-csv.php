@@ -489,7 +489,7 @@ class CSV extends Importer {
 			}
 		} else if( strpos($column_value,'file:') === 0 ) {
 			$correct_value = trim(substr($column_value, 5));
-			if( filter_var($correct_value, FILTER_VALIDATE_URL) ) {
+			if( isset(parse_url($correct_value)['scheme'] ) ) {
 				$id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
 
 				if(!$id){
@@ -562,7 +562,7 @@ class CSV extends Importer {
 		if( $attachments ) {
 			foreach( $attachments as $attachment ) {
 				if(empty($attachment)) continue;
-				if( filter_var($attachment, FILTER_VALIDATE_URL) ) {
+				if(isset(parse_url($attachment)['scheme'])) {
 					$id = $TainacanMedia->insert_attachment_from_url($attachment, $item_inserted->get_id());
 					if(!$id) {
 						$this->add_error_log('Error in Attachment file imported from URL ' . $attachment);

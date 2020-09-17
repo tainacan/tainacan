@@ -52,11 +52,26 @@
                                     placement: 'auto-start'
                                 }">
                             {{ item.title != undefined ? item.title : '' }}
-                        </p>                            
+                        </p>                 
+                        <span 
+                                v-if="isSlideshowViewModeEnabled"
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 100,
+                                    },
+                                    content: $i18n.get('label_see_on_slideshow'),
+                                    placement: 'auto-start'
+                                }"          
+                                @click.prevent="starSlideshowFromHere(index)"
+                                class="icon slideshow-icon">
+                            <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                        </span>              
                     </div>
                     <!-- Remaining metadata -->  
                     <div class="media">
                         <div 
+                                v-if="!shouldHideItemsThumbnail"
                                 :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }"
                                 class="card-thumbnail">
                             <img 
@@ -119,16 +134,19 @@ export default {
     mixins: [
         viewModesMixin
     ],
-    props: {
-        collectionId: Number,
-        displayedMetadata: Array,
-        items: Array,
-        isLoading: false
+    data() {
+        return {
+            shouldHideItemsThumbnail: this.$root.hideItemsThumbnail
+        }
+    },
+    computed: {
+        descriptionMaxCharacter() {
+            return (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? (this.shouldHideItemsThumbnail ? 185 : 155) : (this.shouldHideItemsThumbnail ? 480 : 330);
+        }
     },
     methods: {
         getLimitedDescription(description) {
-            let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 155 : 330;
-            return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
+            return description.length > this.descriptionMaxCharacter ? description.substring(0, this.descriptionMaxCharacter - 3) + '...' : description;
         }
     }
 }

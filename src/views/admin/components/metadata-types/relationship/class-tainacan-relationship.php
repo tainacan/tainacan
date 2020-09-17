@@ -9,86 +9,86 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Relationship extends Metadata_Type {
 
-    function __construct(){
-        // call metadatum type constructor
-        parent::__construct();
-        $this->set_primitive_type('item');
-        $this->set_repository( \Tainacan\Repositories\Items::get_instance() );
-        $this->set_component('tainacan-relationship');
-        $this->set_form_component('tainacan-form-relationship');
-        $this->set_name( __('Relationship', 'tainacan') );
-        $this->set_description( __('A relationship with another item', 'tainacan') );
-        $this->set_preview_template('
-            <div>
-                <div class="taginput control is-expanded has-selected">
-                    <div class="taginput-container is-focusable"> 
-                        <div class="autocomplete control">
-                            <div class="control has-icon-right is-loading is-clearfix">
-                                <input type="text" class="input" value="'. __('Item') . ' 9" > 
-                            </div> 
-                            <div class="dropdown-menu" style="">
-                                <div class="dropdown-content">
-                                    <a class="dropdown-item is-hovered">
-                                        <span>'. __('Collection') . ' 2 <strong>'._('item') . ' 9</strong>9</span>
-                                    </a>
-                                    <a class="dropdown-item">
-                                        <span>'. __('Collection') . ' 3 <strong>'._('item') . ' 9</strong>9</span>
-                                    </a>
-                                    <a class="dropdown-item">
-                                        <span>'. __('Collection') . ' 3 <strong>'._('item') . ' 9</strong>8</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        ');
-    }
+	function __construct(){
+		// call metadatum type constructor
+		parent::__construct();
+		$this->set_primitive_type('item');
+		$this->set_repository( \Tainacan\Repositories\Items::get_instance() );
+		$this->set_component('tainacan-relationship');
+		$this->set_form_component('tainacan-form-relationship');
+		$this->set_name( __('Relationship', 'tainacan') );
+		$this->set_description( __('A relationship with another item', 'tainacan') );
+		$this->set_preview_template('
+			<div>
+				<div class="taginput control is-expanded has-selected">
+					<div class="taginput-container is-focusable"> 
+						<div class="autocomplete control">
+							<div class="control has-icon-right is-loading is-clearfix">
+								<input type="text" class="input" value="'. __('Item') . ' 9" > 
+							</div> 
+							<div class="dropdown-menu" style="">
+								<div class="dropdown-content">
+									<a class="dropdown-item is-hovered">
+										<span>'. __('Collection') . ' 2 <strong>'._('item') . ' 9</strong>9</span>
+									</a>
+									<a class="dropdown-item">
+										<span>'. __('Collection') . ' 3 <strong>'._('item') . ' 9</strong>9</span>
+									</a>
+									<a class="dropdown-item">
+										<span>'. __('Collection') . ' 3 <strong>'._('item') . ' 9</strong>8</span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		');
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function get_form_labels(){
-       return [
-           'collection_id' => [
-               'title' => __( 'Related Collection', 'tainacan' ),
-               'description' => __( 'Select the collection to fetch items', 'tainacan' ),
-           ],
-           'search' => [
-               'title' => __( 'Related Metadatum', 'tainacan' ),
-               'description' => __( 'Select the metadata to use as search criteria in the target collection and as a label when representing the relationship', 'tainacan' ),
-           ],
-           'repeated' => [
-               'title' =>__( 'Allow repeated items', 'tainacan' ),
-               'description' => __( 'Allows different items to be related to the same item selected in another collection.', 'tainacan' ),
-           ]
-       ];
-    }
-    
-    public function validate_options(\Tainacan\Entities\Metadatum $metadatum) {
-        if ( !in_array($metadatum->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
-            return true;
+	/**
+	 * @inheritdoc
+	 */
+	public function get_form_labels(){
+		return [
+			'collection_id' => [
+				'title' => __( 'Related Collection', 'tainacan' ),
+				'description' => __( 'Select the collection to fetch items', 'tainacan' ),
+			],
+			'search' => [
+				'title' => __( 'Related Metadatum', 'tainacan' ),
+				'description' => __( 'Select the metadata to use as search criteria in the target collection and as a label when representing the relationship', 'tainacan' ),
+			],
+			'repeated' => [
+				'title' =>__( 'Allow repeated items', 'tainacan' ),
+				'description' => __( 'Allows different items to be related to the same item selected in another collection.', 'tainacan' ),
+			]
+		];
+	}
 
-        if (!empty($this->get_option('collection_id')) && !is_numeric($this->get_option('collection_id'))) {
-            return [
-                'collection_id' => __('Invalid collection ID','tainacan')
-            ];
-        } else if( empty($this->get_option('collection_id'))) {
-            return [
-                'collection_id' => __('The related collection is required','tainacan')
-            ];
-        }
+	public function validate_options(\Tainacan\Entities\Metadatum $metadatum) {
+		if ( !in_array($metadatum->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+			return true;
+
+		if (!empty($this->get_option('collection_id')) && !is_numeric($this->get_option('collection_id'))) {
+			return [
+				'collection_id' => __('Invalid collection ID','tainacan')
+			];
+		} else if( empty($this->get_option('collection_id'))) {
+			return [
+				'collection_id' => __('The related collection is required','tainacan')
+			];
+		}
 		// empty is ok
 		if  ( !empty($this->get_option('search')) && !is_numeric($this->get_option('search')) ) {
 			return [
-                'search' => __('Search option must be a numeric Metadatum ID','tainacan')
-            ];
+				'search' => __('Search option must be a numeric Metadatum ID','tainacan')
+			];
 		}
 		
-        return true;
-    }
-	
+		return true;
+	}
+
 	/**
 	 * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as an html string
 	 * @param  Item_Metadata_Entity $item_metadata 
@@ -159,7 +159,7 @@ class Relationship extends Metadata_Type {
 		return $return;
 		
 	}
-	
+
 	private function get_item_html($item) {
 		
 		$return = '';
@@ -199,7 +199,7 @@ class Relationship extends Metadata_Type {
 		return $return;
 		
 	}
-	
+
 	/**
 	 * Get related Collection object 
 	 * @return \Tainacan\Entities\Collection|false The Collection object or false
@@ -218,5 +218,22 @@ class Relationship extends Metadata_Type {
 		return false;
 		
 	}
-	
+
+	/**
+	 * Gets the options for this metadatum types, including default values for options
+	 * that were not set yet.
+	 * @return array Metadatum type options
+	 */
+	public function get_options() {
+		$opt = parent::get_options();
+		if ( isset($opt['search']) && !empty($opt['search']) ) {
+			$search_id = $opt['search'];
+			$metadata = \Tainacan\Repositories\Metadata::get_instance()->fetch($search_id, 'OBJECT');
+			if ($metadata->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy') {
+				$taxonomy_id = $metadata->get_metadata_type_options()['taxonomy_id'];
+				return array_merge(['search_by_tax' => $taxonomy_id], $opt);
+			}
+		}
+		return $opt;
+	}
 }

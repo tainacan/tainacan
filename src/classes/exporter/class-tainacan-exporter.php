@@ -799,7 +799,7 @@ abstract class Exporter {
 
 		if (method_exists($this, $method_name)) {
 			$author = $this->get_transient('author');
-			$this->add_log('User in process: ' . $author);
+			$this->add_log('User in process: ' . $author . ' (' . date("Y-m-d H:i:s") . ')');
 			wp_set_current_user($author);
 			$result = $this->$method_name();
 		} else {

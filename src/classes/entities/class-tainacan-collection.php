@@ -35,6 +35,7 @@ class Collection extends Entity {
 		$header_image,
 		$comment_status,
 		$allow_comments,
+		$hide_items_thumbnail_on_lists,
 		$submission_anonymous_user;
 
 	/**
@@ -554,6 +555,15 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * Get the state of $hide_items_thumbnail_on_lists to decide if it should always display item thumbnails, even being placeholders
+	 *
+	 * @return string
+	 */
+	function get_hide_items_thumbnail_on_lists() {
+		return $this->get_mapped_property( 'hide_items_thumbnail_on_lists' );
+	}
+
+	/**
 	 * Set the collection name
 	 *
 	 * @param [string] $value
@@ -751,6 +761,17 @@ class Collection extends Entity {
 	 */
 	function set_submission_anonymous_user( $value ) {
 		$this->set_mapped_property( 'submission_anonymous_user', $value );
+	}
+
+	/**
+	 * Set the state of $hide_items_thumbnail_on_lists
+	 *
+	 * @param string $value
+	 *
+	 * @return void
+	 */
+	function set_hide_items_thumbnail_on_lists( $value ) {
+		$this->set_mapped_property( 'hide_items_thumbnail_on_lists', $value );
 	}
 
 	/**

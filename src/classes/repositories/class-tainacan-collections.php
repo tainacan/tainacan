@@ -108,8 +108,8 @@ class Collections extends Repository {
 			'default_displayed_metadata' => [
 				'map'         => 'meta',
 				'title'       => __( 'Default Displayed Metadata', 'tainacan' ),
-				'type'        => 'array/object/string',
-				'items'       => [ 'type' => 'array/string/integer/object' ],
+				'type'        => ['array', 'object', 'string'],
+				'items'       => [ 'type' => ['array','string', 'integer', 'object'] ],
 				'default'     => [],
 				'description' => __( 'List of collection properties that will be displayed in the table view', 'tainacan' ),
 				//'validation' => v::stringType(),
@@ -134,16 +134,16 @@ class Collections extends Repository {
 			'metadata_order'             => [
 				'map'         => 'meta',
 				'title'       => __( 'Metadata order', 'tainacan' ),
-				'type'        => 'array/object/string',
-				'items'       => [ 'type' => 'array/string/integer/object' ],
+				'type'        => ['array', 'object', 'string'],
+				'items'       => [ 'type' => ['array', 'string', 'integer', 'object'] ],
 				'description' => __( 'The order of the metadata in the collection', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
 			'filters_order'              => [
 				'map'         => 'meta',
 				'title'       => __( 'Filters order', 'tainacan' ),
-				'type'        => 'array/object/string',
-				'items'       => [ 'type' => 'array/string/integer/object' ],
+				'type'        => ['array', 'object', 'string'],
+				'items'       => [ 'type' => ['array', 'string', 'integer', 'object'] ],
 				'description' => __( 'The order of the filters in the collection', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
@@ -159,7 +159,7 @@ class Collections extends Repository {
 			'cover_page_id'              => [
 				'map'         => 'meta',
 				'title'       => __( 'Cover Page ID', 'tainacan' ),
-				'type'        => 'integer/string',
+				'type'        => ['integer', 'string'],
 				'description' => __( 'If enabled, this custom page will be used as cover for this collection, instead of default items list.', 'tainacan' ),
 				'on_error'    => __( 'Invalid page', 'tainacan' ),
 				//'validation' => v::numeric(),
@@ -202,7 +202,15 @@ class Collections extends Repository {
 				'description'            => __( 'If enabled, allows submission by anonymous user.', 'tainacan' ),
 				'default'                => 'false'
 			],
-
+			'hide_items_thumbnail_on_lists' => [
+				'map'         => 'meta',
+				'title'       => __( 'Hide items thumbnail on lists', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Enable this option to never display the item thumbnail on the items list. This is ment for collections made of mainly textual content.', 'tainacan' ),
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+				'default'     => 'no'
+			],
 		] );
 	}
 

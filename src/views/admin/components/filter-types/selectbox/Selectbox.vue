@@ -62,8 +62,10 @@
                 let promise = null;
                 promise = this.getValuesPlainText( this.metadatumId, null, this.isRepositoryLevel );
                 promise.request
-                    .then(() => {
+                    .then((res) => {
                         this.updateSelectedValues();
+
+                        this.$emit('updateParentCollapse', res.data.values.length > 0 );
                     })
                     .catch( error => {
                         if (isCancel(error))

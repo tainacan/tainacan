@@ -173,6 +173,7 @@ abstract class Repository {
 				$diffs = $this->insert_metadata( $obj, $prop, $diffs );
 			}
 		}
+		update_post_meta( $id, '_user_edit_lastr', get_current_user_id() );
 
 		do_action( 'tainacan-insert', $obj, $diffs, $is_update );
 		do_action( 'tainacan-insert-' . $obj->get_post_type(), $obj );

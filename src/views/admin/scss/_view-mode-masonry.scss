@@ -9,10 +9,6 @@
     animation-name: appear;   
     animation-duration: 0.5s;
 
-    .selected-masonry-item {
-        background-color: var(--tainacan-turquoise1);
-    }
-
     .tainacan-masonry-item {
         background-color: var(--tainacan-item-background-color);
         display: block;
@@ -26,11 +22,15 @@
         &:hover {
             background-color: var(--tainacan-item-heading-hover-background-color);
         }
+        &.selected-masonry-item {
+            background-color: var(--tainacan-turquoise1);
+        }
 
         .masonry-item-checkbox {
             position: absolute;
             margin-top: 8px;
             margin-left: 1em;
+            z-index: 9;
         }
         .actions-area {
             position: relative;
@@ -59,13 +59,13 @@
             opacity: 1.0;
             height: 32px;
             margin-top: -30px;
-            background-color: var(--tainacan-item-heading-hover-background-color) !important;
+            background-color: var(--tainacan-item-heading-hover-background-color);
 
             a {
                 opacity: 1;
             }
         }
-        &.selected-grid-item {
+        &.selected-masonry-item {
             .actions-area {
                 background-color: var(--tainacan-turquoise1);
             }
@@ -93,10 +93,8 @@
                 visibility: hidden;
             }
 
-            // Masonry skeleton is white due to 
-            // background-blend-mode
             .skeleton {
-                background: var(--tainacan-background-color);
+                background: var(--tainacan-skeleton-color);
                 color: transparent !important;
             }
         }
@@ -104,20 +102,36 @@
         .metadata-title {
             flex-shrink: 0;
             margin: 0px 6px 0px 24px;
-            padding: 10px 1em;
+            padding: 8px 1em;
             min-height: 41px;
             cursor: pointer;
+            position: relative;
 
             p { 
                 font-size: 0.875em !important;
                 color: var(--tainacan-heading-color) !important; 
                 text-align: left !important;
                 margin-bottom: 0 !important;
+                line-height: 1.875em;
                 word-break: break-word;
                 margin: 0;
             }
+
+            .slideshow-icon {
+                color: var(--tainacan-info-color); 
+                position: absolute;
+                right: 7px;
+                top: 9px;
+                transform: scale(0.0);
+                transition: transform 0.2s ease;
+            }
         } 
-    
+        &:hover,
+        &:focus {
+            .slideshow-icon {
+                transform: scale(1.0);
+            }
+        }
     }
 }
 

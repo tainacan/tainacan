@@ -41,7 +41,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
                         'description' => __( 'The ID of the owner of the background processes. Defaults to current user', 'tainacan' ),
                     ],
                     'all_users' => [
-                        'type'        => 'bool',
+                        'type'        => 'boolean',
                         'description' => __( 'Whether to return processes from all users (if current user is admin).', 'tainacan' ),
                         'default'     => false,
                     ],
@@ -66,7 +66,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
                         'default'     => 1
                     ],
 					'recent' => [
-                        'type'        => 'bool',
+                        'type'        => 'boolean',
                         'description' => __( 'Returns only processes created or updated recently', 'tainacan' ),
                         'default' => false
                     ],

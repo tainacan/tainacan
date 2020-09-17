@@ -230,12 +230,23 @@
                 if (this.itemMetadatum.metadatum.metadata_type_options &&
                     this.itemMetadatum.metadatum.metadata_type_options.search)
                 {
-                    query['metaquery'] = [];
+                    if (this.itemMetadatum.metadatum.metadata_type_options.search_by_tax) {
+                        query['taxquery'] = [];
+
+                        query['taxquery'][0] = {
+                            taxonomy: `tnc_tax_${this.itemMetadatum.metadatum.metadata_type_options.search_by_tax}`,
+                            operator: 'LIKE',
+                            taxonomy_id : this.itemMetadatum.metadatum.metadata_type_options.search_by_tax,
+                            terms: search
+                        }
+                    } else {
+                        query['metaquery'] = [];
                     
-                    query['metaquery'][0] = {
-                        key: this.itemMetadatum.metadatum.metadata_type_options.search,
-                        value: search,
-                        compare: 'LIKE'
+                        query['metaquery'][0] = {
+                            key: this.itemMetadatum.metadatum.metadata_type_options.search,
+                            value: search,
+                            compare: 'LIKE'
+                        }
                     }
                     
                 } else {

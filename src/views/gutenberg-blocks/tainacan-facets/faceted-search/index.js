@@ -105,6 +105,10 @@ registerBlockType('tainacan/faceted-search', {
             type: Boolean,
             default: false
         },
+        hideItemsThumbnail: {
+            type: Boolean,
+            default: false
+        },
         hideExposersButton: {
             type: Boolean,
             default: false
@@ -147,7 +151,7 @@ registerBlockType('tainacan/faceted-search', {
         },
         listType: {
             type: String,
-            default: 'collection'
+            default: ''
         },
         isCollectionModalOpen: {
             type: Boolean,
@@ -239,6 +243,7 @@ registerBlockType('tainacan/faceted-search', {
             hideDisplayedMetadataButton,
             hideSortingArea,
             hideSortByButton,
+            hideItemsThumbnail,
             hideExposersButton,
             hideItemsPerPageButton,
             hidePaginationArea,
@@ -268,8 +273,9 @@ registerBlockType('tainacan/faceted-search', {
             secondaryColor
         } = attributes;
 
-        const registeredViewModesEntries = Object.entries(tainacan_plugin.registered_view_modes);
-        const registeredViewModesKeys = Object.keys(tainacan_plugin.registered_view_modes);
+        let registeredViewModesEntries = [];
+        let registeredViewModesKeys = [];
+        updateAvailableViewModes(hideItemsThumbnail);
 
         const fontSizes = [
             {
@@ -332,12 +338,44 @@ registerBlockType('tainacan/faceted-search', {
             return enabledViewModes.includes(viewMode);
         }
 
+        function updateAvailableViewModes(isItemThumbnailHidden) {
+            if (isItemThumbnailHidden != true) {
+                registeredViewModesEntries = Object.entries(tainacan_plugin.registered_view_modes);
+                registeredViewModesKeys = Object.keys(tainacan_plugin.registered_view_modes);
+            } else {
+                const validViewModes = {};
+                Object.keys(tainacan_plugin.registered_view_modes).forEach((viewModeKey) => {
+                    if (!tainacan_plugin.registered_view_modes[viewModeKey]['requires_thumbnail']) 
+                        validViewModes[viewModeKey] = tainacan_plugin.registered_view_modes[viewModeKey];
+                });
+                registeredViewModesEntries = Object.entries(validViewModes);
+                registeredViewModesKeys = Object.keys(validViewModes);
+
+                const availableViewModes = JSON.parse(JSON.stringify(enabledViewModes)).filter((aViewMode) => registeredViewModesKeys.includes(aViewMode) );
+                if (JSON.stringify(availableViewModes) != JSON.stringify(enabledViewModes)) {
+                    enabledViewModes = availableViewModes;
+
+                    // Puts a valid view mode as default if the current one is not in the list anymore.
+                    if (!checkIfViewModeIsEnabled(defaultViewMode)) {
+                        const validViewModeIndex = enabledViewModes.findIndex((aViewMode) => registeredViewModesKeys.includes(aViewMode));
+                        if (validViewModeIndex >= 0)
+                            defaultViewMode = enabledViewModes[validViewModeIndex];
+                    }
+
+                    setAttributes({
+                        enabledViewModes: enabledViewModes,
+                        defaultViewMode: defaultViewMode 
+                    });
+                }
+            }
+        }
+
         function onUpdateListType( aListType, props) {
             listType = aListType;
 
             if (listType != 'collection') {
                 enabledViewModes = registeredViewModesKeys;
-                defaultViewMode = 'masonry';
+                defaultViewMode = hideItemsThumbnail ? 'table' : 'masonry';
             }
 
             setAttributes({ 
@@ -349,7 +387,7 @@ registerBlockType('tainacan/faceted-search', {
             if (listType == 'term')
                 openTermModal();
             else if (listType == 'collection')
-                openCollectionModal()
+                openCollectionModal();
             else
                 return;
         }
@@ -366,40 +404,66 @@ registerBlockType('tainacan/faceted-search', {
                 <div>
                     <BlockControls>
                         { !( termId == undefined && listType == 'term' ) && !( collectionId == undefined && listType == 'collection' ) ?
-                        <ToolbarGroup>
-                            <Dropdown
-                                contentClassName="wp-block-tainacan__dropdown"
-                                renderToggle={ ( { isOpen, onToggle } ) => (
-                                    tainacan_blocks.wp_version < '5.5' ?
+                            tainacan_blocks.wp_version < '5.4' ?
+                                <Dropdown
+                                    contentClassName="wp-block-tainacan__dropdown"
+                                    renderToggle={ ( { isOpen, onToggle } ) => 
                                         <Button
-                                            style={{ whiteSpace: 'nowrap' }}
+                                            style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2', height: '100%' }}
                                             onClick={ onToggle }
                                             aria-expanded={ isOpen }>
                                                 { __('Items list source', 'tainacan')  }
                                                 <span class="components-dropdown-menu__indicator"></span> 
                                         </Button>
-                                        :
-                                        <ToolbarButton
-                                            onClick={ onToggle }
-                                            aria-expanded={ isOpen }>
-                                                { __('Items list source', 'tainacan')  }
-                                                <span class="components-dropdown-menu__indicator"></span>  
-                                        </ToolbarButton>
-                                ) }
-                                renderContent={ ( { onToggle } ) => (
-                                    <MenuGroup>
-                                        <MenuItemsChoice
-                                            choices={ listTypeChoices }
-                                            value={ listType } 
-                                            onSelect={ (value) => {
-                                                onUpdateListType(value);
-                                                onToggle(); 
-                                            }}>
-                                        </MenuItemsChoice>
-                                    </MenuGroup>
-                                ) }
-                            />
-                        </ToolbarGroup>
+                                    }
+                                    renderContent={ ( { onToggle } ) => (
+                                        <MenuGroup>
+                                            <MenuItemsChoice
+                                                choices={ listTypeChoices }
+                                                value={ listType }
+                                                onSelect={ (value) => {
+                                                    onUpdateListType(value);
+                                                    onToggle(); 
+                                                }}>
+                                            </MenuItemsChoice>
+                                        </MenuGroup>
+                                    ) }
+                                />
+                                :
+                                <ToolbarGroup>
+                                    <Dropdown
+                                        contentClassName="wp-block-tainacan__dropdown"
+                                        renderToggle={ ( { isOpen, onToggle } ) => (
+                                            tainacan_blocks.wp_version < '5.5' ?
+                                                <Button
+                                                    style={{ whiteSpace: 'nowrap' }}
+                                                    onClick={ onToggle }
+                                                    aria-expanded={ isOpen }>
+                                                        { __('Items list source', 'tainacan')  }
+                                                        <span class="components-dropdown-menu__indicator"></span> 
+                                                </Button>
+                                                :
+                                                <ToolbarButton
+                                                    onClick={ onToggle }
+                                                    aria-expanded={ isOpen }>
+                                                        { __('Items list source', 'tainacan')  }
+                                                        <span class="components-dropdown-menu__indicator"></span>  
+                                                </ToolbarButton>
+                                        ) }
+                                        renderContent={ ( { onToggle } ) => (
+                                            <MenuGroup>
+                                                <MenuItemsChoice
+                                                    choices={ listTypeChoices }
+                                                    value={ listType } 
+                                                    onSelect={ (value) => {
+                                                        onUpdateListType(value);
+                                                        onToggle(); 
+                                                    }}>
+                                                </MenuItemsChoice>
+                                            </MenuGroup>
+                                        ) }
+                                    />
+                                </ToolbarGroup>
                         :null }
                     </BlockControls>
                 </div>
@@ -501,6 +565,19 @@ registerBlockType('tainacan/faceted-search', {
                                     } 
                                 }
                             />
+
+                            <ToggleControl
+                                label={__('Hide Items Thumbnail', 'tainacan')}
+                                help={ hideItemsThumbnail ? __('Do not show the items Thumbnail on the list', 'tainacan') : __('Toggle to show the items thumbnail on the list', 'tainacan')}
+                                checked={ hideItemsThumbnail }
+                                onChange={ ( isChecked ) => {
+                                        hideItemsThumbnail = isChecked;
+                                        setAttributes({ hideItemsThumbnail: isChecked });
+                                        updateAvailableViewModes(isChecked);
+                                    } 
+                                }
+                            />
+
                             <BaseControl
                                     id="defaultViewModeSelect"
                                     label={ __('Forced default view mode', 'tainacan')}
@@ -849,7 +926,7 @@ registerBlockType('tainacan/faceted-search', {
                     </InspectorControls>
                 </div>
 
-                { ( termId == undefined && listType == 'term' ) || ( collectionId == undefined && listType == 'collection' ) ? (
+                { listType == '' || ( termId == undefined && listType == 'term' ) || ( collectionId == undefined && listType == 'collection' ) ? (
                     <Placeholder
                         className="tainacan-block-placeholder"
                         icon={(
@@ -1007,7 +1084,7 @@ registerBlockType('tainacan/faceted-search', {
                                         : null 
                                     }
                                     <div class="aside-filters">    
-                                        <div class="items">
+                                        <div className={ 'items' + (hideItemsThumbnail ? ' items-without-thumbnail' : '') }>
                                             { Array(5).fill().map( () => {
                                                 return <div class="fake-item">
                                                     <div class="fake-item-header">
@@ -1112,7 +1189,7 @@ registerBlockType('tainacan/faceted-search', {
             )
         );
     },
-    save({ attributes, className }){
+    save({ attributes, className }) {
         const {
             termId,
             taxonomyId,
@@ -1128,6 +1205,7 @@ registerBlockType('tainacan/faceted-search', {
             hideSearch,
             hideAdvancedSearch,
             hideSortByButton,
+            hideItemsThumbnail,
             hidePaginationArea,
             hideExposersButton,
             hideItemsPerPageButton,
@@ -1180,7 +1258,7 @@ registerBlockType('tainacan/faceted-search', {
                         term-id={ listType == 'term' ? termId : null }
                         taxonomy={ listType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
                         collection-id={ listType == 'collection' ? collectionId : null }  
-                        default-view-mode={ defaultViewMode != 'none' ? defaultViewMode : (listType == 'collection' ? collectionDefaultViewMode : 'masonry') }
+                        default-view-mode={ defaultViewMode != 'none' ? defaultViewMode : (listType == 'collection' ? collectionDefaultViewMode : (hideItemsThumbnail ? 'table' : 'masonry') ) }
                         is-forced-view-mode={ defaultViewMode == 'none' ? true : false }
                         enabled-view-modes={ enabledViewModes.toString() }  
                         hide-filters = { hideFilters.toString() }
@@ -1190,6 +1268,7 @@ registerBlockType('tainacan/faceted-search', {
                         hide-displayed-metadata-button = { hideDisplayedMetadataButton.toString() }
                         hide-pagination-area = { hidePaginationArea.toString() }
                         hide-sorting-area = { hideSortingArea.toString() }
+                        hide-items-thumbnail = { hideItemsThumbnail ? hideItemsThumbnail.toString() : 'false' }
                         hide-sort-by-button = { hideSortByButton.toString() }
                         hide-pagination-area = { hidePaginationArea.toString() }
                         hide-exposers-button = { hideExposersButton.toString() }
@@ -1204,5 +1283,272 @@ registerBlockType('tainacan/faceted-search', {
                         id="tainacan-items-page">
                 </main>
             </div>
-    }
+    },
+    deprecated: [
+        {
+            attributes: {
+                termId: {
+                    type: String,
+                    default: undefined
+                },
+                taxonomyId: {
+                    type: String,
+                    default: undefined
+                },
+                collectionId: {
+                    type: String,
+                    default: undefined
+                },
+                defaultViewMode: {
+                    type: String,
+                    default: 'masonry'
+                },
+                enabledViewModes: {
+                    type: Array,
+                    default: Object.keys(tainacan_plugin.registered_view_modes)
+                },
+                collectionDefaultViewMode: {
+                    type: String,
+                    default: 'masonry'
+                },
+                collectionEnabledViewModes: {
+                    type: Array,
+                    default: []
+                },
+                hideFilters: {
+                    type: Boolean,
+                    default: false
+                },
+                hideHideFiltersButton: {
+                    type: Boolean,
+                    default: false
+                },
+                hideSearch: {
+                    type: Boolean,
+                    default: false
+                },
+                hideAdvancedSearch: {
+                    type: Boolean,
+                    default: false
+                },
+                hideDisplayedMetadataButton: {
+                    type: Boolean,
+                    default: false
+                },
+                hideSortingArea: {
+                    type: Boolean,
+                    default: false
+                },
+                hideSortByButton: {
+                    type: Boolean,
+                    default: false
+                },
+                hideExposersButton: {
+                    type: Boolean,
+                    default: false
+                },
+                hideItemsPerPageButton: {
+                    type: Boolean,
+                    default: false
+                },
+                defaultItemsPerPage: {
+                    type: Number,
+                    default: 12
+                },
+                hideGoToPageButton: {
+                    type: Boolean,
+                    default: false
+                },
+                hidePaginationArea: {
+                    type: Boolean,
+                    default: false
+                },
+                showFiltersButtonInsideSearchControl: {
+                    type: Boolean,
+                    default: false
+                },
+                startWithFiltersHidden: {
+                    type: Boolean,
+                    default: false
+                },
+                filtersAsModal: {
+                    type: Boolean,
+                    default: false
+                },
+                showInlineViewModeOptions: {
+                    type: Boolean,
+                    default: false
+                },
+                showFullscreenWithViewModes: {
+                    type: Boolean,
+                    default: false
+                },
+                listType: {
+                    type: String,
+                    default: ''
+                },
+                isCollectionModalOpen: {
+                    type: Boolean,
+                    default: false
+                },
+                isTermModalOpen: {
+                    type: Boolean,
+                    default: false
+                },
+                backgroundColor: {
+                    type: String,
+                    default: '#ffffff'
+                },
+                baseFontSize: {
+                    type: Number,
+                    default: 16
+                },
+                filtersAreaWidth: {
+                    type: Number,
+                    default: 20
+                },
+                inputColor: {
+                    type: String,
+                    default: '#1d1d1d'
+                },
+                inputBackgroundColor: {
+                    type: String,
+                    default: '#ffffff'
+                },
+                inputBorderColor: {
+                    type: String,
+                    default: '#dbdbdb'
+                },
+                labelColor: {
+                    type: String,
+                    default: '#454647'
+                },
+                infoColor: {
+                    type: String,
+                    default: '#555758'
+                },
+                headingColor: {
+                    type: String,
+                    default: '#000000'
+                },
+                skeletonColor: {
+                    type: String,
+                    default: '#eeeeee'
+                },
+                itemBackgroundColor: {
+                    type: String,
+                    default: '#ffffff'
+                },
+                itemHoverBackgroundColor: {
+                    type: String,
+                    default: '#f2f2f2'
+                },
+                itemHeadingHoverBackgroundColor: {
+                    type: String,
+                    default: '#dbdbdb'
+                },
+                primaryColor: {
+                    type: String,
+                    default: '#d9eced'
+                },
+                secondaryColor: {
+                    type: String,
+                    default: '#298596'
+                }
+            },
+            save({ attributes, className }) {
+                const {
+                    termId,
+                    taxonomyId,
+                    collectionId,
+                    defaultViewMode,
+                    enabledViewModes,
+                    collectionDefaultViewMode,
+                    collectionEnabledViewModes,
+                    hideDisplayedMetadataButton,
+                    hideSortingArea,
+                    hideFilters,
+                    hideHideFiltersButton,
+                    hideSearch,
+                    hideAdvancedSearch,
+                    hideSortByButton,
+                    hidePaginationArea,
+                    hideExposersButton,
+                    hideItemsPerPageButton,
+                    defaultItemsPerPage,
+                    hideGoToPageButton,
+                    showFiltersButtonInsideSearchControl,
+                    startWithFiltersHidden,
+                    filtersAsModal,
+                    showInlineViewModeOptions,
+                    showFullscreenWithViewModes,
+                    listType,
+                    backgroundColor,
+                    baseFontSize,
+                    filtersAreaWidth,
+                    inputColor,
+                    inputBackgroundColor,
+                    inputBorderColor,
+                    labelColor,
+                    infoColor,
+                    headingColor,
+                    skeletonColor,
+                    itemBackgroundColor,
+                    itemHoverBackgroundColor,
+                    itemHeadingHoverBackgroundColor,
+                    primaryColor,
+                    secondaryColor
+                } = attributes;
+                
+                return <div 
+                            style={{
+                                'font-size': baseFontSize + 'px',
+                                '--tainacan-base-font-size': baseFontSize + 'px',
+                                '--tainacan-background-color': backgroundColor,
+                                '--tainacan-filter-menu-width-theme': filtersAreaWidth + '%',
+                                '--tainacan-input-color': inputColor,
+                                '--tainacan-input-background-color': inputBackgroundColor,
+                                '--tainacan-input-border-color': inputBorderColor,
+                                '--tainacan-label-color': labelColor,
+                                '--tainacan-info-color': infoColor,
+                                '--tainacan-heading-color': headingColor,
+                                '--tainacan-skeleton-color': skeletonColor,
+                                '--tainacan-item-background-color': itemBackgroundColor,
+                                '--tainacan-item-hover-background-color': itemHoverBackgroundColor,
+                                '--tainacan-item-heading-hover-background-color': itemHeadingHoverBackgroundColor,
+                                '--tainacan-primary': primaryColor,
+                                '--tainacan-secondary': secondaryColor
+                            }}
+                            className={ className }>
+                        <main 
+                                term-id={ listType == 'term' ? termId : null }
+                                taxonomy={ listType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
+                                collection-id={ listType == 'collection' ? collectionId : null }  
+                                default-view-mode={ defaultViewMode != 'none' ? defaultViewMode : (listType == 'collection' ? collectionDefaultViewMode : 'masonry') }
+                                is-forced-view-mode={ defaultViewMode == 'none' ? true : false }
+                                enabled-view-modes={ enabledViewModes.toString() }  
+                                hide-filters = { hideFilters.toString() }
+                                hide-hide-filters-button= { hideHideFiltersButton.toString() }
+                                hide-search = { hideSearch.toString() }
+                                hide-advanced-search = { hideAdvancedSearch.toString() }
+                                hide-displayed-metadata-button = { hideDisplayedMetadataButton.toString() }
+                                hide-pagination-area = { hidePaginationArea.toString() }
+                                hide-sorting-area = { hideSortingArea.toString() }
+                                hide-sort-by-button = { hideSortByButton.toString() }
+                                hide-pagination-area = { hidePaginationArea.toString() }
+                                hide-exposers-button = { hideExposersButton.toString() }
+                                hide-items-per-page-button = { hideItemsPerPageButton.toString() }
+                                default-items-per-page = { defaultItemsPerPage }
+                                hide-go-to-page-button = { hideGoToPageButton.toString() }
+                                show-filters-button-inside-search-control = { showFiltersButtonInsideSearchControl.toString() }
+                                start-with-filters-hidden = { startWithFiltersHidden.toString() }
+                                filters-as-modal = { filtersAsModal.toString() }
+                                show-inline-view-mode-options = { showInlineViewModeOptions.toString() }
+                                show-fullscreen-with-view-modes = { showFullscreenWithViewModes.toString() }
+                                id="tainacan-items-page">
+                        </main>
+                    </div>
+            },
+        }
+    ]
 });

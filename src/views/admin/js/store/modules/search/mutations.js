@@ -134,11 +134,13 @@ export const setItemsPerPage = ( state, itemsPerPage ) => {
 
 export const setSearchQuery = ( state, searchQuery ) => {
     
-    if (searchQuery != '') {
+    if (searchQuery != '')
         state.postquery.search = searchQuery;
-    } else {
+    else
         delete state.postquery.search;
-    }
+
+    // In case a s parameter was passed
+    delete state.postquery.s;
 };
 
 export const setStatus = ( state, status ) => {

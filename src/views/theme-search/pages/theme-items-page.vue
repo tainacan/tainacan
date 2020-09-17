@@ -514,6 +514,8 @@
                         :is-filters-menu-compressed="!hideFilters && !isFiltersModalActive"
                         :total-items="totalItems"
                         :is-loading="showLoading"
+                        :enabled-view-modes="enabledViewModes"
+                        :initial-item-position="initialItemPosition"
                         :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
         
                 <!-- Pagination -->
@@ -566,6 +568,7 @@
             hideDisplayedMetadataButton: false,
             hideSortingArea: false,
             hideSortByButton: false,
+            hideItemsThumbnail: false,
             hideExposersButton: false,
             hideItemsPerPageButton: false,
             hideGoToPageButton: false,
@@ -598,7 +601,9 @@
                 hasAnOpenModal: false,
                 hasAnOpenAlert: true,                
                 metadataSearchCancel: undefined,
-                isMobile: false
+                latestNonFullscreenViewMode: '',
+                isMobile: false,
+                initialItemPosition: null
             }
         },
         computed: {
@@ -723,11 +728,17 @@
                  */
                 this.prepareMetadata();
             });
+
+            this.$eventBusSearch.$on('start-slideshow-from-item', (index) => {
+                this.latestNonFullscreenViewMode = JSON.parse(JSON.stringify(this.viewMode));
+                this.onChangeViewMode('slideshow');
+                this.initialItemPosition = index;
+            });
         },
         mounted() {
             this.prepareMetadata();
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
-
+            
             // Setting initial view mode on Theme
             let prefsViewMode = !this.isRepositoryLevel ? 'view_mode_' + this.collectionId : 'view_mode';
            
@@ -747,7 +758,7 @@
             let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
             if (existingViewModeIndex >= 0) {
                 if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
-                    this.$eventBusSearch.setItemsPerPage(24, true);
+                    this.$eventBusSearch.setItemsPerPage(12, true);
                 }
             }
             
@@ -819,17 +830,22 @@
                     this.$eventBusSearch.setOrder(newOrder);
             },
             onChangeViewMode(viewMode) {
+
+                // Resets inital position in case it was defined before
+                this.initialItemPosition = null;
+
                 // We need to load metadata again as fetch_only might change from view mode
                 this.prepareMetadata();
-                this.$eventBusSearch.setViewMode(viewMode);
 
                 // For view modes such as slides, we force pagination to request only 12 per page
                 let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(aViewMode => aViewMode == viewMode);
                 if (existingViewModeIndex >= 0) {
-                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
-                        this.$eventBusSearch.setItemsPerPage(24, true);
-                    }
+                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination)
+                        this.$eventBusSearch.setItemsPerPage(12, true);
                 }
+
+                // Finally sets the new view mode
+                this.$eventBusSearch.setViewMode(viewMode);
             },
             onChangeDisplayedMetadata() {
                 let fetchOnlyMetadatumIds = [];
@@ -890,16 +906,18 @@
                                     let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).replace(/,null/g, '').split(',') : [];
                                     let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
 
-                                    let thumbnailMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true;
+                                    let thumbnailMetadatumDisplay = this.hideItemsThumbnail ? null : (prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true);
 
-                                    metadata.push({
-                                        name: this.$i18n.get('label_thumbnail'),
-                                        metadatum: 'row_thumbnail',
-                                        metadata_type: undefined,
-                                        slug: 'thumbnail',
-                                        id: undefined,
-                                        display: thumbnailMetadatumDisplay
-                                    });
+                                    if (this.hideItemsThumbnail != true) {
+                                        metadata.push({
+                                            name: this.$i18n.get('label_thumbnail'),
+                                            metadatum: 'row_thumbnail',
+                                            metadata_type: undefined,
+                                            slug: 'thumbnail',
+                                            id: undefined,
+                                            display: thumbnailMetadatumDisplay
+                                        });
+                                    }
 
                                     // Repository Level always shows core metadata
                                     if (this.isRepositoryLevel) {
@@ -1006,7 +1024,8 @@
                                 // Loads only basic attributes necessary to view modes that do not allow custom meta
                                 } else {
                             
-                                    this.$eventBusSearch.addFetchOnly('thumbnail,creation_date,title,description', true, '');
+                                    const basicAttributes = this.hideItemsThumbnail ? 'creation_date,title,description' : 'thumbnail,creation_date,title,description';
+                                    this.$eventBusSearch.addFetchOnly(basicAttributes, true, '');
                                     
                                     if (this.isRepositoryLevel) {
                                         this.sortingMetadata.push({
@@ -1319,6 +1338,7 @@
             .label {
                 color: var(--tainacan-label-color);
                 font-size: 0.875em;
+                line-height: 1.75em;
                 font-weight: normal;
                 margin-top: 2px;
                 margin-bottom: 2px;

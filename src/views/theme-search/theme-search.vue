@@ -14,6 +14,7 @@
             :hide-advanced-search="$root.hideAdvancedSearch ? $root.hideAdvancedSearch : false"
             :hide-displayed-metadata-button="$root.hideDisplayedMetadataButton ? $root.hideDisplayedMetadataButton : false"
             :hide-sorting-area="$root.hideSortingArea ? $root.hideSortingArea : false"
+            :hide-items-thumbnail="$root.hideItemsThumbnail ? $root.hideItemsThumbnail : false"
             :hide-sort-by-button="$root.hideSortByButton ? $root.hideSortByButton : false"
             :hide-exposers-button="$root.hideExposersButton ? $root.hideExposersButton : false"
             :hide-items-per-page-button="$root.hideItemsPerPageButton ? $root.hideItemsPerPageButton : false"
@@ -156,6 +157,7 @@ export default {
             @media screen and (min-width: 1366px) {
                 flex-wrap: nowrap !important;
                 height: auto !important;
+                align-items: stretch;
             }
         }
 

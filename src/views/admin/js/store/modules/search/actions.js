@@ -9,6 +9,7 @@ export const set_postquery = ({ commit }, postquery ) => {
 
 export const set_advanced_query = ({commit}, advancedSearchQuery) => {
     commit('removePostQueryAttribute', 'search');
+    commit('removePostQueryAttribute', 's');
     commit('setAdvancedSearchQuery', advancedSearchQuery);
 };
 

@@ -157,7 +157,7 @@
                     if (this.isRepositoryLevel)
                         route = `/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
                     else {
-                        if (this.collectionId == 'default' && this.currentCollectionId)
+                        if ((this.collectionId == 'default' || this.filter.inherited) && this.currentCollectionId)
                             route = `/collection/${this.currentCollectionId}/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
                         else
                             route = `/collection/${this.collectionId}/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
@@ -182,6 +182,8 @@
                         .then((res) => {
                             this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data);
                             this.isLoadingOptions = false;
+                            
+                            this.$emit('updateParentCollapse', res.data.values.length > 0 );
                         })
                         .catch( error => {
                             if (isCancel(error)) {
@@ -198,10 +200,13 @@
                 } else {
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
-                            if (Array.isArray(this.facetsFromItemSearch[facet]))
+                            if (Array.isArray(this.facetsFromItemSearch[facet])) {
                                 this.prepareOptionsForTaxonomy(this.facetsFromItemSearch[facet]);
-                            else
+                                this.$emit('updateParentCollapse', this.facetsFromItemSearch[facet].length > 0 );
+                            } else {
                                 this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]));
+                                this.$emit('updateParentCollapse', Object.values(this.facetsFromItemSearch[facet]).length > 0 );
+                            }
                         }    
                     }
                 }

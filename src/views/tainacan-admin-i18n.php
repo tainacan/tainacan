@@ -26,7 +26,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'activities'                                     => __( 'Activities', 'tainacan' ),
 	'collection'                                     => __( 'Collection', 'tainacan' ),
 	'item'                                           => __( 'Item', 'tainacan' ),
-	'metadatum'                                      => __( 'Metadata', 'tainacan' ),
+	'metadatum'                                      => __( 'Metadatum', 'tainacan' ),
 	'filter'                                         => __( 'Filter', 'tainacan' ),
 	'taxonomy'                                       => __( 'Taxonomy', 'tainacan' ),
 	'activity'                                       => __( 'Activity', 'tainacan' ),
@@ -145,6 +145,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'title_exporter_page'                            => __( 'Exporter', 'tainacan'),
 	'title_collection_capabilities'					 => __( 'Capabilities Related to the Collection', 'tainacan'),
 	'title_repository_capabilities'					 => __( 'Capabilities Related to the Repository', 'tainacan'),
+	'title_gallery-help-modal'						 => __( 'Welcome to the gallery view mode', 'tainacan'),
 
 	// Labels (used mainly on Aria Labels and Inputs)
 	'label'                                          => __( 'Label', 'tainacan' ),
@@ -298,6 +299,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_cards'                                    => __( 'Cards', 'tainacan' ),
 	'label_records'                                  => __( 'Records', 'tainacan' ),
 	'label_masonry'                                  => __( 'Masonry', 'tainacan' ),
+	'label_list'	                                 => __( 'List', 'tainacan' ),
 	'label_visualization'                            => __( 'Visualization', 'tainacan' ),
 	/* translators: This should be a short term for `visualization` such as `view on` referring to the view modes dropdown */
 	'label_view_on'				                     => __( 'View on', 'tainacan' ),
@@ -472,7 +474,13 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_know_more'								 => __( 'Know more', 'tainacan' ),
 	'label_request_details'							 => __( 'Request details', 'tainacan' ),
 	'label_terms_without_parent'					 => __( 'Terms without parent', 'tainacan' ),
-
+	'label_see_on_slideshow'						 => __( 'See on slideshow', 'tainacan' ),
+	'label_gallery_help'							 => __( 'Help with the gallery view mode', 'tainacan' ),
+	'label_space_key'								 => __( 'SPACE', 'tainacan' ),
+	'label_esc_key'								 	 => __( 'ESC', 'tainacan' ),
+	'label_view_selected_items_as'					 => __( 'View selected items as...', 'tainacan' ),
+	'label_actions_for_the_selection'				 => __( 'Actions for the selection', 'tainacan' ),
+	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -529,6 +537,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_select_title_mapping'				 => __( 'Before runnning import, consider selecting the title source metadata', 'tainacan'),
 	'instruction_click_error_to_go_to_metadata'		 => __( 'Click on the error to go to the metadata:', 'tainacan'),
 	'instruction_click_to_see_or_search'			 => __( 'Click to see options or type to search...', 'tainacan'),
+	'instruction_select_one_or_more_collections'	 => __( 'Select one or more collections', 'tainacan'),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every published item, including those visible only to editors.', 'tainacan' ),
@@ -727,6 +736,13 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_not_allowed_change_order_filters'		 	 => __( 'Can not change filters order here.', 'tainacan' ),
 	'info_no_value_compound_metadata'			 	 => __( 'No value has been added to this compound metadata.', 'tainacan' ),
 	'info_child_of'			 	 					 => __( 'child of', 'tainacan' ),
+	'info_gallery_help_introduction'				 => __( 'Use the following commands to navigate thorugh the items', 'tainacan' ),
+	'info_gallery_previous_item'					 => __( 'to go to the previous item', 'tainacan' ),
+	'info_gallery_next_item'						 => __( 'to go to the next item', 'tainacan' ),
+	'info_gallery_hide_controls'					 => __( 'to hide the controls and focus on the document', 'tainacan' ),
+	'info_gallery_start_transition'					 => __( 'to start or pause automatic transition after every 3s', 'tainacan' ),
+	'info_gallery_exit'								 => __( ' to leave the fullscreen gallery view mode', 'tainacan' ),
+	'info_gallery_help_end'							 => __( 'At any moment, you can also check the item metadata list by clicking on the metadata icon (%1$s)  or go directly to the item page, where you will have all its details, by clicking on the eye icon (%2$s).', 'tainacan' ),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),

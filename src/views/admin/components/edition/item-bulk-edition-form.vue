@@ -259,7 +259,7 @@ export default {
                             this.uploadedItems.push( item );
                         
                         // Uploads Media Document
-                        this.sendFile(file)
+                        this.sendFile({ itemId: item.id, file:file })
                             .then((uploadedFile) => {
                                 
                                 // Updates Item with Document

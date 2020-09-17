@@ -129,7 +129,6 @@
         },
         methods: {
             ...mapActions('item', [
-                'fetchItem',
                 'duplicateItem'
             ]),
             ...mapActions('bulkedition', [

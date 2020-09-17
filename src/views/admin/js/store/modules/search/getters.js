@@ -46,7 +46,7 @@ export const getOrderBy = state => {
 };
 
 export const getSearchQuery = state => {
-    return state.postquery.search;
+    return state.postquery.search || state.postquery.s;
 };
 
 export const getStatus = state => {

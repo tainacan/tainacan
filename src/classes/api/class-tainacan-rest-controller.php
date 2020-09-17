@@ -69,6 +69,7 @@ class REST_Controller extends \WP_REST_Controller {
 			'authorid'     => 'author',
 			'authorname'   => 'author_name',
 			'search'       => 's',
+			's'			   => 's',	
 			'searchterm'   => 'search',
 			'status'       => 'post_status',
 			'offset'       => 'offset',
@@ -117,6 +118,7 @@ class REST_Controller extends \WP_REST_Controller {
 			'inclusive' => 'inclusive',
 			'before'    => 'before',
 			'after'     => 'after',
+			'column'    => 'column',
 		];
 
 		$tax_query = [
@@ -145,7 +147,7 @@ class REST_Controller extends \WP_REST_Controller {
 		}
 
 		$args['perm'] = 'readable';
-
+		
 		return apply_filters('tainacan-api-prepare-items-args', $args, $request);
 	}
 
@@ -273,7 +275,7 @@ class REST_Controller extends \WP_REST_Controller {
 	public function get_fetch_only_param(){
 		return [
 			'fetch_only' => array(
-				'type'        => 'string/array',
+				'type'        => ['string','array'],
 				'description' => __( 'Fetch only specific attribute. The specifics attributes are the same in schema.', 'tainacan' ),
 				//TODO: explicar o fetch only meta.. cabe aqui?
 			)
@@ -337,15 +339,18 @@ class REST_Controller extends \WP_REST_Controller {
 
 		$query_params['order'] = array(
 			'description'        => __( 'Order sort attribute ascending or descending.', 'tainacan' ),
-			'type'               => 'string/array',
+			'type'               => ['string','array'],
 			'default'            => 'desc',
 			'enum'               => array( 'asc', 'desc', 'ASC', 'DESC' ),
 		);
 
 		$query_params['orderby'] = array(
 			'description'        => __( "Sort objects by object attribute.", 'tainacan' ),
-			'type'               => 'string/array',
+			'type'               => ['string', 'array'],
 			'default'            => 'date',
+			// 'items' => [
+			// 	'type' => 'string'
+			// ],
 			'enum'               => array(
 				'author',
 				'date',
@@ -365,7 +370,7 @@ class REST_Controller extends \WP_REST_Controller {
 
 		$query_params['perpage'] = array(
 			'description'        => __( "Maximum number of objects to be returned in result set.", 'tainacan' ),
-			'type'               => 'numeric',
+			'type'               => 'number',
 			'default'            => 10,
 		);
 
@@ -393,11 +398,11 @@ class REST_Controller extends \WP_REST_Controller {
 	protected function get_meta_queries_params(){
 		return array(
 			'metakey'      => array(
-				'type'        => 'integer/string',
+				'type'        => ['integer', 'string'],
 				'description' => __('Custom metadata key.'),
 			),
 			'metavalue'    => array(
-				'type'        => 'string/array',
+				'type'        => ['string', 'array'],
 				'description' => __('Custom metadata value'),
 			),
 			'metavaluenum' => array(
@@ -429,7 +434,7 @@ class REST_Controller extends \WP_REST_Controller {
 			),
 			'metaquery'    => array(
 				'description' => __('Limits result set to items that have specific custom metadata'),
-				'type'        => 'array/object',
+				'type'        => ['array', 'object'],
 				'items'       => array(
 					'keys' => array(
 						'key'      => array(
@@ -437,7 +442,7 @@ class REST_Controller extends \WP_REST_Controller {
 							'description' => __('Custom metadata key.'),
 						),
 						'value'    => array(
-							'type'        => 'string/array',
+							'type'        => ['string', 'array'],
 							'description' => __('Custom metadata value. It can be an array only when compare is IN, NOT IN, BETWEEN, or NOT BETWEEN. You dont have to specify a value when using the EXISTS or NOT EXISTS comparisons in WordPress 3.9 and up.
 	(Note: Due to bug #23268, value is required for NOT EXISTS comparisons to work correctly prior to 3.9. You must supply some string for the value parameter. An empty string or NULL will NOT work. However, any other string will do the trick and will NOT show up in your SQL when using NOT EXISTS. Need inspiration? How about \'bug #23268\'.'),
 						),
@@ -472,12 +477,12 @@ class REST_Controller extends \WP_REST_Controller {
 							'description' => __('Custom metadata type. Possible values are NUMERIC, BINARY, CHAR, DATE, DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. Default value is CHAR. You can also specify precision and scale for the DECIMAL and NUMERIC types (for example, DECIMAL(10,5) or NUMERIC(10) are valid). The type DATE works with the compare value BETWEEN only if the date is stored at the format YYYY-MM-DD and tested with this format.'),
 						),
 					),
-					'type'            => 'array'
+					'type'            => ['array', 'object']
 				),
 			),
 			'datequery'    => array(
-				'description' => __('Limits the result set to items that were created in some specific date'),
-				'type'        => 'array/object',
+				'description' => __('Limits the result set to items that were created or modified in some specific date'),
+				'type'        => ['array', 'object'],
 				'items'       => array(
 					'keys' => array(
 						'year'      => array(
@@ -535,20 +540,24 @@ class REST_Controller extends \WP_REST_Controller {
 							'description' => __('For after/before, whether exact value should be matched or not.'),
 						),
 						'before'    => array(
-							'type'        => 'string/array',
+							'type'        => ['string', 'array'],
 							'description' => __('Date to retrieve posts before. Accepts strtotime()-compatible string, or array of year, month, day '),
 						),
 						'after'     => array(
-							'type'        => 'string/array',
+							'type'        => ['string', 'array'],
 							'description' => __('Date to retrieve posts after. Accepts strtotime()-compatible string, or array of year, month, day '),
 						),
+						'column'     => array(
+							'type'        => 'string',
+							'description' => __('Posts column to query against, possible values: post_date, post_date_gmt, post_modified, post_modified_gmt. Default: ‘post_date’.'),
+						),
 					),
-					'type'      => 'array'
+					'type'      => ['array', 'object']
 				),
 			),
 			'taxquery'     => array(
 				'description' => __('Show items associated with certain taxonomy.'),
-				'type'        => 'array/object',
+				'type'        => ['array', 'object'],
 				'items'       => array(
 					'keys' => array(
 						'taxonomy' => array(
@@ -567,7 +576,7 @@ class REST_Controller extends \WP_REST_Controller {
 							)
 						),
 						'terms'    => array(
-							'type'        => 'int/string/array',
+							'type'        => ['integer', 'string', 'array'],
 							'description' => __('Taxonomy term(s).'),
 						),
 						'operator' => array(
@@ -592,7 +601,7 @@ class REST_Controller extends \WP_REST_Controller {
 							)
 						),
 					),
-					'type'     => 'array'
+					'type'     => ['array', 'object']
 				),
 			),
 		);

@@ -1,6 +1,46 @@
 <template>
+    <div 
+            :class="{ 
+                'hide-controls': hideControls
+            }">
 
-    <div :class="{ 'hide-controls': hideControls }">
+        <!-- HELP BUTTON -->
+        <button
+                v-tooltip="{
+                    delay: {
+                        show: 500,
+                        hide: 300,
+                    },
+                    content: $i18n.get('label_gallery_help'),
+                    autoHide: false,
+                    placement: 'auto-start'
+                }"  
+                id="gallery-help-button"
+                class="is-hidden-mobile"
+                @click="openGalleryHelpModal">
+            <span class="icon">
+                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-help"/>
+            </span>
+        </button>
+
+        <!-- METADATA BUTTON -->
+        <button
+                v-tooltip="{
+                    delay: {
+                        show: 500,
+                        hide: 300,
+                    },
+                    content: isMetadataCompressed ? $i18n.get('label_show_metadata') : $i18n.get('label_hide_metadata'),
+                    autoHide: false,
+                    placement: 'auto-start'
+                }"  
+                id="metedata-panel-button"
+                :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
+                @click="isMetadataCompressed = !isMetadataCompressed">
+            <span class="icon">
+                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/>
+            </span>
+        </button>
 
         <!-- ITEM PAGE BUTTON -->
         <a
@@ -56,10 +96,137 @@
                 @click="isMetadataCompressed = !isMetadataCompressed">
             <span class="icon">
                 <i 
-                        :class="{ 'tainacan-icon-arrowright' : isMetadataCompressed, 'tainacan-icon-arrowleft' : !isMetadataCompressed }"
+                        :class="{ 'tainacan-icon-arrowleft' : isMetadataCompressed, 'tainacan-icon-arrowright' : !isMetadataCompressed }"
                         class="tainacan-icon tainacan-icon-1-25em"/>
             </span>
         </button>
+
+        <div 
+                :class="{ 'fullscreen-spaced-to-left': !isMetadataCompressed }"
+                @keyup.left.prevent="swiper.activeIndex > 0 ? prevSlide() : null"
+                @keyup.right.prevent="swiper.activeIndex < slideItems.length - 1 ? nextSlide() : null">
+            <div class="table-wrapper">
+
+                <!-- SLIDE MAIN VIEW-->
+                <section 
+                        @click.prevent.stop="onHideControls()"
+                        class="tainacan-slide-main-view">
+                    <button 
+                            @click.stop.prevent="prevSlide()"
+                            :style="{ visibility: (page > 1 && swiper.activeIndex <= 0) || swiper.activeIndex > 0 ? 'visible' : 'hidden' }"
+                            class="slide-control-arrow arrow-left"
+                            :aria-label="$i18n.get('previous')">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('previous'),
+                                    autoHide: true,
+                                    placement: 'auto'
+                                }"
+                                class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
+                        </span> 
+                    </button>
+                    <div     
+                            class="slide-main-content">
+
+                        <transition 
+                                mode="out-in"
+                                :name="goingRight ? 'slide-right' : 'slide-left'" >
+                            <span 
+                                    v-if="isLoadingItem"
+                                    class="icon is-large loading-icon">
+                                <div class="is-large control has-icons-right is-loading is-clearfix" />
+                            </span>
+                            <!-- Empty result placeholder -->
+                            <section
+                                    v-if="!isLoading && !isLoadingItem && items.length <= 0"
+                                    class="section">
+                                <div class="content has-text-gray4 has-text-centered">
+                                    <p>
+                                        <span class="icon is-large">
+                                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items" />
+                                        </span>
+                                    </p> 
+                                    <p>{{ $i18n.get('info_no_item_found') }}</p>
+                                </div>
+                            </section>
+                            <div 
+                                    v-if="!isLoadingItem && slideItems.length > 0 && (item.document != undefined && item.document != undefined && item.document != '')"
+                                    v-html="item.document_as_html" />  
+                            <div v-else>
+                                <div class="empty-document">
+                                    <p>{{ $i18n.get('label_document_empty') }}</p>
+                                    <img 
+                                            :alt="$i18n.get('label_document_empty')" 
+                                            :src="thumbPlaceholderPath">
+                                </div>
+                            </div>
+                        </transition>
+                    </div>
+                    <button 
+                            @click.stop.prevent="nextSlide()"
+                            :style="{ visibility: (swiper.activeIndex < slideItems.length - 1) || page < totalPages ? 'visible' : 'hidden' }"
+                            class="slide-control-arrow arrow-right"
+                            :aria-label="$i18n.get('next')">
+                        <span
+                                v-tooltip="{
+                                    content: $i18n.get('next'),
+                                    autoHide: true,
+                                    placement: 'auto'
+                                }"
+                                class="icon is-large has-text-turoquoise5">
+                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
+                        </span>
+                    </button>
+                </section>
+
+                <!-- SLIDE ITEMS LIST --> 
+                <div class="tainacan-slides-list">
+                    <section 
+                            v-if="slideItems[swiper.activeIndex]"
+                            @click.prevent="onHideControls()"
+                            class="slide-title-area">
+                        <h1>{{ slideItems[swiper.activeIndex].title }}</h1>
+                        <button 
+                                :disabled="(swiper.activeIndex == slideItems.length - 1 && page == totalPages)"
+                                class="play-button"
+                                @click.stop.prevent="isPlaying = !isPlaying">
+                            <span 
+                                    v-tooltip="{
+                                        content: isPlaying ? $i18n.get('label_pause_slide_transition') : $i18n.get('label_begin_slide_transition'),
+                                        autoHide: true,
+                                        placement: 'auto'
+                                    }"
+                                    class="icon">
+                                <i 
+                                        :class="{ 'tainacan-icon-pausefill' : isPlaying, 'tainacan-icon-playfill' : !isPlaying }"
+                                        class="has-text-secondary tainacan-icon tainacan-icon-30px"/>
+                            </span>
+                            <circular-counter 
+                                    v-if="isPlaying"
+                                    :time="slideTimeout/1000" />
+                        </button>
+                    </section>
+
+                    <!-- The Swiper slider itself -->
+                    <div   
+                            id="tainacan-slide-container"
+                            class="swiper-container">
+                        <div 
+                                role="list"
+                                class="swiper-wrapper" />
+                    </div>
+
+                    <!-- List loading -->
+                    <span 
+                            v-if="isLoading"
+                            :style="{ left: !goingRight ? '' : '25%', right: !goingRight ? '25%' : '' }"
+                            class="icon loading-icon">
+                        <div class="control has-icons-right is-loading is-clearfix" />
+                    </span>
+                </div>
+            </div> 
+        </div>
 
         <aside
                 v-if="!isMetadataCompressed"
@@ -143,133 +310,6 @@
             <br>
 
         </aside>
-
-        <div 
-                :class="{ 'fullscreen-spaced-to-right': !isMetadataCompressed }"
-                @keyup.left.prevent="swiper.activeIndex > 0 ? prevSlide() : null"
-                @keyup.right.prevent="swiper.activeIndex < slideItems.length - 1 ? nextSlide() : null">
-            <div class="table-wrapper">
-
-                <!-- SLIDE MAIN VIEW-->
-                <section 
-                        @click.prevent.stop="onHideControls()"
-                        class="tainacan-slide-main-view">
-                    <button 
-                            @click.stop.prevent="prevSlide()"
-                            :style="{ visibility: (page > 1 && swiper.activeIndex <= 0) || swiper.activeIndex > 0 ? 'visible' : 'hidden' }"
-                            class="slide-control-arrow arrow-left"
-                            :aria-label="$i18n.get('previous')">
-                        <span
-                                v-tooltip="{
-                                    content: $i18n.get('previous'),
-                                    autoHide: true,
-                                    placement: 'auto'
-                                }"
-                                class="icon is-large">
-                            <icon class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
-                        </span> 
-                    </button>
-                    <div     
-                            class="slide-main-content">
-
-                        <transition 
-                                mode="out-in"
-                                :name="goingRight ? 'slide-right' : 'slide-left'" >
-                            <span 
-                                    v-if="isLoadingItem"
-                                    class="icon is-large loading-icon">
-                                <div class="is-large control has-icons-right is-loading is-clearfix" />
-                            </span>
-                            <!-- Empty result placeholder -->
-                            <section
-                                    v-if="!isLoading && !isLoadingItem && items.length <= 0"
-                                    class="section">
-                                <div class="content has-text-gray4 has-text-centered">
-                                    <p>
-                                        <span class="icon is-large">
-                                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items" />
-                                        </span>
-                                    </p> 
-                                    <p>{{ $i18n.get('info_no_item_found') }}</p>
-                                </div>
-                            </section>
-                            <div 
-                                    v-if="!isLoadingItem && slideItems.length > 0 && (item.document != undefined && item.document != undefined && item.document != '')"
-                                    v-html="item.document_as_html" />  
-                            <div v-else>
-                                <div class="empty-document">
-                                    <p>{{ $i18n.get('label_document_empty') }}</p>
-                                    <img 
-                                            :alt="$i18n.get('label_document_empty')" 
-                                            :src="thumbPlaceholderPath">
-                                </div>
-                            </div>
-                        </transition>
-                    </div>
-                    <button 
-                            @click.stop.prevent="nextSlide()"
-                            :style="{ visibility: (swiper.activeIndex < slideItems.length - 1) || page < totalPages ? 'visible' : 'hidden' }"
-                            class="slide-control-arrow arrow-right"
-                            :aria-label="$i18n.get('next')">
-                        <span
-                                v-tooltip="{
-                                    content: $i18n.get('next'),
-                                    autoHide: true,
-                                    placement: 'auto'
-                                }"
-                                class="icon is-large has-text-turoquoise5">
-                            <icon class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
-                        </span>
-                    </button>
-                </section>
-
-                <!-- SLIDE ITEMS LIST --> 
-                <div class="tainacan-slides-list">
-                    <section 
-                            v-if="slideItems[swiper.activeIndex]"
-                            @click.prevent="onHideControls()"
-                            class="slide-title-area">
-                        <h1>{{ slideItems[swiper.activeIndex].title }}</h1>
-                        <button 
-                                :disabled="(swiper.activeIndex == slideItems.length - 1 && page == totalPages)"
-                                class="play-button"
-                                @click.stop.prevent="isPlaying = !isPlaying">
-                            <span 
-                                    v-tooltip="{
-                                        content: isPlaying ? $i18n.get('label_pause_slide_transition') : $i18n.get('label_begin_slide_transition'),
-                                        autoHide: true,
-                                        placement: 'auto'
-                                    }"
-                                    class="icon">
-                                <i 
-                                        :class="{ 'tainacan-icon-pausefill' : isPlaying, 'tainacan-icon-playfill' : !isPlaying }"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-30px"/>
-                            </span>
-                            <circular-counter 
-                                    v-if="isPlaying"
-                                    :time="slideTimeout/1000" />
-                        </button>
-                    </section>
-
-                    <!-- The Swiper slider itself -->
-                    <div   
-                            id="tainacan-slide-container"
-                            class="swiper-container">
-                        <div 
-                                role="list"
-                                class="swiper-wrapper" />
-                    </div>
-
-                    <!-- List loading -->
-                    <span 
-                            v-if="isLoading"
-                            :style="{ left: !goingRight ? '' : '25%', right: !goingRight ? '25%' : '' }"
-                            class="icon loading-icon">
-                        <div class="control has-icons-right is-loading is-clearfix" />
-                    </span>
-                </div>
-            </div> 
-        </div>
     </div>
 </template>
 
@@ -279,6 +319,7 @@ import axios from '../../admin/js/axios';
 import 'swiper/css/swiper.min.css';
 import Swiper from 'swiper';
 import CircularCounter from './circular-counter.vue';
+import GalleryHelpModal from './gallery-help-modal.vue'
 import { viewModesMixin } from '../js/view-modes-mixin.js';
  
 export default {
@@ -290,16 +331,7 @@ export default {
         viewModesMixin
     ],
     props: {
-        collectionId: Number,
-        displayedMetadata: Array,
-        items:  {
-            type: Array,
-            default: () => [],
-            required: true
-        },
-        isLoading: Boolean,
-        totalItems: Number,
-        hideControls: true
+        initialItemPosition: null
     },  
     data () {
         return {
@@ -310,14 +342,17 @@ export default {
             swiper: {},
             goingRight: true,
             isPlaying: false,
+            hideControls: false,
             slideTimeout: 5000, 
             intervalId: 0, 
             collapseAll: false,
             isLoadingItem: true,
+            itemRequestCancel: undefined,
             isMetadataCompressed: true,
             minPage: 1,
             maxPage: 1,
-            preloadedItem: {}
+            preloadedItem: {},
+            itemPosition: null
         }
     },
     computed: {
@@ -335,15 +370,15 @@ export default {
     watch: {
         'swiper.activeIndex': {
             handler(currentIndex, previousIndex) { 
-                this.updateSliderBasedOnIndex(currentIndex, previousIndex)
+                this.updateSliderBasedOnIndex(currentIndex, previousIndex);
             },
             immediate: true
         }, 
         isLoading: {
             handler(val, oldValue) {
                 if (val === false && oldValue === true && this.swiper && this.items && this.items.length) {
-                    let updatedSlideIndex = this.swiper.activeIndex != undefined ? (JSON.parse(JSON.stringify(this.swiper.activeIndex)) + 0) : 0;
-        
+                    let updatedSlideIndex = (this.swiper.activeIndex != undefined ? (JSON.parse(JSON.stringify(this.swiper.activeIndex)) + 0) : 0);
+
                     for (let newItem of ((this.goingRight === true || this.goingRight === undefined) ? JSON.parse(JSON.stringify(this.items)) : JSON.parse(JSON.stringify(this.items)).reverse())) {
                         let existingItemIndex = this.slideItems.findIndex(anItem => anItem.id == newItem.id);
                         if (existingItemIndex < 0) {
@@ -361,7 +396,6 @@ export default {
                     if (updatedSlideIndex == this.slideItems.length - 1 && this.page == this.totalPages)
                         this.isPlaying = false;
                     
-                    this.swiper.virtual.update();
                     this.updateSliderBasedOnIndex(updatedSlideIndex);
                 }
             },
@@ -381,18 +415,17 @@ export default {
         this.minPage = this.page;
         this.maxPage = this.page;
 
-        // Adds clipped class to root html
-        document.documentElement.scrollTo(0,0);
-        document.documentElement.classList.add('is-clipped');
-
         // Adds keyup and keydown event listeners
         window.addEventListener('keyup', this.handleKeyboardKeys);
+
+        // Passes props to data value of initial position, as we will modify it
+        this.itemPosition = this.initialItemPosition;
 
         // Builds Swiper component
         const self = this;
         this.swiper = new Swiper('.swiper-container', {
             mousewheel: true,
-            keyboard: true,
+            observer: true,
             preventInteractionOnTransition: true,
             slidesPerView: 24,
             spaceBetween: 12,
@@ -425,7 +458,19 @@ export default {
                 addSlidesBefore: 2,
                 addSlidesAfter: 2
             },
+            on: {
+                observerUpdate: function () {
+                    if (self.itemPosition != null && self.itemPosition != undefined) {
+                        this.slideTo(self.itemPosition);
+                        self.itemPosition = null;
+                    }
+                }
+            }
         });
+
+        // Adds clipped class to root html
+        document.documentElement.scrollTo(0,0);
+        document.documentElement.classList.add('is-clipped');
     },
     beforeDestroy() {
         // Remove clipped class from root html
@@ -436,7 +481,6 @@ export default {
 
         clearInterval(this.intervalId);
         if (this.swiper) {
-            this.swiper.virtual.removeAllSlides();
             this.swiper.destroy();
         }
     },
@@ -461,7 +505,10 @@ export default {
             this.hideControls = !this.hideControls;
         },
         closeSlideViewMode() {
-            this.$parent.onChangeViewMode(this.$parent.defaultViewMode);
+            let currentQuery = this.$route.query;
+            delete currentQuery['slideshow-from'];
+            this.$router.replace({ query: currentQuery });
+            this.$parent.onChangeViewMode(this.$parent.latestNonFullscreenViewMode ? this.$parent.latestNonFullscreenViewMode : this.$parent.defaultViewMode);
         },
         moveToClikedSlide(index) {
             if (this.swiper)
@@ -482,11 +529,17 @@ export default {
                 this.onHideControls();
             
             // Space toggles play state
-            if (event.keyCode === 32 && !(this.swiper.activeIndex == this.slideItems.length - 1 && this.page == this.totalPages))
+            else if (event.keyCode === 32 && !(this.swiper.activeIndex == this.slideItems.length - 1 && this.page == this.totalPages))
                 this.isPlaying = !this.isPlaying;
+            
+            // Next and previous arrows navigate
+            else if (event.keyCode === 39)
+                this.nextSlide();
+            else if (event.keyCode === 37)
+                this.prevSlide();
 
             // ESC leaves the fullscreen viewmode
-            if (event.keyCode === 27)
+            else if (event.keyCode === 27)
                 this.closeSlideViewMode(); 
             
         },
@@ -531,13 +584,21 @@ export default {
                     this.replaceItem(this.preloadedItem);
                     this.$nextTick(() => this.isLoadingItem = false);
                 } else {
+                    // Cancels previous Request
+                    if (this.itemRequestCancel != undefined)
+                        this.itemRequestCancel.cancel('Item search Canceled.');
+
                     // Loads current item
                     this.fetchItem({ itemId: this.slideItems[this.swiper.activeIndex].id, contextEdit: true })
-                        .then(() => {
-                            this.isLoadingItem = false;
-                        })
-                        .catch(() => {
-                            this.isLoadingItem = false;
+                        .then((resp) => {
+                            resp.request.then(() => {
+                                this.isLoadingItem = false;
+                            })
+                            .catch(() => {
+                                this.isLoadingItem = false;
+                            });
+                            // Item resquest token for cancelling
+                            this.itemRequestCancel = resp.source;
                         });
                 }
 
@@ -554,6 +615,18 @@ export default {
                 }
             }
         },
+        openGalleryHelpModal() {
+            this.$buefy.modal.open({
+                component: GalleryHelpModal,
+                width: 680,
+                ariaRole: 'alertdialog',
+                ariaModal: true,
+                customClass: 'gallery-help-modal',
+                onCancel: () => {
+                    setTimeout(() => document.documentElement.classList.add('is-clipped'), 500); 
+                }
+            });
+        }
     }
 }
 </script>

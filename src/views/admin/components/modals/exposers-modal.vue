@@ -12,7 +12,7 @@
             <h2 
                     id="exposers-modal-title"
                     v-if="selectedExposer == undefined">
-                {{ itemId ? $i18n.get('label_urls_for_item_page') : $i18n.get('label_urls_for_items_list') }}
+                {{ itemId ? $i18n.get('label_urls_for_item_page') : ($i18n.get('label_urls_for_items_list') + (selectedItems && selectedItems.length ? (' (' + selectedItems.length + ' ' + $i18n.get('items') + ')') : '')) }}
             </h2>
             <h2 
                     id="exposers-modal-title"
@@ -257,7 +257,8 @@ export default {
         collectionId: Number,
         totalItems: Number,
         itemId: Number,
-        itemURL: String
+        itemURL: String,
+        selectedItems: Array
     },
     data(){
         return {
@@ -272,7 +273,7 @@ export default {
     },
     computed: {
         totalPages() {
-            return Math.ceil(Number(this.totalItems)/Number(this.maxItemsPerPage));    
+            return this.selectedItems && this.selectedItems.length ? 1 : Math.ceil(Number(this.totalItems)/Number(this.maxItemsPerPage));    
         },
         exposerBaseURL() {
             let baseURL = this.collectionId != undefined ? '/collection/' + this.collectionId + '/items/' : '/items/';
@@ -293,6 +294,7 @@ export default {
             // Removes Admin View Mode
             if (currentParams.admin_view_mode != undefined)
                 delete currentParams.admin_view_mode;
+
             
             // Handles pagination of this link
             delete currentParams.paged;
@@ -300,6 +302,13 @@ export default {
                 delete currentParams.perpage;
             else 
                 currentParams.perpage = this.maxItemsPerPage;
+
+            // If selectedItems were provided, filters by them
+            if (this.selectedItems && this.selectedItems.length) {
+                currentParams.postin = this.selectedItems;
+                delete currentParams.paged;
+                currentParams.perpage = this.maxItemsPerPage;
+            }
 
             return tainacan_plugin.tainacan_api_url + baseURL + '?' + qs.stringify(currentParams);
         },
@@ -456,7 +465,7 @@ export default {
                 });
         },
         getLastItemNumber(page) {
-            let last = (Number(this.maxItemsPerPage*(page - 1)) + Number(this.maxItemsPerPage));
+            let last = (this.selectedItems && this.selectedItems.length) ? this.selectedItems.length : (Number(this.maxItemsPerPage*(page - 1)) + Number(this.maxItemsPerPage));
             
             return last > this.totalItems ? this.totalItems : last;
         },

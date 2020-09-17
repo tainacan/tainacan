@@ -42,7 +42,8 @@
                         :is-loading-items.sync="isLoadingItems"
                         :current-collection-id="$eventBusSearch.collectionId"
                         @input="onInput"
-                        @sendValuesToTags="onSendValuesToTags" 
+                        @sendValuesToTags="onSendValuesToTags"
+                        @updateParentCollapse="onFilterUpdateParentCollapse" 
                         :filters-as-modal="filtersAsModal"/>
             </div>
         </b-collapse>
@@ -77,6 +78,11 @@
                     taxonomy: $event.taxonomy,
                     metadatumId: this.filter.metadatum_id
                 });
+            },
+            onFilterUpdateParentCollapse(open) {
+                const componentsThatShouldCollapseIfEmpty = ['tainacan-filter-taxonomy-checkbox', 'tainacan-filter-selectbox', 'tainacan-filter-checkbox'];
+                if (componentsThatShouldCollapseIfEmpty.includes(this.filter.filter_type_object.component))
+                    this.open = open;
             }
         }
     }
@@ -89,13 +95,13 @@
 
         &:not(:last-child) {
             margin-bottom: 0;
-            padding-bottom: 1.5em;
+            padding-bottom: 0.75em;
         }
 
         .collapse-trigger {
-            margin-left: -5px;
+            margin-left: -7px;
             .icon {
-                margin-right: 12px;
+                margin-right: 5px;
             }
             .collapse-label {
                 display: inline-block;
@@ -205,6 +211,7 @@
             @media screen and (min-width: 768px) {
                 .dropdown-trigger input {
                     font-size: 0.75em !important;
+                    line-height: 1.75em;
                 }
                 .datepicker-header {
 
