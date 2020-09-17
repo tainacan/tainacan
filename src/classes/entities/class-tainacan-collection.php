@@ -34,7 +34,8 @@ class Collection extends Entity {
 		$header_image_id,
 		$header_image,
 		$comment_status,
-		$allow_comments;
+		$allow_comments,
+		$submission_anonymous_user;
 
 	/**
 	 * {@inheritDoc}
@@ -544,6 +545,15 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * Get enable submission with anonymous user
+	 *
+	 * @return string
+	 */
+	function get_submission_anonymous_user() {
+		return $this->get_mapped_property( 'submission_anonymous_user' ) != 'false';
+	}
+
+	/**
 	 * Set the collection name
 	 *
 	 * @param [string] $value
@@ -730,6 +740,17 @@ class Collection extends Entity {
 	 */
 	public function set_allow_comments( $value ) {
 		$this->set_mapped_property('allow_comments', $value );
+	}
+
+	/**
+	 * Set enable submission with anonymous user 
+	 *
+	 * @param [boolean] $value
+	 *
+	 * @return void
+	 */
+	function set_submission_anonymous_user( $value ) {
+		$this->set_mapped_property( 'submission_anonymous_user', $value );
 	}
 
 	/**
