@@ -65,6 +65,44 @@ export const eventBusItemMetadata = new Vue({
                         }
                         
                 });
+            } else {
+
+                // If no itemId is provided, we are probably on an item Submission flow
+                if (values.length > 0 && values[0] != undefined && values[0].value) {
+                    let onlyValues = values.map((aValueObject) => aValueObject.value);
+                    values = onlyValues;
+                }
+                
+                this.$store.dispatch('item/updateItemSubmissionMetadatum', { 
+                    metadatum_id: metadatumId, 
+                    values: Array.isArray(values[0]) ? values[0] : values,
+                    //parent_meta_id: parentMetaId ? parentMetaId : null
+                });
+                //     .then(() => { 
+                //         this.$emit('isUpdatingValue', false);
+                //         let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ));
+                //         if (index >= 0)
+                //             this.errors.splice( index, 1);
+                        
+                //         this.$emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[index]);
+                //     })
+                //     .catch(({ error_message, error, item_metadata }) => {
+                //         this.$emit('isUpdatingValue', false);
+                //         let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ));
+                //         let messages = [];
+
+                //         for (let index in error)
+                //             messages.push(error[index]);
+
+                //         if ( index >= 0) {
+                //             Vue.set( this.errors, index, { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages });
+                //             this.$emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[index]);
+                //         } else {
+                //             this.errors.push( { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } );
+                //             this.$emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[0]);
+                //         }
+                        
+                // });
             }
         },
         removeItemMetadataGroup({ itemId, metadatumId, parentMetaId }) {

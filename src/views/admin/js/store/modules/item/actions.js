@@ -294,3 +294,33 @@ export const updateThumbnail = ({ commit }, { itemId, thumbnailId }) => {
 
     }); 
 };
+
+// Item Submission ======================================================
+export const clearItemSubmission = ({ commit }) => {
+    commit('clearItemSubmission');
+}
+
+export const setItemSubmission = ({ commit }, value) => {
+    commit('setItemSubmission', value);
+}
+
+export const updateItemSubmission = ({ commit }, { key, value }) => {
+    commit('updateItemSubmission', { key: key, value: value });
+}
+
+export const updateItemSubmissionMetadatum = ({ commit }, { metadatum_id, values }) => {
+    commit('updateItemSubmissionMetadatum', { metadatum_id: metadatum_id, values: values });
+}
+
+export const submitItemSubmission = ({ commit }, itemSubmission) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.post('/items/submission', itemSubmission)
+            .then( res => {
+                let itemSubmission = res.data
+                commit('setItemSubmission', itemSubmission);
+                resolve( item );
+            }).catch( error => { 
+                reject(error['response']['data']);
+            });
+    }); 
+}

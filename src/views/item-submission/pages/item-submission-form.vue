@@ -75,7 +75,7 @@
                                     </div>
                                 </div>
                                 <div v-if="form.document_type == 'text'">
-                                    <div v-html="item.document_as_html" />
+                                    <div v-html="itemSubmission.document_as_html" />
                                     <div class="document-buttons-row">
                                         <a
                                                 class="button is-rounded is-secondary"
@@ -111,7 +111,7 @@
                                     </div>
                                 </div>
                                 <div v-if="form.document_type == 'url'">
-                                    <div v-html="item.document_as_html" />
+                                    <div v-html="itemSubmission.document_as_html" />
                                     <div class="document-buttons-row">
                                         <a
                                                 class="button is-rounded is-secondary"
@@ -275,18 +275,18 @@
                                 class="section-box section-thumbnail">
                             <div class="thumbnail-field">
                                 <file-item
-                                        v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
+                                        v-if="itemSubmission.thumbnail != undefined && ((itemSubmission.thumbnail['tainacan-medium'] != undefined && itemSubmission.thumbnail['tainacan-medium'] != false) || (itemSubmission.thumbnail.medium != undefined && itemSubmission.thumbnail.medium != false))"
                                         :show-name="false"
                                         :modal-on-click="false"
                                         :size="178"
                                         :file="{
                                             media_type: 'image',
-                                            thumbnails: { 'tainacan-medium': [ item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] ] },
+                                            thumbnails: { 'tainacan-medium': [ itemSubmission.thumbnail['tainacan-medium'] ? itemSubmission.thumbnail['tainacan-medium'][0] : itemSubmission.thumbnail.medium[0] ] },
                                             title: $i18n.get('label_thumbnail'),
-                                            description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + item.thumbnail.full[0] + `'/>` 
+                                            description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + itemSubmission.thumbnail.full[0] + `'/>` 
                                         }"/>
                                 <figure
-                                        v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
+                                        v-if="itemSubmission.thumbnail == undefined || ((itemSubmission.thumbnail.medium == undefined || itemSubmission.thumbnail.medium == false) && (itemSubmission.thumbnail['tainacan-medium'] == undefined || itemSubmission.thumbnail['tainacan-medium'] == false))"
                                         class="image">
                                     <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                     <img
@@ -310,7 +310,7 @@
                                         </span>
                                     </a>
                                     <a
-                                            v-if="item.thumbnail && item.thumbnail.thumbnail != undefined && item.thumbnail.thumbnail != false"
+                                            v-if="itemSubmission.thumbnail && itemSubmission.thumbnail.thumbnail != undefined && itemSubmission.thumbnail.thumbnail != false"
                                             id="button-delete-thumbnail"
                                             class="button is-rounded is-secondary"
                                             :aria-label="$i18n.get('label_button_delete_thumb')"
@@ -357,7 +357,7 @@
                             </span>
                         </template>
 
-                        <div v-if="item != undefined && item.id != undefined">
+                        <div v-if="itemSubmission != undefined">
                             <br>
                             <button
                                     style="margin-left: calc(var(--tainacan-one-column) + 12px)"
@@ -367,13 +367,13 @@
                                     :disabled="isLoadingAttachments">
                                 {{ $i18n.get("label_edit_attachments") }}
                             </button>
-                            <attachments-list
-                                    v-if="item != undefined && item.id != undefined"
-                                    :item="item"
+                            <!-- <attachments-list
+                                    v-if="itemSubmission != undefined"
+                                    :item="itemSubmission"
                                     :is-editable="true"
                                     :is-loading.sync="isLoadingAttachments"
                                     @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"
-                                    @onDeleteAttachment="deleteAttachment($event)"/>
+                                    @onDeleteAttachment="deleteAttachment($event)"/> -->
                         </div>
                     </template>
                 </div>
@@ -460,18 +460,9 @@
 
             <footer class="footer">
 
-                <!-- Last Updated Info -->
+                <!-- Updated and Error Info -->
                 <div class="update-info-section">
                     <p class="footer-message">
-                        <span 
-                                v-if="isUpdatingValues"
-                                class="update-warning">
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating"/>
-                            </span>
-                            <span>{{ $i18n.get('info_updating_metadata_values') }}</span>
-                        </span>
-                        <span v-else>{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}</span>
 
                         <span class="help is-danger">
                             {{ formErrorMessage }}
@@ -481,16 +472,13 @@
                         </span>
                     </p>
                 </div>
-                <div
-                        class="form-submission-footer"
-                        v-if="form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined">
+                <div class="form-submission-footer">
                     <button
-                            v-if="form.status == 'auto-draft'"
                             @click="onDiscard()"
                             type="button"
                             class="button is-outlined">{{ $i18n.get('cancel') }}</button>
                     <button
-                            @click="onSubmit('draft')"
+                            @click="onSubmit()"
                             type="button"
                             class="button is-secondary">{{ $i18n.get('label_submit') }}</button>
                 </div>
@@ -506,7 +494,7 @@ import wpMediaFrames from '../../admin/js/wp-media-frames';
 import FileItem from '../../admin/components/other/file-item.vue';
 import DocumentItem from '../../admin/components/other/document-item.vue';
 import CustomDialog from '../../admin/components/other/custom-dialog.vue';
-import AttachmentsList from '../../admin/components/lists/attachments-list.vue';
+//import AttachmentsList from '../../admin/components/lists/attachments-list.vue';
 import { formHooks } from '../../admin/js/mixins';
 
 export default {
@@ -514,7 +502,7 @@ export default {
     components: {
         FileItem,
         DocumentItem,
-        AttachmentsList
+        //AttachmentsList
     },
     mixins: [ formHooks ],
     props: {
@@ -529,14 +517,11 @@ export default {
     },
     data(){
         return {
-            itemId: Number,
-            item: {},
             isLoading: false,
             metadataCollapses: [],
             collapseAll: true,
             form: {
                 collectionId: Number,
-                status: '',
                 document: '',
                 document_type: '',
                 comment_status: ''
@@ -551,19 +536,18 @@ export default {
             urlLink: '',
             isTextModalActive: false,
             textLink: '',
-            isUpdatingValues: false,
             isLoadingAttachments: false,
         }
     },
     computed: {
+        itemSubmission() {
+            return this.getItemSubmission();
+        },
         collection() {
             return this.getCollection()
         },
         metadatumList() {
-            return JSON.parse(JSON.stringify(this.getItemMetadata()));
-        },
-        lastUpdated() {
-            return this.getLastUpdated();
+            return this.itemSubmission && this.itemSubmission.metadata ? JSON.parse(JSON.stringify(this.getMetadata().map((metadatum) => { return { metadatum: metadatum, item: {}, value: this.itemSubmission.metadata.find((aMetadatum) => aMetadatum.metadatum_id == metadatum.id).value } } ))) : [];
         },
         totalAttachments() {
             return this.getTotalAttachments();
@@ -574,51 +558,52 @@ export default {
     },
     created() {
 
-        // Initialize clear form data
-        this.cleanItemMetadata();
+        // Initialize clear data from store
+        this.clearItemSubmission();
+        
         eventBusItemMetadata.clearAllErrors();
         this.formErrorMessage = '';
         this.form.collectionId = this.collectionId;
 
-        // CREATING NEW  AUTO DRAFT ITEM
+        // CREATING NEW ITEM SUBMISSION
         this.createNewItem();
 
-        // Sets feedback variables
-        eventBusItemMetadata.$on('isUpdatingValue', (status) => {
-            this.isUpdatingValues = status;
-        });
         eventBusItemMetadata.$on('hasErrorsOnForm', (hasErrors) => {
             if (hasErrors)
                 this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
             else
                 this.formErrorMessage = '';
         });
-        this.cleanLastUpdated();
     },
     beforeDestroy () {
-        eventBusItemMetadata.$off('isUpdatingValue');
         eventBusItemMetadata.$off('hasErrorsOnForm');
     },
     methods: {
         ...mapActions('item', [
-            'sendItem',
+            'setItemSubmission',
+            'updateItemSubmission',
+            'submitItemSubmission',
             'updateItem',
             'updateItemDocument',
             'fetchItemMetadata',
             'fetchItem',
-            'cleanItemMetadata',
+            'clearItemSubmission',
             'sendAttachments',
             'fetchAttachments',
             'deletePermanentlyAttachment',
             'updateThumbnail',
-            'cleanLastUpdated',
-            'setLastUpdated',
             'removeAttachmentFromItem'
         ]),
         ...mapGetters('item',[
+            'getItemSubmission',
             'getItemMetadata',
-            'getTotalAttachments',
-            'getLastUpdated'
+            'getTotalAttachments'
+        ]),
+        ...mapActions('metadata',[
+            'fetchMetadata'
+        ]),
+        ...mapGetters('metadata',[
+            'getMetadata'
         ]),
         ...mapActions('collection', [
             'deleteItem',
@@ -626,63 +611,54 @@ export default {
         ...mapGetters('collection', [
             'getCollection',
         ]),
-        onSubmit(status) {
+        onSubmit() {
 
             // Puts loading on Item edition
             this.isLoading = true;
 
-            let previousStatus = this.form.status;
-            this.form.status = status;
-
             this.form.comment_status = this.form.comment_status == 'open' ? 'open' : 'closed';
 
-            let data = { id: this.itemId, status: this.form.status, comment_status: this.form.comment_status };
+            let data = { comment_status: this.form.comment_status };
             this.fillExtraFormData(data);
-
-            let promise = null;
-            if (status == 'trash')
-                promise = this.deleteItem({ itemId: this.itemId, isPermanently: false });
-            else
-                promise = this.updateItem(data);
+            this.updateExtraFormData(this.itemSubmission);
 
             // Clear errors so we don't have them duplicated from api
             eventBusItemMetadata.errors = [];
 
-            promise.then(updatedItem => {
+            this.submitItemSubmission(this.itemSubmission)
+                .then((resp) => {
+                    console.log(resp);
+                })
+                .catch((error) => console.error(error));
 
-                this.item = updatedItem;
+            // this.updateItem(data).then(() => {
 
-                // Fills hook forms with it's real values
-                this.updateExtraFormData(this.item);
+            //     // Fills hook forms with it's real values
+            //     this.updateExtraFormData(this.itemSubmission);
 
-                // Fill this.form data with current data.
-                this.form.status = status == 'trash' ? status : this.item.status;
-                this.form.document = this.item.document;
-                this.form.document_type = this.item.document_type;
-                this.form.comment_status = this.item.comment_status;
+            //     // Fill this.form data with current data.
+            //     this.form.document = this.itemSubmission.document;
+            //     this.form.document_type = this.itemSubmission.document_type;
+            //     this.form.comment_status = this.itemSubmission.comment_status;
                 
-                this.isLoading = false;
-
-                console.log('ITEM SALVO', this.item);
-            })
-            .catch((errors) => {
+            //     this.isLoading = false;
+            // })
+            // .catch((errors) => {
                 
-                if (errors.errors) {
-                    for (let error of errors.errors) {
-                        for (let metadatum of Object.keys(error)){
-                            eventBusItemMetadata.errors.push({ 
-                                metadatum_id: metadatum,
-                                errors: error[metadatum]
-                            });
-                        }   
-                    }
-                    this.formErrorMessage = errors.error_message;
-                }
-                this.form.status = previousStatus;
-                this.item.status = previousStatus;
+            //     if (errors.errors) {
+            //         for (let error of errors.errors) {
+            //             for (let metadatum of Object.keys(error)){
+            //                 eventBusItemMetadata.errors.push({ 
+            //                     metadatum_id: metadatum,
+            //                     errors: error[metadatum]
+            //                 });
+            //             }   
+            //         }
+            //         this.formErrorMessage = errors.error_message;
+            //     }
 
-                this.isLoading = false;
-            });
+            //     this.isLoading = false;
+            // });
         },
         onDiscard() {
             console.log('FORMULÁRIO DESCARTADO');
@@ -696,48 +672,40 @@ export default {
 
             // Creates draft Item
             this.form.comment_status = this.form.comment_status == 'open' ? 'open' : 'closed';
-            let data = { collection_id: this.form.collectionId, status: 'auto-draft', comment_status: this.form.comment_status };
+            let data = { collection_id: this.form.collectionId, comment_status: this.form.comment_status };
 
             this.fillExtraFormData(data);
-            this.sendItem(data).then(res => {
+            this.setItemSubmission(data);
 
-                this.itemId = res.id;
-                this.item = res;
+            // Initializes Media Frames now that itemId exists
+            //this.initializeMediaFrames();
 
-                // Initializes Media Frames now that itemId exists
-                this.initializeMediaFrames();
+            // Pre-fill values incentivate it
+            this.form.document = this.itemSubmission.document;
+            this.form.document_type = this.itemSubmission.document_type;
+            this.form.comment_status = this.itemSubmission.comment_status;
 
-                // Pre-fill status with publish to incentivate it
-                this.visibility = 'draft';
-                this.form.status = 'auto-draft'
-                this.form.document = this.item.document;
-                this.form.document_type = this.item.document_type;
-                this.form.comment_status = this.item.comment_status;
+            // Loads metadata and attachments
+            this.loadMetadata();
+            // this.isLoadingAttachments = true;
+            // this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId })
+            //     .then(() => this.isLoadingAttachments = false)
+            //     .catch(() => this.isLoadingAttachments = false);
 
-                // Loads metadata and attachments
-                this.loadMetadata();
-                this.isLoadingAttachments = true;
-                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId })
-                    .then(() => this.isLoadingAttachments = false)
-                    .catch(() => this.isLoadingAttachments = false);
-
-            })
-            .catch((error) => {
-                this.$console.error(error);
-                this.isLoading = false;
-            });
         },
         loadMetadata() {
             // Obtains Item Metadatum
-            this.fetchItemMetadata(this.itemId).then((metadata) => {
-                this.metadataCollapses = [];
+            this.fetchMetadata({ collectionId: this.collectionId }).then(resp => {
+                resp.request.then((metadata) => {
+                    this.metadataCollapses = [];
 
-                for (let i = 0; i < metadata.length; i++) {
-                    this.metadataCollapses.push(false);
-                    this.metadataCollapses[i] = true;
-                }                
-                this.isLoading = false;
-                console.log(this.metadataCollapses)
+                    for (let i = 0; i < metadata.length; i++) {
+                        this.metadataCollapses.push(false);
+                        this.metadataCollapses[i] = true;
+                    }                
+                    this.updateItemSubmission({ key: 'metadata', value: metadata.map((metadatum) => { return { metadatum_id: metadatum.id, value: ''} }) });
+                    this.isLoading = false;
+                });
             });
         },
         setFileDocument(event) {
@@ -747,32 +715,31 @@ export default {
             this.isTextModalActive = true;
         },
         confirmTextWriting() {
-            this.isLoading = true;
+            //this.isLoading = true;
             this.isTextModalActive = false;
             this.form.document_type = 'text';
             this.form.document = this.textContent;
-            this.updateItemDocument({ 
-                item_id: this.itemId, 
-                document: this.form.document,
-                document_type: this.form.document_type 
-            })
-            .then(item => {
-                this.item.document_as_html = item.document_as_html;
-                this.isLoading = false;
-            })
-            .catch((errors) => {
-                for (let error of errors.errors) {
-                    for (let metadatum of Object.keys(error)){
-                        eventBusItemMetadata.errors.push({ 
-                            metadatum_id: metadatum, 
-                            errors: error[metadatum]
-                        });
-                    }
-                }
-                this.formErrorMessage = errors.error_message;
+            // this.updateItemDocument({
+            //     document: this.form.document,
+            //     document_type: this.form.document_type 
+            // })
+            // .then(item => {
+            //     this.item.document_as_html = item.document_as_html;
+            //     this.isLoading = false;
+            // })
+            // .catch((errors) => {
+            //     for (let error of errors.errors) {
+            //         for (let metadatum of Object.keys(error)){
+            //             eventBusItemMetadata.errors.push({ 
+            //                 metadatum_id: metadatum, 
+            //                 errors: error[metadatum]
+            //             });
+            //         }
+            //     }
+            //     this.formErrorMessage = errors.error_message;
 
-                this.isLoading = false;
-            });
+            //     this.isLoading = false;
+            // });
         },
         cancelTextWriting() {
             this.isTextModalActive = false;
@@ -782,36 +749,35 @@ export default {
             this.isURLModalActive = true;
         },
         confirmURLSelection() {
-            this.isLoading = true;
+            //this.isLoading = true;
             this.isURLModalActive = false;
             this.form.document_type = 'url';
             this.form.document = this.urlLink;
-            this.updateItemDocument({ 
-                item_id: this.itemId,
-                document: this.form.document,
-                document_type: this.form.document_type
-            })
-            .then(item => {
-                this.item.document_as_html = item.document_as_html;
-                this.isLoading = false;
+            // this.updateItemDocument({ 
+            //     document: this.form.document,
+            //     document_type: this.form.document_type
+            // })
+            // .then(item => {
+            //     this.item.document_as_html = item.document_as_html;
+            //     this.isLoading = false;
 
-                let oldThumbnail = this.item.thumbnail;
-                if (item.document_type == 'url' && oldThumbnail != item.thumbnail )
-                    this.item.thumbnail = item.thumbnail;
-            })
-            .catch((errors) => {
-                for (let error of errors.errors) {
-                    for (let metadatum of Object.keys(error)) {
-                        eventBusItemMetadata.errors.push({ 
-                            metadatum_id: metadatum, 
-                            errors: error[metadatum]
-                        });
-                    }
-                }
-                this.formErrorMessage = errors.error_message;
+            //     let oldThumbnail = this.item.thumbnail;
+            //     if (item.document_type == 'url' && oldThumbnail != item.thumbnail )
+            //         this.item.thumbnail = item.thumbnail;
+            // })
+            // .catch((errors) => {
+            //     for (let error of errors.errors) {
+            //         for (let metadatum of Object.keys(error)) {
+            //             eventBusItemMetadata.errors.push({ 
+            //                 metadatum_id: metadatum, 
+            //                 errors: error[metadatum]
+            //             });
+            //         }
+            //     }
+            //     this.formErrorMessage = errors.error_message;
 
-                this.isLoading = false;
-            });
+            //     this.isLoading = false;
+            // });
         },
         cancelURLSelection() {
             this.isURLModalActive = false;
@@ -823,15 +789,14 @@ export default {
             this.form.document_type = 'empty';
             this.form.document = '';
             this.updateItemDocument({
-                item_id: this.itemId,
                 document: this.form.document,
                 document_type: this.form.document_type
             })
             .then(() => {
-                this.isLoadingAttachments = true;
-                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
-                    .then(() => this.isLoadingAttachments = false)
-                    .catch(() => this.isLoadingAttachments = false);
+                // this.isLoadingAttachments = true;
+                // this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                //     .then(() => this.isLoadingAttachments = false)
+                //     .catch(() => this.isLoadingAttachments = false);
             })
             .catch((errors) => {
                 for (let error of errors.errors) {
@@ -846,10 +811,7 @@ export default {
             });
         },
         deleteThumbnail() {
-            this.updateThumbnail({itemId: this.itemId, thumbnailId: 0})
-                .then(() => {
-                    this.item.thumbnail = false;
-                })
+            this.updateThumbnail({ thumbnailId: 0})
                 .catch((error) => {
                     this.$console.error(error);
                 });
@@ -865,11 +827,11 @@ export default {
                     onConfirm: () => {
                         this.deletePermanentlyAttachment(attachment.id)
                             .then(() => {
-                                this.isLoadingAttachments = true;
+                                // this.isLoadingAttachments = true;
 
-                                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
-                                    .then(() => this.isLoadingAttachments = false)
-                                    .catch(() => this.isLoadingAttachments = false);
+                                // this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                                //     .then(() => this.isLoadingAttachments = false)
+                                //     .catch(() => this.isLoadingAttachments = false);
                             })
                             .catch((error) => {
                                 this.$console.error(error);
@@ -888,30 +850,29 @@ export default {
                         frame_title: this.$i18n.get('instruction_select_document_file_for_item'),
                         frame_button: this.$i18n.get('label_select_file'),
                     },
-                    relatedPostId: this.itemId,
                     onSave: (file) => {
-                        this.isLoading = true;
+                        //this.isLoading = true;
                         this.form.document_type = 'attachment';
                         this.form.document = file.id + '';
-                        this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
-                            .then((item) => {
-                                this.isLoading = false;
-                                this.item.document_as_html = item.document_as_html;
+                        // this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
+                        //     .then((item) => {
+                        //         this.isLoading = false;
+                        //         this.item.document_as_html = item.document_as_html;
 
-                                let oldThumbnail = this.item.thumbnail;
-                                if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail )
-                                    this.item.thumbnail = item.thumbnail;
+                        //         let oldThumbnail = this.item.thumbnail;
+                        //         if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail )
+                        //             this.item.thumbnail = item.thumbnail;
 
-                            })
-                            .catch((errors) => {
-                                for (let error of errors.errors) {
-                                    for (let metadatum of Object.keys(error)){
-                                        eventBusItemMetadata.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
-                                    }
-                                }
-                                this.formErrorMessage = errors.error_message;
-                                this.isLoading = false;
-                            });
+                        //     })
+                        //     .catch((errors) => {
+                        //         for (let error of errors.errors) {
+                        //             for (let metadatum of Object.keys(error)){
+                        //                 eventBusItemMetadata.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                        //             }
+                        //         }
+                        //         this.formErrorMessage = errors.error_message;
+                        //         this.isLoading = false;
+                        //     });
                     }
                 }
             );
@@ -920,14 +881,13 @@ export default {
                     button_labels: {
                         frame_title: this.$i18n.get('instruction_select_item_thumbnail'),
                     },
-                    relatedPostId: this.itemId,
-                    onSave: (media) => {
-                        this.updateThumbnail({itemId: this.itemId, thumbnailId: media.id})
-                            .then((res) => {
-                                this.item.thumbnail = res.thumbnail;
-                            })
-                            .catch(error => this.$console.error(error));
-                    }
+                    // onSave: (media) => {
+                    //     this.updateThumbnail({itemId: this.itemId, thumbnailId: media.id})
+                    //         .then((res) => {
+                    //             this.item.thumbnail = res.thumbnail;
+                    //         })
+                    //         .catch(error => this.$console.error(error));
+                    // }
                 }
             );
             this.attachmentMediaFrame = new wpMediaFrames.attachmentControl(
@@ -936,14 +896,13 @@ export default {
                         frame_title: this.$i18n.get('instruction_select_files_to_attach_to_item'),
                         frame_button: this.$i18n.get('label_attach_to_item'),
                     },
-                    relatedPostId: this.itemId,
-                    onSave: () => {
-                        // Fetch current existing attachments
-                        this.isLoadingAttachments = true;
-                        this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
-                            .then(() => this.isLoadingAttachments = false)
-                            .catch(() => this.isLoadingAttachments = false);
-                    }
+                    // onSave: () => {
+                    //     // Fetch current existing attachments
+                    //     this.isLoadingAttachments = true;
+                    //     this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                    //         .then(() => this.isLoadingAttachments = false)
+                    //         .catch(() => this.isLoadingAttachments = false);
+                    // }
                 }
             );
 
@@ -1051,23 +1010,6 @@ export default {
                     color: var(--tainacan-secondary); 
                     font-size: 0.8125em;
                 }
-            }
-        }
-    }
-    .section-status {
-        padding-bottom: 16px;
-        font-size: 0.875em;
-
-        .field {
-            padding: 10px 0 14px 0px !important;
-
-            .b-radio {
-                margin-right: 24px;
-                margin-left: 0;
-            }
-            .icon  {
-                font-size: 1.125em !important;
-                color: var(--tainacan-info-color);
             }
         }
     }

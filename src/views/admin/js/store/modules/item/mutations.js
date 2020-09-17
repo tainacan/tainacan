@@ -147,3 +147,29 @@ export const setLastUpdated = (state, value) => {
     }
 }
 
+export const clearItemSubmission = (state) => {
+    state.itemSubmission = {};
+}
+
+export const setItemSubmission = (state, value) => {
+    state.itemSubmission = value;
+}
+
+export const updateItemSubmission = (state, { key, value }) => {
+    Vue.set(state.itemSubmission, key, value);
+}
+
+
+export const updateItemSubmissionMetadatum = (state, { metadatum_id, values }) => {
+    
+    let metadata = Array.isArray(state.itemSubmission.metadata) ? state.itemSubmission.metadata : [];
+    let existingMetadatumIndex = metadata.findIndex((metadatum) => metadatum.metadatum_id == metadatum_id);
+
+    if (existingMetadatumIndex >= 0)
+        metadata[existingMetadatumIndex].value = values;
+    else
+        metadata.push({ metadatum_id: metadatum_id, value: values });
+
+    Vue.set(state.itemSubmission, 'metadata', metadata);
+}
+
