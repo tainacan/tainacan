@@ -178,7 +178,7 @@ registerBlockType('tainacan/search-bar', {
                                                     (alignment == 'right' ? ' is-aligned-right' : '') 
                                                 }
                                                 id="tainacan-search-bar-block"
-                                                action={ tainacan_blocks.site_url + '/' + collectionSlug + '/#/' }
+                                                action={ tainacan_blocks.site_url + '/' + collectionSlug }
                                                 method='get'>
                                             <input 
                                                 style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
@@ -223,7 +223,7 @@ registerBlockType('tainacan/search-bar', {
                                         (alignment == 'right' ? ' is-aligned-right' : '') 
                                     }
                                     id="tainacan-search-bar-block"
-                                    action={ tainacan_blocks.site_url + '/' + collectionSlug + '/#/' }
+                                    action={ tainacan_blocks.site_url + '/' + collectionSlug }
                                     method='get'>
                                 <input 
                                     style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
