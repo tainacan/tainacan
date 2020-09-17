@@ -17,6 +17,7 @@ class REST_Items_Controller extends REST_Controller {
 	private $item;
 	private $item_metadata;
 	private $collections_repository;
+	private $metadatum_repository;
 
 	/**
 	 * REST_Items_Controller constructor.
@@ -36,6 +37,7 @@ class REST_Items_Controller extends REST_Controller {
 		$this->item = new Entities\Item();
 		$this->item_metadata = Repositories\Item_Metadata::get_instance();
 		$this->collections_repository = Repositories\Collections::get_instance();
+		$this->metadatum_repository = Repositories\Metadata::get_instance();
 	}
 
 	/**
@@ -128,6 +130,17 @@ class REST_Items_Controller extends REST_Controller {
 							'type'        => 'string'
 						),
 					)
+				),
+			)
+		);
+		register_rest_route(
+			$this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/submission',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'submission_item'),
+					'permission_callback' => array($this, 'submission_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
 				),
 			)
 		);
@@ -829,6 +842,93 @@ class REST_Items_Controller extends REST_Controller {
 
 	}
 
+	public function submission_item ( $request ) {
+		$collection_id = $request['collection_id'];
+		$item          = json_decode($request->get_body(), true);
+		$metadata = $item['metadata'];
+
+		$defualt_status = 'private'; //get option of collection
+		$item['status'] = 'auto-draft';
+
+		if(empty($item) || empty($metadata)) {
+			return new \WP_REST_Response([
+				'error_message' => __('Body can not be empty.', 'tainacan'),
+				'item'          => $item
+			], 400);
+		}
+
+		try {
+			$collection = $this->collections_repository->fetch($collection_id);
+			$item_obj = $this->prepare_item_for_database( [ $item, $collection_id ] );
+			if($item_obj->validate()) {
+				$item = $this->items_repository->insert( $item_obj );
+				$item_id = $item->get_id();
+				foreach($metadata as $m) {
+					$value = $m['value'];
+					$metadatum_id = $m['metadatum_id'];
+					$parent_meta_id = null;
+					$metadatum = $this->metadatum_repository->fetch( $metadatum_id );
+					$item_metadata = new Entities\Item_Metadata_Entity($item, $metadatum, null, $parent_meta_id);
+
+					if($item_metadata->is_multiple()) {
+						$item_metadata->set_value( is_array($value) ? $value : [$value] );
+					} else {
+						$item_metadata->set_value( is_array($value) ? implode(' ', $value) : $value);
+					}
+					if ( $item_metadata->validate() ) {
+						if($item->can_edit() || $collection->get_submission_anonymous_user()) {
+							$this->item_metadata->update( $item_metadata );
+						}
+						elseif($metadatum->get_accept_suggestion()) {
+							$this->item_metadata->suggest( $item_metadata );
+						}
+						else {
+							return new \WP_REST_Response( [
+								'error_message' => __( 'The metadatum does not accept suggestions', 'tainacan' ),
+							], 400 );
+						}
+					} else {
+						return new \WP_REST_Response( [
+							'error_message' => __( 'Please verify, invalid value(s)', 'tainacan' ),
+							'errors'        => $item_metadata->get_errors(),
+							'item_metadata' => $this->prepare_item_for_response($item_metadata, $request),
+						], 400 );
+					}
+				}
+
+				$item->set_status($defualt_status);
+				if($item->validate()) {
+					$item = $this->items_repository->insert( $item_obj );
+					return new \WP_REST_Response($this->prepare_item_for_response($item, $request), 201 );
+				} else {
+					return new \WP_REST_Response([
+						'error_message' => __('One or more values are invalid.', 'tainacan'),
+						'errors'        => $this->item->get_errors(),
+						'item'          => $this->prepare_item_for_response($this->item, $request)
+					], 400);
+				}
+			} else {
+				return new \WP_REST_Response([
+					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'errors'        => $this->item->get_errors(),
+					'item'          => $this->prepare_item_for_response($this->item, $request)
+				], 400);
+			}
+		} catch (\Exception $exception){
+			return new \WP_REST_Response($exception->getMessage(), 400);
+		}
+	}
+
+	public function submission_item_permissions_check ( $request ) {
+		$collection = $this->collections_repository->fetch($request['collection_id']);
+		if ($collection instanceof Entities\Collection) {
+			if ($collection->get_submission_anonymous_user()) {
+				return true;
+			}
+			return current_user_can($collection->get_items_capabilities()->edit_posts);
+		}
+		return false;
+	}
 
 	/**
 	 * @param string $method
