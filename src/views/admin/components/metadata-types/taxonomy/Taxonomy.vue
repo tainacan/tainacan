@@ -85,7 +85,7 @@
             }
         },
         watch: {
-            valueComponent( val ){
+            valueComponent( val ) {
                 this.$emit('input', val);
             }
         },

@@ -66,7 +66,7 @@ export const eventBusItemMetadata = new Vue({
                         
                 });
             } else {
-
+                
                 // If no itemId is provided, we are probably on an item Submission flow
                 if (values.length > 0 && values[0] != undefined && values[0].value) {
                     let onlyValues = values.map((aValueObject) => aValueObject.value);

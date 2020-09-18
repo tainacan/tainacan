@@ -703,7 +703,7 @@ export default {
                         this.metadataCollapses.push(false);
                         this.metadataCollapses[i] = true;
                     }                
-                    this.updateItemSubmission({ key: 'metadata', value: metadata.map((metadatum) => { return { metadatum_id: metadatum.id, value: ''} }) });
+                    this.updateItemSubmission({ key: 'metadata', value: metadata.map((metadatum) => { return { metadatum_id: metadatum.id, value: null } }) });
                     this.isLoading = false;
                 });
             });

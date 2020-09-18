@@ -166,48 +166,51 @@
                 this.performValueChange();
             }, 800),
             performValueChange() {
-
+                
                 // Compound metadata do not emit values, only their children.
                 if (this.metadatumComponent == 'tainacan-compound')
                     return;
 
+                if (this.itemMetadatum.value !== null) {
+
                 // This routine avoids calling the API if the value did not changed
-                switch(this.itemMetadatum.value.constructor.name) {
+                    switch(this.itemMetadatum.value.constructor.name) {
 
-                    // Multivalored Metadata requires checking the whole array
-                    case 'Array': {
-                        
-                        let equal = [];
-                        let currentValues = [];
-
-                        // An array of terms
-                        if (this.values.length && this.values[0].constructor.name == 'Object')
-                            currentValues = this.values.map(term => term.value)
-                        else
-                            currentValues = this.values;
+                        // Multivalored Metadata requires checking the whole array
+                        case 'Array': {
                             
-                        for (let value of currentValues) {
-                            let foundIndex = this.itemMetadatum.value.findIndex(element => value == element.id);
-                            if (foundIndex >= 0)
-                                equal.push(this.itemMetadatum.value[foundIndex]);
+                            let equal = [];
+                            let currentValues = [];
+                            
+                            // An array of terms
+                            if (this.values.length && this.values[0].constructor.name == 'Object')
+                                currentValues = this.values.map(term => term.value)
+                            else
+                                currentValues = this.values;
+                                
+                            for (let value of currentValues) {
+                                let foundIndex = this.itemMetadatum.value.findIndex(element => value == element.id);
+                                if (foundIndex >= 0)
+                                    equal.push(this.itemMetadatum.value[foundIndex]);
+                            }
+
+                            if (equal.length == currentValues.length && this.itemMetadatum.value.length <= equal.length)
+                                return;
+
+                            break;
                         }
+                        
+                        // A single term value
+                        case 'Object':
+                            if (this.values.length && this.values[0] == this.itemMetadatum.value.id)
+                                return;
+                            break;
 
-                        if (equal.length == currentValues.length && this.itemMetadatum.value.length <= equal.length)
-                            return;
-
-                        break;
+                        // Any single metadatum value that is not a term
+                        default:
+                            if (this.values.length && this.values[0] == this.itemMetadatum.value)
+                                return;
                     }
-                    
-                    // A single term value
-                    case 'Object':
-                        if (this.values.length && this.values[0] == this.itemMetadatum.value.id)
-                            return;
-                        break;
-
-                    // Any single metadatum value that is not a term
-                    default:
-                        if (this.values.length && this.values[0] == this.itemMetadatum.value)
-                            return;
                 }
                 
                 // If none is the case, the value is update request is sent to the API
