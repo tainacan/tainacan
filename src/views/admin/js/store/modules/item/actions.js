@@ -316,11 +316,12 @@ export const submitItemSubmission = ({ commit }, itemSubmission) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission', itemSubmission)
             .then( res => {
-                let itemSubmission = res.data
-                commit('setItemSubmission', itemSubmission);
-                resolve( item );
+                resolve( res.data );
             }).catch( error => { 
-                reject(error['response']['data']);
+                reject({
+                    errors: error.response.data.errors,
+                    error_message: error.response.data.error_message
+                });
             });
     }); 
 }

@@ -902,14 +902,14 @@ class REST_Items_Controller extends REST_Controller {
 				} else {
 					return new \WP_REST_Response([
 						'error_message' => __('One or more values are invalid.', 'tainacan'),
-						'errors'        => $this->item->get_errors(),
+						'errors'        => $item->get_errors(),
 						'item'          => $this->prepare_item_for_response($this->item, $request)
 					], 400);
 				}
 			} else {
 				return new \WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
-					'errors'        => $this->item->get_errors(),
+					'errors'        => $item->get_errors(),
 					'item'          => $this->prepare_item_for_response($this->item, $request)
 				], 400);
 			}

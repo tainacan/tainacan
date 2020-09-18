@@ -5,6 +5,7 @@
                 :active.sync="isLoading"
                 :can-cancel="false"/>
         <form
+                v-if="!hasSentForm"
                 v-show="!isLoading"
                 class="tainacan-form"
                 label-width="120px">
@@ -484,6 +485,22 @@
                 </div>
             </footer>
         </form>
+
+        <section 
+                v-else
+                class="section">
+            <div class="content has-text-grey has-text-centered">
+                <br>
+                <p>
+                    <span class="icon is-medium">
+                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-approvedcircle"/>
+                    </span>
+                </p>
+                <h2>{{ sentFormHeading ? sentFormHeading : $i18n.get('label_sent_form') }}</h2>
+                <p>{{ sentFormMessage? sentFormMessage: $i18n.get('info_sent_form') }}</p>
+                <br>
+            </div>
+        </section>
     </div>
 </template>
 
@@ -513,7 +530,9 @@ export default {
         hideThumbnailSection: Boolean,
         hideAttachmentsSection: Boolean,
         hideCollapses: Boolean,
-        enabledMetadata: Array
+        enabledMetadata: Array,
+        sentFormHeading: String,
+        sentFormMessage: String
     },
     data(){
         return {
@@ -537,6 +556,7 @@ export default {
             isTextModalActive: false,
             textLink: '',
             isLoadingAttachments: false,
+            hasSentForm: false
         }
     },
     computed: {
@@ -626,39 +646,24 @@ export default {
             eventBusItemMetadata.errors = [];
 
             this.submitItemSubmission(this.itemSubmission)
-                .then((resp) => {
-                    console.log(resp);
+                .then(() => {
+                    this.hasSentForm = true;
+                    this.isLoading = false;
                 })
-                .catch((error) => console.error(error));
-
-            // this.updateItem(data).then(() => {
-
-            //     // Fills hook forms with it's real values
-            //     this.updateExtraFormData(this.itemSubmission);
-
-            //     // Fill this.form data with current data.
-            //     this.form.document = this.itemSubmission.document;
-            //     this.form.document_type = this.itemSubmission.document_type;
-            //     this.form.comment_status = this.itemSubmission.comment_status;
-                
-            //     this.isLoading = false;
-            // })
-            // .catch((errors) => {
-                
-            //     if (errors.errors) {
-            //         for (let error of errors.errors) {
-            //             for (let metadatum of Object.keys(error)){
-            //                 eventBusItemMetadata.errors.push({ 
-            //                     metadatum_id: metadatum,
-            //                     errors: error[metadatum]
-            //                 });
-            //             }   
-            //         }
-            //         this.formErrorMessage = errors.error_message;
-            //     }
-
-            //     this.isLoading = false;
-            // });
+                .catch((errors) => { 
+                    if (errors.errors) {
+                        for (let error of errors.errors) {
+                            for (let metadatum of Object.keys(error)){
+                                eventBusItemMetadata.errors.push({ 
+                                    metadatum_id: metadatum,
+                                    errors: error[metadatum]
+                                });
+                            }   
+                        }
+                        this.formErrorMessage = errors.error_message;
+                    }
+                    this.isLoading = false;
+                });
         },
         onDiscard() {
             console.log('FORMULÁRIO DESCARTADO');
