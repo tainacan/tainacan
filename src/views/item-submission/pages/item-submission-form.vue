@@ -468,7 +468,7 @@
                         <span class="help is-danger">
                             {{ formErrorMessage }}
                             <item-metadatum-errors-tooltip 
-                                    v-if="formErrors.length"
+                                    v-if="formErrors.length && formErrors[0].errors && formErrors[0].errors.length"
                                     :form-errors="formErrors" />
                         </span>
                     </p>
@@ -513,12 +513,14 @@ import DocumentItem from '../../admin/components/other/document-item.vue';
 import CustomDialog from '../../admin/components/other/custom-dialog.vue';
 //import AttachmentsList from '../../admin/components/lists/attachments-list.vue';
 import { formHooks } from '../../admin/js/mixins';
+import ItemMetadatumErrorsTooltip from '../../admin/components/other/item-metadatum-errors-tooltip.vue';
 
 export default {
     name: 'ItemSubmissionForm',
     components: {
         FileItem,
         DocumentItem,
+        ItemMetadatumErrorsTooltip,
         //AttachmentsList
     },
     mixins: [ formHooks ],
@@ -589,6 +591,7 @@ export default {
         this.createNewItem();
 
         eventBusItemMetadata.$on('hasErrorsOnForm', (hasErrors) => {
+
             if (hasErrors)
                 this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
             else
