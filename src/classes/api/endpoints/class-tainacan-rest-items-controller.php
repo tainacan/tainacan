@@ -846,7 +846,7 @@ class REST_Items_Controller extends REST_Controller {
 		$item          = json_decode($request->get_body(), true);
 		$metadata = $item['metadata'];
 
-		$defualt_status = 'private'; //get option of collection
+		$default_status = 'private'; //get option of collection
 		$item['status'] = 'auto-draft';
 
 		if(empty($item) || empty($metadata)) {
@@ -858,18 +858,18 @@ class REST_Items_Controller extends REST_Controller {
 
 		try {
 			$collection = $this->collections_repository->fetch($collection_id);
-			$item_obj = $this->prepare_item_for_database( [ $item, $collection_id ] );
-			if($item_obj->validate()) {
-				$item = $this->items_repository->insert( $item_obj );
+			$item = $this->prepare_item_for_database( [ $item, $collection_id ] );
+			if ( $item->validate() ) {
+				$item = $this->items_repository->insert( $item );
 				$item_id = $item->get_id();
-				foreach($metadata as $m) {
+				foreach ( $metadata as $m ) {
 					$value = $m['value'];
 					$metadatum_id = $m['metadatum_id'];
 					$parent_meta_id = null;
 					$metadatum = $this->metadatum_repository->fetch( $metadatum_id );
 					$item_metadata = new Entities\Item_Metadata_Entity($item, $metadatum, null, $parent_meta_id);
 
-					if($item_metadata->is_multiple()) {
+					if ($item_metadata->is_multiple()) {
 						$item_metadata->set_value( is_array($value) ? $value : [$value] );
 					} else {
 						$item_metadata->set_value( is_array($value) ? implode(' ', $value) : $value);
@@ -895,9 +895,9 @@ class REST_Items_Controller extends REST_Controller {
 					}
 				}
 
-				$item->set_status($defualt_status);
-				if($item->validate()) {
-					$item = $this->items_repository->insert( $item_obj );
+				$item->set_status($default_status);
+				if ($item->validate()) {
+					$item = $this->items_repository->insert( $item );
 					return new \WP_REST_Response($this->prepare_item_for_response($item, $request), 201 );
 				} else {
 					return new \WP_REST_Response([

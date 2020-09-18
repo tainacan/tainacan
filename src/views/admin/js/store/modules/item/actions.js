@@ -314,7 +314,7 @@ export const updateItemSubmissionMetadatum = ({ commit }, { metadatum_id, values
 
 export const submitItemSubmission = ({ commit }, itemSubmission) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.post('/items/submission', itemSubmission)
+        axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission', itemSubmission)
             .then( res => {
                 let itemSubmission = res.data
                 commit('setItemSubmission', itemSubmission);

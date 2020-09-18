@@ -510,7 +510,7 @@ class Theme_Helper {
 	 * 
 	 * 		@type string 		$label				 Label, visible to users. Default to $slug
 	 * 		@type string		$description		 Description, visible only to editors in the admin. Default none.
-	 * 		@type string		$type 				 Type. Accepted values are 'template' or 'component'. Defautl 'template'
+	 * 		@type string		$type 				 Type. Accepted values are 'template' or 'component'. Default 'template'
 	 * 		@type string		$template			 Full path  to the template file to be used. Required if $type is set to template.
 	 * 												 Default: theme-path/tainacan/view-mode-{$slug}.php
 	 * 		@type string		$component			 Component tag name. The web component js must be included and must accept two props:
