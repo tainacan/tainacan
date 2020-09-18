@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { Button, ColorPicker, BaseControl, CheckboxControl, FontSizePicker, HorizontalRule, Spinner, ToggleControl, Placeholder, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
+const { Button, TextControl, TextareaControl, ColorPicker, BaseControl, CheckboxControl, FontSizePicker, HorizontalRule, Spinner, ToggleControl, Placeholder, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -106,6 +106,14 @@ registerBlockType('tainacan/item-submission-form', {
         isLoadingCollectionMetadata: {
             type: Boolean,
             default: false
+        },
+        sentFormHeading: {
+            type: String,
+            default: __( 'Form submitted!', 'tainacan' )
+        },
+        sentFormMessage: {
+            type: String,
+            default: __( 'Thank you. Your item was submitted to the collection.', 'tainacan' )
         }
     },
     supports: {
@@ -134,7 +142,9 @@ registerBlockType('tainacan/item-submission-form', {
             secondaryColor,
             isLoadingCollectionMetadata,
             collectionMetadata,
-            enabledMetadata
+            enabledMetadata,
+            sentFormHeading,
+            sentFormMessage
         } = attributes;
 
         const fontSizes = [
@@ -242,37 +252,60 @@ registerBlockType('tainacan/item-submission-form', {
                 : null }
 
                 <div>
+                <InspectorControls>
+                        <PanelBody
+                                title={ __('Submission feedback', 'tainacan') }
+                                initialOpen={ true } >
+                            <TextControl
+                                label={ __('The heading of the message that will confirm that the submission went well.', 'tainacan') }
+                                value={ sentFormHeading }
+                                onChange={ ( updatedHeading ) =>{
+                                    sentFormHeading = updatedHeading;
+                                    setAttributes({ sentFormHeading: sentFormHeading });
+                                } }
+                            />
+                            <TextareaControl
+                                label={ __('The message that will confirm that the submission went well.', 'tainacan') }
+                                help={ __('You may want to inform the user here that the item is under evaluation or that it will be visible after a certain time.', 'tainacan') }
+                                value={ sentFormMessage }
+                                onChange={ ( updatedMessage ) =>{
+                                    sentFormMessage = updatedMessage;
+                                    setAttributes({ sentFormMessage: sentFormMessage });
+                                } }
+                            />
+                        </PanelBody>
+                    </InspectorControls>
                     <InspectorControls>
-                            <PanelBody
-                                    title={__('Metadata Input', 'tainacan')}
-                                    initialOpen={ true } >
-                                { !isLoadingCollectionMetadata ? 
-                                    <BaseControl
-                                        id="metadata-checkbox-list"
-                                        label={ __('Metadata input shown on the list', 'tainacan') }
-                                        help={ __('Uncheck the metadata that you do not want to be shown on the form', 'tainacan') }
-                                    >
-                                    <ul id="metadata-checkbox-list">
-                                        { enabledMetadata.length ? 
-                                            enabledMetadata.map((isMetadatumEnabled, index) => {
-                                                return (
-                                                    <li>
-                                                        <CheckboxControl 
-                                                            label={ collectionMetadata[index].name }
-                                                            checked={ isMetadatumEnabled ? true : false }
-                                                            help={ collectionMetadata[index].metadata_type_object.name + (collectionMetadata[index].collection_id != collectionId ? (' (' + __('Inherited', 'tainacan') + ')' ) : '') }
-                                                            onChange={  (isEnabled) => toggleIsEnabledMetadatum(isEnabled, index) }
-                                                        />
-                                                    </li>
-                                                )
-                                            })
-                                            :
-                                        <p>{ __('No public metadata was found in this collection', 'tainacan') }</p> 
-                                        }
-                                    </ul>    
-                                    </BaseControl>
-                                : <Spinner /> }
-                            </PanelBody>
+                        <PanelBody
+                                title={__('Metadata Input', 'tainacan')}
+                                initialOpen={ true } >
+                            { !isLoadingCollectionMetadata ? 
+                                <BaseControl
+                                    id="metadata-checkbox-list"
+                                    label={ __('Metadata input shown on the list', 'tainacan') }
+                                    help={ __('Uncheck the metadata that you do not want to be shown on the form', 'tainacan') }
+                                >
+                                <ul id="metadata-checkbox-list">
+                                    { enabledMetadata.length ? 
+                                        enabledMetadata.map((isMetadatumEnabled, index) => {
+                                            return (
+                                                <li>
+                                                    <CheckboxControl 
+                                                        label={ collectionMetadata[index].name }
+                                                        checked={ isMetadatumEnabled ? true : false }
+                                                        help={ collectionMetadata[index].metadata_type_object.name + (collectionMetadata[index].collection_id != collectionId ? (' (' + __('Inherited', 'tainacan') + ')' ) : '') }
+                                                        onChange={  (isEnabled) => toggleIsEnabledMetadatum(isEnabled, index) }
+                                                    />
+                                                </li>
+                                            )
+                                        })
+                                        :
+                                    <p>{ __('No public metadata was found in this collection', 'tainacan') }</p> 
+                                    }
+                                </ul>    
+                                </BaseControl>
+                            : <Spinner /> }
+                        </PanelBody>
                     </InspectorControls>
                     <InspectorControls>
                         <PanelBody
@@ -638,7 +671,9 @@ registerBlockType('tainacan/item-submission-form', {
             infoColor,
             primaryColor,
             secondaryColor,
-            enabledMetadata
+            enabledMetadata,
+            sentFormHeading,
+            sentFormMessage
         } = attributes;
         
         return <div 
@@ -664,7 +699,9 @@ registerBlockType('tainacan/item-submission-form', {
                     hide-thumbnail-section={ hideThumbnailSection.toString() }
                     hide-attachments-section={ hideAttachmentsSection.toString() }
                     hide-collapses={ hideCollapses.toString() }
-                    enabled-metadata={ enabledMetadata.toString() }>
+                    enabled-metadata={ enabledMetadata.toString() }
+                    sent-form-heading={ sentFormHeading }
+                    sent-form-message={ sentFormMessage }>
             </div>
         </div>
     }

@@ -106,7 +106,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 hideThumbnailSection: false,
                 hideAttachmentsSection: false,
                 hideCollapses: false,
-                enabledMetadata: []
+                enabledMetadata: [],
+                sentFormHeading: '',
+                sentFormMessage: ''
             },
             beforeMount () {
                 // Collection source settings
@@ -126,6 +128,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.hideAttachmentsSection = this.isParameterTrue('hide-attachments-section');
                 if (this.$el.attributes['hide-collapses'] != undefined)
                     this.hideCollapses = this.isParameterTrue('hide-collapses');
+
+                // Form submission feedback messages
+                if (this.$el.attributes['sent-form-heading'] != undefined)
+                    this.sentFormHeading = this.$el.attributes['sent-form-heading'].value;
+                if (this.$el.attributes['sent-form-message'] != undefined)
+                    this.sentFormMessage = this.$el.attributes['sent-form-message'].value;
 
                 // List of metadata
                 if (this.$el.attributes['enabled-metadata'] != undefined && this.$el.attributes['enabled-metadata'].value)

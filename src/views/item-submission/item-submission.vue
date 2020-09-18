@@ -8,7 +8,9 @@
             :hide-thumbnail-section="$root.hideThumbnailSection ? $root.hideThumbnailSection : false"
             :hide-attachments-section="$root.hideAttachmentsSection ? $root.hideAttachmentsSection : false"
             :hide-collapses="$root.hideCollapses ? $root.hideCollapses : false"
-            :enabled-metadata="$root.enabledMetadata ? $root.enabledMetadata : []" />
+            :enabled-metadata="$root.enabledMetadata ? $root.enabledMetadata : []"
+            :sent-form-heading="$root.sentFormHeading"
+            :sent-form-message="$root.sentFormMessage" />
 </template>
 
 <script>

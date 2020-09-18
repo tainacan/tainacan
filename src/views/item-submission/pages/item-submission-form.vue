@@ -496,8 +496,8 @@
                         <i class="tainacan-icon tainacan-icon-30px tainacan-icon-approvedcircle"/>
                     </span>
                 </p>
-                <h2>{{ sentFormHeading ? sentFormHeading : $i18n.get('label_sent_form') }}</h2>
-                <p>{{ sentFormMessage? sentFormMessage: $i18n.get('info_sent_form') }}</p>
+                <h2 v-if="sentFormHeading">{{ sentFormHeading }}</h2>
+                <p v-if="sentFormMessage">{{ sentFormMessage }}</p>
                 <br>
             </div>
         </section>
@@ -666,7 +666,15 @@ export default {
                 });
         },
         onDiscard() {
-            console.log('FORMULÁRIO DESCARTADO');
+            // Initialize clear data from store
+            this.clearItemSubmission();
+            
+            eventBusItemMetadata.clearAllErrors();
+            this.formErrorMessage = '';
+            this.form.collectionId = this.collectionId;
+
+            // CREATING NEW ITEM SUBMISSION
+            this.createNewItem();
         },
         createNewItem() {
             // Puts loading on Draft Item creation
