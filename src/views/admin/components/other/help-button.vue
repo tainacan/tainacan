@@ -77,6 +77,7 @@ export default {
             padding: 0.5em 1.0em 1.0em 1.0em;
 
             p {
+                margin: 0 0 0.125em 0;
                 font-size: 0.875em !important;
                 font-weight: normal !important;
                 white-space: normal !important;

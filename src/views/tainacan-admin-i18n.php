@@ -480,6 +480,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_esc_key'								 	 => __( 'ESC', 'tainacan' ),
 	'label_view_selected_items_as'					 => __( 'View selected items as...', 'tainacan' ),
 	'label_actions_for_the_selection'				 => __( 'Actions for the selection', 'tainacan' ),
+	'label_upload_custom_thumbnail'					 => __( 'Upload custom thubmnail', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -743,6 +744,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_gallery_start_transition'					 => __( 'to start or pause automatic transition after every 3s', 'tainacan' ),
 	'info_gallery_exit'								 => __( ' to leave the fullscreen gallery view mode', 'tainacan' ),
 	'info_gallery_help_end'							 => __( 'At any moment, you can also check the item metadata list by clicking on the metadata icon (%1$s)  or go directly to the item page, where you will have all its details, by clicking on the eye icon (%2$s).', 'tainacan' ),
+	'info_thumbnail_custom'							 => __( 'Upload the desired image for the thumbnail', 'tainacan'),
+	'info_thumbnail_default_from_document' 			 => __( 'A thumbnail will be automatically generated from the submitted document file', 'tainacan'),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),

@@ -33,6 +33,7 @@ export default {
     @import "../../../node_modules/buefy/src/scss/components/_checkbox.scss";
     @import "../../../node_modules/buefy/src/scss/components/_radio.scss";
     @import "../../../node_modules/buefy/src/scss/components/_switch.scss";
+    @import "../../../node_modules/buefy/src/scss/components/_upload.scss";
     @import "../../../node_modules/buefy/src/scss/components/_tag.scss";
     @import "../../../node_modules/buefy/src/scss/components/_loading.scss";
     @import "../../../node_modules/buefy/src/scss/components/_dropdown.scss";
