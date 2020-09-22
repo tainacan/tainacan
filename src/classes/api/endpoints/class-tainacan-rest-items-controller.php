@@ -841,7 +841,32 @@ class REST_Items_Controller extends REST_Controller {
 
 	}
 
-	public function submission_item ( $request ) {
+	private function submission_item_metadada ( \Tainacan\Entities\Item_Metadata_Entity &$item_metadata) {
+		$collection_id = $item_metadata->get_item()->get_collection_id();
+		$item = $item_metadata->get_item();
+		$collection = $this->collections_repository->fetch($collection_id);
+		if ( $item_metadata->validate() ) {
+			if($item->can_edit() || $collection->get_submission_anonymous_user()) {
+				return $this->item_metadata->update( $item_metadata );
+			}
+			elseif($metadatum->get_accept_suggestion()) {
+				return $this->item_metadata->suggest( $item_metadata );
+			}
+			else {
+				return new \WP_REST_Response( [
+					'error_message' => __( 'The metadatum does not accept suggestions', 'tainacan' ),
+				], 400 );
+			}
+		} else {
+			return new \WP_REST_Response( [
+				'error_message' => __( 'Please verify, invalid value(s)', 'tainacan' ),
+				'errors'        => $item_metadata->get_errors(),
+				'item_metadata' => $this->prepare_item_for_response($item_metadata, $request),
+			], 400 );
+		}
+	}
+
+	public function submission_item ( $request) {
 		$collection_id = $request['collection_id'];
 		$item          = json_decode($request->get_body(), true);
 		$metadata = $item['metadata'];
@@ -865,33 +890,47 @@ class REST_Items_Controller extends REST_Controller {
 				foreach ( $metadata as $m ) {
 					$value = $m['value'];
 					$metadatum_id = $m['metadatum_id'];
-					$parent_meta_id = null;
 					$metadatum = $this->metadatum_repository->fetch( $metadatum_id );
-					$item_metadata = new Entities\Item_Metadata_Entity($item, $metadatum, null, $parent_meta_id);
+					$item_metadata = new Entities\Item_Metadata_Entity($item, $metadatum);
 
-					if ($item_metadata->is_multiple()) {
-						$item_metadata->set_value( is_array($value) ? $value : [$value] );
+					if($metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Compound') {
+						if ($item_metadata->is_multiple()) {
+							foreach($value as $row) {
+								$parent_meta_id = null;
+								foreach($row as $child) {
+									$metadatum_child = $this->metadatum_repository->fetch( $child['metadatum_id'] );
+									$item_metadata_child = new Entities\Item_Metadata_Entity($item, $metadatum_child, null, $parent_meta_id);
+									$item_metadata_child->set_value(is_array($child['value']) ? implode(' ', $child['value']) : $child['value']);
+									$item_metadata_child = $this->submission_item_metadada($item_metadata_child);
+									if ($item_metadata_child instanceof \WP_REST_Response) {
+										return $item_metadata_child;
+									}	
+									$parent_meta_id = $item_metadata_child->get_parent_meta_id();
+								}
+							}
+						} else {
+							$parent_meta_id = null;
+							foreach($value as $child) {
+								$metadatum_child = $this->metadatum_repository->fetch( $child['metadatum_id'] );
+								$item_metadata_child = new Entities\Item_Metadata_Entity($item, $metadatum_child, null, $parent_meta_id);
+								$item_metadata_child->set_value(is_array($child['value']) ? implode(' ', $child['value']) : $child['value']);
+								$item_metadata_child = $this->submission_item_metadada($item_metadata_child);
+								if ($item_metadata_child instanceof \WP_REST_Response) {
+									return $item_metadata_child;
+								}	
+								$parent_meta_id = $item_metadata_child->get_parent_meta_id();
+							}
+						}
 					} else {
-						$item_metadata->set_value( is_array($value) ? implode(' ', $value) : $value);
-					}
-					if ( $item_metadata->validate() ) {
-						if($item->can_edit() || $collection->get_submission_anonymous_user()) {
-							$this->item_metadata->update( $item_metadata );
+						if ($item_metadata->is_multiple()) {
+							$item_metadata->set_value( is_array($value) ? $value : [$value] );
+						} else {
+							$item_metadata->set_value( is_array($value) ? implode(' ', $value) : $value);
 						}
-						elseif($metadatum->get_accept_suggestion()) {
-							$this->item_metadata->suggest( $item_metadata );
+						$item_metadata = $this->submission_item_metadada($item_metadata);
+						if ($item_metadata instanceof \WP_REST_Response) {
+							return $item_metadata;
 						}
-						else {
-							return new \WP_REST_Response( [
-								'error_message' => __( 'The metadatum does not accept suggestions', 'tainacan' ),
-							], 400 );
-						}
-					} else {
-						return new \WP_REST_Response( [
-							'error_message' => __( 'Please verify, invalid value(s)', 'tainacan' ),
-							'errors'        => $item_metadata->get_errors(),
-							'item_metadata' => $this->prepare_item_for_response($item_metadata, $request),
-						], 400 );
 					}
 				}
 
