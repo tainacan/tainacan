@@ -481,6 +481,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_view_selected_items_as'					 => __( 'View selected items as...', 'tainacan' ),
 	'label_actions_for_the_selection'				 => __( 'Actions for the selection', 'tainacan' ),
 	'label_upload_custom_thumbnail'					 => __( 'Upload custom thubmnail', 'tainacan' ),
+	'label_switch_document_type'					 => __( 'Switch document type', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
