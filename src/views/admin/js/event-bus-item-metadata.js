@@ -25,7 +25,7 @@ export const eventBusItemMetadata = new Vue({
         this.$on('remove_group', this.removeItemMetadataGroup);
     },
     methods : {
-        updateValue({ itemId, metadatumId, values, parentMetaId }){
+        updateValue({ itemId, metadatumId, values, parentMetaId, parentId }){
             
             if (itemId) {
 
@@ -67,9 +67,10 @@ export const eventBusItemMetadata = new Vue({
                         }
                         
                 });
+
+            // If no itemId is provided, we are probably on an item Submission flow
             } else {
 
-                // If no itemId is provided, we are probably on an item Submission flow
                 if (values.length > 0 && values[0] != undefined && values[0].value) {
                     let onlyValues = values.map((aValueObject) => aValueObject.value);
                     values = onlyValues;
@@ -78,7 +79,8 @@ export const eventBusItemMetadata = new Vue({
                 this.$store.dispatch('item/updateItemSubmissionMetadatum', { 
                     metadatum_id: metadatumId, 
                     values: Array.isArray(values[0]) ? values[0] : values,
-                    //parent_meta_id: parentMetaId ? parentMetaId : null
+                    child_group_index: parentMetaId,
+                    parent_id: parentId
                 });
 
                 let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ));
@@ -91,6 +93,8 @@ export const eventBusItemMetadata = new Vue({
                     this.errors.push( { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } );
                     this.$emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[0]);
                 }
+
+                this.$emit('isUpdatingValue', false);
             }
         },
         removeItemMetadataGroup({ itemId, metadatumId, parentMetaId }) {
@@ -105,10 +109,18 @@ export const eventBusItemMetadata = new Vue({
                     parent_meta_id: parentMetaId
                 })
                     .then((res) => {
-                        this.$emit('hasRemovedItemMetadataGroup', res)
+                        this.$emit('hasRemovedItemMetadataGroup', res);
                         this.$emit('isUpdatingValue', false);
                     })
                     .catch(() => this.$emit('isUpdatingValue', false));
+            } else if (!itemId) {
+                this.$store.dispatch('item/deleteGroupFromItemSubmissionMetadatum', { 
+                    metadatum_id: metadatumId,
+                    child_group_index: parentMetaId
+                });
+                
+                this.$emit('hasRemovedItemMetadataGroup', true);
+                this.$emit('isUpdatingValue', false);
             }
         },
         clearAllErrors() {

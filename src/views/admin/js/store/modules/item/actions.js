@@ -308,8 +308,12 @@ export const updateItemSubmission = ({ commit }, { key, value }) => {
     commit('updateItemSubmission', { key: key, value: value });
 }
 
-export const updateItemSubmissionMetadatum = ({ commit }, { metadatum_id, values }) => {
-    commit('updateItemSubmissionMetadatum', { metadatum_id: metadatum_id, values: values });
+export const updateItemSubmissionMetadatum = ({ commit }, { metadatum_id, values, child_group_index, parent_id }) => {
+    commit('updateItemSubmissionMetadatum', { metadatum_id: metadatum_id, values: values, child_group_index: child_group_index, parent_id: parent_id });
+}
+
+export const deleteGroupFromItemSubmissionMetadatum = ({ commit }, { metadatum_id, child_group_index }) => {
+    commit('deleteGroupFromItemSubmissionMetadatum', { metadatum_id: metadatum_id, child_group_index: child_group_index });
 }
 
 export const submitItemSubmission = ({ commit }, itemSubmission) => {

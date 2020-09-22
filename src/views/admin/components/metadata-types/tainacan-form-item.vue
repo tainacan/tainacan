@@ -218,7 +218,8 @@
                     itemId: this.itemMetadatum.item.id,
                     metadatumId: this.itemMetadatum.metadatum.id,
                     values: this.values ? this.values : '',
-                    parentMetaId: this.itemMetadatum.parent_meta_id
+                    parentMetaId: this.itemMetadatum.parent_meta_id,
+                    parentId: this.itemMetadatum.metadatum.parent != undefined ? this.itemMetadatum.metadatum.parent : 0
                 });
             },
             addValue(){
