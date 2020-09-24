@@ -131,8 +131,7 @@
              */  
             'itemMetadatum.value': {
                 handler() {
-                    if (this.itemMetadatum.item.id)
-                        this.createChildMetadataGroups();
+                    this.createChildMetadataGroups();
                 },
                 immediate: true
             }
@@ -154,7 +153,6 @@
                     this.itemMetadatum.metadatum.metadata_type_options &&
                     this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
                 ) {
-                    
                     // Here we load the values from the object, but must also create some
                     if (parentValues && parentValues.length) {
                         
@@ -173,7 +171,7 @@
                                         existingChildItemMetadata.push({
                                             item: this.itemMetadatum.item,
                                             metadatum: childMetadatum,
-                                            parent_meta_id: childItemMetadatum.parent_meta_id,
+                                            parent_meta_id: (this.itemMetadatum.item && this.itemMetadatum.item.id) ?childItemMetadatum.parent_meta_id : groupIndex,
                                             value: childItemMetadatum.value,
                                             value_as_html: childItemMetadatum.value_as_html,
                                             value_as_string: childItemMetadatum.value_as_string,
@@ -185,7 +183,7 @@
                                         existingChildItemMetadata.push({
                                             item: this.itemMetadatum.item,
                                             metadatum: childMetadatum,
-                                            parent_meta_id: existingParentMetaIdIndex >= 0 ? childItemMetadata[existingParentMetaIdIndex].parent_meta_id : 0,
+                                            parent_meta_id: (this.itemMetadatum.item && this.itemMetadatum.item.id) ? (existingParentMetaIdIndex >= 0 ? childItemMetadata[existingParentMetaIdIndex].parent_meta_id : 0) : groupIndex,
                                             value: '',
                                             value_as_html: '',
                                             value_as_string: '',
@@ -201,7 +199,7 @@
                                     let childObject = {
                                         item: this.itemMetadatum.item,
                                         metadatum: childMetadatum,
-                                        parent_meta_id: '0',
+                                        parent_meta_id: (this.itemMetadatum.item && this.itemMetadatum.item.id) ? '0' : currentChildItemMetadataGroups.length,
                                         value: '',
                                         value_as_html: '',
                                         value_as_string: '',
@@ -290,9 +288,7 @@
                             newEmptyGroup.push(childObject)
                         }
                     } 
-                    
                     this.childItemMetadataGroups.push(newEmptyGroup);
-    
                     this.isCreatingGroup = false;
                 }
             },
@@ -308,7 +304,6 @@
                     if (!this.itemMetadatum.item.id)
                         this.childItemMetadataGroups.splice(groupIndex, 1);
                 
-                    console.log(this.childItemMetadataGroups, groupIndex)
                 } else {
                     this.childItemMetadataGroups.splice(groupIndex, 1);
                 }
