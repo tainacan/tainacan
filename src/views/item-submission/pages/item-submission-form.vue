@@ -422,7 +422,6 @@ export default {
         this.createNewItem();
 
         eventBusItemMetadata.$on('hasErrorsOnForm', (hasErrors) => {
-
             if (hasErrors)
                 this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
             else

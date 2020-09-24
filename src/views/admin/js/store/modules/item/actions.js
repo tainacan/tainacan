@@ -327,8 +327,14 @@ export const submitItemSubmission = ({ commit }, { itemSubmission, itemSubmissio
         }
         if (itemSubmission.thumbnail || itemSubmission.attachments.length || itemSubmission.document_type == 'attachment') 
             config.headers['content-type'] = 'multipart/form-data';
-            
-        axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission', Object.assign(itemSubmission, { metadata: itemSubmissionMetadata }), config )
+        
+        const formData = new FormData();
+        formData.append('metadata', itemSubmissionMetadata);
+
+        for (let key of Object.keys(itemSubmission))
+            formData.append(key, itemSubmission[key])
+        
+        axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission', formData, config )
             .then( res => {
                 resolve( res.data );
             }).catch( error => { 
