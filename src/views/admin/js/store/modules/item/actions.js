@@ -323,16 +323,19 @@ export const deleteGroupFromItemSubmissionMetadatum = ({ commit }, { metadatum_i
 export const submitItemSubmission = ({ commit }, { itemSubmission, itemSubmissionMetadata }) => {
     return new Promise((resolve, reject) => {
         let config = {
-            headers: { }
+            headers: { 'content-type': 'multipart/form-data' }
         }
-        if (itemSubmission.thumbnail || itemSubmission.attachments.length || itemSubmission.document_type == 'attachment') 
-            config.headers['content-type'] = 'multipart/form-data';
         
-        const formData = new FormData();
-        formData.append('metadata', itemSubmissionMetadata);
+        let item = {...itemSubmission, metadata: itemSubmissionMetadata };
 
-        for (let key of Object.keys(itemSubmission))
-            formData.append(key, itemSubmission[key])
+        const formData = new FormData();
+        for (let key of Object.keys(itemSubmission)) {
+            if (['document', 'attachments', 'thumbnail'].includes(key) ) {
+                formData.append(key, itemSubmission[key]);
+                delete item[key];
+            }
+        }
+        formData.append('item', JSON.stringify(item));
         
         axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission', formData, config )
             .then( res => {
