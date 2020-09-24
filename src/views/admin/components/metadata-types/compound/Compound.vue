@@ -137,10 +137,10 @@
             }
         },
         created() {
-            eventBusItemMetadata.$on('hasRemovedItemMetadataGroup', () => this.isRemovingGroup = false);
+            eventBusItemMetadata.$on('hasRemovedItemMetadataGroup', () => this.$nextTick(() => this.isRemovingGroup = false));
         },
         beforeDestroy() {
-            eventBusItemMetadata.$off('hasRemovedItemMetadataGroup', () => this.isRemovingGroup = false);
+            eventBusItemMetadata.$off('hasRemovedItemMetadataGroup', () => this.$nextTick(() => this.isRemovingGroup = false));
         },
         methods: {
             createChildMetadataGroups() {
@@ -161,9 +161,9 @@
                             let existingChildItemMetadata = [];
 
                             if (childItemMetadata && childItemMetadata.length) {
-                                   
+                        
                                 for (let childMetadatum of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
-                                                                           
+                                
                                     const childItemMetadatumIndex = childItemMetadata.findIndex((aChildItemMetadatum) => childMetadatum.id == aChildItemMetadatum.metadatum_id);
                                     // Loads the existing values
                                     if (childItemMetadatumIndex >= 0) {
@@ -208,7 +208,7 @@
                                     existingChildItemMetadata.push(childObject)
                                 }
                             }
-                            currentChildItemMetadataGroups.push(existingChildItemMetadata)
+                            currentChildItemMetadataGroups.push(existingChildItemMetadata);
                         }
                     }
                 }
@@ -303,7 +303,6 @@
                     });
                     if (!this.itemMetadatum.item.id)
                         this.childItemMetadataGroups.splice(groupIndex, 1);
-                
                 } else {
                     this.childItemMetadataGroups.splice(groupIndex, 1);
                 }

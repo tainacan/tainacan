@@ -171,7 +171,6 @@ export const updateItemSubmissionMetadatum = (state, { metadatum_id, values, chi
         let existingParentMetadatumIndex = metadata.findIndex((metadatum) => metadatum.metadatum_id == parent_id);
 
         if (existingParentMetadatumIndex >= 0) {
-            console.log(child_group_index)
             if (metadata[existingParentMetadatumIndex].value && metadata[existingParentMetadatumIndex].value[child_group_index]) {
                 let existingMetadatumIndex = metadata[existingParentMetadatumIndex].value[child_group_index].findIndex((metadatum) => metadatum.metadatum_id == metadatum_id);
                 
@@ -182,12 +181,10 @@ export const updateItemSubmissionMetadatum = (state, { metadatum_id, values, chi
             } else {
                 metadata[existingParentMetadatumIndex].value = (metadata[existingParentMetadatumIndex].value ? metadata[existingParentMetadatumIndex].value : []);
                 metadata[existingParentMetadatumIndex].value.push([ { metadatum_id: metadatum_id, value: values } ])
-                console.log(JSON.parse(JSON.stringify(metadata[existingParentMetadatumIndex])));
             }
         } else {
             metadata.push({ metadatum_id: parent_id, value: [ [ { metadatum_id: metadatum_id, value: values } ] ] });
         }
-        console.log(metadata[existingParentMetadatumIndex])
     } else {
         let existingMetadatumIndex = metadata.findIndex((metadatum) => metadatum.metadatum_id == metadatum_id);
 
@@ -211,6 +208,6 @@ export const deleteGroupFromItemSubmissionMetadatum = (state, { metadatum_id, ch
             existingMetadatum.value = existingMetadatumValue;
             Vue.set(state.itemSubmissionMetadata, existingMetadatumIndex, existingMetadatum);
         }
+        console.log('store',  JSON.parse(JSON.stringify(state.itemSubmissionMetadata[existingMetadatumIndex].value)))
     }
-    console.log(state.itemSubmissionMetadata[existingMetadatumIndex].value)
 }
