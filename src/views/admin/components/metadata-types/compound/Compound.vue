@@ -305,6 +305,10 @@
                         metadatumId: this.itemMetadatum.metadatum.id,
                         parentMetaId: this.itemMetadatum.item.id ? this.itemMetadatum.value[groupIndex][0].parent_meta_id : groupIndex
                     });
+                    if (!this.itemMetadatum.item.id)
+                        this.childItemMetadataGroups.splice(groupIndex, 1);
+                
+                    console.log(this.childItemMetadataGroups, groupIndex)
                 } else {
                     this.childItemMetadataGroups.splice(groupIndex, 1);
                 }

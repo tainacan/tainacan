@@ -25,3 +25,7 @@ export const getTotalAttachments =  state => {
 export const getItemSubmission =  state => {
     return state.itemSubmission;
 }
+
+export const getItemSubmissionMetadata =  state => {
+    return state.itemSubmissionMetadata;
+}

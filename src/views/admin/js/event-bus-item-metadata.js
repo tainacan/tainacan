@@ -97,7 +97,7 @@ export const eventBusItemMetadata = new Vue({
                 this.$emit('isUpdatingValue', false);
             }
         },
-        removeItemMetadataGroup({ itemId, metadatumId, parentMetaId }) {
+        removeItemMetadataGroup({ itemId, metadatumId, parentMetaId, parentMetadatum }) {
             
             this.$emit('isUpdatingValue', true);
             
@@ -113,7 +113,10 @@ export const eventBusItemMetadata = new Vue({
                         this.$emit('isUpdatingValue', false);
                     })
                     .catch(() => this.$emit('isUpdatingValue', false));
+            
+            // Item sbmission logic
             } else if (!itemId) {
+                
                 this.$store.dispatch('item/deleteGroupFromItemSubmissionMetadatum', { 
                     metadatum_id: metadatumId,
                     child_group_index: parentMetaId

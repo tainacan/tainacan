@@ -379,12 +379,13 @@ export default {
             metadataCollapses: [],
             collapseAll: true,
             form: {
-                collectionId: Number,
-                document: '',
+                collection_id: Number,
+                document: null,
                 document_type: '',
-                comment_status: ''
+                comment_status: '',
+                attachments: [],
+                thumbnail: null
             },
-            thumbnail: {},
             formErrorMessage: '',
             thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             hasSentForm: false,
@@ -395,11 +396,14 @@ export default {
         itemSubmission() {
             return this.getItemSubmission();
         },
+        itemSubmissionMetadata() {
+            return this.getItemSubmissionMetadata();
+        },
         collection() {
             return this.getCollection()
         },
         metadatumList() {
-            return this.itemSubmission && this.itemSubmission.metadata ? JSON.parse(JSON.stringify(this.getMetadata().map((metadatum) => { return { metadatum: metadatum, item: {}, value: this.itemSubmission.metadata.find((aMetadatum) => aMetadatum.metadatum_id == metadatum.id).value } } ))) : [];
+            return (this.itemSubmissionMetadata && this.itemSubmissionMetadata.length) ? JSON.parse(JSON.stringify(this.getMetadata().map((metadatum) => { return { metadatum: metadatum, item: {}, value: this.itemSubmissionMetadata.find((aMetadatum) => aMetadatum.metadatum_id == metadatum.id).value } } ))) : [];
         },
         formErrors() {
            return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
@@ -412,7 +416,7 @@ export default {
         
         eventBusItemMetadata.clearAllErrors();
         this.formErrorMessage = '';
-        this.form.collectionId = this.collectionId;
+        this.form.collection_id = this.collectionId;
 
         // CREATING NEW ITEM SUBMISSION
         this.createNewItem();
@@ -431,6 +435,7 @@ export default {
     methods: {
         ...mapActions('item', [
             'setItemSubmission',
+            'setItemSubmissionMetadata',
             'updateItemSubmission',
             'submitItemSubmission',
             'updateItem',
@@ -442,7 +447,8 @@ export default {
         ]),
         ...mapGetters('item',[
             'getItemSubmission',
-            'getItemMetadata'
+            'getItemMetadata',
+            'getItemSubmissionMetadata',
         ]),
         ...mapActions('metadata',[
             'fetchMetadata'
@@ -461,16 +467,15 @@ export default {
             // Puts loading on Item edition
             this.isLoading = true;
 
-            this.form.comment_status = this.form.comment_status == 'open' ? 'open' : 'closed';
-
-            let data = { comment_status: this.form.comment_status };
+            let data = this.form;
             this.fillExtraFormData(data);
-            this.updateExtraFormData(this.itemSubmission);
+            this.updateExtraFormData(data);
+            this.setItemSubmission(Object.assign(this.itemSubmission, data));
 
             // Clear errors so we don't have them duplicated from api
             eventBusItemMetadata.errors = [];
 
-            this.submitItemSubmission(this.itemSubmission)
+            this.submitItemSubmission({ itemSubmission: this.itemSubmission, itemSubmissionMetadata: this.itemSubmissionMetadata })
                 .then(() => {
                     this.hasSentForm = true;
                     this.isLoading = false;
@@ -496,7 +501,7 @@ export default {
             
             eventBusItemMetadata.clearAllErrors();
             this.formErrorMessage = '';
-            this.form.collectionId = this.collectionId;
+            this.form.collection_id = this.collectionId;
 
             // CREATING NEW ITEM SUBMISSION
             this.createNewItem();
@@ -508,17 +513,10 @@ export default {
             // Clear errors so we don't have them duplicated from api
             eventBusItemMetadata.errors = [];
 
-            // Creates draft Item
-            this.form.comment_status = this.form.comment_status == 'open' ? 'open' : 'closed';
-            let data = { collection_id: this.form.collectionId, comment_status: this.form.comment_status };
+            let data = this.form;
 
             this.fillExtraFormData(data);
             this.setItemSubmission(data);
-
-            // Pre-fill values incentivate it
-            this.form.document = this.itemSubmission.document;
-            this.form.document_type = this.itemSubmission.document_type;
-            this.form.comment_status = this.itemSubmission.comment_status;
 
             // Loads metadata
             this.loadMetadata();
@@ -533,7 +531,7 @@ export default {
                         this.metadataCollapses.push(false);
                         this.metadataCollapses[i] = true;
                     }                
-                    this.updateItemSubmission({ key: 'metadata', value: metadata.map((metadatum) => { return { metadatum_id: metadatum.id, value: null } }) });
+                    this.setItemSubmissionMetadata( metadata.map((metadatum) => { return { metadatum_id: metadatum.id, value: null } }) );
                     this.isLoading = false;
                 });
             });

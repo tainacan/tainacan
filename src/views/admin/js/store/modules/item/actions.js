@@ -304,6 +304,10 @@ export const setItemSubmission = ({ commit }, value) => {
     commit('setItemSubmission', value);
 }
 
+export const setItemSubmissionMetadata = ({ commit }, value) => {
+    commit('setItemSubmissionMetadata', value);
+}
+
 export const updateItemSubmission = ({ commit }, { key, value }) => {
     commit('updateItemSubmission', { key: key, value: value });
 }
@@ -316,9 +320,15 @@ export const deleteGroupFromItemSubmissionMetadatum = ({ commit }, { metadatum_i
     commit('deleteGroupFromItemSubmissionMetadatum', { metadatum_id: metadatum_id, child_group_index: child_group_index });
 }
 
-export const submitItemSubmission = ({ commit }, itemSubmission) => {
+export const submitItemSubmission = ({ commit }, { itemSubmission, itemSubmissionMetadata }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission', itemSubmission)
+        let config = {
+            headers: { }
+        }
+        if (itemSubmission.thumbnail || itemSubmission.attachments.length || itemSubmission.document_type == 'attachment') 
+            config.headers['content-type'] = 'multipart/form-data';
+            
+        axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission', Object.assign(itemSubmission, { metadata: itemSubmissionMetadata }), config )
             .then( res => {
                 resolve( res.data );
             }).catch( error => { 

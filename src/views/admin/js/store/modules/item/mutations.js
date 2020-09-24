@@ -155,13 +155,17 @@ export const setItemSubmission = (state, value) => {
     state.itemSubmission = value;
 }
 
+export const setItemSubmissionMetadata = (state, value) => {
+    state.itemSubmissionMetadata = value;
+}
+
 export const updateItemSubmission = (state, { key, value }) => {
     Vue.set(state.itemSubmission, key, value);
 }
 
 export const updateItemSubmissionMetadatum = (state, { metadatum_id, values, child_group_index, parent_id }) => {
 
-    let metadata = Array.isArray(state.itemSubmission.metadata) ? state.itemSubmission.metadata : [];
+    let metadata = Array.isArray(state.itemSubmissionMetadata) ? state.itemSubmissionMetadata : [];
 
     if (parent_id && parent_id > 0) {
         let existingParentMetadatumIndex = metadata.findIndex((metadatum) => metadatum.metadatum_id == parent_id);
@@ -190,23 +194,21 @@ export const updateItemSubmissionMetadatum = (state, { metadatum_id, values, chi
             metadata.push({ metadatum_id: metadatum_id, value: values });
     }
 
-    Vue.set(state.itemSubmission, 'metadata', metadata);
+    Vue.set(state, 'itemSubmissionMetadata', metadata);
 }
 
-
 export const deleteGroupFromItemSubmissionMetadatum = (state, { metadatum_id, child_group_index }) => {
+
+    let existingMetadatumIndex = state.itemSubmissionMetadata.findIndex((metadatum) => metadatum.metadatum_id == metadatum_id);
     
-    let metadata = Array.isArray(state.itemSubmission.metadata) ? state.itemSubmission.metadata : [];
-
-    let existingMetadatumIndex = metadata.findIndex((metadatum) => metadatum.metadatum_id == metadatum_id);
-
     if (existingMetadatumIndex >= 0) {
-        if (metadata[existingMetadatumIndex].value[child_group_index]) {
-            const existingChildGroups = metadata[existingMetadatumIndex].value;
-            existingChildGroups.splice(child_group_index, 1);
-            metadata[existingMetadatumIndex].value = existingChildGroups;
+        if (state.itemSubmissionMetadata[existingMetadatumIndex].value[child_group_index]) {
+            let existingMetadatum = state.itemSubmissionMetadata[existingMetadatumIndex];
+            let existingMetadatumValue = existingMetadatum.value;
+            existingMetadatumValue.splice(child_group_index, 1);
+            existingMetadatum.value = existingMetadatumValue;
+            Vue.set(state.itemSubmissionMetadata, existingMetadatumIndex, existingMetadatum);
         }
     }
-
-    Vue.set(state.itemSubmission, 'metadata', metadata);
+    console.log(state.itemSubmissionMetadata[existingMetadatumIndex].value)
 }
