@@ -570,7 +570,7 @@ class Collection extends Entity {
 	 * @return bool
 	 */
 	function get_allows_submission() {
-		return true || $this->get_mapped_property( 'allows_submission' ) != 'false';
+		return $this->get_mapped_property( 'allows_submission' ) != 'false';
 	}
 
 	/**
