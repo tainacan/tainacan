@@ -17,7 +17,8 @@ class TAINACAN_REST_Items_Submission extends TAINACAN_UnitApiTestCase {
 				'name'        => 'Col-1',
 				'description' => 'Col-1',
 				'status'      => 'publish',
-				'submission_anonymous_user' => true
+				'submission_anonymous_user' => true,
+				'allows_submission' => true
 			],
 			true
 		);
@@ -28,7 +29,8 @@ class TAINACAN_REST_Items_Submission extends TAINACAN_UnitApiTestCase {
 				'name'        => 'Col-2',
 				'description' => 'Col-2',
 				'status'      => 'publish',
-				'submission_anonymous_user' => false
+				'submission_anonymous_user' => false,
+				'allows_submission' => true
 			],
 			true
 		);
