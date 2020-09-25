@@ -347,7 +347,8 @@
             height: 1px;
         }
         .empty-label {
-            color: var(--tainacan-gray3);
+            color: var(--tainacan-gray4);
+            font-size: 0.875em;
             font-style: italic;
         }
     }

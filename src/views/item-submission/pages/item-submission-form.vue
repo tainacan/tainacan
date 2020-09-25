@@ -31,11 +31,10 @@
                             :message="$i18n.getHelperMessage('items', 'document')"/>
                 </div>
                 <div class="section-box document-field">
-                    <div v-if="form.document_type != undefined && form.document_type != null && form.document_type != 'empty'">
-                        <div 
-                                v-if="form.document_type == 'attachment'"
-                                class="section-box section-thumbnail">
-                            <b-upload 
+                    <div v-if="form.document_type != '' && form.document_type != undefined && form.document_type != null && form.document_type != 'empty'">
+                        <div v-if="form.document_type == 'attachment'">
+                            <b-upload
+                                    expanded 
                                     v-if="!form.document"
                                     v-model="form.document"
                                     drag-drop>
@@ -128,8 +127,8 @@
                             :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
 
                 </div>
-                <p>{{ showThumbnailInput ? $i18n.get('info_thumbnail_custom') : $i18n.get('info_thumbnail_default_from_document') }}</p>
-                <div class="section-status">
+                <div class="section-toggle">
+                    <p>{{ showThumbnailInput ? $i18n.get('info_thumbnail_custom') : $i18n.get('info_thumbnail_default_from_document') }}</p>
                     <div class="field has-addons">
                         <b-switch
                                 id="tainacan-checkbox-show-thumbnail-input"
@@ -143,6 +142,7 @@
                         v-if="!isLoading && showThumbnailInput"
                         class="section-box section-thumbnail">
                     <b-upload 
+                            expanded
                             v-if="!form.thumbnail"
                             v-model="form.thumbnail"
                             drag-drop>
@@ -195,8 +195,11 @@
                     </label>
                 </div>                
 
-                <div v-if="itemSubmission != undefined">
+                <div 
+                        v-if="itemSubmission != undefined"
+                        class="section-box">
                     <b-upload 
+                            expanded
                             v-model="form.attachments"
                             multiple
                             drag-drop>
@@ -247,7 +250,7 @@
                                 :title="$i18n.getHelperTitle('items', 'comment_status')"
                                 :message="$i18n.getHelperMessage('items', 'comment_status')"/>
                 </div>
-                <div class="section-status">
+                <div class="section-toggle">
                     <div class="field has-addons">
                         <b-switch
                                 id="tainacan-checkbox-comment-status"
@@ -303,7 +306,12 @@
                     v-html="formHooks['item']['end-right'].join('')"/>
             </template>
 
-            <footer class="footer">
+            <footer class="form-submission-footer">
+
+                <button
+                        @click="onDiscard()"
+                        type="button"
+                        class="button is-outlined">{{ $i18n.get('cancel') }}</button>
 
                 <!-- Updated and Error Info -->
                 <div class="update-info-section">
@@ -317,16 +325,11 @@
                         </span>
                     </p>
                 </div>
-                <div class="form-submission-footer">
-                    <button
-                            @click="onDiscard()"
-                            type="button"
-                            class="button is-outlined">{{ $i18n.get('cancel') }}</button>
-                    <button
-                            @click="onSubmit()"
-                            type="button"
-                            class="button is-secondary">{{ $i18n.get('label_submit') }}</button>
-                </div>
+
+                <button
+                        @click="onSubmit()"
+                        type="button"
+                        class="button is-secondary">{{ $i18n.get('label_submit') }}</button>
             </footer>
         </form>
 
@@ -554,6 +557,8 @@ export default {
 
 <style lang="scss" scoped>
 
+.tainacan-item-submission-form {
+
     .tainacan-form {
         background-color: var(--tainacan-background-color);
         padding-left: var(--tainacan-one-column);
@@ -566,7 +571,8 @@ export default {
             margin-bottom: 0.5em;
         }
         .field {
-            padding: 10px 0px 14px 60px;
+            padding: 10px 0px 14px 34px;
+
         }
          .columns {
             flex-wrap: wrap;
@@ -578,6 +584,14 @@ export default {
         }
     }
 
+    .collapse-all {
+        font-size: 0.75em;
+        .icon {
+            vertical-align: bottom;
+        }
+    }
+
+
     .section-label {
         position: relative;
         label {
@@ -588,15 +602,14 @@ export default {
         }
     }
 
-    .collapse-all {
-        font-size: 0.75em;
-        .icon {
-            vertical-align: bottom;
-        }
+    .section-toggle p {
+        font-size: 0.875em;
+        margin-bottom: 0;
+        padding-left: var(--tainacan-one-column);
     }
 
     .section-box {
-        padding: 0 var(--tainacan-one-column) 0 0;
+        padding: 0 var(--tainacan-one-column);
         margin-top: 14px;
         margin-bottom: 32px;
 
@@ -641,47 +654,17 @@ export default {
         }
     }
 
-    #button-edit-thumbnail,
-    #button-edit-document,
-    #button-delete-thumbnail,
-    #button-delete-document {
-
-        border-radius: 100px !important;
-        max-height: 2.125em !important;
-        max-width: 2.125em !important;
-        min-height: 2.125em !important;
-        min-width: 2.125em !important;
-        padding: 0 !important;
-        z-index: 99;
-        margin-left: 12px !important;
-
-        .icon {
-            display: inherit;
-            padding: 0;
-            margin: 0;
-            margin-top: -2px;
-            font-size: 1.125em;
-        }
-    }
-
     .files-list {
         display: flex;
     }
 
-    .footer {
-        padding: 18px var(--tainacan-one-column);
+    .form-submission-footer {
+        padding: 18px 0;
         width: 100%;
-        height: 65px;
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
         align-items: center;
-
-        .form-submission-footer {
-            .button {
-                margin-left: 16px;
-                margin-right: 6px;
-            }
-        }
+        font-size: 1em;
 
         @keyframes blink {
             from { color: var(--tainacan-blue5); }
@@ -692,13 +675,6 @@ export default {
             display: flex;
             align-items: center;
         }
-        .update-warning {
-            color: var(--tainacan-blue5);
-            animation-name: blink;
-            animation-duration: 0.5s;
-            animation-delay: 0.5s;
-        }
-
         .update-info-section {
             color: var(--tainacan-info-color);
             margin-right: auto;
@@ -712,4 +688,5 @@ export default {
         }
     }
 
+}
 </style>

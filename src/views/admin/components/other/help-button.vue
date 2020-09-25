@@ -70,6 +70,7 @@ export default {
                 font-size: 0.875em;
                 font-weight: bold;
                 color: var(--tainacan-secondary);
+                margin-bottom: 0;
             }
         }
 

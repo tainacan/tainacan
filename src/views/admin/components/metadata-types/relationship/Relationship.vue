@@ -50,7 +50,7 @@
             </template>
         </b-taginput>
         <a
-                v-if="currentUserCanEditItems"
+                v-if="currentUserCanEditItems && itemMetadatum.item && itemMetadatum.item.id"
                 :disabled="!$route || $route.query.iframemode"
                 @click="createNewItemModal = !createNewItemModal"
                 class="add-link">

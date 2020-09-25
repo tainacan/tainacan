@@ -1,5 +1,6 @@
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
+import qs from 'qs';
 
 const { __ } = wp.i18n;
 
@@ -63,7 +64,16 @@ export default class CollectionModal extends React.Component {
         if (this.state.collectionPage <= 1)
             someModalCollections = [];
 
-        let endpoint = '/collections/?perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionPage;
+        let query = {
+            perpage: this.state.collectionsPerPage,
+            paged: this.state.collectionPage
+        }
+
+        if (this.props.filterOptionsBy && Object.keys(this.props.filterOptionsBy).length !== 0)
+            query = {...query, meta_query: this.props.filterOptionsBy}
+            
+
+        let endpoint = '/collections/?' + qs.stringify(query); 
 
         if (this.state.collectionOrderBy == 'date')
             endpoint += '&orderby=date&order=asc';
@@ -125,7 +135,17 @@ export default class CollectionModal extends React.Component {
             collections: []
         });
 
-        let endpoint = '/collections/?perpage=' + this.state.collectionsPerPage;
+        let query = {
+            perpage: this.state.collectionsPerPage,
+            paged: this.state.collectionPage
+        }
+
+        if (this.props.filterOptionsBy && Object.keys(this.props.filterOptionsBy).length !== 0)
+            query = {...query, meta_query: this.props.filterOptionsBy}
+            
+
+        let endpoint = '/collections/?' + qs.stringify(query); 
+
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
         

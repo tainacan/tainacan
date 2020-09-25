@@ -733,7 +733,7 @@
         margin-bottom: 0 !important;
 
         ul {
-            padding: none;
+            padding: 0;
         }
     }
     .hidden-tabs-section /deep/ .tabs {
@@ -1015,6 +1015,10 @@
         }
 
         .tags.is-small {
+            font-size: 0.875em;
+        }
+
+        section p {
             font-size: 0.875em;
         }
     }

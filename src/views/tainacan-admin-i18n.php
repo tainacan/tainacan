@@ -480,7 +480,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_esc_key'								 	 => __( 'ESC', 'tainacan' ),
 	'label_view_selected_items_as'					 => __( 'View selected items as...', 'tainacan' ),
 	'label_actions_for_the_selection'				 => __( 'Actions for the selection', 'tainacan' ),
-	'label_upload_custom_thumbnail'					 => __( 'Upload custom thubmnail', 'tainacan' ),
+	'label_upload_custom_thumbnail'					 => __( 'Upload custom thumbnail', 'tainacan' ),
 	'label_switch_document_type'					 => __( 'Switch document type', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
