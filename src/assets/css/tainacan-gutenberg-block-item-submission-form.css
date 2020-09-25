@@ -32,23 +32,10 @@
     border-radius: 4px;
     border: 1px solid rgba(200, 200, 200, 0.3);
     overflow: hidden; }
-    .wp-block-tainacan-item-submission-form .item-submission-form-placeholder .form-columns {
-      display: flex; }
-      .wp-block-tainacan-item-submission-form .item-submission-form-placeholder .form-columns > div:first-child {
-        padding-right: 4.1666667%; }
-      .wp-block-tainacan-item-submission-form .item-submission-form-placeholder .form-columns > div {
-        flex-grow: 1;
-        flex-shrink: 0;
-        flex-basis: 50%; }
-      @media screen and (max-width: 768px) {
-        .wp-block-tainacan-item-submission-form .item-submission-form-placeholder .form-columns {
-          flex-wrap: wrap; }
-          .wp-block-tainacan-item-submission-form .item-submission-form-placeholder .form-columns > div {
-            flex-basis: 100%; } }
     .wp-block-tainacan-item-submission-form .item-submission-form-placeholder .fake-text {
       background-color: var(--tainacan-label-color, rgba(200, 200, 200, 0.3));
       height: 0.2em;
-      width: 24%;
+      width: 15%;
       min-width: 1.25em;
       border-radius: 2px;
       display: inline-block; }

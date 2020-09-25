@@ -42,30 +42,10 @@
         border: 1px solid rgba(200,200,200, 0.3);
         overflow: hidden;
 
-        .form-columns {
-            display: flex;
-
-            &>div:first-child {
-                padding-right: 4.1666667%;
-            }
-            &>div {
-                flex-grow: 1;
-                flex-shrink: 0;
-                flex-basis: 50%;
-            }
-
-            @media screen and (max-width: 768px) {
-                flex-wrap: wrap;
-                &>div {
-                    flex-basis: 100%;
-                }
-            }
-        }
-
         .fake-text {
             background-color: var(--tainacan-label-color, rgba(200,200,200, 0.3));
             height: 0.2em;
-            width: 24%;
+            width: 15%;
             min-width: 1.25em;
             border-radius: 2px;
             display: inline-block;

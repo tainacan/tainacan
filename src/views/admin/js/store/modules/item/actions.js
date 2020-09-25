@@ -326,7 +326,9 @@ export const submitItemSubmission = ({ commit }, { itemSubmission, itemSubmissio
         let item = JSON.parse(JSON.stringify(itemSubmission)); // Use a copy as the next request will need document, attchment and thumbnail
 
         for (let key of Object.keys(item)) {
-            if (['document', 'attachments', 'thumbnail'].includes(key) )
+            if (['attachments', 'thumbnail'].includes(key) )
+                delete item[key];
+            else if (key === 'document' && itemSubmission.document_type === 'attachment' )
                 delete item[key];
         }
 
@@ -350,7 +352,7 @@ export const finishItemSubmission = ({ commit }, { itemSubmission, fakeItemId })
         const formData = new FormData();
 
         for (let key of Object.keys(itemSubmission)) {
-            if (['document','thumbnail'].includes(key) )
+            if (key === 'thumbnail' || (key === 'document' && itemSubmission.document_type === 'attachment') )
                 formData.append(key, itemSubmission[key]);
             else if (key === 'attachments') {
                 for (let i = 0; i < itemSubmission[key].length; i++)

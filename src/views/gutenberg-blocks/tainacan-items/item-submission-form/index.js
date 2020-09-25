@@ -548,82 +548,75 @@ registerBlockType('tainacan/item-submission-form', {
                                         '--tainacan-secondary': secondaryColor
                                     }}
                                     class="item-submission-form-placeholder">
-                                <div class="form-columns">
-                                    <div>
-                                        { 
-                                            (!hideFileModalButton || !hideTextModalButton || !hideLinkModalButton) ? 
-                                            (
-                                            <div>
-                                                <span class="fake-text section-label"></span>
-                                                <div class="documents-section">
-                                                    { hideFileModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
-                                                    { hideTextModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
-                                                    { hideLinkModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
-                                                </div>
-                                            </div>
-                                            ) : null 
-                                        }
-                                        { !hideThumbnailSection ? 
-                                        (
-                                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                                <span class="fake-text section-label"></span>
-                                                <div class="thumbnail-section">
-                                                    <div 
-                                                            style={{ 
-                                                                backgroundImage: tainacan_plugin ? 'url("' + tainacan_plugin.base_url + '/assets/images/placeholder_square.png")' : '' 
-                                                            }}
-                                                            class="fake-image"></div>
-                                                    <span class="fake-button"><span class="fake-icon"></span></span>
-                                                </div>
-                                            </div>
-                                        ) : null
-                                        }
-                                        { !hideAttachmentsSection ? 
+                
+                                <div>
+                                    { 
+                                        (!hideFileModalButton || !hideTextModalButton || !hideLinkModalButton) ? 
                                         (
                                         <div>
-                                            <span 
-                                                    style={{ position: 'relative' }}
-                                                    class="fake-text section-label">
-                                                <div class="fake-tooltip"><div class="fake-link"></div></div>
-                                            </span>
-                                            <div class="attachments-section">
-                                                <div class="fake-image"></div>
-                                                <div class="fake-image"></div>
-                                                <div class="fake-image"></div>
-                                                <div class="fake-image"></div>
+                                            <span class="fake-text section-label"></span>
+                                            <div class="documents-section">
+                                                { hideFileModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
+                                                { hideTextModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
+                                                { hideLinkModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
                                             </div>
                                         </div>
                                         ) : null 
-                                        }
-                                        <span class="fake-text section-label"></span>
-                                        <div class="fake-switch"><span class="fake-icon"></span><span class="fake-text"></span></div>
-                                        
+                                    }
+                                    { !hideThumbnailSection ? 
+                                    (
+                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                            <span class="fake-text section-label"></span>
+                                            <div class="fake-switch"><span class="fake-icon"></span><span class="fake-text"></span></div>
+                                        </div>
+                                    ) : null
+                                    }
+                                    { !hideAttachmentsSection ? 
+                                    (
+                                    <div>
+                                        <span 
+                                                style={{ position: 'relative' }}
+                                                class="fake-text section-label">
+                                            <div class="fake-tooltip"><div class="fake-link"></div></div>
+                                        </span>
+                                        <div class="attachments-section">
+                                            <div class="fake-image"></div>
+                                            <div class="fake-image"></div>
+                                            <div class="fake-image"></div>
+                                            <div class="fake-image"></div>
+                                        </div>
                                     </div>
-                                    <div style={{ flexGrow: '1' }}>
-                                        <div class="fake-text section-label"></div>
-                                        <div class="fake-link"></div>
-                                        <div class="metadata-section">
-                                            { enabledMetadata.length ? 
-                                                enabledMetadata.map( (isEnabled) => {
-                                                    return isEnabled ? 
-                                                        <div class={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
-                                                            { !hideCollapses ? <span class="fake-collapse-arrow"></span> : null }
-                                                            <span class="fake-text"></span>
-                                                            <span class="fake-input"></span>
-                                                        </div>
-                                                    : null
-                                                }) : 
-                                                Array(12).fill().map( () => {
-                                                    return <div class={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
+                                    ) : null 
+                                    }
+                                    <span class="fake-text section-label"></span>
+                                    <div class="fake-switch"><span class="fake-icon"></span><span class="fake-text"></span></div>
+                                    
+                                </div>
+                                <div style={{ flexGrow: '1' }}>
+                                    <div class="fake-text section-label"></div>
+                                    <div class="fake-link"></div>
+                                    <div class="metadata-section">
+                                        { enabledMetadata.length ? 
+                                            enabledMetadata.map( (isEnabled) => {
+                                                return isEnabled ? 
+                                                    <div class={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
                                                         { !hideCollapses ? <span class="fake-collapse-arrow"></span> : null }
                                                         <span class="fake-text"></span>
                                                         <span class="fake-input"></span>
                                                     </div>
-                                                })
-                                            }
-                                        </div>
+                                                : null
+                                            }) : 
+                                            Array(12).fill().map( () => {
+                                                return <div class={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
+                                                    { !hideCollapses ? <span class="fake-collapse-arrow"></span> : null }
+                                                    <span class="fake-text"></span>
+                                                    <span class="fake-input"></span>
+                                                </div>
+                                            })
+                                        }
                                     </div>
                                 </div>
+                                
                                 <div class="form-footer">
                                     <span class="fake-text"></span>
                                     <span class="fake-button outline"><span class="fake-text"></span></span>
