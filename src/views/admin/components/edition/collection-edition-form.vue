@@ -468,6 +468,8 @@
                         <b-switch
                                 id="tainacan-checkbox-allow-submission" 
                                 size="is-small"
+                                true-value="yes" 
+                                false-value="no"
                                 v-model="form.allows_submission" />
                         <help-button 
                                 :title="$i18n.getHelperTitle('collections', 'allows_submission')" 
@@ -476,7 +478,7 @@
                         
                     <transition name="filter-item">
                         <div 
-                                v-if="form.allows_submission"
+                                v-if="form.allows_submission === 'yes'"
                                 class="item-submission-options">
 
                             <!-- Allows Submissions by anonynmous user ------------------------ --> 
@@ -489,6 +491,8 @@
                                 <b-switch
                                         id="tainacan-checkbox-allow-submission" 
                                         size="is-small"
+                                        true-value="yes" 
+                                        false-value="no"
                                         v-model="form.submission_anonymous_user" />
                                 <help-button 
                                         :title="$i18n.getHelperTitle('collections', 'submission_anonymous_user')" 
@@ -621,9 +625,9 @@ export default {
                 enabled_view_modes: [],
                 default_view_mode: [],
                 allow_comments: '',
-                allows_submission: false,
+                allows_submission: 'no',
                 submission_default_status: 'draft',
-                submission_anonymous_user: false,
+                submission_anonymous_user: 'no',
                 hide_items_thumbnail_on_lists: ''
             },
             thumbnail: {},

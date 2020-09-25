@@ -140,8 +140,18 @@ export default class CollectionModal extends React.Component {
             paged: this.state.collectionPage
         }
 
-        if (this.props.filterOptionsBy && Object.keys(this.props.filterOptionsBy).length !== 0)
-            query = {...query, meta_query: this.props.filterOptionsBy}
+        if (this.props.filterOptionsBy && Object.keys(this.props.filterOptionsBy).length !== 0) {
+            let metaqueries = [];
+
+            for (let metaquery of Object.keys(this.props.filterOptionsBy)) {
+                metaqueries.push({
+                    key: metaquery,
+                    value: this.props.filterOptionsBy[key]
+                })
+            }
+
+            query = {...query, metaquery: metaqueries}
+        }
             
 
         let endpoint = '/collections/?' + qs.stringify(query); 
