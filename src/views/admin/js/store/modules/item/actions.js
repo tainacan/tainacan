@@ -351,8 +351,12 @@ export const finishItemSubmission = ({ commit }, { itemSubmission, fakeItemId })
         const formData = new FormData();
 
         for (let key of Object.keys(itemSubmission)) {
-            if (['document', 'attachments', 'thumbnail'].includes(key) )
+            if (['document','thumbnail'].includes(key) )
                 formData.append(key, itemSubmission[key]);
+            else if (key === 'attachments') {
+                for (let i = 0; i < itemSubmission[key].length; i++)
+                    formData.append(key + '[' + i + ']', itemSubmission[key][i]);
+            }
         }
         console.log(formData)
         axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission/' + fakeItemId + '/finish', formData, config )
