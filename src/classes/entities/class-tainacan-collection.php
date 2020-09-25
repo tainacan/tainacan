@@ -35,6 +35,7 @@ class Collection extends Entity {
 		$header_image,
 		$comment_status,
 		$allow_comments,
+		$allows_submission,
 		$hide_items_thumbnail_on_lists,
 		$submission_anonymous_user,
 		$submission_default_status;
