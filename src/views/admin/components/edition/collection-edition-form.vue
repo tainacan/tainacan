@@ -816,6 +816,9 @@ export default {
                 parent: this.form.parent,
                 enabled_view_modes: this.form.enabled_view_modes,
                 default_view_mode: this.form.default_view_mode,
+                allows_submission: this.form.allows_submission,
+                submission_anonymous_user: this.form.submission_anonymous_user,
+                submission_default_status: this.form.submission_default_status,
                 allow_comments: this.form.allow_comments,
                 hide_items_thumbnail_on_lists: this.form.hide_items_thumbnail_on_lists
             };

@@ -347,7 +347,6 @@ export const finishItemSubmission = ({ commit }, { itemSubmission, fakeItemId })
         let config = {
             headers: { 'content-type': 'multipart/form-data' }
         }
-        console.log(itemSubmission)
         const formData = new FormData();
 
         for (let key of Object.keys(itemSubmission)) {
@@ -358,7 +357,6 @@ export const finishItemSubmission = ({ commit }, { itemSubmission, fakeItemId })
                     formData.append(key + '[' + i + ']', itemSubmission[key][i]);
             }
         }
-        console.log(formData)
         axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission/' + fakeItemId + '/finish', formData, config )
             .then( res => {
                 resolve( res.data );

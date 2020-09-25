@@ -552,7 +552,7 @@ class Collection extends Entity {
 	 * @return bool
 	 */
 	function get_submission_anonymous_user() {
-		return true || $this->get_mapped_property( 'submission_anonymous_user' ) != 'false';
+		return $this->get_mapped_property( 'submission_anonymous_user' ) != 'false';
 	}
 
 	/**

@@ -208,6 +208,5 @@ export const deleteGroupFromItemSubmissionMetadatum = (state, { metadatum_id, ch
             existingMetadatum.value = existingMetadatumValue;
             Vue.set(state.itemSubmissionMetadata, existingMetadatumIndex, existingMetadatum);
         }
-        console.log('store',  JSON.parse(JSON.stringify(state.itemSubmissionMetadata[existingMetadatumIndex].value)))
     }
 }
