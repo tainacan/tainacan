@@ -1014,9 +1014,9 @@ class REST_Items_Controller extends REST_Controller {
 			}
 		}
 
-		if ($document_id === false || $thumbnail_id === false) {
-			if($document_id !== false) wp_delete_attachment($document_id, true);
-			if($thumbnail_id !== false) wp_delete_attachment($thumbnail_id, true);
+		if ((isset($document_id) && $document_id === false) || (isset($thumbnail_id) && $thumbnail_id === false)) {
+			if(isset($document_id) && $document_id !== false) wp_delete_attachment($document_id, true);
+			if(isset($thumbnail_id) && $thumbnail_id !== false) wp_delete_attachment($thumbnail_id, true);
 			return new \WP_REST_Response([
 				'error_message' => __('error on create document or thumbnail.', 'tainacan'),
 			], 400);
