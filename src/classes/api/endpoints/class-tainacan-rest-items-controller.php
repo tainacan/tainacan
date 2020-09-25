@@ -889,8 +889,6 @@ class REST_Items_Controller extends REST_Controller {
 		}
 
 		try {
-			$collection = $this->collections_repository->fetch($collection_id);
-
 			$item['status'] = 'auto-draft';
 			$item = $this->prepare_item_for_database( [ $item, $collection_id ] );
 
@@ -1059,8 +1057,8 @@ class REST_Items_Controller extends REST_Controller {
 
 	public function submission_item_permissions_check ( $request ) {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
-		if ($collection instanceof Entities\Collection && $collection->get_allows_submission()) {
-			if ($collection->get_submission_anonymous_user()) {
+		if ($collection instanceof Entities\Collection && $collection->get_allows_submission() == 'yes') {
+			if ($collection->get_submission_anonymous_user() == 'yes') {
 				return true;
 			}
 			return current_user_can($collection->get_items_capabilities()->edit_posts);

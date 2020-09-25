@@ -550,10 +550,10 @@ class Collection extends Entity {
 	/**
 	 * Get enable submission with anonymous user
 	 *
-	 * @return bool
+	 * @return string "yes"|"no"
 	 */
 	function get_submission_anonymous_user() {
-		return $this->get_mapped_property( 'submission_anonymous_user' ) != 'false';
+		return $this->get_mapped_property( 'submission_anonymous_user' );
 	}
 
 	/**
@@ -568,10 +568,10 @@ class Collection extends Entity {
 	/**
 	 * Checks if submission items are allowed for the current collection.
 	 *
-	 * @return bool
+	 * @return string "yes"|"no"
 	 */
 	function get_allows_submission() {
-		return $this->get_mapped_property( 'allows_submission' ) != 'false';
+		return $this->get_mapped_property( 'allows_submission' );
 	}
 
 	/**
@@ -775,7 +775,7 @@ class Collection extends Entity {
 	/**
 	 * Set enable submission with anonymous user 
 	 *
-	 * @param [boolean] $value
+	 * @param [string] $value
 	 *
 	 * @return void
 	 */
@@ -797,7 +797,7 @@ class Collection extends Entity {
 	/**
 	 * Set if submission items are allowes for the current collection. 
 	 *
-	 * @param [boolean] $value
+	 * @param [string] $value
 	 *
 	 * @return void
 	 */
