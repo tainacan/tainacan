@@ -5,7 +5,7 @@
                 :active.sync="isLoading"
                 :can-cancel="false"/>
         <form
-                v-if="!hasSentForm"
+                v-if="!hasSentForm && !isSubmitting && !isUploading"
                 v-show="!isLoading"
                 class="tainacan-form"
                 label-width="120px">
@@ -57,7 +57,7 @@
                                         closable
                                         attached
                                         :aria-close-label="$i18n.get('delete')"
-                                        @close="form.document = null">
+                                        @close="form.document = ''">
                                     {{ form.document.name }}
                                 </b-tag>
                             </div>
@@ -333,9 +333,27 @@
             </footer>
         </form>
 
+        <!-- Message displayed when the form is being submitted -->
+        <section 
+                v-if="isSubmitting || isUploading"
+                class="section">
+            <div class="content has-text-grey has-text-centered">
+                <br>
+                <p>
+                    <span class="icon is-medium">
+                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-updating tainacan-icon-spin"/>
+                    </span>
+                </p>
+                <h2>{{ $i18n.get('label_sending_form') }}</h2>
+                <p v-if="isSubmitting">{{ $i18n.get('info_submission_processing') }}</p>
+                <p v-if="isUploading">{{ $i18n.get('info_submission_uploading') }}</p>
+                <br>
+            </div>
+        </section>
+
         <!-- Message displayed once the form is submitted -->
         <section 
-                v-else
+                v-if="hasSentForm"
                 class="section">
             <div class="content has-text-grey has-text-centered">
                 <br>
@@ -379,15 +397,17 @@ export default {
     data(){
         return {
             isLoading: false,
+            isSubmitting: false,
+            isUploading: false,
             metadataCollapses: [],
             collapseAll: true,
             form: {
                 collection_id: Number,
-                document: null,
+                document: '',
                 document_type: '',
                 comment_status: '',
                 attachments: [],
-                thumbnail: null
+                thumbnail: ''
             },
             formErrorMessage: '',
             hasSentForm: false,
@@ -451,7 +471,7 @@ export default {
         onSubmit() {
 
             // Puts loading on Item edition
-            this.isLoading = true;
+            this.isSubmitting = true;
 
             let data = this.form;
             this.fillExtraFormData(data);
@@ -463,11 +483,15 @@ export default {
 
             this.submitItemSubmission({ itemSubmission: this.itemSubmission, itemSubmissionMetadata: this.itemSubmissionMetadata })
                 .then((fakeItemId) => {
+
+                    this.isUploading = true;
+                    this.isSubmitting = false;
+
                     if (fakeItemId) {
                         this.finishItemSubmission({ itemSubmission: this.itemSubmission, fakeItemId: fakeItemId })
                             .then(() => {
                                 this.hasSentForm = true;
-                                this.isLoading = false;
+                                this.isUploading = false;
                             })
                             .catch((errors) => { 
                                 if (errors.errors) {
@@ -656,6 +680,7 @@ export default {
 
     .files-list {
         display: flex;
+        flex-wrap: wrap;
     }
 
     .form-submission-footer {
