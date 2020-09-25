@@ -637,6 +637,7 @@ registerBlockType('tainacan/item-submission-form', {
 
                 { isCollectionModalOpen ? 
                     <CollectionModal
+                        filterOptionsBy={ { allows_submission: true } }
                         existingCollectionId={ collectionId } 
                         onSelectCollection={ ({ collectionId}) => {
                             collectionId = collectionId;

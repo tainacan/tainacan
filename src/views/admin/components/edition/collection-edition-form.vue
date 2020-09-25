@@ -473,7 +473,6 @@
                                 :title="$i18n.getHelperTitle('collections', 'allows_submission')" 
                                 :message="$i18n.getHelperMessage('collections', 'allows_submission')"/>
                     </b-field>
-
                         
                     <transition name="filter-item">
                         <div 
@@ -622,6 +621,9 @@ export default {
                 enabled_view_modes: [],
                 default_view_mode: [],
                 allow_comments: '',
+                allows_submission: false,
+                submission_default_status: 'draft',
+                submission_anonymous_user: false,
                 hide_items_thumbnail_on_lists: ''
             },
             thumbnail: {},
