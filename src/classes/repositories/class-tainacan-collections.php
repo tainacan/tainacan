@@ -211,9 +211,9 @@ class Collections extends Repository {
 			],
 			'allows_submission' => [
 				'map'                    => 'meta',
-				'title'                  => __( 'Collection allows submission item', 'tainacan' ),
+				'title'                  => __( 'Allows item submission', 'tainacan' ),
 				'type'                   => 'boolean',
-				'description'            => __( 'If enabled, the collection allows submission item.', 'tainacan' ),
+				'description'            => __( 'If enabled, the collection allows item submission, for example via the Item Submission block.', 'tainacan' ),
 				'default'                => 'false'
 			],
 			'hide_items_thumbnail_on_lists' => [

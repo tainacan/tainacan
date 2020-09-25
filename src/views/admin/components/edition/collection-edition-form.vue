@@ -458,6 +458,72 @@
                                 :message="$i18n.getHelperMessage('collections', 'allow_comments')"/>
                     </b-field>
 
+                    <!-- Allows Submissions ------------------------ --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.getHelperTitle('collections', 'allows_submission')"
+                            :type="editFormErrors['allows_submission'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['allows_submission'] != undefined ? editFormErrors['allows_submission'] : ''">
+                        &nbsp;
+                        <b-switch
+                                id="tainacan-checkbox-allow-submission" 
+                                size="is-small"
+                                v-model="form.allows_submission" />
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'allows_submission')" 
+                                :message="$i18n.getHelperMessage('collections', 'allows_submission')"/>
+                    </b-field>
+
+                        
+                    <transition name="filter-item">
+                        <div 
+                                v-if="form.allows_submission"
+                                class="item-submission-options">
+
+                            <!-- Allows Submissions by anonynmous user ------------------------ --> 
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.getHelperTitle('collections', 'submission_anonymous_user')"
+                                    :type="editFormErrors['submission_anonymous_user'] != undefined ? 'is-danger' : ''" 
+                                    :message="editFormErrors['submission_anonymous_user'] != undefined ? editFormErrors['submission_anonymous_user'] : ''">
+                                &nbsp;
+                                <b-switch
+                                        id="tainacan-checkbox-allow-submission" 
+                                        size="is-small"
+                                        v-model="form.submission_anonymous_user" />
+                                <help-button 
+                                        :title="$i18n.getHelperTitle('collections', 'submission_anonymous_user')" 
+                                        :message="$i18n.getHelperMessage('collections', 'submission_anonymous_user')"/>
+                            </b-field>
+
+                            <!-- Item submission default Status -------------------------------- --> 
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.getHelperTitle('collections', 'submission_default_status')"
+                                    :type="editFormErrors['submission_default_status'] != undefined ? 'is-danger' : ''" 
+                                    :message="editFormErrors['submission_default_status'] != undefined ? editFormErrors['submission_default_status'] : ''">
+                                <help-button 
+                                        :title="$i18n.getHelperTitle('collections', 'submission_default_status')" 
+                                        :message="$i18n.getHelperMessage('collections', 'submission_default_status')"/>
+                                <div class="status-radios">
+                                    <b-radio
+                                            v-model="form.submission_default_status"
+                                            v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'trash')"
+                                            :key="index"
+                                            :native-value="statusOption.slug">
+                                        <span class="icon has-text-gray">
+                                            <i 
+                                                class="tainacan-icon tainacan-icon-18px"
+                                                :class="$statusHelper.getIcon(statusOption.slug)"/>
+                                        </span>
+                                        {{ statusOption.name }}
+                                    </b-radio>
+                                </div>
+                            </b-field>
+
+                        </div>
+                    </transition>
+
                     <!-- Hook for extra Form options -->
                     <template 
                             v-if="formHooks != undefined && 
@@ -650,6 +716,9 @@ export default {
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes.reduce((result, viewMode) => { typeof viewMode == 'string' ? result.push(viewMode) : null; return result }, [])));
                 this.form.allow_comments = this.collection.allow_comments;
+                this.form.allows_submission = this.collection.allows_submission;
+                this.form.submission_anonymous_user = this.collection.submission_anonymous_user;
+                this.form.submission_default_status = this.collection.submission_default_status;
                 this.form.hide_items_thumbnail_on_lists = this.collection.hide_items_thumbnail_on_lists;
 
                 // Generates CoverPage from current cover_page_id info
@@ -770,6 +839,9 @@ export default {
                     this.form.enabled_view_modes = this.collection.enabled_view_modes.map((viewMode) => viewMode.viewMode);
                     this.form.default_view_mode = this.collection.default_view_mode;
                     this.form.allow_comments = this.collection.allow_comments;
+                    this.form.allows_submission = this.collection.allows_submission;
+                    this.form.submission_anonymous_user = this.collection.submission_anonymous_user;
+                    this.form.submission_default_status = this.collection.submission_default_status;
                     this.form.hide_items_thumbnail_on_lists = this.collection.hide_items_thumbnail_on_lists;
                     
                     this.isLoading = false;
@@ -824,6 +896,9 @@ export default {
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = [];
                 this.form.allow_comments = this.collection.allow_comments;
+                this.form.allows_submission = this.collection.allows_submission;
+                this.form.submission_anonymous_user = this.collection.submission_anonymous_user;
+                this.form.submission_default_status = this.collection.submission_default_status;
                 this.form.hide_items_thumbnail_on_lists = this.collection.hide_items_thumbnail_on_lists;
 
                 // Pre-fill status with publish to incentivate it
@@ -1128,6 +1203,12 @@ export default {
             display: flex;
             align-items: center;
         }
+    }
+    .item-submission-options {
+        padding-left: 1em;
+        padding-top: 1.25em;
+        margin-top: -1.5em;
+        border-left: 1px solid var(--tainacan-gray2);
     }
 
 </style>

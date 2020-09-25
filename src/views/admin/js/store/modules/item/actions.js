@@ -323,12 +323,14 @@ export const deleteGroupFromItemSubmissionMetadatum = ({ commit }, { metadatum_i
 export const submitItemSubmission = ({ commit }, { itemSubmission, itemSubmissionMetadata }) => {
     return new Promise((resolve, reject) => {
 
-        for (let key of Object.keys(itemSubmission)) {
+        let item = JSON.parse(JSON.stringify(itemSubmission)); // Use a copy as the next request will need document, attchment and thumbnail
+
+        for (let key of Object.keys(item)) {
             if (['document', 'attachments', 'thumbnail'].includes(key) )
-                delete itemSubmission[key];
+                delete item[key];
         }
 
-        axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission', {...itemSubmission, metadata: itemSubmissionMetadata } )
+        axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission', {...item, metadata: itemSubmissionMetadata } )
             .then( res => {
                 resolve( res.data.id );
             }).catch( error => { 
@@ -345,14 +347,14 @@ export const finishItemSubmission = ({ commit }, { itemSubmission, fakeItemId })
         let config = {
             headers: { 'content-type': 'multipart/form-data' }
         }
-        
+        console.log(itemSubmission)
         const formData = new FormData();
 
         for (let key of Object.keys(itemSubmission)) {
             if (['document', 'attachments', 'thumbnail'].includes(key) )
                 formData.append(key, itemSubmission[key]);
         }
-        
+        console.log(formData)
         axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission/' + fakeItemId + '/finish', formData, config )
             .then( res => {
                 resolve( res.data );
