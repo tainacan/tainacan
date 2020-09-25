@@ -198,9 +198,11 @@ class Collections extends Repository {
 			'submission_anonymous_user'  => [
 				'map'                    => 'meta',
 				'title'                  => __( 'Allows submission by anonymous user', 'tainacan' ),
-				'type'                   => 'boolean',
+				'type'                   => 'string',
 				'description'            => __( 'If enabled, allows submission by anonymous user.', 'tainacan' ),
-				'default'                => 'false'
+				'default'                => 'no',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 			],
 			'submission_default_status'  => [
 				'map'                    => 'meta',
@@ -212,9 +214,11 @@ class Collections extends Repository {
 			'allows_submission' => [
 				'map'                    => 'meta',
 				'title'                  => __( 'Allows item submission', 'tainacan' ),
-				'type'                   => 'boolean',
+				'type'                   => 'string',
 				'description'            => __( 'If enabled, the collection allows item submission, for example via the Item Submission block.', 'tainacan' ),
-				'default'                => 'false'
+				'default'                => 'no',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 			],
 			'hide_items_thumbnail_on_lists' => [
 				'map'         => 'meta',
