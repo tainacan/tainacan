@@ -978,7 +978,6 @@ class REST_Items_Controller extends REST_Controller {
 		if($item_id === false) {
 			return new \WP_REST_Response([
 				'error_message' => __('submission ID not exist.', 'tainacan'),
-				'item'          => $item
 			], 400);
 		}
 
@@ -986,28 +985,36 @@ class REST_Items_Controller extends REST_Controller {
 		$collection = $this->collections_repository->fetch($collection_id);
 		$default_status = $collection->get_submission_default_status();
 		
-		if ( !function_exists('media_handle_upload') ) {
-			require_once(ABSPATH . "wp-admin" . '/includes/image.php');
-			require_once(ABSPATH . "wp-admin" . '/includes/file.php');
-			require_once(ABSPATH . "wp-admin" . '/includes/media.php');
-		}
 		$TainacanMedia = \Tainacan\Media::get_instance();
 		$files = $request->get_file_params();
-		//$TainacanMedia->insert_attachment_from_file($files['thumbnail']['tmp_name'], $item_id);
 		if( isset($files['thumbnail']) && !is_array($files['thumbnail']['tmp_name']) == 1 && $files['thumbnail']['size'] > 0 ) {
-			$thumbnail_id = \media_handle_sideload($files['thumbnail']);
-			// $thumbnail_id = $TainacanMedia->insert_attachment_from_file($files['thumbnail']['tmp_name'], $item_id);
+			$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . $files['thumbnail']['name'];
+			move_uploaded_file($files['thumbnail']['tmp_name'], $tmp_file_name);
+			$thumbnail_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name);
 			$item->set__thumbnail_id($thumbnail_id);
+			unlink($tmp_file_name);
 		}
 
 		if( isset($files['document']) && !is_array($files['document']['tmp_name']) == 1 && $files['document']['size'] > 0 ) {
-			$document_id = \media_handle_sideload($files['document'], $item_id);
-			// $document_id = $TainacanMedia->insert_attachment_from_file($files['document']['tmp_name'], $item_id);
+			$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . $files['document']['name'];
+			move_uploaded_file($files['document']['tmp_name'], $tmp_file_name);
+			$document_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name, $item_id);
 			$item->set_document_type('attachment');
 			$item->set_document($document_id);
+			unlink($tmp_file_name);
 		}
-		
-		\media_handle_sideload($files['attachments'], $item_id);
+
+		if( isset($files['attachments']) ) {
+			$attachments = is_array($files['attachments']['tmp_name']) ? $files['attachments']['tmp_name'] : [$files['attachments']['tmp_name']];
+			$attachments_name = is_array($files['attachments']['name']) ? $files['attachments']['name'] : [$files['attachments']['name']];
+			for ($i = 0; $i < count($attachments); $i++) {
+				$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . $attachments_name[$i];
+				move_uploaded_file($attachments[$i], $tmp_file_name);
+				$TainacanMedia->insert_attachment_from_file($tmp_file_name, $item_id);
+				unlink($tmp_file_name);
+			}
+		}
+
 		$item->set_status($default_status);
 
 		if ($item->validate()) {
