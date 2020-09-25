@@ -202,6 +202,20 @@ class Collections extends Repository {
 				'description'            => __( 'If enabled, allows submission by anonymous user.', 'tainacan' ),
 				'default'                => 'false'
 			],
+			'submission_default_status'  => [
+				'map'                    => 'meta',
+				'title'                  => __( 'Default submission item status', 'tainacan' ),
+				'type'                   => 'string',
+				'description'            => __( 'The default status of the item that will be created in the collection after submission.', 'tainacan' ),
+				'default'                => 'draft'
+			],
+			'allows_submission' => [
+				'map'                    => 'meta',
+				'title'                  => __( 'Collection allows submission item', 'tainacan' ),
+				'type'                   => 'boolean',
+				'description'            => __( 'If enabled, the collection allows submission item.', 'tainacan' ),
+				'default'                => 'false'
+			],
 			'hide_items_thumbnail_on_lists' => [
 				'map'         => 'meta',
 				'title'       => __( 'Hide items thumbnail on lists', 'tainacan' ),

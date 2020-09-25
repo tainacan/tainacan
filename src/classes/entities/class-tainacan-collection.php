@@ -36,7 +36,8 @@ class Collection extends Entity {
 		$comment_status,
 		$allow_comments,
 		$hide_items_thumbnail_on_lists,
-		$submission_anonymous_user;
+		$submission_anonymous_user,
+		$submission_default_status;
 
 	/**
 	 * {@inheritDoc}
@@ -548,10 +549,28 @@ class Collection extends Entity {
 	/**
 	 * Get enable submission with anonymous user
 	 *
-	 * @return string
+	 * @return bool
 	 */
 	function get_submission_anonymous_user() {
 		return $this->get_mapped_property( 'submission_anonymous_user' ) != 'false';
+	}
+
+	/**
+	 * Get default submission status
+	 *
+	 * @return string
+	 */
+	function get_submission_default_status() {
+		return $this->get_mapped_property( 'submission_default_status' );
+	}
+
+	/**
+	 * Checks if submission items are allowed for the current collection.
+	 *
+	 * @return bool
+	 */
+	function get_allows_submission() {
+		return true || $this->get_mapped_property( 'allows_submission' ) != 'false';
 	}
 
 	/**
@@ -761,6 +780,28 @@ class Collection extends Entity {
 	 */
 	function set_submission_anonymous_user( $value ) {
 		$this->set_mapped_property( 'submission_anonymous_user', $value );
+	}
+
+	/**
+	 * Set default submission status
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_submission_default_status( $value ) {
+		$this->set_mapped_property( 'submission_default_status', $value );
+	}
+
+	/**
+	 * Set if submission items are allowes for the current collection. 
+	 *
+	 * @param [boolean] $value
+	 *
+	 * @return void
+	 */
+	function set_allows_submission( $value ) {
+		$this->set_mapped_property( 'allows_submission', $value );
 	}
 
 	/**
