@@ -387,7 +387,6 @@ export default {
                 thumbnail: null
             },
             formErrorMessage: '',
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             hasSentForm: false,
             showThumbnailInput: false
         }
@@ -398,9 +397,6 @@ export default {
         },
         itemSubmissionMetadata() {
             return this.getItemSubmissionMetadata();
-        },
-        collection() {
-            return this.getCollection()
         },
         metadatumList() {
             return (this.itemSubmissionMetadata && this.itemSubmissionMetadata.length) ? JSON.parse(JSON.stringify(this.getMetadata().map((metadatum) => { return { metadatum: metadatum, item: {}, value: this.itemSubmissionMetadata.find((aMetadatum) => aMetadatum.metadatum_id == metadatum.id).value } } ))) : [];
@@ -435,18 +431,12 @@ export default {
         ...mapActions('item', [
             'setItemSubmission',
             'setItemSubmissionMetadata',
-            'updateItemSubmission',
             'submitItemSubmission',
-            'updateItem',
-            'updateItemDocument',
-            'fetchItemMetadata',
-            'fetchItem',
-            'clearItemSubmission',
-            'updateThumbnail'
+            'finishItemSubmission',
+            'clearItemSubmission'
         ]),
         ...mapGetters('item',[
             'getItemSubmission',
-            'getItemMetadata',
             'getItemSubmissionMetadata',
         ]),
         ...mapActions('metadata',[
@@ -454,12 +444,6 @@ export default {
         ]),
         ...mapGetters('metadata',[
             'getMetadata'
-        ]),
-        ...mapActions('collection', [
-            'deleteItem',
-        ]),
-        ...mapGetters('collection', [
-            'getCollection',
         ]),
         onSubmit() {
 
@@ -475,9 +459,28 @@ export default {
             eventBusItemMetadata.errors = [];
 
             this.submitItemSubmission({ itemSubmission: this.itemSubmission, itemSubmissionMetadata: this.itemSubmissionMetadata })
-                .then(() => {
-                    this.hasSentForm = true;
-                    this.isLoading = false;
+                .then((fakeItemId) => {
+                    if (fakeItemId) {
+                        this.finishItemSubmission({ itemSubmission: this.itemSubmission, fakeItemId: fakeItemId })
+                            .then(() => {
+                                this.hasSentForm = true;
+                                this.isLoading = false;
+                            })
+                            .catch((errors) => { 
+                                if (errors.errors) {
+                                    for (let error of errors.errors) {
+                                        for (let metadatum of Object.keys(error)){
+                                            eventBusItemMetadata.errors.push({ 
+                                                metadatum_id: metadatum,
+                                                errors: error[metadatum]
+                                            });
+                                        }   
+                                    }
+                                    this.formErrorMessage = errors.error_message;
+                                }
+                                this.isLoading = false;
+                            });
+                    }
                 })
                 .catch((errors) => { 
                     if (errors.errors) {
