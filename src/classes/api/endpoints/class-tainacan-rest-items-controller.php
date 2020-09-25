@@ -987,14 +987,8 @@ class REST_Items_Controller extends REST_Controller {
 		
 		$TainacanMedia = \Tainacan\Media::get_instance();
 		$files = $request->get_file_params();
-		if( isset($files['thumbnail']) && !is_array($files['thumbnail']['tmp_name']) == 1 && $files['thumbnail']['size'] > 0 ) {
-			$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . $files['thumbnail']['name'];
-			move_uploaded_file($files['thumbnail']['tmp_name'], $tmp_file_name);
-			$thumbnail_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name);
-			$item->set__thumbnail_id($thumbnail_id);
-			unlink($tmp_file_name);
-		}
 
+		$insert_attachments = [];
 		if( isset($files['document']) && !is_array($files['document']['tmp_name']) == 1 && $files['document']['size'] > 0 ) {
 			$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . $files['document']['name'];
 			move_uploaded_file($files['document']['tmp_name'], $tmp_file_name);
@@ -1002,6 +996,30 @@ class REST_Items_Controller extends REST_Controller {
 			$item->set_document_type('attachment');
 			$item->set_document($document_id);
 			unlink($tmp_file_name);
+			$insert_attachments[] = $document_id;
+		}
+
+		if( isset($files['thumbnail']) && !is_array($files['thumbnail']['tmp_name']) == 1 && $files['thumbnail']['size'] > 0 ) {
+			$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . $files['thumbnail']['name'];
+			move_uploaded_file($files['thumbnail']['tmp_name'], $tmp_file_name);
+			$thumbnail_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name);
+			unlink($tmp_file_name);
+			$item->set__thumbnail_id($thumbnail_id);
+			$insert_attachments[] = $thumbnail_id;
+		} else {
+			$thumbnail_id = $this->items_repository->get_thumbnail_id_from_document($item);
+			if (!is_null($thumbnail_id)) {
+				set_post_thumbnail( $item_id, (int) $thumbnail_id );
+				$insert_attachments[] = $thumbnail_id;
+			}
+		}
+
+		if ($document_id === false || $thumbnail_id === false) {
+			if($document_id !== false) wp_delete_attachment($document_id, true);
+			if($thumbnail_id !== false) wp_delete_attachment($thumbnail_id, true);
+			return new \WP_REST_Response([
+				'error_message' => __('error on create document or thumbnail.', 'tainacan'),
+			], 400);
 		}
 
 		if( isset($files['attachments']) ) {
@@ -1010,8 +1028,17 @@ class REST_Items_Controller extends REST_Controller {
 			for ($i = 0; $i < count($attachments); $i++) {
 				$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . $attachments_name[$i];
 				move_uploaded_file($attachments[$i], $tmp_file_name);
-				$TainacanMedia->insert_attachment_from_file($tmp_file_name, $item_id);
+				$attachment_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name, $item_id);
 				unlink($tmp_file_name);
+				if($attachment_id === false) {
+					foreach($insert_attachments as $remove_id) {
+						wp_delete_attachment($remove_id, true);
+					}
+					return new \WP_REST_Response([
+						'error_message' => __('error on create attachments.', 'tainacan'),
+					], 400);
+				}
+				$insert_attachments[] = $attachment_id;
 			}
 		}
 
