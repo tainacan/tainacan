@@ -1035,7 +1035,7 @@ class REST_Items_Controller extends REST_Controller {
 						wp_delete_attachment($remove_id, true);
 					}
 					return new \WP_REST_Response([
-						'error_message' => __('error on create attachments.', 'tainacan'),
+						'error_message' => __('error on create attachment ', 'tainacan') . "($attachments_name[$i])",
 					], 400);
 				}
 				$insert_attachments[] = $attachment_id;
