@@ -17,8 +17,8 @@ class TAINACAN_REST_Items_Submission extends TAINACAN_UnitApiTestCase {
 				'name'        => 'Col-1',
 				'description' => 'Col-1',
 				'status'      => 'publish',
-				'submission_anonymous_user' => true,
-				'allows_submission' => true
+				'submission_anonymous_user' => 'yes',
+				'allows_submission' => 'yes'
 			],
 			true
 		);
@@ -29,8 +29,8 @@ class TAINACAN_REST_Items_Submission extends TAINACAN_UnitApiTestCase {
 				'name'        => 'Col-2',
 				'description' => 'Col-2',
 				'status'      => 'publish',
-				'submission_anonymous_user' => false,
-				'allows_submission' => true
+				'submission_anonymous_user' => 'no',
+				'allows_submission' => 'yes'
 			],
 			true
 		);
@@ -238,8 +238,8 @@ class TAINACAN_REST_Items_Submission extends TAINACAN_UnitApiTestCase {
 
 	public function test_submission_item_user_anonymous() {
 		wp_logout();
-		$this->assertEquals($this->col_user_anonymous->get_submission_anonymous_user(), true);
-		$this->assertEquals($this->col_user_logged->get_submission_anonymous_user(), false);
+		$this->assertEquals($this->col_user_anonymous->get_submission_anonymous_user(), 'yes');
+		$this->assertEquals($this->col_user_logged->get_submission_anonymous_user(), 'no');
 
 		$metadatums = $this->collections_metadatum[$this->col_user_anonymous->get_id()];
 
@@ -309,8 +309,8 @@ class TAINACAN_REST_Items_Submission extends TAINACAN_UnitApiTestCase {
 
 	public function test_submission_item_user_logged() {
 		// echo "user_id" . $this->user_id;
-		$this->assertEquals($this->col_user_anonymous->get_submission_anonymous_user(), true);
-		$this->assertEquals($this->col_user_logged->get_submission_anonymous_user(), false);
+		$this->assertEquals($this->col_user_anonymous->get_submission_anonymous_user(), 'yes');
+		$this->assertEquals($this->col_user_logged->get_submission_anonymous_user(), 'no');
 
 		$metadatums = $this->collections_metadatum[$this->col_user_anonymous->get_id()];
 		$item_json = json_encode([
