@@ -1013,10 +1013,18 @@ class REST_Items_Controller extends REST_Controller {
 		}
 
 		if ((isset($document_id) && $document_id === false) || (isset($thumbnail_id) && $thumbnail_id === false)) {
-			if(isset($document_id) && $document_id !== false) wp_delete_attachment($document_id, true);
-			if(isset($thumbnail_id) && $thumbnail_id !== false) wp_delete_attachment($thumbnail_id, true);
+			$entities_erros = ["document", "thumbnail"];
+			if(isset($document_id) && $document_id !== false) {
+				$entities_erros = ["thumbnail"];
+				wp_delete_attachment($document_id, true);
+			}
+			if(isset($thumbnail_id) && $thumbnail_id !== false) {
+				$entities_erros = ["document"];
+				wp_delete_attachment($thumbnail_id, true);
+			}
 			return new \WP_REST_Response([
 				'error_message' => __('error on create document or thumbnail.', 'tainacan'),
+				'errors' => $entities_erros
 			], 400);
 		}
 
@@ -1034,6 +1042,7 @@ class REST_Items_Controller extends REST_Controller {
 					}
 					return new \WP_REST_Response([
 						'error_message' => __('error on create attachment ', 'tainacan') . "($attachments_name[$i])",
+						'errors' => ['attachment']
 					], 400);
 				}
 				$insert_attachments[] = $attachment_id;
