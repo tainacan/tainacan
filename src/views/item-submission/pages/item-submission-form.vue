@@ -5,8 +5,8 @@
                 :active.sync="isLoading"
                 :can-cancel="false"/>
         <form
-                v-if="!hasSentForm && !isSubmitting && !isUploading"
-                v-show="!isLoading"
+                v-if="!hasSentForm"
+                v-show="!isLoading && !isSubmitting && !isUploading"
                 class="tainacan-form"
                 label-width="120px">
         
@@ -505,7 +505,9 @@ export default {
                                     }
                                     this.formErrorMessage = errors.error_message;
                                 }
-                                this.isLoading = false;
+                                this.isSubmitting =  false;
+                                this.hasSentForm = false;
+                                this.isUploading = false;
                             });
                     }
                 })
@@ -521,7 +523,9 @@ export default {
                         }
                         this.formErrorMessage = errors.error_message;
                     }
-                    this.isLoading = false;
+                    this.isSubmitting =  false;
+                    this.hasSentForm = false;
+                    this.isUploading = false;
                 });
         },
         onDiscard() {
@@ -689,7 +693,7 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 1em;
+        font-size: 0.875em;
 
         @keyframes blink {
             from { color: var(--tainacan-blue5); }
@@ -699,6 +703,7 @@ export default {
         .footer-message {
             display: flex;
             align-items: center;
+            margin: 12px;
         }
         .update-info-section {
             color: var(--tainacan-info-color);
