@@ -362,7 +362,7 @@ export const finishItemSubmission = ({ commit }, { itemSubmission, fakeItemId })
         axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission/' + fakeItemId + '/finish', formData, config )
             .then( res => {
                 resolve( res.data );
-            }).catch( error => { 
+            }).catch( error => {
                 reject({
                     errors: error.response.data.errors,
                     error_message: error.response.data.error_message
