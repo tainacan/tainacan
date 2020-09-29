@@ -66,6 +66,9 @@ font-weight: normal;
 .tainacan-icon-attachments:before {
     content: "attachments";
 }
+.tainacan-icon-form:before {
+    content: "form";
+}
 .tainacan-icon-wordpress:before {
     content: "wordpress";
 }
@@ -281,6 +284,9 @@ font-weight: normal;
 }
 .tainacan-icon-viewtable:before {
     content: "viewtable";
+}
+.tainacan-icon-viewlist:before {
+    content: "viewlist";
 }
 .tainacan-icon-facebook:before {
     content: "facebook";

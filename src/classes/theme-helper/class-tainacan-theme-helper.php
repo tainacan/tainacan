@@ -106,7 +106,7 @@ class Theme_Helper {
 			'label' => __('List', 'tainacan'),
 			'dynamic_metadata' => true,
 			'description' => 'A list view, similiar to the records, but full width',
-			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewrecords tainacan-icon-1-25em"></i></span>',
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewlist tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'implements_skeleton' => true,
 			'requires_thumbnail' => false
