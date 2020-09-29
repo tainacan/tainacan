@@ -133,7 +133,7 @@
             <!-- Another option of the Button for hiding filters -->
             <div 
                     v-if="showFiltersButtonInsideSearchControl && !hideHideFiltersButton && !hideFilters && !openAdvancedSearch"
-                    class="search-control-item"
+                    :class="'search-control-item' + (isFiltersModalActive ? ' is-filters-modal-active' : '')"
                     id="tainacanFiltersButton">
                 <button 
                         class="button is-white"
@@ -1432,8 +1432,11 @@
                     white-space: nowrap; 
                 } 
             }
-        }
 
+            &#tainacanFiltersButton.is-filters-modal-active .gray-icon i::before {
+                color: var(--tainacan-secondary) !important;
+            }
+        }
     }
 
     .above-search-control {
