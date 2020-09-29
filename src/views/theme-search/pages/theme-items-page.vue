@@ -681,7 +681,7 @@
                         if (this.filtersAsModal && this.$refs['filters-modal'] && this.$refs['filters-modal'].focus)
                             this.$refs['filters-modal'].focus();
                             
-                        if (!this.filtersAsModal && !this.isMobile && document.documentElement)
+                        if (!this.filtersAsModal && !this.isMobile && document.documentElement && (this.registeredViewModes[this.viewMode] == undefined || !this.registeredViewModes[this.viewMode].full_screen))
                             document.documentElement.classList.remove('is-clipped');
                     }, 800);
                     
