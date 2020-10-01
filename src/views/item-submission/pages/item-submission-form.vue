@@ -9,7 +9,6 @@
                 v-show="!isLoading && !isSubmitting && !isUploading"
                 class="tainacan-form"
                 label-width="120px">
-        
     
             <!-- Hook for extra Form options -->
             <template
@@ -30,7 +29,9 @@
                             :title="$i18n.getHelperTitle('items', 'document')"
                             :message="$i18n.getHelperMessage('items', 'document')"/>
                 </div>
-                <div class="section-box document-field">
+                <div 
+                        class="section-box document-field"
+                        id="tainacan-item-metadatum_id-document">
                     <div v-if="form.document_type != '' && form.document_type != undefined && form.document_type != null && form.document_type != 'empty'">
                         <div v-if="form.document_type == 'attachment'">
                             <b-upload
@@ -57,7 +58,8 @@
                                         closable
                                         attached
                                         :aria-close-label="$i18n.get('delete')"
-                                        @close="form.document = ''">
+                                        @close="form.document = ''"
+                                        :type="formErrors.find(error => error.metadatum_id== 'document') ? 'is-danger' : ''">
                                     {{ form.document.name }}
                                 </b-tag>
                             </div>
@@ -140,7 +142,8 @@
                 </div>
                 <div 
                         v-if="!isLoading && showThumbnailInput"
-                        class="section-box section-thumbnail">
+                        class="section-box section-thumbnail"
+                        id="tainacan-item-metadatum_id-thumbnail">
                     <b-upload 
                             expanded
                             v-if="!form.thumbnail"
@@ -165,7 +168,8 @@
                                 closable
                                 attached
                                 :aria-close-label="$i18n.get('delete')"
-                                @close="form.thumbnail = null">
+                                @close="form.thumbnail = null"
+                                :type="formErrors.find(error => error.metadatum_id == 'thumbnail') ? 'is-danger' : ''">
                             {{ form.thumbnail.name }}
                         </b-tag>
                     </div>
@@ -197,7 +201,8 @@
 
                 <div 
                         v-if="itemSubmission != undefined"
-                        class="section-box">
+                        class="section-box"
+                        id="tainacan-item-metadatum_id-attachment">
                     <b-upload 
                             expanded
                             v-model="form.attachments"
@@ -224,7 +229,8 @@
                                 closable
                                 attached
                                 :aria-close-label="$i18n.get('delete')"
-                                @close="form.attachments.splice(index, 1)">
+                                @close="form.attachments.splice(index, 1)"
+                                :type="formErrors.find(error => error.metadatum_id == 'attachment') ? 'is-danger' : ''">
                             {{ attachment.name }}
                         </b-tag>
                     </div>
@@ -496,15 +502,23 @@ export default {
                             .catch((errors) => { 
                                 if (errors.errors) {
                                     for (let error of errors.errors) {
-                                        for (let metadatum of Object.keys(error)){
+                                        if (Array.isArray(error.errors)) {
+                                            for (let metadatum of Object.keys(error)) {
+                                                eventBusItemMetadata.errors.push({ 
+                                                    metadatum_id: metadatum,
+                                                    errors: error[metadatum]
+                                                });
+                                            }
+                                        } else {
                                             eventBusItemMetadata.errors.push({ 
-                                                metadatum_id: metadatum,
-                                                errors: error[metadatum]
-                                            });
+                                                metadatum_id: error,
+                                                errors: error
+                                            }); 
                                         }   
                                     }
-                                    this.formErrorMessage = errors.error_message;
                                 }
+                                this.formErrorMessage = errors.error_message;
+                                
                                 this.isSubmitting =  false;
                                 this.hasSentForm = false;
                                 this.isUploading = false;
@@ -514,15 +528,23 @@ export default {
                 .catch((errors) => { 
                     if (errors.errors) {
                         for (let error of errors.errors) {
-                            for (let metadatum of Object.keys(error)){
+                            if (Array.isArray(error.errors)) {
+                                for (let metadatum of Object.keys(error)) {
+                                    eventBusItemMetadata.errors.push({ 
+                                        metadatum_id: metadatum,
+                                        errors: error[metadatum]
+                                    });
+                                }
+                            } else {
                                 eventBusItemMetadata.errors.push({ 
-                                    metadatum_id: metadatum,
-                                    errors: error[metadatum]
-                                });
-                            }   
+                                    metadatum_id: error,
+                                    errors: error
+                                }); 
+                            }  
                         }
-                        this.formErrorMessage = errors.error_message;
                     }
+                    this.formErrorMessage = errors.error_message;
+
                     this.isSubmitting =  false;
                     this.hasSentForm = false;
                     this.isUploading = false;
