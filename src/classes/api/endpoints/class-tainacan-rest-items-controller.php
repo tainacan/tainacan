@@ -987,45 +987,40 @@ class REST_Items_Controller extends REST_Controller {
 		$files = $request->get_file_params();
 
 		$insert_attachments = [];
+		$entities_erros = [];
 		if( isset($files['document']) && !is_array($files['document']['tmp_name']) == 1 && $files['document']['size'] > 0 ) {
 			$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . $files['document']['name'];
 			move_uploaded_file($files['document']['tmp_name'], $tmp_file_name);
 			$document_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name, $item_id);
-			$item->set_document_type('attachment');
-			$item->set_document($document_id);
+			if($document_id === false) {
+				$entities_erros[] = ["document" => __('error on create document', 'tainacan')];
+				wp_delete_attachment($document_id, true);
+			} else {
+				$item->set_document_type('attachment');
+				$item->set_document($document_id);
+				$insert_attachments[] = $document_id;
+			}
 			unlink($tmp_file_name);
-			$insert_attachments[] = $document_id;
 		}
 
 		if( isset($files['thumbnail']) && !is_array($files['thumbnail']['tmp_name']) == 1 && $files['thumbnail']['size'] > 0 ) {
 			$tmp_file_name = sys_get_temp_dir() . DIRECTORY_SEPARATOR . \hexdec(\uniqid()) . '_' . $files['thumbnail']['name'];
 			move_uploaded_file($files['thumbnail']['tmp_name'], $tmp_file_name);
 			$thumbnail_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name);
+			if($thumbnail_id === false) {
+				$entities_erros[] = ["thumbnail" => __('error on create thumbnail', 'tainacan')];
+				wp_delete_attachment($thumbnail_id, true);
+			} else {
+				$item->set__thumbnail_id($thumbnail_id);
+				$insert_attachments[] = $thumbnail_id;
+			}
 			unlink($tmp_file_name);
-			$item->set__thumbnail_id($thumbnail_id);
-			$insert_attachments[] = $thumbnail_id;
 		} else {
 			$thumbnail_id = $this->items_repository->get_thumbnail_id_from_document($item);
 			if (!is_null($thumbnail_id)) {
 				set_post_thumbnail( $item_id, (int) $thumbnail_id );
 				$insert_attachments[] = $thumbnail_id;
 			}
-		}
-
-		if ((isset($document_id) && $document_id === false) || (isset($thumbnail_id) && $thumbnail_id === false)) {
-			$entities_erros = ["document", "thumbnail"];
-			if(isset($document_id) && $document_id !== false) {
-				$entities_erros = ["thumbnail"];
-				wp_delete_attachment($document_id, true);
-			}
-			if(isset($thumbnail_id) && $thumbnail_id !== false) {
-				$entities_erros = ["document"];
-				wp_delete_attachment($thumbnail_id, true);
-			}
-			return new \WP_REST_Response([
-				'error_message' => __('error on create document or thumbnail.', 'tainacan'),
-				'errors' => $entities_erros
-			], 400);
 		}
 
 		if( isset($files['attachments']) ) {
@@ -1037,28 +1032,27 @@ class REST_Items_Controller extends REST_Controller {
 				$attachment_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name, $item_id);
 				unlink($tmp_file_name);
 				if($attachment_id === false) {
-					foreach($insert_attachments as $remove_id) {
-						wp_delete_attachment($remove_id, true);
-					}
-					return new \WP_REST_Response([
-						'error_message' => __('error on create attachment ', 'tainacan') . "($attachments_name[$i])",
-						'errors' => ['attachment']
-					], 400);
+					$entities_erros[] = ['attachments' => __('error on create attachment ', 'tainacan') . "($attachments_name[$i])" ];
+					break;
 				}
 				$insert_attachments[] = $attachment_id;
 			}
 		}
 
-		$item->set_status($default_status);
+		if( empty($insert_attachments) ) {
+			$item->set_status($default_status);
+		} else foreach($insert_attachments as $remove_id) {
+			wp_delete_attachment($remove_id, true);
+		}
 
-		if ($item->validate()) {
+		if (empty($entities_erros) && $item->validate()) {
 			$item = $this->items_repository->insert( $item );
 			delete_transient('tnc_transient_submission_' . $submission_id);
 			return new \WP_REST_Response($this->prepare_item_for_response($item, $request), 201 );
 		} else {
 			return new \WP_REST_Response([
 				'error_message' => __('One or more values are invalid.', 'tainacan'),
-				'errors'        => $item->get_errors(),
+				'errors'        => array_merge($item->get_errors(), $entities_erros),
 				'item'          => $this->prepare_item_for_response($this->item, $request)
 			], 400);
 		}
