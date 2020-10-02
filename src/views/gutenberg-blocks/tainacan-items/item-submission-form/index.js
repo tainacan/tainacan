@@ -55,6 +55,10 @@ registerBlockType('tainacan/item-submission-form', {
             type: Boolean,
             default: false
         },
+        showAllowCommentsSection: {            
+            type: Boolean,
+            default: false
+        },
         hideCollapses: {
             type: Boolean,
             default: false
@@ -114,6 +118,22 @@ registerBlockType('tainacan/item-submission-form', {
         sentFormMessage: {
             type: String,
             default: __( 'Thank you. Your item was submitted to the collection.', 'tainacan' )
+        },
+        documentSectionLabel: {
+            type: String,
+            default: __( 'Document', 'tainacan' )
+        },
+        attachmentsSectionLabel: {
+            type: String,
+            default: __( 'Attachments', 'tainacan' )
+        },
+        thumbnailSectionLabel: {
+            type: String,
+            default: __( 'Thumbnail', 'tainacan' )
+        },
+        metadataSectionLabel: {
+            type: String,
+            default: __( 'Metadata', 'tainacan' )
         }
     },
     supports: {
@@ -130,6 +150,7 @@ registerBlockType('tainacan/item-submission-form', {
             hideLinkModalButton,
             hideThumbnailSection,
             hideAttachmentsSection,
+            showAllowCommentsSection,
             hideCollapses,
             baseFontSize,
             backgroundColor,
@@ -144,7 +165,11 @@ registerBlockType('tainacan/item-submission-form', {
             collectionMetadata,
             enabledMetadata,
             sentFormHeading,
-            sentFormMessage
+            sentFormMessage,
+            documentSectionLabel,
+            attachmentsSectionLabel,
+            thumbnailSectionLabel,
+            metadataSectionLabel
         } = attributes;
 
         const fontSizes = [
@@ -252,7 +277,7 @@ registerBlockType('tainacan/item-submission-form', {
                 : null }
 
                 <div>
-                <InspectorControls>
+                    <InspectorControls>
                         <PanelBody
                                 title={ __('Submission feedback', 'tainacan') }
                                 initialOpen={ true } >
@@ -271,6 +296,44 @@ registerBlockType('tainacan/item-submission-form', {
                                 onChange={ ( updatedMessage ) =>{
                                     sentFormMessage = updatedMessage;
                                     setAttributes({ sentFormMessage: sentFormMessage });
+                                } }
+                            />
+                        </PanelBody>
+                    </InspectorControls>
+                    <InspectorControls>
+                        <PanelBody
+                                title={ __('Section labels', 'tainacan') }
+                                initialOpen={ false } >
+                            <TextControl
+                                label={ __('Document section label', 'tainacan') }
+                                value={ documentSectionLabel }
+                                onChange={ ( updatedSectionName ) =>{
+                                    documentSectionLabel = updatedSectionName;
+                                    setAttributes({ documentSectionLabel: documentSectionLabel });
+                                } }
+                            />
+                            <TextControl
+                                label={ __('Thumbnail section label', 'tainacan') }
+                                value={ thumbnailSectionLabel }
+                                onChange={ ( updatedSectionName ) =>{
+                                    thumbnailSectionLabel = updatedSectionName;
+                                    setAttributes({ thumbnailSectionLabel: thumbnailSectionLabel });
+                                } }
+                            />
+                            <TextControl
+                                label={ __('Attachments section label', 'tainacan') }
+                                value={ attachmentsSectionLabel }
+                                onChange={ ( updatedSectionName ) =>{
+                                    attachmentsSectionLabel = updatedSectionName;
+                                    setAttributes({ attachmentsSectionLabel: attachmentsSectionLabel });
+                                } }
+                            />
+                            <TextControl
+                                label={ __('Metadata section label', 'tainacan') }
+                                value={ metadataSectionLabel }
+                                onChange={ ( updatedSectionName ) =>{
+                                    metadataSectionLabel = updatedSectionName;
+                                    setAttributes({ metadataSectionLabel: metadataSectionLabel });
                                 } }
                             />
                         </PanelBody>
@@ -358,6 +421,16 @@ registerBlockType('tainacan/item-submission-form', {
                                 onChange={ ( isChecked ) => {
                                         hideAttachmentsSection = isChecked;
                                         setAttributes({ hideAttachmentsSection: isChecked });
+                                    }  
+                                }
+                            />
+                            <ToggleControl
+                                label={__('Show "allow comments" section', 'tainacan')}
+                                help={ showAllowCommentsSection ? __('Show the option to allow comments on the item page.', 'tainacan') : __('Toggle to hide the option to allow comments on the item page.', 'tainacan')}
+                                checked={ showAllowCommentsSection }
+                                onChange={ ( isChecked ) => {
+                                        showAllowCommentsSection = isChecked;
+                                        setAttributes({ showAllowCommentsSection: isChecked });
                                     }  
                                 }
                             />
@@ -586,9 +659,14 @@ registerBlockType('tainacan/item-submission-form', {
                                     </div>
                                     ) : null 
                                     }
-                                    <span class="fake-text section-label"></span>
-                                    <div class="fake-switch"><span class="fake-icon"></span><span class="fake-text"></span></div>
-                                    
+                                    { 
+                                    showAllowCommentsSection ? 
+                                    (
+                                        <div>
+                                            <span class="fake-text section-label"></span>
+                                            <div class="fake-switch"><span class="fake-icon"></span><span class="fake-text"></span></div>
+                                        </div>
+                                    ) : null }
                                 </div>
                                 <div style={{ flexGrow: '1' }}>
                                     <div class="fake-text section-label"></div>
@@ -654,7 +732,12 @@ registerBlockType('tainacan/item-submission-form', {
             hideLinkModalButton,
             hideThumbnailSection,
             hideAttachmentsSection,
+            showAllowCommentsSection,
             hideCollapses,
+            documentSectionLabel,
+            thumbnailSectionLabel,
+            attachmentsSectionLabel,
+            metadataSectionLabel,
             baseFontSize,
             inputColor,
             inputBackgroundColor,
@@ -690,10 +773,15 @@ registerBlockType('tainacan/item-submission-form', {
                     hide-link-modal-button={ hideLinkModalButton.toString() }
                     hide-thumbnail-section={ hideThumbnailSection.toString() }
                     hide-attachments-section={ hideAttachmentsSection.toString() }
+                    show-allow-comments-section={ showAllowCommentsSection.toString() }
                     hide-collapses={ hideCollapses.toString() }
                     enabled-metadata={ enabledMetadata.toString() }
                     sent-form-heading={ sentFormHeading }
-                    sent-form-message={ sentFormMessage }>
+                    sent-form-message={ sentFormMessage }
+                    document-section-label={ documentSectionLabel }
+                    thumbnail-section-label={ thumbnailSectionLabel }
+                    attachments-section-label={ attachmentsSectionLabel }
+                    metadata-section-label={ metadataSectionLabel }>
             </div>
         </div>
     }

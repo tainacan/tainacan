@@ -18,9 +18,9 @@
                                 v-if="error.errors.length"
                                 :key="index">
                             <a 
-                                    v-if="['thumbnail', 'attachment', 'document'].includes(error.metadatum_id)"
+                                    v-if="['thumbnail', 'attachments', 'document'].includes(error.metadatum_id)"
                                     @click="metadataElements[error.metadatum_id].scrollIntoView({ behavior: 'smooth', block: 'center' })">
-                                {{ $i18n.get('label_' + getErrorMessage(error.errors)) }}
+                                {{ getErrorMessage(error.errors) }}
                             </a> 
                             <a 
                                     v-else-if="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')]"
