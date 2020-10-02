@@ -44,7 +44,7 @@
 
         .fake-text {
             background-color: var(--tainacan-label-color, rgba(200,200,200, 0.3));
-            height: 0.2em;
+            height: 0.25em;
             width: 15%;
             min-width: 1.25em;
             border-radius: 2px;
@@ -53,7 +53,21 @@
             &.section-label {
                 display: block;
                 margin-top: 1em;
-                height: 0.25em;
+                height: 0.32em;
+            }
+            &.fake-text-info {
+                background-color: var(--tainacan-info-color, rgba(200,200,200, 0.3));
+                width: 5%;
+                opacity: 0.75;
+                margin-left: 6px;
+            }
+            &.fake-help-button {
+                background-color: var(--tainacan-secondary, rgba(200,200,200, 0.3));
+                height: 0.32em;
+                width: 0.32em;
+                min-width: 0.25em;
+                border-radius: 0.2em;
+                margin-left: 6px;
             }
         }
         .fake-collapse-arrow {
@@ -84,17 +98,18 @@
             border-radius: 2px;
             display: inline-block;
         }
-        .fake-image {
+        .fake-image-uploader {
             background-size: cover;
-            background-color: var(--tainacan-gray2, rgba(200,200,200, 0.3));
             height: 3em;
-            width: 3em;
-            min-height: 3em;
-            min-width: 3em;
-            max-height: 3em;
-            max-width: 3em;
+            background-color: var(--tainacan-input-background-color, rgba(200,200,200, 0.3));
+            border: 2px dashed var(--tainacan-input-border-color, rgba(200,200,200, 0.3));
+            width: 100%;
             border-radius: 2px;
             display: inline-block;
+
+            &:hover {
+                background-color: var(--tainacan-primary, rgba(200,200,200, 0.1));
+            }
         }
         .fake-tooltip {
             background-color: var(--tainacan-primary, rgba(200,200,200, 0.1));
@@ -132,16 +147,24 @@
         }
         .fake-input {
             background-color: var(--tainacan-input-background-color, rgba(200,200,200, 0.3));
-            height: 0.95em;
+            height: 1.5em;
             width: 18%;
+            border: 2px solid var(--tainacan-input-border-color, rgba(200,200,200, 0.3));
+            border-radius: 3px;
+            display: inline-block;
+        }
+        .fake-textarea {
+            background-color: var(--tainacan-input-background-color, rgba(200,200,200, 0.3));
+            height: 2.5em;
+            width: 100%;
             border: 2px solid var(--tainacan-input-border-color, rgba(200,200,200, 0.3));
             border-radius: 3px;
             display: inline-block;
         }
         .fake-button {
             background-color: var(--tainacan-secondary, rgba(200,200,200, 0.3));
-            padding: 0.3em 0.5em;
-            height: 0.8em;
+            padding: 0.4em 0.7em;
+            height: 0.95em;
             width: 10%;
             max-width: 3.25em;
             min-width: 1em;
@@ -198,8 +221,8 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                width: 2em;
-                height: 2em;
+                width: 3em;
+                height: 3em;
                 border-radius: 100%;
                 background-color: var(--tainacan-input-border-color, rgba(200,200,200, 0.3));
 
@@ -214,14 +237,6 @@
         .thumbnail-section {
             padding: 0.5em;
 
-            .fake-image {
-                height: 3.5em;
-                width: 3.5em;
-                min-height: 3.5em;
-                min-width: 3.5em;
-                max-height: 3.5em;
-                max-width: 3.5em;
-            }
             .fake-button {
                 position: relative;
                 max-width: 0.85em;
@@ -247,11 +262,6 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-start;
-
-            .fake-image {
-                margin-right: 0.25em;
-                margin-bottom: 0.25em;
-            }
         }
         .metadata-section {
             width: 100%;

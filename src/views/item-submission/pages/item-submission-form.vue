@@ -28,6 +28,7 @@
                         class="section-label">
                     <label>{{ documentSectionLabel }}</label>
                     <help-button
+                            v-if="!hideHelpButtons"
                             :title="$i18n.getHelperTitle('items', 'document')"
                             :message="$i18n.getHelperMessage('items', 'document')"/>
                 </div>
@@ -70,16 +71,17 @@
                             <b-input 
                                     type="textarea"
                                     v-model="form.document" />
-                            <br>                      
+                            <br v-if="hasMoreThanOneDocumentTypeOption">                      
                         </div>
                         <div v-if="form.document_type == 'url'">
                             <b-input 
                                     :placeholder="$i18n.get('instruction_insert_url')"
                                     type="url"
                                     v-model="form.document" />
-                            <br>
+                            <br v-if="hasMoreThanOneDocumentTypeOption">
                         </div>
                         <button
+                                v-if="hasMoreThanOneDocumentTypeOption"
                                 type="button"
                                 class="button is-outlined"
                                 @click="form.document = ''; form.document_type = 'empty'">
@@ -129,6 +131,7 @@
                         class="section-label">
                     <label>{{ thumbnailSectionLabel }}</label>
                     <help-button
+                            v-if="!hideHelpButtons"
                             :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
                             :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
 
@@ -257,8 +260,9 @@
                 <div class="section-label">
                     <label>{{ $i18n.get('label_comments') }}</label>
                     <help-button
-                                :title="$i18n.getHelperTitle('items', 'comment_status')"
-                                :message="$i18n.getHelperMessage('items', 'comment_status')"/>
+                            v-if="!hideHelpButtons"
+                            :title="$i18n.getHelperTitle('items', 'comment_status')"
+                            :message="$i18n.getHelperMessage('items', 'comment_status')"/>
                 </div>
                 <div class="section-toggle">
                     <div class="field has-addons">
@@ -401,6 +405,8 @@ export default {
         hideAttachmentsSection: Boolean,
         showAllowCommentsSection: Boolean,
         hideCollapses: Boolean,
+        hideHelpButtons: Boolean,
+        hideMetadataTypes: Boolean,
         enabledMetadata: Array,
         sentFormHeading: String,
         sentFormMessage: String,
@@ -441,6 +447,9 @@ export default {
         },
         formErrors() {
            return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
+        },
+        hasMoreThanOneDocumentTypeOption() {
+            return [ this.hideFileModalButton, this.hideTextModalButton, this.hideLinkModalButton ].filter((option) => { return option == false }).length > 1;
         }
     },
     created() {
@@ -461,6 +470,15 @@ export default {
             else
                 this.formErrorMessage = '';
         });
+    },
+    mounted() {
+        // Checks if only one type of document is allowed. In this case we preset document type
+        if (!this.hideFileModalButton && this.hideTextModalButton && this.hideLinkModalButton)
+            this.form.document_type = 'attachment';
+        else if (this.hideFileModalButton && !this.hideTextModalButton && this.hideLinkModalButton)
+            this.form.document_type = 'text';
+        else if (this.hideFileModalButton && this.hideTextModalButton && !this.hideLinkModalButton)
+            this.form.document_type = 'url';
     },
     beforeDestroy () {
         eventBusItemMetadata.$off('hasErrorsOnForm');
@@ -639,6 +657,7 @@ export default {
 
     .section-label {
         position: relative;
+        margin-top: 14px;
         label {
             font-size: 1em !important;
             font-weight: 500 !important;
@@ -650,13 +669,13 @@ export default {
     .section-toggle p {
         font-size: 0.875em;
         margin-bottom: 0;
-        padding-left: var(--tainacan-one-column);
+        padding-left: calc(0.75em - 1px);
     }
 
     .section-box {
-        padding: 0 var(--tainacan-one-column);
-        margin-top: 14px;
-        margin-bottom: 32px;
+        padding: 0 calc(0.75em - 1px);
+        margin-top: 10px;
+        margin-bottom: 14px;
 
         ul {
             padding: 0;
@@ -710,7 +729,7 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 0.875em;
+        font-size: 1em;
 
         @keyframes blink {
             from { color: var(--tainacan-blue5); }
@@ -721,6 +740,7 @@ export default {
             display: flex;
             align-items: center;
             margin: 12px;
+            font-size: 0.875em;
         }
         .update-info-section {
             color: var(--tainacan-info-color);

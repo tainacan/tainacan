@@ -106,6 +106,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 hideThumbnailSection: false,
                 hideAttachmentsSection: false,
                 showAllowCommentsSection: false,
+                hideHelpButtons: false,
+                hideMetadataTypes: false,
                 hideCollapses: false,
                 enabledMetadata: [],
                 sentFormHeading: '',
@@ -135,6 +137,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.showAllowCommentsSection = this.isParameterTrue('show-allow-comments-section');
                 if (this.$el.attributes['hide-collapses'] != undefined)
                     this.hideCollapses = this.isParameterTrue('hide-collapses');
+                if (this.$el.attributes['hide-help-buttons'] != undefined)
+                    this.hideHelpButtons = this.isParameterTrue('hide-help-buttons');
+                if (this.$el.attributes['hide-metadata-types'] != undefined)
+                    this.hideMetadataTypes = this.isParameterTrue('hide-metadata-types');
 
                 // Form sections labels
                 if (this.$el.attributes['document-section-label'] != undefined)

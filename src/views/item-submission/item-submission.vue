@@ -9,6 +9,8 @@
             :hide-attachments-section="$root.hideAttachmentsSection ? $root.hideAttachmentsSection : false"
             :show-allow-comments-section="$root.showAllowCommentsSection ? $root.showAllowCommentsSection : false"
             :hide-collapses="$root.hideCollapses ? $root.hideCollapses : false"
+            :hide-help-buttons="$root.hideHelpButtons ? $root.hideHelpButtons : false"
+            :hide-metadata-types="$root.hideMetadataTypes ? $root.hideMetadataTypes : false"
             :enabled-metadata="$root.enabledMetadata ? $root.enabledMetadata : []"
             :sent-form-heading="$root.sentFormHeading"
             :sent-form-message="$root.sentFormMessage"

@@ -36,10 +36,13 @@
                     :class="errorMessage ? 'is-danger' : ''">
                 *
             </span>
-            <span class="metadata-type">
+            <span 
+                    v-if="!$parent.hideMetadataTypes"
+                    class="metadata-type">
                 ({{ itemMetadatum.metadatum.metadata_type_object.name }})
             </span>
-            <help-button 
+            <help-button
+                    v-if="!$parent.hideHelpButtons" 
                     :title="itemMetadatum.metadatum.name"
                     :message="itemMetadatum.metadatum.description"/>
         </span>
@@ -271,7 +274,8 @@
         .metadata-type {
             font-size: 0.8125em;
             font-weight: 400;
-            color: var(--tainacan-gray3);
+            color: var(--tainacan-info-color);
+            opacity: 0.75;
             top: -0.1em;
             position: relative;
         }

@@ -55,6 +55,14 @@ registerBlockType('tainacan/item-submission-form', {
             type: Boolean,
             default: false
         },
+        hideHelpButtons: {
+            type: Boolean,
+            default: false
+        },
+        hideMetadataTypes: {
+            type: Boolean,
+            default: false
+        },
         showAllowCommentsSection: {            
             type: Boolean,
             default: false
@@ -152,6 +160,8 @@ registerBlockType('tainacan/item-submission-form', {
             hideAttachmentsSection,
             showAllowCommentsSection,
             hideCollapses,
+            hideHelpButtons,
+            hideMetadataTypes,
             baseFontSize,
             backgroundColor,
             inputColor,
@@ -375,7 +385,7 @@ registerBlockType('tainacan/item-submission-form', {
                                 title={__('Form elements', 'tainacan')}
                                 initialOpen={ true } >
                             <ToggleControl
-                                    label={__('Hide the file submission button', 'tainacan')}
+                                    label={__('Hide the Document type file button', 'tainacan')}
                                     help={ hideFileModalButton ? __('Do not show the button for uploading a file document', 'tainacan') : __('Toggle to show the button to upload a file document.', 'tainacan')}
                                     checked={ hideFileModalButton }
                                     onChange={ ( isChecked ) => {
@@ -385,7 +395,7 @@ registerBlockType('tainacan/item-submission-form', {
                                     }
                                 />
                             <ToggleControl
-                                    label={__('Hide the text submission button', 'tainacan')}
+                                    label={__('Hide the Document type text button', 'tainacan')}
                                     help={ hideTextModalButton ? __('Do not show the button for setting a text as document.', 'tainacan') : __('Toggle to show the button to set a text as document.', 'tainacan')}
                                     checked={ hideTextModalButton }
                                     onChange={ ( isChecked ) => {
@@ -395,7 +405,7 @@ registerBlockType('tainacan/item-submission-form', {
                                     }
                                 />
                             <ToggleControl
-                                label={__('Hide the link submission button', 'tainacan')}
+                                label={__('Hide the Document type link button', 'tainacan')}
                                 help={ hideLinkModalButton ? __('Do not show the button for setting a link as document.', 'tainacan') : __('Toggle to show the button to set a link as document.', 'tainacan')}
                                 checked={ hideLinkModalButton }
                                 onChange={ ( isChecked ) => {
@@ -441,6 +451,26 @@ registerBlockType('tainacan/item-submission-form', {
                                 onChange={ ( isChecked ) => {
                                         hideCollapses = isChecked;
                                         setAttributes({ hideCollapses: isChecked });
+                                    }  
+                                }
+                            />
+                            <ToggleControl
+                                label={__('Hide help buttons', 'tainacan')}
+                                help={ hideHelpButtons ? __('Do not show the "?" icon with a help tooltip aside the labels.', 'tainacan') : __('Toggle to show the "?" icon with a help tooltip aside the labels.', 'tainacan')}
+                                checked={ hideHelpButtons }
+                                onChange={ ( isChecked ) => {
+                                        hideHelpButtons = isChecked;
+                                        setAttributes({ hideHelpButtons: isChecked });
+                                    }  
+                                }
+                            />
+                            <ToggleControl
+                                label={__('Hide metadata type', 'tainacan')}
+                                help={ hideMetadataTypes ? __('Do not show the metadata type aside the metadata label.', 'tainacan') : __('Toggle to show the metadata type aside the metadata label.', 'tainacan')}
+                                checked={ hideMetadataTypes }
+                                onChange={ ( isChecked ) => {
+                                        hideMetadataTypes = isChecked;
+                                        setAttributes({ hideMetadataTypes: isChecked });
                                     }  
                                 }
                             />
@@ -625,19 +655,37 @@ registerBlockType('tainacan/item-submission-form', {
                                         (!hideFileModalButton || !hideTextModalButton || !hideLinkModalButton) ? 
                                         (
                                         <div>
-                                            <span class="fake-text section-label"></span>
-                                            <div class="documents-section">
-                                                { hideFileModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
-                                                { hideTextModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
-                                                { hideLinkModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
-                                            </div>
+                                            { documentSectionLabel ? 
+                                                <span style={{ display: 'flex', alignItems: 'baseline', marginBottom: '5px' }}><span class="fake-text section-label"></span>{ !hideHelpButtons ? <span class="fake-text fake-help-button"></span> : null }</span>
+                                            : null }
+                                            { [ hideFileModalButton, hideTextModalButton, hideLinkModalButton ].filter((option) => { return option == false }).length > 1 ?
+                                                <div class="documents-section">
+                                                    { hideFileModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
+                                                    { hideTextModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
+                                                    { hideLinkModalButton ? null : <span class="fake-circle"><span class="fake-icon"></span></span> }
+                                                </div>
+                                            : (
+                                                (!hideFileModalButton && hideTextModalButton && hideLinkModalButton) ?
+                                                    <div class="fake-image-uploader"></div>
+                                                : (
+                                                    (hideFileModalButton && !hideTextModalButton && hideLinkModalButton) ?
+                                                        <span class="fake-textarea"></span>
+                                                    : (
+                                                        (hideFileModalButton && hideTextModalButton && !hideLinkModalButton) ?
+                                                            <span class="fake-input" style={{ width: '100%' }}></span>
+                                                        : null
+                                                    )  
+                                                )
+                                            )}
                                         </div>
                                         ) : null 
                                     }
                                     { !hideThumbnailSection ? 
                                     (
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span class="fake-text section-label"></span>
+                                            { !thumbnailSectionLabel ? 
+                                                <span style={{ display: 'flex', alignItems: 'baseline' }}><span class="fake-text section-label"></span>{ !hideHelpButtons ? <span class="fake-text fake-help-button"></span> : null }</span>
+                                            : null }
                                             <div class="fake-switch"><span class="fake-icon"></span><span class="fake-text"></span></div>
                                         </div>
                                     ) : null
@@ -645,16 +693,15 @@ registerBlockType('tainacan/item-submission-form', {
                                     { !hideAttachmentsSection ? 
                                     (
                                     <div>
+                                        { !attachmentsSectionLabel ? 
                                         <span 
                                                 style={{ position: 'relative' }}
                                                 class="fake-text section-label">
                                             <div class="fake-tooltip"><div class="fake-link"></div></div>
                                         </span>
+                                        : null }
                                         <div class="attachments-section">
-                                            <div class="fake-image"></div>
-                                            <div class="fake-image"></div>
-                                            <div class="fake-image"></div>
-                                            <div class="fake-image"></div>
+                                            <div class="fake-image-uploader"></div>
                                         </div>
                                     </div>
                                     ) : null 
@@ -663,13 +710,15 @@ registerBlockType('tainacan/item-submission-form', {
                                     showAllowCommentsSection ? 
                                     (
                                         <div>
-                                            <span class="fake-text section-label"></span>
+                                            <span style={{ display: 'flex', alignItems: 'baseline' }}><span class="fake-text section-label"></span>{ !hideHelpButtons ? <span class="fake-text fake-help-button"></span> : null }</span>
                                             <div class="fake-switch"><span class="fake-icon"></span><span class="fake-text"></span></div>
                                         </div>
                                     ) : null }
                                 </div>
                                 <div style={{ flexGrow: '1' }}>
-                                    <div class="fake-text section-label"></div>
+                                    { metadataSectionLabel ?
+                                        <div class="fake-text section-label"></div>
+                                    :null }
                                     { !hideCollapses ? <div class="fake-link"></div> : null }
                                     <div class="metadata-section">
                                         { enabledMetadata.length ? 
@@ -677,7 +726,9 @@ registerBlockType('tainacan/item-submission-form', {
                                                 return isEnabled ? 
                                                     <div class={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
                                                         { !hideCollapses ? <span class="fake-collapse-arrow"></span> : null }
-                                                        <span class="fake-text"></span>
+                                                        <span style={{ lineHeight: '0em' }}>
+                                                            <span class="fake-text"></span>{ !hideMetadataTypes ? <span class="fake-text fake-text-info"></span> : null }{ !hideHelpButtons ? <span class="fake-text fake-help-button"></span> : null }
+                                                        </span>
                                                         <span class="fake-input"></span>
                                                     </div>
                                                 : null
@@ -733,6 +784,8 @@ registerBlockType('tainacan/item-submission-form', {
             hideThumbnailSection,
             hideAttachmentsSection,
             showAllowCommentsSection,
+            hideHelpButtons,
+            hideMetadataTypes,
             hideCollapses,
             documentSectionLabel,
             thumbnailSectionLabel,
@@ -774,6 +827,8 @@ registerBlockType('tainacan/item-submission-form', {
                     hide-thumbnail-section={ hideThumbnailSection.toString() }
                     hide-attachments-section={ hideAttachmentsSection.toString() }
                     show-allow-comments-section={ showAllowCommentsSection.toString() }
+                    hide-help-buttons={ hideHelpButtons.toString() }
+                    hide-metadata-types={ hideMetadataTypes.toString() }
                     hide-collapses={ hideCollapses.toString() }
                     enabled-metadata={ enabledMetadata.toString() }
                     sent-form-heading={ sentFormHeading }

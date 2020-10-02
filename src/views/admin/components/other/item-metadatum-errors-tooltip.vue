@@ -21,7 +21,7 @@
                                     v-if="['thumbnail', 'attachments', 'document'].includes(error.metadatum_id)"
                                     @click="metadataElements[error.metadatum_id].scrollIntoView({ behavior: 'smooth', block: 'center' })">
                                 {{ getErrorMessage(error.errors) }}
-                            </a> 
+                            </a>
                             <a 
                                     v-else-if="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')]"
                                     @click="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')].scrollIntoView({ behavior: 'smooth', block: 'center' })">
@@ -127,9 +127,15 @@ export default {
                 color: var(--tainacan-red2);
                 text-decoration: underline;
             }
+            a:hover {
+                color: var(--tainacan-red2);
+            }
             ol, ul {
                 margin: 4px 4px;
                 padding-left: 16px;
+            }
+            li {
+                line-height: 0.875em;
             }
         }
         &:before {
