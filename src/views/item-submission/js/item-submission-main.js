@@ -105,10 +105,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 hideLinkModalButton: false,
                 hideThumbnailSection: false,
                 hideAttachmentsSection: false,
+                showAllowCommentsSection: false,
                 hideCollapses: false,
                 enabledMetadata: [],
                 sentFormHeading: '',
-                sentFormMessage: ''
+                sentFormMessage: '',
+                documentSectionLabel: '',
+                thumbnailSectionLabel: '',
+                attachmentsSectionLabel: '',
+                metadataSectionLabel: ''
             },
             beforeMount () {
                 // Collection source settings
@@ -126,8 +131,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.hideThumbnailSection = this.isParameterTrue('hide-thumbnail-section');
                 if (this.$el.attributes['hide-attachments-section'] != undefined)
                     this.hideAttachmentsSection = this.isParameterTrue('hide-attachments-section');
+                if (this.$el.attributes['show-allow-comments-section'] != undefined)
+                    this.showAllowCommentsSection = this.isParameterTrue('show-allow-comments-section');
                 if (this.$el.attributes['hide-collapses'] != undefined)
                     this.hideCollapses = this.isParameterTrue('hide-collapses');
+
+                // Form sections labels
+                if (this.$el.attributes['document-section-label'] != undefined)
+                    this.documentSectionLabel = this.$el.attributes['document-section-label'].value;
+                if (this.$el.attributes['thumbnail-section-label'] != undefined)
+                    this.thumbnailSectionLabel = this.$el.attributes['thumbnail-section-label'].value;
+                if (this.$el.attributes['attachments-section-label'] != undefined)
+                    this.attachmentsSectionLabel = this.$el.attributes['attachments-section-label'].value;
+                if (this.$el.attributes['metadata-section-label'] != undefined)
+                    this.metadataSectionLabel = this.$el.attributes['metadata-section-label'].value;
 
                 // Form submission feedback messages
                 if (this.$el.attributes['sent-form-heading'] != undefined)

@@ -23,8 +23,10 @@
 
             <!-- Document -------------------------------- -->
             <template v-if="!hideFileModalButton || !hideTextModalButton || !hideLinkModalButton">
-                <div class="section-label">
-                    <label>{{ form.document != undefined && form.document != null && form.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
+                <div 
+                        v-if="documentSectionLabel"
+                        class="section-label">
+                    <label>{{ documentSectionLabel }}</label>
                     <help-button
                             :title="$i18n.getHelperTitle('items', 'document')"
                             :message="$i18n.getHelperMessage('items', 'document')"/>
@@ -122,8 +124,10 @@
 
             <!-- Thumbnail -------------------------------- -->
             <template v-if="!hideThumbnailSection">
-                <div class="section-label">
-                    <label>{{ $i18n.get('label_thumbnail') }}</label>
+                <div 
+                        v-if="thumbnailSectionLabel"
+                        class="section-label">
+                    <label>{{ thumbnailSectionLabel }}</label>
                     <help-button
                             :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
                             :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
@@ -191,8 +195,8 @@
             <template v-if="!hideAttachmentsSection">
                 
                 <div class="section-label">
-                    <label>
-                        <span>{{ $i18n.get('label_attachments') }}</span>
+                    <label v-if="attachmentsSectionLabel">
+                        <span>{{ attachmentsSectionLabel }}</span>
                         <span class="icon has-text-gray4">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
                         </span>
@@ -249,7 +253,7 @@
             </template>
 
             <!-- Comment Status ------------------------ -->
-            <template v-if="!hideCommentStatus">
+            <template v-if="showAllowCommentsSection">
                 <div class="section-label">
                     <label>{{ $i18n.get('label_comments') }}</label>
                     <help-button
@@ -272,8 +276,8 @@
 
             <!-- Metadata from Collection-------------------------------- -->
             <div class="section-label">
-                <label>
-                    <span>{{ $i18n.get('metadata') }}</span>
+                <label v-if="metadataSectionLabel">
+                    <span>{{ metadataSectionLabel }}</span>
                     <span class="icon has-text-gray4">
                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
                     </span>
@@ -395,10 +399,15 @@ export default {
         hideLinkModalButton: Boolean,
         hideThumbnailSection: Boolean,
         hideAttachmentsSection: Boolean,
+        showAllowCommentsSection: Boolean,
         hideCollapses: Boolean,
         enabledMetadata: Array,
         sentFormHeading: String,
-        sentFormMessage: String
+        sentFormMessage: String,
+        documentSectionLabel: String,
+        thumbnailSectionLabel: String,
+        attachmentsSectionLabel: String,
+        metadataSectionLabel: String
     },
     data(){
         return {

@@ -7,10 +7,15 @@
             :hide-link-modal-button="$root.hideLinkModalButton ? $root.hideLinkModalButton : false"
             :hide-thumbnail-section="$root.hideThumbnailSection ? $root.hideThumbnailSection : false"
             :hide-attachments-section="$root.hideAttachmentsSection ? $root.hideAttachmentsSection : false"
+            :show-allow-comments-section="$root.showAllowCommentsSection ? $root.showAllowCommentsSection : false"
             :hide-collapses="$root.hideCollapses ? $root.hideCollapses : false"
             :enabled-metadata="$root.enabledMetadata ? $root.enabledMetadata : []"
             :sent-form-heading="$root.sentFormHeading"
-            :sent-form-message="$root.sentFormMessage" />
+            :sent-form-message="$root.sentFormMessage"
+            :document-section-label="$root.documentSectionLabel"
+            :thumbnail-section-label="$root.thumbnailSectionLabel"
+            :attachments-section-label="$root.attachmentsSectionLabel"
+            :metadata-section-label="$root.metadataSectionLabel" />
 </template>
 
 <script>
