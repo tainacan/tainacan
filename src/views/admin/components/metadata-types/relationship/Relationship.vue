@@ -42,7 +42,7 @@
                 {{ $i18n.get('info_no_item_found') }}
             </template>
             <template
-                    v-if="currentUserCanEditItems && !$route.query.iframemode" 
+                    v-if="currentUserCanEditItems && !($route && $route.query.iframemode)" 
                     slot="footer">
                  <a @click="createNewItemModal = true">
                     {{ $i18n.get('label_crate_new_item') + ' "' + searchQuery + '"' }}
@@ -50,8 +50,8 @@
             </template>
         </b-taginput>
         <a
-                v-if="currentUserCanEditItems"
-                :disabled="$route.query.iframemode"
+                v-if="currentUserCanEditItems && itemMetadatum.item && itemMetadatum.item.id"
+                :disabled="!$route || $route.query.iframemode"
                 @click="createNewItemModal = !createNewItemModal"
                 class="add-link">
             <span class="icon is-small">
@@ -137,7 +137,7 @@
             }
 
             // Checks if current user can edit itens on the related collection to offer modal
-            if (this.collection.id == this.collectionId)
+            if (this.collection && this.collection.id == this.collectionId)
                 this.currentUserCanEditItems = this.collection.current_user_can_edit_items;
             else {
                 axios.get('/collections/' + this.collectionId + '?fetch_only=name,url,allow_comments&context=edit')

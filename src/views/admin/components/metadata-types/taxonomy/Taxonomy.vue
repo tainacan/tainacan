@@ -85,7 +85,7 @@
             }
         },
         watch: {
-            valueComponent( val ){
+            valueComponent( val ) {
                 this.$emit('input', val);
             }
         },
@@ -95,7 +95,7 @@
             this.taxonomyId = metadata_type_options.taxonomy_id;
             this.taxonomy = metadata_type_options.taxonomy;
 
-            if (metadata_type_options && metadata_type_options.allow_new_terms && this.itemMetadatum.item) 
+            if (this.itemMetadatum.item && this.itemMetadatum.item.id && metadata_type_options && metadata_type_options.allow_new_terms && this.itemMetadatum.item) 
                 this.allowNew = metadata_type_options.allow_new_terms == 'yes';
 
             this.getTermsId();

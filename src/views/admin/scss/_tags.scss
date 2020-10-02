@@ -54,5 +54,14 @@
                 }
             }
         }
+
+        &.is-danger, 
+        &.is-danger:hover, 
+        &.is-danger:focus, 
+        &.is-danger:active {
+            border-color: var(--tainacan-danger) !important;
+            background-color: var(--tainacan-red1) !important;
+            color: var(--tainacan-danger) !important;
+        }
     }
 }

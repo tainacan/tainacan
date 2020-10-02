@@ -86,7 +86,7 @@
     </p>
     <a 
             v-if="isMultiple"
-            :disabled="childItemMetadataGroups.length > 0 && !someValueOnLastInput"
+            :disabled="itemMetadatum.item.id && (childItemMetadataGroups.length > 0 && !someValueOnLastInput)"
             @click="addGroup"
             class="is-block add-link">
         <span class="icon is-small">
@@ -137,10 +137,10 @@
             }
         },
         created() {
-            eventBusItemMetadata.$on('hasRemovedItemMetadataGroup', () => this.isRemovingGroup = false);
+            eventBusItemMetadata.$on('hasRemovedItemMetadataGroup', () => this.$nextTick(() => this.isRemovingGroup = false));
         },
         beforeDestroy() {
-            eventBusItemMetadata.$off('hasRemovedItemMetadataGroup', () => this.isRemovingGroup = false);
+            eventBusItemMetadata.$off('hasRemovedItemMetadataGroup', () => this.$nextTick(() => this.isRemovingGroup = false));
         },
         methods: {
             createChildMetadataGroups() {
@@ -153,7 +153,6 @@
                     this.itemMetadatum.metadatum.metadata_type_options &&
                     this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
                 ) {
-                    
                     // Here we load the values from the object, but must also create some
                     if (parentValues && parentValues.length) {
                         
@@ -162,9 +161,9 @@
                             let existingChildItemMetadata = [];
 
                             if (childItemMetadata && childItemMetadata.length) {
-                                   
+                        
                                 for (let childMetadatum of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
-                                                                           
+                                
                                     const childItemMetadatumIndex = childItemMetadata.findIndex((aChildItemMetadatum) => childMetadatum.id == aChildItemMetadatum.metadatum_id);
                                     // Loads the existing values
                                     if (childItemMetadatumIndex >= 0) {
@@ -172,7 +171,7 @@
                                         existingChildItemMetadata.push({
                                             item: this.itemMetadatum.item,
                                             metadatum: childMetadatum,
-                                            parent_meta_id: childItemMetadatum.parent_meta_id,
+                                            parent_meta_id: (this.itemMetadatum.item && this.itemMetadatum.item.id) ?childItemMetadatum.parent_meta_id : groupIndex,
                                             value: childItemMetadatum.value,
                                             value_as_html: childItemMetadatum.value_as_html,
                                             value_as_string: childItemMetadatum.value_as_string,
@@ -184,7 +183,7 @@
                                         existingChildItemMetadata.push({
                                             item: this.itemMetadatum.item,
                                             metadatum: childMetadatum,
-                                            parent_meta_id: existingParentMetaIdIndex >= 0 ? childItemMetadata[existingParentMetaIdIndex].parent_meta_id : 0,
+                                            parent_meta_id: (this.itemMetadatum.item && this.itemMetadatum.item.id) ? (existingParentMetaIdIndex >= 0 ? childItemMetadata[existingParentMetaIdIndex].parent_meta_id : 0) : groupIndex,
                                             value: '',
                                             value_as_html: '',
                                             value_as_string: '',
@@ -200,7 +199,7 @@
                                     let childObject = {
                                         item: this.itemMetadatum.item,
                                         metadatum: childMetadatum,
-                                        parent_meta_id: '0',
+                                        parent_meta_id: (this.itemMetadatum.item && this.itemMetadatum.item.id) ? '0' : currentChildItemMetadataGroups.length,
                                         value: '',
                                         value_as_html: '',
                                         value_as_string: '',
@@ -209,7 +208,7 @@
                                     existingChildItemMetadata.push(childObject)
                                 }
                             }
-                            currentChildItemMetadataGroups.push(existingChildItemMetadata)
+                            currentChildItemMetadataGroups.push(existingChildItemMetadata);
                         }
                     }
                 }
@@ -229,12 +228,44 @@
             addGroup() {
 
                 this.isCreatingGroup = true;
+
+                if (this.itemMetadatum.item && this.itemMetadatum.item.id) {
                 
-                // Sends value to api so we can obtain the parent_meta_id
-                eventBusItemMetadata.fetchCompoundFirstParentMetaId({
-                    itemId: this.itemMetadatum.item.id,
-                    metadatumId: this.itemMetadatum.metadatum.id
-                }).then((parentMetaId) => {
+                    // Sends value to api so we can obtain the parent_meta_id
+                    eventBusItemMetadata.fetchCompoundFirstParentMetaId({
+                        itemId: this.itemMetadatum.item.id,
+                        metadatumId: this.itemMetadatum.metadatum.id
+                    }).then((parentMetaId) => {
+
+                        // Create a new placeholder parent_meta_id group here.
+                        let newEmptyGroup = [];
+
+                        if (this.itemMetadatum &&
+                            this.itemMetadatum.metadatum &&
+                            this.itemMetadatum.metadatum.metadata_type_options &&
+                            this.itemMetadatum.metadatum.metadata_type_options.children_objects.length > 0 
+                        ) {
+                            for (let childMetadatum of this.itemMetadatum.metadatum.metadata_type_options.children_objects) {
+                                let childObject = {
+                                    item: this.itemMetadatum.item,
+                                    metadatum: childMetadatum,
+                                    parent_meta_id: parentMetaId,
+                                    value: '',
+                                    value_as_html: '',
+                                    value_as_string: '',
+                                    collapse: true
+                                };
+                                newEmptyGroup.push(childObject)
+                            }
+                        } 
+                        
+                        this.childItemMetadataGroups.push(newEmptyGroup);
+                        
+                        this.isCreatingGroup = false;
+                    });
+
+                // If no itemId is provided, we are probably on an item Submission flow
+                } else {
 
                     // Create a new placeholder parent_meta_id group here.
                     let newEmptyGroup = [];
@@ -248,7 +279,7 @@
                             let childObject = {
                                 item: this.itemMetadatum.item,
                                 metadatum: childMetadatum,
-                                parent_meta_id: parentMetaId,
+                                parent_meta_id: this.childItemMetadataGroups.length,
                                 value: '',
                                 value_as_html: '',
                                 value_as_string: '',
@@ -257,21 +288,21 @@
                             newEmptyGroup.push(childObject)
                         }
                     } 
-                    
                     this.childItemMetadataGroups.push(newEmptyGroup);
-                    
                     this.isCreatingGroup = false;
-                });
+                }
             },
-            removeGroup(groupIndex) {   
+            removeGroup(groupIndex) {
                 
                 if (this.itemMetadatum.value && this.itemMetadatum.value[groupIndex] && this.itemMetadatum.value[groupIndex][0]) {
-                    this.isRemovingGroup = true;        
+                    this.isRemovingGroup = true;
                     eventBusItemMetadata.$emit('remove_group', {
                         itemId: this.itemMetadatum.item.id,
                         metadatumId: this.itemMetadatum.metadatum.id,
-                        parentMetaId: this.itemMetadatum.value[groupIndex][0].parent_meta_id
+                        parentMetaId: this.itemMetadatum.item.id ? this.itemMetadatum.value[groupIndex][0].parent_meta_id : groupIndex
                     });
+                    if (!this.itemMetadatum.item.id)
+                        this.childItemMetadataGroups.splice(groupIndex, 1);
                 } else {
                     this.childItemMetadataGroups.splice(groupIndex, 1);
                 }
@@ -316,7 +347,8 @@
             height: 1px;
         }
         .empty-label {
-            color: var(--tainacan-gray3);
+            color: var(--tainacan-gray4);
+            font-size: 0.875em;
             font-style: italic;
         }
     }
