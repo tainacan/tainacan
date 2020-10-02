@@ -982,6 +982,7 @@ class REST_Items_Controller extends REST_Controller {
 		$item = $this->items_repository->fetch($item_id);
 		$collection = $this->collections_repository->fetch($collection_id);
 		$default_status = $collection->get_submission_default_status();
+		$item->set_status($default_status);
 		
 		$TainacanMedia = \Tainacan\Media::get_instance();
 		$files = $request->get_file_params();
@@ -1039,13 +1040,13 @@ class REST_Items_Controller extends REST_Controller {
 			}
 		}
 
-		if( empty($insert_attachments) ) {
-			$item->set_status($default_status);
-		} else foreach($insert_attachments as $remove_id) {
-			wp_delete_attachment($remove_id, true);
+		if( !empty($entities_erros) ) {
+			foreach($insert_attachments as $remove_id) {
+				wp_delete_attachment($remove_id, true);
+			}
 		}
 
-		if (empty($entities_erros) && $item->validate()) {
+		if (empty($entities_erros) & $item->validate()) {
 			$item = $this->items_repository->insert( $item );
 			delete_transient('tnc_transient_submission_' . $submission_id);
 			return new \WP_REST_Response($this->prepare_item_for_response($item, $request), 201 );
