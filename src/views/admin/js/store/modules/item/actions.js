@@ -294,3 +294,79 @@ export const updateThumbnail = ({ commit }, { itemId, thumbnailId }) => {
 
     }); 
 };
+
+// Item Submission ======================================================
+export const clearItemSubmission = ({ commit }) => {
+    commit('clearItemSubmission');
+}
+
+export const setItemSubmission = ({ commit }, value) => {
+    commit('setItemSubmission', value);
+}
+
+export const setItemSubmissionMetadata = ({ commit }, value) => {
+    commit('setItemSubmissionMetadata', value);
+}
+
+export const updateItemSubmission = ({ commit }, { key, value }) => {
+    commit('updateItemSubmission', { key: key, value: value });
+}
+
+export const updateItemSubmissionMetadatum = ({ commit }, { metadatum_id, values, child_group_index, parent_id }) => {
+    commit('updateItemSubmissionMetadatum', { metadatum_id: metadatum_id, values: values, child_group_index: child_group_index, parent_id: parent_id });
+}
+
+export const deleteGroupFromItemSubmissionMetadatum = ({ commit }, { metadatum_id, child_group_index }) => {
+    commit('deleteGroupFromItemSubmissionMetadatum', { metadatum_id: metadatum_id, child_group_index: child_group_index });
+}
+
+export const submitItemSubmission = ({ commit }, { itemSubmission, itemSubmissionMetadata }) => {
+    return new Promise((resolve, reject) => {
+
+        let item = JSON.parse(JSON.stringify(itemSubmission)); // Use a copy as the next request will need document, attchment and thumbnail
+
+        for (let key of Object.keys(item)) {
+            if (['attachments', 'thumbnail'].includes(key) )
+                delete item[key];
+            else if (key === 'document' && itemSubmission.document_type === 'attachment' )
+                delete item[key];
+        }
+
+        axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission', {...item, metadata: itemSubmissionMetadata } )
+            .then( res => {
+                resolve( res.data.id );
+            }).catch( error => { 
+                reject({
+                    errors: error.response.data.errors,
+                    error_message: error.response.data.error_message
+                });
+            });
+    }); 
+}
+
+export const finishItemSubmission = ({ commit }, { itemSubmission, fakeItemId }) => {
+    return new Promise((resolve, reject) => {
+        let config = {
+            headers: { 'content-type': 'multipart/form-data' }
+        }
+        const formData = new FormData();
+
+        for (let key of Object.keys(itemSubmission)) {
+            if (key === 'thumbnail' || (key === 'document' && itemSubmission.document_type === 'attachment') )
+                formData.append(key, itemSubmission[key]);
+            else if (key === 'attachments') {
+                for (let i = 0; i < itemSubmission[key].length; i++)
+                    formData.append(key + '[' + i + ']', itemSubmission[key][i]);
+            }
+        }
+        axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission/' + fakeItemId + '/finish', formData, config )
+            .then( res => {
+                resolve( res.data );
+            }).catch( error => {
+                reject({
+                    errors: error.response.data.errors,
+                    error_message: error.response.data.error_message
+                });
+            });
+    }); 
+}

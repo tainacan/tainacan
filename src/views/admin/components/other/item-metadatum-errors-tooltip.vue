@@ -13,16 +13,23 @@
             </div>
             <div class="help-tooltip-body">
                 <ol>
-                    <li 
-                            v-for="(error, index) of formErrors"
-                            :key="index">
-                        <a 
-                                v-if="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')]"
-                                @click="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')].scrollIntoView({ behavior: 'smooth', block: 'center' })">
-                            {{ getErrorMessage(error.errors) }}
-                        </a>
-                        <p v-else>{{ getErrorMessage(error.errors) }}</p>
-                    </li>
+                    <template v-for="(error, index) of formErrors">
+                        <li 
+                                v-if="error.errors.length"
+                                :key="index">
+                            <a 
+                                    v-if="['thumbnail', 'attachments', 'document'].includes(error.metadatum_id)"
+                                    @click="metadataElements[error.metadatum_id].scrollIntoView({ behavior: 'smooth', block: 'center' })">
+                                {{ getErrorMessage(error.errors) }}
+                            </a> 
+                            <a 
+                                    v-else-if="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')]"
+                                    @click="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')].scrollIntoView({ behavior: 'smooth', block: 'center' })">
+                                {{ getErrorMessage(error.errors) }}
+                            </a>                           
+                            <p v-else>{{ getErrorMessage(error.errors) }}</p>
+                        </li>
+                    </template>
                 </ol>
             </div>
         </div> 
@@ -43,9 +50,13 @@ export default {
     methods: {
         getErrorMessage(errors) {
             let metadatumErrorMessage = '';
-            for (let singleError of errors) { 
-                for (let index of Object.keys(singleError))
-                    metadatumErrorMessage += singleError[index] + '\n';
+            for (let singleError of errors) {
+                if (typeof singleError != 'string') {
+                    for (let index of Object.keys(singleError))
+                        metadatumErrorMessage += singleError[index] + '\n';
+                } else {
+                    metadatumErrorMessage += singleError;
+                }
             }
             return metadatumErrorMessage;
         },

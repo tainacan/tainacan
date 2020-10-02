@@ -147,3 +147,66 @@ export const setLastUpdated = (state, value) => {
     }
 }
 
+export const clearItemSubmission = (state) => {
+    state.itemSubmission = {};
+}
+
+export const setItemSubmission = (state, value) => {
+    state.itemSubmission = value;
+}
+
+export const setItemSubmissionMetadata = (state, value) => {
+    state.itemSubmissionMetadata = value;
+}
+
+export const updateItemSubmission = (state, { key, value }) => {
+    Vue.set(state.itemSubmission, key, value);
+}
+
+export const updateItemSubmissionMetadatum = (state, { metadatum_id, values, child_group_index, parent_id }) => {
+
+    let metadata = Array.isArray(state.itemSubmissionMetadata) ? state.itemSubmissionMetadata : [];
+
+    if (parent_id && parent_id > 0) {
+        let existingParentMetadatumIndex = metadata.findIndex((metadatum) => metadatum.metadatum_id == parent_id);
+
+        if (existingParentMetadatumIndex >= 0) {
+            if (metadata[existingParentMetadatumIndex].value && metadata[existingParentMetadatumIndex].value[child_group_index]) {
+                let existingMetadatumIndex = metadata[existingParentMetadatumIndex].value[child_group_index].findIndex((metadatum) => metadatum.metadatum_id == metadatum_id);
+                
+                if (existingMetadatumIndex >= 0)
+                    metadata[existingParentMetadatumIndex].value[child_group_index][existingMetadatumIndex].value = values;
+                else
+                    metadata[existingParentMetadatumIndex].value[child_group_index].push({ metadatum_id: metadatum_id, value: values });
+            } else {
+                metadata[existingParentMetadatumIndex].value = (metadata[existingParentMetadatumIndex].value ? metadata[existingParentMetadatumIndex].value : []);
+                metadata[existingParentMetadatumIndex].value.push([ { metadatum_id: metadatum_id, value: values } ])
+            }
+        } else {
+            metadata.push({ metadatum_id: parent_id, value: [ [ { metadatum_id: metadatum_id, value: values } ] ] });
+        }
+    } else {
+        let existingMetadatumIndex = metadata.findIndex((metadatum) => metadatum.metadatum_id == metadatum_id);
+
+        if (existingMetadatumIndex >= 0)
+            metadata[existingMetadatumIndex].value = values;
+        else
+            metadata.push({ metadatum_id: metadatum_id, value: values });
+    }
+    Vue.set(state, 'itemSubmissionMetadata', metadata);
+}
+
+export const deleteGroupFromItemSubmissionMetadatum = (state, { metadatum_id, child_group_index }) => {
+
+    let existingMetadatumIndex = state.itemSubmissionMetadata.findIndex((metadatum) => metadatum.metadatum_id == metadatum_id);
+    
+    if (existingMetadatumIndex >= 0) {
+        if (state.itemSubmissionMetadata[existingMetadatumIndex].value[child_group_index]) {
+            let existingMetadatum = state.itemSubmissionMetadata[existingMetadatumIndex];
+            let existingMetadatumValue = existingMetadatum.value;
+            existingMetadatumValue.splice(child_group_index, 1);
+            existingMetadatum.value = existingMetadatumValue;
+            Vue.set(state.itemSubmissionMetadata, existingMetadatumIndex, existingMetadatum);
+        }
+    }
+}

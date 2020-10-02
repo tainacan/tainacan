@@ -7,6 +7,7 @@ module.exports = {
     entry: {
         admin: './src/views/admin/js/main.js',
         theme_search: './src/views/theme-search/js/theme-main.js',
+        item_submission: './src/views/item-submission/js/item-submission-main.js',
         roles: './src/views/roles/js/roles-main.js',
 
         block_terms_list: './src/views/gutenberg-blocks/tainacan-terms/terms-list/index.js',
@@ -29,7 +30,9 @@ module.exports = {
         
         block_facets_list: './src/views/gutenberg-blocks/tainacan-facets/facets-list/index.js',
         block_facets_list_theme: './src/views/gutenberg-blocks/tainacan-facets/facets-list/facets-list-theme.js',
-        
+
+        block_item_submission_form: './src/views/gutenberg-blocks/tainacan-items/item-submission-form/index.js',
+
         block_faceted_search: './src/views/gutenberg-blocks/tainacan-facets/faceted-search/index.js',
         
         block_carousel_terms_list: './src/views/gutenberg-blocks/tainacan-terms/carousel-terms-list/index.js',

@@ -195,6 +195,31 @@ class Collections extends Repository {
 		        'default'     => 'open',
 		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 			],
+			'submission_anonymous_user'  => [
+				'map'                    => 'meta',
+				'title'                  => __( 'Allows submission by anonymous user', 'tainacan' ),
+				'type'                   => 'string',
+				'description'            => __( 'If enabled, allows submission by anonymous user.', 'tainacan' ),
+				'default'                => 'no',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
+			'submission_default_status'  => [
+				'map'                    => 'meta',
+				'title'                  => __( 'Default submission item status', 'tainacan' ),
+				'type'                   => 'string',
+				'description'            => __( 'The default status of the item that will be created in the collection after submission.', 'tainacan' ),
+				'default'                => 'draft'
+			],
+			'allows_submission' => [
+				'map'                    => 'meta',
+				'title'                  => __( 'Allows item submission', 'tainacan' ),
+				'type'                   => 'string',
+				'description'            => __( 'If enabled, the collection allows item submission, for example via the Item Submission block.', 'tainacan' ),
+				'default'                => 'no',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
 			'hide_items_thumbnail_on_lists' => [
 				'map'         => 'meta',
 				'title'       => __( 'Hide items thumbnail on lists', 'tainacan' ),

@@ -1096,6 +1096,10 @@
         .tags.is-small {
             font-size: 0.875em;
         }
+
+        section p {
+            font-size: 0.875em;
+        }
     }
 
     .tainacan-modal-checkbox-search-results-body {
