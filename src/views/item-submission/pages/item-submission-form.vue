@@ -202,7 +202,7 @@
                 <div 
                         v-if="itemSubmission != undefined"
                         class="section-box"
-                        id="tainacan-item-metadatum_id-attachment">
+                        id="tainacan-item-metadatum_id-attachments">
                     <b-upload 
                             expanded
                             v-model="form.attachments"
@@ -230,7 +230,7 @@
                                 attached
                                 :aria-close-label="$i18n.get('delete')"
                                 @close="form.attachments.splice(index, 1)"
-                                :type="formErrors.find(error => error.metadatum_id == 'attachment') ? 'is-danger' : ''">
+                                :type="formErrors.find(error => error.metadatum_id == 'attachments') ? 'is-danger' : ''">
                             {{ attachment.name }}
                         </b-tag>
                     </div>
@@ -502,19 +502,12 @@ export default {
                             .catch((errors) => { 
                                 if (errors.errors) {
                                     for (let error of errors.errors) {
-                                        if (Array.isArray(error.errors)) {
-                                            for (let metadatum of Object.keys(error)) {
-                                                eventBusItemMetadata.errors.push({ 
-                                                    metadatum_id: metadatum,
-                                                    errors: error[metadatum]
-                                                });
-                                            }
-                                        } else {
+                                        for (let metadatum of Object.keys(error)) {
                                             eventBusItemMetadata.errors.push({ 
-                                                metadatum_id: error,
-                                                errors: error
-                                            }); 
-                                        }   
+                                                metadatum_id: metadatum,
+                                                errors: error[metadatum]
+                                            });
+                                        }  
                                     }
                                 }
                                 this.formErrorMessage = errors.error_message;
@@ -528,19 +521,12 @@ export default {
                 .catch((errors) => { 
                     if (errors.errors) {
                         for (let error of errors.errors) {
-                            if (Array.isArray(error.errors)) {
-                                for (let metadatum of Object.keys(error)) {
-                                    eventBusItemMetadata.errors.push({ 
-                                        metadatum_id: metadatum,
-                                        errors: error[metadatum]
-                                    });
-                                }
-                            } else {
+                            for (let metadatum of Object.keys(error)) {
                                 eventBusItemMetadata.errors.push({ 
-                                    metadatum_id: error,
-                                    errors: error
-                                }); 
-                            }  
+                                    metadatum_id: metadatum,
+                                    errors: error[metadatum]
+                                });
+                            }   
                         }
                     }
                     this.formErrorMessage = errors.error_message;
