@@ -670,7 +670,7 @@ registerBlockType('tainacan/item-submission-form', {
                                 </div>
                                 <div style={{ flexGrow: '1' }}>
                                     <div class="fake-text section-label"></div>
-                                    <div class="fake-link"></div>
+                                    { !hideCollapses ? <div class="fake-link"></div> : null }
                                     <div class="metadata-section">
                                         { enabledMetadata.length ? 
                                             enabledMetadata.map( (isEnabled) => {
@@ -694,8 +694,8 @@ registerBlockType('tainacan/item-submission-form', {
                                 </div>
                                 
                                 <div class="form-footer">
-                                    <span class="fake-text"></span>
                                     <span class="fake-button outline"><span class="fake-text"></span></span>
+                                    <span class="fake-text"></span>
                                     <span class="fake-button"><span class="fake-text"></span></span>
                                 </div>
                             </div>

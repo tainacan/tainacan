@@ -230,7 +230,5 @@
         background-color: var(--tainacan-info-color, rgba(200, 200, 200, 0.3)); }
       .wp-block-tainacan-item-submission-form .item-submission-form-placeholder .form-footer .fake-button {
         margin: 0 1em; }
-      .wp-block-tainacan-item-submission-form .item-submission-form-placeholder .form-footer .fake-button.outline {
-        margin-left: auto; }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-item-submission-form.css.map */
