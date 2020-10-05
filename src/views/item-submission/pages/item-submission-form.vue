@@ -413,7 +413,10 @@ export default {
         documentSectionLabel: String,
         thumbnailSectionLabel: String,
         attachmentsSectionLabel: String,
-        metadataSectionLabel: String
+        metadataSectionLabel: String,
+        useCaptcha: Boolean,
+        captchaSiteKey: String,
+        captchaSecretKey: String
     },
     data(){
         return {

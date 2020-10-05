@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { Button, TextControl, TextareaControl, ColorPicker, BaseControl, CheckboxControl, FontSizePicker, HorizontalRule, Spinner, ToggleControl, Placeholder, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
+const { Button, ExternalLink, TextControl, TextareaControl, ColorPicker, BaseControl, CheckboxControl, FontSizePicker, HorizontalRule, Spinner, ToggleControl, Placeholder, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -142,6 +142,18 @@ registerBlockType('tainacan/item-submission-form', {
         metadataSectionLabel: {
             type: String,
             default: __( 'Metadata', 'tainacan' )
+        },
+        useCaptcha: {
+            type: Boolean,
+            default: false
+        },
+        captchaSiteKey: {
+            type: String,
+            default: ''
+        },
+        captchaSecretKey: {
+            type: String,
+            default: ''
         }
     },
     supports: {
@@ -179,7 +191,10 @@ registerBlockType('tainacan/item-submission-form', {
             documentSectionLabel,
             attachmentsSectionLabel,
             thumbnailSectionLabel,
-            metadataSectionLabel
+            metadataSectionLabel,
+            useCaptcha,
+            captchaSiteKey,
+            captchaSecretKey
         } = attributes;
 
         const fontSizes = [
@@ -287,6 +302,43 @@ registerBlockType('tainacan/item-submission-form', {
                 : null }
 
                 <div>
+                <InspectorControls>
+                        <PanelBody
+                                title={ __('Security', 'tainacan') }
+                                initialOpen={ true } >
+                            <ToggleControl
+                                    label={__('Use reCAPTCHA', 'tainacan')}
+                                    help={ !useCaptcha ? __('Show reCAPTCHA input at the end of the form to prevent bots.', 'tainacan') : __('Do not show reCAPTCHA input at the end of the form.', 'tainacan')}
+                                    checked={ useCaptcha }
+                                    onChange={ ( isChecked ) => {
+                                            useCaptcha = isChecked;
+                                            setAttributes({ useCaptcha: isChecked });
+                                        }  
+                                    }
+                                />
+                            { useCaptcha ? (
+                                <div>
+                                    <TextControl
+                                        label={ __('The reCAPTCHA site key', 'tainacan') }
+                                        value={ captchaSiteKey }
+                                        onChange={ ( updatedKey ) =>{
+                                            captchaSiteKey = updatedKey;
+                                            setAttributes({ captchaSiteKey: updatedKey });
+                                        } }
+                                    />
+                                    <TextControl
+                                        label={ __('The reCAPTCHA site secret', 'tainacan') }
+                                        value={ captchaSecretKey }
+                                        onChange={ ( updatedKey ) =>{
+                                            captchaSecretKey = updatedKey;
+                                            setAttributes({ captchaSecretKey: updatedKey });
+                                        } }
+                                    />
+                                </div>
+                            )
+                            : null }
+                        </PanelBody>
+                    </InspectorControls>
                     <InspectorControls>
                         <PanelBody
                                 title={ __('Submission feedback', 'tainacan') }
@@ -802,7 +854,10 @@ registerBlockType('tainacan/item-submission-form', {
             secondaryColor,
             enabledMetadata,
             sentFormHeading,
-            sentFormMessage
+            sentFormMessage,
+            useCaptcha,
+            captchaSiteKey,
+            captchaSecretKey
         } = attributes;
         
         return <div 
@@ -837,7 +892,10 @@ registerBlockType('tainacan/item-submission-form', {
                     document-section-label={ documentSectionLabel }
                     thumbnail-section-label={ thumbnailSectionLabel }
                     attachments-section-label={ attachmentsSectionLabel }
-                    metadata-section-label={ metadataSectionLabel }>
+                    metadata-section-label={ metadataSectionLabel }
+                    use-captcha={ useCaptcha.toString() }
+                    captcha-site-key={ captchaSiteKey }
+                    captcha-secret-key={ captchaSecretKey }>
             </div>
         </div>
     }

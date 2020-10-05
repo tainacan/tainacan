@@ -17,7 +17,10 @@
             :document-section-label="$root.documentSectionLabel"
             :thumbnail-section-label="$root.thumbnailSectionLabel"
             :attachments-section-label="$root.attachmentsSectionLabel"
-            :metadata-section-label="$root.metadataSectionLabel" />
+            :metadata-section-label="$root.metadataSectionLabel"
+            :use-captcha="$root.useCaptcha ? $root.useCaptcha : false"
+            :captcha-site-key="$root.captchaSiteKey"
+            :captcha-secret-key="$root.captchaSecretKey" />
 </template>
 
 <script>
