@@ -365,6 +365,7 @@ registerBlockType('tainacan/item-submission-form', {
                                                 <li>
                                                     <CheckboxControl 
                                                         label={ collectionMetadata[index].name }
+                                                        disabled={ collectionMetadata[index].required == 'yes' }
                                                         checked={ isMetadatumEnabled ? true : false }
                                                         help={ collectionMetadata[index].metadata_type_object.name + (collectionMetadata[index].collection_id != collectionId ? (' (' + __('Inherited', 'tainacan') + ')' ) : '') }
                                                         onChange={  (isEnabled) => toggleIsEnabledMetadatum(isEnabled, index) }

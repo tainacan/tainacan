@@ -65,6 +65,7 @@ export default {
     @import "../admin/scss/_dropdown-and-autocomplete.scss";
     @import "../admin/scss/_tooltips.scss";
     @import "../admin/scss/_control.scss";
+    @import "../admin/scss/_upload.scss";
     @import "../admin/scss/_custom_variables.scss";
 
     .tainacan-item-submission-form { 
