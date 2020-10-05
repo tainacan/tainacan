@@ -251,6 +251,9 @@ a:hover {
         }
     }
 }
+.taginput-container .input:hover {
+    border: none !important;
+}
 
 // Buefy notices (toast, snackbar...)
 .notices {

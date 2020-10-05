@@ -73,7 +73,7 @@ export const eventBusItemMetadata = new Vue({
 
                 if (values.length > 0 && values[0] != undefined && values[0].value) {
                     let onlyValues = values.map((aValueObject) => aValueObject.value);
-                    values = onlyValues;
+                    values = JSON.parse(JSON.stringify(onlyValues));
                 }
                 
                 this.$store.dispatch('item/updateItemSubmissionMetadatum', { 

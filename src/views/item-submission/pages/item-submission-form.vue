@@ -581,7 +581,7 @@ export default {
             // Clear errors so we don't have them duplicated from api
             eventBusItemMetadata.errors = [];
 
-            let data = this.form;
+            let data = JSON.parse(JSON.stringify(this.form));
 
             this.fillExtraFormData(data);
             this.setItemSubmission(data);
