@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { Button, ExternalLink, TextControl, TextareaControl, ColorPicker, BaseControl, CheckboxControl, FontSizePicker, HorizontalRule, Spinner, ToggleControl, Placeholder, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
+const { Button, TextControl, TextareaControl, ColorPicker, BaseControl, CheckboxControl, FontSizePicker, HorizontalRule, Spinner, ToggleControl, Placeholder, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -72,8 +72,8 @@ registerBlockType('tainacan/item-submission-form', {
             default: false
         },
         backgroundColor: {
-            type: String,
-            default: '#ffffff'
+            type: Object,
+            default: { r: 255, g: 255, b: 255, a: 0}
         },
         baseFontSize: {
             type: Number,
@@ -548,10 +548,9 @@ registerBlockType('tainacan/item-submission-form', {
                                 <ColorPicker
                                     color={ backgroundColor }
                                     onChangeComplete={ (colorValue ) => {
-                                        backgroundColor = colorValue.hex;
+                                        backgroundColor = colorValue.rgb;
                                         setAttributes({ backgroundColor: backgroundColor });
                                     }}
-                                    disableAlpha
                                 />
                             </BaseControl>
                             <HorizontalRule />
@@ -692,7 +691,7 @@ registerBlockType('tainacan/item-submission-form', {
                             </div>
                             <div 
                                     style={{
-                                        '--tainacan-background-color': backgroundColor,
+                                        '--tainacan-background-color': 'rgba(' + backgroundColor.r + ',' + backgroundColor.g + ',' + backgroundColor.b + ',' + backgroundColor.a + ')',
                                         '--tainacan-input-color': inputColor,
                                         '--tainacan-input-background-color': inputBackgroundColor,
                                         '--tainacan-input-border-color': inputBorderColor,
@@ -864,7 +863,7 @@ registerBlockType('tainacan/item-submission-form', {
                     style={{
                         'font-size': baseFontSize + 'px',
                         '--tainacan-base-font-size': baseFontSize + 'px',
-                        '--tainacan-background-color': backgroundColor,
+                        '--tainacan-background-color': 'rgba(' + backgroundColor.r + ',' + backgroundColor.g + ',' + backgroundColor.b + ',' + backgroundColor.a + ')',
                         '--tainacan-input-color': inputColor,
                         '--tainacan-input-background-color': inputBackgroundColor,
                         '--tainacan-input-border-color': inputBorderColor,

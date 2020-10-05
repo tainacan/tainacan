@@ -629,6 +629,8 @@ export default {
         background-color: var(--tainacan-background-color);
         padding-left: var(--tainacan-one-column);
         padding-right: var(--tainacan-one-column);
+        padding-top: 24px;
+        padding-bottom: 10px;
 
         @media screen and (max-width: 769px) {
             max-width: 100%;

@@ -55,6 +55,7 @@
                 &.is-active { background-color: var(--tainacan-primary); }
 
                 .media {
+                    display: flex;
                     align-items: center;
                 
                     .media-left {
