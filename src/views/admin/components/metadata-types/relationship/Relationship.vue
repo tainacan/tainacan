@@ -123,7 +123,7 @@
             if (this.itemMetadatum.value && (Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value.length > 0 : true )) {
                 let query = qs.stringify({ postin: ( Array.isArray( this.itemMetadatum.value ) ) ? this.itemMetadatum.value : [ this.itemMetadatum.value ]  });
                 query += this.itemMetadatum.metadatum.metadata_type_options.search ? '&fetch_only_meta=' + this.itemMetadatum.metadatum.metadata_type_options.search : '';
-                axios.get('/collection/' + this.collectionId + '/items?' + query + '&nopaging=1&fetch_only=title,thumbnail')
+                axios.get('/collection/' + this.collectionId + '/items?' + query + '&nopaging=1&fetch_only=title,thumbnail&order=asc')
                     .then( res => {
                         if (res.data.items) {
                             for (let item of res.data.items)
@@ -229,7 +229,6 @@
             },
             getQueryString( search ) {
                 let query = [];
-
                 if (this.itemMetadatum.metadatum.metadata_type_options &&
                     this.itemMetadatum.metadatum.metadata_type_options.search)
                 {
@@ -250,6 +249,23 @@
                             value: search,
                             compare: 'LIKE'
                         }
+
+                        // Sorting options depend on metadata type. Notice that this won't work with taxonomies
+                        switch(this.itemMetadatum.metadatum.metadata_type_options.related_primitive_type) {
+                            case 'float':
+                            case 'int':
+                                query['orderby'] = 'meta_value_num';
+                                query['metakey'] = this.itemMetadatum.metadatum.metadata_type_options.search;
+                            break;
+                            case 'date':
+                                query['orderby'] = 'meta_value';
+                                query['metakey'] = this.itemMetadatum.metadatum.metadata_type_options.search;
+                                query['metatype'] = 'DATETIME';
+                            break;
+                            default:
+                                query['orderby'] = 'meta_value';
+                                query['metakey'] = this.itemMetadatum.metadatum.metadata_type_options.search;
+                        }
                     }
                     
                 } else {
@@ -259,6 +275,7 @@
                 query['fetch_only_meta'] = this.itemMetadatum.metadatum.metadata_type_options.search;
                 query['perpage'] = 12;
                 query['paged'] = this.page;
+                query['order'] = 'asc';
 
                 if (this.selected.length > 0)
                     query['exclude'] = this.selected.map((item) => item.value);
