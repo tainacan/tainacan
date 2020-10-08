@@ -104,7 +104,8 @@
                         v-model="values"
                         :item-metadatum="itemMetadatum"
                         @input="changeValue"
-                        @blur="performValueChange"/>
+                        @blur="performValueChange"
+                        :is-last-metadatum="isLastMetadatum" />
             </div>
         </transition>
     </b-field>
@@ -118,7 +119,8 @@
         props: {
             itemMetadatum: Object,
             isCollapsed: true,
-            hideCollapses: false
+            hideCollapses: false,
+            isLastMetadatum: false
         },
         data(){
             return {

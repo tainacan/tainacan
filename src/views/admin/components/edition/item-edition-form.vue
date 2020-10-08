@@ -485,6 +485,7 @@
                                         :key="index"
                                         :item-metadatum="itemMetadatum"
                                         :is-collapsed="metadataCollapses[index]"
+                                        :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
                                         @changeCollapse="onChangeCollapse($event, index)"/>
 
                                 <!-- Hook for extra Form options -->

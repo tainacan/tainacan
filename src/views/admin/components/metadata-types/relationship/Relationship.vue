@@ -10,8 +10,10 @@
                 @input="onInput"
                 @blur="onBlur"
                 :data="options"
-                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? 100 : 1)"
+                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? null : 1)"
                 autocomplete
+                :remove-on-keys="[]"
+                :dropdown-position="isLastMetadatum ? 'top' :'auto'"
                 attached
                 :placeholder="$i18n.get('instruction_type_existing_item')"
                 :loading="isLoading"
@@ -82,7 +84,8 @@
             itemMetadatum: Object,
             maxtags: undefined,
             disabled: false,
-            allowNew: true
+            allowNew: true,
+            isLastMetadatum: false
         },
         data() {
             return {

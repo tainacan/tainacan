@@ -23,7 +23,6 @@
                     </b-checkbox>
                 </span>
             </div>
-            <pre>{{ firstSelectedIndex }}</pre>
             <div class="field">
                 <b-dropdown
                         :mobile-modal="true"
