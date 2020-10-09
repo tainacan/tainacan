@@ -296,10 +296,10 @@ class Collections extends Repository {
 
 		$this->pre_process( $collection );
 		
+		$this->handle_parent_order_metadata_clone( $collection );
 		$new_collection = parent::insert( $collection );
 
 		$this->handle_core_metadata( $new_collection );
-		$this->handle_childen_order_metadata_clone( $new_collection );
 
 		$collection->register_collection_item_post_type();
 		flush_rewrite_rules( false ); // needed to activate items post type archive url
@@ -400,21 +400,24 @@ class Collections extends Repository {
 		}
 	}
 
-	function handle_childen_order_metadata_clone( &$collection ) {
+	/**
+	 * This function guarantees that children collections has its own clone 
+	 * of "metadata_order" from the parent collention.
+	 * 
+	 * @param \Tainacan\Entities\Collection $collection, children collection
+	 *
+	 * @return void
+	 */
+	function handle_parent_order_metadata_clone( &$collection ) {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
-		
-		if ($collection instanceof Entities\Collection && $collection->get_parent() != 0 ) {
+		if ($collection instanceof Entities\Collection && $collection->get_parent() != 0) {
 			$parent_collection = $this->fetch( $collection->get_parent() );
 			$collection->set_metadata_order($parent_collection->get_metadata_order());
 
-			if ($collection->validate()) {
-				parent::update($collection);
-			} else {
-				throw new \Exception( $collection->get_error() );
+			if (!$collection->validate()) {
+				throw new \Exception( implode(",", $collection->get_errors()) );
 			}
 		}
-
-		return true;
 	}
 
 }
