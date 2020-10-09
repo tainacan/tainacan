@@ -424,7 +424,6 @@ class Metadata extends Repository {
 
 				//var_dump($args);
 				$results = array_merge($results, $this->fetch( $args, 'OBJECT' ));
-
 			}
 
 		} else {
@@ -447,9 +446,8 @@ class Metadata extends Repository {
 			$args['meta_query'][] = $meta_query;
 
 			$results = $this->fetch( $args, 'OBJECT' );
+
 		}
-
-
 
 		return $this->order_result(
 			$results,
@@ -562,6 +560,7 @@ class Metadata extends Repository {
 	 */
 	public function order_result( $result, Entities\Collection $collection, $include_disabled = false ) {
 		$order = $collection->get_metadata_order();
+
 		if ( $order ) {
 			$order = ( is_array( $order ) ) ? $order : unserialize( $order );
 
