@@ -400,7 +400,7 @@ class Collections extends Repository {
 		}
 	}
 
-	function handle_childen_order_metadata_clone( &$collection ) {
+	function handle_childen_order_metadata_clone( $collection ) {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		
 		if ($collection instanceof Entities\Collection && $collection->get_parent() != 0 ) {
@@ -410,11 +410,9 @@ class Collections extends Repository {
 			if ($collection->validate()) {
 				parent::update($collection);
 			} else {
-				throw new \Exception( $collection->get_error() );
+				throw new \Exception( implode("," $collection->get_errors()) );
 			}
 		}
-
-		return true;
 	}
 
 }
