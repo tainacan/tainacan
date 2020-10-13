@@ -235,6 +235,7 @@ class REST_Items_Controller extends REST_Controller {
 				if ( $request->get_method() != 'GET') {
 					$item_arr['thumbnail'] = $item->get_thumbnail();
 					$item_arr['thumbnail_alt'] = get_post_meta( $item->get__thumbnail_id(), '_wp_attachment_image_alt', true );
+					$item_arr['thumbnail_id'] = $item->get__thumbnail_id();
 				}
 
 			} else {
@@ -273,8 +274,10 @@ class REST_Items_Controller extends REST_Controller {
 					$item_arr['current_user_can_edit'] = $item->can_edit();
 					$item_arr['current_user_can_delete'] = $item->can_delete();
 				}
-				if( isset($item_arr['thumbnail']) )
+				if( isset($item_arr['thumbnail']) ) {
 					$item_arr['thumbnail_alt'] = get_post_meta( $item->get__thumbnail_id(), '_wp_attachment_image_alt', true );
+					$item_arr['thumbnail_id'] = $item->get__thumbnail_id();
+				}
 
 				$item_arr['url'] = get_permalink( $item_arr['id'] );
 				$item_arr['exposer_urls'] = \Tainacan\Exposers_Handler::get_exposer_urls(get_rest_url(null, "{$this->namespace}/{$this->rest_base}/{$item->get_id()}/"));
