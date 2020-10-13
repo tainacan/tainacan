@@ -346,9 +346,9 @@ export default {
 						title: this.params.button_labels.frame_title,
 						library: wp.media.query({ 
 							type: 'image', 
-							uploadedTo: null
 						}),
 						multiple: false,
+						autoSelect: true,
 						date: false,
 						priority: 20,
 						suggestedWidth: this.params.width,
@@ -368,10 +368,10 @@ export default {
 		},
 		// Called on both skippedcrop and cropped states
 		setImageFromAttachment: function( attachment ) {
-			wp.media.view.settings.post = {
+			wp.media.view.settings.post.id = {
 				id: this.params.relatedPostId
 			}
-			this.params.attachment = attachment;
+			this.params.attachments = attachment;
 			this.params.onSave(attachment);
 		}
 

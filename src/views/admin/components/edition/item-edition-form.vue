@@ -351,6 +351,20 @@
                                     </a>
                                 </div>
                             </div>
+                            <div 
+                                    v-if="item.thumbnail_id"
+                                    class="thumbnail-alt-input">
+                                <label class="label">{{ $i18n.get('label_thumbnail_alt') }}</label>
+                                <help-button
+                                        :title="$i18n.get('label_thumbnail_alt')"
+                                        :message="$i18n.get('info_thumbnail_alt')"/>
+                                <b-input
+                                        type="textarea" 
+                                        lazy
+                                        :placeholder="$i18n.get('instruction_thumbnail_alt')"
+                                        :value="item.thumbnail_alt ? item.thumbnail_alt : ''"
+                                        @input="onUpdateThumbnailAlt" />
+                            </div>
                         </div>
 
                         <!-- Hook for extra Form options -->
@@ -823,6 +837,7 @@ export default {
                 comment_status: ''
             },
             thumbnail: {},
+            thumbnailAlt: '',
             formErrorMessage: '',
             thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             thumbnailMediaFrame: undefined,
@@ -1377,6 +1392,8 @@ export default {
                         this.updateThumbnail({itemId: this.itemId, thumbnailId: media.id})
                         .then((res) => {
                             this.item.thumbnail = res.thumbnail;
+                            this.item.thumbnail_id = res.thumbnail_id;
+                            this.item.thumbnail_alt = res.thumbnail_alt;
                         })
                         .catch(error => this.$console.error(error));
                     }
@@ -1402,27 +1419,17 @@ export default {
             );
 
         },
-        // openNewAttachmentsMediaFrame() {
-        //     const newAttachmentMediaFrame = new wpMediaFrames.customAttachmentsControl({ 
-        //         existingAttachments: this.getAttachments().map((attachment) => attachment.id),
-        //         button_labels: {
-        //             frame_title: this.$i18n.get('instruction_select_files_to_attach_to_item'),
-        //             frame_button_new: this.$i18n.get('label_attach_to_item'),
-        //             frame_button_update: this.$i18n.get('finish')
-        //         },
-        //         relatedPostId: this.itemId,
-        //         onSelect: (selected) => {
-        //             console.log(selected);
-        //              // Fetch current existing attachments
-        //             this.isLoadingAttachments = true;
-        //             this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
-        //                 .then(() => this.isLoadingAttachments = false)
-        //                 .catch(() => this.isLoadingAttachments = false);
-                    
-        //         }
-        //     });
-        //     setTimeout(() => newAttachmentMediaFrame.openModal(), 1000);
-        // },
+        onUpdateThumbnailAlt(updatedThumbnailAlt) {
+            this.thumbnailAlt = updatedThumbnailAlt;
+
+            this.updateThumbnail({ itemId: this.itemId, thumbnailId: this.item.thumbnail_id, thumbnailAlt: this.thumbnailAlt })
+                .then((res) => {
+                    this.item.thumbnail = res.thumbnail;
+                    this.item.thumbnail_id = res.thumbnail_id;
+                    this.item.thumbnail_alt = res.thumbnail_alt;
+                })
+                .catch(error => this.$console.error(error));
+        },
         toggleCollapseAll() {
             this.collapseAll = !this.collapseAll;
 
@@ -1757,6 +1764,16 @@ export default {
             position: relative;
             left: 90px;
             bottom: 1.0em;
+        }
+
+        .thumbnail-alt-input {
+            .label {
+                font-size: 0.875em;
+                font-weight: 500;
+                margin-left: 15px;
+                margin-bottom: 0;
+                margin-top: 0.15em;
+            }
         }
     }
 
