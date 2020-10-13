@@ -78,7 +78,7 @@
                                 class="tainacan-list-thumbnail"
                                 v-if="item.thumbnail != undefined">
                             <img 
-                                    :alt="$i18n.get('label_thumbnail')"
+                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                     :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">  
                         </div>
                         <div class="list-metadata media-body">

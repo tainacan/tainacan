@@ -450,7 +450,7 @@ export default {
                 renderSlide(slideItem) {
                     return `<div role="listitem" class="swiper-slide tainacan-slide-item">
                             <img 
-                                    alt="` + self.$i18n.get('label_thumbnail') + ': ' + slideItem.title + `"
+                                    alt="` + (slideItem['thumbnail_alt'] ? slideItem['thumbnail_alt'] : (self.$i18n.get('label_thumbnail') + ': ' + slideItem.title) ) + `"
                                     class="thumbnail" 
                                     src="` + (slideItem['thumbnail']['tainacan-medium'] ? slideItem['thumbnail']['tainacan-medium'][0] : (slideItem['thumbnail']['medium']? slideItem['thumbnail']['medium'][0] : self.thumbPlaceholderPath)) + `">  
                         </div>`;

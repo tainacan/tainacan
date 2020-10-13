@@ -92,6 +92,16 @@
                                         :src="thumbPlaceholderPath">
                             </figure>
                         </div>
+                        <br>
+                        <div 
+                                v-if="item.thumbnail_id"
+                                class="thumbnail-alt-input">
+                            <label class="label">{{ $i18n.get('label_thumbnail_alt') }}</label>
+                            <help-button
+                                    :title="$i18n.get('label_thumbnail_alt')"
+                                    :message="$i18n.get('info_thumbnail_alt')"/>
+                            <p> {{ item.thumbnail_alt }}</p>
+                        </div>
                     </div>        
 
                     <!-- Hook for extra Form options -->

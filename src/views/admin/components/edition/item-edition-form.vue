@@ -352,7 +352,7 @@
                                 </div>
                             </div>
                             <div 
-                                    v-if="item.thumbnail_id"
+                                    v-if="form.thumbnail_id"
                                     class="thumbnail-alt-input">
                                 <label class="label">{{ $i18n.get('label_thumbnail_alt') }}</label>
                                 <help-button
@@ -362,7 +362,7 @@
                                         type="textarea" 
                                         lazy
                                         :placeholder="$i18n.get('instruction_thumbnail_alt')"
-                                        :value="item.thumbnail_alt ? item.thumbnail_alt : ''"
+                                        :value="form.thumbnail_alt ? form.thumbnail_alt : ''"
                                         @input="onUpdateThumbnailAlt" />
                             </div>
                         </div>
@@ -834,10 +834,11 @@ export default {
                 status: '',
                 document: '',
                 document_type: '',
-                comment_status: ''
+                comment_status: '',
+                thumbnail_id: '',
+                thumbnail_alt: ''
             },
             thumbnail: {},
-            thumbnailAlt: '',
             formErrorMessage: '',
             thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             thumbnailMediaFrame: undefined,
@@ -1003,6 +1004,7 @@ export default {
             'sendItem',
             'updateItem',
             'updateItemDocument',
+            'updateThumbnailAlt',
             'fetchItemMetadata',
             'fetchItem',
             'cleanItemMetadata',
@@ -1069,6 +1071,8 @@ export default {
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
+                this.form.thumbnail_id = this.item.thumbnail_id;
+                this.form.thumbnail_alt = this.item.thumbnail_alt;
                 
                 this.isLoading = false;
 
@@ -1167,6 +1171,8 @@ export default {
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
+                this.form.thumbnail_id = this.item.thumbnail_id;
+                this.form.thumbnail_alt = this.item.thumbnail_alt;
 
                 // If a parameter was passed with a suggestion of item title, also send a patch to item metadata
                 if (this.$route.query.newitemtitle) {
@@ -1312,9 +1318,10 @@ export default {
             });
         },
         deleteThumbnail() {
-            this.updateThumbnail({itemId: this.itemId, thumbnailId: 0})
+            this.updateThumbnail({ itemId: this.itemId, thumbnailId: 0 })
                 .then(() => {
                     this.item.thumbnail = false;
+                    this.item.thumbnail_id = null;
                 })
                 .catch((error) => {
                     this.$console.error(error);
@@ -1387,15 +1394,19 @@ export default {
                     button_labels: {
                         frame_title: this.$i18n.get('instruction_select_item_thumbnail'),
                     },
+                    thumbnail: this.form.thumbnail_id,
                     relatedPostId: this.itemId,
                     onSave: (media) => {
-                        this.updateThumbnail({itemId: this.itemId, thumbnailId: media.id})
-                        .then((res) => {
-                            this.item.thumbnail = res.thumbnail;
-                            this.item.thumbnail_id = res.thumbnail_id;
-                            this.item.thumbnail_alt = res.thumbnail_alt;
-                        })
-                        .catch(error => this.$console.error(error));
+                        this.updateThumbnail({ itemId: this.itemId, thumbnailId: media.id})
+                            .then((res) => {
+                                this.item.thumbnail = res.thumbnail;
+                                this.item.thumbnail_id = res.thumbnail_id;
+                                this.item.thumbnail_alt = res.thumbnail_alt;
+                                this.form.thumbnail = res.thumbnail;
+                                this.form.thumbnail_id = res.thumbnail_id;
+                                this.form.thumbnail_alt = res.thumbnail_alt;
+                            })
+                            .catch(error => this.$console.error(error));
                     }
                 }
             );
@@ -1420,13 +1431,13 @@ export default {
 
         },
         onUpdateThumbnailAlt(updatedThumbnailAlt) {
-            this.thumbnailAlt = updatedThumbnailAlt;
 
-            this.updateThumbnail({ itemId: this.itemId, thumbnailId: this.item.thumbnail_id, thumbnailAlt: this.thumbnailAlt })
+            this.updateThumbnailAlt({ thumbnailId: this.item.thumbnail_id, thumbnailAlt: updatedThumbnailAlt })
                 .then((res) => {
-                    this.item.thumbnail = res.thumbnail;
                     this.item.thumbnail_id = res.thumbnail_id;
                     this.item.thumbnail_alt = res.thumbnail_alt;
+                    this.form.thumbnail_id = res.thumbnail_id;
+                    this.form.thumbnail_alt = res.thumbnail_alt;
                 })
                 .catch(error => this.$console.error(error));
         },
@@ -1502,6 +1513,8 @@ export default {
                     this.form.document = this.item.document;
                     this.form.document_type = this.item.document_type;
                     this.form.comment_status = this.item.comment_status;
+                    this.form.thumbnail_id = this.item.thumbnail_id;
+                    this.form.thumbnail_alt = this.item.thumbnail_alt;
 
                     if (this.form.document_type != undefined && this.form.document_type == 'url')
                         this.urlLink = this.form.document;
