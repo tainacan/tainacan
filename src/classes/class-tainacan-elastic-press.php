@@ -57,6 +57,29 @@ class Elastic_Press {
 				unset( $formatted_args['query']['bool']['should'] );
 				unset( $formatted_args["query"]["bool"]["must"][0]["multi_match"]["type"] );
 			}
+
+			/**
+			 * @TODO
+			 * Elasticsearch is not good a substring matches similar to SQL like.
+			 * here we replace `match_phrase` with` wildcard`, but this is not an efficient operation.
+			 */
+			if ( ! empty( $formatted_args['post_filter']['bool']['must'] ) ) {
+				$array_must = $formatted_args['post_filter']['bool']['must'];
+				for($i = 0; $i < count($array_must); $i++ ) {
+					$el_must = $array_must[$i];
+					if( ! empty($el_must['bool']['must']) ) {
+						$array_must_nested = $el_must['bool']['must'];
+						for($j = 0; $j < count($array_must_nested); $j++ ) {
+							if ( isset ($array_must_nested[$j]['match_phrase'] ) ) {
+								$formatted_args['post_filter']['bool']['must'][$i]['bool']['must'][$j]['wildcard'] = 
+								array_map( function($match) { return "*$match*"; } ,$array_must_nested[$j]['match_phrase']);
+								unset($formatted_args['post_filter']['bool']['must'][$i]['bool']['must'][$j]['match_phrase']);
+							}
+						}
+					}
+				}
+			}
+
 			return $formatted_args;
 		 } );
 		 
@@ -134,7 +157,7 @@ class Elastic_Press {
 			$args['ep_integrate'] = true;
 
 			add_action('ep_valid_response', function ( $response, $query, $query_args ) {
-				$aggregations = $response['aggregations'];
+				$aggregations = isset($response['aggregations']) ? $response['aggregations'] : [];
 				$this->last_aggregations = $this->format_aggregations($aggregations);
 			}, 10, 3);
 
