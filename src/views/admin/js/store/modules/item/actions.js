@@ -279,7 +279,7 @@ export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId,
     });
 };
 
-export const updateThumbnail = ({ commit }, { itemId, thumbnailId }) => {
+export const updateThumbnail = ({ commit }, { itemId, thumbnailId, thumbnailAlt }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/items/' + itemId, {
             _thumbnail_id: thumbnailId
@@ -290,6 +290,21 @@ export const updateThumbnail = ({ commit }, { itemId, thumbnailId }) => {
             resolve( item );
         }).catch( error => { 
             reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+        });
+
+    }); 
+};
+
+export const updateThumbnailAlt = ({ commit }, { thumbnailId, thumbnailAlt }) => {
+    return new Promise((resolve, reject) => {
+        axios.wp.patch('/media/' + thumbnailId + '?force=true', {
+            alt_text: thumbnailAlt
+        }).then( res => {
+            let thumbnail = res.data;
+            commit('setLastUpdated');
+            resolve( thumbnail );
+        }).catch( error => { 
+            reject( error );
         });
 
     }); 

@@ -169,6 +169,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_slug'                                     => __( 'Slug', 'tainacan' ),
 	'label_image'                                    => __( 'Image', 'tainacan' ),
 	'label_thumbnail'                                => __( 'Thumbnail', 'tainacan' ),
+	'label_thumbnail_alt'                            => __( 'Thumbnail alternative text', 'tainacan' ),
 	'label_empty_thumbnail'                          => __( 'Empty Thumbnail', 'tainacan' ),
 	'label_empty_term_image'                         => __( 'Empty Term Image', 'tainacan' ),
 	'label_parent_collection'                        => __( 'Parent collection', 'tainacan' ),
@@ -541,6 +542,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_click_error_to_go_to_metadata'		 => __( 'Click on the error to go to the metadata:', 'tainacan'),
 	'instruction_click_to_see_or_search'			 => __( 'Click to see options or type to search...', 'tainacan'),
 	'instruction_select_one_or_more_collections'	 => __( 'Select one or more collections', 'tainacan'),
+	'instruction_thumbnail_alt'					 => __( 'Type here a descriptive text for the image thumbnail...', 'tainacan'),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every published item, including those visible only to editors.', 'tainacan' ),
@@ -749,7 +751,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_thumbnail_custom'							 => __( 'Upload the desired image for the thumbnail', 'tainacan'),
 	'info_thumbnail_default_from_document' 			 => __( 'A thumbnail will be automatically generated from the submitted document file', 'tainacan'),
 	'info_submission_processing'		 			 => __( 'Please, wait while the submission is being processed', 'tainacan'),
-	'info_submission_uploading'		 			 	=> __( 'Please, wait while files are uploaded', 'tainacan'),
+	'info_submission_uploading'	  			 		 => __( 'Please, wait while files are uploaded', 'tainacan'),
+	'info_thumbnail_alt'			 			 	 => __( 'The alternative text of the thumbnail is visible only by screen readers and should be usefull for users with visual impariments.', 'tainacan'),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),
