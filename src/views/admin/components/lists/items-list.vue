@@ -62,7 +62,7 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="collectionId && isOnTrash"
-                            @click="untrashSelectedItems()"
+                            @click="untrashSelectedItems();"
                             aria-role="listitem">
                         {{ $i18n.get('label_untrash_selected_items') }}
                     </b-dropdown-item>
@@ -1308,6 +1308,7 @@ export default {
                                 groupId: groupId
                             }).then(() => {
                                 this.$eventBusSearch.loadItems();
+                                this.$root.$emit('openProcessesPopup');
                             });
                         });
                     }
@@ -1339,6 +1340,7 @@ export default {
                                     groupId: groupId
                                 }).then(() => {
                                     this.$eventBusSearch.loadItems();
+                                    this.$root.$emit('openProcessesPopup');
                                 });
                             } else {
                                 this.trashItemsInBulk({
@@ -1346,6 +1348,7 @@ export default {
                                     groupId: groupId
                                 }).then(() => {
                                     this.$eventBusSearch.loadItems();
+                                    this.$root.$emit('openProcessesPopup');
                                 });
                             }
                         });
