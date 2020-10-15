@@ -320,6 +320,14 @@
                     v-html="formHooks['item']['end-right'].join('')"/>
             </template>
 
+            <!-- Google ReCAPTCHA -->
+            <template v-if="useCaptcha">
+                <div 
+                        class="g-recaptcha"
+                        :data-sitekey="captchaSiteKey" />
+                <br>
+            </template>
+
             <footer class="form-submission-footer">
 
                 <button
@@ -492,7 +500,8 @@ export default {
             'setItemSubmissionMetadata',
             'submitItemSubmission',
             'finishItemSubmission',
-            'clearItemSubmission'
+            'clearItemSubmission',
+            'verifyCaptcha'
         ]),
         ...mapGetters('item',[
             'getItemSubmission',
@@ -508,6 +517,25 @@ export default {
 
             // Puts loading on Item edition
             this.isSubmitting = true;
+
+            // Checks captcha value before submitting to the api
+            if (this.useCaptcha) {
+                this.verifyCaptcha({ secret: this.captchaSecretKey, response: grecaptcha.getResponse()})
+                    .then(() => {
+                        this.performItemSubmission();
+                    })
+                    .catch((error) => {
+                        this.formErrorMessage = error;
+
+                        this.isSubmitting = false;
+                        this.hasSentForm = false;
+                        this.isUploading = false;
+                    });
+            } else {
+                this.performItemSubmission();
+            }
+        },
+        performItemSubmission() {
 
             let data = this.form;
             this.fillExtraFormData(data);

@@ -178,6 +178,13 @@ function tainacan_blocks_register_tainacan_item_submission_form(){
 		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
 	);
 
+	wp_register_script(
+		'google-recaptcha-script',
+		'https://www.google.com/recaptcha/api.js',
+		[], false, true 
+	);
+	wp_enqueue_script('google-recaptcha-script');
+
 	wp_register_style(
 		'item-submission-form',
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-item-submission-form.css',

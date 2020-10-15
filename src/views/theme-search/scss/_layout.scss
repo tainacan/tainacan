@@ -142,6 +142,16 @@
 			min-width: 13.75%;
 			min-width: 13.75vw;
 		}
+		&.is-filters-menu-fixed {
+
+			.items-list-area {
+				margin-left: var(--tainacan-filter-menu-width-theme) !important;
+			}
+			.filters-menu:not(.filters-menu-modal) {
+				position: fixed;
+				top: 0px !important;
+			}
+		}
 	}
 
 	@media screen and (max-width: 768px) {

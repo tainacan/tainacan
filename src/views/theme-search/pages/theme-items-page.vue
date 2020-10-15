@@ -2,6 +2,7 @@
     <div 
             :class="{
                 'is-filters-menu-open': !hideFilters && isFiltersModalActive && !openAdvancedSearch,
+                'is-filters-menu-fixed': isFiltersListFixed,
                 'repository-level-page': isRepositoryLevel,
                 'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
             }"
@@ -447,6 +448,7 @@
                 
                 <h3 
                         id="items-list-landmark"
+                        ref="items-list-landmark"
                         class="sr-only">
                     {{ $i18n.get('label_items_list') }}
                 </h3>
@@ -603,7 +605,9 @@
                 metadataSearchCancel: undefined,
                 latestNonFullscreenViewMode: '',
                 isMobile: false,
-                initialItemPosition: null
+                initialItemPosition: null,
+                isFiltersListFixed: false,
+                intersectionObserver: null
             }
         },
         computed: {
@@ -773,9 +777,27 @@
                 this.hideFiltersOnMobile();
                 window.addEventListener('resize', this.hideFiltersOnMobile);
             }
+            
+            // Uses Intersection Observer o see if the top of the list is on screen and fix filters list position
+            if (!this.filtersAsModal &&
+                !this.hideFilters &&
+                this.$refs['items-list-landmark'] &&
+                "IntersectionObserver" in window &&
+                "IntersectionObserverEntry" in window &&
+                "isIntersecting" in window.IntersectionObserverEntry.prototype &&
+                "boundingClientRect" in window.IntersectionObserverEntry.prototype) {
+                this.intersectionObserver = new IntersectionObserver(entries => {
+                    this.isFiltersListFixed = entries[0] && (!entries[0].isIntersecting) && (entries[0].boundingClientRect.y < 0);
+                });
+                this.intersectionObserver.observe(this.$refs['items-list-landmark']);
+            }
         },
         beforeDestroy() {
             this.removeEventListeners();
+            
+            // Removes intersection listener, if it was set up
+            if (this.intersectionObserver)
+                this.intersectionObserver.disconnect();
 
             // Cancels previous Metadata Request
             if (this.metadataSearchCancel != undefined)

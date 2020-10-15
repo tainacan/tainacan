@@ -385,3 +385,20 @@ export const finishItemSubmission = ({ commit }, { itemSubmission, fakeItemId })
             });
     }); 
 }
+
+export const verifyCaptcha = ({ commit }, { secret, response }) => {
+    return new Promise((resolve, reject) => {
+
+        // New axios instance
+        const googleReCaptcha = axios.axiosCreate({
+            baseURL: 'https://www.google.com/recaptcha/api/'
+        });
+        
+        googleReCaptcha.post('/verify/', { secret: secret, response: response })
+            .then( res => {
+                resolve( res.data );
+            }).catch( error => {
+                reject(error);
+            });
+    }); 
+}
