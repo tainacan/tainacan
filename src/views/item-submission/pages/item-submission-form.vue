@@ -321,7 +321,7 @@
             </template>
 
             <!-- Google ReCAPTCHA -->
-            <template v-if="useCaptcha">
+            <template v-if="captchaSiteKey">
                 <div 
                         class="g-recaptcha"
                         :data-sitekey="captchaSiteKey" />
@@ -422,9 +422,7 @@ export default {
         thumbnailSectionLabel: String,
         attachmentsSectionLabel: String,
         metadataSectionLabel: String,
-        useCaptcha: Boolean,
-        captchaSiteKey: String,
-        captchaSecretKey: String
+        captchaSiteKey: String
     },
     data(){
         return {
@@ -500,8 +498,7 @@ export default {
             'setItemSubmissionMetadata',
             'submitItemSubmission',
             'finishItemSubmission',
-            'clearItemSubmission',
-            'verifyCaptcha'
+            'clearItemSubmission'
         ]),
         ...mapGetters('item',[
             'getItemSubmission',
@@ -518,25 +515,6 @@ export default {
             // Puts loading on Item edition
             this.isSubmitting = true;
 
-            // Checks captcha value before submitting to the api
-            if (this.useCaptcha) {
-                this.verifyCaptcha({ secret: this.captchaSecretKey, response: grecaptcha.getResponse()})
-                    .then(() => {
-                        this.performItemSubmission();
-                    })
-                    .catch((error) => {
-                        this.formErrorMessage = error;
-
-                        this.isSubmitting = false;
-                        this.hasSentForm = false;
-                        this.isUploading = false;
-                    });
-            } else {
-                this.performItemSubmission();
-            }
-        },
-        performItemSubmission() {
-
             let data = this.form;
             this.fillExtraFormData(data);
             this.updateExtraFormData(data);
@@ -545,7 +523,11 @@ export default {
             // Clear errors so we don't have them duplicated from api
             eventBusItemMetadata.errors = [];
 
-            this.submitItemSubmission({ itemSubmission: this.itemSubmission, itemSubmissionMetadata: this.itemSubmissionMetadata })
+            this.submitItemSubmission({ 
+                    itemSubmission: this.itemSubmission,
+                    itemSubmissionMetadata: this.itemSubmissionMetadata,
+                    captchaResponse: grecaptcha ? grecaptcha.getResponse() : null 
+                })
                 .then((fakeItemId) => {
 
                     this.isUploading = true;

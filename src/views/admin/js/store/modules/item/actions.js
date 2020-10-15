@@ -335,7 +335,7 @@ export const deleteGroupFromItemSubmissionMetadatum = ({ commit }, { metadatum_i
     commit('deleteGroupFromItemSubmissionMetadatum', { metadatum_id: metadatum_id, child_group_index: child_group_index });
 }
 
-export const submitItemSubmission = ({ commit }, { itemSubmission, itemSubmissionMetadata }) => {
+export const submitItemSubmission = ({ commit }, { itemSubmission, itemSubmissionMetadata, captchaResponse }) => {
     return new Promise((resolve, reject) => {
 
         let item = JSON.parse(JSON.stringify(itemSubmission)); // Use a copy as the next request will need document, attchment and thumbnail
@@ -346,6 +346,9 @@ export const submitItemSubmission = ({ commit }, { itemSubmission, itemSubmissio
             else if (key === 'document' && itemSubmission.document_type === 'attachment' )
                 delete item[key];
         }
+
+        if (captchaResponse)
+            item['g-recaptcha-response'] = captchaResponse;
 
         axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission', {...item, metadata: itemSubmissionMetadata } )
             .then( res => {
@@ -382,23 +385,6 @@ export const finishItemSubmission = ({ commit }, { itemSubmission, fakeItemId })
                     errors: error.response.data.errors,
                     error_message: error.response.data.error_message
                 });
-            });
-    }); 
-}
-
-export const verifyCaptcha = ({ commit }, { secret, response }) => {
-    return new Promise((resolve, reject) => {
-
-        // New axios instance
-        const googleReCaptcha = axios.axiosCreate({
-            baseURL: 'https://www.google.com/recaptcha/api/'
-        });
-        
-        googleReCaptcha.post('/verify/', { secret: secret, response: response })
-            .then( res => {
-                resolve( res.data );
-            }).catch( error => {
-                reject(error);
             });
     }); 
 }

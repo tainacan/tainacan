@@ -4,7 +4,6 @@ import Buefy from 'buefy';
 import VTooltip from 'v-tooltip';
 import cssVars from 'css-vars-ponyfill';
 import VueTheMask from 'vue-the-mask';
-import qs from 'qs';
 
 // Metadata Types
 import Text from '../../admin/components/metadata-types/text/Text.vue';
@@ -116,9 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 thumbnailSectionLabel: '',
                 attachmentsSectionLabel: '',
                 metadataSectionLabel: '',
-                useCaptcha: false,
-                captchaSiteKey: '',
-                captchaSecretKey: ''
+                captchaSiteKey: ''
             },
             beforeMount () {
                 // Collection source settings
@@ -166,12 +163,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.enabledMetadata = this.$el.attributes['enabled-metadata'].value.split(',');
 
                 // Captcha
-                if (this.$el.attributes['use-captcha'] != undefined)
-                    this.useCaptcha = this.isParameterTrue('use-captcha');
                 if (this.$el.attributes['captcha-site-key'] != undefined)
                     this.captchaSiteKey = this.$el.attributes['captcha-site-key'].value;
-                if (this.$el.attributes['captcha-secret-key'] != undefined)
-                    this.captchaSecretKey = this.$el.attributes['captcha-secret-key'].value;
+
             },
             methods: {
                 isParameterTrue(parameter) {
