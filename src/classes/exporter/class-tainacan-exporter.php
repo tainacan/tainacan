@@ -681,14 +681,15 @@ abstract class Exporter {
 		$upload_dir = trailingslashit( $upload_dir_info['basedir'] );
 		$upload_url = trailingslashit( $upload_dir_info['baseurl'] );
 		$exporter_folder = 'tainacan/exporter';
+		$file_suffix = "{$exporter_folder}/{$prefix}_{$key}";
 
 		if (!is_dir($upload_dir . $exporter_folder)) {
 			if (!mkdir($upload_dir . $exporter_folder)) {
 				return false;
 			}
 		}
-		$file_name = "$upload_dir$exporter_folder/$prefix$key";
-		$file_url = "$upload_url$exporter_folder/$prefix$key";
+		$file_name = "{$upload_dir}{$file_suffix}";
+		$file_url  = "{$upload_url}{$file_suffix}";
 		$this->output_files[$key] = [
 			'filename' => $file_name,
 			'url' => $file_url
@@ -716,7 +717,7 @@ abstract class Exporter {
 	* Method called by Exporters classes to set accepted mapping method
 	* 
 	* @param string $method THe accepted methods. any or list. If list, Exporter must also inform 
-	* default mapper and the list of accepted mappers 
+	* default mapper and the list of accepted mappers
 	* @param string $default_mapping The default mapping method. Required if list is chosen 
 	* @param array $list List of accepted mapping methods 
 	*/
