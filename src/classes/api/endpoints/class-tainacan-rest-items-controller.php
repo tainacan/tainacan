@@ -862,7 +862,7 @@ class REST_Items_Controller extends REST_Controller {
 		$item = $item_metadata->get_item();
 		$collection = $this->collections_repository->fetch($collection_id);
 		if ( $item_metadata->validate() ) {
-			if($item->can_edit() || $collection->get_submission_anonymous_user()) {
+			if($item->can_edit() || $collection->get_submission_anonymous_user() == 'yes') {
 				return $this->item_metadata->update( $item_metadata );
 			}
 			elseif($item_metadata->get_metadatum()->get_accept_suggestion()) {
