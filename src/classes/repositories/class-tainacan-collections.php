@@ -231,9 +231,9 @@ class Collections extends Repository {
 			],
 			'submission_use_recaptcha' => [
 				'map'                    => 'meta',
-				'title'                  => __( 'Allows item submission use recaptcha', 'tainacan' ),
+				'title'                  => __( 'Use reCAPTCHA verification on submission form', 'tainacan' ),
 				'type'                   => 'string',
-				'description'            => __( 'If enabled, the collection allows item submission using a recaptcha', 'tainacan' ),
+				'description'            => __( 'If enabled, the collection allows item submission using a reCAPTCHA', 'tainacan' ),
 				'default'                => 'no',
 				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no

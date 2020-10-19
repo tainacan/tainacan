@@ -320,7 +320,7 @@
                     v-html="formHooks['item']['end-right'].join('')"/>
             </template>
 
-            <!-- Google ReCAPTCHA -->
+            <!-- Google reCAPTCHA -->
             <template v-if="useCaptcha == 'yes'">
                 <div 
                         class="g-recaptcha"
