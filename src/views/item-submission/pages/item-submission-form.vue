@@ -527,7 +527,7 @@ export default {
             this.submitItemSubmission({ 
                     itemSubmission: this.itemSubmission,
                     itemSubmissionMetadata: this.itemSubmissionMetadata,
-                    captchaResponse: grecaptcha ? grecaptcha.getResponse() : null 
+                    captchaResponse: (this.useCaptcha == 'yes' && grecaptcha) ? grecaptcha.getResponse() : null 
                 })
                 .then((fakeItemId) => {
 
