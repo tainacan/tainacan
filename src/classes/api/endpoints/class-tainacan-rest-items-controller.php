@@ -1088,7 +1088,7 @@ class REST_Items_Controller extends REST_Controller {
 			$captcha_data = $body['g-recaptcha-response'];
 			if (!$captcha_data) {
 				return new \WP_REST_Response([
-					'error_message' => __('recaptcha data it is need.', 'tainacan'),
+					'error_message' => __('reCAPTCHA data it is need.', 'tainacan'),
 					'errors'        => []
 				], 400);
 			}
@@ -1098,7 +1098,7 @@ class REST_Items_Controller extends REST_Controller {
 				return true;
 			} else {
 				return new \WP_REST_Response([
-					'error_message' => __('recaptcha not valid.', 'tainacan'),
+					'error_message' => __('reCAPTCHA not valid.', 'tainacan'),
 					'errors'        => []
 				], 400);
 			}

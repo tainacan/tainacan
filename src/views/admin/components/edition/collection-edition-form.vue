@@ -524,7 +524,7 @@
                                 </div>
                             </b-field>
 
-                            <!-- Submission process uses ReCAPTCHA ------------------------ --> 
+                            <!-- Submission process uses reCAPTCHA ------------------------ --> 
                             <b-field
                                     :addons="false" 
                                     :label="$i18n.getHelperTitle('collections', 'submission_use_recaptcha')"
