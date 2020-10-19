@@ -524,6 +524,24 @@
                                 </div>
                             </b-field>
 
+                            <!-- Submission process uses ReCAPTCHA ------------------------ --> 
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.getHelperTitle('collections', 'submission_use_recaptcha')"
+                                    :type="editFormErrors['submission_use_recaptcha'] != undefined ? 'is-danger' : ''" 
+                                    :message="editFormErrors['submission_use_recaptcha'] != undefined ? editFormErrors['submission_use_recaptcha'] : ''">
+                                &nbsp;
+                                <b-switch
+                                        id="tainacan-checkbox-submission-use-recaptcha" 
+                                        size="is-small"
+                                        true-value="yes" 
+                                        false-value="no"
+                                        v-model="form.submission_use_recaptcha" />
+                                <help-button 
+                                        :title="$i18n.getHelperTitle('collections', 'submission_use_recaptcha')" 
+                                        :message="$i18n.getHelperMessage('collections', 'submission_use_recaptcha')"/>
+                            </b-field>
+
                         </div>
                     </transition>
 
@@ -628,7 +646,8 @@ export default {
                 allows_submission: 'no',
                 submission_default_status: 'draft',
                 submission_anonymous_user: 'no',
-                hide_items_thumbnail_on_lists: ''
+                hide_items_thumbnail_on_lists: '',
+                submission_use_recaptcha: 'no'
             },
             thumbnail: {},
             cover: {},
@@ -725,6 +744,7 @@ export default {
                 this.form.allows_submission = this.collection.allows_submission;
                 this.form.submission_anonymous_user = this.collection.submission_anonymous_user;
                 this.form.submission_default_status = this.collection.submission_default_status;
+                this.form.submission_use_recaptcha = this.collection.submission_use_recaptcha;
                 this.form.hide_items_thumbnail_on_lists = this.collection.hide_items_thumbnail_on_lists;
 
                 // Generates CoverPage from current cover_page_id info
@@ -825,6 +845,7 @@ export default {
                 allows_submission: this.form.allows_submission,
                 submission_anonymous_user: this.form.submission_anonymous_user,
                 submission_default_status: this.form.submission_default_status,
+                submission_use_recaptcha: this.form.submission_use_recaptcha,
                 allow_comments: this.form.allow_comments,
                 hide_items_thumbnail_on_lists: this.form.hide_items_thumbnail_on_lists
             };
@@ -851,6 +872,7 @@ export default {
                     this.form.allows_submission = this.collection.allows_submission;
                     this.form.submission_anonymous_user = this.collection.submission_anonymous_user;
                     this.form.submission_default_status = this.collection.submission_default_status;
+                    this.form.submission_use_recaptcha = this.collection.submission_use_recaptcha;
                     this.form.hide_items_thumbnail_on_lists = this.collection.hide_items_thumbnail_on_lists;
                     
                     this.isLoading = false;
@@ -908,6 +930,7 @@ export default {
                 this.form.allows_submission = this.collection.allows_submission;
                 this.form.submission_anonymous_user = this.collection.submission_anonymous_user;
                 this.form.submission_default_status = this.collection.submission_default_status;
+                this.form.submission_use_recaptcha = this.collection.submission_use_recaptcha;
                 this.form.hide_items_thumbnail_on_lists = this.collection.hide_items_thumbnail_on_lists;
 
                 // Pre-fill status with publish to incentivate it

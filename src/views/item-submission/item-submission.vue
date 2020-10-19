@@ -18,6 +18,7 @@
             :thumbnail-section-label="$root.thumbnailSectionLabel"
             :attachments-section-label="$root.attachmentsSectionLabel"
             :metadata-section-label="$root.metadataSectionLabel"
+            :use-captcha="$root.useCaptcha"
             :captcha-site-key="$root.captchaSiteKey" />
 </template>
 

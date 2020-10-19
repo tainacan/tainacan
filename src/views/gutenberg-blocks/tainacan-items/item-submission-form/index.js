@@ -143,6 +143,10 @@ registerBlockType('tainacan/item-submission-form', {
             type: String,
             default: __( 'Metadata', 'tainacan' )
         },
+        useCaptcha: {
+            type: String,
+            default: 'no'
+        },
         captchaSiteKey: {
             type: String,
             default: ''
@@ -184,8 +188,12 @@ registerBlockType('tainacan/item-submission-form', {
             attachmentsSectionLabel,
             thumbnailSectionLabel,
             metadataSectionLabel,
+            useCaptcha,
             captchaSiteKey
         } = attributes;
+
+        captchaSiteKey = tainacan_plugin['item_submission_captcha_site_key'];
+        setAttributes({ captchaSiteKey: captchaSiteKey });
 
         const fontSizes = [
             {
@@ -764,10 +772,13 @@ registerBlockType('tainacan/item-submission-form', {
                 { isCollectionModalOpen ? 
                     <CollectionModal
                         filterOptionsBy={ { allows_submission: 'yes' } }
-                        existingCollectionId={ collectionId } 
-                        onSelectCollection={ ({ collectionId }) => {
+                        existingCollectionId={ collectionId }
+                        existingUseCaptcha={ useCaptcha } 
+                        onSelectCollection={ ({ collectionId, useCaptcha }) => {
                             collectionId = collectionId;
+                            useCaptcha = useCaptcha;
                             setAttributes({
+                                useCaptcha: useCaptcha,
                                 collectionId: collectionId,
                                 isCollectionModalOpen: false
                             });
@@ -808,6 +819,7 @@ registerBlockType('tainacan/item-submission-form', {
             enabledMetadata,
             sentFormHeading,
             sentFormMessage,
+            useCaptcha,
             captchaSiteKey
         } = attributes;
         
@@ -844,7 +856,8 @@ registerBlockType('tainacan/item-submission-form', {
                     thumbnail-section-label={ thumbnailSectionLabel }
                     attachments-section-label={ attachmentsSectionLabel }
                     metadata-section-label={ metadataSectionLabel }
-                    captcha-site-key={ captchaSiteKey } >
+                    captcha-site-key={ captchaSiteKey }
+                    use-captcha={ useCaptcha } >
             </div>
         </div>
     }

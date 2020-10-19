@@ -321,7 +321,7 @@
             </template>
 
             <!-- Google ReCAPTCHA -->
-            <template v-if="captchaSiteKey">
+            <template v-if="useCaptcha == 'yes'">
                 <div 
                         class="g-recaptcha"
                         :data-sitekey="captchaSiteKey" />
@@ -422,6 +422,7 @@ export default {
         thumbnailSectionLabel: String,
         attachmentsSectionLabel: String,
         metadataSectionLabel: String,
+        useCaptcha: String,
         captchaSiteKey: String
     },
     data(){
