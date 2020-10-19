@@ -38,7 +38,8 @@ class Collection extends Entity {
 		$allows_submission,
 		$hide_items_thumbnail_on_lists,
 		$submission_anonymous_user,
-		$submission_default_status;
+		$submission_default_status,
+		$submission_use_recaptcha;
 
 	/**
 	 * {@inheritDoc}
@@ -584,6 +585,15 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * Checks if submission items use a recaptcha.
+	 *
+	 * @return string "yes"|"no"
+	 */
+	function get_submission_use_recaptcha() {
+		return $this->get_mapped_property( 'submission_use_recaptcha' );
+	}
+
+	/**
 	 * Set the collection name
 	 *
 	 * @param [string] $value
@@ -814,6 +824,17 @@ class Collection extends Entity {
 	 */
 	function set_hide_items_thumbnail_on_lists( $value ) {
 		$this->set_mapped_property( 'hide_items_thumbnail_on_lists', $value );
+	}
+
+	/**
+	 * Set if submission items are use recaptcha.
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_submission_use_recaptcha( $value ) {
+		return $this->set_mapped_property( 'submission_use_recaptcha', $value);
 	}
 
 	/**

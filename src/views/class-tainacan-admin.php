@@ -26,6 +26,7 @@ class Admin {
 		add_action( 'init', array( &$this, 'register_user_meta' ) );
 		add_action( 'after_setup_theme', array( &$this, 'load_theme_files'));
 
+		add_action( 'admin_init', array( &$this, 'register_user_setting') );
 	}
 
 	function add_admin_menu() {
@@ -55,6 +56,15 @@ class Admin {
 			'tnc_rep_edit_users',
 			'tainacan_roles',
 			array( &$this, 'roles_page' )
+		);
+
+		add_submenu_page(
+			$this->menu_slug,
+			__('Item Submission', 'tainacan'),
+			__('Item Submission', 'tainacan'),
+			'manage_options',
+			'tainacan_item_submission',
+			array( &$this, 'item_submission' )
 		);
 
 		add_action( 'load-' . $page_suffix, array( &$this, 'load_admin_page' ) );
@@ -319,6 +329,20 @@ class Admin {
 		register_meta( 'user', 'tainacan_prefs', $args );
 	}
 
+	function register_user_setting() {
+		register_setting(
+			'tainacan_item_submission_recaptcha',
+			'tnc_option_recaptch_site_key',
+			'sanitize_text_field'
+		);
+	
+		register_setting(
+			'tainacan_item_submission_recaptcha',
+			'tnc_option_recaptch_secret_key',
+			'sanitize_text_field'
+		);
+	}
+
 	function ajax_sample_permalink(){
 
 		$id = $_POST['post_id'];
@@ -380,5 +404,12 @@ class Admin {
 		$check = new System_Check();
 		$check->admin_page();
 	}
+
+	public function item_submission() {
+		require_once('item-submission/class-tainacan-item-submission.php');
+		$submission = new Item_Submission();
+		$submission->admin_page();
+	}
+
 }
 

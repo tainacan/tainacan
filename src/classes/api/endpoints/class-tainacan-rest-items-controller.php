@@ -887,6 +887,11 @@ class REST_Items_Controller extends REST_Controller {
 		$item          = json_decode($request->get_body(), true);
 		$metadata = $item['metadata'];
 
+		$response_recaptcha = $this->submission_item_check_recaptcha($request);
+		if ($response_recaptcha !== true) {
+			return $response_recaptcha;
+		}
+
 		if(empty($item) || empty($metadata)) {
 			return new \WP_REST_Response([
 				'error_message' => __('Body can not be empty.', 'tainacan'),
@@ -1074,6 +1079,31 @@ class REST_Items_Controller extends REST_Controller {
 			return current_user_can($collection->get_items_capabilities()->edit_posts);
 		}
 		return false;
+	}
+
+	private function submission_item_check_recaptcha( $request ) {
+		$collection = $this->collections_repository->fetch($request['collection_id']);
+		$body = json_decode($request->get_body(), true);
+		if ($collection instanceof Entities\Collection && $collection->get_submission_use_recaptcha() == 'yes') {
+			$captcha_data = $body['g-recaptcha-response'];
+			if (!$captcha_data) {
+				return new \WP_REST_Response([
+					'error_message' => __('recaptcha data it is need.', 'tainacan'),
+					'errors'        => []
+				], 400);
+			}
+			$secret_key = get_option("tnc_option_recaptch_secret_key");
+			$response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=".$captcha_data."&remoteip=".$_SERVER['REMOTE_ADDR']);
+			if ($response.success) {
+				return true;
+			} else {
+				return new \WP_REST_Response([
+					'error_message' => __('recaptcha not valid.', 'tainacan'),
+					'errors'        => []
+				], 400);
+			}
+		}
+		return true;
 	}
 
 	/**
