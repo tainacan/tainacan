@@ -568,7 +568,13 @@ abstract class Exporter {
 
 		$processed_items = $this->get_items($current_collection_item, $collection_definition);
 		foreach ($processed_items as $processed_item) {
+		    $init = microtime(true);
 			$this->process_item( $processed_item['item'], $processed_item['metadata'] );
+			$final = microtime(true);
+			$total = ($final - $init);
+			$time_log = sprintf( __('Processed in %f seconds', 'tainacan'), $total );
+
+            $this->add_log($time_log);
 		}
 
 		$this->process_footer($current_collection_item, $collection_definition);
@@ -617,7 +623,6 @@ abstract class Exporter {
 			$collection_definition['total_items'] = $items->found_posts;
 			$this->update_current_collection($collection_definition);
 		}
-		
 		
 		$data = [];
 		while ($items->have_posts()) {
