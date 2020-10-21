@@ -273,6 +273,9 @@ class REST_Items_Controller extends REST_Controller {
 				if ( $request['context'] === 'edit' ) {
 					$item_arr['current_user_can_edit'] = $item->can_edit();
 					$item_arr['current_user_can_delete'] = $item->can_delete();
+					$item_arr['nonces'] = array(
+						'update-post_' . $item->get_id() => wp_create_nonce('update-post_' . $item->get_id())
+					);
 				}
 				if( isset($item_arr['thumbnail']) ) {
 					$item_arr['thumbnail_alt'] = get_post_meta( $item->get__thumbnail_id(), '_wp_attachment_image_alt', true );

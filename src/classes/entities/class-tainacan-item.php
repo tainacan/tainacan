@@ -93,6 +93,8 @@ class Item extends Entity {
 		}
 
 		$attachments_query = [
+			'orderby'			=> 'menu_order',
+			'order' 			=> 'ASC',
 			'post_type'     	=> 'attachment',
 			'posts_per_page' 	=> -1,
 			'post_parent'   	=> $item_id,

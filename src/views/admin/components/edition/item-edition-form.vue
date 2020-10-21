@@ -531,25 +531,20 @@
                                 </template>
 
                                 <div v-if="item != undefined && item.id != undefined">
-                                    <br>
-                                    <button
-                                            style="margin-left: calc(var(--tainacan-one-column) + 12px)"
-                                            type="button"
-                                            class="button is-secondary"
-                                            @click.prevent="attachmentMediaFrame.openFrame($event)"
-                                            :disabled="isLoadingAttachments">
-                                        {{ $i18n.get("label_edit_attachments") }}
-                                    </button>
-<!--                                     
-                                    <button
-                                            style="margin-left: calc(var(--tainacan-one-column) + 12px)"
-                                            type="button"
-                                            class="button is-secondary"
-                                            @click.prevent="openNewAttachmentsMediaFrame"
-                                            :disabled="isLoadingAttachments">
-                                        {{ $i18n.get("label_edit_attachments") + ' 2' }}
-                                    </button>
-                                     -->
+                                    <div class="attachments-list-heading">
+                                        <button
+                                                style="margin-left: calc(var(--tainacan-one-column) + 12px)"
+                                                type="button"
+                                                class="button is-secondary"
+                                                @click.prevent="attachmentMediaFrame.openFrame($event)"
+                                                :disabled="isLoadingAttachments">
+                                            {{ $i18n.get("label_edit_attachments") }}
+                                        </button>
+                                        <p>
+                                            {{ $i18n.get("info_edit_attachments") }}
+                                        </p>
+                                    </div>
+
                                     <attachments-list
                                             v-if="item != undefined && item.id != undefined"
                                             :item="item"
@@ -1417,8 +1412,9 @@ export default {
                         frame_title: this.$i18n.get('instruction_select_files_to_attach_to_item'),
                         frame_button: this.$i18n.get('label_attach_to_item'),
                     },
+                    nonce: this.item.nonces['update-post_' + this.item.id],
                     relatedPostId: this.itemId,
-                    document: this.item.document, 
+                    document: this.item.document_type == 'attachment' ? this.item.document : null, 
                     onSave: () => {
                         // Fetch current existing attachments
                         this.isLoadingAttachments = true;
@@ -1787,6 +1783,17 @@ export default {
                 margin-bottom: 0;
                 margin-top: 0.15em;
             }
+        }
+    }
+
+    .attachments-list-heading {
+        display: flex;
+        align-items: center;
+        margin-top: 24px;
+        margin-bottom: 24px;
+
+        button {
+            margin-right: 12px;
         }
     }
 

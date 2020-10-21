@@ -753,6 +753,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_submission_processing'		 			 => __( 'Please, wait while the submission is being processed', 'tainacan'),
 	'info_submission_uploading'	  			 		 => __( 'Please, wait while files are uploaded', 'tainacan'),
 	'info_thumbnail_alt'			 			 	 => __( 'The alternative text of the thumbnail is visible only by screen readers and should be usefull for users with visual impariments.', 'tainacan'),
+	'info_edit_attachments'							 => __( 'Order, title or alternative text of the attachments, are edited via the WordPress media modal.', 'tainacan' ),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),
