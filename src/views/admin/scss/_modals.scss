@@ -202,6 +202,10 @@
     .tainacan-header-image-modal,
     .tainacan-thumbnail-modal,
     .tainacan-item-attachments-modal {
+        .tainacan-document-attachment {
+            display: none;
+            visibility: hidden;
+        }
         .media-toolbar button.button:not(.is-small):not(.is-medium):not(.is-large){
             margin-top: 1em !important;
             font-size: 0.875rem !important;

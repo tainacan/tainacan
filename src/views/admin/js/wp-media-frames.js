@@ -61,7 +61,6 @@ export default {
 							uploadedTo: wp.media.view.settings.post.id,
 							orderby: 'menuOrder',
 							order: 'ASC',
-							post__not_in: [ this.params.document ],
 	 						posts_per_page: -1,
 			 				query: true
 						}),
@@ -73,9 +72,16 @@ export default {
 				]
 			});
 
-			this.frame.$el.addClass( 'tainacan-item-attachments-modal' );
-
 			this.frame.on( 'toolbar:create:main-gallery', this.galleryToolbar, this.frame );
+
+			this.frame.$el.addClass( 'tainacan-item-attachments-modal' );
+			this.frame.$el['tainacan-document-id'] = this.params.document;
+
+			wp.media.view.Attachment.Library = wp.media.view.Attachment.Library.extend({
+                className: function() { 
+					return 'attachment ' + ((this.controller.$el['tainacan-document-id'] && (this.model.get('id') == this.controller.$el['tainacan-document-id'])) ? 'tainacan-document-attachment' : ''); 
+				}
+            });
 
 			this.frame.on( 'select', () => {
                  // Get the attachment from the modal frame.
@@ -84,7 +90,7 @@ export default {
 				wp.media.view.settings.post.id = {
 					id: this.params.relatedPostId
 				}
-																																																
+					
                 this.params.attachments = attachments;
 				this.params.onSave(attachments);
 			});
