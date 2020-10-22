@@ -236,6 +236,9 @@ class REST_Items_Controller extends REST_Controller {
 					$item_arr['thumbnail'] = $item->get_thumbnail();
 					$item_arr['thumbnail_alt'] = get_post_meta( $item->get__thumbnail_id(), '_wp_attachment_image_alt', true );
 					$item_arr['thumbnail_id'] = $item->get__thumbnail_id();
+					$item_arr['nonces'] = array(
+						'update-post_' . $item->get_id() => wp_create_nonce('update-post_' . $item->get_id())
+					);
 				}
 
 			} else {
