@@ -378,10 +378,10 @@ registerBlockType('tainacan/item-submission-form', {
                                             return (
                                                 <li>
                                                     <CheckboxControl 
-                                                        label={ collectionMetadata[index].name }
+                                                        label={ collectionMetadata[index].name + (collectionMetadata[index].required == 'yes' ? ' *' : '') }
                                                         disabled={ collectionMetadata[index].required == 'yes' }
                                                         checked={ isMetadatumEnabled ? true : false }
-                                                        help={ collectionMetadata[index].metadata_type_object.name + (collectionMetadata[index].collection_id != collectionId ? (' (' + __('Inherited', 'tainacan') + ')' ) : '') }
+                                                        help={ collectionMetadata[index].metadata_type_object.name + (collectionMetadata[index].required == 'yes' ? (', ' + __('Required', 'tainacan')) : '' ) + (collectionMetadata[index].collection_id != collectionId ? (' (' + __('Inherited', 'tainacan') + ')' ) : '') }
                                                         onChange={  (isEnabled) => toggleIsEnabledMetadatum(isEnabled, index) }
                                                     />
                                                 </li>
