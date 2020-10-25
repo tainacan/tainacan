@@ -294,6 +294,7 @@ class REST_Roles_Controller extends REST_Controller {
 
 		foreach ( $newcaps as $cap => $val ) {
 			\wp_roles()->add_cap($role_slug, $cap, $val);
+			\tainacan_roles()->add_dependencies($role_slug, $cap);
 		}
 
 
