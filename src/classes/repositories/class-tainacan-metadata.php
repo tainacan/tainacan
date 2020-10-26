@@ -344,7 +344,6 @@ class Metadata extends Repository {
 
 			$args = apply_filters( 'tainacan_fetch_args', $args, 'metadata' );
 
-			error_log(json_encode($args));
 
 			$wp_query = new \WP_Query( $args );
 
