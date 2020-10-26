@@ -230,6 +230,19 @@ export const fetchCollectionForExposer = ({ commit }, collectionId) => {
     });
 };
 
+export const fetchCollectionForItemSubmission = ({ commit }, collectionId) => {
+    return new Promise((resolve, reject) => { 
+        let endpoint = '/collections/' + collectionId + '?fetch_only=name,allows_submission,submission_use_recaptcha';
+        axios.tainacan.get(endpoint)
+        .then(res => {
+            resolve( res.data );
+        })
+        .catch(error => {
+            reject(error);
+        })
+    });
+};
+
 export const deleteCollection = ({ commit }, { collectionId, isPermanently }) => {
     return new Promise((resolve, reject) => { 
         let endpoint = '/collections/' + collectionId;

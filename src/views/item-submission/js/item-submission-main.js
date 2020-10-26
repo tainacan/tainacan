@@ -114,9 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 documentSectionLabel: '',
                 thumbnailSectionLabel: '',
                 attachmentsSectionLabel: '',
-                metadataSectionLabel: '',
-                useCaptcha: 'no',
-                captchaSiteKey: ''
+                metadataSectionLabel: ''
             },
             beforeMount () {
                 // Collection source settings
@@ -162,12 +160,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 // List of metadata
                 if (this.$el.attributes['enabled-metadata'] != undefined && this.$el.attributes['enabled-metadata'].value)
                     this.enabledMetadata = this.$el.attributes['enabled-metadata'].value.split(',');
-
-                // Captcha
-                if (this.$el.attributes['use-captcha'] != undefined)
-                    this.useCaptcha = this.$el.attributes['use-captcha'].value;
-                if (this.$el.attributes['captcha-site-key'] != undefined)
-                    this.captchaSiteKey = this.$el.attributes['captcha-site-key'].value;
 
             },
             methods: {

@@ -1524,7 +1524,7 @@
             .multivalue-separator {
                 display: block;
                 max-height: 1px;
-                width: 60px;
+                width: 80px;
                 background: var(--tainacan-gray3);
                 content: none;
                 color: transparent;

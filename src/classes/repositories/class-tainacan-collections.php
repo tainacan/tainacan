@@ -199,7 +199,7 @@ class Collections extends Repository {
 				'map'                    => 'meta',
 				'title'                  => __( 'Allows submission by anonymous user', 'tainacan' ),
 				'type'                   => 'string',
-				'description'            => __( 'If enabled, allows submission by anonymous user.', 'tainacan' ),
+				'description'            => __( 'If enabled, allows submission by anonymous users, whose does not have to be logged in with permissions on the WordPress system.', 'tainacan' ),
 				'default'                => 'no',
 				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no

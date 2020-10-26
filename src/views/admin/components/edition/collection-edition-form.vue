@@ -540,7 +540,11 @@
                                 <help-button 
                                         :title="$i18n.getHelperTitle('collections', 'submission_use_recaptcha')" 
                                         :message="$i18n.getHelperMessage('collections', 'submission_use_recaptcha')"/>
+                                <p 
+                                        v-if="form.submission_use_recaptcha == 'yes'" 
+                                        v-html="$i18n.getWithVariables('info_recaptcha_link_%s', [ reCAPTCHASettingsPagePath ])" />        
                             </b-field>
+                            
 
                         </div>
                     </transition>
@@ -672,6 +676,7 @@ export default {
             viewModesList: [],
             fromImporter: '',
             registeredViewModes: tainacan_plugin.registered_view_modes,
+            reCAPTCHASettingsPagePath: tainacan_plugin.admin_url + 'admin.php?page=tainacan_item_submission',
             newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page',
             isUpdatingSlug: false,
             entityName: 'collection'

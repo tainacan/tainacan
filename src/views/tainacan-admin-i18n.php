@@ -484,6 +484,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_upload_custom_thumbnail'					 => __( 'Upload custom thumbnail', 'tainacan' ),
 	'label_switch_document_type'					 => __( 'Switch document type', 'tainacan' ),
 	'label_sending_form'							 => __( 'Sending form...', 'tainacan' ),
+	'label_form_not_loaded'							 => __( 'This form could not be loaded', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -754,6 +755,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_submission_uploading'	  			 		 => __( 'Please, wait while files are uploaded', 'tainacan'),
 	'info_thumbnail_alt'			 			 	 => __( 'The alternative text of the thumbnail is visible only by screen readers and should be usefull for users with visual impariments.', 'tainacan'),
 	'info_edit_attachments'							 => __( 'Order, title or alternative text of the attachments, are edited via the WordPress media modal.', 'tainacan' ),
+	'info_recaptcha_link_%s'						 =>	__( 'Remember to configure your website reCAPTCHA keys on <a href="%s">the item submission repository page</a>.', 'tainacan'),
+	'info_form_not_loaded'					 		 =>	__( 'There are probably not enought permissions to display it here.', 'tainacan'),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),

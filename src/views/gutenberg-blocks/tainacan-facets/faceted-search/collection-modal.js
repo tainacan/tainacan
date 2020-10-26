@@ -15,13 +15,11 @@ export default class CollectionModal extends React.Component {
             collectionViewModes: [],
             collectionsPerPage: 24,
             collectionId: undefined,  
-            useCaptcha: 'no',
             isLoadingCollections: false, 
             modalCollections: [],
             totalModalCollections: 0, 
             collectionPage: 1,
             collectionOrderBy: 'date-desc',
-            temporaryUseCaptcha: 'no',
             temporaryCollectionId: '',
             temporaryCollectionDefaultViewMode: '',
             temporaryCollectionEnabledViewModes: [],
@@ -40,12 +38,10 @@ export default class CollectionModal extends React.Component {
     componentWillMount() {
         
         this.setState({ 
-            useCaptcha: this.props.existingUseCaptcha,
             collectionId: this.props.existingCollectionId,
             temporaryCollectionId: this.props.existingCollectionId,
             temporaryCollectionDefaultViewMode: this.props.existingCollectionDefaultViewMode,
             temporaryCollectionEnabledViewModes: this.props.existingCollectionEnabledViewModes,
-            temporaryUseCaptcha: this.props.existingUseCaptcha,
             collectionPage: 1
         });
 
@@ -111,8 +107,7 @@ export default class CollectionModal extends React.Component {
                         name: collection.name, 
                         id: collection.id,
                         default_view_mode: collection.default_view_mode,
-                        enabled_view_modes: collection.enabled_view_modes ,
-                        submission_use_recaptcha: collection.submission_use_recaptcha
+                        enabled_view_modes: collection.enabled_view_modes
                     });
                 }
 
@@ -129,11 +124,10 @@ export default class CollectionModal extends React.Component {
             });
     }
 
-    selectCollection({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes, useCaptcha }) {
+    selectCollection({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes }) {
         collectionId = collectionId;
         this.setState({ collectionId: collectionId });
-        this.setState({ useCaptcha: useCaptcha });
-        this.props.onSelectCollection({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes, useCaptcha });
+        this.props.onSelectCollection({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes });
     }
 
     fetchCollections(name) {
@@ -186,8 +180,7 @@ export default class CollectionModal extends React.Component {
                     name: collection.name, 
                     id: collection.id + '',
                     default_view_mode: collection.default_view_mode,
-                    enabled_view_modes: collection.enabled_view_modes,
-                    submission_use_recaptcha: collection.submission_use_recaptcha 
+                    enabled_view_modes: collection.enabled_view_modes
                 }));
 
                 this.setState({ 
@@ -205,7 +198,6 @@ export default class CollectionModal extends React.Component {
     resetCollections() {
 
         this.setState({
-            useCaptcha: 'no',
             collectionId: null,
             collectionPage: 1,
             modalCollections: []
@@ -274,11 +266,9 @@ export default class CollectionModal extends React.Component {
                                             this.state.temporaryCollectionId = aCollectionId;
                                             this.state.temporaryCollectionDefaultViewMode = selectedCollection.default_view_mode;
                                             this.state.temporaryCollectionEnabledViewModes = selectedCollection.enabled_view_modes;
-                                            this.state.temporaryUseCaptcha = selectedCollection.submission_use_recaptcha;
                                             this.setState({ temporaryCollectionId: aCollectionId });
                                             this.setState({ temporaryCollectionDefaultViewMode: selectedCollection.default_view_mode });
                                             this.setState({ temporaryCollectionEnabledViewModes: selectedCollection.enabled_view_modes });
-                                            this.setState({ temporaryUseCaptcha: selectedCollection.submission_use_recaptcha });
                                         } } />
                                     }                                      
                                 </div>
@@ -308,11 +298,9 @@ export default class CollectionModal extends React.Component {
                                         this.state.temporaryCollectionId = aCollectionId;
                                         this.state.temporaryCollectionDefaultViewMode = selectedCollection.default_view_mode;
                                         this.state.temporaryCollectionEnabledViewModes = selectedCollection.enabled_view_modes;
-                                        this.state.temporaryUseCaptcha = selectedCollection.submission_use_recaptcha;
                                         this.setState({ temporaryCollectionId: aCollectionId });
                                         this.setState({ temporaryCollectionDefaultViewMode: selectedCollection.default_view_mode });
                                         this.setState({ temporaryCollectionEnabledViewModes: selectedCollection.enabled_view_modes });
-                                        this.setState({ temporaryUseCaptcha: selectedCollection.submission_use_recaptcha });
                                     } } />
                                 }                                     
                             </div>
@@ -347,8 +335,7 @@ export default class CollectionModal extends React.Component {
                         onClick={ () => this.selectCollection({ 
                             collectionId: this.state.temporaryCollectionId,
                             collectionDefaultViewMode: this.state.temporaryCollectionDefaultViewMode,
-                            collectionEnabledViewModes: this.state.temporaryCollectionEnabledViewModes,
-                            useCaptcha: this.state.temporaryUseCaptcha
+                            collectionEnabledViewModes: this.state.temporaryCollectionEnabledViewModes
                         }) }>
                         {__('Use selected Collection', 'tainacan')}
                     </Button>

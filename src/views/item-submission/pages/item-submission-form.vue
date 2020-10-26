@@ -4,388 +4,403 @@
                 :is-full-page="false"
                 :active.sync="isLoading"
                 :can-cancel="false"/>
-        <form
-                v-if="!hasSentForm"
-                v-show="!isLoading && !isSubmitting && !isUploading"
-                class="tainacan-form"
-                label-width="120px">
-    
-            <!-- Hook for extra Form options -->
-            <template
-                    v-if="formHooks != undefined &&
-                        formHooks['item'] != undefined &&
-                        formHooks['item']['begin-left'] != undefined">
-                <form
-                        id="form-item-begin-left"
-                        class="form-hook-region"
-                        v-html="formHooks['item']['begin-left'].join('')"/>
-            </template>
+        <template v-if="couldLoadCollection && collecionAllowsItemSubmission">
+            <form
+                    v-if="!hasSentForm"
+                    v-show="!isLoading && !isSubmitting && !isUploading"
+                    class="tainacan-form"
+                    label-width="120px">
+        
+                <!-- Hook for extra Form options -->
+                <template
+                        v-if="formHooks != undefined &&
+                            formHooks['item'] != undefined &&
+                            formHooks['item']['begin-left'] != undefined">
+                    <form
+                            id="form-item-begin-left"
+                            class="form-hook-region"
+                            v-html="formHooks['item']['begin-left'].join('')"/>
+                </template>
 
-            <!-- Document -------------------------------- -->
-            <template v-if="!hideFileModalButton || !hideTextModalButton || !hideLinkModalButton">
-                <div 
-                        v-if="documentSectionLabel"
-                        class="section-label">
-                    <label>{{ documentSectionLabel }}</label>
-                    <help-button
-                            v-if="!hideHelpButtons"
-                            :title="$i18n.getHelperTitle('items', 'document')"
-                            :message="$i18n.getHelperMessage('items', 'document')"/>
-                </div>
-                <div 
-                        class="section-box document-field"
-                        id="tainacan-item-metadatum_id-document">
-                    <div v-if="form.document_type != '' && form.document_type != undefined && form.document_type != null && form.document_type != 'empty'">
-                        <div v-if="form.document_type == 'attachment'">
-                            <b-upload
-                                    expanded 
-                                    v-if="!form.document"
-                                    v-model="form.document"
-                                    drag-drop>
-                                <section class="section">
-                                    <div class="content has-text-centered">
-                                        <p>
-                                            <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload" />
-                                            </span>
-                                        </p>
-                                        <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
-                                    </div>
-                                </section>
-                            </b-upload>
-                            <div 
-                                    v-else
-                                    class="files-list">
-                                <b-tag 
-                                        rounded
-                                        closable
-                                        attached
-                                        :aria-close-label="$i18n.get('delete')"
-                                        @close="form.document = ''"
-                                        :type="formErrors.find(error => error.metadatum_id== 'document') ? 'is-danger' : ''">
-                                    {{ form.document.name }}
-                                </b-tag>
-                            </div>
-                        </div>
-                        <div v-if="form.document_type == 'text'">
-                            <b-input 
-                                    type="textarea"
-                                    v-model="form.document" />
-                            <br v-if="hasMoreThanOneDocumentTypeOption">                      
-                        </div>
-                        <div v-if="form.document_type == 'url'">
-                            <b-input 
-                                    :placeholder="$i18n.get('instruction_insert_url')"
-                                    type="url"
-                                    v-model="form.document" />
-                            <br v-if="hasMoreThanOneDocumentTypeOption">
-                        </div>
-                        <button
-                                v-if="hasMoreThanOneDocumentTypeOption"
-                                type="button"
-                                class="button is-outlined"
-                                @click="form.document = ''; form.document_type = 'empty'">
-                            {{ $i18n.get('label_switch_document_type') }}
-                        </button>
-                    </div>
-                    <ul v-else>
-                        <li v-if="!hideFileModalButton">
-                            <button
-                                    type="button"
-                                    @click.prevent="form.document_type = 'attachment'">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload"/>
-                                </span>
-                            </button>
-                            <p>{{ $i18n.get('label_file') }}</p>
-                        </li>
-                        <li v-if="!hideTextModalButton">
-                            <button
-                                    type="button"
-                                    @click.prevent="form.document_type = 'text'">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text"/>
-                                </span>
-                            </button>
-                            <p>{{ $i18n.get('label_text') }}</p>
-                        </li>
-                        <li v-if="!hideLinkModalButton">
-                            <button
-                                    type="button"
-                                    @click.prevent="form.document_type = 'url'">
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
-                                </span>
-                            </button>
-                            <p>{{ $i18n.get('label_url') }}</p>
-                        </li>
-                    </ul>
-                </div>
-               
-            </template>
-
-            <!-- Thumbnail -------------------------------- -->
-            <template v-if="!hideThumbnailSection">
-                <div 
-                        v-if="thumbnailSectionLabel"
-                        class="section-label">
-                    <label>{{ thumbnailSectionLabel }}</label>
-                    <help-button
-                            v-if="!hideHelpButtons"
-                            :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
-                            :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
-
-                </div>
-                <div class="section-toggle">
-                    <p>{{ showThumbnailInput ? $i18n.get('info_thumbnail_custom') : $i18n.get('info_thumbnail_default_from_document') }}</p>
-                    <div class="field has-addons">
-                        <b-switch
-                                id="tainacan-checkbox-show-thumbnail-input"
-                                size="is-small"
-                                v-model="showThumbnailInput">
-                            {{ $i18n.get('label_upload_custom_thumbnail') }}
-                        </b-switch>
-                    </div>
-                </div>
-                <div 
-                        v-if="!isLoading && showThumbnailInput"
-                        class="section-box section-thumbnail"
-                        id="tainacan-item-metadatum_id-thumbnail">
-                    <b-upload 
-                            expanded
-                            v-if="!form.thumbnail"
-                            v-model="form.thumbnail"
-                            drag-drop>
-                        <section class="section">
-                            <div class="content has-text-centered">
-                                <p>
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload" />
-                                    </span>
-                                </p>
-                                <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
-                            </div>
-                        </section>
-                    </b-upload>
+                <!-- Document -------------------------------- -->
+                <template v-if="!hideFileModalButton || !hideTextModalButton || !hideLinkModalButton">
                     <div 
-                            v-else
-                            class="files-list">
-                        <b-tag 
-                                rounded
-                                closable
-                                attached
-                                :aria-close-label="$i18n.get('delete')"
-                                @close="form.thumbnail = null"
-                                :type="formErrors.find(error => error.metadatum_id == 'thumbnail') ? 'is-danger' : ''">
-                            {{ form.thumbnail.name }}
-                        </b-tag>
+                            v-if="documentSectionLabel"
+                            class="section-label">
+                        <label>{{ documentSectionLabel }}</label>
+                        <help-button
+                                v-if="!hideHelpButtons"
+                                :title="$i18n.getHelperTitle('items', 'document')"
+                                :message="$i18n.getHelperMessage('items', 'document')"/>
                     </div>
-                </div>
-            </template>
-
-            <!-- Hook for extra Form options -->
-            <template
-                    v-if="formHooks != undefined &&
-                        formHooks['item'] != undefined &&
-                        formHooks['item']['end-left'] != undefined">
-                <form
-                    id="form-item-end-left"
-                    class="form-hook-region"
-                    v-html="formHooks['item']['end-left'].join('')"/>
-            </template>
-
-            <!-- Attachments ------------------------------------------ -->
-            <template v-if="!hideAttachmentsSection">
+                    <div 
+                            class="section-box document-field"
+                            id="tainacan-item-metadatum_id-document">
+                        <div v-if="form.document_type != '' && form.document_type != undefined && form.document_type != null && form.document_type != 'empty'">
+                            <div v-if="form.document_type == 'attachment'">
+                                <b-upload
+                                        expanded 
+                                        v-if="!form.document"
+                                        v-model="form.document"
+                                        drag-drop>
+                                    <section class="section">
+                                        <div class="content has-text-centered">
+                                            <p>
+                                                <span class="icon">
+                                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload" />
+                                                </span>
+                                            </p>
+                                            <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
+                                        </div>
+                                    </section>
+                                </b-upload>
+                                <div 
+                                        v-else
+                                        class="files-list">
+                                    <b-tag 
+                                            rounded
+                                            closable
+                                            attached
+                                            :aria-close-label="$i18n.get('delete')"
+                                            @close="form.document = ''"
+                                            :type="formErrors.find(error => error.metadatum_id== 'document') ? 'is-danger' : ''">
+                                        {{ form.document.name }}
+                                    </b-tag>
+                                </div>
+                            </div>
+                            <div v-if="form.document_type == 'text'">
+                                <b-input 
+                                        type="textarea"
+                                        v-model="form.document" />
+                                <br v-if="hasMoreThanOneDocumentTypeOption">                      
+                            </div>
+                            <div v-if="form.document_type == 'url'">
+                                <b-input 
+                                        :placeholder="$i18n.get('instruction_insert_url')"
+                                        type="url"
+                                        v-model="form.document" />
+                                <br v-if="hasMoreThanOneDocumentTypeOption">
+                            </div>
+                            <button
+                                    v-if="hasMoreThanOneDocumentTypeOption"
+                                    type="button"
+                                    class="button is-outlined"
+                                    @click="form.document = ''; form.document_type = 'empty'">
+                                {{ $i18n.get('label_switch_document_type') }}
+                            </button>
+                        </div>
+                        <ul v-else>
+                            <li v-if="!hideFileModalButton">
+                                <button
+                                        type="button"
+                                        @click.prevent="form.document_type = 'attachment'">
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload"/>
+                                    </span>
+                                </button>
+                                <p>{{ $i18n.get('label_file') }}</p>
+                            </li>
+                            <li v-if="!hideTextModalButton">
+                                <button
+                                        type="button"
+                                        @click.prevent="form.document_type = 'text'">
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text"/>
+                                    </span>
+                                </button>
+                                <p>{{ $i18n.get('label_text') }}</p>
+                            </li>
+                            <li v-if="!hideLinkModalButton">
+                                <button
+                                        type="button"
+                                        @click.prevent="form.document_type = 'url'">
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
+                                    </span>
+                                </button>
+                                <p>{{ $i18n.get('label_url') }}</p>
+                            </li>
+                        </ul>
+                    </div>
                 
+                </template>
+
+                <!-- Thumbnail -------------------------------- -->
+                <template v-if="!hideThumbnailSection">
+                    <div 
+                            v-if="thumbnailSectionLabel"
+                            class="section-label">
+                        <label>{{ thumbnailSectionLabel }}</label>
+                        <help-button
+                                v-if="!hideHelpButtons"
+                                :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
+                                :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
+
+                    </div>
+                    <div class="section-toggle">
+                        <p>{{ showThumbnailInput ? $i18n.get('info_thumbnail_custom') : $i18n.get('info_thumbnail_default_from_document') }}</p>
+                        <div class="field has-addons">
+                            <b-switch
+                                    id="tainacan-checkbox-show-thumbnail-input"
+                                    size="is-small"
+                                    v-model="showThumbnailInput">
+                                {{ $i18n.get('label_upload_custom_thumbnail') }}
+                            </b-switch>
+                        </div>
+                    </div>
+                    <div 
+                            v-if="!isLoading && showThumbnailInput"
+                            class="section-box section-thumbnail"
+                            id="tainacan-item-metadatum_id-thumbnail">
+                        <b-upload 
+                                expanded
+                                v-if="!form.thumbnail"
+                                v-model="form.thumbnail"
+                                drag-drop>
+                            <section class="section">
+                                <div class="content has-text-centered">
+                                    <p>
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload" />
+                                        </span>
+                                    </p>
+                                    <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
+                                </div>
+                            </section>
+                        </b-upload>
+                        <div 
+                                v-else
+                                class="files-list">
+                            <b-tag 
+                                    rounded
+                                    closable
+                                    attached
+                                    :aria-close-label="$i18n.get('delete')"
+                                    @close="form.thumbnail = null"
+                                    :type="formErrors.find(error => error.metadatum_id == 'thumbnail') ? 'is-danger' : ''">
+                                {{ form.thumbnail.name }}
+                            </b-tag>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Hook for extra Form options -->
+                <template
+                        v-if="formHooks != undefined &&
+                            formHooks['item'] != undefined &&
+                            formHooks['item']['end-left'] != undefined">
+                    <form
+                        id="form-item-end-left"
+                        class="form-hook-region"
+                        v-html="formHooks['item']['end-left'].join('')"/>
+                </template>
+
+                <!-- Attachments ------------------------------------------ -->
+                <template v-if="!hideAttachmentsSection">
+                    
+                    <div class="section-label">
+                        <label v-if="attachmentsSectionLabel">
+                            <span>{{ attachmentsSectionLabel }}</span>
+                            <span class="icon has-text-gray4">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
+                            </span>
+                        </label>
+                    </div>                
+
+                    <div 
+                            v-if="itemSubmission != undefined"
+                            class="section-box"
+                            id="tainacan-item-metadatum_id-attachments">
+                        <b-upload 
+                                expanded
+                                v-model="form.attachments"
+                                multiple
+                                drag-drop>
+                            <section class="section">
+                                <div class="content has-text-centered">
+                                    <p>
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload" />
+                                        </span>
+                                    </p>
+                                    <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
+                                </div>
+                            </section>
+                        </b-upload>
+                        <div 
+                                v-if="form.attachments && form.attachments.length"
+                                class="files-list">
+                            <b-tag 
+                                    v-for="(attachment, index) of form.attachments"
+                                    :key="index"
+                                    rounded
+                                    closable
+                                    attached
+                                    :aria-close-label="$i18n.get('delete')"
+                                    @close="form.attachments.splice(index, 1)"
+                                    :type="formErrors.find(error => error.metadatum_id == 'attachments') ? 'is-danger' : ''">
+                                {{ attachment.name }}
+                            </b-tag>
+                        </div>
+                    </div>
+                </template>
+            
+                <!-- Hook for extra Form options -->
+                <template
+                        v-if="formHooks != undefined &&
+                            formHooks['item'] != undefined &&
+                            formHooks['item']['begin-right'] != undefined">
+                    <form
+                        id="form-item-begin-right"
+                        class="form-hook-region"
+                        v-html="formHooks['item']['begin-right'].join('')"/>
+                </template>
+
+                <!-- Comment Status ------------------------ -->
+                <template v-if="showAllowCommentsSection">
+                    <div class="section-label">
+                        <label>{{ $i18n.get('label_comments') }}</label>
+                        <help-button
+                                v-if="!hideHelpButtons"
+                                :title="$i18n.getHelperTitle('items', 'comment_status')"
+                                :message="$i18n.getHelperMessage('items', 'comment_status')"/>
+                    </div>
+                    <div class="section-toggle">
+                        <div class="field has-addons">
+                            <b-switch
+                                    id="tainacan-checkbox-comment-status"
+                                    size="is-small"
+                                    true-value="open"
+                                    false-value="closed"
+                                    v-model="form.comment_status">
+                                {{ $i18n.get('label_allow_comments') }}
+                            </b-switch>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Metadata from Collection-------------------------------- -->
                 <div class="section-label">
-                    <label v-if="attachmentsSectionLabel">
-                        <span>{{ attachmentsSectionLabel }}</span>
+                    <label v-if="metadataSectionLabel">
+                        <span>{{ metadataSectionLabel }}</span>
                         <span class="icon has-text-gray4">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
                         </span>
                     </label>
-                </div>                
-
-                <div 
-                        v-if="itemSubmission != undefined"
-                        class="section-box"
-                        id="tainacan-item-metadatum_id-attachments">
-                    <b-upload 
-                            expanded
-                            v-model="form.attachments"
-                            multiple
-                            drag-drop>
-                        <section class="section">
-                            <div class="content has-text-centered">
-                                <p>
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload" />
-                                    </span>
-                                </p>
-                                <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
-                            </div>
-                        </section>
-                    </b-upload>
-                    <div 
-                            v-if="form.attachments && form.attachments.length"
-                            class="files-list">
-                        <b-tag 
-                                v-for="(attachment, index) of form.attachments"
-                                :key="index"
-                                rounded
-                                closable
-                                attached
-                                :aria-close-label="$i18n.get('delete')"
-                                @close="form.attachments.splice(index, 1)"
-                                :type="formErrors.find(error => error.metadatum_id == 'attachments') ? 'is-danger' : ''">
-                            {{ attachment.name }}
-                        </b-tag>
-                    </div>
                 </div>
-            </template>
-        
-            <!-- Hook for extra Form options -->
-            <template
-                    v-if="formHooks != undefined &&
-                        formHooks['item'] != undefined &&
-                        formHooks['item']['begin-right'] != undefined">
-                <form
-                    id="form-item-begin-right"
-                    class="form-hook-region"
-                    v-html="formHooks['item']['begin-right'].join('')"/>
-            </template>
 
-            <!-- Comment Status ------------------------ -->
-            <template v-if="showAllowCommentsSection">
-                <div class="section-label">
-                    <label>{{ $i18n.get('label_comments') }}</label>
-                    <help-button
-                            v-if="!hideHelpButtons"
-                            :title="$i18n.getHelperTitle('items', 'comment_status')"
-                            :message="$i18n.getHelperMessage('items', 'comment_status')"/>
-                </div>
-                <div class="section-toggle">
-                    <div class="field has-addons">
-                        <b-switch
-                                id="tainacan-checkbox-comment-status"
-                                size="is-small"
-                                true-value="open"
-                                false-value="closed"
-                                v-model="form.comment_status">
-                            {{ $i18n.get('label_allow_comments') }}
-                        </b-switch>
-                    </div>
-                </div>
-            </template>
-
-            <!-- Metadata from Collection-------------------------------- -->
-            <div class="section-label">
-                <label v-if="metadataSectionLabel">
-                    <span>{{ metadataSectionLabel }}</span>
-                    <span class="icon has-text-gray4">
-                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
+                <a
+                        v-if="!hideCollapses"
+                        class="collapse-all"
+                        @click="toggleCollapseAll()">
+                    {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                    <span class="icon">
+                        <i
+                                :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                                class="tainacan-icon tainacan-icon-1-25em"/>
                     </span>
-                </label>
-            </div>
+                </a>
+                <template v-for="(itemMetadatum, index) of metadatumList">
+                    <tainacan-form-item
+                            :key="index"
+                            v-if="enabledMetadata[index] == 'true'"
+                            :item-metadatum="itemMetadatum"
+                            :hide-collapses="hideCollapses"
+                            :is-collapsed="metadataCollapses[index]"
+                            @changeCollapse="onChangeCollapse($event, index)"/>
+                </template>
 
-            <a
-                    v-if="!hideCollapses"
-                    class="collapse-all"
-                    @click="toggleCollapseAll()">
-                {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                <span class="icon">
-                    <i
-                            :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                            class="tainacan-icon tainacan-icon-1-25em"/>
-                </span>
-            </a>
-            <template v-for="(itemMetadatum, index) of metadatumList">
-                <tainacan-form-item
-                        :key="index"
-                        v-if="enabledMetadata[index] == 'true'"
-                        :item-metadatum="itemMetadatum"
-                        :hide-collapses="hideCollapses"
-                        :is-collapsed="metadataCollapses[index]"
-                        @changeCollapse="onChangeCollapse($event, index)"/>
-            </template>
+                <!-- Hook for extra Form options -->
+                <template
+                        v-if="formHooks != undefined &&
+                            formHooks['item'] != undefined &&
+                            formHooks['item']['end-right'] != undefined">
+                    <form
+                        id="form-item-end-right"
+                        class="form-hook-region"
+                        v-html="formHooks['item']['end-right'].join('')"/>
+                </template>
 
-            <!-- Hook for extra Form options -->
-            <template
-                    v-if="formHooks != undefined &&
-                        formHooks['item'] != undefined &&
-                        formHooks['item']['end-right'] != undefined">
-                <form
-                    id="form-item-end-right"
-                    class="form-hook-region"
-                    v-html="formHooks['item']['end-right'].join('')"/>
-            </template>
+                <!-- Google reCAPTCHA -->
+                <template v-if="useCaptcha == 'yes'">
+                    <div 
+                            class="g-recaptcha"
+                            :data-sitekey="captchaSiteKey" />
+                    <br>
+                </template>
 
-            <!-- Google reCAPTCHA -->
-            <template v-if="useCaptcha == 'yes'">
-                <div 
-                        class="g-recaptcha"
-                        :data-sitekey="captchaSiteKey" />
-                <br>
-            </template>
+                <footer class="form-submission-footer">
 
-            <footer class="form-submission-footer">
+                    <button
+                            @click="onDiscard()"
+                            type="button"
+                            class="button is-outlined">{{ $i18n.get('cancel') }}</button>
 
-                <button
-                        @click="onDiscard()"
-                        type="button"
-                        class="button is-outlined">{{ $i18n.get('cancel') }}</button>
+                    <!-- Updated and Error Info -->
+                    <div class="update-info-section">
+                        <p class="footer-message">
 
-                <!-- Updated and Error Info -->
-                <div class="update-info-section">
-                    <p class="footer-message">
+                            <span class="help is-danger">
+                                {{ formErrorMessage }}
+                                <item-metadatum-errors-tooltip 
+                                        v-if="formErrors.length && formErrors[0].errors && formErrors[0].errors.length"
+                                        :form-errors="formErrors" />
+                            </span>
+                        </p>
+                    </div>
 
-                        <span class="help is-danger">
-                            {{ formErrorMessage }}
-                            <item-metadatum-errors-tooltip 
-                                    v-if="formErrors.length && formErrors[0].errors && formErrors[0].errors.length"
-                                    :form-errors="formErrors" />
+                    <button
+                            @click="onSubmit()"
+                            type="button"
+                            class="button is-secondary">{{ $i18n.get('label_submit') }}</button>
+                </footer>
+            </form>
+
+            <!-- Message displayed when the form is being submitted -->
+            <section 
+                    v-if="isSubmitting || isUploading"
+                    class="section">
+                <div class="content has-text-grey has-text-centered">
+                    <br>
+                    <p>
+                        <span class="icon is-medium">
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-updating tainacan-icon-spin"/>
                         </span>
                     </p>
+                    <h2>{{ $i18n.get('label_sending_form') }}</h2>
+                    <p v-if="isSubmitting">{{ $i18n.get('info_submission_processing') }}</p>
+                    <p v-if="isUploading">{{ $i18n.get('info_submission_uploading') }}</p>
+                    <br>
                 </div>
+            </section>
 
-                <button
-                        @click="onSubmit()"
-                        type="button"
-                        class="button is-secondary">{{ $i18n.get('label_submit') }}</button>
-            </footer>
-        </form>
+            <!-- Message displayed once the form is submitted -->
+            <section 
+                    v-if="hasSentForm"
+                    class="section">
+                <div class="content has-text-grey has-text-centered">
+                    <br>
+                    <p>
+                        <span class="icon is-medium">
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-approvedcircle"/>
+                        </span>
+                    </p>
+                    <h2 v-if="sentFormHeading">{{ sentFormHeading }}</h2>
+                    <p v-if="sentFormMessage">{{ sentFormMessage }}</p>
+                    <br>
+                </div>
+            </section>
 
-        <!-- Message displayed when the form is being submitted -->
+        </template>
+
+        <!-- Message displayed if the collection could not be loaded -->
         <section 
-                v-if="isSubmitting || isUploading"
+                v-else
                 class="section">
             <div class="content has-text-grey has-text-centered">
                 <br>
-                <p>
-                    <span class="icon is-medium">
-                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-updating tainacan-icon-spin"/>
-                    </span>
-                </p>
-                <h2>{{ $i18n.get('label_sending_form') }}</h2>
-                <p v-if="isSubmitting">{{ $i18n.get('info_submission_processing') }}</p>
-                <p v-if="isUploading">{{ $i18n.get('info_submission_uploading') }}</p>
-                <br>
-            </div>
-        </section>
-
-        <!-- Message displayed once the form is submitted -->
-        <section 
-                v-if="hasSentForm"
-                class="section">
-            <div class="content has-text-grey has-text-centered">
-                <br>
-                <p>
-                    <span class="icon is-medium">
-                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-approvedcircle"/>
-                    </span>
-                </p>
-                <h2 v-if="sentFormHeading">{{ sentFormHeading }}</h2>
-                <p v-if="sentFormMessage">{{ sentFormMessage }}</p>
+                <h2>{{ $i18n.get('label_form_not_loaded') }}</h2>
+                <p>{{ $i18n.get('info_form_not_loaded') }}</p>
                 <br>
             </div>
         </section>
@@ -422,11 +437,10 @@ export default {
         thumbnailSectionLabel: String,
         attachmentsSectionLabel: String,
         metadataSectionLabel: String,
-        useCaptcha: String,
-        captchaSiteKey: String
     },
     data(){
         return {
+            collecionAllowsItemSubmission: true,
             isLoading: false,
             isSubmitting: false,
             isUploading: false,
@@ -442,7 +456,10 @@ export default {
             },
             formErrorMessage: '',
             hasSentForm: false,
-            showThumbnailInput: false
+            showThumbnailInput: false,
+            couldLoadCollection: true,
+            useCaptcha: 'no',
+            captchaSiteKey: tainacan_plugin['item_submission_captcha_site_key']
         }
     },
     computed: {
@@ -464,22 +481,38 @@ export default {
     },
     created() {
 
-        // Initialize clear data from store
-        this.clearItemSubmission();
-        
-        eventBusItemMetadata.clearAllErrors();
-        this.formErrorMessage = '';
-        this.form.collection_id = this.collectionId;
+        // Puts loading on form
+        this.isLoading = true;
 
-        // CREATING NEW ITEM SUBMISSION
-        this.createNewItem();
+        // First, check if collections allows this whole thing
+        this.fetchCollectionForItemSubmission(this.collectionId)
+            .then((collection) => {
 
-        eventBusItemMetadata.$on('hasErrorsOnForm', (hasErrors) => {
-            if (hasErrors)
-                this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
-            else
+                // Gets update info from the collecion in case it has been updated
+                this.collecionAllowsItemSubmission = collection.allows_submission == 'yes' ? true : false;
+                this.useCaptcha = collection.submission_use_recaptcha;
+
+                // Initialize clear data from store
+                this.clearItemSubmission();
+                
+                eventBusItemMetadata.clearAllErrors();
                 this.formErrorMessage = '';
-        });
+                this.form.collection_id = this.collectionId;
+
+                // CREATING NEW ITEM SUBMISSION
+                this.createNewItem();
+
+                eventBusItemMetadata.$on('hasErrorsOnForm', (hasErrors) => {
+                    if (hasErrors)
+                        this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
+                    else
+                        this.formErrorMessage = '';
+                });
+            })
+            .catch(() => {
+                this.collecionAllowsItemSubmission = false;
+                this.isLoading = false;
+            });
     },
     mounted() {
         // Checks if only one type of document is allowed. In this case we preset document type
@@ -510,6 +543,9 @@ export default {
         ]),
         ...mapGetters('metadata',[
             'getMetadata'
+        ]),
+        ...mapActions('collection',[
+            'fetchCollectionForItemSubmission'
         ]),
         onSubmit() {
 
@@ -589,8 +625,6 @@ export default {
             this.createNewItem();
         },
         createNewItem() {
-            // Puts loading on Draft Item creation
-            this.isLoading = true;
 
             // Clear errors so we don't have them duplicated from api
             eventBusItemMetadata.errors = [];
@@ -614,6 +648,11 @@ export default {
                         this.metadataCollapses[i] = true;
                     }                
                     this.setItemSubmissionMetadata( metadata.map((metadatum) => { return { metadatum_id: metadatum.id, value: null } }) );
+                    this.couldLoadCollection = true;
+                    this.isLoading = false;
+                })
+                .catch(() => {
+                    this.couldLoadCollection = false;
                     this.isLoading = false;
                 });
             });

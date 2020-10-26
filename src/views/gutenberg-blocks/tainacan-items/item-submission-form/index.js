@@ -142,14 +142,6 @@ registerBlockType('tainacan/item-submission-form', {
         metadataSectionLabel: {
             type: String,
             default: __( 'Metadata', 'tainacan' )
-        },
-        useCaptcha: {
-            type: String,
-            default: 'no'
-        },
-        captchaSiteKey: {
-            type: String,
-            default: ''
         }
     },
     supports: {
@@ -187,13 +179,8 @@ registerBlockType('tainacan/item-submission-form', {
             documentSectionLabel,
             attachmentsSectionLabel,
             thumbnailSectionLabel,
-            metadataSectionLabel,
-            useCaptcha,
-            captchaSiteKey
+            metadataSectionLabel
         } = attributes;
-
-        captchaSiteKey = tainacan_plugin['item_submission_captcha_site_key'];
-        setAttributes({ captchaSiteKey: captchaSiteKey });
 
         const fontSizes = [
             {
@@ -773,12 +760,9 @@ registerBlockType('tainacan/item-submission-form', {
                     <CollectionModal
                         filterOptionsBy={ { allows_submission: 'yes' } }
                         existingCollectionId={ collectionId }
-                        existingUseCaptcha={ useCaptcha } 
-                        onSelectCollection={ ({ collectionId, useCaptcha }) => {
+                        onSelectCollection={ ({ collectionId }) => {
                             collectionId = collectionId;
-                            useCaptcha = useCaptcha;
                             setAttributes({
-                                useCaptcha: useCaptcha,
                                 collectionId: collectionId,
                                 isCollectionModalOpen: false
                             });
@@ -819,8 +803,6 @@ registerBlockType('tainacan/item-submission-form', {
             enabledMetadata,
             sentFormHeading,
             sentFormMessage,
-            useCaptcha,
-            captchaSiteKey
         } = attributes;
         
         return <div 
@@ -855,9 +837,7 @@ registerBlockType('tainacan/item-submission-form', {
                     document-section-label={ documentSectionLabel }
                     thumbnail-section-label={ thumbnailSectionLabel }
                     attachments-section-label={ attachmentsSectionLabel }
-                    metadata-section-label={ metadataSectionLabel }
-                    captcha-site-key={ captchaSiteKey }
-                    use-captcha={ useCaptcha } >
+                    metadata-section-label={ metadataSectionLabel } >
             </div>
         </div>
     }
