@@ -84,10 +84,15 @@ class Bulk_Edit_Process extends Generic_Process {
 
 	public function get_output() {
         $name = $this->get_bulk_collection_name();
-        $title = __('Collection', 'tainacan');
+        $title_label  = __('Collection', 'tainacan');
+        $author_label = __('Processed by', 'tainacan');
+
+        $current_user = wp_get_current_user();
+        $author_name = $current_user->user_login;
 
 	    $message  = __('Bulk edit finished', 'tainacan');
-		$message .= "<p> <strong> ${title}: </strong> ${name} </p>";
+		$message .= "<p> <strong> ${title_label}: </strong> ${name} </p>";
+		$message .= "<p> <strong> ${author_label}: </strong> ${author_name} </p>";
 
 		return $message;
 	}
