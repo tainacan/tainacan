@@ -83,9 +83,28 @@ class Bulk_Edit_Process extends Generic_Process {
 	}
 
 	public function get_output() {
-		$message = __('Bulk edit finished', 'tainacan');
+        $name = $this->get_bulk_collection_name();
+        $title = __('Collection', 'tainacan');
+
+	    $message  = __('Bulk edit finished', 'tainacan');
+		$message .= "<p> <strong> ${title}: </strong> ${name} </p>";
+
 		return $message;
 	}
+
+	private function get_bulk_collection_name() {
+	    $params =  $this->get_options();
+	    if ($params['collection_id']) {
+	        $collection = $params['collection_id'];
+	        $bulk_collection = Tainacan\Repositories\Collections::get_instance()->fetch($collection);
+
+            if ($bulk_collection) {
+                return $bulk_collection->get_name();
+            }
+        }
+
+	    return __('Collection', 'tainacan');
+    }
 
 	public function set_bulk_edit_data($bulk_edit_data = false) {
 		$this->bulk_edit_data = $bulk_edit_data;
