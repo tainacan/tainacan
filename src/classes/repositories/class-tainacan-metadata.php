@@ -326,18 +326,20 @@ class Metadata extends Repository {
 				return [];
 			}
 		} elseif ( is_array( $args ) ) {
-			 
 			$args = array_merge( [
 				'posts_per_page' => - 1,
-				'meta_query' => [
-					[
-						'key'     => 'metadata_type',
-						'value'   => 'Tainacan\Metadata_Types\Control',
-						'compare' => 'NOT IN'
-					]
-				]
 			], $args );
-			
+
+			if ( ! (isset($args['include_control_metadata_types']) && $args['include_control_metadata_types'] == true) ) {
+				if( !isset($args['meta_query']) )
+					$args['meta_query'] = [];
+				$args['meta_query'][] = [
+					'key'     => 'metadata_type',
+					'value'   => 'Tainacan\Metadata_Types\Control',
+					'compare' => 'NOT IN'
+				];
+			}
+
 			$args = $this->parse_fetch_args( $args );
 
 			$args['post_type'] = Entities\Metadatum::get_post_type();
@@ -430,7 +432,6 @@ class Metadata extends Repository {
 				$args['meta_query'] = $original_meta_q;
 				$args['meta_query'][] = $meta_query;
 
-				//var_dump($args);
 				$results = array_merge($results, $this->fetch( $args, 'OBJECT' ));
 
 			}
