@@ -84,15 +84,18 @@ class Bulk_Edit_Process extends Generic_Process {
 
 	public function get_output() {
         $name = $this->get_bulk_collection_name();
-        $title_label  = __('Collection', 'tainacan');
-        $author_label = __('Processed by', 'tainacan');
-
+        $metadata = $this->get_changed_metadata();
         $current_user = wp_get_current_user();
         $author_name = $current_user->user_login;
+
+        $title_label  = __('Collection', 'tainacan');
+        $author_label = __('Processed by', 'tainacan');
+        $metadata_label = __('Changed metadata', 'tainacan');
 
 	    $message  = __('Bulk edit finished', 'tainacan');
 		$message .= "<p> <strong> ${title_label}: </strong> ${name} </p>";
 		$message .= "<p> <strong> ${author_label}: </strong> ${author_name} </p>";
+		$message .= "<p> <strong> ${metadata_label}: </strong> ${metadata} </p>";
 
 		return $message;
 	}
@@ -109,6 +112,13 @@ class Bulk_Edit_Process extends Generic_Process {
         }
 
 	    return __('Collection', 'tainacan');
+    }
+
+    private function get_changed_metadata() {
+	    $metadatum_id = $this->bulk_edit_data['metadatum_id'];
+        $metadata = get_post($metadatum_id);
+
+        return $metadata->post_title;
     }
 
 	public function set_bulk_edit_data($bulk_edit_data = false) {
