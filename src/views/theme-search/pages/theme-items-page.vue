@@ -786,6 +786,7 @@
                 "IntersectionObserverEntry" in window &&
                 "isIntersecting" in window.IntersectionObserverEntry.prototype &&
                 "boundingClientRect" in window.IntersectionObserverEntry.prototype) {
+
                 this.intersectionObserver = new IntersectionObserver(entries => {
                     this.isFiltersListFixed = entries[0] && (!entries[0].isIntersecting) && (entries[0].boundingClientRect.y < 0);
                 });

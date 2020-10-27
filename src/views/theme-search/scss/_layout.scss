@@ -39,9 +39,10 @@
     -ms-flex: 0 1 100%;
     flex: 0 1 100%;
 }
+
 .filters-menu.filters-menu-modal {
 	z-index: 999999 !important;
-	background: var(--tainacan-white);
+	background: var(--tainacan-background-color, inherit);
 	width: 100%;
 
 	#filters-modal .modal-close {
@@ -150,6 +151,13 @@
 			.filters-menu:not(.filters-menu-modal) {
 				position: fixed;
 				top: 0px !important;
+
+				.modal-content {
+					position: absolute;
+					top: 0px;
+					height: auto !important;
+					background: var(--tainacan-background-color, inherit)
+				}
 			}
 		}
 	}
