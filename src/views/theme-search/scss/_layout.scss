@@ -90,11 +90,13 @@
 	overflow-x: hidden;
 	visibility: visible;
 	display: block;
+	transition: top ease-in 0.75s, position ease-in 0.75s;
 
 	@media screen and (max-width: 768px) {
 		padding: 0;
 
 		.modal-content { 
+			transition: top ease-in 0.75s, position ease-in 0.75s;
 			width: 88%; 
 			width: 88vw;
 		}
@@ -143,7 +145,7 @@
 			min-width: 13.75%;
 			min-width: 13.75vw;
 		}
-		&.is-filters-menu-fixed {
+		&.is-filters-menu-fixed-at-top {
 
 			.items-list-area {
 				margin-left: var(--tainacan-filter-menu-width-theme) !important;
@@ -157,6 +159,15 @@
 					top: 0px;
 					height: auto !important;
 					background: var(--tainacan-background-color, inherit)
+				}
+			}
+			&.is-filters-menu-fixed-at-bottom {
+				.filters-menu:not(.filters-menu-modal) {
+					position: absolute;
+					.modal-content {
+						top: auto;
+						bottom: 0px;
+					}
 				}
 			}
 		}

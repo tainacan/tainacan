@@ -2,7 +2,8 @@
     <div 
             :class="{
                 'is-filters-menu-open': !hideFilters && isFiltersModalActive && !openAdvancedSearch,
-                'is-filters-menu-fixed': isFiltersListFixed,
+                'is-filters-menu-fixed-at-top': isFiltersListFixedAtTop,
+                'is-filters-menu-fixed-at-bottom': isFiltersListFixedAtBottom,
                 'repository-level-page': isRepositoryLevel,
                 'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
             }"
@@ -448,10 +449,14 @@
                 
                 <h3 
                         id="items-list-landmark"
-                        ref="items-list-landmark"
                         class="sr-only">
                     {{ $i18n.get('label_items_list') }}
                 </h3>
+                
+                <!-- This is used by intersection observers to set filters menu as fixed -->
+                <div 
+                        ref="items-list-results-top"
+                        class="sr-only"/>
 
                 <div 
                         v-show="(showLoading && 
@@ -529,6 +534,12 @@
                             (advancedSearchResults || !openAdvancedSearch)"
                         :hide-items-per-page-button="hideItemsPerPageButton"
                         :hide-go-to-page-button="hideGoToPageButton"/>
+
+                <!-- This is used by intersection observers to set filters menu as fixed on the bottom -->
+                <div 
+                        ref="items-list-results-bottom"
+                        class="sr-only"
+                        style="bottom: 0px" />
             </div>
         </div>
        
@@ -606,8 +617,10 @@
                 latestNonFullscreenViewMode: '',
                 isMobile: false,
                 initialItemPosition: null,
-                isFiltersListFixed: false,
-                intersectionObserver: null
+                isFiltersListFixedAtTop: false,
+                isFiltersListFixedAtBottom: false,
+                itemsListTopIntersectionObserver: null,
+                itemsListBottomIntersectionObserver: null
             }
         },
         computed: {
@@ -781,24 +794,35 @@
             // Uses Intersection Observer o see if the top of the list is on screen and fix filters list position
             if (!this.filtersAsModal &&
                 !this.hideFilters &&
-                this.$refs['items-list-landmark'] &&
+                this.$refs['items-list-results-top'] &&
+                this.$refs['items-list-results-bottom'] &&
                 "IntersectionObserver" in window &&
                 "IntersectionObserverEntry" in window &&
                 "isIntersecting" in window.IntersectionObserverEntry.prototype &&
                 "boundingClientRect" in window.IntersectionObserverEntry.prototype) {
 
-                this.intersectionObserver = new IntersectionObserver(entries => {
-                    this.isFiltersListFixed = entries[0] && (!entries[0].isIntersecting) && (entries[0].boundingClientRect.y < 0);
+                this.itemsListTopIntersectionObserver = new IntersectionObserver(entries => {
+                    this.isFiltersListFixedAtTop = entries[0] && (!entries[0].isIntersecting) && (entries[0].boundingClientRect.y < 0);
                 });
-                this.intersectionObserver.observe(this.$refs['items-list-landmark']);
+                this.itemsListTopIntersectionObserver.observe(this.$refs['items-list-results-top']);
+    
+                this.itemsListBottomIntersectionObserver = new IntersectionObserver(entries => {
+                    if (entries[0].isIntersecting)
+                        this.isFiltersListFixedAtBottom = true;
+                    else
+                        this.isFiltersListFixedAtBottom = false;
+                });
+                this.itemsListBottomIntersectionObserver.observe(this.$refs['items-list-results-bottom']);
             }
         },
         beforeDestroy() {
             this.removeEventListeners();
             
             // Removes intersection listener, if it was set up
-            if (this.intersectionObserver)
-                this.intersectionObserver.disconnect();
+            if (this.itemsListTopIntersectionObserver)
+                this.itemsListTopIntersectionObserver.disconnect();
+            if (this.itemsListBottomIntersectionObserver)
+                this.itemsListBottomIntersectionObserver.disconnect();
 
             // Cancels previous Metadata Request
             if (this.metadataSearchCancel != undefined)
