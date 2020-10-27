@@ -800,8 +800,9 @@ class Metadata extends Repository {
 					'compare' => 'IN'
 				]
 			],
-			'include_disabled' => true
-		] ); 
+			'include_disabled' => true,
+			'include_control_metadata_types' => true
+		] );
 
 		$data_control_metadata = [
 			'document_type' => [
