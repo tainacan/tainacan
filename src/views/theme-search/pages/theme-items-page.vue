@@ -428,6 +428,7 @@
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
         <div 
                 id="items-list-area"
+                ref="items-list-area"
                 class="items-list-area">
 
             <!-- FILTERS TAG LIST-->
@@ -455,6 +456,7 @@
                 
                 <!-- This is used by intersection observers to set filters menu as fixed -->
                 <div 
+                        id="items-list-results-top"
                         ref="items-list-results-top"
                         class="sr-only"/>
 
@@ -537,6 +539,7 @@
 
                 <!-- This is used by intersection observers to set filters menu as fixed on the bottom -->
                 <div 
+                        id="items-list-results-bottom"
                         ref="items-list-results-bottom"
                         class="sr-only"
                         style="bottom: 0px" />
@@ -802,7 +805,9 @@
                 "boundingClientRect" in window.IntersectionObserverEntry.prototype) {
 
                 this.itemsListTopIntersectionObserver = new IntersectionObserver(entries => {
-                    this.isFiltersListFixedAtTop = entries[0] && (!entries[0].isIntersecting) && (entries[0].boundingClientRect.y < 0);
+                    const itemsListAreaHeight = this.$refs['items-list-area'] ? this.$refs['items-list-area'].clientHeight : 0;
+                    if (itemsListAreaHeight > window.innerHeight)
+                        this.isFiltersListFixedAtTop = entries[0] && (!entries[0].isIntersecting) && (entries[0].boundingClientRect.y < 0);
                 });
                 this.itemsListTopIntersectionObserver.observe(this.$refs['items-list-results-top']);
     
@@ -1497,6 +1502,11 @@
             min-height: 50vh;
             height: auto;
         }
+    }
+
+    .filter-tags-list {
+        padding-top: 1.5em;
+        padding-bottom: 1.5em;
     }
 
     .metadata-alert {
