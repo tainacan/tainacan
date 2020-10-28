@@ -245,8 +245,13 @@ class CSV extends Exporter {
 		
 		if ( is_array($files) && isset($files[$this->collection_name])) {
 			$file = $files[$this->collection_name];
+			$current_user = wp_get_current_user();
+			$author_name = $current_user->user_login;
+
 			$message = __('target collections:', 'tainacan');
 			$message .= " <b>" . implode(", ", $this->get_collections_names() ) . "</b><br/>";
+			$message .= __('Exported by:', 'tainacan');
+			$message .= " <b> ${author_name} </b><br/>";
 			$message .= __('Your CSV file is ready! Access it in the link below:', 'tainacan');
 			$message .= '<br/><br/>';
 			$message .= '<a href="' . $file['url'] . '">Download</a>';
