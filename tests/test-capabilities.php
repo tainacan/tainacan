@@ -502,25 +502,25 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		wp_set_current_user($this->subscriber2->ID);
 
 		$meta = tainacan_metadata()->fetch_by_collection($this->public_collection);
-		$this->AssertEquals(6, sizeof($meta));
+		$this->AssertEquals(4, sizeof($meta));
 		$meta = tainacan_metadata()->fetch_ids_by_collection($this->public_collection);
-		$this->AssertEquals(6, sizeof($meta));
+		$this->AssertEquals(4, sizeof($meta));
 
 		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_read_private_metadata' );
 		$current_user = $this->subscriber2; // force update current user object with new capabilities
 
 		$meta = tainacan_metadata()->fetch_by_collection($this->public_collection);
-		$this->AssertEquals(7, sizeof($meta));
+		$this->AssertEquals(5, sizeof($meta));
 		$meta = tainacan_metadata()->fetch_ids_by_collection($this->public_collection);
-		$this->AssertEquals(7, sizeof($meta));
+		$this->AssertEquals(5, sizeof($meta));
 
 		$this->subscriber2->add_cap( 'tnc_rep_read_private_metadata' );
 		$current_user = $this->subscriber2; // force update current user object with new capabilities
 
 		$meta = tainacan_metadata()->fetch_by_collection($this->public_collection);
-		$this->AssertEquals(8, sizeof($meta));
+		$this->AssertEquals(6, sizeof($meta));
 		$meta = tainacan_metadata()->fetch_ids_by_collection($this->public_collection);
-		$this->AssertEquals(8, sizeof($meta));
+		$this->AssertEquals(6, sizeof($meta));
 
 
 	}

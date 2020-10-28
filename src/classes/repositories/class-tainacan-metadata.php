@@ -653,11 +653,12 @@ class Metadata extends Repository {
 
 		do_action( 'register_metadata_types' );
 
-		return array_filter($this->metadata_types, function($metadata_type) use ($output) {
-			if ( $metadata_type != 'Tainacan\Metadata_Types\Control') {
-				return $output === 'NAME' ? str_replace( 'Tainacan\Metadata_Types\\', '', $metadata_type ) : $metadata_type;
-			}
-		});
+		return array_map(
+			function($metadata_type) use ($output) {
+				return $output === 'NAME' ? str_replace( 'Tainacan\\Metadata_Types\\', '', $metadata_type ) : $metadata_type;
+			},
+			array_filter($this->metadata_types, function($metadata_type) { return $metadata_type != 'Tainacan\Metadata_Types\Control';})
+		);
 	}
 
 

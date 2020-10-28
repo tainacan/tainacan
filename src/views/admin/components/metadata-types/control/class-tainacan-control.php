@@ -10,33 +10,42 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Class TainacanMetadatumType
  */
-class Control extends Metadata_Type {
+class MetadataTypeControlHelperHook {
+	private static $instance = null;
+	private function __construct() { }
 
-	function __construct(){
-		// call metadatum type constructor
-		parent::__construct();
-		$this->set_primitive_type('control');
-		$this->set_component('tainacan-text');
-		$this->set_name( __('Control Type', 'tainacan') );
-		$this->set_description( __('A special metadata type, used to map certain item properties such as collection id and document type to metadata in order to easily create filters.', 'tainacan') );
-		$this->set_default_options([
-			'control_metadatum_options' => ['document_type', 'collection_id'],
-			'control_metadatum' => 'document_type'
-		]);
-		add_action( 'tainacan-insert-tainacan-item', array( $this, 'update_control_metadatum' ), 10, 1 );
+	public static function get_instance() {
+		if ( ! isset( self::$instance ) ) {
+			self::$instance = new self();
+			add_action( 'tainacan-insert-tainacan-item', array(self::$instance, 'update_control_metadatum'), 10, 1 );
+		}
+		return self::$instance;
 	}
 
-	function update_control_metadatum( $item ) {
+	static function update_control_metadatum( $item ) {
 		if ( $item instanceof \Tainacan\Entities\Item ) {
-			$metadata = $item->get_metadata();
+			$item_metadata_repositories = \Tainacan\Repositories\Item_Metadata::get_instance();
+			$item_metadata_repositories->disable_logs();
+			$collection = $item->get_collection();
+			$args = [
+				'include_control_metadata_types' => true,
+				'meta_query' => [
+					[
+						'key'     => 'metadata_type',
+						'value'   => 'Tainacan\Metadata_Types\Control',
+						'compare' => 'IN'
+					]
+				]
+			];
+			$metadatum_repository = \Tainacan\Repositories\Metadata::get_instance();
+			$metadata = $metadatum_repository->fetch_by_collection( $collection, $args );
 			foreach ($metadata as $item_metadatum) {
-				if ( $item_metadatum->get_metadatum()->get_metadata_type_object() instanceof \Tainacan\Metadata_Types\Control &&
-					 $item_metadatum->get_metadatum()->get_metadata_type_options()['control_metadatum'] == $this->get_option('control_metadatum')) {
-					
-					$update_item_metadatum = new \Tainacan\Entities\Item_Metadata_Entity( $item, $item_metadatum->get_metadatum() );
-					switch ( $this->get_option('control_metadatum') ) {
+				if ( $item_metadatum->get_metadata_type_object() instanceof \Tainacan\Metadata_Types\Control) {
+					$update_item_metadatum = new \Tainacan\Entities\Item_Metadata_Entity( $item, $item_metadatum );
+					switch ( $item_metadatum->get_metadata_type_object()->get_option('control_metadatum') ) {
 						case 'document_type':
-							$update_item_metadatum->set_value( $item->get_document_type() );
+							$document_type = $item->get_document_type() == 'attachment' ? get_post_mime_type($item->get_document()) : $item->get_document_type();
+							$update_item_metadatum->set_value( $document_type !== false ? $document_type : 'attachment' );
 						break;
 
 						case 'collection_id':
@@ -49,15 +58,38 @@ class Control extends Metadata_Type {
 					}
 
 					if ( $update_item_metadatum->validate() )
-						\Tainacan\Repositories\Item_Metadata::get_instance()->insert( $update_item_metadatum );
+						$item_metadata_repositories->insert( $update_item_metadatum );
 					else
 						$errors[] = $update_item_metadatum->get_errors();
-
-					break; // Ends foreach in case we already found the related metadata
 				}
 			}
+			$item_metadata_repositories->enable_logs();
 		}
 	}
+}
+
+/**
+ * Class TainacanMetadatumType
+ */
+class Control extends Metadata_Type {
+
+	private $metadataTypeControlHelperHook;
+
+	function __construct() {
+		// call metadatum type constructor
+		parent::__construct();
+		$this->set_primitive_type('control');
+		$this->set_component('tainacan-text');
+		$this->set_name( __('Control Type', 'tainacan') );
+		$this->set_description( __('A special metadata type, used to map certain item properties such as collection id and document type to metadata in order to easily create filters.', 'tainacan') );
+		$this->set_default_options([
+			'control_metadatum_options' => ['document_type', 'collection_id'],
+			'control_metadatum' => 'document_type'
+		]);
+		$metadataTypeControlHelperHook = MetadataTypeControlHelperHook::get_instance();
+	}
+
+	
 
 	public function validate_options( Metadatum $metadatum ) {
 		if ( !in_array($metadatum->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )

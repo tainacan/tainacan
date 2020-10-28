@@ -165,8 +165,8 @@ class Metadata extends TAINACAN_UnitTestCase {
 		$retrieve_metadata_ids =  $Tainacan_Metadata->fetch_ids_by_collection( $collection_son, [] );
 
 		// should return 6
-		$this->assertEquals( 8, sizeof( $retrieve_metadata ) );
-		$this->assertEquals( 8, sizeof( $retrieve_metadata_ids ) );
+		$this->assertEquals( 6, sizeof( $retrieve_metadata ) );
+		$this->assertEquals( 6, sizeof( $retrieve_metadata_ids ) );
 	}
 
 	/**
@@ -197,7 +197,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 	 */
 	function test_metadata_metadata_type(){
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
-		$this->assertEquals( 10, sizeof( $Tainacan_Metadata->fetch_metadata_types() ) );
+		$this->assertEquals( 9, sizeof( $Tainacan_Metadata->fetch_metadata_types() ) );
 	}
 
 
