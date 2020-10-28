@@ -89,7 +89,7 @@ class Bulk_Edit_Process extends Generic_Process {
         $author_name = $current_user->user_login;
 
         $title_label  = __('Collection', 'tainacan');
-        $author_label = __('Processed by', 'tainacan');
+        $author_label = __('Edited by', 'tainacan');
         $metadata_label = __('Changed metadata', 'tainacan');
 
 	    $message  = __('Bulk edit finished', 'tainacan');
