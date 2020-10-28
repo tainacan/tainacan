@@ -51,6 +51,10 @@ class MetadataTypeControlHelperHook {
 						case 'collection_id':
 							$update_item_metadatum->set_value( $item->get_collection_id() );
 						break;
+
+						case 'have_thumbnail':
+							$update_item_metadatum->set_value( !empty($item->get__thumbnail_id()) ? 'yes':'no' );
+						break;
 						
 						default:
 							// What the hell am I doing here?
@@ -83,7 +87,7 @@ class Control extends Metadata_Type {
 		$this->set_name( __('Control Type', 'tainacan') );
 		$this->set_description( __('A special metadata type, used to map certain item properties such as collection id and document type to metadata in order to easily create filters.', 'tainacan') );
 		$this->set_default_options([
-			'control_metadatum_options' => ['document_type', 'collection_id'],
+			'control_metadatum_options' => ['document_type', 'collection_id', 'have_thumbnail'],
 			'control_metadatum' => 'document_type'
 		]);
 		$metadataTypeControlHelperHook = MetadataTypeControlHelperHook::get_instance();
@@ -114,9 +118,13 @@ class Control extends Metadata_Type {
 			case 'collection_id':
 				$return = ($format == 'html' ? $this->get_collection_as_html( $value ) : $this->get_collection_as_string( $value ));
 			break;
+
+			case 'have_thumbnail':
+				$return = ( $value == 'yes' ? __( 'yes', 'tainacan' ) : __( 'no', 'tainacan' ) );
+			break;
 			
 			default:
-				// What the hell am I doing here?
+				$return = $value;// What the hell am I doing here?
 			break;
 		}
 		return $return;

@@ -824,6 +824,15 @@ class Metadata extends Repository {
 				'display'		  => 'never',
 				'metadata_type_options' => [ 'control_metadatum' => 'collection_id' ]
 			],
+			'have_thumbnail' => [
+				'name'            => 'HaveThumbnail',
+				'description'     => 'Does the item have a thumbnail?',
+				'collection_id'   => 'default',
+				'metadata_type'   => 'Tainacan\Metadata_Types\Control',
+				'status'          => 'publish',
+				'display'		  => 'never',
+				'metadata_type_options' => [ 'control_metadatum' => 'have_thumbnail' ]
+			],
 		];
 
 		foreach ( $data_control_metadata as $index => $data_control_metadatum ) {
@@ -832,7 +841,10 @@ class Metadata extends Repository {
 			} else {
 				$exists = false;
 				foreach ( $metadata as $metadatum ) {
-					if ( $metadatum->get_metadata_type() === $data_control_metadatum['metadata_type'] ) {
+					if ( 
+						$metadatum->get_metadata_type() === $data_control_metadatum['metadata_type']  &&
+						$metadatum->get_metadata_type_options()['control_metadatum'] == $data_control_metadatum['metadata_type_options']['control_metadatum']
+					) {
 						$exists = true;
 					}
 				}
