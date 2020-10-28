@@ -133,6 +133,8 @@ export default {
                                 this.$userPrefs.set(viewModeKey, 'table');
                             }
                         }
+
+                        // Emit slideshow-from to start this view mode from index
                         if (this.$route.query.view_mode != ['slideshow'] && this.$route.query['slideshow-from'] != null && this.$route.query['slideshow-from'] != undefined && this.$route.query['slideshow-from'] != false)
                             this.$emit('start-slideshow-from-item', this.$route.query['slideshow-from']);
 

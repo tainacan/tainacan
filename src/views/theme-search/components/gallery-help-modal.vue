@@ -29,8 +29,8 @@
 </template>
 
 <style lang="scss">
-    .gallery-help-modal {
-        z-index: 999999999;
+    .modal.gallery-help-modal {
+        z-index: 9999999999;
 
         .gallery-help-modal-content {
             font-size: 0.875em;

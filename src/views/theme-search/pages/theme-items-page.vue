@@ -623,7 +623,9 @@
                 isFiltersListFixedAtTop: false,
                 isFiltersListFixedAtBottom: false,
                 itemsListTopIntersectionObserver: null,
-                itemsListBottomIntersectionObserver: null
+                itemsListBottomIntersectionObserver: null,
+                latestPerPageAfterViewModeWithoutPagination: 12,
+                latestPageAfterViewModeWithoutPagination: 1,
             }
         },
         computed: {
@@ -774,11 +776,14 @@
                 else   
                     this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
             }
-            // For view modes such as slides, we force pagination to request only 12 per page
+            // For view modes such as slides, we force pagination to request only 24 per page
             let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
             if (existingViewModeIndex >= 0) {
                 if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
-                    this.$eventBusSearch.setItemsPerPage(12, true);
+                    this.latestPerPageAfterViewModeWithoutPagination = this.getItemsPerPage();
+                    this.latestPageAfterViewModeWithoutPagination = this.getPage();
+
+                    this.$eventBusSearch.setItemsPerPage(24, true);
                 }
             }
             
@@ -856,7 +861,9 @@
                 'getOrder',
                 'getViewMode',
                 'getTotalItems',
-                'getMetaKey'
+                'getMetaKey',
+                'getPage',
+                'getItemsPerPage'
             ]),
             openExposersModal() {
                 this.$buefy.modal.open({
@@ -889,11 +896,15 @@
                 // We need to load metadata again as fetch_only might change from view mode
                 this.prepareMetadata();
 
-                // For view modes such as slides, we force pagination to request only 12 per page
+                // For view modes such as slides, we force pagination to request only 24 per page
                 let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(aViewMode => aViewMode == viewMode);
                 if (existingViewModeIndex >= 0) {
-                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination)
-                        this.$eventBusSearch.setItemsPerPage(12, true);
+                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
+                        this.latestPerPageAfterViewModeWithoutPagination = this.getItemsPerPage();
+                        this.latestPageAfterViewModeWithoutPagination = this.getPage();
+
+                        this.$eventBusSearch.setItemsPerPage(24, true);
+                    }
                 }
 
                 // Finally sets the new view mode

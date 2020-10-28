@@ -505,6 +505,10 @@ export default {
             this.hideControls = !this.hideControls;
         },
         closeSlideViewMode() {
+            // Sets the perpage and paged from previous configuration
+            this.$eventBusSearch.setItemsPerPage(this.$parent.latestPerPageAfterViewModeWithoutPagination, true);
+            this.$eventBusSearch.setPage(this.$parent.latestPageAfterViewModeWithoutPagination);
+  
             let currentQuery = this.$route.query;
             delete currentQuery['slideshow-from'];
             this.$router.replace({ query: currentQuery });
