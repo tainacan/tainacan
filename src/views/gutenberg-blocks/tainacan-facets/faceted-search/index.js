@@ -1240,7 +1240,7 @@ registerBlockType('tainacan/faceted-search', {
             updatedListType = 'collection';
         else if (updatedListType === '' && termId && taxonomyId)
             updatedListType = 'term' 
-        console.log(updatedListType, collectionId)
+
         return <div 
                     style={{
                         'font-size': baseFontSize + 'px',
