@@ -752,6 +752,10 @@
             });
 
             this.$eventBusSearch.$on('start-slideshow-from-item', (index) => {
+                let currentQuery = this.$route.query;
+                delete currentQuery['slideshow-from'];
+                this.$router.replace({ query: currentQuery }).catch((error) => this.$console.log(error));
+
                 this.latestNonFullscreenViewMode = JSON.parse(JSON.stringify(this.viewMode));
                 this.onChangeViewMode('slideshow');
                 this.initialItemPosition = index;
