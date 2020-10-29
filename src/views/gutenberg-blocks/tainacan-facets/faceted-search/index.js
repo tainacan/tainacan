@@ -378,7 +378,7 @@ registerBlockType('tainacan/faceted-search', {
                 defaultViewMode = hideItemsThumbnail ? 'table' : 'masonry';
             }
 
-            setAttributes({ 
+            setAttributes({
                 listType: aListType,
                 enabledViewModes: enabledViewModes,
                 defaultViewMode: defaultViewMode
@@ -1234,6 +1234,13 @@ registerBlockType('tainacan/faceted-search', {
             secondaryColor
         } = attributes;
         
+        let updatedListType = '' + listType;
+
+        if (updatedListType === '' && collectionId)
+            updatedListType = 'collection';
+        else if (updatedListType === '' && termId && taxonomyId)
+            updatedListType = 'term' 
+        console.log(updatedListType, collectionId)
         return <div 
                     style={{
                         'font-size': baseFontSize + 'px',
@@ -1255,10 +1262,10 @@ registerBlockType('tainacan/faceted-search', {
                     }}
                     className={ className }>
                 <main 
-                        term-id={ listType == 'term' ? termId : null }
-                        taxonomy={ listType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
-                        collection-id={ listType == 'collection' ? collectionId : null }  
-                        default-view-mode={ defaultViewMode != 'none' ? defaultViewMode : (listType == 'collection' ? collectionDefaultViewMode : (hideItemsThumbnail ? 'table' : 'masonry') ) }
+                        term-id={ updatedListType == 'term' ? termId : null }
+                        taxonomy={ updatedListType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
+                        collection-id={ updatedListType == 'collection' ? collectionId : null }  
+                        default-view-mode={ defaultViewMode != 'none' ? defaultViewMode : (updatedListType == 'collection' ? collectionDefaultViewMode : (hideItemsThumbnail ? 'table' : 'masonry') ) }
                         is-forced-view-mode={ defaultViewMode == 'none' ? true : false }
                         enabled-view-modes={ enabledViewModes.toString() }  
                         hide-filters = { hideFilters.toString() }
