@@ -63,7 +63,7 @@
                                             attached
                                             :aria-close-label="$i18n.get('delete')"
                                             @close="form.document = ''"
-                                            :type="documentErrorMessage ? 'is-danger' : ''">
+                                            :class="documentErrorMessage ? 'is-danger' : ''">
                                         {{ form.document.name }}
                                     </b-tag>
                                 </div>
@@ -182,7 +182,7 @@
                                     attached
                                     :aria-close-label="$i18n.get('delete')"
                                     @close="form.thumbnail = null"
-                                    :type="thumbnailErrorMessage ? 'is-danger' : ''">
+                                    :class="thumbnailErrorMessage ? 'is-danger' : ''">
                                 {{ form.thumbnail.name }}
                             </b-tag>
                         </div>
@@ -248,7 +248,7 @@
                                     attached
                                     :aria-close-label="$i18n.get('delete')"
                                     @close="form.attachments.splice(index, 1)"
-                                    :type="attachmentsErrorMessage.includes(attachment.name) ? 'is-danger' : ''">
+                                    :class="attachmentsErrorMessage.includes(attachment.name) ? 'is-danger' : ''">
                                 {{ attachment.name }}
                             </b-tag>
                         </div>

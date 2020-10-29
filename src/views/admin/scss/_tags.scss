@@ -64,4 +64,24 @@
             color: var(--tainacan-danger) !important;
         }
     }
+
+    &.is-danger {
+        border-color: var(--tainacan-danger) !important;
+        background-color: var(--tainacan-red1) !important;
+        color: var(--tainacan-danger) !important;
+
+        .tag, 
+        .tag:hover, 
+        .tag:focus, 
+        .tag:active {
+            border-color: var(--tainacan-danger) !important;
+            background-color: var(--tainacan-red1) !important;
+            color: var(--tainacan-danger) !important;
+        }
+
+        &:hover .tag.is-delete:hover,
+        .tag.is-delete:hover {
+            border-color: var(--tainacan-danger) !important;
+        }
+    }
 }
