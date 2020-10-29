@@ -1011,7 +1011,7 @@ class REST_Items_Controller extends REST_Controller {
 			move_uploaded_file($files['document']['tmp_name'], $tmp_file_name);
 			$document_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name, $item_id);
 			if($document_id === false) {
-				$entities_erros[] = ["document" => __('error on create document', 'tainacan')];
+				$entities_erros[] = ["document" => __('Error while creating document', 'tainacan')];
 				wp_delete_attachment($document_id, true);
 			} else {
 				$item->set_document_type('attachment');
@@ -1026,7 +1026,7 @@ class REST_Items_Controller extends REST_Controller {
 			move_uploaded_file($files['thumbnail']['tmp_name'], $tmp_file_name);
 			$thumbnail_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name);
 			if($thumbnail_id === false) {
-				$entities_erros[] = ["thumbnail" => __('error on create thumbnail', 'tainacan')];
+				$entities_erros[] = ["thumbnail" => __('Error while creating thumbnail', 'tainacan')];
 				wp_delete_attachment($thumbnail_id, true);
 			} else {
 				$item->set__thumbnail_id($thumbnail_id);
@@ -1050,7 +1050,7 @@ class REST_Items_Controller extends REST_Controller {
 				$attachment_id = $TainacanMedia->insert_attachment_from_file($tmp_file_name, $item_id);
 				unlink($tmp_file_name);
 				if($attachment_id === false) {
-					$entities_erros[] = ['attachments' => __('error on create attachment ', 'tainacan') . "($attachments_name[$i])" ];
+					$entities_erros[] = ['attachments' => __('Error while creating attachment ', 'tainacan') . "($attachments_name[$i])" ];
 					break;
 				}
 				$insert_attachments[] = $attachment_id;

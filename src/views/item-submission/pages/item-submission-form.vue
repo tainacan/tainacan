@@ -63,10 +63,15 @@
                                             attached
                                             :aria-close-label="$i18n.get('delete')"
                                             @close="form.document = ''"
-                                            :type="formErrors.find(error => error.metadatum_id== 'document') ? 'is-danger' : ''">
+                                            :type="documentErrorMessage ? 'is-danger' : ''">
                                         {{ form.document.name }}
                                     </b-tag>
                                 </div>
+                                <p 
+                                        v-if="documentErrorMessage" 
+                                        class="help is-danger">
+                                    {{ documentErrorMessage }}
+                                </p>
                             </div>
                             <div v-if="form.document_type == 'text'">
                                 <b-input 
@@ -177,10 +182,15 @@
                                     attached
                                     :aria-close-label="$i18n.get('delete')"
                                     @close="form.thumbnail = null"
-                                    :type="formErrors.find(error => error.metadatum_id == 'thumbnail') ? 'is-danger' : ''">
+                                    :type="thumbnailErrorMessage ? 'is-danger' : ''">
                                 {{ form.thumbnail.name }}
                             </b-tag>
                         </div>
+                        <p 
+                                v-if="thumbnailErrorMessage" 
+                                class="help is-danger">
+                            {{ thumbnailErrorMessage }}
+                        </p>
                     </div>
                 </template>
 
@@ -238,10 +248,15 @@
                                     attached
                                     :aria-close-label="$i18n.get('delete')"
                                     @close="form.attachments.splice(index, 1)"
-                                    :type="formErrors.find(error => error.metadatum_id == 'attachments') ? 'is-danger' : ''">
+                                    :type="attachmentsErrorMessage.includes(attachment.name) ? 'is-danger' : ''">
                                 {{ attachment.name }}
                             </b-tag>
                         </div>
+                        <p 
+                                v-if="attachmentsErrorMessage" 
+                                class="help is-danger">
+                            {{ attachmentsErrorMessage }}
+                        </p>
                     </div>
                 </template>
             
@@ -477,6 +492,18 @@ export default {
         },
         hasMoreThanOneDocumentTypeOption() {
             return [ this.hideFileModalButton, this.hideTextModalButton, this.hideLinkModalButton ].filter((option) => { return option == false }).length > 1;
+        },
+        documentErrorMessage() {
+            const existingError = this.formErrors.find(error => error.metadatum_id == 'document');
+            return existingError ? existingError.errors : '';
+        },
+        attachmentsErrorMessage() {
+            const existingError = this.formErrors.find(error => error['attachments'] || error.metadatum_id == 'attachments');
+            return existingError ? existingError.errors : '';
+        },
+        thumbnailErrorMessage() {
+            const existingError = this.formErrors.find(error => error.metadatum_id == 'thumbnail');
+            return existingError ? existingError.errors : '';
         }
     },
     created() {
