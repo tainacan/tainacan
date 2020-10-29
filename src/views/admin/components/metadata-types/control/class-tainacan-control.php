@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Class TainacanMetadatumType
  */
-class MetadataTypeControlHelperHook {
+class MetadataTypeControlHelper {
 	private static $instance = null;
 	private function __construct() { }
 
@@ -77,7 +77,7 @@ class MetadataTypeControlHelperHook {
  */
 class Control extends Metadata_Type {
 
-	private $metadataTypeControlHelperHook;
+	private $metadataTypeControlHelper;
 
 	function __construct() {
 		// call metadatum type constructor
@@ -90,10 +90,12 @@ class Control extends Metadata_Type {
 			'control_metadatum_options' => ['document_type', 'collection_id', 'have_thumbnail'],
 			'control_metadatum' => 'document_type'
 		]);
-		$metadataTypeControlHelperHook = MetadataTypeControlHelperHook::get_instance();
+		$metadataTypeControlHelper = MetadataTypeControlHelper::get_instance();
 	}
 
-	
+	public static function get_helper() {
+		return MetadataTypeControlHelper::get_instance();
+	}
 
 	public function validate_options( Metadatum $metadatum ) {
 		if ( !in_array($metadatum->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
