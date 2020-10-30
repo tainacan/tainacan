@@ -184,35 +184,3 @@
 		}
 	}
 }
-
-	/* Default layout - Sidebar */
-:not(.wp-block-tainacan-faceted-search)>.theme-items-list:not(.is-fullscreen).is-filters-menu-open {
-
-	&.is-filters-menu-fixed-at-top {
-
-		.items-list-area {
-			margin-left: var(--tainacan-filter-menu-width-theme) !important;
-		}
-		.filters-menu:not(.filters-menu-modal) {
-			position: fixed;
-			top: 0px !important;
-
-			.modal-content {
-				position: absolute;
-				top: 0px;
-				height: auto !important;
-				background: var(--tainacan-background-color, inherit)
-			}
-		}
-		&.is-filters-menu-fixed-at-bottom {
-			.filters-menu:not(.filters-menu-modal) {
-				position: absolute;
-				.modal-content {
-					top: auto;
-					bottom: 0;
-				}
-			}
-		}
-	}
-}
-

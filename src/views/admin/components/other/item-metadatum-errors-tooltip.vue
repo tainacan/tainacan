@@ -110,6 +110,7 @@ export default {
             h5 {
                 font-size: 0.875em;
                 font-weight: bold;
+                color: var(--tainacan-red2);
             }
         }
 
@@ -122,13 +123,13 @@ export default {
                 font-weight: normal !important;
                 white-space: normal !important;
                 overflow: visible !important;
+                color: var(--tainacan-red2) !important;
             }
             a {
-                color: var(--tainacan-red2);
                 text-decoration: underline;
             }
             a:hover {
-                color: var(--tainacan-red2);
+                color: var(--tainacan-red2) !important;
             }
             ol, ul {
                 margin: 4px 4px;
