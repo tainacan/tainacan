@@ -387,6 +387,10 @@ class REST_Metadata_Controller extends REST_Controller {
 				]
 			];
 
+			if ($request['include_control_metadata_types'] === 'true') {
+				$args['include_control_metadata_types'] = true;
+			}
+
 			$result = $this->metadatum_repository->fetch( $args, 'OBJECT' );
 		}
 

@@ -110,7 +110,7 @@ class Cli_Control_Metadata {
 		$progress->finish();
 
 		$this->result_count['items'] += $this->result_count['items_collection'];
-		$msg = "\n" . $this->result_count['items_collection'] . " items recalculated in collection";
+		$msg = $this->result_count['items_collection'] . " items recalculated in collection";
 
 		\WP_CLI::success( $msg );
 	}

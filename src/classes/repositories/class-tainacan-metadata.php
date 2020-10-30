@@ -458,7 +458,9 @@ class Metadata extends Repository {
 			$results = $this->fetch( $args, 'OBJECT' );
 		}
 
-
+		$results = array_filter($results, function($meta) {
+			return ( !isset($meta->get_metadata_type_options()['only_repository']) || $meta->get_metadata_type_options()['only_repository'] == 'no' );
+		});
 
 		return $this->order_result(
 			$results,
@@ -793,22 +795,26 @@ class Metadata extends Repository {
 			return;
 		}
 
-		$metadata = $this->fetch_by_collection( $collection, [
+		$metadata = $this->fetch( [
 			'meta_query' => [
 				[
 					'key'     => 'metadata_type',
-					'value'   => [ 'Tainacan\Metadata_Types\Control' ],
-					'compare' => 'IN'
+					'value'   => 'Tainacan\Metadata_Types\Control',
+					'compare' => '='
+				],[
+					'key'     => 'collection_id',
+					'value'   => 'default',
+					'compare' => '='
 				]
 			],
 			'include_disabled' => true,
 			'include_control_metadata_types' => true
-		] );
+		], 'OBJECT' );
 
 		$data_control_metadata = [
 			'document_type' => [
-				'name'            => 'DocumentType',
-				'description'     => 'The item main document type',
+				'name'            => __('Document type', 'tainacan'),
+				'description'     => __('The item main document type', 'tainacan'),
 				'collection_id'   => 'default',
 				'metadata_type'   => 'Tainacan\Metadata_Types\Control',
 				'status'          => 'publish',
@@ -816,22 +822,25 @@ class Metadata extends Repository {
 				'metadata_type_options' => [ 'control_metadatum' => 'document_type' ]
 			],
 			'collection_id'       => [
-				'name'            => 'CollectionID',
-				'description'     => 'The item collection ID',
+				'name'            => __('Collection', 'tainacan'),
+				'description'     => __('The item collection ID', 'tainacan'),
 				'collection_id'   => 'default',
 				'metadata_type'   => 'Tainacan\Metadata_Types\Control',
 				'status'          => 'publish',
 				'display'		  => 'never',
-				'metadata_type_options' => [ 'control_metadatum' => 'collection_id' ]
+				'metadata_type_options' => [ 
+					'control_metadatum' => 'collection_id',
+					'only_repository' => 'yes' 
+				]
 			],
-			'have_thumbnail' => [
-				'name'            => 'HaveThumbnail',
-				'description'     => 'Does the item have a thumbnail?',
+			'has_thumbnail' => [
+				'name'            => __('Has thumbnail', 'tainacan'),
+				'description'     => __('Does the item has a thumbnail set?', 'tainacan'),
 				'collection_id'   => 'default',
 				'metadata_type'   => 'Tainacan\Metadata_Types\Control',
 				'status'          => 'publish',
 				'display'		  => 'never',
-				'metadata_type_options' => [ 'control_metadatum' => 'have_thumbnail' ]
+				'metadata_type_options' => [ 'control_metadatum' => 'has_thumbnail' ]
 			],
 		];
 
