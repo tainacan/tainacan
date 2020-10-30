@@ -5,16 +5,6 @@ use Tainacan\Repositories\Repository;
 
 class Roles {
 
-
-	public static $dependencies = [
-		"tainacan-items" => [
-			'edit_posts'           => 'upload_files',
-			"edit_private_posts"   => 'upload_files',
-			"edit_published_posts" => 'upload_files',
-			"edit_others_posts"    => 'upload_files'
-		]
-	];
-
 	private static $instance = null;
 
 	private $capabilities;
