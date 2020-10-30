@@ -128,7 +128,7 @@ class Embed {
 
 		$class = 'tainacan-embed-container';
 
-		if ( !(substr($html, 0, strlen('<iframe')) === '<iframe') )
+		if ( !preg_match('/(?:<iframe[^>]*)(?:(?:\/>)|(?:>.*?<\/iframe>))/i', $html ) && !preg_match('/(?:<object[^>]*)(?:(?:\/>)|(?:>.*?<\/object>))/i', $html)  && !preg_match('/(?:<embed[^>]*)(?:(?:\/>)|(?:>.*?<\/embed>))/i', $html ) )
 			$class .= ' tainacan-embed-without-iframe';
 
 		return $html !== '' ? '<div class="' . $class . '">'.$html.'</div>' : '';
