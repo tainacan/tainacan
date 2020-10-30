@@ -63,8 +63,4 @@ class Background_Importer extends Background_Process {
 		
 	}
 
-	
 }
-
-
- ?>
