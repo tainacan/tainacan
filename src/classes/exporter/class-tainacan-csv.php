@@ -5,25 +5,25 @@ use Tainacan;
 use Tainacan\Entities;
 
 class CSV extends Exporter {
-  private $collection_name;
+	private $collection_name;
 
 	public function __construct($attributes = array()) {
 		parent::__construct($attributes);
 		$this->set_accepted_mapping_methods('any'); // set all method to mapping
 		$this->accept_no_mapping = true;
 		if ($current_collection = $this->get_current_collection_object()) {
-        $name = $current_collection->get_name();
-        $this->collection_name = sanitize_title($name) . "_csv_export.csv";;
-    } else {
-		  $this->collection_name = "csv_export.csv";
-    }
+			$name = $current_collection->get_name();
+			$this->collection_name = sanitize_title($name) . "_csv_export.csv";;
+		} else {
+			$this->collection_name = "csv_export.csv";
+		}
 
 		//$this->set_accepted_mapping_methods('list', [ "dublin-core" ]); // set specific list of methods to mapping
 		$this->set_default_options([
-            'delimiter' => ',',
-            'multivalued_delimiter' => '||',
-            'enclosure' => '"'
-        ]);
+			'delimiter' => ',',
+			'multivalued_delimiter' => '||',
+			'enclosure' => '"'
+		]);
 	}
 	
 	public function filter_multivalue_separator($separator) {
@@ -278,7 +278,7 @@ class CSV extends Exporter {
 
 	public function options_form() {
 		ob_start();
-	   ?>
+		?>
 		<div class="field">
 			<label class="label"><?php _e('CSV Delimiter', 'tainacan'); ?></label>
 			<span class="help-wrapper">
@@ -346,11 +346,7 @@ class CSV extends Exporter {
 		</div>
 		
 		
-	   
-	   <?php 
-	   
-	   
-	   return ob_get_clean();
-
-    }
+		<?php
+		return ob_get_clean();
+	}
 }

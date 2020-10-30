@@ -83,16 +83,16 @@ class Bulk_Edit_Process extends Generic_Process {
 	}
 
 	public function get_output() {
-        $name = $this->get_bulk_collection_name();
-        $metadata = $this->get_changed_metadata();
-        $current_user = wp_get_current_user();
-        $author_name = $current_user->user_login;
+		$name = $this->get_bulk_edit_collection_name();
+		$metadata = $this->get_changed_metadata();
+		$current_user = wp_get_current_user();
+		$author_name = $current_user->user_login;
 
-        $title_label  = __('Collection', 'tainacan');
-        $author_label = __('Edited by', 'tainacan');
-        $metadata_label = __('Changed metadata', 'tainacan');
+		$title_label  = __('Collection', 'tainacan');
+		$author_label = __('Edited by', 'tainacan');
+		$metadata_label = __('Changed metadata', 'tainacan');
 
-	    $message  = __('Bulk edit finished', 'tainacan');
+		$message  = __('Bulk edit finished', 'tainacan');
 		$message .= "<p> <strong> ${title_label}: </strong> ${name} </p>";
 		$message .= "<p> <strong> ${author_label}: </strong> ${author_name} </p>";
 		$message .= "<p> <strong> ${metadata_label}: </strong> ${metadata} </p>";
@@ -100,26 +100,26 @@ class Bulk_Edit_Process extends Generic_Process {
 		return $message;
 	}
 
-	private function get_bulk_collection_name() {
-	    $params =  $this->get_options();
-	    if ($params['collection_id']) {
-	        $collection = $params['collection_id'];
-	        $bulk_collection = Tainacan\Repositories\Collections::get_instance()->fetch($collection);
+	private function get_bulk_edit_collection_name() {
+		$params =  $this->get_options();
+		if ($params['collection_id']) {
+			$collection = $params['collection_id'];
+			$bulk_collection = Tainacan\Repositories\Collections::get_instance()->fetch($collection);
 
-            if ($bulk_collection) {
-                return $bulk_collection->get_name();
-            }
-        }
+			if ($bulk_collection) {
+				return $bulk_collection->get_name();
+			}
+		}
 
-	    return __('Collection', 'tainacan');
-    }
+		return __('Collection', 'tainacan');
+	}
 
-    private function get_changed_metadata() {
-	    $metadatum_id = $this->bulk_edit_data['metadatum_id'];
-        $metadata = get_post($metadatum_id);
+	private function get_changed_metadata() {
+		$metadatum_id = $this->bulk_edit_data['metadatum_id'];
+		$metadata = get_post($metadatum_id);
 
-        return $metadata->post_title;
-    }
+		return $metadata->post_title;
+	}
 
 	public function set_bulk_edit_data($bulk_edit_data = false) {
 		$this->bulk_edit_data = $bulk_edit_data;

@@ -1023,7 +1023,7 @@ class CSV extends Importer {
 
 		$message  = __('imported file:', 'tainacan');
 		$message .= " <b> ${imported_file} </b><br/>";
-	  $message .= __('target collections:', 'tainacan');
+		$message .= __('target collections:', 'tainacan');
 		$message .= " <b>" . implode(", ", $this->get_collections_names() ) . "</b><br/>";
 		$message .= __('Imported by:', 'tainacan');
 		$message .= " <b> ${author} </b><br/>";
