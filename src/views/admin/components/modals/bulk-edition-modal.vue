@@ -440,7 +440,7 @@
                         }).then(() => {
                             this.finalizeProcedure(criterion);
                         });
-                    } if(procedure.metadatum.id === 'comments'){
+                    } else if (procedure.metadatum.id === 'comments') {
                         this.setCommentStatusInBulk({
                             collectionId: this.collectionId,
                             groupId: this.groupId,
