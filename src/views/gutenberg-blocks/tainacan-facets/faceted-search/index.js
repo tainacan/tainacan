@@ -1393,7 +1393,7 @@ registerBlockType('tainacan/faceted-search', {
                 },
                 listType: {
                     type: String,
-                    default: ''
+                    default: 'collection'
                 },
                 isCollectionModalOpen: {
                     type: Boolean,
@@ -1464,7 +1464,7 @@ registerBlockType('tainacan/faceted-search', {
                     default: '#298596'
                 }
             },
-            save({ attributes, className }) {
+            save({ attributes, className }){
                 const {
                     termId,
                     taxonomyId,
@@ -1532,7 +1532,7 @@ registerBlockType('tainacan/faceted-search', {
                                 term-id={ listType == 'term' ? termId : null }
                                 taxonomy={ listType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
                                 collection-id={ listType == 'collection' ? collectionId : null }  
-                                default-view-mode={ defaultViewMode != 'none' ? defaultViewMode : (listType == 'collection' ? collectionDefaultViewMode : (hideItemsThumbnail ? 'table' : 'masonry') ) }
+                                default-view-mode={ defaultViewMode != 'none' ? defaultViewMode : (listType == 'collection' ? collectionDefaultViewMode : 'masonry') }
                                 is-forced-view-mode={ defaultViewMode == 'none' ? true : false }
                                 enabled-view-modes={ enabledViewModes.toString() }  
                                 hide-filters = { hideFilters.toString() }
