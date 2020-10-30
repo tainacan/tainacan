@@ -1405,14 +1405,13 @@ export default {
                     }
                 }
             );
-
             this.attachmentMediaFrame = new wpMediaFrames.attachmentControl(
                 'my-attachment-media-frame', {
                     button_labels: {
                         frame_title: this.$i18n.get('instruction_select_files_to_attach_to_item'),
                         frame_button: this.$i18n.get('label_attach_to_item'),
                     },
-                    nonce: this.item.nonce ? this.item.nonces['update-post_' + this.item.id] : null,
+                    nonce: this.item.nonces ? this.item.nonces['update-post_' + this.item.id] : null,
                     relatedPostId: this.itemId,
                     document: this.item.document_type == 'attachment' ? this.item.document : null, 
                     onSave: () => {
