@@ -114,7 +114,7 @@
 
                 let endpoint = '';
                 
-                if (this.isRepositoryLevel) 
+                if (this.isRepositoryLevel || this.filter.collection_id == 'default') 
                     endpoint += '/facets/' + this.metadatumId;
                 else {
                     if (this.collectionId == 'default' && this.currentCollection)
