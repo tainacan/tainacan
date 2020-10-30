@@ -227,7 +227,7 @@
                 
             </b-tab-item>
 
-            <b-tab-item :label="isTaxonomy ? $i18n.get('label_selected_terms') : $i18n.get('label_selected_metadatum_values')">
+            <b-tab-item :label="(isTaxonomy ? $i18n.get('label_selected_terms') : $i18n.get('label_selected_metadatum_values')) + (amountSelected !== null && amountSelected !== undefined ? (' (' + amountSelected + ')' ): '') ">
 
                 <div class="modal-card-body tainacan-tags-container">
                     <b-field
@@ -303,7 +303,8 @@
             isCheckbox: {
                 type: Boolean,
                 default: true,
-            }
+            },
+            amountSelected: 0
         },
         data() {
             return {
