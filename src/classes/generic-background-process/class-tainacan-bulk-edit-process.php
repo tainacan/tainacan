@@ -106,7 +106,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			$collection = $params['collection_id'];
 			$bulk_collection = Tainacan\Repositories\Collections::get_instance()->fetch($collection);
 
-			if ($bulk_collection) {
+			if ($bulk_collection instanceof \Tainacan\Entities\Collection) {
 				return $bulk_collection->get_name();
 			}
 		}
@@ -115,10 +115,11 @@ class Bulk_Edit_Process extends Generic_Process {
 	}
 
 	private function get_changed_metadata() {
-		$metadatum_id = $this->bulk_edit_data['metadatum_id'];
-		$metadata = get_post($metadatum_id);
-
-		return $metadata->post_title;
+		$metadatum = $this->metadatum_repository->fetch($this->bulk_edit_data['metadatum_id']);
+		if ($metadatum instanceof \Tainacan\Entities\Metadatum) {
+			return $metadatum->get_name();
+		}
+		return __('Metadata', 'tainacan');
 	}
 
 	public function set_bulk_edit_data($bulk_edit_data = false) {
