@@ -761,8 +761,6 @@ abstract class Importer {
 		}
 
 		return false;
-
-
 	}
 
     /**
@@ -913,8 +911,6 @@ abstract class Importer {
 		}
 
 		return $return;
-
-
     }
 
     /**
@@ -990,7 +986,6 @@ abstract class Importer {
                     'input_type' => 'tainacan-taxonomy-checkbox'
                 ]);
             }
-
         }
 
         /*Properties of metadatum*/

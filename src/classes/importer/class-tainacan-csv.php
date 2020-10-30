@@ -283,7 +283,6 @@ class CSV extends Importer {
 		return false;
 	}
 
-
 	public function options_form() {
 		ob_start();
 		?>
@@ -1018,9 +1017,17 @@ class CSV extends Importer {
 	* @return string
 	*/
 	public function get_output() {
+		$imported_file = basename($this->get_tmp_file());
+		$current_user = wp_get_current_user();
+		$author = $current_user->user_login;
 
-		$message = __('target collections:', 'tainacan');
+		$message  = __('imported file:', 'tainacan');
+		$message .= " <b> ${imported_file} </b><br/>";
+		$message .= __('target collections:', 'tainacan');
 		$message .= " <b>" . implode(", ", $this->get_collections_names() ) . "</b><br/>";
+		$message .= __('Imported by:', 'tainacan');
+		$message .= " <b> ${author} </b><br/>";
+
 		return $message;
 	}
 
