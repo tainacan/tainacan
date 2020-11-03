@@ -26,6 +26,7 @@ function tainacan_blocks_add_gutenberg_blocks_actions() {
 	add_action('init', 'tainacan_blocks_register_tainacan_collections_list');
 	add_action('init', 'tainacan_blocks_register_tainacan_carousel_collections_list');
 	add_action('init', 'tainacan_blocks_register_tainacan_facets_list');
+	add_action('init', 'tainacan_blocks_register_tainacan_item_submission_form');
 
 	add_action('init', 'tainacan_blocks_add_plugin_settings');
 	
@@ -156,6 +157,45 @@ function tainacan_blocks_register_tainacan_dynamic_items_list(){
 			'editor_script' => 'dynamic-items-list',
 			'style'         => 'dynamic-items-list',
 			'script'		=> 'dynamic-items-list-theme'
+		) );
+	}
+}
+
+function tainacan_blocks_register_tainacan_item_submission_form(){
+	global $TAINACAN_BASE_URL;
+	global $TAINACAN_VERSION;
+
+	wp_register_script(
+		'tainacan-item-submission',
+		$TAINACAN_BASE_URL . '/assets/js/item_submission.js',
+		['underscore', 'jcrop', 'media-editor', 'media-views', 'customize-controls'],
+		TAINACAN_VERSION
+	);
+
+	wp_register_script(
+		'item-submission-form',
+		$TAINACAN_BASE_URL . '/assets/js/block_item_submission_form.js',
+		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
+	);
+
+	wp_register_script(
+		'google-recaptcha-script',
+		'https://www.google.com/recaptcha/api.js',
+		[], false, true 
+	);
+	wp_enqueue_script('google-recaptcha-script');
+
+	wp_register_style(
+		'item-submission-form',
+		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-item-submission-form.css',
+		array('wp-edit-blocks', 'tainacan-blocks-common-styles')
+	);
+
+	if (function_exists('register_block_type')) {
+		register_block_type( 'tainacan/item-submission-form', array(
+			'editor_script' => 'item-submission-form',
+			'style'         => 'item-submission-form',
+			'script'		=> 'tainacan-item-submission'
 		) );
 	}
 }
@@ -378,8 +418,11 @@ function tainacan_blocks_add_plugin_settings() {
 	wp_localize_script( 'carousel-collections-list', 'tainacan_blocks', $settings );
 	wp_localize_script( 'facets-list', 'tainacan_blocks', $settings );
 
-	// The facet facteded search block uses a different settings object, the same used on the theme items list
+	// The faceded search block uses a different settings object, the same used on the theme items list
 	wp_localize_script( 'tainacan-search', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params() );
+
+	// The item submission search block uses a different settings object, the same used on the item submission component
+	wp_localize_script( 'tainacan-item-submission', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params() );
 }
 
 function tainacan_blocks_get_common_styles() {

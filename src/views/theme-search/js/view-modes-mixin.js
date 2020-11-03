@@ -54,7 +54,7 @@ export const viewModesMixin = {
                 return metadata.value_as_html;
         },
         starSlideshowFromHere(index) {
-            this.$router.replace({ query: {...this.$route.query, ...{'slideshow-from': index } }});
+            this.$router.replace({ query: {...this.$route.query, ...{'slideshow-from': index } }}).catch((error) => this.$console.log(error));
         }
     }
 }

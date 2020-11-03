@@ -154,7 +154,7 @@
 
                     let route = '';
                     
-                    if (this.isRepositoryLevel)
+                    if (this.isRepositoryLevel || this.filter.collection_id == 'default')
                         route = `/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
                     else {
                         if ((this.collectionId == 'default' || this.filter.inherited) && this.currentCollectionId)

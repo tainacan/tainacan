@@ -9,6 +9,7 @@
     }
     li {
         overflow-y: hidden;
+        margin: 0;
     }
     a {
         font-size: 0.8125em;
@@ -24,7 +25,7 @@
         }
     }
     li.is-active a {
-        border-bottom-color: var(--tainacan-turquoise5);
+        border-bottom-color: var(--tainacan-secondary);
         color: var(--tainacan-black) !important;
     }
     .icon:first-child {

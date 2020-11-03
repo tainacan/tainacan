@@ -13,6 +13,8 @@
                 v-model="selected"
                 :data="labels"
                 field="label"
+                :remove-on-keys="[]"
+                :dropdown-position="isLastMetadatum ? 'top' :'auto'"
                 attached
                 ellipsis
                 :aria-close-label="$i18n.get('remove_value')"
@@ -59,6 +61,7 @@
             disabled: false,
             allowSelectToCreate: false,
             maxtags: '',
+            isLastMetadatum: false
         },
         data() {
             return {

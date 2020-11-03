@@ -14,6 +14,7 @@
                 :has-counter="false" />
         <checkbox-radio-metadata-input
                 v-else
+                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 :is-modal="false"
                 :parent="0"
                 :taxonomy_id="taxonomyId"
@@ -23,6 +24,7 @@
                 :collection-id="itemMetadatum.metadatum.collection_id"
                 :is-taxonomy="true"
                 :metadatum="itemMetadatum.metadatum"
+                :amount-selected="getComponent == 'tainacan-taxonomy-checkbox' ? value.length : (value ? '1' : '0')"
                 :is-checkbox="getComponent == 'tainacan-taxonomy-checkbox'"
                 @input="(selected) => valueComponent = selected"
             />
@@ -85,7 +87,7 @@
             }
         },
         watch: {
-            valueComponent( val ){
+            valueComponent( val ) {
                 this.$emit('input', val);
             }
         },
@@ -95,7 +97,7 @@
             this.taxonomyId = metadata_type_options.taxonomy_id;
             this.taxonomy = metadata_type_options.taxonomy;
 
-            if (metadata_type_options && metadata_type_options.allow_new_terms && this.itemMetadatum.item) 
+            if (this.itemMetadatum.item && this.itemMetadatum.item.id && metadata_type_options && metadata_type_options.allow_new_terms && this.itemMetadatum.item) 
                 this.allowNew = metadata_type_options.allow_new_terms == 'yes';
 
             this.getTermsId();

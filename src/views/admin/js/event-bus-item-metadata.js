@@ -8,10 +8,12 @@ export const eventBusItemMetadata = new Vue({
     },
     watch: {
         errors() {
-            this.$emit('hasErrorsOnForm', this.errors.length > 0);
+            this.$emit('hasErrorsOnForm', this.errors.length > 0 && this.errors[0].errors && this.errors[0].errors.length);
             
-            for (let error of this.errors) 
-                this.$emit('updateErrorMessageOf#' + (error.metadatum_id + (error.parent_meta_id ? '-' + error.parent_meta_id : '')), error);
+            if (this.errors.length > 0 && this.errors[0].errors && this.errors[0].errors.length) {
+                for (let error of this.errors) 
+                    this.$emit('updateErrorMessageOf#' + (error.metadatum_id + (error.parent_meta_id ? '-' + error.parent_meta_id : '')), error);
+            }
         }
     },
     created() {
@@ -23,7 +25,7 @@ export const eventBusItemMetadata = new Vue({
         this.$on('remove_group', this.removeItemMetadataGroup);
     },
     methods : {
-        updateValue({ itemId, metadatumId, values, parentMetaId }){
+        updateValue({ itemId, metadatumId, values, parentMetaId, parentId }){
             
             if (itemId) {
 
@@ -65,9 +67,37 @@ export const eventBusItemMetadata = new Vue({
                         }
                         
                 });
+
+            // If no itemId is provided, we are probably on an item Submission flow
+            } else {
+
+                if (values.length > 0 && values[0] != undefined && values[0].value) {
+                    let onlyValues = values.map((aValueObject) => aValueObject.value);
+                    values = JSON.parse(JSON.stringify(onlyValues));
+                }
+                
+                this.$store.dispatch('item/updateItemSubmissionMetadatum', { 
+                    metadatum_id: metadatumId, 
+                    values: Array.isArray(values[0]) ? values[0] : values,
+                    child_group_index: parentMetaId,
+                    parent_id: parentId
+                });
+
+                let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ));
+                let messages = [];
+
+                if ( index >= 0) {
+                    Vue.set( this.errors, index, { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages });
+                    this.$emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[index]);
+                } else {
+                    this.errors.push( { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } );
+                    this.$emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[0]);
+                }
+
+                this.$emit('isUpdatingValue', false);
             }
         },
-        removeItemMetadataGroup({ itemId, metadatumId, parentMetaId }) {
+        removeItemMetadataGroup({ itemId, metadatumId, parentMetaId, parentMetadatum }) {
             
             this.$emit('isUpdatingValue', true);
             
@@ -79,10 +109,21 @@ export const eventBusItemMetadata = new Vue({
                     parent_meta_id: parentMetaId
                 })
                     .then((res) => {
-                        this.$emit('hasRemovedItemMetadataGroup', res)
+                        this.$emit('hasRemovedItemMetadataGroup', res);
                         this.$emit('isUpdatingValue', false);
                     })
                     .catch(() => this.$emit('isUpdatingValue', false));
+            
+            // Item sbmission logic
+            } else if (!itemId) {
+                
+                this.$store.dispatch('item/deleteGroupFromItemSubmissionMetadatum', { 
+                    metadatum_id: metadatumId,
+                    child_group_index: parentMetaId
+                });
+                
+                this.$emit('hasRemovedItemMetadataGroup', true);
+                this.$emit('isUpdatingValue', false);
             }
         },
         clearAllErrors() {

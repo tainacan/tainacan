@@ -55,7 +55,7 @@
                                 v-for="(column, metadatumIndex) in displayedMetadata"
                                 :key="metadatumIndex"
                                 v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                v-html="item.metadata != undefined && collectionId ? renderMetadata(item.metadata, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)" />                 
+                                v-html="item.metadata != undefined && collectionId ? renderMetadata(item.metadata, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                 
                         <span 
                                 v-if="isSlideshowViewModeEnabled"
                                 v-tooltip="{
@@ -78,7 +78,7 @@
                                 class="tainacan-list-thumbnail"
                                 v-if="item.thumbnail != undefined">
                             <img 
-                                    :alt="$i18n.get('label_thumbnail')"
+                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                     :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">  
                         </div>
                         <div class="list-metadata media-body">

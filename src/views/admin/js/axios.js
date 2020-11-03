@@ -98,4 +98,4 @@ export const CancelToken = axios.CancelToken;
 export const isCancel = axios.isCancel;
 export const all = axios.all;
 
-export default { tainacan, wp, CancelToken, isCancel, all };
+export default { tainacan, wp, CancelToken, isCancel, all};

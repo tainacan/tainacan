@@ -328,7 +328,8 @@
                                             :class="{'tainacan-icon-viewtable' : ( adminViewMode == 'table' || adminViewMode == undefined),
                                                     'tainacan-icon-viewcards' : adminViewMode == 'cards',
                                                     'tainacan-icon-viewminiature' : adminViewMode == 'grid',
-                                                    'tainacan-icon-viewrecords' : adminViewMode == 'records' || adminViewMode == 'list',
+                                                    'tainacan-icon-viewrecords' : adminViewMode == 'records',
+                                                    'tainacan-icon-viewlist' : adminViewMode == 'list',
                                                     'tainacan-icon-viewmasonry' : adminViewMode == 'masonry' }"
                                             class="tainacan-icon tainacan-icon-1-25em"/>
                                 </span>
@@ -402,7 +403,7 @@
                                 :value="'list'"
                                 aria-role="listitem">
                             <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-viewrecords"/>
+                                <i class="tainacan-icon tainacan-icon-viewlist"/>
                             </span>
                             <span>{{ $i18n.get('label_list') }}</span>
                         </b-dropdown-item>
@@ -890,14 +891,15 @@
                     trapFocus: true
                 });
             },
-            openExposersModal() {
+            openExposersModal(selectedItems) {
                 this.$buefy.modal.open({
                     parent: this,
                     component: ExposersModal,
                     hasModalCard: true,
                     props: { 
                         collectionId: this.collectionId,
-                        totalItems: this.totalItems
+                        totalItems: this.totalItems,
+                        selectedItems: selectedItems
                     },
                     trapFocus: true
                 })

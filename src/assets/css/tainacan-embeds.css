@@ -1,11 +1,13 @@
 .tainacan-embed-container {
   position: relative;
-  padding-bottom: 56.25%;
-  padding-top: 30px;
   height: 0;
   overflow: hidden;
   max-width: 100%;
   height: auto;
+}
+.tainacan-embed-container:not(.tainacan-embed-without-iframe) {
+  padding-bottom: 56.25%;
+  padding-top: 30px;
 }
 .tainacan-embed-container iframe,
 .tainacan-embed-container object,

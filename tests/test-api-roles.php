@@ -234,6 +234,38 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertTrue($role['capabilities']['upload_files']);
 	}
 
+	public function test_add_dependencies_capabilities() {
+		$request = new \WP_REST_Request('POST', $this->namespace . '/roles');
+
+		$request->set_query_params(['name' => 'New role']);
+
+		$create = $this->server->dispatch($request);
+		//var_dump($create);
+		$this->assertEquals( 201, $create->get_status() );
+
+		$request = new \WP_REST_Request('PATCH', $this->namespace . '/roles/tainacan-new-role');
+
+		$request->set_query_params(
+			[
+				'name' => 'Changed name',
+				'capabilities' => [
+					'tnc_col_12_edit_items' => true
+				]
+			]
+		);
+
+		$response = $this->server->dispatch($request);
+
+		$this->assertEquals( 200, $response->get_status() );
+
+		$role = \wp_roles()->roles['tainacan-new-role'];
+
+		$this->assertArrayHasKey('tnc_col_12_edit_items', $role['capabilities']);
+		$this->assertTrue($role['capabilities']['tnc_col_12_edit_items']);
+		$this->assertArrayHasKey('upload_files', $role['capabilities']);
+		$this->assertTrue($role['capabilities']['upload_files']);
+	}
+
 	public function test_get_collection_caps() {
 
 		$collection = $this->tainacan_entity_factory->create_entity(

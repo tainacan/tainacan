@@ -55,6 +55,7 @@
                 &.is-active { background-color: var(--tainacan-primary); }
 
                 .media {
+                    display: flex;
                     align-items: center;
                 
                     .media-left {
@@ -130,9 +131,6 @@
         margin-bottom: 0px !important; 
         text-overflow: ellipsis;
         background-color: var(--tainacan-input-background-color);
-        &:hover {
-            border: none !important;
-        }
     }
     .input.has-selected, .input:focus, .input:active {
         background-color: var(--tainacan-input-background-color);

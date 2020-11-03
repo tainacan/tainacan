@@ -69,6 +69,7 @@ class REST_Controller extends \WP_REST_Controller {
 			'authorid'     => 'author',
 			'authorname'   => 'author_name',
 			'search'       => 's',
+			's'			   => 's',	
 			'searchterm'   => 'search',
 			'status'       => 'post_status',
 			'offset'       => 'offset',
@@ -146,7 +147,7 @@ class REST_Controller extends \WP_REST_Controller {
 		}
 
 		$args['perm'] = 'readable';
-
+		
 		return apply_filters('tainacan-api-prepare-items-args', $args, $request);
 	}
 

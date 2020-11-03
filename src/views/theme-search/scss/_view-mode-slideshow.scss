@@ -27,7 +27,7 @@
 #gallery-help-button {
     right: 10.5rem;
 }
-.metadata-menu {
+.metadata-menu.tainacan-form {
     background-color: var(--tainacan-black);
     position: absolute;
     z-index: 10;
@@ -85,7 +85,7 @@
         hr {
             margin-top: 0;
             width: 100%;
-            background-color: var(--tainacan-turquoise5);
+            background-color: var(--tainacan-secondary);
         }
     }
 
@@ -247,6 +247,9 @@
             width: auto;
             height: auto;
         }
+        iframe {
+            border: none;
+        }
 
         .empty-document {
             font-size: 4em;
@@ -319,7 +322,7 @@
         .icon {
             border-radius: 100px;
             background: var(--tainacan-white);
-            border: 3px solid var(--tainacan-turquoise5);
+            border: 3px solid var(--tainacan-secondary);
             i, i:before {
                 font-size: 1.5em;
             }
@@ -358,7 +361,7 @@
         .tainacan-icon::before {
             line-height: 5em;
             font-size: 5em;
-            color: var(--tainacan-turquoise5);
+            color: var(--tainacan-secondary);
             text-shadow: 0px 0px 2px var(--tainacan-gray5);
         }
     }
@@ -428,7 +431,7 @@
 
             &.active-item img,
             &.swiper-slide-active img {
-                border-bottom: 4px solid var(--tainacan-turquoise5);
+                border-bottom: 4px solid var(--tainacan-secondary);
             }
             &:hover img{
                 border-bottom: 4px solid var(--tainacan-gray2);

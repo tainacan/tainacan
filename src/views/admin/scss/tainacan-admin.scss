@@ -36,8 +36,11 @@
 html {
     overflow-y: hidden;
 }
-body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter, body.tainacan-admin-page #wp-auth-check-wrap {
+body.tainacan-admin-page #adminmenumain, body.tainacan-admin-page #wpfooter {
     display: none;
+}
+body.tainacan-admin-page #wp-auth-check-wrap {
+    z-index: 9999999;
 }
 #tainacan-admin-app {
     background: var(--tainacan-background-color);
@@ -211,7 +214,7 @@ a:hover {
         .multivalue-separator {
             display: block;
             max-height: 1px;
-            width: 60px;
+            width: 80px;
             background: var(--tainacan-gray2);
             content: none;
             color: transparent;
@@ -225,7 +228,7 @@ a:hover {
     .multivalue-separator {
         display: block;
         max-height: 1px;
-        width: 60px;
+        width: 80px;
         background: var(--tainacan-gray3);
         content: none;
         color: transparent;
@@ -247,6 +250,9 @@ a:hover {
             margin-bottom: 0.75em;
         }
     }
+}
+.taginput-container .input:hover {
+    border: none !important;
 }
 
 // Buefy notices (toast, snackbar...)

@@ -1,12 +1,15 @@
 <template>
     <b-field
+            :class="hideCollapses ? 'has-collapses-hidden' : ''"
             :addons="false"
             :message="errorMessage"
             :type="errorMessage ? 'is-danger' : ''">
         <span   
                 class="collapse-handle"
-                @click="$emit('changeCollapse', errorMessage ? true : !isCollapsed )">
-            <span class="icon">
+                @click="!hideCollapses ? $emit('changeCollapse', errorMessage ? true : !isCollapsed ) : ''">
+            <span 
+                    v-if="!hideCollapses"
+                    class="icon">
                 <i 
                         :class="{
                             'tainacan-icon-arrowdown' : isCollapsed || errorMessage,
@@ -33,16 +36,19 @@
                     :class="errorMessage ? 'is-danger' : ''">
                 *
             </span>
-            <span class="metadata-type">
+            <span 
+                    v-if="!$parent.hideMetadataTypes"
+                    class="metadata-type">
                 ({{ itemMetadatum.metadatum.metadata_type_object.name }})
             </span>
-            <help-button 
+            <help-button
+                    v-if="!$parent.hideHelpButtons" 
                     :title="itemMetadatum.metadatum.name"
                     :message="itemMetadatum.metadatum.description"/>
         </span>
         <transition name="filter-item">
             <div   
-                    v-show="isCollapsed || errorMessage"
+                    v-show="hideCollapses || (isCollapsed || errorMessage)"
                     v-if="isTextInputComponent">
                 <component 
                         :is="metadatumComponent"
@@ -91,14 +97,15 @@
         <!-- Non-textual metadata such as taxonomy, relationship and compound manage multiple state in different ways -->
         <transition name="filter-item">
             <div 
-                    v-show="isCollapsed"
+                    v-show="hideCollapses || isCollapsed"
                     v-if="!isTextInputComponent">
                 <component
                         :is="metadatumComponent"
                         v-model="values"
                         :item-metadatum="itemMetadatum"
                         @input="changeValue"
-                        @blur="performValueChange"/>
+                        @blur="performValueChange"
+                        :is-last-metadatum="isLastMetadatum" />
             </div>
         </transition>
     </b-field>
@@ -111,7 +118,9 @@
         name: 'TainacanFormItem',
         props: {
             itemMetadatum: Object,
-            isCollapsed: true
+            isCollapsed: true,
+            hideCollapses: false,
+            isLastMetadatum: false
         },
         data(){
             return {
@@ -162,48 +171,51 @@
                 this.performValueChange();
             }, 800),
             performValueChange() {
-
+                
                 // Compound metadata do not emit values, only their children.
                 if (this.metadatumComponent == 'tainacan-compound')
                     return;
 
+                if (this.itemMetadatum.value !== null) {
+
                 // This routine avoids calling the API if the value did not changed
-                switch(this.itemMetadatum.value.constructor.name) {
+                    switch(this.itemMetadatum.value.constructor.name) {
 
-                    // Multivalored Metadata requires checking the whole array
-                    case 'Array': {
-                        
-                        let equal = [];
-                        let currentValues = [];
-
-                        // An array of terms
-                        if (this.values.length && this.values[0].constructor.name == 'Object')
-                            currentValues = this.values.map(term => term.value)
-                        else
-                            currentValues = this.values;
+                        // Multivalored Metadata requires checking the whole array
+                        case 'Array': {
                             
-                        for (let value of currentValues) {
-                            let foundIndex = this.itemMetadatum.value.findIndex(element => value == element.id);
-                            if (foundIndex >= 0)
-                                equal.push(this.itemMetadatum.value[foundIndex]);
+                            let equal = [];
+                            let currentValues = [];
+                            
+                            // An array of terms
+                            if (this.values.length && this.values[0].constructor.name == 'Object')
+                                currentValues = this.values.map(term => term.value)
+                            else
+                                currentValues = this.values;
+                                
+                            for (let value of currentValues) {
+                                let foundIndex = this.itemMetadatum.value.findIndex(element => value == element.id);
+                                if (foundIndex >= 0)
+                                    equal.push(this.itemMetadatum.value[foundIndex]);
+                            }
+
+                            if (equal.length == currentValues.length && this.itemMetadatum.value.length <= equal.length)
+                                return;
+
+                            break;
                         }
+                        
+                        // A single term value
+                        case 'Object':
+                            if (this.values.length && this.values[0] == this.itemMetadatum.value.id)
+                                return;
+                            break;
 
-                        if (equal.length == currentValues.length && this.itemMetadatum.value.length <= equal.length)
-                            return;
-
-                        break;
+                        // Any single metadatum value that is not a term
+                        default:
+                            if (this.values.length && this.values[0] == this.itemMetadatum.value)
+                                return;
                     }
-                    
-                    // A single term value
-                    case 'Object':
-                        if (this.values.length && this.values[0] == this.itemMetadatum.value.id)
-                            return;
-                        break;
-
-                    // Any single metadatum value that is not a term
-                    default:
-                        if (this.values.length && this.values[0] == this.itemMetadatum.value)
-                            return;
                 }
                 
                 // If none is the case, the value is update request is sent to the API
@@ -211,7 +223,8 @@
                     itemId: this.itemMetadatum.item.id,
                     metadatumId: this.itemMetadatum.metadatum.id,
                     values: this.values ? this.values : '',
-                    parentMetaId: this.itemMetadatum.parent_meta_id
+                    parentMetaId: this.itemMetadatum.parent_meta_id,
+                    parentId: this.itemMetadatum.metadatum.parent != undefined ? this.itemMetadatum.metadatum.parent : 0
                 });
             },
             addValue(){
@@ -236,8 +249,21 @@
     }
 
     .field {
-        border-bottom: 1px solid var(--tainacan-gray2);
+        border-bottom: 1px solid var(--tainacan-input-border-color);
         padding: 10px var(--tainacan-container-padding);
+
+        &.has-collapses-hidden {
+            border-bottom: none;
+            padding: 10px !important;
+
+            .collapse-handle {
+                margin-left: -15px;
+            }
+
+            .child-metadata-inputs {
+                margin-left: 0.25em;
+            }
+        }
 
         .label {
             font-size: 0.875em;
@@ -250,7 +276,8 @@
         .metadata-type {
             font-size: 0.8125em;
             font-weight: 400;
-            color: var(--tainacan-gray3);
+            color: var(--tainacan-info-color);
+            opacity: 0.75;
             top: -0.1em;
             position: relative;
         }

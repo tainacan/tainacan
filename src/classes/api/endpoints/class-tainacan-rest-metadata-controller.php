@@ -306,7 +306,6 @@ class REST_Metadata_Controller extends REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
 			$item_arr = $item->_toArray();
-
 			$item_arr['metadata_type_object'] = $item->get_metadata_type_object()->_toArray();
 
 			if(isset($item_arr['metadata_type_options']) && isset($item_arr['metadata_type_options']['taxonomy_id'])){
@@ -400,7 +399,7 @@ class REST_Metadata_Controller extends REST_Controller {
 		}
 
 		return new \WP_REST_Response($prepared_item, 200);
-	}
+	} 
 
 	/**
 	 * @param \WP_REST_Request $request

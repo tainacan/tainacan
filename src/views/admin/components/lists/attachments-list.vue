@@ -189,7 +189,6 @@
 
     .uploaded-files {
         display: block;
-        text-align: center;
 
         .file-item-container {
             display: inline-block;

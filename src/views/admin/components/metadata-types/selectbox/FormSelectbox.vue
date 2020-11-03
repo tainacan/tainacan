@@ -16,6 +16,7 @@
                     @input="emitValues()"
                     @focus="clear()"
                     attached
+                    :remove-on-keys="[]"
                     :aria-close-label="$i18n.get('remove_value')"
                     :class="{'has-selected': options != undefined && options != []}"
                     :placeholder="$i18n.get('new') + ', ...'"/>
@@ -34,7 +35,7 @@
             return {
                 optionType: '',
                 optionMessage: '',
-                options: []
+                options: [],
             }
         },
         computed: {

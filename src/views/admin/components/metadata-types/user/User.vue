@@ -16,6 +16,8 @@
                 :placeholder="$i18n.get('instruction_type_search_users')"
                 keep-first
                 open-on-focus
+                :remove-on-keys="[]"
+                :dropdown-position="isLastMetadatum ? 'top' :'auto'"
                 :loading="isLoading || isLoading"
                 :aria-close-label="$i18n.get('remove_value')"
                 :class="{'has-selected': selected != undefined && selected != []}"
@@ -58,6 +60,7 @@ export default {
         maxtags: undefined,
         disabled: false,
         allowNew: true,
+        isLastMetadatum: false
     },
     data() {
         return {

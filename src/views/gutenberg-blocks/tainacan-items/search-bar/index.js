@@ -178,13 +178,13 @@ registerBlockType('tainacan/search-bar', {
                                                     (alignment == 'right' ? ' is-aligned-right' : '') 
                                                 }
                                                 id="tainacan-search-bar-block"
-                                                action={ tainacan_blocks.site_url + '/' + collectionSlug + '/#/' }
+                                                action={ tainacan_blocks.site_url + '/' + collectionSlug }
                                                 method='get'>
                                             <input 
                                                 style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
                                                 id="tainacan-search-bar-block_input"
                                                 label={ __('Search', 'tainacan')}
-                                                name='search'
+                                                name='s'
                                                 placeholder={ placeholderText }
                                             /> 
                                             <button 
@@ -223,13 +223,13 @@ registerBlockType('tainacan/search-bar', {
                                         (alignment == 'right' ? ' is-aligned-right' : '') 
                                     }
                                     id="tainacan-search-bar-block"
-                                    action={ tainacan_blocks.site_url + '/' + collectionSlug + '/#/' }
+                                    action={ tainacan_blocks.site_url + '/' + collectionSlug }
                                     method='get'>
                                 <input 
                                     style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
                                     id="tainacan-search-bar-block_input"
                                     label={ __('Search', 'tainacan')}
-                                    name='search'
+                                    name='s'
                                     placeholder={ placeholderText }
                                 /> 
                                 <button 
@@ -621,7 +621,7 @@ registerBlockType('tainacan/search-bar', {
                                                 style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
                                                 id="tainacan-search-bar-block_input"
                                                 label={ __('Search', 'tainacan')}
-                                                name='search'
+                                                name='s'
                                                 placeholder={ placeholderText }
                                             /> 
                                             <button 
@@ -667,7 +667,7 @@ registerBlockType('tainacan/search-bar', {
                                     style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
                                     id="tainacan-search-bar-block_input"
                                     label={ __('Search', 'tainacan')}
-                                    name='search'
+                                    name='s'
                                     placeholder={ placeholderText }
                                 /> 
                                 <button 

@@ -169,6 +169,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_slug'                                     => __( 'Slug', 'tainacan' ),
 	'label_image'                                    => __( 'Image', 'tainacan' ),
 	'label_thumbnail'                                => __( 'Thumbnail', 'tainacan' ),
+	'label_thumbnail_alt'                            => __( 'Thumbnail alternative text', 'tainacan' ),
 	'label_empty_thumbnail'                          => __( 'Empty Thumbnail', 'tainacan' ),
 	'label_empty_term_image'                         => __( 'Empty Term Image', 'tainacan' ),
 	'label_parent_collection'                        => __( 'Parent collection', 'tainacan' ),
@@ -358,8 +359,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_select_all_items'                         => __( 'Select all items', 'tainacan' ),
 	'label_select_all'                               => __( 'Select all', 'tainacan' ),
 	'label_untrash_selected_items'                   => __( 'Restore from trash', 'tainacan' ),
-	'label_value_not_informed'                       => __( 'Value not informed.', 'tainacan' ),
-	'label_description_not_informed'                 => __( 'Description not informed.', 'tainacan' ),
+	'label_value_not_provided'                       => __( 'No value provided.', 'tainacan' ),
+	'label_description_not_provided'                 => __( 'No description provided.', 'tainacan' ),
 	'label_save_goto_metadata'                       => __( 'Save and Go to Metadata', 'tainacan' ),
 	'label_save_goto_filter'                         => __( 'Save and Go to Filters', 'tainacan' ),
 	'label_view_all_collections'                     => __( 'View all Collections', 'tainacan' ),
@@ -470,6 +471,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_editing_capabilitiy'					 	 => __( 'Editing capabilitiy', 'tainacan' ),
 	'label_default_author_user'						 => __( 'Set the item author as default value', 'tainacan' ),
 	'label_crate_new_item'							 => __( 'Create new item', 'tainacan' ),
+	'label_submit'									 => __( 'Submit', 'tainacan' ),
 	'label_know_more'								 => __( 'Know more', 'tainacan' ),
 	'label_request_details'							 => __( 'Request details', 'tainacan' ),
 	'label_terms_without_parent'					 => __( 'Terms without parent', 'tainacan' ),
@@ -477,7 +479,13 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_gallery_help'							 => __( 'Help with the gallery view mode', 'tainacan' ),
 	'label_space_key'								 => __( 'SPACE', 'tainacan' ),
 	'label_esc_key'								 	 => __( 'ESC', 'tainacan' ),
-
+	'label_view_selected_items_as'					 => __( 'View selected items as...', 'tainacan' ),
+	'label_actions_for_the_selection'				 => __( 'Actions for the selection', 'tainacan' ),
+	'label_upload_custom_thumbnail'					 => __( 'Upload custom thumbnail', 'tainacan' ),
+	'label_switch_document_type'					 => __( 'Switch document type', 'tainacan' ),
+	'label_sending_form'							 => __( 'Sending form...', 'tainacan' ),
+	'label_form_not_loaded'							 => __( 'This form could not be loaded', 'tainacan' ),
+	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -535,6 +543,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_click_error_to_go_to_metadata'		 => __( 'Click on the error to go to the metadata:', 'tainacan'),
 	'instruction_click_to_see_or_search'			 => __( 'Click to see options or type to search...', 'tainacan'),
 	'instruction_select_one_or_more_collections'	 => __( 'Select one or more collections', 'tainacan'),
+	'instruction_thumbnail_alt'					 => __( 'Type here a descriptive text for the image thumbnail...', 'tainacan'),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every published item, including those visible only to editors.', 'tainacan' ),
@@ -740,6 +749,14 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_gallery_start_transition'					 => __( 'to start or pause automatic transition after every 3s', 'tainacan' ),
 	'info_gallery_exit'								 => __( ' to leave the fullscreen gallery view mode', 'tainacan' ),
 	'info_gallery_help_end'							 => __( 'At any moment, you can also check the item metadata list by clicking on the metadata icon (%1$s)  or go directly to the item page, where you will have all its details, by clicking on the eye icon (%2$s).', 'tainacan' ),
+	'info_thumbnail_custom'							 => __( 'Upload the desired image for the thumbnail', 'tainacan'),
+	'info_thumbnail_default_from_document' 			 => __( 'A thumbnail will be automatically generated from the submitted document file', 'tainacan'),
+	'info_submission_processing'		 			 => __( 'Please, wait while the submission is being processed', 'tainacan'),
+	'info_submission_uploading'	  			 		 => __( 'Please, wait while files are uploaded', 'tainacan'),
+	'info_thumbnail_alt'			 			 	 => __( 'The alternative text of the thumbnail is visible only by screen readers and should be usefull for users with visual impariments.', 'tainacan'),
+	'info_edit_attachments'							 => __( 'Order, title or alternative text of the attachments, are edited via the WordPress media modal.', 'tainacan' ),
+	'info_recaptcha_link_%s'						 =>	__( 'Remember to configure your website reCAPTCHA keys on <a href="%s">the item submission repository page</a>.', 'tainacan'),
+	'info_form_not_loaded'					 		 =>	__( 'There are probably not enought permissions to display it here.', 'tainacan'),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),

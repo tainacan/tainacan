@@ -205,7 +205,7 @@ export default {
             .tainacan-compound-group {
                 margin-left: 2px;
                 padding-left: 0.875em;
-                border-left: 1px solid var(--tainacan-gray2);
+                border-left: 1px solid var(--tainacan-gray3);
 
                 .tainacan-compound-metadatum .label {
                     margin-bottom: 0.25em;
@@ -219,8 +219,8 @@ export default {
                 .multivalue-separator {
                     display: block;
                     max-height: 1px;
-                    width: 60px;
-                    background: var(--tainacan-gray2);
+                    width: 80px;
+                    background: var(--tainacan-gray3);
                     content: none;
                     color: transparent;
                     margin: 1em auto 1em -0.875em;
