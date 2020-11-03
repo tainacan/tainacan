@@ -407,6 +407,7 @@
                 :active.sync="isFiltersModalActive"
                 :width="736"
                 animation="slide-menu"
+                :auto-focus="filtersAsModal"
                 :trap-focus="filtersAsModal"
                 full-screen
                 :custom-class="'tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"

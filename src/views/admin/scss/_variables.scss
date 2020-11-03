@@ -89,7 +89,7 @@ $black-invert: findColorInvert($black);
 $foreground-color: $black;
 $background-color: $white;
 
-@import "../../../../node_modules/bulma/sass/utilities/derived-variables.scss";
+@import "../../../../node_modules/bulma/sass/utilities/derived-variables.sass";
 
 // Setup $colors to use as bulma classes
 $colors: (
