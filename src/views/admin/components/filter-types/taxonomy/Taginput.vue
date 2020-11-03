@@ -117,7 +117,7 @@
                 if (this.isRepositoryLevel || this.filter.collection_id == 'default') 
                     endpoint += '/facets/' + this.metadatumId;
                 else {
-                    if (this.collectionId == 'default' && this.currentCollection)
+                    if (this.collectionId == 'default' && this.currentCollectionId)
                         endpoint += '/collection/' + this.currentCollectionId +'/facets/' + this.metadatumId;
                     else
                         endpoint += '/collection/' + this.collectionId +'/facets/' + this.metadatumId;

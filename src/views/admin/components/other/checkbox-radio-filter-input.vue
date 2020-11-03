@@ -560,7 +560,7 @@
                     let query = `?order=asc&number=${this.maxNumSearchResultsShow}&search=${this.optionName}&${qs.stringify(query_items)}`;
 
                     let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
-
+                    
                     if (this.collectionId == 'default')
                         route = `/facets/${this.metadatumId}${query}`;
 
@@ -676,7 +676,6 @@
                 let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0&${qs.stringify(query_items)}`
 
                 this.isColumnLoading = true;
-
                 let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
 
                 if (this.collectionId == 'default')
