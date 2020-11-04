@@ -23,8 +23,7 @@
                 @typing="search"
                 check-infinite-scroll
                 @infinite-scroll="searchMore"
-                :has-counter="false"
-                :ref="'relationship-taginput-' + itemMetadatum.metadatum.id">
+                :has-counter="false">
             <template slot-scope="props">
                 <div class="media">
                     <div 
