@@ -1,5 +1,5 @@
 <template>
-    <div :class="{ 'is-flex': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
+    <div :class="{ 'is-flex is-flex-wrap-wrap': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
         <b-taginput
                 expanded
                 :disabled="disabled"
