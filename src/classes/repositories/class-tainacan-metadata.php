@@ -458,9 +458,11 @@ class Metadata extends Repository {
 
 		}
 
-		$results = array_filter($results, function($meta) {
-			return ( !isset($meta->get_metadata_type_options()['only_repository']) || $meta->get_metadata_type_options()['only_repository'] == 'no' );
-		});
+		if (!isset($args['add_only_repository']) || $args['add_only_repository'] !== true) {
+			$results = array_filter($results, function($meta) {
+				return ( !isset($meta->get_metadata_type_options()['only_repository']) || $meta->get_metadata_type_options()['only_repository'] == 'no' );
+			});
+		}
 
 		return $this->order_result(
 			$results,

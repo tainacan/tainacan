@@ -29,6 +29,7 @@ class MetadataTypeControlHelper {
 			$collection = $item->get_collection();
 			$args = [
 				'include_control_metadata_types' => true,
+				'add_only_repository' => true,
 				'meta_query' => [
 					[
 						'key'     => 'metadata_type',

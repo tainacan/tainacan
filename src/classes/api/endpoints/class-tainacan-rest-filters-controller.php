@@ -384,8 +384,8 @@ class REST_Filters_Controller extends REST_Controller {
 			$filters = $this->filter_repository->fetch_by_collection($collection, $args);
 			$filters = array_filter($filters, function($filter) {
 				if ( $filter->get_metadatum() !== null ) {
-					$options = $filter->get_metadatum()->get_metadata_type_options();
-					return ($options == null || $options['only_repository'] == 'no');
+			 		$options = $filter->get_metadatum()->get_metadata_type_options();
+			 		return ($options == null || !isset($options['only_repository']) || $options['only_repository'] == 'no');
 				}
 				return false;
 			});
