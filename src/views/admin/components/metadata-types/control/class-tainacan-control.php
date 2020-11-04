@@ -179,12 +179,31 @@ class Control extends Metadata_Type {
 				return __( 'Empty', 'tainacan' );
 			break;
 
-			default: 
-				return $value;
+			case 'application/pdf':
+				return "pdf";
+			break;
 		}
+		$type = explode( '/', $value );
+		if (count($type) == 2 ) {
+			switch ($type[0]) {
+				case 'image':
+					$value = __( 'image', 'tainacan' ) . '/' . $type[1];
+				break;
+				case 'video':
+					$value = __( 'video', 'tainacan' ) . '/' . $type[1];
+				break;
+				case 'text':
+					$value = __( 'text', 'tainacan' ) . '/' . $type[1];
+				break;
+				case 'application':
+					$value = __( 'others', 'tainacan' ) . '/' . $type[1];
+				break;
+			}
+		}
+		return $value;
 	}
 
-	private function get_collection_as_html( $value ) { 	
+	private function get_collection_as_html( $value ) {
 		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch( (int) $value );
 		if ( $collection instanceof \Tainacan\Entities\Collection ) {
 			$label = $collection->get_name();
