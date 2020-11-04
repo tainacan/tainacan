@@ -31,7 +31,7 @@
             <div 
                     class="active-metadatum-item"
                     :class="{
-                        'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
+                        'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadatum.parent == 0 || metadatum.collection_id != collectionId,
                         'not-focusable-item': openedMetadatumId == metadatum.id,
                         'disabled-metadatum': parent.enabled == false,
                         'inherited-metadatum': (metadatum.collection_id != collectionId && metadatum.parent == 0) || isRepositoryLevel
@@ -42,7 +42,7 @@
                         :ref="'metadatum-handler-' + metadatum.id"
                         class="handle">
                     <span 
-                            :style="{ opacity: !( metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder) ? '1.0' : '0.0' }"
+                            :style="{ opacity: !( metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadatum.parent == 0 || metadatum.collection_id != collectionId) ? '1.0' : '0.0' }"
                             v-tooltip="{
                                 content: metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
                                 autoHide: true,
