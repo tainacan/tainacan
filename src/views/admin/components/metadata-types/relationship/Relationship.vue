@@ -23,7 +23,8 @@
                 @typing="search"
                 check-infinite-scroll
                 @infinite-scroll="searchMore"
-                :has-counter="false">
+                :has-counter="false"
+                :ref="'relationship-taginput-' + itemMetadatum.metadatum.id">
             <template slot-scope="props">
                 <div class="media">
                     <div 
@@ -93,9 +94,6 @@
                 options: [],
                 isLoading: false,
                 collectionId: '',
-                inputValue: null,
-                queryObject: {},
-                itemsFound: [],
                 searchQuery: '',
                 totalItems: 0,
                 page: 1,
@@ -153,6 +151,9 @@
                 'getCollection'
             ]),
             onInput(newSelected) {
+                // First we reset the input
+                this.search('');
+
                 this.selected = newSelected;
                 this.$emit('input', newSelected.map((item) => item.value));
             },
