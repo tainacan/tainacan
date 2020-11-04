@@ -21,7 +21,8 @@ class Taxonomy extends Metadata_Type {
 		
 		$this->set_default_options([
 			'allow_new_terms' => 'no',
-			'link_filtered_by_collections' => []
+			'link_filtered_by_collections' => [],
+			'input_type' => 'tainacan-taxonomy-radio',
 		]);
 
 		$this->set_form_component('tainacan-form-taxonomy');
@@ -111,6 +112,11 @@ class Taxonomy extends Metadata_Type {
 
 		if (empty($this->get_option('taxonomy_id')))
 			return ['taxonomy_id' => __('Please select a taxonomy', 'tainacan')];
+
+		$options = $metadatum->get_metadata_type_options();
+		if ( !$metadatum->is_multiple() && $this->get_option('input_type') !== 'tainacan-taxonomy-radio' ) {
+			return ['input_type' => __('A taxonomy metadata that accepts simple values should use a radio type input', 'tainacan')];
+		}
 
 		$Tainacan_Metadata = Metadata::get_instance();
 

@@ -980,11 +980,19 @@ abstract class Importer {
 
             if( $taxonomy->validate() ){
                 $inserted_tax = $taxonomy_repo->insert( $taxonomy );
-                $newMetadatum->set_metadata_type_options([
-                    'taxonomy_id' => $inserted_tax->get_id(),
-                    'allow_new_terms' => 'yes',
-                    'input_type' => 'tainacan-taxonomy-checkbox'
-                ]);
+                if(is_array($properties) && in_array( 'multiple', $properties) ){
+                    $newMetadatum->set_metadata_type_options([
+                        'taxonomy_id' => $inserted_tax->get_id(),
+                        'allow_new_terms' => 'yes',
+                        'input_type' => 'tainacan-taxonomy-checkbox'
+                    ]);
+                } else {
+                    $newMetadatum->set_metadata_type_options([
+                        'taxonomy_id' => $inserted_tax->get_id(),
+                        'allow_new_terms' => 'no',
+                        'input_type' => 'tainacan-taxonomy-radio'
+                    ]);
+                }
             }
         }
 
