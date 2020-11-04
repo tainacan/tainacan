@@ -383,11 +383,11 @@ class REST_Filters_Controller extends REST_Controller {
 			$collection = $this->collection_repository->fetch($request['collection_id']);
 			$filters = $this->filter_repository->fetch_by_collection($collection, $args);
 			$filters = array_filter($filters, function($filter) {
-				return ( $filter->get_metadatum() !== null && (
-					$filter->get_metadatum()->get_metadata_type_options() == null ||
-					!isset(($filter->get_metadatum()->get_metadata_type_options())['only_repository']) ||
-					$filter->get_metadatum()->get_metadata_type_options()['only_repository'] == 'no' )
-				);
+				if ( $filter->get_metadatum() !== null ) {
+					$options = $filter->get_metadatum()->get_metadata_type_options();
+					return ($options == null || $options['only_repository'] == 'no');
+				}
+				return false;
 			});
 		}
 
