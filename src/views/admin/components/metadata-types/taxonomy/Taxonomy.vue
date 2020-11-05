@@ -41,12 +41,26 @@
                 &nbsp;{{ $i18n.get('label_new_term') }}
             </a>
         </div>
+
+        <b-modal 
+                v-model="isTermCreationModalOpen"
+                trap-focus
+                aria-role="dialog"
+                aria-modal
+                :can-cancel="['outside', 'escape']">
+            <term-edition-form 
+                    :taxonomy-id="taxonomyId"
+                    :edit-form="{ id: 'new', name: newTermName ? newTermName : '' }"
+                    :is-modal="true"
+                    @onEditionFinished="($event) => addRecentlyCreatedTerm($event.term)"
+                    @onEditionCanceled="() => $console.log('Edition canceled')"
+                    @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
+        </b-modal>
     </div>
 </template>
 
 <script>
     import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue';
-    import TermEditionForm from '../../edition/term-edition-form.vue';
     import CheckboxRadioMetadataInput from '../../other/checkbox-radio-metadata-input.vue';
     import { tainacan as axios } from '../../../js/axios.js';
 
@@ -62,6 +76,8 @@
             forcedComponentType: '',
             maxtags: '',
             allowSelectToCreate: false,
+            isTermCreationModalOpen: false,
+            newTermName: ''
         },
         data(){
             return {
@@ -142,23 +158,8 @@
                 }
             },
             openTermCreationModal(newTerm) {
-                this.$buefy.modal.open({
-                    parent: this,
-                    component: TermEditionForm,
-                    canCancel: ['outside', 'escape'],
-                    props: {
-                        taxonomyId: this.taxonomyId,
-                        editForm: { id: 'new', name: newTerm.name ? newTerm.name : '' },
-                        isModal: true
-                    },
-                    events: {
-                        onEditionFinished: ($event) => this.addRecentlyCreatedTerm($event.term),
-                        onEditionCanceled: () => this.$console.log('Edition canceled'),
-                        onErrorFound: ($event) => this.$console.log('Form with errors: ' + $event)
-                    },
-                    trapFocus: true
-                });
-            
+                this.newTermName = newTerm.name;
+                this.isTermCreationModalOpen = true;
             }
         }
     }

@@ -168,7 +168,7 @@ function tainacan_blocks_register_tainacan_item_submission_form(){
 	wp_register_script(
 		'tainacan-item-submission',
 		$TAINACAN_BASE_URL . '/assets/js/item_submission.js',
-		['underscore', 'jcrop', 'media-editor', 'media-views', 'customize-controls'],
+		['underscore'],
 		TAINACAN_VERSION
 	);
 
