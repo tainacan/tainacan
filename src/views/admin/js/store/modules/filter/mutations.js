@@ -36,10 +36,6 @@ export const setFilterTypes = (state, filterTypes) => {
     state.filterTypes = filterTypes;
 }
 
-// export const setRepositoryCollectionFilters = (state, repositoryCollectionFilters) => {
-//     state.repositoryCollectionFilters = repositoryCollectionFilters;
-// }
-
 export const setRepositoryCollectionFilters = (state, { collectionName, repositoryCollectionFilters }) => {
     if (collectionName != undefined)
         Vue.set(state.repositoryCollectionFilters, collectionName, repositoryCollectionFilters);
@@ -49,10 +45,6 @@ export const setRepositoryCollectionFilters = (state, { collectionName, reposito
 
 export const clearRepositoryCollectionFilters = (state) => {
     state.repositoryCollectionFilters = {};
-}
-
-export const setTaxonomyFilters = (state, taxonomyFilters) => {
-    state.taxonomyFilters = taxonomyFilters;
 }
 
 export const setTaxonomyFiltersForCollection = (state, { collectionName, taxonomyFilters }) => {

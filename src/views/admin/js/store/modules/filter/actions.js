@@ -176,37 +176,38 @@ export const fetchRepositoryCollectionFilters = ({ dispatch, commit } ) => {
 
                             let promises = [];
 
-                            for (let collection of collections ) {
-                                
-                                let endpoint = '';
-                                endpoint = '/collection/' + collection.id + '/filters/?nopaging=1&include_disabled=false';
+                            // First, we add reporitory level filters
+                            promises.push(
+                                axios.tainacan.get('/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false')
+                                    .then((resp) => { return { filters: resp.data, collectionId: 'default' } }) 
+                                    .catch((error) => {
+                                        reject(error);
+                                    })
+                            );
 
+                            // Then we add collection level filters
+                            collections.forEach(collection => {
                                 promises.push(
-                                    axios.tainacan.get(endpoint)
-                                        .then((resp) => { return { filter: resp.data, collectionId: collection.id } }) 
+                                    axios.tainacan.get('/collection/' + collection.id + '/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false&metaquery[0][key]=collection_id&metaquery[0][value]=default&metaquery[0][compare]=!=')
+                                        .then((resp) => { return { filters: resp.data, collectionId: collection.id } }) 
                                         .catch((error) => {
                                             reject(error);
                                         })
                                 );
-                            }
-                            axios.all(promises).then((results) => {
-                                for (let resp of results) {
-                                    let repositoryFilters = resp.filter.filter((filter) => { 
-                                        return (filter.collection_id == 'default')
-                                    });
-                                    let collectionFilters = resp.filter.filter((filter) => {
-                                        return (filter.collection_id != 'default')
-                                    });
-                                    commit('setRepositoryCollectionFilters', { collectionName: resp.collectionId, repositoryCollectionFilters: collectionFilters });
-                                    commit('setRepositoryCollectionFilters', { collectionName: undefined, repositoryCollectionFilters: repositoryFilters });
-                                }
+                            });
+                            
+                            // Process it all
+                            axios.all(promises)
+                                .then((results) => {
+                                    for (let resp of results)
+                                        commit('setRepositoryCollectionFilters', { collectionName: (resp.collectionId != 'default' ? resp.collectionId : undefined), repositoryCollectionFilters: resp.filters });
 
-                                resolve();
-                            })  
-                            .catch((error) => {
-                                console.log(error);
-                                reject(error);
-                            })   
+                                    resolve();
+                                })  
+                                .catch((error) => {
+                                    console.log(error);
+                                    reject(error);
+                                })   
                         }
                     })
                     .catch(() => {
@@ -225,38 +226,51 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, taxonomyId ) => {
     commit('clearTaxonomyFilters');
 
     return new Promise((resolve, reject) => {
+
         dispatch('taxonomy/fetchTaxonomy', { taxonomyId: taxonomyId }, { root: true })
             .then((res) => {
                 let taxonomy = res.taxonomy;
                 if (taxonomy.collections_ids != undefined && taxonomy.collections_ids.length != undefined) {
                     
-                    let amountOfCollectionsLoaded = 0;
-                    for (let collectionId of taxonomy.collections_ids ) {
-                
-                        let endpoint = '';
-                        endpoint = '/collection/' + collectionId + '/filters/?nopaging=1&include_disabled=false';
+                    let promises = [];
 
-                        axios.tainacan.get(endpoint)
-                            .then((resp) => {
-                                let repositoryFilters = resp.data.filter((filter) => { 
-                                    return (filter.collection_id == 'default') && filter.metadatum.metadata_type_object.options.taxonomy_id != taxonomyId
-                                });
-                                let collectionFilters = resp.data.filter((filter) => {
-                                    return (filter.collection_id != 'default') && filter.metadatum.metadata_type_object.options.taxonomy_id != taxonomyId
-                                });
-                                commit('setTaxonomyFiltersForCollection', { collectionName: collectionId, taxonomyFilters: collectionFilters });
-                                commit('setTaxonomyFiltersForCollection', { collectionName: undefined, taxonomyFilters: repositoryFilters });
-                                amountOfCollectionsLoaded++;
-
-                                if (amountOfCollectionsLoaded == taxonomy.collections_ids.length) {
-                                    resolve();
-                                }
-                            }) 
+                    // First, we add reporitory level search
+                    promises.push(
+                        axios.tainacan.get('/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false')
+                            .then((resp) => { return { filters: resp.data, collectionId: 'default' } }) 
                             .catch((error) => {
-                                console.log(error);
                                 reject(error);
-                            });    
-                    }
+                            })
+                    );
+
+                    // Then we add collection level filters
+                    taxonomy.collections_ids.forEach(collectionId => {
+                        promises.push(
+                            axios.tainacan.get('/collection/' + collectionId + '/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false&metaquery[0][key]=collection_id&metaquery[0][value]=default&metaquery[0][compare]=!=')
+                                .then((resp) => { return { filters: resp.data, collectionId: collectionId } }) 
+                                .catch((error) => {
+                                    reject(error);
+                                })
+                        );
+                    });
+
+                    // Process it all
+                    axios.all(promises)
+                        .then((results) => {
+                            for (let resp of results) {
+                                let taxonomyFilters = resp.filters.filter((filter) => {
+                                    return filter.metadatum.metadata_type_object.options.taxonomy_id != taxonomyId
+                                });
+                                commit('setTaxonomyFiltersForCollection', { collectionName: (resp.collectionId != 'default' ? resp.collectionId : undefined), taxonomyFilters: taxonomyFilters });
+                            }
+
+                            resolve();
+                        }) 
+                        .catch((error) => {
+                            console.log(error);
+                            reject(error);
+                        });    
+                    
                 }
             })
             .error(() => {

@@ -326,16 +326,26 @@ class Metadata extends Repository {
 				return [];
 			}
 		} elseif ( is_array( $args ) ) {
-
 			$args = array_merge( [
 				'posts_per_page' => - 1,
 			], $args );
+
+			if ( ! (isset($args['include_control_metadata_types']) && $args['include_control_metadata_types'] == true) ) {
+				if( !isset($args['meta_query']) )
+					$args['meta_query'] = [];
+				$args['meta_query'][] = [
+					'key'     => 'metadata_type',
+					'value'   => 'Tainacan\Metadata_Types\Control',
+					'compare' => 'NOT IN'
+				];
+			}
 
 			$args = $this->parse_fetch_args( $args );
 
 			$args['post_type'] = Entities\Metadatum::get_post_type();
 
 			$args = apply_filters( 'tainacan_fetch_args', $args, 'metadata' );
+
 
 			$wp_query = new \WP_Query( $args );
 
@@ -422,7 +432,6 @@ class Metadata extends Repository {
 				$args['meta_query'] = $original_meta_q;
 				$args['meta_query'][] = $meta_query;
 
-				//var_dump($args);
 				$results = array_merge($results, $this->fetch( $args, 'OBJECT' ));
 			}
 
@@ -447,6 +456,12 @@ class Metadata extends Repository {
 
 			$results = $this->fetch( $args, 'OBJECT' );
 
+		}
+
+		if (!isset($args['add_only_repository']) || $args['add_only_repository'] !== true) {
+			$results = array_filter($results, function($meta) {
+				return ( !isset($meta->get_metadata_type_options()['only_repository']) || $meta->get_metadata_type_options()['only_repository'] == 'no' );
+			});
 		}
 
 		return $this->order_result(
@@ -643,15 +658,12 @@ class Metadata extends Repository {
 
 		do_action( 'register_metadata_types' );
 
-		if ( $output === 'NAME' ) {
-			foreach ( $this->metadata_types as $metadata_type ) {
-				$return[] = str_replace( 'Tainacan\Metadata_Types\\', '', $metadata_type );
-			}
-
-			return $return;
-		}
-
-		return $this->metadata_types;
+		return array_map(
+			function($metadata_type) use ($output) {
+				return $output === 'NAME' ? str_replace( 'Tainacan\\Metadata_Types\\', '', $metadata_type ) : $metadata_type;
+			},
+			array_filter($this->metadata_types, function($metadata_type) { return $metadata_type != 'Tainacan\Metadata_Types\Control';})
+		);
 	}
 
 
@@ -767,6 +779,90 @@ class Metadata extends Repository {
 
 				if ( ! $exists ) {
 					$this->insert_array_metadatum( $data_core_metadatum );
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param Entities\Collection $collection
+	 * @param bool $force if true will register control metadata even if collection is auto draft
+	 *
+	 * @return bool
+	 * @throws \ErrorException
+	 * @throws \Exception
+	 */
+	public function register_control_metadata( Entities\Collection $collection, $force = false ) {
+
+		if ( $force !== true && $collection->get_status() == 'auto-draft' ) {
+			return;
+		}
+
+		$metadata = $this->fetch( [
+			'meta_query' => [
+				[
+					'key'     => 'metadata_type',
+					'value'   => 'Tainacan\Metadata_Types\Control',
+					'compare' => '='
+				],[
+					'key'     => 'collection_id',
+					'value'   => 'default',
+					'compare' => '='
+				]
+			],
+			'include_disabled' => true,
+			'include_control_metadata_types' => true
+		], 'OBJECT' );
+
+		$data_control_metadata = [
+			'document_type' => [
+				'name'            => __('Document type', 'tainacan'),
+				'description'     => __('The item main document type', 'tainacan'),
+				'collection_id'   => 'default',
+				'metadata_type'   => 'Tainacan\Metadata_Types\Control',
+				'status'          => 'publish',
+				'display'		  => 'never',
+				'metadata_type_options' => [ 'control_metadatum' => 'document_type' ]
+			],
+			'collection_id'       => [
+				'name'            => __('Collection', 'tainacan'),
+				'description'     => __('The item collection ID', 'tainacan'),
+				'collection_id'   => 'default',
+				'metadata_type'   => 'Tainacan\Metadata_Types\Control',
+				'status'          => 'publish',
+				'display'		  => 'never',
+				'metadata_type_options' => [ 
+					'control_metadatum' => 'collection_id',
+					'only_repository' => 'yes' 
+				]
+			],
+			'has_thumbnail' => [
+				'name'            => __('Has thumbnail', 'tainacan'),
+				'description'     => __('Does the item has a thumbnail set?', 'tainacan'),
+				'collection_id'   => 'default',
+				'metadata_type'   => 'Tainacan\Metadata_Types\Control',
+				'status'          => 'publish',
+				'display'		  => 'never',
+				'metadata_type_options' => [ 'control_metadatum' => 'has_thumbnail' ]
+			],
+		];
+
+		foreach ( $data_control_metadata as $index => $data_control_metadatum ) {
+			if ( empty( $metadata ) ) {
+				$this->insert_array_metadatum( $data_control_metadatum );
+			} else {
+				$exists = false;
+				foreach ( $metadata as $metadatum ) {
+					if ( 
+						$metadatum->get_metadata_type() === $data_control_metadatum['metadata_type']  &&
+						$metadatum->get_metadata_type_options()['control_metadatum'] == $data_control_metadatum['metadata_type_options']['control_metadatum']
+					) {
+						$exists = true;
+					}
+				}
+
+				if ( ! $exists ) {
+					$this->insert_array_metadatum( $data_control_metadatum );
 				}
 			}
 		}
@@ -911,7 +1007,6 @@ class Metadata extends Repository {
 			$set_ = 'set_' . $attribute;
 			$metadatum->$set_( $value );
 		}
-
 		if ( $metadatum->validate() ) {
 			$metadatum = $this->insert( $metadatum );
 
@@ -1248,6 +1343,9 @@ class Metadata extends Repository {
 						continue;
 					}
 					$label = $_post->post_title;
+				} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\Control' ) {
+					$metadata_type_object = $metadatum->get_metadata_type_object();
+					$label = $metadata_type_object->get_control_metadatum_value($r, $metadatum_options['control_metadatum'], 'string' );
 				} elseif ( $metadatum_type === 'Tainacan\Metadata_Types\User' ) {
 					$name = get_the_author_meta( 'display_name', $label );
 					$label = apply_filters("tainacan-item-get-author-name", $name);

@@ -310,6 +310,7 @@ class Collections extends Repository {
 		$new_collection = parent::insert( $collection );
 
 		$this->handle_core_metadata( $new_collection );
+		$this->handle_control_metadata( $new_collection );
 
 		$collection->register_collection_item_post_type();
 		flush_rewrite_rules( false ); // needed to activate items post type archive url
@@ -408,6 +409,12 @@ class Collections extends Repository {
 		) {
 			$Tainacan_Metadata->maybe_update_core_metadata_meta_keys( $collection, $this->old_collection, $this->old_core_title, $this->old_core_description );
 		}
+	}
+
+	function handle_control_metadata( $collection ) {
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+
+		$Tainacan_Metadata->register_control_metadata( $collection );
 	}
 
 	/**

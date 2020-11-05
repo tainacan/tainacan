@@ -468,6 +468,7 @@ class Metadatum extends Entity {
 			}
 		}
 		if ( $this->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' && $this->is_multiple() ) {
+ 
 			$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 			$children_taxonomy = $Tainacan_Metadata->fetch(
 				[

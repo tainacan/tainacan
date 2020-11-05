@@ -45,9 +45,6 @@
 
             <!-- TERM ITEMS PAGE FILTERS -->
             <template v-if="taxonomy && taxonomyFilters">
-                <collections-filter
-                        :open="!collapseAll"
-                        :query="getQuery"/>
                 <div 
                         v-if="key == 'repository-filters'"
                         :key="index"
@@ -148,9 +145,6 @@
 
             <!-- REPOSITORY ITEMS PAGE FILTERS -->
             <template v-else-if="isRepositoryLevel && !taxonomy">
-                <collections-filter
-                        :open="!collapseAll"
-                        :query="getQuery"/>
                 <div 
                         v-if="key == 'repository-filters'"
                         :key="index"
@@ -290,11 +284,9 @@
 <script>
     import { mapGetters, mapActions } from 'vuex';
     import FiltersTagsList from './filters-tags-list.vue';
-    import CollectionsFilter from '../other/collection-filter.vue';
 
     export default {
         components: {
-            CollectionsFilter,
             FiltersTagsList
         },
         props: {
