@@ -128,7 +128,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
     public function get_items( $request ) {
         global $wpdb;
-        //$body = json_decode($request->get_body(), true);
 
         $perpage = isset($request['perpage']) && is_numeric($request['perpage']) ? $request['perpage'] : 10;
         if ($perpage < 1) {
@@ -145,6 +144,8 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
         $user_q = $wpdb->prepare("AND user_id = %d", get_current_user_id());
         $status_q = "";
+
+        $date_range = '';
 
         if (current_user_can('edit_users')) {
             if (isset($request['user_id'])) {
@@ -165,12 +166,20 @@ class REST_Background_Processes_Controller extends REST_Controller {
             }
         }
 
+        if (isset($request['datequery'])) {
+            $from = $request['datequery'][0]['after'];
+            $to = $request['datequery'][0]['before'];
+            $date_query = "AND processed_last >= %s AND processed_last <= %s";
+
+            $date_range = $wpdb->prepare($date_query, $from, $to);
+        }
+
 		$recent_q = '';
 		if ( isset($request['recent']) && $request['recent'] !== false ) {
             $recent_q = "AND (processed_last >= NOW() - INTERVAL 10 MINUTE OR queued_on >= NOW() - INTERVAL 10 MINUTE)";
         }
 
-        $base_query = "FROM $this->table WHERE 1=1 $status_q $user_q $recent_q ORDER BY priority DESC, queued_on DESC";
+        $base_query = "FROM $this->table WHERE 1=1 $status_q $user_q $recent_q $date_range ORDER BY priority DESC, queued_on DESC";
 
         $query = "SELECT * $base_query $limit_q";
         $count_query = "SELECT COUNT(ID) $base_query";
@@ -192,7 +201,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $rest_response->header('X-WP-TotalPages', (int) $max_pages);
 
         return $rest_response;
-
     }
 
     public function get_item( $request ) {
