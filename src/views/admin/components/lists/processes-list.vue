@@ -2,65 +2,7 @@
 
   <div>
 
-    <div class="sub-header">
-      <b-field>
-        <b-datepicker
-            ref="datepicker"
-            :placeholder="$i18n.get('instruction_filter_activities_date')"
-            size="is-small"
-            range
-            icon="calendar-today"
-            v-model="searchDates"
-            @input="searchProcesses()"
-            :day-names="[
-                $i18n.get('datepicker_short_sunday'),
-                $i18n.get('datepicker_short_monday'),
-                $i18n.get('datepicker_short_tuesday'),
-                $i18n.get('datepicker_short_wednesday'),
-                $i18n.get('datepicker_short_thursday'),
-                $i18n.get('datepicker_short_friday'),
-                $i18n.get('datepicker_short_saturday'),
-            ]"
-            :month-names="[
-                $i18n.get('datepicker_month_january'),
-                $i18n.get('datepicker_month_february'),
-                $i18n.get('datepicker_month_march'),
-                $i18n.get('datepicker_month_april'),
-                $i18n.get('datepicker_month_may'),
-                $i18n.get('datepicker_month_june'),
-                $i18n.get('datepicker_month_july'),
-                $i18n.get('datepicker_month_august'),
-                $i18n.get('datepicker_month_september'),
-                $i18n.get('datepicker_month_october'),
-                $i18n.get('datepicker_month_november'),
-                $i18n.get('datepicker_month_december'),
-            ]"
-        />
-        <p
-            class="control"
-            v-if="searchDates && searchDates.length != 0">
-          <button
-              class="button"
-              @click="clearSearchDates()">
-            <span class="icon"><i class="tainacan-icon tainacan-icon-close"/></span>
-          </button>
-        </p>
-      </b-field>
-
-      <div class="control has-icons-right is-medium is-clearfix">
-        <b-input
-            :placeholder="$i18n.get('instruction_search')"
-            type="search"
-            size="is-small"
-            :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
-            autocomplete="on"
-            v-model="searchQuery"
-            @keyup.enter.native="searchProcesses()"
-            icon-right="magnify"
-            icon-right-clickable
-            @icon-right-click="searchProcesses" />
-      </div>
-    </div>
+    
 
     <div
         v-if="processes.length > 0 && !isLoading"
@@ -393,8 +335,6 @@
                 isSelecting: false,
                 highlightedProcess: '',
                 dateFormat: '',
-                searchDates: [],
-                searchQuery: ''
             }
         },
         watch: {
@@ -563,33 +503,6 @@
                         this.heartBitUpdateProcess(updatedProcess);
                     }
                 }
-            },
-            searchProcesses() {
-              this.loadProcesses();
-            },
-            clearSearchDates() {
-              this.searchDates = null;
-              this.loadProcesses();
-            },
-            loadProcesses() {
-              this.isLoading = true;
-              let dateFormat = 'YYYY-MM-DD';
-              let fromDate = this.searchDates && this.searchDates[0] ? moment(this.searchDates[0]).format(dateFormat) : null;
-              let toDate = this.searchDates && this.searchDates[1] ? moment(this.searchDates[1]).format(dateFormat) : null;
-
-              this.fetchProcesses({
-                page: this.processesPage,
-                processesPerPage: this.processesPerPage,
-                searchDates: [fromDate, toDate],
-                search: this.searchQuery
-              })
-                  .then(res => {
-                    this.isLoading = false;
-                    this.total = res.total;
-                  })
-                  .catch(() => {
-                    this.isLoading = false;
-                  });
             }
         }
     }

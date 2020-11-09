@@ -128,6 +128,70 @@
                     </b-field>
                 </div>
 
+                <div 
+                        v-if="tab == 'processes'"
+                        class="sub-header">
+                    <b-field class="header-item">
+                        <b-datepicker
+                            ref="datepicker"
+                            :placeholder="$i18n.get('instruction_filter_activities_date')"
+                            range
+                            icon="calendar-today"
+                            v-model="searchDates"
+                            @input="searchProcesses()"
+                            :date-formatter="(date) => dateFormatter(date)"
+                            :date-parser="(date) => dateParser(date)"
+                            :years-range="[-50, 3]"
+                            :day-names="[
+                                $i18n.get('datepicker_short_sunday'),
+                                $i18n.get('datepicker_short_monday'),
+                                $i18n.get('datepicker_short_tuesday'),
+                                $i18n.get('datepicker_short_wednesday'),
+                                $i18n.get('datepicker_short_thursday'),
+                                $i18n.get('datepicker_short_friday'),
+                                $i18n.get('datepicker_short_saturday'),
+                            ]"
+                            :month-names="[
+                                $i18n.get('datepicker_month_january'),
+                                $i18n.get('datepicker_month_february'),
+                                $i18n.get('datepicker_month_march'),
+                                $i18n.get('datepicker_month_april'),
+                                $i18n.get('datepicker_month_may'),
+                                $i18n.get('datepicker_month_june'),
+                                $i18n.get('datepicker_month_july'),
+                                $i18n.get('datepicker_month_august'),
+                                $i18n.get('datepicker_month_september'),
+                                $i18n.get('datepicker_month_october'),
+                                $i18n.get('datepicker_month_november'),
+                                $i18n.get('datepicker_month_december'),
+                            ]"
+                        />
+                        <p
+                            class="control"
+                            v-if="searchDates && searchDates.length != 0">
+                            <button
+                                class="button"
+                                @click="clearSearchDates()">
+                                <span class="icon"><i class="tainacan-icon tainacan-icon-close"/></span>
+                            </button>
+                        </p>
+                    </b-field>
+
+                    <b-field class="header-item">
+                        <b-input
+                            :placeholder="$i18n.get('instruction_search')"
+                            type="search"
+                            size="is-small"
+                            :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
+                            autocomplete="on"
+                            v-model="searchQuery"
+                            @keyup.enter.native="searchProcesses()"
+                            icon-right="magnify"
+                            icon-right-clickable
+                            @icon-right-click="searchProcesses" />
+                    </b-field>
+                </div>
+
                 <activities-list
                         v-if="tab != 'processes' && $userCaps.hasCapability('tnc_rep_read_logs')"
                         :is-loading="isLoading"
@@ -151,10 +215,11 @@
                 <processes-list
                         v-if="tab == 'processes'"
                         :is-loading="isLoading"
-                        :total="total"
+                        :total="totalProcesses"
                         :page="processesPage"
                         :processes-per-page="processesPerPage"
-                        :processes="processes"/>
+                        :processes="processes"
+                        @updateTotalProcesses="(total) => { totalProcesses = total; $console.log(totalProcesses);}" />
 
                 <!-- Empty state processes image -->
                 <div v-if="tab == 'processes' && processes.length <= 0 && !isLoading">
@@ -221,7 +286,7 @@
                             (processesPerPage * (processesPage - 1) + 1) +
                             $i18n.get('info_to') +
                             getLastProcessesNumber() +
-                            $i18n.get('info_of') + total + '.'
+                            $i18n.get('info_of') + totalProcesses + '.'
                         }}
                     </div>
                     <div class="items-per-page">
@@ -242,7 +307,7 @@
                     <div class="pagination">
                         <b-pagination
                                 @change="onPageChange"
-                                :total="total"
+                                :total="totalProcesses"
                                 :current.sync="processesPage"
                                 order="is-centered"
                                 size="is-small"
@@ -460,21 +525,36 @@
                         });
                 }
             },
+            searchProcesses() {
+              this.loadProcesses();
+            },
+            clearSearchDates() {
+              this.searchDates = null;
+              if (this.tab != 'processes')
+                this.loadActivities();
+              else
+                this.loadProcesses();
+            },
             loadProcesses() {
-                this.isLoading = true;
+              this.isLoading = true;
+              let dateFormat = 'YYYY-MM-DD';
+              let fromDate = this.searchDates && this.searchDates[0] ? moment(this.searchDates[0]).format(dateFormat) : null;
+              let toDate = this.searchDates && this.searchDates[1] ? moment(this.searchDates[1]).format(dateFormat) : null;
 
-                this.fetchProcesses({
-                    page: this.processesPage,
-                    processesPerPage: this.processesPerPage,
-                    shouldUpdateStore: true
-                })
-                    .then((res) => {
-                        this.isLoading = false;
-                        this.total = res.total;
-                    })
-                    .catch(() => {
-                        this.isLoading = false;
-                    });
+              this.fetchProcesses({
+                page: this.processesPage,
+                processesPerPage: this.processesPerPage,
+                searchDates: [fromDate, toDate],
+                search: this.searchQuery,
+                shouldUpdateStore: true
+              })
+                  .then(res => {
+                    this.isLoading = false;
+                    this.totalProcesses = res.total;
+                  })
+                  .catch(() => {
+                    this.isLoading = false;
+                  });
             },
             getLastActivityNumber() {
                 let last = (Number(this.activitiesPerPage * (this.activitiesPage - 1)) + Number(this.activitiesPerPage));
@@ -482,15 +562,11 @@
             },
             getLastProcessesNumber() {
                 let last = (Number(this.processesPerPage * (this.processesPage - 1)) + Number(this.processesPerPage));
-                return last > this.total ? this.total : last;
+                return last > this.totalProcesses ? this.totalProcesses : last;
             },
             searchActivities() {
                 this.activitiesPage = 1;
                 this.loadActivities();
-            },
-            clearSearchDates() {
-                this.searchDates = null;
-                this.searchActivities();
             },
             filterActivitiesByUser(user) {
                 this.userIdForFiltering = user != null && user.id != undefined ? user.id : null;
@@ -564,6 +640,8 @@
         .header-item {
             margin-bottom: 0 !important;
             min-height: 2em;
+            display: flex;
+            align-items: center;
 
             &:not(:last-child) {
                 padding-right: 0.5em;
@@ -581,7 +659,7 @@
                 display: flex;
                 align-items: center;
                 border-radius: 0px !important;
-                height: 1.95em !important;
+                height: 100% !important;
             }
             
             .field {
