@@ -217,7 +217,7 @@
                         v-if="tab == 'processes' && processes.length > 0">
                     <div class="shown-items">
                         {{
-                            $i18n.get('info_showing_processes') +
+                            $i18n.get('info_showing_processes') + ' ' +
                             (processesPerPage * (processesPage - 1) + 1) +
                             $i18n.get('info_to') +
                             getLastProcessesNumber() +
