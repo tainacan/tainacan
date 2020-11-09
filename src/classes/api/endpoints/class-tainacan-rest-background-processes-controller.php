@@ -101,7 +101,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
             ),
 
         ));
-
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[0-9]+)', array(
 
             array(
@@ -112,8 +111,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
             ),
 
         ));
-
-
     }
 
 
@@ -128,7 +125,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
         // TODO
         return current_user_can('read');
 	}
-
 
     public function get_items( $request ) {
         global $wpdb;
@@ -344,9 +340,4 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
     }
 
-
-
-
 }
-
-?>
