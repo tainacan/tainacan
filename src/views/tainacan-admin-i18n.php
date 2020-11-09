@@ -348,6 +348,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_process_failed'                           => __( 'Process failed', 'tainacan' ),
 	'label_max_options_to_show'                      => __( 'Max options to show', 'tainacan' ),
 	'label_unamed_process'                           => __( 'Unamed process', 'tainacan' ),
+	'loading_processes'							     => __( 'Loading processes', 'tainacan' ),
 	'label_semantic_uri'                             => __( 'Semantic Uri', 'tainacan' ),
 	'label_view_collection_on_website'               => __( 'View collection on website', 'tainacan' ),
 	'label_view_more'                                => __( 'View more', 'tainacan' ),

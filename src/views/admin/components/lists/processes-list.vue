@@ -358,7 +358,9 @@
 
   <div v-else-if="isLoading">
     <center>
-      Carregando processos ...
+      <span>
+        {{ $i18n.get('loading_processes') }}
+      </span>
     </center>
   </div>
 
