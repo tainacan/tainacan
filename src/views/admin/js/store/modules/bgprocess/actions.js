@@ -58,20 +58,6 @@ export const fetchProcess = ({ commit }, id) => {
     });
 };
 
-export const fetchProcessLog = ({ commit }, { id: id, isFull: isFull }) => {
-    return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/bg-processes/${id}/log`)
-        .then( res => {
-            let log = res.data;
-            commit('setProcessLog', log);
-            resolve(log)
-        })
-        .catch( error => {
-            reject(error);
-        })
-    });
-};
-
 export const fetchProcessErrorLog = ({ commit }, { id: id, isFull: isFull }) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.get(`/bg-processes/${id}/log`)
