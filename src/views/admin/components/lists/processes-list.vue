@@ -156,7 +156,7 @@
                                     placement: 'auto-start'
                                 }">
                             <span :class="{'occluding-content': bgProcess.progress_value }"><span class="has-text-weight-bold">{{ $i18n.get('label_progress') + " " }}</span>{{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}</span>
-                            <span>{{ bgProcess.progress_value &lt;&equals; 0 ? `(0%)` : ' ('+ bgProcess.progress_value +'%)' }}</span>
+                            <span>{{ bgProcess.progress_value == 0 ? `(0%)` : ' ('+ bgProcess.progress_value +'%)' }}</span>
                         </p>
                     </span>
                     <!-- Queued on -->
@@ -565,8 +565,9 @@
             },
             loadProcesses() {
               this.isLoading = true;
-              let fromDate = this.searchDates && this.searchDates[0] ? moment(this.searchDates[0]).format('YYYY-MM-DD') : null;
-              let toDate = this.searchDates && this.searchDates[1] ? moment(this.searchDates[1]).format('YYYY-MM-DD') : null;
+              let dateFormat = 'YYYY-MM-DD'
+              let fromDate = this.searchDates && this.searchDates[0] ? moment(this.searchDates[0]).format(dateFormat) : null;
+              let toDate = this.searchDates && this.searchDates[1] ? moment(this.searchDates[1]).format(dateFormat) : null;
 
               this.fetchProcesses({
                 page: this.processesPage,
@@ -574,7 +575,6 @@
                 searchDates: [fromDate, toDate],
               })
                   .then(res => {
-                    console.log(res)
                     this.isLoading = false;
                     this.total = res.total;
                   })
