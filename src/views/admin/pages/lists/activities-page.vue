@@ -1,10 +1,10 @@
 <template>
     <div>
         <div
-                :class="{
-                    'repository-level-page': isRepositoryLevel,
-                    'page-container': isRepositoryLevel
-                }">
+            :class="{
+                   'repository-level-page': isRepositoryLevel,
+                   'page-container': isRepositoryLevel
+               }">
             <tainacan-title
                     v-if="!isItemLevel"
                     :bread-crumb-items="[{ path: '', label: this.$i18n.get('activities') }]"/>
@@ -559,15 +559,7 @@
     @import '../../scss/_variables.scss';
 
     .sub-header {
-        min-height: $header-height;
-        height: auto;
-        padding-left: 0;
-        padding-right: 0;
-        border-bottom: 1px solid #ddd;
-        display: inline-flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
+        @include logs-container();
 
         .header-item {
             margin-bottom: 0 !important;

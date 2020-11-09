@@ -587,6 +587,11 @@
 </script>
 
 <style lang="scss" scoped>
+    @import '../../scss/_variables.scss';
+
+    .sub-header {
+      @include logs-container();
+    }
 
     .selection-control {
         
