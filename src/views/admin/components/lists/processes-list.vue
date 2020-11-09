@@ -84,16 +84,17 @@
         </b-field>
 
         <div class="control has-icons-right is-medium is-clearfix">
-          <input
-              class="input is-small"
+          <b-input
               :placeholder="$i18n.get('instruction_search')"
-              aria-autocomplete="on"
-              type="search">
-          <span
-              @click="searchProcesses()"
-              class="icon is-right">
-          <i class="tainacan-icon tainacan-icon-search"></i>
-        </span>
+              type="search"
+              size="is-small"
+              :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
+              autocomplete="on"
+              v-model="searchQuery"
+              @keyup.enter.native="searchProcesses()"
+              icon-right="magnify"
+              icon-right-clickable
+          />
         </div>
       </div>
 
@@ -388,7 +389,8 @@
                 isSelecting: false,
                 highlightedProcess: '',
                 dateFormat: '',
-                searchDates: []
+                searchDates: [],
+                searchQuery: ''
             }
         },
         watch: {
@@ -559,6 +561,7 @@
                 }
             },
             searchProcesses() {
+              console.log('sua boneca vai quebrar !!!');
               this.loadProcesses();
             },
             clearSearchDates() {
@@ -567,7 +570,7 @@
             },
             loadProcesses() {
               this.isLoading = true;
-              let dateFormat = 'YYYY-MM-DD'
+              let dateFormat = 'YYYY-MM-DD';
               let fromDate = this.searchDates && this.searchDates[0] ? moment(this.searchDates[0]).format(dateFormat) : null;
               let toDate = this.searchDates && this.searchDates[1] ? moment(this.searchDates[1]).format(dateFormat) : null;
 
@@ -575,6 +578,7 @@
                 page: this.processesPage,
                 processesPerPage: this.processesPerPage,
                 searchDates: [fromDate, toDate],
+                search: this.searchQuery
               })
                   .then(res => {
                     this.isLoading = false;

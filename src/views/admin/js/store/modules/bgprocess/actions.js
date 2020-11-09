@@ -2,7 +2,7 @@ import axios from '../../../axios';
 import qs from 'qs';
 
 // Actions related to background processes
-export const fetchProcesses = ({ commit }, {page, processesPerPage, shouldUpdateStore, searchDates}) => {
+export const fetchProcesses = ({ commit }, {page, processesPerPage, shouldUpdateStore, searchDates, search}) => {
     return new Promise((resolve, reject) => {
         let endpoint = '/bg-processes?all_users=1';
 
@@ -22,6 +22,10 @@ export const fetchProcesses = ({ commit }, {page, processesPerPage, shouldUpdate
                 ]
             };
             endpoint += '&' + qs.stringify(dateQuery);
+        }
+
+        if (search != undefined && search != '') {
+            endpoint += `&search=${search}`;
         }
 
         axios.tainacan.get(endpoint)

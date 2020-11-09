@@ -174,12 +174,19 @@ class REST_Background_Processes_Controller extends REST_Controller {
             $date_range = $wpdb->prepare($date_query, $from, $to);
         }
 
+        $process_type = '';
+        if (isset($request['search'])) {
+            $name = $request['search'];
+            $process_type = "AND name LIKE '%${name}%'";
+            $process_type = $wpdb->prepare($process_type);
+        }
+
 		$recent_q = '';
 		if ( isset($request['recent']) && $request['recent'] !== false ) {
             $recent_q = "AND (processed_last >= NOW() - INTERVAL 10 MINUTE OR queued_on >= NOW() - INTERVAL 10 MINUTE)";
         }
 
-        $base_query = "FROM $this->table WHERE 1=1 $status_q $user_q $recent_q $date_range ORDER BY priority DESC, queued_on DESC";
+        $base_query = "FROM $this->table WHERE 1=1 $status_q $user_q $recent_q $date_range $process_type ORDER BY priority DESC, queued_on DESC";
 
         $query = "SELECT * $base_query $limit_q";
         $count_query = "SELECT COUNT(ID) $base_query";
