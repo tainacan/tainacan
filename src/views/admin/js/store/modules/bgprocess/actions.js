@@ -27,8 +27,11 @@ export const fetchProcesses = ({ commit }, {page, processesPerPage, shouldUpdate
         axios.tainacan.get(endpoint)
         .then( res => {
             let processes = res.data;
+            /*
             if (shouldUpdateStore)
                 commit('setProcesses', processes);
+             */
+            commit('setProcesses', processes);
             resolve({ 'processes': processes, 'total': res.headers['x-wp-total'] });
         })
         .catch( error => {
