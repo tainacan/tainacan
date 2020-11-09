@@ -37,7 +37,66 @@
             </div>
         </div>
 -->
-    
+
+      <div class="sub-header">
+        <b-field>
+          <b-datepicker
+              ref="datepicker"
+              :placeholder="$i18n.get('instruction_filter_activities_date')"
+              size="is-small"
+              range
+              icon="calendar-today"
+              v-model="searchDates"
+              @input="searchProcesses()"
+              :day-names="[
+                $i18n.get('datepicker_short_sunday'),
+                $i18n.get('datepicker_short_monday'),
+                $i18n.get('datepicker_short_tuesday'),
+                $i18n.get('datepicker_short_wednesday'),
+                $i18n.get('datepicker_short_thursday'),
+                $i18n.get('datepicker_short_friday'),
+                $i18n.get('datepicker_short_saturday'),
+            ]"
+              :month-names="[
+                $i18n.get('datepicker_month_january'),
+                $i18n.get('datepicker_month_february'),
+                $i18n.get('datepicker_month_march'),
+                $i18n.get('datepicker_month_april'),
+                $i18n.get('datepicker_month_may'),
+                $i18n.get('datepicker_month_june'),
+                $i18n.get('datepicker_month_july'),
+                $i18n.get('datepicker_month_august'),
+                $i18n.get('datepicker_month_september'),
+                $i18n.get('datepicker_month_october'),
+                $i18n.get('datepicker_month_november'),
+                $i18n.get('datepicker_month_december'),
+            ]"
+          />
+          <p
+              class="control"
+              v-if="searchDates && searchDates.length != 0">
+            <button
+                class="button"
+                @click="clearSearchDates()">
+              <span class="icon"><i class="tainacan-icon tainacan-icon-close"/></span>
+            </button>
+          </p>
+        </b-field>
+
+        <div class="control has-icons-right is-medium is-clearfix">
+          <input
+              class="input is-small"
+              :placeholder="$i18n.get('instruction_search')"
+              aria-autocomplete="on"
+              type="search">
+          <span
+              @click="searchProcesses()"
+              class="icon is-right">
+          <i class="tainacan-icon tainacan-icon-search"></i>
+        </span>
+        </div>
+      </div>
+
         <div class="processes-list">
             <div     
                     :class="{ 
@@ -54,8 +113,8 @@
                     <!-- Collapse -->   
                     <span class="icon">
                         <i 
-                                :class="{ 'tainacan-icon-arrowdown' : collapses[index], 'tainacan-icon-arrowright' : !collapses[index] }"
-                                class="tainacan-icon tainacan-icon-1-25em has-text-blue4"/>
+                            :class="{ 'tainacan-icon-arrowdown' : collapses[index], 'tainacan-icon-arrowright' : !collapses[index] }"
+                            class="tainacan-icon tainacan-icon-1-25em has-text-blue4" />
                     </span>
                     <!-- Checking list -->
                     <!-- <span 
@@ -296,6 +355,13 @@
             </div>        
         </div>
     </div>
+
+  <div v-else-if="isLoading">
+    <center>
+      Carregando processos ...
+    </center>
+  </div>
+
 </template>
 
 <script>
@@ -319,7 +385,8 @@
                 allOnPageSelected: false,
                 isSelecting: false,
                 highlightedProcess: '',
-                dateFormat: ''
+                dateFormat: '',
+                searchDates: []
             }
         },
         watch: {
@@ -371,7 +438,8 @@
             ...mapActions('bgprocess', [
                 'deleteProcess',
                 'updateProcess',
-                'heartBitUpdateProcess'
+                'heartBitUpdateProcess',
+                'fetchProcesses'
             ]),
             selectAllOnPage() {
                 for (let i = 0; i < this.selected.length; i++) 
@@ -487,6 +555,32 @@
                         this.heartBitUpdateProcess(updatedProcess);
                     }
                 }
+            },
+            searchProcesses() {
+              this.loadProcesses();
+            },
+            clearSearchDates() {
+              this.searchDates = null;
+              this.loadProcesses();
+            },
+            loadProcesses() {
+              this.isLoading = true;
+              let fromDate = this.searchDates && this.searchDates[0] ? moment(this.searchDates[0]).format('YYYY-MM-DD') : null;
+              let toDate = this.searchDates && this.searchDates[1] ? moment(this.searchDates[1]).format('YYYY-MM-DD') : null;
+
+              this.fetchProcesses({
+                page: this.processesPage,
+                processesPerPage: this.processesPerPage,
+                searchDates: [fromDate, toDate],
+              })
+                  .then(res => {
+                    console.log(res)
+                    this.isLoading = false;
+                    this.total = res.total;
+                  })
+                  .catch(() => {
+                    this.isLoading = false;
+                  });
             }
         }
     }
