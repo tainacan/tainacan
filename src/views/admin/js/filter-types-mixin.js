@@ -62,7 +62,7 @@ export const dynamicFilterTypeMixin = {
         getValuesPlainText(metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
 
             if (isInCheckboxModal || search || !this.isUsingElasticSearch) {
-
+                
                 const source = axios.CancelToken.source();
  
                 let currentQuery  = JSON.parse(JSON.stringify(this.query));
@@ -99,7 +99,7 @@ export const dynamicFilterTypeMixin = {
                     url += `search=${search}&` + qs.stringify(query_items);
                 else
                     url += qs.stringify(query_items);
-                
+ 
                 this.isLoadingOptions = true;
                 
                 return new Object ({
@@ -268,7 +268,7 @@ export const dynamicFilterTypeMixin = {
             else
                 this.searchResults = sResults;
 
-            if (opts.length) {
+            if (opts) {
                 if (this.shouldAddOptions === true && this.options && this.options.length)
                     this.options = this.options.concat(opts)
                 else 
@@ -283,7 +283,7 @@ export const dynamicFilterTypeMixin = {
             if (this.filter.max_options && this.options.length >= this.filter.max_options) {
                 let showViewAllButton = true;
 
-                if(this.options.length === this.filter.max_options){
+                if (this.options.length === this.filter.max_options){
                     this.options[this.filter.max_options-1].showViewAllButton = showViewAllButton;
                 } else {
                     this.options[this.options.length-1].showViewAllButton = showViewAllButton;
@@ -340,7 +340,7 @@ export const dynamicFilterTypeMixin = {
             else
                 this.searchResults = sResults;
 
-            if (opts.length) {
+            if (opts) {
                 if (this.shouldAddOptions === true && this.options && this.options.length)
                      this.options = this.options.concat(opts)
                 else 

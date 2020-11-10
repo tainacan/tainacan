@@ -133,6 +133,7 @@
                 });
             },
             updateSelectedValues() {
+                
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
@@ -144,7 +145,7 @@
                 } else {
                     this.selected = [];
                 }
-
+                
                 let onlyLabels = [];
                 if (!isNaN(this.selected[0])){
                     for (let aSelected of this.selected) {
