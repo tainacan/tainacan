@@ -73,8 +73,8 @@ abstract class Generic_Process {
 	protected $error_log = [];
 
 	/**
-	 * List of attributes that are saved in DB and that are used to 
-	 * reconstruct the object, this property needs be overwritten.
+	 * List of attributes saved in DB, used to reconstruct the object.
+	 * This property needs to be overwritten.
 	 * @var array
 	 */
 	protected $array_attributes = [
@@ -84,7 +84,7 @@ abstract class Generic_Process {
 	];
 
 	/**
-	 * @return string
+	 * @return string the process unique id
 	 */
 	public function get_id(){
 		return $this->id;

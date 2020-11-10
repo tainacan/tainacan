@@ -4,7 +4,7 @@
     @include display-grid;
     -ms-grid-columns: 455px 455px;
     grid-template-columns: repeat(auto-fill, 455px);
-    grid-gap: 0px;
+    grid-gap: 0;
     justify-content: space-evenly;
     animation-name: appear;
     animation-duration: 0.5s;
@@ -17,7 +17,7 @@
 
     .tainacan-card {
         background-color: var(--tainacan-item-background-color);
-        padding: 0px;
+        padding: 0;
         flex-basis: 0;
         margin: 15px;
         max-width: 425px;

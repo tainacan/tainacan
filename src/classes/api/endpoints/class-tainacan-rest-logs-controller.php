@@ -248,9 +248,7 @@ class REST_Logs_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_items( $request ) {
-
 		$args = $this->prepare_filters( $request );
-
 
 		if ($request['item_id']) {
 			$args['item_id'] = $request['item_id'];

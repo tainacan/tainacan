@@ -1,76 +1,81 @@
 <template>
-    <div 
-            v-if="processes.length > 0 && !isLoading"
-            class="table-container">
-<!--
-        <div class="selection-control">
-            <div class="field select-all is-pulled-left">
-                <span>
-                    <b-checkbox 
-                            @click.native="selectAllOnPage()" 
-                            :value="allOnPageSelected">{{ $i18n.get('label_select_all_processes_page') }}</b-checkbox>
-                </span>
-            </div>
-            <div class="field is-pulled-right">
-                <b-dropdown
-                        position="is-bottom-left"
-                        :disabled="!isSelecting"
-                        id="bulk-actions-dropdown"
-                        trap-focus>
-                    <button
-                            class="button is-white"
-                            slot="trigger">
-                        <span>{{ $i18n.get('label_bulk_actions') }}</span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                        </span>
-                    </button> 
 
-                    <b-dropdown-item
-                            id="item-delete-selected-items"
-                            @click="deleteSelected()">
-                        {{ $i18n.get('label_delete_selected_processes') }}
-                    </b-dropdown-item>
-                    <b-dropdown-item disabled>{{ $i18n.get('label_edit_selected_processes') + ' (Not ready)' }}
-                    </b-dropdown-item>
-                </b-dropdown>
-            </div>
-        </div>
--->
+  <div>
+
     
-        <div class="processes-list">
-            <div     
-                    :class="{ 
+
+    <div
+        v-if="processes.length > 0 && !isLoading"
+        class="table-container">
+      <!--
+              <div class="selection-control">
+                  <div class="field select-all is-pulled-left">
+                      <span>
+                          <b-checkbox
+                                  @click.native="selectAllOnPage()"
+                                  :value="allOnPageSelected">{{ $i18n.get('label_select_all_processes_page') }}</b-checkbox>
+                      </span>
+                  </div>
+                  <div class="field is-pulled-right">
+                      <b-dropdown
+                              position="is-bottom-left"
+                              :disabled="!isSelecting"
+                              id="bulk-actions-dropdown"
+                              trap-focus>
+                          <button
+                                  class="button is-white"
+                                  slot="trigger">
+                              <span>{{ $i18n.get('label_bulk_actions') }}</span>
+                              <span class="icon">
+                                  <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                              </span>
+                          </button>
+
+                          <b-dropdown-item
+                                  id="item-delete-selected-items"
+                                  @click="deleteSelected()">
+                              {{ $i18n.get('label_delete_selected_processes') }}
+                          </b-dropdown-item>
+                          <b-dropdown-item disabled>{{ $i18n.get('label_edit_selected_processes') + ' (Not ready)' }}
+                          </b-dropdown-item>
+                      </b-dropdown>
+                  </div>
+              </div>
+      -->
+
+      <div class="processes-list">
+        <div
+            :class="{
                         'opened-process': collapses[index],
-                        'selected-row': selected[index], 
-                        'highlighted-process': highlightedProcess == bgProcess.ID 
+                        'selected-row': selected[index],
+                        'highlighted-process': highlightedProcess == bgProcess.ID
                     }"
-                    class="processes-list-item"
-                    :key="index"
-                    v-for="(bgProcess, index) of processes">
-                <div 
-                        @click="$set(collapses, index, !collapses[index])"
-                        class="process-handler">
-                    <!-- Collapse -->   
-                    <span class="icon">
-                        <i 
-                                :class="{ 'tainacan-icon-arrowdown' : collapses[index], 'tainacan-icon-arrowright' : !collapses[index] }"
-                                class="tainacan-icon tainacan-icon-1-25em has-text-blue4"/>
+            class="processes-list-item"
+            :key="index"
+            v-for="(bgProcess, index) of processes">
+          <div
+              @click="$set(collapses, index, !collapses[index])"
+              class="process-handler">
+            <!-- Collapse -->
+            <span class="icon">
+                        <i
+                            :class="{ 'tainacan-icon-arrowdown' : collapses[index], 'tainacan-icon-arrowright' : !collapses[index] }"
+                            class="tainacan-icon tainacan-icon-1-25em has-text-blue4" />
                     </span>
-                    <!-- Checking list -->
-                    <!-- <span 
-                            :class="{ 'is-selecting': isSelecting }"
-                            class="checkbox-cell">
-                        <b-checkbox 
-                                v-model="selected[index]"/> 
-                    </span> -->
-                    <!-- Name -->
-                    <span 
-                            class="process-title"
-                            :label="$i18n.get('label_name')" 
-                            :aria-label="$i18n.get('label_name') + ': ' + bgProcess.name">
+            <!-- Checking list -->
+            <!-- <span
+                    :class="{ 'is-selecting': isSelecting }"
+                    class="checkbox-cell">
+                <b-checkbox
+                        v-model="selected[index]"/>
+            </span> -->
+            <!-- Name -->
+            <span
+                class="process-title"
+                :label="$i18n.get('label_name')"
+                :aria-label="$i18n.get('label_name') + ': ' + bgProcess.name">
                         <p
-                                v-tooltip="{
+                            v-tooltip="{
                                     delay: {
                                         show: 500,
                                         hide: 300,
@@ -81,13 +86,13 @@
                                 }">
                             {{ bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process') }}</p>
                     </span>
-                    <!-- Progress -->
-                    <span 
-                            class="process-progress"
-                            :label="$i18n.get('label_progress')" 
-                            :aria-label="$i18n.get('label_progress') + ': ' + bgProcess.progress_label ? bgProcess.progress_label + (bgProcess.progress_value ? ' (' + bgProcess.progress_value + '%)' : '') : $i18n.get('label_no_details_of_process')">
+            <!-- Progress -->
+            <span
+                class="process-progress"
+                :label="$i18n.get('label_progress')"
+                :aria-label="$i18n.get('label_progress') + ': ' + bgProcess.progress_label ? bgProcess.progress_label + (bgProcess.progress_value ? ' (' + bgProcess.progress_value + '%)' : '') : $i18n.get('label_no_details_of_process')">
                         <p
-                                v-tooltip="{
+                            v-tooltip="{
                                     delay: {
                                         show: 500,
                                         hide: 300,
@@ -97,16 +102,16 @@
                                     placement: 'auto-start'
                                 }">
                             <span :class="{'occluding-content': bgProcess.progress_value }"><span class="has-text-weight-bold">{{ $i18n.get('label_progress') + " " }}</span>{{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}</span>
-                            <span>{{ bgProcess.progress_value &lt;&equals; 0 ? `(0%)` : ' ('+ bgProcess.progress_value +'%)' }}</span>
+                            <span>{{ bgProcess.progress_value == 0 ? `(0%)` : ' ('+ bgProcess.progress_value +'%)' }}</span>
                         </p>
                     </span>
-                    <!-- Queued on -->
-                    <span 
-                            class="process-queued-on"
-                            :label="$i18n.get('label_queued_on')" 
-                            :aria-label="$i18n.get('label_queued_on') + ' ' + getDate(bgProcess.queued_on)">
+            <!-- Queued on -->
+            <span
+                class="process-queued-on"
+                :label="$i18n.get('label_queued_on')"
+                :aria-label="$i18n.get('label_queued_on') + ' ' + getDate(bgProcess.queued_on)">
                         <p
-                                v-tooltip="{
+                            v-tooltip="{
                                     delay: {
                                         show: 500,
                                         hide: 300,
@@ -117,19 +122,19 @@
                                 }">
                             <span class="has-text-weight-bold">{{ $i18n.get('label_queued_on') + " " }}</span>{{ getDate(bgProcess.queued_on) }}</p>
                     </span>
-                    
-                    <!-- Status-->
-                    <span 
-                            class="actions-cell" 
-                            :label="$i18n.get('label_status')">
+
+            <!-- Status-->
+            <span
+                class="actions-cell"
+                :label="$i18n.get('label_status')">
                         <div class="actions-container">
-                            <span 
-                                    v-if="bgProcess.status == 'running'"
-                                    class="icon has-text-success loading-icon">
+                            <span
+                                v-if="bgProcess.status == 'running'"
+                                class="icon has-text-success loading-icon">
                                 <div class="control has-icons-right is-loading is-clearfix" />
                             </span>
-                            <span 
-                                    v-tooltip="{
+                            <span
+                                v-tooltip="{
                                         delay: {
                                             show: 500,
                                             hide: 300,
@@ -138,13 +143,13 @@
                                         autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    v-if=" bgProcess.status === 'running' "
-                                    class="icon has-text-gray action-icon"
-                                    @click.prevent.stop="pauseProcess(index)">
+                                v-if=" bgProcess.status === 'running' "
+                                class="icon has-text-gray action-icon"
+                                @click.prevent.stop="pauseProcess(index)">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-stop"/>
                             </span>
-                            <span 
-                                    v-tooltip="{
+                            <span
+                                v-tooltip="{
                                         delay: {
                                             show: 500,
                                             hide: 300,
@@ -153,12 +158,12 @@
                                         autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    v-if=" ( bgProcess.status === 'finished' && !bgProcess.error_log ) || bgProcess.status === null"
-                                    class="icon has-text-success">
+                                v-if=" ( bgProcess.status === 'finished' && !bgProcess.error_log ) || bgProcess.status === null"
+                                class="icon has-text-success">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
                             </span>
                             <span
-                                    v-tooltip="{
+                                v-tooltip="{
                                         delay: {
                                             show: 500,
                                             hide: 300,
@@ -167,15 +172,15 @@
                                         autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    v-if=" bgProcess.status === 'finished-errors' || ( bgProcess.done > 0 && bgProcess.error_log && bgProcess.status === 'finished' ) "
-                                    class="icon has-text-success">
+                                v-if=" bgProcess.status === 'finished-errors' || ( bgProcess.done > 0 && bgProcess.error_log && bgProcess.status === 'finished' ) "
+                                class="icon has-text-success">
                                 <i
                                     style="margin-right: -5px;"
                                     class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alert has-text-yellow2"/>
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
                             </span>
                             <span
-                                    v-tooltip="{
+                                v-tooltip="{
                                         delay: {
                                             show: 500,
                                             hide: 300,
@@ -184,12 +189,12 @@
                                         autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    v-if=" bgProcess.status === 'cancelled' "
-                                    class="icon has-text-success">
+                                v-if=" bgProcess.status === 'cancelled' "
+                                class="icon has-text-success">
                                 <i class="tainacan-icon has-text-danger tainacan-icon-1-25em tainacan-icon-repprovedcircle"/>
                             </span>
                             <span
-                                    v-tooltip="{
+                                v-tooltip="{
                                         delay: {
                                             show: 500,
                                             hide: 300,
@@ -198,12 +203,12 @@
                                         autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    v-if=" bgProcess.status === 'paused' "
-                                    class="icon has-text-gray">
+                                v-if=" bgProcess.status === 'paused' "
+                                class="icon has-text-gray">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-pause"/>
                             </span>
                             <span
-                                    v-tooltip="{
+                                v-tooltip="{
                                         delay: {
                                             show: 500,
                                             hide: 300,
@@ -212,12 +217,12 @@
                                         autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    v-if=" bgProcess.status === 'waiting' "
-                                    class="icon has-text-gray">
+                                v-if=" bgProcess.status === 'waiting' "
+                                class="icon has-text-gray">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting"/>
                             </span>
-                            <span 
-                                    v-tooltip="{
+                            <span
+                                v-tooltip="{
                                         delay: {
                                             show: 500,
                                             hide: 300,
@@ -226,46 +231,46 @@
                                         autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    v-if="bgProcess.status === 'errored'"
-                                    class="icon has-text-danger">
+                                v-if="bgProcess.status === 'errored'"
+                                class="icon has-text-danger">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processerror" />
                             </span>
                         </div>
                     </span>
-                </div>
+          </div>
 
-                <!-- Collapse inner content -->
-                <transition name="filter-item">
-                    <div 
-                            v-if="collapses[index]"
-                            class="process-collapse">
-                        <!-- Output -->
-                        <span 
-                                class="process-output"
-                                :label="$i18n.get('label_output')" 
-                                :aria-label="$i18n.get('label_output') + ': ' + (bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'))">
+          <!-- Collapse inner content -->
+          <transition name="filter-item">
+            <div
+                v-if="collapses[index]"
+                class="process-collapse">
+              <!-- Output -->
+              <span
+                  class="process-output"
+                  :label="$i18n.get('label_output')"
+                  :aria-label="$i18n.get('label_output') + ': ' + (bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'))">
                             <p v-html="bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info')"/>
                         </span>
 
-                        <!-- Logs -->
-                        <span 
-                                class="process-logs"
-                                :label="$i18n.get('label_log_file')" 
-                                :aria-label="$i18n.get('label_log_gile')">
+              <!-- Logs -->
+              <span
+                  class="process-logs"
+                  :label="$i18n.get('label_log_file')"
+                  :aria-label="$i18n.get('label_log_gile')">
                             <p>
-                                <a 
-                                        v-if="bgProcess.log"
-                                        :href="bgProcess.log">
+                                <a
+                                    v-if="bgProcess.log"
+                                    :href="bgProcess.log">
                                     <span class="icon is-small">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
                                     </span>
                                     {{ $i18n.get('label_log_file') }}
                                 </a>
                                 <br>
-                                <a 
-                                        v-if="bgProcess.error_log"
-                                        class="has-text-danger"
-                                        :href="bgProcess.error_log">
+                                <a
+                                    v-if="bgProcess.error_log"
+                                    class="has-text-danger"
+                                    :href="bgProcess.error_log">
                                     <span class="icon is-small">
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
                                     </span>
@@ -274,13 +279,13 @@
                             </p>
                         </span>
 
-                        <!-- Last processed on -->
-                        <span 
-                                class="process-last-processed-on"
-                                :label="$i18n.get('label_last_processed_on')" 
-                                :aria-label="$i18n.get('label_last_processed_on') + ' ' + getDate(bgProcess.processed_last)">
+              <!-- Last processed on -->
+              <span
+                  class="process-last-processed-on"
+                  :label="$i18n.get('label_last_processed_on')"
+                  :aria-label="$i18n.get('label_last_processed_on') + ' ' + getDate(bgProcess.processed_last)">
                             <p
-                                    v-tooltip="{
+                                v-tooltip="{
                                         delay: {
                                             show: 500,
                                             hide: 300,
@@ -291,11 +296,21 @@
                                     }">
                                 <span class="has-text-weight-bold">{{ $i18n.get('label_last_processed_on') + " " }}</span>{{ getDate(bgProcess.processed_last) }}</p>
                         </span>
-                    </div>
-                </transition>
-            </div>        
+            </div>
+          </transition>
         </div>
+      </div>
     </div>
+
+    <div v-else-if="isLoading">
+      <center>
+      <span>
+        {{ $i18n.get('loading_processes') }}
+      </span>
+      </center>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -319,7 +334,7 @@
                 allOnPageSelected: false,
                 isSelecting: false,
                 highlightedProcess: '',
-                dateFormat: ''
+                dateFormat: '',
             }
         },
         watch: {
@@ -371,7 +386,8 @@
             ...mapActions('bgprocess', [
                 'deleteProcess',
                 'updateProcess',
-                'heartBitUpdateProcess'
+                'heartBitUpdateProcess',
+                'fetchProcesses'
             ]),
             selectAllOnPage() {
                 for (let i = 0; i < this.selected.length; i++) 
@@ -493,6 +509,11 @@
 </script>
 
 <style lang="scss" scoped>
+    @import '../../scss/_variables.scss';
+
+    .sub-header {
+      @include logs-container();
+    }
 
     .selection-control {
         
