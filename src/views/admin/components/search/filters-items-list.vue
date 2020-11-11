@@ -450,8 +450,20 @@
                 
                 // Custom filter loading, get's from collections that have items with that taxonomy
                 } else {
+
+                    let collectionsIds = [];
+                    
+                    if (
+                        this.$route.query && 
+                        this.$route.query.metaquery && 
+                        Array.isArray(this.$route.query.metaquery) &&
+                        this.$route.query.metaquery.find((aMetaQuery) => aMetaQuery.key == 'collection_id')
+                    ) {
+                        collectionsIds = this.$route.query.metaquery.find((aMetaQuery) => aMetaQuery.key == 'collection_id').value;
+                    }
+
                     let taxonomyId = this.taxonomy.split("_");
-                    this.fetchTaxonomyFilters(taxonomyId[taxonomyId.length - 1])
+                    this.fetchTaxonomyFilters({ taxonomyId: taxonomyId[taxonomyId.length - 1], collectionsIds: collectionsIds })
                         .catch(() => this.isLoadingFilters = false);
                         
                 }
