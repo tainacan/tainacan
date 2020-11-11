@@ -1715,6 +1715,9 @@ export default {
     }
 
     .document-field {
+        /deep/ iframe {
+            max-width: 100%;
+        }
         .document-buttons-row {
             text-align: right;
             top: -21px;
