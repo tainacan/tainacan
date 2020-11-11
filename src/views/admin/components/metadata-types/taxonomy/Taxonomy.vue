@@ -17,6 +17,8 @@
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 :is-modal="false"
                 :parent="0"
+                :allow-new="allowNew"
+                @showAddNewTerm="openTermCreationModal"
                 :taxonomy_id="taxonomyId"
                 :selected="!valueComponent ? [] : valueComponent"
                 :metadatum-id="itemMetadatum.metadatum.id"
