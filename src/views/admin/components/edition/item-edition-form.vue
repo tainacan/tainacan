@@ -1296,7 +1296,13 @@ export default {
             })
             .then(() => {
                 this.isLoadingAttachments = true;
-                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                this.fetchAttachments({
+                    page: 1,
+                    attachmentsPerPage: 24,
+                    itemId: this.itemId,
+                    documentId: this.item.document,
+                    thumbnailId: this.item.thumbnail_id
+                })
                     .then(() => this.isLoadingAttachments = false)
                     .catch(() => this.isLoadingAttachments = false);
             })
@@ -1335,7 +1341,13 @@ export default {
                             .then(() => {
                                 this.isLoadingAttachments = true;
 
-                                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                                this.fetchAttachments({ 
+                                        page: 1,
+                                        attachmentsPerPage: 24,
+                                        itemId: this.itemId,
+                                        documentId: this.item.document,
+                                        thumbnailId: this.item.thumbnail_id
+                                    })
                                     .then(() => this.isLoadingAttachments = false)
                                     .catch(() => this.isLoadingAttachments = false);
                             })
@@ -1361,6 +1373,7 @@ export default {
                         this.isLoading = true;
                         this.form.document_type = 'attachment';
                         this.form.document = file.id + '';
+                        
                         this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
                         .then((item) => {
                             this.isLoading = false;
@@ -1414,10 +1427,17 @@ export default {
                     nonce: this.item.nonces ? this.item.nonces['update-post_' + this.item.id] : null,
                     relatedPostId: this.itemId,
                     document: this.item.document_type == 'attachment' ? this.item.document : null, 
+                    thumbnailId: this.item.thumbnail_id ? this.item.thumbnail_id : null, 
                     onSave: () => {
                         // Fetch current existing attachments
                         this.isLoadingAttachments = true;
-                        this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                        this.fetchAttachments({ 
+                            page: 1,
+                            attachmentsPerPage: 24,
+                            itemId: this.itemId,
+                            documentId: this.item.document,
+                            thumbnailId: this.item.thumbnail_id
+                        })
                             .then(() => this.isLoadingAttachments = false)
                             .catch(() => this.isLoadingAttachments = false);
                     }
@@ -1523,7 +1543,12 @@ export default {
                     this.setLastUpdated(this.item.modification_date);
 
                     // Fetch current existing attachments now that item.document
-                    this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
+                    this.fetchAttachments({
+                        page: 1,
+                        attachmentsPerPage: 24,
+                        itemId: this.itemId,
+                        documentId: this.item.document,
+                        thumbnailId: this.item.thumbnail_id });
 
                     // Initializes Media Frames now that itemId and item.document exists
                     this.initializeMediaFrames();

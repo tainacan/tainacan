@@ -202,7 +202,8 @@
     .tainacan-header-image-modal,
     .tainacan-thumbnail-modal,
     .tainacan-item-attachments-modal {
-        .tainacan-document-attachment {
+        .tainacan-document-attachment,
+        .tainacan-thumbnail-attachment {
             display: none;
             visibility: hidden;
         }
