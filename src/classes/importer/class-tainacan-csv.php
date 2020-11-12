@@ -965,7 +965,7 @@ class CSV extends Importer {
 					if( !is_numeric($metadatum_id) ) {
 						$metadatum = $this->create_new_metadata( $header, $collection['id']);
 						if ( $metadatum == false ) {
-							$this->add_error_log( __("Error on creating metadata metadata, please review the metadata description.", 'tainacan') );
+							$this->add_error_log( __("Error while creating metadatum, please review the metadatum description.", 'tainacan') );
 							$this->abort();
 							return false;
 						}

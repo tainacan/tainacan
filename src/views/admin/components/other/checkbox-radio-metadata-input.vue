@@ -104,7 +104,7 @@
                             class="tainacan-finder-column"
                             :key="finderColumn.label + '-' + key">
                         <p class="column-label">
-                            {{ finderColumn.label ? finderColumn.label : $i18n.get('label_terms_without_parent') }}
+                            {{ finderColumn.label ? finderColumn.label : $i18n.get('label_root_terms') }}
                         </p>
                         <ul v-if="finderColumn.children.length">
                             <b-field
@@ -221,12 +221,12 @@
                                 </b-radio>
                             </li>
                         </template>
-                        <template v-if="!searchResults.length">
+                        <template v-if="!isLoadingSearch && !searchResults.length">
                             <li class="tainacan-li-search-results result-info">
                                 {{ $i18n.get('info_no_terms_found') }}
                             </li>
                         </template>
-                       <template v-if="allowNew && !searchResults.length">
+                       <template v-if="!isLoadingSearch && allowNew && !searchResults.length">
                             <li class="tainacan-li-search-results result-info">
                                 <a @click="$emit('showAddNewTerm', { name: optionName })">
                                     {{ $i18n.get('label_new_term') + ' "' + optionName + '"' }}

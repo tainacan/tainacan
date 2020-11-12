@@ -108,7 +108,7 @@
                                 class="tainacan-finder-column"
                                 :key="finderColumn.label + '-' + key">
                             <p class="column-label">
-                                {{ finderColumn.label ? finderColumn.label : $i18n.get('label_terms_without_parent') }}
+                                {{ finderColumn.label ? finderColumn.label : $i18n.get('label_root_terms') }}
                             </p>
                             <ul v-if="finderColumn.children.length">
                                 <b-field

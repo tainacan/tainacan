@@ -189,7 +189,7 @@
                                                 show: 500,
                                                 hide: 100,
                                             },
-                                            content: $i18n.get('label_see_on_slideshow'),
+                                            content: $i18n.get('label_see_on_fullscreen'),
                                             placement: 'auto-start'
                                         }"          
                                         @click.prevent="starSlideshowFromHere(index)"

@@ -115,7 +115,7 @@ class Taxonomy extends Metadata_Type {
 
 		$options = $metadatum->get_metadata_type_options();
 		if ( !$metadatum->is_multiple() && $this->get_option('input_type') !== 'tainacan-taxonomy-radio' ) {
-			return ['input_type' => __('A taxonomy metadata that accepts simple values should use a radio type input', 'tainacan')];
+			return ['input_type' => __('A taxonomy metadata that does not accept multiple values should use a radio type input', 'tainacan')];
 		}
 
 		$Tainacan_Metadata = Metadata::get_instance();
