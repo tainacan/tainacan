@@ -169,7 +169,7 @@ class Compound extends Metadata_Type {
 	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
 		$separator = $item_metadata->get_multivalue_separator();
-		$options = $item_metadata->get_metadatum()->get_metadata_type_object()->get_options();
+		$options = $item_metadata->get_metadatum()->get_metadata_type_options();
 		$order = $options['children_order'];
 		$return = '';
 
