@@ -340,6 +340,7 @@
                 <template v-if="useCaptcha == 'yes'">
                     <div 
                             class="g-recaptcha"
+                            id="tainacan-g-recaptcha"
                             :data-sitekey="captchaSiteKey" />
                     <br>
                 </template>
@@ -507,7 +508,6 @@ export default {
         }
     },
     created() {
-
         // Puts loading on form
         this.isLoading = true;
 
@@ -542,6 +542,7 @@ export default {
             });
     },
     mounted() {
+
         // Checks if only one type of document is allowed. In this case we preset document type
         if (!this.hideFileModalButton && this.hideTextModalButton && this.hideLinkModalButton)
             this.form.document_type = 'attachment';
@@ -677,6 +678,15 @@ export default {
                     this.setItemSubmissionMetadata( metadata.map((metadatum) => { return { metadatum_id: metadatum.id, value: null } }) );
                     this.couldLoadCollection = true;
                     this.isLoading = false;
+
+                    // Mounts grecapcha
+                    if (this.useCaptcha == 'yes') {
+                        try {
+                            grecaptcha.render('tainacan-g-recaptcha');
+                        } catch(error) {
+                            this.$console.log(error);
+                        }
+                    }
                 })
                 .catch(() => {
                     this.couldLoadCollection = false;
