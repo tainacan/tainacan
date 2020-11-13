@@ -758,6 +758,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_edit_attachments'							 => __( 'Order, title or alternative text of the attachments, are edited via the WordPress media modal.', 'tainacan' ),
 	'info_recaptcha_link_%s'						 =>	__( 'Remember to configure your website reCAPTCHA keys on <a href="%s" target="_blank">the item submission repository page</a>.', 'tainacan'),
 	'info_form_not_loaded'					 		 =>	__( 'There are probably not enought permissions to display it here.', 'tainacan'),
+	'info_validating_slug'					 		 =>	__( 'Validating slug...', 'tainacan'),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),

@@ -431,7 +431,7 @@
                             :addons="false" 
                             :label="$i18n.get('label_slug')"
                             :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
+                            :message="isUpdatingSlug ? $i18n.get('info_validating_slug') : (editFormErrors['slug'] != undefined ? editFormErrors['slug'] : '')">
                         <help-button 
                                 :title="$i18n.getHelperTitle('collections', 'slug')" 
                                 :message="$i18n.getHelperMessage('collections', 'slug')"/>
@@ -439,7 +439,9 @@
                                 id="tainacan-text-slug"
                                 @input="updateSlug"
                                 v-model="form.slug"
-                                @focus="clearErrors('slug')"/>
+                                @focus="clearErrors('slug')"
+                                :disabled="isUpdatingSlug"
+                                :loading="isUpdatingSlug"/>
                     </b-field>
 
                     <!-- Comment Status ------------------------ --> 
@@ -831,7 +833,7 @@ export default {
 
                     this.isUpdatingSlug = false;
                 });
-        }, 500),
+        }, 1000),
         onSubmit(goTo) {
            
             this.isLoading = true;
