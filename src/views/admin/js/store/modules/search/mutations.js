@@ -60,7 +60,7 @@ export const addTaxQuery = ( state, filter ) => {
 };
 
 export const addFetchOnly = ( state, metadatum ) => {
-    state.postquery.fetch_only = metadatum.replace(/,null/g, '');
+    state.postquery.fetch_only = metadatum
 };
 export const addFetchOnlyMeta = ( state, metadatum ) => {
     state.postquery.fetch_only_meta = metadatum;

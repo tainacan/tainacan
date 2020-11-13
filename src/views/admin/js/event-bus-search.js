@@ -210,7 +210,6 @@ export default {
                     this.updateURLQueries();
                 },
                 addFetchOnly( metadatum, ignorePrefs, metadatumIDs ){
-                    
                     this.$store.dispatch('search/add_fetch_only', metadatum );
                     this.$store.dispatch('search/add_fetch_only_meta', metadatumIDs);
                     this.updateURLQueries();  
