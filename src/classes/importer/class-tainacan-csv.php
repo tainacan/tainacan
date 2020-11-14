@@ -980,13 +980,16 @@ class CSV extends Importer {
 				}
 
 				$this->save_mapping( $collection['id'], $collection['mapping'] );
-				
+
 				$coll = \Tainacan\Repositories\Collections::get_instance()->fetch($collection['id']);
-				$metadata_order = array_map(
-					function($meta) { return ["enabled"=>true, "id"=>$meta]; },
-					array_keys( $collection['mapping'] )
-				);
-				$coll->set_metadata_order( $metadata_order );
+				if(empty($coll->get_metadata_order())) {
+					$metadata_order = array_map(
+						function($meta) { return ["enabled"=>true, "id"=>$meta]; },
+						array_keys( $collection['mapping'] )
+					);
+					$coll->set_metadata_order( $metadata_order );
+				}
+
 				if ( $coll->validate() ) {
 					\Tainacan\Repositories\Collections::get_instance()->update( $coll );
 				} else {
