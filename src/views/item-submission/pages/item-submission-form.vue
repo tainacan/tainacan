@@ -755,6 +755,7 @@ export default {
             font-weight: 500 !important;
             color: var(--tainacan-label-color) !important;
             line-height: 1.2em;
+            display: inline-block;
         }
     }
 
@@ -782,6 +783,7 @@ export default {
                     border-radius: 50px;
                     height: 72px;
                     width: 72px;
+                    padding: 0;
                     border: none;
                     background-color: var(--tainacan-gray2);
                     color: var(--tainacan-secondary);

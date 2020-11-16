@@ -152,6 +152,21 @@ export default {
             }
         }
 
+        // Some themes set a low max-width or marigns to inputs, this also messes up with Bulma inputs such as taginput.
+        input[type="text"],
+        input[type="password"],
+        input[type="search"],
+        input[type="email"],
+        input[type="url"],
+        input[type="tel"],
+        input[type="number"],
+        input[type="range"], input[type="date"],
+        textarea {
+            max-width: 100%;
+            margin-top: initial;
+            margin-bottom: initial;
+        }
+
         .date-filter-container,
         .numeric-filter-container {
             @media screen and (min-width: 1366px) {

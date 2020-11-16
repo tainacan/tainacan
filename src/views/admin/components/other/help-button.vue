@@ -71,6 +71,7 @@ export default {
                 font-weight: bold;
                 color: var(--tainacan-secondary);
                 margin-bottom: 0;
+                margin-top: 0;
             }
         }
 
@@ -84,6 +85,7 @@ export default {
                 white-space: normal !important;
                 overflow: visible !important;
                 max-height: 100% !important;
+                line-height: normal;
                 color: var(--tainacan-secondary);
             }
         }

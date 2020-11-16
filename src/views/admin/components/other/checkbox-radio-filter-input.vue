@@ -1026,6 +1026,7 @@
             border-radius: 0 !important;
             min-height: 100%;
             border: 1px solid var(--tainacan-input-border-color);
+            background-color: var(--tainacan-input-background-color);
             transition: background 0.2s ease;
         }
         .button.is-active {
