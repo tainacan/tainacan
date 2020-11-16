@@ -178,7 +178,7 @@
 
                 if (this.itemMetadatum.value !== null) {
                     
-                // This routine avoids calling the API if the value did not changed
+                    // This routine avoids calling the API if the value did not changed
                     switch(this.itemMetadatum.value.constructor.name) {
 
                         // Multivalored Metadata requires checking the whole array
@@ -202,7 +202,7 @@
 
                                 if (equal.length == currentValues.length && this.itemMetadatum.value.length <= equal.length)
                                     return;
-                            } else {
+                            } else { // This will happen in taxonomy single valued on item submission, as there all term values appear as array.
                                 if (this.itemMetadatum.value == currentValues)
                                     return;
                             }
