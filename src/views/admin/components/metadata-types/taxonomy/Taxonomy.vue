@@ -26,10 +26,11 @@
                 :collection-id="itemMetadatum.metadatum.collection_id"
                 :is-taxonomy="true"
                 :metadatum="itemMetadatum.metadatum"
-                :amount-selected="getComponent == 'tainacan-taxonomy-checkbox' ? value.length : (value ? '1' : '0')"
+                :amount-selected="Array.isArray(valueComponent) ? valueComponent.length : (valueComponent ? '1' : '0')"
                 :is-checkbox="getComponent == 'tainacan-taxonomy-checkbox'"
                 @input="(selected) => valueComponent = selected"
             />
+            
         <div 
                 v-if="allowNew"
                 class="add-new-term">
