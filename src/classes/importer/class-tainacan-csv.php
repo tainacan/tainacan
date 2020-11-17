@@ -283,7 +283,6 @@ class CSV extends Importer {
 		return false;
 	}
 
-
 	public function options_form() {
 		ob_start();
 		?>
@@ -489,7 +488,7 @@ class CSV extends Importer {
 			}
 		} else if( strpos($column_value,'file:') === 0 ) {
 			$correct_value = trim(substr($column_value, 5));
-			if( filter_var($correct_value, FILTER_VALIDATE_URL) ) {
+			if( isset(parse_url($correct_value)['scheme'] ) ) {
 				$id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
 
 				if(!$id){
@@ -562,7 +561,7 @@ class CSV extends Importer {
 		if( $attachments ) {
 			foreach( $attachments as $attachment ) {
 				if(empty($attachment)) continue;
-				if( filter_var($attachment, FILTER_VALIDATE_URL) ) {
+				if(isset(parse_url($attachment)['scheme'])) {
 					$id = $TainacanMedia->insert_attachment_from_url($attachment, $item_inserted->get_id());
 					if(!$id) {
 						$this->add_error_log('Error in Attachment file imported from URL ' . $attachment);
@@ -966,7 +965,7 @@ class CSV extends Importer {
 					if( !is_numeric($metadatum_id) ) {
 						$metadatum = $this->create_new_metadata( $header, $collection['id']);
 						if ( $metadatum == false ) {
-							$this->add_error_log( __("Error on creating metadata metadata, please review the metadata description.", 'tainacan') );
+							$this->add_error_log( __("Error while creating metadatum, please review the metadatum description.", 'tainacan') );
 							$this->abort();
 							return false;
 						}
@@ -981,13 +980,16 @@ class CSV extends Importer {
 				}
 
 				$this->save_mapping( $collection['id'], $collection['mapping'] );
-				
+
 				$coll = \Tainacan\Repositories\Collections::get_instance()->fetch($collection['id']);
-				$metadata_order = array_map(
-					function($meta) { return ["enabled"=>true, "id"=>$meta]; },
-					array_keys( $collection['mapping'] )
-				);
-				$coll->set_metadata_order( $metadata_order );
+				if(empty($coll->get_metadata_order())) {
+					$metadata_order = array_map(
+						function($meta) { return ["enabled"=>true, "id"=>$meta]; },
+						array_keys( $collection['mapping'] )
+					);
+					$coll->set_metadata_order( $metadata_order );
+				}
+
 				if ( $coll->validate() ) {
 					\Tainacan\Repositories\Collections::get_instance()->update( $coll );
 				} else {
@@ -1018,9 +1020,17 @@ class CSV extends Importer {
 	* @return string
 	*/
 	public function get_output() {
+		$imported_file = basename($this->get_tmp_file());
+		$current_user = wp_get_current_user();
+		$author = $current_user->user_login;
 
-		$message = __('target collections:', 'tainacan');
+		$message  = __('imported file:', 'tainacan');
+		$message .= " <b> ${imported_file} </b><br/>";
+		$message .= __('target collections:', 'tainacan');
 		$message .= " <b>" . implode(", ", $this->get_collections_names() ) . "</b><br/>";
+		$message .= __('Imported by:', 'tainacan');
+		$message .= " <b> ${author} </b><br/>";
+
 		return $message;
 	}
 

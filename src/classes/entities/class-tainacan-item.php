@@ -93,6 +93,8 @@ class Item extends Entity {
 		}
 
 		$attachments_query = [
+			'orderby'			=> 'menu_order',
+			'order' 			=> 'ASC',
 			'post_type'     	=> 'attachment',
 			'posts_per_page' 	=> -1,
 			'post_parent'   	=> $item_id,
@@ -405,7 +407,7 @@ class Item extends Entity {
 			$is_valid = false;
 		}
 
-		$arrayItemMetadata = $this->get_metadata(['parent'=>'any']);
+		$arrayItemMetadata = $this->get_metadata(['parent'=>'any', 'include_control_metadata_types' => 'true']);
 		if ( $arrayItemMetadata ) {
 			foreach ( $arrayItemMetadata as $itemMetadata ) {
 
@@ -564,16 +566,15 @@ class Item extends Entity {
 				}
 
 				$mto = $metadatum_object->get_metadata_type_object();
-				$before = str_replace('$type', $mto->get_slug(), $args['before']);
-				$return .= $before;
 
 				$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($this, $metadatum_object);
 				if ($item_meta->has_value() || !$args['hide_empty']) {
+					$before = str_replace('$type', $mto->get_slug(), $args['before']);
+					$return .= $before;
 					$return .= $args['before_title'] . $metadatum_object->get_name() . $args['after_title'];
 					$return .= $args['before_value'] . $item_meta->get_value_as_html() . $args['after_value'];
+					$return .= $args['after'];
 				}
-
-				$return .= $args['after'];
 
 			}
 
@@ -632,16 +633,14 @@ class Item extends Entity {
 				}
 			}
 
-			$before = str_replace('$type', $fto->get_slug(), $args['before']);
-			$return .= $before;
-
 			if ($item_meta->has_value() || !$args['hide_empty']) {
+				$before = str_replace('$type', $fto->get_slug(), $args['before']);
+				$return .= $before;
 				$return .= $args['before_title'] . $item_meta->get_metadatum()->get_name() . $args['after_title'];
 				$return .= $args['before_value'] . $item_meta->get_value_as_html() . $args['after_value'];
+				$return .= $args['after'];
+
 			}
-
-			$return .= $args['after'];
-
 		}
 
 		return $return;
@@ -667,11 +666,8 @@ class Item extends Entity {
 
 			if ( wp_attachment_is_image($this->get_document()) ) {
 
-				$img = wp_get_attachment_image($this->get_document(), $img_size);
-				$img_full = wp_get_attachment_url($this->get_document());
-
-				$image_attributes = wp_get_attachment_image_src( $this->get_document(), $img_size );
-                $img = "<img style='max-width: 100%;' src='" . $image_attributes[0] . "' />";
+				$img_full = wp_get_attachment_url($this->get_document());			
+				$img = wp_get_attachment_image( $this->get_document(), $img_size );
 
 				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $img_full, $img);
 
@@ -707,9 +703,6 @@ class Item extends Entity {
 
 			$img = wp_get_attachment_image($attachment, $img_size);
 			$img_full = wp_get_attachment_url($attachment);
-
-			$image_attributes = wp_get_attachment_image_src($attachment, $img_size );
-			$img = "<img style='max-width: 100%;' src='" . $image_attributes[0] . "' />";
 
 			$output .= sprintf("<a href='%s' target='blank'>%s</a>", $img_full, $img);
 			

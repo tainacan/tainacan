@@ -50,18 +50,18 @@ abstract class Generic_Process {
 	];
 
 	/**
-	 * Transients is used to store temporary data to be used accross multiple requests
+	 * Transients are used to store temporary data to be used across multiple requests
 	 *
 	 * Add and remove transient data using add_transient() and delete_transient() methods
 	 *
-	 * Transitens can be strings, numbers or arrays. Avoid storing objects.
+	 * Transients can be strings, numbers or arrays. Avoid storing objects.
 	 * 
 	 * @var array
 	 */
 	protected $transients = [];
 
 	/**
-	 * Wether to abort process execution.
+	 * Whether to abort process execution.
 	 * @var bool
 	 */
 	protected $abort = false;
@@ -73,8 +73,8 @@ abstract class Generic_Process {
 	protected $error_log = [];
 
 	/**
-	 * List of attributes that are saved in DB and that are used to 
-	 * reconstruct the object, this property need be overwrite.
+	 * List of attributes saved in DB, used to reconstruct the object.
+	 * This property needs to be overwritten.
 	 * @var array
 	 */
 	protected $array_attributes = [
@@ -84,7 +84,7 @@ abstract class Generic_Process {
 	];
 
 	/**
-	 * @return string
+	 * @return string the process unique id
 	 */
 	public function get_id(){
 		return $this->id;

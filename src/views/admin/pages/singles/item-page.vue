@@ -42,7 +42,7 @@
                             ?
                             $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
                     </div>
-                    <div class="section-box">
+                    <div class="section-box document-field">
                         <div
                                 v-if="item.document !== undefined && item.document !== null &&
                                 item.document_type !== undefined && item.document_type !== null &&
@@ -91,6 +91,16 @@
                                         :alt="$i18n.get('label_thumbnail')"
                                         :src="thumbPlaceholderPath">
                             </figure>
+                        </div>
+                        <br>
+                        <div 
+                                v-if="item.thumbnail_id"
+                                class="thumbnail-alt-input">
+                            <label class="label">{{ $i18n.get('label_thumbnail_alt') }}</label>
+                            <help-button
+                                    :title="$i18n.get('label_thumbnail_alt')"
+                                    :message="$i18n.get('info_thumbnail_alt')"/>
+                            <p> {{ item.thumbnail_alt }}</p>
                         </div>
                     </div>        
 
@@ -213,7 +223,7 @@
                                             class="content">
                                         <component 
                                                 :is="itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ? 'div' : 'p'" 
-                                                v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span></p>`"/>
+                                                v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`"/>
                                     </div>
                                 </div>
                             </div>
@@ -247,7 +257,9 @@
                         
                             <attachments-list
                                     v-if="item != undefined && item.id != undefined"
-                                    :item="item" />    
+                                    :item="item"
+                                    :is-loading.sync="isLoadingAttachments"
+                                    @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading" />    
                         </b-tab-item>
 
                         <b-tab-item>
@@ -258,9 +270,7 @@
                                 <span>{{ $i18n.get('activities') }}</span>
                             </template>
                             
-                            <activities-page
-                                    :is-loading.sync="isLoadingAttachments"
-                                    @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"/>
+                            <activities-page v-if="activeTab == 2"/>
                         </b-tab-item>
                     </b-tabs>
                 </div>
@@ -333,12 +343,12 @@
             return {
                 collectionId: Number,
                 itemId: Number,
+                itemRequestCancel: undefined,
                 isLoading: false,
                 open: true,
                 thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
                 urls_open: false,
-                activeTab: 0,
-                isLoadingAttachments: false
+                activeTab: 0
             }
         },
         computed: {
@@ -366,18 +376,27 @@
             // Puts loading on Item Loading
             this.isLoading = true;
 
+            // Cancels previous Request
+            if (this.itemRequestCancel != undefined)
+                this.itemRequestCancel.cancel('Item search Canceled.');
+
             // Obtains Item
             this.fetchItem({ 
                 itemId: this.itemId,
                 contextEdit: true,    
                 fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html'       
             })
-            .then((item) => {
-                this.$root.$emit('onCollectionBreadCrumbUpdate', [
-                    {path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items')},
-                    {path: '', label: item.title}
-                ]);
-                this.loadMetadata();
+             .then((resp) => {
+                resp.request.then((item) => {
+                    this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                        {path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items')},
+                        {path: '', label: item.title}
+                    ]);
+                    this.loadMetadata();
+                });
+
+                // Item resquest token for cancelling
+                this.itemRequestCancel = resp.source;
             });
 
         },
@@ -592,6 +611,17 @@
                 font-size: 1.125em !important;
                 color: var(--tainacan-gray3);
             }
+        }
+    }
+
+    .document-field {
+        /deep/ iframe {
+            max-width: 100%;
+        }
+        .document-buttons-row {
+            text-align: right;
+            top: -21px;
+            position: relative;
         }
     }
 

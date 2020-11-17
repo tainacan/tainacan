@@ -3,6 +3,7 @@
         <div 
                 class="is-inline-flex"
                 v-if="filterTags != undefined && filterTags.length > 0">
+            <p style="margin-bottom: 0;"><strong>{{ totalItems }}</strong>{{ ' itens encontrados, ' }}<strong>{{ filterTags.length }}</strong>{{ ' filtros aplicados: ' }}&nbsp;&nbsp;</p>
             <b-tag            
                     v-for="(filterTag, index) of filterTags"
                     :key="index"       
@@ -20,6 +21,7 @@
         </div>
     </transition>
 </template>
+
 <script>
     import { mapGetters } from 'vuex';
 
@@ -38,11 +40,15 @@
                     }
                 }
                 return flattenTags;
+            },
+            totalItems() {
+                return this.getTotalItems()
             }
         },
         methods: {
             ...mapGetters('search',[
-                'getFilterTags'
+                'getFilterTags',
+                'getTotalItems'
             ]),
             removeMetaQuery({ filterId, value, singleLabel, label, taxonomy, metadatumId }) {
                 this.$eventBusSearch.resetPageOnStore();
@@ -79,6 +85,7 @@
         &.is-inline-flex {
             flex-wrap: wrap;
             justify-content: flex-start;   
+            align-items: baseline;
         }  
         
         #button-clear-all {

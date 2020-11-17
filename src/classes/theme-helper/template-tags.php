@@ -182,6 +182,19 @@ function tainacan_get_the_collection_name() {
 }					
 
 /**
+ * When visiting an item single page containing a search query, returns the previous and next items
+ *
+ * @return array containing next and previous items with basic url, title and thumbnail information
+ */
+function tainacan_get_adjacent_items() {
+	if ( is_single() ) {
+		return \Tainacan\Theme_Helper::get_instance()->get_adjacent_items();
+	}
+	return false;
+}
+
+
+/**
  * When visiting a collection archive or single, prints the collection name
  *
  * @return void
@@ -241,9 +254,9 @@ function tainacan_the_collection_url() {
 
 
 /**
- * get related to view modes
+ * Get related to view modes
  *
- * @return array ['default_view_mode'=> [], '$enabled_view_modes'=> [] ]
+ * @return array ['default_view_mode'=> '', '$enabled_view_modes'=> [], , '$registered_view_modes'=> [] ]
  */
 function tainacan_get_the_view_modes() {
 	$default_view_mode = apply_filters( 'tainacan-default-view-mode-for-themes', 'masonry' );
@@ -253,6 +266,15 @@ function tainacan_get_the_view_modes() {
 		array_push($registered_view_modes_slugs, $key);
 	}
 	$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', $registered_view_modes_slugs );
+
+	// If in a collection page
+	$collection_id = tainacan_get_collection_id();
+	if ($collection_id) {
+		$collection = new  \Tainacan\Entities\Collection($collection_id);
+		$default_view_mode = $collection->get_default_view_mode();
+		$enabled_view_modes = $collection->get_enabled_view_modes();
+	}
+	
 	return [
 		'default_view_mode' => $default_view_mode,
 		'enabled_view_modes' => $enabled_view_modes,
@@ -260,6 +282,22 @@ function tainacan_get_the_view_modes() {
 	];
 }
 
+/** 
+ * Checks whether a view mode is enabled in the current list instance
+ *
+ * @return boolean 
+ */
+function tainacan_is_view_mode_enabled($view_mode_slug) {
+	$view_modes = tainacan_get_the_view_modes();
+	
+	if (is_array($view_modes['enabled_view_modes'])) {
+		foreach($view_modes['enabled_view_modes'] as $view_mode) {
+			if ($view_mode == $view_mode_slug)
+				return true;
+		}
+	}
+	return false;
+}
 
 /**
  * Outputs the div used by Vue to render the Items List with a powerful faceted search
@@ -279,6 +317,7 @@ function tainacan_get_the_view_modes() {
 	 *	   @type bool	$hide_displayed_metadata_dropdown			Hides the "Displayed metadata" dropdown even if the current view modes allows it	
 	 * 	   @type bool	$hide_sorting_area							Completely hides all sorting controls	
 	 * 	   @type bool 	$hide_sort_by_button						Hides the button where user can select the metadata to sort by items (keeps the sort direction)
+	 * 	   @type bool 	$hide_items_thumbnail						Forces the thumbnail to be hiden on every listing. This setting also disables view modes that contain the 'requires-thumbnail' attr. By default is false or inherited from collection setting
 	 *	   @type bool	$hide_exposers_button						Hides the "View as..." button, a.k.a. Exposers modal
 	 * 	   @type bool 	$hide_items_per_page_button					Hides the button for selecting amount of items loaded per page
 	 * 	   @type bool 	$hide_go_to_page_button						Hides the button for skiping to a specific page
@@ -319,13 +358,15 @@ function tainacan_the_faceted_search($args = array()) {
 	// If in a collection page
 	$collection_id = tainacan_get_collection_id();
 	if ($collection_id) {
-
 		$props .= 'collection-id="' . $collection_id . '" ';
 		$collection = new  \Tainacan\Entities\Collection($collection_id);
 		$default_view_mode = $collection->get_default_view_mode();
 		$enabled_view_modes = $collection->get_enabled_view_modes();
+		
+		// Gets hideItemsThumbnail info from collection setting
+		$args['hide-items-thumbnail'] = $collection->get_hide_items_thumbnail_on_lists() == 'yes' ? true : false;
 	}
-
+	
 	// If in a tainacan taxonomy
 	$term = tainacan_get_term();
 	if ($term) {
@@ -446,9 +487,8 @@ function tainacan_register_view_mode($slug, $args = []) {
 function tainacan_get_item($post_id = 0) {
 	$post = get_post( $post_id );
 
-	if (!$post) {
+	if (!$post)
 		return null;
-	}
 
 	$theme_helper = \Tainacan\Theme_Helper::get_instance();
 

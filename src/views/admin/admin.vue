@@ -48,6 +48,7 @@
     import PrimaryMenu from './components/navigation/primary-menu.vue';
     import TainacanHeader from './components/navigation/tainacan-header.vue';
     import TainacanRepositorySubheader from './components/navigation/tainacan-repository-subheader.vue';
+    import CustomDialog from './components/other/custom-dialog.vue';
 
     export default { 
         name: "AdminPage",
@@ -76,6 +77,34 @@
             this.isMenuCompressed = (this.$route.params.collectionId != undefined);
             this.activeRoute = this.$route.name;
             this.isRepositoryLevel = this.$route.params.collectionId == undefined;
+
+            if (jQuery && jQuery( document )) {
+                jQuery( document ).ajaxError(this.onHeartBitError);
+            }
+        },
+        methods: {
+            onHeartBitError(event, jqxhr, settings) {
+                if (settings && settings.url == '/wp-admin/admin-ajax.php') {
+                    this.$buefy.snackbar.open({
+                        message: this.$i18n.get('error_connectivity'),
+                        type: 'is-danger',
+                        duration: 5000,
+                        actionText: this.$i18n.get('label_know_more'),
+                        onAction: () => {
+                            this.$buefy.modal.open({
+                                component: CustomDialog,
+                                props: {
+                                    title: this.$i18n.get('error_connectivity_label'),
+                                    message: this.$i18n.get('error_connectivity_detail'),
+                                    hideCancel: true
+                                },
+                                ariaRole: 'alertdialog',
+                                ariaModal: true
+                            });
+                        }
+                    });
+                }
+            }
         }
     }
 </script>

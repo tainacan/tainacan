@@ -31,6 +31,12 @@
         </button>
 
         <br>
+
+        <filters-tags-list
+                style="padding: 1em 0;"
+                class="filter-tags-list"
+                v-if="filtersAsModal && hasFiltered" />
+
         <br>
         <div            
                 v-if="!isLoadingFilters &&
@@ -39,9 +45,6 @@
 
             <!-- TERM ITEMS PAGE FILTERS -->
             <template v-if="taxonomy && taxonomyFilters">
-                <collections-filter
-                        :open="!collapseAll"
-                        :query="getQuery"/>
                 <div 
                         v-if="key == 'repository-filters'"
                         :key="index"
@@ -79,7 +82,8 @@
                                 :key="filterIndex"
                                 :filter="filter"
                                 :open="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"/>
+                                :is-repository-level="key == 'repository-filters'"
+                                :filters-as-modal="filtersAsModal"/>
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -126,7 +130,8 @@
                                 :key="filterIndex"
                                 :filter="filter"
                                 :open="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"/>
+                                :is-repository-level="key == 'repository-filters'"
+                                :filters-as-modal="filtersAsModal"/>
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -140,9 +145,6 @@
 
             <!-- REPOSITORY ITEMS PAGE FILTERS -->
             <template v-else-if="isRepositoryLevel && !taxonomy">
-                <collections-filter
-                        :open="!collapseAll"
-                        :query="getQuery"/>
                 <div 
                         v-if="key == 'repository-filters'"
                         :key="index"
@@ -180,7 +182,8 @@
                                 :key="filterIndex"
                                 :filter="filter"
                                 :open="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"/>
+                                :is-repository-level="key == 'repository-filters'"
+                                :filters-as-modal="filtersAsModal"/>
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -227,7 +230,8 @@
                                 :key="filterIndex"
                                 :filter="filter"
                                 :open="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"/>
+                                :is-repository-level="key == 'repository-filters'"
+                                :filters-as-modal="filtersAsModal"/>
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -249,7 +253,8 @@
                         :key="index"
                         :filter="filter"
                         :open="!collapseAll"
-                        :is-repository-level="isRepositoryLevel"/>
+                        :is-repository-level="isRepositoryLevel"
+                        :filters-as-modal="filtersAsModal"/>
             </template>
         </div>
         <section
@@ -278,16 +283,18 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex';
-    import CollectionsFilter from '../other/collection-filter.vue';
+    import FiltersTagsList from './filters-tags-list.vue';
 
     export default {
         components: {
-            CollectionsFilter
+            FiltersTagsList
         },
         props: {
             collectionId: String,
             isRepositoryLevel: Boolean,
             taxonomy: String,
+            filtersAsModal: Boolean,
+            hasFiltered: Boolean,
             isLoadingItems: Boolean
         },
         data() {
@@ -368,13 +375,17 @@
         },
         mounted() {
             this.prepareFilters();
-
             this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', () => {
                 /* This condition is to prevent an incorrect fetch by filter or metadata when we come from items
                  * at collection level to items page at repository level
                  */
                 this.prepareFilters();
             });
+            if (this.isUsingElasticSearch) {
+                this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
+                    this.isLoadingItems = isLoadingItems;
+                });
+            }
         },
         beforeDestroy() {
             // Cancels previous collection name Request
@@ -390,6 +401,9 @@
                 this.filtersSearchCancel.cancel('Filters search Canceled.');
 
             this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
+
+            if (this.isUsingElasticSearch)
+                this.$eventBusSearch.$off('isLoadingItems');
      
         },
         methods: {
@@ -436,8 +450,20 @@
                 
                 // Custom filter loading, get's from collections that have items with that taxonomy
                 } else {
+
+                    let collectionsIds = [];
+                    
+                    if (
+                        this.$route.query && 
+                        this.$route.query.metaquery && 
+                        Array.isArray(this.$route.query.metaquery) &&
+                        this.$route.query.metaquery.find((aMetaQuery) => aMetaQuery.key == 'collection_id')
+                    ) {
+                        collectionsIds = this.$route.query.metaquery.find((aMetaQuery) => aMetaQuery.key == 'collection_id').value;
+                    }
+
                     let taxonomyId = this.taxonomy.split("_");
-                    this.fetchTaxonomyFilters(taxonomyId[taxonomyId.length - 1])
+                    this.fetchTaxonomyFilters({ taxonomyId: taxonomyId[taxonomyId.length - 1], collectionsIds: collectionsIds })
                         .catch(() => this.isLoadingFilters = false);
                         
                 }

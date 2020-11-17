@@ -108,8 +108,8 @@ class Collections extends Repository {
 			'default_displayed_metadata' => [
 				'map'         => 'meta',
 				'title'       => __( 'Default Displayed Metadata', 'tainacan' ),
-				'type'        => 'array/object/string',
-				'items'       => [ 'type' => 'array/string/integer/object' ],
+				'type'        => ['array', 'object', 'string'],
+				'items'       => [ 'type' => ['array','string', 'integer', 'object'] ],
 				'default'     => [],
 				'description' => __( 'List of collection properties that will be displayed in the table view', 'tainacan' ),
 				//'validation' => v::stringType(),
@@ -134,16 +134,16 @@ class Collections extends Repository {
 			'metadata_order'             => [
 				'map'         => 'meta',
 				'title'       => __( 'Metadata order', 'tainacan' ),
-				'type'        => 'array/object/string',
-				'items'       => [ 'type' => 'array/string/integer/object' ],
+				'type'        => ['array', 'object', 'string'],
+				'items'       => [ 'type' => ['array', 'string', 'integer', 'object'] ],
 				'description' => __( 'The order of the metadata in the collection', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
 			'filters_order'              => [
 				'map'         => 'meta',
 				'title'       => __( 'Filters order', 'tainacan' ),
-				'type'        => 'array/object/string',
-				'items'       => [ 'type' => 'array/string/integer/object' ],
+				'type'        => ['array', 'object', 'string'],
+				'items'       => [ 'type' => ['array', 'string', 'integer', 'object'] ],
 				'description' => __( 'The order of the filters in the collection', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
@@ -159,7 +159,7 @@ class Collections extends Repository {
 			'cover_page_id'              => [
 				'map'         => 'meta',
 				'title'       => __( 'Cover Page ID', 'tainacan' ),
-				'type'        => 'integer/string',
+				'type'        => ['integer', 'string'],
 				'description' => __( 'If enabled, this custom page will be used as cover for this collection, instead of default items list.', 'tainacan' ),
 				'on_error'    => __( 'Invalid page', 'tainacan' ),
 				//'validation' => v::numeric(),
@@ -194,8 +194,51 @@ class Collections extends Repository {
 		        'description' => __( 'Collection items comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
 		        'default'     => 'open',
 		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
-		    ]
-
+			],
+			'submission_anonymous_user'  => [
+				'map'                    => 'meta',
+				'title'                  => __( 'Allows submission by anonymous user', 'tainacan' ),
+				'type'                   => 'string',
+				'description'            => __( 'If enabled, allows submission by anonymous users, whose does not have to be logged in with permissions on the WordPress system.', 'tainacan' ),
+				'default'                => 'no',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
+			'submission_default_status'  => [
+				'map'                    => 'meta',
+				'title'                  => __( 'Default submission item status', 'tainacan' ),
+				'type'                   => 'string',
+				'description'            => __( 'The default status of the item that will be created in the collection after submission.', 'tainacan' ),
+				'default'                => 'draft'
+			],
+			'allows_submission' => [
+				'map'                    => 'meta',
+				'title'                  => __( 'Allows item submission', 'tainacan' ),
+				'type'                   => 'string',
+				'description'            => __( 'If enabled, the collection allows item submission, for example via the Item Submission block.', 'tainacan' ),
+				'default'                => 'no',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
+			'hide_items_thumbnail_on_lists' => [
+				'map'         => 'meta',
+				'title'       => __( 'Hide items thumbnail on lists', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Enable this option to never display the item thumbnail on the items list. This is ment for collections made of mainly textual content.', 'tainacan' ),
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+				'default'     => 'no'
+			],
+			'submission_use_recaptcha' => [
+				'map'                    => 'meta',
+				'title'                  => __( 'Use reCAPTCHA verification on submission form', 'tainacan' ),
+				'type'                   => 'string',
+				'description'            => __( 'If enabled, the collection allows item submission using a reCAPTCHA', 'tainacan' ),
+				'default'                => 'no',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
+			
 		] );
 	}
 
@@ -262,10 +305,12 @@ class Collections extends Repository {
 	public function insert( $collection ) {
 
 		$this->pre_process( $collection );
-
+		
+		$this->handle_parent_order_clone( $collection );
 		$new_collection = parent::insert( $collection );
 
 		$this->handle_core_metadata( $new_collection );
+		$this->handle_control_metadata( $new_collection );
 
 		$collection->register_collection_item_post_type();
 		flush_rewrite_rules( false ); // needed to activate items post type archive url
@@ -366,6 +411,30 @@ class Collections extends Repository {
 		}
 	}
 
+	function handle_control_metadata( $collection ) {
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 
+		$Tainacan_Metadata->register_control_metadata( $collection );
+	}
+
+	/**
+	 * This function guarantees that children collections has its own clone 
+	 * of "metadata_order" from the parent collention.
+	 * 
+	 * @param \Tainacan\Entities\Collection $collection, children collection
+	 *
+	 * @return void
+	 */
+	function handle_parent_order_clone( &$collection ) {
+		if ($collection instanceof Entities\Collection && $collection->get_parent() != 0) {
+			$parent_collection = $this->fetch( $collection->get_parent() );
+			$collection->set_metadata_order($parent_collection->get_metadata_order());
+			$collection->set_filters_order($parent_collection->get_filters_order());
+
+			if (!$collection->validate()) {
+				throw new \Exception( implode(",", $collection->get_errors()) );
+			}
+		}
+	}
 
 }

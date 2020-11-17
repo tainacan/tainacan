@@ -26,7 +26,7 @@ abstract class Importer {
 	 * This array holds the structure that the default step 'process_collections' will handle.
 	 *
 	 * Its an array of the target collections, with their IDs, an identifier from the source, the total number of items to be imported, the mapping array
-	 * from the source structure to the ID of the metadata metadata in tainacan
+	 * from the source structure to the ID of the metadata in tainacan
 	 *
 	 * The format of the map is an array where the keys are the metadata IDs of the destination collection and the
 	 * values are the identifier from the source. This could be an ID or a string or whatever the importer finds appropriate to handle
@@ -761,8 +761,6 @@ abstract class Importer {
 		}
 
 		return false;
-
-
 	}
 
     /**
@@ -913,8 +911,6 @@ abstract class Importer {
 		}
 
 		return $return;
-
-
     }
 
     /**
@@ -982,15 +978,22 @@ abstract class Importer {
             $taxonomy->set_status('publish');
             $taxonomy->set_allow_insert('yes');
 
-            if($taxonomy->validate()){
+            if( $taxonomy->validate() ){
                 $inserted_tax = $taxonomy_repo->insert( $taxonomy );
-                $newMetadatum->set_metadata_type_options([
-                    'taxonomy_id' => $inserted_tax->get_id(),
-                    'allow_new_terms' => 'yes',
-                    'input_type' => 'tainacan-taxonomy-checkbox'
-                ]);
+                if(is_array($properties) && in_array( 'multiple', $properties) ){
+                    $newMetadatum->set_metadata_type_options([
+                        'taxonomy_id' => $inserted_tax->get_id(),
+                        'allow_new_terms' => 'yes',
+                        'input_type' => 'tainacan-taxonomy-checkbox'
+                    ]);
+                } else {
+                    $newMetadatum->set_metadata_type_options([
+                        'taxonomy_id' => $inserted_tax->get_id(),
+                        'allow_new_terms' => 'no',
+                        'input_type' => 'tainacan-taxonomy-radio'
+                    ]);
+                }
             }
-
         }
 
         /*Properties of metadatum*/

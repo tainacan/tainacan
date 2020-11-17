@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { BaseControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, PanelBody } = wp.components;
+const { BaseControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ToolbarGroup, ToolbarButton, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -21,12 +21,17 @@ registerBlockType('tainacan/facets-list', {
                 height="24px"
                 width="24px">
             <path 
-                    fill="var(--tainacan-block-primary, $primary)"
+                    fill="#298596"
                     d="M21.43,13.64,19.32,16a2.57,2.57,0,0,1-2,1H11a3.91,3.91,0,0,0,0-.49,5.49,5.49,0,0,0-5-5.47V9.64A2.59,2.59,0,0,1,8.59,7H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,13.64ZM4,3A2,2,0,0,0,2,5v7.3a5.32,5.32,0,0,1,2-1V5H16V3ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1,0-7,2.74,2.74,0,0,1,.5,0A3.5,3.5,0,0,1,9,16a2.92,2.92,0,0,1,0,.51,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,1,0,5.5,18,1.5,1.5,0,0,0,7,16.53Z"/>
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'facets', 'tainacan' ), __( 'search', 'tainacan' ), __( 'terms', 'tainacan' ) ],
     description: __('List facets from a Tainacan Collection or Repository', 'tainacan'),
+    example: {
+        attributes: {
+            content: 'preview'
+        }
+    },
     attributes: {
         content: {
             type: 'array',
@@ -363,12 +368,64 @@ registerBlockType('tainacan/facets-list', {
             }
         ];
 
-        return (
+        return content == 'preview' ? 
+            <div className={className}>
+                <img
+                        width="100%"
+                        src={ `${tainacan_blocks.base_url}/assets/images/facets-list.png` } />
+            </div>
+        : (
             <div className={className}>
 
                 <div>
                     <BlockControls>
                         <Toolbar controls={ layoutControls } />
+                        { facets.length ? (
+                            tainacan_blocks.wp_version < '5.4' ?
+                                <Button style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2' }} onClick={ () => openMetadataModal() } >
+                                   <p style={{ margin: 0 }}>
+                                        <svg 
+                                                xmlns="http://www.w3.org/2000/svg" 
+                                                viewBox="0 0 24 24"
+                                                height="24px"
+                                                width="24px">
+                                            <path d="M21.43,13.64,19.32,16a2.57,2.57,0,0,1-2,1H11a3.91,3.91,0,0,0,0-.49,5.49,5.49,0,0,0-5-5.47V9.64A2.59,2.59,0,0,1,8.59,7H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,13.64ZM4,3A2,2,0,0,0,2,5v7.3a5.32,5.32,0,0,1,2-1V5H16V3ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1,0-7,2.74,2.74,0,0,1,.5,0A3.5,3.5,0,0,1,9,16a2.92,2.92,0,0,1,0,.51,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,1,0,5.5,18,1.5,1.5,0,0,0,7,16.53Z"/>
+                                        </svg>
+                                    </p>&nbsp;
+                                    {__('Select facets', 'tainacan')}
+                                </Button>
+                                : 
+                                <ToolbarGroup>
+                                    { tainacan_blocks.wp_version < '5.5' ?
+                                        <Button style={{ whiteSpace: 'nowrap' }} onClick={ () => openMetadataModal() }>
+                                            <p>
+                                                <svg 
+                                                        xmlns="http://www.w3.org/2000/svg" 
+                                                        viewBox="0 0 24 24"
+                                                        height="24px"
+                                                        width="24px">
+                                                    <path d="M21.43,13.64,19.32,16a2.57,2.57,0,0,1-2,1H11a3.91,3.91,0,0,0,0-.49,5.49,5.49,0,0,0-5-5.47V9.64A2.59,2.59,0,0,1,8.59,7H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,13.64ZM4,3A2,2,0,0,0,2,5v7.3a5.32,5.32,0,0,1,2-1V5H16V3ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1,0-7,2.74,2.74,0,0,1,.5,0A3.5,3.5,0,0,1,9,16a2.92,2.92,0,0,1,0,.51,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,1,0,5.5,18,1.5,1.5,0,0,0,7,16.53Z"/>
+                                                </svg>
+                                            </p>&nbsp;
+                                            {__('Select facets', 'tainacan')}
+                                        </Button>
+                                        :
+                                        <ToolbarButton onClick={ () => openMetadataModal() }>
+                                            <p>
+                                                <svg 
+                                                        xmlns="http://www.w3.org/2000/svg" 
+                                                        viewBox="0 0 24 24"
+                                                        height="24px"
+                                                        width="24px">
+                                                    <path d="M21.43,13.64,19.32,16a2.57,2.57,0,0,1-2,1H11a3.91,3.91,0,0,0,0-.49,5.49,5.49,0,0,0-5-5.47V9.64A2.59,2.59,0,0,1,8.59,7H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,13.64ZM4,3A2,2,0,0,0,2,5v7.3a5.32,5.32,0,0,1,2-1V5H16V3ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1,0-7,2.74,2.74,0,0,1,.5,0A3.5,3.5,0,0,1,9,16a2.92,2.92,0,0,1,0,.51,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,1,0,5.5,18,1.5,1.5,0,0,0,7,16.53Z"/>
+                                                </svg>
+                                            </p>&nbsp;
+                                            {__('Select facets', 'tainacan')}
+                                        </ToolbarButton>
+                                    }    
+                                </ToolbarGroup>
+                            ): null
+                        }
                     </BlockControls>
                 </div>
 
@@ -566,28 +623,6 @@ registerBlockType('tainacan/facets-list', {
                                 }}
                                 onCancelSelection={ () => setAttributes({ isParentTermModalOpen: false }) }/> 
                             : null
-                        }
-                        
-                        { facets.length ? (
-                            <div className="tainacan-block-control">
-                                <p>
-                                    <svg 
-                                            xmlns="http://www.w3.org/2000/svg" 
-                                            viewBox="0 0 24 24"
-                                            height="24px"
-                                            width="24px">
-                                        <path d="M21.43,13.64,19.32,16a2.57,2.57,0,0,1-2,1H11a3.91,3.91,0,0,0,0-.49,5.49,5.49,0,0,0-5-5.47V9.64A2.59,2.59,0,0,1,8.59,7H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,13.64ZM4,3A2,2,0,0,0,2,5v7.3a5.32,5.32,0,0,1,2-1V5H16V3ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1,0-7,2.74,2.74,0,0,1,.5,0A3.5,3.5,0,0,1,9,16a2.92,2.92,0,0,1,0,.51,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,1,0,5.5,18,1.5,1.5,0,0,0,7,16.53Z"/>
-                                    </svg>
-                                    {__('List facets from a Tainacan Collection or Repository', 'tainacan')}
-                                </p>
-                                <Button
-                                    isPrimary
-                                    type="submit"
-                                    onClick={ () => openMetadataModal() }>
-                                    {__('Select facets', 'tainacan')}
-                                </Button>    
-                            </div>
-                            ): null
                         }
                     </div>
                     ) : null

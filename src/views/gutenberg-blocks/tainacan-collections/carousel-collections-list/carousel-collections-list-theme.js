@@ -21,6 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     arrowsPosition: 'around',
                     autoPlay: false,
                     autoPlaySpeed: 3,
+                    largeArrows: false,
+                    maxCollectionsPerScreen: 6,
+                    cropImagesToSquare: true,
                     loopSlides: false,
                     hideName: true,
                     showCollectionThumbnail: false,
@@ -38,6 +41,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             autoPlay: this.autoPlay,
                             autoPlaySpeed: this.autoPlaySpeed,
                             loopSlides: this.loopSlides,
+                            largeArrows: this.largeArrows,
+                            cropImagesToSquare: this.cropImagesToSquare,
+                            maxCollectionsPerScreen: this.maxCollectionsPerScreen,
                             hideName: this.hideName,
                             showCollectionThumbnail: this.showCollectionThumbnail,
                             tainacanApiRoot: this.tainacanApiRoot,
@@ -50,10 +56,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
                     this.selectedCollections = this.$el.attributes['selected-collections'] != undefined ? JSON.parse(this.$el.attributes['selected-collections'].value) : undefined;
                     this.maxItemsNumber = this.$el.attributes['max-collections-number'] != undefined ? this.$el.attributes['max-collections-number'].value : undefined;
+                    this.maxCollectionsPerScreen = this.$el.attributes['max-collections-per-screen'] != undefined ? this.$el.attributes['max-collections-per-screen'].value : 6;
                     this.arrowsPosition = this.$el.attributes['arrows-position'] != undefined ? this.$el.attributes['arrows-position'].value : undefined;
                     this.autoPlay = this.$el.attributes['auto-play'] != undefined ? this.$el.attributes['auto-play'].value == 'true' : false;
+                    this.largeArrows = this.$el.attributes['large-arrows'] != undefined ? this.$el.attributes['large-arrows'].value == 'true' : false;
                     this.autoPlaySpeed = this.$el.attributes['auto-play-speed'] != undefined ? this.$el.attributes['auto-play-speed'].value : 3;
                     this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;
+                    this.cropImagesToSquare = this.$el.attributes['crop-images-to-square'] != undefined ? this.$el.attributes['crop-images-to-square'].value == 'true' : false;
                     this.hideName = this.$el.attributes['hide-name'] != undefined ? this.$el.attributes['hide-name'].value == 'true' : false;
                     this.showCollectionThumbnail = this.$el.attributes['show-collection-thumbnail'] != undefined ? this.$el.attributes['show-collection-thumbnail'].value == 'true' : false;
                     this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;

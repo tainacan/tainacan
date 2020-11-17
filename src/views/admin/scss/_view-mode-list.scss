@@ -1,0 +1,220 @@
+.tainacan-list-container {
+    min-height: 50vh;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    justify-content: space-evenly;
+    animation-name: appear;
+    animation-duration: 0.5s;
+
+    .tainacan-list {
+        background-color: rgba(126, 126, 126, 0.05);
+        padding: 0px;
+        flex-basis: 100%;
+        margin: 0 auto 30px auto;
+        width: 100%;
+        cursor: pointer;
+        text-decoration: none;
+        display: block;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+            background-color: var(--tainacan-item-hover-background-color) !important;
+        }
+        &.selected-list-item {
+            background-color: var(--tainacan-turquoise1);
+        }
+
+        .list-checkbox {
+            position: absolute;
+            margin-left: 1.0em;
+            margin-top: 7px;
+            z-index: 9;
+        }
+        .actions-area {
+            position: relative;
+            float: right;
+            top: calc(-1 * var(--tainacan-container-padding));
+            bottom: 0;
+            padding-right: 12px;
+            display: flex;
+            justify-content: space-between;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.2s, opacity 0.3s ease, top 0.2s ease;
+
+            a {
+                margin-left: 12px;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+        }
+        &:hover .actions-area {
+            visibility: visible;
+            opacity: 1.0;
+            top: -7px;
+
+            a {
+                opacity: 1;
+            }
+        }
+
+        .record-line {
+            height: 1px;
+            margin-left: -44px;
+            margin-right: -44px;
+            opacity: 0;
+            visibility: hidden;
+        }
+        .tainacan-list-thumbnail {
+            float: left;
+            margin: 0 0.875em 0 0;
+
+            @media screen and (max-width: 768px) {
+                margin: 0 0.875em 0.875em 0.875em;
+            }
+        }
+        img {
+            width: 170px;
+            height: auto;
+            border-radius: 0px;
+            position: relative;
+            z-index: 1;
+
+            @media screen and (max-width: 960px) {
+                width: 120px;
+            }
+            @media screen and (max-width: 768px) {
+                width: 100%;
+            }
+        }
+        .skeleton {
+            width: 120px;
+        }
+        .metadata-title {
+            flex-shrink: 0;
+            padding: 0.5em 4.75em 0.5em 2.75em;
+            margin-bottom: -25px;
+            min-height: 40px;
+            position: relative;
+            font-size: 1em !important; 
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            color: var(--tainacan-heading-color);
+            transition: background-color 0.3s ease;
+            
+            p {
+                color: var(--tainacan-heading-color) !important;
+                font-size: 0.875em !important;
+                line-height: 1.875em; 
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .slideshow-icon {
+                color: var(--tainacan-info-color); 
+                position: absolute;
+                right: 7px;
+                top: 7px;
+                transform: scale(0.0);
+                transition: transform 0.2s ease;
+            }
+        }
+        &:hover,
+        &:focus {
+            .metadata-title {
+                p { text-decoration: none !important; }
+                .slideshow-icon {
+                    transform: scale(1.0);
+                }
+            }
+        }
+
+        .media {
+            width: 100%;
+            display: flex;
+
+            @media screen and (max-width: 768px) {
+                flex-direction: column;
+            }
+
+            .list-metadata {
+                padding: 0 var(--tainacan-container-padding) var(--tainacan-container-padding) var(--tainacan-container-padding);
+                flex: 1;
+                font-size: 1em;
+                color: var(--tainacan-info-color);
+                overflow: hidden;
+                width: 100%;
+                -moz-column-count: 5;
+                -moz-column-gap: 2em;
+                -moz-column-rule: none;
+                -webkit-column-count: 5;
+                -webkit-column-gap: 2em;
+                -webkit-column-rule: none;
+                column-count: 5;
+                column-gap: 2em;
+                column-rule: none;
+
+                @media screen and (max-width: 2048px) {
+                    -moz-column-count: 4;
+                    -webkit-column-count: 4;
+                    column-count: 4;
+                }
+                @media screen and (max-width: 1680px) {
+                    -moz-column-count: 3;
+                    -webkit-column-count: 3;
+                    column-count: 3;
+                }
+                @media screen and (max-width: 1440px) {
+                    -moz-column-count: 2;
+                    -webkit-column-count: 2;
+                    column-count: 2;
+                }
+                @media screen and (max-width: 960px) {
+                    -moz-column-count: 1;
+                    -webkit-column-count: 1;
+                    column-count: 1;
+                }
+
+                &>span {
+                    -webkit-column-break-inside: avoid;
+                    page-break-inside: avoid;
+                    break-inside: avoid;
+                    display: block;
+                }
+            
+                .metadata-label {
+                    margin: 0 0 0.5em 0;
+                    font-size: 0.75em;
+                    font-weight: 700;
+                    color: var(--tainacan-info-color);
+                    -webkit-column-break-inside: avoid;
+                    page-break-inside: avoid;
+                    break-inside: avoid;
+                }
+
+                .metadata-value {
+                    font-size: 0.75em;
+                    margin-bottom: 1em;
+                    color: var(--tainacan-info-color);
+                    -webkit-column-break-inside: auto;
+                    page-break-inside: auto;
+                    break-inside: auto;
+                }
+
+                & span:last-of-type>.metadata-value {
+                    margin-bottom: 0px;
+                }
+            }
+        }
+    
+    
+    }
+}
+
+

@@ -181,6 +181,10 @@
         border-radius: 0 !important;
         border-color: var(--tainacan-input-border-color);
         padding: 1.25em;
+
+        section {
+            padding: 0;
+        }
     }
     .autocomplete {
         .dropdown-menu {

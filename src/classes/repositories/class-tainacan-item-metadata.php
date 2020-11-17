@@ -70,7 +70,8 @@ class Item_Metadata extends Repository {
 			return $item_metadata;
 		} else {
 			if ( $unique ) {
-				if( empty( $item_metadata->get_value() ) ) {
+				
+				if ( !is_numeric($item_metadata->get_value()) && empty( $item_metadata->get_value() ) ) {
 					if ( $item_metadata->get_metadatum()->get_parent() > 0 )
 						delete_metadata_by_mid( 'post', $item_metadata->get_meta_id() );
 					else
@@ -101,7 +102,7 @@ class Item_Metadata extends Repository {
 					$values = $item_metadata->get_value();
 
 					foreach ( $values as $value ) {
-						if( empty($value) || $value == "" ) {
+						if ( !is_numeric($value) && empty($value) ) {
 							continue;
 						}
 						add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), wp_slash( $value ) );

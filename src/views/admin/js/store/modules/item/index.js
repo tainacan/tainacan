@@ -11,7 +11,9 @@ const state = {
     attachments: [],
     lastUpdated: '',
     comment_status: '',
-    totalAttachments: 0
+    totalAttachments: 0,
+    itemSubmission: {},
+    itemSubmissionMetadata: []
 };
 
 

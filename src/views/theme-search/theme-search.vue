@@ -14,6 +14,7 @@
             :hide-advanced-search="$root.hideAdvancedSearch ? $root.hideAdvancedSearch : false"
             :hide-displayed-metadata-button="$root.hideDisplayedMetadataButton ? $root.hideDisplayedMetadataButton : false"
             :hide-sorting-area="$root.hideSortingArea ? $root.hideSortingArea : false"
+            :hide-items-thumbnail="$root.hideItemsThumbnail ? $root.hideItemsThumbnail : false"
             :hide-sort-by-button="$root.hideSortByButton ? $root.hideSortByButton : false"
             :hide-exposers-button="$root.hideExposersButton ? $root.hideExposersButton : false"
             :hide-items-per-page-button="$root.hideItemsPerPageButton ? $root.hideItemsPerPageButton : false"
@@ -151,11 +152,27 @@ export default {
             }
         }
 
+        // Some themes set a low max-width or marigns to inputs, this also messes up with Bulma inputs such as taginput.
+        input[type="text"],
+        input[type="password"],
+        input[type="search"],
+        input[type="email"],
+        input[type="url"],
+        input[type="tel"],
+        input[type="number"],
+        input[type="range"], input[type="date"],
+        textarea {
+            max-width: 100%;
+            margin-top: initial;
+            margin-bottom: initial;
+        }
+
         .date-filter-container,
         .numeric-filter-container {
             @media screen and (min-width: 1366px) {
                 flex-wrap: nowrap !important;
                 height: auto !important;
+                align-items: stretch;
             }
         }
 
@@ -203,7 +220,7 @@ export default {
             .tainacan-compound-group {
                 margin-left: 2px;
                 padding-left: 0.875em;
-                border-left: 1px solid var(--tainacan-gray2);
+                border-left: 1px solid var(--tainacan-gray3);
 
                 .tainacan-compound-metadatum .label {
                     margin-bottom: 0.25em;
@@ -217,8 +234,8 @@ export default {
                 .multivalue-separator {
                     display: block;
                     max-height: 1px;
-                    width: 60px;
-                    background: var(--tainacan-gray2);
+                    width: 80px;
+                    background: var(--tainacan-gray3);
                     content: none;
                     color: transparent;
                     margin: 1em auto 1em -0.875em;

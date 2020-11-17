@@ -176,7 +176,7 @@ export const updateTerm = ({ commit }, { taxonomyId, id, name, description, pare
     });
 };
 
-export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, order, offset, number}) => {
+export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, order, offset, number, exclude }) => {
     
     let query = '';
     
@@ -198,6 +198,9 @@ export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, orde
     
     if (offset != undefined)
         query += '&offset=' + offset;
+
+    if (exclude != undefined)
+        query += '&' + qs.stringify({ exclude: exclude });
 
     return new Promise((resolve, reject) => {
         axios.tainacan.get(`/taxonomy/${taxonomyId}/terms${query}`)
@@ -232,9 +235,9 @@ export const fetchChildTerms = ({ commit }, { parentId, taxonomyId, fetchOnly, s
 
     query += '&parent=' + parentId;
 
-    if (offset != undefined && number != undefined) {
+    if (offset != undefined && number != undefined)
         query += '&offset=' + offset + '&number=' + number;
-    }
+
     return new Promise((resolve, reject) => {
         axios.tainacan.get(`/taxonomy/${taxonomyId}/terms${query}`)
             .then(res => {

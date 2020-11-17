@@ -57,6 +57,29 @@ class Elastic_Press {
 				unset( $formatted_args['query']['bool']['should'] );
 				unset( $formatted_args["query"]["bool"]["must"][0]["multi_match"]["type"] );
 			}
+
+			/**
+			 * @TODO
+			 * Elasticsearch is not good a substring matches similar to SQL like.
+			 * here we replace `match_phrase` with` wildcard`, but this is not an efficient operation.
+			 */
+			if ( ! empty( $formatted_args['post_filter']['bool']['must'] ) ) {
+				$array_must = $formatted_args['post_filter']['bool']['must'];
+				for($i = 0; $i < count($array_must); $i++ ) {
+					$el_must = $array_must[$i];
+					if( ! empty($el_must['bool']['must']) ) {
+						$array_must_nested = $el_must['bool']['must'];
+						for($j = 0; $j < count($array_must_nested); $j++ ) {
+							if ( isset ($array_must_nested[$j]['match_phrase'] ) ) {
+								$formatted_args['post_filter']['bool']['must'][$i]['bool']['must'][$j]['wildcard'] = 
+								array_map( function($match) { return "*$match*"; } ,$array_must_nested[$j]['match_phrase']);
+								unset($formatted_args['post_filter']['bool']['must'][$i]['bool']['must'][$j]['match_phrase']);
+							}
+						}
+					}
+				}
+			}
+
 			return $formatted_args;
 		 } );
 		 
@@ -102,7 +125,7 @@ class Elastic_Press {
 
 			$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 			$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
-
+			
 			$metadatas = $Tainacan_Item_Metadata->fetch($item, 'OBJECT', [ 'post__in' => $ids_meta, 'order' => 'id', 'metadata_type' => 'Tainacan\Metadata_Types\Relationship' ] );
 			
 			if ( is_array( $metadatas ) ) {
@@ -134,7 +157,7 @@ class Elastic_Press {
 			$args['ep_integrate'] = true;
 
 			add_action('ep_valid_response', function ( $response, $query, $query_args ) {
-				$aggregations = $response['aggregations'];
+				$aggregations = isset($response['aggregations']) ? $response['aggregations'] : [];
 				$this->last_aggregations = $this->format_aggregations($aggregations);
 			}, 10, 3);
 
@@ -699,6 +722,7 @@ class Elastic_Press {
 		if( empty($aggregations) )
 			return $formated_aggs;
 
+		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 		foreach($aggregations as $key => $aggregation) {
 			$description_types = \explode(".", $key);
 			$filter_id = $description_types[0];
@@ -720,7 +744,8 @@ class Elastic_Press {
 						"total_children"	=> $total_children,
 						"total_items"			=> $term['doc_count'],
 						"label" 					=> $term_object->get('name'),
-						"parent"					=> $term_object->get('parent')
+						"parent"					=> $term_object->get('parent'),
+						'hierarchy_path' => get_term_parents_list($term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false])
 					];
 					if (isset($description_types[3])) {
 						array_unshift($formated_aggs[$filter_id], $fct);
@@ -774,6 +799,7 @@ class Elastic_Press {
 		if( empty($aggregations) )
 			return $formated_aggs;
 
+		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 		foreach($aggregations as $key => $aggregation) {
 			$description_types = \explode(".", $key);
 			if($description_types[0] == 'taxonomy') {
@@ -807,7 +833,8 @@ class Elastic_Press {
 						"total_children"	=> $total_children,
 						"total_items"			=> $term['doc_count'],
 						"label" 					=> $term_object->get('name'),
-						"parent"					=> $term_object->get('parent')
+						"parent"					=> $term_object->get('parent'),
+						'hierarchy_path' => get_term_parents_list($term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false])
 					];
 					if ($has_include) {
 						array_unshift($formated_aggs['values'], $fct);

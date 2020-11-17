@@ -306,7 +306,6 @@ class REST_Metadata_Controller extends REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
 			$item_arr = $item->_toArray();
-
 			$item_arr['metadata_type_object'] = $item->get_metadata_type_object()->_toArray();
 
 			if(isset($item_arr['metadata_type_options']) && isset($item_arr['metadata_type_options']['taxonomy_id'])){
@@ -345,6 +344,7 @@ class REST_Metadata_Controller extends REST_Controller {
 			foreach ($extra_metadata as $extra_meta) {
 				$item_arr[$extra_meta] = get_post_meta($item_arr['id'], $extra_meta, true);
 			}
+			$item_arr['inherited'] = $item_arr['collection_id'] != $request['collection_id'];
 
 			return $item_arr;
 		}
@@ -368,6 +368,10 @@ class REST_Metadata_Controller extends REST_Controller {
 				$args['include_disabled'] = true;
 			}
 
+			if ($request['include_control_metadata_types'] === 'true') {
+				$args['include_control_metadata_types'] = true;
+			}
+
 			$collection = new Entities\Collection( $collection_id );
 
 			$result = $this->metadatum_repository->fetch_by_collection( $collection, $args );
@@ -382,6 +386,10 @@ class REST_Metadata_Controller extends REST_Controller {
 				]
 			];
 
+			if ($request['include_control_metadata_types'] === 'true') {
+				$args['include_control_metadata_types'] = true;
+			}
+
 			$result = $this->metadatum_repository->fetch( $args, 'OBJECT' );
 		}
 
@@ -391,7 +399,7 @@ class REST_Metadata_Controller extends REST_Controller {
 		}
 
 		return new \WP_REST_Response($prepared_item, 200);
-	}
+	} 
 
 	/**
 	 * @param \WP_REST_Request $request

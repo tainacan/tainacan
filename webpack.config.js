@@ -7,6 +7,7 @@ module.exports = {
     entry: {
         admin: './src/views/admin/js/main.js',
         theme_search: './src/views/theme-search/js/theme-main.js',
+        item_submission: './src/views/item-submission/js/item-submission-main.js',
         roles: './src/views/roles/js/roles-main.js',
 
         block_terms_list: './src/views/gutenberg-blocks/tainacan-terms/terms-list/index.js',
@@ -29,7 +30,9 @@ module.exports = {
         
         block_facets_list: './src/views/gutenberg-blocks/tainacan-facets/facets-list/index.js',
         block_facets_list_theme: './src/views/gutenberg-blocks/tainacan-facets/facets-list/facets-list-theme.js',
-        
+
+        block_item_submission_form: './src/views/gutenberg-blocks/tainacan-items/item-submission-form/index.js',
+
         block_faceted_search: './src/views/gutenberg-blocks/tainacan-facets/faceted-search/index.js',
         
         block_carousel_terms_list: './src/views/gutenberg-blocks/tainacan-terms/carousel-terms-list/index.js',
@@ -126,7 +129,18 @@ if (production === true) {
         }),
         new TerserPlugin({
             parallel: true,
-            sourceMap: false
+            sourceMap: false,
+            cache: true,
+            terserOptions: {
+                // We preserve function names that start with capital letters as
+                // they're _likely_ component names, and these are useful to have
+                // in tracebacks and error messages.
+                keep_fnames: /__|_x|_n|_nx|sprintf|^[A-Z].+$/,
+                output: {
+                    comments: /translators:/i,
+                },
+            },
+            extractComments: false,
         }),
         new webpack.LoaderOptionsPlugin({
             minimize: true
@@ -137,7 +151,7 @@ if (production === true) {
     module.exports.resolve = {
         alias: {
             'vue$': 'vue/dist/vue.min',
-            'swiper$': 'swiper/dist/js/swiper.min.js'
+            'Swiper$': 'swiper/js/swiper.min.js'
         }
     }
 } else {
@@ -162,7 +176,7 @@ if (production === true) {
         alias: {
             //'vue$': 'vue/dist/vue.esm' // uncomment this and comment the above to use vue dev tools (can cause type error)
             'vue$': 'vue/dist/vue.min',
-            'swiper$': 'swiper/dist/js/swiper.min.js'
+            'Swiper$': 'swiper/js/swiper.min.js'
         }
     }
 }

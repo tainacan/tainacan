@@ -13,39 +13,6 @@
 }
 
 // Control and placeholder region ----------------------------------------------------
-[data-align='full'] .tainacan-block-control {
-    width: calc(100% + 14px);
-}
-.tainacan-block-control {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 5px;
-    position: relative;
-    top: -14px;
-    left: -14px;
-    width: calc(100% + 28px);
-    background: var(--tainacan-block-gray1, $gray1);
-
-    p {
-        font-size: 0.875em !important; 
-        margin: 12px 1.5em !important; 
-        fill: var(--tainacan-block-gray4, $gray4);
-
-        svg {
-            top: 6px;
-            margin-right: 0.75em;
-            position: relative;
-            fill: var(--tainacan-block-gray4, $gray4);
-        }
-    }
-
-    .components-base-control .components-base-control__field {
-        margin-bottom: 0;
-    }
-}
 .tainacan-block-placeholder.components-placeholder {
     align-items: center !important;
     margin-bottom: 0 !important;
@@ -60,7 +27,7 @@
         justify-content: center;
         align-items: baseline;
         width: 100%;
-        max-width: 70%;
+        max-width: 85%;
         flex-wrap: wrap;
         z-index: 1;
 
@@ -76,6 +43,9 @@
                 position: relative;
                 fill: var(--tainacan-block-gray4, $gray4);
             }
+        }
+        .components-button {
+            margin: 0;
         }
     }
 }
@@ -96,7 +66,7 @@
 
         iframe {
             width: calc(100% + 32px);
-            height: calc(100% - 128px);
+            height: calc(100% - 132px);
             margin-left: -16px;
         }
 
@@ -218,6 +188,9 @@
                 @media only screen and (max-width: 768px) { max-width: 80%; }
             }
         }
+        .components-radio-control__option .components-radio-control__input::before {
+            border-width: 0px;
+        }
     }
     .modal-loadmore-section {
         display: flex;
@@ -235,7 +208,7 @@
         display: flex;
         align-items: baseline;
         justify-content: space-between;
-        padding: 16px 16px 0 16px;
+        padding: 15px 16px 0 16px;
         margin: 0 -16px;
 
         p {

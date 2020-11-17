@@ -1,6 +1,6 @@
 import axios from '../../../axios';
 
-export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isContextEdit, includeDisabled, isAdvancedSearch, parent}) => {
+export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isContextEdit, includeDisabled, isAdvancedSearch, parent, includeControlMetadataTypes}) => {
 
     const source = axios.CancelToken.source();
 
@@ -22,6 +22,9 @@ export const fetchMetadata = ({commit}, {collectionId, isRepositoryLevel, isCont
 
             if (parent)
                 endpoint += '&parent=' + parent;
+            
+            if (includeControlMetadataTypes)
+                endpoint += '&include_control_metadata_types=true';
 
             axios.tainacan.get(endpoint, { cancelToken: source.token })
                 .then((res) => {

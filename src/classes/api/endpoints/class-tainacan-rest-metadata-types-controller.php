@@ -32,7 +32,7 @@ class REST_Metadata_Types_Controller extends REST_Controller {
 									'type' => 'string'
 								],
 								'primitive_type'      => [
-									'type'  => 'array/string',
+									'type'  => ['array','string'],
 									'items' => [
 										'type' => 'string'
 									]

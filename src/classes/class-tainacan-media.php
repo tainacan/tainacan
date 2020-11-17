@@ -38,6 +38,13 @@ class Media {
 		return $vars;
 	}
 
+	private function flush_buffers(){
+		if( ob_get_level() > 0 ) {
+			ob_flush();
+		}
+		// flush();
+	}
+
 	/**
 	 * Insert an attachment from an URL address.
 	 *
@@ -52,7 +59,7 @@ class Media {
 			if( !file_exists($filename) ) {
 				return false;
 			}
-
+			$this->flush_buffers();
 			$file = file_get_contents($filename);
 
 			if (false === $file) {
@@ -78,7 +85,7 @@ class Media {
 		if( !file_exists($filename) ) {
 			return false;
 		}
-
+		$this->flush_buffers();
 		return $this->insert_attachment_from_blob(file_get_contents($filename), basename($filename), $post_id);
 
 	}
@@ -188,6 +195,7 @@ class Media {
 
 		// Include image.php
 		require_once( ABSPATH . 'wp-admin/includes/image.php' );
+		require_once( ABSPATH . 'wp-admin/includes/media.php' );
 
 		// Define attachment metadata
 		$attach_data = wp_generate_attachment_metadata( $attach_id, $file_path );
@@ -246,10 +254,11 @@ class Media {
 			$imagick = new \Imagick();
 			$imagick->setResolution(72,72);
 			$imagick->readImage($filepath . '[0]');
-			//$imagick->setIteratorIndex(0);
 			$imagick->setImageFormat('jpg');
+			$imagick->getImageBlob();
+			$imagick = $imagick->mergeImageLayers(\Imagick::LAYERMETHOD_FLATTEN);
 			$this->THROW_EXCPTION_ON_FATAL_ERROR = false;
-			return $imagick->getImageBlob();
+			return $imagick;
 		} catch(\Exception $e) {
 			return null;
 		} catch (\Error $ex) {
@@ -346,8 +355,8 @@ class Media {
 
 		if ( wp_attachment_is_image($att_id) ) {
 
-			$img = wp_get_attachment_url($attachment->ID, 'large');
-			$output .= "<img style='max-width: 100%;' src='" . $img . "' />";
+			$img = wp_get_attachment_image($attachment->ID, 'large');
+			$output .= $img;
 
 		} else {
 

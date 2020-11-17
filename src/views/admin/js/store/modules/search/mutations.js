@@ -60,7 +60,7 @@ export const addTaxQuery = ( state, filter ) => {
 };
 
 export const addFetchOnly = ( state, metadatum ) => {
-    state.postquery.fetch_only = metadatum.replace(/,null/g, '');
+    state.postquery.fetch_only = metadatum
 };
 export const addFetchOnlyMeta = ( state, metadatum ) => {
     state.postquery.fetch_only_meta = metadatum;
@@ -134,11 +134,13 @@ export const setItemsPerPage = ( state, itemsPerPage ) => {
 
 export const setSearchQuery = ( state, searchQuery ) => {
     
-    if (searchQuery != '') {
+    if (searchQuery != '')
         state.postquery.search = searchQuery;
-    } else {
+    else
         delete state.postquery.search;
-    }
+
+    // In case a s parameter was passed
+    delete state.postquery.s;
 };
 
 export const setStatus = ( state, status ) => {

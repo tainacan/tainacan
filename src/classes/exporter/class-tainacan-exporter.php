@@ -84,7 +84,7 @@ abstract class Exporter {
 	 * This array holds the structure that the default step 'process_collections' will handle.
 	 *
 	 * Its an array of the target collections, with their IDs, an identifier from the source, the total number of items to be importer/exporter, the mapping array 
-	 * from the source structure to the ID of the metadata metadata in tainacan
+	 * from the source structure to the ID of the metadata in tainacan
 	 *
 	 * The format of the map is an array where the keys are the metadata IDs of the destination collection and the 
 	 * values are the identifier from the source. This could be an ID or a string or whatever the importer/exporter finds appropriate to handle
@@ -568,7 +568,13 @@ abstract class Exporter {
 
 		$processed_items = $this->get_items($current_collection_item, $collection_definition);
 		foreach ($processed_items as $processed_item) {
+			$init = microtime(true);
 			$this->process_item( $processed_item['item'], $processed_item['metadata'] );
+			$final = microtime(true);
+			$total = ($final - $init);
+			$time_log = sprintf( __('Processed in %f seconds', 'tainacan'), $total );
+
+			$this->add_log($time_log);
 		}
 
 		$this->process_footer($current_collection_item, $collection_definition);
@@ -617,7 +623,6 @@ abstract class Exporter {
 			$collection_definition['total_items'] = $items->found_posts;
 			$this->update_current_collection($collection_definition);
 		}
-		
 		
 		$data = [];
 		while ($items->have_posts()) {
@@ -681,14 +686,15 @@ abstract class Exporter {
 		$upload_dir = trailingslashit( $upload_dir_info['basedir'] );
 		$upload_url = trailingslashit( $upload_dir_info['baseurl'] );
 		$exporter_folder = 'tainacan/exporter';
+		$file_suffix = "{$exporter_folder}/{$prefix}_{$key}";
 
 		if (!is_dir($upload_dir . $exporter_folder)) {
 			if (!mkdir($upload_dir . $exporter_folder)) {
 				return false;
 			}
 		}
-		$file_name = "$upload_dir$exporter_folder/$prefix$key";
-		$file_url = "$upload_url$exporter_folder/$prefix$key";
+		$file_name = "{$upload_dir}{$file_suffix}";
+		$file_url  = "{$upload_url}{$file_suffix}";
 		$this->output_files[$key] = [
 			'filename' => $file_name,
 			'url' => $file_url
@@ -716,7 +722,7 @@ abstract class Exporter {
 	* Method called by Exporters classes to set accepted mapping method
 	* 
 	* @param string $method THe accepted methods. any or list. If list, Exporter must also inform 
-	* default mapper and the list of accepted mappers 
+	* default mapper and the list of accepted mappers
 	* @param string $default_mapping The default mapping method. Required if list is chosen 
 	* @param array $list List of accepted mapping methods 
 	*/
@@ -799,7 +805,7 @@ abstract class Exporter {
 
 		if (method_exists($this, $method_name)) {
 			$author = $this->get_transient('author');
-			$this->add_log('User in process: ' . $author);
+			$this->add_log('User in process: ' . $author . ' (' . date("Y-m-d H:i:s") . ')');
 			wp_set_current_user($author);
 			$result = $this->$method_name();
 		} else {

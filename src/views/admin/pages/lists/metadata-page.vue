@@ -54,7 +54,7 @@
                                                 'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
                                                 'not-focusable-item': openedMetadatumId == metadatum.id,
                                                 'disabled-metadatum': metadatum.enabled == false,
-                                                'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel,
+                                                'inherited-metadatum': metadatum.inherited || isRepositoryLevel,
                                                 'child-metadatum': metadatum.parent > 0
                                             }">
                                         <div 
@@ -99,7 +99,7 @@
                                                     class="label-details"
                                                     :class="{ 'has-text-weight-bold': metadatum.metadata_type_object.core }">  
                                                 ({{ metadatum.metadata_type_object.name }}) 
-                                                <em v-if="metadatum.collection_id != collectionId">{{ $i18n.get('label_inherited') }}</em>
+                                                <em v-if="metadatum.inherited">{{ $i18n.get('label_inherited') }}</em>
                                                 <span 
                                                     class="not-saved" 
                                                     v-if="(editForms[metadatum.id] != undefined && editForms[metadatum.id].saved != true) || metadatum.status == 'auto-draft'">
@@ -195,7 +195,7 @@
                                             :id="metadatum.component"
                                             @click.prevent="addMetadatumViaButton(metadatum)"
                                             class="available-metadatum-item"
-                                            :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name, 'inherited-metadatum': isRepositoryLevel }"
+                                            :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name, 'inherited-metadatum': metadatum.inherited || isRepositoryLevel }"
                                             v-for="(metadatum, index) in availableMetadatumList"
                                             :key="index">
                                         <span

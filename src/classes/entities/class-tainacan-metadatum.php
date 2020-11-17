@@ -173,13 +173,16 @@ class Metadatum extends Entity {
     function get_metadata_type_object(){
         $class_name = $this->get_metadata_type();
 
-		if( !class_exists( $class_name ) ){
-			return null;
+        if( !class_exists( $class_name ) ) {
+            $class_name = "Tainacan\\Metadata_Types\\Text";
+            if( !class_exists( $class_name ) ){
+                return null;
+            }
         }
-        
+
         $object_type = new $class_name();
         $object_type->set_options( $this->get_mapped_property('metadata_type_options') );
-    	return $object_type;
+        return $object_type;
     }
 
     /**
@@ -465,6 +468,7 @@ class Metadatum extends Entity {
 			}
 		}
 		if ( $this->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' && $this->is_multiple() ) {
+ 
 			$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 			$children_taxonomy = $Tainacan_Metadata->fetch(
 				[

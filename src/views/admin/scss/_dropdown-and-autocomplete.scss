@@ -43,6 +43,7 @@
                 text-decoration: none;
                 padding: 0.57em 1em;
                 font-size: 0.825em;
+                background-color: var(--tainacan-background-color);
                 color: var(--tainacan-input-color) !important;
                 border: none;
                 transition: background-color 0.3s ease;
@@ -55,6 +56,7 @@
                 &.is-active { background-color: var(--tainacan-primary); }
 
                 .media {
+                    display: flex;
                     align-items: center;
                 
                     .media-left {
@@ -100,13 +102,31 @@
 .taginput.is-expanded {
     width: 100%;
 }
-
+.input:focus,
+.textarea:focus,
+.taginput .taginput-container.is-focusable:focus,
+.select select:focus,
+.is-focused.input,
+.is-focused.textarea,
+.taginput .is-focused.taginput-container.is-focusable,
+.select select.is-focused,
+.input:active,
+.textarea:active,
+.taginput .taginput-container.is-focusable:active,
+.select select:active,
+.is-active.input,
+.is-active.textarea,
+.taginput .is-active.taginput-container.is-focusable,
+.select select.is-active {
+    box-shadow: none;
+}
 .taginput-container {
+    border-radius: 1px !important;
     padding: 0px !important;
     background-color: transparent !important;
 
     &:focus, &:active {
-        border: none !important;
+        border: 1px solid transparent !important;
     }
     .input { 
         margin-bottom: 0px !important; 

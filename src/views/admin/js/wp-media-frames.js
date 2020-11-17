@@ -1,62 +1,102 @@
-export default { 
+export default {  
+	
     attachmentControl: wp.customize.MediaControl.extend({
+
+		/**
+		 * Set up gallery toolbar.
+		 *
+		 * @return {void}
+		 */
+		galleryToolbar() {
+			this.toolbar.set(
+				new wp.media.view.Toolbar( {
+					controller: this,
+					items: {
+						insert: {
+							style: 'primary',
+							text: wp.media.view.l10n.update,
+							priority: 80,
+							requires: { library: true },
+
+							/**
+							 * @fires wp.media.controller.State#select
+							 */
+							click() {
+								const controller = this.controller,
+									state = controller.state();
+								
+								controller.close();
+								state.trigger(
+									'select',
+									state.get( 'library' )
+								);
+
+								// Restore and reset the default state.
+								controller.setState( controller.options.state );
+								controller.reset();
+							},
+						},
+					},
+				} )
+			);
+		},
+
         /**
 		 * Create a media modal select frame, and store it so the instance can be reused when needed.
 		 */
 		initFrame: function() {
 
 			wp.media.view.settings.post = {
-				id: this.params.relatedPostId,
-				wp_customize: 'off'
+				id: parseInt(this.params.relatedPostId),
+				wp_customize: 'off',
 			}
+			wp.media.model.settings.post.nonce = this.params.nonce;
+			wp.media.model.settings.post.id = parseInt(this.params.relatedPostId);
 			
 			this.frame = wp.media({
-				button: {
-					text: this.params.button_labels.frame_button
-				},
-				content: 'upload', // First view that is opened
-				autoSelect: true,
 				states: [
 					new wp.media.controller.Library({
-						title:     this.params.button_labels.frame_title,
-						library:   wp.media.query({
-							status:  null,
-							type:    null,
-							uploadedTo: wp.media.view.settings.post.id
+						title: this.params.button_labels.frame_title,
+						library: wp.media.query({
+							uploadedTo: wp.media.view.settings.post.id,
+							orderby: 'menuOrder',
+							order: 'ASC',
+	 						posts_per_page: -1,
+			 				query: true
 						}),
-						uploader: true,
-						multiple:  true,
-						date:      false,
-						uploadedTo: wp.media.view.settings.post.id
+						toolbar: 'main-gallery',
+						autoSelect: true,
+						sortable: true,
+						filterable: 'unattached',
 					})
 				]
 			});
 
-			// When a file is selected, run a callback.
-			this.frame.on( 'select', () => {
-				
-                 // Get the attachment from the modal frame.
-                var node,
-                attachments,
-				mejsSettings = window._wpmejsSettings || {};
-				attachments = this.frame.state().get( 'selection' ).toJSON();
+			this.frame.on( 'toolbar:create:main-gallery', this.galleryToolbar, this.frame );
 
-				wp.media.view.settings.post = {
+			this.frame.$el.addClass( 'tainacan-item-attachments-modal' );
+			this.frame.$el['tainacan-document-id'] = this.params.document;
+			this.frame.$el['tainacan-thumbnail-id'] = this.params.thumbnailId;
+
+			wp.media.view.Attachment.Library = wp.media.view.Attachment.Library.extend({
+                className: function() { 
+					return 'attachment ' + 
+						((this.controller.$el['tainacan-document-id'] && (this.model.get('id') == this.controller.$el['tainacan-document-id'])) ? 'tainacan-document-attachment ' : ' ') + 
+						((this.controller.$el['tainacan-thumbnail-id'] && (this.model.get('id') == this.controller.$el['tainacan-thumbnail-id'])) ? 'tainacan-thumbnail-attachment ' : ' '); 
+				}
+            });
+
+			this.frame.on( 'select', () => {
+                 // Get the attachment from the modal frame.
+                var attachments = this.frame.state().get( 'selection' ).toJSON();
+
+				wp.media.view.settings.post.id = {
 					id: this.params.relatedPostId
 				}
-																																																
+					
                 this.params.attachments = attachments;
 				this.params.onSave(attachments);
-                // Set the Customizer setting; the callback takes care of rendering.
-                node = this.container.find( 'audio, video' ).get(0);
-
-                // Initialize audio/video previews.
-                if ( node ) {
-                    this.player = new MediaElementPlayer( node, mejsSettings );
-                } else {
-                    this.cleanupPlayer();
-                }
-            });
+			});
 		}
 	}),	
 
@@ -65,7 +105,7 @@ export default {
 
 		initFrame: function() {
 
-			var l10n = _wpMediaViewsL10n;
+			var l10n = wp.media.view.l10n = typeof _wpMediaViewsL10n === 'undefined' ? {} : _wpMediaViewsL10n;
 
 			// Same of WordPress wp.media.controller.CustomizeImageCropper, but without `wp_customize: on`
 			var customImageCropper = wp.media.controller.Cropper.extend({
@@ -119,9 +159,9 @@ export default {
 						title: this.params.button_labels.frame_title,
 						library: wp.media.query({ 
 							type: 'image', 
-							uploadedTo: null
 						}),
 						multiple: false,
+						autoSelect: true,
 						date: false,
 						priority: 20,
 						suggestedWidth: this.params.width,
@@ -134,17 +174,17 @@ export default {
 					})
 				]
 			});
-
+			this.frame.$el.addClass( 'tainacan-thumbnail-modal' );
 			this.frame.on( 'select', this.onSelect, this );
 			this.frame.on( 'cropped', this.onCropped, this );
 			this.frame.on( 'skippedcrop', this.onSkippedCrop, this );
 		},
 		// Called on both skippedcrop and cropped states
 		setImageFromAttachment: function( attachment ) {
-			wp.media.view.settings.post = {
+			wp.media.view.settings.post.id = {
 				id: this.params.relatedPostId
 			}
-			this.params.attachment = attachment;
+			this.params.attachments = attachment;
 			this.params.onSave(attachment);
 		}
 
@@ -154,7 +194,7 @@ export default {
 		
 		initFrame: function() {
 
-			var l10n = _wpMediaViewsL10n;	
+			var l10n = wp.media.view.l10n = typeof _wpMediaViewsL10n === 'undefined' ? {} : _wpMediaViewsL10n;
 			
 			// Same of WordPress wp.media.controller.CustomizeImageCropper, but without `wp_customize: on`
 			var customImageCropper = wp.media.controller.Cropper.extend({
@@ -234,7 +274,7 @@ export default {
 			});
 
 			//this.frame.state('cropper').set( 'canSkipCrop', true );
-
+			this.frame.$el.addClass( 'tainacan-header-image-modal' );
 			this.frame.on( 'select', this.onSelect, this );
 			this.frame.on( 'cropped', this.onCropped, this );
 			this.frame.on( 'skippedcrop', this.onSkippedCrop, this );
@@ -274,7 +314,7 @@ export default {
 					})
 				]
 			});
-
+			this.frame.$el.addClass( 'tainacan-document-modal' );
 			// When a file is selected, run a callback.
 			this.frame.on( 'select', () => {
 				

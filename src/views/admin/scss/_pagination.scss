@@ -108,6 +108,7 @@
             color: var(--tainacan-secondary);
             border: none;
             align-items: inherit;
+            min-width: 1.75em;
         }
         .pagination-link:active {
             box-shadow: none;

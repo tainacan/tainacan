@@ -1,6 +1,7 @@
 <template>
     <b-field
-            class="filter-item-forms">
+            class="filter-item-forms"
+            :style="{ columnSpan: filtersAsModal && filter.filter_type_object && filter.filter_type_object.component && (filter.filter_type_object.component == 'tainacan-filter-taxonomy-checkbox' || filter.filter_type_object.component == 'tainacan-filter-checkbox') ? 'all' : 'unset'}">
         <b-collapse
                 class="show" 
                 :open.sync="open"
@@ -41,7 +42,9 @@
                         :is-loading-items.sync="isLoadingItems"
                         :current-collection-id="$eventBusSearch.collectionId"
                         @input="onInput"
-                        @sendValuesToTags="onSendValuesToTags" />
+                        @sendValuesToTags="onSendValuesToTags"
+                        @updateParentCollapse="onFilterUpdateParentCollapse" 
+                        :filters-as-modal="filtersAsModal"/>
             </div>
         </b-collapse>
     </b-field>
@@ -56,6 +59,7 @@
             isRepositoryLevel: Boolean,
             open: true,
             isLoadingItems: true,
+            filtersAsModal: Boolean
         },
         data() {
             return {
@@ -74,6 +78,11 @@
                     taxonomy: $event.taxonomy,
                     metadatumId: this.filter.metadatum_id
                 });
+            },
+            onFilterUpdateParentCollapse(open) {
+                const componentsThatShouldCollapseIfEmpty = ['tainacan-filter-taxonomy-checkbox', 'tainacan-filter-selectbox', 'tainacan-filter-checkbox'];
+                if (componentsThatShouldCollapseIfEmpty.includes(this.filter.filter_type_object.component))
+                    this.open = open;
             }
         }
     }
@@ -84,10 +93,15 @@
     .filter-item-forms {
         break-inside: avoid;
 
+        &:not(:last-child) {
+            margin-bottom: 0;
+            padding-bottom: 0.75em;
+        }
+
         .collapse-trigger {
-            margin-left: -5px;
+            margin-left: -7px;
             .icon {
-                margin-right: 12px;
+                margin-right: 5px;
             }
             .collapse-label {
                 display: inline-block;
@@ -118,6 +132,7 @@
                 cursor: pointer;
                 outline: none;
                 padding: 0 !important;
+                margin: 0;
             }
         }
 
@@ -197,6 +212,7 @@
             @media screen and (min-width: 768px) {
                 .dropdown-trigger input {
                     font-size: 0.75em !important;
+                    line-height: 1.75em;
                 }
                 .datepicker-header {
 

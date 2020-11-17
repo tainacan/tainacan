@@ -231,7 +231,7 @@ class Items extends Repository {
 		$no_collection_set = false;
 
 		/**
-		 * We can not user $collections->fetch() here because facets
+		 * We can not use $collections->fetch() here because facets
 		 * filter wp_query to just return the query and not the results
 		 * See Repositories\Metadata::fetch_all_metadatum_values()
 		 *

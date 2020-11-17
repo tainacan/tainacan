@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { IconButton, Button, ToggleControl, Placeholder, Toolbar } = wp.components;
+const { IconButton, Button, ToggleControl, Placeholder, Toolbar, ToolbarGroup, PanelBody, ToolbarButton } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -13,12 +13,17 @@ registerBlockType('tainacan/terms-list', {
     icon:
         <svg width="24" height="24" viewBox="0 -2 12 16">
             <path
-                fill="var(--tainacan-block-primary, $primary)"                
+                fill="#298596"                
                 d="M 4.4,2.5 H 0 V 0 h 4.4 l 1.2,1.3 z m -1.9,5 v 3.1 H 5 v 1.2 H 1.3 v -8 H 2.5 V 6.3 H 5 V 7.6 H 2.5 Z m 8.2,0.7 H 6.3 V 5.7 h 4.4 l 1.2,1.2 z M 11.9,11.3 10.7,10 H 6.3 v 2.5 h 4.4 z"/>       
         </svg>,
     category: 'tainacan-blocks',
     keywords: [ __( 'Tainacan', 'tainacan' ), __( 'terms', 'tainacan' ), __( 'taxonomy', 'tainacan' ) ],
     description: __('Expose terms from your Tainacan taxonomies', 'tainacan'),
+    example: {
+        attributes: {
+            content: 'preview'
+        }
+    },
     attributes: {
         selectedTermsObject: {
             type: 'array',
@@ -186,30 +191,75 @@ registerBlockType('tainacan/terms-list', {
         const layoutControls = [
             {
                 icon: 'grid-view',
-                title: __( 'Grid View' ),
+                title: __( 'Grid View', 'tainacan' ),
                 onClick: () => updateLayout('grid'),
                 isActive: layout === 'grid',
             },
             {
                 icon: 'list-view',
-                title: __( 'List View' ),
+                title: __( 'List View', 'tainacan' ),
                 onClick: () => updateLayout('list'),
                 isActive: layout === 'list',
             }
         ];
 
-        return (
+        return content == 'preview' ? 
+            <div className={className}>
+                <img
+                        width="100%"
+                        src={ `${tainacan_blocks.base_url}/assets/images/terms-list.png` } />
+            </div>
+        : (
             <div className={className}>
 
                 <div>
                     <BlockControls>
                         <Toolbar controls={ layoutControls } />
+                        { selectedTermsHTML.length ?
+                            tainacan_blocks.wp_version < '5.4' ?
+                                <Button style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2' }} onClick={ openTermsModal } >
+                                    <p style={{ margin: 0 }}>
+                                        <svg width="24" height="24" viewBox="0 -3 12 17">
+                                            <path
+                                                d="M 4.4,2.5 H 0 V 0 h 4.4 l 1.2,1.3 z m -1.9,5 v 3.1 H 5 v 1.2 H 1.3 v -8 H 2.5 V 6.3 H 5 V 7.6 H 2.5 Z m 8.2,0.7 H 6.3 V 5.7 h 4.4 l 1.2,1.2 z M 11.9,11.3 10.7,10 H 6.3 v 2.5 h 4.4 z"/>       
+                                        </svg>
+                                    </p>&nbsp;
+                                    {  __( 'Select terms', 'tainacan' ) }
+                                </Button>
+                                : 
+                                <ToolbarGroup>
+                                    { tainacan_blocks.wp_version < '5.5' ?
+                                        <Button style={{ whiteSpace: 'nowrap' }} onClick={ openTermsModal } >
+                                            <p>
+                                                <svg width="24" height="24" viewBox="0 -3 12 17">
+                                                    <path
+                                                        d="M 4.4,2.5 H 0 V 0 h 4.4 l 1.2,1.3 z m -1.9,5 v 3.1 H 5 v 1.2 H 1.3 v -8 H 2.5 V 6.3 H 5 V 7.6 H 2.5 Z m 8.2,0.7 H 6.3 V 5.7 h 4.4 l 1.2,1.2 z M 11.9,11.3 10.7,10 H 6.3 v 2.5 h 4.4 z"/>       
+                                                </svg>
+                                            </p>&nbsp;
+                                            {  __( 'Select terms', 'tainacan' ) }
+                                        </Button>
+                                        :
+                                        <ToolbarButton onClick={ openTermsModal } >
+                                            <p>
+                                                <svg width="24" height="24" viewBox="0 -3 12 17">
+                                                    <path
+                                                        d="M 4.4,2.5 H 0 V 0 h 4.4 l 1.2,1.3 z m -1.9,5 v 3.1 H 5 v 1.2 H 1.3 v -8 H 2.5 V 6.3 H 5 V 7.6 H 2.5 Z m 8.2,0.7 H 6.3 V 5.7 h 4.4 l 1.2,1.2 z M 11.9,11.3 10.7,10 H 6.3 v 2.5 h 4.4 z"/>       
+                                                </svg>
+                                            </p>&nbsp;
+                                            {  __( 'Select terms', 'tainacan' ) }
+                                        </ToolbarButton>
+                                    }
+                                </ToolbarGroup>
+                        : null }
                     </BlockControls>
                 </div>
 
                 <div>
                     <InspectorControls>
-                        <div style={{ marginTop: '24px' }}>
+                        <PanelBody
+                                title={ __('List settings', 'tainacan') }
+                                initialOpen={ true }
+                            >
                             { layout == 'list' ? 
                                 <ToggleControl
                                     label={__('Image', 'tainacan')}
@@ -236,7 +286,7 @@ registerBlockType('tainacan/terms-list', {
                                     }
                                 />
                             : null }
-                        </div>
+                        </PanelBody>
                     </InspectorControls>
                 </div>
 
@@ -262,24 +312,6 @@ registerBlockType('tainacan/terms-list', {
                                 }}
                                 onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
                             : null 
-                        }
-                        { selectedTermsHTML.length ? (
-                            <div className="tainacan-block-control">
-                                    <p>
-                                        <svg width="24" height="24" viewBox="0 -2 12 16">
-                                            <path
-                                                d="M 4.4,2.5 H 0 V 0 h 4.4 l 1.2,1.3 z m -1.9,5 v 3.1 H 5 v 1.2 H 1.3 v -8 H 2.5 V 6.3 H 5 V 7.6 H 2.5 Z m 8.2,0.7 H 6.3 V 5.7 h 4.4 l 1.2,1.2 z M 11.9,11.3 10.7,10 H 6.3 v 2.5 h 4.4 z"/>       
-                                        </svg>
-                                        {__('Expose terms from your Tainacan taxonomies', 'tainacan')}
-                                    </p>
-                                    <Button
-                                        isPrimary
-                                        type="submit"
-                                        onClick={ () => openTermsModal() }>
-                                        {__('Select terms', 'tainacan')}
-                                    </Button>   
-                                </div>
-                            ): null
                         }
                     </div>
                     ) : null

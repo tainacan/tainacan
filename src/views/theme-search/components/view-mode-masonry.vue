@@ -43,11 +43,25 @@
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-masonry-item" 
-                        :href="item.url">
+                        :href="getItemLink(item.url, index)">
 
                     <!-- Title -->
                     <div class="metadata-title">
-                        <p>{{ item.title != undefined ? item.title : '' }}</p>                             
+                        <p>{{ item.title != undefined ? item.title : '' }}</p>
+                        <span 
+                                v-if="isSlideshowViewModeEnabled"
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 100,
+                                    },
+                                    content: $i18n.get('label_see_on_fullscreen'),
+                                    placement: 'auto-start'
+                                }"          
+                                @click.prevent="starSlideshowFromHere(index)"
+                                class="icon slideshow-icon">
+                            <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                        </span>                             
                     </div>
 
                     <!-- Thumbnail -->
@@ -56,7 +70,7 @@
                             class="tainacan-masonry-item-thumbnail"
                             :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)) + ')' }">  
                         <img 
-                                :alt="$i18n.get('label_thumbnail')"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                 :style="{ minHeight: getItemImageHeight(item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px'}"
                                 :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)" >  
                     </div>
@@ -67,21 +81,15 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { viewModesMixin } from '../js/view-modes-mixin.js';
 
 export default {
     name: 'ViewModeMasonry',
-    props: {
-        collectionId: Number,
-        displayedMetadata: Array,
-        items: Array,
-        isLoading: false,
-        itemsPerPage: Number,
-        isFiltersMenuCompressed: Boolean
-    },
+    mixins: [
+        viewModesMixin
+    ],
     data () {
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             itemColumnWidth: Number,
             containerWidthDiscount: Number,
             masonryCols: {default: 6, 1919: 5, 1407: 4, 1215: 3, 1023: 3, 767: 2, 343: 1}
@@ -127,22 +135,6 @@ export default {
         window.removeEventListener('resize', this.recalculateItemsHeight);
     },
     methods: {
-        ...mapGetters('search', [
-            'getItemsPerPage',
-        ]),
-        goToItemPage(item) {
-            window.location.href = item.url;   
-        },
-        renderMetadata(itemMetadata, column) {
-
-            let metadata = itemMetadata[column.slug] != undefined ? itemMetadata[column.slug] : false;
-
-            if (!metadata) {
-                return '';
-            } else {
-                return metadata.value_as_html;
-            }
-        },
         randomHeightForMasonryItem() {
             let min = 120;
             let max = 380;

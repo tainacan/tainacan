@@ -41,7 +41,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
                         'description' => __( 'The ID of the owner of the background processes. Defaults to current user', 'tainacan' ),
                     ],
                     'all_users' => [
-                        'type'        => 'bool',
+                        'type'        => 'boolean',
                         'description' => __( 'Whether to return processes from all users (if current user is admin).', 'tainacan' ),
                         'default'     => false,
                     ],
@@ -66,7 +66,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
                         'default'     => 1
                     ],
 					'recent' => [
-                        'type'        => 'bool',
+                        'type'        => 'boolean',
                         'description' => __( 'Returns only processes created or updated recently', 'tainacan' ),
                         'default' => false
                     ],
@@ -101,7 +101,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
             ),
 
         ));
-
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[0-9]+)', array(
 
             array(
@@ -112,8 +111,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
             ),
 
         ));
-
-
     }
 
 
@@ -129,10 +126,8 @@ class REST_Background_Processes_Controller extends REST_Controller {
         return current_user_can('read');
 	}
 
-
     public function get_items( $request ) {
         global $wpdb;
-        //$body = json_decode($request->get_body(), true);
 
         $perpage = isset($request['perpage']) && is_numeric($request['perpage']) ? $request['perpage'] : 10;
         if ($perpage < 1) {
@@ -149,6 +144,8 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
         $user_q = $wpdb->prepare("AND user_id = %d", get_current_user_id());
         $status_q = "";
+
+        $date_range = '';
 
         if (current_user_can('edit_users')) {
             if (isset($request['user_id'])) {
@@ -169,12 +166,27 @@ class REST_Background_Processes_Controller extends REST_Controller {
             }
         }
 
+        if (isset($request['datequery'])) {
+            $from = $request['datequery'][0]['after'];
+            $to = $request['datequery'][0]['before'];
+            $date_query = "AND processed_last >= %s AND processed_last <= %s";
+
+            $date_range = $wpdb->prepare($date_query, $from, $to);
+        }
+
+        $process_type = '';
+        if (isset($request['search'])) {
+            $name = $request['search'];
+            $process_type = "AND name LIKE '%${name}%'";
+            $process_type = $wpdb->prepare($process_type);
+        }
+
 		$recent_q = '';
 		if ( isset($request['recent']) && $request['recent'] !== false ) {
             $recent_q = "AND (processed_last >= NOW() - INTERVAL 10 MINUTE OR queued_on >= NOW() - INTERVAL 10 MINUTE)";
         }
 
-        $base_query = "FROM $this->table WHERE 1=1 $status_q $user_q $recent_q ORDER BY priority DESC, queued_on DESC";
+        $base_query = "FROM $this->table WHERE 1=1 $status_q $user_q $recent_q $date_range $process_type ORDER BY priority DESC, queued_on DESC";
 
         $query = "SELECT * $base_query $limit_q";
         $count_query = "SELECT COUNT(ID) $base_query";
@@ -196,7 +208,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $rest_response->header('X-WP-TotalPages', (int) $max_pages);
 
         return $rest_response;
-
     }
 
     public function get_item( $request ) {
@@ -344,9 +355,4 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
     }
 
-
-
-
 }
-
-?>

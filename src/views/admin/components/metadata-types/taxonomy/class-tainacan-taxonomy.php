@@ -13,20 +13,22 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Taxonomy extends Metadata_Type {
 
-    function __construct(){
-        // call metadatum type constructor
-        parent::__construct();
-        $this->set_primitive_type('term');
-        $this->set_repository( \Tainacan\Repositories\Terms::get_instance() );
+	function __construct(){
+		// call metadatum type constructor
+		parent::__construct();
+		$this->set_primitive_type('term');
+		$this->set_repository( \Tainacan\Repositories\Terms::get_instance() );
+		
+		$this->set_default_options([
+			'allow_new_terms' => 'no',
+			'link_filtered_by_collections' => [],
+			'input_type' => 'tainacan-taxonomy-radio',
+		]);
 
-        $this->set_default_options([
-            'allow_new_terms' => 'no'
-        ]);
-
-        $this->set_form_component('tainacan-form-taxonomy');
+		$this->set_form_component('tainacan-form-taxonomy');
 		$this->set_component('tainacan-taxonomy');
 		$this->set_name( __('Taxonomy', 'tainacan') );
-        $this->set_description( __('A metadatum to use a taxonomy in this collection', 'tainacan') );
+		$this->set_description( __('A metadatum to use a taxonomy in this collection', 'tainacan') );
 		$this->set_preview_template('
 			<div>
 				<div>
@@ -71,35 +73,49 @@ class Taxonomy extends Metadata_Type {
 				<a class="add-new-term">'. __('View all') . '</a>
 			</div>
 		');
+
 	}
 
-    /**
-     * @inheritdoc
-     */
-    public function get_form_labels(){
-        return [
-            'taxonomy_id' => [
-                'title' => __( 'Related Collection', 'tainacan' ),
-                'description' => __( 'Select the collection to fetch items', 'tainacan' ),
-            ],
-            'input_type' => [
-                'title' => __( 'Input type', 'tainacan' ),
-                'description' => __( 'The html type of the terms list ', 'tainacan' ),
-            ],
-            'allow_new_terms' => [
-                'title' => __( 'Allow new terms', 'tainacan' ),
-                'description' => __( 'Allows to create new terms', 'tainacan' ),
-            ]
-        ];
-    }
+	/**
+	 * @inheritdoc
+		*/
+	public function get_form_labels(){
+		return [
+			'taxonomy_id' => [
+				'title' => __( 'Related Collection', 'tainacan' ),
+				'description' => __( 'Select the collection to fetch items', 'tainacan' ),
+			],
+			'input_type' => [
+				'title' => __( 'Input type', 'tainacan' ),
+				'description' => __( 'The html type of the terms list ', 'tainacan' ),
+			],
+			'visible_options_list' => [
+				'title' => __( 'Always visible options list', 'tainacan' ),
+				'description' => __( 'Check this option if you are displaying a checkbox or radio input type and wish the options list to always be visible.', 'tainacan' ),
+			],
+			'allow_new_terms' => [
+				'title' => __( 'Allow new terms', 'tainacan' ),
+				'description' => __( 'Allows to create new terms directly on the item form.', 'tainacan' ),
+			],
+			'link_filtered_by_collections' => [
+				'title' => __( 'Link filtered by collections', 'tainacan' ),
+				'description' => __( 'Links to term items list filtered by certain collections instead of repository level term items page.', 'tainacan' ),
+			]
+		];
+	}
 
 	public function validate_options( Metadatum $metadatum) {
 
 		if ( !in_array($metadatum->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
-            return true;
+			return true;
 
 		if (empty($this->get_option('taxonomy_id')))
 			return ['taxonomy_id' => __('Please select a taxonomy', 'tainacan')];
+
+		$options = $metadatum->get_metadata_type_options();
+		if ( !$metadatum->is_multiple() && $this->get_option('input_type') !== 'tainacan-taxonomy-radio' ) {
+			return ['input_type' => __('A taxonomy metadata that does not accept multiple values should use a radio type input', 'tainacan')];
+		}
 
 		$Tainacan_Metadata = Metadata::get_instance();
 
@@ -165,7 +181,6 @@ class Taxonomy extends Metadata_Type {
 				}
 			}
 		}
-		
 
 		return true;
 
@@ -178,16 +193,16 @@ class Taxonomy extends Metadata_Type {
 	 *
 	 * @return bool Valid or not
 	 */
-    public function validate( Item_Metadata_Entity $item_metadata) {
+	public function validate( Item_Metadata_Entity $item_metadata) {
 
-        $item = $item_metadata->get_item();
+		$item = $item_metadata->get_item();
 
-        if ( !in_array($item->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
-            return true;
+		if ( !in_array($item->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+			return true;
 
 		$valid = true;
 
-        if ('no' === $this->get_option('allow_new_terms') || false === $this->get_option('allow_new_terms')) { //support legacy bug when it was saved as false
+		if ('no' === $this->get_option('allow_new_terms') || false === $this->get_option('allow_new_terms')) { //support legacy bug when it was saved as false
 			$terms = $item_metadata->get_value();
 
 			if (false === $terms)
@@ -213,8 +228,8 @@ class Taxonomy extends Metadata_Type {
 
 		return $valid;
 
-    }
-
+	}
+	
 	/**
 	 * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as an html string
 	 * @param  Item_Metadata_Entity $item_metadata
@@ -273,11 +288,11 @@ class Taxonomy extends Metadata_Type {
 
 		$terms = [];
 
-		$terms[] = $term->_toHtml();
+		$terms[] = $this->term_to_html($term);
 
 		while ($term->get_parent() > 0) {
 			$term = \Tainacan\Repositories\Terms::get_instance()->fetch( (int) $term->get_parent(), $term->get_taxonomy() );
-			$terms[] = $term->_toHtml();
+			$terms[] = $this->term_to_html($term);
 		}
 
 		$terms = \array_reverse($terms);
@@ -286,6 +301,35 @@ class Taxonomy extends Metadata_Type {
 
 		return \implode($glue, $terms);
 
+	}
+
+	private function term_to_html($term) {
+		$collections = $this->get_option( 'link_filtered_by_collections' );
+		if ( !empty( $collections ) ) {
+			$return = '';
+			$id = $term->get_id();
+
+			if ( $id ) {
+				$link = get_term_link( (int) $id );
+				if (is_string($link)) {
+					$meta_query = [
+						'metaquery' => [
+							[
+								'key' => 'collection_id',
+								'compare' => 'IN',
+								'value' => $collections
+							]
+						]
+					];
+					$link = $link . '?' . http_build_query( $meta_query );
+					$return = "<a data-linkto='term' data-id='$id' href='$link'>";
+					$return.= $term->get_name();
+					$return .= "</a>";
+				}
+			}
+			return $return;
+		}
+		return $term->_toHtml();
 	}
 
 	public function _toArray() {

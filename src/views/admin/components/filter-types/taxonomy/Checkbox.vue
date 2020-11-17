@@ -1,48 +1,62 @@
 <template>
     <div 
-            :style="{ 'height': isLoadingOptions ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
-            :class="{ 'skeleton': isLoadingOptions }"
+            :style="{ 'height': isLoadingOptions && !filtersAsModal ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
+            :class="{ 'skeleton': isLoadingOptions && !filtersAsModal }"
             class="block">
-        <!-- <span 
-                v-if="isLoadingOptions"
-                style="width: 100%"
-                class="icon has-text-centered loading-icon">
-            <div class="control has-icons-right is-loading is-clearfix" />
-        </span> -->
-        <div
-                v-for="(option, index) in options.slice(0, filter.max_options)"
-                v-if="!isLoadingOptions"
-                :key="index"
-                :value="index"
-                class="metadatum">
-            <label 
-                    v-if="!option.isChild"
-                    class="b-checkbox checkbox is-small">
-                <input 
-                        v-model="selected"
-                        @input="resetPage"
-                        :value="option.value"
-                        type="checkbox"> 
-                <span class="check" /> 
-                <span class="control-label">
-                    <span class="checkbox-label-text">{{ option.label }}</span> 
-                    <span 
-                            v-if="option.total_items != undefined"
-                            class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
-                </span>
-            </label>
-            <button
-                    class="view-all-button link-style"
-                    v-if="option.showViewAllButton"
-                    @click="openCheckboxModal(option.parent)"> 
-                {{ $i18n.get('label_view_all') }}
-            </button>
-        </div>
-        <p 
-                v-if="!isLoadingOptions && options.length != undefined && options.length <= 0"
-                class="no-options-placeholder">
-            {{ $i18n.get('info_no_options_avialable_filtering') }}
-        </p>
+        <template v-if="!filtersAsModal">
+            <!-- <span 
+                    v-if="isLoadingOptions"
+                    style="width: 100%"
+                    class="icon has-text-centered loading-icon">
+                <div class="control has-icons-right is-loading is-clearfix" />
+            </span> -->
+            <div
+                    v-for="(option, index) in options.slice(0, filter.max_options)"
+                    v-if="!isLoadingOptions"
+                    :key="index"
+                    :value="index"
+                    class="metadatum">
+                <label 
+                        v-if="!option.isChild"
+                        class="b-checkbox checkbox is-small">
+                    <input 
+                            v-model="selected"
+                            @input="resetPage"
+                            :value="option.value"
+                            type="checkbox"> 
+                    <span class="check" /> 
+                    <span class="control-label">
+                        <span class="checkbox-label-text">{{ option.label }}</span> 
+                        <span 
+                                v-if="option.total_items != undefined"
+                                class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
+                    </span>
+                </label>
+                <button
+                        class="view-all-button link-style"
+                        v-if="option.showViewAllButton"
+                        @click="openCheckboxModal(option.parent)"> 
+                    {{ $i18n.get('label_view_all') }}
+                </button>
+            </div>
+            <p 
+                    v-if="!isLoadingOptions && options.length != undefined && options.length <= 0"
+                    class="no-options-placeholder">
+                {{ $i18n.get('info_no_options_avialable_filtering') }}
+            </p>
+        </template>
+        <template v-else>
+            <checkbox-radio-filter-input
+                    :is-modal="false" 
+                    :filter="filter"
+                    :taxonomy_id="taxonomyId"
+                    :selected="selected"
+                    :metadatum-id="metadatumId"
+                    :taxonomy="taxonomy"
+                    :collection-id="collectionId"
+                    :is-taxonomy="true"
+                    :query="query" />
+        </template>
     </div>
 </template>
 
@@ -50,14 +64,16 @@
     import qs from 'qs';
     import { tainacan as axios, CancelToken, isCancel } from '../../../js/axios';
     import { mapGetters } from 'vuex';
-    import CheckboxRadioModal from '../../../components/modals/checkbox-radio-modal.vue';
+    import CheckboxRadioFilterInput from '../../../components/other/checkbox-radio-filter-input.vue';
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
     
     export default {
-        mixins: [ filterTypeMixin ], 
+        components: { CheckboxRadioFilterInput },
+        mixins: [ filterTypeMixin ],
         props: {
             isRepositoryLevel: Boolean,
-            currentCollectionId: String
+            currentCollectionId: String,
+            filtersAsModal: Boolean
         },
         data(){
             return {
@@ -88,9 +104,10 @@
                         this.loadOptions();
                 },
                 immediate: true
-            },
+            },                
             isLoadingItems: {
                 handler() {
+                    if (!this.filtersAsModal)
                     this.isLoadingOptions = this.isLoadingItems;
                 },
                 immediate: true
@@ -110,7 +127,8 @@
                 }
         },
         mounted(){
-            this.loadOptions();
+            if (!this.filtersAsModal)
+                this.loadOptions();
         },
         beforeDestroy() {
             
@@ -139,10 +157,10 @@
                     if (this.isRepositoryLevel)
                         route = `/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
                     else {
-                        if (this.collectionId == 'default' && this.currentCollectionId)
+                        if (this.filter.collection_id == 'default' && this.currentCollectionId)
                             route = `/collection/${this.currentCollectionId}/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
                         else
-                            route = `/collection/${this.collectionId}/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
+                            route = `/collection/${this.filter.collection_id}/facets/${this.metadatumId}?getSelected=1&order=asc&parent=0&number=${this.filter.max_options}&` + qs.stringify(query_items);
                     }
 
                     this.options = [];
@@ -164,6 +182,8 @@
                         .then((res) => {
                             this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data);
                             this.isLoadingOptions = false;
+                            
+                            this.$emit('updateParentCollapse', res.data.values.length > 0 );
                         })
                         .catch( error => {
                             if (isCancel(error)) {
@@ -180,10 +200,13 @@
                 } else {
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
-                            if (Array.isArray(this.facetsFromItemSearch[facet]))
+                            if (Array.isArray(this.facetsFromItemSearch[facet])) {
                                 this.prepareOptionsForTaxonomy(this.facetsFromItemSearch[facet]);
-                            else
+                                this.$emit('updateParentCollapse', this.facetsFromItemSearch[facet].length > 0 );
+                            } else {
                                 this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]));
+                                this.$emit('updateParentCollapse', Object.values(this.facetsFromItemSearch[facet]).length > 0 );
+                            }
                         }    
                     }
                 }
@@ -273,7 +296,7 @@
             openCheckboxModal(parent) {
                 this.$buefy.modal.open({
                     parent: this,
-                    component: CheckboxRadioModal,
+                    component: CheckboxRadioFilterInput,
                     props: {
                         parent: parent,
                         filter: this.filter,
@@ -320,9 +343,6 @@
                     }
                 }
                 this.updateSelectedValues();
-            },
-            updatesIsLoading(isLoadingOptions) {
-                this.isLoadingOptions = isLoadingOptions;
             }
         }
     }

@@ -39,9 +39,10 @@
     -ms-flex: 0 1 100%;
     flex: 0 1 100%;
 }
+
 .filters-menu.filters-menu-modal {
 	z-index: 999999 !important;
-	background: var(--tainacan-white);
+	background: var(--tainacan-background-color, inherit);
 	width: 100%;
 
 	#filters-modal .modal-close {
@@ -89,11 +90,17 @@
 	overflow-x: hidden;
 	visibility: visible;
 	display: block;
+	top: 0;
+	bottom: 0;
+	transition: top ease-in 0.75s, bottom ease-in 0.75s, position ease-in 0.75s;
 
 	@media screen and (max-width: 768px) {
 		padding: 0;
 
 		.modal-content { 
+			top: 0;
+			bottom: 0;
+			transition: top ease-in 0.75s, bottom ease-in 0.75s, position ease-in 0.75s;
 			width: 88%; 
 			width: 88vw;
 		}

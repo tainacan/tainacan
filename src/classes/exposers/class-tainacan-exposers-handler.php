@@ -28,7 +28,7 @@ class Exposers_Handler {
 	}
 	
 	public function __construct() {
-	    self::$instance = $this;
+		self::$instance = $this;
 		
 		add_action('init', array(&$this, 'init'));
 		
@@ -45,6 +45,7 @@ class Exposers_Handler {
 		$this->register_exposer('Tainacan\Exposers\Csv');
 		//$this->register_exposer('Tainacan\Exposers\OAI_PMH');
 		//$this->register_exposer('Tainacan\Exposers\JSON_LD');
+		$this->register_exposer('Tainacan\Exposers\JSON_flat');
 		do_action('tainacan-register-exposers', $this);
 	}
 	
@@ -54,15 +55,15 @@ class Exposers_Handler {
 	 * @param $class_name string | object The class name or the instance
 	 */
 	public function register_exposer( $class_name ){
-	    $obj = $class_name;
+		$obj = $class_name;
 		if( is_object( $class_name ) ){
 			$class_name = get_class( $class_name );
 		} else {
-		    $obj = new $class_name;
+			$obj = new $class_name;
 		}
 		
 		if(!in_array( $class_name, $this->exposers)){
-		    $this->exposers[$obj->slug] = $class_name;
+			$this->exposers[$obj->slug] = $class_name;
 		}
 	}
 	
@@ -72,11 +73,11 @@ class Exposers_Handler {
 	 * @param $class_name string | object The class name or the instance
 	 */
 	public function unregister_exposer( $class_name ){
-	    $obj = $class_name;
+		$obj = $class_name;
 		if( is_object( $class_name ) ){
 			$class_name = get_class( $class_name );
 		} else {
-		    $obj = new $class_name;
+			$obj = new $class_name;
 		}
 		
 		if ( array_key_exists($obj->slug, $this->exposers) ) {
@@ -95,12 +96,12 @@ class Exposers_Handler {
 	 * @return string
 	 */
 	public function check_class_name($class_name, $root = false, $prefix = 'Tainacan\Exposer\\') {
-	    if(is_string($class_name)) {
-    	    if(array_key_exists($class_name, $this->exposers)) {
-                $class_name = $this->exposers[$class_name];
-                $prefix = '';
-    	    }
-	    }
+		if(is_string($class_name)) {
+			if(array_key_exists($class_name, $this->exposers)) {
+				$class_name = $this->exposers[$class_name];
+				$prefix = '';
+			}
+		}
 		$class = $prefix.sanitize_text_field($class_name);
 		$class = str_replace(['-', ' '], ['_', '_'], $class);
 		
@@ -114,7 +115,7 @@ class Exposers_Handler {
 	 * @return boolean
 	 */
 	public function is_tainacan_request($request) {
-	    return substr($request->get_route(), 0, strlen('/tainacan/v2')) == '/tainacan/v2';
+		return substr($request->get_route(), 0, strlen('/tainacan/v2')) == '/tainacan/v2';
 	}
 	
 	/**
@@ -122,15 +123,15 @@ class Exposers_Handler {
 	 * @param \WP_REST_Request $request
 	 */
 	public static function request_has_url_param($request) {
-	    $Tainacan_Exposers = self::get_instance();
-	    $query_url_params = $request->get_query_params();
-	    if (
-	        is_array($query_url_params) && array_key_exists(self::TYPE_PARAM, $query_url_params) &&
-	        $Tainacan_Exposers->exposer_exists($query_url_params[self::TYPE_PARAM])
-	    ) {
-	        return true;
-	    }
-	    return false;
+		$Tainacan_Exposers = self::get_instance();
+		$query_url_params = $request->get_query_params();
+		if (
+			is_array($query_url_params) && array_key_exists(self::TYPE_PARAM, $query_url_params) &&
+			$Tainacan_Exposers->exposer_exists($query_url_params[self::TYPE_PARAM])
+		) {
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -142,18 +143,18 @@ class Exposers_Handler {
 	 */
 	public function rest_request_after_callbacks( $response, $handler, $request ) {
 		if($this->is_tainacan_request($request) && $response instanceof \WP_REST_Response ) {
-    		if($request->get_method() == 'GET') {
-    			if($exposer = $this->request_has_exposer($request)) {
-    				$type_responde = $exposer->rest_request_after_callbacks($response, $handler, $request);
-    				if(self::request_has_url_param($request)) {
-    				    header(implode('', $response->get_headers()));
-    				    echo stripcslashes($response->get_data());
-    				    exit();
-    				}
-    				return $type_responde;
-    			}
-    		} 
-	    }
+			if($request->get_method() == 'GET') {
+				if($exposer = $this->request_has_exposer($request)) {
+					$type_responde = $exposer->rest_request_after_callbacks($response, $handler, $request);
+					if(self::request_has_url_param($request)) {
+						header(implode('', $response->get_headers()));
+						echo stripcslashes($response->get_data());
+						exit();
+					}
+					return $type_responde;
+				}
+			}
+		}
 		// default JSON response
 		return $response;
 	}
@@ -176,17 +177,17 @@ class Exposers_Handler {
 		$query_url_params = $request->get_query_params();
 		$Tainacan_Exposers = self::get_instance();
 		if(
-    			is_array($body) && array_key_exists(self::TYPE_PARAM, $body) &&
-    			$Tainacan_Exposers->exposer_exists($body[self::TYPE_PARAM])
+				is_array($body) && array_key_exists(self::TYPE_PARAM, $body) &&
+				$Tainacan_Exposers->exposer_exists($body[self::TYPE_PARAM])
 		) {
 			$exposer = $Tainacan_Exposers->check_class_name($body[self::TYPE_PARAM], true);
 			return new $exposer;
 		} elseif (
-                is_array($query_url_params) && array_key_exists(self::TYPE_PARAM, $query_url_params) &&
-                $Tainacan_Exposers->exposer_exists($query_url_params[self::TYPE_PARAM])
-        ){
-            $exposer = $Tainacan_Exposers->check_class_name($query_url_params[self::TYPE_PARAM], true);
-		    return new $exposer;
+				is_array($query_url_params) && array_key_exists(self::TYPE_PARAM, $query_url_params) &&
+				$Tainacan_Exposers->exposer_exists($query_url_params[self::TYPE_PARAM])
+		) {
+			$exposer = $Tainacan_Exposers->check_class_name($query_url_params[self::TYPE_PARAM], true);
+			return new $exposer;
 		}
 		return false;
 	}
@@ -199,19 +200,19 @@ class Exposers_Handler {
 	 * @return array of slug or array of \Tainacan\Exposers\Exposer
 	 */
 	public function get_exposers($output = \ARRAY_N) {
-	    $ret = [];
-	    switch ($output) {
-	        case \OBJECT:
-	            foreach ($this->exposers as $type) {
-	                $ret[] = new $type;
-	            }
-	            break;
-	        case \ARRAY_N:
-	        default:
-	            return $this->exposers;
-	            break;
-	    }
-	    return $ret;
+		$ret = [];
+		switch ($output) {
+			case \OBJECT:
+				foreach ($this->exposers as $type) {
+					$ret[] = new $type;
+				}
+				break;
+			case \ARRAY_N:
+			default:
+				return $this->exposers;
+				break;
+		}
+		return $ret;
 	}
 
 	/**
@@ -279,29 +280,29 @@ class Exposers_Handler {
 	 * @return string|string[][]
 	 */
 	public static function get_exposer_urls($base_url = '') {
-	    return [];
+		return [];
 		$Tainacan_Exposers = self::get_instance();
-	    $mappers = $Tainacan_Exposers->get_mappers(\OBJECT);
-	    $types = $Tainacan_Exposers->get_types(\OBJECT);
-	    $urls = [];
-	    foreach ($types as $type) {
-	        $url = $base_url.(strpos($base_url, '?') === false ? '?' : '&').self::TYPE_PARAM.'='.$type->slug;
-	        $urls[$type->slug] = [$url];
-	        if(is_array($type->get_mappers())) {
-	            $first = true; // first is default, jump
-	            foreach ($type->get_mappers() as $type_mapper) {
-	                if($first) {
-	                    $first = false;
-	                    continue;
-	                }
-	                $urls[$type->slug][] = $url.'&'.self::MAPPER_PARAM.'='.$type_mapper;
-	            }
-	        } else {
-	            foreach ($mappers as $mapper) {
-	                $urls[$type->slug][] = $url.'&'.self::MAPPER_PARAM.'='.$mapper->slug;
-	            }
-	        }
-	    }
-	    return $urls;
+		$mappers = $Tainacan_Exposers->get_mappers(\OBJECT);
+		$types = $Tainacan_Exposers->get_types(\OBJECT);
+		$urls = [];
+		foreach ($types as $type) {
+			$url = $base_url.(strpos($base_url, '?') === false ? '?' : '&').self::TYPE_PARAM.'='.$type->slug;
+			$urls[$type->slug] = [$url];
+			if(is_array($type->get_mappers())) {
+				$first = true; // first is default, jump
+				foreach ($type->get_mappers() as $type_mapper) {
+					if($first) {
+						$first = false;
+						continue;
+					}
+					$urls[$type->slug][] = $url.'&'.self::MAPPER_PARAM.'='.$type_mapper;
+				}
+			} else {
+				foreach ($mappers as $mapper) {
+					$urls[$type->slug][] = $url.'&'.self::MAPPER_PARAM.'='.$mapper->slug;
+				}
+			}
+		}
+		return $urls;
 	}
 }

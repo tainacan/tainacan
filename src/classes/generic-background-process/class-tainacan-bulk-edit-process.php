@@ -83,8 +83,43 @@ class Bulk_Edit_Process extends Generic_Process {
 	}
 
 	public function get_output() {
-		$message = __('Bulk edit finished', 'tainacan');
+		$name = $this->get_bulk_edit_collection_name();
+		$metadata = $this->get_changed_metadata();
+		$current_user = wp_get_current_user();
+		$author_name = $current_user->user_login;
+
+		$title_label  = __('Collection', 'tainacan');
+		$author_label = __('Edited by', 'tainacan');
+		$metadata_label = __('Changed metadata', 'tainacan');
+
+		$message  = __('Bulk edit finished', 'tainacan');
+		$message .= "<p> <strong> ${title_label}: </strong> ${name} </p>";
+		$message .= "<p> <strong> ${author_label}: </strong> ${author_name} </p>";
+		$message .= "<p> <strong> ${metadata_label}: </strong> ${metadata} </p>";
+
 		return $message;
+	}
+
+	private function get_bulk_edit_collection_name() {
+		$params =  $this->get_options();
+		if ($params['collection_id']) {
+			$collection = $params['collection_id'];
+			$bulk_collection = Tainacan\Repositories\Collections::get_instance()->fetch($collection);
+
+			if ($bulk_collection instanceof \Tainacan\Entities\Collection) {
+				return $bulk_collection->get_name();
+			}
+		}
+
+		return __('Collection', 'tainacan');
+	}
+
+	private function get_changed_metadata() {
+		$metadatum = $this->metadatum_repository->fetch($this->bulk_edit_data['metadatum_id']);
+		if ($metadatum instanceof \Tainacan\Entities\Metadatum) {
+			return $metadatum->get_name();
+		}
+		return __('Metadata', 'tainacan');
 	}
 
 	public function set_bulk_edit_data($bulk_edit_data = false) {
@@ -181,24 +216,13 @@ class Bulk_Edit_Process extends Generic_Process {
 	}
 
 	private function bulk_list_get_item($count) {
-		$args = [
-			'perpage' => 1,
-			'offset' => $count,
-			'post_status' => array('publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash'),
-			'meta_query' => array(
-				array(
-					'key' => $this->meta_key,
-					'value' => $this->get_group_id(),
-					'compare' => '=',
-				)
-			)
-		];
-		$item = $this->items_repository->fetch($args, [], 'WP_Query');
-		$this->set_current_step_total($item->found_posts);
-		if ($item->have_posts()) {
-			$item->the_post();
-			$item = new \Tainacan\Entities\Item($item->post);
-			return $item;
+		global $wpdb;
+		$results = $wpdb->get_results( "select post_id, meta_key from $wpdb->postmeta where meta_key = '{$this->meta_key}' AND meta_value = '" . $this->get_group_id() . "' ORDER BY post_id DESC LIMIT $count, 1", ARRAY_A );
+		foreach($results as $meta) {
+			$item = $this->items_repository->fetch((int)$meta['post_id'], [], 'OBJECT');
+			if($item instanceof \Tainacan\Entities\Item) {
+				return $item;
+			}
 		}
 		return false;
 	}

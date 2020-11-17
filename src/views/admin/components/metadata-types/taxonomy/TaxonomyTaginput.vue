@@ -13,6 +13,8 @@
                 v-model="selected"
                 :data="labels"
                 field="label"
+                :remove-on-keys="[]"
+                :dropdown-position="isLastMetadatum ? 'top' :'auto'"
                 attached
                 ellipsis
                 :aria-close-label="$i18n.get('remove_value')"
@@ -22,7 +24,8 @@
                 autocomplete
                 @typing="loadTerms"
                 check-infinite-scroll
-                @infinite-scroll="loadMoreTerms">
+                @infinite-scroll="loadMoreTerms"
+                :has-counter="false">
             <template slot-scope="props">
                 <div class="media">
                     <div class="media-content">
@@ -34,6 +37,13 @@
                     v-if="!isFetching"
                     slot="empty">
                 {{ $i18n.get('info_no_terms_found') }}
+            </template>
+            <template 
+                    v-if="allowNew"
+                    slot="footer">
+                 <a @click="$emit('showAddNewTerm', { name: searchName })">
+                    {{ $i18n.get('label_new_term') + ' "' + searchName + '"' }}
+                </a>
             </template>
         </b-taginput>
     </div>
@@ -51,6 +61,7 @@
             disabled: false,
             allowSelectToCreate: false,
             maxtags: '',
+            isLastMetadatum: false
         },
         data() {
             return {
@@ -118,7 +129,8 @@
                     all: true,
                     order: 'asc',
                     offset: this.offset,
-                    number: 12
+                    number: 12,
+                    exclude: this.selected.map((aSelected) => aSelected.value )
                 }).then((res) => {
                     
                     for (let term of res.terms)

@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded",() => {
             let input = document.getElementById('tainacan-search-bar-block_input');
             if (input) {
                 if (input.value)
-                    window.location.href = e.target.action + '?search=' + input.value;
+                    window.location.href = e.target.action + '?s=' + input.value;
                 return;
             }
         })); 

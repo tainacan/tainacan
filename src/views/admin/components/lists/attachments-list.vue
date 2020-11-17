@@ -165,7 +165,8 @@
                     page: this.attachmentsPage,
                     attachmentsPerPage: this.attachmentsPerPage,
                     itemId: this.item.id,
-                    documentId: this.item.document
+                    documentId: this.item.document,
+                    thumbnailId: this.item.thumbnail_id
                 })
                     .then((response) => {
                         this.isLoading = false;
@@ -189,7 +190,6 @@
 
     .uploaded-files {
         display: block;
-        text-align: center;
 
         .file-item-container {
             display: inline-block;

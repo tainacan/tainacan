@@ -9,16 +9,6 @@
     animation-name: appear;
     animation-duration: 0.5s;
 
-    .selected-record {
-        background-color: var(--tainacan-turquoise1);
-        .metadata-title {
-            background-color: var(--tainacan-turquoise2);
-        }
-        .media {
-            background-color: var(--tainacan-turquoise1);
-        }
-    }
-
     .tainacan-record {
         background-color: rgba(126, 126, 126, 0.05);
         padding: 0px;
@@ -35,16 +25,24 @@
         &:hover {
             background-color: var(--tainacan-item-hover-background-color) !important;
         }
+        &.selected-record {
+            background-color: var(--tainacan-turquoise1);
+            .metadata-title {
+                background-color: var(--tainacan-turquoise2);
+            }
+        }    
 
         .record-checkbox {
             position: absolute;
             margin-left: 1.0em;
             margin-top: 7px;
+            z-index: 9;
         }
         .actions-area {
             position: relative;
             float: right;
             top: calc(-1 * var(--tainacan-container-padding));
+            bottom: 0;
             padding-right: 12px;
             //width: 80px;
             display: flex;
@@ -94,9 +92,10 @@
         .metadata-title {
             flex-shrink: 0;
             padding: 0.5em 4.75em 0.5em 2.75em;
-            margin-bottom: -27px;
+            margin-bottom: -25px;
+            font-size: 1.0em !important; 
             min-height: 40px;
-            font-size: 0.875em !important; 
+            position: relative;
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
@@ -104,21 +103,36 @@
             transition: background-color 0.3s ease;
 
             p {
-                line-height: 1.8;
-                font-size: 1.0em !important; 
+                line-height: 1.875em;
+                font-size: 0.875em !important; 
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
                 margin: 0;
                 transition: background-color 0.3s;
             }
+            .slideshow-icon {
+                color: var(--tainacan-info-color); 
+                position: absolute;
+                right: 7px;
+                top: 7px;
+                transform: scale(0.0);
+                transition: transform 0.2s ease;
+            }
         }
-        &:hover .metadata-title {
-            background-color: var(---tainacan-item-heading-hover-background-color) !important;
-        }
-        &:hover .media {
-            background-color: var(--tainacan-item-hover-background-color) !important;
-        }
+        &:hover,
+        &:focus {
+            .metadata-title {
+                background-color: var(---tainacan-item-heading-hover-background-color) !important;
+                p { text-decoration: none !important; }
+                .slideshow-icon {
+                    transform: scale(1.0);
+                }
+            }
+            .media {
+                background-color: var(--tainacan-item-hover-background-color) !important;
+            }
+        } 
 
         .media {
             width: 100%;

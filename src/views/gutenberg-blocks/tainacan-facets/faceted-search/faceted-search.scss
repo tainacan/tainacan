@@ -1,7 +1,7 @@
 @import '../../gutenberg-blocks-variables.scss';
 
 .wp-block-tainacan-faceted-search {
-    margin: 2em auto;
+    margin: 0 auto;
 
     // Spinner
     .spinner-container {
@@ -19,7 +19,8 @@
         font-style: italic;
         color: var(--tainacan-block-gray4, $gray4);
         text-align: center;
-        margin: 4px auto;
+        margin: 0 auto;
+        padding: 8px 2px 2px 2px;
     }
     .items-list-placeholder {
         font-size: 1.125em;
@@ -128,6 +129,15 @@
                     flex-wrap: wrap;
                     justify-content: space-evenly;
                     align-content: flex-start;
+
+                    &.items-without-thumbnail {
+                        .fake-item-thumb {
+                            display: none;
+                        }
+                        .fake-item-description {
+                            left: 0;
+                        }
+                    }
                 }
 
                 .pagination {

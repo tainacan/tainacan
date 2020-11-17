@@ -169,6 +169,8 @@ class Compound extends Metadata_Type {
 	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
 		$separator = $item_metadata->get_multivalue_separator();
+		$options = $item_metadata->get_metadatum()->get_metadata_type_options();
+		$order = $options['children_order'];
 		$return = '';
 
 		if ( empty($value) )
@@ -178,29 +180,36 @@ class Compound extends Metadata_Type {
 			$elements = [];
 			foreach ( $value as $compound_element ) {
 				if ( !empty($compound_element) ) {
-					$metadata_value = '';
-					foreach ( $compound_element as $meta ) {
+					$metadata_value =  array_fill(0, count($compound_element), null);
+					$metadata_value_not_ordinate = [];
+					foreach ( $compound_element as $meta_id => $meta ) {
+						$index = array_search( $meta_id, array_column( $order, 'id' ) );
 						if ( $meta instanceof Item_Metadata_Entity && $meta->get_value_as_html() != '' ) {
-							$metadata_value .= '<label class="label">' . $meta->get_metadatum()->get_name() . '</label> <p>' . $meta->get_value_as_html() . "</p> \n";
+							if ( $index !== false ) {
+								$metadata_value[$index] = '<div class="tainacan-metadatum"><label class="label">' . $meta->get_metadatum()->get_name() . '</label> <p>' . $meta->get_value_as_html() . "</p></div>";
+							} else {
+								$metadata_value_not_ordinate[] = '<div class="tainacan-metadatum"><label class="label">' . $meta->get_metadatum()->get_name() . '</label> <p>' . $meta->get_value_as_html() . "</p></div>";
+							}
 						}
 					}
-					$elements[] = '<div class="tainacan-compound-metadatum">' . $metadata_value . "</div> \n" ;
+					$elements[] = '<div class="tainacan-compound-metadatum">' . implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate)) . "</div> \n" ;
 				}
 			}
-			$return .= '<div class="tainacan-compound-group">' . implode($separator, $elements) . '</div>';
+			$return = '<div class="tainacan-compound-group">' . implode($separator, $elements) . '</div>';
 		} else {
-			$return .= '<div class="tainacan-compound-group">';
-				foreach ( $value as $meta ) {
-					if ( $meta->get_value_as_html() != '' ) {
-						$return .= '<div class="tainacan-metadatum">';
-						if ( $meta instanceof Item_Metadata_Entity ) {
-							$return .= '<label class="label">' . $meta->get_metadatum()->get_name() . "</label>\n";
-							$return .= '<p>' . $meta->get_value_as_html() . '</p>';
-						}
-						$return .= '</div>' . "\n\n";
-					}	
-				}
-			$return .= '</div>' . "\n\n";
+			$metadata_value =  array_fill(0, count($value), null);
+			$metadata_value_not_ordinate = [];
+			foreach ( $value as $meta_id => $meta ) {
+				$index = array_search( $meta_id, array_column( $order, 'id' ) );
+				if ( $meta instanceof Item_Metadata_Entity && $meta->get_value_as_html() != '' ) {
+					if ( $index !== false ) {
+						$metadata_value[intval($index)] = '<div class="tainacan-metadatum"><label class="label">' . $meta->get_metadatum()->get_name() . '</label> <p>' . $meta->get_value_as_html() . "</p></div>";
+					} else {
+						$metadata_value_not_ordinate[] = '<div class="tainacan-metadatum"><label class="label">' . $meta->get_metadatum()->get_name() . '</label> <p>' . $meta->get_value_as_html() . "</p></div>";
+					}
+				}	
+			}
+			$return = '<div class="tainacan-compound-group">' . implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate)) . "</div> \n";
 		}
 		
 		return $return;

@@ -10,7 +10,7 @@ class Checkbox extends Filter_Type {
 
     function __construct(){
         $this->set_name( __('Checkbox List', 'tainacan') );
-        $this->set_supported_types(['string','long_string','item']);
+        $this->set_supported_types(['string','long_string','item', 'control']);
         $this->set_component('tainacan-filter-checkbox');
         $this->set_preview_template('
             <div>

@@ -222,7 +222,7 @@
             <!-- Change OrderBy Select and Order Button-->
             <div class="search-control-item">
                 <b-field>
-                    <label class="label">{{ $i18n.get('label_sort') }}</label>
+                    <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
                     <b-dropdown
                             :mobile-modal="true"
                             @input="onChangeOrder"
@@ -329,7 +329,8 @@
                                                     'tainacan-icon-viewcards' : adminViewMode == 'cards',
                                                     'tainacan-icon-viewminiature' : adminViewMode == 'grid',
                                                     'tainacan-icon-viewrecords' : adminViewMode == 'records',
-                                                    'tainacan-icon-viewmasonry' : adminViewMode == 'masonry'}"
+                                                    'tainacan-icon-viewlist' : adminViewMode == 'list',
+                                                    'tainacan-icon-viewmasonry' : adminViewMode == 'masonry' }"
                                             class="tainacan-icon tainacan-icon-1-25em"/>
                                 </span>
                             </span>
@@ -360,7 +361,8 @@
                             </span>
                             <span>{{ $i18n.get('label_cards') }}</span>
                         </b-dropdown-item>
-                        <b-dropdown-item 
+                        <b-dropdown-item
+                                v-if="collection && collection.hide_items_thumbnail_on_lists != 'yes'" 
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'grid' }"
@@ -383,6 +385,7 @@
                             <span>{{ $i18n.get('label_records') }}</span>
                         </b-dropdown-item>
                         <b-dropdown-item 
+                                v-if="collection && collection.hide_items_thumbnail_on_lists != 'yes'"
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'masonry' }"
@@ -392,6 +395,17 @@
                                 <i class="tainacan-icon tainacan-icon-viewmasonry"/>
                             </span>
                             <span>{{ $i18n.get('label_masonry') }}</span>
+                        </b-dropdown-item>
+                        <b-dropdown-item 
+                                aria-controls="items-list-results"
+                                role="button"
+                                :class="{ 'is-active': adminViewMode == 'list' }"
+                                :value="'list'"
+                                aria-role="listitem">
+                            <span class="icon gray-icon">
+                                <i class="tainacan-icon tainacan-icon-viewlist"/>
+                            </span>
+                            <span>{{ $i18n.get('label_list') }}</span>
                         </b-dropdown-item>
                     </b-dropdown>
                 </b-field>
@@ -480,7 +494,7 @@
 
             <!-- STATUS TABS, only on Admin -------- -->
             <items-status-tabs 
-                    v-if="!openAdvancedSearch"
+                    v-if="!openAdvancedSearch && !$route.query.iframemode"
                     :is-repository-level="isRepositoryLevel"/>
 
             <!-- FILTERS TAG LIST-->
@@ -554,7 +568,7 @@
                               totalItems > 0 &&
                               ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                         :collection-id="collectionId"
-                        :table-metadata="displayedMetadata"
+                        :displayed-metadata="displayedMetadata"
                         :items="items"
                         :total-items="totalItems"
                         :is-loading="showLoading"
@@ -807,14 +821,14 @@
                 if (existingViewMode == 'cards' || 
                     existingViewMode == 'table' || 
                     existingViewMode == 'records' || 
+                    existingViewMode == 'list' || 
                     existingViewMode == 'grid' || 
                     existingViewMode == 'masonry')
-                    this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
+                        this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
                 else
                     this.$eventBusSearch.setInitialAdminViewMode('table');
             }
             
-
             this.showItemsHiddingDueSortingDialog();
 
             // Watches window resize to adjust filter's top position and compression on mobile 
@@ -877,14 +891,15 @@
                     trapFocus: true
                 });
             },
-            openExposersModal() {
+            openExposersModal(selectedItems) {
                 this.$buefy.modal.open({
                     parent: this,
                     component: ExposersModal,
                     hasModalCard: true,
                     props: { 
                         collectionId: this.collectionId,
-                        totalItems: this.totalItems
+                        totalItems: this.totalItems,
+                        selectedItems: selectedItems
                     },
                     trapFocus: true
                 })
@@ -964,7 +979,7 @@
                                 this.sortingMetadata = [];
 
                                 // Decides if custom meta will be loaded with item.
-                                let shouldLoadMeta = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == undefined;
+                                let shouldLoadMeta = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == 'list' || this.adminViewMode == undefined;
                                 
                                 if (shouldLoadMeta) {
                                     
@@ -972,20 +987,21 @@
                                     let prefsFetchOnly = !this.isRepositoryLevel ? `fetch_only_${this.collectionId}` : 'fetch_only';
                                     let prefsFetchOnlyMeta = !this.isRepositoryLevel ? `fetch_only_meta_${this.collectionId}` : 'fetch_only_meta';
 
-                                    let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).replace(/,null/g, '').split(',') : [];
+                                    let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).split(',') : [];
                                     let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
 
-                                    let thumbnailMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true;
-                                    
-                                    metadata.push({
-                                        name: this.$i18n.get('label_thumbnail'),
-                                        metadatum: 'row_thumbnail',
-                                        metadata_type: undefined,
-                                        slug: 'thumbnail',
-                                        id: undefined,
-                                        display: thumbnailMetadatumDisplay
-                                    });
+                                    let thumbnailMetadatumDisplay = (!this.isRepositoryLevel && this.collection.hide_items_thumbnail_on_lists == 'yes') ? null : (prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != 'null') : true);
 
+                                    if (this.isRepositoryLevel || this.collection.hide_items_thumbnail_on_lists != 'yes') {
+                                        metadata.push({
+                                            name: this.$i18n.get('label_thumbnail'),
+                                            metadatum: 'row_thumbnail',
+                                            metadata_type: undefined,
+                                            slug: 'thumbnail',
+                                            id: undefined,
+                                            display: thumbnailMetadatumDisplay
+                                        });
+                                    }
                                     // Repository Level always shows core metadata
                                     if (this.isRepositoryLevel) {
                                         metadata.push({
@@ -1056,10 +1072,10 @@
                                             
                                         }
                                     }
-
-                                    let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != null) : true;
-                                    let authorNameMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[2] != null) : true;
-
+                                    
+                                    let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != 'null') : true;
+                                    let authorNameMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[2] != 'null') : true;
+                                    
                                     // Creation date and author name should appear only on admin.
                                     metadata.push({
                                         name: this.$i18n.get('label_creation_date'),
@@ -1119,8 +1135,9 @@
 
                                 // Loads only basic attributes necessary to view modes that do not allow custom meta
                                 } else {
-                            
-                                    this.$eventBusSearch.addFetchOnly('thumbnail,creation_date,author_name,title,description', true, '');
+                                    
+                                    const basicAttributes = this.collection.hide_items_thumbnail_on_lists == 'yes' ? 'creation_date,author_name,title,description' : 'thumbnail,creation_date,author_name,title,description';
+                                    this.$eventBusSearch.addFetchOnly(basicAttributes, true, '');
 
                                     if (this.isRepositoryLevel) {
                                         this.sortingMetadata.push({
@@ -1486,6 +1503,7 @@
             .label {
                 color: var(--tainacan-label-color);
                 font-size: 0.875em;
+                line-height: 1.75em;
                 font-weight: normal;
                 margin-top: 2px;
                 margin-bottom: 2px;

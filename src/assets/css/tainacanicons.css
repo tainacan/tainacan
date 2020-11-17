@@ -66,6 +66,9 @@ font-weight: normal;
 .tainacan-icon-attachments:before {
     content: "attachments";
 }
+.tainacan-icon-form:before {
+    content: "form";
+}
 .tainacan-icon-wordpress:before {
     content: "wordpress";
 }
@@ -281,6 +284,9 @@ font-weight: normal;
 }
 .tainacan-icon-viewtable:before {
     content: "viewtable";
+}
+.tainacan-icon-viewlist:before {
+    content: "viewlist";
 }
 .tainacan-icon-facebook:before {
     content: "facebook";
@@ -560,8 +566,8 @@ font-weight: normal;
 }
 
 .tainacan-icon-spin:before {
-	-webkit-animation: mdi-spin 2s infinite linear;
-	animation: mdi-spin 2s infinite linear;
+	-webkit-animation: mdi-spin 2s infinite linear reverse !important;
+	animation: mdi-spin 2s infinite linear reverse !important;
 }
 
 @-webkit-keyframes mdi-spin {

@@ -29,6 +29,10 @@ input[type="week"].input {
     padding-bottom: calc(0.57em - 1px);
     transition: background-color 0.1s ease, border-color 0.3s ease;
 
+    &.is-danger {
+        border: 1px solid var(--tainacan-danger);
+    }
+
     &:focus, &:active {
         box-shadow: none !important;
         background-color: var(--tainacan-input-background-color);

@@ -9,34 +9,39 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Collection extends Entity {
 
-    protected
-        $diplay_name,
-        $full,
-        $_thumbnail_id,
-        $modification_date,
-        $creation_date,
-        $author_id,
-        $url,
-        $name,
-        $slug,
-        $order,
-        $parent,
-        $description,
-        $default_order,
-        $default_orderby,
-        $columns,
+	protected
+		$diplay_name,
+		$full,
+		$_thumbnail_id,
+		$modification_date,
+		$creation_date,
+		$author_id,
+		$url,
+		$name,
+		$slug,
+		$order,
+		$parent,
+		$description,
+		$default_order,
+		$default_orderby,
+		$columns,
 		$default_view_mode,
 		$enabled_view_modes,
-        $metadata_order,
-        $filters_order,
-        $enable_cover_page,
-        $cover_page_id,
-        $header_image_id,
-	    $header_image,
-        $comment_status,
-        $allow_comments;
+		$metadata_order,
+		$filters_order,
+		$enable_cover_page,
+		$cover_page_id,
+		$header_image_id,
+		$header_image,
+		$comment_status,
+		$allow_comments,
+		$allows_submission,
+		$hide_items_thumbnail_on_lists,
+		$submission_anonymous_user,
+		$submission_default_status,
+		$submission_use_recaptcha;
 
-    /**
+	/**
 	 * {@inheritDoc}
 	 * @see \Tainacan\Entities\Entity::post_type
 	 * @var string
@@ -130,7 +135,7 @@ class Collection extends Entity {
 				'revisions',
 				'page-attributes',
 				'post-formats',
-			    'comments'
+				'comments'
 			]
 		);
 
@@ -226,7 +231,7 @@ class Collection extends Entity {
 		return apply_filters("tainacan-collection-get-attachments", $attachments, $exclude, $this);
 	}
 
-    /**
+	/**
 	 * @return string
 	 */
 	function get_author_name() {
@@ -241,11 +246,11 @@ class Collection extends Entity {
 
 		$sizes = get_intermediate_image_sizes();
 
-        array_unshift($sizes, 'full');
+		array_unshift($sizes, 'full');
 
-        foreach ( $sizes as $size ) {
-            $thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
-        }
+		foreach ( $sizes as $size ) {
+			$thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
+		}
 
 		return apply_filters("tainacan-collection-get-thumbnail", $thumbs, $this);
 	}
@@ -270,10 +275,10 @@ class Collection extends Entity {
 	 */
 
 	function get__thumbnail_id() {
-        $_thumbnail_id = $this->get_mapped_property("_thumbnail_id");
-        if ( isset( $_thumbnail_id ) ) {
-            return $_thumbnail_id;
-        }
+		$_thumbnail_id = $this->get_mapped_property("_thumbnail_id");
+		if ( isset( $_thumbnail_id ) ) {
+			return $_thumbnail_id;
+		}
 
 		return get_post_thumbnail_id( $this->get_id() );
 	}
@@ -429,8 +434,8 @@ class Collection extends Entity {
 	 * @return boolean
 	 */
 	function is_cover_page_enabled() {
-        return $this->get_enable_cover_page() === 'yes';
-    }
+		return $this->get_enable_cover_page() === 'yes';
+	}
 
 	/**
 	 * Get enable cover page attribute
@@ -532,7 +537,7 @@ class Collection extends Entity {
 	 * @return string "open"|"closed"
 	 */
 	public function get_comment_status() {
-	    return $this->get_mapped_property('comment_status');
+		return $this->get_mapped_property('comment_status');
 	}
 
 	/**
@@ -540,7 +545,52 @@ class Collection extends Entity {
 	 * @return bool
 	 */
 	public function get_allow_comments() {
-	    return $this->get_mapped_property('allow_comments');
+		return $this->get_mapped_property('allow_comments');
+	}
+
+	/**
+	 * Get enable submission with anonymous user
+	 *
+	 * @return string "yes"|"no"
+	 */
+	function get_submission_anonymous_user() {
+		return $this->get_mapped_property( 'submission_anonymous_user' );
+	}
+
+	/**
+	 * Get default submission status
+	 *
+	 * @return string
+	 */
+	function get_submission_default_status() {
+		return $this->get_mapped_property( 'submission_default_status' );
+	}
+
+	/**
+	 * Checks if submission items are allowed for the current collection.
+	 *
+	 * @return string "yes"|"no"
+	 */
+	function get_allows_submission() {
+		return $this->get_mapped_property( 'allows_submission' );
+	}
+
+	/**
+	 * Get the state of $hide_items_thumbnail_on_lists to decide if it should always display item thumbnails, even being placeholders
+	 *
+	 * @return string
+	 */
+	function get_hide_items_thumbnail_on_lists() {
+		return $this->get_mapped_property( 'hide_items_thumbnail_on_lists' );
+	}
+
+	/**
+	 * Checks if submission items use a recaptcha.
+	 *
+	 * @return string "yes"|"no"
+	 */
+	function get_submission_use_recaptcha() {
+		return $this->get_mapped_property( 'submission_use_recaptcha' );
 	}
 
 	/**
@@ -720,7 +770,7 @@ class Collection extends Entity {
 	 * @param $value string "open"|"closed"
 	 */
 	public function set_comment_status( $value ) {
-	    $this->set_mapped_property('comment_status', $value);
+		$this->set_mapped_property('comment_status', $value);
 	}
 
 	/**
@@ -729,7 +779,62 @@ class Collection extends Entity {
 	 * @param $value bool
 	 */
 	public function set_allow_comments( $value ) {
-	    $this->set_mapped_property('allow_comments', $value );
+		$this->set_mapped_property('allow_comments', $value );
+	}
+
+	/**
+	 * Set enable submission with anonymous user 
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_submission_anonymous_user( $value ) {
+		$this->set_mapped_property( 'submission_anonymous_user', $value );
+	}
+
+	/**
+	 * Set default submission status
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_submission_default_status( $value ) {
+		$this->set_mapped_property( 'submission_default_status', $value );
+	}
+
+	/**
+	 * Set if submission items are allowes for the current collection. 
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_allows_submission( $value ) {
+		$this->set_mapped_property( 'allows_submission', $value );
+	}
+
+	/**
+	 * Set the state of $hide_items_thumbnail_on_lists
+	 *
+	 * @param string $value
+	 *
+	 * @return void
+	 */
+	function set_hide_items_thumbnail_on_lists( $value ) {
+		$this->set_mapped_property( 'hide_items_thumbnail_on_lists', $value );
+	}
+
+	/**
+	 * Set if submission items are use recaptcha.
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_submission_use_recaptcha( $value ) {
+		return $this->set_mapped_property( 'submission_use_recaptcha', $value);
 	}
 
 	/**

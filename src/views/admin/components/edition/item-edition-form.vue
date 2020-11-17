@@ -21,12 +21,14 @@
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>
             <a
+                    v-if="!$route.query.iframemode"
                     @click="$router.go(-1)"
                     class="back-link has-text-secondary">
                 {{ $i18n.get('back') }}
             </a>
             <hr>
         </div>
+        
         <transition
                 mode="out-in"
                 :name="(isOnSequenceEdit && sequenceRightDirection != undefined) ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
@@ -349,6 +351,20 @@
                                     </a>
                                 </div>
                             </div>
+                            <div 
+                                    v-if="form.thumbnail_id"
+                                    class="thumbnail-alt-input">
+                                <label class="label">{{ $i18n.get('label_thumbnail_alt') }}</label>
+                                <help-button
+                                        :title="$i18n.get('label_thumbnail_alt')"
+                                        :message="$i18n.get('info_thumbnail_alt')"/>
+                                <b-input
+                                        type="textarea" 
+                                        lazy
+                                        :placeholder="$i18n.get('instruction_thumbnail_alt')"
+                                        :value="form.thumbnail_alt ? form.thumbnail_alt : ''"
+                                        @input="onUpdateThumbnailAlt" />
+                            </div>
                         </div>
 
                         <!-- Hook for extra Form options -->
@@ -483,6 +499,7 @@
                                         :key="index"
                                         :item-metadatum="itemMetadatum"
                                         :is-collapsed="metadataCollapses[index]"
+                                        :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
                                         @changeCollapse="onChangeCollapse($event, index)"/>
 
                                 <!-- Hook for extra Form options -->
@@ -514,15 +531,20 @@
                                 </template>
 
                                 <div v-if="item != undefined && item.id != undefined">
-                                    <br>
-                                    <button
-                                            style="margin-left: calc(var(--tainacan-one-column) + 12px)"
-                                            type="button"
-                                            class="button is-secondary"
-                                            @click.prevent="attachmentMediaFrame.openFrame($event)"
-                                            :disabled="isLoadingAttachments">
-                                        {{ $i18n.get("label_edit_attachments") }}
-                                    </button>
+                                    <div class="attachments-list-heading">
+                                        <button
+                                                style="margin-left: calc(var(--tainacan-one-column) + 12px)"
+                                                type="button"
+                                                class="button is-secondary"
+                                                @click.prevent="attachmentMediaFrame.openFrame($event)"
+                                                :disabled="isLoadingAttachments">
+                                            {{ $i18n.get("label_edit_attachments") }}
+                                        </button>
+                                        <p>
+                                            {{ $i18n.get("info_edit_attachments") }}
+                                        </p>
+                                    </div>
+
                                     <attachments-list
                                             v-if="item != undefined && item.id != undefined"
                                             :item="item"
@@ -791,6 +813,7 @@ export default {
             pageTitle: '',
             itemId: Number,
             item: {},
+            itemRequestCancel: undefined,
             collectionId: Number,
             sequenceId: Number,
             itemPosition: Number,
@@ -806,7 +829,9 @@ export default {
                 status: '',
                 document: '',
                 document_type: '',
-                comment_status: ''
+                comment_status: '',
+                thumbnail_id: '',
+                thumbnail_alt: ''
             },
             thumbnail: {},
             formErrorMessage: '',
@@ -882,7 +907,7 @@ export default {
             this.fetchSequenceGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
         }
     },
-    created(){
+    created() {
         // Obtains collection ID
         this.cleanItemMetadata();
         eventBusItemMetadata.clearAllErrors();
@@ -891,12 +916,12 @@ export default {
         this.form.collectionId = this.collectionId;
 
         // CREATING NEW SINGLE ITEM
-        if (this.$route.fullPath.split("/").pop() == "new") {
+        if (this.$route.path.split("/").pop() == "new") {
             this.isCreatingNewItem = true;
             this.createNewItem();
 
         // EDITING EXISTING ITEM
-        } else if (this.$route.fullPath.split("/").pop() == "edit") {
+        } else if (this.$route.path.split("/").pop() == "edit") {
             this.isLoading = true;
 
             // Obtains current Item ID from URL
@@ -974,6 +999,7 @@ export default {
             'sendItem',
             'updateItem',
             'updateItemDocument',
+            'updateThumbnailAlt',
             'fetchItemMetadata',
             'fetchItem',
             'cleanItemMetadata',
@@ -988,7 +1014,8 @@ export default {
         ...mapGetters('item',[
             'getItemMetadata',
             'getTotalAttachments',
-            'getLastUpdated'
+            'getLastUpdated',
+            'getAttachments'
         ]),
         ...mapActions('collection', [
             'deleteItem',
@@ -1005,6 +1032,7 @@ export default {
             'getGroup'
         ]),
         onSubmit(status, sequenceDirection) {
+
             // Puts loading on Item edition
             this.isLoading = true;
             this.sequenceRightDirection = undefined;
@@ -1038,22 +1066,36 @@ export default {
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
+                this.form.thumbnail_id = this.item.thumbnail_id;
+                this.form.thumbnail_alt = this.item.thumbnail_alt;
                 
                 this.isLoading = false;
 
-                if (!this.isOnSequenceEdit) {
-                    if (this.form.status != 'trash') {
-                        if (previousStatus == 'auto-draft')
-                            this.$router.push({ path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), query: { recent: true } });
-                        else
-                            this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
-                    } else
-                        this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
+                if (!this.$route.query.iframemode) {
+
+                    if (!this.isOnSequenceEdit) {
+                        if (this.form.status != 'trash') {
+                            if (previousStatus == 'auto-draft')
+                                this.$router.push({ path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), query: { recent: true } });
+                            else
+                                this.$router.push(this.$routerHelper.getItemPath(this.form.collectionId, this.itemId));
+                        } else
+                            this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId));
+                    } else {
+                        if (sequenceDirection == 'next')
+                            this.onNextInSequence();
+                        else if (sequenceDirection == 'previous')
+                            this.onPrevInSequence();
+                    }
+
                 } else {
-                    if (sequenceDirection == 'next')
-                        this.onNextInSequence();
-                    else if (sequenceDirection == 'previous')
-                        this.onPrevInSequence();
+                    parent.postMessage({ 
+                            type: 'itemCreationMessage',
+                            itemId: this.item.id,
+                            itemTitle: this.item.title,
+                            itemThumbnail: this.item.thumbnail
+                        },
+                        tainacan_plugin.admin_url);
                 }
             })
             .catch((errors) => {
@@ -1076,7 +1118,17 @@ export default {
             });
         },
         onDiscard() {
-            this.$router.go(-1);
+            if (!this.$route.query.iframemode)
+                this.$router.go(-1);
+            else
+                parent.postMessage({ 
+                        type: 'itemCreationMessage',
+                        itemId: null,
+                        itemTitle: null,
+                        itemThumbnail: null
+                    },
+                    tainacan_plugin.admin_url);
+
         },
         createNewItem() {
             // Puts loading on Draft Item creation
@@ -1093,7 +1145,12 @@ export default {
 
             // Creates draft Item
             this.form.comment_status = this.form.comment_status == 'open' ? 'open' : 'closed';
-            let data = {collection_id: this.form.collectionId, status: 'auto-draft', comment_status: this.form.comment_status};
+            let data = { collection_id: this.form.collectionId, status: 'auto-draft', comment_status: this.form.comment_status };
+
+            // If a parameter was passed with a suggestion of item title, use it
+            if (this.$route.query.newitemtitle)
+                data.title = this.$route.query.newitemtitle;
+
             this.fillExtraFormData(data);
             this.sendItem(data).then(res => {
 
@@ -1109,6 +1166,18 @@ export default {
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
+                this.form.thumbnail_id = this.item.thumbnail_id;
+                this.form.thumbnail_alt = this.item.thumbnail_alt;
+
+                // If a parameter was passed with a suggestion of item title, also send a patch to item metadata
+                if (this.$route.query.newitemtitle) {
+                    eventBusItemMetadata.$emit('input', {
+                        itemId: this.itemId,
+                        metadatumId: this.$route.query.newmetadatumid,
+                        values: this.$route.query.newitemtitle,
+                        parentMetaId: 0
+                    });
+                }
 
                 // Loads metadata and attachments
                 this.loadMetadata();
@@ -1227,7 +1296,13 @@ export default {
             })
             .then(() => {
                 this.isLoadingAttachments = true;
-                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                this.fetchAttachments({
+                    page: 1,
+                    attachmentsPerPage: 24,
+                    itemId: this.itemId,
+                    documentId: this.form.document,
+                    thumbnailId: this.form.thumbnail_id
+                })
                     .then(() => this.isLoadingAttachments = false)
                     .catch(() => this.isLoadingAttachments = false);
             })
@@ -1244,9 +1319,10 @@ export default {
             });
         },
         deleteThumbnail() {
-            this.updateThumbnail({itemId: this.itemId, thumbnailId: 0})
+            this.updateThumbnail({ itemId: this.itemId, thumbnailId: 0 })
                 .then(() => {
                     this.item.thumbnail = false;
+                    this.item.thumbnail_id = null;
                 })
                 .catch((error) => {
                     this.$console.error(error);
@@ -1265,7 +1341,13 @@ export default {
                             .then(() => {
                                 this.isLoadingAttachments = true;
 
-                                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                                this.fetchAttachments({ 
+                                        page: 1,
+                                        attachmentsPerPage: 24,
+                                        itemId: this.itemId,
+                                        documentId: this.form.document,
+                                        thumbnailId: this.form.thumbnail_id
+                                    })
                                     .then(() => this.isLoadingAttachments = false)
                                     .catch(() => this.isLoadingAttachments = false);
                             })
@@ -1291,6 +1373,7 @@ export default {
                         this.isLoading = true;
                         this.form.document_type = 'attachment';
                         this.form.document = file.id + '';
+                        
                         this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
                         .then((item) => {
                             this.isLoading = false;
@@ -1319,34 +1402,57 @@ export default {
                     button_labels: {
                         frame_title: this.$i18n.get('instruction_select_item_thumbnail'),
                     },
+                    thumbnail: this.form.thumbnail_id,
                     relatedPostId: this.itemId,
                     onSave: (media) => {
-                        this.updateThumbnail({itemId: this.itemId, thumbnailId: media.id})
-                        .then((res) => {
-                            this.item.thumbnail = res.thumbnail;
-                        })
-                        .catch(error => this.$console.error(error));
+                        this.updateThumbnail({ itemId: this.itemId, thumbnailId: media.id})
+                            .then((res) => {
+                                this.item.thumbnail = res.thumbnail;
+                                this.item.thumbnail_id = res.thumbnail_id;
+                                this.item.thumbnail_alt = res.thumbnail_alt;
+                                this.form.thumbnail = res.thumbnail;
+                                this.form.thumbnail_id = res.thumbnail_id;
+                                this.form.thumbnail_alt = res.thumbnail_alt;
+                            })
+                            .catch(error => this.$console.error(error));
                     }
                 }
             );
-
             this.attachmentMediaFrame = new wpMediaFrames.attachmentControl(
                 'my-attachment-media-frame', {
                     button_labels: {
                         frame_title: this.$i18n.get('instruction_select_files_to_attach_to_item'),
                         frame_button: this.$i18n.get('label_attach_to_item'),
                     },
+                    nonce: this.item.nonces ? this.item.nonces['update-post_' + this.item.id] : null,
                     relatedPostId: this.itemId,
+                    document: this.form.document_type == 'attachment' ? this.form.document : null, 
+                    thumbnailId: this.form.thumbnail_id ? this.form.thumbnail_id : null, 
                     onSave: () => {
                         // Fetch current existing attachments
                         this.isLoadingAttachments = true;
-                        this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                        this.fetchAttachments({ 
+                            page: 1,
+                            attachmentsPerPage: 24,
+                            itemId: this.itemId,
+                            documentId: this.form.document,
+                            thumbnailId: this.form.thumbnail_id
+                        })
                             .then(() => this.isLoadingAttachments = false)
                             .catch(() => this.isLoadingAttachments = false);
                     }
                 }
             );
 
+        },
+        onUpdateThumbnailAlt(updatedThumbnailAlt) {
+
+            this.updateThumbnailAlt({ thumbnailId: this.item.thumbnail_id, thumbnailAlt: updatedThumbnailAlt })
+                .then((res) => {
+                    this.form.thumbnail_id = res.thumbnail_id;
+                    this.form.thumbnail_alt = res.thumbnail_alt;
+                })
+                .catch(error => this.$console.error(error));
         },
         toggleCollapseAll() {
             this.collapseAll = !this.collapseAll;
@@ -1375,63 +1481,80 @@ export default {
             });
         },
         loadExistingItem() {
-            // Initializes Media Frames now that itemId exists
-            this.initializeMediaFrames();
+
+            // Cancels previous Request
+            if (this.itemRequestCancel != undefined)
+                this.itemRequestCancel.cancel('Item search Canceled.');
 
             this.fetchItem({
                 itemId: this.itemId,
                 contextEdit: true,
                 fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html'
             })
-            .then(res => {
-                this.item = res;
+            .then((resp) => {
+                resp.request.then((res) => {
+                    this.item = res;
 
-                // Checks if user has permission to edit
-                if (!this.item.current_user_can_edit)
-                    this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
+                    // Checks if user has permission to edit
+                    if (!this.item.current_user_can_edit)
+                        this.$router.push(this.$routerHelper.getCollectionPath(this.collectionId));
 
-                // Updates Collection BreadCrumb
-                if (this.isOnSequenceEdit) {
-                    this.$root.$emit('onCollectionBreadCrumbUpdate', [
-                        { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
-                        { path: '', label: this.$i18n.get('sequence') },
-                        { path: '', label: this.item.title },
-                        { path: '', label: this.$i18n.get('edit') }
-                    ]);
-                } else {
-                    this.$root.$emit('onCollectionBreadCrumbUpdate', [
-                        { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
-                        { path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), label: this.item.title },
-                        { path: '', label: this.$i18n.get('edit') }
-                    ]);
-                }
+                    // Updates Collection BreadCrumb
+                    if (this.isOnSequenceEdit) {
+                        this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                            { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
+                            { path: '', label: this.$i18n.get('sequence') },
+                            { path: '', label: this.item.title },
+                            { path: '', label: this.$i18n.get('edit') }
+                        ]);
+                    } else {
+                        this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                            { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
+                            { path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), label: this.item.title },
+                            { path: '', label: this.$i18n.get('edit') }
+                        ]);
+                    }
 
-                // Fills hook forms with it's real values
-                this.$nextTick()
-                    .then(() => {
-                        this.updateExtraFormData(this.item);
-                    });
+                    // Fills hook forms with it's real values
+                    this.$nextTick()
+                        .then(() => {
+                            this.updateExtraFormData(this.item);
+                        });
 
-                // Fill this.form data with current data.
-                this.form.status = this.item.status;
-                this.form.document = this.item.document;
-                this.form.document_type = this.item.document_type;
-                this.form.comment_status = this.item.comment_status;
+                    // Fill this.form data with current data.
+                    this.form.status = this.item.status;
+                    this.form.document = this.item.document;
+                    this.form.document_type = this.item.document_type;
+                    this.form.comment_status = this.item.comment_status;
+                    this.form.thumbnail_id = this.item.thumbnail_id;
+                    this.form.thumbnail_alt = this.item.thumbnail_alt;
 
-                if (this.form.document_type != undefined && this.form.document_type == 'url')
-                    this.urlLink = this.form.document;
-                if (this.form.document_type != undefined && this.form.document_type == 'text')
-                    this.textContent = this.form.document;
+                    if (this.form.document_type != undefined && this.form.document_type == 'url')
+                        this.urlLink = this.form.document;
+                    if (this.form.document_type != undefined && this.form.document_type == 'text')
+                        this.textContent = this.form.document;
 
-                if (this.item.status == 'publish' || this.item.status == 'private')
-                    this.visibility = this.item.status;
+                    if (this.item.status == 'publish' || this.item.status == 'private')
+                        this.visibility = this.item.status;
 
-                this.loadMetadata();
-                this.setLastUpdated(this.item.modification_date);
+                    this.loadMetadata();
+                    this.setLastUpdated(this.item.modification_date);
+
+                    // Fetch current existing attachments now that item.document
+                    this.fetchAttachments({
+                        page: 1,
+                        attachmentsPerPage: 24,
+                        itemId: this.itemId,
+                        documentId: this.form.document,
+                        thumbnailId: this.form.thumbnail_id });
+
+                    // Initializes Media Frames now that itemId and item.document exists
+                    this.initializeMediaFrames();
+                });
+
+                // Item resquest token for cancelling
+                this.itemRequestCancel = resp.source;
             });
-
-            // Fetch current existing attachments
-            this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
         },
         onNextInSequence() {
             this.sequenceRightDirection = true;
@@ -1487,7 +1610,7 @@ export default {
             }
             .status-tag {
                 color: var(--tainacan-white);
-                background: var(--tainacan-turquoise5);
+                background: var(--tainacan-secondary);
                 padding: 0.15em 0.5em;
                 font-size: 0.75em;
                 margin: 0 1em 0 0;
@@ -1553,7 +1676,7 @@ export default {
         label {
             font-size: 1em !important;
             font-weight: 500 !important;
-            color: var(--tainacan-gray5) !important;
+            color: var(--tainacan-label-color) !important;
             line-height: 1.2em;
         }
     }
@@ -1585,7 +1708,7 @@ export default {
                     color: var(--tainacan-secondary);
                     margin-bottom: 6px;
                     &:hover {
-                        background-color: var(--tainacan-turquoise2);
+                        background-color: var(--tainacan-primary);
                         cursor: pointer;
                     }
                 }
@@ -1615,6 +1738,9 @@ export default {
     }
 
     .document-field {
+        /deep/ iframe {
+            max-width: 100%;
+        }
         .document-buttons-row {
             text-align: right;
             top: -21px;
@@ -1673,6 +1799,27 @@ export default {
             left: 90px;
             bottom: 1.0em;
         }
+
+        .thumbnail-alt-input {
+            .label {
+                font-size: 0.875em;
+                font-weight: 500;
+                margin-left: 15px;
+                margin-bottom: 0;
+                margin-top: 0.15em;
+            }
+        }
+    }
+
+    .attachments-list-heading {
+        display: flex;
+        align-items: center;
+        margin-top: 24px;
+        margin-bottom: 24px;
+
+        button {
+            margin-right: 12px;
+        }
     }
 
     .footer {
@@ -1724,7 +1871,7 @@ export default {
 
         .sequence-progress {
             height: 5px;
-            background: var(--tainacan-turquoise5);
+            background: var(--tainacan-secondary);
             width: 0%;
             position: absolute;
             top: 0;
@@ -1742,7 +1889,7 @@ export default {
 
         .sequence-button {
             background-color: transparent;
-            color: var(--tainacan-turquoise5);
+            color: var(--tainacan-secondary);
             border: none;
 
             .icon {
@@ -1753,7 +1900,7 @@ export default {
             &:focus,
             &:active {
                 background-color: transparent !important;
-                color: var(--tainacan-turquoise5) !important;
+                color: var(--tainacan-secondary) !important;
             }
         }
     }

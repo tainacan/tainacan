@@ -9,6 +9,8 @@
     }
     li {
         overflow-y: hidden;
+        margin: 0;
+        padding: 0;
     }
     a {
         font-size: 0.8125em;
@@ -24,7 +26,7 @@
         }
     }
     li.is-active a {
-        border-bottom-color: var(--tainacan-turquoise5);
+        border-bottom-color: var(--tainacan-secondary);
         color: var(--tainacan-black) !important;
     }
     .icon:first-child {
@@ -35,5 +37,10 @@
 .b-tabs {
     .tab-content {         
         padding: 0.75em 1.5em;  
+    }
+    .tabs a,
+    .tabs a:hover,
+    .tabs a:hover:not([href]) {
+        text-decoration: none;
     }
 }

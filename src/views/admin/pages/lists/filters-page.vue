@@ -47,7 +47,7 @@
                                     'not-sortable-item': (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true),
                                     'not-focusable-item': openedFilterId == filter.id, 
                                     'disabled-filter': filter.enabled == false,
-                                    'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
+                                    'inherited-filter': filter.inherited || isRepositoryLevel
                                 }" 
                                 v-for="(filter, index) in activeFilterList" 
                                 :key="filter.id">
@@ -89,12 +89,13 @@
                                 <span   
                                         v-if="filter.filter_type_object != undefined"
                                         class="label-details">  
-                                    ({{ filter.filter_type_object.name }})  
-                                        <span 
-                                                class="not-saved" 
-                                                v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'"> 
-                                            {{ $i18n.get('info_not_saved') }}
-                                        </span>
+                                    ({{ filter.filter_type_object.name }}) 
+                                    <em v-if="filter.inherited">{{ $i18n.get('label_inherited') }}</em> 
+                                    <span 
+                                            class="not-saved" 
+                                            v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'"> 
+                                        {{ $i18n.get('info_not_saved') }}
+                                    </span>
                                     <span 
                                             v-if="filter.status == 'private'"
                                             class="icon">
@@ -177,7 +178,7 @@
                                 <div 
                                         class="available-metadatum-item"
                                         :class="{
-                                            'inherited-metadatum': metadatum.collection_id != collectionId || isRepositoryLevel,
+                                            'inherited-metadatum': metadatum.inherited || isRepositoryLevel,
                                             'disabled-metadatum': isSelectingFilterType
                                         }"
                                         v-if="metadatum.enabled"
@@ -757,7 +758,8 @@ export default {
                             collectionId: this.collectionId, 
                             isRepositoryLevel: this.isRepositoryLevel, 
                             isContextEdit: true,
-                            parent: 'any' 
+                            parent: 'any',
+                            includeControlMetadataTypes: true,
                         }).then((resp) => {
                                 resp.request
                                     .then(() => {

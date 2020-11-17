@@ -49,7 +49,8 @@ class Theme_Helper {
 		add_filter('get_the_archive_title', array($this, 'filter_archive_title'));
 
 		add_shortcode( 'tainacan-search', array($this, 'search_shortcode'));
-		
+		add_shortcode( 'tainacan-item-submission', array($this, 'item_submission_shortcode'));
+
 		add_action( 'generate_rewrite_rules', array( &$this, 'rewrite_rules' ), 10, 1 );
 		add_filter( 'query_vars', array( &$this, 'rewrite_rules_query_vars' ) );
 		add_filter( 'template_include', array( &$this, 'rewrite_rule_template_include' ) );
@@ -64,7 +65,8 @@ class Theme_Helper {
 			'dynamic_metadata' => true,
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewtable tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
-			'implements_skeleton' => true
+			'implements_skeleton' => true,
+			'requires_thumbnail' => false
 		]);
 		$this->register_view_mode('cards', [
 			'label' => __('Cards', 'tainacan'),
@@ -72,7 +74,8 @@ class Theme_Helper {
 			'description' => 'A cards view, displaying title, description, author name and creation date.',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewcards tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
-			'implements_skeleton' => true
+			'implements_skeleton' => true,
+			'requires_thumbnail' => false
 		]);
 		$this->register_view_mode('records', [
 			'label' => __('Records', 'tainacan'),
@@ -80,7 +83,8 @@ class Theme_Helper {
 			'description' => 'A records view, similiar to cards, but flexible for metadata',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewrecords tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
-			'implements_skeleton' => true
+			'implements_skeleton' => true,
+			'requires_thumbnail' => false
 		]);
 		$this->register_view_mode('masonry', [
 			'label' => __('Masonry', 'tainacan'),
@@ -98,6 +102,15 @@ class Theme_Helper {
 			'type' => 'component',
 			'show_pagination' => false,
 			'full_screen' => true
+		]);
+		$this->register_view_mode('list', [
+			'label' => __('List', 'tainacan'),
+			'dynamic_metadata' => true,
+			'description' => 'A list view, similiar to the records, but full width',
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewlist tainacan-icon-1-25em"></i></span>',
+			'type' => 'component',
+			'implements_skeleton' => true,
+			'requires_thumbnail' => false
 		]);
 	}
 	
@@ -354,6 +367,28 @@ class Theme_Helper {
 		return $image;
 	}
 
+	public function item_submission_shortcode($args) {
+		global $TAINACAN_BASE_URL;
+
+		$props = ' ';
+
+		// Passes arguments to custom props
+		if ($args) {
+			foreach ($args as $key => $value) {
+				if ($value == true || $value == 'true') {
+					$props .= str_replace('_', '-', $key) . '="' . $value . '" ';
+				}
+			}
+		}
+
+		wp_enqueue_media();
+		wp_enqueue_script('jcrop');
+		wp_enqueue_script('tainacan-item-submission', $TAINACAN_BASE_URL . '/assets/js/item_submission.js' , ['underscore', 'jcrop', 'media-editor', 'media-views', 'customize-controls'] , TAINACAN_VERSION);
+		wp_localize_script('tainacan-item-submission', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
+
+		return "<div id='tainacan-item-submission-form' $props ></div>";
+	}
+
 	public function search_shortcode($args) {
 	
 		$props = ' ';
@@ -383,6 +418,10 @@ class Theme_Helper {
 			$collection = new  \Tainacan\Entities\Collection($collection_id);
 			$default_view_mode = $collection->get_default_view_mode();
 			$enabled_view_modes = $collection->get_enabled_view_modes();
+
+					
+			// Gets hideItemsThumbnail info from collection setting
+			$args['hide-items-thumbnail'] = $collection->get_hide_items_thumbnail_on_lists() == 'yes' ? true : false;
 		}
 
 		// If in a tainacan taxonomy
@@ -469,22 +508,23 @@ class Theme_Helper {
 	 * @param array|string $args {
 	 * 		Optional. Array of arguments
 	 * 
-	 * 		@type string 		$label				Label, visible to users. Default to $slug
-	 * 		@type string		$description		Description, visible only to editors in the admin. Default none.
-	 * 		@type string		$type 				Type. Accepted values are 'template' or 'component'. Defautl 'template'
-	 * 		@type string		$template			Full path  to the template file to be used. Required if $type is set to template.
-	 * 												Default: theme-path/tainacan/view-mode-{$slug}.php
-	 * 		@type string		$component			Component tag name. The web component js must be included and must accept two props:
-	 * 													* items - the list of items to be rendered
-	 * 													* displayed-metadata - list of metadata to be displayed
-	 * 												Default view-mode-{$slug}
-	 * 		@type string		$thumbnail			Full URL to an thumbnail that represents the view mode. Displayed in admin.
-	 * 		@type string		$icon 				HTML that outputs an icon that represents the view mode. Displayed in front end.
-	 * 		@type bool			$show_pagination	Wether to display or not pagination controls. Default true.
-	 * 		@type bool			$full_screen		Wether the view mode will display full screen or not. Default false.
-	 * 		@type bool			$dynamic_metadata	Wether to display or not (and use or not) the "displayed metadata" selector. Default false.
-	 * 		
-	 * 
+	 * 		@type string 		$label				 Label, visible to users. Default to $slug
+	 * 		@type string		$description		 Description, visible only to editors in the admin. Default none.
+	 * 		@type string		$type 				 Type. Accepted values are 'template' or 'component'. Default 'template'
+	 * 		@type string		$template			 Full path  to the template file to be used. Required if $type is set to template.
+	 * 												 Default: theme-path/tainacan/view-mode-{$slug}.php
+	 * 		@type string		$component			 Component tag name. The web component js must be included and must accept two props:
+	 * 												 	* items - the list of items to be rendered
+	 * 												 	* displayed-metadata - list of metadata to be displayed
+	 * 												 Default view-mode-{$slug}
+	 * 		@type string		$thumbnail			 Full URL to an thumbnail that represents the view mode. Displayed in admin.
+	 * 		@type string		$icon 				 HTML that outputs an icon that represents the view mode. Displayed in front end.
+	 * 		@type bool			$show_pagination	 Wether to display or not pagination controls. Default true.
+	 * 		@type bool			$full_screen		 Wether the view mode will display full screen or not. Default false.
+	 * 		@type bool			$dynamic_metadata	 Wether to display or not (and use or not) the "displayed metadata" selector. Default false.
+	 * 		@type bool			$implements_skeleton Wether the view mode has its own strategy for disaplying loading state.
+	 * 		@type string		$skeleton_template	 If the view mode is a template, this is the html of its loading state.
+	 * 		@type bool			$required_thumbnail	 Wether the view mode considers essential that the item thumbnail is available, even if it is a placeholder.
 	 * }
 	 * 
 	 * @return void
@@ -503,8 +543,8 @@ class Theme_Helper {
 			'full_screen' => false,
 			'dynamic_metadata' => false,
 			'implements_skeleton' => false,
-			'skeleton_template' => ''
-
+			'skeleton_template' => '',
+			'requires_thumbnail' => true
 		);
 		$args = wp_parse_args($args, $defaults);
 
@@ -550,7 +590,7 @@ class Theme_Helper {
 					$title = tainacan_get_the_collection_name();
 					$img_info = ( has_post_thumbnail( tainacan_get_collection_id() ) ) ? wp_get_attachment_image_src( get_post_thumbnail_id( tainacan_get_collection_id() ), 'full' ) : $logo;
 					$url_src = home_url( $wp->request );
-					$excerpt = tainacan_get_the_collection_description();
+					$excerpt = strip_tags(tainacan_get_the_collection_description());
 				} elseif ( is_post_type_archive('tainacan-collection') ) {
 					$title = __('Collections', 'tainacan');
 				}
@@ -572,7 +612,7 @@ class Theme_Helper {
 				$tainacan_term = tainacan_get_term();
 				
 				$title = $term->name;
-				$excerpt = $term->description;
+				$excerpt = strip_tags($term->description);
 				
 				$url_src = get_term_link($term->term_id, $term->taxonomy);
 
@@ -618,6 +658,82 @@ class Theme_Helper {
 
 
 		<?php } else { return; } // End if().
+	}
+
+
+	/**
+	 * Get previous and next item according to current search query
+	 * 
+	 * @param integer $index the position of the item in the current list. This should be added to pagination.
+	 * 
+	 * @return array containing the next and previous item
+	 */
+	public function get_adjacent_items() {
+
+		// Array with the link results. If nothing goes well here we just don't have any link :(
+		$adjacent_items = [
+			'next' => null,
+			'previous' => null
+		];
+
+		// Adjusts the args to obtain only on one item per request with the correct offset
+		$args = $_GET;
+		
+		// Defines where are we getting items from
+		$entity = [];
+		if (isset($args['source_list']) && $args['source_list'] == 'collection' && $collection_id = tainacan_get_collection_id()) {
+			$entity = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
+		}
+		unset($args['source_list']);
+
+		if (isset($args['pos'])) {
+
+			// Sets Page based on position
+			$args['perpage'] = '1';
+			$current_position = (int)$args['pos'] + 1;
+			unset($args['pos']);
+			$args = (new \Tainacan\API\EndPoints\REST_Items_Controller())->process_request_filters($args);
+
+			// Fetch Previous Item
+			if($current_position > 1) {
+				$args['paged'] = $current_position - 1;
+				$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
+				
+				if ($items->have_posts()) {
+					$items->the_post();
+					$item = new Entities\Item($items->post);
+
+					if (!empty($item)  && $item instanceof \Tainacan\Entities\Item) {
+						$adjacent_items['previous'] = [
+							'url' => get_permalink( $item->get_id() ) . '?' . http_build_query(array_merge($_GET, ['pos'=> $current_position-2])),
+							'title' => $item->get_title(),
+							'thumbnail' => $item->get_thumbnail()
+						];
+					}
+					\wp_reset_postdata();
+				}
+			}
+
+			// Fetch Next Item
+			$args['paged'] = $current_position + 1;
+			$items = \Tainacan\Repositories\Items::get_instance()->fetch($args, $entity, 'WP_Query');
+
+			if ($items->have_posts()) {
+				$items->the_post();
+				$item = new Entities\Item($items->post);
+
+				if (!empty($item) && $item instanceof \Tainacan\Entities\Item) {
+					$adjacent_items['next'] = [
+						'url' => get_permalink( $item->get_id() ) . '?' . http_build_query(array_merge($_GET, ['pos'=> $current_position])),
+						'title' => $item->get_title(),
+						'thumbnail' => $item->get_thumbnail()
+					];
+				}
+				\wp_reset_postdata();
+			}
+		}
+
+		return $adjacent_items;
 	}
 	
 }

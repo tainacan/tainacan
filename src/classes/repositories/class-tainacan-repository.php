@@ -128,9 +128,10 @@ abstract class Repository {
 		$old       = '';
 
 		$diffs = [];
-
 		do_action( 'tainacan-pre-insert', $obj );
-		do_action( 'tainacan-pre-insert-' . $obj->get_post_type(), $obj );
+		$obj_post_type = $obj->get_post_type();
+		if( $obj_post_type != false )
+			do_action( "tainacan-pre-insert-$obj_post_type", $obj );
 
 		$map = $this->get_map();
 
@@ -159,6 +160,8 @@ abstract class Repository {
 
 			$post_t                  = $collection->get_db_identifier();
 			$obj->WP_Post->post_type = $post_t;
+			$obj_post_type = 'tainacan-item';
+			do_action( "tainacan-pre-insert-$obj_post_type", $obj );
 		}
 
 		// TODO verificar se salvou mesmo
@@ -173,9 +176,12 @@ abstract class Repository {
 				$diffs = $this->insert_metadata( $obj, $prop, $diffs );
 			}
 		}
+		update_post_meta( $id, '_user_edit_lastr', get_current_user_id() );
 
 		do_action( 'tainacan-insert', $obj, $diffs, $is_update );
-		do_action( 'tainacan-insert-' . $obj->get_post_type(), $obj );
+		if( $obj_post_type != false ) {
+			do_action( "tainacan-insert-$obj_post_type", $obj );
+		}
 
 		// return a brand new object
 		return new $this->entities_type( $obj->WP_Post );

@@ -37,7 +37,7 @@
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-card"
-                        :href="item.url">                                
+                        :href="getItemLink(item.url, index)">                                
                     <!-- Title -->
                     <div class="metadata-title">
                         <p 
@@ -52,15 +52,30 @@
                                     placement: 'auto-start'
                                 }">
                             {{ item.title != undefined ? item.title : '' }}
-                        </p>                            
+                        </p>                 
+                        <span 
+                                v-if="isSlideshowViewModeEnabled"
+                                v-tooltip="{
+                                    delay: {
+                                        show: 500,
+                                        hide: 100,
+                                    },
+                                    content: $i18n.get('label_see_on_fullscreen'),
+                                    placement: 'auto-start'
+                                }"          
+                                @click.prevent="starSlideshowFromHere(index)"
+                                class="icon slideshow-icon">
+                            <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                        </span>              
                     </div>
                     <!-- Remaining metadata -->  
                     <div class="media">
                         <div 
+                                v-if="!shouldHideItemsThumbnail"
                                 :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }"
                                 class="card-thumbnail">
                             <img 
-                                    :alt="$i18n.get('label_thumbnail')"
+                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                     v-if="item.thumbnail != undefined"
                                     :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">  
                         </div>
@@ -74,13 +89,13 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
+                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"   
                                     class="metadata-description"
-                                    v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`" />                                                        
+                                    v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />                                                        
                             <br>
                             <!-- Author and Creation Date-->
 <!--                            <p 
@@ -112,35 +127,26 @@
 </template>
 
 <script>
+import { viewModesMixin } from '../js/view-modes-mixin.js';
 
 export default {
     name: 'ViewModeCards',
-    props: {
-        collectionId: Number,
-        displayedMetadata: Array,
-        items: Array,
-        isLoading: false,
-        shouldUseSmallCard: false
-    },
-    data () {
+    mixins: [
+        viewModesMixin
+    ],
+    data() {
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png'
+            shouldHideItemsThumbnail: this.$root.hideItemsThumbnail
+        }
+    },
+    computed: {
+        descriptionMaxCharacter() {
+            return (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? (this.shouldHideItemsThumbnail ? 185 : 155) : (this.shouldHideItemsThumbnail ? 480 : 330);
         }
     },
     methods: {
-        renderMetadata(itemMetadata, column) {
-
-            let metadata = itemMetadata[column.slug] != undefined ? itemMetadata[column.slug] : false;
-
-            if (!metadata) {
-                return '';
-            } else {
-                return metadata.value_as_html;
-            }
-        },
         getLimitedDescription(description) {
-            let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 155 : 330;
-            return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
+            return description.length > this.descriptionMaxCharacter ? description.substring(0, this.descriptionMaxCharacter - 3) + '...' : description;
         }
     }
 }

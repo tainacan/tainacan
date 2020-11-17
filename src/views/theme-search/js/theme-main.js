@@ -29,6 +29,7 @@ import ViewModeCards from '../components/view-mode-cards.vue';
 import ViewModeRecords from '../components/view-mode-records.vue';
 import ViewModeMasonry from '../components/view-mode-masonry.vue';
 import ViewModeSlideshow from '../components/view-mode-slideshow.vue';
+import ViewModeList from '../components/view-mode-list.vue';
 
 // Remaining imports
 import store from '../../admin/js/store/store';
@@ -108,6 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Vue.component('view-mode-records', ViewModeRecords);
         Vue.component('view-mode-masonry', ViewModeMasonry);
         Vue.component('view-mode-slideshow', ViewModeSlideshow);
+        Vue.component('view-mode-list', ViewModeList);
 
         Vue.use(eventBusSearch, { store: store, router: routerTheme});
             
@@ -129,6 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 hideDisplayedMetadataButton: false,
                 hideSortByButton: false,
                 hideSortingArea: false,
+                hideItemsThumbnail: false,
                 hideItemsPerPageButton: false,
                 hideGoToPageButton: false,
                 hidePaginationArea: false,
@@ -167,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (this.$el.attributes['enabled-view-modes'] != undefined)
                     this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
-                
+               
                 // Options related to hidding elements
                 if (this.$el.attributes['hide-filters'] != undefined)
                     this.hideFilters = this.isParameterTrue('hide-filters');
@@ -181,6 +184,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.hideDisplayedMetadataButton = this.isParameterTrue('hide-displayed-metadata-button');
                 if (this.$el.attributes['hide-sorting-area'] != undefined)
                     this.hideSortingArea = this.isParameterTrue('hide-sorting-area');
+                if (this.$el.attributes['hide-items-thumbnail'] != undefined)
+                    this.hideItemsThumbnail = this.isParameterTrue('hide-items-thumbnail');
                 if (this.$el.attributes['hide-sort-by-button'] != undefined)
                     this.hideSortByButton = this.isParameterTrue('hide-sort-by-button');
                 if (this.$el.attributes['hide-exposers-button'] != undefined)

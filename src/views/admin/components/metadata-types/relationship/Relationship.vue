@@ -1,5 +1,5 @@
 <template>
-    <div :class="{ 'is-flex': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
+    <div :class="{ 'is-flex is-flex-wrap-wrap': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
         <b-taginput
                 expanded
                 :disabled="disabled"
@@ -10,8 +10,10 @@
                 @input="onInput"
                 @blur="onBlur"
                 :data="options"
-                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? 100 : 1)"
+                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? null : 1)"
                 autocomplete
+                :remove-on-keys="[]"
+                :dropdown-position="isLastMetadatum ? 'top' :'auto'"
                 attached
                 :placeholder="$i18n.get('instruction_type_existing_item')"
                 :loading="isLoading"
@@ -20,7 +22,8 @@
                 field="label"
                 @typing="search"
                 check-infinite-scroll
-                @infinite-scroll="searchMore">
+                @infinite-scroll="searchMore"
+                :has-counter="false">
             <template slot-scope="props">
                 <div class="media">
                     <div 
@@ -40,12 +43,40 @@
                     slot="empty">
                 {{ $i18n.get('info_no_item_found') }}
             </template>
+            <template
+                    v-if="currentUserCanEditItems && !($route && $route.query.iframemode)" 
+                    slot="footer">
+                 <a @click="createNewItemModal = true">
+                    {{ $i18n.get('label_crate_new_item') + ' "' + searchQuery + '"' }}
+                </a>
+            </template>
         </b-taginput>
+        <a
+                v-if="currentUserCanEditItems && itemMetadatum.item && itemMetadatum.item.id"
+                :disabled="!$route || $route.query.iframemode"
+                @click="createNewItemModal = !createNewItemModal"
+                class="add-link">
+            <span class="icon is-small">
+                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+            </span>
+            &nbsp;{{ $i18n.get('label_crate_new_item') }}
+        </a>
+        <b-modal 
+                :width="1200"
+                :active.sync="createNewItemModal">
+            <iframe 
+                    :id="newItemFrame"
+                    width="100%"
+                    style="height: 85vh"
+                    :src="adminFullURL + $routerHelper.getNewItemPath(collectionId) + '?iframemode=true&newmetadatumid=' + itemMetadatum.metadatum.metadata_type_options.search + '&newitemtitle=' + searchQuery" />
+        </b-modal>
+        
     </div>
 </template>
 
 <script>
     import { tainacan as axios } from '../../../js/axios';
+    import { mapGetters } from 'vuex';
     import qs from 'qs';
 
     export default {       
@@ -53,7 +84,8 @@
             itemMetadatum: Object,
             maxtags: undefined,
             disabled: false,
-            allowNew: true
+            allowNew: true,
+            isLastMetadatum: false
         },
         data() {
             return {
@@ -61,20 +93,34 @@
                 options: [],
                 isLoading: false,
                 collectionId: '',
-                inputValue: null,
-                queryObject: {},
-                itemsFound: [],
                 searchQuery: '',
                 totalItems: 0,
-                page: 1
+                page: 1,
+                createNewItemModal: false,
+                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#',
+                currentUserCanEditItems: false
+            }
+        },
+        computed: {
+            collection() {
+                return this.getCollection();
+            }
+        },
+        watch: {
+            createNewItemModal() {
+                if (this.createNewItemModal)
+                    window.addEventListener('message', this.createNewItemFromModal, false);
+                else
+                    window.removeEventListener('message', this.createNewItemFromModal);
             }
         },
         created() {
             this.collectionId = ( this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.collection_id ) ? this.itemMetadatum.metadatum.metadata_type_options.collection_id : '';
+            
             if (this.itemMetadatum.value && (Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value.length > 0 : true )) {
                 let query = qs.stringify({ postin: ( Array.isArray( this.itemMetadatum.value ) ) ? this.itemMetadatum.value : [ this.itemMetadatum.value ]  });
                 query += this.itemMetadatum.metadatum.metadata_type_options.search ? '&fetch_only_meta=' + this.itemMetadatum.metadatum.metadata_type_options.search : '';
-                axios.get('/collection/' + this.collectionId + '/items?' + query + '&nopaging=1&fetch_only=title,thumbnail')
+                axios.get('/collection/' + this.collectionId + '/items?' + query + '&nopaging=1&fetch_only=title,thumbnail&order=asc')
                     .then( res => {
                         if (res.data.items) {
                             for (let item of res.data.items)
@@ -89,9 +135,24 @@
                         this.$console.log(error);
                     });
             }
+
+            // Checks if current user can edit itens on the related collection to offer modal
+            if (this.collection && this.collection.id == this.collectionId)
+                this.currentUserCanEditItems = this.collection.current_user_can_edit_items;
+            else {
+                axios.get('/collections/' + this.collectionId + '?fetch_only=name,url,allow_comments&context=edit')
+                    .then(res => this.currentUserCanEditItems = res.data.current_user_can_edit_items )
+                    .catch(() => this.currentUserCanEditItems = false );
+            }
         },
         methods: {
+            ...mapGetters('collection', [
+                'getCollection'
+            ]),
             onInput(newSelected) {
+                // First we reset the input
+                this.search('');
+
                 this.selected = newSelected;
                 this.$emit('input', newSelected.map((item) => item.value));
             },
@@ -168,16 +229,43 @@
             },
             getQueryString( search ) {
                 let query = [];
-
                 if (this.itemMetadatum.metadatum.metadata_type_options &&
                     this.itemMetadatum.metadatum.metadata_type_options.search)
                 {
-                    query['metaquery'] = [];
+                    if (this.itemMetadatum.metadatum.metadata_type_options.search_by_tax) {
+                        query['taxquery'] = [];
+
+                        query['taxquery'][0] = {
+                            taxonomy: `tnc_tax_${this.itemMetadatum.metadatum.metadata_type_options.search_by_tax}`,
+                            operator: 'LIKE',
+                            taxonomy_id : this.itemMetadatum.metadatum.metadata_type_options.search_by_tax,
+                            terms: search
+                        }
+                    } else {
+                        query['metaquery'] = [];
                     
-                    query['metaquery'][0] = {
-                        key: this.itemMetadatum.metadatum.metadata_type_options.search,
-                        value: search,
-                        compare: 'LIKE'
+                        query['metaquery'][0] = {
+                            key: this.itemMetadatum.metadatum.metadata_type_options.search,
+                            value: search,
+                            compare: 'LIKE'
+                        }
+
+                        // Sorting options depend on metadata type. Notice that this won't work with taxonomies
+                        switch(this.itemMetadatum.metadatum.metadata_type_options.related_primitive_type) {
+                            case 'float':
+                            case 'int':
+                                query['orderby'] = 'meta_value_num';
+                                query['metakey'] = this.itemMetadatum.metadatum.metadata_type_options.search;
+                            break;
+                            case 'date':
+                                query['orderby'] = 'meta_value';
+                                query['metakey'] = this.itemMetadatum.metadatum.metadata_type_options.search;
+                                query['metatype'] = 'DATETIME';
+                            break;
+                            default:
+                                query['orderby'] = 'meta_value';
+                                query['metakey'] = this.itemMetadatum.metadatum.metadata_type_options.search;
+                        }
                     }
                     
                 } else {
@@ -187,21 +275,40 @@
                 query['fetch_only_meta'] = this.itemMetadatum.metadatum.metadata_type_options.search;
                 query['perpage'] = 12;
                 query['paged'] = this.page;
+                query['order'] = 'asc';
 
                 if (this.selected.length > 0)
                     query['exclude'] = this.selected.map((item) => item.value);
 
                 return qs.stringify(query);
+            },
+            createNewItemFromModal(event) {
+                const message = event.message ? 'message' : 'data';
+                const data = event[message];
+
+                if (data.type == 'itemCreationMessage') {
+                    this.createNewItemModal = false;
+
+                    if (data.itemId) {
+                        this.searchQuery = '';
+                        this.selected.push({
+                            label: data.itemTitle,
+                            value: data.itemId,
+                            img: data.itemThumbnail ? data.itemThumbnail : ''
+                        });
+                        this.onInput(this.selected);
+                    }
+                }  
             }
         }
     }
 </script>
 
-<style>
-    .help.counter {
-        display: none;
-    }
+<style scoped>
     div.is-flex {
         justify-content: flex-start;
+    }
+    .add-link {
+        font-size: 0.75em;
     }
 </style>

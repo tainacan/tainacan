@@ -78,6 +78,10 @@ rsync -axz --exclude='vendor/bin/phpc*' --exclude='vendor/squizlabs' --exclude='
   src/* $wp_plugin_dir/
 
 rm -rf $wp_plugin_dir/scss
-find $wp_plugin_dir/views/  -type f -name '*.js' ! -path "${wp_plugin_dir}/views/libs/*" -exec rm {} +
+find $wp_plugin_dir/views/ -type f -name '*.vue' -exec rm {} +
+find $wp_plugin_dir/views/ -type f -name '*.scss' -exec rm {} +
+find $wp_plugin_dir/views/ -type f -name '*.sass' -exec rm {} +
+find $wp_plugin_dir/views/ -type f -name '*.js' ! -path "${wp_plugin_dir}/views/libs/*" -exec rm {} +
+find $wp_plugin_dir/views/ -type d -empty -delete
 
 echo "Build complete!"
