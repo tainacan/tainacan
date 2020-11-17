@@ -69,7 +69,6 @@ class CSV extends Exporter {
 		remove_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator']);
 		remove_filter('tainacan-terms-hierarchy-html-separator', [$this, 'filter_hierarchy_separator']);
 		
-		
 		$line[] = $item->get_status();
 		
 		$line[] = $this->get_document_cell($item);
@@ -294,13 +293,13 @@ class CSV extends Exporter {
 						<div class="help-tooltip-body">
 							<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
 						</div>
-					</div> 
+					</div>
 			</span>
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="delimiter" maxlength="1" value="<?php echo $this->get_option('delimiter'); ?>">
 			</div>
 		</div>
-		
+
 		<div class="field">
 			<label class="label"><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></label>
 			<span class="help-wrapper">
@@ -316,13 +315,13 @@ class CSV extends Exporter {
 						<div class="help-tooltip-body">
 							<p><?php _e('The character used to separate each value inside a cell with multiple values (e.g. ||). Note that the target metadatum must accept multiple values.', 'tainacan'); ?></p>
 						</div>
-					</div> 
+					</div>
 			</span>
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="multivalued_delimiter" value="<?php echo $this->get_option('multivalued_delimiter'); ?>">
 			</div>
 		</div>
-		
+
 		<div class="field">
 			<label class="label"><?php _e('Enclosure', 'tainacan'); ?></label>
 			<span class="help-wrapper">
@@ -338,15 +337,14 @@ class CSV extends Exporter {
 						<div class="help-tooltip-body">
 							<p><?php _e('The character that wraps the content of each cell in your CSV. (e.g. ")', 'tainacan'); ?></p>
 						</div>
-					</div> 
+					</div>
 			</span>
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="enclosure" value="<?php echo esc_attr($this->get_option('enclosure')); ?>">
 			</div>
 		</div>
-		
-		
-		<?php
-		return ob_get_clean();
-	}
+
+      <?php
+      return ob_get_clean();
+  }
 }

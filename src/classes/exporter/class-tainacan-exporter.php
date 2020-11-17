@@ -84,7 +84,7 @@ abstract class Exporter {
 	 * This array holds the structure that the default step 'process_collections' will handle.
 	 *
 	 * Its an array of the target collections, with their IDs, an identifier from the source, the total number of items to be importer/exporter, the mapping array 
-	 * from the source structure to the ID of the metadata metadata in tainacan
+	 * from the source structure to the ID of the metadata in tainacan
 	 *
 	 * The format of the map is an array where the keys are the metadata IDs of the destination collection and the 
 	 * values are the identifier from the source. This could be an ID or a string or whatever the importer/exporter finds appropriate to handle

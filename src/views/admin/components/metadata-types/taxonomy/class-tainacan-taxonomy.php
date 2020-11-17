@@ -74,7 +74,6 @@ class Taxonomy extends Metadata_Type {
 			</div>
 		');
 
-		add_filter( 'tainacan-term-to-html', [$this, 'term_to_html'], 10, 2 );
 	}
 
 	/**
@@ -115,7 +114,7 @@ class Taxonomy extends Metadata_Type {
 
 		$options = $metadatum->get_metadata_type_options();
 		if ( !$metadatum->is_multiple() && $this->get_option('input_type') !== 'tainacan-taxonomy-radio' ) {
-			return ['input_type' => __('A taxonomy metadata that accepts simple values should use a radio type input', 'tainacan')];
+			return ['input_type' => __('A taxonomy metadata that does not accept multiple values should use a radio type input', 'tainacan')];
 		}
 
 		$Tainacan_Metadata = Metadata::get_instance();
@@ -231,37 +230,6 @@ class Taxonomy extends Metadata_Type {
 
 	}
 	
-	public function term_to_html($return, $term) {
-		
-		$collections = $this->get_option( 'link_filtered_by_collections' );
-
-		if ( !empty( $collections ) ) {
-			$return = '';
-			$id = $term->get_id();
-
-			if ( $id ) {
-				$link = get_term_link( (int) $id );
-				if (is_string($link)) {
-					$meta_query = [
-						'metaquery' => [
-							[
-								'key' => 'collection_id',
-								'compare' => 'IN',
-								'value' => $collections
-							]
-						]
-					];
-					$link = $link . '?' . http_build_query( $meta_query );
-					$return = "<a data-linkto='term' data-id='$id' href='$link'>";
-					$return.= $term->get_name();
-					$return .= "</a>";
-				}
-			}
-			return $return;
-		}
-		return $return;
-	}
-
 	/**
 	 * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as an html string
 	 * @param  Item_Metadata_Entity $item_metadata
@@ -320,11 +288,11 @@ class Taxonomy extends Metadata_Type {
 
 		$terms = [];
 
-		$terms[] = $term->_toHtml();
+		$terms[] = $this->term_to_html($term);
 
 		while ($term->get_parent() > 0) {
 			$term = \Tainacan\Repositories\Terms::get_instance()->fetch( (int) $term->get_parent(), $term->get_taxonomy() );
-			$terms[] = $term->_toHtml();
+			$terms[] = $this->term_to_html($term);
 		}
 
 		$terms = \array_reverse($terms);
@@ -333,6 +301,35 @@ class Taxonomy extends Metadata_Type {
 
 		return \implode($glue, $terms);
 
+	}
+
+	private function term_to_html($term) {
+		$collections = $this->get_option( 'link_filtered_by_collections' );
+		if ( !empty( $collections ) ) {
+			$return = '';
+			$id = $term->get_id();
+
+			if ( $id ) {
+				$link = get_term_link( (int) $id );
+				if (is_string($link)) {
+					$meta_query = [
+						'metaquery' => [
+							[
+								'key' => 'collection_id',
+								'compare' => 'IN',
+								'value' => $collections
+							]
+						]
+					];
+					$link = $link . '?' . http_build_query( $meta_query );
+					$return = "<a data-linkto='term' data-id='$id' href='$link'>";
+					$return.= $term->get_name();
+					$return .= "</a>";
+				}
+			}
+			return $return;
+		}
+		return $term->_toHtml();
 	}
 
 	public function _toArray() {

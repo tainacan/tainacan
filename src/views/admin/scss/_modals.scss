@@ -57,6 +57,7 @@
 }
 .tainacan-modal-content {
     font-family: var(--tainacan-font-family, inherit);
+    font-size: 1rem;
     border-radius: 0px;
     background-color: var(--tainacan-background-color);
     padding: 40px var(--tainacan-one-column);
@@ -202,7 +203,8 @@
     .tainacan-header-image-modal,
     .tainacan-thumbnail-modal,
     .tainacan-item-attachments-modal {
-        .tainacan-document-attachment {
+        .tainacan-document-attachment,
+        .tainacan-thumbnail-attachment {
             display: none;
             visibility: hidden;
         }

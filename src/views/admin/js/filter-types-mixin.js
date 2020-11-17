@@ -77,7 +77,7 @@ export const dynamicFilterTypeMixin = {
 
                 let url = '';
                 
-                if (isRepositoryLevel || this.filter.collection_id == 'default')
+                if (isRepositoryLevel)
                     url = `/facets/${metadatumId}?getSelected=${getSelected}&`;
                 else {
                     if (this.filter.collection_id == 'default' && this.currentCollectionId)
@@ -161,7 +161,7 @@ export const dynamicFilterTypeMixin = {
 
                 let url = '';
                 
-                if (isRepositoryLevel || this.filter.collection_id == 'default')
+                if (isRepositoryLevel)
                     url = `/facets/${this.filter.metadatum.metadatum_id}?getSelected=${getSelected}&`;
                 else {
                     if (this.filter.collection_id == 'default' && this.currentCollectionId)

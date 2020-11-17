@@ -195,6 +195,7 @@ class Media {
 
 		// Include image.php
 		require_once( ABSPATH . 'wp-admin/includes/image.php' );
+		require_once( ABSPATH . 'wp-admin/includes/media.php' );
 
 		// Define attachment metadata
 		$attach_data = wp_generate_attachment_metadata( $attach_id, $file_path );

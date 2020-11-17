@@ -181,23 +181,26 @@ class Control extends Metadata_Type {
 			break;
 
 			case 'application/pdf':
-				return "pdf";
+				return "PDF";
 			break;
 		}
 		$type = explode( '/', $value );
 		if (count($type) == 2 ) {
 			switch ($type[0]) {
 				case 'image':
-					$value = __( 'image', 'tainacan' ) . '/' . $type[1];
+					$value = __( 'Image', 'tainacan' ) . '/' . $type[1];
 				break;
 				case 'video':
-					$value = __( 'video', 'tainacan' ) . '/' . $type[1];
+					$value = __( 'Video', 'tainacan' ) . '/' . $type[1];
+				break;
+				case 'audio':
+					$value = __( 'Audio', 'tainacan' ) . '/' . $type[1];
 				break;
 				case 'text':
-					$value = __( 'text', 'tainacan' ) . '/' . $type[1];
+					$value = __( 'Text', 'tainacan' ) . '/' . $type[1];
 				break;
 				case 'application':
-					$value = __( 'others', 'tainacan' ) . '/' . $type[1];
+					$value = __( 'Others', 'tainacan' ) . '/' . $type[1];
 				break;
 			}
 		}

@@ -965,7 +965,7 @@ class CSV extends Importer {
 					if( !is_numeric($metadatum_id) ) {
 						$metadatum = $this->create_new_metadata( $header, $collection['id']);
 						if ( $metadatum == false ) {
-							$this->add_error_log( __("Error on creating metadata metadata, please review the metadata description.", 'tainacan') );
+							$this->add_error_log( __("Error while creating metadatum, please review the metadatum description.", 'tainacan') );
 							$this->abort();
 							return false;
 						}
@@ -980,13 +980,16 @@ class CSV extends Importer {
 				}
 
 				$this->save_mapping( $collection['id'], $collection['mapping'] );
-				
+
 				$coll = \Tainacan\Repositories\Collections::get_instance()->fetch($collection['id']);
-				$metadata_order = array_map(
-					function($meta) { return ["enabled"=>true, "id"=>$meta]; },
-					array_keys( $collection['mapping'] )
-				);
-				$coll->set_metadata_order( $metadata_order );
+				if(empty($coll->get_metadata_order())) {
+					$metadata_order = array_map(
+						function($meta) { return ["enabled"=>true, "id"=>$meta]; },
+						array_keys( $collection['mapping'] )
+					);
+					$coll->set_metadata_order( $metadata_order );
+				}
+
 				if ( $coll->validate() ) {
 					\Tainacan\Repositories\Collections::get_instance()->update( $coll );
 				} else {

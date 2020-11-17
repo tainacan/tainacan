@@ -205,7 +205,7 @@ class REST_Importers_Controller extends REST_Controller {
                         if (is_array($value) && isset($value['id'])) {
                             if ($importer->add_collection($value) === false ) {
                                 return new \WP_REST_Response([
-                                    'error_message' => __('Error on creating metadata, please review the metadata description', 'tainacan' ),
+                                    'error_message' => __('Error while creating metadatum, please review the metadatum description.', 'tainacan' ),
                                     'session_id' => $session_id
                                 ], 400);
                             }

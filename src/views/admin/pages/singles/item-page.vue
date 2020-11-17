@@ -42,7 +42,7 @@
                             ?
                             $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
                     </div>
-                    <div class="section-box">
+                    <div class="section-box document-field">
                         <div
                                 v-if="item.document !== undefined && item.document !== null &&
                                 item.document_type !== undefined && item.document_type !== null &&
@@ -611,6 +611,17 @@
                 font-size: 1.125em !important;
                 color: var(--tainacan-gray3);
             }
+        }
+    }
+
+    .document-field {
+        /deep/ iframe {
+            max-width: 100%;
+        }
+        .document-buttons-row {
+            text-align: right;
+            top: -21px;
+            position: relative;
         }
     }
 

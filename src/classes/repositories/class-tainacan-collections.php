@@ -306,7 +306,7 @@ class Collections extends Repository {
 
 		$this->pre_process( $collection );
 		
-		$this->handle_parent_order_metadata_clone( $collection );
+		$this->handle_parent_order_clone( $collection );
 		$new_collection = parent::insert( $collection );
 
 		$this->handle_core_metadata( $new_collection );
@@ -425,11 +425,11 @@ class Collections extends Repository {
 	 *
 	 * @return void
 	 */
-	function handle_parent_order_metadata_clone( &$collection ) {
-		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+	function handle_parent_order_clone( &$collection ) {
 		if ($collection instanceof Entities\Collection && $collection->get_parent() != 0) {
 			$parent_collection = $this->fetch( $collection->get_parent() );
 			$collection->set_metadata_order($parent_collection->get_metadata_order());
+			$collection->set_filters_order($parent_collection->get_filters_order());
 
 			if (!$collection->validate()) {
 				throw new \Exception( implode(",", $collection->get_errors()) );

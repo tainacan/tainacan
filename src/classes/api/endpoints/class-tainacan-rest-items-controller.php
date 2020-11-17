@@ -892,6 +892,9 @@ class REST_Items_Controller extends REST_Controller {
 		$collection_id = $request['collection_id'];
 		$item          = json_decode($request->get_body(), true);
 		$metadata = $item['metadata'];
+		foreach ($item as $key => $value) {
+			$item[$key] = ( is_string($value) && !is_numeric($value) ? filter_var($value, FILTER_SANITIZE_STRING) : $value );
+		}
 
 		$response_recaptcha = $this->submission_item_check_recaptcha($request);
 		if ($response_recaptcha !== true) {
@@ -913,6 +916,7 @@ class REST_Items_Controller extends REST_Controller {
 				$item = $this->items_repository->insert( $item );
 				$item_id = $item->get_id();
 				foreach ( $metadata as $m ) {
+					if ( !isset($m['value']) || $m['value'] == null ) continue;
 					$value = $m['value'];
 					$metadatum_id = $m['metadatum_id'];
 					$metadatum = $this->metadatum_repository->fetch( $metadatum_id );
@@ -923,22 +927,38 @@ class REST_Items_Controller extends REST_Controller {
 							foreach($value as $row) {
 								$parent_meta_id = null;
 								foreach($row as $child) {
+									$child_value = $child['value'];
+									if (is_array($child_value) == true) {
+										$child_value = implode(' ', $child_value);
+									}
+									if (is_numeric($value) != true) {
+										$child_value = filter_var($child_value, FILTER_SANITIZE_STRING);
+									}
 									$metadatum_child = $this->metadatum_repository->fetch( $child['metadatum_id'] );
 									$item_metadata_child = new Entities\Item_Metadata_Entity($item, $metadatum_child, null, $parent_meta_id);
-									$item_metadata_child->set_value(is_array($child['value']) ? implode(' ', $child['value']) : $child['value']);
+									$item_metadata_child->set_value($child_value);
 									$item_metadata_child = $this->submission_item_metadada($item_metadata_child, $request);
 									if ($item_metadata_child instanceof \WP_REST_Response) {
 										return $item_metadata_child;
-									}	
+									}
 									$parent_meta_id = $item_metadata_child->get_parent_meta_id();
 								}
 							}
 						} else {
 							$parent_meta_id = null;
+							if( is_array($value) && count($value) == 1 )
+								$value = $value[0];
 							foreach($value as $child) {
+								$child_value = $child['value'];
+								if (is_array($child_value) == true) {
+									$child_value = implode(' ', $child_value);
+								}
+								if (is_numeric($value) != true) {
+									$child_value = filter_var($child_value, FILTER_SANITIZE_STRING);
+								}
 								$metadatum_child = $this->metadatum_repository->fetch( $child['metadatum_id'] );
 								$item_metadata_child = new Entities\Item_Metadata_Entity($item, $metadatum_child, null, $parent_meta_id);
-								$item_metadata_child->set_value(is_array($child['value']) ? implode(' ', $child['value']) : $child['value']);
+								$item_metadata_child->set_value($child_value);
 								$item_metadata_child = $this->submission_item_metadada($item_metadata_child, $request);
 								if ($item_metadata_child instanceof \WP_REST_Response) {
 									return $item_metadata_child;
@@ -947,6 +967,11 @@ class REST_Items_Controller extends REST_Controller {
 							}
 						}
 					} else {
+						if (is_array($value) == true) {
+							$value = array_map( function($v) { return is_numeric($v) ? $v : filter_var($v, FILTER_SANITIZE_STRING); }, $value);
+						} else if (is_numeric($value) != true) {
+							$value = filter_var($value, FILTER_SANITIZE_STRING);
+						}
 						if ($item_metadata->is_multiple()) {
 							$item_metadata->set_value( is_array($value) ? $value : [$value] );
 						} else {
@@ -987,6 +1012,7 @@ class REST_Items_Controller extends REST_Controller {
 	}
 
 	public function submission_item_finish ( $request ) {
+		define( 'WP_ADMIN', true );
 		$submission_id = $request['submission_id'];
 		$collection_id = $request['collection_id'];
 		$item_id = get_transient('tnc_transient_submission_' . $submission_id);

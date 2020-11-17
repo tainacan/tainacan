@@ -221,7 +221,7 @@ export const fetchRepositoryCollectionFilters = ({ dispatch, commit } ) => {
 };
 
 // TAXONOMY FILTERS - MULTIPLE COLLECTIONS ------------------------
-export const fetchTaxonomyFilters = ({ dispatch, commit }, taxonomyId ) => {
+export const fetchTaxonomyFilters = ({ dispatch, commit }, { taxonomyId, collectionsIds} ) => {
     
     commit('clearTaxonomyFilters');
 
@@ -244,7 +244,8 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, taxonomyId ) => {
                     );
 
                     // Then we add collection level filters
-                    taxonomy.collections_ids.forEach(collectionId => {
+                    const collectionsToSearch = collectionsIds.length ? collectionsIds : taxonomy.collections_ids
+                    collectionsToSearch.forEach(collectionId => {
                         promises.push(
                             axios.tainacan.get('/collection/' + collectionId + '/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false&metaquery[0][key]=collection_id&metaquery[0][value]=default&metaquery[0][compare]=!=')
                                 .then((resp) => { return { filters: resp.data, collectionId: collectionId } }) 

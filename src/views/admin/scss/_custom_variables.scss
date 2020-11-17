@@ -152,7 +152,16 @@
 
     a,
     a:hover,
-    a:focus {
+    a:focus,
+    a:hover:not([href]) {
         color: var(--tainacan-secondary);
+    }
+    a:not([href]) 
+    a:hover:not([href]) {
+        border-top: none;
+        border-left: none;
+        border-bottom: none;
+        border-right: none;
+        box-shadow: none;
     }
 }

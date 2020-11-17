@@ -76,10 +76,13 @@ export default {
 
 			this.frame.$el.addClass( 'tainacan-item-attachments-modal' );
 			this.frame.$el['tainacan-document-id'] = this.params.document;
+			this.frame.$el['tainacan-thumbnail-id'] = this.params.thumbnailId;
 
 			wp.media.view.Attachment.Library = wp.media.view.Attachment.Library.extend({
                 className: function() { 
-					return 'attachment ' + ((this.controller.$el['tainacan-document-id'] && (this.model.get('id') == this.controller.$el['tainacan-document-id'])) ? 'tainacan-document-attachment' : ''); 
+					return 'attachment ' + 
+						((this.controller.$el['tainacan-document-id'] && (this.model.get('id') == this.controller.$el['tainacan-document-id'])) ? 'tainacan-document-attachment ' : ' ') + 
+						((this.controller.$el['tainacan-thumbnail-id'] && (this.model.get('id') == this.controller.$el['tainacan-thumbnail-id'])) ? 'tainacan-thumbnail-attachment ' : ' '); 
 				}
             });
 

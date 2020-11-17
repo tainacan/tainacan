@@ -9,13 +9,13 @@ namespace Tainacan\Exposers;
 class JSON_flat extends Exposer {
 	
 	public $slug = 'json-flat'; // type slug for url safe
-	public $name = 'simple JSON (JavaScript Object Notation) for tainacan items';
+	public $name = 'Simple JSON (JavaScript Object Notation) for tainacan items';
 	public $accept_no_mapper = true;
 	protected $mappers = true;
 
 	function __construct() {
 		$this->set_name( __('Simple JSON', 'tainacan') );
-		$this->set_description( __('simple JSON for tainacan items', 'tainacan') );
+		$this->set_description( __('Simple JSON for tainacan items', 'tainacan') );
 	}
 	
 	

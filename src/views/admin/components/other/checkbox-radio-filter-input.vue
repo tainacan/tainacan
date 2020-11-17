@@ -108,7 +108,7 @@
                                 class="tainacan-finder-column"
                                 :key="finderColumn.label + '-' + key">
                             <p class="column-label">
-                                {{ finderColumn.label ? finderColumn.label : $i18n.get('label_terms_without_parent') }}
+                                {{ finderColumn.label ? finderColumn.label : $i18n.get('label_root_terms') }}
                             </p>
                             <ul v-if="finderColumn.children.length">
                                 <b-field
@@ -1026,6 +1026,7 @@
             border-radius: 0 !important;
             min-height: 100%;
             border: 1px solid var(--tainacan-input-border-color);
+            background-color: var(--tainacan-input-background-color);
             transition: background 0.2s ease;
         }
         .button.is-active {

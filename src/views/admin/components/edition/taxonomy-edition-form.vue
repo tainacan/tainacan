@@ -21,7 +21,7 @@
                                         :addons="false"
                                         :label="$i18n.get('label_name')"
                                         :type="editFormErrors['name'] != undefined ? 'is-danger' : ''"
-                                        :message="editFormErrors['name'] != undefined ? editFormErrors['name'] : ''">
+                                        :message="isUpdatingSlug ? $i18n.get('info_validating_slug') : (editFormErrors['name'] != undefined ? editFormErrors['name'] : '')">
                                     <span class="required-metadatum-asterisk">*</span>
                                     <help-button 
                                             :title="$i18n.getHelperTitle('taxonomies', 'name')" 
@@ -30,7 +30,9 @@
                                             id="tainacan-text-name"
                                             v-model="form.name"
                                             @focus="clearErrors('name')"
-                                            @blur="updateSlug()"/>
+                                            @blur="updateSlug()"
+                                            :disabled="isUpdatingSlug"
+                                            :loading="isUpdatingSlug"/>
                                 </b-field>
 
                                 <!-- Hook for extra Form options -->

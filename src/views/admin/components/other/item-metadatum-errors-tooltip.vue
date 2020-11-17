@@ -111,6 +111,8 @@ export default {
                 font-size: 0.875em;
                 font-weight: bold;
                 color: var(--tainacan-red2);
+                margin-bottom: 0;
+                margin-top: 0;
             }
         }
 
@@ -123,6 +125,7 @@ export default {
                 font-weight: normal !important;
                 white-space: normal !important;
                 overflow: visible !important;
+                line-height: normal;
                 color: var(--tainacan-red2) !important;
             }
             a {

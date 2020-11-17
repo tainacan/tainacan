@@ -590,7 +590,7 @@ class Theme_Helper {
 					$title = tainacan_get_the_collection_name();
 					$img_info = ( has_post_thumbnail( tainacan_get_collection_id() ) ) ? wp_get_attachment_image_src( get_post_thumbnail_id( tainacan_get_collection_id() ), 'full' ) : $logo;
 					$url_src = home_url( $wp->request );
-					$excerpt = tainacan_get_the_collection_description();
+					$excerpt = strip_tags(tainacan_get_the_collection_description());
 				} elseif ( is_post_type_archive('tainacan-collection') ) {
 					$title = __('Collections', 'tainacan');
 				}
@@ -612,7 +612,7 @@ class Theme_Helper {
 				$tainacan_term = tainacan_get_term();
 				
 				$title = $term->name;
-				$excerpt = $term->description;
+				$excerpt = strip_tags($term->description);
 				
 				$url_src = get_term_link($term->term_id, $term->taxonomy);
 

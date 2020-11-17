@@ -1296,7 +1296,13 @@ export default {
             })
             .then(() => {
                 this.isLoadingAttachments = true;
-                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                this.fetchAttachments({
+                    page: 1,
+                    attachmentsPerPage: 24,
+                    itemId: this.itemId,
+                    documentId: this.form.document,
+                    thumbnailId: this.form.thumbnail_id
+                })
                     .then(() => this.isLoadingAttachments = false)
                     .catch(() => this.isLoadingAttachments = false);
             })
@@ -1335,7 +1341,13 @@ export default {
                             .then(() => {
                                 this.isLoadingAttachments = true;
 
-                                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                                this.fetchAttachments({ 
+                                        page: 1,
+                                        attachmentsPerPage: 24,
+                                        itemId: this.itemId,
+                                        documentId: this.form.document,
+                                        thumbnailId: this.form.thumbnail_id
+                                    })
                                     .then(() => this.isLoadingAttachments = false)
                                     .catch(() => this.isLoadingAttachments = false);
                             })
@@ -1361,6 +1373,7 @@ export default {
                         this.isLoading = true;
                         this.form.document_type = 'attachment';
                         this.form.document = file.id + '';
+                        
                         this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
                         .then((item) => {
                             this.isLoading = false;
@@ -1413,11 +1426,18 @@ export default {
                     },
                     nonce: this.item.nonces ? this.item.nonces['update-post_' + this.item.id] : null,
                     relatedPostId: this.itemId,
-                    document: this.item.document_type == 'attachment' ? this.item.document : null, 
+                    document: this.form.document_type == 'attachment' ? this.form.document : null, 
+                    thumbnailId: this.form.thumbnail_id ? this.form.thumbnail_id : null, 
                     onSave: () => {
                         // Fetch current existing attachments
                         this.isLoadingAttachments = true;
-                        this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                        this.fetchAttachments({ 
+                            page: 1,
+                            attachmentsPerPage: 24,
+                            itemId: this.itemId,
+                            documentId: this.form.document,
+                            thumbnailId: this.form.thumbnail_id
+                        })
                             .then(() => this.isLoadingAttachments = false)
                             .catch(() => this.isLoadingAttachments = false);
                     }
@@ -1429,8 +1449,6 @@ export default {
 
             this.updateThumbnailAlt({ thumbnailId: this.item.thumbnail_id, thumbnailAlt: updatedThumbnailAlt })
                 .then((res) => {
-                    this.item.thumbnail_id = res.thumbnail_id;
-                    this.item.thumbnail_alt = res.thumbnail_alt;
                     this.form.thumbnail_id = res.thumbnail_id;
                     this.form.thumbnail_alt = res.thumbnail_alt;
                 })
@@ -1523,7 +1541,12 @@ export default {
                     this.setLastUpdated(this.item.modification_date);
 
                     // Fetch current existing attachments now that item.document
-                    this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
+                    this.fetchAttachments({
+                        page: 1,
+                        attachmentsPerPage: 24,
+                        itemId: this.itemId,
+                        documentId: this.form.document,
+                        thumbnailId: this.form.thumbnail_id });
 
                     // Initializes Media Frames now that itemId and item.document exists
                     this.initializeMediaFrames();
@@ -1715,6 +1738,9 @@ export default {
     }
 
     .document-field {
+        /deep/ iframe {
+            max-width: 100%;
+        }
         .document-buttons-row {
             text-align: right;
             top: -21px;

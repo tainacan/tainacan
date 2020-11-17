@@ -178,12 +178,18 @@ function tainacan_blocks_register_tainacan_item_submission_form(){
 		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
 	);
 
+	// Registers Google ReCAPTCHA
 	wp_register_script(
 		'google-recaptcha-script',
 		'https://www.google.com/recaptcha/api.js',
 		[], false, true 
 	);
 	wp_enqueue_script('google-recaptcha-script');
+
+	// Registers extra metadata type forms
+	$theme_helper = \Tainacan\Metadata_Types\Metadata_Type_Helper::get_instance();
+	if (isset($theme_helper))
+		$theme_helper->register_metadata_type_compoment();
 
 	wp_register_style(
 		'item-submission-form',

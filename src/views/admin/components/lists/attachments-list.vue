@@ -165,7 +165,8 @@
                     page: this.attachmentsPage,
                     attachmentsPerPage: this.attachmentsPerPage,
                     itemId: this.item.id,
-                    documentId: this.item.document
+                    documentId: this.item.document,
+                    thumbnailId: this.item.thumbnail_id
                 })
                     .then((response) => {
                         this.isLoading = false;
