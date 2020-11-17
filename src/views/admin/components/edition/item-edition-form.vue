@@ -1300,8 +1300,8 @@ export default {
                     page: 1,
                     attachmentsPerPage: 24,
                     itemId: this.itemId,
-                    documentId: this.item.document,
-                    thumbnailId: this.item.thumbnail_id
+                    documentId: this.form.document,
+                    thumbnailId: this.form.thumbnail_id
                 })
                     .then(() => this.isLoadingAttachments = false)
                     .catch(() => this.isLoadingAttachments = false);
@@ -1345,8 +1345,8 @@ export default {
                                         page: 1,
                                         attachmentsPerPage: 24,
                                         itemId: this.itemId,
-                                        documentId: this.item.document,
-                                        thumbnailId: this.item.thumbnail_id
+                                        documentId: this.form.document,
+                                        thumbnailId: this.form.thumbnail_id
                                     })
                                     .then(() => this.isLoadingAttachments = false)
                                     .catch(() => this.isLoadingAttachments = false);
@@ -1426,8 +1426,8 @@ export default {
                     },
                     nonce: this.item.nonces ? this.item.nonces['update-post_' + this.item.id] : null,
                     relatedPostId: this.itemId,
-                    document: this.item.document_type == 'attachment' ? this.item.document : null, 
-                    thumbnailId: this.item.thumbnail_id ? this.item.thumbnail_id : null, 
+                    document: this.form.document_type == 'attachment' ? this.form.document : null, 
+                    thumbnailId: this.form.thumbnail_id ? this.form.thumbnail_id : null, 
                     onSave: () => {
                         // Fetch current existing attachments
                         this.isLoadingAttachments = true;
@@ -1435,8 +1435,8 @@ export default {
                             page: 1,
                             attachmentsPerPage: 24,
                             itemId: this.itemId,
-                            documentId: this.item.document,
-                            thumbnailId: this.item.thumbnail_id
+                            documentId: this.form.document,
+                            thumbnailId: this.form.thumbnail_id
                         })
                             .then(() => this.isLoadingAttachments = false)
                             .catch(() => this.isLoadingAttachments = false);
@@ -1449,8 +1449,6 @@ export default {
 
             this.updateThumbnailAlt({ thumbnailId: this.item.thumbnail_id, thumbnailAlt: updatedThumbnailAlt })
                 .then((res) => {
-                    this.item.thumbnail_id = res.thumbnail_id;
-                    this.item.thumbnail_alt = res.thumbnail_alt;
                     this.form.thumbnail_id = res.thumbnail_id;
                     this.form.thumbnail_alt = res.thumbnail_alt;
                 })
@@ -1547,8 +1545,8 @@ export default {
                         page: 1,
                         attachmentsPerPage: 24,
                         itemId: this.itemId,
-                        documentId: this.item.document,
-                        thumbnailId: this.item.thumbnail_id });
+                        documentId: this.form.document,
+                        thumbnailId: this.form.thumbnail_id });
 
                     // Initializes Media Frames now that itemId and item.document exists
                     this.initializeMediaFrames();
