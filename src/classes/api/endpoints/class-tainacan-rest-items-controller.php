@@ -916,6 +916,7 @@ class REST_Items_Controller extends REST_Controller {
 				$item = $this->items_repository->insert( $item );
 				$item_id = $item->get_id();
 				foreach ( $metadata as $m ) {
+					if ( !isset($m['value']) || $m['value'] == null ) continue;
 					$value = $m['value'];
 					$metadatum_id = $m['metadatum_id'];
 					$metadatum = $this->metadatum_repository->fetch( $metadatum_id );
@@ -1011,6 +1012,7 @@ class REST_Items_Controller extends REST_Controller {
 	}
 
 	public function submission_item_finish ( $request ) {
+		define( 'WP_ADMIN', true );
 		$submission_id = $request['submission_id'];
 		$collection_id = $request['collection_id'];
 		$item_id = get_transient('tnc_transient_submission_' . $submission_id);
