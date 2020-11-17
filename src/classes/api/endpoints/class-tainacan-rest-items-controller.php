@@ -945,6 +945,8 @@ class REST_Items_Controller extends REST_Controller {
 							}
 						} else {
 							$parent_meta_id = null;
+							if( is_array($value) && count($value) == 1 )
+								$value = $value[0];
 							foreach($value as $child) {
 								$child_value = $child['value'];
 								if (is_array($child_value) == true) {
