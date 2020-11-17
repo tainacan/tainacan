@@ -466,128 +466,126 @@ class Item_Metadata_Entity extends Entity {
      *
      * @return boolean
      */
-    function validate() {
-        $value = $this->get_value();
-        $metadatum = $this->get_metadatum();
-        $item = $this->get_item();
+	function validate() {
+		$value = $this->get_value();
+		$metadatum = $this->get_metadatum();
+		$item = $this->get_item();
 
-	    if (empty($value) && $this->is_required() && in_array( $item->get_status(), apply_filters( 'tainacan-status-require-validation', [
-			    'publish',
-			    'future',
-			    'private'
-		    ] ) )
-	    ) {
-		    $this->add_error('required', $metadatum->get_name() . ' is required');
-		    return false;
-	    } elseif (empty($value) && !$this->is_required()) {
-		    $this->set_as_valid();
-		    return true;
-	    } elseif(empty($value) && $this->is_required() && !in_array( $item->get_status(), apply_filters( 'tainacan-status-require-validation', [
-			    'publish',
-			    'future',
-			    'private'
-		    ] ) )) {
+		if (empty($value) && $this->is_required() && in_array( $item->get_status(), apply_filters( 'tainacan-status-require-validation', [
+				'publish',
+				'future',
+				'private'
+			] ) )
+		) {
+			$this->add_error('required', $metadatum->get_name() . ' is required');
+			return false;
+		} elseif (empty($value) && !$this->is_required()) {
+			$this->set_as_valid();
+			return true;
+		} elseif(empty($value) && $this->is_required() && !in_array( $item->get_status(), apply_filters( 'tainacan-status-require-validation', [
+				'publish',
+				'future',
+				'private'
+			] ) )) {
 
-		    $this->set_as_valid();
-		    return true;
-	    }
+			$this->set_as_valid();
+			return true;
+		}
 
-        $classMetadatumType = $metadatum->get_metadata_type_object();
-        if( is_object( $classMetadatumType ) ){
-            if( method_exists ( $classMetadatumType , 'validate' ) ){
-                if( ! $classMetadatumType->validate( $this ) ) {
-                    $this->add_error('metadata_type_error', $classMetadatumType->get_errors() );
-                    return false;
-                }
-            }
-        }
-        
-        if ($this->is_multiple()) {
-            
-            if (is_array($value)) {
-                
-                // if its required, at least one must be filled
-                $one_filled = false;
-								$valid = true;
-								$dupe_array = array();
-								foreach($value as $val) {
-									if (!empty($val))
-										$one_filled = true;
-									
-									if ($this->is_collection_key()) {
-										if (++$dupe_array[$val] > 1) {
-											$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
-											return false;
-										}
-										
-										$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-										$test = $Tainacan_Items->fetch([
-											'meta_query' => [
-												[
-													'key'   => $this->metadatum->get_id(),
-													'value' => $val
-												]
-											],
-											'post__not_in' => [$item->get_id()]
-										], $item->get_collection());
+		$classMetadatumType = $metadatum->get_metadata_type_object();
+		if( is_object( $classMetadatumType ) ){
+			if( method_exists ( $classMetadatumType , 'validate' ) ){
+				if( ! $classMetadatumType->validate( $this ) ) {
+					$this->add_error('metadata_type_error', $classMetadatumType->get_errors() );
+					return false;
+				}
+			}
+		}
+
+		if ($this->is_multiple()) {
+			if (is_array($value)) {
+				// if its required, at least one must be filled
+				$one_filled = false;
+				$valid = true;
+				$dupe_array = array();
+				foreach($value as $val) {
+					if (!empty($val))
+						$one_filled = true;
+
+					if ($this->is_collection_key()) {
+						if (++$dupe_array[$val] > 1) {
+							$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
+							return false;
+						}
+
+						$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+						$test = $Tainacan_Items->fetch([
+							'meta_query' => [
+								[
+									'key'   => $this->metadatum->get_id(),
+									'value' => $val
+								]
+							],
+							'post__not_in' => [$item->get_id()]
+						], $item->get_collection());
+
+						if ($test->have_posts()) {
+								// translators: %s = metadatum name. ex: Register ID is a collection key and there is another item with the same value
+							$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
+							return false;
+						}
+					}
+				}
+
+				if ($this->is_required() && !$one_filled) {
+					// translators: %s = metadatum name. ex: Title is required
+					$this->add_error( 'required', sprintf( __('%s is required', 'tainacan'), $metadatum->get_name() ) );
+					return false;
+				}
+
+				if (!$valid) {
+					// translators: %s = metadatum name. ex: Title is invalid
+					$this->add_error( 'invalid', sprintf( __('%s is invalid', 'tainacan'), $metadatum->get_name() ) );
+					return false;
+				}
+
+				$this->set_as_valid();
+				return true;
+			} else {
+				// translators: %s = metadatum name. ex: Title is invalid
+				$this->add_error( 'invalid', sprintf( __('%s is invalid', 'tainacan'), $metadatum->get_name() ) );
+				return false;
+			}
+		} else {
+
+			if( is_array($value) ){
+				// translators: %s = metadatum name. ex: Title accepts only one single value and not a list of values
+				$this->add_error( 'not_multiple', sprintf( __('%s accepts only one single value and not a list of values', 'tainacan'), $metadatum->get_name() ) );
+				return false;
+			}
+			
+			if ($this->is_collection_key()) {
+				$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 				
-										if ($test->have_posts()) {
-												// translators: %s = metadatum name. ex: Register ID is a collection key and there is another item with the same value
-											$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
-											return false;
-										}
-									}
-                }
-                
-                if ($this->is_required() && !$one_filled) {
-                    // translators: %s = metadatum name. ex: Title is required
-                    $this->add_error( 'required', sprintf( __('%s is required', 'tainacan'), $metadatum->get_name() ) );
-                    return false;
-                }
-                
-                if (!$valid) {
-                    // translators: %s = metadatum name. ex: Title is invalid
-                    $this->add_error( 'invalid', sprintf( __('%s is invalid', 'tainacan'), $metadatum->get_name() ) );
-                    return false;
-                }
-                
-                $this->set_as_valid();
-                return true;
-            } else {
-                // translators: %s = metadatum name. ex: Title is invalid
-                $this->add_error( 'invalid', sprintf( __('%s is invalid', 'tainacan'), $metadatum->get_name() ) );
-                return false;
-            }
-        } else {
+				$test = $Tainacan_Items->fetch([
+					'meta_query' => [
+						[
+							'key'   => $this->metadatum->get_id(),
+							'value' => $value
+						],
+					],
+					'post__not_in' => [$item->get_id()]
+				], $item->get_collection());
 
-            if( is_array($value) ){
-                // translators: %s = metadatum name. ex: Title accepts only one single value and not a list of values
-                $this->add_error( 'not_multiple', sprintf( __('%s accepts only one single value and not a list of values', 'tainacan'), $metadatum->get_name() ) );
-                return false;
-            }
-            
-            if ($this->is_collection_key()) {
-                $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-                
-                $test = $Tainacan_Items->fetch([
-                    'meta_query' => [
-                        [
-                            'key'   => $this->metadatum->get_id(),
-                            'value' => $value
-                        ],
-                    ],
-                	'post__not_in' => [$item->get_id()]
-                ], $item->get_collection());
+				if ($test->have_posts()) {
+					// translators: %s = metadatum name. ex: Register ID is a collection key and there is another item with the same value
+					$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
+					return false;
+				}
+			}
 
-                if ($test->have_posts()) {
-                    // translators: %s = metadatum name. ex: Register ID is a collection key and there is another item with the same value
-	                $this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
-                    return false;
-                }
-            }
-
-            $this->set_as_valid();
-            return true;
-        }   
-    }
+			$this->set_as_valid();
+			return true;
+		}
+	}
 }
