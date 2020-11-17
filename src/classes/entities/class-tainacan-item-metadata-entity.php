@@ -471,6 +471,11 @@ class Item_Metadata_Entity extends Entity {
 		$metadatum = $this->get_metadatum();
 		$item = $this->get_item();
 
+		if( !isset($metadatum) ) {
+			$this->add_error('not_found', ['metadatum not found'] );
+			return false;
+		}
+
 		if (empty($value) && $this->is_required() && in_array( $item->get_status(), apply_filters( 'tainacan-status-require-validation', [
 				'publish',
 				'future',
