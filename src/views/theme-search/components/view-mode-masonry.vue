@@ -40,6 +40,7 @@
                     class="tainacan-masonry-container">
                 <a 
                         role="listitem"
+                        :data-tainacan-item-id="item.id"
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-masonry-item" 
