@@ -134,6 +134,7 @@
                 <div
                         role="listitem"
                         :key="index"
+                        :data-tainacan-item-id="item.id"
                         v-for="(item, index) of items"
                         :class="{ 'selected-grid-item': getSelectedItemChecked(item.id) == true }"
                         class="tainacan-grid-item">
@@ -248,6 +249,7 @@
                 <div
                         role="listitem"
                         :key="index"
+                        :data-tainacan-item-id="item.id"
                         v-for="(item, index) of items"
                         :class="{
                             'selected-masonry-item': getSelectedItemChecked(item.id) == true,
@@ -358,6 +360,7 @@
                 <div
                         role="listitem"
                         :key="index"
+                        :data-tainacan-item-id="item.id"
                         v-for="(item, index) of items"
                         :class="{ 'selected-card': getSelectedItemChecked(item.id) == true }"
                         class="tainacan-card">
@@ -525,6 +528,7 @@
                 <div
                         role="listitem"
                         :key="index"
+                        :data-tainacan-item-id="item.id"
                         v-for="(item, index) of items"
                         :class="{ 'selected-record': getSelectedItemChecked(item.id) == true }"
                         class="tainacan-record">
@@ -735,6 +739,7 @@
                                 'highlighted-item': highlightedItem == item.id
                             }"
                             :key="index"
+                            :data-tainacan-item-id="item.id"
                             v-for="(item, index) of items">
                         <!-- Checking list -->
                         <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
@@ -925,6 +930,7 @@
                         role="listitem"
                         :href="item.url"
                         :key="index"
+                        :data-tainacan-item-id="item.id"
                         v-for="(item, index) of items"
                         class="tainacan-list"
                         :class="{ 'selected-list-item': getSelectedItemChecked(item.id) == true }">
