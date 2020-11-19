@@ -724,8 +724,7 @@ registerBlockType('tainacan/faceted-search', {
                                 value={ defaultItemsPerPage ? defaultItemsPerPage : 12 }
                                 onChange={ ( itemsPerPage ) => {
                                     defaultItemsPerPage = itemsPerPage;
-                                    setAttributes( { defaultItemsPerPage: itemsPerPage } ) 
-                                    setContent();
+                                    setAttributes( { defaultItemsPerPage: itemsPerPage } );
                                 }}
                                 min={ 1 }
                                 max={ tainacan_plugin.api_max_items_per_page ? tainacan_plugin.api_max_items_per_page : 96 }
