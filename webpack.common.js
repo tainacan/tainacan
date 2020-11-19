@@ -1,7 +1,4 @@
 let path = require('path');
-let webpack = require('webpack');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
     entry: {
@@ -96,7 +93,6 @@ module.exports = {
                     },
                 ],
             }
-
         ]
     },
     node: {
@@ -106,89 +102,5 @@ module.exports = {
     },
     performance: {
         hints: false
-    },
+    }
 };
-
-// Change to true for production mode
-const production = false;
-
-if (production === true) {
-    process.env.NODE_ENV = 'production';
-    const TerserPlugin = require('terser-webpack-plugin');
-
-    console.log(`Production: ${production}`);
-
-    module.exports.mode = 'production';
-
-    module.exports.devtool = undefined;
-
-    module.exports.plugins = (module.exports.plugins || []).concat([
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify('production')
-            }
-        }),
-        new webpack.LoaderOptionsPlugin({
-            minimize: true
-        }),
-        new VueLoaderPlugin(),
-    ]);
-
-    module.exports.resolve = {
-        alias: {
-            'vue$': 'vue/dist/vue.min',
-            'Swiper$': 'swiper/js/swiper.min.js'
-        }
-    }
-
-    module.exports.optimization = {
-        sideEffects: true,
-        minimize: true,
-        minimizer: [
-            new TerserPlugin({
-                parallel: true,
-                sourceMap: false,
-                cache: true,
-                terserOptions: {
-                    // We preserve function names that start with capital letters as
-                    // they're _likely_ component names, and these are useful to have
-                    // in tracebacks and error messages.
-                    keep_fnames: /__|_x|_n|_nx/,
-                    mangle: {
-                        keep_fnames: /__|_x|_n|_nx/,
-                    },
-                    output: {
-                        comments: /translators:/i,
-                    },
-                },
-                extractComments: false,
-            })
-        ],
-    };
-
-} else {
-    console.log(`Production: ${production}`);
-
-    module.exports.devtool = '';
-
-    module.exports.plugins = [
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify('development')
-            },
-        }),
-        new VueLoaderPlugin(),
-        new BundleAnalyzerPlugin({
-            openAnalyzer: false,
-            analyzerMode: 'static'
-        })
-    ];
-
-    module.exports.resolve = {
-        alias: {
-            //'vue$': 'vue/dist/vue.esm' // uncomment this and comment the above to use vue dev tools (can cause type error)
-            'vue$': 'vue/dist/vue.min',
-            'Swiper$': 'swiper/js/swiper.min.js'
-        }
-    }
-}
