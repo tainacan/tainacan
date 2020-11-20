@@ -20,7 +20,7 @@ const terserPlugin = new TerserPlugin({
 
 module.exports = merge(common, {
     mode: 'production',
-    devtool: undefined,
+    devtool: '',
     plugins: [
         new VueLoaderPlugin(),
     ],

@@ -46,15 +46,15 @@ fi
 
 new_md5_js=$(<last-js-build.md5)
 
+is_prod_build=false
 if [ "$current_md5_js" != "$new_md5_js" ]
 then
-    is_prod_build=false
     for i in "$@"
     do
         case $i in
             --prod)
                 is_prod_build=true
-                echo "Building in production mode..."
+                echo "$(tput setab 4)  $(tput sgr 0) $(tput setab 4) $(tput sgr 0) Building in production mode $(tput setab 4) $(tput sgr 0) $(tput setab 4)  $(tput sgr 0)"
                 npm run build-prod
             ;;
         esac
@@ -62,11 +62,10 @@ then
 
     if [ "$is_prod_build" == false ]
     then
-        echo "Building in development mode..."
+        echo "$(tput setab 2)  $(tput sgr 0) $(tput setab 2) $(tput sgr 0) Building in development mode $(tput setab 2) $(tput sgr 0) $(tput setab 2)  $(tput sgr 0)"
         npm run build
     fi
 fi
-### END npm build ###
 
 ## Fetch PDF.js
 ## Commented as we have a modified version of its code.
@@ -77,7 +76,6 @@ fi
 #   unzip pdfjs-1.9.426-dist.zip -d src/pdf-viewer/pdfjs-dist/
 #   rm pdfjs-1.9.426-dist.zip
 # fi
-
 
 echo "Updating files in $wp_plugin_dir"
 
@@ -94,11 +92,17 @@ rsync -axz --exclude='vendor/bin/phpc*' --exclude='vendor/squizlabs' --exclude='
  --exclude='vendor/tecnickcom/tcpdf/examples' \
   src/* $wp_plugin_dir/
 
+echo "Removing unecessary source files"
 rm -rf $wp_plugin_dir/scss
 find $wp_plugin_dir/views/ -type f -name '*.vue' -exec rm {} +
 find $wp_plugin_dir/views/ -type f -name '*.scss' -exec rm {} +
 find $wp_plugin_dir/views/ -type f -name '*.sass' -exec rm {} +
 find $wp_plugin_dir/views/ -type f -name '*.js' ! -path "${wp_plugin_dir}/views/libs/*" -exec rm {} +
 find $wp_plugin_dir/views/ -type d -empty -delete
+
+if [ "$is_prod_build" == true ]
+then
+    find $wp_plugin_dir/assets/js/ -type f -name '*.js.map' -exec rm {} +
+fi
 
 echo "Build complete!"
