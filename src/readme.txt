@@ -13,7 +13,7 @@ Tainacan is an open-source, powerful and flexible digital repository platform fo
  
 == Description ==
  
-[Tainacan](https://tainacan.org/) is an open-source, powerful and flexible digital repository platform for WordPress. Manage and publish your digital collections just as easily as you post to your blog, having all the tools of a professional repository platform. It can be used for the creation of a digital collection, a digital library or a digital repository for your institutional or personal collection. 
+[Tainacan](https://tainacan.org/) is an [open-source](https://github.com/tainacan/tainacan), powerful and flexible digital repository platform for WordPress. Manage and publish your digital collections just as easily as you post to your blog, having all the tools of a professional repository platform. It can be used for the creation of a digital collection, a digital library or a digital repository for your institutional or personal collection. 
 
 Tainacan aims to facilitate the activities of organizing, documenting, disseminating and displaying digital objects based on simple and accessible principles of digital curation. The plugin integrates with the Wordpress block engine, making it easy to reuse objects for different and varied uses.
 
@@ -80,6 +80,7 @@ If you have Imagick installed in your server, Tainacan will be able to automatic
 == Find out more ==
  
 * Visit our official website: [https://tainacan.org/](https://tainacan.org/)
+* Contribute to the source code: [https://github.com/tainacan/tainacan](https://github.com/tainacan/tainacan)
 * Check our documentation Wiki: [https://wiki.tainacan.org/](https://wiki.tainacan.org/)
  
 == Screenshots ==
