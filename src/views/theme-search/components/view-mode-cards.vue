@@ -35,6 +35,7 @@
                 <a
                         role="listitem"
                         :key="index"
+                        :data-tainacan-item-id="item.id"
                         v-for="(item, index) of items"
                         class="tainacan-card"
                         :href="getItemLink(item.url, index)">                                

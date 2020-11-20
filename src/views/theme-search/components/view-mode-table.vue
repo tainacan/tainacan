@@ -90,6 +90,7 @@
                 </thead>
                 <tbody>
                     <tr     
+                            :data-tainacan-item-id="item.id"
                             :key="index"
                             v-for="(item, index) of items">
                         

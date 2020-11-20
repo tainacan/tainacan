@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import FacetsListTheme from './facets-list-theme.vue';
 
+// Vue Dev Tools!
+Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+
 // This is rendered on the theme side.
 document.addEventListener("DOMContentLoaded", () => {
 

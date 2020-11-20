@@ -34,6 +34,7 @@
                     class="tainacan-list-container">
                 <a 
                         role="listitem"
+                        :data-tainacan-item-id="item.id"
                         :href="getItemLink(item.url, index)"
                         :key="index"
                         v-for="(item, index) of items"

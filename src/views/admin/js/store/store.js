@@ -15,6 +15,8 @@ import exporter from './modules/exporter';
 import exposer from './modules/exposer';
 import capability from './modules/capability';
 
+// Vue Dev Tools!
+Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
