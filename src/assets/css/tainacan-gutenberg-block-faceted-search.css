@@ -249,5 +249,14 @@
           width: 50%; }
   .wp-block-tainacan-faceted-search .theme-items-list {
     max-width: 100% !important; }
+  .wp-block-tainacan-faceted-search:not(.alignfull) .theme-items-list .search-control {
+    padding: var(--tainacan-container-padding, 25px) var(--tainacan-container-padding, 25px) 20px var(--tainacan-container-padding, 25px); }
+  .wp-block-tainacan-faceted-search:not(.alignfull) .theme-items-list #filters-modal .modal-content {
+    padding: 24px 18px 24px var(--tainacan-container-padding, 25px); }
+  .wp-block-tainacan-faceted-search:not(.alignfull) .theme-items-list #filter-menu-compress-button {
+    border-radius: 2px; }
+  .wp-block-tainacan-faceted-search:not(.alignfull) .theme-items-list #items-list-results .table-container {
+    padding-left: var(--tainacan-container-padding, 25px);
+    padding-right: var(--tainacan-container-padding, 25px); }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-faceted-search.css.map */

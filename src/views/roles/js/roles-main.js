@@ -3,6 +3,9 @@ import store from '../../admin/js/store/store';
 import router from './roles-router';
 import VTooltip from 'v-tooltip';
 
+// Vue Dev Tools!
+Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+
 import { I18NPlugin } from './wp-i18n-plugin';
 
 import RolesPage from '../roles.vue';
