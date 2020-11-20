@@ -11,6 +11,9 @@ import draggable from 'vuedraggable';
 import VueTheMask from 'vue-the-mask';
 import cssVars from 'css-vars-ponyfill';
 
+// Vue Dev Tools!
+Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+
 // Metadata Types
 import Text from '../components/metadata-types/text/Text.vue';
 import Textarea from '../components/metadata-types/textarea/Textarea.vue';

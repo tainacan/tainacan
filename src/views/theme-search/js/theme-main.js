@@ -6,6 +6,9 @@ import VueMasonry from 'vue-masonry-css';
 import cssVars from 'css-vars-ponyfill';
 import qs from 'qs';
 
+// Vue Dev Tools!
+Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+
 // Filters
 import FilterNumeric from '../../admin/components/filter-types/numeric/Numeric.vue';
 import FilterDate from '../../admin/components/filter-types/date/Date.vue';

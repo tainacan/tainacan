@@ -5,6 +5,9 @@ import VTooltip from 'v-tooltip';
 import cssVars from 'css-vars-ponyfill';
 import VueTheMask from 'vue-the-mask';
 
+// Vue Dev Tools!
+Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+
 // Metadata Types
 import Text from '../../admin/components/metadata-types/text/Text.vue';
 import Textarea from '../../admin/components/metadata-types/textarea/Textarea.vue';
