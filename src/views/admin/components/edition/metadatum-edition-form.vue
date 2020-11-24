@@ -209,6 +209,12 @@
                                 :message="$i18n.getHelperMessage('metadata', 'collection_key')"/>
                     </b-checkbox>
                 </b-field>
+
+                <b-field>
+                  <b-checkbox>
+                    {{ $i18n.get('label_repository_metadatum') }}
+                  </b-checkbox>
+                </b-field>
             </b-field>
 
             <component
