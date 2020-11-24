@@ -211,8 +211,14 @@
                 </b-field>
 
                 <b-field>
-                  <b-checkbox>
-                    {{ $i18n.get('label_repository_metadatum') }}
+                  <b-checkbox
+                      class="is-inline-block"
+                      v-model="editForm.repository_level"
+                      name="repository_level"
+                      true-value="yes"
+                      false-value="no"
+                  >
+                    {{ $i18n.get('label_repository_metadata') }}
                   </b-checkbox>
                 </b-field>
             </b-field>
@@ -288,13 +294,10 @@
             }
         },
         created() {
-
             this.editForm = this.editedMetadatum;
             this.formErrors = this.editForm.formErrors != undefined ? this.editForm.formErrors : {};
             this.formErrorMessage = this.editForm.formErrors != undefined ? this.editForm.formErrorMessage : '';
-
             this.oldForm = JSON.parse(JSON.stringify(this.originalMetadatum));
-
         },
         mounted() {
             // Fills hook forms with it's real values 

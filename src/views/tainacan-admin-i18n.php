@@ -434,6 +434,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_document_uploaded'						 => __( 'Document uploaded', 'tainacan' ),
 	'label_repository_filter'						 => __( 'Repository filter', 'tainacan' ),
 	'label_repository_metadatum'					 => __( 'Repository metadatum', 'tainacan' ),
+	'label_repository_metadata'					     => __( 'Repository metadata', 'tainacan' ),
 	'label_collection_filter'						 => __( 'Collection filter', 'tainacan' ),
 	'label_collection_metadatum'					 => __( 'Collection metadatum', 'tainacan' ),
 	'label_collection_capabilities'					 => __( 'Collection capabilities', 'tainacan' ),
