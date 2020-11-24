@@ -129,6 +129,22 @@ registerBlockType('tainacan/facets-list', {
         isParentTermModalOpen: {
             type: Boolean,
             default: false
+        },
+        maxColumnsCount: {
+            type: Number,
+            default: 5
+        },
+        appendChildTerms: {
+            type: Boolean,
+            default: false
+        },
+        childFacetsObject: {
+            type: Object,
+            default: {}
+        },
+        isLoadingChildTerms: {
+            type: Boolean,
+            default: false
         }
     },
     supports: {
@@ -157,21 +173,33 @@ registerBlockType('tainacan/facets-list', {
             searchString,
             isLoading,
             parentTerm,
-            isParentTermModalOpen
+            isParentTermModalOpen,
+            maxColumnsCount,
+            appendChildTerms,
+            childFacetsObject,
+            isLoadingChildTerms
         } = attributes;
 
         // Obtains block's client id to render it on save function
         setAttributes({ blockId: clientId });
+        
+        // Sets some defaults that were not working
+        if (maxColumnsCount === undefined) {
+            maxColumnsCount = 5;
+            setAttributes({ maxColumnsCount: maxColumnsCount });
+        }
     
         function prepareFacet(facet) {
+            const facetId = facet.id != undefined ? facet.id : facet.value; 
             return (
                 <li 
-                    key={ facet.id }
-                    className={ 'facet-list-item' + (!showImage ? ' facet-without-image' : '') }
-                    style={{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}}>      
+                    key={ facetId }
+                    className={ 'facet-list-item' + (!showImage ? ' facet-without-image' : '') + ((appendChildTerms && facet.total_children > 0) ? ' facet_term_with_children': '')}
+                    style={{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}}>
                     <a 
-                        id={ isNaN(facet.id) ? facet.id : 'facet-id-' + facet.id }
-                        href={ facet.url } 
+                        id={ isNaN(facetId) ? facetId : 'facet-id-' + facetId }
+                        href={ !appendChildTerms ? facet.url : (facet.total_children > 0 ? null : facet.url) }
+                        onClick={ () => { (appendChildTerms && facet.total_children > 0) ? displayChildTerms(facetId) : null } } 
                         target="_blank"
                         style={{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'rem' : ''}}>
                         { metadatumType == 'Taxonomy' ? 
@@ -204,7 +232,43 @@ registerBlockType('tainacan/facets-list', {
                         }
                         <span>{ facet.label ? facet.label : '' }</span>
                         { facet.total_items ? <span class="facet-item-count" style={{ display: !showItemsCount ? 'none' : '' }}>&nbsp;({ facet.total_items })</span> : null }
+                        
                     </a>
+                    { appendChildTerms && childFacetsObject[facetId] && childFacetsObject[facetId].visible ?
+                        <ul class="child-term-facets">
+                            { isLoadingChildTerms ? 
+                                <div class="spinner-container">
+                                    <Spinner />
+                                </div>
+                                :
+                                childFacetsObject[facetId].facets.map((aChildTermFacet) => {
+                                    const childFacetId = aChildTermFacet.id ? aChildTermFacet.id : aChildTermFacet.value;
+
+                                    return <li 
+                                                className={ 'facet-list-item' + (!showImage ? ' facet-without-image' : '') }
+                                                style={{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}}>
+                                            <a 
+                                                id={ isNaN(childFacetId) ? childFacetId : 'facet-id-' + childFacetId }
+                                                href={ aChildTermFacet.url }
+                                                target="_blank"
+                                                style={{ fontSize: layout == 'cloud' && aChildTermFacet.total_items ? + (1 + (cloudRate/4) * Math.log(aChildTermFacet.total_items)) + 'rem' : ''}}>
+                                            <img
+                                                src={ 
+                                                    aChildTermFacet.entity && aChildTermFacet.entity['header_image']
+                                                        ?    
+                                                    aChildTermFacet.entity['header_image']
+                                                        : 
+                                                    `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`
+                                                }
+                                                alt={ aChildTermFacet.label ? aChildTermFacet.label : __( 'Thumbnail', 'tainacan' ) }/>
+                                            <span>{ aChildTermFacet.label ? aChildTermFacet.label : '' }</span>
+                                            { aChildTermFacet.total_items ? <span class="facet-item-count" style={{ display: !showItemsCount ? 'none' : '' }}>&nbsp;({ aChildTermFacet.total_items })</span> : null }
+                                        </a>
+                                    </li>
+                                })
+                            }
+                        </ul>
+                    : null }
                 </li>
             );
         }
@@ -248,14 +312,14 @@ registerBlockType('tainacan/facets-list', {
             }
 
             // Set up parentTerm for taxonomies
-            if (parentTerm && parentTerm.id !== undefined && parentTerm.id !== null && parentTerm.id !== '' && metadatumType == 'Taxonomy')
+            if (parentTerm && parentTerm.id !== undefined && parentTerm.id !== null && parentTerm.id !== '' && metadatumType == 'Taxonomy') {
                 queryObject.parent = parentTerm.id;
-            else {
+            } else {
                 delete queryObject.parent;
                 setAttributes({ parentTerm: null });
             }
 
-            // Parameter fo tech entity object with image and url
+            // Parameter to fech entity object with image and url
             queryObject['context'] = 'extended';
             
             endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject);
@@ -277,24 +341,101 @@ registerBlockType('tainacan/facets-list', {
                             }, facet));
                         }
                     }
-                    
-                    for (let facet of facetsObject)
-                        facets.push(prepareFacet(facet));
 
+                    isLoading = false;
+
+                    // Updates local storage in order to facetsObject to be used in the following functions.
                     setAttributes({
-                        content: <div></div>,
-                        facets: facets,
                         facetsObject: facetsObject,
                         isLoading: false,
                         facetsRequestSource: facetsRequestSource
                     });
+                    
+                    updateContent();
+                    
+                });
+        }
+
+        function displayChildTerms(parentTermId) {
+            if (childFacetsObject[parentTermId]) {
+                childFacetsObject[parentTermId].visible = !childFacetsObject[parentTermId].visible;
+                setAttributes({
+                    childFacetsObject: childFacetsObject
+                });
+            } else
+                fetchChildTerms(parentTermId)
+        }
+
+        function fetchChildTerms(parentTermId) {
+
+            isLoadingChildTerms = true;
+            
+            setAttributes({
+                isLoadingChildTerms: isLoadingChildTerms
+            });
+            
+            let endpoint = '/facets/' + metadatumId;
+            let query = endpoint.split('?')[1];
+            let queryObject = qs.parse(query);
+
+            // Set up max facets to be shown
+            if (maxFacetsNumber != undefined && maxFacetsNumber > 0)
+                queryObject.number = maxFacetsNumber;
+            else if (queryObject.number != undefined && queryObject.number > 0)
+                setAttributes({ maxFacetsNumber: queryObject.number });
+            else {
+                queryObject.number = 12;
+                setAttributes({ maxFacetsNumber: 12 });
+            }
+
+            // Set up searching string
+            if (searchString != undefined)
+                queryObject.search = searchString;
+            else if (queryObject.search != undefined)
+                setAttributes({ searchString: queryObject.search });
+            else {
+                delete queryObject.search;
+                setAttributes({ searchString: undefined });
+            }
+
+            // Parameter to fech entity object with image and url
+            queryObject['context'] = 'extended';
+
+            // The term parent id
+            queryObject.parent = parentTermId;
+            endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject);
+            
+            tainacan.get(endpoint)
+                .then(response => {
+                    let childFacets = [];
+
+                    for (let facet of response.data.values) {
+                        childFacets.push(Object.assign({ 
+                            url: facet.entity && facet.entity.url ? facet.entity.url : tainacan_blocks.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
+                        }, facet));
+                    }
+                    
+                    childFacetsObject[parentTermId] = {
+                        facets: childFacets,
+                        visible: true
+                    }
+
+                    isLoadingChildTerms = false;
+
+                    // Updates local storage in order to childFacets to be used in the following functions.
+                    setAttributes({
+                        childFacetsObject: childFacetsObject,
+                        isLoadingChildTerms: false,
+                    });
+                    updateContent();
+                    
                 });
         }
 
         function updateContent() {
             facets = [];
-            for (let facet of facetsObject)
-                facets.push(prepareFacet(facet));
+            for (let facetObject of facetsObject)
+                facets.push(prepareFacet(facetObject));
 
             setAttributes({
                 content: <div></div>,
@@ -461,27 +602,41 @@ registerBlockType('tainacan/facets-list', {
                                 title={__('Facets', 'tainacan')}
                                 initialOpen={ true }
                             >
-                            <div>
-                                <RangeControl
-                                    label={__('Maximum number of facets', 'tainacan')}
-                                    value={ maxFacetsNumber ? maxFacetsNumber : 12}
-                                    onChange={ ( aMaxFacetsNumber ) => {
-                                        maxFacetsNumber = aMaxFacetsNumber;
-                                        setAttributes( { maxFacetsNumber: aMaxFacetsNumber } ) 
-                                        setContent();
-                                    }}
-                                    min={ 1 }
-                                    max={ 96 }
-                                />
-                            </div>
-                            { metadatumType == 'Taxonomy' ?
+                            <RangeControl
+                                label={__('Maximum number of facets', 'tainacan')}
+                                value={ maxFacetsNumber ? maxFacetsNumber : 12}
+                                onChange={ ( aMaxFacetsNumber ) => {
+                                    maxFacetsNumber = aMaxFacetsNumber;
+                                    setAttributes( { maxFacetsNumber: aMaxFacetsNumber } ) 
+                                    setContent();
+                                }}
+                                min={ 1 }
+                                max={ 96 }
+                            />
+                            <ToggleControl
+                                    label={__('Items count', 'tainacan')}
+                                    help={ showItemsCount ? __("Toggle to show items counter", 'tainacan') : __("Do not show items counter", 'tainacan')}
+                                    checked={ showItemsCount }
+                                    onChange={ ( isChecked ) => {
+                                            showItemsCount = isChecked;
+                                            setAttributes({ showItemsCount: showItemsCount });
+                                            updateContent();
+                                        } 
+                                    }
+                                /> 
+                        </PanelBody>
+                        {/* Settings related only to facets from Taxonomy metadata */}
+                        { metadatumType == 'Taxonomy' ?
+                            <PanelBody 
+                                    title={__('Taxonomy options', 'tainacan')}
+                                    initialOpen={ true }>
                                 <div>
                                     <BaseControl
                                         id="parent-term-selection"
                                         label={ (parentTerm && (parentTerm.id === '0' || parentTerm.id === 0)) ? __('Showing only:', 'tainacan') : __('Showing children of:', 'tainacan') }
                                         help="Narrow terms to children of a parent term."
                                     >
-                                        <span style={{ fontWeight: 'bold' }}>&nbsp;{ parentTerm && parentTerm.name ? parentTerm.name : __('Any term.', 'tainacan') }</span>
+                                        <span style={{ fontWeight: 'bold', top: '-3px', position: 'relative' }}>&nbsp;{ parentTerm && parentTerm.name ? parentTerm.name : __('Any term.', 'tainacan') }</span>
                                         <br />
                                         <Button
                                             style={{ margin: '6px auto 16px auto', display: 'block' }}
@@ -491,66 +646,98 @@ registerBlockType('tainacan/facets-list', {
                                             {__('Select parent term', 'tainacan')}
                                         </Button> 
                                     </BaseControl>
-                                </div> 
-                            : null}
-                            <hr></hr>
-                            <div>
-                                { layout == 'list' && (metadatumType == 'Taxonomy' || metadatumType == 'Relationship') ? 
-                                    <ToggleControl
-                                        label={__('Image', 'tainacan')}
-                                        help={ showImage ? __("Toggle to show facet's image", 'tainacan') : __("Do not show facet's image", 'tainacan')}
-                                        checked={ showImage }
-                                        onChange={ ( isChecked ) => {
-                                                showImage = isChecked;
-                                                setAttributes({ showImage: showImage });
-                                                updateContent();
-                                            } 
-                                        }
-                                    /> 
-                                : null }
-                                { layout == 'grid' ?
-                                    <div>
-                                        { (metadatumType == 'Taxonomy' || metadatumType == 'Relationship') ? 
-                                            <ToggleControl
-                                                label={__('Image', 'tainacan')}
-                                                help={ showImage ? __("Toggle to show facet's image", 'tainacan') : __("Do not show facet's image", 'tainacan')}
-                                                checked={ showImage }
-                                                onChange={ ( isChecked ) => {
-                                                        showImage = isChecked;
-                                                        setAttributes({ showImage: showImage });
-                                                        updateContent();
-                                                    } 
-                                                }
-                                            /> : null
-                                        }
-                                        <div style={{ marginTop: '16px'}}>
-                                            <RangeControl
-                                                label={__('Margin between facets in pixels', 'tainacan')}
-                                                value={ gridMargin }
-                                                onChange={ ( margin ) => {
-                                                    gridMargin = margin;
-                                                    setAttributes( { gridMargin: margin } ) 
+
+                                    { parentTerm !== null ? 
+                                        <ToggleControl
+                                            label={__('Append child terms', 'tainacan')}
+                                            help={ appendChildTerms ? __("Do not append child terms after each term found", 'tainacan') : __("Toggle to append child terms after each term found", 'tainacan')}
+                                            checked={ appendChildTerms }
+                                            onChange={ ( isChecked ) => {
+                                                    appendChildTerms = isChecked;
+                                                    setAttributes({ appendChildTerms: appendChildTerms });
                                                     updateContent();
-                                                }}
-                                                min={ 0 }
-                                                max={ 48 }
-                                            />
-                                        </div>
-                                    </div>
-                                : null }
-                                <ToggleControl
-                                        label={__('Items count', 'tainacan')}
-                                        help={ showItemsCount ? __("Toggle to show items counter", 'tainacan') : __("Do not show items counter", 'tainacan')}
-                                        checked={ showItemsCount }
-                                        onChange={ ( isChecked ) => {
-                                                showItemsCount = isChecked;
-                                                setAttributes({ showItemsCount: showItemsCount });
+                                                } 
+                                            }
+                                        />
+                                    : null}
+                                </div>
+                            </PanelBody>
+                        : null}
+                        {/* Settings related only to grid view mode */}
+                        { layout == undefined || layout == 'grid' ? 
+                            <PanelBody
+                                    title={__('Grid view mode settings', 'tainacan')}
+                                    initialOpen={ true }
+                                >
+                                <div>
+                                    { (metadatumType == 'Taxonomy' || metadatumType == 'Relationship') ? 
+                                        <ToggleControl
+                                            label={__('Image', 'tainacan')}
+                                            help={ showImage ? __("Toggle to show facet's image", 'tainacan') : __("Do not show facet's image", 'tainacan')}
+                                            checked={ showImage }
+                                            onChange={ ( isChecked ) => {
+                                                    showImage = isChecked;
+                                                    setAttributes({ showImage: showImage });
+                                                    updateContent();
+                                                } 
+                                            }
+                                        /> : null
+                                    }
+                                    <div style={{ marginTop: '16px'}}>
+                                        <RangeControl
+                                            label={__('Margin between facets in pixels', 'tainacan')}
+                                            value={ gridMargin }
+                                            onChange={ ( margin ) => {
+                                                gridMargin = margin;
+                                                setAttributes( { gridMargin: margin } ) 
                                                 updateContent();
-                                            } 
-                                        }
-                                    /> 
-                            </div>
-                        </PanelBody>
+                                            }}
+                                            min={ 0 }
+                                            max={ 48 }
+                                        />
+                                    </div>
+                                </div>
+                            </PanelBody>
+                        : null 
+                        }
+                        {/* Settings related only to list view mode */}
+                        { layout == 'list' ? 
+                            <PanelBody
+                                    title={__('List view mode settings', 'tainacan')}
+                                    initialOpen={ true }
+                                >
+                                <div>
+                                    { (metadatumType == 'Taxonomy' || metadatumType == 'Relationship') ? 
+                                        <ToggleControl
+                                            label={__('Image', 'tainacan')}
+                                            help={ showImage ? __("Toggle to show facet's image", 'tainacan') : __("Do not show facet's image", 'tainacan')}
+                                            checked={ showImage }
+                                            onChange={ ( isChecked ) => {
+                                                    showImage = isChecked;
+                                                    setAttributes({ showImage: showImage });
+                                                    updateContent();
+                                                } 
+                                            }
+                                        /> 
+                                    : null }
+                                    <div style={{ marginTop: '16px'}}>
+                                        <RangeControl
+                                                label={ __('Maximum number of columns on a wide screen', 'tainacan') }
+                                                value={ maxColumnsCount ? maxColumnsCount : 5 }
+                                                onChange={ ( aMaxColumnsCount ) => {
+                                                    maxColumnsCount = aMaxColumnsCount;
+                                                    setAttributes( { maxColumnsCount: aMaxColumnsCount } );
+                                                    updateContent(); 
+                                                }}
+                                                min={ 1 }
+                                                max={ 7 }
+                                            />
+                                    </div>
+                                </div>
+                            </PanelBody>
+                        : null 
+                        }
+                        {/* Settings related only to cloud view mode */}
                         { layout == 'cloud' ? 
                             <PanelBody
                                     title={__('Cloud settings', 'tainacan')}
@@ -715,7 +902,7 @@ registerBlockType('tainacan/facets-list', {
                                 gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + 185) + 'px)' : 'inherit', 
                                 marginTop: showSearchBar ? '1.5rem' : '0px'
                             }}
-                            className={'facets-list-edit facets-layout-' + layout }>
+                            className={ 'facets-list-edit facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '') }>
                             { facets }
                         </ul>
                     </div>
@@ -763,7 +950,9 @@ registerBlockType('tainacan/facets-list', {
             metadatumId,
             metadatumType,
             maxFacetsNumber,
+            maxColumnsCount,
             showSearchBar,
+            appendChildTerms
         } = attributes;
         return <div 
                     className={ className }
@@ -776,10 +965,12 @@ registerBlockType('tainacan/facets-list', {
                     show-items-count={ '' + showItemsCount }
                     show-search-bar={ '' + showSearchBar }
                     show-load-more={ '' + showLoadMore }
+                    append-child-terms={ '' + appendChildTerms }
                     layout={ layout }
                     cloud-rate={ cloudRate }
                     grid-margin={ gridMargin }
                     max-facets-number={ maxFacetsNumber }
+                    max-columns-count={ maxColumnsCount }
                     tainacan-api-root={ tainacan_blocks.root }
                     tainacan-base-url={ tainacan_blocks.base_url }
                     tainacan-site-url={ tainacan_blocks.site_url }
@@ -788,6 +979,147 @@ registerBlockType('tainacan/facets-list', {
                 </div>
     },
     deprecated: [
+        {
+            attributes: {
+                content: {
+                    type: 'array',
+                    source: 'children',
+                    selector: 'div'
+                },
+                collectionId: {
+                    type: String,
+                    default: undefined
+                },
+                collectionSlug: {
+                    type: String,
+                    default: undefined
+                },
+                facets: {
+                    type: Array,
+                    default: []
+                },
+                facetsObject: {
+                    type: Array,
+                    default: []
+                },
+                showImage: {
+                    type: Boolean,
+                    default: true
+                },
+                showItemsCount: {
+                    type: Boolean,
+                    default: true
+                },
+                showLoadMore: {
+                    type: Boolean,
+                    default: false
+                },
+                showSearchBar: {
+                    type: Boolean,
+                    value: false
+                },
+                layout: {
+                    type: String,
+                    default: 'grid'
+                },
+                cloudRate: {
+                    type: Number,
+                    default: 1
+                },
+                isModalOpen: {
+                    type: Boolean,
+                    default: false
+                },
+                gridMargin: {
+                    type: Number,
+                    default: 0
+                },
+                metadatumId: {
+                    type: String,
+                    default: undefined
+                },
+                metadatumType: {
+                    type: String,
+                    default: undefined
+                },
+                facetsRequestSource: {
+                    type: String,
+                    default: undefined
+                },
+                maxFacetsNumber: {
+                    type: Number,
+                    value: undefined
+                },
+                isLoading: {
+                    type: Boolean,
+                    value: false
+                },
+                isLoadingCollection: {
+                    type: Boolean,
+                    value: false
+                },
+                collection: {
+                    type: Object,
+                    value: undefined
+                },
+                searchString: {
+                    type: String,
+                    default: undefined
+                },
+                blockId: {
+                    type: String,
+                    default: undefined
+                },
+                parentTerm: {
+                    type: Number,
+                    default: null
+                },
+                isParentTermModalOpen: {
+                    type: Boolean,
+                    default: false
+                }
+            },
+            save({ attributes, className }){
+                const {
+                    content, 
+                    blockId,
+                    collectionId,  
+                    collectionSlug,
+                    parentTerm,  
+                    showImage,
+                    showItemsCount,
+                    showLoadMore,
+                    layout,
+                    cloudRate,
+                    gridMargin,
+                    metadatumId,
+                    metadatumType,
+                    maxFacetsNumber,
+                    showSearchBar,
+                } = attributes;
+                return <div 
+                            className={ className }
+                            metadatum-id={ metadatumId }
+                            metadatum-type={ metadatumType }
+                            collection-id={ collectionId }  
+                            collection-slug={ collectionSlug }
+                            parent-term-id={ parentTerm ? parentTerm.id : null }  
+                            show-image={ '' + showImage }
+                            show-items-count={ '' + showItemsCount }
+                            show-search-bar={ '' + showSearchBar }
+                            show-load-more={ '' + showLoadMore }
+                            layout={ layout }
+                            cloud-rate={ cloudRate }
+                            grid-margin={ gridMargin }
+                            max-facets-number={ maxFacetsNumber }
+                            tainacan-api-root={ tainacan_blocks.root }
+                            tainacan-base-url={ tainacan_blocks.base_url }
+                            tainacan-site-url={ tainacan_blocks.site_url }
+                            id={ 'wp-block-tainacan-facets-list_' + blockId }>
+                                { content }
+                        </div>
+            }
+        },
         {
             attributes: {
                 content: {

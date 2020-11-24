@@ -316,18 +316,65 @@
     ul.facets-list.facets-layout-list,
     ul.facets-list-edit.facets-layout-list {
         padding: 0;
-        display: flex;
-        flex-wrap: wrap;
+        padding-left: 0;
+        margin: 0;
+        margin-left: 0;
+        display: block;
         align-items: center;
         list-style-type: none;
+        column-fill: balance;
+
+        &.max-columns-count-7 {
+            column-count: 7;
+            @media only screen and (max-width: 1600px) { column-count: 6; }
+            @media only screen and (max-width: 1400px) { column-count: 5; }
+            @media only screen and (max-width: 1280px) { column-count: 4; }
+            @media only screen and (max-width: 1024px) { column-count: 3; }
+            @media only screen and (max-width: 768px) { column-count: 2; }
+            @media only screen and (max-width: 498px) { column-count: 1; }
+        }
+        &.max-columns-count-6 {
+            column-count: 6;
+            @media only screen and (max-width: 1400px) { column-count: 5; }
+            @media only screen and (max-width: 1280px) { column-count: 4; }
+            @media only screen and (max-width: 1024px) { column-count: 3; }
+            @media only screen and (max-width: 768px) { column-count: 2; }
+            @media only screen and (max-width: 498px) { column-count: 1; }
+        }
+        &.max-columns-count-5 {
+            column-count: 5;
+            @media only screen and (max-width: 1280px) { column-count: 4; }
+            @media only screen and (max-width: 1024px) { column-count: 3; }
+            @media only screen and (max-width: 768px) { column-count: 2; }
+            @media only screen and (max-width: 498px) { column-count: 1; }
+        }
+        &.max-columns-count-4 {
+            column-count: 4;
+            @media only screen and (max-width: 1024px) { column-count: 3; }
+            @media only screen and (max-width: 768px) { column-count: 2; }
+            @media only screen and (max-width: 498px) { column-count: 1; }
+        }
+        &.max-columns-count-3 {
+            column-count: 3;
+            @media only screen and (max-width: 1024px) { column-count: 3; }
+            @media only screen and (max-width: 768px) { column-count: 2; }
+            @media only screen and (max-width: 498px) { column-count: 1; }
+        }
+        &.max-columns-count-2 {
+            column-count: 2;
+            @media only screen and (max-width: 768px) { column-count: 1; }
+        }        
+        &.max-columns-count-1 {
+            column-count: 1;
+        }
 
         li.facet-list-item {
-            position: relative;
-            margin: 12px 12px 24px 12px;
-            margin-bottom: 12px;
+            display: inline-block;
+            padding: 12px 12px 24px 12px;
+            margin-bottom: 0px;
             min-height: 54px;
-            min-width: calc(20% - 24px);
-            width: calc(20% - 24px);
+            min-width: 100%;
+            width: 100%;
 
             a { 
                 color: var(--tainacan-block-gray5, $gray5); 
@@ -365,26 +412,19 @@
                 text-decoration: none;
             }
 
-            @media only screen and (max-width: 1600px) { 
-                min-width: calc(25% - 24px);
-                width: calc(25% - 24px);
+            &.facet_term_with_children {
+                font-weight: bold;
+                cursor: pointer;
             }
 
-            @media only screen and (max-width: 1024px) { 
-                min-width: calc(33.333% - 24px);
-                width: calc(33.333% - 24px);
-            }
-    
-            @media only screen and (max-width: 768px) { 
-                min-width: calc(50% - 24px);
-                width: calc(50% - 24px);
-            }
-    
-            @media only screen and (max-width: 498px) { 
-                min-width: calc(100% - 24px);
-                width: calc(100% - 24px);
-            }
+            .child-term-facets {
+                margin: 12px 0px -12px 0px;
 
+                .facet-list-item {
+                    padding: 12px;
+                    font-weight: normal;
+                }
+            }
         }
     }
 

@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     cloudRate: 1,
                     gridMargin: 0,
                     maxFacetsNumber: 12,
+                    maxColumnsCount: 5,
                     tainacanApiRoot: '',
                     tainacanBaseUrl: '',
                     tainacanSiteUrl: '',
@@ -53,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             cloudRate: this.cloudRate,
                             gridMargin: this.gridMargin,
                             maxFacetsNumber: this.maxFacetsNumber,
+                            maxColumnsCount: this.maxColumnsCount,
                             tainacanApiRoot: this.tainacanApiRoot,
                             tainacanBaseUrl: this.tainacanBaseUrl,
                             tainacanSiteUrl: this.tainacanSiteUrl,
@@ -74,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.cloudRate = this.$el.attributes['cloud-rate'] != undefined ? Number(this.$el.attributes['cloud-rate'].value) : undefined;
                     this.gridMargin = this.$el.attributes['grid-margin'] != undefined ? Number(this.$el.attributes['grid-margin'].value) : undefined;
                     this.maxFacetsNumber = this.$el.attributes['max-facets-number'] != undefined ? this.$el.attributes['max-facets-number'].value : undefined;
+                    this.maxColumnsCount = this.$el.attributes['max-columns-count'] != undefined ? this.$el.attributes['max-columns-count'].value : 5;
                     this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
                     this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
                     this.tainacanSiteUrl = this.$el.attributes['tainacan-site-url'] != undefined ? this.$el.attributes['tainacan-site-url'].value : undefined;

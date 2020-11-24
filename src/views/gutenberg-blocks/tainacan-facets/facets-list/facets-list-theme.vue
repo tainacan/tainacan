@@ -37,7 +37,7 @@
                     marginTop: showSearchBar ? '1.5em' : '0px'
                 }"
                 class="facets-list"
-                :class="'facets-layout-' + layout + (!showName ? ' facets-list-without-margin' : '')">
+                :class="'facets-layout-' + layout + (!showName ? ' facets-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
                 <li
                         :key="facet"
                         v-for="facet in Number(maxFacetsNumber)"
@@ -55,7 +55,7 @@
                         marginTop: showSearchBar ? '1.5em' : '0px'
                     }"
                     class="facets-list"
-                    :class="'facets-layout-' + layout">
+                    :class="'facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
                 <li
                         :key="index"
                         v-for="(facet, index) of facets"
@@ -152,6 +152,7 @@ export default {
         cloudRate: Number,
         gridMargin: Number,
         maxFacetsNumber: Number,
+        maxColumnsCount: Number,
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
         tainacanSiteUrl: String,

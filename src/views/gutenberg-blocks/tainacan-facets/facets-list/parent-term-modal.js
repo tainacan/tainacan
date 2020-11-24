@@ -217,7 +217,7 @@ export default class ParentTermModal extends React.Component {
                                 <p class="modal-radio-area-label">{__('Non specific term', 'tainacan')}</p>
                                 <RadioControl
                                     className={'repository-radio-option'}
-                                    selected={ this.state.temporaryFacetId }
+                                    selected={ this.state.temporaryFacetId != null ? this.state.temporaryFacetId : ''}
                                     options={ [
                                         { label: __('Terms children of any term', 'tainacan'), value: '' }, 
                                         { label: __('Terms with no parent (root terms)', 'tainacan'), value: '0' }
