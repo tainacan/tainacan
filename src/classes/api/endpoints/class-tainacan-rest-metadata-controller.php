@@ -482,17 +482,19 @@ class REST_Metadata_Controller extends REST_Controller {
 			$attributes = [];
 
 			$metadatum_id = $request['metadatum_id'];
-
+			$confirm_repository = false;
 			foreach ($body as $att => $value){
 				$attributes[$att] = $value;
+				if ($att === "repository_level" && $value === "yes") {
+					$confirm_repository = true;
+				}
 			}
 
 			$metadatum = $this->metadatum_repository->fetch($metadatum_id);
 
 			$error_message = __('Metadata with this ID was not found', 'tainacan');
 
-			if($metadatum){
-
+			if ($metadatum) {
 				// These conditions are for verify if endpoints are used correctly
 				if(!$collection_id && $metadatum->get_collection_id() !== 'default') {
 					$error_message = __('This metadata is not a default metadata', 'tainacan');
@@ -508,6 +510,10 @@ class REST_Metadata_Controller extends REST_Controller {
 						'error_message' => $error_message,
 						'metadatum_id'      => $metadatum_id
 					] );
+				}
+
+				if (isset($request['repository_level']) && $confirm_repository) {
+					$attributes['collection_id'] = "default";
 				}
 
 				$prepared_metadata = $this->prepare_item_for_updating($metadatum, $attributes);
