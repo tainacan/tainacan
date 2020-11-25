@@ -210,7 +210,9 @@
                     </b-checkbox>
                 </b-field>
 
-                <b-field>
+                <b-field
+                  v-if="!this.isRepositoryLevel"
+                >
                   <b-checkbox
                       class="is-inline-block"
                       v-model="editForm.repository_level"
@@ -326,7 +328,7 @@
                 if ((metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {                    
                     let repository = this.editForm.repository_level;
                     if (repository && repository === 'yes') {                        
-                        this.isRepositoryLevel = true;                        
+                        this.isRepositoryLevel = true;
                     }
 
                     this.fillExtraFormData(this.editForm);
