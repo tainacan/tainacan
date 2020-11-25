@@ -214,6 +214,7 @@
                   <b-checkbox
                       class="is-inline-block"
                       v-model="editForm.repository_level"
+                      @input="clearErrors('repository_level')"
                       name="repository_level"
                       true-value="yes"
                       false-value="no"
@@ -321,10 +322,13 @@
             ...mapActions('metadata', [
                 'updateMetadatum'
             ]),
-            saveEdition(metadatum) {
+            saveEdition(metadatum) {                
+                if ((metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {                    
+                    let repository = this.editForm.repository_level;
+                    if (repository && repository === 'yes') {                        
+                        this.isRepositoryLevel = true;                        
+                    }
 
-                if ((metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
-                    
                     this.fillExtraFormData(this.editForm);
                     this.isUpdating = true;
                     this.updateMetadatum({

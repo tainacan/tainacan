@@ -501,14 +501,14 @@ class REST_Metadata_Controller extends REST_Controller {
 
 					return new \WP_REST_Response( [
 						'error_message' => $error_message,
-						'metadatum_id'      => $metadatum_id
+						'metadatum_id'  => $metadatum_id
 					] );
 				} elseif ($collection_id && $metadatum->get_collection_id() === 'default'){
 					$error_message = __('This metadata is not a collection metadata', 'tainacan');
 
 					return new \WP_REST_Response( [
 						'error_message' => $error_message,
-						'metadatum_id'      => $metadatum_id
+						'metadatum_id'  => $metadatum_id
 					] );
 				}
 
@@ -529,7 +529,7 @@ class REST_Metadata_Controller extends REST_Controller {
 				return new \WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
 					'errors'        => $prepared_metadata->get_errors(),
-					'metadatum'      => $this->prepare_item_for_response($prepared_metadata, $request)
+					'metadatum'     => $this->prepare_item_for_response($prepared_metadata, $request)
 				], 400);
 			}
 
