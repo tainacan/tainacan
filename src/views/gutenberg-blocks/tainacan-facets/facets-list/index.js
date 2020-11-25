@@ -143,8 +143,8 @@ registerBlockType('tainacan/facets-list', {
             default: {}
         },
         isLoadingChildTerms: {
-            type: Boolean,
-            default: false
+            type: Number,
+            default: null
         }
     },
     supports: {
@@ -234,41 +234,47 @@ registerBlockType('tainacan/facets-list', {
                         { facet.total_items ? <span class="facet-item-count" style={{ display: !showItemsCount ? 'none' : '' }}>&nbsp;({ facet.total_items })</span> : null }
                         
                     </a>
-                    { appendChildTerms && childFacetsObject[facetId] && childFacetsObject[facetId].visible ?
-                        <ul class="child-term-facets">
-                            { isLoadingChildTerms ? 
-                                <div class="spinner-container">
-                                    <Spinner />
-                                </div>
-                                :
-                                childFacetsObject[facetId].facets.map((aChildTermFacet) => {
-                                    const childFacetId = aChildTermFacet.id ? aChildTermFacet.id : aChildTermFacet.value;
+                    
+                    { isLoadingChildTerms == facetId ? 
+                        <div class="spinner-container">
+                            <Spinner />
+                        </div>
+                        :
+                        ( appendChildTerms && childFacetsObject[facetId] && childFacetsObject[facetId].visible ?
+                            <ul class="child-term-facets">
+                                { 
+                                    childFacetsObject[facetId].facets.length ? 
+                                        childFacetsObject[facetId].facets.map((aChildTermFacet) => {
+                                            const childFacetId = aChildTermFacet.id ? aChildTermFacet.id : aChildTermFacet.value;
 
-                                    return <li 
-                                                className={ 'facet-list-item' + (!showImage ? ' facet-without-image' : '') }
-                                                style={{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}}>
-                                            <a 
-                                                id={ isNaN(childFacetId) ? childFacetId : 'facet-id-' + childFacetId }
-                                                href={ aChildTermFacet.url }
-                                                target="_blank"
-                                                style={{ fontSize: layout == 'cloud' && aChildTermFacet.total_items ? + (1 + (cloudRate/4) * Math.log(aChildTermFacet.total_items)) + 'rem' : ''}}>
-                                            <img
-                                                src={ 
-                                                    aChildTermFacet.entity && aChildTermFacet.entity['header_image']
-                                                        ?    
-                                                    aChildTermFacet.entity['header_image']
-                                                        : 
-                                                    `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`
-                                                }
-                                                alt={ aChildTermFacet.label ? aChildTermFacet.label : __( 'Thumbnail', 'tainacan' ) }/>
-                                            <span>{ aChildTermFacet.label ? aChildTermFacet.label : '' }</span>
-                                            { aChildTermFacet.total_items ? <span class="facet-item-count" style={{ display: !showItemsCount ? 'none' : '' }}>&nbsp;({ aChildTermFacet.total_items })</span> : null }
-                                        </a>
-                                    </li>
-                                })
-                            }
-                        </ul>
-                    : null }
+                                            return <li 
+                                                        className={ 'facet-list-item' + (!showImage ? ' facet-without-image' : '') }
+                                                        style={{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}}>
+                                                    <a 
+                                                        id={ isNaN(childFacetId) ? childFacetId : 'facet-id-' + childFacetId }
+                                                        href={ aChildTermFacet.url }
+                                                        target="_blank"
+                                                        style={{ fontSize: layout == 'cloud' && aChildTermFacet.total_items ? + (1 + (cloudRate/4) * Math.log(aChildTermFacet.total_items)) + 'rem' : ''}}>
+                                                    <img
+                                                        src={ 
+                                                            aChildTermFacet.entity && aChildTermFacet.entity['header_image']
+                                                                ?    
+                                                            aChildTermFacet.entity['header_image']
+                                                                : 
+                                                            `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`
+                                                        }
+                                                        alt={ aChildTermFacet.label ? aChildTermFacet.label : __( 'Thumbnail', 'tainacan' ) }/>
+                                                    <span>{ aChildTermFacet.label ? aChildTermFacet.label : '' }</span>
+                                                    { aChildTermFacet.total_items ? <span class="facet-item-count" style={{ display: !showItemsCount ? 'none' : '' }}>&nbsp;({ aChildTermFacet.total_items })</span> : null }
+                                                </a>
+                                            </li>
+                                        })
+                                        :
+                                        <p class="no-child-facet-found">{ __( 'This facet children terms do not contain items.', 'tainacan' )}</p>
+                                }
+                            </ul>
+                        : null )
+                    }
                 </li>
             );
         }
@@ -362,17 +368,19 @@ registerBlockType('tainacan/facets-list', {
                 setAttributes({
                     childFacetsObject: childFacetsObject
                 });
+                updateContent();
             } else
                 fetchChildTerms(parentTermId)
         }
 
         function fetchChildTerms(parentTermId) {
 
-            isLoadingChildTerms = true;
+            isLoadingChildTerms = parentTermId;
             
             setAttributes({
                 isLoadingChildTerms: isLoadingChildTerms
             });
+            updateContent();
             
             let endpoint = '/facets/' + metadatumId;
             let query = endpoint.split('?')[1];
@@ -420,12 +428,12 @@ registerBlockType('tainacan/facets-list', {
                         visible: true
                     }
 
-                    isLoadingChildTerms = false;
+                    isLoadingChildTerms = null;
 
                     // Updates local storage in order to childFacets to be used in the following functions.
                     setAttributes({
                         childFacetsObject: childFacetsObject,
-                        isLoadingChildTerms: false,
+                        isLoadingChildTerms: null,
                     });
                     updateContent();
                     
