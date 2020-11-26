@@ -12,7 +12,7 @@ export default class ParentTermModal extends React.Component {
         // Initialize state
         this.state = {
             metadatumId: '',
-            facetsPerPage: 3,
+            facetsPerPage: 12,
             facetId: undefined,
             isLoadingFacets: false, 
             modalFacets: [],

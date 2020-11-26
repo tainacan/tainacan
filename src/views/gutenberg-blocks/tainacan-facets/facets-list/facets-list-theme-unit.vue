@@ -5,7 +5,7 @@
             :style="{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}">
         <a 
                 :id="isNaN(facetId) ? facetId : 'facet-id-' + facetId"
-                :href="(appendChildTerms && facet.total_children > 0) ? null : facet.url"
+                :href="(appendChildTerms && facet.total_children > 0) ? null : ((linkTermFacetsToTermPage && metadatumType == 'Taxonomy') ? facet.term_url : facet.url)"
                 @click="() => { (appendChildTerms && facet.total_children > 0) ? displayChildTerms(facetId) : null }"
                 target="_blank"
                 :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}">
@@ -55,8 +55,10 @@
                         v-for="childFacet in Number(facet.total_children)"
                         class="facet-list-item skeleton"
                         :style="{ 
-                            marginBottom: layout == 'grid' && ((metadatumType == 'Relationship' || metadatumType == 'Taxonomy') && showImage) ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
-                            minHeight: getSkeletonHeight()
+                            minHeight: getSkeletonHeight(),
+                            marginTop: layout == 'list' ? '4px' : '',
+                            marginLeft: layout == 'list' ? '7px' : '',
+                            marginBottom: layout == 'grid' && showImage ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
                         }" />
             </ul>
             <template v-else>
@@ -78,6 +80,7 @@
                                     :metadatum-type="metadatumType"
                                     :show-items-count="showItemsCount"
                                     :is-loading-child-terms="isloadingChildTerms"
+                                    :link-term-facets-to-term-page="linkTermFacetsToTermPage"
                                     @on-display-child-terms="displayChildTerms" />
                         </template>
                         <p 
@@ -102,6 +105,7 @@ export default {
         showItemsCount: Boolean,
         showSearchBar: Boolean,
         isLoadingChildTerms: Boolean,
+        linkTermFacetsToTermPage: Boolean,
         layout: String,
         cloudRate: Number,
         metadatumType: String,

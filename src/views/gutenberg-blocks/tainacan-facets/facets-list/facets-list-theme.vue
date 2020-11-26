@@ -30,23 +30,46 @@
                     @input="(value) => applySearchString(value)"
                     type="text">
         </div>
-        <ul
-                v-if="isLoading"
-                :style="{
-                    gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + 185) + 'px)' : 'inherit', 
-                    marginTop: showSearchBar ? '1.5em' : '4px'
-                }"
-                class="facets-list"
-                :class="'facets-layout-' + layout + (!showName ? ' facets-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
-                <li
-                        :key="facet"
-                        v-for="facet in Number(maxFacetsNumber)"
-                        class="facet-list-item skeleton"
-                        :style="{ 
-                            marginBottom: layout == 'grid' && ((metadatumType == 'Relationship' || metadatumType == 'Taxonomy') && showImage) ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
-                            minHeight: getSkeletonHeight()
-                        }" />      
-        </ul>
+        <template v-if="isLoading">
+            <ul
+                    v-if="layout !== 'list'"
+                    :style="{
+                        gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + 185) + 'px)' : 'inherit', 
+                        marginTop: showSearchBar ? '1.5em' : '4px'
+                    }"
+                    class="facets-list"
+                    :class="'facets-layout-' + layout + (!showName ? ' facets-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
+                    <li
+                            :key="facet"
+                            v-for="facet in Number(maxFacetsNumber)"
+                            class="facet-list-item skeleton"
+                            :style="{ 
+                                marginBottom: layout == 'grid' && ((metadatumType == 'Relationship' || metadatumType == 'Taxonomy') && showImage) ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
+                                minHeight: getSkeletonHeight()
+                            }" />      
+            </ul>
+            <ul
+                    v-else
+                    :style="{
+                        marginTop: showSearchBar ? '1.5em' : '4px'
+                    }"
+                    class="facets-list"
+                    :class="'facets-layout-' + layout + (!showName ? ' facets-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
+                <div
+                        style="margin: 2px 6px" 
+                        v-for="column in Number(maxColumnsCount)"
+                        :key="column">
+                    <li
+                            v-for="facet in Math.ceil(maxFacetsNumber/maxColumnsCount)"
+                            :key="facet"
+                            class="facet-list-item skeleton"
+                            :style="{ 
+                                marginBottom: layout == 'grid' && ((metadatumType == 'Relationship' || metadatumType == 'Taxonomy') && showImage) ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
+                                minHeight: getSkeletonHeight()
+                            }" />    
+                </div>  
+            </ul>
+        </template>
         <div v-else>
             <ul 
                     v-if="facets.length > 0 && layout != 'list'"
@@ -70,6 +93,7 @@
                         :metadatum-type="metadatumType"
                         :show-items-count="showItemsCount"
                         :is-loading-child-terms="isloadingChildTerms"
+                        :link-term-facets-to-term-page="linkTermFacetsToTermPage"
                         @on-display-child-terms="displayChildTerms" />
             </ul>
             <ul 
@@ -96,6 +120,7 @@
                             :metadatum-type="metadatumType"
                             :show-items-count="showItemsCount"
                             :is-loading-child-terms="isloadingChildTerms"
+                            :link-term-facets-to-term-page="linkTermFacetsToTermPage"
                             @on-display-child-terms="displayChildTerms" />
                 </div>
             </ul>
@@ -147,6 +172,7 @@ export default {
         showSearchBar: Boolean,
         showLoadMore: Boolean,
         appendChildTerms: Boolean,
+        linkTermFacetsToTermPage: Boolean,
         layout: String,
         cloudRate: Number,
         gridMargin: Number,
@@ -255,7 +281,8 @@ export default {
                     if (this.metadatumType == 'Taxonomy') {
                         for (let facet of response.data.values) {
                             this.facets.push(Object.assign({ 
-                                url: facet.entity && facet.entity.url ? facet.entity.url : this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
+                                term_url: facet.entity && facet.entity.url ? facet.entity.url : this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value,
+                                url: this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
                             }, facet));
                         }
                     } else {
@@ -320,7 +347,8 @@ export default {
                     
                     for (let facet of response.data.values) {
                         childFacets.push(Object.assign({ 
-                            url: facet.entity && facet.entity.url ? facet.entity.url : this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
+                            term_url: facet.entity && facet.entity.url ? facet.entity.url : this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value,
+                            url: this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
                         }, facet));
                     }
 

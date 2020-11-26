@@ -142,6 +142,10 @@ registerBlockType('tainacan/facets-list', {
             type: Object,
             default: {}
         },
+        linkTermFacetsToTermPage: {
+            type: Boolean,
+            default: true
+        },
         isLoadingChildTerms: {
             type: Number,
             default: null
@@ -177,6 +181,7 @@ registerBlockType('tainacan/facets-list', {
             maxColumnsCount,
             appendChildTerms,
             childFacetsObject,
+            linkTermFacetsToTermPage,
             isLoadingChildTerms
         } = attributes;
 
@@ -188,6 +193,18 @@ registerBlockType('tainacan/facets-list', {
             maxColumnsCount = 5;
             setAttributes({ maxColumnsCount: maxColumnsCount });
         }
+        if (linkTermFacetsToTermPage === undefined) {
+            linkTermFacetsToTermPage = true;
+            setAttributes({ linkTermFacetsToTermPage: linkTermFacetsToTermPage });
+        }
+        if (showImage === undefined) {
+            showImage = true;
+            setAttributes({ showImage: showImage });
+        }
+        if (showItemsCount === undefined) {
+            showItemsCount = true;
+            setAttributes({ showItemsCount: showItemsCount });
+        }
     
         function prepareFacet(facet) {
             const facetId = facet.id != undefined ? facet.id : facet.value; 
@@ -198,7 +215,7 @@ registerBlockType('tainacan/facets-list', {
                     style={{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}}>
                     <a 
                         id={ isNaN(facetId) ? facetId : 'facet-id-' + facetId }
-                        href={ !appendChildTerms ? facet.url : (facet.total_children > 0 ? null : facet.url) }
+                        href={ !appendChildTerms ? ((linkTermFacetsToTermPage && metadatumType == 'Taxonomy') ? facet.term_url : facet.url) : (facet.total_children > 0 ? null : (linkTermFacetsToTermPage ? facet.term_url : facet.url)) }
                         onClick={ () => { (appendChildTerms && facet.total_children > 0) ? displayChildTerms(facetId) : null } } 
                         target="_blank"
                         style={{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'rem' : ''}}>
@@ -315,7 +332,8 @@ registerBlockType('tainacan/facets-list', {
                     if (metadatumType == 'Taxonomy') {
                         for (let facet of response.data.values) {
                             facetsObject.push(Object.assign({ 
-                                url: facet.entity && facet.entity.url ? facet.entity.url : tainacan_blocks.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
+                                term_url: facet.entity && facet.entity.url ? facet.entity.url : tainacan_blocks.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value,
+                                url: tainacan_blocks.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
                             }, facet));
                         }
                     } else {
@@ -397,7 +415,8 @@ registerBlockType('tainacan/facets-list', {
 
                     for (let facet of response.data.values) {
                         childFacets.push(Object.assign({ 
-                            url: facet.entity && facet.entity.url ? facet.entity.url : tainacan_blocks.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
+                            term_url: facet.entity && facet.entity.url ? facet.entity.url : tainacan_blocks.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value,
+                            url: tainacan_blocks.site_url + '/' + collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
                         }, facet));
                     }
                     
@@ -617,6 +636,17 @@ registerBlockType('tainacan/facets-list', {
                                     title={__('Taxonomy options', 'tainacan')}
                                     initialOpen={ true }>
                                 <div>
+                                    <ToggleControl
+                                        label={__('Link term facets to term page', 'tainacan')}
+                                        help={ linkTermFacetsToTermPage ? __("Link facets to the term items page instead of the collection page filtered by term", 'tainacan') : __("Toggle to link facets to the collection page filtered by the term instead of the term items page", 'tainacan')}
+                                        checked={ linkTermFacetsToTermPage }
+                                        onChange={ ( isChecked ) => {
+                                                linkTermFacetsToTermPage = isChecked;
+                                                setAttributes({ linkTermFacetsToTermPage: linkTermFacetsToTermPage });
+                                                updateContent();
+                                            } 
+                                        }
+                                    />
                                     <BaseControl
                                         id="parent-term-selection"
                                         label={ (parentTerm && (parentTerm.id === '0' || parentTerm.id === 0)) ? __('Showing only:', 'tainacan') : __('Showing children of:', 'tainacan') }
@@ -956,6 +986,7 @@ registerBlockType('tainacan/facets-list', {
             maxFacetsNumber,
             maxColumnsCount,
             showSearchBar,
+            linkTermFacetsToTermPage,
             appendChildTerms
         } = attributes;
         return <div 
@@ -970,6 +1001,7 @@ registerBlockType('tainacan/facets-list', {
                     show-search-bar={ '' + showSearchBar }
                     show-load-more={ '' + showLoadMore }
                     append-child-terms={ '' + appendChildTerms }
+                    link-term-facets-to-term-page={ '' + linkTermFacetsToTermPage }
                     layout={ layout }
                     cloud-rate={ cloudRate }
                     grid-margin={ gridMargin }

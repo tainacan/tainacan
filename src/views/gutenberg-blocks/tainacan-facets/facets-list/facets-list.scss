@@ -418,8 +418,13 @@
             }
 
             .child-term-facets {
-                padding-left: 1.3em;
+                padding-left: 7px;
                 margin: 12px 0px -12px 0px;
+
+                img {
+                    width: 36px;
+                    min-width: 36px;
+                }
 
                 .facet-list-item {
                     padding: 12px;

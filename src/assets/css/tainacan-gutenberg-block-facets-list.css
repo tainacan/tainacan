@@ -425,8 +425,12 @@
         cursor: pointer; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item .child-term-facets,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item .child-term-facets {
-        padding-left: 1.3em;
+        padding-left: 7px;
         margin: 12px 0px -12px 0px; }
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item .child-term-facets img,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item .child-term-facets img {
+          width: 36px;
+          min-width: 36px; }
         .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item .child-term-facets .facet-list-item,
         .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item .child-term-facets .facet-list-item {
           padding: 12px;

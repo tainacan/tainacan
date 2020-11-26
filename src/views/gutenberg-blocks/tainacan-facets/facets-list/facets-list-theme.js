@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     showItemsCount: true,
                     showSearchBar: false,
                     showLoadMore: false,
+                    linkTermFacetsToTermPage: true,
                     appendChildTerms: false,
                     layout: 'grid',
                     cloudRate: 1,
@@ -56,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             layout: this.layout,
                             cloudRate: this.cloudRate,
                             gridMargin: this.gridMargin,
+                            linkTermFacetsToTermPage: this.linkTermFacetsToTermPage,
                             appendChildTerms: this.appendChildTerms,
                             maxFacetsNumber: this.maxFacetsNumber,
                             maxColumnsCount: this.maxColumnsCount,
@@ -80,6 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.layout = this.$el.attributes['layout'] != undefined ? this.$el.attributes['layout'].value : undefined;
                     this.cloudRate = this.$el.attributes['cloud-rate'] != undefined ? Number(this.$el.attributes['cloud-rate'].value) : undefined;
                     this.gridMargin = this.$el.attributes['grid-margin'] != undefined ? Number(this.$el.attributes['grid-margin'].value) : undefined;
+                    this.linkTermFacetsToTermPage = this.$el.attributes['link-term-facets-to-term-page'] != undefined ? this.$el.attributes['link-term-facets-to-term-page'].value == 'true' : true;
                     this.maxFacetsNumber = this.$el.attributes['max-facets-number'] != undefined ? this.$el.attributes['max-facets-number'].value : undefined;
                     this.maxColumnsCount = this.$el.attributes['max-columns-count'] != undefined ? this.$el.attributes['max-columns-count'].value : 5;
                     this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
