@@ -49,13 +49,13 @@
         </ul>
         <div v-else>
             <ul 
-                    v-if="facets.length > 0"
+                    v-if="facets.length > 0 && layout != 'list'"
                     :style="{
-                        gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + 185) + 'px)' : 'inherit', 
+                        gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + 185) + 'px)' : 'inherit',
                         marginTop: showSearchBar ? '1.5em' : '0px'
                     }"
                     class="facets-list"
-                    :class="'facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">    
+                    :class="'facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
                 <facets-list-theme-unit
                         v-for="(facet, index) of facets"
                         :key="index"
@@ -71,6 +71,33 @@
                         :show-items-count="showItemsCount"
                         :is-loading-child-terms="isloadingChildTerms"
                         @on-display-child-terms="displayChildTerms" />
+            </ul>
+            <ul 
+                    v-if="facets.length > 0 && layout == 'list'"
+                    :style="{
+                        marginTop: showSearchBar ? '1.5em' : '0px'
+                    }"
+                    class="facets-list"
+                    :class="'facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
+                <div 
+                        v-for="column in Number(maxColumnsCount)"
+                        :key="column">
+                    <facets-list-theme-unit
+                            v-for="(facet, index) of facets.slice((column - 1) * Math.ceil(facets.length/maxColumnsCount), column * Math.ceil(facets.length/maxColumnsCount))"
+                            :key="index"
+                            :show-search-bar="showSearchBar"
+                            :show-image="showImage"
+                            :child-facets-object="childFacetsObject"
+                            :append-child-terms="appendChildTerms"
+                            :facet="facet"
+                            :cloud-rate="cloudRate"
+                            :tainacan-base-url="tainacanBaseUrl"
+                            :layout="layout"
+                            :metadatum-type="metadatumType"
+                            :show-items-count="showItemsCount"
+                            :is-loading-child-terms="isloadingChildTerms"
+                            @on-display-child-terms="displayChildTerms" />
+                </div>
             </ul>
 
             <button

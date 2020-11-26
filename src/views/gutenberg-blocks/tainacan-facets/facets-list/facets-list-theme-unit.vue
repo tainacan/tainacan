@@ -68,6 +68,7 @@
                             <facets-list-theme-unit
                                     v-for="(aChildTermFacet, childFacetIndex) of childFacetsObject[facet.id != undefined ? facet.id : facet.value].facets"
                                     :key="childFacetIndex"
+                                    :show-image="showImage"
                                     :child-facets-object="childFacetsObject"
                                     :facet="aChildTermFacet"
                                     :cloud-rate="cloudRate"

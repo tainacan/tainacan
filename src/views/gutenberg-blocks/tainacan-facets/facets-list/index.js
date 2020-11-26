@@ -883,14 +883,32 @@ registerBlockType('tainacan/facets-list', {
                         <Spinner />
                     </div> :
                     <div>
-                        <ul 
-                            style={{ 
-                                gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + 185) + 'px)' : 'inherit', 
-                                marginTop: showSearchBar ? '1.5rem' : '0px'
-                            }}
-                            className={ 'facets-list-edit facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '') }>
-                            { facets }
-                        </ul>
+                        { layout !== 'list' ?
+                            <ul 
+                                style={{ 
+                                    gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + 185) + 'px)' : 'inherit', 
+                                    marginTop: showSearchBar ? '1.5rem' : '0px'
+                                }}
+                                className={ 'facets-list-edit facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '') }>
+                                { facets }
+                            </ul>
+                            :
+                            <ul 
+                                style={{  
+                                    marginTop: showSearchBar ? '1.5rem' : '0px'
+                                }}
+                                className={ 'facets-list-edit facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '') }>
+                                {
+                                    Array.from(Array(maxColumnsCount).keys()).map( (column) => {
+                                        return <div>
+                                            {
+                                                facets.slice(column  * Math.ceil(facets.length/maxColumnsCount), (column + 1) * Math.ceil(facets.length/maxColumnsCount))
+                                            }
+                                        </div>
+                                    })
+                                }
+                            </ul>
+                        }
                     </div>
                 }
 
