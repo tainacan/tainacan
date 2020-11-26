@@ -390,6 +390,7 @@
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item a {
         color: var(--tainacan-block-gray5, #454647);
+        line-height: normal;
         height: auto;
         display: flex;
         align-items: center;
@@ -419,12 +420,13 @@
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item:hover a {
         color: var(--tainacan-block-gray5, #454647);
         text-decoration: none; }
-      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item.facet_term_with_children,
-      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item.facet_term_with_children {
-        font-weight: bold;
+      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item.facet-term-with-children,
+      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item.facet-term-with-children {
+        font-weight: bold !important;
         cursor: pointer; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item .child-term-facets,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item .child-term-facets {
+        padding-left: 1.3em;
         margin: 12px 0px -12px 0px; }
         .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item .child-term-facets .facet-list-item,
         .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item .child-term-facets .facet-list-item {
@@ -485,5 +487,17 @@
       background-color: var(--tainacan-block-gray3, #cbcbcb); }
     .wp-block-tainacan-facets-list .show-more-button i > svg {
       fill: white; }
+
+.filter-item-enter-active {
+  overflow: hidden;
+  animation-name: filter-item-in;
+  animation-duration: 0.1s;
+  animation-timing-function: ease; }
+
+.filter-item-leave-active {
+  overflow: hidden;
+  animation-name: filter-item-out;
+  animation-duration: 0.1s;
+  animation-timing-function: ease; }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-facets-list.css.map */

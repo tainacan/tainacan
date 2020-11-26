@@ -378,6 +378,7 @@
 
             a { 
                 color: var(--tainacan-block-gray5, $gray5); 
+                line-height: normal;
                 height: auto;
                 display: flex;
                 align-items: center;
@@ -412,12 +413,13 @@
                 text-decoration: none;
             }
 
-            &.facet_term_with_children {
-                font-weight: bold;
+            &.facet-term-with-children{
+                font-weight: bold !important;
                 cursor: pointer;
             }
 
             .child-term-facets {
+                padding-left: 1.3em;
                 margin: 12px 0px -12px 0px;
 
                 .facet-list-item {
@@ -499,4 +501,17 @@
             fill: white;
         }
     }
+}
+
+.filter-item-enter-active {
+    overflow: hidden;
+    animation-name: filter-item-in;
+    animation-duration: 0.1s;
+    animation-timing-function: ease;   
+}
+.filter-item-leave-active {   
+    overflow: hidden; 
+    animation-name: filter-item-out;
+    animation-duration: 0.1s;
+    animation-timing-function: ease;   
 }

@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import FacetsListTheme from './facets-list-theme.vue';
+import FacetsListThemeUnit from './facets-list-theme-unit.vue';
 
 // Vue Dev Tools!
 Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+Vue.component('facets-list-theme-unit', FacetsListThemeUnit);
 
 // This is rendered on the theme side.
 document.addEventListener("DOMContentLoaded", () => {
@@ -28,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     showItemsCount: true,
                     showSearchBar: false,
                     showLoadMore: false,
+                    appendChildTerms: false,
                     layout: 'grid',
                     cloudRate: 1,
                     gridMargin: 0,
@@ -53,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             layout: this.layout,
                             cloudRate: this.cloudRate,
                             gridMargin: this.gridMargin,
+                            appendChildTerms: this.appendChildTerms,
                             maxFacetsNumber: this.maxFacetsNumber,
                             maxColumnsCount: this.maxColumnsCount,
                             tainacanApiRoot: this.tainacanApiRoot,
@@ -67,6 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.metadatumType = this.$el.attributes['metadatum-type'] != undefined ? this.$el.attributes['metadatum-type'].value : undefined;
                     this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
                     this.collectionSlug = this.$el.attributes['collection-slug'] != undefined ? this.$el.attributes['collection-slug'].value : undefined;
+                    this.appendChildTerms = this.$el.attributes['append-child-terms'] != undefined ? this.$el.attributes['append-child-terms'].value == 'true' : true;
                     this.parentTermId = this.$el.attributes['parent-term-id'] != undefined ? this.$el.attributes['parent-term-id'].value : undefined;
                     this.showImage = this.$el.attributes['show-image'] != undefined ? this.$el.attributes['show-image'].value == 'true' : true;
                     this.showItemsCount = this.$el.attributes['show-items-count'] != undefined ? this.$el.attributes['show-items-count'].value == 'true' : true;

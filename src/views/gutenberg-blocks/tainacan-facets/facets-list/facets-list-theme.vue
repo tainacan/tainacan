@@ -34,7 +34,7 @@
                 v-if="isLoading"
                 :style="{
                     gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + 185) + 'px)' : 'inherit', 
-                    marginTop: showSearchBar ? '1.5em' : '0px'
+                    marginTop: showSearchBar ? '1.5em' : '4px'
                 }"
                 class="facets-list"
                 :class="'facets-layout-' + layout + (!showName ? ' facets-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
@@ -44,7 +44,7 @@
                         class="facet-list-item skeleton"
                         :style="{ 
                             marginBottom: layout == 'grid' && ((metadatumType == 'Relationship' || metadatumType == 'Taxonomy') && showImage) ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
-                            height: getSkeletonHeight()
+                            minHeight: getSkeletonHeight()
                         }" />      
         </ul>
         <div v-else>
@@ -55,51 +55,22 @@
                         marginTop: showSearchBar ? '1.5em' : '0px'
                     }"
                     class="facets-list"
-                    :class="'facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
-                <li
-                        :key="index"
+                    :class="'facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">    
+                <facets-list-theme-unit
                         v-for="(facet, index) of facets"
-                        class="facet-list-item"
-                        :class="(!showImage ? 'facet-without-image' : '')"
-                        :style="{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}">      
-                    <a 
-                            :id="isNaN(facet.id) ? facet.id : 'facet-id-' + facet.id"
-                            :href="facet.url"
-                            target="_blank"
-                            :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}">
-                        <img
-                            v-if="metadatumType == 'Taxonomy'"
-                            :src=" 
-                                facet.entity && facet.entity['header_image']
-                                    ?    
-                                facet.entity['header_image']
-                                    : 
-                                `${tainacanBaseUrl}/assets/images/placeholder_square.png`
-                            "
-                            :alt="facet.title ? facet.title : $root.__('Thumbnail', 'tainacan')">
-                        <img
-                            v-if="metadatumType == 'Relationship'"
-                            :src=" 
-                                facet.entity.thumbnail && facet.entity.thumbnail['tainacan-medium'][0] && facet.entity.thumbnail['tainacan-medium'][0] 
-                                    ?
-                                facet.entity.thumbnail['tainacan-medium'][0] 
-                                    :
-                                (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'][0] && facet.entity.thumbnail['thumbnail'][0]
-                                    ?    
-                                facet.entity.thumbnail['thumbnail'][0] 
-                                    : 
-                                `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
-                            "
-                            :alt="facet.title ? facet.title : $root.__('Thumbnail', 'tainacan')">
-                        <span>{{ facet.label ? facet.label : '' }}</span>
-                        <span 
-                                v-if="facet.total_items"
-                                class="facet-item-count"
-                                :style="{ display: !showItemsCount ? 'none' : '' }">
-                            &nbsp;({{ facet.total_items }})
-                        </span>
-                    </a>
-                </li>
+                        :key="index"
+                        :show-search-bar="showSearchBar"
+                        :show-image="showImage"
+                        :child-facets-object="childFacetsObject"
+                        :append-child-terms="appendChildTerms"
+                        :facet="facet"
+                        :cloud-rate="cloudRate"
+                        :tainacan-base-url="tainacanBaseUrl"
+                        :layout="layout"
+                        :metadatum-type="metadatumType"
+                        :show-items-count="showItemsCount"
+                        :is-loading-child-terms="isloadingChildTerms"
+                        @on-display-child-terms="displayChildTerms" />
             </ul>
 
             <button
@@ -143,11 +114,12 @@ export default {
         metadatumType: String,  
         collectionId: String,  
         collectionSlug: String,
-        parentTermId: String,  
+        parentTermId: String,
         showImage: Boolean,
         showItemsCount: Boolean,
         showSearchBar: Boolean,
         showLoadMore: Boolean,
+        appendChildTerms: Boolean,
         layout: String,
         cloudRate: Number,
         gridMargin: Number,
@@ -161,10 +133,12 @@ export default {
     data() {
         return {
             facets: [],
+            childFacetsObject: {},
             collection: undefined,
             facetsRequestSource: undefined,
             searchString: '',
             isLoading: false,
+            isloadingChildTerms: null,
             isLoadingCollection: false,
             localMaxFacetsNumber: undefined,
             localOrder: undefined,
@@ -273,6 +247,72 @@ export default {
                     this.isLoading = false;
                     // console.log(error);
                 });
+        },
+        fetchChildTerms(parentTermId) {
+            
+            this.isloadingChildTerms = parentTermId;
+
+            let endpoint = '/facets/' + this.metadatumId;
+            let query = endpoint.split('?')[1];
+            let queryObject = qs.parse(query);
+
+            // Set up max facets to be shown
+            if (this.maxFacetsNumber != undefined && Number(this.maxFacetsNumber) > 0)
+                queryObject.number = this.maxFacetsNumber;
+            else if (queryObject.number != undefined && queryObject.number > 0)
+                this.localMaxFacetsNumber = queryObject.number;
+            else {
+                queryObject.number = 12;
+                this.localMaxFacetsNumber = 12;
+            }
+
+            // Set up searching string
+            if (this.searchString != undefined)
+                queryObject.search = this.searchString;
+            else if (queryObject.search != undefined)
+                this.searchString = queryObject.search;
+            else {
+                delete queryObject.search;
+                this.searchString = undefined;
+            }
+
+            // Set up paging
+            queryObject.offset = this.offset;
+            if (this.lastTerm != undefined)
+                queryObject.last_term = this.lastTerm;
+
+            // Parameter fo tech entity object with image and url
+            queryObject['context'] = 'extended';
+
+            queryObject['parent'] = parentTermId
+            endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject);
+            
+            this.tainacanAxios.get(endpoint, { cancelToken: this.facetsRequestSource.token })
+                .then(response => {
+                    let childFacets = [];
+                    
+                    for (let facet of response.data.values) {
+                        childFacets.push(Object.assign({ 
+                            url: facet.entity && facet.entity.url ? facet.entity.url : this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value
+                        }, facet));
+                    }
+
+                    this.$set(this.childFacetsObject, parentTermId, {
+                        facets: childFacets,
+                        visible: true
+                    });
+                    this.isloadingChildTerms = null;
+                    
+                }).catch(() => { 
+                    this.isloadingChildTerms = null;
+                    // console.log(error);
+                });
+        },
+        displayChildTerms(parentTermId) {
+            if (this.childFacetsObject[parentTermId]) {
+                this.$set(this.childFacetsObject[parentTermId], 'visible', !this.childFacetsObject[parentTermId].visible);
+            } else
+                this.fetchChildTerms(parentTermId)
         },
         getSkeletonHeight() {
             switch(this.layout) {

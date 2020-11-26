@@ -194,7 +194,7 @@ registerBlockType('tainacan/facets-list', {
             return (
                 <li 
                     key={ facetId }
-                    className={ 'facet-list-item' + (!showImage ? ' facet-without-image' : '') + ((appendChildTerms && facet.total_children > 0) ? ' facet_term_with_children': '')}
+                    className={ 'facet-list-item' + (!showImage ? ' facet-without-image' : '') + ((appendChildTerms && facet.total_children > 0) ? ' facet-term-with-children': '')}
                     style={{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}}>
                     <a 
                         id={ isNaN(facetId) ? facetId : 'facet-id-' + facetId }
@@ -234,47 +234,25 @@ registerBlockType('tainacan/facets-list', {
                         { facet.total_items ? <span class="facet-item-count" style={{ display: !showItemsCount ? 'none' : '' }}>&nbsp;({ facet.total_items })</span> : null }
                         
                     </a>
-                    
-                    { isLoadingChildTerms == facetId ? 
+                    { appendChildTerms && facet.total_children > 0 ?
+                        isLoadingChildTerms == facetId ? 
                         <div class="spinner-container">
                             <Spinner />
                         </div>
                         :
-                        ( appendChildTerms && childFacetsObject[facetId] && childFacetsObject[facetId].visible ?
+                        ( childFacetsObject[facetId] && childFacetsObject[facetId].visible ?
                             <ul class="child-term-facets">
                                 { 
                                     childFacetsObject[facetId].facets.length ? 
                                         childFacetsObject[facetId].facets.map((aChildTermFacet) => {
-                                            const childFacetId = aChildTermFacet.id ? aChildTermFacet.id : aChildTermFacet.value;
-
-                                            return <li 
-                                                        className={ 'facet-list-item' + (!showImage ? ' facet-without-image' : '') }
-                                                        style={{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}}>
-                                                    <a 
-                                                        id={ isNaN(childFacetId) ? childFacetId : 'facet-id-' + childFacetId }
-                                                        href={ aChildTermFacet.url }
-                                                        target="_blank"
-                                                        style={{ fontSize: layout == 'cloud' && aChildTermFacet.total_items ? + (1 + (cloudRate/4) * Math.log(aChildTermFacet.total_items)) + 'rem' : ''}}>
-                                                    <img
-                                                        src={ 
-                                                            aChildTermFacet.entity && aChildTermFacet.entity['header_image']
-                                                                ?    
-                                                            aChildTermFacet.entity['header_image']
-                                                                : 
-                                                            `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`
-                                                        }
-                                                        alt={ aChildTermFacet.label ? aChildTermFacet.label : __( 'Thumbnail', 'tainacan' ) }/>
-                                                    <span>{ aChildTermFacet.label ? aChildTermFacet.label : '' }</span>
-                                                    { aChildTermFacet.total_items ? <span class="facet-item-count" style={{ display: !showItemsCount ? 'none' : '' }}>&nbsp;({ aChildTermFacet.total_items })</span> : null }
-                                                </a>
-                                            </li>
+                                            return prepareFacet(aChildTermFacet);
                                         })
                                         :
                                         <p class="no-child-facet-found">{ __( 'This facet children terms do not contain items.', 'tainacan' )}</p>
                                 }
                             </ul>
                         : null )
-                    }
+                    : null }
                 </li>
             );
         }
