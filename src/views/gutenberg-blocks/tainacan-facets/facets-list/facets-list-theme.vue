@@ -34,19 +34,19 @@
             <ul
                     v-if="layout !== 'list'"
                     :style="{
-                        gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + 185) + 'px)' : 'inherit', 
+                        gridGap: layout == 'grid' ? (gridMargin + 'px') : 'inherit',
                         marginTop: showSearchBar ? '1.5em' : '4px'
                     }"
                     class="facets-list"
                     :class="'facets-layout-' + layout + (!showName ? ' facets-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
-                    <li
-                            :key="facet"
-                            v-for="facet in Number(maxFacetsNumber)"
-                            class="facet-list-item skeleton"
-                            :style="{ 
-                                marginBottom: layout == 'grid' && ((metadatumType == 'Relationship' || metadatumType == 'Taxonomy') && showImage) ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
-                                minHeight: getSkeletonHeight()
-                            }" />      
+                <li
+                        :key="facet"
+                        v-for="facet in Number(maxFacetsNumber)"
+                        class="facet-list-item skeleton"
+                        :style="{ 
+                            marginBottom: layout == 'grid' && ((metadatumType == 'Relationship' || metadatumType == 'Taxonomy') && showImage) ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
+                            minHeight: getSkeletonHeight()
+                        }" />      
             </ul>
             <ul
                     v-else
@@ -74,7 +74,7 @@
             <ul 
                     v-if="facets.length > 0 && layout != 'list'"
                     :style="{
-                        gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + 185) + 'px)' : 'inherit',
+                        gridGap: layout == 'grid' ? (gridMargin + 'px') : 'inherit',
                         marginTop: showSearchBar ? '1.5em' : '0px'
                     }"
                     class="facets-list"

@@ -186,17 +186,146 @@
     display: flex;
     display: -ms-grid;
     display: grid;
-    -ms-grid-columns: 220px 220px 220px 220px 220px;
-    grid-template-columns: repeat(auto-fill, 220px);
-    grid-gap: 0px;
     justify-content: space-evenly;
     list-style-type: none; }
+    .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-7,
+    .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-7 {
+      -ms-grid-columns: 220px 220px 220px 220px 220px 220px 220px;
+      grid-template-columns: repeat(7, 1fr); }
+      @media only screen and (max-width: 1600px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-7,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-7 {
+          -ms-grid-columns: 220px 220px 220px 220px 220px 220px;
+          grid-template-columns: repeat(6, 1fr); } }
+      @media only screen and (max-width: 1400px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-7,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-7 {
+          -ms-grid-columns: 220px 220px 220px 220px 220px;
+          grid-template-columns: repeat(5, 1fr); } }
+      @media only screen and (max-width: 1280px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-7,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-7 {
+          -ms-grid-columns: 220px 220px 220px 220px;
+          grid-template-columns: repeat(4, 1fr); } }
+      @media only screen and (max-width: 1024px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-7,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-7 {
+          -ms-grid-columns: 220px 220px 220px;
+          grid-template-columns: repeat(3, 1fr); } }
+      @media only screen and (max-width: 768px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-7,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-7 {
+          -ms-grid-columns: 220px 220px;
+          grid-template-columns: repeat(2, 1fr); } }
+      @media only screen and (max-width: 498px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-7,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-7 {
+          -ms-grid-columns: 220px;
+          grid-template-columns: repeat(1, 1fr); } }
+    .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-6,
+    .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-6 {
+      -ms-grid-columns: 220px 220px 220px 220px 220px 220px;
+      grid-template-columns: repeat(6, 1fr); }
+      @media only screen and (max-width: 1400px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-6,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-6 {
+          -ms-grid-columns: 220px 220px 220px 220px 220px;
+          grid-template-columns: repeat(5, 1fr); } }
+      @media only screen and (max-width: 1280px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-6,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-6 {
+          -ms-grid-columns: 220px 220px 220px 220px;
+          grid-template-columns: repeat(4, 1fr); } }
+      @media only screen and (max-width: 1024px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-6,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-6 {
+          -ms-grid-columns: 220px 220px 220px;
+          grid-template-columns: repeat(3, 1fr); } }
+      @media only screen and (max-width: 768px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-6,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-6 {
+          -ms-grid-columns: 220px 220px;
+          grid-template-columns: repeat(2, 1fr); } }
+      @media only screen and (max-width: 498px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-6,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-6 {
+          -ms-grid-columns: 220px;
+          grid-template-columns: repeat(1, 1fr); } }
+    .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-5,
+    .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-5 {
+      -ms-grid-columns: 220px 220px 220px 220px 220px;
+      grid-template-columns: repeat(5, 1fr); }
+      @media only screen and (max-width: 1280px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-5,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-5 {
+          -ms-grid-columns: 220px 220px 220px 220px;
+          grid-template-columns: repeat(4, 1fr); } }
+      @media only screen and (max-width: 1024px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-5,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-5 {
+          -ms-grid-columns: 220px 220px 220px;
+          grid-template-columns: repeat(3, 1fr); } }
+      @media only screen and (max-width: 768px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-5,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-5 {
+          -ms-grid-columns: 220px 220px;
+          grid-template-columns: repeat(2, 1fr); } }
+      @media only screen and (max-width: 498px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-5,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-5 {
+          -ms-grid-columns: 220px;
+          grid-template-columns: repeat(1, 1fr); } }
+    .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-4,
+    .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-4 {
+      -ms-grid-columns: 220px 220px 220px 220px;
+      grid-template-columns: repeat(4, 1fr); }
+      @media only screen and (max-width: 1024px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-4,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-4 {
+          -ms-grid-columns: 220px 220px 220px;
+          grid-template-columns: repeat(3, 1fr); } }
+      @media only screen and (max-width: 768px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-4,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-4 {
+          -ms-grid-columns: 220px 220px;
+          grid-template-columns: repeat(2, 1fr); } }
+      @media only screen and (max-width: 498px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-4,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-4 {
+          -ms-grid-columns: 220px;
+          grid-template-columns: repeat(1, 1fr); } }
+    .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-3,
+    .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-3 {
+      -ms-grid-columns: 220px 220px 220px;
+      grid-template-columns: repeat(3, 1fr); }
+      @media only screen and (max-width: 768px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-3,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-3 {
+          -ms-grid-columns: 220px 220px;
+          grid-template-columns: repeat(2, 1fr); } }
+      @media only screen and (max-width: 498px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-3,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-3 {
+          -ms-grid-columns: 220px;
+          grid-template-columns: repeat(1, 1fr); } }
+    .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-2,
+    .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-2 {
+      -ms-grid-columns: 220px 220px;
+      grid-template-columns: repeat(2, 1fr); }
+      @media only screen and (max-width: 498px) {
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-2,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-2 {
+          -ms-grid-columns: 220px;
+          grid-template-columns: repeat(1, 1fr); } }
+    .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid.max-columns-count-1,
+    .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid.max-columns-count-1 {
+      -ms-grid-columns: 220px;
+      grid-template-columns: repeat(1, 1fr); }
     .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item,
     .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item {
       position: relative;
       display: block;
-      margin: 12px;
-      width: 185px; }
+      width: 100%; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item a {
         color: var(--tainacan-block-gray5, #454647);
@@ -206,8 +335,7 @@
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item img,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item img {
         height: auto;
-        width: 185px;
-        min-width: 185px;
+        width: 100%;
         padding: 0px;
         margin-bottom: 0.5em; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item span.facet-item-count,
@@ -250,16 +378,6 @@
     .wp-block-tainacan-facets-list ul.facets-list-edit li.facet-list-item:hover button:hover {
       background-color: white !important;
       border: 1px solid var(--tainacan-block-gray3, #cbcbcb) !important; }
-  @media only screen and (max-width: 498px) {
-    .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid,
-    .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid {
-      grid-template-columns: repeat(auto-fill, 100%); }
-      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item,
-      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item {
-        width: 100%; }
-        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item img,
-        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item img {
-          width: 100%; } }
   .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list,
   .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list {
     padding: 0;
@@ -473,9 +591,16 @@
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item span.facet-item-count,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item span.facet-item-count {
         color: var(--tainacan-block-gray3, #cbcbcb); }
-      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item:hover a,
+      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item:hover, .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item:hover a,
+      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item:hover,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item:hover a {
         color: var(--tainacan-block-primary, #298596);
+        text-decoration: none;
+        cursor: pointer; }
+      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item:hover.facet-term-with-children, .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item:hover.facet-term-with-children a,
+      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item:hover.facet-term-with-children,
+      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item:hover.facet-term-with-children a {
+        color: var(--tainacan-block-gray5, #454647) !important;
         text-decoration: none; }
   .wp-block-tainacan-facets-list .show-more-button {
     margin: 12px auto;

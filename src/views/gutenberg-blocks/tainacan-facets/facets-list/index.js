@@ -84,7 +84,7 @@ registerBlockType('tainacan/facets-list', {
         },
         gridMargin: {
             type: Number,
-            default: 0
+            default: 24
         },
         metadatumId: {
             type: String,
@@ -205,14 +205,17 @@ registerBlockType('tainacan/facets-list', {
             showItemsCount = true;
             setAttributes({ showItemsCount: showItemsCount });
         }
+        if (gridMargin === undefined) {
+            gridMargin = 24;
+            setAttributes({ gridMargin: gridMargin });
+        }
     
         function prepareFacet(facet) {
             const facetId = facet.id != undefined ? facet.id : facet.value; 
             return (
                 <li 
                     key={ facetId }
-                    className={ 'facet-list-item' + (!showImage ? ' facet-without-image' : '') + ((appendChildTerms && facet.total_children > 0) ? ' facet-term-with-children': '')}
-                    style={{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}}>
+                    className={ 'facet-list-item' + (!showImage ? ' facet-without-image' : '') + ((appendChildTerms && facet.total_children > 0) ? ' facet-term-with-children': '')}>
                     <a 
                         id={ isNaN(facetId) ? facetId : 'facet-id-' + facetId }
                         href={ !appendChildTerms ? ((linkTermFacetsToTermPage && metadatumType == 'Taxonomy') ? facet.term_url : facet.url) : (facet.total_children > 0 ? null : (linkTermFacetsToTermPage ? facet.term_url : facet.url)) }
@@ -712,6 +715,19 @@ registerBlockType('tainacan/facets-list', {
                                             max={ 48 }
                                         />
                                     </div>
+                                    <div style={{ marginTop: '16px'}}>
+                                        <RangeControl
+                                                label={ __('Maximum number of columns on a wide screen', 'tainacan') }
+                                                value={ maxColumnsCount ? maxColumnsCount : 5 }
+                                                onChange={ ( aMaxColumnsCount ) => {
+                                                    maxColumnsCount = aMaxColumnsCount;
+                                                    setAttributes( { maxColumnsCount: aMaxColumnsCount } );
+                                                    updateContent(); 
+                                                }}
+                                                min={ 1 }
+                                                max={ 7 }
+                                            />
+                                    </div>
                                 </div>
                             </PanelBody>
                         : null 
@@ -916,7 +932,7 @@ registerBlockType('tainacan/facets-list', {
                         { layout !== 'list' ?
                             <ul 
                                 style={{ 
-                                    gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + 185) + 'px)' : 'inherit', 
+                                    gridGap: layout == 'grid' ? (gridMargin + 'px') : 'inherit',
                                     marginTop: showSearchBar ? '1.5rem' : '0px'
                                 }}
                                 className={ 'facets-list-edit facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '') }>

@@ -45,7 +45,7 @@
             <ul
                     v-if="isLoadingChildTerms == (facet.id != undefined ? facet.id : facet.value)"
                     :style="{
-                        gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + 185) + 'px)' : 'inherit', 
+                        gridGap: layout == 'grid' ? (gridMargin + 'px') : 'inherit',
                         marginTop: showSearchBar ? '1.5em' : '4px'
                     }"
                     class="facets-list"

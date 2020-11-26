@@ -222,17 +222,132 @@
     ul.facets-list-edit.facets-layout-grid {
         padding: 0;
         @include display-grid;
-        -ms-grid-columns: 220px 220px 220px 220px 220px;
-        grid-template-columns: repeat(auto-fill, 220px);
-        grid-gap: 0px;
         justify-content: space-evenly;
         list-style-type: none;
+
+        &.max-columns-count-7 {
+            -ms-grid-columns: 220px 220px 220px 220px 220px 220px 220px;
+            grid-template-columns: repeat(7, 1fr);
+
+            @media only screen and (max-width: 1600px) {
+                -ms-grid-columns: 220px 220px 220px 220px 220px 220px;
+                grid-template-columns: repeat(6, 1fr);
+            }
+            @media only screen and (max-width: 1400px) {
+                -ms-grid-columns: 220px 220px 220px 220px 220px;
+                grid-template-columns: repeat(5, 1fr);
+            }
+            @media only screen and (max-width: 1280px) { 
+                -ms-grid-columns: 220px 220px 220px 220px;
+                grid-template-columns: repeat(4, 1fr);
+            }
+            @media only screen and (max-width: 1024px) { 
+                -ms-grid-columns: 220px 220px 220px;
+                grid-template-columns: repeat(3, 1fr);
+            }
+            @media only screen and (max-width: 768px) { 
+                -ms-grid-columns: 220px 220px;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            @media only screen and (max-width: 498px) {
+                -ms-grid-columns: 220px;
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+        &.max-columns-count-6 {
+            -ms-grid-columns: 220px 220px 220px 220px 220px 220px;
+            grid-template-columns: repeat(6, 1fr);
+
+            @media only screen and (max-width: 1400px) {
+                -ms-grid-columns: 220px 220px 220px 220px 220px;
+                grid-template-columns: repeat(5, 1fr);
+            }
+            @media only screen and (max-width: 1280px) { 
+                -ms-grid-columns: 220px 220px 220px 220px;
+                grid-template-columns: repeat(4, 1fr);
+            }
+            @media only screen and (max-width: 1024px) { 
+                -ms-grid-columns: 220px 220px 220px;
+                grid-template-columns: repeat(3, 1fr);
+            }
+            @media only screen and (max-width: 768px) { 
+                -ms-grid-columns: 220px 220px;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            @media only screen and (max-width: 498px) {
+                -ms-grid-columns: 220px;
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+        &.max-columns-count-5 {
+            -ms-grid-columns: 220px 220px 220px 220px 220px;
+            grid-template-columns: repeat(5, 1fr);
+
+            @media only screen and (max-width: 1280px) { 
+                -ms-grid-columns: 220px 220px 220px 220px;
+                grid-template-columns: repeat(4, 1fr);
+            }
+            @media only screen and (max-width: 1024px) { 
+                -ms-grid-columns: 220px 220px 220px;
+                grid-template-columns: repeat(3, 1fr);
+            }
+            @media only screen and (max-width: 768px) { 
+                -ms-grid-columns: 220px 220px;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            @media only screen and (max-width: 498px) {
+                -ms-grid-columns: 220px;
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+        &.max-columns-count-4 {
+            -ms-grid-columns: 220px 220px 220px 220px;
+            grid-template-columns: repeat(4, 1fr);
+
+            @media only screen and (max-width: 1024px) { 
+                -ms-grid-columns: 220px 220px 220px;
+                grid-template-columns: repeat(3, 1fr);
+            }
+            @media only screen and (max-width: 768px) { 
+                -ms-grid-columns: 220px 220px;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            @media only screen and (max-width: 498px) {
+                -ms-grid-columns: 220px;
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+        &.max-columns-count-3 {
+            -ms-grid-columns: 220px 220px 220px;
+            grid-template-columns: repeat(3, 1fr);
+
+            @media only screen and (max-width: 768px) { 
+                -ms-grid-columns: 220px 220px;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            @media only screen and (max-width: 498px) {
+                -ms-grid-columns: 220px;
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+        &.max-columns-count-2 {
+            -ms-grid-columns: 220px 220px;
+            grid-template-columns: repeat(2, 1fr);
+
+            @media only screen and (max-width: 498px) {
+                -ms-grid-columns: 220px;
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }        
+        &.max-columns-count-1 {
+            -ms-grid-columns: 220px;
+            grid-template-columns: repeat(1, 1fr);
+        }
 
         li.facet-list-item {
             position: relative;
             display: block;
-            margin: 12px;
-            width: 185px;
+            width: 100%;
 
             a { 
                 color: var(--tainacan-block-gray5, $gray5); 
@@ -243,8 +358,7 @@
 
             img {
                 height: auto;
-                width: 185px;
-                min-width: 185px;
+                width: 100%;
                 padding: 0px;
                 margin-bottom: 0.5em;
             }
@@ -297,18 +411,6 @@
         &:hover button:hover {
             background-color: rgba(255, 255, 255, 1) !important;
             border: 1px solid var(--tainacan-block-gray3, $gray3) !important;
-        }
-    }
-    @media only screen and (max-width: 498px) { 
-        
-        ul.facets-list.facets-layout-grid,
-        ul.facets-list-edit.facets-layout-grid {
-            grid-template-columns: repeat(auto-fill, 100%);
-
-            li.facet-list-item { 
-                width: 100%;
-                img { width: 100%; }
-            }
         }
     }
 
@@ -480,8 +582,15 @@
                 color: var(--tainacan-block-gray3, $gray3);
             }
 
-            &:hover a { 
+            &:hover,
+            &:hover a {
                 color: var(--tainacan-block-primary, $primary);
+                text-decoration: none;
+                cursor: pointer;
+            }
+            &:hover.facet-term-with-children,
+            &:hover.facet-term-with-children a { 
+                color: var(--tainacan-block-gray5, $gray5);
                 text-decoration: none;
             }
         }

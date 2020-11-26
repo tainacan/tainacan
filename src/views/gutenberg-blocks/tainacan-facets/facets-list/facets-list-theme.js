@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     appendChildTerms: false,
                     layout: 'grid',
                     cloudRate: 1,
-                    gridMargin: 0,
+                    gridMargin: 24,
                     maxFacetsNumber: 12,
                     maxColumnsCount: 5,
                     tainacanApiRoot: '',
