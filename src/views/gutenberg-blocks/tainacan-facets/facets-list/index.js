@@ -477,15 +477,13 @@ registerBlockType('tainacan/facets-list', {
         function updateLayout(newLayout) {
             layout = newLayout;
 
-            if (layout == 'grid')
-                showImage = true;
-
-            if (layout == 'list' || layout == 'cloud')
-                showImage = false;
+            if (layout == 'grid' && appendChildTerms == true) {
+                appendChildTerms = false;
+            }
 
             setAttributes({ 
                 layout: layout, 
-                showImage: showImage
+                appendChildTerms: appendChildTerms
             });
             updateContent();
         }
@@ -675,7 +673,7 @@ registerBlockType('tainacan/facets-list', {
                                         </Button> 
                                     </BaseControl>
 
-                                    { parentTerm !== null ? 
+                                    { parentTerm !== null && layout !== 'grid' && layout !== undefined ? 
                                         <ToggleControl
                                             label={__('Append child terms', 'tainacan')}
                                             help={ appendChildTerms ? __("Do not append child terms after each term found", 'tainacan') : __("Toggle to append child terms after each term found", 'tainacan')}
