@@ -1,7 +1,7 @@
 <template>
     <li 
             class="facet-list-item"
-            :class="(!showImage ? 'facet-without-image' : '') + ((appendChildTerms && facet.total_children > 0) ? ' facet-term-with-children': '')"
+            :class="(!showImage ? 'facet-without-image' : '') + (nameInsideImage ? ' facet-with-name-inside-image' : '') + ((appendChildTerms && facet.total_children > 0) ? ' facet-term-with-children': '')"
             :style="{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}">
         <a 
                 :id="isNaN(facetId) ? facetId : 'facet-id-' + facetId"
@@ -71,6 +71,7 @@
                                     v-for="(aChildTermFacet, childFacetIndex) of childFacetsObject[facet.id != undefined ? facet.id : facet.value].facets"
                                     :key="childFacetIndex"
                                     :show-image="showImage"
+                                    :name-inside-image="nameInsideImage"
                                     :child-facets-object="childFacetsObject"
                                     :facet="aChildTermFacet"
                                     :cloud-rate="cloudRate"
@@ -104,6 +105,7 @@ export default {
         showImage: Boolean,
         showItemsCount: Boolean,
         showSearchBar: Boolean,
+        nameInsideImage: Boolean,
         isLoadingChildTerms: Boolean,
         linkTermFacetsToTermPage: Boolean,
         layout: String,

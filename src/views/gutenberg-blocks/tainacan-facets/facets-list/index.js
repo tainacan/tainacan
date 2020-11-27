@@ -58,6 +58,10 @@ registerBlockType('tainacan/facets-list', {
             type: Boolean,
             default: true
         },
+        nameInsideImage: {
+            type: Boolean,
+            default: false
+        },
         showItemsCount: {
             type: Boolean,
             default: true
@@ -163,6 +167,7 @@ registerBlockType('tainacan/facets-list', {
             collectionId,
             collectionSlug,    
             showImage,
+            nameInsideImage,
             showItemsCount,
             showLoadMore,
             showSearchBar,
@@ -201,6 +206,10 @@ registerBlockType('tainacan/facets-list', {
             showImage = true;
             setAttributes({ showImage: showImage });
         }
+        if (nameInsideImage === undefined) {
+            nameInsideImage = true;
+            setAttributes({ nameInsideImage: nameInsideImage });
+        }
         if (showItemsCount === undefined) {
             showItemsCount = true;
             setAttributes({ showItemsCount: showItemsCount });
@@ -215,7 +224,7 @@ registerBlockType('tainacan/facets-list', {
             return (
                 <li 
                     key={ facetId }
-                    className={ 'facet-list-item' + (!showImage ? ' facet-without-image' : '') + ((appendChildTerms && facet.total_children > 0) ? ' facet-term-with-children': '')}>
+                    className={ 'facet-list-item' + (!showImage ? ' facet-without-image' : '') + (nameInsideImage ? ' facet-with-name-inside-image' : '') + ((appendChildTerms && facet.total_children > 0) ? ' facet-term-with-children': '')}>
                     <a 
                         id={ isNaN(facetId) ? facetId : 'facet-id-' + facetId }
                         href={ !appendChildTerms ? ((linkTermFacetsToTermPage && metadatumType == 'Taxonomy') ? facet.term_url : facet.url) : (facet.total_children > 0 ? null : (linkTermFacetsToTermPage ? facet.term_url : facet.url)) }
@@ -691,12 +700,12 @@ registerBlockType('tainacan/facets-list', {
                                 <div>
                                     { (metadatumType == 'Taxonomy' || metadatumType == 'Relationship') ? 
                                         <ToggleControl
-                                            label={__('Image', 'tainacan')}
-                                            help={ showImage ? __("Toggle to show facet's image", 'tainacan') : __("Do not show facet's image", 'tainacan')}
-                                            checked={ showImage }
+                                            label={__('Name inside image', 'tainacan')}
+                                            help={ nameInsideImage ? __("Toggle to show facet's name inside the image", 'tainacan') : __("Do not show facet's name image", 'tainacan')}
+                                            checked={ nameInsideImage }
                                             onChange={ ( isChecked ) => {
-                                                    showImage = isChecked;
-                                                    setAttributes({ showImage: showImage });
+                                                    nameInsideImage = isChecked;
+                                                    setAttributes({ nameInsideImage: nameInsideImage });
                                                     updateContent();
                                                 } 
                                             }
@@ -992,6 +1001,7 @@ registerBlockType('tainacan/facets-list', {
             collectionSlug,
             parentTerm,  
             showImage,
+            nameInsideImage,
             showItemsCount,
             showLoadMore,
             layout,
@@ -1013,6 +1023,7 @@ registerBlockType('tainacan/facets-list', {
                     collection-slug={ collectionSlug }
                     parent-term-id={ parentTerm ? parentTerm.id : null }  
                     show-image={ '' + showImage }
+                    name-inside-image={ '' + nameInsideImage }
                     show-items-count={ '' + showItemsCount }
                     show-search-bar={ '' + showSearchBar }
                     show-load-more={ '' + showLoadMore }

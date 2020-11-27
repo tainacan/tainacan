@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     showItemsCount: true,
                     showSearchBar: false,
                     showLoadMore: false,
+                    nameInsideImage: false,
                     linkTermFacetsToTermPage: true,
                     appendChildTerms: false,
                     layout: 'grid',
@@ -51,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             collectionSlug: this.collectionSlug,
                             parentTermId: this.parentTermId,  
                             showImage: this.showImage,
+                            nameInsideImage: this.nameInsideImage,
                             showItemsCount: this.showItemsCount,
                             showSearchBar: this.showSearchBar,
                             showLoadMore: this.showLoadMore,
@@ -76,6 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.appendChildTerms = this.$el.attributes['append-child-terms'] != undefined ? this.$el.attributes['append-child-terms'].value == 'true' : true;
                     this.parentTermId = this.$el.attributes['parent-term-id'] != undefined ? this.$el.attributes['parent-term-id'].value : undefined;
                     this.showImage = this.$el.attributes['show-image'] != undefined ? this.$el.attributes['show-image'].value == 'true' : true;
+                    this.nameInsideImage = this.$el.attributes['name-inside-image'] != undefined ? this.$el.attributes['name-inside-image'].value == 'true' : false;
                     this.showItemsCount = this.$el.attributes['show-items-count'] != undefined ? this.$el.attributes['show-items-count'].value == 'true' : true;
                     this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;
                     this.showLoadMore = this.$el.attributes['show-load-more'] != undefined ? this.$el.attributes['show-load-more'].value == 'true' : false;

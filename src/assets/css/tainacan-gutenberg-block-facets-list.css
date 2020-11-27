@@ -179,6 +179,36 @@
         width: 100%;
         border: 1px solid var(--tainacan-block-gray3, #cbcbcb);
         box-shadow: none; }
+  .wp-block-tainacan-facets-list ul.facets-list-edit li.facet-list-item {
+    display: flex;
+    align-items: flex-start; }
+    .wp-block-tainacan-facets-list ul.facets-list-edit li.facet-list-item button {
+      position: absolute !important;
+      background-color: rgba(255, 255, 255, 0.75);
+      color: var(--tainacan-block-gray5, #454647);
+      padding: 2px;
+      margin-left: 5px;
+      min-width: 14px;
+      visibility: hidden;
+      position: relative;
+      opacity: 0;
+      right: -14px;
+      top: 0px;
+      justify-content: center;
+      z-index: 999; }
+    .wp-block-tainacan-facets-list ul.facets-list-edit li.facet-list-item:hover button {
+      height: auto;
+      visibility: visible;
+      background-color: white !important;
+      opacity: 1;
+      right: -8px;
+      top: -8px;
+      border: 1px solid var(--tainacan-block-gray3, #cbcbcb);
+      border-radius: 12px;
+      transition: opacity linear 0.15s, right linear 0.15s; }
+    .wp-block-tainacan-facets-list ul.facets-list-edit li.facet-list-item:hover button:hover {
+      background-color: white !important;
+      border: 1px solid var(--tainacan-block-gray3, #cbcbcb) !important; }
   .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid,
   .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid {
     padding: 0;
@@ -331,53 +361,44 @@
         color: var(--tainacan-block-gray5, #454647);
         border: none;
         font-weight: bold;
-        line-height: normal; }
-      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item img,
-      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item img {
+        line-height: normal;
+        display: block; }
+      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item:not(.facet-with-name-inside-image) img,
+      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item:not(.facet-with-name-inside-image) img {
         height: auto;
         width: 100%;
         padding: 0px;
         margin-bottom: 0.5em; }
-      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item span.facet-item-count,
-      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item span.facet-item-count {
+      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item:not(.facet-with-name-inside-image) span.facet-item-count,
+      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item:not(.facet-with-name-inside-image) span.facet-item-count {
         color: var(--tainacan-block-gray3, #cbcbcb); }
-      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item.facet-without-image img,
-      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item.facet-without-image img {
-        display: none; }
+      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item.facet-with-name-inside-image a span,
+      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item.facet-with-name-inside-image a span {
+        display: block;
+        position: absolute;
+        background: rgba(255, 255, 255, 0.75);
+        opacity: 0;
+        padding: 8px 12px;
+        word-break: break-word;
+        transition: opacity 0.5s ease;
+        max-width: 100%; }
+      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item.facet-with-name-inside-image a span:first-of-type,
+      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item.facet-with-name-inside-image a span:first-of-type {
+        left: 0;
+        bottom: 0;
+        border-top-right-radius: 2px; }
+      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item.facet-with-name-inside-image a span:last-of-type,
+      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item.facet-with-name-inside-image a span:last-of-type {
+        right: 0;
+        top: 0;
+        border-bottom-left-radius: 2px; }
+      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item:hover.facet-with-name-inside-image a span,
+      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item:hover.facet-with-name-inside-image a span {
+        opacity: 1; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item:hover a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item:hover a {
         color: var(--tainacan-block-gray5, #454647);
         text-decoration: none; }
-  .wp-block-tainacan-facets-list ul.facets-list-edit li.facet-list-item {
-    display: flex;
-    align-items: flex-start; }
-    .wp-block-tainacan-facets-list ul.facets-list-edit li.facet-list-item button {
-      position: absolute !important;
-      background-color: rgba(255, 255, 255, 0.75);
-      color: var(--tainacan-block-gray5, #454647);
-      padding: 2px;
-      margin-left: 5px;
-      min-width: 14px;
-      visibility: hidden;
-      position: relative;
-      opacity: 0;
-      right: -14px;
-      top: 0px;
-      justify-content: center;
-      z-index: 999; }
-    .wp-block-tainacan-facets-list ul.facets-list-edit li.facet-list-item:hover button {
-      height: auto;
-      visibility: visible;
-      background-color: white !important;
-      opacity: 1;
-      right: -8px;
-      top: -8px;
-      border: 1px solid var(--tainacan-block-gray3, #cbcbcb);
-      border-radius: 12px;
-      transition: opacity linear 0.15s, right linear 0.15s; }
-    .wp-block-tainacan-facets-list ul.facets-list-edit li.facet-list-item:hover button:hover {
-      background-color: white !important;
-      border: 1px solid var(--tainacan-block-gray3, #cbcbcb) !important; }
   .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list,
   .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list {
     padding: 0;
@@ -600,7 +621,7 @@
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item:hover.facet-term-with-children, .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item:hover.facet-term-with-children a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item:hover.facet-term-with-children,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item:hover.facet-term-with-children a {
-        color: var(--tainacan-block-gray5, #454647) !important;
+        color: var(--tainacan-block-gray5, #454647);
         text-decoration: none; }
   .wp-block-tainacan-facets-list .show-more-button {
     margin: 12px auto;

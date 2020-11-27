@@ -167,20 +167,20 @@ export default class ParentTermModal extends React.Component {
                 title={__('Select a parent term to fetch facets from', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
                 contentLabel={__('Select term', 'tainacan')}>
-                <div>
-                    <div className="modal-search-area">
-                        <TextControl 
-                                label={__('Search for a term', 'tainacan')} 
-                                placeholder={ __('Search by term\'s name', 'tainacan') }
-                                value={ this.state.searchFacetName }
-                                onChange={(value) => {
-                                    this.setState({ 
-                                        searchFacetName: value
-                                    });
-                                    _.debounce(this.fetchFacets(value), 300);
-                                }}/>
-                    </div>
-                    {(
+            <div>
+                <div className="modal-search-area">
+                    <TextControl 
+                            label={__('Search for a term', 'tainacan')} 
+                            placeholder={ __('Search by term\'s name', 'tainacan') }
+                            value={ this.state.searchFacetName }
+                            onChange={(value) => {
+                                this.setState({ 
+                                    searchFacetName: value
+                                });
+                                _.debounce(this.fetchFacets(value), 300);
+                            }}/>
+                </div>
+                {(
                     this.state.searchFacetName != '' ? (
                         this.state.facets.length > 0 ?
                         (

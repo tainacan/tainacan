@@ -84,6 +84,7 @@
                         :key="index"
                         :show-search-bar="showSearchBar"
                         :show-image="showImage"
+                        :name-inside-image="nameInsideImage"
                         :child-facets-object="childFacetsObject"
                         :append-child-terms="appendChildTerms"
                         :facet="facet"
@@ -111,6 +112,7 @@
                             :key="index"
                             :show-search-bar="showSearchBar"
                             :show-image="showImage"
+                            :name-inside-image="nameInsideImage"
                             :child-facets-object="childFacetsObject"
                             :append-child-terms="appendChildTerms"
                             :facet="facet"
@@ -168,6 +170,7 @@ export default {
         collectionSlug: String,
         parentTermId: String,
         showImage: Boolean,
+        nameInsideImage: Boolean,
         showItemsCount: Boolean,
         showSearchBar: Boolean,
         showLoadMore: Boolean,
