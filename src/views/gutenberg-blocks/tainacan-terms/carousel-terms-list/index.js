@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
+const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -10,6 +10,7 @@ import TermsModal from '../terms-list/terms-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
+import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 
 registerBlockType('tainacan/carousel-terms-list', {
     title: __('Tainacan Terms Carousel', 'tainacan'),
@@ -308,49 +309,18 @@ registerBlockType('tainacan/carousel-terms-list', {
 
                 { terms.length ?
                     <BlockControls>
-                        { tainacan_blocks.wp_version < '5.4' ?
-                            <Button style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2' }} onClick={ () => openCarouselModal() } >
-                                <p style={{ margin: 0 }}>
-                                    <svg
+                        {
+                            TainacanBlocksCompatToolbar({
+                                label: __('Add more terms', 'tainacan'),
+                                icon: <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
+                                            viewBox="0 -2 24 24"
                                             height="24px"
                                             width="24px">
                                         <path d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
-                                    </svg>
-                                </p>&nbsp;
-                                { __('Add more terms', 'tainacan') } 
-                            </Button>
-                            : 
-                            <ToolbarGroup>
-                                { tainacan_blocks.wp_version < '5.5' ?
-                                    <Button style={{ whiteSpace: 'nowrap' }} onClick={ () => openCarouselModal() } >
-                                        <p>
-                                            <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    height="24px"
-                                                    width="24px">
-                                                <path d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
-                                            </svg>
-                                        </p>&nbsp;
-                                        { __('Add more terms', 'tainacan') } 
-                                    </Button>
-                                    :
-                                    <ToolbarButton onClick={ () => openCarouselModal() } >
-                                        <p>
-                                            <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    height="24px"
-                                                    width="24px">
-                                                <path d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
-                                            </svg>
-                                        </p>&nbsp;
-                                        { __('Add more terms', 'tainacan') } 
-                                    </ToolbarButton>
-                                }
-                            </ToolbarGroup>
+                                    </svg>,
+                                onClick: openCarouselModal
+                            })
                         }
                     </BlockControls>
                 : null }

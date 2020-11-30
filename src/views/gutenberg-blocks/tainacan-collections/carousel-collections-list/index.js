@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
+const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -10,6 +10,7 @@ import CarouselCollectionsModal from './carousel-collections-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
+import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 
 registerBlockType('tainacan/carousel-collections-list', {
     title: __('Tainacan Collections Carousel', 'tainacan'),
@@ -322,49 +323,18 @@ registerBlockType('tainacan/carousel-collections-list', {
 
                 { collections.length ?
                     <BlockControls>
-                        { tainacan_blocks.wp_version < '5.4' ?
-                            <Button style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2' }} onClick={ () => openCarouselModal() } >
-                                <p style={{ margin: 0 }}>
-                                    <svg
+                        { 
+                            TainacanBlocksCompatToolbar({
+                                label: __('Add more collections', 'tainacan'),
+                                icon: <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
+                                            viewBox="0 -2 24 24"
                                             height="24px"
                                             width="24px">
                                         <path d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
-                                    </svg>
-                                </p>&nbsp;
-                                { __('Add more collections', 'tainacan') } 
-                            </Button>
-                            : 
-                            <ToolbarGroup>
-                                { tainacan_blocks.wp_version < '5.5' ?
-                                    <Button style={{ whiteSpace: 'nowrap' }} onClick={ () => openCarouselModal() } >
-                                        <p>
-                                            <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    height="24px"
-                                                    width="24px">
-                                                <path d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
-                                            </svg>
-                                        </p>&nbsp;
-                                        { __('Add more collections', 'tainacan') } 
-                                    </Button>
-                                    :
-                                    <ToolbarButton onClick={ () => openCarouselModal() } >
-                                        <p>
-                                            <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    height="24px"
-                                                    width="24px">
-                                                <path d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
-                                            </svg>
-                                        </p>&nbsp;
-                                        { __('Add more collections', 'tainacan') } 
-                                    </ToolbarButton>
-                                }
-                            </ToolbarGroup>
+                                    </svg>,
+                                onClick: openCarouselModal
+                            })
                         }
                     </BlockControls>
                 : null }

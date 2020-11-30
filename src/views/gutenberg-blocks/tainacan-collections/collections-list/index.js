@@ -2,10 +2,11 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar, ToolbarGroup, PanelBody, ToolbarButton } = wp.components;
+const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
+import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import CollectionsModal from './collections-modal.js';
 
 registerBlockType('tainacan/collections-list', {
@@ -221,43 +222,15 @@ registerBlockType('tainacan/collections-list', {
                     <BlockControls>
                         <Toolbar controls={ layoutControls } />
                         { selectedCollectionsHTML.length ?
-                            tainacan_blocks.wp_version < '5.4' ?
-                                <Button style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2' }} onClick={ openCollectionsModal } >
-                                   <p style={{ margin: 0 }}>
-                                        <svg width="24" height="24" viewBox="0 -5 12 16">
-                                            <path
-                                                d="M10,8.8v1.3H1.2C0.6,10.1,0,9.5,0,8.8V2.5h1.3v6.3H10z M6.9,0H3.8C3.1,0,2.5,0.6,2.5,1.3l0,5c0,0.7,0.6,1.2,1.3,1.2h7.5
-                                                c0.7,0,1.3-0.6,1.3-1.2V2.5c0-0.7-0.6-1.2-1.3-1.2H8.2L6.9,0z"/>       
-                                        </svg>
-                                    </p>&nbsp;
-                                    {  __( 'Select collections', 'tainacan' ) }
-                                </Button>
-                                : 
-                                <ToolbarGroup>
-                                    { tainacan_blocks.wp_version < '5.5' ?
-                                        <Button style={{ whiteSpace: 'nowrap' }} onClick={ openCollectionsModal } >
-                                            <p>
-                                                <svg width="24" height="24" viewBox="0 -5 12 16">
-                                                    <path
-                                                        d="M10,8.8v1.3H1.2C0.6,10.1,0,9.5,0,8.8V2.5h1.3v6.3H10z M6.9,0H3.8C3.1,0,2.5,0.6,2.5,1.3l0,5c0,0.7,0.6,1.2,1.3,1.2h7.5
-                                                        c0.7,0,1.3-0.6,1.3-1.2V2.5c0-0.7-0.6-1.2-1.3-1.2H8.2L6.9,0z"/>       
-                                                </svg>
-                                            </p>&nbsp;
-                                            {  __( 'Select collections', 'tainacan' ) }
-                                        </Button>
-                                        : 
-                                        <ToolbarButton onClick={ openCollectionsModal } >
-                                            <p>
-                                                <svg width="24" height="24" viewBox="0 -5 12 16">
-                                                    <path
-                                                        d="M10,8.8v1.3H1.2C0.6,10.1,0,9.5,0,8.8V2.5h1.3v6.3H10z M6.9,0H3.8C3.1,0,2.5,0.6,2.5,1.3l0,5c0,0.7,0.6,1.2,1.3,1.2h7.5
-                                                        c0.7,0,1.3-0.6,1.3-1.2V2.5c0-0.7-0.6-1.2-1.3-1.2H8.2L6.9,0z"/>       
-                                                </svg>
-                                            </p>&nbsp;
-                                            {  __( 'Select collections', 'tainacan' ) }
-                                        </ToolbarButton>
-                                    }
-                                </ToolbarGroup>
+                            TainacanBlocksCompatToolbar({
+                                label: __( 'Select collections', 'tainacan' ),
+                                icon: <svg width="24" height="24" viewBox="0 -5 12 16">
+                                        <path
+                                            d="M10,8.8v1.3H1.2C0.6,10.1,0,9.5,0,8.8V2.5h1.3v6.3H10z M6.9,0H3.8C3.1,0,2.5,0.6,2.5,1.3l0,5c0,0.7,0.6,1.2,1.3,1.2h7.5
+                                            c0.7,0,1.3-0.6,1.3-1.2V2.5c0-0.7-0.6-1.2-1.3-1.2H8.2L6.9,0z"/>       
+                                    </svg>,
+                                onClick: openCollectionsModal
+                            })
                         : null }
                     </BlockControls>
                 </div>

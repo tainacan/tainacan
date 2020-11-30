@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, ColorPicker, ColorPalette, BaseControl, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
+const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -10,6 +10,7 @@ import CarouselItemsModal from './carousel-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
+import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 
 registerBlockType('tainacan/carousel-items-list', {
     title: __('Tainacan Collection\'s Items Carousel', 'tainacan'),
@@ -361,92 +362,32 @@ registerBlockType('tainacan/carousel-items-list', {
 
                 { items.length ?
                     <BlockControls>
-                        { tainacan_blocks.wp_version < '5.4' ?
-                            loadStrategy != 'search' ? 
-                                <Button style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2' }} onClick={ () => openCarouseltemsModal('selection') } >
-                                    <p style={{ margin: 0 }}>
-                                        <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 24 24"
-                                                height="24px"
-                                                width="24px">
-                                            <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
-                                        </svg>
-                                    </p>&nbsp;
-                                    { __('Add more items', 'tainacan') }
-                                </Button>
-                                :
-                                <Button style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2' }} onClick={ () => openCarouseltemsModal('search') } >
-                                    <p style={{ margin: 0 }}>
-                                        <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 24 24"
-                                                height="24px"
-                                                width="24px">
-                                            <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
-                                        </svg>
-                                    </p>&nbsp;
-                                    { __('Configure a search', 'tainacan') } 
-                                </Button>
-                            : 
-                            <ToolbarGroup>
-                                { loadStrategy != 'search' ? (
-                                    tainacan_blocks.wp_version < '5.5' ? 
-                                        <Button style={{ whiteSpace: 'nowrap' }} onClick={ () => openCarouseltemsModal('selection')  } >
-                                            <p>
-                                                <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 24 24"
-                                                        height="24px"
-                                                        width="24px">
-                                                    <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
-                                                </svg>
-                                            </p>&nbsp;
-                                            { __('Add more items', 'tainacan') }
-                                        </Button>
-                                        :
-                                        <ToolbarButton onClick={ () => openCarouseltemsModal('selection')  } >
-                                            <p>
-                                                <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 24 24"
-                                                        height="24px"
-                                                        width="24px">
-                                                    <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
-                                                </svg>
-                                            </p>&nbsp;
-                                            { __('Add more items', 'tainacan') }
-                                        </ToolbarButton>
-                                    ) : 
-                                    ( tainacan_blocks.wp_version < '5.5' ? 
-                                        <Button style={{ whiteSpace: 'nowrap' }} onClick={ () => openCarouseltemsModal('search') } >
-                                            <p>
-                                                <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 24 24"
-                                                        height="24px"
-                                                        width="24px">
-                                                    <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
-                                                </svg>
-                                            </p>&nbsp;
-                                            { __('Configure a search', 'tainacan') } 
-                                        </Button>
-                                        :
-                                        <ToolbarButton onClick={ () => openCarouseltemsModal('search') } >
-                                            <p>
-                                                <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 24 24"
-                                                        height="24px"
-                                                        width="24px">
-                                                    <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
-                                                </svg>
-                                            </p>&nbsp;
-                                            { __('Configure a search', 'tainacan') } 
-                                        </ToolbarButton>
-                                    )
-                                }
-                            </ToolbarGroup>
+                        { loadStrategy != 'search' ?
+                            TainacanBlocksCompatToolbar({
+                                label: __('Add more items', 'tainacan'),
+                                icon: <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            height="24px"
+                                            width="24px">
+                                        <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
+                                    </svg>,
+                                onClick: openCarouseltemsModal,
+                                onClickParams: 'selection'
+                            })
+                            :
+                            TainacanBlocksCompatToolbar({
+                                label: __('Configure a search', 'tainacan'),
+                                icon: <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            height="24px"
+                                            width="24px">
+                                        <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
+                                    </svg>,
+                                onClick: openCarouseltemsModal,
+                                onClickParams: 'search'
+                            }) 
                         }
                     </BlockControls>
                 : null }

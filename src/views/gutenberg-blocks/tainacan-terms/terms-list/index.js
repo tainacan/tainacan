@@ -2,10 +2,11 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { IconButton, Button, ToggleControl, Placeholder, Toolbar, ToolbarGroup, PanelBody, ToolbarButton } = wp.components;
+const { IconButton, Button, ToggleControl, Placeholder, Toolbar, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
+import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import TermsModal from './terms-modal.js';
 
 registerBlockType('tainacan/terms-list', {
@@ -216,40 +217,14 @@ registerBlockType('tainacan/terms-list', {
                     <BlockControls>
                         <Toolbar controls={ layoutControls } />
                         { selectedTermsHTML.length ?
-                            tainacan_blocks.wp_version < '5.4' ?
-                                <Button style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2' }} onClick={ openTermsModal } >
-                                    <p style={{ margin: 0 }}>
-                                        <svg width="24" height="24" viewBox="0 -3 12 17">
-                                            <path
-                                                d="M 4.4,2.5 H 0 V 0 h 4.4 l 1.2,1.3 z m -1.9,5 v 3.1 H 5 v 1.2 H 1.3 v -8 H 2.5 V 6.3 H 5 V 7.6 H 2.5 Z m 8.2,0.7 H 6.3 V 5.7 h 4.4 l 1.2,1.2 z M 11.9,11.3 10.7,10 H 6.3 v 2.5 h 4.4 z"/>       
-                                        </svg>
-                                    </p>&nbsp;
-                                    {  __( 'Select terms', 'tainacan' ) }
-                                </Button>
-                                : 
-                                <ToolbarGroup>
-                                    { tainacan_blocks.wp_version < '5.5' ?
-                                        <Button style={{ whiteSpace: 'nowrap' }} onClick={ openTermsModal } >
-                                            <p>
-                                                <svg width="24" height="24" viewBox="0 -3 12 17">
-                                                    <path
-                                                        d="M 4.4,2.5 H 0 V 0 h 4.4 l 1.2,1.3 z m -1.9,5 v 3.1 H 5 v 1.2 H 1.3 v -8 H 2.5 V 6.3 H 5 V 7.6 H 2.5 Z m 8.2,0.7 H 6.3 V 5.7 h 4.4 l 1.2,1.2 z M 11.9,11.3 10.7,10 H 6.3 v 2.5 h 4.4 z"/>       
-                                                </svg>
-                                            </p>&nbsp;
-                                            {  __( 'Select terms', 'tainacan' ) }
-                                        </Button>
-                                        :
-                                        <ToolbarButton onClick={ openTermsModal } >
-                                            <p>
-                                                <svg width="24" height="24" viewBox="0 -3 12 17">
-                                                    <path
-                                                        d="M 4.4,2.5 H 0 V 0 h 4.4 l 1.2,1.3 z m -1.9,5 v 3.1 H 5 v 1.2 H 1.3 v -8 H 2.5 V 6.3 H 5 V 7.6 H 2.5 Z m 8.2,0.7 H 6.3 V 5.7 h 4.4 l 1.2,1.2 z M 11.9,11.3 10.7,10 H 6.3 v 2.5 h 4.4 z"/>       
-                                                </svg>
-                                            </p>&nbsp;
-                                            {  __( 'Select terms', 'tainacan' ) }
-                                        </ToolbarButton>
-                                    }
-                                </ToolbarGroup>
+                            TainacanBlocksCompatToolbar({
+                                label: __( 'Select terms', 'tainacan' ),
+                                icon: <svg width="24" height="24" viewBox="0 -3 12 17">
+                                        <path
+                                            d="M 4.4,2.5 H 0 V 0 h 4.4 l 1.2,1.3 z m -1.9,5 v 3.1 H 5 v 1.2 H 1.3 v -8 H 2.5 V 6.3 H 5 V 7.6 H 2.5 Z m 8.2,0.7 H 6.3 V 5.7 h 4.4 l 1.2,1.2 z M 11.9,11.3 10.7,10 H 6.3 v 2.5 h 4.4 z"/>       
+                                    </svg>,
+                                onClick: openTermsModal
+                            })
                         : null }
                     </BlockControls>
                 </div>
