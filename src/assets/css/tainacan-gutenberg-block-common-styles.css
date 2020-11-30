@@ -84,6 +84,7 @@
   .wp-block-tainacan-modal .modal-search-area {
     display: flex;
     justify-content: center;
+    align-items: flex-end;
     margin-bottom: 6px; }
     .wp-block-tainacan-modal .modal-search-area .components-base-control {
       width: 60%; }

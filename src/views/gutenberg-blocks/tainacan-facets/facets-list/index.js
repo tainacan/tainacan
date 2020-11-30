@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { BaseControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, PanelBody } = wp.components;
+const { BaseControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -380,7 +380,7 @@ registerBlockType('tainacan/facets-list', {
 
                 <div>
                     <BlockControls>
-                        <Toolbar controls={ layoutControls } />
+                        { TainacanBlocksCompatToolbar({ controls: layoutControls }) }
                         { facets.length ? (
                                 TainacanBlocksCompatToolbar({
                                     label: __('Select facets', 'tainacan'),

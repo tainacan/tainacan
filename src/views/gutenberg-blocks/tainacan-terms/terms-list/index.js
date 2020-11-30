@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { IconButton, Button, ToggleControl, Placeholder, Toolbar, PanelBody } = wp.components;
+const { IconButton, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -215,7 +215,7 @@ registerBlockType('tainacan/terms-list', {
 
                 <div>
                     <BlockControls>
-                        <Toolbar controls={ layoutControls } />
+                        { TainacanBlocksCompatToolbar({ controls: layoutControls }) }
                         { selectedTermsHTML.length ?
                             TainacanBlocksCompatToolbar({
                                 label: __( 'Select terms', 'tainacan' ),

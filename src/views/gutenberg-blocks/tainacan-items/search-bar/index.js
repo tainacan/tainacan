@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, TextControl, Toolbar, SelectControl, Button, ToggleControl, Placeholder, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { RangeControl, TextControl, SelectControl, Button, ToggleControl, Placeholder, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -319,7 +319,7 @@ registerBlockType('tainacan/search-bar', {
 
                 <div>
                     <BlockControls>
-                        <Toolbar controls={ alignmentControls } />
+                        { TainacanBlocksCompatToolbar({ controls: alignmentControls }) }
                         { collectionId ?
                             TainacanBlocksCompatToolbar({
                                 label:__('Configure search source', 'tainacan'),

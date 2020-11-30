@@ -2,7 +2,7 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = wp.editor;
 
@@ -482,7 +482,7 @@ registerBlockType('tainacan/dynamic-items-list', {
 
                 <div>
                     <BlockControls>
-                        <Toolbar controls={ layoutControls } />
+                        { TainacanBlocksCompatToolbar({ controls: layoutControls }) }
                         { items.length ? 
                             TainacanBlocksCompatToolbar({
                                 label: __('Configure search', 'tainacan'),
