@@ -11,7 +11,7 @@ import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
-import deprecatedBlocks from './deprecated.js'
+import DeprecatedBlocks from './carousel-collections-deprecated.js'
 
 registerBlockType('tainacan/carousel-collections-list', {
     title: __('Tainacan Collections Carousel', 'tainacan'),
@@ -621,5 +621,5 @@ registerBlockType('tainacan/carousel-collections-list', {
                         { content }
                 </div>
     },
-    deprecated: deprecatedBlocks
+    deprecated: DeprecatedBlocks
 });

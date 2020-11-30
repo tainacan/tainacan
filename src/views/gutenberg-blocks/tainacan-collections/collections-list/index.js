@@ -8,6 +8,7 @@ const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2
 
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import CollectionsModal from './collections-modal.js';
+import DeprecatedBlocks from './collections-list-deprecated.js';
 
 registerBlockType('tainacan/collections-list', {
     title: __('Tainacan Collections List', 'tainacan'),
@@ -100,6 +101,7 @@ registerBlockType('tainacan/collections-list', {
     supports: {
         align: ['full', 'wide'],
         html: false,
+        fontSize: true
     },
     edit({ attributes, setAttributes, className, isSelected }){
         let { 
@@ -352,5 +354,6 @@ registerBlockType('tainacan/collections-list', {
     save({ attributes, className }){
         const { content } = attributes;
         return <div className={className}>{ content }</div>
-    }
+    },
+    deprecated: DeprecatedBlocks
 });
