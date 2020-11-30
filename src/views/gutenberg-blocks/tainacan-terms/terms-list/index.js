@@ -4,7 +4,7 @@ const { __ } = wp.i18n;
 
 const { IconButton, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = wp.editor;
+const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import TermsModal from './terms-modal.js';
@@ -117,10 +117,17 @@ registerBlockType('tainacan/terms-list', {
                 <li 
                     key={ term.id }
                     className="term-list-item">
-                    <IconButton
-                        onClick={ () => removeTermOfId(term.id) }
-                        icon="no-alt"
-                        label={__('Remove', 'tainacan')}/>         
+                    { tainacan_blocks.wp_version < '5.4' ?
+                        <IconButton
+                            onClick={ () => removeTermOfId(term.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                            :
+                        <Button
+                            onClick={ () => removeTermOfId(term.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                    }         
                     <a 
                         id={ isNaN(term.id) ? term.id : 'term-id-' + term.id }
                         href={ term.url } 

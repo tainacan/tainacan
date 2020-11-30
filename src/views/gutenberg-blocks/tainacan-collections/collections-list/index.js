@@ -4,7 +4,7 @@ const { __ } = wp.i18n;
 
 const { RangeControl, IconButton, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = wp.editor;
+const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import CollectionsModal from './collections-modal.js';
@@ -119,10 +119,17 @@ registerBlockType('tainacan/collections-list', {
                     key={ collection.id }
                     className="collection-list-item"
                     style={{ marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}}>
-                    <IconButton
-                        onClick={ () => removeCollectionOfId(collection.id) }
-                        icon="no-alt"
-                        label={__('Remove', 'tainacan')}/>         
+                    { tainacan_blocks.wp_version < '5.4' ?
+                        <IconButton
+                            onClick={ () => removeCollectionOfId(collection.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                        :
+                        <Button
+                            onClick={ () => removeCollectionOfId(collection.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                    }
                     <a 
                         id={ isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id }
                         href={ collection.url } 

@@ -4,7 +4,7 @@ const { __ } = wp.i18n;
 
 const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = wp.editor;
+const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import TermsModal from '../terms-list/terms-modal.js';
 import tainacan from '../../js/axios.js';
@@ -25,7 +25,7 @@ registerBlockType('tainacan/carousel-terms-list', {
                 d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
         </svg>,
     category: 'tainacan-blocks',
-    keywords: [ __( 'terms', 'tainacan' ), __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ),  __( 'taxonomy', 'tainacan' ) ],
+    keywords: [ __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ),  __( 'taxonomy', 'tainacan' ) ],
     description: __('List terms on a Carousel, showing their thumbnails or a preview of items.', 'tainacan'),
     example: {
         attributes: {
@@ -157,10 +157,17 @@ registerBlockType('tainacan/carousel-terms-list', {
                 <li 
                     key={ term.id }
                     className={ 'term-list-item ' + (!showTermThumbnail ? 'term-list-item-grid ' : '') + (maxTermsPerScreen ? ' max-terms-per-screen-' + maxTermsPerScreen : '') }>   
-                    <IconButton
-                        onClick={ () => removeItemOfId(term.id) }
-                        icon="no-alt"
-                        label={__('Remove', 'tainacan')}/>
+                    { tainacan_blocks.wp_version < '5.4' ?
+                        <IconButton
+                            onClick={ () => removeItemOfId(term.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                        :
+                        <Button
+                            onClick={ () => removeItemOfId(term.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                    }
                     <a 
                         id={ isNaN(term.id) ? term.id : 'term-id-' + term.id }
                         href={ term.url } 

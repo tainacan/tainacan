@@ -22,7 +22,7 @@ const {
     MenuItemsChoice
 } = wp.components;
 
-const { InspectorControls, BlockControls } = wp.editor;
+const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import CollectionModal from './collection-modal.js';
 import TermModal from './term-modal.js';
@@ -412,7 +412,7 @@ registerBlockType('tainacan/faceted-search', {
                                     contentClassName="wp-block-tainacan__dropdown"
                                     renderToggle={ ( { isOpen, onToggle } ) => 
                                         <Button
-                                            style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2', height: '100%' }}
+                                            style={{ whiteSpace: 'nowrap', backgroundColor: '#fff', alignItems: 'center', borderTop: '1px solid #b5bcc2', borderBottom: '1px solid #b5bcc2', height: '100%' }}
                                             onClick={ onToggle }
                                             aria-expanded={ isOpen }>
                                                 { __('Items list source', 'tainacan')  }

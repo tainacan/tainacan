@@ -1,4 +1,4 @@
-const { Button, ToolbarGroup, ToolbarButton } = wp.components;
+const { Button, Toolbar, ToolbarGroup, ToolbarButton } = wp.components;
 
 export default function TainacanBlocksCompatToolbar({ label, icon, onClick, onClickParams, controls }) {
     
@@ -6,7 +6,7 @@ export default function TainacanBlocksCompatToolbar({ label, icon, onClick, onCl
         return tainacan_blocks.wp_version < '5.4' ? <Toolbar controls={ controls } /> : <ToolbarGroup controls={ controls } /> 
     else
         return tainacan_blocks.wp_version < '5.4' ?
-            <Button style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2' }} onClick={ () => onClick(onClickParams) }>
+            <Button style={{ whiteSpace: 'nowrap', backgroundColor: '#fff', alignItems: 'center', borderTop: '1px solid #b5bcc2', borderBottom: '1px solid #b5bcc2' }} onClick={ () => onClick(onClickParams) }>
                 <p style={{ margin: 0 }}>
                 { icon }
                 </p>&nbsp;

@@ -243,7 +243,7 @@ export default class ParentTermModal extends React.Component {
                                 {
                                     this.state.modalFacets.length < this.state.totalModalFacets ? (
                                     <Button 
-                                        isDefault
+                                        isSecondary
                                         isSmall
                                         onClick={ () => this.fetchModalFacets() }>
                                         {__('Load more', 'tainacan')}
@@ -259,7 +259,7 @@ export default class ParentTermModal extends React.Component {
                 )}
                 <div className="modal-footer-area">
                     <Button 
-                        isDefault
+                        isSecondary
                         onClick={ () => { this.cancelSelection() }}>
                         {__('Cancel', 'tainacan')}
                     </Button>

@@ -4,7 +4,7 @@ const { __ } = wp.i18n;
 
 const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = wp.editor;
+const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import CarouselCollectionsModal from './carousel-collections-modal.js';
 import tainacan from '../../js/axios.js';
@@ -161,10 +161,17 @@ registerBlockType('tainacan/carousel-collections-list', {
                 <li 
                     key={ collection.id }
                     className={ 'collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid ' : '') + (maxCollectionsPerScreen ? ' max-collections-per-screen-' + maxCollectionsPerScreen : '') }>   
-                    <IconButton
-                        onClick={ () => removeItemOfId(collection.id) }
-                        icon="no-alt"
-                        label={__('Remove', 'tainacan')}/>
+                    { tainacan_blocks.wp_version < '5.4' ?
+                        <IconButton
+                            onClick={ () => removeItemOfId(collection.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                            :
+                        <Button
+                            onClick={ () => removeItemOfId(collection.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                    }
                     <a 
                         id={ isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id }
                         href={ collection.url } 

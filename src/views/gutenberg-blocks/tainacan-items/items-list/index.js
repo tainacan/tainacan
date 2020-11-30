@@ -4,7 +4,7 @@ const { __ } = wp.i18n;
 
 const { RangeControl, IconButton, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = wp.editor;
+const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import ItemsModal from './items-modal.js';
@@ -124,10 +124,17 @@ registerBlockType('tainacan/items-list', {
                     key={ item.id }
                     className="item-list-item"
                     style={{ marginBottom: layout == 'grid' ?  (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}}>
-                    <IconButton
-                        onClick={ () => removeItemOfId(item.id) }
-                        icon="no-alt"
-                        label={__('Remove', 'tainacan')}/>         
+                    { tainacan_blocks.wp_version < '5.4' ?
+                        <IconButton
+                            onClick={ () => removeItemOfId(item.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                            :
+                        <Button
+                            onClick={ () => removeItemOfId(item.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                    }
                     <a 
                         id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
                         href={ item.url } 

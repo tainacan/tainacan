@@ -275,7 +275,7 @@ export default class CollectionsModal extends React.Component {
                                 {
                                     this.state.modalCollections.length < this.state.totalModalCollections ? (
                                     <Button 
-                                        isDefault
+                                        isSecondary
                                         isSmall
                                         onClick={ () => this.fetchModalCollections() }>
                                         {__('Load more', 'tainacan')}
@@ -291,7 +291,7 @@ export default class CollectionsModal extends React.Component {
                 )}
                 <div className="modal-footer-area">
                     <Button
-                        isDefault
+                        isSecondary
                         onClick={ () => this.cancelSelection() }>
                         {__('Cancel', 'tainacan')}
                     </Button>
