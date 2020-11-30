@@ -11,6 +11,7 @@ import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
+import deprecatedBlocks from './deprecated.js'
 
 registerBlockType('tainacan/carousel-collections-list', {
     title: __('Tainacan Collections Carousel', 'tainacan'),
@@ -122,9 +123,10 @@ registerBlockType('tainacan/carousel-collections-list', {
     supports: {
         align: ['full', 'wide'],
         html: false,
-        multiple: true
+        multiple: true,
+        fontSize: true
     },
-    edit({ attributes, setAttributes, className, isSelected, clientId }){
+    edit({ attributes, setAttributes, className, isSelected, clientId }) {
         let {
             collections, 
             content, 
@@ -619,143 +621,5 @@ registerBlockType('tainacan/carousel-collections-list', {
                         { content }
                 </div>
     },
-    deprecated: [
-        {
-            attributes: {
-                content: {
-                    type: 'array',
-                    source: 'children',
-                    selector: 'div'
-                },
-                collections: {
-                    type: Array,
-                    default: []
-                },
-                isModalOpen: {
-                    type: Boolean,
-                    default: false
-                },
-                selectedCollections: {
-                    type: Array,
-                    default: []
-                },
-                itemsRequestSource: {
-                    type: String,
-                    default: undefined
-                },
-                maxCollectionsNumber: {
-                    type: Number,
-                    value: undefined
-                },
-                isLoading: {
-                    type: Boolean,
-                    value: false
-                },
-                isLoadingCollection: {
-                    type: Boolean,
-                    value: false
-                },
-                arrowsPosition: {
-                    type: String,
-                    value: 'search'
-                },
-                autoPlay: {
-                    type: Boolean,
-                    value: false
-                },
-                autoPlaySpeed: {
-                    type: Number,
-                    value: 3
-                },
-                loopSlides: {
-                    type: Boolean,
-                    value: false
-                },
-                hideName: {
-                    type: Boolean,
-                    value: true
-                },
-                showCollectionThumbnail: {
-                    type: Boolean,
-                    value: false
-                },
-                collection: {
-                    type: Object,
-                    value: undefined
-                },
-                blockId: {
-                    type: String,
-                    default: undefined
-                },
-                collectionBackgroundColor: {
-                    type: String,
-                    default: "#454647"
-                },
-                collectionTextColor: {
-                    type: String,
-                    default: "#ffffff"
-                }
-            },
-            save({ attributes, className }){
-                const {
-                    content, 
-                    blockId,
-                    selectedCollections,
-                    arrowsPosition,
-                    maxCollectionsNumber,
-                    autoPlay,
-                    autoPlaySpeed,
-                    loopSlides,
-                    hideName,
-                    showCollectionThumbnail
-                } = attributes;
-                return <div 
-                            className={ className }
-                            selected-collections={ JSON.stringify(selectedCollections.map((collection) => { return collection.id })) }
-                            arrows-position={ arrowsPosition }
-                            auto-play={ '' + autoPlay }
-                            auto-play-speed={ autoPlaySpeed }
-                            loop-slides={ '' + loopSlides }
-                            hide-name={ '' + hideName }
-                            max-collections-number={ maxCollectionsNumber }
-                            tainacan-api-root={ tainacan_blocks.root }
-                            tainacan-base-url={ tainacan_blocks.base_url }
-                            show-collection-thumbnail={ '' + showCollectionThumbnail }
-                            id={ 'wp-block-tainacan-carousel-collections-list_' + blockId }>
-                                { content }
-                        </div>
-            },
-        },
-        {
-            save({ attributes, className }){
-                const {
-                    content, 
-                    blockId,
-                    selectedCollections,
-                    arrowsPosition,
-                    maxCollectionsNumber,
-                    autoPlay,
-                    autoPlaySpeed,
-                    loopSlides,
-                    hideName,
-                    showCollectionThumbnail
-                } = attributes;
-                return <div 
-                            className={ className }
-                            selected-collections={ JSON.stringify(selectedCollections) }
-                            arrows-position={ arrowsPosition }
-                            auto-play={ '' + autoPlay }
-                            auto-play-speed={ autoPlaySpeed }
-                            loop-slides={ '' + loopSlides }
-                            hide-name={ '' + hideName }
-                            max-collections-number={ maxCollectionsNumber }
-                            tainacan-api-root={ tainacan_blocks.root }
-                            tainacan-base-url={ tainacan_blocks.base_url }
-                            show-collection-thumbnail={ '' + showCollectionThumbnail }
-                            id={ 'wp-block-tainacan-carousel-collections-list_' + blockId }>
-                                { content }
-                        </div>
-            }
-        }
-    ]
+    deprecated: deprecatedBlocks
 });
