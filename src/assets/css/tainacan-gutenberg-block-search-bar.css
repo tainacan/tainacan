@@ -7,7 +7,7 @@
   .wp-block-tainacan-search-bar .tainacan-search-container {
     width: 100%; }
     .wp-block-tainacan-search-bar .tainacan-search-container #tainacan-search-bar-block {
-      height: 32px;
+      height: 2em;
       max-width: 100%;
       display: flex;
       justify-content: center;
@@ -29,7 +29,9 @@
         margin: 0;
         border: none;
         padding: 4px 0.75em;
-        text-overflow: ellipsis; }
+        text-overflow: ellipsis;
+        overflow: hidden;
+        font-size: 0.875em; }
       .wp-block-tainacan-search-bar .tainacan-search-container #tainacan-search-bar-block button {
         height: auto !important;
         display: flex;
@@ -41,8 +43,9 @@
         padding: 4px 1em;
         font-size: 1em; }
         .wp-block-tainacan-search-bar .tainacan-search-container #tainacan-search-bar-block button .icon {
-          height: 28px; }
+          height: 1.75em; }
           .wp-block-tainacan-search-bar .tainacan-search-container #tainacan-search-bar-block button .icon svg {
+            transform: scale(1);
             fill: var(--tainacan-block-primary, #298596); }
       @media only screen and (max-width: 768px) {
         .wp-block-tainacan-search-bar .tainacan-search-container #tainacan-search-bar-block {
@@ -89,12 +92,12 @@
       .wp-block-tainacan-search-bar.is-style-alternate #tainacan-search-bar-block input#tainacan-search-bar-block_input::placeholder {
         color: var(--tainacan-block-gray3, #cbcbcb); }
     .wp-block-tainacan-search-bar.is-style-alternate #tainacan-search-bar-block button {
-      margin-right: 0.75em;
+      margin-right: 12px;
       padding: 0 0.35em;
-      min-height: 28px;
+      min-height: 1.75em;
       z-index: 2;
       border: none;
-      background: transparent;
+      background: transparent !important;
       cursor: pointer; }
       .wp-block-tainacan-search-bar.is-style-alternate #tainacan-search-bar-block button .icon svg {
         fill: var(--tainacan-block-gray3, #cbcbcb);
@@ -124,7 +127,7 @@
     fill: var(--tainacan-block-gray2, #dbdbdb) !important; }
   .wp-block-tainacan-search-bar.is-style-stylish #tainacan-search-bar-block {
     width: 100%;
-    height: 53px;
+    height: 3.3125em;
     display: flex;
     flex-direction: row;
     border: none; }
@@ -132,29 +135,29 @@
       border: none; }
     .wp-block-tainacan-search-bar.is-style-stylish #tainacan-search-bar-block:hover input#tainacan-search-bar-block_input {
       width: 100%;
-      padding-right: 52px;
-      padding-left: 24px;
+      padding-right: 3.25em;
+      padding-left: 1.625em;
       border-width: 0; }
     .wp-block-tainacan-search-bar.is-style-stylish #tainacan-search-bar-block input#tainacan-search-bar-block_input {
       width: 0%;
       min-width: 0%;
-      border-radius: 28px;
-      margin-right: -56px;
-      padding-right: 27px;
-      padding-left: 26px;
+      border-radius: 3.3125em;
+      margin-right: -3.5em;
+      padding-right: 1.6875em;
+      padding-left: 1.625em;
       font-size: 1em;
       border-width: 0;
       background: var(--tainacan-block-gray1, #f2f2f2);
       transition: width 0.5s ease-in, padding 0.5s ease-in; }
       .wp-block-tainacan-search-bar.is-style-stylish #tainacan-search-bar-block input#tainacan-search-bar-block_input:focus, .wp-block-tainacan-search-bar.is-style-stylish #tainacan-search-bar-block input#tainacan-search-bar-block_input:active, .wp-block-tainacan-search-bar.is-style-stylish #tainacan-search-bar-block input#tainacan-search-bar-block_input:hover {
         width: 100%;
-        padding-right: 52px;
-        padding-left: 24px;
+        padding-right: 3.25em;
+        padding-left: 1.625em;
         border-width: 0; }
     .wp-block-tainacan-search-bar.is-style-stylish #tainacan-search-bar-block button {
       margin-left: 0.875em;
       padding: 0 0.35em;
-      min-height: 28px;
+      min-height: 1.75em;
       z-index: 2;
       border: none;
       background: transparent;
@@ -165,38 +168,38 @@
       .wp-block-tainacan-search-bar.is-style-stylish #tainacan-search-bar-block button:hover {
         background: transparent !important; }
   .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container:not(.is-aligned-right):not(.is-aligned-left) .tainacan-search-container {
-    width: calc(100% - var(--tainacan-one-column) - 53px);
-    width: calc(100% - 4.1667vw - 53px);
+    width: calc(100% - var(--tainacan-one-column) - 3.3125em);
+    width: calc(100% - 4.1667vw - 3.3125em);
     bottom: calc(-50% + 38px);
     position: absolute; }
   .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container:not(.is-aligned-right):not(.is-aligned-left) .search-bar-collection-header-title {
     margin-bottom: 26px; }
   .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container.is-aligned-right .tainacan-search-container {
-    width: calc(100% - var(--tainacan-one-column) - 26px);
-    width: calc(100% - 4.1667vw - 26px);
+    width: calc(100% - var(--tainacan-one-column) - 1.625em);
+    width: calc(100% - 4.1667vw - 1.625em);
     top: calc(-50% + 26px);
-    right: calc(var(--tainacan-one-column) + 26px);
-    right: calc(4.1667vw + 26px);
+    right: calc(var(--tainacan-one-column) + 1.625em);
+    right: calc(4.1667vw + 1.625em);
     position: absolute; }
   .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container.is-aligned-left .tainacan-search-container {
-    width: calc(100% - 1em - 26px);
+    width: calc(100% - 1em - 1.625em);
     top: calc(-50% + 26px);
-    left: calc(var(--tainacan-one-column) + 26px);
-    left: calc(4.1667vw + 26px);
+    left: calc(var(--tainacan-one-column) + 1.625em);
+    left: calc(4.1667vw + 1.625em);
     position: absolute; }
   .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block input#tainacan-search-bar-block_input {
     background: white;
     border-width: 3px;
     border-style: solid;
-    margin-right: -56px;
-    padding-right: 24px;
-    padding-left: 24px; }
+    margin-right: -3.5em;
+    padding-right: 1.5em;
+    padding-left: 1.5em; }
     .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block input#tainacan-search-bar-block_input:hover {
       border-width: 3px !important; }
   @media only screen and (max-width: 768px) {
     .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container .tainacan-search-container {
-      width: calc(100% - var(--tainacan-one-column) - 53px) !important;
-      width: calc(100% - 4.1667vw - 53px) !important;
+      width: calc(100% - var(--tainacan-one-column) - 3.3125em) !important;
+      width: calc(100% - 4.1667vw - 3.3125em) !important;
       bottom: calc(-50% + 38px) !important;
       position: absolute !important; }
     .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container.is-aligned-right .search-bar-collection-header-title, .wp-block-tainacan-search-bar.is-style-stylish .search-bar-collection-header-container.is-aligned-left .search-bar-collection-header-title {

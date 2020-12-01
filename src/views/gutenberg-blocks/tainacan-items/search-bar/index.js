@@ -8,6 +8,7 @@ const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2
 
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import SearchBarModal from './search-bar-modal.js';
+import DeprecatedBlocks from './search-bar-deprecated.js';
 
 registerBlockType('tainacan/search-bar', {
     title: __('Tainacan Search Bar', 'tainacan'),
@@ -102,7 +103,8 @@ registerBlockType('tainacan/search-bar', {
     supports: {
         align: ['full', 'wide', 'left', 'center', 'right'],
         html: true,
-        multiple: false
+        multiple: false,
+        fontSize: true
     },
     styles: [
         {
@@ -197,7 +199,7 @@ registerBlockType('tainacan/search-bar', {
                                                             style={{ fill: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}    
                                                             width="24" 
                                                             height="24"
-                                                            viewBox="-2 -3 20 20">
+                                                            viewBox="-2 -2 20 20">
                                                         <path d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
                                                             c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
                                                             c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
@@ -242,7 +244,7 @@ registerBlockType('tainacan/search-bar', {
                                                 style={{ fill: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}    
                                                 width="24" 
                                                 height="24"
-                                                viewBox="-2 -3 20 20">
+                                                viewBox="-2 -2 20 20">
                                             <path d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
                                                 c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
                                                 c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
@@ -652,5 +654,6 @@ registerBlockType('tainacan/search-bar', {
     save({ attributes, className }){
         const { content } = attributes;
         return <div className={ className }>{ content }</div>
-    }
+    },
+    deprecated: DeprecatedBlocks
 });
