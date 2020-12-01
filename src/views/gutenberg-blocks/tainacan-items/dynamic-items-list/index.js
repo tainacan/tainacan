@@ -11,6 +11,7 @@ import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
+import DeprecatedBlocks from './dynamic-items-list-deprecated.js';
 
 registerBlockType('tainacan/dynamic-items-list', {
     title: __('Tainacan Collection\'s Items List', 'tainacan'),
@@ -153,6 +154,7 @@ registerBlockType('tainacan/dynamic-items-list', {
     supports: {
         align: ['full', 'wide'],
         html: false,
+        fontSize: true
     },
     edit({ attributes, setAttributes, className, isSelected, clientId }){
         let {
@@ -1018,139 +1020,5 @@ registerBlockType('tainacan/dynamic-items-list', {
                         { content }
                 </div>
     },
-    deprecated: [
-    {
-        attributes: {
-            content: {
-                type: 'array',
-                source: 'children',
-                selector: 'div'
-            },
-            collectionId: {
-                type: String,
-                default: undefined
-            },
-            items: {
-                type: Array,
-                default: []
-            },
-            showImage: {
-                type: Boolean,
-                default: true
-            },
-            showName: {
-                type: Boolean,
-                default: true
-            },
-            layout: {
-                type: String,
-                default: 'grid'
-            },
-            isModalOpen: {
-                type: Boolean,
-                default: false
-            },
-            gridMargin: {
-                type: Number,
-                default: 0
-            },
-            searchURL: {
-                type: String,
-                default: undefined
-            },
-            itemsRequestSource: {
-                type: String,
-                default: undefined
-            },
-            maxItemsNumber: {
-                type: Number,
-                value: undefined
-            },
-            isLoading: {
-                type: Boolean,
-                value: false
-            },
-            isLoadingCollection: {
-                type: Boolean,
-                value: false
-            },
-            showSearchBar: {
-                type: Boolean,
-                value: false
-            },
-            showCollectionHeader: {
-                type: Boolean,
-                value: false
-            },
-            showCollectionLabel: {
-                type: Boolean,
-                value: false
-            },
-            collection: {
-                type: Object,
-                value: undefined
-            },
-            searchString: {
-                type: String,
-                default: undefined
-            },
-            order: {
-                type: String,
-                default: undefined
-            },
-            blockId: {
-                type: String,
-                default: undefined
-            },
-            collectionBackgroundColor: {
-                type: String,
-                default: "#454647"
-            },
-            collectionTextColor: {
-                type: String,
-                default: "#ffffff"
-            }
-        },
-        save({ attributes, className }){
-            const {
-                content, 
-                blockId,
-                collectionId,  
-                showImage,
-                showName,
-                layout,
-                gridMargin,
-                searchURL,
-                maxItemsNumber,
-                order,
-                showSearchBar,
-                showCollectionHeader,
-                showCollectionLabel,
-                collectionBackgroundColor,
-                collectionTextColor
-            } = attributes;
-            
-            return <div 
-                        search-url={ searchURL }
-                        className={ className }
-                        collection-id={ collectionId }  
-                        show-image={ '' + showImage }
-                        show-name={ '' + showName }
-                        show-search-bar={ '' + showSearchBar }
-                        show-collection-header={ '' + showCollectionHeader }
-                        show-collection-label={ '' + showCollectionLabel }
-                        layout={ layout }
-                        collection-background-color={ collectionBackgroundColor }
-                        collection-text-color={ collectionTextColor }
-                        grid-margin={ gridMargin }
-                        max-items-number={ maxItemsNumber }
-                        order={ order }
-                        tainacan-api-root={ tainacan_blocks.root }
-                        tainacan-base-url={ tainacan_blocks.base_url }
-                        id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>
-                            { content }
-                    </div>
-        }
-    }
-    ]
+    deprecated: DeprecatedBlocks
 });
