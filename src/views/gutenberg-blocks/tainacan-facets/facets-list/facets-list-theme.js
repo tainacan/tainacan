@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import FacetsListTheme from './facets-list-theme.vue';
+import FacetsListThemeUnit from './facets-list-theme-unit.vue';
 
 // Vue Dev Tools!
 Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+Vue.component('facets-list-theme-unit', FacetsListThemeUnit);
 
 // This is rendered on the theme side.
 document.addEventListener("DOMContentLoaded", () => {
@@ -28,10 +30,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     showItemsCount: true,
                     showSearchBar: false,
                     showLoadMore: false,
+                    nameInsideImage: false,
+                    linkTermFacetsToTermPage: true,
+                    appendChildTerms: false,
                     layout: 'grid',
                     cloudRate: 1,
-                    gridMargin: 0,
+                    gridMargin: 24,
                     maxFacetsNumber: 12,
+                    maxColumnsCount: 5,
                     tainacanApiRoot: '',
                     tainacanBaseUrl: '',
                     tainacanSiteUrl: '',
@@ -46,13 +52,17 @@ document.addEventListener("DOMContentLoaded", () => {
                             collectionSlug: this.collectionSlug,
                             parentTermId: this.parentTermId,  
                             showImage: this.showImage,
+                            nameInsideImage: this.nameInsideImage,
                             showItemsCount: this.showItemsCount,
                             showSearchBar: this.showSearchBar,
                             showLoadMore: this.showLoadMore,
                             layout: this.layout,
                             cloudRate: this.cloudRate,
                             gridMargin: this.gridMargin,
+                            linkTermFacetsToTermPage: this.linkTermFacetsToTermPage,
+                            appendChildTerms: this.appendChildTerms,
                             maxFacetsNumber: this.maxFacetsNumber,
+                            maxColumnsCount: this.maxColumnsCount,
                             tainacanApiRoot: this.tainacanApiRoot,
                             tainacanBaseUrl: this.tainacanBaseUrl,
                             tainacanSiteUrl: this.tainacanSiteUrl,
@@ -65,15 +75,19 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.metadatumType = this.$el.attributes['metadatum-type'] != undefined ? this.$el.attributes['metadatum-type'].value : undefined;
                     this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
                     this.collectionSlug = this.$el.attributes['collection-slug'] != undefined ? this.$el.attributes['collection-slug'].value : undefined;
+                    this.appendChildTerms = this.$el.attributes['append-child-terms'] != undefined ? this.$el.attributes['append-child-terms'].value == 'true' : true;
                     this.parentTermId = this.$el.attributes['parent-term-id'] != undefined ? this.$el.attributes['parent-term-id'].value : undefined;
                     this.showImage = this.$el.attributes['show-image'] != undefined ? this.$el.attributes['show-image'].value == 'true' : true;
+                    this.nameInsideImage = this.$el.attributes['name-inside-image'] != undefined ? this.$el.attributes['name-inside-image'].value == 'true' : false;
                     this.showItemsCount = this.$el.attributes['show-items-count'] != undefined ? this.$el.attributes['show-items-count'].value == 'true' : true;
                     this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;
                     this.showLoadMore = this.$el.attributes['show-load-more'] != undefined ? this.$el.attributes['show-load-more'].value == 'true' : false;
                     this.layout = this.$el.attributes['layout'] != undefined ? this.$el.attributes['layout'].value : undefined;
                     this.cloudRate = this.$el.attributes['cloud-rate'] != undefined ? Number(this.$el.attributes['cloud-rate'].value) : undefined;
                     this.gridMargin = this.$el.attributes['grid-margin'] != undefined ? Number(this.$el.attributes['grid-margin'].value) : undefined;
+                    this.linkTermFacetsToTermPage = this.$el.attributes['link-term-facets-to-term-page'] != undefined ? this.$el.attributes['link-term-facets-to-term-page'].value == 'true' : true;
                     this.maxFacetsNumber = this.$el.attributes['max-facets-number'] != undefined ? this.$el.attributes['max-facets-number'].value : undefined;
+                    this.maxColumnsCount = this.$el.attributes['max-columns-count'] != undefined ? this.$el.attributes['max-columns-count'].value : 5;
                     this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
                     this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
                     this.tainacanSiteUrl = this.$el.attributes['tainacan-site-url'] != undefined ? this.$el.attributes['tainacan-site-url'].value : undefined;

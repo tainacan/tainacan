@@ -12,7 +12,7 @@ export default class ParentTermModal extends React.Component {
         // Initialize state
         this.state = {
             metadatumId: '',
-            facetsPerPage: 3,
+            facetsPerPage: 12,
             facetId: undefined,
             isLoadingFacets: false, 
             modalFacets: [],
@@ -167,20 +167,20 @@ export default class ParentTermModal extends React.Component {
                 title={__('Select a parent term to fetch facets from', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
                 contentLabel={__('Select term', 'tainacan')}>
-                <div>
-                    <div className="modal-search-area">
-                        <TextControl 
-                                label={__('Search for a term', 'tainacan')} 
-                                placeholder={ __('Search by term\'s name', 'tainacan') }
-                                value={ this.state.searchFacetName }
-                                onChange={(value) => {
-                                    this.setState({ 
-                                        searchFacetName: value
-                                    });
-                                    _.debounce(this.fetchFacets(value), 300);
-                                }}/>
-                    </div>
-                    {(
+            <div>
+                <div className="modal-search-area">
+                    <TextControl 
+                            label={__('Search for a term', 'tainacan')} 
+                            placeholder={ __('Search by term\'s name', 'tainacan') }
+                            value={ this.state.searchFacetName }
+                            onChange={(value) => {
+                                this.setState({ 
+                                    searchFacetName: value
+                                });
+                                _.debounce(this.fetchFacets(value), 300);
+                            }}/>
+                </div>
+                {(
                     this.state.searchFacetName != '' ? (
                         this.state.facets.length > 0 ?
                         (
@@ -217,7 +217,7 @@ export default class ParentTermModal extends React.Component {
                                 <p class="modal-radio-area-label">{__('Non specific term', 'tainacan')}</p>
                                 <RadioControl
                                     className={'repository-radio-option'}
-                                    selected={ this.state.temporaryFacetId }
+                                    selected={ this.state.temporaryFacetId != null ? this.state.temporaryFacetId : ''}
                                     options={ [
                                         { label: __('Terms children of any term', 'tainacan'), value: '' }, 
                                         { label: __('Terms with no parent (root terms)', 'tainacan'), value: '0' }
