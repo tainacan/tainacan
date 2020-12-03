@@ -211,7 +211,7 @@
                 </b-field>
 
                 <b-field
-                  v-if="!this.isRepositoryLevel"
+                  v-if="!this.isRepositoryLevel && this.isOnModal"
                 >
                   <b-checkbox
                       class="is-inline-block"
