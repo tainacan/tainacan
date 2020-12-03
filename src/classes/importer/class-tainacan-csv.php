@@ -966,7 +966,7 @@ class CSV extends Importer {
 					  $repo_key = "create_repository_metadata";
 					  $_collection_id = $collection['id'];
 					  if (strpos($metadatum_id, $repo_key) !== false) {
-                $_collection_id = "default";
+					    $_collection_id = "default";
 					  }
 						$metadatum = $this->create_new_metadata($header, $_collection_id);
 
