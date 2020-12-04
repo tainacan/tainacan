@@ -44,7 +44,7 @@
                         v-for="facet in Number(maxFacetsNumber)"
                         class="facet-list-item skeleton"
                         :style="{ 
-                            marginBottom: layout == 'grid' && ((metadatumType == 'Relationship' || metadatumType == 'Taxonomy') && showImage) ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
+                            marginBottom: layout == 'grid' && ((isMetadatumTypeRelationship || isMetadatumTypeTaxonomy) && showImage) ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
                             minHeight: getSkeletonHeight()
                         }" />      
             </ul>
@@ -64,7 +64,7 @@
                             :key="facet"
                             class="facet-list-item skeleton"
                             :style="{ 
-                                marginBottom: layout == 'grid' && ((metadatumType == 'Relationship' || metadatumType == 'Taxonomy') && showImage) ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
+                                marginBottom: layout == 'grid' && ((isMetadatumTypeRelationship || isMetadatumTypeTaxonomy) && showImage) ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
                                 minHeight: getSkeletonHeight()
                             }" />    
                 </div>  
@@ -95,6 +95,8 @@
                         :show-items-count="showItemsCount"
                         :is-loading-child-terms="isloadingChildTerms"
                         :link-term-facets-to-term-page="linkTermFacetsToTermPage"
+                        :is-metadatum-type-taxonomy="isMetadatumTypeTaxonomy"
+                        :is-metadatum-type-relationship="isMetadatumTypeRelationship"
                         @on-display-child-terms="displayChildTerms" />
             </ul>
             <ul 
@@ -123,6 +125,8 @@
                             :show-items-count="showItemsCount"
                             :is-loading-child-terms="isloadingChildTerms"
                             :link-term-facets-to-term-page="linkTermFacetsToTermPage"
+                            :is-metadatum-type-taxonomy="isMetadatumTypeTaxonomy"
+                            :is-metadatum-type-relationship="isMetadatumTypeRelationship"
                             @on-display-child-terms="displayChildTerms" />
                 </div>
             </ul>
@@ -204,6 +208,14 @@ export default {
             lastTerm: undefined
         }
     },
+    computed: {
+        isMetadatumTypeRelationship() {
+            return (this.metadatumType == 'Tainacan\\Metadata_Types\\Relationship') || (this.metadatumType == this.$root.__('Relationship', 'tainacan') );
+        },
+        isMetadatumTypeTaxonomy() {
+            return (this.metadatumType == 'Tainacan\\Metadata_Types\\Taxonomy') || (this.metadatumType == this.$root.__('Taxonomy', 'tainacan') );
+        }
+    },
     created() {
         this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
         this.offset = 0;
@@ -266,7 +278,7 @@ export default {
                 queryObject.last_term = this.lastTerm;
 
             // Set up parentTerm for taxonomies
-            if (this.parentTermId !== undefined && this.parentTermId !== null && this.parentTermId !== '' && this.metadatumType == 'Taxonomy')
+            if (this.parentTermId !== undefined && this.parentTermId !== null && this.parentTermId !== '' && this.isMetadatumTypeTaxonomy)
                 queryObject.parent = this.parentTermId;
             else {
                 delete queryObject.parent;
@@ -281,7 +293,7 @@ export default {
             this.tainacanAxios.get(endpoint, { cancelToken: this.facetsRequestSource.token })
                 .then(response => {
 
-                    if (this.metadatumType == 'Taxonomy') {
+                    if (this.isMetadatumTypeTaxonomy) {
                         for (let facet of response.data.values) {
                             this.facets.push(Object.assign({ 
                                 term_url: facet.entity && facet.entity.url ? facet.entity.url : this.tainacanSiteUrl + '/' + this.collectionSlug + '/#/?taxquery[0][compare]=IN&taxquery[0][taxonomy]=' + facet.taxonomy + '&taxquery[0][terms][0]=' + facet.value,
@@ -375,12 +387,12 @@ export default {
         getSkeletonHeight() {
             switch(this.layout) {
                 case 'grid':
-                    if ((this.metadatumType == 'Relationship' || this.metadatumType == 'Taxonomy') && this.showImage)
+                    if ((this.isMetadatumTypeRelationship || this.isMetadatumTypeTaxonomy) && this.showImage)
                         return '230px';
                     else
                         return '24px'
                 case 'list':
-                    if ((this.metadatumType == 'Relationship' || this.metadatumType == 'Taxonomy') && this.showImage)
+                    if ((this.isMetadatumTypeRelationship || this.isMetadatumTypeTaxonomy) && this.showImage)
                         return '54px';
                     else
                         return '24px'

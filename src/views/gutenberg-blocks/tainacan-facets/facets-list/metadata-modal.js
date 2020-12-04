@@ -38,7 +38,6 @@ export default class MetadataModal extends React.Component {
         this.fetchModalCollections = this.fetchModalCollections.bind(this);
         this.selectMetadatum = this.selectMetadatum.bind(this);
         this.fetchModalMetadata = this.fetchModalMetadata.bind(this);
-        this.getMetadatumType = this.getMetadatumType.bind(this);
     }
 
     componentWillMount() {
@@ -211,7 +210,8 @@ export default class MetadataModal extends React.Component {
                     otherModalMetadata.push({ 
                         name: metadatum.name, 
                         id: metadatum.id,
-                        type: this.getMetadatumType(metadatum)
+                        type: metadatum.metadata_type,
+                        typeLabel: metadatum.metadata_type_object ? metadatum.metadata_type_object.name : ''
                     });
                 }
 
@@ -225,26 +225,6 @@ export default class MetadataModal extends React.Component {
             .catch(error => {
                 console.log('Error trying to fetch metadata: ' + error);
             });
-    }
-
-    getMetadatumType(metadatum) {
-        let metadatumType = metadatum.metadata_type_object ? metadatum.metadata_type_object.component : false;
-
-        if (metadatumType) {
-            switch(metadatumType) {
-                case 'tainacan-text':           return __('Text', 'tainacan');
-                case 'tainacan-textarea':       return __('Text area', 'tainacan');
-                case 'tainacan-date':           return __('Date', 'tainacan');
-                case 'tainacan-numeric':        return __('Numeric', 'tainacan');
-                case 'tainacan-selectbox':      return __('Select box', 'tainacan');
-                case 'tainacan-relationship':   return __('Relationship', 'tainacan');
-                case 'tainacan-taxonomy':       return __('Taxonomy', 'tainacan');
-                case 'tainacan-compound':       return __('Compound', 'tainacan');
-                default:                        return false;
-            }
-        } else {
-            return metadatumType;
-        }
     }
 
     selectMetadatum(selectedMetadatum) {
@@ -276,7 +256,7 @@ export default class MetadataModal extends React.Component {
                                     selected={ this.state.temporaryMetadatumId }
                                     options={
                                         this.state.modalMetadata.map((metadatum) => {
-                                            return { label: metadatum.name + ' (' + metadatum.type + ')', value: '' + metadatum.id }
+                                            return { label: metadatum.name + ' (' + metadatum.typeLabel + ')', value: '' + metadatum.id }
                                         })
                                     }
                                     onChange={ ( aMetadatumId ) => { 

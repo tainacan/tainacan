@@ -637,13 +637,13 @@
     .wp-block-tainacan-facets-list .show-more-button i > svg {
       fill: white; }
 
-.filter-item-enter-active {
+.child-reveal-enter-active {
   overflow: hidden;
   animation-name: filter-item-in;
   animation-duration: 0.1s;
   animation-timing-function: ease; }
 
-.filter-item-leave-active {
+.child-reveal-leave-active {
   overflow: hidden;
   animation-name: filter-item-out;
   animation-duration: 0.1s;

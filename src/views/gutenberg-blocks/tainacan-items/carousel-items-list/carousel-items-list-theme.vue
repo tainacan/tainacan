@@ -248,7 +248,7 @@ export default {
                 preventInteractionOnTransition: true,
                 allowClick: true,
                 allowTouchMove: true, 
-                slidesPerView: 7,
+                slidesPerView: 1,
                 slidesPerGroup: 1,
                 spaceBetween: 32,
                 slideToClickedSlide: true,
@@ -279,13 +279,13 @@ export default {
 
         if (!isNaN(this.maxItemsPerScreen) && this.maxItemsPerScreen != 6) {
             this.swiperOptions.breakpoints = {
-                498:  { slidesPerView: this.maxItemsPerScreen - 5 > 0 ? this.maxItemsPerScreen - 5 : 1 }, 
-                768:  { slidesPerView: this.maxItemsPerScreen - 4 > 0 ? this.maxItemsPerScreen - 4 : 1 },
-                1024: { slidesPerView: this.maxItemsPerScreen - 3 > 0 ? this.maxItemsPerScreen - 3 : 1 },
-                1366: { slidesPerView: this.maxItemsPerScreen - 2 > 0 ? this.maxItemsPerScreen - 2 : 1 },
-                1600: { slidesPerView: this.maxItemsPerScreen - 1 > 0 ? this.maxItemsPerScreen - 1 : 1 },
+                498:  { slidesPerView: this.maxItemsPerScreen - 4 > 0 ? this.maxItemsPerScreen - 4 : 1 }, 
+                768:  { slidesPerView: this.maxItemsPerScreen - 3 > 0 ? this.maxItemsPerScreen - 3 : 1 },
+                1024: { slidesPerView: this.maxItemsPerScreen - 2 > 0 ? this.maxItemsPerScreen - 2 : 1 },
+                1366: { slidesPerView: this.maxItemsPerScreen - 1 > 0 ? this.maxItemsPerScreen - 1 : 1 },
+                1600: { slidesPerView: this.maxItemsPerScreen > 0 ? this.maxItemsPerScreen : 1 },
             }
-            this.swiperOptions.slidesPerView = this.maxItemsPerScreen;
+            this.swiperOptions.slidesPerView = 1;
         }
     },
     methods: {

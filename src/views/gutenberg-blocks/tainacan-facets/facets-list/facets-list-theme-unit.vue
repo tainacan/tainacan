@@ -5,12 +5,12 @@
             :style="{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}">
         <a 
                 :id="isNaN(facetId) ? facetId : 'facet-id-' + facetId"
-                :href="(appendChildTerms && facet.total_children > 0) ? null : ((linkTermFacetsToTermPage && metadatumType == 'Taxonomy') ? facet.term_url : facet.url)"
+                :href="(appendChildTerms && facet.total_children > 0) ? null : ((linkTermFacetsToTermPage && isMetadatumTypeTaxonomy) ? facet.term_url : facet.url)"
                 @click="() => { (appendChildTerms && facet.total_children > 0) ? displayChildTerms(facetId) : null }"
                 target="_blank"
                 :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}">
             <img
-                v-if="metadatumType == 'Taxonomy'"
+                v-if="isMetadatumTypeTaxonomy"
                 :src=" 
                     facet.entity && facet.entity['header_image']
                         ?    
@@ -20,7 +20,7 @@
                 "
                 :alt="facet.label ? facet.label : $root.__('Thumbnail', 'tainacan')">
             <img
-                v-if="metadatumType == 'Relationship'"
+                v-if="isMetadatumTypeRelationship"
                 :src=" 
                     facet.entity.thumbnail && facet.entity.thumbnail['tainacan-medium'][0] && facet.entity.thumbnail['tainacan-medium'][0] 
                         ?
@@ -62,7 +62,7 @@
                         }" />
             </ul>
             <template v-else>
-                <transition name="filter-item">
+                <transition name="child-reveal">
                     <ul 
                             v-if="childFacetsObject[facet.id != undefined ? facet.id : facet.value] && childFacetsObject[facet.id != undefined ? facet.id : facet.value].visible"
                             class="child-term-facets">
@@ -82,6 +82,8 @@
                                     :show-items-count="showItemsCount"
                                     :is-loading-child-terms="isloadingChildTerms"
                                     :link-term-facets-to-term-page="linkTermFacetsToTermPage"
+                                    :is-metadatum-type-taxonomy="isMetadatumTypeTaxonomy"
+                                    :is-metadatum-type-relationship="isMetadatumTypeRelationship"
                                     @on-display-child-terms="displayChildTerms" />
                         </template>
                         <p 
@@ -111,7 +113,9 @@ export default {
         layout: String,
         cloudRate: Number,
         metadatumType: String,
-        childFacetsObject: Object
+        childFacetsObject: Object,
+        isMetadatumTypeTaxonomy: Boolean,
+        isMetadatumTypeRelationship: Boolean
     },
     computed:{
         facetId() {
@@ -125,12 +129,12 @@ export default {
         getSkeletonHeight() {
             switch(this.layout) {
                 case 'grid':
-                    if ((this.metadatumType == 'Relationship' || this.metadatumType == 'Taxonomy') && this.showImage)
+                    if ((this.isMetadatumTypeRelationship || this.isMetadatumTypeTaxonomy) && this.showImage)
                         return '230px';
                     else
                         return '24px'
                 case 'list':
-                    if ((this.metadatumType == 'Relationship' || this.metadatumType == 'Taxonomy') && this.showImage)
+                    if ((this.isMetadatumTypeRelationship || this.isMetadatumTypeTaxonomy) && this.showImage)
                         return '54px';
                     else
                         return '24px'
