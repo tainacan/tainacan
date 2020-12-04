@@ -1,8 +1,7 @@
 <template>
     <li 
             class="facet-list-item"
-            :class="(!showImage ? 'facet-without-image' : '') + (nameInsideImage ? ' facet-with-name-inside-image' : '') + ((appendChildTerms && facet.total_children > 0) ? ' facet-term-with-children': '')"
-            :style="{ marginBottom: layout == 'grid' ? gridMargin + 'px' : ''}">
+            :class="(!showImage ? 'facet-without-image' : '') + (nameInsideImage ? ' facet-with-name-inside-image' : '') + ((appendChildTerms && facet.total_children > 0) ? ' facet-term-with-children': '')">
         <a 
                 :id="isNaN(facetId) ? facetId : 'facet-id-' + facetId"
                 :href="(appendChildTerms && facet.total_children > 0) ? null : ((linkTermFacetsToTermPage && isMetadatumTypeTaxonomy) ? facet.term_url : facet.url)"
@@ -58,7 +57,7 @@
                             minHeight: getSkeletonHeight(),
                             marginTop: layout == 'list' ? '4px' : '',
                             marginLeft: layout == 'list' ? '7px' : '',
-                            marginBottom: layout == 'grid' && showImage ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
+                            marginBottom: layout == 'grid' && showImage ? (showName ? gridMargin + 12 : gridMargin) + 'px' : ''
                         }" />
             </ul>
             <template v-else>

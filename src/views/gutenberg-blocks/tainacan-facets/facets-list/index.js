@@ -221,7 +221,7 @@ registerBlockType('tainacan/facets-list', {
             gridMargin = 24;
             setAttributes({ gridMargin: gridMargin });
         }
-        console.log(metadatumType)
+        
         function prepareFacet(facet) {
             const facetId = facet.id != undefined ? facet.id : facet.value; 
             return (
