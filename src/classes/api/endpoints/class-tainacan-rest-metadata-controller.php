@@ -484,10 +484,11 @@ class REST_Metadata_Controller extends REST_Controller {
 			$metadatum_id = $request['metadatum_id'];
 			$confirm_repository = false;
 			foreach ($body as $att => $value){
-				$attributes[$att] = $value;
 				if ($att === "repository_level" && $value === "yes") {
 					$confirm_repository = true;
+					continue;
 				}
+				$attributes[$att] = $value;
 			}
 
 			$metadatum = $this->metadatum_repository->fetch($metadatum_id);
