@@ -210,10 +210,10 @@ export default {
     },
     computed: {
         isMetadatumTypeRelationship() {
-            return (this.metadatumType == 'Tainacan\\Metadata_Types\\Relationship') || (this.metadatumType == this.$root.__('Relationship', 'tainacan') );
+            return (this.metadatumType == 'Tainacan\\Metadata_Types\\Relationship') || (this.metadatumType == this.$root.__('Relationship', 'tainacan')) || (this.metadatumType == 'Relationship');
         },
         isMetadatumTypeTaxonomy() {
-            return (this.metadatumType == 'Tainacan\\Metadata_Types\\Taxonomy') || (this.metadatumType == this.$root.__('Taxonomy', 'tainacan') );
+            return (this.metadatumType == 'Tainacan\\Metadata_Types\\Taxonomy') || (this.metadatumType == this.$root.__('Taxonomy', 'tainacan')) || (this.metadatumType == 'Taxonomy');
         }
     },
     created() {

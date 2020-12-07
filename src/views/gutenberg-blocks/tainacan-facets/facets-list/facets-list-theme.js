@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.metadatumType = this.$el.attributes['metadatum-type'] != undefined ? this.$el.attributes['metadatum-type'].value : undefined;
                     this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
                     this.collectionSlug = this.$el.attributes['collection-slug'] != undefined ? this.$el.attributes['collection-slug'].value : undefined;
-                    this.appendChildTerms = this.$el.attributes['append-child-terms'] != undefined ? this.$el.attributes['append-child-terms'].value == 'true' : true;
+                    this.appendChildTerms = this.$el.attributes['append-child-terms'] != undefined ? this.$el.attributes['append-child-terms'].value == 'true' : false;
                     this.parentTermId = this.$el.attributes['parent-term-id'] != undefined ? this.$el.attributes['parent-term-id'].value : undefined;
                     this.showImage = this.$el.attributes['show-image'] != undefined ? this.$el.attributes['show-image'].value == 'true' : true;
                     this.nameInsideImage = this.$el.attributes['name-inside-image'] != undefined ? this.$el.attributes['name-inside-image'].value == 'true' : false;

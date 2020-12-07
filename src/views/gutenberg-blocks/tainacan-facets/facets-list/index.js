@@ -1023,7 +1023,7 @@ registerBlockType('tainacan/facets-list', {
                     metadatum-type={ metadatumType }
                     collection-id={ collectionId }  
                     collection-slug={ collectionSlug }
-                    parent-term-id={ parentTerm ? parentTerm.id : null }  
+                    parent-term-id={ parentTerm ? parentTerm.id : undefined }  
                     show-image={ '' + showImage }
                     name-inside-image={ '' + nameInsideImage }
                     show-items-count={ '' + showItemsCount }
