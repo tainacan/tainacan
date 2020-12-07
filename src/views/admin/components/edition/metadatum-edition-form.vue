@@ -222,6 +222,9 @@
                       false-value="no"
                   >
                     {{ $i18n.get('label_repository_metadata') }}
+                    <help-button
+                                :title="$i18n.getHelperTitle('metadata', 'repository_level')"
+                                :message="$i18n.getHelperMessage('metadata', 'repository_level')"/>
                   </b-checkbox>
                 </b-field>
             </b-field>
