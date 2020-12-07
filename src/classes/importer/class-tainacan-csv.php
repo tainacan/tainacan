@@ -963,12 +963,12 @@ class CSV extends Importer {
 				foreach( $collection['mapping'] as $metadatum_id => $header ){
 
 					if (!is_numeric($metadatum_id)) {
-					  $repo_key = "create_repository_metadata";
-					  $_collection_id = $collection['id'];
-					  if (strpos($metadatum_id, $repo_key) !== false) {
-					    $_collection_id = "default";
-					  }
-						$metadatum = $this->create_new_metadata($header, $_collection_id);
+						$repo_key = "create_repository_metadata";
+						$collection_id = $collection['id'];
+						if (strpos($metadatum_id, $repo_key) !== false) {
+							$collection_id = "default";
+						}
+						$metadatum = $this->create_new_metadata($header, $collection_id);
 
 						if ($metadatum == false) {
 							$this->add_error_log( __("Error while creating metadatum, please review the metadatum description.", 'tainacan') );
