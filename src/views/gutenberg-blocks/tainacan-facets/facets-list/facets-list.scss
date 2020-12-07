@@ -408,6 +408,12 @@
                 color: var(--tainacan-block-gray5, $gray5); 
                 text-decoration: none;
             }
+
+            svg {
+                fill: var(--tainacan-block-gray4, $gray4);
+                margin-left: auto;
+                overflow: visible;
+            }
         }
     }
 
@@ -495,6 +501,12 @@
                 margin-right: 20px;
             }
 
+            svg {
+                fill: var(--tainacan-block-gray4, $gray4);
+                margin-left: auto;
+                overflow: visible;
+            }
+
             &.facet-without-image { 
                 min-height: 0.875em;
                 a {
@@ -574,6 +586,13 @@
                 min-width: 54px;
                 padding: 0px;
                 margin-right: 20px;
+            }
+
+            svg {
+                fill: var(--tainacan-block-gray4, $gray4);
+                margin-left: auto;
+                overflow: visible;
+                margin-bottom: -12px;
             }
 
             &.facet-without-image img {

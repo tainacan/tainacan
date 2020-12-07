@@ -206,7 +206,7 @@ registerBlockType('tainacan/facets-list', {
             setAttributes({ linkTermFacetsToTermPage: linkTermFacetsToTermPage });
         }
         if (showImage === undefined) {
-            showImage = true;
+            showImage = (layout == 'grid');
             setAttributes({ showImage: showImage });
         }
         if (nameInsideImage === undefined) {
@@ -264,7 +264,29 @@ registerBlockType('tainacan/facets-list', {
                         }
                         <span>{ facet.label ? facet.label : '' }</span>
                         { facet.total_items ? <span class="facet-item-count" style={{ display: !showItemsCount ? 'none' : '' }}>&nbsp;({ facet.total_items })</span> : null }
-                        
+                        { appendChildTerms && facet.total_children > 0 ? 
+                            ( childFacetsObject[facetId] && childFacetsObject[facetId].visible ?
+                                <svg 
+                                        xmlns="http://www.w3.org/2000/svg" 
+                                        viewBox="-4 -3 16 16"
+                                        height="32px"
+                                        width="32px">
+                                    <g transform="translate(-69.294715,-148.68529)">
+                                        <path d="m 71.096008,154.8776 2.43204,-2.4257 2.4257,2.4257 0.7493,-0.74294 -3.175,-3.175 -3.175,3.175 z" />
+                                    </g>
+                                </svg>
+                            :
+                            <svg 
+                                    xmlns="http://www.w3.org/2000/svg" 
+                                    viewBox="-4 -3 16 16"
+                                    height="32px"
+                                    width="32px">
+                                <g transform="translate(-69.294715,-148.68529)">
+                                    <path d="m 71.096008,150.95966 2.43204,2.4257 2.4257,-2.4257 0.7493,0.74294 -3.175,3.175 -3.175,-3.175 z" />
+                                </g>
+                            </svg>
+                            )
+                        :null }
                     </a>
                     { appendChildTerms && facet.total_children > 0 ?
                         isLoadingChildTerms == facetId ? 
@@ -480,11 +502,14 @@ registerBlockType('tainacan/facets-list', {
         function updateLayout(newLayout) {
             layout = newLayout;
 
-            if (layout == 'grid' && appendChildTerms == true) {
+            if (layout == 'grid' && appendChildTerms == true)
                 appendChildTerms = false;
-            }
+            
+            if (layout == 'cloud' && showImage == true)
+                showImage = false;
 
-            setAttributes({ 
+            setAttributes({
+                showImage: showImage,
                 layout: layout, 
                 appendChildTerms: appendChildTerms
             });

@@ -39,6 +39,28 @@
                     :style="{ display: !showItemsCount ? 'none' : '' }">
                 &nbsp;({{ facet.total_items }})
             </span>
+            <template v-if="appendChildTerms && facet.total_children > 0">
+                <svg 
+                        v-if="childFacetsObject[facetId] && childFacetsObject[facetId].visible"
+                        xmlns="http://www.w3.org/2000/svg" 
+                        viewBox="-4 -3 16 16"
+                        height="32px"
+                        width="32px">
+                    <g transform="translate(-69.294715,-148.68529)">
+                        <path d="m 71.096008,154.8776 2.43204,-2.4257 2.4257,2.4257 0.7493,-0.74294 -3.175,-3.175 -3.175,3.175 z" />
+                    </g>
+                </svg>
+                <svg 
+                        v-else
+                        xmlns="http://www.w3.org/2000/svg" 
+                        viewBox="-4 -3 16 16"
+                        height="32px"
+                        width="32px">
+                    <g transform="translate(-69.294715,-148.68529)">
+                        <path d="m 71.096008,150.95966 2.43204,2.4257 2.4257,-2.4257 0.7493,0.74294 -3.175,3.175 -3.175,-3.175 z" />
+                    </g>
+                </svg>
+            </template>
         </a>
         <template v-if="appendChildTerms && facet.total_children > 0">
             <ul
