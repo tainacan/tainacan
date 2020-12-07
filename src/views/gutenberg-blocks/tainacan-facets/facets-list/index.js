@@ -221,6 +221,15 @@ registerBlockType('tainacan/facets-list', {
             gridMargin = 24;
             setAttributes({ gridMargin: gridMargin });
         }
+        // Uptades previous logic of metadatum type
+        if (metadatumType == __('Taxonomy', 'tainacan')) {
+            metadatumType = 'Tainacan\\Metadata_Types\\Taxonomy';
+            setAttributes({ metadatumType: metadatumType });
+        }
+        if (metadatumType == __('Relationship', 'tainacan')) {
+            metadatumType = 'Tainacan\\Metadata_Types\\Relationship';
+            setAttributes({ metadatumType: metadatumType });
+        }
         
         function prepareFacet(facet) {
             const facetId = facet.id != undefined ? facet.id : facet.value; 
