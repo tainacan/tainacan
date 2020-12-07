@@ -1034,12 +1034,12 @@ registerBlockType('tainacan/facets-list', {
                     collection-slug={ collectionSlug }
                     parent-term-id={ parentTerm ? parentTerm.id : undefined }  
                     show-image={ '' + showImage }
-                    name-inside-image={ '' + nameInsideImage }
+                    name-inside-image={ nameInsideImage === true ? 'true' : 'false' }
                     show-items-count={ '' + showItemsCount }
                     show-search-bar={ '' + showSearchBar }
                     show-load-more={ '' + showLoadMore }
-                    append-child-terms={ '' + appendChildTerms }
-                    link-term-facets-to-term-page={ '' + linkTermFacetsToTermPage }
+                    append-child-terms={ (appendChildTerms === true ? 'true' : 'false') }
+                    link-term-facets-to-term-page={ linkTermFacetsToTermPage === false ? 'false' : 'true' }
                     layout={ layout }
                     cloud-rate={ cloudRate }
                     grid-margin={ gridMargin }
