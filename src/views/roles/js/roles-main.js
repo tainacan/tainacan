@@ -2,6 +2,7 @@ import Vue from 'vue';
 import store from '../../admin/js/store/store';
 import router from './roles-router';
 import VTooltip from 'v-tooltip';
+import { Snackbar, Modal } from 'buefy';
 
 // Vue Dev Tools!
 Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
@@ -12,6 +13,8 @@ import RolesPage from '../roles.vue';
 
 Vue.use(I18NPlugin);
 Vue.use(VTooltip);
+Vue.use(Snackbar);
+Vue.use(Modal);
 
 // Changing title of pages
 router.beforeEach((to, from, next) => {

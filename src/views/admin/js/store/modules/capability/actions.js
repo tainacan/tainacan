@@ -68,8 +68,9 @@ export const createRole = ({ commit }, role) => {
                 commit('setRole', role);
                 resolve(role);
             })
-            .catch(error => {
-                reject(error);
+            .catch((error) => {
+                if (error.response)
+                    reject(error.response.data);
             });
     });
 };
@@ -85,7 +86,8 @@ export const updateRole = ({ commit }, role) => {
                 resolve(updatedRole);
             })
             .catch(error => {
-                reject(error);
+                if (error.response)
+                    reject(error.response.data);
             });
     });
 };

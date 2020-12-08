@@ -16,6 +16,11 @@
                     class="notice notice-success notice-alt">
                 <p>{{ $i18n.get('User Role Saved') }}</p>
             </div>
+            <div 
+                    v-if="showErrorNotice"
+                    class="notice notice-error notice-alt">
+                <p>{{ errorMessage }}</p>
+            </div>
         </transition>
         <hr class="wp-header-end">
         <br>
@@ -234,7 +239,9 @@
                     capabilities: {}
                 },
                 capabilitiesTab: 'repository',
-                showNotice: false
+                showNotice: false,
+                showErrorNotice: false,
+                errorMessage: ''
             }
         },
         computed: {
@@ -354,18 +361,26 @@
                             this.$router.push('/roles/' + this.roleSlug);
                             this.isUpdatingRole = false;
                             this.showNotice = true;
+                            this.showErrorNotice = false;
+                            this.errorMessage = '';
                         })
-                        .catch(() => {
+                        .catch((error) => {
                             this.isUpdatingRole = false;
+                            this.errorMessage = error.error_message;
+                            this.showErrorNotice = true;
                         });
                 } else {
                     this.updateRole(this.role)
                         .then(() => {
                             this.isUpdatingRole = false;
                             this.showNotice = true;
+                            this.showErrorNotice = false;
+                            this.errorMessage = '';
                         })
-                        .catch(() => {
+                        .catch((error) => {
                             this.isUpdatingRole = false;
+                            this.errorMessage = error.error_message;
+                            this.showErrorNotice = true;
                         });
                 }
             },
