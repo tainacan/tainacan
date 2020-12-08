@@ -698,7 +698,8 @@
                 return this.getStatus();
             },
             adminViewMode() {
-                return this.getAdminViewMode();
+                const currentAdminViewMode = this.getAdminViewMode();
+                return ['table', 'cards', 'records', 'grid', 'masonry', 'list'].indexOf(currentAdminViewMode) >= 0 ? currentAdminViewMode : 'table';
             },
             orderBy() {
                 return this.getOrderBy();
