@@ -119,7 +119,7 @@ class REST_Roles_Controller extends REST_Controller {
 
 		$role_slug = sanitize_title($name);
 
-		if( preg_match('/^[a-z0-9-_]*$/', $name) == false ) {
+		if( preg_match('/^[a-zA-Z0-9-_ ]*$/', $name) == false ) {
 			return new \WP_REST_Response([
 				'error_message' => __('This role name is not allowed. Use only letters, numbers, underscore and hyphen', 'tainacan'),
 				'error'         => $name
