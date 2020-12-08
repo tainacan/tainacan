@@ -53,7 +53,7 @@ class REST_Roles_Controller extends REST_Controller {
 			),
 			'schema'                  => [$this, 'get_schema']
 		));
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<role>[a-z-]+)', array(
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<role>[a-z0-9-_]+)', array(
 			array(
 				'methods'             => \WP_REST_Server::DELETABLE,
 				'callback'            => array($this, 'delete_item'),
@@ -118,6 +118,13 @@ class REST_Roles_Controller extends REST_Controller {
 		$name = esc_html( esc_sql( $request['name'] ) );
 
 		$role_slug = sanitize_title($name);
+
+		if( preg_match('/^[a-z0-9-_]*$/', $name) == false ) {
+			return new \WP_REST_Response([
+				'error_message' => __('This role name is not allowed. Use only letters, numbers, underscore and hyphen', 'tainacan'),
+				'error'         => $name
+			], 400);
+		}
 
 		// avoid confusion ...
 		if ( in_array($role_slug, $this->core_roles) ) {
