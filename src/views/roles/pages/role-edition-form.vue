@@ -358,6 +358,7 @@
                     this.createRole(this.role)
                         .then((createdRole) => {
                             this.roleSlug = createdRole.slug;
+                            this.role = createdRole;
                             this.$router.push('/roles/' + this.roleSlug);
                             this.isUpdatingRole = false;
                             this.showNotice = true;
