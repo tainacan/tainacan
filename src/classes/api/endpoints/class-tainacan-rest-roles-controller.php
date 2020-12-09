@@ -119,6 +119,7 @@ class REST_Roles_Controller extends REST_Controller {
 
 		$role_slug = sanitize_title($name);
 
+		// allow restricted name format ...
 		if( preg_match('/^[a-zA-Z0-9-_ ]*$/', $name) == false ) {
 			return new \WP_REST_Response([
 				'error_message' => __('This role name is not allowed. Use only letters, numbers, underscore and hyphen', 'tainacan'),
@@ -243,6 +244,14 @@ class REST_Roles_Controller extends REST_Controller {
 		if ( isset($request['name']) ) {
 
 			$name = esc_html( esc_sql( $request['name'] ) );
+			// allow restricted name format ...
+			if( preg_match('/^[a-zA-Z0-9-_ ]*$/', $name) == false ) {
+				return new \WP_REST_Response([
+					'error_message' => __('This role name is not allowed. Use only letters, numbers, underscore and hyphen', 'tainacan'),
+					'error'         => $name
+				], 400);
+			}
+
 			// the slug remains the same
 			\wp_roles()->roles[$role_slug]['name'] = $name;
 			update_option( \wp_roles()->role_key, \wp_roles()->roles );
