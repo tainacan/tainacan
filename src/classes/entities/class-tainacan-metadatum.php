@@ -467,7 +467,7 @@ class Metadatum extends Entity {
 				return false;
 			}
 		}
-		if ( $this->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' && $this->is_multiple() ) {
+		if ( $this->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' && $this->is_multiple() && $this->get_id() != null ) {
  
 			$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 			$children_taxonomy = $Tainacan_Metadata->fetch(
@@ -496,7 +496,7 @@ class Metadatum extends Entity {
 						$this->add_error($this->get_id(), __("Compound metadata with multiple values can't have a	children metadata set to as required", 'tainacan'));
 						return false;
 					}
-				}				
+				}
 			}
 		}
 		
