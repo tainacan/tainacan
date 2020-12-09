@@ -579,14 +579,14 @@
                         style="margin-left: auto;"
                         class="control">
                     <button
-                            v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata')"
+                            v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata') && !fromImporter"
                             id="button-submit-goto-metadata"
                             @click.prevent="onSubmit('metadata')"
                             class="button is-secondary">{{ $i18n.get('label_save_goto_metadata') }}</button>
                 </div>
                  <div class="control">
                     <button
-                            v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata')"
+                            v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata') && !fromImporter"
                             id="button-submit-goto-filter"
                             @click.prevent="onSubmit('filters')"
                             class="button is-secondary">{{ $i18n.get('label_save_goto_filter') }}</button>
@@ -886,9 +886,9 @@ export default {
                     this.formErrorMessage = '';
                     this.editFormErrors = {};
 
-                    if (this.fromImporter)
+                    if (this.fromImporter) {
                         this.$router.go(-1);
-                    else {
+                    } else {
                         if (goTo == 'metadata')
                             this.$router.push(this.$routerHelper.getCollectionMetadataPath(this.collectionId));
                         else if (goTo == 'filters')
