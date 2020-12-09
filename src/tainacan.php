@@ -34,3 +34,9 @@ add_action( 'after_setup_theme', function() {
 } );
 
 add_action('init', ['Tainacan\Migrations', 'run_migrations']);
+
+//https://core.trac.wordpress.org/ticket/23022
+//https://core.trac.wordpress.org/ticket/23022#comment:13
+add_filter( 'wp_untrash_post_status', function( $new_status, $post_id, $previous_status ) {
+	return $previous_status;
+}, 10, 3 );
