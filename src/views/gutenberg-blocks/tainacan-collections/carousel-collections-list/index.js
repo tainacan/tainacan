@@ -2,14 +2,16 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
+const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = wp.editor;
+const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import CarouselCollectionsModal from './carousel-collections-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
+import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
+import DeprecatedBlocks from './carousel-collections-deprecated.js'
 
 registerBlockType('tainacan/carousel-collections-list', {
     title: __('Tainacan Collections Carousel', 'tainacan'),
@@ -121,9 +123,10 @@ registerBlockType('tainacan/carousel-collections-list', {
     supports: {
         align: ['full', 'wide'],
         html: false,
-        multiple: true
+        multiple: true,
+        fontSize: true
     },
-    edit({ attributes, setAttributes, className, isSelected, clientId }){
+    edit({ attributes, setAttributes, className, isSelected, clientId }) {
         let {
             collections, 
             content, 
@@ -160,10 +163,17 @@ registerBlockType('tainacan/carousel-collections-list', {
                 <li 
                     key={ collection.id }
                     className={ 'collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid ' : '') + (maxCollectionsPerScreen ? ' max-collections-per-screen-' + maxCollectionsPerScreen : '') }>   
-                    <IconButton
-                        onClick={ () => removeItemOfId(collection.id) }
-                        icon="no-alt"
-                        label={__('Remove', 'tainacan')}/>
+                    { tainacan_blocks.wp_version < '5.4' ?
+                        <IconButton
+                            onClick={ () => removeItemOfId(collection.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                            :
+                        <Button
+                            onClick={ () => removeItemOfId(collection.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                    }
                     <a 
                         id={ isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id }
                         href={ collection.url } 
@@ -322,49 +332,18 @@ registerBlockType('tainacan/carousel-collections-list', {
 
                 { collections.length ?
                     <BlockControls>
-                        { tainacan_blocks.wp_version < '5.4' ?
-                            <Button style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2' }} onClick={ () => openCarouselModal() } >
-                                <p style={{ margin: 0 }}>
-                                    <svg
+                        { 
+                            TainacanBlocksCompatToolbar({
+                                label: __('Add more collections', 'tainacan'),
+                                icon: <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
+                                            viewBox="0 -2 24 24"
                                             height="24px"
                                             width="24px">
                                         <path d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
-                                    </svg>
-                                </p>&nbsp;
-                                { __('Add more collections', 'tainacan') } 
-                            </Button>
-                            : 
-                            <ToolbarGroup>
-                                { tainacan_blocks.wp_version < '5.5' ?
-                                    <Button style={{ whiteSpace: 'nowrap' }} onClick={ () => openCarouselModal() } >
-                                        <p>
-                                            <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    height="24px"
-                                                    width="24px">
-                                                <path d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
-                                            </svg>
-                                        </p>&nbsp;
-                                        { __('Add more collections', 'tainacan') } 
-                                    </Button>
-                                    :
-                                    <ToolbarButton onClick={ () => openCarouselModal() } >
-                                        <p>
-                                            <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    height="24px"
-                                                    width="24px">
-                                                <path d="M18,17v2H12a5.65,5.65,0,0,0-.36-2ZM2,7v7.57a5.74,5.74,0,0,1,2-1.2V7ZM20,6H15L13,4H8A2,2,0,0,0,6,6v7a6,6,0,0,1,5.19,3H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM7,16.05v6.06l3.06-3.06ZM5,22.11V16.05L1.94,19.11Z"/>
-                                            </svg>
-                                        </p>&nbsp;
-                                        { __('Add more collections', 'tainacan') } 
-                                    </ToolbarButton>
-                                }
-                            </ToolbarGroup>
+                                    </svg>,
+                                onClick: openCarouselModal
+                            })
                         }
                     </BlockControls>
                 : null }
@@ -642,143 +621,5 @@ registerBlockType('tainacan/carousel-collections-list', {
                         { content }
                 </div>
     },
-    deprecated: [
-        {
-            attributes: {
-                content: {
-                    type: 'array',
-                    source: 'children',
-                    selector: 'div'
-                },
-                collections: {
-                    type: Array,
-                    default: []
-                },
-                isModalOpen: {
-                    type: Boolean,
-                    default: false
-                },
-                selectedCollections: {
-                    type: Array,
-                    default: []
-                },
-                itemsRequestSource: {
-                    type: String,
-                    default: undefined
-                },
-                maxCollectionsNumber: {
-                    type: Number,
-                    value: undefined
-                },
-                isLoading: {
-                    type: Boolean,
-                    value: false
-                },
-                isLoadingCollection: {
-                    type: Boolean,
-                    value: false
-                },
-                arrowsPosition: {
-                    type: String,
-                    value: 'search'
-                },
-                autoPlay: {
-                    type: Boolean,
-                    value: false
-                },
-                autoPlaySpeed: {
-                    type: Number,
-                    value: 3
-                },
-                loopSlides: {
-                    type: Boolean,
-                    value: false
-                },
-                hideName: {
-                    type: Boolean,
-                    value: true
-                },
-                showCollectionThumbnail: {
-                    type: Boolean,
-                    value: false
-                },
-                collection: {
-                    type: Object,
-                    value: undefined
-                },
-                blockId: {
-                    type: String,
-                    default: undefined
-                },
-                collectionBackgroundColor: {
-                    type: String,
-                    default: "#454647"
-                },
-                collectionTextColor: {
-                    type: String,
-                    default: "#ffffff"
-                }
-            },
-            save({ attributes, className }){
-                const {
-                    content, 
-                    blockId,
-                    selectedCollections,
-                    arrowsPosition,
-                    maxCollectionsNumber,
-                    autoPlay,
-                    autoPlaySpeed,
-                    loopSlides,
-                    hideName,
-                    showCollectionThumbnail
-                } = attributes;
-                return <div 
-                            className={ className }
-                            selected-collections={ JSON.stringify(selectedCollections.map((collection) => { return collection.id })) }
-                            arrows-position={ arrowsPosition }
-                            auto-play={ '' + autoPlay }
-                            auto-play-speed={ autoPlaySpeed }
-                            loop-slides={ '' + loopSlides }
-                            hide-name={ '' + hideName }
-                            max-collections-number={ maxCollectionsNumber }
-                            tainacan-api-root={ tainacan_blocks.root }
-                            tainacan-base-url={ tainacan_blocks.base_url }
-                            show-collection-thumbnail={ '' + showCollectionThumbnail }
-                            id={ 'wp-block-tainacan-carousel-collections-list_' + blockId }>
-                                { content }
-                        </div>
-            },
-        },
-        {
-            save({ attributes, className }){
-                const {
-                    content, 
-                    blockId,
-                    selectedCollections,
-                    arrowsPosition,
-                    maxCollectionsNumber,
-                    autoPlay,
-                    autoPlaySpeed,
-                    loopSlides,
-                    hideName,
-                    showCollectionThumbnail
-                } = attributes;
-                return <div 
-                            className={ className }
-                            selected-collections={ JSON.stringify(selectedCollections) }
-                            arrows-position={ arrowsPosition }
-                            auto-play={ '' + autoPlay }
-                            auto-play-speed={ autoPlaySpeed }
-                            loop-slides={ '' + loopSlides }
-                            hide-name={ '' + hideName }
-                            max-collections-number={ maxCollectionsNumber }
-                            tainacan-api-root={ tainacan_blocks.root }
-                            tainacan-base-url={ tainacan_blocks.base_url }
-                            show-collection-thumbnail={ '' + showCollectionThumbnail }
-                            id={ 'wp-block-tainacan-carousel-collections-list_' + blockId }>
-                                { content }
-                        </div>
-            }
-        }
-    ]
+    deprecated: DeprecatedBlocks
 });

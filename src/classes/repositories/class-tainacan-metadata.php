@@ -199,7 +199,17 @@ class Metadata extends Repository {
 				'validation'  => v::optional( v::url() ),
 				'description' => __( 'The semantic metadatum description URI like: ', 'tainacan' ) . 'https://schema.org/URL',
 				'default'     => ''
-			]
+			],
+			'repository_level' => [
+				'map'         => 'meta',
+				'title'       => __( 'Repository metadata', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Makes this metadatum a repository level metadatum instead of collection metadatum', 'tainacan' ),
+				'on_error'    => __( 'Invalid value for repository metadata', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
+				// yes or no. It cant be multiple if its collection_key
+				'default'     => 'no'
+			],
 		] );
 	}
 

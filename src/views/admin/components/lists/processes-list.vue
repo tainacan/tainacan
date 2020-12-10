@@ -379,7 +379,7 @@
         },
         beforeDestroy() {
             if (jQuery && jQuery( document )) {
-                jQuery( document ).unbind( 'heartbeat-tick', this.onHeartBitTickList)
+                jQuery( document ).off( 'heartbeat-tick', this.onHeartBitTickList)
             }
         },
         methods: {

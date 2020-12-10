@@ -229,12 +229,13 @@ class Relationship extends Metadata_Type {
 		if ( isset($opt['search']) && !empty($opt['search']) ) {
 			$search_id = $opt['search'];
 			$metadata = \Tainacan\Repositories\Metadata::get_instance()->fetch($search_id, 'OBJECT');
-			
-			$opt = array_merge(['related_primitive_type' => $metadata->get_metadata_type_object()->get_primitive_type()], $opt);
+			if( $metadata instanceof \Tainacan\Entities\Metadatum ) {
+				$opt = array_merge(['related_primitive_type' => $metadata->get_metadata_type_object()->get_primitive_type()], $opt);
 
-			if ($metadata->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy') {
-				$taxonomy_id = $metadata->get_metadata_type_options()['taxonomy_id'];
-				return array_merge(['search_by_tax' => $taxonomy_id], $opt);
+				if ($metadata->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy') {
+					$taxonomy_id = $metadata->get_metadata_type_options()['taxonomy_id'];
+					return array_merge(['search_by_tax' => $taxonomy_id], $opt);
+				}
 			}
 		}
 		return $opt;

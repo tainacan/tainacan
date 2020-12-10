@@ -3,7 +3,7 @@ import { SnackbarProgrammatic as Snackbar } from 'buefy';
 import { ModalProgrammatic as Modal } from 'buefy';
 import CustomDialog from '../components/other/custom-dialog.vue'
 
-// Simpler version of the i18n plugin to translate error feedbac messages
+// Simpler version of the i18n plugin to translate error feedback messages
 const i18nGet = function (key) {
     let string = tainacan_plugin.i18n[key];
     return (string !== undefined && string !== null && string !== '' ) ? string : "ERROR: Invalid i18n key!";

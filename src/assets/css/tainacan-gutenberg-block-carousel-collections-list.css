@@ -124,7 +124,8 @@
         text-decoration: none;
         padding: 8px 16px;
         display: block;
-        line-height: 1.2em; }
+        line-height: 1.2em;
+        word-break: break-word; }
       .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container a > img {
         width: 100%;
         height: auto; }
