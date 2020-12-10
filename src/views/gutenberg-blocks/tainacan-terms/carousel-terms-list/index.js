@@ -2,14 +2,16 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
+const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = wp.editor;
+const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import TermsModal from '../terms-list/terms-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
+import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
+import DeprecatedBlocks from './carousel-terms-list-deprecated.js';
 
 registerBlockType('tainacan/carousel-terms-list', {
     title: __('Tainacan Terms Carousel', 'tainacan'),
@@ -24,7 +26,7 @@ registerBlockType('tainacan/carousel-terms-list', {
                 d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
         </svg>,
     category: 'tainacan-blocks',
-    keywords: [ __( 'terms', 'tainacan' ), __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ),  __( 'taxonomy', 'tainacan' ) ],
+    keywords: [ __( 'carousel', 'tainacan' ), __( 'slider', 'tainacan' ),  __( 'taxonomy', 'tainacan' ) ],
     description: __('List terms on a Carousel, showing their thumbnails or a preview of items.', 'tainacan'),
     example: {
         attributes: {
@@ -121,7 +123,8 @@ registerBlockType('tainacan/carousel-terms-list', {
     supports: {
         align: ['full', 'wide'],
         html: false,
-        multiple: true
+        multiple: true,
+        fontSize: true
     },
     edit({ attributes, setAttributes, className, isSelected, clientId }){
         let {
@@ -156,10 +159,17 @@ registerBlockType('tainacan/carousel-terms-list', {
                 <li 
                     key={ term.id }
                     className={ 'term-list-item ' + (!showTermThumbnail ? 'term-list-item-grid ' : '') + (maxTermsPerScreen ? ' max-terms-per-screen-' + maxTermsPerScreen : '') }>   
-                    <IconButton
-                        onClick={ () => removeItemOfId(term.id) }
-                        icon="no-alt"
-                        label={__('Remove', 'tainacan')}/>
+                    { tainacan_blocks.wp_version < '5.4' ?
+                        <IconButton
+                            onClick={ () => removeItemOfId(term.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                        :
+                        <Button
+                            onClick={ () => removeItemOfId(term.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                    }
                     <a 
                         id={ isNaN(term.id) ? term.id : 'term-id-' + term.id }
                         href={ term.url } 
@@ -308,49 +318,18 @@ registerBlockType('tainacan/carousel-terms-list', {
 
                 { terms.length ?
                     <BlockControls>
-                        { tainacan_blocks.wp_version < '5.4' ?
-                            <Button style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2' }} onClick={ () => openCarouselModal() } >
-                                <p style={{ margin: 0 }}>
-                                    <svg
+                        {
+                            TainacanBlocksCompatToolbar({
+                                label: __('Add more terms', 'tainacan'),
+                                icon: <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
+                                            viewBox="0 -2 24 24"
                                             height="24px"
                                             width="24px">
                                         <path d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
-                                    </svg>
-                                </p>&nbsp;
-                                { __('Add more terms', 'tainacan') } 
-                            </Button>
-                            : 
-                            <ToolbarGroup>
-                                { tainacan_blocks.wp_version < '5.5' ?
-                                    <Button style={{ whiteSpace: 'nowrap' }} onClick={ () => openCarouselModal() } >
-                                        <p>
-                                            <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    height="24px"
-                                                    width="24px">
-                                                <path d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
-                                            </svg>
-                                        </p>&nbsp;
-                                        { __('Add more terms', 'tainacan') } 
-                                    </Button>
-                                    :
-                                    <ToolbarButton onClick={ () => openCarouselModal() } >
-                                        <p>
-                                            <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24"
-                                                    height="24px"
-                                                    width="24px">
-                                                <path d="M21.43,14.64,19.32,17a2.57,2.57,0,0,1-2,1H12.05a6,6,0,0,0-6-6H6V10.64A2.59,2.59,0,0,1,8.59,8H17.3a2.57,2.57,0,0,1,2,1l2.11,2.38A2.59,2.59,0,0,1,21.43,14.64ZM4,4A2,2,0,0,0,2,6v7.63a5.74,5.74,0,0,1,2-1.2V6H16V4ZM7,15.05v6.06l3.06-3.06ZM5,21.11V15.05L1.94,18.11Z"/>
-                                            </svg>
-                                        </p>&nbsp;
-                                        { __('Add more terms', 'tainacan') } 
-                                    </ToolbarButton>
-                                }
-                            </ToolbarGroup>
+                                    </svg>,
+                                onClick: openCarouselModal
+                            })
                         }
                     </BlockControls>
                 : null }
@@ -622,151 +601,5 @@ registerBlockType('tainacan/carousel-terms-list', {
                         { content }
                 </div>
     },
-    deprecated: [
-        {
-            attributes: {
-                content: {
-                    type: 'array',
-                    source: 'children',
-                    selector: 'div'
-                },
-                terms: {
-                    type: Array,
-                    default: []
-                },
-                isModalOpen: {
-                    type: Boolean,
-                    default: false
-                },
-                selectedTerms: {
-                    type: Array,
-                    default: []
-                },
-                itemsRequestSource: {
-                    type: String,
-                    default: undefined
-                },
-                maxTermsNumber: {
-                    type: Number,
-                    value: undefined
-                },
-                isLoading: {
-                    type: Boolean,
-                    value: false
-                },
-                isLoadingTerm: {
-                    type: Boolean,
-                    value: false
-                },
-                arrowsPosition: {
-                    type: String,
-                    value: 'search'
-                },
-                autoPlay: {
-                    type: Boolean,
-                    value: false
-                },
-                autoPlaySpeed: {
-                    type: Number,
-                    value: 3
-                },
-                loopSlides: {
-                    type: Boolean,
-                    value: false
-                },
-                hideName: {
-                    type: Boolean,
-                    value: true
-                },
-                showTermThumbnail: {
-                    type: Boolean,
-                    value: false
-                },
-                term: {
-                    type: Object,
-                    value: undefined
-                },
-                blockId: {
-                    type: String,
-                    default: undefined
-                },
-                termBackgroundColor: {
-                    type: String,
-                    default: "#454647"
-                },
-                termTextColor: {
-                    type: String,
-                    default: "#ffffff"
-                },
-                taxonomyId: {
-                    type: String,
-                    default: undefined
-                }
-            },
-            save({ attributes, className }){
-                const {
-                    content, 
-                    blockId,
-                    selectedTerms,
-                    arrowsPosition,
-                    maxTermsNumber,
-                    autoPlay,
-                    autoPlaySpeed,
-                    loopSlides,
-                    hideName,
-                    showTermThumbnail,
-                    taxonomyId
-                } = attributes;
-                return <div 
-                            className={ className }
-                            selected-terms={ JSON.stringify(selectedTerms.map((term) => { return term.id; })) }
-                            arrows-position={ arrowsPosition }
-                            auto-play={ '' + autoPlay }
-                            auto-play-speed={ autoPlaySpeed }
-                            loop-slides={ '' + loopSlides }
-                            hide-name={ '' + hideName }
-                            max-terms-number={ maxTermsNumber }
-                            taxonomy-id={ taxonomyId }
-                            tainacan-api-root={ tainacan_blocks.root }
-                            tainacan-base-url={ tainacan_blocks.base_url }
-                            show-term-thumbnail={ '' + showTermThumbnail }
-                            id={ 'wp-block-tainacan-carousel-terms-list_' + blockId }>
-                                { content }
-                        </div>
-            },
-        },
-        {
-            save({ attributes, className }){
-                const {
-                    content, 
-                    blockId,
-                    selectedTerms,
-                    arrowsPosition,
-                    maxTermsNumber,
-                    autoPlay,
-                    autoPlaySpeed,
-                    loopSlides,
-                    hideName,
-                    showTermThumbnail,
-                    taxonomyId
-                } = attributes;
-                return <div 
-                            className={ className }
-                            selected-terms={ JSON.stringify(selectedTerms) }
-                            arrows-position={ arrowsPosition }
-                            auto-play={ '' + autoPlay }
-                            auto-play-speed={ autoPlaySpeed }
-                            loop-slides={ '' + loopSlides }
-                            hide-name={ '' + hideName }
-                            max-terms-number={ maxTermsNumber }
-                            taxonomy-id={ taxonomyId }
-                            tainacan-api-root={ tainacan_blocks.root }
-                            tainacan-base-url={ tainacan_blocks.base_url }
-                            show-term-thumbnail={ '' + showTermThumbnail }
-                            id={ 'wp-block-tainacan-carousel-terms-list_' + blockId }>
-                                { content }
-                        </div>
-            }
-        }
-    ]
+    deprecated: DeprecatedBlocks
 });

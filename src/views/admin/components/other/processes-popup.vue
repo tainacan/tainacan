@@ -207,7 +207,7 @@ export default {
     },
     beforeDestroy() {
         if (jQuery && jQuery( document )) {
-            jQuery( document ).unbind( 'heartbeat-tick', this.onHeartBitTickPopup)
+            jQuery( document ).off( 'heartbeat-tick', this.onHeartBitTickPopup)
         }
     },
     methods: {

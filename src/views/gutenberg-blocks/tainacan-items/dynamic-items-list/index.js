@@ -2,14 +2,16 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, Toolbar, ToolbarGroup, ToolbarButton, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = wp.editor;
+const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import DynamicItemsModal from './dynamic-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
+import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
+import DeprecatedBlocks from './dynamic-items-list-deprecated.js';
 
 registerBlockType('tainacan/dynamic-items-list', {
     title: __('Tainacan Collection\'s Items List', 'tainacan'),
@@ -152,6 +154,7 @@ registerBlockType('tainacan/dynamic-items-list', {
     supports: {
         align: ['full', 'wide'],
         html: false,
+        fontSize: true
     },
     edit({ attributes, setAttributes, className, isSelected, clientId }){
         let {
@@ -481,51 +484,19 @@ registerBlockType('tainacan/dynamic-items-list', {
 
                 <div>
                     <BlockControls>
-                        <Toolbar controls={ layoutControls } />
+                        { TainacanBlocksCompatToolbar({ controls: layoutControls }) }
                         { items.length ? 
-                            tainacan_blocks.wp_version < '5.4' ?
-                                <Button style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2' }} onClick={ openDynamicItemsModal } >
-                                    <p style={{ margin: 0 }}>
-                                                <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 24 24"
-                                                height="24px"
-                                                width="24px">
-                                            <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
-                                        </svg>
-                                    </p>&nbsp;
-                                    {__('Configure search', 'tainacan')}  
-                                </Button>
-                                : 
-                                <ToolbarGroup>
-                                    { tainacan_blocks.wp_version < '5.5' ?
-                                        <Button style={{ whiteSpace: 'nowrap' }} onClick={ openDynamicItemsModal }>
-                                            <p style={{ margin: 0 }}>
-                                                <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 24 24"
-                                                        height="24px"
-                                                        width="24px">
-                                                    <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
-                                                </svg>
-                                            </p>&nbsp;
-                                            {__('Configure search', 'tainacan')}  
-                                        </Button>
-                                        :
-                                        <ToolbarButton onClick={ openDynamicItemsModal }>
-                                            <p>
-                                                <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 24 24"
-                                                        height="24px"
-                                                        width="24px">
-                                                    <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
-                                                </svg>
-                                            </p>&nbsp;
-                                            {__('Configure search', 'tainacan')}  
-                                        </ToolbarButton>
-                                    }
-                                </ToolbarGroup>
+                            TainacanBlocksCompatToolbar({
+                                label: __('Configure search', 'tainacan'),
+                                icon: <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 -2 24 24"
+                                            height="24px"
+                                            width="24px">
+                                        <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
+                                    </svg>,
+                                onClick: openDynamicItemsModal
+                            })
                         : null }
                     </BlockControls>
                 </div>
@@ -1049,139 +1020,5 @@ registerBlockType('tainacan/dynamic-items-list', {
                         { content }
                 </div>
     },
-    deprecated: [
-    {
-        attributes: {
-            content: {
-                type: 'array',
-                source: 'children',
-                selector: 'div'
-            },
-            collectionId: {
-                type: String,
-                default: undefined
-            },
-            items: {
-                type: Array,
-                default: []
-            },
-            showImage: {
-                type: Boolean,
-                default: true
-            },
-            showName: {
-                type: Boolean,
-                default: true
-            },
-            layout: {
-                type: String,
-                default: 'grid'
-            },
-            isModalOpen: {
-                type: Boolean,
-                default: false
-            },
-            gridMargin: {
-                type: Number,
-                default: 0
-            },
-            searchURL: {
-                type: String,
-                default: undefined
-            },
-            itemsRequestSource: {
-                type: String,
-                default: undefined
-            },
-            maxItemsNumber: {
-                type: Number,
-                value: undefined
-            },
-            isLoading: {
-                type: Boolean,
-                value: false
-            },
-            isLoadingCollection: {
-                type: Boolean,
-                value: false
-            },
-            showSearchBar: {
-                type: Boolean,
-                value: false
-            },
-            showCollectionHeader: {
-                type: Boolean,
-                value: false
-            },
-            showCollectionLabel: {
-                type: Boolean,
-                value: false
-            },
-            collection: {
-                type: Object,
-                value: undefined
-            },
-            searchString: {
-                type: String,
-                default: undefined
-            },
-            order: {
-                type: String,
-                default: undefined
-            },
-            blockId: {
-                type: String,
-                default: undefined
-            },
-            collectionBackgroundColor: {
-                type: String,
-                default: "#454647"
-            },
-            collectionTextColor: {
-                type: String,
-                default: "#ffffff"
-            }
-        },
-        save({ attributes, className }){
-            const {
-                content, 
-                blockId,
-                collectionId,  
-                showImage,
-                showName,
-                layout,
-                gridMargin,
-                searchURL,
-                maxItemsNumber,
-                order,
-                showSearchBar,
-                showCollectionHeader,
-                showCollectionLabel,
-                collectionBackgroundColor,
-                collectionTextColor
-            } = attributes;
-            
-            return <div 
-                        search-url={ searchURL }
-                        className={ className }
-                        collection-id={ collectionId }  
-                        show-image={ '' + showImage }
-                        show-name={ '' + showName }
-                        show-search-bar={ '' + showSearchBar }
-                        show-collection-header={ '' + showCollectionHeader }
-                        show-collection-label={ '' + showCollectionLabel }
-                        layout={ layout }
-                        collection-background-color={ collectionBackgroundColor }
-                        collection-text-color={ collectionTextColor }
-                        grid-margin={ gridMargin }
-                        max-items-number={ maxItemsNumber }
-                        order={ order }
-                        tainacan-api-root={ tainacan_blocks.root }
-                        tainacan-base-url={ tainacan_blocks.base_url }
-                        id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>
-                            { content }
-                    </div>
-        }
-    }
-    ]
+    deprecated: DeprecatedBlocks
 });

@@ -47,7 +47,7 @@
                     <div 
                             class="skeleton"
                             :style="{ 
-                                minHeight: (childItemMetadatum.metadatum.metadata_type_object.component == 'tainacan-checkbox' || childItemMetadatum.metadatum.metadata_type_object.component == 'tainacan-taxonomycheckbox') ? '150px' : '30px'
+                                minHeight: (childItemMetadatum.metadatum.metadata_type_object.component == 'tainacan-checkbox' || childItemMetadatum.metadatum.metadata_type_object.component == 'tainacan-taxonomy-checkbox') ? '150px' : '30px'
                             }" />
                 </div>
                 <tainacan-form-item

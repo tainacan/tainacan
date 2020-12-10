@@ -35,7 +35,7 @@ module.exports = {
         block_carousel_terms_list: './src/views/gutenberg-blocks/tainacan-terms/carousel-terms-list/index.js',
         block_carousel_terms_list_theme: './src/views/gutenberg-blocks/tainacan-terms/carousel-terms-list/carousel-terms-list-theme.js',
 
-        tainacan_blocks_category_icon: './src/views/gutenberg-blocks/tainacan-blocks-category-icon.js'
+        tainacan_blocks_category_icon: './src/views/gutenberg-blocks/js/tainacan-blocks-category-icon.js'
     },
     output: {
         path: path.resolve(__dirname, './src/assets/js/'),

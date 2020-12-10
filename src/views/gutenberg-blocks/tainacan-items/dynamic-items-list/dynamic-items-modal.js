@@ -178,7 +178,7 @@ export default class DynamicItemsModal extends React.Component {
                         src={ this.state.searchURL } />
                 <div className="modal-footer-area">
                     <Button 
-                        isDefault
+                        isSecondary
                         onClick={ () => { this.resetCollections() }}>
                         {__('Switch collection', 'tainacan')}
                     </Button>
@@ -259,7 +259,7 @@ export default class DynamicItemsModal extends React.Component {
                                 {
                                     this.state.modalCollections.length < this.state.totalModalCollections ? (
                                     <Button 
-                                        isDefault
+                                        isSecondary
                                         isSmall
                                         onClick={ () => this.fetchModalCollections() }>
                                         {__('Load more', 'tainacan')}
@@ -275,7 +275,7 @@ export default class DynamicItemsModal extends React.Component {
                 )}
                 <div className="modal-footer-area">
                     <Button 
-                        isDefault
+                        isSecondary
                         onClick={ () => { this.cancelSelection() }}>
                         {__('Cancel', 'tainacan')}
                     </Button>

@@ -11,7 +11,7 @@
         width: 100%;
 
         #tainacan-search-bar-block {
-            height: 32px;
+            height: 2em;
             max-width: 100%;
             display: flex;
             justify-content: center;
@@ -41,6 +41,8 @@
                 border: none;
                 padding: 4px 0.75em;
                 text-overflow: ellipsis;
+                overflow: hidden;
+                font-size: 0.875em;
             }
             button {
                 height: auto !important;
@@ -54,8 +56,9 @@
                 font-size: 1em;
 
                 .icon {
-                    height: 28px;                    
-                    svg { 
+                    height: 1.75em;                    
+                    svg {
+                        transform: scale(1);
                         fill: var(--tainacan-block-primary, $primary); 
                     }
                 }
@@ -130,12 +133,12 @@
             }
 
             button {
-                margin-right: 0.75em;
+                margin-right: 12px;
                 padding: 0 0.35em;
-                min-height: 28px;
+                min-height: 1.75em;
                 z-index: 2;
                 border: none;
-                background: transparent;
+                background: transparent !important;
                 cursor: pointer;
 
                 .icon {
@@ -205,7 +208,7 @@
     &.is-style-stylish {
         #tainacan-search-bar-block {
             width: 100%;
-            height: 53px;
+            height: 3.3125em;
             display: flex;
             flex-direction: row;
             border: none;
@@ -218,18 +221,18 @@
 
             &:hover input#tainacan-search-bar-block_input {
                 width: 100%;
-                padding-right: 52px;
-                padding-left: 24px;
+                padding-right: 3.25em;
+                padding-left: 1.625em;
                 border-width: 0;
             }
 
             input#tainacan-search-bar-block_input {
                 width: 0%;
                 min-width: 0%;
-                border-radius: 28px;
-                margin-right: -56px;
-                padding-right: 27px;
-                padding-left: 26px;
+                border-radius: 3.3125em;
+                margin-right: -3.5em;
+                padding-right: 1.6875em;
+                padding-left: 1.625em;
                 font-size: 1em;
                 border-width: 0;
                 background: var(--tainacan-block-gray1, $gray1);
@@ -239,8 +242,8 @@
                 &:active,
                 &:hover {
                     width: 100%;
-                    padding-right: 52px;
-                    padding-left: 24px;
+                    padding-right: 3.25em;
+                    padding-left: 1.625em;
                     border-width: 0;
                 }
             }
@@ -248,7 +251,7 @@
             button {
                 margin-left: 0.875em;
                 padding: 0 0.35em;
-                min-height: 28px;
+                min-height: 1.75em;
                 z-index: 2;
                 border: none;
                 background: transparent;
@@ -276,8 +279,8 @@
 
             &:not(.is-aligned-right):not(.is-aligned-left) {
                 .tainacan-search-container {
-                    width: calc(100% - var(--tainacan-one-column) - 53px);
-                    width: calc(100% - 4.1667vw - 53px);
+                    width: calc(100% - var(--tainacan-one-column) - 3.3125em);
+                    width: calc(100% - 4.1667vw - 3.3125em);
                     bottom: calc(-50% + 38px);
                     position: absolute;
                 }
@@ -287,21 +290,21 @@
             }
             &.is-aligned-right {
                 .tainacan-search-container {
-                    width: calc(100% - var(--tainacan-one-column) - 26px);
-                    width: calc(100% - 4.1667vw - 26px);
+                    width: calc(100% - var(--tainacan-one-column) - 1.625em);
+                    width: calc(100% - 4.1667vw - 1.625em);
                     top: calc(-50% + 26px);
-                    right: calc(var(--tainacan-one-column) + 26px);
-                    right: calc(4.1667vw + 26px);
+                    right: calc(var(--tainacan-one-column) + 1.625em);
+                    right: calc(4.1667vw + 1.625em);
                     position: absolute;
                 }
             }
 
             &.is-aligned-left {
                 .tainacan-search-container {
-                    width: calc(100% - 1em - 26px);
+                    width: calc(100% - 1em - 1.625em);
                     top: calc(-50% + 26px);
-                    left: calc(var(--tainacan-one-column) + 26px);
-                    left: calc(4.1667vw + 26px);
+                    left: calc(var(--tainacan-one-column) + 1.625em);
+                    left: calc(4.1667vw + 1.625em);
                     position: absolute;
                 }
             }
@@ -310,9 +313,9 @@
                 background: white;
                 border-width: 3px;
                 border-style: solid;
-                margin-right: -56px;
-                padding-right: 24px;
-                padding-left: 24px;
+                margin-right: -3.5em;
+                padding-right: 1.5em;
+                padding-left: 1.5em;
 
                 &:hover {
                     border-width: 3px !important;
@@ -321,8 +324,8 @@
 
             @media only screen and (max-width: 768px) { 
                 .tainacan-search-container {
-                    width: calc(100% - var(--tainacan-one-column) - 53px) !important;
-                    width: calc(100% - 4.1667vw - 53px) !important;
+                    width: calc(100% - var(--tainacan-one-column) - 3.3125em) !important;
+                    width: calc(100% - 4.1667vw - 3.3125em) !important;
                     bottom: calc(-50% + 38px) !important;
                     position: absolute !important;
                 }

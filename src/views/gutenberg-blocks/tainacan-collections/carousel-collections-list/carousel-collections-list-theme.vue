@@ -237,7 +237,7 @@ export default {
                 preventInteractionOnTransition: true,
                 allowClick: true,
                 allowTouchMove: true, 
-                slidesPerView: this.showCollectionThumbnail ? 6 : 5,
+                slidesPerView: 1,
                 slidesPerGroup: 1,
                 spaceBetween: this.showCollectionThumbnail ? 32 : 16,
                 slideToClickedSlide: true,
@@ -264,13 +264,13 @@ export default {
 
          if (!isNaN(this.maxCollectionsPerScreen)) {
             this.swiperOptions.breakpoints = {
-                498:  { slidesPerView: this.maxCollectionsPerScreen - 5 > 0 ? this.maxCollectionsPerScreen - 5 : 1 }, 
-                768:  { slidesPerView: this.maxCollectionsPerScreen - 4 > 0 ? this.maxCollectionsPerScreen - 4 : 1 },
-                1024: { slidesPerView: this.maxCollectionsPerScreen - 3 > 0 ? this.maxCollectionsPerScreen - 3 : 1 },
-                1366: { slidesPerView: this.maxCollectionsPerScreen - 2 > 0 ? this.maxCollectionsPerScreen - 2 : 1 },
-                1600: { slidesPerView: this.maxCollectionsPerScreen - 1 > 0 ? this.maxCollectionsPerScreen - 1 : 1 },
+                498:  { slidesPerView: this.maxCollectionsPerScreen - 4 > 0 ? this.maxCollectionsPerScreen - 4 : 1 }, 
+                768:  { slidesPerView: this.maxCollectionsPerScreen - 3 > 0 ? this.maxCollectionsPerScreen - 3 : 1 },
+                1024: { slidesPerView: this.maxCollectionsPerScreen - 2 > 0 ? this.maxCollectionsPerScreen - 2 : 1 },
+                1366: { slidesPerView: this.maxCollectionsPerScreen - 1 > 0 ? this.maxCollectionsPerScreen - 1 : 1 },
+                1600: { slidesPerView: this.maxCollectionsPerScreen > 0 ? this.maxCollectionsPerScreen : 1 },
             }
-            this.swiperOptions.slidesPerView = this.maxCollectionsPerScreen;
+            this.swiperOptions.slidesPerView = 1;
         }
     },
     methods: {
