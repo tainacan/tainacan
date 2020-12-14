@@ -575,6 +575,7 @@
                 z-index: 99;
                 text-align: center;
                 color: var(--tainacan-info-color);
+                background-color: transparent;
             }
             #button-delete-header,
             #button-edit-header {

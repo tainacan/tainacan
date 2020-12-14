@@ -13,16 +13,23 @@
             </div>
             <div class="help-tooltip-body">
                 <ol>
-                    <li 
-                            v-for="(error, index) of formErrors"
-                            :key="index">
-                        <a 
-                                v-if="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')]"
-                                @click="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')].scrollIntoView({ behavior: 'smooth', block: 'center' })">
-                            {{ getErrorMessage(error.errors) }}
-                        </a>
-                        <p v-else>{{ getErrorMessage(error.errors) }}</p>
-                    </li>
+                    <template v-for="(error, index) of formErrors">
+                        <li 
+                                v-if="error.errors.length"
+                                :key="index">
+                            <a 
+                                    v-if="['thumbnail', 'attachments', 'document'].includes(error.metadatum_id)"
+                                    @click="metadataElements[error.metadatum_id].scrollIntoView({ behavior: 'smooth', block: 'center' })">
+                                {{ getErrorMessage(error.errors) }}
+                            </a>
+                            <a 
+                                    v-else-if="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')]"
+                                    @click="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')].scrollIntoView({ behavior: 'smooth', block: 'center' })">
+                                {{ getErrorMessage(error.errors) }}
+                            </a>                           
+                            <p v-else>{{ getErrorMessage(error.errors) }}</p>
+                        </li>
+                    </template>
                 </ol>
             </div>
         </div> 
@@ -43,9 +50,13 @@ export default {
     methods: {
         getErrorMessage(errors) {
             let metadatumErrorMessage = '';
-            for (let singleError of errors) { 
-                for (let index of Object.keys(singleError))
-                    metadatumErrorMessage += singleError[index] + '\n';
+            for (let singleError of errors) {
+                if (typeof singleError != 'string') {
+                    for (let index of Object.keys(singleError))
+                        metadatumErrorMessage += singleError[index] + '\n';
+                } else {
+                    metadatumErrorMessage += singleError;
+                }
             }
             return metadatumErrorMessage;
         },
@@ -99,6 +110,9 @@ export default {
             h5 {
                 font-size: 0.875em;
                 font-weight: bold;
+                color: var(--tainacan-red2);
+                margin-bottom: 0;
+                margin-top: 0;
             }
         }
 
@@ -111,14 +125,21 @@ export default {
                 font-weight: normal !important;
                 white-space: normal !important;
                 overflow: visible !important;
+                line-height: normal;
+                color: var(--tainacan-red2) !important;
             }
             a {
-                color: var(--tainacan-red2);
                 text-decoration: underline;
+            }
+            a:hover {
+                color: var(--tainacan-red2) !important;
             }
             ol, ul {
                 margin: 4px 4px;
                 padding-left: 16px;
+            }
+            li {
+                line-height: 0.875em;
             }
         }
         &:before {

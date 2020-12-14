@@ -351,6 +351,20 @@
                                     </a>
                                 </div>
                             </div>
+                            <div 
+                                    v-if="form.thumbnail_id"
+                                    class="thumbnail-alt-input">
+                                <label class="label">{{ $i18n.get('label_thumbnail_alt') }}</label>
+                                <help-button
+                                        :title="$i18n.get('label_thumbnail_alt')"
+                                        :message="$i18n.get('info_thumbnail_alt')"/>
+                                <b-input
+                                        type="textarea" 
+                                        lazy
+                                        :placeholder="$i18n.get('instruction_thumbnail_alt')"
+                                        :value="form.thumbnail_alt ? form.thumbnail_alt : ''"
+                                        @input="onUpdateThumbnailAlt" />
+                            </div>
                         </div>
 
                         <!-- Hook for extra Form options -->
@@ -485,6 +499,7 @@
                                         :key="index"
                                         :item-metadatum="itemMetadatum"
                                         :is-collapsed="metadataCollapses[index]"
+                                        :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
                                         @changeCollapse="onChangeCollapse($event, index)"/>
 
                                 <!-- Hook for extra Form options -->
@@ -516,25 +531,20 @@
                                 </template>
 
                                 <div v-if="item != undefined && item.id != undefined">
-                                    <br>
-                                    <button
-                                            style="margin-left: calc(var(--tainacan-one-column) + 12px)"
-                                            type="button"
-                                            class="button is-secondary"
-                                            @click.prevent="attachmentMediaFrame.openFrame($event)"
-                                            :disabled="isLoadingAttachments">
-                                        {{ $i18n.get("label_edit_attachments") }}
-                                    </button>
-<!--                                     
-                                    <button
-                                            style="margin-left: calc(var(--tainacan-one-column) + 12px)"
-                                            type="button"
-                                            class="button is-secondary"
-                                            @click.prevent="openNewAttachmentsMediaFrame"
-                                            :disabled="isLoadingAttachments">
-                                        {{ $i18n.get("label_edit_attachments") + ' 2' }}
-                                    </button>
-                                     -->
+                                    <div class="attachments-list-heading">
+                                        <button
+                                                style="margin-left: calc(var(--tainacan-one-column) + 12px)"
+                                                type="button"
+                                                class="button is-secondary"
+                                                @click.prevent="attachmentMediaFrame.openFrame($event)"
+                                                :disabled="isLoadingAttachments">
+                                            {{ $i18n.get("label_edit_attachments") }}
+                                        </button>
+                                        <p>
+                                            {{ $i18n.get("info_edit_attachments") }}
+                                        </p>
+                                    </div>
+
                                     <attachments-list
                                             v-if="item != undefined && item.id != undefined"
                                             :item="item"
@@ -819,7 +829,9 @@ export default {
                 status: '',
                 document: '',
                 document_type: '',
-                comment_status: ''
+                comment_status: '',
+                thumbnail_id: '',
+                thumbnail_alt: ''
             },
             thumbnail: {},
             formErrorMessage: '',
@@ -987,6 +999,7 @@ export default {
             'sendItem',
             'updateItem',
             'updateItemDocument',
+            'updateThumbnailAlt',
             'fetchItemMetadata',
             'fetchItem',
             'cleanItemMetadata',
@@ -1053,6 +1066,8 @@ export default {
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
+                this.form.thumbnail_id = this.item.thumbnail_id;
+                this.form.thumbnail_alt = this.item.thumbnail_alt;
                 
                 this.isLoading = false;
 
@@ -1151,6 +1166,8 @@ export default {
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
                 this.form.comment_status = this.item.comment_status;
+                this.form.thumbnail_id = this.item.thumbnail_id;
+                this.form.thumbnail_alt = this.item.thumbnail_alt;
 
                 // If a parameter was passed with a suggestion of item title, also send a patch to item metadata
                 if (this.$route.query.newitemtitle) {
@@ -1279,7 +1296,13 @@ export default {
             })
             .then(() => {
                 this.isLoadingAttachments = true;
-                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                this.fetchAttachments({
+                    page: 1,
+                    attachmentsPerPage: 24,
+                    itemId: this.itemId,
+                    documentId: this.form.document,
+                    thumbnailId: this.form.thumbnail_id
+                })
                     .then(() => this.isLoadingAttachments = false)
                     .catch(() => this.isLoadingAttachments = false);
             })
@@ -1296,9 +1319,10 @@ export default {
             });
         },
         deleteThumbnail() {
-            this.updateThumbnail({itemId: this.itemId, thumbnailId: 0})
+            this.updateThumbnail({ itemId: this.itemId, thumbnailId: 0 })
                 .then(() => {
                     this.item.thumbnail = false;
+                    this.item.thumbnail_id = null;
                 })
                 .catch((error) => {
                     this.$console.error(error);
@@ -1317,7 +1341,13 @@ export default {
                             .then(() => {
                                 this.isLoadingAttachments = true;
 
-                                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                                this.fetchAttachments({ 
+                                        page: 1,
+                                        attachmentsPerPage: 24,
+                                        itemId: this.itemId,
+                                        documentId: this.form.document,
+                                        thumbnailId: this.form.thumbnail_id
+                                    })
                                     .then(() => this.isLoadingAttachments = false)
                                     .catch(() => this.isLoadingAttachments = false);
                             })
@@ -1343,6 +1373,7 @@ export default {
                         this.isLoading = true;
                         this.form.document_type = 'attachment';
                         this.form.document = file.id + '';
+                        
                         this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
                         .then((item) => {
                             this.isLoading = false;
@@ -1371,29 +1402,42 @@ export default {
                     button_labels: {
                         frame_title: this.$i18n.get('instruction_select_item_thumbnail'),
                     },
+                    thumbnail: this.form.thumbnail_id,
                     relatedPostId: this.itemId,
                     onSave: (media) => {
-                        this.updateThumbnail({itemId: this.itemId, thumbnailId: media.id})
-                        .then((res) => {
-                            this.item.thumbnail = res.thumbnail;
-                        })
-                        .catch(error => this.$console.error(error));
+                        this.updateThumbnail({ itemId: this.itemId, thumbnailId: media.id})
+                            .then((res) => {
+                                this.item.thumbnail = res.thumbnail;
+                                this.item.thumbnail_id = res.thumbnail_id;
+                                this.item.thumbnail_alt = res.thumbnail_alt;
+                                this.form.thumbnail = res.thumbnail;
+                                this.form.thumbnail_id = res.thumbnail_id;
+                                this.form.thumbnail_alt = res.thumbnail_alt;
+                            })
+                            .catch(error => this.$console.error(error));
                     }
                 }
             );
-
             this.attachmentMediaFrame = new wpMediaFrames.attachmentControl(
                 'my-attachment-media-frame', {
                     button_labels: {
                         frame_title: this.$i18n.get('instruction_select_files_to_attach_to_item'),
                         frame_button: this.$i18n.get('label_attach_to_item'),
                     },
+                    nonce: this.item.nonces ? this.item.nonces['update-post_' + this.item.id] : null,
                     relatedPostId: this.itemId,
-                    document: this.item.document, 
+                    document: this.form.document_type == 'attachment' ? this.form.document : null, 
+                    thumbnailId: this.form.thumbnail_id ? this.form.thumbnail_id : null, 
                     onSave: () => {
                         // Fetch current existing attachments
                         this.isLoadingAttachments = true;
-                        this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
+                        this.fetchAttachments({ 
+                            page: 1,
+                            attachmentsPerPage: 24,
+                            itemId: this.itemId,
+                            documentId: this.form.document,
+                            thumbnailId: this.form.thumbnail_id
+                        })
                             .then(() => this.isLoadingAttachments = false)
                             .catch(() => this.isLoadingAttachments = false);
                     }
@@ -1401,27 +1445,15 @@ export default {
             );
 
         },
-        // openNewAttachmentsMediaFrame() {
-        //     const newAttachmentMediaFrame = new wpMediaFrames.customAttachmentsControl({ 
-        //         existingAttachments: this.getAttachments().map((attachment) => attachment.id),
-        //         button_labels: {
-        //             frame_title: this.$i18n.get('instruction_select_files_to_attach_to_item'),
-        //             frame_button_new: this.$i18n.get('label_attach_to_item'),
-        //             frame_button_update: this.$i18n.get('finish')
-        //         },
-        //         relatedPostId: this.itemId,
-        //         onSelect: (selected) => {
-        //             console.log(selected);
-        //              // Fetch current existing attachments
-        //             this.isLoadingAttachments = true;
-        //             this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document })
-        //                 .then(() => this.isLoadingAttachments = false)
-        //                 .catch(() => this.isLoadingAttachments = false);
-                    
-        //         }
-        //     });
-        //     setTimeout(() => newAttachmentMediaFrame.openModal(), 1000);
-        // },
+        onUpdateThumbnailAlt(updatedThumbnailAlt) {
+
+            this.updateThumbnailAlt({ thumbnailId: this.item.thumbnail_id, thumbnailAlt: updatedThumbnailAlt })
+                .then((res) => {
+                    this.form.thumbnail_id = res.thumbnail_id;
+                    this.form.thumbnail_alt = res.thumbnail_alt;
+                })
+                .catch(error => this.$console.error(error));
+        },
         toggleCollapseAll() {
             this.collapseAll = !this.collapseAll;
 
@@ -1494,6 +1526,8 @@ export default {
                     this.form.document = this.item.document;
                     this.form.document_type = this.item.document_type;
                     this.form.comment_status = this.item.comment_status;
+                    this.form.thumbnail_id = this.item.thumbnail_id;
+                    this.form.thumbnail_alt = this.item.thumbnail_alt;
 
                     if (this.form.document_type != undefined && this.form.document_type == 'url')
                         this.urlLink = this.form.document;
@@ -1507,7 +1541,12 @@ export default {
                     this.setLastUpdated(this.item.modification_date);
 
                     // Fetch current existing attachments now that item.document
-                    this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId, documentId: this.item.document });
+                    this.fetchAttachments({
+                        page: 1,
+                        attachmentsPerPage: 24,
+                        itemId: this.itemId,
+                        documentId: this.form.document,
+                        thumbnailId: this.form.thumbnail_id });
 
                     // Initializes Media Frames now that itemId and item.document exists
                     this.initializeMediaFrames();
@@ -1571,7 +1610,7 @@ export default {
             }
             .status-tag {
                 color: var(--tainacan-white);
-                background: var(--tainacan-turquoise5);
+                background: var(--tainacan-secondary);
                 padding: 0.15em 0.5em;
                 font-size: 0.75em;
                 margin: 0 1em 0 0;
@@ -1637,7 +1676,7 @@ export default {
         label {
             font-size: 1em !important;
             font-weight: 500 !important;
-            color: var(--tainacan-gray5) !important;
+            color: var(--tainacan-label-color) !important;
             line-height: 1.2em;
         }
     }
@@ -1669,7 +1708,7 @@ export default {
                     color: var(--tainacan-secondary);
                     margin-bottom: 6px;
                     &:hover {
-                        background-color: var(--tainacan-turquoise2);
+                        background-color: var(--tainacan-primary);
                         cursor: pointer;
                     }
                 }
@@ -1699,6 +1738,9 @@ export default {
     }
 
     .document-field {
+        /deep/ iframe {
+            max-width: 100%;
+        }
         .document-buttons-row {
             text-align: right;
             top: -21px;
@@ -1757,6 +1799,27 @@ export default {
             left: 90px;
             bottom: 1.0em;
         }
+
+        .thumbnail-alt-input {
+            .label {
+                font-size: 0.875em;
+                font-weight: 500;
+                margin-left: 15px;
+                margin-bottom: 0;
+                margin-top: 0.15em;
+            }
+        }
+    }
+
+    .attachments-list-heading {
+        display: flex;
+        align-items: center;
+        margin-top: 24px;
+        margin-bottom: 24px;
+
+        button {
+            margin-right: 12px;
+        }
     }
 
     .footer {
@@ -1808,7 +1871,7 @@ export default {
 
         .sequence-progress {
             height: 5px;
-            background: var(--tainacan-turquoise5);
+            background: var(--tainacan-secondary);
             width: 0%;
             position: absolute;
             top: 0;
@@ -1826,7 +1889,7 @@ export default {
 
         .sequence-button {
             background-color: transparent;
-            color: var(--tainacan-turquoise5);
+            color: var(--tainacan-secondary);
             border: none;
 
             .icon {
@@ -1837,7 +1900,7 @@ export default {
             &:focus,
             &:active {
                 background-color: transparent !important;
-                color: var(--tainacan-turquoise5) !important;
+                color: var(--tainacan-secondary) !important;
             }
         }
     }

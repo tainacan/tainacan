@@ -758,7 +758,8 @@ export default {
                             collectionId: this.collectionId, 
                             isRepositoryLevel: this.isRepositoryLevel, 
                             isContextEdit: true,
-                            parent: 'any' 
+                            parent: 'any',
+                            includeControlMetadataTypes: true,
                         }).then((resp) => {
                                 resp.request
                                     .then(() => {

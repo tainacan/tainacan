@@ -45,9 +45,6 @@
 
             <!-- TERM ITEMS PAGE FILTERS -->
             <template v-if="taxonomy && taxonomyFilters">
-                <collections-filter
-                        :open="!collapseAll"
-                        :query="getQuery"/>
                 <div 
                         v-if="key == 'repository-filters'"
                         :key="index"
@@ -148,9 +145,6 @@
 
             <!-- REPOSITORY ITEMS PAGE FILTERS -->
             <template v-else-if="isRepositoryLevel && !taxonomy">
-                <collections-filter
-                        :open="!collapseAll"
-                        :query="getQuery"/>
                 <div 
                         v-if="key == 'repository-filters'"
                         :key="index"
@@ -290,11 +284,9 @@
 <script>
     import { mapGetters, mapActions } from 'vuex';
     import FiltersTagsList from './filters-tags-list.vue';
-    import CollectionsFilter from '../other/collection-filter.vue';
 
     export default {
         components: {
-            CollectionsFilter,
             FiltersTagsList
         },
         props: {
@@ -458,8 +450,20 @@
                 
                 // Custom filter loading, get's from collections that have items with that taxonomy
                 } else {
+
+                    let collectionsIds = [];
+                    
+                    if (
+                        this.$route.query && 
+                        this.$route.query.metaquery && 
+                        Array.isArray(this.$route.query.metaquery) &&
+                        this.$route.query.metaquery.find((aMetaQuery) => aMetaQuery.key == 'collection_id')
+                    ) {
+                        collectionsIds = this.$route.query.metaquery.find((aMetaQuery) => aMetaQuery.key == 'collection_id').value;
+                    }
+
                     let taxonomyId = this.taxonomy.split("_");
-                    this.fetchTaxonomyFilters(taxonomyId[taxonomyId.length - 1])
+                    this.fetchTaxonomyFilters({ taxonomyId: taxonomyId[taxonomyId.length - 1], collectionsIds: collectionsIds })
                         .catch(() => this.isLoadingFilters = false);
                         
                 }

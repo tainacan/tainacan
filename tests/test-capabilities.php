@@ -832,6 +832,40 @@ class Capabilities extends TAINACAN_UnitTestCase {
 	}
 
 	/**
+	 * @group collectionss
+	 */
+	function test_manage_collection_can_edit_collection() {
+		global $current_user;
+		wp_set_current_user($this->subscriber2->ID);
+
+		$this->assertFalse( $this->public_collection->can_edit() );
+
+		$this->subscriber2->add_cap( 'manage_tainacan_collection_' . $this->public_collection->get_id() );
+		$current_user = $this->subscriber2; // force update current user object with new capabilities
+
+		$this->assertTrue( $this->public_collection->can_edit() );
+
+	}
+
+	/**
+	 * @group collections
+	 */
+	function test_manage_all_collections_can_edit_collection() {
+		global $current_user;
+		wp_set_current_user($this->subscriber2->ID);
+
+		$this->assertFalse( $this->public_collection->can_edit() );
+
+		$this->subscriber2->add_cap( 'manage_tainacan_collection_all' );
+		$current_user = $this->subscriber2; // force update current user object with new capabilities
+
+		$this->assertTrue( $this->public_collection->can_edit() );
+		$this->assertTrue( $this->private_collection->can_edit() );
+
+
+	}
+
+	/**
 	 * @group items
 	 */
 	function test_items_metacaps() {

@@ -49,7 +49,8 @@ class Theme_Helper {
 		add_filter('get_the_archive_title', array($this, 'filter_archive_title'));
 
 		add_shortcode( 'tainacan-search', array($this, 'search_shortcode'));
-		
+		add_shortcode( 'tainacan-item-submission', array($this, 'item_submission_shortcode'));
+
 		add_action( 'generate_rewrite_rules', array( &$this, 'rewrite_rules' ), 10, 1 );
 		add_filter( 'query_vars', array( &$this, 'rewrite_rules_query_vars' ) );
 		add_filter( 'template_include', array( &$this, 'rewrite_rule_template_include' ) );
@@ -366,6 +367,28 @@ class Theme_Helper {
 		return $image;
 	}
 
+	public function item_submission_shortcode($args) {
+		global $TAINACAN_BASE_URL;
+
+		$props = ' ';
+
+		// Passes arguments to custom props
+		if ($args) {
+			foreach ($args as $key => $value) {
+				if ($value == true || $value == 'true') {
+					$props .= str_replace('_', '-', $key) . '="' . $value . '" ';
+				}
+			}
+		}
+
+		wp_enqueue_media();
+		wp_enqueue_script('jcrop');
+		wp_enqueue_script('tainacan-item-submission', $TAINACAN_BASE_URL . '/assets/js/item_submission.js' , ['underscore', 'jcrop', 'media-editor', 'media-views', 'customize-controls'] , TAINACAN_VERSION);
+		wp_localize_script('tainacan-item-submission', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
+
+		return "<div id='tainacan-item-submission-form' $props ></div>";
+	}
+
 	public function search_shortcode($args) {
 	
 		$props = ' ';
@@ -487,7 +510,7 @@ class Theme_Helper {
 	 * 
 	 * 		@type string 		$label				 Label, visible to users. Default to $slug
 	 * 		@type string		$description		 Description, visible only to editors in the admin. Default none.
-	 * 		@type string		$type 				 Type. Accepted values are 'template' or 'component'. Defautl 'template'
+	 * 		@type string		$type 				 Type. Accepted values are 'template' or 'component'. Default 'template'
 	 * 		@type string		$template			 Full path  to the template file to be used. Required if $type is set to template.
 	 * 												 Default: theme-path/tainacan/view-mode-{$slug}.php
 	 * 		@type string		$component			 Component tag name. The web component js must be included and must accept two props:
@@ -567,7 +590,7 @@ class Theme_Helper {
 					$title = tainacan_get_the_collection_name();
 					$img_info = ( has_post_thumbnail( tainacan_get_collection_id() ) ) ? wp_get_attachment_image_src( get_post_thumbnail_id( tainacan_get_collection_id() ), 'full' ) : $logo;
 					$url_src = home_url( $wp->request );
-					$excerpt = tainacan_get_the_collection_description();
+					$excerpt = strip_tags(tainacan_get_the_collection_description());
 				} elseif ( is_post_type_archive('tainacan-collection') ) {
 					$title = __('Collections', 'tainacan');
 				}
@@ -589,7 +612,7 @@ class Theme_Helper {
 				$tainacan_term = tainacan_get_term();
 				
 				$title = $term->name;
-				$excerpt = $term->description;
+				$excerpt = strip_tags($term->description);
 				
 				$url_src = get_term_link($term->term_id, $term->taxonomy);
 

@@ -133,7 +133,9 @@ export default {
                                 this.$userPrefs.set(viewModeKey, 'table');
                             }
                         }
-                        if (this.$route.query.view_mode != ['slideshow'] && this.$route.query['slideshow-from'] != null && this.$route.query['slideshow-from'] != undefined && this.$route.query['slideshow-from'] != false)
+
+                        // Emit slideshow-from to start this view mode from index
+                        if (this.$route.query.view_mode != 'slideshow' && this.$route.query['slideshow-from'] !== null && this.$route.query['slideshow-from'] !== undefined && this.$route.query['slideshow-from'] !== false)
                             this.$emit('start-slideshow-from-item', this.$route.query['slideshow-from']);
 
                         // Admin View Modes
@@ -208,7 +210,6 @@ export default {
                     this.updateURLQueries();
                 },
                 addFetchOnly( metadatum, ignorePrefs, metadatumIDs ){
-                    
                     this.$store.dispatch('search/add_fetch_only', metadatum );
                     this.$store.dispatch('search/add_fetch_only_meta', metadatumIDs);
                     this.updateURLQueries();  

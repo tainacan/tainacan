@@ -125,7 +125,13 @@ class Embed {
 	 * @return string       Updated embed markup
 	 */
 	function responsive_embed($html, $url, $attr) {
-		return $html !== '' ? '<div class="tainacan-embed-container">'.$html.'</div>' : '';
+
+		$class = 'tainacan-embed-container';
+
+		if ( !preg_match('/(?:<iframe[^>]*)(?:(?:\/>)|(?:>.*?<\/iframe>))/i', $html ) && !preg_match('/(?:<object[^>]*)(?:(?:\/>)|(?:>.*?<\/object>))/i', $html)  && !preg_match('/(?:<embed[^>]*)(?:(?:\/>)|(?:>.*?<\/embed>))/i', $html ) )
+			$class .= ' tainacan-embed-without-iframe';
+
+		return $html !== '' ? '<div class="' . $class . '">'.$html.'</div>' : '';
 	}
 	 
 }

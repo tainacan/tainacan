@@ -114,6 +114,7 @@
     .modal-search-area {
         display: flex;
         justify-content: center;
+        align-items: flex-end;
         margin-bottom: 6px;
 
         .components-base-control {
@@ -165,7 +166,7 @@
         }
 
         svg.components-checkbox-control__checked {
-            fill: black;
+            fill: inherit;
         }
     
         .modal-checkbox-list-item,
@@ -187,6 +188,9 @@
 
                 @media only screen and (max-width: 768px) { max-width: 80%; }
             }
+        }
+        .components-radio-control__option .components-radio-control__input::before {
+            border-width: 0px;
         }
     }
     .modal-loadmore-section {

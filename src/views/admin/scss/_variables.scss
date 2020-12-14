@@ -89,7 +89,7 @@ $black-invert: findColorInvert($black);
 $foreground-color: $black;
 $background-color: $white;
 
-@import "../../../../node_modules/bulma/sass/utilities/derived-variables.scss";
+@import "../../../../node_modules/bulma/sass/utilities/derived-variables.sass";
 
 // Setup $colors to use as bulma classes
 $colors: (
@@ -177,6 +177,17 @@ $spacing-values: ('0': 0rem, '1': 0.25rem, '2': 0.5rem, '3': 1rem, '4': 1.5rem, 
     display: flex;
     display: -ms-grid;
     display: grid;
+}
+@mixin logs-container {
+    min-height: $header-height;
+    height: auto;
+    padding-left: 0;
+    padding-right: 0;
+    border-bottom: 1px solid #ddd;
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 // A copy of bootstrap's screen reader only class to be used for accessibility.

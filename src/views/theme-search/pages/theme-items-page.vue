@@ -2,6 +2,8 @@
     <div 
             :class="{
                 'is-filters-menu-open': !hideFilters && isFiltersModalActive && !openAdvancedSearch,
+                'is-filters-menu-fixed-at-top': isFiltersListFixedAtTop,
+                'is-filters-menu-fixed-at-bottom': isFiltersListFixedAtBottom,
                 'repository-level-page': isRepositoryLevel,
                 'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
             }"
@@ -405,6 +407,7 @@
                 :active.sync="isFiltersModalActive"
                 :width="736"
                 animation="slide-menu"
+                :auto-focus="filtersAsModal"
                 :trap-focus="filtersAsModal"
                 full-screen
                 :custom-class="'tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"
@@ -426,6 +429,7 @@
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
         <div 
                 id="items-list-area"
+                ref="items-list-area"
                 class="items-list-area">
 
             <!-- FILTERS TAG LIST-->
@@ -450,6 +454,12 @@
                         class="sr-only">
                     {{ $i18n.get('label_items_list') }}
                 </h3>
+                
+                <!-- This is used by intersection observers to set filters menu as fixed -->
+                <div 
+                        id="items-list-results-top"
+                        ref="items-list-results-top"
+                        class="sr-only"/>
 
                 <div 
                         v-show="(showLoading && 
@@ -527,6 +537,13 @@
                             (advancedSearchResults || !openAdvancedSearch)"
                         :hide-items-per-page-button="hideItemsPerPageButton"
                         :hide-go-to-page-button="hideGoToPageButton"/>
+
+                <!-- This is used by intersection observers to set filters menu as fixed on the bottom -->
+                <div 
+                        id="items-list-results-bottom"
+                        ref="items-list-results-bottom"
+                        class="sr-only"
+                        style="bottom: 0px" />
             </div>
         </div>
        
@@ -603,7 +620,13 @@
                 metadataSearchCancel: undefined,
                 latestNonFullscreenViewMode: '',
                 isMobile: false,
-                initialItemPosition: null
+                initialItemPosition: null,
+                isFiltersListFixedAtTop: false,
+                isFiltersListFixedAtBottom: false,
+                itemsListTopIntersectionObserver: null,
+                itemsListBottomIntersectionObserver: null,
+                latestPerPageAfterViewModeWithoutPagination: 12,
+                latestPageAfterViewModeWithoutPagination: 1,
             }
         },
         computed: {
@@ -730,6 +753,10 @@
             });
 
             this.$eventBusSearch.$on('start-slideshow-from-item', (index) => {
+                let currentQuery = this.$route.query;
+                delete currentQuery['slideshow-from'];
+                this.$router.replace({ query: currentQuery }).catch((error) => this.$console.log(error));
+
                 this.latestNonFullscreenViewMode = JSON.parse(JSON.stringify(this.viewMode));
                 this.onChangeViewMode('slideshow');
                 this.initialItemPosition = index;
@@ -754,11 +781,14 @@
                 else   
                     this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
             }
-            // For view modes such as slides, we force pagination to request only 12 per page
+            // For view modes such as slides, we force pagination to request only 24 per page
             let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
             if (existingViewModeIndex >= 0) {
                 if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
-                    this.$eventBusSearch.setItemsPerPage(12, true);
+                    this.latestPerPageAfterViewModeWithoutPagination = this.getItemsPerPage();
+                    this.latestPageAfterViewModeWithoutPagination = this.getPage();
+
+                    this.$eventBusSearch.setItemsPerPage(24, true);
                 }
             }
             
@@ -773,9 +803,41 @@
                 this.hideFiltersOnMobile();
                 window.addEventListener('resize', this.hideFiltersOnMobile);
             }
+            
+            // Uses Intersection Observer o see if the top of the list is on screen and fix filters list position
+            if (!this.filtersAsModal &&
+                !this.hideFilters &&
+                this.$refs['items-list-results-top'] &&
+                this.$refs['items-list-results-bottom'] &&
+                "IntersectionObserver" in window &&
+                "IntersectionObserverEntry" in window &&
+                "isIntersecting" in window.IntersectionObserverEntry.prototype &&
+                "boundingClientRect" in window.IntersectionObserverEntry.prototype) {
+
+                this.itemsListTopIntersectionObserver = new IntersectionObserver(entries => {
+                    const itemsListAreaHeight = this.$refs['items-list-area'] ? this.$refs['items-list-area'].clientHeight : 0;
+                    if (itemsListAreaHeight > window.innerHeight)
+                        this.isFiltersListFixedAtTop = entries[0] && (!entries[0].isIntersecting) && (entries[0].boundingClientRect.y < 0);
+                });
+                this.itemsListTopIntersectionObserver.observe(this.$refs['items-list-results-top']);
+    
+                this.itemsListBottomIntersectionObserver = new IntersectionObserver(entries => {
+                    if (entries[0].isIntersecting)
+                        this.isFiltersListFixedAtBottom = true;
+                    else
+                        this.isFiltersListFixedAtBottom = false;
+                });
+                this.itemsListBottomIntersectionObserver.observe(this.$refs['items-list-results-bottom']);
+            }
         },
         beforeDestroy() {
             this.removeEventListeners();
+            
+            // Removes intersection listener, if it was set up
+            if (this.itemsListTopIntersectionObserver)
+                this.itemsListTopIntersectionObserver.disconnect();
+            if (this.itemsListBottomIntersectionObserver)
+                this.itemsListBottomIntersectionObserver.disconnect();
 
             // Cancels previous Metadata Request
             if (this.metadataSearchCancel != undefined)
@@ -804,7 +866,9 @@
                 'getOrder',
                 'getViewMode',
                 'getTotalItems',
-                'getMetaKey'
+                'getMetaKey',
+                'getPage',
+                'getItemsPerPage'
             ]),
             openExposersModal() {
                 this.$buefy.modal.open({
@@ -837,11 +901,15 @@
                 // We need to load metadata again as fetch_only might change from view mode
                 this.prepareMetadata();
 
-                // For view modes such as slides, we force pagination to request only 12 per page
+                // For view modes such as slides, we force pagination to request only 24 per page
                 let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(aViewMode => aViewMode == viewMode);
                 if (existingViewModeIndex >= 0) {
-                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination)
-                        this.$eventBusSearch.setItemsPerPage(12, true);
+                    if (!this.registeredViewModes[Object.keys(this.registeredViewModes)[existingViewModeIndex]].show_pagination) {
+                        this.latestPerPageAfterViewModeWithoutPagination = this.getItemsPerPage();
+                        this.latestPageAfterViewModeWithoutPagination = this.getPage();
+
+                        this.$eventBusSearch.setItemsPerPage(24, true);
+                    }
                 }
 
                 // Finally sets the new view mode
@@ -903,10 +971,10 @@
                                     let prefsFetchOnly = !this.isRepositoryLevel ? `fetch_only_${this.collectionId}` : 'fetch_only';
                                     let prefsFetchOnlyMeta = !this.isRepositoryLevel ? `fetch_only_meta_${this.collectionId}` : 'fetch_only_meta';
 
-                                    let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).replace(/,null/g, '').split(',') : [];
+                                    let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).split(',') : [];
                                     let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
 
-                                    let thumbnailMetadatumDisplay = this.hideItemsThumbnail ? null : (prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true);
+                                    let thumbnailMetadatumDisplay = this.hideItemsThumbnail ? null : (prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != 'null') : true);
 
                                     if (this.hideItemsThumbnail != true) {
                                         metadata.push({
@@ -991,7 +1059,7 @@
                                         
                                     }
 
-                                    let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != null) : true;
+                                    let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != 'null') : true;
                                 
                                     this.$eventBusSearch.addFetchOnly(
                                         (thumbnailMetadatumDisplay ? 'thumbnail' : null) +','+
@@ -1452,6 +1520,11 @@
         }
     }
 
+    .filter-tags-list {
+        padding-top: 1.5em;
+        padding-bottom: 1.5em;
+    }
+
     .metadata-alert {
         display: flex;
         justify-content: space-between;
@@ -1502,7 +1575,7 @@
             .multivalue-separator {
                 display: block;
                 max-height: 1px;
-                width: 60px;
+                width: 80px;
                 background: var(--tainacan-gray3);
                 content: none;
                 color: transparent;

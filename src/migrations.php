@@ -445,6 +445,41 @@ class Migrations {
 
 	}
 
+	static function create_control_metadata() {
+		$items_repository = \Tainacan\Repositories\Items::get_instance();
+		$collection_repository = \Tainacan\Repositories\Collections::get_instance();
+		$metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
+		$collections = $collection_repository->fetch(['posts_per_page' => -1], 'OBJECT');
+		$helper = \Tainacan\Metadata_Types\Control::get_helper();
+
+		foreach ($collections as $collection) {
+			$collection_id = $collection->get_id();
+			$metadata_repository->register_control_metadata( $collection );
+			$per_page = 50; $page = 1;
+			$args = [
+				'posts_per_page'=> $per_page,
+				'paged' => $page,
+				'post_status' => get_post_stati()
+			];
+			$collection_items = $items_repository->fetch($args, $collection_id, 'WP_Query');
+			$total = $collection_items->found_posts;
+			$last_page = ceil($total/$per_page);
+			while ($page++ <= $last_page) {
+				if ($collection_items->have_posts()) {
+					while ( $collection_items->have_posts() ) {
+						$collection_items->the_post();
+						$item = new \Tainacan\Entities\Item($collection_items->post);
+						if ( $item instanceof \Tainacan\Entities\Item) {
+							$helper->update_control_metadatum($item);
+						}
+					}
+				}
+				$args['paged'] = $page;
+				$collection_items = $items_repository->fetch($args, $collection_id, 'WP_Query');
+			}
+		}
+	}
+
 }
 
 

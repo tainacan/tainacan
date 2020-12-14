@@ -1,7 +1,8 @@
 import axios from '../../../axios';
+import qs from 'qs';
 
 // Actions related to background processes
-export const fetchProcesses = ({ commit }, {page, processesPerPage, shouldUpdateStore}) => {
+export const fetchProcesses = ({ commit }, {page, processesPerPage, shouldUpdateStore, searchDates, search}) => {
     return new Promise((resolve, reject) => {
         let endpoint = '/bg-processes?all_users=1';
 
@@ -10,11 +11,31 @@ export const fetchProcesses = ({ commit }, {page, processesPerPage, shouldUpdate
         if (processesPerPage != undefined)
             endpoint += '&perpage=' + processesPerPage;
 
+        if (searchDates && searchDates[0] != null && searchDates[1] != null) {
+            let dateQuery = {
+                datequery: [
+                    {
+                        'after': searchDates[0],
+                        'before': searchDates[1],
+                        'inclusive': true
+                    }
+                ]
+            };
+            endpoint += '&' + qs.stringify(dateQuery);
+        }
+
+        if (search != undefined && search != '') {
+            endpoint += `&search=${search}`;
+        }
+
         axios.tainacan.get(endpoint)
         .then( res => {
             let processes = res.data;
+            /*
             if (shouldUpdateStore)
                 commit('setProcesses', processes);
+             */
+            commit('setProcesses', processes);
             resolve({ 'processes': processes, 'total': res.headers['x-wp-total'] });
         })
         .catch( error => {
@@ -51,20 +72,6 @@ export const fetchProcess = ({ commit }, id) => {
             commit('setProcess', aProcess);
             
             resolve(aProcess)
-        })
-        .catch( error => {
-            reject(error);
-        })
-    });
-};
-
-export const fetchProcessLog = ({ commit }, { id: id, isFull: isFull }) => {
-    return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/bg-processes/${id}/log`)
-        .then( res => {
-            let log = res.data;
-            commit('setProcessLog', log);
-            resolve(log)
         })
         .catch( error => {
             reject(error);

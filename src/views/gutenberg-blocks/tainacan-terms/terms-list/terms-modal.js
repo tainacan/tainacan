@@ -414,7 +414,7 @@ export default class TermsModal extends React.Component {
                                 {
                                     this.state.modalTerms.length < this.state.totalModalTerms ? (
                                     <Button 
-                                        isDefault
+                                        isSecondary
                                         isSmall
                                         onClick={ () => this.fetchModalTerms(this.state.modalTerms.length, this.state.taxonomyId) }>
                                         {__('Load more', 'tainacan')}
@@ -430,7 +430,7 @@ export default class TermsModal extends React.Component {
                 )}
                 <div className="modal-footer-area">
                     <Button
-                        isDefault
+                        isSecondary
                         onClick={ () => this.resetTaxonomies() }>
                         {__('Switch taxonomy', 'tainacan')}
                     </Button>
@@ -534,7 +534,7 @@ export default class TermsModal extends React.Component {
                                 {
                                     this.state.modalTaxonomies.length < this.state.totalModalTaxonomies ? (
                                     <Button 
-                                        isDefault
+                                        isSecondary
                                         isSmall
                                         onClick={ () => this.fetchModalTaxonomies() }>
                                         {__('Load more', 'tainacan')}
@@ -550,7 +550,7 @@ export default class TermsModal extends React.Component {
                 )}
                 <div className="modal-footer-area">
                     <Button 
-                        isDefault
+                        isSecondary
                         onClick={ () => { this.cancelSelection() }}>
                         {__('Cancel', 'tainacan')}
                     </Button>

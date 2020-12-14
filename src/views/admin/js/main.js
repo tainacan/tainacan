@@ -11,6 +11,9 @@ import draggable from 'vuedraggable';
 import VueTheMask from 'vue-the-mask';
 import cssVars from 'css-vars-ponyfill';
 
+// Vue Dev Tools!
+Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+
 // Metadata Types
 import Text from '../components/metadata-types/text/Text.vue';
 import Textarea from '../components/metadata-types/textarea/Textarea.vue';
@@ -39,6 +42,9 @@ import FilterDateInterval from '../components/filter-types/date-interval/DateInt
 import FilterNumericListInterval from '../components/filter-types/numeric-list-interval/NumericListInterval.vue';
 import FilterTaxonomyCheckbox from '../components/filter-types/taxonomy/Checkbox.vue';
 import FilterTaxonomyTaginput from '../components/filter-types/taxonomy/Taginput.vue';
+
+// Term edition form must be imported here so that it is not necessary on item-submission bundle
+import TermEditionForm from '../components/edition/term-edition-form.vue';
 
 import FormFilterNumeric from '../components/filter-types/numeric/FormNumeric.vue';
 import FormFilterNumericInterval from '../components/filter-types/numeric-interval/FormNumericInterval.vue';
@@ -104,6 +110,7 @@ Vue.component('tainacan-form-taxonomy', FormTaxonomy);
 Vue.component('tainacan-form-selectbox', FormSelectbox);
 Vue.component('tainacan-form-numeric', FormNumeric);
 Vue.component('tainacan-form-user', FormUser);
+Vue.component('term-edition-form', TermEditionForm);
 
 /* Filters */
 Vue.component('tainacan-filter-numeric', FilterNumeric);

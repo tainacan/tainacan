@@ -117,10 +117,10 @@
                 if (this.isRepositoryLevel) 
                     endpoint += '/facets/' + this.metadatumId;
                 else {
-                    if (this.collectionId == 'default' && this.currentCollection)
+                    if (this.filter.collection_id == 'default' && this.currentCollectionId)
                         endpoint += '/collection/' + this.currentCollectionId +'/facets/' + this.metadatumId;
                     else
-                        endpoint += '/collection/' + this.collectionId +'/facets/' + this.metadatumId;
+                        endpoint += '/collection/' + this.filter.collection_id + '/facets/' + this.metadatumId;
                 }
 
                 endpoint += '?order=asc&' + qs.stringify(query_items);

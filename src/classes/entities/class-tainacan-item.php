@@ -93,6 +93,8 @@ class Item extends Entity {
 		}
 
 		$attachments_query = [
+			'orderby'			=> 'menu_order',
+			'order' 			=> 'ASC',
 			'post_type'     	=> 'attachment',
 			'posts_per_page' 	=> -1,
 			'post_parent'   	=> $item_id,
@@ -405,7 +407,7 @@ class Item extends Entity {
 			$is_valid = false;
 		}
 
-		$arrayItemMetadata = $this->get_metadata(['parent'=>'any']);
+		$arrayItemMetadata = $this->get_metadata(['parent'=>'any', 'include_control_metadata_types' => 'true']);
 		if ( $arrayItemMetadata ) {
 			foreach ( $arrayItemMetadata as $itemMetadata ) {
 

@@ -108,7 +108,7 @@
                                 class="tainacan-finder-column"
                                 :key="finderColumn.label + '-' + key">
                             <p class="column-label">
-                                {{ finderColumn.label ? finderColumn.label : $i18n.get('label_terms_without_parent') }}
+                                {{ finderColumn.label ? finderColumn.label : $i18n.get('label_root_terms') }}
                             </p>
                             <ul v-if="finderColumn.children.length">
                                 <b-field
@@ -560,7 +560,7 @@
                     let query = `?order=asc&number=${this.maxNumSearchResultsShow}&search=${this.optionName}&${qs.stringify(query_items)}`;
 
                     let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
-
+                    
                     if (this.collectionId == 'default')
                         route = `/facets/${this.metadatumId}${query}`;
 
@@ -676,7 +676,6 @@
                 let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0&${qs.stringify(query_items)}`
 
                 this.isColumnLoading = true;
-
                 let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
 
                 if (this.collectionId == 'default')
@@ -1027,6 +1026,7 @@
             border-radius: 0 !important;
             min-height: 100%;
             border: 1px solid var(--tainacan-input-border-color);
+            background-color: var(--tainacan-input-background-color);
             transition: background 0.2s ease;
         }
         .button.is-active {
@@ -1094,6 +1094,10 @@
         }
 
         .tags.is-small {
+            font-size: 0.875em;
+        }
+
+        section p {
             font-size: 0.875em;
         }
     }

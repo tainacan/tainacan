@@ -9,7 +9,7 @@
         </a>
         <div class="help-tooltip">
             <div class="help-tooltip-header">
-                <h5>{{ title }}</h5>
+                <h5 class="has-text-color">{{ title }}</h5>
             </div>
             <div class="help-tooltip-body">
                 <p v-html="(message != '' && message != undefined) ? message : $i18n.get('info_no_description_provided')"/>
@@ -49,8 +49,7 @@ export default {
     }
     .help-tooltip {
         z-index: 99999999999999999999;
-        color: var(--tainacan-turquoise5);
-        background-color: var(--tainacan-turquoise2);
+        background-color: var(--tainacan-primary);
         border: none;
         display: block;
         border-radius: 5px;
@@ -70,6 +69,9 @@ export default {
             h5 {
                 font-size: 0.875em;
                 font-weight: bold;
+                color: var(--tainacan-secondary);
+                margin-bottom: 0;
+                margin-top: 0;
             }
         }
 
@@ -77,11 +79,14 @@ export default {
             padding: 0.5em 1.0em 1.0em 1.0em;
 
             p {
+                margin: 0 0 0.125em 0;
                 font-size: 0.875em !important;
                 font-weight: normal !important;
                 white-space: normal !important;
                 overflow: visible !important;
                 max-height: 100% !important;
+                line-height: normal;
+                color: var(--tainacan-secondary);
             }
         }
 
@@ -95,7 +100,7 @@ export default {
             border-style: solid;
         }
         &:before {
-            border-color: var(--tainacan-turquoise2) transparent transparent transparent;
+            border-color: var(--tainacan-primary) transparent transparent transparent;
             border-right-width: 15px;
             border-top-width: 12px;
             border-left-width: 15px;

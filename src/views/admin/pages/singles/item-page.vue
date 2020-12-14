@@ -42,7 +42,7 @@
                             ?
                             $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
                     </div>
-                    <div class="section-box">
+                    <div class="section-box document-field">
                         <div
                                 v-if="item.document !== undefined && item.document !== null &&
                                 item.document_type !== undefined && item.document_type !== null &&
@@ -91,6 +91,16 @@
                                         :alt="$i18n.get('label_thumbnail')"
                                         :src="thumbPlaceholderPath">
                             </figure>
+                        </div>
+                        <br>
+                        <div 
+                                v-if="item.thumbnail_id"
+                                class="thumbnail-alt-input">
+                            <label class="label">{{ $i18n.get('label_thumbnail_alt') }}</label>
+                            <help-button
+                                    :title="$i18n.get('label_thumbnail_alt')"
+                                    :message="$i18n.get('info_thumbnail_alt')"/>
+                            <p> {{ item.thumbnail_alt }}</p>
                         </div>
                     </div>        
 
@@ -213,7 +223,7 @@
                                             class="content">
                                         <component 
                                                 :is="itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ? 'div' : 'p'" 
-                                                v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_informed') + `</span></p>`"/>
+                                                v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`"/>
                                     </div>
                                 </div>
                             </div>
@@ -601,6 +611,17 @@
                 font-size: 1.125em !important;
                 color: var(--tainacan-gray3);
             }
+        }
+    }
+
+    .document-field {
+        /deep/ iframe {
+            max-width: 100%;
+        }
+        .document-buttons-row {
+            text-align: right;
+            top: -21px;
+            position: relative;
         }
     }
 

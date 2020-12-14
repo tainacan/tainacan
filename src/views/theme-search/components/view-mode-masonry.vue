@@ -40,6 +40,7 @@
                     class="tainacan-masonry-container">
                 <a 
                         role="listitem"
+                        :data-tainacan-item-id="item.id"
                         :key="index"
                         v-for="(item, index) of items"
                         class="tainacan-masonry-item" 
@@ -55,7 +56,7 @@
                                         show: 500,
                                         hide: 100,
                                     },
-                                    content: $i18n.get('label_see_on_slideshow'),
+                                    content: $i18n.get('label_see_on_fullscreen'),
                                     placement: 'auto-start'
                                 }"          
                                 @click.prevent="starSlideshowFromHere(index)"
@@ -70,7 +71,7 @@
                             class="tainacan-masonry-item-thumbnail"
                             :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)) + ')' }">  
                         <img 
-                                :alt="$i18n.get('label_thumbnail')"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                 :style="{ minHeight: getItemImageHeight(item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px'}"
                                 :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)" >  
                     </div>

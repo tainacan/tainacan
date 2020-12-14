@@ -839,7 +839,6 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertNotEquals($metadatumB->get_id(), $data['metadata_order'][0]['id']);
 		$this->assertNotEquals($metadatumB->get_id(), $data['metadata_order'][1]['id']);
 		$this->assertNotEquals($metadatumB->get_id(), $data['metadata_order'][2]['id']);
-
 	}
 
 	/**

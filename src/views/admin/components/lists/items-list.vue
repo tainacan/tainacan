@@ -23,7 +23,6 @@
                     </b-checkbox>
                 </span>
             </div>
-            <pre>{{ firstSelectedIndex }}</pre>
             <div class="field">
                 <b-dropdown
                         :mobile-modal="true"
@@ -63,7 +62,7 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="collectionId && isOnTrash"
-                            @click="untrashSelectedItems()"
+                            @click="untrashSelectedItems();"
                             aria-role="listitem">
                         {{ $i18n.get('label_untrash_selected_items') }}
                     </b-dropdown-item>
@@ -135,6 +134,7 @@
                 <div
                         role="listitem"
                         :key="index"
+                        :data-tainacan-item-id="item.id"
                         v-for="(item, index) of items"
                         :class="{ 'selected-grid-item': getSelectedItemChecked(item.id) == true }"
                         class="tainacan-grid-item">
@@ -179,7 +179,7 @@
                             class="grid-item-thumbnail"
                             :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }">
                         <img
-                                :alt="$i18n.get('label_thumbnail')"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                 :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">
                     </a>
 
@@ -249,6 +249,7 @@
                 <div
                         role="listitem"
                         :key="index"
+                        :data-tainacan-item-id="item.id"
                         v-for="(item, index) of items"
                         :class="{
                             'selected-masonry-item': getSelectedItemChecked(item.id) == true,
@@ -292,7 +293,7 @@
                             class="tainacan-masonry-item-thumbnail"
                             :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)) + ')' }">
                         <img
-                                :alt="$i18n.get('label_thumbnail')"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                 :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">
                     </div>
 
@@ -359,6 +360,7 @@
                 <div
                         role="listitem"
                         :key="index"
+                        :data-tainacan-item-id="item.id"
                         v-for="(item, index) of items"
                         :class="{ 'selected-card': getSelectedItemChecked(item.id) == true }"
                         class="tainacan-card">
@@ -460,7 +462,7 @@
                                 :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }"
                                 class="card-thumbnail">
                             <img
-                                    :alt="$i18n.get('label_thumbnail')"
+                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                     v-if="item.thumbnail != undefined"
                                     :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">
                         </div>
@@ -473,13 +475,13 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`,
+                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"
                                     class="metadata-description"
-                                    v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_informed') + `</span>`" />
+                                    v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
                             <!-- Author-->
                             <p
                                     v-tooltip="{
@@ -526,6 +528,7 @@
                 <div
                         role="listitem"
                         :key="index"
+                        :data-tainacan-item-id="item.id"
                         v-for="(item, index) of items"
                         :class="{ 'selected-record': getSelectedItemChecked(item.id) == true }"
                         class="tainacan-record">
@@ -651,7 +654,7 @@
                         <div class="list-metadata media-body">
                             <div class="tainacan-record-thumbnail">
                                 <img
-                                        :alt="$i18n.get('label_thumbnail')"
+                                        :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                         v-if="item.thumbnail != undefined"
                                         :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">
                             </div>
@@ -736,6 +739,7 @@
                                 'highlighted-item': highlightedItem == item.id
                             }"
                             :key="index"
+                            :data-tainacan-item-id="item.id"
                             v-for="(item, index) of items">
                         <!-- Checking list -->
                         <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
@@ -777,7 +781,7 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
+                                        content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -785,14 +789,14 @@
                                     v-if="collectionId == undefined &&
                                           column.metadata_type_object != undefined &&
                                           column.metadata_type_object.related_mapped_prop == 'title'"
-                                    v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.title != undefined && item.title != '') ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)"/>
+                                    v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.title != undefined && item.title != '') ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)"/>
                             <p
                                     v-tooltip="{
                                         delay: {
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
+                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -800,7 +804,7 @@
                                     v-if="collectionId == undefined &&
                                           column.metadata_type_object != undefined &&
                                           column.metadata_type_object.related_mapped_prop == 'description'"
-                                    v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.description != undefined && item.description) != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)"/>
+                                    v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.description != undefined && item.description) != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)"/>
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -808,7 +812,7 @@
                                             hide: 300,
                                         },
                                         classes: [ column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '' ],
-                                        content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`,
+                                        content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                         html: true,
                                         autoHide: false,
                                         placement: 'auto-start'
@@ -820,11 +824,11 @@
                                           column.metadatum !== 'row_author' &&
                                           column.metadatum !== 'row_title' &&
                                           column.metadatum !== 'row_description'"
-                                    v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`"/>
+                                    v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`"/>
 
                             <span v-if="column.metadatum == 'row_thumbnail'">
                                 <img
-                                        :alt="$i18n.get('label_thumbnail')"
+                                        :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                         class="table-thumb"
                                         :src="item['thumbnail']['tainacan-small'] ? item['thumbnail']['tainacan-small'][0] : (item['thumbnail'].thumbnail ? item['thumbnail'].thumbnail[0] : thumbPlaceholderPath)">
                             </span>
@@ -926,6 +930,7 @@
                         role="listitem"
                         :href="item.url"
                         :key="index"
+                        :data-tainacan-item-id="item.id"
                         v-for="(item, index) of items"
                         class="tainacan-list"
                         :class="{ 'selected-list-item': getSelectedItemChecked(item.id) == true }">
@@ -964,7 +969,7 @@
                                 v-for="(column, metadatumIndex) in displayedMetadata"
                                 :key="metadatumIndex"
                                 v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                v-html="item.metadata != undefined && collectionId ? renderMetadata(item.metadata, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_informed') + `</span>`)" />                 
+                                v-html="item.metadata != undefined && collectionId ? renderMetadata(item.metadata, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                 
                     </div>
 
                     <!-- Actions -->
@@ -1029,7 +1034,7 @@
                                 class="tainacan-list-thumbnail"
                                 v-if="item.thumbnail != undefined">
                             <img 
-                                    :alt="$i18n.get('label_thumbnail')"
+                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                     :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">  
                         </div>
                         <div class="list-metadata media-body">
@@ -1309,6 +1314,7 @@ export default {
                                 groupId: groupId
                             }).then(() => {
                                 this.$eventBusSearch.loadItems();
+                                this.$root.$emit('openProcessesPopup');
                             });
                         });
                     }
@@ -1340,6 +1346,7 @@ export default {
                                     groupId: groupId
                                 }).then(() => {
                                     this.$eventBusSearch.loadItems();
+                                    this.$root.$emit('openProcessesPopup');
                                 });
                             } else {
                                 this.trashItemsInBulk({
@@ -1347,6 +1354,7 @@ export default {
                                     groupId: groupId
                                 }).then(() => {
                                     this.$eventBusSearch.loadItems();
+                                    this.$root.$emit('openProcessesPopup');
                                 });
                             }
                         });

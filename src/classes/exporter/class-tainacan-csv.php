@@ -5,17 +5,25 @@ use Tainacan;
 use Tainacan\Entities;
 
 class CSV extends Exporter {
+	private $collection_name;
 
 	public function __construct($attributes = array()) {
 		parent::__construct($attributes);
 		$this->set_accepted_mapping_methods('any'); // set all method to mapping
 		$this->accept_no_mapping = true;
+		if ($current_collection = $this->get_current_collection_object()) {
+			$name = $current_collection->get_name();
+			$this->collection_name = sanitize_title($name) . "_csv_export.csv";;
+		} else {
+			$this->collection_name = "csv_export.csv";
+		}
+
 		//$this->set_accepted_mapping_methods('list', [ "dublin-core" ]); // set specific list of methods to mapping
 		$this->set_default_options([
-            'delimiter' => ',',
-            'multivalued_delimiter' => '||',
-            'enclosure' => '"'
-        ]);
+			'delimiter' => ',',
+			'multivalued_delimiter' => '||',
+			'enclosure' => '"'
+		]);
 	}
 	
 	public function filter_multivalue_separator($separator) {
@@ -61,7 +69,6 @@ class CSV extends Exporter {
 		remove_filter('tainacan-item-metadata-get-multivalue-separator', [$this, 'filter_multivalue_separator']);
 		remove_filter('tainacan-terms-hierarchy-html-separator', [$this, 'filter_hierarchy_separator']);
 		
-		
 		$line[] = $item->get_status();
 		
 		$line[] = $this->get_document_cell($item);
@@ -79,10 +86,8 @@ class CSV extends Exporter {
 		$line[] = $item->get_modification_date();
 		
 		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
-		
-		
-		$this->append_to_file('csvexporter.csv', $line_string."\n");
-		
+
+		$this->append_to_file($this->collection_name, $line_string."\n");
 	}
 
 	function get_compound_metadata_cell($meta) {
@@ -214,7 +219,7 @@ class CSV extends Exporter {
 		
 		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
 		
-		$this->append_to_file('csvexporter.csv', $line_string."\n");
+		$this->append_to_file($this->collection_name, $line_string."\n");
 		
 	}
 	
@@ -237,10 +242,15 @@ class CSV extends Exporter {
 	public function get_output() {
 		$files = $this->get_output_files();
 		
-		if ( is_array($files) && isset($files['csvexporter.csv'])) {
-			$file = $files['csvexporter.csv'];
+		if ( is_array($files) && isset($files[$this->collection_name])) {
+			$file = $files[$this->collection_name];
+			$current_user = wp_get_current_user();
+			$author_name = $current_user->user_login;
+
 			$message = __('target collections:', 'tainacan');
 			$message .= " <b>" . implode(", ", $this->get_collections_names() ) . "</b><br/>";
+			$message .= __('Exported by:', 'tainacan');
+			$message .= " <b> ${author_name} </b><br/>";
 			$message .= __('Your CSV file is ready! Access it in the link below:', 'tainacan');
 			$message .= '<br/><br/>';
 			$message .= '<a href="' . $file['url'] . '">Download</a>';
@@ -267,7 +277,7 @@ class CSV extends Exporter {
 
 	public function options_form() {
 		ob_start();
-	   ?>
+		?>
 		<div class="field">
 			<label class="label"><?php _e('CSV Delimiter', 'tainacan'); ?></label>
 			<span class="help-wrapper">
@@ -283,13 +293,13 @@ class CSV extends Exporter {
 						<div class="help-tooltip-body">
 							<p><?php _e('The character used to separate each column in your CSV (e.g. , or ;)', 'tainacan'); ?></p>
 						</div>
-					</div> 
+					</div>
 			</span>
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="delimiter" maxlength="1" value="<?php echo $this->get_option('delimiter'); ?>">
 			</div>
 		</div>
-		
+
 		<div class="field">
 			<label class="label"><?php _e('Multivalued metadata delimiter', 'tainacan'); ?></label>
 			<span class="help-wrapper">
@@ -305,13 +315,13 @@ class CSV extends Exporter {
 						<div class="help-tooltip-body">
 							<p><?php _e('The character used to separate each value inside a cell with multiple values (e.g. ||). Note that the target metadatum must accept multiple values.', 'tainacan'); ?></p>
 						</div>
-					</div> 
+					</div>
 			</span>
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="multivalued_delimiter" value="<?php echo $this->get_option('multivalued_delimiter'); ?>">
 			</div>
 		</div>
-		
+
 		<div class="field">
 			<label class="label"><?php _e('Enclosure', 'tainacan'); ?></label>
 			<span class="help-wrapper">
@@ -327,19 +337,14 @@ class CSV extends Exporter {
 						<div class="help-tooltip-body">
 							<p><?php _e('The character that wraps the content of each cell in your CSV. (e.g. ")', 'tainacan'); ?></p>
 						</div>
-					</div> 
+					</div>
 			</span>
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="enclosure" value="<?php echo esc_attr($this->get_option('enclosure')); ?>">
 			</div>
 		</div>
-		
-		
-	   
-	   <?php 
-	   
-	   
-	   return ob_get_clean();
 
-    }
+      <?php
+      return ob_get_clean();
+  }
 }

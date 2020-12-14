@@ -431,7 +431,7 @@
                             :addons="false" 
                             :label="$i18n.get('label_slug')"
                             :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
+                            :message="isUpdatingSlug ? $i18n.get('info_validating_slug') : (editFormErrors['slug'] != undefined ? editFormErrors['slug'] : '')">
                         <help-button 
                                 :title="$i18n.getHelperTitle('collections', 'slug')" 
                                 :message="$i18n.getHelperMessage('collections', 'slug')"/>
@@ -439,7 +439,9 @@
                                 id="tainacan-text-slug"
                                 @input="updateSlug"
                                 v-model="form.slug"
-                                @focus="clearErrors('slug')"/>
+                                @focus="clearErrors('slug')"
+                                :disabled="isUpdatingSlug"
+                                :loading="isUpdatingSlug"/>
                     </b-field>
 
                     <!-- Comment Status ------------------------ --> 
@@ -457,6 +459,97 @@
                                 :title="$i18n.getHelperTitle('collections', 'allow_comments')" 
                                 :message="$i18n.getHelperMessage('collections', 'allow_comments')"/>
                     </b-field>
+
+                    <!-- Allows Submissions ------------------------ --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.getHelperTitle('collections', 'allows_submission')"
+                            :type="editFormErrors['allows_submission'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['allows_submission'] != undefined ? editFormErrors['allows_submission'] : ''">
+                        &nbsp;
+                        <b-switch
+                                id="tainacan-checkbox-allow-submission" 
+                                size="is-small"
+                                true-value="yes" 
+                                false-value="no"
+                                v-model="form.allows_submission" />
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'allows_submission')" 
+                                :message="$i18n.getHelperMessage('collections', 'allows_submission')"/>
+                    </b-field>
+                        
+                    <transition name="filter-item">
+                        <div 
+                                v-if="form.allows_submission === 'yes'"
+                                class="item-submission-options">
+
+                            <!-- Allows Submissions by anonynmous user ------------------------ --> 
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.getHelperTitle('collections', 'submission_anonymous_user')"
+                                    :type="editFormErrors['submission_anonymous_user'] != undefined ? 'is-danger' : ''" 
+                                    :message="editFormErrors['submission_anonymous_user'] != undefined ? editFormErrors['submission_anonymous_user'] : ''">
+                                &nbsp;
+                                <b-switch
+                                        id="tainacan-checkbox-allow-submission" 
+                                        size="is-small"
+                                        true-value="yes" 
+                                        false-value="no"
+                                        v-model="form.submission_anonymous_user" />
+                                <help-button 
+                                        :title="$i18n.getHelperTitle('collections', 'submission_anonymous_user')" 
+                                        :message="$i18n.getHelperMessage('collections', 'submission_anonymous_user')"/>
+                            </b-field>
+
+                            <!-- Item submission default Status -------------------------------- --> 
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.getHelperTitle('collections', 'submission_default_status')"
+                                    :type="editFormErrors['submission_default_status'] != undefined ? 'is-danger' : ''" 
+                                    :message="editFormErrors['submission_default_status'] != undefined ? editFormErrors['submission_default_status'] : ''">
+                                <help-button 
+                                        :title="$i18n.getHelperTitle('collections', 'submission_default_status')" 
+                                        :message="$i18n.getHelperMessage('collections', 'submission_default_status')"/>
+                                <div class="status-radios">
+                                    <b-radio
+                                            v-model="form.submission_default_status"
+                                            v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'trash')"
+                                            :key="index"
+                                            :native-value="statusOption.slug">
+                                        <span class="icon has-text-gray">
+                                            <i 
+                                                class="tainacan-icon tainacan-icon-18px"
+                                                :class="$statusHelper.getIcon(statusOption.slug)"/>
+                                        </span>
+                                        {{ statusOption.name }}
+                                    </b-radio>
+                                </div>
+                            </b-field>
+
+                            <!-- Submission process uses reCAPTCHA ------------------------ --> 
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.getHelperTitle('collections', 'submission_use_recaptcha')"
+                                    :type="editFormErrors['submission_use_recaptcha'] != undefined ? 'is-danger' : ''" 
+                                    :message="editFormErrors['submission_use_recaptcha'] != undefined ? editFormErrors['submission_use_recaptcha'] : ''">
+                                &nbsp;
+                                <b-switch
+                                        id="tainacan-checkbox-submission-use-recaptcha" 
+                                        size="is-small"
+                                        true-value="yes" 
+                                        false-value="no"
+                                        v-model="form.submission_use_recaptcha" />
+                                <help-button 
+                                        :title="$i18n.getHelperTitle('collections', 'submission_use_recaptcha')" 
+                                        :message="$i18n.getHelperMessage('collections', 'submission_use_recaptcha')"/>
+                                <p 
+                                        v-if="form.submission_use_recaptcha == 'yes'" 
+                                        v-html="$i18n.getWithVariables('info_recaptcha_link_%s', [ reCAPTCHASettingsPagePath ])" />        
+                            </b-field>
+                            
+
+                        </div>
+                    </transition>
 
                     <!-- Hook for extra Form options -->
                     <template 
@@ -486,14 +579,14 @@
                         style="margin-left: auto;"
                         class="control">
                     <button
-                            v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata')"
+                            v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata') && !fromImporter"
                             id="button-submit-goto-metadata"
                             @click.prevent="onSubmit('metadata')"
                             class="button is-secondary">{{ $i18n.get('label_save_goto_metadata') }}</button>
                 </div>
                  <div class="control">
                     <button
-                            v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata')"
+                            v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata') && !fromImporter"
                             id="button-submit-goto-filter"
                             @click.prevent="onSubmit('filters')"
                             class="button is-secondary">{{ $i18n.get('label_save_goto_filter') }}</button>
@@ -556,7 +649,11 @@ export default {
                 enabled_view_modes: [],
                 default_view_mode: [],
                 allow_comments: '',
-                hide_items_thumbnail_on_lists: ''
+                allows_submission: 'no',
+                submission_default_status: 'draft',
+                submission_anonymous_user: 'no',
+                hide_items_thumbnail_on_lists: '',
+                submission_use_recaptcha: 'no'
             },
             thumbnail: {},
             cover: {},
@@ -581,6 +678,7 @@ export default {
             viewModesList: [],
             fromImporter: '',
             registeredViewModes: tainacan_plugin.registered_view_modes,
+            reCAPTCHASettingsPagePath: tainacan_plugin.admin_url + 'admin.php?page=tainacan_item_submission',
             newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page',
             isUpdatingSlug: false,
             entityName: 'collection'
@@ -650,6 +748,10 @@ export default {
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes.reduce((result, viewMode) => { typeof viewMode == 'string' ? result.push(viewMode) : null; return result }, [])));
                 this.form.allow_comments = this.collection.allow_comments;
+                this.form.allows_submission = this.collection.allows_submission;
+                this.form.submission_anonymous_user = this.collection.submission_anonymous_user;
+                this.form.submission_default_status = this.collection.submission_default_status;
+                this.form.submission_use_recaptcha = this.collection.submission_use_recaptcha;
                 this.form.hide_items_thumbnail_on_lists = this.collection.hide_items_thumbnail_on_lists;
 
                 // Generates CoverPage from current cover_page_id info
@@ -731,7 +833,7 @@ export default {
 
                     this.isUpdatingSlug = false;
                 });
-        }, 500),
+        }, 1000),
         onSubmit(goTo) {
            
             this.isLoading = true;
@@ -747,6 +849,10 @@ export default {
                 parent: this.form.parent,
                 enabled_view_modes: this.form.enabled_view_modes,
                 default_view_mode: this.form.default_view_mode,
+                allows_submission: this.form.allows_submission,
+                submission_anonymous_user: this.form.submission_anonymous_user,
+                submission_default_status: this.form.submission_default_status,
+                submission_use_recaptcha: this.form.submission_use_recaptcha,
                 allow_comments: this.form.allow_comments,
                 hide_items_thumbnail_on_lists: this.form.hide_items_thumbnail_on_lists
             };
@@ -770,15 +876,19 @@ export default {
                     this.form.enabled_view_modes = this.collection.enabled_view_modes.map((viewMode) => viewMode.viewMode);
                     this.form.default_view_mode = this.collection.default_view_mode;
                     this.form.allow_comments = this.collection.allow_comments;
+                    this.form.allows_submission = this.collection.allows_submission;
+                    this.form.submission_anonymous_user = this.collection.submission_anonymous_user;
+                    this.form.submission_default_status = this.collection.submission_default_status;
+                    this.form.submission_use_recaptcha = this.collection.submission_use_recaptcha;
                     this.form.hide_items_thumbnail_on_lists = this.collection.hide_items_thumbnail_on_lists;
                     
                     this.isLoading = false;
                     this.formErrorMessage = '';
                     this.editFormErrors = {};
 
-                    if (this.fromImporter)
+                    if (this.fromImporter) {
                         this.$router.go(-1);
-                    else {
+                    } else {
                         if (goTo == 'metadata')
                             this.$router.push(this.$routerHelper.getCollectionMetadataPath(this.collectionId));
                         else if (goTo == 'filters')
@@ -824,6 +934,10 @@ export default {
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = [];
                 this.form.allow_comments = this.collection.allow_comments;
+                this.form.allows_submission = this.collection.allows_submission;
+                this.form.submission_anonymous_user = this.collection.submission_anonymous_user;
+                this.form.submission_default_status = this.collection.submission_default_status;
+                this.form.submission_use_recaptcha = this.collection.submission_use_recaptcha;
                 this.form.hide_items_thumbnail_on_lists = this.collection.hide_items_thumbnail_on_lists;
 
                 // Pre-fill status with publish to incentivate it
@@ -1128,6 +1242,12 @@ export default {
             display: flex;
             align-items: center;
         }
+    }
+    .item-submission-options {
+        padding-left: 1em;
+        padding-top: 1.25em;
+        margin-top: -1.5em;
+        border-left: 1px solid var(--tainacan-gray2);
     }
 
 </style>

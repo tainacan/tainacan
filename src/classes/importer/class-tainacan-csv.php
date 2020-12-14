@@ -283,7 +283,6 @@ class CSV extends Importer {
 		return false;
 	}
 
-
 	public function options_form() {
 		ob_start();
 		?>
@@ -654,7 +653,7 @@ class CSV extends Importer {
 	 *
 	 * @param array $processed_item Associative array with metadatum source's as index with
 	 *                              its value or values
-	 * @param integet $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
+	 * @param integer $collection_index The index in the $this->collections array of the collection the item is being inserted into
 	 *
 	 * @return Tainacan\Entities\Item Item inserted
 	 */
@@ -722,7 +721,7 @@ class CSV extends Importer {
 		if( is_array( $processed_item ) ) {
 			foreach ( $processed_item as $metadatum_source => $values ) {
 
-				if ( $metadatum_source == 'special_document' ||
+				if ($metadatum_source == 'special_document' ||
 					 $metadatum_source == 'special_attachments' ||
 					 $metadatum_source == 'special_item_status' ||
 					 $metadatum_source == 'special_comment_status') {
@@ -736,9 +735,9 @@ class CSV extends Importer {
 				}
 				$metadatum = $Tainacan_Metadata->fetch( $tainacan_metadatum_id );
 
-				if( $this->is_empty_value( $values ) ) continue;
+				if ($this->is_empty_value($values)) continue;
 
-				if( $metadatum instanceof Entities\Metadatum ) {
+				if ($metadatum instanceof Entities\Metadatum) {
 					$singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatum); // *empty item will be replaced by inserted in the next foreach
 					if( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy' ) {
 						if( !is_array( $values ) ) {
@@ -959,18 +958,25 @@ class CSV extends Importer {
 	public function add_collection(array $collection) {
 		if (isset($collection['id'])) {
 
-			if( isset($collection['mapping']) && is_array($collection['mapping']) ){
+			if (isset($collection['mapping']) && is_array($collection['mapping'])) {
 
 				foreach( $collection['mapping'] as $metadatum_id => $header ){
 
-					if( !is_numeric($metadatum_id) ) {
-						$metadatum = $this->create_new_metadata( $header, $collection['id']);
-						if ( $metadatum == false ) {
-							$this->add_error_log( __("Error on creating metadata metadata, please review the metadata description.", 'tainacan') );
+					if (!is_numeric($metadatum_id)) {
+						$repo_key = "create_repository_metadata";
+						$collection_id = $collection['id'];
+						if (strpos($metadatum_id, $repo_key) !== false) {
+							$collection_id = "default";
+						}
+						$metadatum = $this->create_new_metadata($header, $collection_id);
+
+						if ($metadatum == false) {
+							$this->add_error_log( __("Error while creating metadatum, please review the metadatum description.", 'tainacan') );
 							$this->abort();
 							return false;
 						}
-						if( is_object($metadatum) && $metadatum instanceof \Tainacan\Entities\Metadatum ){
+
+						if (is_object($metadatum) && $metadatum instanceof \Tainacan\Entities\Metadatum) {
 							$collection['mapping'][$metadatum->get_id()] = $header;
 						} elseif ( is_array($metadatum) && sizeof($metadatum) == 2) {
 							$parent_header = key($header);
@@ -981,13 +987,16 @@ class CSV extends Importer {
 				}
 
 				$this->save_mapping( $collection['id'], $collection['mapping'] );
-				
+
 				$coll = \Tainacan\Repositories\Collections::get_instance()->fetch($collection['id']);
-				$metadata_order = array_map(
-					function($meta) { return ["enabled"=>true, "id"=>$meta]; },
-					array_keys( $collection['mapping'] )
-				);
-				$coll->set_metadata_order( $metadata_order );
+				if(empty($coll->get_metadata_order())) {
+					$metadata_order = array_map(
+						function($meta) { return ["enabled"=>true, "id"=>$meta]; },
+						array_keys( $collection['mapping'] )
+					);
+					$coll->set_metadata_order( $metadata_order );
+				}
+
 				if ( $coll->validate() ) {
 					\Tainacan\Repositories\Collections::get_instance()->update( $coll );
 				} else {
@@ -1018,9 +1027,17 @@ class CSV extends Importer {
 	* @return string
 	*/
 	public function get_output() {
+		$imported_file = basename($this->get_tmp_file());
+		$current_user = wp_get_current_user();
+		$author = $current_user->user_login;
 
-		$message = __('target collections:', 'tainacan');
+		$message  = __('imported file:', 'tainacan');
+		$message .= " <b> ${imported_file} </b><br/>";
+		$message .= __('target collections:', 'tainacan');
 		$message .= " <b>" . implode(", ", $this->get_collections_names() ) . "</b><br/>";
+		$message .= __('Imported by:', 'tainacan');
+		$message .= " <b> ${author} </b><br/>";
+
 		return $message;
 	}
 

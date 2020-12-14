@@ -5,16 +5,6 @@ use Tainacan\Repositories\Repository;
 
 class Roles {
 
-
-	public static $dependencies = [
-		"tainacan-items" => [
-			'edit_posts'           => 'upload_files',
-			"edit_private_posts"   => 'upload_files',
-			"edit_published_posts" => 'upload_files',
-			"edit_others_posts"    => 'upload_files'
-		]
-	];
-
 	private static $instance = null;
 
 	private $capabilities;
@@ -536,6 +526,8 @@ class Roles {
 			}
 		}
 
+		$collection_capabilities = tainacan_collections()->get_capabilities();
+
 		foreach ( $caps as $cap ) {
 
 			if ( array_key_exists($cap, $allcaps) && $allcaps[$cap] === true ) {
@@ -548,24 +540,64 @@ class Roles {
 
 					$allcaps = array_merge($allcaps, [ $cap => true ]);
 
-				} elseif ( \strpos($cap, 'tnc_col_') === 0 ) {
+				/**
+				 * Handle checks for collection specific capabilities.
+				 * Either tnc_col_* or tnc_rep_*_collections
+				 */
+				} elseif ( \strpos($cap, 'tnc_col_') === 0 || in_array( $cap, (array) $collection_capabilities ) ) {
 
-					$col_id = preg_replace('/[a-z_]+(\d+)[a-z_]+?$/', '$1', $cap );
+					$check_all_collections_cap = false;
+					$has_all_collections_cap   = false;
+					
+					
+					/**
+					 * We are only interested in checks for a specific collection.
+					 * $args[2] will be set if this came from a meta cap of a specific collection ( e.g. current_user_can('tnc_rep_edit_collection', 3) ).
+					 */
+					if ( isset( $args[2] ) && is_numeric( $args[2] ) ) {
+						$col_id = $args[2];
+					/**
+					 * Or we extract the collectino id from the capability itself. Example: tnc_col_3_delete_items
+					 */
+					} else {
+						$col_id = preg_replace('/[a-z_]+(\d+)[a-z_]+?$/', '$1', $cap );
+						$check_all_collections_cap = true;
+					}
 
+					/**
+					 * If there is no specific collection, do nothing.
+					 */
 					if ( ! is_numeric($col_id) ) {
 						continue;
 					}
 
-					// check for tnc_col_all_* capabilities
-					$all_collections_cap = preg_replace('/([a-z_]+)(\d+)([a-z_]+?)$/', '${1}all${3}', $cap );
+					// In case of a tnc_col_* capability check, 
+					// Let's see if the user has the respective tnc_col_all_* capability
+					if ( $check_all_collections_cap ) {
+						$all_collections_cap     = preg_replace('/([a-z_]+)(\d+)([a-z_]+?)$/', '${1}all${3}', $cap );
+						$has_all_collections_cap = $user->has_cap( $all_collections_cap );
+					}
 
 					if (
 							$user->has_cap('manage_tainacan_collection_' . $col_id) ||
 							$user->has_cap('manage_tainacan_collection_all') ||
-							$user->has_cap($all_collections_cap) ) {
+							$has_all_collections_cap
+						) {
+
 						$allcaps = array_merge($allcaps, [ $cap => true ]);
-					} else {
-						// check if the user is the owner
+
+						/**
+						 * If a user is trying to edit a collection relying on the manage_tainacan_collection_* cap
+						 * they will also need the edit_others_posts capability. But since it is 'manage_tainacan',
+						 * we have to treat this here because this check will not get here since we are only handling
+						 * caps that starts with tnc_
+						 */
+						if ( $collection_capabilities->edit_posts === $cap ) {
+							$allcaps = array_merge($allcaps, [ $collection_capabilities->edit_others_posts => true ]);
+						}
+
+					} elseif ( \strpos($cap, 'tnc_col_') === 0 ) {
+						// check if the user is the owner only when checking tnc_col_* capabilities
 						$collection = tainacan_collections()->fetch( (int) $col_id );
 						if ( $collection instanceof \Tainacan\Entities\Collection ) {
 							if ( (int) $collection->get_author_id() == (int) $user->ID ) {
@@ -579,7 +611,6 @@ class Roles {
 		}
 
 		return $allcaps;
-
 
 	}
 

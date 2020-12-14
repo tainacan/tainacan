@@ -31,7 +31,7 @@
                         class="level-item">
                     <router-link 
                             tag="a" 
-                            :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '' }" 
+                            :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }" 
                             :aria-label="$i18n.get('label_collection_items')">               
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/>

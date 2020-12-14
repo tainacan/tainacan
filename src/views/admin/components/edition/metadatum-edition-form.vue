@@ -209,6 +209,24 @@
                                 :message="$i18n.getHelperMessage('metadata', 'collection_key')"/>
                     </b-checkbox>
                 </b-field>
+
+                <b-field
+                  v-if="!isRepositoryLevel && isOnModal"
+                >
+                  <b-checkbox
+                      class="is-inline-block"
+                      v-model="editForm.repository_level"
+                      @input="clearErrors('repository_level')"
+                      name="repository_level"
+                      true-value="yes"
+                      false-value="no"
+                  >
+                    {{ $i18n.get('label_repository_metadata') }}
+                    <help-button
+                                :title="$i18n.getHelperTitle('metadata', 'repository_level')"
+                                :message="$i18n.getHelperMessage('metadata', 'repository_level')"/>
+                  </b-checkbox>
+                </b-field>
             </b-field>
 
             <component
@@ -282,13 +300,10 @@
             }
         },
         created() {
-
             this.editForm = this.editedMetadatum;
             this.formErrors = this.editForm.formErrors != undefined ? this.editForm.formErrors : {};
             this.formErrorMessage = this.editForm.formErrors != undefined ? this.editForm.formErrorMessage : '';
-
             this.oldForm = JSON.parse(JSON.stringify(this.originalMetadatum));
-
         },
         mounted() {
             // Fills hook forms with it's real values 
@@ -312,10 +327,13 @@
             ...mapActions('metadata', [
                 'updateMetadatum'
             ]),
-            saveEdition(metadatum) {
+            saveEdition(metadatum) {                
+                if ((metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {                    
+                    let repository = this.editForm.repository_level;
+                    if (repository && repository === 'yes') {                        
+                        this.isRepositoryLevel = true;
+                    }
 
-                if ((metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
-                    
                     this.fillExtraFormData(this.editForm);
                     this.isUpdating = true;
                     this.updateMetadatum({

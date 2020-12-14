@@ -1,7 +1,7 @@
 @import '../../gutenberg-blocks-variables.scss';
 
 .wp-block-tainacan-faceted-search {
-    margin: 2em auto;
+    margin: 0 auto;
 
     // Spinner
     .spinner-container {
@@ -321,5 +321,21 @@
 
     .theme-items-list {
         max-width: 100% !important;
+    }
+
+    &:not(.alignfull) .theme-items-list {
+        .search-control {
+            padding: var(--tainacan-container-padding, 25px) var(--tainacan-container-padding, 25px) 20px var(--tainacan-container-padding, 25px);
+        }
+        #filters-modal .modal-content {
+            padding: 24px 18px 24px var(--tainacan-container-padding, 25px);
+        }
+        #filter-menu-compress-button {
+            border-radius: 2px;
+        }
+        #items-list-results .table-container {
+            padding-left: var(--tainacan-container-padding, 25px);
+            padding-right: var(--tainacan-container-padding, 25px);
+        }
     }
 }

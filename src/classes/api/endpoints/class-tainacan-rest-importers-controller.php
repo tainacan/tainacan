@@ -183,11 +183,10 @@ class REST_Importers_Controller extends REST_Controller {
 	 * @return string|\WP_Error|\WP_REST_Response
 	 */
 	public function update_item( $request ) {
-	    $session_id = $request['session_id'];
+        $session_id = $request['session_id'];
+        $body = json_decode($request->get_body(), true);
 
-	    $body = json_decode($request->get_body(), true);
-
-	    if(!empty($body)){
+	    if (!empty($body)) {
 	    	$attributes = [];
 
 	    	foreach ($body as $att => $value){
@@ -197,15 +196,13 @@ class REST_Importers_Controller extends REST_Controller {
 			global $Tainacan_Importer_Handler;
 			$importer = $Tainacan_Importer_Handler->get_importer_instance_by_session_id($session_id);
 			
-	    	if($importer) {
-                
-                foreach ($body as $att => $value){
-                    
+	    	if ($importer) {
+                foreach ($body as $att => $value) {
                     if ($att == 'collection') {
                         if (is_array($value) && isset($value['id'])) {
                             if ($importer->add_collection($value) === false ) {
                                 return new \WP_REST_Response([
-                                    'error_message' => __('Error on creating metadata, please review the metadata description', 'tainacan' ),
+                                    'error_message' => __('Error while creating metadatum, please review the metadatum description.', 'tainacan' ),
                                     'session_id' => $session_id
                                 ], 400);
                             }
@@ -383,8 +380,5 @@ class REST_Importers_Controller extends REST_Controller {
         return new \WP_REST_Response( $importers, 200 );
     }
 
-
-
 }
 
-?>

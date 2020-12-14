@@ -35,7 +35,9 @@ sass -E 'UTF-8' --cache-location .tmp/sass-cache-12 src/views/gutenberg-blocks/t
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-13 src/views/gutenberg-blocks/tainacan-facets/faceted-search/faceted-search.scss:src/assets/css/tainacan-gutenberg-block-faceted-search.css
 
-sass -E 'UTF-8' --cache-location .tmp/sass-cache-14 src/views/gutenberg-blocks/gutenberg-blocks-style.scss:src/assets/css/tainacan-gutenberg-block-common-styles.css
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-14 src/views/gutenberg-blocks/tainacan-items/item-submission-form/item-submission-form.scss:src/assets/css/tainacan-gutenberg-block-item-submission-form.css
+
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-15 src/views/gutenberg-blocks/gutenberg-blocks-style.scss:src/assets/css/tainacan-gutenberg-block-common-styles.css
 
 echo "Compilação do Sass Concluído!"
 exit 0

@@ -2,11 +2,13 @@ const { registerBlockType } = wp.blocks;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, IconButton, Button, ToggleControl, Placeholder, Toolbar, ToolbarGroup, PanelBody, ToolbarButton } = wp.components;
+const { RangeControl, IconButton, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = wp.editor;
+const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
+import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import ItemsModal from './items-modal.js';
+import DeprecatedBlocks from './items-list-deprecated.js'
 
 registerBlockType('tainacan/items-list', {
     title: __('Tainacan Items List', 'tainacan'),
@@ -103,6 +105,7 @@ registerBlockType('tainacan/items-list', {
     supports: {
         align: ['full', 'wide'],
         html: false,
+        fontSize: true
     },
     edit({ attributes, setAttributes, className, isSelected }){
         let {
@@ -123,10 +126,17 @@ registerBlockType('tainacan/items-list', {
                     key={ item.id }
                     className="item-list-item"
                     style={{ marginBottom: layout == 'grid' ?  (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}}>
-                    <IconButton
-                        onClick={ () => removeItemOfId(item.id) }
-                        icon="no-alt"
-                        label={__('Remove', 'tainacan')}/>         
+                    { tainacan_blocks.wp_version < '5.4' ?
+                        <IconButton
+                            onClick={ () => removeItemOfId(item.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                            :
+                        <Button
+                            onClick={ () => removeItemOfId(item.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                    }
                     <a 
                         id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
                         href={ item.url } 
@@ -224,45 +234,17 @@ registerBlockType('tainacan/items-list', {
 
                 <div>
                     <BlockControls>
-                        <Toolbar controls={ layoutControls } />
+                        { TainacanBlocksCompatToolbar({ controls: layoutControls }) }
                         { selectedItemsHTML.length ?
-                             tainacan_blocks.wp_version < '5.4' ?
-                                <Button style={{ whiteSpace: 'nowrap', alignItems: 'center', borderTop: '1px solid #b5bcc2' }} onClick={ openItemsModal } >
-                                    <p style={{ margin: 0 }}>
-                                        <svg width="24" height="24" viewBox="0 -2 12 16">
-                                            <path
-                                                d="M8.8,1.2H1.2V10H0V1.2C0,0.6,0.6,0,1.2,0h7.5V1.2z M3.8,2.5c-0.7,0-1.2,0.6-1.2,1.3v8.8c0,0.7,0.6,1.2,1.2,1.2h6.9
-                                                c0.7,0,1.2-0.6,1.2-1.2V6.3L8.1,2.5H3.8z M7.5,3.4L11,6.9H7.5V3.4z"/>       
-                                        </svg>
-                                    </p>&nbsp;
-                                    {  __( 'Add more items', 'tainacan' ) }
-                                </Button>
-                                : 
-                                <ToolbarGroup>
-                                    { tainacan_blocks.wp_version < '5.5' ?
-                                        <Button style={{ whiteSpace: 'nowrap' }} onClick={ openItemsModal } >
-                                            <p>
-                                                <svg width="24" height="24" viewBox="0 -2 12 16">
-                                                    <path
-                                                        d="M8.8,1.2H1.2V10H0V1.2C0,0.6,0.6,0,1.2,0h7.5V1.2z M3.8,2.5c-0.7,0-1.2,0.6-1.2,1.3v8.8c0,0.7,0.6,1.2,1.2,1.2h6.9
-                                                        c0.7,0,1.2-0.6,1.2-1.2V6.3L8.1,2.5H3.8z M7.5,3.4L11,6.9H7.5V3.4z"/>       
-                                                </svg>
-                                            </p>&nbsp;
-                                            {  __( 'Add more items', 'tainacan' ) }
-                                        </Button>
-                                        :
-                                        <ToolbarButton onClick={ openItemsModal } >
-                                            <p>
-                                                <svg width="24" height="24" viewBox="0 -2 12 16">
-                                                    <path
-                                                        d="M8.8,1.2H1.2V10H0V1.2C0,0.6,0.6,0,1.2,0h7.5V1.2z M3.8,2.5c-0.7,0-1.2,0.6-1.2,1.3v8.8c0,0.7,0.6,1.2,1.2,1.2h6.9
-                                                        c0.7,0,1.2-0.6,1.2-1.2V6.3L8.1,2.5H3.8z M7.5,3.4L11,6.9H7.5V3.4z"/>       
-                                                </svg>
-                                            </p>&nbsp;
-                                            {  __( 'Add more items', 'tainacan' ) }
-                                        </ToolbarButton>
-                                    }
-                                </ToolbarGroup>
+                            TainacanBlocksCompatToolbar({
+                                label: __( 'Add more items', 'tainacan' ),
+                                icon: <svg width="24" height="24" viewBox="0 -2 12 16">
+                                        <path
+                                            d="M8.8,1.2H1.2V10H0V1.2C0,0.6,0.6,0,1.2,0h7.5V1.2z M3.8,2.5c-0.7,0-1.2,0.6-1.2,1.3v8.8c0,0.7,0.6,1.2,1.2,1.2h6.9
+                                            c0.7,0,1.2-0.6,1.2-1.2V6.3L8.1,2.5H3.8z M7.5,3.4L11,6.9H7.5V3.4z"/>       
+                                    </svg>,
+                                onClick: openItemsModal
+                            })
                         : null }
                     </BlockControls>
                 </div>
@@ -381,5 +363,6 @@ registerBlockType('tainacan/items-list', {
     save({ attributes, className }){
         const { content } = attributes;
         return <div className={className}>{ content }</div>
-    }
+    },
+    deprecated: DeprecatedBlocks
 });

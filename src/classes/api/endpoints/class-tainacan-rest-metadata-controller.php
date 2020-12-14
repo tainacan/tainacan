@@ -368,6 +368,10 @@ class REST_Metadata_Controller extends REST_Controller {
 				$args['include_disabled'] = true;
 			}
 
+			if ($request['include_control_metadata_types'] === 'true') {
+				$args['include_control_metadata_types'] = true;
+			}
+
 			$collection = new Entities\Collection( $collection_id );
 
 			$result = $this->metadatum_repository->fetch_by_collection( $collection, $args );
@@ -381,6 +385,10 @@ class REST_Metadata_Controller extends REST_Controller {
 					]
 				]
 			];
+
+			if ($request['include_control_metadata_types'] === 'true') {
+				$args['include_control_metadata_types'] = true;
+			}
 
 			$result = $this->metadatum_repository->fetch( $args, 'OBJECT' );
 		}
@@ -474,8 +482,12 @@ class REST_Metadata_Controller extends REST_Controller {
 			$attributes = [];
 
 			$metadatum_id = $request['metadatum_id'];
-
+			$confirm_repository = false;
 			foreach ($body as $att => $value){
+				if ($att === "repository_level" && $value === "yes") {
+					$confirm_repository = true;
+					continue;
+				}
 				$attributes[$att] = $value;
 			}
 
@@ -483,23 +495,26 @@ class REST_Metadata_Controller extends REST_Controller {
 
 			$error_message = __('Metadata with this ID was not found', 'tainacan');
 
-			if($metadatum){
-
+			if ($metadatum) {
 				// These conditions are for verify if endpoints are used correctly
 				if(!$collection_id && $metadatum->get_collection_id() !== 'default') {
 					$error_message = __('This metadata is not a default metadata', 'tainacan');
 
 					return new \WP_REST_Response( [
 						'error_message' => $error_message,
-						'metadatum_id'      => $metadatum_id
+						'metadatum_id'  => $metadatum_id
 					] );
 				} elseif ($collection_id && $metadatum->get_collection_id() === 'default'){
 					$error_message = __('This metadata is not a collection metadata', 'tainacan');
 
 					return new \WP_REST_Response( [
 						'error_message' => $error_message,
-						'metadatum_id'      => $metadatum_id
+						'metadatum_id'  => $metadatum_id
 					] );
+				}
+
+				if (isset($request['repository_level']) && $confirm_repository) {
+					$attributes['collection_id'] = "default";
 				}
 
 				$prepared_metadata = $this->prepare_item_for_updating($metadatum, $attributes);
@@ -515,7 +530,7 @@ class REST_Metadata_Controller extends REST_Controller {
 				return new \WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
 					'errors'        => $prepared_metadata->get_errors(),
-					'metadatum'      => $this->prepare_item_for_response($prepared_metadata, $request)
+					'metadatum'     => $this->prepare_item_for_response($prepared_metadata, $request)
 				], 400);
 			}
 

@@ -698,7 +698,8 @@
                 return this.getStatus();
             },
             adminViewMode() {
-                return this.getAdminViewMode();
+                const currentAdminViewMode = this.getAdminViewMode();
+                return ['table', 'cards', 'records', 'grid', 'masonry', 'list'].indexOf(currentAdminViewMode) >= 0 ? currentAdminViewMode : 'table';
             },
             orderBy() {
                 return this.getOrderBy();
@@ -987,12 +988,12 @@
                                     let prefsFetchOnly = !this.isRepositoryLevel ? `fetch_only_${this.collectionId}` : 'fetch_only';
                                     let prefsFetchOnlyMeta = !this.isRepositoryLevel ? `fetch_only_meta_${this.collectionId}` : 'fetch_only_meta';
 
-                                    let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).replace(/,null/g, '').split(',') : [];
+                                    let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).split(',') : [];
                                     let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
 
-                                    let thumbnailMetadatumDisplay = this.collection.hide_items_thumbnail_on_lists == 'yes' ? null : (prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != null) : true);
-                                    
-                                    if (this.collection.hide_items_thumbnail_on_lists != 'yes') {
+                                    let thumbnailMetadatumDisplay = (!this.isRepositoryLevel && this.collection.hide_items_thumbnail_on_lists == 'yes') ? null : (prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != 'null') : true);
+
+                                    if (this.isRepositoryLevel || this.collection.hide_items_thumbnail_on_lists != 'yes') {
                                         metadata.push({
                                             name: this.$i18n.get('label_thumbnail'),
                                             metadatum: 'row_thumbnail',
@@ -1072,10 +1073,10 @@
                                             
                                         }
                                     }
-
-                                    let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != null) : true;
-                                    let authorNameMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[2] != null) : true;
-
+                                    
+                                    let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != 'null') : true;
+                                    let authorNameMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[2] != 'null') : true;
+                                    
                                     // Creation date and author name should appear only on admin.
                                     metadata.push({
                                         name: this.$i18n.get('label_creation_date'),
@@ -1186,7 +1187,7 @@
                     .catch(() => this.isLoadingMetadata = false);     
             },
             updateCollectionInfo () {
-                // Only needed for displayting totalItems on tabs.
+                // Only needed for displaying totalItems on tabs.
                 if (this.collectionId)
                     this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true });
             },

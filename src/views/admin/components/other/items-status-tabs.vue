@@ -11,7 +11,7 @@
                     }">
                 <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                     {{ $i18n.get('label_all_published_items') }}
-                    <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish)})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish })` : '' }}</span>
+                    <span class="has-text-gray">&nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish })` : (collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish)})` : '') }}</span>
                 </a>
             </li>
             <li 
@@ -36,7 +36,7 @@
                                 />
                     </span>
                     {{ statusOption.name }}
-                    <span class="has-text-gray">&nbsp;{{ collection && collection.total_items ? ` (${collection.total_items[statusOption.slug]})` : (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems[statusOption.slug] })` : '' }}</span>
+                    <span class="has-text-gray">&nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems[statusOption.slug] })` : (collection && collection.total_items ? ` (${collection.total_items[statusOption.slug]})` : '') }}</span>
                 </a>
             </li>
         </ul>

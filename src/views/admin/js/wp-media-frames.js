@@ -1,203 +1,4 @@
-export default {
-	// customAttachmentsControl: class customAttachmentsControl {
-
-	// 	constructor(props) {
-	// 		this.props = props;
-
-	// 		this.buildAndSetGalleryFrame();
-	// 	}
-
-	// 	getGalleryDetailsMediaFrame() {
-	// 		/**
-	// 		 * Custom gallery details frame.
-	// 		 *
-	// 		 * @see https://github.com/xwp/wp-core-media-widgets/blob/905edbccfc2a623b73a93dac803c5335519d7837/wp-admin/js/widgets/media-gallery-widget.js
-	// 		 * @class GalleryDetailsMediaFrame
-	// 		 * @class
-	// 		 */
-	// 		return wp.media.view.MediaFrame.Post.extend( {
-	// 			/**
-	// 			 * Set up gallery toolbar.
-	// 			 *
-	// 			 * @return {void}
-	// 			 */
-	// 			galleryToolbar() {
-	// 				const editing = this.state().get( 'editing' );
-	// 				this.toolbar.set(
-	// 					new wp.media.view.Toolbar( {
-	// 						controller: this,
-	// 						items: {
-	// 							insert: {
-	// 								style: 'primary',
-	// 								text: editing
-	// 									? wp.media.view.l10n.updateGallery
-	// 									: wp.media.view.l10n.insertGallery,
-	// 								priority: 80,
-	// 								requires: { library: true },
-		
-	// 								/**
-	// 								 * @fires wp.media.controller.State#update
-	// 								 */
-	// 								click() {
-	// 									const controller = this.controller,
-	// 										state = controller.state();
-										
-	// 									controller.close();
-	// 									state.trigger(
-	// 										'update',
-	// 										state.get( 'library' )
-	// 									);
-		
-	// 									// Restore and reset the default state.
-	// 									controller.setState( controller.options.state );
-	// 									controller.reset();
-	// 								},
-	// 							},
-	// 						},
-	// 					} )
-	// 				);
-	// 			},
-		
-	// 			/**
-	// 			 * Create the default states.
-	// 			 *
-	// 			 * @return {void}
-	// 			 */
-	// 			createStates: function createStates() {
-	// 				this.on( 'toolbar:create:main-gallery', this.galleryToolbar, this );
-		
-	// 				this.states.add( [
-	// 					new wp.media.controller.Library( {
-	// 						id: 'gallery',
-	// 						title: wp.media.view.l10n.createGalleryTitle,
-	// 						priority: 40,
-	// 						toolbar: 'main-gallery',
-	// 						filterable: 'unattached',
-	// 						multiple: 'add',
-	// 						editable: false,
-	// 						menu: 'gallery',
-	// 						describe: true,
-	// 						autoSelect: true,
-	// 						syncSelection: false,
-	// 						selection: this.options.selection,
-	// 						library:  wp.media.query( {
-	// 							uploadedTo: wp.media.model.settings.post.id,
-	// 							orderby: 'menuOrder',
-	// 							order: 'ASC',
-	// 							posts_per_page: -1,
-	// 							query: true
-	// 						} ),
-	// 					} ),
-	// 					new wp.media.controller.GalleryEdit( {
-	// 						library: wp.media.query( {
-	// 							uploadedTo: wp.media.model.settings.post.id,
-	// 							orderby: 'menuOrder',
-	// 							order: 'ASC',
-	// 							posts_per_page: -1,
-	// 							query: true
-	// 						} ),
-	// 						selection: this.options.selection,
-	// 						editing: this.options.editing,
-	// 						menu: 'gallery',
-	// 						displaySettings: false,
-	// 						multiple: true,
-	// 						filterable: 'unattached'
-	// 					} )
-	// 				] );
-	// 			},
-	// 		} );
-	// 	};
-
-	// 	getAttachmentsCollection() {
-	// 		return wp.media.query( {
-	// 			uploadedTo: wp.media.model.settings.post.id,
-	// 			orderby: 'menuOrder',
-	// 			order: 'ASC',
-	// 			posts_per_page: -1,
-	// 			query: true
-	// 		} );
-	// 	};
-
-	// 	/**
-	// 	 * Sets the Gallery frame and initializes listeners.
-	// 	 *
-	// 	 * @return {void}
-	// 	 */
-	// 	buildAndSetGalleryFrame() {
-
-	// 		// If a frame already existed remove it.
-	// 		if ( this.frame )
-	// 			this.frame.remove();
-			
-	// 		if ( ! this.GalleryDetailsMediaFrame )
-	// 			this.GalleryDetailsMediaFrame = this.getGalleryDetailsMediaFrame();
-			
-	// 		const attachments = this.getAttachmentsCollection( );
-	// 		const selection = new wp.media.model.Selection( attachments.models, {
-	// 			props: attachments.props.toJSON(),
-	// 			multiple: true,
-	// 		} );
-
-	// 		this.frame = new this.GalleryDetailsMediaFrame( {
-	// 			state: this.props.existingAttachments && this.props.existingAttachments.length ? 'gallery-edit' : 'gallery',
-	// 			multiple: true,
-	// 			selection: selection,
-	// 			editing: this.props.existingAttachments && this.props.existingAttachments.length ? true : false,
-	// 		} );
-	// 		wp.media.frame = this.frame;
-
-	// 		this.frame.on( 'select', (selected) => this.onSelect(selected));
-	// 		this.frame.on( 'update', (selected) => this.onUpdate(selected));
-	// 		this.frame.on( 'onclose', () => this.onClose() );
-	// 	}
-
-	// 	onUpdate( selections ) {
-	// 		const state = this.frame.state();
-	// 		const selectedImages = selections || state.get( 'selection' );
-
-	// 		if ( ! selectedImages || ! selectedImages.models.length )
-	// 			return;
-
-	// 		this.props.onSelect( selectedImages.models.map( ( model ) => model.toJSON() ));
-	// 	}
-
-	// 	onSelect() {
-	// 		// Get media attachment details from the frame state
-	// 		const attachments = this.frame.state().get( 'selection' ).toJSON();
-	// 		this.props.onSelect( attachments );
-	// 	}
-
-	// 	onClose() {
-	// 		const { onClose } = this.props;
-	
-	// 		if ( onClose )
-	// 			onClose();
-	// 	}
-
-	// 	openModal() {
-	// 		this.buildAndSetGalleryFrame();
-			
-	// 		const frameContent = this.frame.content.get();
-	// 		if ( frameContent && frameContent.collection ) {
-	// 			const collection = frameContent.collection;
-
-	// 			// clean all attachments we have in memory.
-	// 			collection
-	// 				.toArray()
-	// 				.forEach( ( model ) => model.trigger( 'destroy', model ) );
-
-	// 			// reset has more flag, if library had small amount of items all items may have been loaded before.
-	// 			collection.mirroring._hasMore = true;
-
-	// 			// request items
-	// 			collection.more();
-	// 		}
-	// 		// load the images so they are available in the media modal.
-	// 		this.getAttachmentsCollection().more();
-
-	// 		this.frame.open();
-	// 	}
-	// },  
+export default {  
 	
     attachmentControl: wp.customize.MediaControl.extend({
 
@@ -247,8 +48,10 @@ export default {
 
 			wp.media.view.settings.post = {
 				id: parseInt(this.params.relatedPostId),
-				wp_customize: 'off'
+				wp_customize: 'off',
 			}
+			wp.media.model.settings.post.nonce = this.params.nonce;
+			wp.media.model.settings.post.id = parseInt(this.params.relatedPostId);
 			
 			this.frame = wp.media({
 				states: [
@@ -268,19 +71,29 @@ export default {
 					})
 				]
 			});
-			
-			this.frame.$el.addClass( 'tainacan-item-attachments-modal' );
 
 			this.frame.on( 'toolbar:create:main-gallery', this.galleryToolbar, this.frame );
+
+			this.frame.$el.addClass( 'tainacan-item-attachments-modal' );
+			this.frame.$el['tainacan-document-id'] = this.params.document;
+			this.frame.$el['tainacan-thumbnail-id'] = this.params.thumbnailId;
+
+			wp.media.view.Attachment.Library = wp.media.view.Attachment.Library.extend({
+                className: function() { 
+					return 'attachment ' + 
+						((this.controller.$el['tainacan-document-id'] && (this.model.get('id') == this.controller.$el['tainacan-document-id'])) ? 'tainacan-document-attachment ' : ' ') + 
+						((this.controller.$el['tainacan-thumbnail-id'] && (this.model.get('id') == this.controller.$el['tainacan-thumbnail-id'])) ? 'tainacan-thumbnail-attachment ' : ' '); 
+				}
+            });
 
 			this.frame.on( 'select', () => {
                  // Get the attachment from the modal frame.
                 var attachments = this.frame.state().get( 'selection' ).toJSON();
-				
+
 				wp.media.view.settings.post.id = {
 					id: this.params.relatedPostId
 				}
-																																																
+					
                 this.params.attachments = attachments;
 				this.params.onSave(attachments);
 			});
@@ -292,7 +105,7 @@ export default {
 
 		initFrame: function() {
 
-			var l10n = _wpMediaViewsL10n;
+			var l10n = wp.media.view.l10n = typeof _wpMediaViewsL10n === 'undefined' ? {} : _wpMediaViewsL10n;
 
 			// Same of WordPress wp.media.controller.CustomizeImageCropper, but without `wp_customize: on`
 			var customImageCropper = wp.media.controller.Cropper.extend({
@@ -346,9 +159,9 @@ export default {
 						title: this.params.button_labels.frame_title,
 						library: wp.media.query({ 
 							type: 'image', 
-							uploadedTo: null
 						}),
 						multiple: false,
+						autoSelect: true,
 						date: false,
 						priority: 20,
 						suggestedWidth: this.params.width,
@@ -368,10 +181,10 @@ export default {
 		},
 		// Called on both skippedcrop and cropped states
 		setImageFromAttachment: function( attachment ) {
-			wp.media.view.settings.post = {
+			wp.media.view.settings.post.id = {
 				id: this.params.relatedPostId
 			}
-			this.params.attachment = attachment;
+			this.params.attachments = attachment;
 			this.params.onSave(attachment);
 		}
 
@@ -381,7 +194,7 @@ export default {
 		
 		initFrame: function() {
 
-			var l10n = _wpMediaViewsL10n;	
+			var l10n = wp.media.view.l10n = typeof _wpMediaViewsL10n === 'undefined' ? {} : _wpMediaViewsL10n;
 			
 			// Same of WordPress wp.media.controller.CustomizeImageCropper, but without `wp_customize: on`
 			var customImageCropper = wp.media.controller.Cropper.extend({

@@ -104,7 +104,7 @@
                             class="tainacan-finder-column"
                             :key="finderColumn.label + '-' + key">
                         <p class="column-label">
-                            {{ finderColumn.label ? finderColumn.label : $i18n.get('label_terms_without_parent') }}
+                            {{ finderColumn.label ? finderColumn.label : $i18n.get('label_root_terms') }}
                         </p>
                         <ul v-if="finderColumn.children.length">
                             <b-field
@@ -188,37 +188,51 @@
                         :style="{ height: expandResultsSection ? 'auto' : '0px' }"
                         class="modal-card-body tainacan-search-results-container">
                     <ul class="tainacan-modal-checkbox-search-results-body">
-                        <li
-                                class="tainacan-li-search-results"
-                                v-for="(option, key) in searchResults"
-                                :key="key">
-                            <label 
-                                    v-if="isCheckbox"
-                                    class="b-checkbox checkbox">
-                                <input                                     
+                        <template v-if="searchResults.length">
+                            <li
+                                    class="tainacan-li-search-results"
+                                    v-for="(option, key) in searchResults"
+                                    :key="key">
+                                <label 
+                                        v-if="isCheckbox"
+                                        class="b-checkbox checkbox">
+                                    <input                                     
+                                            v-model="selected"
+                                            :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
+                                            type="checkbox"> 
+                                    <span class="check" /> 
+                                    <span class="control-label">
+                                        <span 
+                                                class="checkbox-label-text"
+                                                v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" /> 
+                                    </span>
+                                </label>
+                                <b-radio
+                                        v-tooltip="{
+                                            content: option.name ? option.name : option.label,
+                                            autoHide: false,
+                                        }"
+                                        v-else
                                         v-model="selected"
-                                        :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
-                                        type="checkbox"> 
-                                <span class="check" /> 
-                                <span class="control-label">
+                                        :native-value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.value)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))">
                                     <span 
-                                            class="checkbox-label-text"
-                                            v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" /> 
-                                </span>
-                            </label>
-                            <b-radio
-                                    v-tooltip="{
-                                        content: option.name ? option.name : option.label,
-                                        autoHide: false,
-                                    }"
-                                    v-else
-                                    v-model="selected"
-                                    :native-value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.value)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))">
-                                <span 
-                                            class="checkbox-label-text"
-                                            v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" />
-                            </b-radio>
-                        </li>
+                                                class="checkbox-label-text"
+                                                v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" />
+                                </b-radio>
+                            </li>
+                        </template>
+                        <template v-if="!isLoadingSearch && !searchResults.length">
+                            <li class="tainacan-li-search-results result-info">
+                                {{ $i18n.get('info_no_terms_found') }}
+                            </li>
+                        </template>
+                       <template v-if="!isLoadingSearch && allowNew && !searchResults.length">
+                            <li class="tainacan-li-search-results result-info">
+                                <a @click="$emit('showAddNewTerm', { name: optionName })">
+                                    {{ $i18n.get('label_new_term') + ' "' + optionName + '"' }}
+                                </a>
+                            </li>
+                        </template>
                         <b-loading
                                 :is-full-page="false"
                                 :active.sync="isLoadingSearch"/>
@@ -227,7 +241,7 @@
                 
             </b-tab-item>
 
-            <b-tab-item :label="isTaxonomy ? $i18n.get('label_selected_terms') : $i18n.get('label_selected_metadatum_values')">
+            <b-tab-item :label="(isTaxonomy ? $i18n.get('label_selected_terms') : $i18n.get('label_selected_metadatum_values')) + (amountSelected !== null && amountSelected !== undefined ? (' (' + amountSelected + ')' ): '') ">
 
                 <div class="modal-card-body tainacan-tags-container">
                     <b-field
@@ -294,6 +308,7 @@
             metadatumId: Number,
             metadatum: Object,
             selected: Array,
+            allowNew: Boolean,
             isTaxonomy: {
                 type: Boolean,
                 default: false,
@@ -303,7 +318,8 @@
             isCheckbox: {
                 type: Boolean,
                 default: true,
-            }
+            },
+            amountSelected: 0
         },
         data() {
             return {
@@ -358,6 +374,7 @@
             this.$parent.$on('update-taxonomy-inputs', ($event) => { 
                 if ($event.taxonomyId == this.taxonomy_id && $event.metadatumId == this.metadatumId) {
                     this.finderColumns = [];
+                    this.optionName = '';
                     this.hierarchicalPath = [];
                     this.isSearching = false;
                     this.searchResults = [];
@@ -733,7 +750,7 @@
         margin-bottom: 0 !important;
 
         ul {
-            padding: none;
+            padding: 0;
         }
     }
     .hidden-tabs-section /deep/ .tabs {
@@ -792,8 +809,13 @@
             }
         }
 
-        &:hover {
+        &:hover:not(.result-info) {
             background-color: var(--tainacan-gray1);
+        }
+        &.result-info {
+            width: 100%;
+            column-span: all;
+            font-size: 0.75em;
         }
     }
 
@@ -947,6 +969,7 @@
         .button {
             border-radius: 0 !important;
             min-height: 100%;
+            background-color: var(--tainacan-input-background-color);
             border: 1px solid var(--tainacan-input-border-color);
             transition: background 0.2s ease;
         }
@@ -1015,6 +1038,10 @@
         }
 
         .tags.is-small {
+            font-size: 0.875em;
+        }
+
+        section p {
             font-size: 0.875em;
         }
     }

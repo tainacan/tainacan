@@ -448,9 +448,9 @@ export default {
             virtual: {
                 slides: self.slideItems,
                 renderSlide(slideItem) {
-                    return `<div role="listitem" class="swiper-slide tainacan-slide-item">
+                    return `<div data-tainacan-item-id="`+ slideItem.id + `" role="listitem" class="swiper-slide tainacan-slide-item">
                             <img 
-                                    alt="` + self.$i18n.get('label_thumbnail') + ': ' + slideItem.title + `"
+                                    alt="` + (slideItem['thumbnail_alt'] ? slideItem['thumbnail_alt'] : (self.$i18n.get('label_thumbnail') + ': ' + slideItem.title) ) + `"
                                     class="thumbnail" 
                                     src="` + (slideItem['thumbnail']['tainacan-medium'] ? slideItem['thumbnail']['tainacan-medium'][0] : (slideItem['thumbnail']['medium']? slideItem['thumbnail']['medium'][0] : self.thumbPlaceholderPath)) + `">  
                         </div>`;
@@ -508,6 +508,10 @@ export default {
             let currentQuery = this.$route.query;
             delete currentQuery['slideshow-from'];
             this.$router.replace({ query: currentQuery });
+
+            // Sets the perpage and paged from previous configuration
+            this.$eventBusSearch.setItemsPerPage(this.$parent.latestPerPageAfterViewModeWithoutPagination, true);
+            this.$eventBusSearch.setPage(this.$parent.latestPageAfterViewModeWithoutPagination);
             this.$parent.onChangeViewMode(this.$parent.latestNonFullscreenViewMode ? this.$parent.latestNonFullscreenViewMode : this.$parent.defaultViewMode);
         },
         moveToClikedSlide(index) {

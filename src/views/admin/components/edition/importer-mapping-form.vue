@@ -81,6 +81,11 @@
                                 {{ $i18n.get('label_create_metadatum') }}
                             </option>
                             <option
+                                v-if="collection && collection.current_user_can_edit_metadata"
+                                :value="'create_repository_metadata' + index">
+                              {{ $i18n.get('label_create_repository_metadata') }}
+                            </option>
+                            <option
                                     v-for="(collectionMetadatum, metadatumIndex) of collectionMetadata"
                                     :key="metadatumIndex"
                                     :value="collectionMetadatum.id"

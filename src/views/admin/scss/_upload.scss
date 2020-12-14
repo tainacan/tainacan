@@ -1,10 +1,10 @@
 .upload-draggable {
     transition: background ease 0.3s, color ease 0.3s;
 }
-
+.upload .upload-draggable:hover.is-primary,
 .upload-draggable:hover.is-primary, 
 .upload .upload-draggable.is-hovered.is-primary {
-    border-color: var(--tainacan-turquoise5) !important;
-    background: var(--tainacan-turquoise4) !important;
-    color: var(--tainacan-white) !important;
+    border-color: var(--tainacan-secondary) !important;
+    background: var(--tainacan-primary) !important;
+    color: var(--tainacan-secondary) !important;
 }

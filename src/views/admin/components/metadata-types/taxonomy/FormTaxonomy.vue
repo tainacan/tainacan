@@ -109,6 +109,7 @@
                     @input="updateSelectedCollections"
                     @focus="clear()"
                     attached
+                    :remove-on-keys="[]"
                     :aria-close-label="$i18n.get('remove_value')"
                     :class="{'has-selected': link_filtered_by_collections != undefined && link_filtered_by_collections != []}"
                     :placeholder="$i18n.get('instruction_select_one_or_more_collections')"

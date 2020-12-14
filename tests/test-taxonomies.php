@@ -585,4 +585,140 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 		$this->assertEquals(2, $term_repo->count);
 	}
 
+	function test_term_taxonomy_filtered_by_collections() {
+		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+
+		$tax = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'         => 'Tax',
+				'description'  => 'Tax',
+				'allow_insert' => 'no',
+				'status'       => 'publish'
+			),
+			true
+		);
+
+		//retorna a taxonomia
+		$tax = $Tainacan_Taxonomies->fetch($tax->get_id());
+
+		$term_1 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $tax->get_db_identifier(),
+				'name'     => 'preto',
+				'user'     => get_current_user_id(),
+			),
+			true
+		);
+
+		$term_2 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $tax->get_db_identifier(),
+				'name'     => 'branco',
+				'user'     => get_current_user_id(),
+			),
+			true
+		);
+
+		$collectionOnly = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'testA',
+			),
+			true
+		);
+
+		$collectionAll = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'testB',
+			),
+			true
+		);
+		
+		$metadatumOnly = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'meta',
+				'description' => 'description',
+				'collection' => $collectionOnly,
+				'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+					'allow_new_terms' => 'no',
+					'link_filtered_by_collections' => [$collectionOnly->get_id()]
+				]
+			),
+			true
+		);
+
+		$metadatumAll = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'meta',
+				'description' => 'description',
+				'collection' => $collectionAll,
+				'metadata_type' => 'Tainacan\Metadata_Types\Taxonomy',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'taxonomy_id' => $tax->get_id(),
+					'allow_new_terms' => 'no'
+				]
+			),
+			true
+		);
+
+		$itemOnly = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'item teste',
+				'description' => 'description',
+				'collection'  => $collectionOnly,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$itemAll = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'item teste',
+				'description' => 'description',
+				'collection'  => $collectionAll,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$item_metadata_only = $this->tainacan_item_metadata_factory->create_item_metadata($itemOnly, $metadatumOnly, $term_1); 
+		$item_metadata_all = $this->tainacan_item_metadata_factory->create_item_metadata($itemAll, $metadatumAll, $term_2); 
+				
+		$expected_response = get_term_link($term_2->get_id());
+		$text = $item_metadata_all->get_value_as_html();
+		preg_match_all('~<a(.*?)href=(\'|")([^"]+)(\'|")(.*?)>~', $text, $matches);
+		$response = $matches[3][0];
+		$this->assertEquals($response, $expected_response);
+
+
+		$meta_query = [
+			'metaquery' => [
+				[
+					'key' => 'collection_id',
+					'compare' => 'IN',
+					'value' => [$collectionOnly->get_id()]
+				]
+			]
+		];
+		$expected_response = get_term_link($term_1->get_id()) . '?' . http_build_query( $meta_query );
+		$text = $item_metadata_only->get_value_as_html();
+		preg_match_all('~<a(.*?)href=(\'|")([^"]+)(\'|")(.*?)>~', $text, $matches);
+		$response = $matches[3][0];
+		$this->assertEquals($response, $expected_response);
+	}
+
 }

@@ -11,7 +11,6 @@ class Importer_Handler {
 		$this->bg_importer = new Background_Importer();
 
 		add_action('init', array(&$this, 'init'));
-		
 	}
 
 	public function init() {
@@ -220,5 +219,3 @@ class Importer_Handler {
 
 global $Tainacan_Importer_Handler;
 $Tainacan_Importer_Handler = new Importer_Handler();
-
- ?>
