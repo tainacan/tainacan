@@ -6,7 +6,6 @@ use Tainacan\Entities;
 use Tainacan\Entities\Entity;
 use Tainacan;
 use Tainacan\Repositories;
-use \Respect\Validation\Validator as v;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
@@ -906,4 +905,3 @@ abstract class Repository {
 
 }
 
-?>
