@@ -476,23 +476,15 @@ class Item_Metadata_Entity extends Entity {
 			return false;
 		}
 
-		if (empty($value) && $this->is_required() && in_array( $item->get_status(), apply_filters( 'tainacan-status-require-validation', [
-				'publish',
-				'future',
-				'private'
-			] ) )
-		) {
+		$validation_statuses = ['publish', 'future', 'private'];
+
+		if (empty($value) && $this->is_required() && in_array($item->get_status(), apply_filters( 'tainacan-status-require-validation', $validation_statuses) )) {
 			$this->add_error('required', $metadatum->get_name() . ' is required');
 			return false;
 		} elseif (empty($value) && !$this->is_required()) {
 			$this->set_as_valid();
 			return true;
-		} elseif(empty($value) && $this->is_required() && !in_array( $item->get_status(), apply_filters( 'tainacan-status-require-validation', [
-				'publish',
-				'future',
-				'private'
-			] ) )) {
-
+		} elseif(empty($value) && $this->is_required() && !in_array( $item->get_status(), apply_filters( 'tainacan-status-require-validation', $validation_statuses) )) {
 			$this->set_as_valid();
 			return true;
 		}
