@@ -471,26 +471,27 @@ class Item_Metadata_Entity extends Entity {
 		$metadatum = $this->get_metadatum();
 		$item = $this->get_item();
 
-		if( !isset($metadatum) ) {
+		if (!isset($metadatum)) {
 			$this->add_error('not_found', ['metadatum not found'] );
 			return false;
 		}
 
-		$validation_statuses = ['publish', 'future', 'private'];
-
-		if (empty($value) && $this->is_required() && in_array($item->get_status(), apply_filters( 'tainacan-status-require-validation', $validation_statuses) )) {
-			$this->add_error('required', $metadatum->get_name() . ' is required');
-			return false;
-		} elseif (empty($value) && !$this->is_required()) {
-			$this->set_as_valid();
-			return true;
-		} elseif(empty($value) && $this->is_required() && !in_array( $item->get_status(), apply_filters( 'tainacan-status-require-validation', $validation_statuses) )) {
-			$this->set_as_valid();
-			return true;
-		}
+		if (empty($value)) {
+		    if ($this->is_required()) {
+                $validation_statuses = ['publish', 'future', 'private'];
+		        if (in_array($item->get_status(), apply_filters( 'tainacan-status-require-validation', $validation_statuses) )) {
+                    $this->add_error('required', $metadatum->get_name() . ' is required');
+                    return false;
+                } else {
+                    return $this->set_as_valid();
+                }
+            } else {
+                return $this->set_as_valid();
+            }
+        }
 
 		$classMetadatumType = $metadatum->get_metadata_type_object();
-		if( is_object( $classMetadatumType ) ){
+		if (is_object($classMetadatumType)) {
 			if( method_exists ( $classMetadatumType , 'validate' ) ){
 				if( ! $classMetadatumType->validate( $this ) ) {
 					$this->add_error('metadata_type_error', $classMetadatumType->get_errors() );
