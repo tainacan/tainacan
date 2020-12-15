@@ -177,10 +177,10 @@
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)"
                             class="grid-item-thumbnail"
-                            :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }">
+                            :style="{ backgroundImage: 'url(' + $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium') + ')' }">
                         <img
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium')">
                     </a>
 
                     <!-- Actions -->
@@ -291,10 +291,10 @@
                             @click.right="onRightClickItem($event, item)"
                             v-if="item.thumbnail != undefined"
                             class="tainacan-masonry-item-thumbnail"
-                            :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)) + ')' }">
+                            :style="{ backgroundImage: 'url(' + $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full') + ')' }">
                         <img
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full')">
                     </div>
 
                     <!-- Actions -->
@@ -459,12 +459,12 @@
                             @click.right="onRightClickItem($event, item)">
                         <div
                                 v-if="collection && collection.hide_items_thumbnail_on_lists != 'yes'"
-                                :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }"
+                                :style="{ backgroundImage: 'url(' + $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium') + ')' }"
                                 class="card-thumbnail">
                             <img
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                     v-if="item.thumbnail != undefined"
-                                    :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium')">
                         </div>
 
                         <div class="list-metadata media-body">
@@ -656,7 +656,7 @@
                                 <img
                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                         v-if="item.thumbnail != undefined"
-                                        :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">
+                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full')">
                             </div>
                             <span
                                     v-for="(column, metadatumIndex) in displayedMetadata"
@@ -830,7 +830,7 @@
                                 <img
                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                         class="table-thumb"
-                                        :src="item['thumbnail']['tainacan-small'] ? item['thumbnail']['tainacan-small'][0] : (item['thumbnail'].thumbnail ? item['thumbnail'].thumbnail[0] : thumbPlaceholderPath)">
+                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small')">
                             </span>
                             <p
                                     v-tooltip="{
@@ -1035,7 +1035,7 @@
                                 v-if="item.thumbnail != undefined">
                             <img 
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                    :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">  
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full')">  
                         </div>
                         <div class="list-metadata media-body">
                             <span 

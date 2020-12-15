@@ -127,7 +127,7 @@
                                 this.selected.push({
                                     label: this.getItemLabel(item),
                                     value: item.id,
-                                    img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : ''
+                                    img: this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small')
                                 });
                         }
                     })
@@ -194,7 +194,7 @@
                                     this.options.push({
                                         label: this.getItemLabel(item),
                                         value: item.id,
-                                        img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : ''
+                                        img: this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small')
                                     })
                             }
                             if (res.headers['x-wp-total'])

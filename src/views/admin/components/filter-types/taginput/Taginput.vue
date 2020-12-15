@@ -173,7 +173,7 @@
                                             this.selected.push({ 
                                                 label: item.title, 
                                                 value: item.id, 
-                                                img: item.thumbnail && item.thumbnail.thumbnail && item.thumbnail.thumbnail[0] ? item.thumbnail.thumbnail[0] : null 
+                                                img: item.thumbnail ? this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small') : null 
                                             });
                                         }
                                     }

@@ -62,7 +62,16 @@ import store from './store/store'
 import router from './router'
 import eventBusSearch from './event-bus-search';
 import eventBusTermsList from './event-bus-terms-list.js';
-import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin, StatusHelperPlugin, CommentsStatusHelperPlugin } from './utilities';
+import { 
+    I18NPlugin,
+    UserPrefsPlugin,
+    RouterHelperPlugin,
+    ConsolePlugin,
+    UserCapabilitiesPlugin,
+    ThumbnailHelperPlugin,
+    StatusHelperPlugin,
+    CommentsStatusHelperPlugin 
+} from './utilities';
 
 /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
 if (typeof window.tainacan_extra_plugins != "undefined") {
@@ -80,6 +89,7 @@ Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(RouterHelperPlugin);
 Vue.use(UserCapabilitiesPlugin);
+Vue.use(ThumbnailHelperPlugin);
 Vue.use(StatusHelperPlugin);
 Vue.use(ConsolePlugin, {visual: false});
 Vue.use(VueTheMask);

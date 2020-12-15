@@ -1236,6 +1236,9 @@
         .filters-menu {
             display: none;
         }
+        .metadata-alert {
+            position: absolute;
+        }
     }
 
     .advanced-search-criteria-title {

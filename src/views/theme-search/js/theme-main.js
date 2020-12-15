@@ -38,7 +38,12 @@ import ViewModeList from '../components/view-mode-list.vue';
 import store from '../../admin/js/store/store';
 import routerTheme from './theme-router.js';
 import eventBusSearch from '../../admin/js/event-bus-search';
-import { I18NPlugin, UserPrefsPlugin, ConsolePlugin } from '../../admin/js/utilities';
+import { 
+    I18NPlugin,
+    UserPrefsPlugin,
+    ConsolePlugin,
+    ThumbnailHelperPlugin
+} from '../../admin/js/utilities';
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -78,6 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Vue.use(VueMasonry);
         Vue.use(I18NPlugin);
         Vue.use(UserPrefsPlugin);
+        Vue.use(ThumbnailHelperPlugin);
         Vue.use(ConsolePlugin, {visual: false});
 
         /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */

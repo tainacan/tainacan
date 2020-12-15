@@ -89,7 +89,7 @@
                                 v-if="item.document!= undefined && item.document != '' && item.document_type != 'empty'"
                                 class="document-thumb"
                                 :alt="$i18n.get('label_thumbnail') + ': ' + item.title"
-                                :src="item.thumbnail['tainacan-small'] ? item.thumbnail['tainacan-small'][0] : (item.thumbnail.thumbnail ? item.thumbnail.thumbnail[0] : thumbPlaceholderPath)" > 
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small')" > 
                         <span 
                             class="document-name"
                             v-html="item.title" />                            

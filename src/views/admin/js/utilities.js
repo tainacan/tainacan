@@ -352,6 +352,39 @@ UserCapabilitiesPlugin.install = function (Vue, options = {}) {
     }
 };
 
+// THUMBNAIL PLUGIN - Translates api path of thumbnails src to render placeholders and propoper sizes.
+export const ThumbnailHelperPlugin = {};
+ThumbnailHelperPlugin.install = function (Vue, options = {}) {
+    
+    Vue.prototype.$thumbHelper = {
+        thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
+        getSrc(thumbnail, tainacanSize, documentType) {
+
+            let wordpressSize = '';
+            switch(tainacanSize) {
+                case 'tainacan-medium-full':
+                   wordpressSize = 'medium_large';
+                   break;
+                case 'tainacan-medium':
+                    wordpressSize = 'medium';
+                    break;
+                case 'tainacan-small':
+                    wordpressSize = 'thumbnail';
+                    break;
+                default:
+                    wordpressSize = 'thumbnail';
+            }
+
+            let thumbnailPlaceholder = '';
+            switch(documentType) {
+                default:
+                    thumbnailPlaceholder = this.thumbPlaceholderPath;
+            }
+
+            return (thumbnail && thumbnail[tainacanSize]) ? thumbnail[tainacanSize][0] : ((thumbnail && thumbnail[wordpressSize]) ? thumbnail[wordpressSize][0] : thumbnailPlaceholder);
+        }
+    }
+};
 
 // STATUS ICONS PLUGIN - Sets icon for status option
 export const StatusHelperPlugin = {};
