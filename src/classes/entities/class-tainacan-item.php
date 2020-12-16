@@ -9,23 +9,23 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Item extends Entity {
 	use \Tainacan\Traits\Entity_Collection_Relation;
-    protected
-        $terms,
-        $diplay_name,
-        $full,
-        $_thumbnail_id,
-        $modification_date,
-        $creation_date,
-        $author_id,
-        $url,
-        $id,
-        $title,
-        $order,
-        $parent,
-        $decription,
-        $document_type,
-        $document,
-        $collection_id;
+	protected
+		$terms,
+		$diplay_name,
+		$full,
+		$_thumbnail_id,
+		$modification_date,
+		$creation_date,
+		$author_id,
+		$url,
+		$id,
+		$title,
+		$order,
+		$parent,
+		$decription,
+		$document_type,
+		$document,
+		$collection_id;
 
 	/**
 	 * {@inheritDoc}
@@ -116,26 +116,26 @@ class Item extends Entity {
 		return apply_filters("tainacan-item-get-author-name", $name, $this);
 	}
 
-    /**
-     * Gets the thumbnail list of files
-     *
-     * Each size is represented as an array in the format returned by
-     * @see https://developer.wordpress.org/reference/functions/wp_get_attachment_image_src/
-     *
-     * @return array
-     */
-    function get_thumbnail() {
+	/**
+	 * Gets the thumbnail list of files
+	 *
+	 * Each size is represented as an array in the format returned by
+	 * @see https://developer.wordpress.org/reference/functions/wp_get_attachment_image_src/
+	 *
+	 * @return array
+	 */
+	function get_thumbnail() {
 
-        $sizes = get_intermediate_image_sizes();
+		$sizes = get_intermediate_image_sizes();
 
-        array_unshift($sizes, 'full');
+		array_unshift($sizes, 'full');
 
-        foreach ( $sizes as $size ) {
-            $thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
-        }
+		foreach ( $sizes as $size ) {
+			$thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
+		}
 
-        return apply_filters("tainacan-item-get-thumbnail", $thumbs, $this);
-    }
+		return apply_filters("tainacan-item-get-thumbnail", $thumbs, $this);
+	}
 
 	/**
 	 * @param $id
@@ -148,10 +148,10 @@ class Item extends Entity {
 	 * @return int|string
 	 */
 	function get__thumbnail_id() {
-        $_thumbnail_id = $this->get_mapped_property("_thumbnail_id");
-        if ( isset( $_thumbnail_id ) ) {
-            return $_thumbnail_id;
-        }
+		$_thumbnail_id = $this->get_mapped_property("_thumbnail_id");
+		if ( isset( $_thumbnail_id ) ) {
+			return $_thumbnail_id;
+		}
 
 		return get_post_thumbnail_id( $this->get_id() );
 	}
@@ -271,7 +271,7 @@ class Item extends Entity {
 	 * @return string "open"|"closed"
 	 */
 	public function get_comment_status() {
-	    return apply_filters('comments_open', $this->get_mapped_property('comment_status'), $this->get_id());
+		return apply_filters('comments_open', $this->get_mapped_property('comment_status'), $this->get_id());
 	}
 
 	/**
@@ -383,7 +383,7 @@ class Item extends Entity {
 	 * @param $value string "open"|"closed"
 	 */
 	public function set_comment_status( $value ) {
-	    $this->set_mapped_property('comment_status', $value);
+		$this->set_mapped_property('comment_status', $value);
 	}
 
 	/**
