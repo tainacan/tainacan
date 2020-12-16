@@ -158,7 +158,7 @@
                                     <p>{{ $i18n.get('label_document_empty') }}</p>
                                     <img 
                                             :alt="$i18n.get('label_document_empty')" 
-                                            :src="thumbPlaceholderPath">
+                                            :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_type)">
                                 </div>
                             </div>
                         </transition>
@@ -452,7 +452,7 @@ export default {
                             <img 
                                     alt="` + (slideItem['thumbnail_alt'] ? slideItem['thumbnail_alt'] : (self.$i18n.get('label_thumbnail') + ': ' + slideItem.title) ) + `"
                                     class="thumbnail" 
-                                    src="` + self.$thumbHelper.getSrc(slideItem['thumbnail'], 'tainacan-medium') + `">  
+                                    src="` + self.$thumbHelper.getSrc(slideItem['thumbnail'], 'tainacan-medium', slideItem.document_type) + `">  
                         </div>`;
                 },
                 addSlidesBefore: 2,

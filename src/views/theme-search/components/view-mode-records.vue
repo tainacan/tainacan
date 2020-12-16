@@ -87,7 +87,7 @@
                                     v-if="item.thumbnail != undefined">
                                 <img 
                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full')">  
+                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)">  
                                 <div 
                                         :style="{ 
                                             minHeight: getItemImageHeight(item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px',

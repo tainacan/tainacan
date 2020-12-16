@@ -120,14 +120,14 @@
             if (this.itemMetadatum.value && (Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value.length > 0 : true )) {
                 let query = qs.stringify({ postin: ( Array.isArray( this.itemMetadatum.value ) ) ? this.itemMetadatum.value : [ this.itemMetadatum.value ]  });
                 query += this.itemMetadatum.metadatum.metadata_type_options.search ? '&fetch_only_meta=' + this.itemMetadatum.metadatum.metadata_type_options.search : '';
-                axios.get('/collection/' + this.collectionId + '/items?' + query + '&nopaging=1&fetch_only=title,thumbnail&order=asc')
+                axios.get('/collection/' + this.collectionId + '/items?' + query + '&nopaging=1&fetch_only=title,document_type,thumbnail&order=asc')
                     .then( res => {
                         if (res.data.items) {
                             for (let item of res.data.items)
                                 this.selected.push({
                                     label: this.getItemLabel(item),
                                     value: item.id,
-                                    img: this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small')
+                                    img: this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_type)
                                 });
                         }
                     })
@@ -194,7 +194,7 @@
                                     this.options.push({
                                         label: this.getItemLabel(item),
                                         value: item.id,
-                                        img: this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small')
+                                        img: this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_type)
                                     })
                             }
                             if (res.headers['x-wp-total'])

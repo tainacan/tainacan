@@ -61,7 +61,7 @@
                                 <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img  
                                         :alt="$i18n.get('label_thumbnail')" 
-                                        :src="thumbPlaceholderPath">
+                                        :src="$thumbHelper.getEmptyThumbnailPlaceholder()">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a 
@@ -669,7 +669,6 @@ export default {
             isNewCollection: false,
             isMapped: false,
             mapper: false,
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             headerPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_rectangle.png',
             collections: [],
             isFetchingCollections: true,

@@ -305,9 +305,9 @@
                                         :size="178"
                                         :file="{
                                             media_type: 'image',
-                                            thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium') ] },
+                                            thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type) ] },
                                             title: $i18n.get('label_thumbnail'),
-                                            description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full') + `'/>` 
+                                            description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_type) + `'/>` 
                                         }"/>
                                 <figure
                                         v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
@@ -315,7 +315,7 @@
                                     <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                     <img
                                             :alt="$i18n.get('label_thumbnail')"
-                                            :src="thumbPlaceholderPath">
+                                            :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_type)">
                                 </figure>
                                 <div class="thumbnail-buttons-row">
                                     <a
@@ -835,7 +835,6 @@ export default {
             },
             thumbnail: {},
             formErrorMessage: '',
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             thumbnailMediaFrame: undefined,
             attachmentMediaFrame: undefined,
             fileMediaFrame: undefined,

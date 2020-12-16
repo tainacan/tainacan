@@ -80,7 +80,7 @@
                                 v-if="item.thumbnail != undefined">
                             <img 
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full')">  
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)">  
                         </div>
                         <div class="list-metadata media-body">
                             <span 
