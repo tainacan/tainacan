@@ -144,8 +144,10 @@ class Item extends Entity {
 	}
 
 	private function get_iamge_blurhash($file_path, $width, $height) {
-		$image = imagecreatefromstring(file_get_contents($file_path));
-		if($image == false) 
+		if (!$image = @imagecreatefromstring(file_get_contents($file_path))) {
+			return "L2OzSs00j[_3D%xuWBt700_3IU%M";
+		}
+		if($image == false)
 			return '';
 
 		$max_width = 45;
