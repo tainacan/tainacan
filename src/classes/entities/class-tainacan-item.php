@@ -130,11 +130,45 @@ class Item extends Entity {
 
 		array_unshift($sizes, 'full');
 
+		if( in_array('tainacan-small', $sizes ) ) {
+			$tmp_src = wp_get_attachment_image_src( $this->get__thumbnail_id(), 'tainacan-small' );
+			$blurhash = $this->get_iamge_blurhash($tmp_src[0], $tmp_src[1], $tmp_src[2]);
+		}
+
 		foreach ( $sizes as $size ) {
 			$thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
+			$thumbs[$size][] = $blurhash;
 		}
 
 		return apply_filters("tainacan-item-get-thumbnail", $thumbs, $this);
+	}
+
+	private function get_iamge_blurhash($file_path, $width, $height) {
+		$image = imagecreatefromstring(file_get_contents($file_path));
+		if($image == false) 
+			return '';
+
+		$max_width = 45;
+		if( $width > $max_width ) {
+			$image = imagescale($image, $max_width);
+			$width = imagesx($image);
+			$height = imagesy($image);
+		}
+		
+		$pixels = [];
+		for ($y = 0; $y < $height; ++$y) {
+			$row = [];
+			for ($x = 0; $x < $width; ++$x) {
+				$index = imagecolorat($image, $x, $y);
+				$colors = imagecolorsforindex($image, $index);
+				$row[] = [$colors['red'], $colors['green'], $colors['blue']];
+			}
+			$pixels[] = $row;
+		}
+		$components_x = 4;
+		$components_y = 3;
+		$blurhash = \kornrunner\Blurhash\Blurhash::encode($pixels, $components_x, $components_y);
+		return $blurhash;
 	}
 
 	/**
