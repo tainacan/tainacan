@@ -9,6 +9,9 @@
 @import "../../../../node_modules/bulma/bulma.sass";
 @import "../../../../node_modules/buefy/src/scss/buefy.scss";
 
+// Vue Blurhash transtition effect
+@import '../../../../node_modules/vue-blurhash/dist/vue-blurhash.css';
+
 // Import Tainacan custom styles
 @import "../scss/_tainacan-form.scss";
 @import "../scss/_control.scss";

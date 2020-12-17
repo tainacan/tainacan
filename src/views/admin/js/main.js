@@ -10,6 +10,7 @@ import VueMasonry from 'vue-masonry-css';
 import draggable from 'vuedraggable';
 import VueTheMask from 'vue-the-mask';
 import cssVars from 'css-vars-ponyfill';
+import VueBlurHash from 'vue-blurhash';
 
 // Vue Dev Tools!
 Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
@@ -85,6 +86,7 @@ Vue.use(Buefy, {
 });
 Vue.use(VTooltip);
 Vue.use(VueMasonry);
+Vue.use(VueBlurHash);
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(RouterHelperPlugin);

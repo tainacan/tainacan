@@ -359,23 +359,25 @@ ThumbnailHelperPlugin.install = function (Vue, options = {}) {
     Vue.prototype.$thumbHelper = {
         imagesFolderPath: tainacan_plugin.base_url + '/assets/images/',
         getSrc(thumbnail, tainacanSize, documentType) {
-
-            let wordpressSize = '';
-            switch(tainacanSize) {
-                case 'tainacan-medium-full':
-                   wordpressSize = 'medium_large';
-                   break;
-                case 'tainacan-medium':
-                    wordpressSize = 'medium';
-                    break;
-                case 'tainacan-small':
-                    wordpressSize = 'thumbnail';
-                    break;
-                default:
-                    wordpressSize = 'thumbnail';
-            }
-
+            const wordpressSize = this.getWordpressFallbackSize(tainacanSize);
             return (thumbnail && thumbnail[tainacanSize]) ? thumbnail[tainacanSize][0] : ((thumbnail && thumbnail[wordpressSize]) ? thumbnail[wordpressSize][0] : this.getEmptyThumbnailPlaceholder(documentType, tainacanSize));
+        },
+        getSrcSet(thumbnail, tainacanSize, documentType) {
+            const defaultSrc = this.getSrc(thumbnail, tainacanSize, documentType);
+            const retinaSrc = (thumbnail && thumbnail['full']) ? thumbnail['full'][0] : this.getEmptyThumbnailPlaceholder(documentType, 'full');
+            return defaultSrc + ' 1x, ' + retinaSrc + ' 2x';
+        },
+        getWidth(thumbnail, tainacanSize, fallbackSizeValue) {
+            const wordpressSize = this.getWordpressFallbackSize(tainacanSize);
+            return (thumbnail && thumbnail[tainacanSize]) ? thumbnail[tainacanSize][1] : ((thumbnail && thumbnail[wordpressSize]) ? thumbnail[wordpressSize][1] : (fallbackSizeValue ? fallbackSizeValue : 120));
+        },
+        getHeight(thumbnail, tainacanSize, fallbackSizeValue) {
+            const wordpressSize = this.getWordpressFallbackSize(tainacanSize);
+            return (thumbnail && thumbnail[tainacanSize]) ? thumbnail[tainacanSize][2] : ((thumbnail && thumbnail[wordpressSize]) ? thumbnail[wordpressSize][2] : (fallbackSizeValue ? fallbackSizeValue : 120));
+        },
+        getBlurhashString(thumbnail, tainacanSize) {
+            const wordpressSize = this.getWordpressFallbackSize(tainacanSize);
+            return (thumbnail && thumbnail[tainacanSize]) ? thumbnail[tainacanSize][4] : ((thumbnail && thumbnail[wordpressSize]) ? thumbnail[wordpressSize][4] : '');
         },
         getEmptyThumbnailPlaceholder(documentType, tainacanSize) {
             
@@ -435,6 +437,18 @@ ThumbnailHelperPlugin.install = function (Vue, options = {}) {
                 case 'full':
                 default:
                     return this.imagesFolderPath + imageSrc + '.png';
+            }
+        },
+        getWordpressFallbackSize(tainacanSize) {
+            switch(tainacanSize) {
+                case 'tainacan-medium-full':
+                   return 'medium_large';
+                case 'tainacan-medium':
+                    return 'medium';
+                case 'tainacan-small':
+                    return 'thumbnail';
+                default:
+                    return 'thumbnail';
             }
         }
     }
