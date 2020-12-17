@@ -86,10 +86,10 @@
                             v-for="(item, index) of uploadedItems"
                             :key="item.id">
                         <img 
-                                v-if="item.document!= undefined && item.document != '' && item.document_type != 'empty'"
+                                v-if="item.document != undefined && item.document != '' && item.document_type != 'empty'"
                                 class="document-thumb"
                                 :alt="$i18n.get('label_thumbnail') + ': ' + item.title"
-                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small')" > 
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_type)" > 
                         <span 
                             class="document-name"
                             v-html="item.title" />                            
@@ -197,7 +197,6 @@ export default {
             isLoading: false,
             isCreatingSequenceEditGroup: false,
             submitedFileList: [],
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             uploadedItems: [],
             amountFinished: 0
         }

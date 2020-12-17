@@ -177,10 +177,10 @@
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)"
                             class="grid-item-thumbnail"
-                            :style="{ backgroundImage: 'url(' + $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium') + ')' }">
+                            :style="{ backgroundImage: 'url(' + $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type) + ')' }">
                         <img
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium')">
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type)">
                     </a>
 
                     <!-- Actions -->
@@ -291,10 +291,10 @@
                             @click.right="onRightClickItem($event, item)"
                             v-if="item.thumbnail != undefined"
                             class="tainacan-masonry-item-thumbnail"
-                            :style="{ backgroundImage: 'url(' + $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full') + ')' }">
+                            :style="{ backgroundImage: 'url(' + $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type) + ')' }">
                         <img
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full')">
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)">
                     </div>
 
                     <!-- Actions -->
@@ -459,12 +459,12 @@
                             @click.right="onRightClickItem($event, item)">
                         <div
                                 v-if="collection && collection.hide_items_thumbnail_on_lists != 'yes'"
-                                :style="{ backgroundImage: 'url(' + $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium') + ')' }"
+                                :style="{ backgroundImage: 'url(' + $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type) + ')' }"
                                 class="card-thumbnail">
                             <img
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                     v-if="item.thumbnail != undefined"
-                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium')">
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type)">
                         </div>
 
                         <div class="list-metadata media-body">
@@ -656,7 +656,7 @@
                                 <img
                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                         v-if="item.thumbnail != undefined"
-                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full')">
+                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)">
                             </div>
                             <span
                                     v-for="(column, metadatumIndex) in displayedMetadata"
@@ -830,7 +830,7 @@
                                 <img
                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                         class="table-thumb"
-                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small')">
+                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_type)">
                             </span>
                             <p
                                     v-tooltip="{
@@ -1035,7 +1035,7 @@
                                 v-if="item.thumbnail != undefined">
                             <img 
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full')">  
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)">  
                         </div>
                         <div class="list-metadata media-body">
                             <span 
@@ -1080,7 +1080,6 @@ export default {
         return {
             isAllItemsSelected: false,
             queryAllItemsSelected: {},
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             cursorPosX: -1,
             cursorPosY: -1,
             contextMenuItem: null,

@@ -49,7 +49,7 @@
                                     <picture>
                                         <img
                                                 width="150px"
-                                                :src="diff.old ? diff.old : placeholderSquareImage"
+                                                :src="diff.old ? diff.old : $thumbHelper.getEmptyThumbnailPlaceholder()"
                                                 :alt="attributeName">
                                     </picture>
                                 </div>
@@ -158,7 +158,7 @@
                                     <picture>
                                         <img
                                                 width="150px"
-                                                :src="diff.new ? diff.new : placeholderSquareImage"
+                                                :src="diff.new ? diff.new : $thumbHelper.getEmptyThumbnailPlaceholder()"
                                                 :alt="attributeName">
                                     </picture>
                                 </div>
@@ -622,7 +622,6 @@
                 infoEmpty: `[ ${this.$i18n.get('info_empty').toLowerCase()} ]`,
                 dateFormat: '',
                 activityCreationDate: '',
-                placeholderSquareImage: `${tainacan_plugin.base_url}/assets/images/placeholder_square.png`,
                 isLoadingActivity: false,
                 adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#', 
             }

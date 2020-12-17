@@ -357,7 +357,7 @@ export const ThumbnailHelperPlugin = {};
 ThumbnailHelperPlugin.install = function (Vue, options = {}) {
     
     Vue.prototype.$thumbHelper = {
-        thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
+        imagesFolderPath: tainacan_plugin.base_url + '/assets/images/',
         getSrc(thumbnail, tainacanSize, documentType) {
 
             let wordpressSize = '';
@@ -375,13 +375,67 @@ ThumbnailHelperPlugin.install = function (Vue, options = {}) {
                     wordpressSize = 'thumbnail';
             }
 
-            let thumbnailPlaceholder = '';
+            return (thumbnail && thumbnail[tainacanSize]) ? thumbnail[tainacanSize][0] : ((thumbnail && thumbnail[wordpressSize]) ? thumbnail[wordpressSize][0] : this.getEmptyThumbnailPlaceholder(documentType, tainacanSize));
+        },
+        getEmptyThumbnailPlaceholder(documentType, tainacanSize) {
+            
+            let imageSrc = '';
             switch(documentType) {
+                case 'image/png':
+                case 'image/jpeg':
+                case 'image/gif':
+                case 'image/bmp':
+                case 'image/webp':
+                case 'image/svg+xml':
+                    imageSrc = 'placeholder_image';
+                    break;
+                case 'audio/midi':
+                case 'audio/mpeg':
+                case 'audio/webm':
+                case 'audio/ogg':
+                case 'audio/wav':
+                    imageSrc = 'placeholder_audio';
+                    break;
+                case 'text':
+                case 'text/plain':
+                case 'text/html':
+                case 'text/css':
+                case 'text/javascript':
+                case 'text/csv':
+                    imageSrc = 'placeholder_text';
+                    break;
+                case 'video/webm':
+                case 'video/ogg':
+                case 'video/mpeg':
+                    imageSrc = 'placeholder_video';
+                    break;
+                case 'url':
+                    imageSrc = 'url';
+                    break;
+                case 'application/pdf':
+                    imageSrc = 'placeholder_pdf';
+                    break;
+                case 'empty':
                 default:
-                    thumbnailPlaceholder = this.thumbPlaceholderPath;
+                    imageSrc = 'placeholder_square';
             }
 
-            return (thumbnail && thumbnail[tainacanSize]) ? thumbnail[tainacanSize][0] : ((thumbnail && thumbnail[wordpressSize]) ? thumbnail[wordpressSize][0] : thumbnailPlaceholder);
+            return this.getEmptyThumbnailPlaceholderBySize(imageSrc, tainacanSize);
+        },
+        getEmptyThumbnailPlaceholderBySize(imageSrc, tainacanSize) {
+            switch(tainacanSize) {
+                case 'tainacan-medium-full':
+                case 'tainacan-medium':
+                case 'medium_large':
+                case 'medium':
+                    return this.imagesFolderPath + imageSrc + '_medium.png';
+                case 'tainacan-small':
+                case 'thumbnail':
+                    return this.imagesFolderPath + imageSrc + '_small.png';
+                case 'full':
+                default:
+                    return this.imagesFolderPath + imageSrc + '.png';
+            }
         }
     }
 };

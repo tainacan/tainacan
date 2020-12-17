@@ -157,7 +157,7 @@
                     let metadata = this.query.metaquery[ index ];
 
                     if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship') {
-                        let query = qs.stringify({ postin: metadata.value, fetch_only: 'title,thumbnail', fetch_only_meta: '' });
+                        let query = qs.stringify({ postin: metadata.value, fetch_only: 'title,thumbnail,document_type', fetch_only_meta: '' });
                         let endpoint = '/items/';
 
                         if (this.relatedCollectionId != '')
@@ -173,7 +173,7 @@
                                             this.selected.push({ 
                                                 label: item.title, 
                                                 value: item.id, 
-                                                img: item.thumbnail ? this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small') : null 
+                                                img: item.thumbnail ? this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_type) : null 
                                             });
                                         }
                                     }

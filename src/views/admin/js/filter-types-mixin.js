@@ -36,7 +36,6 @@ export const filterTypeMixin = {
 export const dynamicFilterTypeMixin = {
     data () {
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             getOptionsValuesCancel: undefined,
             isLoadingOptions: false,
             facetSearchPage: 1

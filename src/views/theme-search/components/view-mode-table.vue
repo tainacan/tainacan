@@ -172,7 +172,7 @@
                                     <img 
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                             class="table-thumb" 
-                                            :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small')">
+                                            :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_type)">
                                     <div class="skeleton"/>
                                 </span> 
                             </a>
