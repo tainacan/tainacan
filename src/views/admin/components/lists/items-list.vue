@@ -839,9 +839,10 @@
                                           column.metadatum !== 'row_description'"
                                     v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`"/>
 
-                            <span v-if="column.metadatum == 'row_thumbnail'">
+                            <span 
+                                    class="table-thumb"
+                                    v-if="column.metadatum == 'row_thumbnail'">
                                 <blur-hash-image
-                                        class="table-thumb"
                                         :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-small', 40)"
                                         :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-small', 40)"
                                         :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-small')"
@@ -1051,7 +1052,7 @@
                          <div 
                                 class="tainacan-list-thumbnail"
                                 v-if="item.thumbnail != undefined">
-                            <blur-hash-image
+                            <!-- <blur-hash-image
                                     :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
                                     :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium-full', 120)"
                                     :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
@@ -1059,7 +1060,11 @@
                                     :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                     :transition-duration="500"
-                                />  
+                                />   -->
+                                <img 
+                                        src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
+                                        :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
+                                        :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')">
                         </div>
                         <div class="list-metadata media-body">
                             <span 
@@ -1070,6 +1075,15 @@
                                 <h3 class="metadata-label">{{ column.name }}</h3>
                                 <p      
                                         v-html="renderMetadata(item.metadata, column)"
+                                        class="metadata-value"/>
+                            </span>
+                            <span
+                                    v-for="(column, metadatumIndex) in displayedMetadata"
+                                    :key="metadatumIndex"
+                                    v-if="(column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
+                                <h3 class="metadata-label">{{ column.name }}</h3>
+                                <p
+                                        v-html="column.metadatum == 'row_creation' ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
                                         class="metadata-value"/>
                             </span>
                         </div>
@@ -1486,6 +1500,9 @@ export default {
     @import "../../scss/_view-mode-grid.scss";
     @import "../../scss/_view-mode-records.scss";
     @import "../../scss/_view-mode-list.scss";
+    
+    // Vue Blurhash transtition effect
+    @import '../../../../../node_modules/vue-blurhash/dist/vue-blurhash.css';
 
     .selection-control {
         margin-bottom: 6px;
