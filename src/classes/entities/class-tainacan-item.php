@@ -57,7 +57,7 @@ class Item extends Entity {
 		$array_item['url']               = get_permalink( $this->get_id() );
 		$array_item['creation_date']     = $this->get_date_i18n( explode( ' ', $array_item['creation_date'] )[0] );
 		$array_item['modification_date'] = $this->get_date_i18n( explode( ' ', $array_item['modification_date'] )[0] );
-
+		$array_item['document_mimetype'] = $this->get_document_mimetype();
 		return apply_filters('tainacan-item-to-array', $array_item, $this);
 	}
 
@@ -272,6 +272,15 @@ class Item extends Entity {
 	 */
 	function get_document_type() {
 		return $this->get_mapped_property( 'document_type' );
+	}
+
+	/**
+	 * Return the document mimetype
+	 *
+	 * @return string
+	 */
+	function get_document_mimetype() {
+		return $this->get_document_type() == 'attachment' ? get_post_mime_type($this->get_document()) : $this->get_document_type();
 	}
 
 	/**
