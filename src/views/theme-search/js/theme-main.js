@@ -5,6 +5,7 @@ import VTooltip from 'v-tooltip';
 import VueMasonry from 'vue-masonry-css';
 import cssVars from 'css-vars-ponyfill';
 import qs from 'qs';
+import VueBlurHash from 'vue-blurhash';
 
 // Vue Dev Tools!
 Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
@@ -81,6 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         Vue.use(VTooltip);
         Vue.use(VueMasonry);
+        Vue.use(VueBlurHash);
         Vue.use(I18NPlugin);
         Vue.use(UserPrefsPlugin);
         Vue.use(ThumbnailHelperPlugin);

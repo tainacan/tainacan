@@ -176,11 +176,15 @@
                             v-if="item.thumbnail != undefined"
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)"
-                            class="grid-item-thumbnail"
-                            :style="{ backgroundImage: 'url(' + $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type) + ')' }">
-                        <img
+                            class="grid-item-thumbnail">
+                        <blur-hash-image
+                                :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
+                                :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 120)"
+                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type)">
+                                :transition-duration="500"
+                        />
                     </a>
 
                     <!-- Actions -->
@@ -286,16 +290,19 @@
                     </div>
 
                     <!-- Thumbnail -->
-                    <div
+                    <blur-hash-image
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)"
                             v-if="item.thumbnail != undefined"
                             class="tainacan-masonry-item-thumbnail"
-                            :style="{ backgroundImage: 'url(' + $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type) + ')' }">
-                        <img
-                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)">
-                    </div>
+                            :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
+                            :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium-full', 120)"
+                            :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
+                            :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
+                            :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
+                            :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                            :transition-duration="500"
+                        />
 
                     <!-- Actions -->
                     <div
@@ -459,13 +466,19 @@
                             @click.right="onRightClickItem($event, item)">
                         <div
                                 v-if="collection && collection.hide_items_thumbnail_on_lists != 'yes'"
-                                :style="{ backgroundImage: 'url(' + $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type) + ')' }"
                                 class="card-thumbnail">
-                            <img
-                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                            <blur-hash-image
                                     v-if="item.thumbnail != undefined"
-                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type)">
+                                    class="tainacan-masonry-item-thumbnail"
+                                    :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
+                                    :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 120)"
+                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type)"
+                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                    :transition-duration="500"
+                                />
                         </div>
+                        
 
                         <div class="list-metadata media-body">
                             <!-- Description -->
@@ -826,11 +839,17 @@
                                           column.metadatum !== 'row_description'"
                                     v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`"/>
 
-                            <span v-if="column.metadatum == 'row_thumbnail'">
-                                <img
+                            <span 
+                                    class="table-thumb"
+                                    v-if="column.metadatum == 'row_thumbnail'">
+                                <blur-hash-image
+                                        :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-small', 40)"
+                                        :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-small', 40)"
+                                        :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-small')"
+                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_type)"
                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                        class="table-thumb"
-                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_type)">
+                                        :transition-duration="500"
+                                />
                             </span>
                             <p
                                     v-tooltip="{
@@ -1033,9 +1052,19 @@
                          <div 
                                 class="tainacan-list-thumbnail"
                                 v-if="item.thumbnail != undefined">
-                            <img 
+                            <!-- <blur-hash-image
+                                    :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
+                                    :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium-full', 120)"
+                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
+                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)">  
+                                    :transition-duration="500"
+                                />   -->
+                                <img 
+                                        src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
+                                        :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
+                                        :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')">
                         </div>
                         <div class="list-metadata media-body">
                             <span 
@@ -1046,6 +1075,15 @@
                                 <h3 class="metadata-label">{{ column.name }}</h3>
                                 <p      
                                         v-html="renderMetadata(item.metadata, column)"
+                                        class="metadata-value"/>
+                            </span>
+                            <span
+                                    v-for="(column, metadatumIndex) in displayedMetadata"
+                                    :key="metadatumIndex"
+                                    v-if="(column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
+                                <h3 class="metadata-label">{{ column.name }}</h3>
+                                <p
+                                        v-html="column.metadatum == 'row_creation' ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
                                         class="metadata-value"/>
                             </span>
                         </div>
@@ -1462,6 +1500,9 @@ export default {
     @import "../../scss/_view-mode-grid.scss";
     @import "../../scss/_view-mode-records.scss";
     @import "../../scss/_view-mode-list.scss";
+    
+    // Vue Blurhash transtition effect
+    @import '../../../../../node_modules/vue-blurhash/dist/vue-blurhash.css';
 
     .selection-control {
         margin-bottom: 6px;

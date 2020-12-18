@@ -132,7 +132,7 @@ class Item extends Entity {
 
 		if( in_array('tainacan-small', $sizes ) ) {
 			$tmp_src = wp_get_attachment_image_src( $this->get__thumbnail_id(), 'tainacan-small' );
-			$blurhash = $this->get_iamge_blurhash($tmp_src[0], $tmp_src[1], $tmp_src[2]);
+			$blurhash = $this->get_image_blurhash($tmp_src[0], $tmp_src[1], $tmp_src[2]);
 		}
 
 		foreach ( $sizes as $size ) {
@@ -143,9 +143,9 @@ class Item extends Entity {
 		return apply_filters("tainacan-item-get-thumbnail", $thumbs, $this);
 	}
 
-	private function get_iamge_blurhash($file_path, $width, $height) {
+	private function get_image_blurhash($file_path, $width, $height) {
 		if (!$image = @imagecreatefromstring(file_get_contents($file_path))) {
-			return "L2OzSs00j[_3D%xuWBt700_3IU%M";
+			return "V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj";
 		}
 		if($image == false)
 			return '';
