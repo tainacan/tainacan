@@ -137,7 +137,8 @@ class Item extends Entity {
 
 		foreach ( $sizes as $size ) {
 			$thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
-			$thumbs[$size][] = $blurhash;
+			if (count($thumbs[$size]) == 4)
+				$thumbs[$size][] = $blurhash;
 		}
 
 		return apply_filters("tainacan-item-get-thumbnail", $thumbs, $this);
