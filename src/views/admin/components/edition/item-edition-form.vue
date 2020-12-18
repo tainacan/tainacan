@@ -305,17 +305,21 @@
                                         :size="178"
                                         :file="{
                                             media_type: 'image',
-                                            thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type) ] },
+                                            thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
                                             title: $i18n.get('label_thumbnail'),
-                                            description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_type) + `'/>` 
+                                            description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_mimetype) + `'/>` 
                                         }"/>
                                 <figure
                                         v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
                                         class="image">
-                                    <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
+                                    <span 
+                                            class="image-placeholder"
+                                            v-if="item.document_type == 'empty'">
+                                        {{ $i18n.get('label_empty_thumbnail') }}
+                                    </span>
                                     <img
                                             :alt="$i18n.get('label_thumbnail')"
-                                            :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_type)">
+                                            :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
                                 </figure>
                                 <div class="thumbnail-buttons-row">
                                     <a

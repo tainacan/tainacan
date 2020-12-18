@@ -377,7 +377,7 @@ ThumbnailHelperPlugin.install = function (Vue, options = {}) {
         },
         getBlurhashString(thumbnail, tainacanSize) {
             const wordpressSize = this.getWordpressFallbackSize(tainacanSize);
-            return (thumbnail && thumbnail[tainacanSize]) ? thumbnail[tainacanSize][4] : ((thumbnail && thumbnail[wordpressSize]) ? thumbnail[wordpressSize][4] : '');
+            return (thumbnail && thumbnail[tainacanSize]) ? thumbnail[tainacanSize][4] : ((thumbnail && thumbnail[wordpressSize]) ? thumbnail[wordpressSize][4] : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj');
         },
         getEmptyThumbnailPlaceholder(documentType, tainacanSize) {
             
@@ -412,7 +412,7 @@ ThumbnailHelperPlugin.install = function (Vue, options = {}) {
                     imageSrc = 'placeholder_video';
                     break;
                 case 'url':
-                    imageSrc = 'url';
+                    imageSrc = 'placeholder_url';
                     break;
                 case 'application/pdf':
                     imageSrc = 'placeholder_pdf';

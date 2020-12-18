@@ -283,6 +283,7 @@ class REST_Items_Controller extends REST_Controller {
 				if( isset($item_arr['thumbnail']) ) {
 					$item_arr['thumbnail_alt'] = get_post_meta( $item->get__thumbnail_id(), '_wp_attachment_image_alt', true );
 					$item_arr['thumbnail_id'] = $item->get__thumbnail_id();
+					$item_arr['document_mimetype'] = $item->get_document_mimetype(); // In case the thumbnail is requested, we need the document mime type to generate proper placeholders
 				}
 
 				$item_arr['url'] = get_permalink( $item_arr['id'] );

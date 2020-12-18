@@ -181,7 +181,7 @@
                                 :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
                                 :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 120)"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
-                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type)"
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                 :transition-duration="500"
                         />
@@ -298,8 +298,8 @@
                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
                             :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium-full', 120)"
                             :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
-                            :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
-                            :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
+                            :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
+                            :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                             :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                             :transition-duration="500"
                         />
@@ -473,7 +473,7 @@
                                     :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
                                     :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 120)"
                                     :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
-                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type)"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                     :transition-duration="500"
                                 />
@@ -669,7 +669,7 @@
                                 <img
                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                         v-if="item.thumbnail != undefined"
-                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)">
+                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)">
                             </div>
                             <span
                                     v-for="(column, metadatumIndex) in displayedMetadata"
@@ -846,7 +846,7 @@
                                         :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-small', 40)"
                                         :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-small', 40)"
                                         :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-small')"
-                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_type)"
+                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                         :transition-duration="500"
                                 />
@@ -1056,14 +1056,14 @@
                                     :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
                                     :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium-full', 120)"
                                     :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
-                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
-                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
+                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                     :transition-duration="500"
                                 />   -->
                                 <img 
-                                        src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
-                                        :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
+                                        src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
+                                        :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')">
                         </div>
                         <div class="list-metadata media-body">

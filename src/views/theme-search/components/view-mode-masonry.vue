@@ -72,8 +72,8 @@
                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
                             :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium-full', 120)"
                             :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
-                            :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
-                            :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_type)"
+                            :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
+                            :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                             :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                             :transition-duration="500"
                         />

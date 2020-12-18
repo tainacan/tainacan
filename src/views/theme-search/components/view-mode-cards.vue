@@ -73,12 +73,12 @@
                     <div class="media">
                         <div 
                                 v-if="!shouldHideItemsThumbnail"
-                                :style="{ backgroundImage: 'url(' + $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type) + ')' }"
+                                :style="{ backgroundImage: 'url(' + $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) + ')' }"
                                 class="card-thumbnail">
                             <img 
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                     v-if="item.thumbnail != undefined"
-                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_type)">  
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)">  
                         </div>
                         <div class="skeleton"/>
                         
