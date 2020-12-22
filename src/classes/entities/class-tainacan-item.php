@@ -498,6 +498,8 @@ class Item extends Entity {
 	 *
 	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
 	 *                                                  Default: true
+	 *     @type bool        $display_slug_as_class     Show metadata slug as a class in the div before the metadata block
+	 *                                                  Default: false
 	 *     @type string      $before                    String to be added before each metadata block
 	 *                                                  Default '<div class="metadata-type-$type">' where $type is the metadata type slug
 	 *     @type string      $after		                String to be added after each metadata block
