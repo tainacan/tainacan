@@ -198,14 +198,10 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 
 			$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum, null, $parent_meta_id);
 
-            if (is_array($value) && !$item_metadata->is_multiple()) {
-                $value = implode(' ', $value);
-            }
-            $value = $this->filter_value($value);
-
+            $value = $this->get_metadata_value($value);
             $item_metadata->set_value($value);
 
-			if ($item_metadata->validate()) {
+            if ($item_metadata->validate()) {
 				if($item->can_edit()) {
 					$updated_item_metadata = $this->item_metadata_repository->update( $item_metadata );
 
@@ -376,4 +372,17 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 		}
 	}
 
+	private function get_metadata_value($is_multiple, $value) {
+	    $filtered_value = $value;
+	    if ($is_multiple) {
+	        // if metadata is multiple, leave it as array
+            // this has to be verified before and separately than the array check
+        } elseif (is_array($value)) {
+            $filtered_value = implode(' ', $value);
+        }
+
+        $filtered_value = $this->filter_value($filtered_value);
+
+	    return $filtered_value;
+    }
 }
