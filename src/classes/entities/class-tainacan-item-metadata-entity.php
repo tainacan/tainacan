@@ -199,10 +199,9 @@ class Item_Metadata_Entity extends Entity {
 	public function get_value_as_array() {
 		$value = $this->get_value();
 		$primitive_type = $this->get_metadatum()->get_metadata_type_object()->get_primitive_type();
-		
-		if ( $this->is_multiple() ) {
-			$return = [];
-			
+        $return = [];
+
+		if ($this->is_multiple()) {
 			foreach ($value as $v) {
 				if( is_array($v) ) {
 					$options = $this->get_metadatum()->get_metadata_type_object()->get_options();
@@ -227,12 +226,8 @@ class Item_Metadata_Entity extends Entity {
 					$return[] = $v;
 				}
 			}
-			
 		} else {
-			
-			$return = '';
-			
-			if( $primitive_type === 'compound' ) {
+			if ($primitive_type === 'compound') {
 				$compounds = [];
 				$compounds_not_ordinate = [];
 				$options = $this->get_metadatum()->get_metadata_type_object()->get_options();
@@ -274,7 +269,6 @@ class Item_Metadata_Entity extends Entity {
 		}
 
 		return $return;
-
 	}
 	
 	/**
@@ -285,7 +279,7 @@ class Item_Metadata_Entity extends Entity {
 	 * 
 	 * @return array the representation of this object as an array
 	 */
-	public function  _toArray( $formatted_values = true, $cascade = false ){
+	public function _toArray( $formatted_values = true, $cascade = false ){
 		$as_array = [];
 		
 		$as_array['value'] = $this->get_value_as_array();
