@@ -187,27 +187,24 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	public function update_item( $request ) {
 		$body = json_decode( $request->get_body(), true );
 
-		if($body) {
-
+		if ($body) {
 			$item_id  = $request['item_id'];
 			$metadatum_id = $request['metadatum_id'];
 			$value    = $body['values'];
+			if (is_array($value)) {
+			    $value = implode(' ', $value);
+            }
+			$value = $this->filter_value($value);
 			$parent_meta_id = isset( $body['parent_meta_id'] ) && $body['parent_meta_id'] > 0 ? $body['parent_meta_id'] : null;
 
-			$item  = $this->item_repository->fetch( $item_id );
-			$metadatum = $this->metadatum_repository->fetch( $metadatum_id );
+			$item  = $this->item_repository->fetch($item_id);
+			$metadatum = $this->metadatum_repository->fetch($metadatum_id);
 
 			$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum, null, $parent_meta_id);
 
-			if($item_metadata->is_multiple()) {
-				$item_metadata->set_value( $value );
-			} elseif(is_array($value)) {
-				$item_metadata->set_value(implode(' ', $value));
-			} else {
-				$item_metadata->set_value($value);
-			}
+            $item_metadata->set_value($value);
 
-			if ( $item_metadata->validate() ) {
+			if ($item_metadata->validate()) {
 				if($item->can_edit()) {
 					$updated_item_metadata = $this->item_metadata_repository->update( $item_metadata );
 
@@ -379,5 +376,3 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	}
 
 }
-
-?>

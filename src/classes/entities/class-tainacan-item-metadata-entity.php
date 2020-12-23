@@ -462,7 +462,7 @@ class Item_Metadata_Entity extends Entity {
     }
     
     /**
-     * Validate attributes
+     * Returns whether metadata value is valid
      *
      * @return boolean
      */

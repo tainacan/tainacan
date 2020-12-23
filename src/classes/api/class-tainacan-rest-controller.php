@@ -4,7 +4,6 @@ namespace Tainacan\API;
 
 class REST_Controller extends \WP_REST_Controller {
 
-
 	/**
 	 * REST_Controller constructor.
 	 */
@@ -624,7 +623,6 @@ class REST_Controller extends \WP_REST_Controller {
 
 	}
 
-
 	function get_permissions_schema() {
 
 		return [
@@ -654,6 +652,10 @@ class REST_Controller extends \WP_REST_Controller {
 		];
 	}
 
-}
+	protected function filter_value($content) {
+		$allowed_html = wp_kses_allowed_html('post');
 
-?>
+		return wp_kses($content, $allowed_html);
+	}
+
+}

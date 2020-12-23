@@ -707,10 +707,9 @@ class REST_Items_Controller extends REST_Controller {
 	 */
 	public function update_item( $request ) {
 		$item_id = $request['item_id'];
-
 		$body = json_decode($request->get_body(), true);
 
-		if(!empty($body)){
+		if (!empty($body)) {
 			$attributes = [];
 
 			foreach ($body as $att => $value){
