@@ -198,7 +198,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 
 			$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum, null, $parent_meta_id);
 
-            $value = $this->get_metadata_value($value);
+            $value = $this->get_metadata_value($item_metadata->is_multiple(), $value);
             $item_metadata->set_value($value);
 
             if ($item_metadata->validate()) {
