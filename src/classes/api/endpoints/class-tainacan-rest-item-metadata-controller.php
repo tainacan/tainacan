@@ -382,7 +382,11 @@ class REST_Item_Metadata_Controller extends REST_Controller {
         }
 
 	    if (is_array($filtered_value)) {
-            // process each element
+            $filtered_arr = array_map(function($v) {
+                return $this->filter_value($v);
+            }, $filtered_value);
+
+            $filtered_value = $filtered_arr;
         } else {
             $filtered_value = $this->filter_value($filtered_value);
         }
