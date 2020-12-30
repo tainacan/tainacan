@@ -375,20 +375,16 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	private function get_metadata_value($is_multiple, $value) {
 	    $filtered_value = $value;
 	    if ($is_multiple) {
-	        // if metadata is multiple, leave it as array
-            // this has to be verified before and separately than the array check
+            if (is_array($filtered_value)) {
+                $filtered_arr = array_map(function($v) {
+                    return $this->filter_value($v);
+                }, $filtered_value);
+
+                $filtered_value = $filtered_arr;
+            }
         } elseif (is_array($value)) {
-            $filtered_value = implode(' ', $value);
-        }
-
-	    if (is_array($filtered_value)) {
-            $filtered_arr = array_map(function($v) {
-                return $this->filter_value($v);
-            }, $filtered_value);
-
-            $filtered_value = $filtered_arr;
-        } else {
-            $filtered_value = $this->filter_value($filtered_value);
+            $string_value = implode(' ', $value);
+            $filtered_value = $this->filter_value($string_value);
         }
 
 	    return $filtered_value;
