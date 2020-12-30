@@ -381,7 +381,11 @@ class REST_Item_Metadata_Controller extends REST_Controller {
             $filtered_value = implode(' ', $value);
         }
 
-        $filtered_value = $this->filter_value($filtered_value);
+	    if (is_array($filtered_value)) {
+            // process each element
+        } else {
+            $filtered_value = $this->filter_value($filtered_value);
+        }
 
 	    return $filtered_value;
     }
