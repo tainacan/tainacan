@@ -137,7 +137,7 @@ class Item extends Entity {
 
 		foreach ( $sizes as $size ) {
 			$thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
-			if (count($thumbs[$size]) == 4)
+			if (is_array($thumbs[$size]) && count($thumbs[$size]) == 4)
 				$thumbs[$size][] = $blurhash;
 		}
 
