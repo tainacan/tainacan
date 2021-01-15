@@ -116,8 +116,6 @@ class Theme_Helper {
 			wp_register_script('tainacan-search', $TAINACAN_BASE_URL . '/assets/js/theme_search.js' , ['underscore'] , TAINACAN_VERSION);
 			wp_localize_script('tainacan-search', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
 		}
-
-		error_log('enqueue_scripts');
 	}
 	
 	public function is_post_an_item(\WP_Post $post) {
