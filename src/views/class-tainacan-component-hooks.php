@@ -31,22 +31,18 @@ class Component_Hooks {
 	private function init() {
 		// the priority should see less than on function
 		// `load_admin_page()` of class `Admin` in file /src/views/class-tainacan-admin.php
-		add_action( 'admin_enqueue_scripts', array( &$this, 'register_component' ), 80 );
-		add_action( 'wp_enqueue_scripts', array( &$this, 'register_public_component' ), 80 );
+		add_action( 'wp_enqueue_scripts', array( &$this, 'register_component' ), 80 );
 	}
 
 	public function register_component() {
 		do_action('tainacan-register-vuejs-component', $this);
 		foreach($this->registered_component as $handle => $component) {
-			wp_enqueue_script($handle, $component['script_path']);
-		}
-	}
-
-	public function register_public_component() {
-		do_action('tainacan-register-vuejs-public-component', $this);
-		foreach($this->registered_component as $handle => $component) {
-			if(isset($component['args']['public']) == true && $component['args']['public'] != false) {
+			if ( is_admin() ) {
 				wp_enqueue_script($handle, $component['script_path']);
+			} else {
+				if(isset($component['args']['public']) == true && $component['args']['public'] != false) {
+					wp_enqueue_script($handle, $component['script_path']);
+				}
 			}
 		}
 	}
