@@ -29,7 +29,7 @@ function tainacan_blocks_add_gutenberg_blocks_actions() {
 	add_action('init', 'tainacan_blocks_register_tainacan_item_submission_form');
 
 	add_action('init', 'tainacan_blocks_add_plugin_settings', 90);
-	add_action('wp_enqueue_scripts', 'tainacan_blocks_add_plugin_admin_settings', 90);
+	add_action('init', 'tainacan_blocks_add_plugin_admin_settings', 90);
 	
 	add_filter('block_categories', 'tainacan_blocks_register_categories', 10, 2);
 	add_action('init', 'tainacan_blocks_register_category_icon');

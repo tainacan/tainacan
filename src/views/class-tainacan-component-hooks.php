@@ -31,8 +31,7 @@ class Component_Hooks {
 	private function init() {
 		// the priority should see less than on function
 		// `load_admin_page()` of class `Admin` in file /src/views/class-tainacan-admin.php
-		add_action( 'wp_enqueue_scripts', array( &$this, 'register_component' ), 80 );
-		add_action( 'admin_enqueue_scripts', array( &$this, 'register_component' ), 80 );
+		add_action( 'init', array( &$this, 'register_component' ), 80 );
 	}
 
 	public function register_component() {
