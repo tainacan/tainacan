@@ -43,7 +43,7 @@ class Component_Hooks {
 	}
 
 	public function register_public_component() {
-		do_action('tainacan-register-vuejs--public-component', $this);
+		do_action('tainacan-register-vuejs-public-component', $this);
 		foreach($this->registered_component as $handle => $component) {
 			if(isset($component['args']['public']) == true && $component['args']['public'] != false) {
 				wp_enqueue_script($handle, $component['script_path']);
