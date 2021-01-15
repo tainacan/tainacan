@@ -28,7 +28,8 @@ function tainacan_blocks_add_gutenberg_blocks_actions() {
 	add_action('init', 'tainacan_blocks_register_tainacan_facets_list');
 	add_action('init', 'tainacan_blocks_register_tainacan_item_submission_form');
 
-	add_action('init', 'tainacan_blocks_add_plugin_settings');
+	add_action('init', 'tainacan_blocks_add_plugin_settings', 90);
+	add_action('wp_enqueue_scripts', 'tainacan_blocks_add_plugin_admin_settings', 90);
 	
 	add_filter('block_categories', 'tainacan_blocks_register_categories', 10, 2);
 	add_action('init', 'tainacan_blocks_register_category_icon');
@@ -403,14 +404,13 @@ function tainacan_blocks_get_plugin_js_settings(){
 		'base_url' 	 => $TAINACAN_BASE_URL,
 		'admin_url'  => admin_url(),
 		'site_url'	 => site_url(),
-		'theme_items_list_url' => esc_url_raw( get_site_url() ) . '/' . \Tainacan\Theme_Helper::get_instance()->get_items_list_slug(),
+		'theme_items_list_url' => esc_url_raw( get_site_url() ) . '/' . \Tainacan\Theme_Helper::get_instance()->get_items_list_slug()
 	];
-
+	
 	return $settings;
 }
 
 function tainacan_blocks_add_plugin_settings() {
-
 	$settings = tainacan_blocks_get_plugin_js_settings();
 
 	wp_localize_script( 'terms-list', 'tainacan_blocks', $settings );
@@ -423,6 +423,9 @@ function tainacan_blocks_add_plugin_settings() {
 	wp_localize_script( 'collections-list', 'tainacan_blocks', $settings );
 	wp_localize_script( 'carousel-collections-list', 'tainacan_blocks', $settings );
 	wp_localize_script( 'facets-list', 'tainacan_blocks', $settings );
+}
+
+function tainacan_blocks_add_plugin_admin_settings() {
 
 	// The faceded search block uses a different settings object, the same used on the theme items list
 	wp_localize_script( 'tainacan-search', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params() );

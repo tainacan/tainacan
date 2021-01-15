@@ -254,7 +254,7 @@ class Admin {
 			'wp_elasticpress'    		=> \Tainacan\Elastic_Press::get_instance()->is_active(),
 			'item_submission_captcha_site_key' => get_option("tnc_option_recaptch_site_key")
 		];
-
+		
 		$maps = [
 			'collections' => $Tainacan_Collections->get_map(),
 			'metadata'    => $Tainacan_Metadata->get_map(),

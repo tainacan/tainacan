@@ -35,7 +35,7 @@ class Theme_Helper {
 		// Redirect to post type archive if no cover page is set
 		add_action('wp', array($this, 'collection_single_redirect'));
 		
-		add_action('wp_print_scripts', array($this, 'enqueue_scripts'));
+		add_action('wp_print_scripts', array($this, 'enqueue_scripts'), 90);
 		
 		// make archive for terms work with items
 		add_action('pre_get_posts', array($this, 'tax_archive_pre_get_posts'));
@@ -62,11 +62,7 @@ class Theme_Helper {
 		
 		$this->register_view_mode('table', [
 			'label' => __('Table', 'tainacan'),
-			'dynamic_metadata' => true,
-			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewtable tainacan-icon-1-25em"></i></span>',
-			'type' => 'component',
-			'implements_skeleton' => true,
-			'requires_thumbnail' => false
+			'dynamic_metadata' => true
 		]);
 		$this->register_view_mode('cards', [
 			'label' => __('Cards', 'tainacan'),
@@ -120,6 +116,8 @@ class Theme_Helper {
 			wp_register_script('tainacan-search', $TAINACAN_BASE_URL . '/assets/js/theme_search.js' , ['underscore'] , TAINACAN_VERSION);
 			wp_localize_script('tainacan-search', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
 		}
+
+		error_log('enqueue_scripts');
 	}
 	
 	public function is_post_an_item(\WP_Post $post) {
