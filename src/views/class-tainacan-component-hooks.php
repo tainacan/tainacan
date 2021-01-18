@@ -37,11 +37,13 @@ class Component_Hooks {
 	public function register_component() {
 		do_action('tainacan-register-vuejs-component', $this);
 		foreach($this->registered_component as $handle => $component) {
+			$deps = isset($component['args']['deps']) ? $component['args']['deps'] : [];
+
 			if ( is_admin() ) {
-				wp_enqueue_script($handle, $component['script_path']);
+				wp_enqueue_script($handle, $component['script_path'], $deps);
 			} else {
-				if(isset($component['args']['public']) == true && $component['args']['public'] != false) {
-					wp_enqueue_script($handle, $component['script_path']);
+				if (isset($component['args']['public']) == true && $component['args']['public'] != false) {
+					wp_enqueue_script($handle, $component['script_path'], $deps);
 				}
 			}
 		}
