@@ -247,6 +247,9 @@ class Roles {
 				'display_name' => __('View private metadata', 'tainacan'),
 				'description' => __('Access private metadata in this collection', 'tainacan'),
 				'scope' => 'collection',
+				'dependencies' => [
+					'read_private_tainacan-metadata'
+				],
 				'supercaps' => [
 					'manage_tainacan',
 					'manage_tainacan_collection_all',
@@ -258,6 +261,9 @@ class Roles {
 				'display_name' => __('View private filters', 'tainacan'),
 				'description' => __('Access private filters in this collection', 'tainacan'),
 				'scope' => 'collection',
+				'dependencies' => [
+					'read_private_tainacan-filters'
+				],
 				'supercaps' => [
 					'manage_tainacan',
 					'manage_tainacan_collection_all',
@@ -530,11 +536,20 @@ class Roles {
 		}
 
 		$collection_capabilities = tainacan_collections()->get_capabilities();
+		$meta_caps = (new \Tainacan\Entities\Metadatum())->get_capabilities();
+		$filters_caps = (new \Tainacan\Entities\Filter())->get_capabilities();
 
 		foreach ( $caps as $cap ) {
 
 			if ( array_key_exists($cap, $allcaps) && $allcaps[$cap] === true ) {
 				continue;
+			}
+
+			if( $user->has_cap('manage_tainacan') && in_array($requested_cap, [
+					$meta_caps->read_private_posts,
+					$filters_caps->read_private_posts] )
+			) {
+				$allcaps = array_merge($allcaps, [ $requested_cap => true ]);
 			}
 
 			if ( \strpos($cap, 'tnc_') === 0 ) {
