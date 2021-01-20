@@ -392,7 +392,8 @@ class Roles {
 				'slug' => 'tainacan-administrator',
 				'display_name' => 'Tainacan Administrator',
 				'caps' => [
-					'manage_tainacan' => true
+					'manage_tainacan' => true,
+					'read' => true
 				]
 			],
 			'tainacan-editor' => [
@@ -414,7 +415,8 @@ class Roles {
 					'tnc_rep_read_private_metadata' => true,
 					'tnc_rep_read_private_filters' => true,
 					'tnc_rep_read_logs' => true,
-					'manage_tainacan_collection_all' => true
+					'manage_tainacan_collection_all' => true,
+					'read' => true
 				]
 			],
 			'tainacan-author' => [
@@ -426,7 +428,8 @@ class Roles {
 					'tnc_rep_read_private_collections' => true,
 					'tnc_rep_read_private_taxonomies' => true,
 					'tnc_rep_read_private_metadata' => true,
-					'tnc_rep_read_private_filters' => true,
+					'tnc_rep_read_private_filters' => true,,
+					'read' => true
 				]
 			],
 		];
