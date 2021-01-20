@@ -545,9 +545,10 @@ class Roles {
 				continue;
 			}
 
-			if( $user->has_cap('manage_tainacan') && in_array($requested_cap, [
+			if( in_array($requested_cap, [
 					$meta_caps->read_private_posts,
 					$filters_caps->read_private_posts] )
+				&& $user->has_cap('manage_tainacan')
 			) {
 				$allcaps = array_merge($allcaps, [ $requested_cap => true ]);
 			}
