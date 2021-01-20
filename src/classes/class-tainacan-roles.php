@@ -428,7 +428,7 @@ class Roles {
 					'tnc_rep_read_private_collections' => true,
 					'tnc_rep_read_private_taxonomies' => true,
 					'tnc_rep_read_private_metadata' => true,
-					'tnc_rep_read_private_filters' => true,,
+					'tnc_rep_read_private_filters' => true,
 					'read' => true
 				]
 			],
