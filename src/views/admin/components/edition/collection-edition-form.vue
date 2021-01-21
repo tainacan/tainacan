@@ -221,7 +221,7 @@
                                     :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')"/>
                         <div class="control">
                             <b-dropdown
-                                    class="two-columns-dropdown"
+                                    class="two-columns-dropdown enabled-view-modes-dropdown"
                                     ref="enabledViewModesDropdown"
                                     :mobile-modal="true"
                                     :disabled="Object.keys(registeredViewModes).length < 0"
@@ -247,14 +247,19 @@
                                             @input="updateViewModeslist(viewMode)"
                                             :value="checkIfViewModeEnabled(viewMode)"
                                             :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => (registeredViewModes[aViewMode] && registeredViewModes[aViewMode].full_screen != true)).length <= 1">
-                                        <span 
-                                                class="gray-icon"
-                                                :class="{ 
-                                                    'has-text-secondary' : checkIfViewModeEnabled(viewMode),
-                                                    'has-text-gray4' : !checkIfViewModeEnabled(viewMode)  
-                                                }"
-                                                v-html="registeredViewModes[viewMode].icon"/>
-                                        <span>{{ registeredViewModes[viewMode].label }}</span>
+                                        <p>
+                                            <strong>
+                                                <span 
+                                                        class="gray-icon"
+                                                        :class="{ 
+                                                            'has-text-secondary' : checkIfViewModeEnabled(viewMode),
+                                                            'has-text-gray4' : !checkIfViewModeEnabled(viewMode)  
+                                                        }"
+                                                        v-html="registeredViewModes[viewMode].icon"/>
+                                                &nbsp;{{ registeredViewModes[viewMode].label }}
+                                            </strong>
+                                        </p>
+                                        <p v-if="registeredViewModes[viewMode].description">{{ registeredViewModes[viewMode].description }}</p>
                                     </b-checkbox>
                                 </b-dropdown-item>   
                             </b-dropdown>
@@ -1248,6 +1253,14 @@ export default {
         padding-top: 1.25em;
         margin-top: -1.5em;
         border-left: 1px solid var(--tainacan-gray2);
+    }
+    .enabled-view-modes-dropdown {
+        p {
+            white-space: normal;
+        }
+        /deep/ svg {
+            margin: 0 0 -8px -3px;
+        }
     }
 
 </style>

@@ -1447,10 +1447,16 @@
                 font-size: 1.3125em !important;
                 color: var(--tainacan-info-color) !important;
                 max-width: 1.25em;
+                svg {
+                    color: var(--tainacan-info-color) !important;
+                }
             }
             .has-text-secondary.gray-icon .icon i::before, 
             .has-text-secondary.gray-icon i::before {
                 color: var(--tainacan-secondary) !important;
+                svg {
+                    fill: var(--tainacan-secondary) !important;
+                }
             }
             
             .dropdown-menu {
