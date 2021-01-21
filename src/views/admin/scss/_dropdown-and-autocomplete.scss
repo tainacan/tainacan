@@ -6,6 +6,9 @@
             .icon {
                 color: var(--tainacan-secondary);
                 align-items: center;
+                svg {
+                    fill: var(--tainacan-secondary);
+                }
             }
             .gray-icon {
                 padding-right: 0 !important;

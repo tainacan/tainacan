@@ -35,7 +35,7 @@ class Theme_Helper {
 		// Redirect to post type archive if no cover page is set
 		add_action('wp', array($this, 'collection_single_redirect'));
 		
-		add_action('wp_print_scripts', array($this, 'enqueue_scripts'));
+		add_action('wp_print_scripts', array($this, 'enqueue_scripts'), 90);
 		
 		// make archive for terms work with items
 		add_action('pre_get_posts', array($this, 'tax_archive_pre_get_posts'));
@@ -62,6 +62,7 @@ class Theme_Helper {
 		
 		$this->register_view_mode('table', [
 			'label' => __('Table', 'tainacan'),
+			'description' => 'The classic table display.',
 			'dynamic_metadata' => true,
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewtable tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
@@ -71,7 +72,7 @@ class Theme_Helper {
 		$this->register_view_mode('cards', [
 			'label' => __('Cards', 'tainacan'),
 			'dynamic_metadata' => false,
-			'description' => 'A cards view, displaying title, description, author name and creation date.',
+			'description' => 'A cards view, displaying cropped thumbnails, title and description.',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewcards tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'implements_skeleton' => true,
@@ -80,7 +81,7 @@ class Theme_Helper {
 		$this->register_view_mode('records', [
 			'label' => __('Records', 'tainacan'),
 			'dynamic_metadata' => true,
-			'description' => 'A records view, similiar to cards, but flexible for metadata',
+			'description' => 'A records view, similiar to cards, but flexible for metadata.',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewrecords tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'implements_skeleton' => true,
@@ -97,7 +98,7 @@ class Theme_Helper {
 		$this->register_view_mode('slideshow', [
 			'label' => __('Slideshow', 'tainacan'),
 			'dynamic_metadata' => false,
-			'description' => 'A fullscreen slideshow view.',
+			'description' => 'A fullscreen slideshow view, that shows the item document instead of just thumbnails.',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'show_pagination' => false,
@@ -106,7 +107,7 @@ class Theme_Helper {
 		$this->register_view_mode('list', [
 			'label' => __('List', 'tainacan'),
 			'dynamic_metadata' => true,
-			'description' => 'A list view, similiar to the records, but full width',
+			'description' => 'A list view, similiar to the records, but full width.',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewlist tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'implements_skeleton' => true,

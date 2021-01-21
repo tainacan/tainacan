@@ -411,7 +411,7 @@
                 :trap-focus="filtersAsModal"
                 full-screen
                 :custom-class="'tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"
-                :can-cancel="hideHideFiltersButton ? ['x', 'outside'] : ['x', 'escape', 'outside']">
+                :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']">
             <filters-items-list
                     :is-loading-items="isLoadingItems"
                     :autofocus="filtersAsModal"
@@ -956,7 +956,8 @@
                 this.fetchMetadata({
                     collectionId: this.collectionId,
                     isRepositoryLevel: this.isRepositoryLevel,
-                    isContextEdit: false
+                    isContextEdit: false,
+                    includeControlMetadataTypes: true
                 }).then((resp) => {
                         resp.request
                             .then(() => {
@@ -1012,38 +1013,40 @@
                                     let fetchOnlyMetadatumIds = [];
 
                                     for (let metadatum of this.metadata) {
-                                        if (metadatum.display !== 'never') {
+                                        if (metadatum.display !== 'never' || metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Control') {
 
-                                            let display;
+                                            if (metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Control') {
+                                                let display;
 
-                                            // Deciding display based on collection settings
-                                            if (metadatum.display == 'no')
-                                                display = false;
-                                            else if (metadatum.display == 'yes')
-                                                display = true;
+                                                // Deciding display based on collection settings
+                                                if (metadatum.display == 'no')
+                                                    display = false;
+                                                else if (metadatum.display == 'yes')
+                                                    display = true;
 
-                                            // Deciding display based on user prefs
-                                            if (prefsFetchOnlyMetaObject.length) {
-                                                let index = prefsFetchOnlyMetaObject.findIndex(metadatumId => metadatumId == metadatum.id);
+                                                // Deciding display based on user prefs
+                                                if (prefsFetchOnlyMetaObject.length) {
+                                                    let index = prefsFetchOnlyMetaObject.findIndex(metadatumId => metadatumId == metadatum.id);
 
-                                                display = index >= 0;
+                                                    display = index >= 0;
+                                                }
+
+                                                metadata.push({
+                                                    name: metadatum.name,
+                                                    metadatum: metadatum.description,
+                                                    slug: metadatum.slug,
+                                                    metadata_type: metadatum.metadata_type,
+                                                    metadata_type_object: metadatum.metadata_type_object,
+                                                    metadata_type_options: metadatum.metadata_type_options,
+                                                    id: metadatum.id,
+                                                    display: display,
+                                                    collection_id: metadatum.collection_id,
+                                                    multiple: metadatum.multiple,
+                                                });
+
+                                                if (display)
+                                                    fetchOnlyMetadatumIds.push(metadatum.id);
                                             }
-
-                                            metadata.push({
-                                                name: metadatum.name,
-                                                metadatum: metadatum.description,
-                                                slug: metadatum.slug,
-                                                metadata_type: metadatum.metadata_type,
-                                                metadata_type_object: metadatum.metadata_type_object,
-                                                metadata_type_options: metadatum.metadata_type_options,
-                                                id: metadatum.id,
-                                                display: display,
-                                                collection_id: metadatum.collection_id,
-                                                multiple: metadatum.multiple,
-                                            });
-
-                                            if (display)
-                                                fetchOnlyMetadatumIds.push(metadatum.id);     
 
                                             if (
                                                 metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
@@ -1108,7 +1111,7 @@
                                     }
                                     
                                     for (let metadatum of this.metadata) {
-                                        if (metadatum.display !== 'never' &&
+                                        if ((metadatum.display !== 'never' || metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Control') &&
                                             metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
                                             metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
                                             metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship' &&
@@ -1118,7 +1121,7 @@
                                                 this.sortingMetadata.push(metadatum);
                                         }
                                     }
-
+                                    
                                     this.sortingMetadata.push({
                                         name: this.$i18n.get('label_creation_date'),
                                         metadatum: 'row_creation',
@@ -1127,7 +1130,6 @@
                                         id: undefined,
                                         display: true
                                     })
-
                                 }
 
                                 this.isLoadingMetadata = false;
@@ -1445,10 +1447,16 @@
                 font-size: 1.3125em !important;
                 color: var(--tainacan-info-color) !important;
                 max-width: 1.25em;
+                svg {
+                    color: var(--tainacan-info-color) !important;
+                }
             }
             .has-text-secondary.gray-icon .icon i::before, 
             .has-text-secondary.gray-icon i::before {
                 color: var(--tainacan-secondary) !important;
+                svg {
+                    fill: var(--tainacan-secondary) !important;
+                }
             }
             
             .dropdown-menu {
