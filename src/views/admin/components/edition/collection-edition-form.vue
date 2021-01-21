@@ -1255,6 +1255,9 @@ export default {
         border-left: 1px solid var(--tainacan-gray2);
     }
     .enabled-view-modes-dropdown {
+        /deep/ .dropdown-item {
+            display: flex !important;
+        }
         p {
             white-space: normal;
         }
