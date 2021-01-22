@@ -32,7 +32,7 @@ export const viewModesMixin = {
         }
     },
     mounted() {
-        this.isSlideshowViewModeEnabled = this.enabledViewModes.findIndex((viewMode) => viewMode == 'slideshow') >= 0;
+        this.isSlideshowViewModeEnabled = (this.enabledViewModes && Array.isArray(this.enabledViewModes)) ? (this.enabledViewModes.findIndex((viewMode) => viewMode == 'slideshow') >= 0) : false;
     },
     methods: {
         getItemLink(itemUrl, index) {
