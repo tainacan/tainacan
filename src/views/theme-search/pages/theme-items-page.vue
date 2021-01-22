@@ -1449,6 +1449,8 @@
                 max-width: 1.25em;
                 svg {
                     color: var(--tainacan-info-color) !important;
+                    overflow: hidden;
+                    vertical-align: middle;
                 }
             }
             .has-text-secondary.gray-icon .icon i::before, 
@@ -1456,6 +1458,8 @@
                 color: var(--tainacan-secondary) !important;
                 svg {
                     fill: var(--tainacan-secondary) !important;
+                    overflow: hidden;
+                    vertical-align: middle;
                 }
             }
             

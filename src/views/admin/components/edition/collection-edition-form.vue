@@ -1262,7 +1262,9 @@ export default {
             white-space: normal;
         }
         /deep/ svg {
-            margin: 0 0 -8px -3px;
+            margin-left: -2px;
+            overflow: hidden;
+            vertical-align: middle;
         }
     }
 
