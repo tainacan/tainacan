@@ -988,10 +988,14 @@ class REST_Items_Controller extends REST_Controller {
 					$item = $this->items_repository->insert( $item );
 					$fake_id = \hexdec(\uniqid());
 					$id = $item->get_id();
-					set_transient('tnc_transient_submission_' . $fake_id, $id, 300);
-					$response_item = $this->prepare_item_for_response($item, $request);
-					$response_item['id'] = $fake_id;
-					return new \WP_REST_Response($response_item, 201 );
+					if (set_transient('tnc_transient_submission_' . $fake_id, $id, 300) == true) {
+						$response_item = $this->prepare_item_for_response($item, $request);
+						$response_item['id'] = $fake_id;
+						return new \WP_REST_Response($response_item, 201 );
+					} else return new \WP_REST_Response([
+						'error_message' => __('unable create submission ID.', 'tainacan'),
+					], 400);
+					
 				} else {
 					return new \WP_REST_Response([
 						'error_message' => __('One or more values are invalid.', 'tainacan'),
