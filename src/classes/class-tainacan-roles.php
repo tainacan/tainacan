@@ -24,6 +24,9 @@ class Roles {
 	*/
 	private function __construct() {
 
+		$this->meta_caps = (new \Tainacan\Entities\Metadatum())->get_capabilities();
+		$this->filters_caps = (new \Tainacan\Entities\Filter())->get_capabilities();
+
 		$this->capabilities = [
 			'manage_tainacan' => [
 				'display_name' => __('Manage Tainacan', 'tainacan'),
@@ -172,6 +175,10 @@ class Roles {
 				'display_name' => __('Manage Collection', 'tainacan'),
 				'description' => __('Manage all collection settings, items, metadata, filters, etc.', 'tainacan'),
 				'scope' => 'collection',
+				'dependencies' => [
+					$this->meta_caps->read_private_posts,
+					$this->filters_caps->read_private_posts
+				],
 				'supercaps' => [
 					'manage_tainacan',
 					'manage_tainacan_collection_all'
@@ -248,7 +255,7 @@ class Roles {
 				'description' => __('Access private metadata in this collection', 'tainacan'),
 				'scope' => 'collection',
 				'dependencies' => [
-					'read_private_tainacan-metadata'
+					$this->meta_caps->read_private_posts, // e.g.: 'read_private_tainacan-metadata'
 				],
 				'supercaps' => [
 					'manage_tainacan',
@@ -262,7 +269,7 @@ class Roles {
 				'description' => __('Access private filters in this collection', 'tainacan'),
 				'scope' => 'collection',
 				'dependencies' => [
-					'read_private_tainacan-filters'
+					$this->filters_caps->read_private_posts, // e.g.: 'read_private_tainacan-filters'
 				],
 				'supercaps' => [
 					'manage_tainacan',
@@ -536,8 +543,6 @@ class Roles {
 		}
 
 		$collection_capabilities = tainacan_collections()->get_capabilities();
-		$meta_caps = (new \Tainacan\Entities\Metadatum())->get_capabilities();
-		$filters_caps = (new \Tainacan\Entities\Filter())->get_capabilities();
 
 		foreach ( $caps as $cap ) {
 
@@ -546,9 +551,12 @@ class Roles {
 			}
 
 			if( in_array($requested_cap, [
-					$meta_caps->read_private_posts,
-					$filters_caps->read_private_posts] )
-				&& $user->has_cap('manage_tainacan')
+					$this->meta_caps->read_private_posts,
+					$this->filters_caps->read_private_posts] 
+				) && (
+					$user->has_cap('manage_tainacan') ||
+					$user->has_cap('manage_tainacan_collection_all')
+				)
 			) {
 				$allcaps = array_merge($allcaps, [ $requested_cap => true ]);
 			}
