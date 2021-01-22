@@ -467,18 +467,18 @@
                         class="loading-container">
 
                     <!--  Default loading, to be used view modes without any skeleton-->
-                    <b-loading
+                    <b-loading 
                             v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)" 
                             :is-full-page="false"
-                            :active="showLoading"/>
+                            :active.sync="showLoading"/>
 
-                    <!-- Custom skeleton templates used by some view modes -->
+                    <!-- Custom skeleton templates used by some view modes --> 
                     <div
                             v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)"
                             v-html="registeredViewModes[viewMode].skeleton_template"/>
                 </div>  
                 
-               <!-- Alert if custom metada is being used for sorting -->
+               <!-- Alert if custom metadata is being used for sorting -->
                 <div 
                         v-if="hasAnOpenAlert &&
                             isSortingByCustomMetadata &&
@@ -509,7 +509,7 @@
                 <!-- Theme View Modes -->
                 <div 
                         v-if="((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch) &&
-                              !isLoadingItems &&
+                              !showLoading &&
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"
                         v-html="itemsListTemplate"/>
