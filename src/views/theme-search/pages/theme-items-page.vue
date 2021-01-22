@@ -775,7 +775,7 @@
                 const userPrefViewMode = this.$userPrefs.get(prefsViewMode);
 
                 let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == userPrefViewMode);
-                let enabledViewModeIndex = this.enabledViewModes.findIndex((viewMode) => viewMode == userPrefViewMode);
+                let enabledViewModeIndex = (this.enabledViewModes && Array.isArray(this.enabledViewModes)) ? this.enabledViewModes.findIndex((viewMode) => viewMode == userPrefViewMode) : -1;
                 if (existingViewModeIndex >= 0 && enabledViewModeIndex >= 0)
                     this.$eventBusSearch.setInitialViewMode(userPrefViewMode);
                 else   
