@@ -327,7 +327,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_save_as_draft'                            => __( 'Save as draft', 'tainacan' ),
 	'label_update_draft'                             => __( 'Update draft', 'tainacan' ),
 	'label_return_to_draft'                          => __( 'Return to draft', 'tainacan' ),
-	'label_publish'                                  => __( 'Publish', 'tainacan' ),
+	/* translators: The verb 'to publish' not the 'publish' status */
+	'label_verb_publish'                             => _x( 'Publish', 'verb', 'tainacan' ),
+	/* translators: The status 'publish' not the verb 'to publish' */
+	'label_publish'                             	 => _x( 'Publish', 'noun', 'tainacan' ),
 	'label_update'                                   => __( 'Update', 'tainacan' ),
 	'label_mapper_metadata'                          => __( 'Mapper Metadata', 'tainacan' ),
 	'label_add_more_mapper_metadata'                 => __( 'Add more mapper\'s metadata', 'tainacan' ),
