@@ -6,6 +6,11 @@
             .icon {
                 color: var(--tainacan-secondary);
                 align-items: center;
+                svg {
+                    fill: var(--tainacan-secondary);
+                    overflow: hidden;
+                    vertical-align: middle;
+                }
             }
             .gray-icon {
                 padding-right: 0 !important;
@@ -54,7 +59,10 @@
                 &:hover { background-color: var(--tainacan-input-border-color); }
                 .is-small { color: var(--tainacan-info-color); }
                 &.is-active { background-color: var(--tainacan-primary); }
-
+                svg {
+                    overflow: hidden;
+                    vertical-align: middle;
+                }
                 .media {
                     display: flex;
                     align-items: center;
