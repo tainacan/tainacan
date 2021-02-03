@@ -57,14 +57,14 @@ class Csv extends Exposer {
 				return $a['name'];
 			}, $items[0]['metadata']);
 			
-			fputcsv($csv, $headers, ';', '"' );
+			fputcsv($csv, $headers, ',', '"' );
 
 			foreach ($items as $item) {
 				$values = array_map(function($a) {
 					return $a['value_as_string'];
 				}, $item['metadata']);
 				
-				fputcsv($csv, $values, ';', '"' );
+				fputcsv($csv, $values, ',', '"' );
 				
 			}
 			rewind($csv);
