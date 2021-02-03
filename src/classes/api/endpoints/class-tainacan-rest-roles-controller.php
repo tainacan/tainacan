@@ -151,6 +151,7 @@ class REST_Roles_Controller extends REST_Controller {
 
 		if ( isset($request['capabilities']) && is_array($request['capabilities']) ) {
 			$this->handle_capabilities_for_role($role_slug, $request['capabilities']);
+			$this->handle_capabilites_default_for_role($role_slug);
 		}
 
 		if ($new_role instanceof \WP_Role) {
@@ -262,6 +263,7 @@ class REST_Roles_Controller extends REST_Controller {
 		if ( is_array($request['capabilities']) ) {
 
 			$this->handle_capabilities_for_role($role_slug, $request['capabilities']);
+			$this->handle_capabilites_default_for_role($role_slug);
 
 		} elseif ( isset($request['add_cap']) ) {
 			// validate that we only deal with tainacan capabilities
@@ -315,6 +317,13 @@ class REST_Roles_Controller extends REST_Controller {
 
 
 
+	}
+
+	private function handle_capabilites_default_for_role($role_slug) {
+		if ( !isset( \wp_roles()->roles[$role_slug] ) ) {
+			return false;
+		}
+		\wp_roles()->add_cap($role_slug, 'read', true);
 	}
 
 	/**

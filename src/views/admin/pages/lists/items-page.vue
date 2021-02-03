@@ -948,12 +948,14 @@
                 let descriptionMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.metadata_type_object != undefined ? metadatum.metadata_type_object.related_mapped_prop == 'description' : false);
 
                 // Updates Search
-                this.$eventBusSearch.addFetchOnly(
-                    ((thumbnailMetadatum != undefined && thumbnailMetadatum.display) ? 'thumbnail' : null) + ',' +
-                    ((creationDateMetadatum != undefined && creationDateMetadatum.display) ? 'creation_date' : null) + ',' +
-                    ((authorNameMetadatum != undefined && authorNameMetadatum.display) ? 'author_name': null) + ',' +
-                    (this.isRepositoryLevel ? 'title' : null) + ',' +
-                    (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null), false, fetchOnlyMetadatumIds.toString());
+                let fetchOnlyArray = [
+                    ((thumbnailMetadatum != undefined && thumbnailMetadatum.display) ? 'thumbnail' : null),
+                    ((creationDateMetadatum != undefined && creationDateMetadatum.display) ? 'creation_date' : null),
+                    ((authorNameMetadatum != undefined && authorNameMetadatum.display) ? 'author_name': null),
+                    (this.isRepositoryLevel ? 'title' : null),
+                    (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null)
+                ];
+                this.$eventBusSearch.addFetchOnly(fetchOnlyArray.filter((fetchOnly) => fetchOnly != null).toString() , false, fetchOnlyMetadatumIds.toString());
 
                 // Closes dropdown
                 this.$refs.displayedMetadataDropdown.toggle();
@@ -1098,13 +1100,14 @@
                                         display: authorNameMetadatumDisplay
                                     });
                                     
-                                    this.$eventBusSearch.addFetchOnly(
-                                        (thumbnailMetadatumDisplay ? 'thumbnail' : null) +','+
-                                        (creationDateMetadatumDisplay ? 'creation_date' : null) +','+
-                                        (authorNameMetadatumDisplay ? 'author_name' : null) +','+
-                                        (this.isRepositoryLevel ? 'title' : null) +','+
+                                    let fetchOnlyArray = [
+                                        (thumbnailMetadatumDisplay ? 'thumbnail' : null),
+                                        (creationDateMetadatumDisplay ? 'creation_date' : null),
+                                        (authorNameMetadatumDisplay ? 'author_name' : null),
+                                        (this.isRepositoryLevel ? 'title' : null),
                                         (this.isRepositoryLevel ? 'description' : null)
-                                    , false, fetchOnlyMetadatumIds.toString());
+                                    ];
+                                    this.$eventBusSearch.addFetchOnly(fetchOnlyArray.filter((fetchOnly) => fetchOnly != null).toString() , false, fetchOnlyMetadatumIds.toString());
 
                                     // Sorting metadata
                                     if (this.isRepositoryLevel) {

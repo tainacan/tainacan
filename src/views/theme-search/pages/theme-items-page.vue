@@ -411,7 +411,7 @@
                 :trap-focus="filtersAsModal"
                 full-screen
                 :custom-class="'tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"
-                :can-cancel="hideHideFiltersButton ? ['x', 'outside'] : ['x', 'escape', 'outside']">
+                :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']">
             <filters-items-list
                     :is-loading-items="isLoadingItems"
                     :autofocus="filtersAsModal"
@@ -467,18 +467,18 @@
                         class="loading-container">
 
                     <!--  Default loading, to be used view modes without any skeleton-->
-                    <b-loading
+                    <b-loading 
                             v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)" 
                             :is-full-page="false"
-                            :active="showLoading"/>
+                            :active.sync="showLoading"/>
 
-                    <!-- Custom skeleton templates used by some view modes -->
+                    <!-- Custom skeleton templates used by some view modes --> 
                     <div
                             v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)"
                             v-html="registeredViewModes[viewMode].skeleton_template"/>
                 </div>  
                 
-               <!-- Alert if custom metada is being used for sorting -->
+               <!-- Alert if custom metadata is being used for sorting -->
                 <div 
                         v-if="hasAnOpenAlert &&
                             isSortingByCustomMetadata &&
@@ -509,7 +509,7 @@
                 <!-- Theme View Modes -->
                 <div 
                         v-if="((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch) &&
-                              !isLoadingItems &&
+                              !showLoading &&
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"
                         v-html="itemsListTemplate"/>
@@ -775,7 +775,7 @@
                 const userPrefViewMode = this.$userPrefs.get(prefsViewMode);
 
                 let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == userPrefViewMode);
-                let enabledViewModeIndex = this.enabledViewModes.findIndex((viewMode) => viewMode == userPrefViewMode);
+                let enabledViewModeIndex = (this.enabledViewModes && Array.isArray(this.enabledViewModes)) ? this.enabledViewModes.findIndex((viewMode) => viewMode == userPrefViewMode) : -1;
                 if (existingViewModeIndex >= 0 && enabledViewModeIndex >= 0)
                     this.$eventBusSearch.setInitialViewMode(userPrefViewMode);
                 else   
@@ -933,11 +933,13 @@
                 let descriptionMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.metadata_type_object != undefined ? metadatum.metadata_type_object.related_mapped_prop == 'description' : false);
               
                 // Updates Search
-                this.$eventBusSearch.addFetchOnly(
-                    ((thumbnailMetadatum != undefined && thumbnailMetadatum.display) ? 'thumbnail' : null) + ',' +
-                    ((creationDateMetadatum != undefined && creationDateMetadatum.display) ? 'creation_date' : null) + ',' +
-                    (this.isRepositoryLevel ? 'title' : null) + ',' +
-                    (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null), false, fetchOnlyMetadatumIds.toString());
+                let fetchOnlyArray = [
+                    ((thumbnailMetadatum != undefined && thumbnailMetadatum.display) ? 'thumbnail' : null),
+                    ((creationDateMetadatum != undefined && creationDateMetadatum.display) ? 'creation_date' : null),
+                    (this.isRepositoryLevel ? 'title' : null),
+                    (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null)
+                ];
+                this.$eventBusSearch.addFetchOnly(fetchOnlyArray.filter((fetchOnly) => fetchOnly != null).toString(), false, fetchOnlyMetadatumIds.toString());
 
                 // Closes dropdown
                 this.$refs.displayedMetadataDropdown.toggle();
@@ -1064,12 +1066,13 @@
 
                                     let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != 'null') : true;
                                 
-                                    this.$eventBusSearch.addFetchOnly(
-                                        (thumbnailMetadatumDisplay ? 'thumbnail' : null) +','+
-                                        (creationDateMetadatumDisplay ? 'creation_date' : null) +','+
-                                        (this.isRepositoryLevel ? 'title' : null) +','+
+                                    let fetchOnlyArray = [
+                                        (thumbnailMetadatumDisplay ? 'thumbnail' : null),
+                                        (creationDateMetadatumDisplay ? 'creation_date' : null),
+                                        (this.isRepositoryLevel ? 'title' : null),
                                         (this.isRepositoryLevel ? 'description' : null)
-                                    , false, fetchOnlyMetadatumIds.toString());
+                                    ];
+                                    this.$eventBusSearch.addFetchOnly(fetchOnlyArray.filter((fetchOnly) => fetchOnly != null).toString(), false, fetchOnlyMetadatumIds.toString());
 
                                     // Sorting metadata
                                     if (this.isRepositoryLevel) {
@@ -1447,10 +1450,20 @@
                 font-size: 1.3125em !important;
                 color: var(--tainacan-info-color) !important;
                 max-width: 1.25em;
+                svg {
+                    color: var(--tainacan-info-color) !important;
+                    overflow: hidden;
+                    vertical-align: middle;
+                }
             }
             .has-text-secondary.gray-icon .icon i::before, 
             .has-text-secondary.gray-icon i::before {
                 color: var(--tainacan-secondary) !important;
+                svg {
+                    fill: var(--tainacan-secondary) !important;
+                    overflow: hidden;
+                    vertical-align: middle;
+                }
             }
             
             .dropdown-menu {

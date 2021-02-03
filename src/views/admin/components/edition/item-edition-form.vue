@@ -628,7 +628,7 @@
                         v-if="collection && collection.current_user_can_publish_items"
                         @click="onSubmit(visibility)"
                         type="button"
-                        class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                        class="button is-success">{{ $i18n.get('label_verb_publish') }}</button>
             </div>
             <div
                     class="form-submission-footer"
@@ -673,13 +673,13 @@
                             v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
                             @click="onSubmit(visibility)"
                             type="button"
-                            class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                            class="button is-success">{{ $i18n.get('label_verb_publish') }}</button>
                     <button 
                             v-else
                             @click="onSubmit(visibility, 'next')"
                             type="button"
                             class="button is-success">
-                        <span>{{ $i18n.get('label_publish') }}</span>
+                        <span>{{ $i18n.get('label_verb_publish') }}</span>
                         <span class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                         </span>

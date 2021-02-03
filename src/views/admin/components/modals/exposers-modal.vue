@@ -276,7 +276,7 @@ export default {
             return this.selectedItems && this.selectedItems.length ? 1 : Math.ceil(Number(this.totalItems)/Number(this.maxItemsPerPage));    
         },
         exposerBaseURL() {
-            let baseURL = this.collectionId != undefined ? '/collection/' + this.collectionId + '/items/' : '/items/';
+            let baseURL = this.collectionId ? '/collection/' + this.collectionId + '/items/' : '/items/';
             let currentParams = JSON.parse(JSON.stringify(this.$route.query));
 
             // Removes Fetch Only
