@@ -16,7 +16,7 @@ SKIP_DB_CREATE=${7-false}
 
 download() {
     if [ `which curl` ]; then
-        curl -s "$1" > "$2";
+        curl -s -L "$1" > "$2";
     elif [ `which wget` ]; then
         wget -nv -O "$2" "$1"
     fi
