@@ -199,7 +199,7 @@ class Item_Metadata_Entity extends Entity {
 	public function get_value_as_array() {
 		$value = $this->get_value();
 		$primitive_type = $this->get_metadatum()->get_metadata_type_object()->get_primitive_type();
-        $return = [];
+		$return = [];
 
 		if ($this->is_multiple()) {
 			foreach ($value as $v) {
@@ -297,40 +297,40 @@ class Item_Metadata_Entity extends Entity {
 			$as_array['item']  = $this->get_item()->_toArray();
 			$as_array['metadatum'] = $this->get_metadatum()->_toArray();
 		}
-	    
+		
 
 		return apply_filters('tainacan-item-metadata-to-array', $as_array, $this);
-    }
-    
-    /**
-     * Define the item
-     *
-     * @param Item $item
-     * @return void
-     */
-    function set_item(Item $item = null) {
-        $this->item = $item;
-    }
-    
-    /**
-     * Define the metadatum value
-     *
-     * @param [integer | string] $value
-     * @return void
-     */
-    function set_value($value) {
-        $this->value = $value;
-    }
-    
-    /**
-     * Define the metadatum
-     *
-     * @param Metadatum $metadatum
-     * @return void
-     */
-    function set_metadatum(Metadatum $metadatum = null) {
-        $this->metadatum = $metadatum;
-    }
+	}
+	
+	/**
+	 * Define the item
+	 *
+	 * @param Item $item
+	 * @return void
+	 */
+	function set_item(Item $item = null) {
+		$this->item = $item;
+	}
+	
+	/**
+	 * Define the metadatum value
+	 *
+	 * @param [integer | string] $value
+	 * @return void
+	 */
+	function set_value($value) {
+		$this->value = $value;
+	}
+	
+	/**
+	 * Define the metadatum
+	 *
+	 * @param Metadatum $metadatum
+	 * @return void
+	 */
+	function set_metadatum(Metadatum $metadatum = null) {
+		$this->metadatum = $metadatum;
+	}
 	
 	/**
 	 * Set the specific meta ID for this metadata.
@@ -364,102 +364,102 @@ class Item_Metadata_Entity extends Entity {
 		}
 		return false;
 	}
-    
-    /**
-     * Return the item
-     *
-     * @return Item
-     */
-    function get_item() {
-        return $this->item;
-    }
-    
-    /**
-     * Return the metadatum
-     *
-     * @return Metadatum
-     */
-    function get_metadatum() {
-        return $this->metadatum;
-    }
 	
 	/**
-     * Return the meta_id
-     *
-     * @return Metadatum
-     */
-    function get_meta_id() {
-        return isset($this->meta_id) ? $this->meta_id : null;
-    }
+	 * Return the item
+	 *
+	 * @return Item
+	 */
+	function get_item() {
+		return $this->item;
+	}
 	
 	/**
-     * Return the meta_id
-     *
-     * @return Metadatum
-     */
-    function get_parent_meta_id() {
-        return isset($this->parent_meta_id) ? $this->parent_meta_id : 0;
-    }
-    
-    /**
-     * Return the metadatum value
-     *
-     * @return string | integer
-     */
-    function get_value() {
-        if (isset($this->value))
-            return $this->value;
-        
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
-        return $Tainacan_Item_Metadata->get_value($this);
-    }
+	 * Return the metadatum
+	 *
+	 * @return Metadatum
+	 */
+	function get_metadatum() {
+		return $this->metadatum;
+	}
 	
 	/**
-     * Check wether the item has a value stored in the database or not
-     *
-     * @return bool
-     */
-    function has_value() {
-        if (isset($this->has_value))
-            return $this->has_value;
-        
+	 * Return the meta_id
+	 *
+	 * @return Metadatum
+	 */
+	function get_meta_id() {
+		return isset($this->meta_id) ? $this->meta_id : null;
+	}
+	
+	/**
+	 * Return the meta_id
+	 *
+	 * @return Metadatum
+	 */
+	function get_parent_meta_id() {
+		return isset($this->parent_meta_id) ? $this->parent_meta_id : 0;
+	}
+	
+	/**
+	 * Return the metadatum value
+	 *
+	 * @return string | integer
+	 */
+	function get_value() {
+		if (isset($this->value))
+			return $this->value;
+		
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+		return $Tainacan_Item_Metadata->get_value($this);
+	}
+	
+	/**
+	 * Check wether the item has a value stored in the database or not
+	 *
+	 * @return bool
+	 */
+	function has_value() {
+		if (isset($this->has_value))
+			return $this->has_value;
+		
 		$value = $this->get_value();
 		$this->has_value = (is_array($value)) ? !empty(array_filter($value)) : !empty($value);
 		return $this->has_value;
-    }
-    
-    /**
-     * Return true if metadatum is multiple, else return false
-     *
-     * @return boolean
-     */
-    function is_multiple() {
-        return $this->get_metadatum()->is_multiple();
-    }
-    
-    /**
-     * Return true if metadatum is key
-     *
-     * @return boolean
-     */
-    function is_collection_key() {
-        return $this->get_metadatum()->is_collection_key();
-    }
-    
-    /**
-     * Return true if metadatum is required
-     *
-     * @return boolean
-     */
-    function is_required() {
-        return $this->get_metadatum()->is_required();
-    }
-    
-    /**
-     * Returns whether metadata value is valid
-     *
-     * @return boolean
-     */
+	}
+	
+	/**
+	 * Return true if metadatum is multiple, else return false
+	 *
+	 * @return boolean
+	 */
+	function is_multiple() {
+		return $this->get_metadatum()->is_multiple();
+	}
+	
+	/**
+	 * Return true if metadatum is key
+	 *
+	 * @return boolean
+	 */
+	function is_collection_key() {
+		return $this->get_metadatum()->is_collection_key();
+	}
+	
+	/**
+	 * Return true if metadatum is required
+	 *
+	 * @return boolean
+	 */
+	function is_required() {
+		return $this->get_metadatum()->is_required();
+	}
+	
+	/**
+	 * Returns whether metadata value is valid
+	 *
+	 * @return boolean
+	 */
 	function validate() {
 		$value = $this->get_value();
 		$metadatum = $this->get_metadatum();
@@ -471,18 +471,18 @@ class Item_Metadata_Entity extends Entity {
 		}
 
 		if (empty($value)) {
-		    if ($this->is_required()) {
-                $validation_statuses = ['publish', 'future', 'private'];
-		        if (in_array($item->get_status(), apply_filters( 'tainacan-status-require-validation', $validation_statuses) )) {
-                    $this->add_error('required', $metadatum->get_name() . ' is required');
-                    return false;
-                } else {
-                    return $this->set_as_valid();
-                }
-            } else {
-                return $this->set_as_valid();
-            }
-        }
+			if ($this->is_required()) {
+				$validation_statuses = ['publish', 'future', 'private'];
+				if (in_array($item->get_status(), apply_filters( 'tainacan-status-require-validation', $validation_statuses) )) {
+					$this->add_error('required', $metadatum->get_name() . ' is required');
+					return false;
+				} else {
+					return $this->set_as_valid();
+				}
+			} else {
+				return $this->set_as_valid();
+			}
+		}
 
 		$classMetadatumType = $metadatum->get_metadata_type_object();
 		if (is_object($classMetadatumType)) {
