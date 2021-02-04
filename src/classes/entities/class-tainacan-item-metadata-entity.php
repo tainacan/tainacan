@@ -404,7 +404,7 @@ class Item_Metadata_Entity extends Entity {
 	/**
 	 * Return the metadatum value
 	 *
-	 * @return string | integer
+	 * @return string|integer|Array
 	 */
 	function get_value() {
 		if (isset($this->value))
