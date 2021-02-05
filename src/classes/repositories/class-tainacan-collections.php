@@ -26,7 +26,7 @@ class Collections extends Repository {
 	 * {@inheritDoc}
 	 * @see \Tainacan\Repositories\Repository::get_map()
 	 */
-  protected function _get_map() {
+	protected function _get_map() {
 		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
 			'name'                       => [
 				'map'         => 'post_title',
@@ -303,10 +303,9 @@ class Collections extends Repository {
 	 * @see \Tainacan\Repositories\Repository::insert()
 	 */
 	public function insert( $collection ) {
+		$this->pre_process( $collection );		
+		$this->handle_parent_order_clone( $collection );		
 
-		$this->pre_process( $collection );
-		
-		$this->handle_parent_order_clone( $collection );
 		$new_collection = parent::insert( $collection );
 
 		$this->handle_core_metadata( $new_collection );
@@ -389,12 +388,9 @@ class Collections extends Repository {
 	}
 
 	function pre_process( $collection ) {
-
 		$this->old_collection       = $this->fetch( $collection->get_id() );
 		$this->old_core_title       = $collection->get_core_title_metadatum();
 		$this->old_core_description = $collection->get_core_description_metadatum();
-
-
 	}
 
 	function handle_core_metadata( $collection ) {
