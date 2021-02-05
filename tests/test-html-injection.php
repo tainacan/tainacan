@@ -27,6 +27,10 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 		$css    = "my text along with some style <style>a { display: none }</style>";
 		$iframe = "<iframe src='www.tainacan.org' title='Taiancan'></iframe>";
 
+		// Accepted formatting
+		$strong = "I have some info to tell the world. And I can <strong> bold it </strong>";
+		$html	= "<div><h1>Main Info</h1><h3>sub title</h3><p>My structure description<p></p>and another paragraph</p></div>";
+
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -86,6 +90,16 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 		$item_metadata->validate();
 		$item_metadata = $Tainacan_Item_Metadata->update($item_metadata);
 		$this->assertEquals($item_metadata->get_value(), '');
+
+		$item_metadata->set_value($strong);
+		$item_metadata->validate();
+		$item_metadata = $Tainacan_Item_Metadata->update($item_metadata);
+		$this->assertEquals($item_metadata->get_value(), $strong);
+
+		$item_metadata->set_value($html);
+		$item_metadata->validate();
+		$item_metadata = $Tainacan_Item_Metadata->update($item_metadata);
+		$this->assertEquals($item_metadata->get_value(), $html);
 
 		// Test terms
 	}
