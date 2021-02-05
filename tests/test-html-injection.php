@@ -21,7 +21,8 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
-		$link = '<a href="www.tainacan.org">link</a>';
+		$link = "<a href='www.tainacan.org'>link</a>";
+		$js = "<script>alert('XSS')</script>";
 
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -32,7 +33,8 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 			true
 		);
 		$collection = $Tainacan_Collections->fetch($collection->get_id());
-
+		// $this->assertEquals($collection->get_name(), 'collection name link link2');
+		
 		$metadatum = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -44,6 +46,7 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 			true
 		);
 		$metadatum = $Tainacan_Metadata->fetch($metadatum->get_id());
+		// $this->assertEquals($metadatum->get_name(), 'metadatum name link');
 
 		$item = $this->tainacan_entity_factory->create_entity(
 			'item',
@@ -55,16 +58,15 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 			true
 		);
 		$item = $Tainacan_Items->fetch($item->get_id());
+		// $this->assertEquals($item->get_title(), 'title item console.log("XSS")');
+		// $this->assertEquals($item->get_description(), 'description item');
 
+		// Test metadata
 		$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
-		$item_metadata->set_value("<script>alert('XSS')</script>");
+		$item_metadata->set_value($js);
 		$item_metadata->validate();
 		$item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
 
-		// $this->assertEquals($collection->get_name(), 'collection name link link2');
-		// $this->assertEquals($metadatum->get_name(), 'metadatum name link');
-		// $this->assertEquals($item->get_title(), 'title item console.log("XSS")');
-		// $this->assertEquals($item->get_description(), 'description item');
 		$this->assertEquals($item_metadata->get_value(), "alert('XSS')");
 
 		$item_metadata->set_value($link);
@@ -72,6 +74,6 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 		$item_metadata = $Tainacan_Item_Metadata->update($item_metadata);
 		$this->assertEquals($item_metadata->get_value(), 'link');
 
-		//test terms
+		// Test terms
 	}
 }
