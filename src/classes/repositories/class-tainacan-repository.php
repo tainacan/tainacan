@@ -904,10 +904,13 @@ abstract class Repository {
 	}
 
 	protected function sanitize_value($content) {
-		if( is_numeric($content) || empty($content) ) {
+		if (is_numeric($content) || empty($content) ) {
 			return $content;
 		}
-		$allowed_html = wp_kses_allowed_html('post');
+		
+		$allowed_html = wp_kses_allowed_html('post');		
+		unset($allowed_html["a"]);
+		
 		return wp_kses(trim($content), $allowed_html);
 	}
 
