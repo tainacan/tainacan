@@ -67,31 +67,14 @@
                                 :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                                 :href="item.url"
                                 target="_blank">
-                            <img
-                                :src=" 
-                                    item.thumbnail && item.thumbnail[maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] && item.thumbnail[maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
-                                        ?
-                                    item.thumbnail[maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
-                                        :
-                                    (item.thumbnail && item.thumbnail['thumbnail'][0] && item.thumbnail['thumbnail'][0]
-                                        ?    
-                                    item.thumbnail['thumbnail'][0] 
-                                        : 
-                                    `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
-                                "
-                                :data-src=" 
-                                    item.thumbnail && item.thumbnail[maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] && item.thumbnail[maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
-                                        ?
-                                    item.thumbnail[maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
-                                        :
-                                    (item.thumbnail && item.thumbnail['thumbnail'][0] && item.thumbnail['thumbnail'][0]
-                                        ?    
-                                    item.thumbnail['thumbnail'][0] 
-                                        : 
-                                    `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
-                                "
-                                :class="maxItemsPerScreen <= 4 ? 'swiper-lazy' : ''"
-                                :alt="item.title ? item.title : $root.__('Thumbnail', 'tainacan')">
+                            <blur-hash-image
+                                    :height="$thumbHelper.getHeight(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'))"
+                                    :width="$thumbHelper.getWidth(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'))"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype'])"
+                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype'])"
+                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'))"
+                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : $root.__( 'Thumbnail', 'tainacan' ))"
+                                    :transition-duration="500" />
                             <span v-if="!hideTitle">{{ item.title ? item.title : '' }}</span>
                             <div 
                                     v-if="maxItemsPerScreen <= 4"

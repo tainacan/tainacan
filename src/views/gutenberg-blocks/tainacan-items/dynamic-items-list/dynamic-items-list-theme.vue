@@ -204,9 +204,15 @@
                             :href="item.url"
                             target="_blank"
                             :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
-                        <img
-                            :src="getItemThumbnail(item, 'tainacan-medium')"
-                            :alt="item.title ? item.title : $root.__('Thumbnail', 'tainacan')">
+                        <blur-hash-image
+                                v-if="showImage"
+                                :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium')"
+                                :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium')"
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item['document_mimetype'])"
+                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium', item['document_mimetype'])"
+                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : $root.__( 'Thumbnail', 'tainacan' ))"
+                                :transition-duration="500" />
                         <span>{{ item.title ? item.title : '' }}</span>
                     </a>
                 </li>
@@ -227,6 +233,7 @@
                             gridTemplateColumns: 'repeat(' + mosaicGridColumns + ', calc((100% / ' + mosaicGridColumns + ') - (' + ((mosaicGridColumns - 1)*Number(gridMargin)) + 'px/' + mosaicGridColumns + ')))',
                             margin: gridMargin + 'px',
                             gridGap: gridMargin + 'px',
+                            gap: gridMargin + 'px'
                         }"
                         class="mosaic-container"
                         :class="'mosaic-container--' + mosaicGroup.length + '-' + mosaicGridRows + 'x' + mosaicGridColumns"
@@ -238,7 +245,7 @@
                             v-for="(item, index) of mosaicGroup"
                             class="item-list-item"
                             :style="{
-                                backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'medium_large')})` : 'none',
+                                backgroundImage: layout == 'mosaic' ? `url(${$thumbHelper.getSrc(item['thumbnail'], 'medium_large', item['document_mimetype'])})` : 'none',
                                 backgroundPosition: layout == 'mosaic' ? `${ mosaicItemFocalPointX * 100 }% ${ mosaicItemFocalPointY * 100 }%` : 'none'
                             }">          
                         <a 
@@ -246,9 +253,14 @@
                                 :href="item.url"
                                 target="_blank"
                                 :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
-                            <img
-                                :src="getItemThumbnail(item, 'tainacan-medium')"
-                                :alt="item.title ? item.title : $root.__('Thumbnail', 'tainacan')">
+                            <blur-hash-image
+                                    :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium')"
+                                    :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium')"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item['document_mimetype'])"
+                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium', item['document_mimetype'])"
+                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
+                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : $root.__( 'Thumbnail', 'tainacan' ))"
+                                    :transition-duration="500" />
                             <span>{{ item.title ? item.title : '' }}</span>
                         </a>
                     </li>
@@ -417,19 +429,6 @@ export default {
                         this.isLoadingCollection = false;      
                     });
             }
-        },
-        getItemThumbnail(item, size) {
-            return ( 
-                item.thumbnail && item.thumbnail[size][0] && item.thumbnail[size][0] 
-                    ?
-                item.thumbnail[size][0] 
-                    :
-                (item.thumbnail && item.thumbnail['large'][0] && item.thumbnail['large'][0]
-                    ?    
-                item.thumbnail['large'][0] 
-                    : 
-                `${this.tainacanBaseUrl}/assets/images/placeholder_square.png`)
-            )
         },
         mosaicPartition(items) {
             const partition = _.groupBy(items, (item, i) => {

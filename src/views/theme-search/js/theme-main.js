@@ -42,7 +42,9 @@ import eventBusSearch from '../../admin/js/event-bus-search';
 import { 
     I18NPlugin,
     UserPrefsPlugin,
-    ConsolePlugin,
+    ConsolePlugin
+} from '../../admin/js/admin-utilities';
+import { 
     ThumbnailHelperPlugin
 } from '../../admin/js/utilities';
 

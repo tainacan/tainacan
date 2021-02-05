@@ -289,6 +289,7 @@
         -ms-grid-columns: 220px 220px 220px 220px 220px;
         grid-template-columns: repeat(auto-fill, 220px);
         grid-gap: 0px;
+        gap: 0px;
         justify-content: space-evenly;
         list-style-type: none;
         margin: 0;
@@ -363,14 +364,13 @@
                 align-items: center;
                 word-break: break-all;
                 word-break: break-word;
-            }
 
-            img {
-                height: auto;
-                width: 54px;
-                min-width: 54px;
-                padding: 0px;
-                margin-right: 20px;
+                &>div:first-child {
+                    height: 54px;
+                    width: 54px;
+                    padding: 0px !important;
+                    margin-right: 20px;
+                }
             }
 
             a.item-without-image img {
@@ -436,6 +436,7 @@
                 background-size: cover;
                 background-position: center;
                 margin: 0;
+                overflow: hidden;
 
                 a { 
                     width: 100%;
@@ -450,7 +451,7 @@
                     display: none;
                 }
                 
-                a span {
+                a>span {
                     display: block;
                     position: absolute;
                     background: rgba(255, 255, 255, 0.75);

@@ -69,9 +69,11 @@ import {
     RouterHelperPlugin,
     ConsolePlugin,
     UserCapabilitiesPlugin,
-    ThumbnailHelperPlugin,
     StatusHelperPlugin,
     CommentsStatusHelperPlugin 
+} from './admin-utilities';
+import { 
+    ThumbnailHelperPlugin
 } from './utilities';
 
 /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */

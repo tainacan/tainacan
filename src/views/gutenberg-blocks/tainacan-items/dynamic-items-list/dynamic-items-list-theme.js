@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import DynamicItemsListTheme from './dynamic-items-list-theme.vue';
+import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
+import VueBlurHash from 'vue-blurhash';
 
 // Vue Dev Tools!
 Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
@@ -101,6 +103,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             };
 
+            Vue.use(ThumbnailHelperPlugin);
+            Vue.use(VueBlurHash);
             new Vue( Object.assign({ el: '#' + blockId }, vueOptions) );
         }
     }

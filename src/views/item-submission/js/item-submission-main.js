@@ -27,7 +27,7 @@ import ItemSubmission from '../item-submission.vue';
 import TainacanFormItem from '../../admin/components/metadata-types/tainacan-form-item.vue';
 import HelpButton from '../../admin/components/other/help-button.vue';
 import store from '../../admin/js/store/store';
-import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin, CommentsStatusHelperPlugin } from '../../admin/js/utilities';
+import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin, CommentsStatusHelperPlugin } from '../../admin/js/admin-utilities';
 
 document.addEventListener("DOMContentLoaded", () => {
 
