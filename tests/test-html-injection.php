@@ -21,8 +21,11 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
-		$link = "<a href='www.tainacan.org'>link</a>";
-		$js = "<script>alert('XSS')</script>";
+		// Evil attempts
+		$link   = "<a href='www.tainacan.org'>link</a>";
+		$js     = "<script>alert('XSS')</script>";
+		$css    = "my text along with some style <style>a { display: none }</style>";
+		$iframe = "<iframe src='www.tainacan.org' title='Taiancan'></iframe>";
 
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -73,6 +76,16 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 		$item_metadata->validate();
 		$item_metadata = $Tainacan_Item_Metadata->update($item_metadata);
 		$this->assertEquals($item_metadata->get_value(), 'link');
+
+		$item_metadata->set_value($css);
+		$item_metadata->validate();
+		$item_metadata = $Tainacan_Item_Metadata->update($item_metadata);
+		$this->assertEquals($item_metadata->get_value(), 'my text along with some style a { display: none }');
+
+		$item_metadata->set_value($iframe);
+		$item_metadata->validate();
+		$item_metadata = $Tainacan_Item_Metadata->update($item_metadata);
+		$this->assertEquals($item_metadata->get_value(), '');
 
 		// Test terms
 	}
