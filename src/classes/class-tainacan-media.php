@@ -21,6 +21,9 @@ class Media {
 
 	protected function __construct() {
 		add_action( 'init', [$this, 'add_attachment_page_rewrite_rule'] );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'add_css' ) );
+		add_action( 'wp_enqueue_scripts', array( &$this, 'add_css' ) );
+
 		add_filter( 'query_vars', [$this, 'attachment_page_add_var'] );
 		add_action( 'template_redirect', [$this, 'attachment_page'] );
 	}
@@ -31,6 +34,11 @@ class Media {
 			'index.php?tainacan_attachment_page=$matches[1]',
 			'top'
 		);
+	}
+
+	public function add_css() {
+		global $TAINACAN_BASE_URL;
+		wp_enqueue_style( 'tainacan-media-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-media-page.css', [], TAINACAN_VERSION );
 	}
 
 	public function attachment_page_add_var($vars) {
@@ -320,11 +328,11 @@ class Media {
 
 	public function attachment_page() {
 		$att_id = get_query_var('tainacan_attachment_page');
-
+		
 		if ( ! $att_id ) {
 			return; // continue normal execution
 		}
-
+		
 		$attachment = get_post($att_id);
 
 		if ( $attachment instanceof \WP_Post && $attachment->post_type == 'attachment' ) {
@@ -359,7 +367,7 @@ class Media {
 			$output .= $img;
 
 		} else {
-
+			wp_print_styles('tainacan-media-page');
 			global $wp_embed;
 
 			$url = wp_get_attachment_url($att_id);
