@@ -34,6 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     mosaicGridColumns: 3,
                     mosaicItemFocalPointX : 0.5,
                     mosaicItemFocalPointY : 0.5,
+                    maxColumnsCount: 4,
+                    cropImagesToSquare: true,
                     order: 'asc',
                     showSearchBar: false,
                     showCollectionHeader: false,
@@ -58,6 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             mosaicGridColumns: this.mosaicGridColumns,
                             mosaicItemFocalPointX: this.mosaicItemFocalPointX,
                             mosaicItemFocalPointY: this.mosaicItemFocalPointY,
+                            maxColumnsCount: this.maxColumnsCount,
+                            cropImagesToSquare: this.cropImagesToSquare,
                             searchURL: this.searchURL,
                             maxItemsNumber: this.maxItemsNumber,
                             order: this.order,
@@ -86,6 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.mosaicGridColumns = this.$el.attributes['mosaic-grid-columns'] != undefined ? Number(this.$el.attributes['mosaic-grid-columns'].value) : undefined;
                     this.mosaicItemFocalPointX = this.$el.attributes['mosaic-item-focal-point-x'] != undefined ? Number(this.$el.attributes['mosaic-item-focal-point-x'].value) : undefined;
                     this.mosaicItemFocalPointY = this.$el.attributes['mosaic-item-focal-point-y'] != undefined ? Number(this.$el.attributes['mosaic-item-focal-point-y'].value) : undefined;
+                    this.maxColumnsCount = this.$el.attributes['max-columns-count'] != undefined ? this.$el.attributes['max-columns-count'].value : 4;
+                    this.cropImagesToSquare = this.$el.attributes['crop-images-to-square'] != undefined ? this.$el.attributes['crop-images-to-square'].value == 'true' : true;
                     this.maxItemsNumber = this.$el.attributes['max-items-number'] != undefined ? this.$el.attributes['max-items-number'].value : undefined;
                     this.order = this.$el.attributes['order'] != undefined ? this.$el.attributes['order'].value : undefined;
                     this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;
