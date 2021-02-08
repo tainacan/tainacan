@@ -1,8 +1,8 @@
 // THUMBNAIL PLUGIN - Translates api path of thumbnails src to render placeholders and propoper sizes.
 export const ThumbnailHelperPlugin = {};
-ThumbnailHelperPlugin.install = function (Vue, options = {}) {
-    
-    Vue.prototype.$thumbHelper = {
+
+export const ThumbnailHelperFunctions = () => {
+    return {
         imagesFolderPath: tainacan_plugin.base_url + '/assets/images/',
         getSrc(thumbnail, tainacanSize, documentType) {
             const wordpressSize = this.getWordpressFallbackSize(tainacanSize);
@@ -88,7 +88,7 @@ ThumbnailHelperPlugin.install = function (Vue, options = {}) {
         getWordpressFallbackSize(tainacanSize) {
             switch(tainacanSize) {
                 case 'tainacan-medium-full':
-                   return 'medium_large';
+                return 'medium_large';
                 case 'tainacan-medium':
                     return 'medium';
                 case 'tainacan-small':
@@ -98,4 +98,8 @@ ThumbnailHelperPlugin.install = function (Vue, options = {}) {
             }
         }
     }
+}
+
+ThumbnailHelperPlugin.install = function (Vue, options = {}) {
+    Vue.prototype.$thumbHelper = ThumbnailHelperFunctions();
 };

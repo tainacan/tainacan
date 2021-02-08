@@ -10,6 +10,7 @@ import DynamicItemsModal from './dynamic-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
+import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import DeprecatedBlocks from './dynamic-items-list-deprecated.js';
 
@@ -189,6 +190,7 @@ registerBlockType('tainacan/dynamic-items-list', {
 
         // Obtains block's client id to render it on save function
         setAttributes({ blockId: clientId });
+        const thumbHelper = ThumbnailHelperFunctions();
         
         function prepareItem(item) {
             return (
@@ -197,21 +199,23 @@ registerBlockType('tainacan/dynamic-items-list', {
                     className="item-list-item"
                     style={ {
                         marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '', 
-                        backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'medium_large')})` : 'none',
+                        backgroundImage: layout == 'mosaic' ? `url(${ thumbHelper.getSrc(item['thumbnail'], 'medium_large', item['document_mimetype']) })` : 'none',
                         backgroundPosition: layout == 'mosaic' ? `${ (mosaicItemFocalPoint && mosaicItemFocalPoint.x ? mosaicItemFocalPoint.x : 0.5) * 100 }% ${ (mosaicItemFocalPoint && mosaicItemFocalPoint.y ? mosaicItemFocalPoint.y : 0.5) * 100 }%` : 'none'
                     }}
                 >      
                     <a 
                         id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
                         href={ item.url } 
+                        onClick={ (event) => event.preventDefault() }
                         target="_blank"
                         style={ {
                             
                         } }
                         className={ (!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '') }>
                         <img
-                            src={ getItemThumbnail(item, 'tainacan-medium') }
-                            alt={ item.title ? item.title : __( 'Thumbnail', 'tainacan' ) }/>
+                            src={ thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item['document_mimetype']) }
+                            srcSet={ thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium', item['document_mimetype']) }
+                            alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : $root.__( 'Thumbnail', 'tainacan' )) }/>
                         <span>{ item.title ? item.title : '' }</span>
                     </a>
                 </li>

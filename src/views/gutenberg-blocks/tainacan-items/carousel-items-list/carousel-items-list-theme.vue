@@ -73,7 +73,7 @@
                                     :src="$thumbHelper.getSrc(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype'])"
                                     :srcset="$thumbHelper.getSrcSet(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype'])"
                                     :hash="$thumbHelper.getBlurhashString(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'))"
-                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : $root.__( 'Thumbnail', 'tainacan' ))"
+                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : $root.__( 'Thumbnail', 'tainacan' ))"
                                     :transition-duration="500" />
                             <span v-if="!hideTitle">{{ item.title ? item.title : '' }}</span>
                             <div 

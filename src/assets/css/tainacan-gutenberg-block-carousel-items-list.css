@@ -222,6 +222,7 @@
         line-height: normal; }
       .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item img {
         height: auto;
+        display: block;
         padding: 0px;
         margin-bottom: 0.5em; }
       .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item:hover a {
