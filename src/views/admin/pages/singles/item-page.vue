@@ -79,17 +79,21 @@
                                     :size="178"
                                     :file="{
                                 media_type: 'image',
-                                thumbnails: { 'tainacan-medium': [ item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] ] },
+                                thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
                                 title: $i18n.get('label_thumbnail'),
-                                description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + item.thumbnail.full[0] + `'/>` 
+                                description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_mimetype) + `'/>` 
                             }"/>
                             <figure
                                     v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
                                     class="image">
-                                <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
+                                <span 
+                                        v-if="item.document_type == 'empty'"
+                                        class="image-placeholder">
+                                    {{ $i18n.get('label_empty_thumbnail') }}
+                                </span>
                                 <img
                                         :alt="$i18n.get('label_thumbnail')"
-                                        :src="thumbPlaceholderPath">
+                                        :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
                             </figure>
                         </div>
                         <br>
@@ -346,7 +350,6 @@
                 itemRequestCancel: undefined,
                 isLoading: false,
                 open: true,
-                thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
                 urls_open: false,
                 activeTab: 0
             }
@@ -384,7 +387,7 @@
             this.fetchItem({ 
                 itemId: this.itemId,
                 contextEdit: true,    
-                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html'       
+                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document_mimetype,document,comment_status,document_as_html'       
             })
              .then((resp) => {
                 resp.request.then((item) => {

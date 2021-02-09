@@ -118,12 +118,12 @@
                 <template slot-scope="props">
                     <div class="media">
                         <div
-                                v-if="props.option.thumbnail && props.option.thumbnail.thumbnail && props.option.thumbnail.thumbnail[0]"
+                                v-if="props.option.thumbnail && props.option.thumbnail['tainacan-small'] && props.option.thumbnail['tainacan-small']"
                                 class="media-left">
                             <img 
                                     width="24"
                                     :alt="$i18n.get('label_thumbnail')"
-                                    :src="props.option.thumbnail.thumbnail[0]" >
+                                    :src="$thumbHelper.getSrc(props.option['thumbnail'], 'tainacan-small')" >
                         </div>
                         <div class="media-content">
                             {{ props.option.name }}

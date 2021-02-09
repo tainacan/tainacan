@@ -47,13 +47,13 @@
                             <file-item
                                     v-if="collection.thumbnail != undefined && ((collection.thumbnail['tainacan-medium'] != undefined && collection.thumbnail['tainacan-medium'] != false) || (collection.thumbnail.medium != undefined && collection.thumbnail.medium != false))"
                                     :show-name="false"
-                                    :modal-on-click="false"
+                                    :modal-on-click="true"
                                     :size="178"
                                     :file="{ 
                                         media_type: 'image', 
-                                        thumbnails: { 'tainacan-medium': [ collection.thumbnail['tainacan-medium'] ? collection.thumbnail['tainacan-medium'][0] : collection.thumbnail.medium[0] ] },
+                                        thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(collection['thumbnail'], 'tainacan-medium') ] },
                                         title: $i18n.get('label_thumbnail'),
-                                        description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + collection.thumbnail.full[0] + `'/>` 
+                                        description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(collection['thumbnail'], 'full') + `'/>` 
                                     }"/>
                           <figure 
                                     v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail['tainacan-medium'] == undefined || collection.thumbnail['tainacan-medium'] == false))"
@@ -61,7 +61,7 @@
                                 <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img  
                                         :alt="$i18n.get('label_thumbnail')" 
-                                        :src="thumbPlaceholderPath">
+                                        :src="$thumbHelper.getEmptyThumbnailPlaceholder()">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a 
@@ -674,7 +674,6 @@ export default {
             isNewCollection: false,
             isMapped: false,
             mapper: false,
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             headerPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_rectangle.png',
             collections: [],
             isFetchingCollections: true,

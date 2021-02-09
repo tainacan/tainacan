@@ -239,7 +239,7 @@
                         <img 
                             :alt="$i18n.get('label_thumbnail')"
                             v-if="collection.thumbnail != undefined"
-                            :src="collection['thumbnail']['tainacan-medium'] ? collection['thumbnail']['tainacan-medium'][0] : (collection['thumbnail'].medium ? collection['thumbnail'].medium[0] : thumbPlaceholderPath)">  
+                            :src="$thumbHelper.getSrc(collection['thumbnail'], 'tainacan-medium')">  
                         
                         <!-- Name -->
                         <div class="metadata-title">
@@ -259,11 +259,6 @@ export default {
         isLoading: false,
         collections: Array,
         collectionsTotal: Number
-    },
-    data(){
-        return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png'
-        }
     }
 }
 </script>

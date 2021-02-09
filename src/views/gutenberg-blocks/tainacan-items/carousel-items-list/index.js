@@ -10,6 +10,7 @@ import CarouselItemsModal from './carousel-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
+import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import DeprecatedBlocks from './carousel-items-deprecated.js';
 
@@ -172,7 +173,8 @@ registerBlockType('tainacan/carousel-items-list', {
 
         // Obtains block's client id to render it on save function
         setAttributes({ blockId: clientId });
-        
+        const thumbHelper = ThumbnailHelperFunctions();
+
         // Sets some defaults that were not working
         if (maxItemsPerScreen === undefined) {
             maxItemsPerScreen = 7;
@@ -207,18 +209,9 @@ registerBlockType('tainacan/carousel-items-list', {
                         href={ item.url } 
                         target="_blank">
                         <img
-                            src={ 
-                                item.thumbnail && item.thumbnail[maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] && item.thumbnail[maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
-                                    ?
-                                item.thumbnail[maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
-                                    :
-                                (item.thumbnail && item.thumbnail['thumbnail'][0] && item.thumbnail['thumbnail'][0]
-                                    ?    
-                                item.thumbnail['thumbnail'][0] 
-                                    : 
-                                `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
-                            }
-                            alt={ item.title ? item.title : __( 'Thumbnail', 'tainacan' ) }/>
+                            src={ thumbHelper.getSrc(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype']) }
+                            srcset={ thumbHelper.getSrcSet(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype']) }
+                            alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : $root.__( 'Thumbnail', 'tainacan' )) }/>
                         { !hideTitle ? <span>{ item.title ? item.title : '' }</span> : null }
                     </a>
                 </li>

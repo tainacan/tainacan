@@ -148,7 +148,7 @@
                                 <img 
                                         :alt="$i18n.get('label_thumbnail')"
                                         class="table-thumb" 
-                                        :src="(collection.thumbnail && collection.thumbnail.thumbnail ) ? collection.thumbnail.thumbnail[0] : thumbPlaceholderPath">
+                                        :src="$thumbHelper.getSrc(collection['thumbnail'], 'tainacan-small')">
                             </span>
                         </td>
                         <!-- Name -->
@@ -322,7 +322,6 @@ export default {
             selectedCollections: [],
             allCollectionsOnPageSelected: false,
             isSelectingCollections: false,
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             cursorPosX: -1,
             cursorPosY: -1,
             contextMenuIndex: null,

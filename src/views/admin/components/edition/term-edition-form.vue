@@ -74,7 +74,7 @@
                                         class="image-placeholder">{{ $i18n.get('label_empty_term_image') }}</span>
                                 <img
                                         :alt="$i18n.get('label_image')"
-                                        :src="(editForm.header_image === undefined || editForm.header_image === false) ? headerPlaceholderPath : editForm.header_image">
+                                        :src="(editForm.header_image === undefined || editForm.header_image === false) ? $thumbHelper.getEmptyThumbnailPlaceholder() : editForm.header_image">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a
@@ -241,7 +241,6 @@
         data() {
             return {
                 formErrors: {},
-                headerPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
                 headerImageMediaFrame: undefined,
                 isFetchingParentTerms: false,
                 parentTerms: [],

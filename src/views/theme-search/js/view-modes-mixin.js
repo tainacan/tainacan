@@ -3,7 +3,6 @@ import qs from 'qs';
 export const viewModesMixin = {
     data() {
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             isSlideshowViewModeEnabled: false
         }
     },

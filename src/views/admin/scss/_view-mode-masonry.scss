@@ -10,7 +10,6 @@
     animation-duration: 0.5s;
 
     .tainacan-masonry-item {
-        background-color: var(--tainacan-item-background-color);
         display: block;
         width: 100%;
         flex-basis: 0;
@@ -19,11 +18,14 @@
         text-decoration: none;
         transition: background-color 0.2s ease;
 
-        &:hover {
+        &:hover:not(.skeleton) {
             background-color: var(--tainacan-item-heading-hover-background-color);
         }
-        &.selected-masonry-item {
+        &.selected-masonry-item:not(.skeleton) {
             background-color: var(--tainacan-turquoise1);
+        }
+        &:not(.skeleton) { 
+            background-color: var(--tainacan-item-background-color);
         }
 
         .masonry-item-checkbox {
@@ -88,14 +90,6 @@
                 height: auto;    
                 transition: height 0.2s ease;
                 display: block;
-            }
-            img:not(.skeleton) {
-                visibility: hidden;
-            }
-
-            .skeleton {
-                background: var(--tainacan-skeleton-color);
-                color: transparent !important;
             }
         }
 

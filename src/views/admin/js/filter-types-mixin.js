@@ -36,7 +36,6 @@ export const filterTypeMixin = {
 export const dynamicFilterTypeMixin = {
     data () {
         return {
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             getOptionsValuesCancel: undefined,
             isLoadingOptions: false,
             facetSearchPage: 1
@@ -304,14 +303,14 @@ export const dynamicFilterTypeMixin = {
                             sResults.push({
                                 label: item.label,
                                 value: item.value,
-                                img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : (item.img ? item.img : ''),
+                                img: item.thumbnail ? this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small') : (item.img ? item.img : ''),
                                 total_items: item.total_items
                             });
                         } else if (indexToIgnore < 0) {
                             opts.push({
                                 label: item.label,
                                 value: item.value,
-                                img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : (item.img ? item.img : ''),
+                                img: item.thumbnail ? this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small') : (item.img ? item.img : ''),
                                 total_items: item.total_items
                             });
                         }
@@ -320,14 +319,14 @@ export const dynamicFilterTypeMixin = {
                             sResults.push({
                                 label: item.label,
                                 value: item.value,
-                                img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : (item.img ? item.img : ''),
+                                img: item.thumbnail ? this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small') : (item.img ? item.img : ''),
                                 total_items: item.total_items
                             });
                         } else {
                             opts.push({
                                 label: item.label,
                                 value: item.value,
-                                img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : (item.img ? item.img : ''),
+                                img: item.thumbnail ? this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small') : (item.img ? item.img : ''),
                                 total_items: item.total_items
                             });
                         }

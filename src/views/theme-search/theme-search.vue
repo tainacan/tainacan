@@ -58,6 +58,9 @@ export default {
     @import "../../../node_modules/buefy/src/scss/components/_notices.scss";
     @import "../../../node_modules/buefy/src/scss/components/_numberinput.scss";
 
+    // Vue Blurhash transtition effect
+    @import '../../../node_modules/vue-blurhash/dist/vue-blurhash.css';
+
     // Tainacan imports
     @import "../admin/scss/_tables.scss";
     @import "../admin/scss/_modals.scss";
