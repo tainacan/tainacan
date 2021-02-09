@@ -115,6 +115,8 @@
           top: -78px !important; }
         .wp-block-tainacan-facets-list .facets-collection-header .collection-header-image {
           background-color: transparent; } }
+  .wp-block-tainacan-facets-list.alignfull .facets-search-bar {
+    padding: 1.00em 2em 0.75em 2em; }
   .wp-block-tainacan-facets-list .facets-search-bar {
     width: 100%;
     display: flex;
@@ -211,7 +213,7 @@
       border: 1px solid var(--tainacan-block-gray3, #cbcbcb) !important; }
   .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid,
   .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid {
-    padding: 0;
+    padding: 0 2em;
     flex-wrap: wrap;
     display: flex;
     display: -ms-grid;

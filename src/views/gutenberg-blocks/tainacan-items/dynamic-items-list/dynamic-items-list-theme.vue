@@ -151,19 +151,20 @@
             <ul
                     v-if="layout !== 'mosaic'"
                     :style="{
-                        gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
-                        marginTop: showSearchBar || showCollectionHeader ? '1.34em' : '0px'
+                        marginTop: showSearchBar || showCollectionHeader ? '1.34em' : '0px',
+                        gridGap: (showName ? gridMargin + 24 : gridMargin) + 'px',
+                        gap: (showName ? gridMargin + 24 : gridMargin) + 'px'
                     }"
                     class="items-list"
-                    :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
-                    <li
-                            :key="item"
-                            v-for="item in Number(maxItemsNumber)"
-                            class="item-list-item skeleton"
-                            :style="{ 
-                                marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
-                                height: layout == 'grid' ? '230px' : '54px'
-                            }" />      
+                    :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
+                <li
+                        :key="item"
+                        v-for="item in Number(maxItemsNumber)"
+                        class="item-list-item skeleton"
+                        :style="{ 
+                            marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
+                            height: layout == 'grid' ? '230px' : '54px'
+                        }" />      
             </ul>
             <ul
                     v-if="layout === 'mosaic'"
@@ -207,8 +208,8 @@
                                 v-if="showImage"
                                 :height="$thumbHelper.getHeight(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
                                 :width="$thumbHelper.getWidth(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
-                                :src="$thumbHelper.getSrc(item['thumbnail'], ( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ), item['document_mimetype'])"
-                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], ( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ), item['document_mimetype'])"
+                                :src="$thumbHelper.getSrc(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ), item['document_mimetype'])"
+                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ), item['document_mimetype'])"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : $root.__( 'Thumbnail', 'tainacan' ))"
                                 :transition-duration="500" />

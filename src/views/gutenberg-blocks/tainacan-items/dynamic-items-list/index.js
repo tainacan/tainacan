@@ -233,8 +233,8 @@ registerBlockType('tainacan/dynamic-items-list', {
                         } }
                         className={ (!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '') }>
                         <img
-                            src={ thumbHelper.getSrc(item['thumbnail'], (layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full'), item['document_mimetype']) }
-                            srcSet={ thumbHelper.getSrcSet(item['thumbnail'], (layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full'), item['document_mimetype']) }
+                            src={ thumbHelper.getSrc(item['thumbnail'], ( (layout == 'list' || cropImagesToSquare) ? 'tainacan-medium' : 'tainacan-medium-full'), item['document_mimetype']) }
+                            srcSet={ thumbHelper.getSrcSet(item['thumbnail'], ( (layout == 'list' || cropImagesToSquare) ? 'tainacan-medium' : 'tainacan-medium-full'), item['document_mimetype']) }
                             alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : $root.__( 'Thumbnail', 'tainacan' )) }/>
                         <span>{ item.title ? item.title : '' }</span>
                     </a>

@@ -1,7 +1,13 @@
 @import '../../gutenberg-blocks-variables.scss';
 
 .wp-block-tainacan-dynamic-items-list {
-    margin: 2em auto;
+    margin-top: 2em;
+    margin-bottom: 2em;
+
+    &:not(.alignfull) {
+        margin-left: auto;
+        margin-right: auto;
+    }
 
     // Spinner
     .spinner-container {
@@ -142,12 +148,16 @@
     }
 
     // Search control bar
+    &.alignfull .dynamic-items-search-bar {
+        padding: 1.00em 2em 0.75em 2em;
+    }
     .dynamic-items-search-bar {
         width: 100%;
         display: flex;
         align-items: center;
         border-bottom: 1px solid var(--tainacan-block-gray3, $gray3);
         padding: 1.00em 0.5em 0.75em 0.5em;
+        position: relative;
 
         @media only screen and (max-width: 768px) {
             flex-wrap: wrap;
@@ -155,7 +165,8 @@
             .search-button {
                 order: 4;
                 position: absolute;
-                margin-top: 0.75em;
+                bottom: 0.875em;
+                left: 1.0em;
             }
             input {
                 width: 100% !important;
@@ -223,27 +234,6 @@
     }
 
     // Style for both grid and list View Modes ----------------------------------------------------
-    ul.items-list.items-layout-list.items-list-without-margin,
-    ul.items-list-edit.items-layout-list.items-list-without-margin,
-    ul.items-list.items-layout-grid.items-list-without-margin,
-    ul.items-list-edit.items-layout-grid.items-list-without-margin {
-        grid-template-columns: repeat(auto-fill, 185px);
-        justify-content: center !important;
-        grid-template-rows: auto !important;
-        list-style: none;
-
-        li {
-            margin-top: 0 !important;
-            margin-right: 0 !important;
-            margin-left: 0 !important;
-            height: 185px !important;
-
-            img { 
-                height: 185px !important;
-                margin-bottom: 0px !important;
-            }
-        }
-    }
     ul.items-list-edit li.item-list-item {
         display: flex;
         align-items: flex-start;
@@ -388,26 +378,44 @@
 
         li.item-list-item {
             position: relative;
-            display: block;
+            display: flex;
+            flex-wrap: wrap;
             width: 100%;
-            flex-basis: 220px;  // Helps with the flex fallback in case grid is not available;
-            margin: auto;
+            flex-basis: 100%;
+            justify-content: center;
+            align-items: center;
 
             a { 
                 color: var(--tainacan-block-gray5, $gray5); 
                 border: none;
                 font-weight: bold;
                 line-height: normal;
+                display: flex;
+                flex-basis: 100%;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+
+                &>div {
+                    width: 100%;
+                }
             }
 
             img {
+                flex-basis: 100%;
                 height: auto;
                 width: 100%;
                 padding: 0px;
-                margin-bottom: 0.5em;
             }
 
-            a.item-without-title span {
+            a:not(.item-without-title) {
+                margin-bottom: 0.5em;
+            }
+            a>span {
+                margin-right: auto;
+                margin-top: 0.5em;
+            }
+            a.item-without-title>span {
                 display: none;
             }
 
@@ -588,7 +596,7 @@
                 }
                 &:hover a span { opacity: 1 };
 
-                a.item-without-title span {
+                a.item-without-title>span {
                     display: none;
                 }
 
