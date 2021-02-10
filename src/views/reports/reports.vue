@@ -24,5 +24,9 @@
         a:hover {
             cursor: pointer;
         }
+
+        .wp-heading-inline {
+            margin-bottom: 2rem;
+        }
     }
 </style>

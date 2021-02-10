@@ -15,6 +15,24 @@ import ChartBlock from '../components/chart-block.vue';
 
 Vue.use(VueApexCharts)
 
+// Apex.theme = {
+//     monochrome: {
+//         enabled: true,
+//         color: '#298596',
+//         shadeTo: 'light',
+//         shadeIntensity: 0.65
+//     }
+// }
+Apex.colors = [
+    '#298596', // Tainacan Turquoise
+    '#01295c', // Tainacan Blue
+    '#25a189', // Tainacan Green
+    '#e69810', // Tainacan Yellow
+    '#a23939', // Tainacan Red
+    '#592570', // Tainacan Purple
+    '#ed4f63'  // Tainacan Pink
+];
+
 Vue.use(I18NPlugin);
 Vue.use(VTooltip);
 Vue.use(Snackbar);
