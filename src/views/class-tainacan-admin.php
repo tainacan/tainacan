@@ -58,6 +58,15 @@ class Admin {
 			array( &$this, 'roles_page' )
 		);
 
+		$reports_page_suffix = add_submenu_page(
+			$this->menu_slug,
+			__('Reports', 'tainacan'),
+			__('Reports', 'tainacan'),
+			'read',
+			'tainacan_reports',
+			array( &$this, 'reports_page' )
+		);
+
 		add_submenu_page(
 			$this->menu_slug,
 			__('Item Submission', 'tainacan'),
@@ -69,6 +78,7 @@ class Admin {
 
 		add_action( 'load-' . $page_suffix, array( &$this, 'load_admin_page' ) );
 		add_action( 'load-' . $roles_page_suffix, array( &$this, 'load_roles_page' ) );
+		add_action( 'load-' . $reports_page_suffix, array( &$this, 'load_reports_page' ) );
 	}
 
 	function load_admin_page() {
@@ -80,6 +90,11 @@ class Admin {
 	function load_roles_page() {
 		add_action( 'admin_enqueue_scripts', array( &$this, 'add_roles_css' ), 90 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'add_roles_js' ), 90 );
+	}
+
+	function load_reports_page() {
+		add_action( 'admin_enqueue_scripts', array( &$this, 'add_reports_css' ), 90 );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'add_reports_js' ), 90 );
 	}
 
 	function login_styles_reset( $style ) {
@@ -128,6 +143,33 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 		// TODO move it to a separate file and start the Vue project
 		echo "<div id='tainacan-roles-app'></div>";
+	}
+
+	function add_reports_css() {
+		global $TAINACAN_BASE_URL;
+
+		wp_enqueue_style( 'tainacan-reports-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-reports.css', [], TAINACAN_VERSION );
+	}
+
+	function add_reports_js() {
+
+		global $TAINACAN_BASE_URL;
+
+		wp_enqueue_script( 'tainacan-reports', $TAINACAN_BASE_URL . '/assets/js/reports.js', ['underscore', 'wp-i18n'], TAINACAN_VERSION, true );
+		wp_set_script_translations('tainacan-reports', 'tainacan');
+
+		$settings = $this->get_admin_js_localization_params();
+		wp_localize_script( 'tainacan-reports', 'tainacan_plugin', $settings );
+		wp_enqueue_script('underscore');
+		wp_enqueue_script('wp-i18n');
+
+		do_action('tainacan-enqueue-reports-scripts');
+	}
+
+	function reports_page() {
+		global $TAINACAN_BASE_URL;
+		// TODO move it to a separate file and start the Vue project
+		echo "<div id='tainacan-reports-app'></div>";
 	}
 
 	function add_admin_css() {
