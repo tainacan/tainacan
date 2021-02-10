@@ -62,7 +62,7 @@
                                 @click.prevent="starSlideshowFromHere(index)"
                                 class="icon slideshow-icon">
                             <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
-                        </span>                             
+                        </span>
                     </div>
 
                     <!-- Thumbnail -->
