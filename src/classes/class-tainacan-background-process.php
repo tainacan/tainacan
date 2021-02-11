@@ -310,7 +310,7 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 			
 			$this->close( $batch->key, 'errored' );
 			$this->debug('Batch closed due to captured error');
-			
+			$this->unlock_process();
 		});
 
 		$task = $batch;
