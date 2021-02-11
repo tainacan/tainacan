@@ -4,11 +4,14 @@ import router from './reports-router';
 import VTooltip from 'v-tooltip';
 import { Snackbar, Modal } from 'buefy';
 import VueApexCharts from 'vue-apexcharts';
+import { 
+    I18NPlugin,
+    UserCapabilitiesPlugin,
+    StatusHelperPlugin,
+} from '../../admin/js/admin-utilities';
 
 // Vue Dev Tools!
 Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
-
-import { I18NPlugin } from './wp-i18n-plugin';
 
 import ReportsPage from '../reports.vue';
 import ChartBlock from '../components/chart-block.vue';
@@ -33,7 +36,10 @@ Apex.colors = [
     '#ed4f63'  // Tainacan Pink
 ];
 
+
 Vue.use(I18NPlugin);
+Vue.use(UserCapabilitiesPlugin);
+Vue.use(StatusHelperPlugin);
 Vue.use(VTooltip);
 Vue.use(Snackbar);
 Vue.use(Modal);

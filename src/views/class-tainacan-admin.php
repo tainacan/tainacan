@@ -148,6 +148,7 @@ class Admin {
 	function add_reports_css() {
 		global $TAINACAN_BASE_URL;
 
+		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/tainacanicons.css', [], TAINACAN_VERSION );
 		wp_enqueue_style( 'tainacan-reports-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-reports.css', [], TAINACAN_VERSION );
 	}
 

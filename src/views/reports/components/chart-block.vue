@@ -1,10 +1,8 @@
 <template>
-    <article class="tile is-child">
-        <apexchart
-                height="350" 
-                :options="chartOptions" 
-                :series="chartSeries" />
-    </article>
+    <apexchart
+            height="380px"
+            :options="chartOptions" 
+            :series="chartSeries" />
 </template>
 
 <script>

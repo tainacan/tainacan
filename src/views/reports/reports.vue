@@ -7,12 +7,15 @@
 </template>
 
 <script>
-    export default { 
-        name: "ReportsPage"
-    }
+export default { 
+    name: "ReportsPage",
+}
 </script>
 
 <style lang="scss">
+
+    // TAINACAN Variables
+    @import "../admin/scss/_variables.scss";
 
     // Bulma imports
     @import "./scss/reports-basics.sass";
