@@ -15,6 +15,7 @@ Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'develo
 
 import ReportsPage from '../reports.vue';
 import ChartBlock from '../components/chart-block.vue';
+import NumberBlock from '../components/number-block.vue';
 
 Vue.use(VueApexCharts)
 
@@ -45,6 +46,7 @@ Vue.use(Snackbar);
 Vue.use(Modal);
 
 Vue.component('chart-block', ChartBlock);
+Vue.component('number-block', NumberBlock);
 Vue.component('apexchart', VueApexCharts);
 
 // Changing title of pages

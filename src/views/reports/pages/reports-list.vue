@@ -4,7 +4,8 @@
         <select 
                 name="select_collections"
                 id="select_collections"
-                v-model="selectedCollection">
+                @input="(inputEvent) => $router.push({ query: { collection: inputEvent.target.value } })"
+                :value="selectedCollection">
             <option value="default">
                 {{ $i18n.get('repository') }}
             </option>
@@ -15,98 +16,35 @@
                 {{ collection.name }}
             </option>
         </select>
-        <div class="columns is-multiline is-desktop">
-            <div class="column is-one-third notification has-text-centered">
-                <p class="title is-2">24</p>
-                <p class="subtitle is-3">
-                    <span class="icon has-text-gray">
-                        <i class="tainacan-icon tainacan-icon-collections tainacan-icon-1-125em" />
-                    </span>
-                    &nbsp;{{ $i18n.get('collections') }}
-                </p>
-                <ul class="has-text-gray status-list">
-                    <li 
-                            v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
-                            :key="index"
-                            v-if="statusOption.slug != 'private' || (statusOption.slug == 'private' && $userCaps.hasCapability('tnc_rep_read_private_collections'))">
-                        <span class="value">2&nbsp;</span>
-                        <span 
-                                v-if="$statusHelper.hasIcon(statusOption.slug)"
-                                class="icon has-text-gray">
-                            <i 
-                                    class="tainacan-icon tainacan-icon-1-125em"
-                                    :class="$statusHelper.getIcon(statusOption.slug)"
-                                    />
-                        </span>
-                        <!-- {{ statusOption.name }} -->
-                    </li>
-                </ul>
+        <div class="columns is-multiline">
+            <div class="column is-full is-one-third-tablet notification has-text-centered">
+                <number-block
+                        :source-collection="selectedCollection"
+                        entity-type="collections"/>
             </div>
-            <div class="column is-one-third notification has-text-centered">
-                <p class="title is-2">2344</p>
-                <p class="subtitle is-3">
-                    <span class="icon has-text-gray">
-                        <i class="tainacan-icon tainacan-icon-items tainacan-icon-1-125em" />
-                    </span>
-                    &nbsp;{{ $i18n.get('items') }}
-                </p>
-                <ul class="has-text-gray status-list">
-                    <li 
-                            v-for="(statusOption, index) of $statusHelper.getStatuses()"
-                            :key="index"
-                            v-if="statusOption.slug != 'private' || (statusOption.slug == 'private' && $userCaps.hasCapability('tnc_rep_read_private_collections'))">
-                        <span class="value">8&nbsp;</span>
-                        <span 
-                                v-if="$statusHelper.hasIcon(statusOption.slug)"
-                                class="icon has-text-gray">
-                            <i 
-                                    class="tainacan-icon tainacan-icon-1-125em"
-                                    :class="$statusHelper.getIcon(statusOption.slug)"
-                                    />
-                        </span>
-                        <!-- {{ statusOption.name }} -->
-                    </li>
-                </ul>
+            <div class="column is-full is-one-third-tablet notification has-text-centered">
+                <number-block 
+                        :source-collection="selectedCollection"
+                        entity-type="items"/>
             </div>
-            <div class="column is-one-third notification has-text-centered">
-                <p class="title is-2">8</p>
-                <p class="subtitle is-3">
-                    <span class="icon has-text-gray">
-                        <i class="tainacan-icon tainacan-icon-taxonomies tainacan-icon-1-125em" />
-                    </span>
-                    &nbsp;{{ $i18n.get('taxonomies') }}
-                </p>
-                <ul class="has-text-gray status-list">
-                    <li 
-                            v-for="(statusOption, index) of $statusHelper.getStatuses()"
-                            :key="index"
-                            v-if="statusOption.slug != 'private' || (statusOption.slug == 'private' && $userCaps.hasCapability('tnc_rep_read_private_collections'))">
-                        <span class="value">2&nbsp;</span>
-                        <span 
-                                v-if="$statusHelper.hasIcon(statusOption.slug)"
-                                class="icon has-text-gray">
-                            <i 
-                                    class="tainacan-icon tainacan-icon-1-125em"
-                                    :class="$statusHelper.getIcon(statusOption.slug)"
-                                    />
-                        </span>
-                        <!-- {{ statusOption.name }} -->
-                    </li>
-                </ul>
+            <div class="column is-full is-one-third-tablet notification has-text-centered">
+               <number-block 
+                        :source-collection="selectedCollection"
+                        entity-type="taxonomies"/>
             </div>
-            <div class="column is-one-quarter">
+            <div class="column is-half is-one-quarter-widescreen">
                 <chart-block
                         class="notification"
                         :chart-series="chartSeries1"
                         :chart-options="chartOptions1" />
             </div>
-            <div class="column is-one-quarter">
+            <div class="column is-half is-one-quarter-widescreen">
                 <chart-block 
                         class="notification"
                         :chart-series="chartSeries2"
                         :chart-options="chartOptions2" />
             </div>
-            <div class="column is-half">
+            <div class="column is-full is-half-widescreen">
                 <chart-block 
                         class="notification"
                         :chart-series="chartSeries3"
@@ -134,21 +72,24 @@ export default {
             chartSeries1: [44, 55, 13, 43, 22],
             chartOptions1: {
                 chart: {
-                    width: 380,
+                    width: 200,
                     type: 'pie',
+                },
+                legend: {
+                    position: 'bottom'
                 },
                 labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
                 title: {
                     text: 'Pie chart'
                 },
                 responsive: [{
-                    breakpoint: 1024,
+                    breakpoint: 1216,
                     options: {
                         chart: {
-                            width: 200
+                            width: 380
                         },
                         legend: {
-                            position: 'bottom'
+                            position: 'left'
                         }
                     }
                 }]
@@ -337,7 +278,16 @@ export default {
             collections: 'getCollections',
         }),
     },
+    watch: {
+        '$route.query' (to) {
+            this.selectedCollection = to.query['collection'] ? to.query['collection'] : 'default';
+        }
+    },
     created() {
+        // Obtains colleciton id from query, if passed
+        this.selectedCollection = this.$route.query['collection'] ? this.$route.query['collection'] : 'default';
+        
+        // Loads collection for the select input
         this.isLoadingCollections = true;
         this.fetchAllCollectionNames()
             .then(() => this.isLoadingCollections = false)
@@ -351,16 +301,3 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-    .title {
-        margin-top: 0.25em;
-    }
-    .status-list {
-        display: flex;
-        justify-content: center;
-
-        li {
-            margin: 0 1em;
-        }
-    }
-</style>
