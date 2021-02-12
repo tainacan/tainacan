@@ -15,9 +15,7 @@
     "minimum-stability": "dev",
     "config": {
         "vendor-dir": "src/vendor",
-        "platform": {
-            "php": "7.2"
-        }
+        "platform-check": false
     },
     "scripts": {
         "post-install-cmd": "\"src/vendor/bin/phpcs\" --config-set installed_paths src/vendor/wimg/php-compatibility",
