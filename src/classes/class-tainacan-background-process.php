@@ -108,12 +108,13 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 				$this->table, 
 				[
 					'data' => maybe_serialize($this->data),
+					'progress_value' => 0,
 					'user_id' => get_current_user_id(),
 					'priority' => $priority,
 					'action' => $this->action,
 					'name' => $this->get_name(),
 					'queued_on' => date('Y-m-d H:i:s'),
-                    'status' => 'waiting'
+					'status' => 'waiting'
 				]
 			);
 			$this->ID = $wpdb->insert_id;
@@ -310,7 +311,7 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 			
 			$this->close( $batch->key, 'errored' );
 			$this->debug('Batch closed due to captured error');
-			
+			$this->unlock_process();
 		});
 
 		$task = $batch;
