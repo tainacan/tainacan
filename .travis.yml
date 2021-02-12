@@ -1,6 +1,7 @@
 sudo: true
 language: php
 php:
+- 8.0
 - 7.1
 - 7.2
 - 5.6
