@@ -390,10 +390,48 @@ class Theme_Helper {
 		return "<div id='tainacan-item-submission-form' $props ></div>";
 	}
 
+	/**
+	 * Returns the div used by Vue to render the Items List with a powerful faceted search
+	 *
+	 * The items list bellong to a collection, to the whole repository or a taxonomy term, according to where
+	 * it is used on the loop, or to given params
+	 * 
+	 * The following params are all optional for customizing the rendered vue component
+	 *
+	 * @param array $args {
+		 *     Optional. Array of arguments.
+		 *     @type string $collection_id								Collection ID for a collection items list
+		 *     @type string $term_id									Term ID for a taxonomy term items list
+		 *     @type bool 	$hide_filters								Completely hide filter sidebar or modal
+		 *     @type bool 	$hide_hide_filters_button					Hides the button resonsible for collpasing filters sidebar on desktop
+		 *     @type bool 	$hide_search								Hides the complete search bar, including advanced search link
+		 *     @type bool 	$hide_advanced_search						Hides only the advanced search link
+		 *     @type bool	$hide_displayed_metadata_dropdown			Hides the "Displayed metadata" dropdown even if the current view modes allows it	
+		 *     @type bool	$hide_sorting_area							Completely hides all sorting controls	
+		 *     @type bool 	$hide_sort_by_button						Hides the button where user can select the metadata to sort by items (keeps the sort direction)
+		 *     @type bool 	$hide_items_thumbnail						Forces the thumbnail to be hiden on every listing. This setting also disables view modes that contain the 'requires-thumbnail' attr. By default is false or inherited from collection setting
+		 *     @type bool	$hide_exposers_button						Hides the "View as..." button, a.k.a. Exposers modal
+		 *     @type bool 	$hide_items_per_page_button					Hides the button for selecting amount of items loaded per page
+		 *     @type bool 	$hide_go_to_page_button						Hides the button for skiping to a specific page
+		 *     @type bool	$hide_pagination_area						Completely hides pagination controls
+		 *     @type int	$default_items_per_page						Default number of items per page loaded
+		 *     @type bool 	$show_filters_button_inside_search_control	Display the "hide filters" button inside of the search control instead of floating
+		 *     @type bool 	$start_with_filters_hidden					Loads the filters list hidden from start
+		 *     @type bool 	$filters_as_modal							Display the filters as a modal instead of a collapsable region on desktop
+		 *     @type bool 	$show_inline_view_mode_options				Display view modes as inline icon buttons instead of the dropdown
+		 *     @type bool 	$show_fullscreen_with_view_modes			Lists fullscreen viewmodes alongside with other view modes istead of separatelly
+		 *     @type string $default_view_mode							The default view mode
+		 *     @type bool	$is_forced_view_mode						Ignores user prefs to always render the choosen default view mode
+		 *     @type string[] $enabled_view_modes						The list os enable view modes to display
+	 * @return string  The HTML div to be used for rendering the items list vue component
+	 */
 	public function search_shortcode($args) {
-	
+		return $this->get_tainacan_items_list($args, true);
+	}
+
+	public function get_tainacan_items_list($args, $force_enqueue = false) {
 		$props = ' ';
-		
+
 		// Loads info related to view modes
 		$view_modes = tainacan_get_the_view_modes();
 		$default_view_mode = $view_modes['default_view_mode'];
@@ -413,20 +451,18 @@ class Theme_Helper {
 		}
 
 		// If in a collection page
-		$collection_id = tainacan_get_collection_id();
-		if ($collection_id) {
-			$props .= 'collection-id="' . $collection_id . '" ';
-			$collection = new  \Tainacan\Entities\Collection($collection_id);
+		$collection = tainacan_get_collection($args);
+		if ($collection) {
+			$props .= 'collection-id="' . $collection->get_id() . '" ';
 			$default_view_mode = $collection->get_default_view_mode();
 			$enabled_view_modes = $collection->get_enabled_view_modes();
-
 					
 			// Gets hideItemsThumbnail info from collection setting
 			$args['hide-items-thumbnail'] = $collection->get_hide_items_thumbnail_on_lists() == 'yes' ? true : false;
 		}
 
 		// If in a tainacan taxonomy
-		$term = tainacan_get_term();
+		$term = tainacan_get_term($args);
 		if ($term) {
 			$props .= 'term-id="' . $term->term_id . '" ';
 			$props .= 'taxonomy="' . $term->taxonomy . '" ';
@@ -442,10 +478,9 @@ class Theme_Helper {
 			}
 		}
 
-		$this->enqueue_scripts(true);
+		$this->enqueue_scripts($force_enqueue);
 
 		return "<div id='tainacan-items-page' $props ></div>";
-
 	}
 	
 	function get_items_list_slug() {
