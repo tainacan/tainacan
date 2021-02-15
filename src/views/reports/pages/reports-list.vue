@@ -17,44 +17,59 @@
             </option>
         </select>
         <div class="columns is-multiline">
-            <div class="column is-full is-one-third-tablet notification has-text-centered">
+            <div class="column is-full is-one-third-tablet has-text-centered">
                 <number-block
+                        class="postbox"
                         :source-collection="selectedCollection"
                         entity-type="collections"/>
             </div>
-            <div class="column is-full is-one-third-tablet notification has-text-centered">
+            <div class="column is-full is-one-third-tablet has-text-centered">
                 <number-block 
+                        class="postbox"
                         :source-collection="selectedCollection"
                         entity-type="items"/>
             </div>
-            <div class="column is-full is-one-third-tablet notification has-text-centered">
-               <number-block 
+            <div class="column is-full is-one-third-tablet has-text-centered">
+               <number-block
+                        class="postbox"
                         :source-collection="selectedCollection"
                         entity-type="taxonomies"/>
             </div>
             <div class="column is-half is-one-quarter-widescreen">
                 <chart-block
-                        class="notification"
-                        :chart-series="chartSeries1"
-                        :chart-options="chartOptions1" />
+                        class="postbox"
+                        :chart-series="reports[0].chartSeries"
+                        :chart-options="reports[0].chartOptions" />
             </div>
             <div class="column is-half is-one-quarter-widescreen">
-                <chart-block 
-                        class="notification"
-                        :chart-series="chartSeries2"
-                        :chart-options="chartOptions2" />
+                <chart-block
+                        class="postbox"
+                        :chart-series="reports[1].chartSeries"
+                        :chart-options="reports[1].chartOptions" />
             </div>
             <div class="column is-full is-half-widescreen">
-                <chart-block 
-                        class="notification"
-                        :chart-series="chartSeries3"
-                        :chart-options="chartOptions3" />
+                <chart-block
+                        class="postbox"
+                        :chart-series="reports[2].chartSeries"
+                        :chart-options="reports[2].chartOptions" />
             </div>
             <div class="column is-full">
-                <chart-block 
-                        class="notification"
-                        :chart-series="chartSeries4"
-                        :chart-options="chartOptions4" />
+                <chart-block
+                        class="postbox"
+                        :chart-series="reports[3].chartSeries"
+                        :chart-options="reports[3].chartOptions" />
+            </div>
+            <div class="column is-full is-half-desktop">
+                <chart-block
+                        class="postbox"
+                        :chart-series="reports[4].chartSeries"
+                        :chart-options="reports[4].chartOptions" />
+            </div>
+            <div class="column is-full is-half-desktop">
+                <chart-block
+                        class="postbox"
+                        :chart-series="reports[5].chartSeries"
+                        :chart-options="reports[5].chartOptions" />
             </div>
         </div>
     </div>
@@ -69,218 +84,19 @@ export default {
         return {
             selectedCollection: 'default',
             isLoadingCollections: false,
-            chartSeries1: [44, 55, 13, 43, 22],
-            chartOptions1: {
-                chart: {
-                    width: 200,
-                    type: 'pie',
-                },
-                legend: {
-                    position: 'bottom'
-                },
-                labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
-                title: {
-                    text: 'Pie chart'
-                },
-                responsive: [{
-                    breakpoint: 1216,
-                    options: {
-                        chart: {
-                            width: 380
-                        },
-                        legend: {
-                            position: 'left'
-                        }
-                    }
-                }]
-            },
-            chartSeries2: [
-                {
-                    name: 'Marine Sprite',
-                    data: [44, 55, 41, 37, 22]
-                }, {
-                    name: 'Striking Calf',
-                    data: [53, 32, 33, 52, 13]
-                }, {
-                    name: 'Tank Picture',
-                    data: [12, 17, 11, 9, 15]
-                }, {
-                    name: 'Bucket Slope',
-                    data: [9, 7, 5, 8, 6]
-                }
-            ],
-            chartOptions2: {
-                chart: {
-                    type: 'bar',
-                    height: 350,
-                    stacked: true,
-                    stackType: '100%'
-                },
-                plotOptions: {
-                    bar: {
-                        horizontal: true,
-                    },
-                },
-                stroke: {
-                    width: 1,
-                    colors: ['#fff']
-                },
-                title: {
-                    text: '100% Stacked Bar'
-                },
-                xaxis: {
-                    categories: [2008, 2009, 2010, 2011, 2012],
-                },
-                tooltip: {
-                    y: {
-                        formatter: function (val) {
-                        return val + "K"
-                        }
-                    }
-                },
-                fill: {
-                    opacity: 1
-                },
-                legend: {
-                    position: 'top',
-                    horizontalAlign: 'left',
-                    offsetX: 40
-                }
-            },
-            chartSeries3: [
-                {
-                    data: [
-                        {
-                            x: 'New Delhi',
-                            y: 218
-                        },
-                        {
-                            x: 'Kolkata',
-                            y: 149
-                        },
-                        {
-                            x: 'Mumbai',
-                            y: 184
-                        },
-                        {
-                            x: 'Ahmedabad',
-                            y: 55
-                        },
-                        {
-                            x: 'Bangaluru',
-                            y: 84
-                        },
-                        {
-                            x: 'Pune',
-                            y: 31
-                        },
-                        {
-                            x: 'Chennai',
-                            y: 70
-                        },
-                        {
-                            x: 'Jaipur',
-                            y: 30
-                        },
-                        {
-                            x: 'Surat',
-                            y: 44
-                        },
-                        {
-                            x: 'Hyderabad',
-                            y: 68
-                        },
-                        {
-                            x: 'Lucknow',
-                            y: 28
-                        },
-                        {
-                            x: 'Indore',
-                            y: 19
-                        },
-                        {
-                            x: 'Kanpur',
-                            y: 29
-                        }
-                    ]
-                }
-            ],
-            chartOptions3: {
-                legend: {
-                    show: false
-                },
-                chart: {
-                    height: 350,
-                    type: 'treemap'
-                },
-                title: {
-                    text: 'Basic Treemap'
-                }
-            },
-            chartSeries4: [
-                {
-                    name: 'Net Profit',
-                    data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
-                }, {
-                    name: 'Revenue',
-                    data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
-                }, {
-                    name: 'Free Cash Flow',
-                    data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
-                }
-            ],
-            chartOptions4: {
-                chart: {
-                    type: 'bar',
-                    height: 350
-                },
-                plotOptions: {
-                    bar: {
-                        horizontal: false,
-                        columnWidth: '55%',
-                        endingShape: 'rounded'
-                    },
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                stroke: {
-                    show: true,
-                    width: 2,
-                    colors: ['transparent']
-                },
-                xaxis: {
-                    categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
-                },
-                yaxis: {
-                    title: {
-                        text: '$ (thousands)'
-                    }
-                },
-                title: {
-                    text: 'Vertical columns'
-                },
-                fill: {
-                    opacity: 1
-                },
-                tooltip: {
-                    y: {
-                        formatter: function (val) {
-                            return "$ " + val + " thousands"
-                        }
-                    }
-                }
-            },
         }
     },
     computed: {
         ...mapGetters('collection', {
             collections: 'getCollections',
         }),
+        ...mapGetters('report', {
+            reports: 'getReports',
+        }),
     },
     watch: {
         '$route.query' (to) {
-            this.selectedCollection = to.query['collection'] ? to.query['collection'] : 'default';
+            this.selectedCollection = to['collection'] ? to['collection'] : 'default';
         }
     },
     created() {
@@ -301,3 +117,10 @@ export default {
 }
 </script>
 
+<style lang="scss" scoped> 
+.postbox {
+    padding: 1.125rem 1.25rem;
+    margin-bottom: 0;
+    height: 100%;
+}
+</style>

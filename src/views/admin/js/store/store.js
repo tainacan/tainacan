@@ -14,6 +14,7 @@ import bulkedition from './modules/bulk-edition';
 import exporter from './modules/exporter';
 import exposer from './modules/exposer';
 import capability from './modules/capability';
+import report from './modules/report';
 
 // Vue Dev Tools!
 Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
@@ -41,6 +42,7 @@ export default new Vuex.Store({
         bulkedition,
         exporter,
         exposer,
-        capability
+        capability,
+        report
     }
 })
