@@ -25,6 +25,7 @@ class MetadataTypeControlHelper {
 	static function update_control_metadatum( $item ) {
 		if ( $item instanceof \Tainacan\Entities\Item ) {
 			$item_metadata_repositories = \Tainacan\Repositories\Item_Metadata::get_instance();
+			$enabled_logs = $item_metadata_repositories->get_enabled_logs();
 			$item_metadata_repositories->disable_logs();
 			$collection = $item->get_collection();
 			$args = [
@@ -68,7 +69,7 @@ class MetadataTypeControlHelper {
 						$errors[] = $update_item_metadatum->get_errors();
 				}
 			}
-			$item_metadata_repositories->enable_logs();
+			if($enabled_logs) $item_metadata_repositories->enable_logs();
 		}
 	}
 }
