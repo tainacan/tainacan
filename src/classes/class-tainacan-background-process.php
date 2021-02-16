@@ -126,7 +126,7 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 	 * Update queue
 	 *
 	 * @param string $key Key.
-	 * @param array  $data Data.
+	 * @param array|object  $batch Data.
 	 *
 	 * @return $this
 	 */
@@ -294,14 +294,13 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 			
 			if ( is_null($error) || 
 				! is_array($error) || 
-				! isset($error['type']) || 
-				$error['type'] !== 1 ) {
+				! isset($error['type']) ) {
 				return;
 			}
 			
 			$this->debug('Shutdown with Fatal error captured');
 			
-			$error_str = $error['message'] . ' - ' . $error['file'] . ' - Line: ' . $error['line'].  
+			$error_str = $error['message'] . ' - ' . $error['file'] . ' - Line: ' . $error['line'];
 			
 			$this->debug($error_str);
 			
