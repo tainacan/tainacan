@@ -292,8 +292,14 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 
 		register_shutdown_function(function() use($batch) {
 			$error = error_get_last();
-			if ( is_null($error) )
+
+			if ( is_null($error) ||
+				!is_array($error) ||
+				!isset($error['type']) ||
+				$error['type'] !== 1
+			) {
 				return;
+			}
 			
 			$error_str = "Fatal error: " . json_encode($error);
 			if ( is_array($error) ) {
