@@ -492,7 +492,7 @@ class Metadatum extends Entity {
 			if ( sizeof($meta_childrens) > 0 ) {
 				foreach($meta_childrens as $meta_children) {
 					if( $meta_children->is_required() ) {
-						$this->add_error($this->get_id(), __("Compound metadata with multiple values can't have a	children metadata set to as required", 'tainacan'));
+						$this->add_error($this->get_id(), __("Compound metadata with multiple values can't have a children metadata set to as required", 'tainacan'));
 						return false;
 					}
 				}

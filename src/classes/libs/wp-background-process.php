@@ -169,6 +169,7 @@
 			session_write_close();
 
 			if ( $this->is_process_running() ) {
+				$this->debug('process already running. To die...');
 				// Background process already running.
 				wp_die();
 			}
@@ -219,6 +220,7 @@
 		 * in a background process.
 		 */
 		protected function is_process_running() {
+			$this->debug('Checking if process ' . $this->identifier . ' is running:');
 			if ( get_site_transient( $this->identifier . '_process_lock' ) ) {
 				// Process already running.
 				$this->debug('process already running');
@@ -236,10 +238,10 @@
 		 * defined in the time_exceeded() method.
 		 */
 		protected function lock_process() {
-			$this->debug('locking process');
+			$this->debug('locking process: ' . $this->identifier);
 			$this->start_time = time(); // Set start time of current process.
-
-			$lock_duration = ( property_exists( $this, 'queue_lock_time' ) ) ? $this->queue_lock_time : 60; // 1 minute
+			$max_execution_time = ini_get('max_execution_time');
+			$lock_duration = ( property_exists( $this, 'queue_lock_time' ) ) ? $this->queue_lock_time : ( empty($max_execution_time) ? 60 : $max_execution_time ); // 1 minute
 			$lock_duration = apply_filters( $this->identifier . '_queue_lock_time', $lock_duration );
 
 			set_site_transient( $this->identifier . '_process_lock', microtime(), $lock_duration );

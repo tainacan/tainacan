@@ -569,8 +569,8 @@ registerBlockType('tainacan/faceted-search', {
                                 }
                             />
                             <ToggleControl
-                                label={__('Show Fullscreen with other View Modes', 'tainacan')}
-                                help={ showFullscreenWithViewModes ? __('Toggle to show Fullscreen view mode alongside with other View Modes', 'tainacan') : __('Keep Fullscreen view mode separated from other View Mode Options', 'tainacan')}
+                                label={__('Show fullscreen Slides with other View Modes', 'tainacan')}
+                                help={ showFullscreenWithViewModes ? __('Toggle to show fullscreen Slides view mode alongside with other View Modes', 'tainacan') : __('Keep fullscreen Slides view mode separated from other View Mode Options', 'tainacan')}
                                 checked={ showFullscreenWithViewModes }
                                 onChange={ ( isChecked ) => {
                                         showFullscreenWithViewModes = isChecked;
