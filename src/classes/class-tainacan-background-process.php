@@ -289,21 +289,21 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 			$this->write_log($batch->key, ['New Request']);
 			$newRequest = false;
 		}
-		
+
 		register_shutdown_function(function() use($batch) {
-			$this->debug('Shutdown with Fatal error captured');
 			$error = error_get_last();
+			if ( is_null($error) )
+				return;
 			
-			$error_str = "Fatal error";
+			$error_str = "Fatal error: " . json_encode($error);
 			if ( is_array($error) ) {
 				$error_str = $error['message'] . ' - ' . $error['file'] . ' - Line: ' . $error['line'];
 			}
-			
+
+			$this->debug('Shutdown with Fatal error captured');
 			$this->debug($error_str);
-			
 			$this->write_error_log($batch->key, ['Fatal Error: ' . $error_str]);
 			$this->write_error_log($batch->key, ['Process aborted']);
-			
 			$this->close( $batch->key, 'errored' );
 			$this->debug('Batch closed due to captured error');
 			$this->unlock_process();
