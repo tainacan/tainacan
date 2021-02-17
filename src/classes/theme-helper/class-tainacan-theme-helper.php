@@ -96,7 +96,7 @@ class Theme_Helper {
 			'implements_skeleton' => true
 		]);
 		$this->register_view_mode('slideshow', [
-			'label' => __('Slideshow', 'tainacan'),
+			'label' => __('Slides', 'tainacan'),
 			'dynamic_metadata' => false,
 			'description' => 'A fullscreen slideshow view, that shows the item document instead of just thumbnails.',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-25em"></i></span>',

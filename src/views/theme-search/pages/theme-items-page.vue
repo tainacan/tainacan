@@ -366,7 +366,7 @@
                     class="search-control-item">
                 <button 
                         class="button is-white"
-                        :aria-label="$i18n.get('label_slideshow')"
+                        :aria-label="$i18n.get('label_slides')"
                         @click="onChangeViewMode(viewModeOption)"
                         v-for="(viewModeOption, index) of enabledViewModes"
                         :key="index"

@@ -11,13 +11,13 @@
                         show: 500,
                         hide: 300,
                     },
-                    content: $i18n.get('label_gallery_help'),
+                    content: $i18n.get('label_slides_help'),
                     autoHide: false,
                     placement: 'auto-start'
                 }"  
-                id="gallery-help-button"
+                id="slides-help-button"
                 class="is-hidden-mobile"
-                @click="openGalleryHelpModal">
+                @click="openSlidesHelpModal">
             <span class="icon">
                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-help"/>
             </span>
@@ -319,7 +319,7 @@ import axios from '../../admin/js/axios';
 import 'swiper/css/swiper.min.css';
 import Swiper from 'swiper';
 import CircularCounter from './circular-counter.vue';
-import GalleryHelpModal from './gallery-help-modal.vue'
+import SlidesHelpModal from './slides-help-modal.vue'
 import { viewModesMixin } from '../js/view-modes-mixin.js';
  
 export default {
@@ -619,13 +619,13 @@ export default {
                 }
             }
         },
-        openGalleryHelpModal() {
+        openSlidesHelpModal() {
             this.$buefy.modal.open({
-                component: GalleryHelpModal,
+                component: SlidesHelpModal,
                 width: 680,
                 ariaRole: 'alertdialog',
                 ariaModal: true,
-                customClass: 'gallery-help-modal',
+                customClass: 'slides-help-modal',
                 onCancel: () => {
                     setTimeout(() => document.documentElement.classList.add('is-clipped'), 500); 
                 }
