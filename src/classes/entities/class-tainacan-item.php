@@ -145,7 +145,10 @@ class Item extends Entity {
 	}
 
 	private function get_image_blurhash($file_path, $width, $height) {
-		if (!$image = @imagecreatefromstring(file_get_contents($file_path))) {
+		if (
+			!(version_compare(PHP_VERSION, '7.2.0') >= 0) ||
+			!$image = @imagecreatefromstring(file_get_contents($file_path))
+		) {
 			return "V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj";
 		}
 		if($image == false)
