@@ -144,7 +144,7 @@ class Item extends Entity {
 		return apply_filters("tainacan-item-get-thumbnail", $thumbs, $this);
 	}
 
-	private function get_image_blurhash($file_path, $width, $height) {
+	public function get_image_blurhash($file_path, $width, $height) {
 		if (
 			!(version_compare(PHP_VERSION, '7.2.0') >= 0) ||
 			!$image = @imagecreatefromstring(file_get_contents($file_path))
