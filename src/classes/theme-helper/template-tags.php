@@ -138,15 +138,10 @@ function tainacan_has_document() {
 /**
  * When visiting a collection archive or single, returns the current collection id
  *
- * @uses get_post_type() WordPress function, which looks for the global $wp_query variable
+ * @uses get_post_type() WordPress function via Theme Helper, which looks for the global $wp_query variable
  */
 function tainacan_get_collection_id() {
-	if ( is_post_type_archive() || is_single() ) {
-		return Repositories\Collections::get_instance()->get_id_by_db_identifier(get_post_type());
-	} elseif ( false !== \Tainacan\Theme_Helper::get_instance()->visiting_collection_cover ) {
-		return \Tainacan\Theme_Helper::get_instance()->visiting_collection_cover;
-	}
-	return false;
+	return \Tainacan\Theme_Helper::get_instance()->tainacan_get_collection_id();
 }
 
 /**
@@ -156,15 +151,7 @@ function tainacan_get_collection_id() {
  * @return \Tainacan\Entities\Collection | false
  */
 function tainacan_get_collection($args = []) {
-	$collection_id = isset($args['collection_id']) ? $args['collection_id'] : tainacan_get_collection_id();
-	if ( $collection_id ) {
-		$TainacanCollections = Repositories\Collections::get_instance();
-		$collection = $TainacanCollections->fetch($collection_id);
-		if ( $collection instanceof Entities\Collection ) {
-			return $collection;
-		}
-	}
-	return false;
+	return \Tainacan\Theme_Helper::get_instance()->tainacan_get_collection($args);
 }
 
 /**
@@ -443,20 +430,7 @@ function tainacan_register_view_mode($slug, $args = []) {
  * If used inside the Loop of items, will get the Item object for the current post
  */
 function tainacan_get_item($post_id = 0) {
-	$post = get_post( $post_id );
-
-	if (!$post)
-		return null;
-
-	$theme_helper = \Tainacan\Theme_Helper::get_instance();
-
-	if (!$theme_helper->is_post_an_item($post))
-		return null;
-
-	$item = new Entities\Item($post);
-
-	return $item;
-
+	return \Tainacan\Theme_Helper::get_instance()->tainacan_get_item();
 }
 
 /**
