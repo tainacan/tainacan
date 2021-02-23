@@ -1,7 +1,7 @@
 <template>
     <div :class="{ 'repository-level-page page-container': isRepositoryLevel }">
         <tainacan-title 
-                    :bread-crumb-items="[{ path: '', label: this.$i18n.get('metadata') }]"/>
+                :bread-crumb-items="[{ path: '', label: this.$i18n.get('metadata') }]"/>
         
         <template v-if="isRepositoryLevel">
             <p>{{ $i18n.get('info_repository_metadata_inheritance') }}</p>
@@ -32,7 +32,24 @@
                                     <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
                                     <p>{{ $i18n.get('info_create_metadata' ) }}</p>
                                 </div>
-                            </section>     
+                            </section>
+                            <div class="tainacan-form sub-header">
+                                <h3 class="label has-text-secondary">{{ $i18n.get('metadata') }}</h3>
+
+                                <b-field class="header-item">
+                                    <b-select
+                                            id="tainacan-switch-compact-metadata-list" 
+                                            size="is-small"
+                                            v-model="showCompactMetadataList">
+                                        <option :value="true">
+                                            {{ $i18n.get('label_compact_list') }}
+                                        </option>
+                                        <option :value="false">
+                                            {{ $i18n.get('label_detailed_list') }}
+                                        </option>
+                                    </b-select>
+                                </b-field>
+                            </div>
                             <draggable 
                                     v-model="activeMetadatumList"
                                     class="active-metadata-area"
@@ -51,6 +68,7 @@
                                     <div 
                                             class="active-metadatum-item"
                                             :class="{
+                                                'is-compact-item': showCompactMetadataList,
                                                 'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
                                                 'not-focusable-item': openedMetadatumId == metadatum.id,
                                                 'disabled-metadatum': metadatum.enabled == false,
@@ -176,6 +194,11 @@
                                             </span>
                                         </div>
                                         <transition name="form-collapse">
+                                            <metadatum-details 
+                                                    v-if="!showCompactMetadataList && openedMetadatumId !== metadatum.id"
+                                                    :metadatum="metadatum" />
+                                        </transition>
+                                        <transition name="form-collapse">
                                             <div v-if="openedMetadatumId == metadatum.id">
                                                 <metadatum-edition-form
                                                         :collection-id="collectionId"
@@ -271,6 +294,7 @@
 <script>
 import MetadataMappingList from '../../components/lists/metadata-mapping-list.vue';
 import MetadatumEditionForm from '../../components/edition/metadatum-edition-form.vue';
+import MetadatumDetails from '../../components/other/metadatum-details.vue';
 import ChildMetadataList from '../../components/metadata-types/compound/child-metadata-list.vue';
 import CustomDialog from '../../components/other/custom-dialog.vue';
 import { mapGetters, mapActions } from 'vuex';
@@ -280,7 +304,8 @@ export default {
     components: {
         MetadataMappingList,
         MetadatumEditionForm,
-        ChildMetadataList
+        ChildMetadataList,
+        MetadatumDetails
     },
     data() {
         return {
@@ -294,7 +319,8 @@ export default {
             formWithErrors: '',
             hightlightedMetadatum: '',
             editForms: {},
-            columnsTopY: 0
+            columnsTopY: 0,
+            showCompactMetadataList: true
         }
     },
     computed: {
@@ -662,6 +688,12 @@ export default {
                 color: var(--tainacan-blue5);
                 font-weight: 500;
             }
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5em;
         }
 
         .loading-spinner {

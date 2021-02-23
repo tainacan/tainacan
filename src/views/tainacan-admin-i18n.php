@@ -536,7 +536,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_switch_document_type'					 => __( 'Switch document type', 'tainacan' ),
 	'label_sending_form'							 => __( 'Sending form...', 'tainacan' ),
 	'label_form_not_loaded'							 => __( 'This form could not be loaded', 'tainacan' ),
-	
+	'label_compact_list'							 => __( 'Compact list', 'tainacan'),
+	'label_detailed_list'							 => __( 'Detailed list', 'tainacan'),
+
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
