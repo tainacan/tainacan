@@ -616,9 +616,9 @@ class Theme_Helper {
 	 */
 	function tainacan_get_collection_id() {
 		if ( is_post_type_archive() || is_single() ) {
-			return Repositories\Collections::get_instance()->get_id_by_db_identifier(get_post_type());
+			return \Tainacan\Repositories\Collections::get_instance()->get_id_by_db_identifier(get_post_type());
 		} elseif ( false !== $this->visiting_collection_cover ) {
-			return \Tainacan\Theme_Helper::get_instance()->visiting_collection_cover;
+			return $this->visiting_collection_cover;
 		}
 		return false;
 	}
@@ -630,11 +630,11 @@ class Theme_Helper {
 	 * @return \Tainacan\Entities\Collection | false
 	 */
 	function tainacan_get_collection($args = []) {
-		$collection_id = isset($args['collection_id']) ? $args['collection_id'] : tainacan_get_collection_id();
+		$collection_id = isset($args['collection_id']) ? $args['collection_id'] : $this->tainacan_get_collection_id();
 		if ( $collection_id ) {
-			$TainacanCollections = Repositories\Collections::get_instance();
+			$TainacanCollections = \Tainacan\Repositories\Collections::get_instance();
 			$collection = $TainacanCollections->fetch($collection_id);
-			if ( $collection instanceof Entities\Collection ) {
+			if ( $collection instanceof \Tainacan\Entities\Collection ) {
 				return $collection;
 			}
 		}
@@ -656,7 +656,7 @@ class Theme_Helper {
 		if (!$this->is_post_an_item($post))
 			return null;
 
-		$item = new Entities\Item($post);
+		$item = new \Tainacan\Entities\Item($post);
 
 		return $item;
 
