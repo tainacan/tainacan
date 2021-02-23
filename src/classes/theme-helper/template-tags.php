@@ -43,11 +43,15 @@ use \Tainacan\Repositories;
 	 *     @type string      $after_value               String to be added after each metadata value
 	 *                                                  Default '</p>'
 	 * }
+ * 
+ * @param int|string $item_id       (Optional) The item ID to retrive the metadatum as a HTML string to be used as output. Default is the global $post
+ * 
+ * 
  * @return string        The HTML output
  */
-function tainacan_get_the_metadata($args = array()) {
+function tainacan_get_the_metadata($args = array(), $item_id = 0) {
 
-	$item = tainacan_get_item();
+	$item = tainacan_get_item( $item_id );
 
 	if ($item instanceof \Tainacan\Entities\Item) {
 		return $item->get_metadata_as_html($args);
@@ -66,10 +70,12 @@ function tainacan_the_metadata($args = array()) {
  *
  * Return the item document as a HTML string to be used as output.
  *
+ * @param int|string $item_id       (Optional) The item ID. Default is the global $post
+ *
  * @return string        The HTML output
  */
-function tainacan_get_the_document() {
-	$item = tainacan_get_item();
+function tainacan_get_the_document($item_id = 0) {
+	$item = tainacan_get_item($item_id);
 
 	if (!$item)
 		return;
@@ -77,8 +83,8 @@ function tainacan_get_the_document() {
 	return apply_filters('tainacan-get-the-document', $item->get_document_as_html(), $item);
 }
 
-function tainacan_the_item_document_download_link() {
-	$item = tainacan_get_item();
+function tainacan_the_item_document_download_link($item_id = 0) {
+	$item = tainacan_get_item($item_id);
 
 	if (!$item)
 		return;
@@ -109,9 +115,9 @@ function tainacan_the_document() {
 /**
  * Return HTML display-ready version of an attachment
  */
-function tainacan_get_single_attachment_as_html($attachment_id) {
+function tainacan_get_single_attachment_as_html($attachment_id, $item_id = 0) {
 
-	$item = tainacan_get_item();
+	$item = tainacan_get_item($item_id);
 
 	if (!$attachment_id) {
 		return '';
@@ -401,10 +407,11 @@ function tainacan_the_term_description() {
  * Return the list of attachments of the current item (by default, excluding the document and the thumbnail)
  *
  * @param string|array IDs of attachments to be excluded (by default this function already excludes the document and the thumbnail)
+ * @param int|string $item_id (Optional) The item ID to retrive attachments. Default is the global $post
  * @return array      Array of WP_Post objects. @see https://developer.wordpress.org/reference/functions/get_children/
  */
-function tainacan_get_the_attachments($exclude = null) {
-	$item = tainacan_get_item();
+function tainacan_get_the_attachments($exclude = null, $item_id = 0) {
+	$item = tainacan_get_item($item_id);
 
 	if (!$item)
 		return [];
@@ -430,7 +437,7 @@ function tainacan_register_view_mode($slug, $args = []) {
  * If used inside the Loop of items, will get the Item object for the current post
  */
 function tainacan_get_item($post_id = 0) {
-	return \Tainacan\Theme_Helper::get_instance()->tainacan_get_item();
+	return \Tainacan\Theme_Helper::get_instance()->tainacan_get_item($post_id);
 }
 
 /**
@@ -442,17 +449,19 @@ function tainacan_get_item($post_id = 0) {
  * @param string|integer The property to be checked. If a string is passed, it will check against
  * 	one of the native property of the item, such as title, description and creation_date.
  *  If an integer is passed, it will check against the IDs of the metadata.
+ * 
+ * @param int|string $item_id       (Optional) The item ID. Default is the global $post
  *
  * @return bool
  */
-function tainacan_current_view_displays($property) {
+function tainacan_current_view_displays($property, $item_id = 0) {
 	global $view_mode_displayed_metadata;
 
 	// Core metadata appear in fetch_only as metadata
 	if ($property == 'title' || $property == 'description') {
-		$item = tainacan_get_item();
+		$item = tainacan_get_item($item_id);
 		$core_getter_method = "get_core_{$property}_metadatum";
-        $property = $item->get_collection()->$core_getter_method()->get_id();
+		$property = $item->get_collection()->$core_getter_method()->get_id();
 	}
 
 	if (is_string($property)) {
