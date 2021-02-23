@@ -47,7 +47,7 @@
                                     :animation="250">
                                 <div    
                                         v-for="(metadatum, index) in activeMetadatumList.filter((meta) => meta != undefined && meta.parent == 0)"
-                                        :key="metadatum.id">                
+                                        :key="metadatum.id">
                                     <div 
                                             class="active-metadatum-item"
                                             :class="{
@@ -94,6 +94,17 @@
                                                     :class="{'is-danger': formWithErrors == metadatum.id }">
                                                     {{ metadatum.name }}
                                             </span>
+                                            <span 
+                                                    v-if="metadatum.required === 'yes'"
+                                                    class="label-details"
+                                                    v-tooltip="{
+                                                        content: $i18n.get('label_required'),
+                                                        autoHide: true,
+                                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                        placement: 'auto-start'
+                                                    }">
+                                                *&nbsp;
+                                            </span>
                                             <span   
                                                     v-if="metadatum.id != undefined && metadatum.metadata_type_object"
                                                     class="label-details"
@@ -106,8 +117,14 @@
                                                 {{ $i18n.get('info_not_saved') }}
                                                 </span>
                                                 <span 
-                                                        v-if="metadatum.status == 'private'"
-                                                        class="icon">
+                                                        v-if="metadatum.status === 'private'"
+                                                        class="icon"
+                                                        v-tooltip="{
+                                                            content: $i18n.get('status_private'),
+                                                            autoHide: true,
+                                                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                            placement: 'auto-start'
+                                                        }">
                                                     <i class="tainacan-icon tainacan-icon-private"/>
                                                 </span>
                                             </span>
