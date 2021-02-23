@@ -598,9 +598,7 @@ export default {
 </script>
 
 <style lang="scss">
-    #tainacan-admin-app .metadata-list-page .available-metadata-area .available-metadatum-item:hover .icon {
-        color: white !important;
-    }
+
     .metadata-list-page {
         padding-bottom: 0;
 
@@ -620,12 +618,12 @@ export default {
                 flex-shrink: 1;
                 flex-grow: 1;
             }
-            a.back-link{
+            a.back-link {
                 font-weight: 500;
                 float: right;
                 margin-top: 5px;
             }
-            hr{
+            hr {
                 margin: 3px 0px 4px 0px; 
                 height: 1px;
                 background-color: var(--tainacan-secondary);
@@ -641,6 +639,7 @@ export default {
         .column {
             overflow-x: hidden;
             overflow-y: auto;
+            padding: 0.75em 0;
 
             &>section.field {
                 position: absolute;
@@ -694,7 +693,7 @@ export default {
             }
 
             &.metadata-area-receive {
-                border: 1px dashed gray;
+                border: 1px dashed var(--tainacan-gray4);
             }
 
             .collapse {
@@ -749,7 +748,7 @@ export default {
                 .controls { 
                     font-size: 0.875em;
                     position: absolute;
-                    right: 5px;
+                    right: 10px;
                     top: 10px;
                     .switch {
                         position: relative;
@@ -767,48 +766,31 @@ export default {
                     cursor: default;
                     background-color: var(--tainacan-white) !important;
                 } 
-                &.not-focusable-item, &.not-focusable-item:hover {
+                &.not-focusable-item,
+                &.not-focusable-item:hover {
                     cursor: default;
                 
                     .metadatum-name {
                         color: var(--tainacan-secondary);
                     }
                 }
-                &.disabled-metadatum {
+                &.disabled-metadatum:not(.not-sortable-item),
+                &.disabled-metadatum:not(.not-sortable-item):hover {
                     color: var(--tainacan-gray3);
-                }    
+                    .label-details, .not-saved {
+                        color: var(--tainacan-gray3) !important;
+                    }
+                }
             }
             .active-metadatum-item:hover:not(.not-sortable-item) {
-                background-color: var(--tainacan-secondary);
-                border-color: var(--tainacan-secondary);
-                color: var(--tainacan-white) !important;
-                        
-                &>.field, form {
-                    background-color: var(--tainacan-white) !important;
-                }
+                background-color: var(--tainacan-turquoise1);
+                border-color: var(--tainacan-turquoise1);
 
-                .label-details, .icon, .not-saved, .icon-level-identifier>i {
-                    color: var(--tainacan-white) !important;
+                .label-details, .not-saved {
+                    color: var(--tainacan-gray4) !important;
                 }
-
                 .grip-icon { 
-                    color: var(--tainacan-white); 
-                }
-
-                .switch.is-small {
-                    input[type="checkbox"] + .check {
-                        background-color: var(--tainacan-secondary) !important;
-                        border: 1.5px solid white !important;
-                        &::before { background-color: var(--tainacan-white) !important; }
-                    } 
-                    input[type="checkbox"]:checked + .check {
-                        border: 1.5px solid white !important;
-                        &::before { background-color: var(--tainacan-white) !important; }
-                    }
-                    &:hover input[type="checkbox"] + .check {
-                        border: 1.5px solid white !important;
-                        background-color: var(--tainacan-secondary) !important;
-                    }
+                    color: var(--tainacan-secondary) !important; 
                 }
             }
             .sortable-ghost {
@@ -932,13 +914,13 @@ export default {
                 }
                 25%  {
                     color: var(--tainacan-white);            
-                    background-color: #2cb4c1; 
-                    border-color: #2cb4c1;
+                    background-color: var(--tainacan-secondary); 
+                    border-color: var(--tainacan-secondary);
                 }
                 75%  {
                     color: var(--tainacan-white);            
-                    background-color: #2cb4c1; 
-                    border-color: #2cb4c1;
+                    background-color: var(--tainacan-secondary); 
+                    border-color: var(--tainacan-secondary);
                 }
                 100% {
                     color: #222;             
@@ -947,10 +929,10 @@ export default {
                 }
             }
             @keyframes hightlighten-icon {
-                0%   { color: #b1b1b1; }
+                0%   { color: var(--tainacan-gray3); }
                 25%  { color: var(--tainacan-white); }
                 75%  { color: var(--tainacan-white); }
-                100% { color: #b1b1b1; }
+                100% { color: var(--tainacan-gray3); }
             }
             @keyframes hightlighten-arrow {
                 0%   {
@@ -958,12 +940,12 @@ export default {
                     border-color: transparent white transparent transparent; 
                 }
                 25%  {
-                    border-color: transparent #2cb4c1 transparent transparent;
-                    border-color: transparent #2cb4c1 transparent transparent; 
+                    border-color: transparent var(--tainacan-secondary) transparent transparent;
+                    border-color: transparent var(--tainacan-secondary) transparent transparent; 
                 }
                 75%  {
-                    border-color: transparent #2cb4c1 transparent transparent;
-                    border-color: transparent #2cb4c1 transparent transparent; 
+                    border-color: transparent var(--tainacan-secondary) transparent transparent;
+                    border-color: transparent var(--tainacan-secondary)transparent transparent; 
                 }
                 100% {
                     border-color: transparent white transparent transparent;
@@ -992,51 +974,48 @@ export default {
                 }
             }
             .available-metadatum-item:hover {
-                background-color: var(--tainacan-secondary);
-                border-color: var(--tainacan-secondary);
-                color: var(--tainacan-white);
+                background-color: var(--tainacan-turquoise1);
+                border-color: var(--tainacan-turquoise2);
                 position: relative;
                 left: -4px;
 
                 &:after {
-                    border-color: transparent var(--tainacan-secondary) transparent transparent;
+                    border-color: transparent var(--tainacan-turquoise1) transparent transparent;
                 }
                 &:before {
-                    border-color: transparent var(--tainacan-secondary) transparent transparent;
+                    border-color: transparent var(--tainacan-turquoise2) transparent transparent;
                 }
-                .icon {
-                    color: var(--tainacan-white) !important;
-                }
-            
                 .grip-icon { 
-                    color: var(--tainacan-white);
+                    color: var(--tainacan-secondary);
                 }
-                
             }
         }
         .inherited-metadatum {
+            .switch.is-small input[type="checkbox"]:checked + .check {
+                border: 1.5px solid var(--tainacan-blue5);
+                &::before { background-color: var(--tainacan-blue5); }
+            }
+
             &.active-metadatum-item:hover:not(.not-sortable-item) {
-                background-color: var(--tainacan-blue5);
-                border-color: var(--tainacan-blue5);
+                background-color: var(--tainacan-blue1);
+                border-color: var(--tainacan-blue1);
                 
-                .switch.is-small {
-                    input[type="checkbox"] + .check {
-                        background-color: var(--tainacan-blue5) !important;
-                    } 
-                    &:hover input[type="checkbox"] + .check {
-                        background-color: var(--tainacan-blue5) !important;
-                    }
+                .grip-icon { 
+                    color: var(--tainacan-blue5) !important; 
                 }
             }
             &.available-metadatum-item:hover {
-                background-color: var(--tainacan-blue5) !important;
-                border-color: var(--tainacan-blue5) !important;
-            
+                background-color: var(--tainacan-blue1) !important;
+                border-color: var(--tainacan-blue2) !important;
+
+                .grip-icon { 
+                    color: var(--tainacan-blue5) !important; 
+                }
                 &:after {
-                    border-color: transparent var(--tainacan-blue5) transparent transparent !important;
+                    border-color: transparent var(--tainacan-blue1) transparent transparent !important;
                 }
                 &:before {
-                    border-color: transparent var(--tainacan-blue5) transparent transparent !important;
+                    border-color: transparent var(--tainacan-blue2) transparent transparent !important;
                 }
             }
         }

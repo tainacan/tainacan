@@ -44,7 +44,7 @@
                         <div  
                                 class="active-filter-item" 
                                 :class="{
-                                    'not-sortable-item': (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true),
+                                    'not-sortable-item': (isRepositoryLevel || isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true),
                                     'not-focusable-item': openedFilterId == filter.id, 
                                     'disabled-filter': filter.enabled == false,
                                     'inherited-filter': filter.inherited || isRepositoryLevel
@@ -98,7 +98,13 @@
                                     </span>
                                     <span 
                                             v-if="filter.status == 'private'"
-                                            class="icon">
+                                            class="icon"
+                                            v-tooltip="{
+                                                content: $i18n.get('status_private'),
+                                                autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                placement: 'auto-start'
+                                            }">
                                         <i class="tainacan-icon tainacan-icon-private"/>
                                     </span>
                                 </span> 
@@ -822,6 +828,7 @@ export default {
         .column {
             overflow-x: hidden;
             overflow-y: auto;
+            padding: 0.75em 0;
 
             &>section.field {
                 position: absolute;
@@ -866,7 +873,7 @@ export default {
             }
 
             &.filters-area-receive {
-                border: 1px dashed gray;
+                border: 1px dashed var(--tainacan-gray4);
             }
 
             .collapse {
@@ -928,7 +935,7 @@ export default {
                 .controls { 
                     font-size: 0.875em;
                     position: absolute;
-                    right: 5px; 
+                    right: 10px; 
                     top: 10px;
                     .switch {
                         position: relative;
@@ -941,53 +948,38 @@ export default {
                     }
                 }
 
-                &.not-sortable-item, &.not-sortable-item:hover {
+                &.not-sortable-item,
+                &.not-sortable-item:hover {
                     cursor: default;
                     background-color: var(--tainacan-white) !important;
                 } 
-                &.not-focusable-item, &.not-focusable-item:hover {
+                &.not-focusable-item,
+                &.not-focusable-item:hover {
                     cursor: default;
                 
                     .metadatum-name {
                         color: var(--tainacan-secondary);
                     }
                 }
-                &.disabled-metadatum {
+                &.disabled-filter:not(.not-sortable-item),
+                &.disabled-filter:not(.not-sortable-item):hover {
                     color: var(--tainacan-gray3);
+                    .label-details, .not-saved {
+                        color: var(--tainacan-gray3) !important;
+                    }
                 }    
             }
             .active-filter-item:hover:not(.not-sortable-item) {
-                background-color: var(--tainacan-secondary);
-                border-color: var(--tainacan-secondary);
-                color: var(--tainacan-white) !important;
+                background-color: var(--tainacan-turquoise1);
+                border-color: var(--tainacan-turquoise1);
 
-                &>.field, form {
-                    background-color: var(--tainacan-white) !important;
+                .label-details, .not-saved {
+                    color: var(--tainacan-gray4) !important;
                 }
-
                 .grip-icon { 
-                    color: var(--tainacan-white);
+                    color: var(--tainacan-secondary);
                 }
 
-                .label-details, .icon, .icon-level-identifier>i {
-                    color: var(--tainacan-white) !important;
-                }
-
-                .switch.is-small {
-                    input[type="checkbox"] + .check {
-                        background-color: var(--tainacan-secondary) !important;
-                        border: 1.5px solid white !important;
-                        &::before { background-color: var(--tainacan-white) !important; }
-                    } 
-                    input[type="checkbox"]:checked + .check {
-                        border: 1.5px solid white !important;
-                        &::before { background-color: var(--tainacan-white) !important; }
-                    }
-                    &:hover input[type="checkbox"] + .check {
-                        border: 1.5px solid white !important;
-                        background-color: var(--tainacan-secondary) !important;
-                    }
-                }
             }
             .sortable-ghost {
                 border: 1px dashed var(--tainacan-gray2);
@@ -999,9 +991,7 @@ export default {
                 position: relative;
 
                 .grip-icon { 
-                    color: var(--tainacan-gray3);
-                    top: 2px;
-                    position: relative;
+                    color: var(--tainacan-white); 
                 }
             }
         }
@@ -1103,56 +1093,51 @@ export default {
                 position: relative;
                 top: 2px;
             }
-            .available-metadatum-item:not(.disabled-metadatum)  {
-                &:hover{
-                    background-color: var(--tainacan-secondary);
-                    border-color: var(--tainacan-secondary);
-                    color: var(--tainacan-white) !important;
-                    position: relative;
-                    left: -4px;
+            .available-metadatum-item:not(.disabled-metadatum):hover{
+                background-color: var(--tainacan-turquoise1);
+                border-color: var(--tainacan-turquoise2);
+                position: relative;
+                left: -4px;
 
-                    &:after {
-                        border-color: transparent var(--tainacan-secondary) transparent transparent;
-                    }
-                    &:before {
-                        border-color: transparent var(--tainacan-secondary) transparent transparent;
-                    }
-                    .icon-level-identifier>i {
-                        color: var(--tainacan-white) !important;
-                    }
-                    .grip-icon {
-                        color: var(--tainacan-white) !important;
-                    }
+                &:after {
+                    border-color: transparent var(--tainacan-turquoise1) transparent transparent;
+                }
+                &:before {
+                    border-color: transparent var(--tainacan-turquoise2) transparent transparent;
+                }
+                .grip-icon {
+                    color: var(--tainacan-secondary) !important;
                 }
             }
         }
 
         .inherited-filter {
             &.active-filter-item:hover:not(.not-sortable-item) {
-                background-color: var(--tainacan-blue5);
-                border-color: var(--tainacan-blue5);
+                background-color: var(--tainacan-blue1);
+                border-color: var(--tainacan-blue1);
                 
-                .switch.is-small {
-                    input[type="checkbox"] + .check {
-                        background-color: var(--tainacan-blue5) !important;
-                    } 
-                    &:hover input[type="checkbox"] + .check {
-                        background-color: var(--tainacan-blue5) !important;
-                    }
+                .grip-icon { 
+                    color: var(--tainacan-blue5) !important; 
                 }
             }
         }
         .inherited-metadatum {
-
-            &.available-metadatum-item:hover {
-                background-color: var(--tainacan-blue5) !important;
-                border-color: var(--tainacan-blue5) !important;
+            .switch.is-small input[type="checkbox"]:checked + .check {
+                border: 1.5px solid var(--tainacan-blue5);
+                &::before { background-color: var(--tainacan-blue5); }
+            }
+            &.available-metadatum-item:not(.disabled-metadatum):hover {
+                background-color: var(--tainacan-blue1) !important;
+                border-color: var(--tainacan-blue2) !important;
             
+                .grip-icon { 
+                    color: var(--tainacan-blue5) !important; 
+                }
                 &:after {
-                    border-color: transparent var(--tainacan-blue5) transparent transparent !important;
+                    border-color: transparent var(--tainacan-blue1) transparent transparent !important;
                 }
                 &:before {
-                    border-color: transparent var(--tainacan-blue5) transparent transparent !important;
+                    border-color: transparent var(--tainacan-blue2) transparent transparent !important;
                 }
 
             }
