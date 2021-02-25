@@ -14,8 +14,8 @@
                 </p>
                 <p>{{ $i18n.get('info_create_child_metadata') }}</p>
             </div>
-        </section>    
-        <draggable 
+        </section>
+        <draggable
                 v-model="childrenMetadata"
                 :style="{ minHeight: childrenMetadata.length > 0 ? '40px' : '70px' }"
                 class="active-metadata-area child-metadata-area"
@@ -31,18 +31,19 @@
             <div 
                     class="active-metadatum-item"
                     :class="{
-                        'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadatum.parent == 0 || metadatum.collection_id != collectionId,
+                        'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadatum.parent == 0 || metadatum.collection_id != collectionId || metadataNameFilterString != '',
                         'not-focusable-item': openedMetadatumId == metadatum.id,
                         'disabled-metadatum': parent.enabled == false,
                         'inherited-metadatum': (metadatum.collection_id != collectionId && metadatum.parent == 0) || isRepositoryLevel
                     }" 
                     v-for="(metadatum, index) in childrenMetadata"
-                    :key="metadatum.id">
+                    :key="metadatum.id"
+                    v-show="metadataNameFilterString == '' || metadatum.name.toString().toLowerCase().indexOf(metadataNameFilterString.toString().toLowerCase()) >= 0">
                 <div 
                         :ref="'metadatum-handler-' + metadatum.id"
                         class="handle">
                     <span 
-                            :style="{ opacity: !( metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadatum.parent == 0 || metadatum.collection_id != collectionId) ? '1.0' : '0.0' }"
+                            :style="{ opacity: !(metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadatum.parent == 0 || metadatum.collection_id != collectionId || metadataNameFilterString != '') ? '1.0' : '0.0' }"
                             v-tooltip="{
                                 content: metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
                                 autoHide: true,
@@ -195,7 +196,8 @@
         props: {
             isRepositoryLevel: Boolean,
             parent: Object,
-            isParentMultiple: Boolean
+            isParentMultiple: Boolean,
+            metadataNameFilterString: String
         },
         data() {
             return {

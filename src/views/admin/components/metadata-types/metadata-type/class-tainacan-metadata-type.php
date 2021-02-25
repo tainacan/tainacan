@@ -200,11 +200,32 @@ abstract class Metadata_Type  {
     }
 
     /**
+     * Gets print-ready version of the options list in html
+     *
+     * Checks if at least one option exists, otherwise return an empty string
+     * 
+     * @return string An html content with labels and values for the options or an empty string
+     */
+    public function get_options_as_html() {
+        $options_as_html = '';
+        $options = $this->get_options();
+        
+        if ( count($options) > 0 ) {
+            foreach($options as $option_label => $option_value) {
+                $options_as_html .= '<div class="field"><div class="label">' . $option_label .'</div>';
+                $options_as_html .= '<div class="value">' . $option_value . '</div></div>';
+            }
+        }
+        return $options_as_html;
+    }
+
+    /**
      * allow i18n from messages
      */
     public function get_form_labels(){
        return [];
     }
+
     /**
      * generate the metadata for this metadatum type
      */
@@ -226,6 +247,7 @@ abstract class Metadata_Type  {
         $attributes['primitive_type']      = $this->get_primitive_type();
         $attributes['form_component']      = $this->get_form_component();
         $attributes['preview_template']    = $this->get_preview_template();
+        $attributes['options_as_html']     = $this->get_options_as_html();
 
         return $attributes;
         

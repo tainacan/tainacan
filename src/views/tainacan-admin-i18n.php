@@ -553,6 +553,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_cover_page'                         => __( 'Search a Page to choose.', 'tainacan' ),
 	'instruction_type_search_users'		             => __( 'Search users...', 'tainacan' ),
 	'instruction_type_search_users_filter'           => __( 'Search users to filter...', 'tainacan' ),
+	'instruction_type_search_metadata_filter'        => __( 'Search metadata to filter...', 'tainacan' ),
+	'instruction_type_search_filter_filter'        	 => __( 'Search filters to filter...', 'tainacan' ),
 	'instruction_type_search_roles_filter'           => __( 'Search roles to filter...', 'tainacan' ),
 	'instruction_select_a_parent_collection'         => __( 'Select a parent collection.', 'tainacan' ),
 	'instruction_select_collection_thumbnail'        => __( 'Select a thumbnail image for collection', 'tainacan' ),

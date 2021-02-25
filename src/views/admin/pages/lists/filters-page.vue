@@ -12,12 +12,31 @@
             
             <div
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
-                    :style="{ height: activeFilterList.length <= 0 && !isLoadingFilters ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
+                    :style="{ height: activeFiltersList.length <= 0 && !isLoadingFilters ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
                     class="columns"
                     ref="filterEditionPageColumns">
                 <div class="column">
+
+                    <div class="tainacan-form sub-header">
+                        <h3 class="has-text-secondary">{{ $i18n.get('filters') }}</h3>
+
+                        <template v-if="activeFiltersList && activeFiltersList.length > 5 && !isLoadingFilters">
+                                
+                            <b-field class="header-item">
+                                <b-input 
+                                        :placeholder="$i18n.get('instruction_type_search_filter_filter')"
+                                        v-model="filterNameFilterString"
+                                        icon="magnify"
+                                        size="is-small"
+                                        icon-right="close-circle"
+                                        icon-right-clickable
+                                        @icon-right-click="filterNameFilterString = ''" />
+                            </b-field>
+                        </template>
+                    </div>
+
                     <section 
-                            v-if="activeFilterList.length <= 0 && !isLoadingFilters"
+                            v-if="activeFiltersList.length <= 0 && !isLoadingFilters"
                             class="field is-grouped-centered section">
                         <div class="content has-text-gray has-text-centered">
                             <p>
@@ -28,32 +47,34 @@
                             <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>  
                             <p>{{ $i18n.get('info_create_filters' ) }}</p>
                         </div>
-                    </section>        
-                    <draggable 
+                    </section>
+
+                    <draggable
                             class="active-filters-area"
                             @change="handleChangeOnFilter"
                             :class="{'filters-area-receive': isDraggingFromAvailable}" 
-                            v-model="activeFilterList"
+                            v-model="activeFiltersList"
                             :group="{ name:'filters', pull: false, put: true }"
                             :sort="(openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel"
                             :handle="'.handle'" 
                             ghost-class="sortable-ghost"
                             filter=".not-sortable-item"
                             :prevent-on-filter="false"
-                            :animation="250"> 
-                        <div  
+                            :animation="250">
+                        <div
                                 class="active-filter-item" 
                                 :class="{
-                                    'not-sortable-item': (isRepositoryLevel || isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true),
+                                    'not-sortable-item': (isRepositoryLevel || isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || filterNameFilterString != ''),
                                     'not-focusable-item': openedFilterId == filter.id, 
                                     'disabled-filter': filter.enabled == false,
                                     'inherited-filter': filter.inherited || isRepositoryLevel
                                 }" 
-                                v-for="(filter, index) in activeFilterList" 
-                                :key="filter.id">
+                                v-for="(filter, index) in activeFiltersList" 
+                                :key="filter.id"
+                                v-show="filterNameFilterString == '' || filter.name.toString().toLowerCase().indexOf(filterNameFilterString.toString().toLowerCase()) >= 0">
                             <div class="handle">
                                 <span 
-                                        :style="{ opacity: !(isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel) ? '1.0' : '0.0' }"
+                                        :style="{ opacity: !(isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel || filterNameFilterString != '') ? '1.0' : '0.0' }"
                                         v-tooltip="{
                                             content: (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true) ? $i18n.get('info_not_allowed_change_order_filters') : $i18n.get('instruction_drag_and_drop_filter_sort'),
                                             autoHide: true,
@@ -386,11 +407,12 @@ export default {
             currentFilterTypePreview: undefined,
             columnsTopY: 0,
             filtersSearchCancel: undefined,
-            metadataSearchCancel: undefined
+            metadataSearchCancel: undefined,
+            filterNameFilterString: ''
         }
     },
     computed: {
-        activeFilterList: {
+        activeFiltersList: {
             get() {
                 return this.getFilters();
             },
@@ -406,9 +428,9 @@ export default {
         '$route.query': {
             handler(newQuery) {
                 if (newQuery.edit != undefined) {
-                    let existingFilterIndex = this.activeFilterList.findIndex((filter) => filter.id == newQuery.edit);
+                    let existingFilterIndex = this.activeFiltersList.findIndex((filter) => filter.id == newQuery.edit);
                     if (existingFilterIndex >= 0)
-                        this.editFilter(this.activeFilterList[existingFilterIndex])                        
+                        this.editFilter(this.activeFiltersList[existingFilterIndex])                        
                 }
             },
             immediate: true
@@ -547,7 +569,7 @@ export default {
             this.availableMetadata.splice(metadatumIndex, 1);
             
             // Inserts it at the end of the list
-            let lastFilterIndex = this.activeFilterList.length;
+            let lastFilterIndex = this.activeFiltersList.length;
             // // Updates store with temporary Filter
             // this.addTemporaryFilter(metadatumType);
 
@@ -573,7 +595,7 @@ export default {
             this.choosenMetadatum = {};
 
             // Removes element from filters list
-            this.activeFilterList.splice(this.newFilterIndex, 1);
+            this.activeFiltersList.splice(this.newFilterIndex, 1);
         },
         handleChangeOnMetadata($event) {
             if ($event.removed) {
@@ -582,7 +604,7 @@ export default {
         },
         updateFiltersOrder() {
             let filtersOrder = [];
-            for (let filter of this.activeFilterList) {
+            for (let filter of this.activeFiltersList) {
                 filtersOrder.push({'id': filter.id, 'enabled': filter.enabled});
             }
             this.isUpdatingFiltersOrder = true;
@@ -608,7 +630,7 @@ export default {
                 }
             }
            
-            for (let activeFilter of this.activeFilterList) {
+            for (let activeFilter of this.activeFiltersList) {
                 for (let i = availableMetadata.length - 1; i >= 0 ; i--) {
                     if (activeFilter.metadatum != undefined) {
                         if (activeFilter.metadatum.metadatum_id == availableMetadata[i].id)
@@ -621,7 +643,7 @@ export default {
         },  
         onChangeEnable($event, index) {
             let filtersOrder = [];
-            for (let filter of this.activeFilterList) {
+            for (let filter of this.activeFiltersList) {
                 filtersOrder.push({'id': filter.id, 'enabled': filter.enabled});
             }
             filtersOrder[index].enabled = $event;
@@ -750,16 +772,16 @@ export default {
 
                         // Checks URL as router watcher would not wait for list to load
                         if (this.$route.query.edit != undefined) {
-                            let existingFilterIndex = this.activeFilterList.findIndex((filter) => filter.id == this.$route.query.edit);
+                            let existingFilterIndex = this.activeFiltersList.findIndex((filter) => filter.id == this.$route.query.edit);
                             if (existingFilterIndex >= 0)
-                                this.editFilter(this.activeFilterList[existingFilterIndex]);                        
+                                this.editFilter(this.activeFiltersList[existingFilterIndex]);                        
                         }
 
                         // Cancels previous Request
                         if (this.metadataSearchCancel != undefined)
                             this.metadataSearchCancel.cancel('Metadata search Canceled.');
 
-                        // Needs to be done after activeFilterList exists to compare and remove chosen metadata.
+                        // Needs to be done after activeFiltersList exists to compare and remove chosen metadata.
                         this.fetchMetadata({
                             collectionId: this.collectionId, 
                             isRepositoryLevel: this.isRepositoryLevel, 
@@ -841,6 +863,25 @@ export default {
                 @media screen and (max-width: 769px) {
                     margin-right: 0;
                 }
+            }
+            h3 {
+                font-weight: 500;
+            }
+        }
+
+        .sub-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5em;
+
+            .header-item {
+                margin-left: 0.75rem;
+                margin-bottom: 0px;
+            }
+
+            h3 {
+                margin-right: auto;
             }
         }
 
@@ -1016,7 +1057,7 @@ export default {
             }
 
             h3 {
-                margin: 0.2em 0em 1em 0em;
+                margin: 0.875em 0em 1em 0em;
                 font-weight: 500;
             }
 

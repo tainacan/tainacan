@@ -14,12 +14,75 @@
                     v-model="activeTab">    
                 <b-tab-item :label="$i18n.get('metadata')">
                     <div
-                            :style="{ height: activeMetadatumList.length <= 0 && !isLoadingMetadata ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
+                            :style="{ height: activeMetadatumList && activeMetadatumList.length <= 0 && !isLoadingMetadata ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
                             class="columns"
                             ref="metadataEditionPageColumns">
                         <b-loading :active.sync="isLoadingMetadatumTypes"/>
 
                         <div class="column">     
+                           
+                            <div class="tainacan-form sub-header">
+                                <h3 class="has-text-secondary">{{ $i18n.get('metadata') }}</h3>
+
+                                <template v-if="activeMetadatumList && activeMetadatumList.length > 5 && !isLoadingMetadata">
+                                    <b-field class="header-item">
+                                        <b-dropdown
+                                                id="tainacan-switch-compact-metadata-list"
+                                                v-model="showCompactMetadataList"
+                                                :mobile-modal="true"
+                                                position="is-bottom-right"
+                                                :aria-label="$i18n.get('label_view_mode')"
+                                                aria-role="list"
+                                                trap-focus>
+                                            <button 
+                                                    class="button is-white"
+                                                    :aria-label="$i18n.get('label_visualization')"
+                                                    slot="trigger">
+                                                <span class="gray-icon icon">
+                                                    <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (showCompactMetadataList ? 'menu' : 'viewlist')" />
+                                                </span>
+                                                <span>{{ showCompactMetadataList ? $i18n.get('label_compact_list') : $i18n.get('label_detailed_list') }}</span>
+                                                <span class="icon">
+                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                                </span>
+                                            </button>
+                                            <b-dropdown-item 
+                                                    aria-controls="items-list-results"
+                                                    role="button"
+                                                    :value="true"
+                                                    :class="{ 'is-active': showCompactMetadataList }"
+                                                    aria-role="listitem">
+                                                <span class="gray-icon icon">
+                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-menu" />
+                                                </span>
+                                                <span>{{ $i18n.get('label_compact_list') }}</span>
+                                            </b-dropdown-item>
+                                            <b-dropdown-item 
+                                                    aria-controls="items-list-results"
+                                                    role="button"
+                                                    :value="false"
+                                                    :class="{ 'is-active': !showCompactMetadataList }"
+                                                    aria-role="listitem">
+                                                <span class="gray-icon icon">
+                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewlist" />
+                                                </span>
+                                                <span>{{ $i18n.get('label_detailed_list') }}</span>
+                                            </b-dropdown-item>
+                                        </b-dropdown>
+                                    </b-field>
+                                    <b-field class="header-item">
+                                        <b-input 
+                                                :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
+                                                v-model="metadataNameFilterString"
+                                                icon="magnify"
+                                                size="is-small"
+                                                icon-right="close-circle"
+                                                icon-right-clickable
+                                                @icon-right-click="metadataNameFilterString = ''" />
+                                    </b-field>
+                                </template>
+                            </div>
+
                             <section 
                                     v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
                                     class="field is-grouped-centered section">
@@ -33,23 +96,7 @@
                                     <p>{{ $i18n.get('info_create_metadata' ) }}</p>
                                 </div>
                             </section>
-                            <div class="tainacan-form sub-header">
-                                <h3 class="label has-text-secondary">{{ $i18n.get('metadata') }}</h3>
 
-                                <b-field class="header-item">
-                                    <b-select
-                                            id="tainacan-switch-compact-metadata-list" 
-                                            size="is-small"
-                                            v-model="showCompactMetadataList">
-                                        <option :value="true">
-                                            {{ $i18n.get('label_compact_list') }}
-                                        </option>
-                                        <option :value="false">
-                                            {{ $i18n.get('label_detailed_list') }}
-                                        </option>
-                                    </b-select>
-                                </b-field>
-                            </div>
                             <draggable 
                                     v-model="activeMetadatumList"
                                     class="active-metadata-area"
@@ -64,12 +111,13 @@
                                     :animation="250">
                                 <div    
                                         v-for="(metadatum, index) in activeMetadatumList.filter((meta) => meta != undefined && meta.parent == 0)"
-                                        :key="metadatum.id">
+                                        :key="metadatum.id"
+                                        v-show="metadataNameFilterString == '' || filterByMetadatumName(metadatum)">
                                     <div 
                                             class="active-metadatum-item"
                                             :class="{
                                                 'is-compact-item': showCompactMetadataList,
-                                                'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder,
+                                                'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '',
                                                 'not-focusable-item': openedMetadatumId == metadatum.id,
                                                 'disabled-metadatum': metadatum.enabled == false,
                                                 'inherited-metadatum': metadatum.inherited || isRepositoryLevel,
@@ -79,7 +127,7 @@
                                                 :ref="'metadatum-handler-' + metadatum.id"
                                                 class="handle">
                                             <span 
-                                                    :style="{ opacity: !(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder) ? '1.0' : '0.0' }"
+                                                    :style="{ opacity: !(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '') ? '1.0' : '0.0' }"
                                                     v-tooltip="{
                                                         content: isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
                                                         autoHide: true,
@@ -215,6 +263,7 @@
                                     <child-metadata-list
                                             v-if="metadatum.metadata_type_object && metadatum.metadata_type_object.component == 'tainacan-compound'"
                                             :parent.sync="metadatum"
+                                            :metadata-name-filter-string="metadataNameFilterString"
                                             :is-parent-multiple="metadatum.multiple == 'yes' || (editForms[metadatum.id] && editForms[metadatum.id].multiple == 'yes')"
                                             :is-repository-level="isRepositoryLevel" />
                                 </div>
@@ -320,7 +369,8 @@ export default {
             hightlightedMetadatum: '',
             editForms: {},
             columnsTopY: 0,
-            showCompactMetadataList: true
+            showCompactMetadataList: true,
+            metadataNameFilterString: ''
         }
     },
     computed: {
@@ -618,6 +668,21 @@ export default {
                             <div>` + metadatum.preview_template + `</div>
                         </div>
                     </div>`;
+        },
+        filterByMetadatumName(metadatum) {
+            if (metadatum.metadata_type_object && 
+                metadatum.metadata_type_object.component == 'tainacan-compound' &&
+                metadatum.metadata_type_options &&
+                metadatum.metadata_type_options.children_objects &&
+                metadatum.metadata_type_options.children_objects.length
+            ) {
+                let childNamesArray = metadatum.metadata_type_options.children_objects.map((children) => children.name);
+                childNamesArray.push(metadatum.name);
+
+                return childNamesArray.some((childName) => childName.toString().toLowerCase().indexOf(this.metadataNameFilterString.toString().toLowerCase()) >= 0);
+            }
+            else 
+                return metadatum.name.toString().toLowerCase().indexOf(this.metadataNameFilterString.toString().toLowerCase()) >= 0;
         }
     }
 }
@@ -679,6 +744,9 @@ export default {
                     margin-right: 0;
                 }
             }
+            h3 {
+                font-weight: 500;
+            }
         }
 
         .page-title {
@@ -692,8 +760,18 @@ export default {
 
         .sub-header {
             display: flex;
+            align-items: center;
             justify-content: space-between;
             padding: 0.5em;
+
+            .header-item {
+                margin-left: 0.75rem;
+                margin-bottom: 0px;
+            }
+
+            h3 {
+                margin-right: auto;
+            }
         }
 
         .loading-spinner {
@@ -860,8 +938,7 @@ export default {
             }
 
             h3 {
-                margin: 0.2em 0em 1em 0em;
-                font-weight: 500;
+                margin: 0.875em 0em 1em 0em;
             }
 
             .available-metadatum-item {
