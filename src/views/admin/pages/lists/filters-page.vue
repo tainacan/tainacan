@@ -18,7 +18,7 @@
                 <div class="column">
 
                     <div class="tainacan-form sub-header">
-                        <h3 class="has-text-secondary">{{ $i18n.get('filters') }}</h3>
+                        <h3>{{ $i18n.get('filters') }}</h3>
 
                         <template v-if="activeFiltersList && activeFiltersList.length > 5 && !isLoadingFilters">
                                 
@@ -85,24 +85,6 @@
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/>
                                 </span>
                                 <span 
-                                        v-tooltip="{
-                                            content: filter.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
-                                            autoHide: true,
-                                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
-                                            placement: 'auto-start'
-                                        }"
-                                        class="icon icon-level-identifier">
-                                    <i 
-                                        :class="{ 
-                                            'tainacan-icon-collections': filter.collection_id == collectionId, 
-                                            'tainacan-icon-repository': filter.collection_id != collectionId,
-                                            'has-text-turquoise5': filter.enabled && filter.collection_id != 'default', 
-                                            'has-text-blue5': filter.enabled && filter.collection_id == 'default',
-                                            'has-text-gray3': !filter.enabled  
-                                        }"
-                                        class="tainacan-icon" />
-                                </span> 
-                                <span 
                                         class="filter-name"
                                         :class="{'is-danger': formWithErrors == filter.id }">
                                         {{ filter.name }}
@@ -128,7 +110,25 @@
                                             }">
                                         <i class="tainacan-icon tainacan-icon-private"/>
                                     </span>
-                                </span> 
+                                    <span 
+                                            v-tooltip="{
+                                                content: filter.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
+                                                autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                placement: 'auto-start'
+                                            }"
+                                            class="icon icon-level-identifier">
+                                        <i 
+                                            :class="{ 
+                                                'tainacan-icon-collections': filter.collection_id == collectionId, 
+                                                'tainacan-icon-repository': filter.collection_id != collectionId,
+                                                'has-text-turquoise5': filter.enabled && filter.collection_id != 'default', 
+                                                'has-text-blue5': filter.enabled && filter.collection_id == 'default',
+                                                'has-text-gray3': !filter.enabled  
+                                            }"
+                                            class="tainacan-icon" />
+                                    </span> 
+                                </span>
                                 <span 
                                         class="loading-spinner" 
                                         v-if="filter.id == undefined"/>
@@ -191,7 +191,7 @@
                         v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || !isRepositoryLevel)"
                         class="column available-metadata-area">
                     <div class="field" >
-                        <h3 class="label has-text-secondary"> {{ $i18n.get('label_available_metadata') }}</h3>
+                        <h3 class="label"> {{ $i18n.get('label_available_metadata') }}</h3>
                         <draggable
                                 @change="handleChangeOnMetadata"
                                 v-if="availableMetadata.length > 0 && !isLoadingMetadatumTypes"
@@ -220,22 +220,7 @@
                                             }" 
                                             class="icon grip-icon">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/>
-                                    </span>
-                                    <span 
-                                            v-tooltip="{
-                                                content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
-                                                autoHide: true,
-                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
-                                                placement: 'auto-start'
-                                            }"
-                                            class="icon icon-level-identifier">
-                                        <i 
-                                            :class="{   
-                                                'tainacan-icon-collections has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 
-                                                'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId 
-                                            }"
-                                            class="tainacan-icon" />
-                                    </span>  
+                                    </span> 
                                     <span 
                                             v-tooltip="{
                                                 content: metadatum.name + (metadatum.parent_name ? (' (' + $i18n.get('info_child_of') + ' ' + metadatum.parent_name + ')') : ''),
@@ -252,6 +237,21 @@
                                             <em>{{ '(' + $i18n.get('info_child_of') + ' ' + metadatum.parent_name + ')' }}</em>
                                         </span>
                                     </span>
+                                    <span 
+                                            v-tooltip="{
+                                                content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
+                                                autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                placement: 'auto-start'
+                                            }"
+                                            class="icon icon-level-identifier">
+                                        <i 
+                                            :class="{   
+                                                'tainacan-icon-collections has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 
+                                                'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId 
+                                            }"
+                                            class="tainacan-icon" />
+                                    </span> 
                                 </div>
                             </template>
                         </draggable>   
@@ -873,7 +873,7 @@ export default {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.5em;
+            padding: 0.5em 1em 0.5em 0.5em;
 
             .header-item {
                 margin-left: 0.75rem;
@@ -899,7 +899,6 @@ export default {
 
         .active-filters-area {
             font-size: 0.875em;
-            margin-right: 0.8em;
             margin-left: -0.8em;
             padding-right: 3em;
             min-height: 330px;
@@ -1010,6 +1009,10 @@ export default {
                     }
                 }    
             }
+            .active-filter-item:not(:hover) .icon-level-identifier .tainacan-icon::before,
+            .active-filter-item:hover.not-sortable-item .icon-level-identifier .tainacan-icon::before {
+                color: var(--tainacan-gray3) !important;
+            }
             .active-filter-item:hover:not(.not-sortable-item) {
                 background-color: var(--tainacan-turquoise1);
                 border-color: var(--tainacan-turquoise1);
@@ -1090,7 +1093,7 @@ export default {
                     font-weight: bold;
                     margin-left: 0.4em;
                     display: inline-block;
-                    width: calc(100% - 80px);
+                    width: calc(100% - 60px);
                 }
                 &:after,
                 &:before {
@@ -1134,6 +1137,10 @@ export default {
                 position: relative;
                 top: 2px;
             }
+            .available-metadatum-item:not(:hover) .icon-level-identifier .tainacan-icon::before,
+            .available-filter-item:hover.not-sortable-item .icon-level-identifier .tainacan-icon::before {
+                color: var(--tainacan-gray3) !important;
+            }
             .available-metadatum-item:not(.disabled-metadatum):hover{
                 background-color: var(--tainacan-turquoise1);
                 border-color: var(--tainacan-turquoise2);
@@ -1155,7 +1162,7 @@ export default {
         .inherited-filter {
             &.active-filter-item:hover:not(.not-sortable-item) {
                 background-color: var(--tainacan-blue1);
-                border-color: var(--tainacan-blue1);
+                border-color: var(--tainacan-blue2);
                 
                 .grip-icon { 
                     color: var(--tainacan-blue5) !important; 

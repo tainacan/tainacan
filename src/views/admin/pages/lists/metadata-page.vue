@@ -19,57 +19,12 @@
                             ref="metadataEditionPageColumns">
                         <b-loading :active.sync="isLoadingMetadatumTypes"/>
 
-                        <div class="column">     
+                        <div class="column">
                            
                             <div class="tainacan-form sub-header">
-                                <h3 class="has-text-secondary">{{ $i18n.get('metadata') }}</h3>
+                                <h3>{{ $i18n.get('metadata') }}</h3>
 
-                                <template v-if="activeMetadatumList && activeMetadatumList.length > 5 && !isLoadingMetadata">
-                                    <b-field class="header-item">
-                                        <b-dropdown
-                                                id="tainacan-switch-compact-metadata-list"
-                                                v-model="showCompactMetadataList"
-                                                :mobile-modal="true"
-                                                position="is-bottom-right"
-                                                :aria-label="$i18n.get('label_view_mode')"
-                                                aria-role="list"
-                                                trap-focus>
-                                            <button 
-                                                    class="button is-white"
-                                                    :aria-label="$i18n.get('label_visualization')"
-                                                    slot="trigger">
-                                                <span class="gray-icon icon">
-                                                    <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (showCompactMetadataList ? 'menu' : 'viewlist')" />
-                                                </span>
-                                                <span>{{ showCompactMetadataList ? $i18n.get('label_compact_list') : $i18n.get('label_detailed_list') }}</span>
-                                                <span class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                                                </span>
-                                            </button>
-                                            <b-dropdown-item 
-                                                    aria-controls="items-list-results"
-                                                    role="button"
-                                                    :value="true"
-                                                    :class="{ 'is-active': showCompactMetadataList }"
-                                                    aria-role="listitem">
-                                                <span class="gray-icon icon">
-                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-menu" />
-                                                </span>
-                                                <span>{{ $i18n.get('label_compact_list') }}</span>
-                                            </b-dropdown-item>
-                                            <b-dropdown-item 
-                                                    aria-controls="items-list-results"
-                                                    role="button"
-                                                    :value="false"
-                                                    :class="{ 'is-active': !showCompactMetadataList }"
-                                                    aria-role="listitem">
-                                                <span class="gray-icon icon">
-                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewlist" />
-                                                </span>
-                                                <span>{{ $i18n.get('label_detailed_list') }}</span>
-                                            </b-dropdown-item>
-                                        </b-dropdown>
-                                    </b-field>
+                                <template v-if="activeMetadatumList && !isLoadingMetadata">
                                     <b-field class="header-item">
                                         <b-input 
                                                 :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
@@ -82,6 +37,22 @@
                                     </b-field>
                                 </template>
                             </div>
+
+                            <button
+                                    aria-controls="filters-items-list"
+                                    :aria-expanded="!collapseAll"
+                                    v-if="activeMetadatumList.length > 0"
+                                    class="link-style collapse-all"
+                                    @click="collapseAll = !collapseAll">
+                                <span class="icon">
+                                    <i 
+                                            :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                                            class="has-text-secondary tainacan-icon tainacan-icon-1-125em"/>
+                                </span>
+                                <span class="collapse-all__text">
+                                    {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                                </span>
+                            </button>
 
                             <section 
                                     v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
@@ -116,7 +87,7 @@
                                     <div 
                                             class="active-metadatum-item"
                                             :class="{
-                                                'is-compact-item': showCompactMetadataList,
+                                                'is-compact-item': !isCollapseOpen(metadatum.id),
                                                 'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '',
                                                 'not-focusable-item': openedMetadatumId == metadatum.id,
                                                 'disabled-metadatum': metadatum.enabled == false,
@@ -126,6 +97,18 @@
                                         <div 
                                                 :ref="'metadatum-handler-' + metadatum.id"
                                                 class="handle">
+                                            <span 
+                                                    v-tooltip="{
+                                                        content: $i18n.get('label_view_metadata_details'),
+                                                        autoHide: true,
+                                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                        placement: 'auto-start'
+                                                    }"
+                                                    @click="$set(collapses, metadatum.id, !isCollapseOpen(metadatum.id))"
+                                                    class="gray-icon icon"
+                                                    style="cursor: pointer">
+                                                <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright')" />
+                                            </span>
                                             <span 
                                                     :style="{ opacity: !(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '') ? '1.0' : '0.0' }"
                                                     v-tooltip="{
@@ -137,24 +120,6 @@
                                                     class="icon grip-icon">
                                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/>
                                             </span>
-                                            <span 
-                                                    v-tooltip="{
-                                                        content: (metadatum.collection_id == 'default') || isRepositoryLevel ? $i18n.get('label_repository_metadatum') : $i18n.get('label_collection_metadatum'),
-                                                        autoHide: true,
-                                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
-                                                        placement: 'auto-start'
-                                                    }"
-                                                    class="icon icon-level-identifier">
-                                                <i 
-                                                    :class="{ 
-                                                        'tainacan-icon-collections': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
-                                                        'tainacan-icon-repository': (metadatum.collection_id == 'default') || isRepositoryLevel,
-                                                        'has-text-turquoise5': metadatum.enabled && (metadatum.collection_id != 'default' && !isRepositoryLevel), 
-                                                        'has-text-blue5': metadatum.enabled && (metadatum.collection_id == 'default' || isRepositoryLevel),
-                                                        'has-text-gray3': !metadatum.enabled
-                                                    }"
-                                                    class="tainacan-icon" />
-                                            </span>  
                                             <span 
                                                     class="metadatum-name"
                                                     :class="{'is-danger': formWithErrors == metadatum.id }">
@@ -192,6 +157,24 @@
                                                             placement: 'auto-start'
                                                         }">
                                                     <i class="tainacan-icon tainacan-icon-private"/>
+                                                </span>
+                                                <span 
+                                                        v-tooltip="{
+                                                            content: (metadatum.collection_id == 'default') || isRepositoryLevel ? $i18n.get('label_repository_metadatum') : $i18n.get('label_collection_metadatum'),
+                                                            autoHide: true,
+                                                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                            placement: 'auto-start'
+                                                        }"
+                                                        class="icon icon-level-identifier">
+                                                    <i 
+                                                        :class="{ 
+                                                            'tainacan-icon-collections': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                                            'tainacan-icon-repository': (metadatum.collection_id == 'default') || isRepositoryLevel,
+                                                            'has-text-turquoise5': metadatum.enabled && (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                                            'has-text-blue5': metadatum.enabled && (metadatum.collection_id == 'default' || isRepositoryLevel),
+                                                            'has-text-gray3': !metadatum.enabled
+                                                        }"
+                                                        class="tainacan-icon" />
                                                 </span>
                                             </span>
                                             <span 
@@ -243,7 +226,7 @@
                                         </div>
                                         <transition name="form-collapse">
                                             <metadatum-details 
-                                                    v-if="!showCompactMetadataList && openedMetadatumId !== metadatum.id"
+                                                    v-if="isCollapseOpen(metadatum.id) && openedMetadatumId !== metadatum.id"
                                                     :metadatum="metadatum" />
                                         </transition>
                                         <transition name="form-collapse">
@@ -265,7 +248,8 @@
                                             :parent.sync="metadatum"
                                             :metadata-name-filter-string="metadataNameFilterString"
                                             :is-parent-multiple="metadatum.multiple == 'yes' || (editForms[metadatum.id] && editForms[metadatum.id].multiple == 'yes')"
-                                            :is-repository-level="isRepositoryLevel" />
+                                            :is-repository-level="isRepositoryLevel"
+                                            :collapse-all="collapseAll" />
                                 </div>
                             </draggable> 
                         </div>
@@ -274,7 +258,7 @@
                                 v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata')) || !isRepositoryLevel"
                                 class="column available-metadata-area" >
                             <div class="field">
-                                <h3 class="label has-text-secondary">{{ $i18n.get('label_available_metadata_types') }}</h3>
+                                <h3 class="label">{{ $i18n.get('label_available_metadata_types') }}</h3>
                                 <draggable 
                                         v-model="availableMetadatumList"
                                         :sort="false" 
@@ -368,9 +352,10 @@ export default {
             formWithErrors: '',
             hightlightedMetadatum: '',
             editForms: {},
+            collapses: {},
             columnsTopY: 0,
-            showCompactMetadataList: true,
-            metadataNameFilterString: ''
+            collapseAll: false,
+            metadataNameFilterString: '',
         }
     },
     computed: {
@@ -404,6 +389,9 @@ export default {
                 }
             },
             immediate: true
+        },
+        collapseAll(isCollapsed) {
+            this.activeMetadatumList.forEach((metadatum) => this.$set(this.collapses, metadatum.id, isCollapsed));
         }
     },
     beforeRouteLeave ( to, from, next ) {
@@ -482,7 +470,6 @@ export default {
             'getMetadatumTypes',
             'getMetadata',
         ]),
-                
         handleChange(event) {     
             if (event.added) {
                 this.addNewMetadatum(event.added.element, event.added.newIndex);
@@ -683,6 +670,9 @@ export default {
             }
             else 
                 return metadatum.name.toString().toLowerCase().indexOf(this.metadataNameFilterString.toString().toLowerCase()) >= 0;
+        },
+        isCollapseOpen(metadatumId) {
+            return this.collapses[metadatumId] == true;
         }
     }
 }
@@ -762,7 +752,7 @@ export default {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.5em;
+            padding: 0.5em 1em 0.5em 0.5em;
 
             .header-item {
                 margin-left: 0.75rem;
@@ -774,6 +764,14 @@ export default {
             }
         }
 
+        .collapse-all {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 0.25em;
+        }
+        .collapse-all__text {
+            font-size: 0.75em !important;
+        }
         .loading-spinner {
             animation: spinAround 500ms infinite linear;
             border: 2px solid var(--tainacan-gray2);
@@ -788,7 +786,6 @@ export default {
 
         .active-metadata-area {
             font-size: 0.875em;
-            margin-right: 0.8em;
             margin-left: -0.8em;
             padding-right: 3em;
             min-height: 330px;
@@ -891,6 +888,10 @@ export default {
                         color: var(--tainacan-gray3) !important;
                     }
                 }
+            }
+            .active-metadatum-item:not(:hover) .icon-level-identifier .tainacan-icon::before,
+            .active-filter-item:hover.not-sortable-item .icon-level-identifier .tainacan-icon::before {
+                color: var(--tainacan-gray3) !important;
             }
             .active-metadatum-item:hover:not(.not-sortable-item) {
                 background-color: var(--tainacan-turquoise1);

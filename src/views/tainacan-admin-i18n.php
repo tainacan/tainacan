@@ -538,6 +538,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_form_not_loaded'							 => __( 'This form could not be loaded', 'tainacan' ),
 	'label_compact_list'							 => __( 'Compact list', 'tainacan'),
 	'label_detailed_list'							 => __( 'Detailed list', 'tainacan'),
+	'label_view_metadata_details'					 => __( 'View metadata details', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
