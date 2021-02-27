@@ -226,6 +226,7 @@
 				$this->debug('process already running');
 				return true;
 			}
+			$this->debug('process not already running');
 
 			return false;
 		}
