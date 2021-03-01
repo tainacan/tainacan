@@ -12,14 +12,14 @@
         <div class="label">{{ $i18n.getHelperTitle('metadata', 'semantic_uri') }}</div>
         <div class="value">{{ metadatum.semantic_uri }}</div>
     </div>
-        <div class="field">
+    <!-- <div class="field">
         <div class="label">{{ $i18n.getHelperTitle('metadata', 'status') }}</div>
         <div class="value">
             <template v-if="metadatum.status === 'publish'">{{ $i18n.get('publish_visibility') }}</template>
             <template v-if="metadatum.status === 'private'">{{ $i18n.get('private_visibility') }}</template>
         </div>
-    </div>
-        <div class="field">
+    </div> -->
+    <div class="field">
         <div class="label">{{ $i18n.get('label_display') }}</div>
         <div class="value">
             <template v-if="metadatum.display === 'yes'">{{ $i18n.get('label_display_default') }}</template>
@@ -32,8 +32,8 @@
         <div class="value">{{ insertOptions }}</div>
     </div>
     <div
-            v-if="metadatum.metadata_type_object && metadatum.metadata_type_object.options_as_html"
-            v-html="metadatum.metadata_type_object.options_as_html" />
+            v-if="metadatum.options_as_html"
+            v-html="metadatum.options_as_html" />
 </div>
 </template>
 
@@ -46,11 +46,11 @@ export default {
         insertOptions() {
             const enableInsertOptions = [];
 
-            if (this.metadatum.required)
+            if (this.metadatum.required === 'yes')
                 enableInsertOptions.push(this.$i18n.getHelperTitle('metadata', 'required'));
-            if (this.metadatum.multiple)
+            if (this.metadatum.multiple === 'yes')
                 enableInsertOptions.push(this.$i18n.getHelperTitle('metadata', 'multiple'));
-            if (this.metadatum.collection_key)
+            if (this.metadatum.collection_key === 'yes')
                 enableInsertOptions.push(this.$i18n.getHelperTitle('metadata', 'collection_key'));
 
             return enableInsertOptions.join(', ');
@@ -62,17 +62,29 @@ export default {
 <style lang="scss" scoped>
 .metadatum-details {
     padding: 0.75em 1.5em 0.75em 3.5em;
-    -moz-column-count: 2;
+    -moz-column-count: 3;
     -moz-column-gap: 0;
     -moz-column-rule: none;
-    -webkit-column-count: 2;
+    -webkit-column-count: 3;
     -webkit-column-gap: 0;
     -webkit-column-rule: none;
-    column-count: 2;
+    column-count: 3;
     column-gap: 4em;
     column-rule: none;
 
-    &>.field, &>section {
+    @media screen and (max-width: 1024px) {
+        -moz-column-count: 2;
+        -webkit-column-count: 2;
+        column-count: 2;
+    }
+
+    @media screen and (max-width: 768px) {
+        -moz-column-count: 1;
+        -webkit-column-count: 1;
+        column-count: 1;
+    }
+
+    /deep/ .field {
         -webkit-column-break-inside: avoid;
         page-break-inside: avoid;
         break-inside: avoid;

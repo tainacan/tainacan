@@ -662,7 +662,8 @@ export default {
                 isRepositoryLevel: this.isRepositoryLevel, 
                 isContextEdit: true, 
                 includeDisabled: true,
-                parent: '0'
+                parent: '0',
+                includeOptionsAsHtml: true
             }).then((resp) => {
                     resp.request
                         .then(() => {

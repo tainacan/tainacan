@@ -211,8 +211,11 @@ abstract class Metadata_Type  {
         $options = $this->get_options();
         
         if ( count($options) > 0 ) {
+
+            $form_labels = $this->get_form_labels();
+            
             foreach($options as $option_label => $option_value) {
-                $options_as_html .= '<div class="field"><div class="label">' . $option_label .'</div>';
+                $options_as_html .= '<div class="field"><div class="label">' . ( isset($form_labels[$option_label]) && isset($form_labels[$option_label]['title']) ? $form_labels[$option_label]['title'] : $option_label ) .'</div>';
                 $options_as_html .= '<div class="value">' . $option_value . '</div></div>';
             }
         }
@@ -247,8 +250,7 @@ abstract class Metadata_Type  {
         $attributes['primitive_type']      = $this->get_primitive_type();
         $attributes['form_component']      = $this->get_form_component();
         $attributes['preview_template']    = $this->get_preview_template();
-        $attributes['options_as_html']     = $this->get_options_as_html();
-
+        
         return $attributes;
         
     }
