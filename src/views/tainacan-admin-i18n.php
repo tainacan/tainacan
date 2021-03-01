@@ -539,6 +539,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_compact_list'							 => __( 'Compact list', 'tainacan'),
 	'label_detailed_list'							 => __( 'Detailed list', 'tainacan'),
 	'label_view_metadata_details'					 => __( 'View metadata details', 'tainacan'),
+	'label_filter_by_metadata_type'					 => __( 'Filter by metadatum type', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

@@ -26,6 +26,38 @@
 
                                 <template v-if="activeMetadatumList && !isLoadingMetadata">
                                     <b-field class="header-item">
+                                        <b-dropdown
+                                                :mobile-modal="true"
+                                                :disabled="activeMetadatumList.length <= 0"
+                                                class="show metadata-options-dropdown"
+                                                aria-role="list"
+                                                trap-focus>
+                                            <button
+                                                    :aria-label="$i18n.get('label_filter_by_metadata_type')"
+                                                    class="button is-white"
+                                                    slot="trigger">
+                                                <span>{{ $i18n.get('label_filter_by_metadata_type') }}</span>
+                                                <span class="icon">
+                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                                                </span>
+                                            </button>
+                                            <div class="metadata-options-container">
+                                                <b-dropdown-item
+                                                        v-for="(metadataType, index) in metadataTypeFilterOptions"
+                                                        :key="index"
+                                                        class="control"
+                                                        custom
+                                                        aria-role="listitem">
+                                                    <b-checkbox
+                                                            v-model="metadataType.enabled"
+                                                            :native-value="metadataType.enabled">
+                                                        {{ metadataType.name }}
+                                                    </b-checkbox>
+                                                </b-dropdown-item>   
+                                            </div>
+                                        </b-dropdown>
+                                    </b-field>
+                                    <b-field class="header-item">
                                         <b-input 
                                                 :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
                                                 v-model="metadataNameFilterString"
@@ -83,12 +115,12 @@
                                 <div    
                                         v-for="(metadatum, index) in activeMetadatumList.filter((meta) => meta != undefined && meta.parent == 0)"
                                         :key="metadatum.id"
-                                        v-show="metadataNameFilterString == '' || filterByMetadatumName(metadatum)">
+                                        v-show="(metadataNameFilterString == '' || filterByMetadatumName(metadatum)) && filterByMetadatumType(metadatum)">
                                     <div 
                                             class="active-metadatum-item"
                                             :class="{
                                                 'is-compact-item': !isCollapseOpen(metadatum.id),
-                                                'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '',
+                                                'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied,
                                                 'not-focusable-item': openedMetadatumId == metadatum.id,
                                                 'disabled-metadatum': metadatum.enabled == false,
                                                 'inherited-metadatum': metadatum.inherited || isRepositoryLevel,
@@ -110,7 +142,7 @@
                                                 <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright')" />
                                             </span>
                                             <span 
-                                                    :style="{ opacity: !(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '') ? '1.0' : '0.0' }"
+                                                    :style="{ opacity: !(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied) ? '1.0' : '0.0' }"
                                                     v-tooltip="{
                                                         content: isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
                                                         autoHide: true,
@@ -124,17 +156,6 @@
                                                     class="metadatum-name"
                                                     :class="{'is-danger': formWithErrors == metadatum.id }">
                                                     {{ metadatum.name }}
-                                            </span>
-                                            <span 
-                                                    v-if="metadatum.required === 'yes'"
-                                                    class="label-details"
-                                                    v-tooltip="{
-                                                        content: $i18n.get('label_required'),
-                                                        autoHide: true,
-                                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
-                                                        placement: 'auto-start'
-                                                    }">
-                                                *&nbsp;
                                             </span>
                                             <span   
                                                     v-if="metadatum.id != undefined && metadatum.metadata_type_object"
@@ -157,6 +178,16 @@
                                                             placement: 'auto-start'
                                                         }">
                                                     <i class="tainacan-icon tainacan-icon-private"/>
+                                                </span>
+                                                <span 
+                                                        v-if="metadatum.required === 'yes'"
+                                                        v-tooltip="{
+                                                            content: $i18n.get('label_required'),
+                                                            autoHide: true,
+                                                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                            placement: 'auto-start'
+                                                        }">
+                                                    *&nbsp;
                                                 </span>
                                                 <span 
                                                         v-tooltip="{
@@ -247,6 +278,8 @@
                                             v-if="metadatum.metadata_type_object && metadatum.metadata_type_object.component == 'tainacan-compound'"
                                             :parent.sync="metadatum"
                                             :metadata-name-filter-string="metadataNameFilterString"
+                                            :metadata-type-filter-options="metadataTypeFilterOptions"
+                                            :has-some-metadata-type-filter-applied="hasSomeMetadataTypeFilterApplied"
                                             :is-parent-multiple="metadatum.multiple == 'yes' || (editForms[metadatum.id] && editForms[metadatum.id].multiple == 'yes')"
                                             :is-repository-level="isRepositoryLevel"
                                             :collapse-all="collapseAll" />
@@ -356,11 +389,15 @@ export default {
             columnsTopY: 0,
             collapseAll: false,
             metadataNameFilterString: '',
+            metadataTypeFilterOptions: []
         }
     },
     computed: {
         collection() {
             return this.getCollection();
+        },
+        hasSomeMetadataTypeFilterApplied() {
+            return this.metadataTypeFilterOptions.length && this.metadataTypeFilterOptions.some((metadatumType) => metadatumType.enabled);
         },
         availableMetadatumList: {
             get() {
@@ -437,13 +474,20 @@ export default {
 
         this.fetchMetadatumTypes()
             .then(() => {
+                this.metadataTypeFilterOptions = JSON.parse(JSON.stringify(this.getMetadatumTypes()))
+                    .map((metadatumType) => {
+                        return {
+                            enabled: false,
+                            name: metadatumType.name,
+                            type: metadatumType.className
+                        }
+                    });
                 this.isLoadingMetadatumTypes = false;
             })
             .catch(() => {
                 this.isLoadingMetadatumTypes = false;
             });
         this.refreshMetadata();
-       
     },
     beforeDestroy() {
 
@@ -470,7 +514,7 @@ export default {
             'getMetadatumTypes',
             'getMetadata',
         ]),
-        handleChange(event) {     
+        handleChange(event) {
             if (event.added) {
                 this.addNewMetadatum(event.added.element, event.added.newIndex);
             } else if (event.removed) {
@@ -671,6 +715,31 @@ export default {
             else 
                 return metadatum.name.toString().toLowerCase().indexOf(this.metadataNameFilterString.toString().toLowerCase()) >= 0;
         },
+        filterByMetadatumType(metadatum) {
+            if (!this.hasSomeMetadataTypeFilterApplied)
+                return true;
+
+            if (metadatum.metadata_type_object && 
+                metadatum.metadata_type_object.component == 'tainacan-compound' &&
+                metadatum.metadata_type_options &&
+                metadatum.metadata_type_options.children_objects &&
+                metadatum.metadata_type_options.children_objects.length
+            ) {
+                let childTypesArray = metadatum.metadata_type_options.children_objects.map((children) => children.metadata_type);
+                childTypesArray.push(metadatum.metadata_type);
+
+                for (let metadatumType of this.metadataTypeFilterOptions) {
+                    if (metadatumType.enabled && childTypesArray.some((childType) => childType == metadatumType.type))
+                        return true;
+                }
+            } else {
+                for (let metadatumType of this.metadataTypeFilterOptions) {
+                    if (metadatumType.enabled && metadatum.metadata_type == metadatumType.type)
+                        return true;
+                }
+            }
+            return false;
+        },
         isCollapseOpen(metadatumId) {
             return this.collapses[metadatumId] == true;
         }
@@ -761,6 +830,26 @@ export default {
 
             h3 {
                 margin-right: auto;
+            }
+
+            .dropdown-menu {
+                display: block;
+
+                div.dropdown-content {
+                    padding: 0;
+
+                    .metadata-options-container {
+                        max-height: 288px;
+                        overflow: auto;
+                        font-size: 1.125em;
+                    }
+                    .dropdown-item {
+                        padding: 0.25em 1.0em 0.25em 0.75em;
+                    }
+                    .dropdown-item span{
+                        vertical-align: middle;
+                    }
+                }
             }
         }
 
