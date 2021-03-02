@@ -316,10 +316,8 @@
             if (this.closedByForm) {
                 this.editedMetadatum.saved = true;
             } else {
-                delete this.oldForm['saved'];
-                delete this.editForm['saved'];
-                //console.log(this.oldForm, this.editForm);
-                if (_.isEqual(this.editForm, this.oldForm))
+                this.$set(this.oldForm, 'saved', this.editForm.saved);
+                if (!_.isEqual(this.editForm, this.oldForm))
                     this.editedMetadatum.saved = false;
                 else
                     this.editedMetadatum.saved = true;
