@@ -70,10 +70,10 @@ class REST_Reports_Controller extends REST_Controller {
 				isset($total_items->trash) ||
 				isset($total_items->draft)) {
 				
-				$response['totals']['items']['trash']   = $total_items->trash;
-				$response['totals']['items']['draft']   = $total_items->draft;
-				$response['totals']['items']['publish'] = $total_items->publish;
-				$response['totals']['items']['private'] = $total_items->private;
+				$response['totals']['items']['trash']   = intval($total_items->trash);
+				$response['totals']['items']['draft']   = intval($total_items->draft);
+				$response['totals']['items']['publish'] = intval($total_items->publish);
+				$response['totals']['items']['private'] = intval($total_items->private);
 			}
 		} else {
 			$collections = $this->collections_repository->fetch([]);
@@ -100,6 +100,27 @@ class REST_Reports_Controller extends REST_Controller {
 					}
 				}
 				wp_reset_postdata();
+			}
+
+			$response['totals']['taxonomies'] = array(
+				'total'   => 0,
+				'trash'   => 0,
+				'publish' => 0,
+				'draft'   => 0,
+				'private' => 0
+			);
+			$total_taxonomies = wp_count_posts( 'tainacan-taxonomy', 'readable' );
+
+			if (isset($total_taxonomies->publish) ||
+				isset($total_taxonomies->private) ||
+				isset($total_taxonomies->trash) ||
+				isset($total_taxonomies->draft)) {
+
+				$response['totals']['taxonomies']['trash'] = intval($total_taxonomies->trash);
+				$response['totals']['taxonomies']['publish'] = intval($total_taxonomies->publish);
+				$response['totals']['taxonomies']['draft'] = intval($total_taxonomies->draft);
+				$response['totals']['taxonomies']['private'] = intval($total_taxonomies->private);
+				$response['totals']['taxonomies']['total'] = $response['totals']['taxonomies']['trash'] + $response['totals']['taxonomies']['publish'] + $response['totals']['taxonomies']['draft'] + $response['totals']['taxonomies']['private'];
 			}
 		}
 		$response['totals']['items']['total'] = ($response['totals']['items']['trash'] + $response['totals']['items']['draft'] + $response['totals']['items']['publish'] + $response['totals']['items']['private']);
