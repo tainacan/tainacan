@@ -19,14 +19,6 @@ import NumberBlock from '../components/number-block.vue';
 
 Vue.use(VueApexCharts)
 
-// Apex.theme = {
-//     monochrome: {
-//         enabled: true,
-//         color: '#298596',
-//         shadeTo: 'light',
-//         shadeIntensity: 0.65
-//     }
-// }
 Apex.colors = [
     '#298596', // Tainacan Turquoise
     '#01295c', // Tainacan Blue
@@ -36,7 +28,6 @@ Apex.colors = [
     '#592570', // Tainacan Purple
     '#ed4f63'  // Tainacan Pink
 ];
-
 
 Vue.use(I18NPlugin);
 Vue.use(UserCapabilitiesPlugin);

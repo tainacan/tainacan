@@ -19,3 +19,24 @@ export const fetchReports = ({ commit }, {} ) => {
             .catch(error => reject(error));
     });
 };
+
+export const fetchSummary = ({ commit }, { collectionId } ) => {
+
+    let endpoint = '/reports';
+    
+    if (collectionId && collectionId != 'default')
+        endpoint += '/collection/' + collectionId + '/summary';
+    else
+        endpoint += '/repository/summary';
+
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get(endpoint)
+            .then(res => {
+                let summary = res.data;
+
+                commit('setSummary', summary);
+                resolve(summary);
+            })
+            .catch(error => reject(error));
+    });
+};

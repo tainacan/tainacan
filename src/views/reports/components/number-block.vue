@@ -33,38 +33,19 @@
 export default {
     props: {
         sourceCollection: String,
-        entityType: String
+        entityType: String,
+        summary: Object
     },
-    data() {
-        return {
-            total: 0,
-            totalByStatus: {}
-        }
-    },
-    mounted() {
-        // Fake data until we fetch and load this from store
-        if (this.entityType === 'items') {
-            this.total = 2344;
-            this.totalByStatus = {
-                'publish': 2326,
-                'private': 8,
-                'draft': 9,
-                'trash': 1
-            }
-        } else if (this.entityType === 'collections') {
-            this.total = 23;
-            this.totalByStatus = {
-                'publish': 18,
-                'private': 2,
-                'trash': 3
-            }
-        } else if (this.entityType === 'taxonomies') {
-            this.total = 8;
-            this.totalByStatus = {
-                'publish': 5,
-                'private': 0,
-                'draft': 1,
-                'trash': 1
+    computed: {
+        total() {
+            return this.summary.totals[this.entityType].total;
+        },
+        totalByStatus() {
+            return {
+                'publish': this.summary.totals[this.entityType].publish,
+                'private': this.summary.totals[this.entityType].private,
+                'draft': this.summary.totals[this.entityType].draft,
+                'trash': this.summary.totals[this.entityType].trash
             }
         }
     }

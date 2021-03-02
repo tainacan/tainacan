@@ -17,22 +17,32 @@
             </option>
         </select>
         <div class="columns is-multiline">
-            <div class="column is-full is-one-third-tablet has-text-centered">
+            <div 
+                    v-if="!selectedCollection || selectedCollection == 'default'"
+                    class="column is-full is-one-third-tablet has-text-centered">
                 <number-block
+                        v-if="!isFetchingSummary && summary && summary.totals"
                         class="postbox"
                         :source-collection="selectedCollection"
+                        :summary="summary"
                         entity-type="collections"/>
             </div>
             <div class="column is-full is-one-third-tablet has-text-centered">
                 <number-block 
+                        v-if="!isFetchingSummary && summary && summary.totals"
                         class="postbox"
                         :source-collection="selectedCollection"
+                        :summary="summary"
                         entity-type="items"/>
             </div>
-            <div class="column is-full is-one-third-tablet has-text-centered">
+            <div 
+                    v-if="!selectedCollection || selectedCollection == 'default'"
+                    class="column is-full is-one-third-tablet has-text-centered">
                <number-block
+                        v-if="!isFetchingSummary && summary && summary.totals"
                         class="postbox"
                         :source-collection="selectedCollection"
+                        :summary="summary"
                         entity-type="taxonomies"/>
             </div>
             <div class="column is-half is-one-quarter-widescreen">
@@ -83,7 +93,8 @@ export default {
     data() {
         return {
             selectedCollection: 'default',
-            isLoadingCollections: false,
+            isFetchingCollections: false,
+            isFetchingSummary: false
         }
     },
     computed: {
@@ -92,11 +103,13 @@ export default {
         }),
         ...mapGetters('report', {
             reports: 'getReports',
-        }),
+            summary: 'getSummary' 
+        })
     },
     watch: {
         '$route.query' (to) {
             this.selectedCollection = to['collection'] ? to['collection'] : 'default';
+            this.loadSummary();
         }
     },
     created() {
@@ -104,15 +117,27 @@ export default {
         this.selectedCollection = this.$route.query['collection'] ? this.$route.query['collection'] : 'default';
         
         // Loads collection for the select input
-        this.isLoadingCollections = true;
+        this.isFetchingCollections = true;
         this.fetchAllCollectionNames()
-            .then(() => this.isLoadingCollections = false)
-            .catch(() => this.isLoadingCollections = false);
+            .then(() => {
+                this.loadSummary();
+                this.isFetchingCollections = false;
+            })
+            .catch(() => this.isFetchingCollections = false);
     },
     methods: {
         ...mapActions('collection', [
             'fetchAllCollectionNames'
-        ])
+        ]),
+        ...mapActions('report', [
+            'fetchSummary',
+        ]),
+        loadSummary() {
+            this.isFetchingSummary = true;
+            this.fetchSummary({ collectionId: this.selectedCollection })
+                .then(() => this.isFetchingSummary = false)
+                .catch(() => this.isFetchingSummary = false);
+        }
     }
 }
 </script>

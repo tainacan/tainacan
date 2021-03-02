@@ -644,7 +644,8 @@ const state = {
               },
             },
         }
-    ]
+    ],
+    summary: {}
 };
 function generateData (count, yrange) {
     var i = 0;
