@@ -17,17 +17,11 @@ use \Tainacan\Repositories;
 	 *     Optional. Array or string of arguments.
 	 *
 	 * 	   @type mixed		 $metadata					Metadatum object, ID or slug to retrieve only one metadatum. empty returns all metadata
-	 *
 	 *     @type array		 $metadata__in				Array of metadata IDs or Slugs to be retrieved. Default none
-	 *
 	 *     @type array		 $metadata__not_in			Array of metadata IDs (slugs not accepted) to excluded. Default none
-	 *
 	 *     @type bool		 $exclude_title				Exclude the Core Title Metadata from result. Default false
-	 *
 	 *     @type bool		 $exclude_description		Exclude the Core Description Metadata from result. Default false
-	 *
 	 *     @type bool		 $exclude_core				Exclude Core Metadata (title and description) from result. Default false
-	 *
 	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
 	 *                                                  Default: true
 	 *     @type string      $before                    String to be added before each metadata block
@@ -219,6 +213,73 @@ function tainacan_the_collection_description() {
 	echo tainacan_get_the_collection_description();
 }
 
+/**
+ * Tainacan Gallery component, used to render document, attachments and other files
+ *
+ * @return string
+ */
+function tainacan_the_media_component($media_items, $args) {
+	echo tainacan_get_the_media_component($media_items, $args);
+}
+
+
+/**
+ * Tainacan Gallery component, used to render document, attachments and other files
+ *
+ * @param array        $media_items               Array of media items to be rendered inside the carousel. Default to empty array
+ * @param array|string $args {
+ *     Optional. Array of arguments.
+ *
+ *     @type bool        $render_main_gallery       Render a main gallery bellow the thumbnails carousel. Default false. 
+ *     @type string      $before_main_div           String to be added before the main gallery div
+ *     @type string      $after_main_div            String to be added after the main gallery div
+ *     @type string      $before_thumbs_div         String to be added before the thumbs gallery div
+ *     @type string      $after_thumbs_div          String to be added after the thumbs gallery div
+ *     @type string      $before_main_ul            String to be added before the main gallery ul
+ *     @type string      $after_main_ul             String to be added after the main gallery ul
+ *     @type string      $before_thumbs_ul          String to be added before the thumbs gallery ul
+ *     @type string      $after_thumbs_ul           String to be added after the thumbs gallery ul
+ *     @type string      $class_main_div            Class to be added to the main gallery div
+ *     @type string      $class_main_ul	            Class to be added to the main gallery ul
+ *     @type string      $class_main_li             Class to be added to the main gallery li
+ *     @type string      $class_thumbs_div          Class to be added to the thumbs gallery div
+ *     @type string      $class_thumbs_ul           Class to be added to the thumbs gallery ul
+ *     @type string      $class_thumbs_li           Class to be added to the thumbs gallery li
+ * }
+ * @return string
+ */
+function tainacan_get_the_media_component($media_items = array(), $args = array()) {
+?>
+<?php var_dump($args['render_main_gallery']) ?>
+	<?php if ($args['render_main_gallery']) : ?>
+		<?php echo $args['before_main_div'] ?>
+		<div class="tainacan-media-component__swiper-main swiper-container <?php echo $args['class_main_div'] ?>">
+			<?php echo $args['before_main_ul'] ?>
+			<ul class="swiper-wrapper <?php echo $args['class_main_ul'] ?>">
+				<?php foreach($media_items as $media_item) { ?>
+					<li class="swiper-slide <?php echo $args['class_main_li'] ?>">
+						<?php $media_item ?>
+					</li>
+				<?php }; ?>
+			</ul>
+			<?php echo $args['before_main_ul'] ?>
+		</div>
+		<?php echo $args['after_main_div'] ?>
+	<?php endif; ?>
+
+	<?php echo $args['before_thumbs_div'] ?>
+	<div class="tainacan-media-component__swiper-thumbs swiper-container <?php echo $args['class_thumbs_div'] ?>">
+		<?php echo $args['before_thumbs_ul'] ?>
+		<ul class="swiper-wrapper <?php echo $args['class_thumbs_ul'] ?>">
+			<li class="swiper-slide <?php echo $args['class_thumbs_li'] ?>">
+				TESTEEE
+			</li>
+		</ul>
+		<?php echo $args['before_thumbs_ul'] ?>
+	</div>
+	<?php echo $args['after_thumbs_div'] ?>
+<?php
+}
 
 /**
  * When visiting a collection archive or single, returns the collection url link
@@ -329,6 +390,7 @@ function tainacan_is_view_mode_enabled($view_mode_slug) {
 function tainacan_the_faceted_search($args = array()) {
 	$theme_helper = \Tainacan\Theme_Helper::get_instance();
 	echo $theme_helper->get_tainacan_items_list($args);
+	//TEST: tainacan_the_media_component(['a', 'b', '<strong>c</strong'], ['render_main_gallery' => true, 'class_main_div' => 'teste']);
 }
 
 /**
