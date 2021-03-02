@@ -536,7 +536,11 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_switch_document_type'					 => __( 'Switch document type', 'tainacan' ),
 	'label_sending_form'							 => __( 'Sending form...', 'tainacan' ),
 	'label_form_not_loaded'							 => __( 'This form could not be loaded', 'tainacan' ),
-	
+	'label_compact_list'							 => __( 'Compact list', 'tainacan'),
+	'label_detailed_list'							 => __( 'Detailed list', 'tainacan'),
+	'label_view_metadata_details'					 => __( 'View metadata details', 'tainacan'),
+	'label_filter_by_metadata_type'					 => __( 'Filter by metadatum type', 'tainacan'),
+
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -551,6 +555,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_cover_page'                         => __( 'Search a Page to choose.', 'tainacan' ),
 	'instruction_type_search_users'		             => __( 'Search users...', 'tainacan' ),
 	'instruction_type_search_users_filter'           => __( 'Search users to filter...', 'tainacan' ),
+	'instruction_type_search_metadata_filter'        => __( 'Search metadata to filter...', 'tainacan' ),
+	'instruction_type_search_filter_filter'        	 => __( 'Search filters to filter...', 'tainacan' ),
 	'instruction_type_search_roles_filter'           => __( 'Search roles to filter...', 'tainacan' ),
 	'instruction_select_a_parent_collection'         => __( 'Select a parent collection.', 'tainacan' ),
 	'instruction_select_collection_thumbnail'        => __( 'Select a thumbnail image for collection', 'tainacan' ),

@@ -308,14 +308,17 @@ class REST_Metadata_Controller extends REST_Controller {
 			$item_arr = $item->_toArray();
 			$item_arr['metadata_type_object'] = $item->get_metadata_type_object()->_toArray();
 
-			if(isset($item_arr['metadata_type_options']) && isset($item_arr['metadata_type_options']['taxonomy_id'])){
+			if ( isset($request['include_options_as_html']) && $request['include_options_as_html'] == 'yes' )
+				$item_arr['options_as_html'] = $item->get_metadata_type_object()->get_options_as_html();
+
+			if ( isset($item_arr['metadata_type_options']) && isset($item_arr['metadata_type_options']['taxonomy_id']) ) {
 				$taxonomy = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( $item_arr['metadata_type_options']['taxonomy_id'] );
 				//$taxonomy = new Entities\Taxonomy($item_arr['metadata_type_options']['taxonomy_id']);
 				//$item_arr['metadata_type_options']['taxonomy'] = $taxonomy->get_db_identifier();
 				$item_arr['metadata_type_options']['taxonomy'] = $taxonomy;
 			}
 
-			if($request['context'] === 'edit'){
+			if ($request['context'] === 'edit') {
 				$item_arr['current_user_can_edit'] = $item->can_edit();
 				$item_arr['current_user_can_delete'] = $item->can_delete();
 				ob_start();

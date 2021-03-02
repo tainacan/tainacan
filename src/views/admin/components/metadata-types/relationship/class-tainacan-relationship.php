@@ -66,6 +66,69 @@ class Relationship extends Metadata_Type {
 		];
 	}
 
+	/**
+     * Gets print-ready version of the options list in html
+     *
+     * Checks if at least one option exists, otherwise return an empty string
+     * 
+     * @return string An html content with labels and values for the options or an empty string
+     */
+    public function get_options_as_html() {
+        $options_as_html = '';
+        $options = $this->get_options();
+		
+        if ( count($options) > 0 ) {
+
+			// Remove this option that is not relevant for the user
+			if ( isset($options['related_primitive_type']) )
+				unset($options['related_primitive_type']);
+
+			$form_labels = $this->get_form_labels();
+				
+			foreach($options as $option_label => $option_value) {
+
+				if ( $option_value != '' ) {
+					$options_as_html .= '<div class="field"><div class="label">' . ( isset($form_labels[$option_label]) && isset($form_labels[$option_label]['title']) ? $form_labels[$option_label]['title'] : $option_label ) .'</div>';
+					
+					$readable_option_value = '';
+
+					switch($option_label) {
+						
+						case 'collection_id':
+							$collection = \tainacan_collections()->fetch( (int) $option_value );
+							if ( $collection instanceof \Tainacan\Entities\Collection )
+								$readable_option_value = $collection->get_name();
+							else
+								$readable_option_value = $option_value;
+						break;
+
+						case 'search':
+							$metadata = \tainacan_metadata()->fetch( (int) $option_value );
+							if ( $metadata ) {
+								$readable_option_value = $metadata;
+							} else
+								$readable_option_value = $option_value;
+						break;
+
+						case 'repeated':
+							if ($option_value == 'yes')
+								$readable_option_value = __('Yes', 'tainacan');
+							else if ($option_value == 'no')
+								$readable_option_value = __('No', 'tainacan');
+							else
+								$readable_option_value = $option_value;
+						break;
+
+						default:
+							$readable_option_value = $option_value;
+					}
+					$options_as_html .= '<div class="value">' . $readable_option_value . '</div></div>';
+				}
+            }
+        }
+        return $options_as_html;
+    }
+
 	public function validate_options(\Tainacan\Entities\Metadatum $metadatum) {
 		if ( !in_array($metadatum->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
 			return true;

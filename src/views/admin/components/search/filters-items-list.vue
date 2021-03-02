@@ -22,11 +22,13 @@
                     isRepositoryLevel) || filters.length > 0)"
                 class="link-style collapse-all"
                 @click="collapseAll = !collapseAll">
-            {{ !collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
             <span class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowdown' : !collapseAll, 'tainacan-icon-arrowright' : collapseAll }"
-                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                        class="has-text-secondary tainacan-icon tainacan-icon-1-125em"/>
+            </span>
+            <span class="collapse-all__text">
+                {{ !collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
             </span>
         </button>
 
@@ -495,6 +497,9 @@
     .collapse-all {
         display: inline-flex;
         align-items: center;
+        margin-left: -0.65em;
+    }
+    .collapse-all__text {
         font-size: 0.75em !important;
     }
     .filters-components-list {
