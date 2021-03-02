@@ -51,12 +51,14 @@ class REST_Reports_Controller extends REST_Controller {
 
 	public function get_summary($request) {
 		$response = array(
-			'total_items' => array(
-				'total' => 0,
-				'trash'   => 0,
-				'draft'   => 0,
-				'publish' => 0,
-				'private' => 0
+			'totals'=> array(
+				'items' => array(
+					'total' => 0,
+					'trash'   => 0,
+					'draft'   => 0,
+					'publish' => 0,
+					'private' => 0
+				)
 			)
 		);
 		if(isset($request['collection_id'])) {
@@ -68,32 +70,39 @@ class REST_Reports_Controller extends REST_Controller {
 				isset($total_items->trash) ||
 				isset($total_items->draft)) {
 				
-				$response['total_items']['trash']   = $total_items->trash;
-				$response['total_items']['draft']   = $total_items->draft;
-				$response['total_items']['publish'] = $total_items->publish;
-				$response['total_items']['private'] = $total_items->private;
+				$response['totals']['items']['trash']   = $total_items->trash;
+				$response['totals']['items']['draft']   = $total_items->draft;
+				$response['totals']['items']['publish'] = $total_items->publish;
+				$response['totals']['items']['private'] = $total_items->private;
 			}
 		} else {
 			$collections = $this->collections_repository->fetch([]);
+			$response['totals']['collections'] = array(
+				'total' => 0,
+				'trash'   => 0,
+				'publish' => 0,
+				'private' => 0
+			);
 			if($collections->have_posts()) {
 				while ($collections->have_posts()) {
 					$collections->the_post();
 					$collection = new Entities\Collection($collections->post);
+					$response['totals']['collections'][$collection->get_status()]++;
+					$response['totals']['collections']['total']++;
 					$total_items = wp_count_posts( $collection->get_db_identifier(), 'readable' );
 
 					if (isset($total_items->publish) || isset($total_items->private) ||
 						isset($total_items->trash) || isset($total_items->draft)) {
-							$response['total_items']['trash']   += $total_items->trash;
-							$response['total_items']['draft']   += $total_items->draft;
-							$response['total_items']['publish'] += $total_items->publish;
-							$response['total_items']['private'] += $total_items->private;
+							$response['totals']['items']['trash']   += $total_items->trash;
+							$response['totals']['items']['draft']   += $total_items->draft;
+							$response['totals']['items']['publish'] += $total_items->publish;
+							$response['totals']['items']['private'] += $total_items->private;
 					}
 				}
 				wp_reset_postdata();
 			}
 		}
-		$response['total_items']['total'] =	($response['total_items']['trash'] + $response['total_items']['draft'] + $response['total_items']['publish'] + $response['total_items']['private']);
-		
+		$response['totals']['items']['total'] = ($response['totals']['items']['trash'] + $response['totals']['items']['draft'] + $response['totals']['items']['publish'] + $response['totals']['items']['private']);
 		return new \WP_REST_Response($response, 200);
 	}
 
