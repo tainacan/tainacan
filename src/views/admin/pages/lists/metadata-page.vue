@@ -138,7 +138,7 @@
                                                     }"
                                                     @click="$set(collapses, metadatum.id, !isCollapseOpen(metadatum.id))"
                                                     class="gray-icon icon"
-                                                    style="cursor: pointer">
+                                                    :style="{ cursor: 'pointer', opacity: openedMetadatumId != metadatum.id ? '1.0' : '0.0' }">
                                                 <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright')" />
                                             </span>
                                             <span 

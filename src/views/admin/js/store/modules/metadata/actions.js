@@ -51,7 +51,7 @@ export const fetchMetadata = ({commit}, { collectionId, isRepositoryLevel, isCon
     });
 };
 
-export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, status, isRepositoryLevel, newIndex, parent}) => {
+export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, status, isRepositoryLevel, newIndex, parent, includeOptionsAsHtml}) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
         if (!isRepositoryLevel)
@@ -59,7 +59,12 @@ export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, stat
         else
             endpoint = '/metadata/';
 
-        axios.tainacan.post(endpoint + '?context=edit', {
+        endpoint += '?context=edit';
+
+        if (includeOptionsAsHtml)
+            endpoint += '&include_options_as_html=yes';
+
+        axios.tainacan.post(endpoint, {
             name: name,
             metadata_type: metadatumType,
             status: status,
@@ -77,7 +82,7 @@ export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, stat
     });
 };
 
-export const updateMetadatum = ({commit}, {collectionId, metadatumId, isRepositoryLevel, index, options}) => {
+export const updateMetadatum = ({commit}, {collectionId, metadatumId, isRepositoryLevel, index, options, includeOptionsAsHtml}) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
 
@@ -86,7 +91,12 @@ export const updateMetadatum = ({commit}, {collectionId, metadatumId, isReposito
         else
             endpoint = '/metadata/' + metadatumId;
 
-        axios.tainacan.put(endpoint + '?context=edit', options)
+        endpoint += '?context=edit';
+
+        if (includeOptionsAsHtml)
+            endpoint += '&include_options_as_html=yes';
+
+        axios.tainacan.put(endpoint, options)
             .then(res => {
                 let metadatum = res.data;
                 commit('setSingleMetadatum', { metadatum: metadatum, index: index, isRepositoryLevel: isRepositoryLevel });

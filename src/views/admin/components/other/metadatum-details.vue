@@ -27,7 +27,9 @@
             <template v-if="metadatum.display === 'never'">{{ $i18n.get('label_display_never') }}</template>
         </div>
     </div>
-    <div class="field">
+    <div 
+            v-if="insertOptions != ''"
+            class="field">
         <div class="label">{{ $i18n.get('label_insert_options') }}</div>
         <div class="value">{{ insertOptions }}</div>
     </div>
@@ -89,12 +91,16 @@ export default {
         page-break-inside: avoid;
         break-inside: avoid;
         margin-bottom: 1em;
-    }
-    .field > .field:not(:last-child) {
-        margin-bottom: 0em;
-    }
-    .field .value {
-        font-size: 0.9em;
+
+        & > .field:not(:last-child) {
+            margin-bottom: 0em;
+        }
+        .label {
+            white-space: normal;
+        }
+        .value {
+            font-size: 0.9em;
+        }
     }
 }
 </style>

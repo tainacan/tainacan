@@ -215,8 +215,10 @@ abstract class Metadata_Type  {
             $form_labels = $this->get_form_labels();
             
             foreach($options as $option_label => $option_value) {
-                $options_as_html .= '<div class="field"><div class="label">' . ( isset($form_labels[$option_label]) && isset($form_labels[$option_label]['title']) ? $form_labels[$option_label]['title'] : $option_label ) .'</div>';
-                $options_as_html .= '<div class="value">' . $option_value . '</div></div>';
+				if ( $option_value != '' ) {
+                    $options_as_html .= '<div class="field"><div class="label">' . ( isset($form_labels[$option_label]) && isset($form_labels[$option_label]['title']) ? $form_labels[$option_label]['title'] : $option_label ) .'</div>';
+                    $options_as_html .= '<div class="value">' . ($option_value == 'yes' ? __('Yes', 'tainacan') : ($option_value == 'no' ? __('No', 'tainacan') : $option_value) ) . '</div></div>';
+                }
             }
         }
         return $options_as_html;

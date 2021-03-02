@@ -104,7 +104,7 @@ class Taxonomy extends Metadata_Type {
 		];
 	}
 
-	    /**
+	/**
      * Gets print-ready version of the options list in html
      *
      * Checks if at least one option exists, otherwise return an empty string
@@ -117,47 +117,84 @@ class Taxonomy extends Metadata_Type {
 		
         if ( count($options) > 0 ) {
 
-            $form_labels = $this->get_form_labels();
-            
-            foreach($options as $option_label => $option_value) {
-                $options_as_html .= '<div class="field"><div class="label">' . ( isset($form_labels[$option_label]) && isset($form_labels[$option_label]['title']) ? $form_labels[$option_label]['title'] : $option_label ) .'</div>';
-                
-				$readable_option_value = '';
-				switch($option_label) {
-					
-					case 'taxonomy_id':
-						$taxonomy = \tainacan_taxonomies()->fetch( (int) $option_value );
-						if ( $taxonomy instanceof \Tainacan\Entities\Taxonomy )
-							$readable_option_value = $taxonomy->get_name();
-						else
-							$readable_option_value = $option_value;
-						break;
+			// Remove this option as it doesn't matter if using a taginput
+			if ( isset($options['visible_options_list']) && isset($options['input_type']) && $options['input_type'] == 'tainacan-taxonomy-tag-input' )
+				unset($options['visible_options_list']);
 
-					case 'input_type':
-							if ($option_value == 'tainacan-taxonomy-radio')
-								$readable_option_value = __('Radio', 'tainacan');
-							else if ($option_value == 'tainacan-taxonomy-checkbox')
-								$readable_option_value = __('Checkbox', 'tainacan');
-							else if ($option_value == 'tainacan-taxonomy-taginput')
-								$readable_option_value = __('Taginput', 'tainacan');
+			$form_labels = $this->get_form_labels();
+				
+			foreach($options as $option_label => $option_value) {
+
+				if ( $option_value != '' ) {
+					$options_as_html .= '<div class="field"><div class="label">' . ( isset($form_labels[$option_label]) && isset($form_labels[$option_label]['title']) ? $form_labels[$option_label]['title'] : $option_label ) .'</div>';
+					
+					$readable_option_value = '';
+
+					switch($option_label) {
+						
+						case 'taxonomy_id':
+							$taxonomy = \tainacan_taxonomies()->fetch( (int) $option_value );
+							if ( $taxonomy instanceof \Tainacan\Entities\Taxonomy )
+								$readable_option_value = $taxonomy->get_name();
 							else
 								$readable_option_value = $option_value;
 						break;
 
-					case 'allow_new_terms':
-						if ($option_value == 'yes')
-							$readable_option_value = __('Yes', 'tainacan');
-						else if ($option_value == 'no')
-							$readable_option_value = __('No', 'tainacan');
-						else
+						case 'input_type':
+								if ($option_value == 'tainacan-taxonomy-radio')
+									$readable_option_value = __('Radio', 'tainacan');
+								else if ($option_value == 'tainacan-taxonomy-checkbox')
+									$readable_option_value = __('Checkbox', 'tainacan');
+								else if ($option_value == 'tainacan-taxonomy-tag-input')
+									$readable_option_value = __('Taginput', 'tainacan');
+								else
+									$readable_option_value = $option_value;
+						break;
+
+						case 'visible_options_list':
+							if ($option_value == 1)
+								$readable_option_value = __('Yes', 'tainacan');
+							else if ($option_value == 0)
+								$readable_option_value = __('No', 'tainacan');
+							else
+								$readable_option_value = $option_value;
+						break;
+
+						case 'allow_new_terms':
+							if ($option_value == 'yes')
+								$readable_option_value = __('Yes', 'tainacan');
+							else if ($option_value == 'no')
+								$readable_option_value = __('No', 'tainacan');
+							else
+								$readable_option_value = $option_value;
+						break;
+
+						case 'link_filtered_by_collections':
+							if (count($option_value) > 0) {
+								$collections = \tainacan_collections()->fetch( [ 'post__in' => $option_value ], 'OBJECT' );
+								
+								if ( is_array($collections) ) {
+									
+									$collection_names = '';
+									for ($i = 0; $i < count($collections); $i++) {
+										$collection_names .= $collections[$i]->get_name();
+										if ($i < count($collections) - 1)
+											$collection_names .= ', ';
+									}
+
+									$readable_option_value = $collection_names;
+								}
+								else
+									$readable_option_value = $option_value;
+							} else
+								$readable_option_value = __( 'None', 'tainacan' );
+						break;
+
+						default:
 							$readable_option_value = $option_value;
-					break;
-
-					default:
-						$readable_option_value = $option_value;
+					}
+					$options_as_html .= '<div class="value">' . $readable_option_value . '</div></div>';
 				}
-				$options_as_html .= '<div class="value">' . $readable_option_value . '</div></div>';
-
             }
         }
         return $options_as_html;
