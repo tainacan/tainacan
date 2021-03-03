@@ -35,6 +35,15 @@ class REST_Reports_Controller extends REST_Controller {
 				),
 			)
 		);
+		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/metadata',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_stats_metadata'),
+					'permission_callback' => array($this, 'reports_permissions_check'),
+				),
+			)
+		);
 		register_rest_route($this->namespace, $this->rest_base . '/repository/summary',
 			array(
 				array(
@@ -209,6 +218,77 @@ class REST_Reports_Controller extends REST_Controller {
 		return new \WP_REST_Response($response, 200);
 	}
 
+	public function get_stats_metadata($request) {
+		$response = array(
+			'totals'=> array(
+				'metadata' => array(
+					'total' => 0,
+					'publish' => 0,
+					'private' => 0
+				),
+				'metadata_per_type' => array()
+			),
+			'distribution' => array(
+
+			)
+		);
+
+		if(isset($request['collection_id'])) {
+			$collection_id = $request['collection_id'];
+			$collection = new Entities\Collection( $collection_id );
+			$result_metadatum = $this->metadatum_repository->fetch_by_collection( $collection, [] );
+			$response['totals']['metadata']['total'] = count($result_metadatum);
+			$meta_ids=[];
+			foreach($result_metadatum as $metadatum) {
+				$meta_type =  explode('\\', $metadatum->get_metadata_type()) ;
+				$meta_type = strtolower($meta_type[sizeof($meta_type)-1]);
+
+				$response['totals']['metadata'][$metadatum->get_status()]++;
+				$response['totals']['metadata_per_type'][$meta_type]++;
+				$meta_ids[] = $metadatum->get_id();
+			}
+			$response['distribution'] = $this->query_item_metadata_distribution($meta_ids, $collection->get_db_identifier());
+			//wp_count_posts()
+		} else {
+			$args = [
+				'meta_query' => [
+					[
+						'key'     => 'collection_id',
+						'value'   => 'default',
+						'compare' => '='
+					]
+				]
+			];
+			$result = $this->metadatum_repository->fetch( $args, 'OBJECT' );
+		}
+		return new \WP_REST_Response($response, 200);
+	}
+
+	private function query_item_metadata_distribution($meta_ids, $collection_post_type) {
+		$count_posts = wp_count_posts( $collection_post_type, 'readable' );
+		$total_items =  intval($count_posts->trash) + intval($count_posts->draft) +
+				intval($count_posts->publish) + intval($count_posts->private);
+
+		global $wpdb;
+		$string_meta_ids = "'".implode("','", $meta_ids)."'";
+		$sql_statement = $wpdb->prepare(
+			"SELECT p.post_title AS 'name', m.meta_key AS id, ((m.total/$total_items) * 100) as fill_percentage
+			FROM
+				(SELECT meta_key, count(*) AS total
+				FROM $wpdb->postmeta 
+				WHERE $wpdb->postmeta.meta_key IN ($string_meta_ids)
+				AND $wpdb->postmeta.post_id IN ( 
+					SELECT id
+					FROM $wpdb->posts
+					WHERE $wpdb->posts.post_type = '$collection_post_type'
+				)
+				GROUP BY $wpdb->postmeta.meta_key) m 
+			INNER JOIN $wpdb->posts p on m.meta_key = p.id;"
+		);
+		$res = $wpdb->get_results($sql_statement);
+		//return $sql_statement;
+		return $res;
+	}
 
 	private function query_count_used_taxononomies() {
 		global $wpdb;
