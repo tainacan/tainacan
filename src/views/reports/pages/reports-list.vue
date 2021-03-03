@@ -21,15 +21,17 @@
                     v-if="!selectedCollection || selectedCollection == 'default'"
                     class="column is-full is-one-third-tablet has-text-centered">
                 <number-block
-                        v-if="!isFetchingSummary && summary && summary.totals"
+                        :class="{ 'skeleton': isFetchingSummary }"
                         class="postbox"
                         :source-collection="selectedCollection"
                         :summary="summary"
                         entity-type="collections"/>
             </div>
-            <div class="column is-full is-one-third-tablet has-text-centered">
+            <div
+                    :class="{ 'is-one-third-tablet': !selectedCollection || selectedCollection == 'default' }"
+                    class="column is-full has-text-centered">
                 <number-block 
-                        v-if="!isFetchingSummary && summary && summary.totals"
+                        :class="{ 'skeleton': isFetchingSummary }"
                         class="postbox"
                         :source-collection="selectedCollection"
                         :summary="summary"
@@ -39,7 +41,7 @@
                     v-if="!selectedCollection || selectedCollection == 'default'"
                     class="column is-full is-one-third-tablet has-text-centered">
                <number-block
-                        v-if="!isFetchingSummary && summary && summary.totals"
+                        :class="{ 'skeleton': isFetchingSummary }"
                         class="postbox"
                         :source-collection="selectedCollection"
                         :summary="summary"
@@ -107,9 +109,12 @@ export default {
         })
     },
     watch: {
-        '$route.query' (to) {
-            this.selectedCollection = to['collection'] ? to['collection'] : 'default';
-            this.loadSummary();
+        '$route.query': {
+            handler(to) {
+                this.selectedCollection = to['collection'] ? to['collection'] : 'default';
+                this.loadSummary();
+            },
+            immediate: true
         }
     },
     created() {

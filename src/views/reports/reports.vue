@@ -15,6 +15,7 @@ export default {
 <style lang="scss">
 
     // TAINACAN Variables
+    @import "../admin/scss/_animations.scss";
     @import "../admin/scss/_variables.scss";
 
     // Bulma imports

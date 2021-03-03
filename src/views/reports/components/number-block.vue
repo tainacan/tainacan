@@ -1,6 +1,10 @@
 <template>
     <div>
-        <p class="title is-2">{{ total }}</p>
+        <p class="title is-2">
+            <i-count-up
+                    :delay="750"
+                    :end-val="total" />
+        </p>
         <p class="subtitle is-3">
             <span class="icon has-text-gray">
                 <i 
@@ -14,7 +18,12 @@
                     v-for="(statusOption, index) of $statusHelper.getStatuses()"
                     :key="index"
                     v-if="(statusOption.slug != 'private' || (statusOption.slug == 'private' && $userCaps.hasCapability('tnc_rep_read_private_collections')) && totalByStatus[statusOption.slug])">
-                <span class="value">{{ totalByStatus[statusOption.slug] }}&nbsp;</span>
+                <span class="value">
+                    <i-count-up
+                            :delay="750"
+                            :end-val="totalByStatus[statusOption.slug]" />
+                    &nbsp;
+                </span>
                 <span 
                         v-if="$statusHelper.hasIcon(statusOption.slug)"
                         class="icon has-text-gray">
@@ -30,7 +39,12 @@
 </template>
 
 <script>
+import ICountUp from 'vue-countup-v2';
+
 export default {
+    components: {
+        ICountUp
+    },
     props: {
         sourceCollection: String,
         entityType: String,
@@ -38,14 +52,14 @@ export default {
     },
     computed: {
         total() {
-            return this.summary.totals[this.entityType].total;
+            return this.summary && this.summary.totals && this.summary.totals[this.entityType] ? this.summary.totals[this.entityType].total : 0;
         },
         totalByStatus() {
             return {
-                'publish': this.summary.totals[this.entityType].publish,
-                'private': this.summary.totals[this.entityType].private,
-                'draft': this.summary.totals[this.entityType].draft,
-                'trash': this.summary.totals[this.entityType].trash
+                'publish': this.summary && this.summary.totals && this.summary.totals[this.entityType] ? this.summary.totals[this.entityType].publish : 0,
+                'private': this.summary && this.summary.totals && this.summary.totals[this.entityType] ?  this.summary.totals[this.entityType].private : 0,
+                'draft': this.summary && this.summary.totals && this.summary.totals[this.entityType] ?  this.summary.totals[this.entityType].draft : 0,
+                'trash': this.summary && this.summary.totals && this.summary.totals[this.entityType] ?  this.summary.totals[this.entityType].trash : 0
             }
         }
     }
