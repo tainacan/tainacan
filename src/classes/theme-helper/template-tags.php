@@ -249,8 +249,21 @@ function tainacan_the_media_component($media_items, $args) {
  * @return string
  */
 function tainacan_get_the_media_component($media_items = array(), $args = array()) {
+	global $TAINACAN_BASE_URL;
+
+	// Modal layer for rendering photoswipe
+	echo tainacan_get_the_media_modal_layer();
+
+	//Necessary enqueues for the media component
+	wp_enqueue_style( 'swiper', 'https://unpkg.com/swiper/swiper-bundle.min.css', array(), TAINACAN_VERSION);
+	wp_enqueue_script( 'swiper', 'https://unpkg.com/swiper/swiper-bundle.min.js', array(), TAINACAN_VERSION, true );	 
+	wp_enqueue_style( 'photoswipe', 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.css', array(), TAINACAN_VERSION);
+	wp_enqueue_style( 'photoswipe-skin', 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/default-skin/default-skin.min.css', array(), TAINACAN_VERSION);
+	wp_enqueue_script( 'photoswipe', 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.js', array(), TAINACAN_VERSION, true );	 
+	wp_enqueue_script( 'photoswipe-skin', 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe-ui-default.min.js', array(), TAINACAN_VERSION, true );	 
+	wp_enqueue_script( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/js/media_component.js', ['swiper', 'photoswipe', 'photoswipe-skin'], TAINACAN_VERSION, true );
 ?>
-<?php var_dump($args['render_main_gallery']) ?>
+
 	<?php if ($args['render_main_gallery']) : ?>
 		<?php echo $args['before_main_div'] ?>
 		<div class="tainacan-media-component__swiper-main swiper-container <?php echo $args['class_main_div'] ?>">
@@ -258,7 +271,7 @@ function tainacan_get_the_media_component($media_items = array(), $args = array(
 			<ul class="swiper-wrapper <?php echo $args['class_main_ul'] ?>">
 				<?php foreach($media_items as $media_item) { ?>
 					<li class="swiper-slide <?php echo $args['class_main_li'] ?>">
-						<?php $media_item ?>
+						<?php tainacan_get_single_attachment_as_html($media_item->ID) ?>
 					</li>
 				<?php }; ?>
 			</ul>
@@ -271,13 +284,89 @@ function tainacan_get_the_media_component($media_items = array(), $args = array(
 	<div class="tainacan-media-component__swiper-thumbs swiper-container <?php echo $args['class_thumbs_div'] ?>">
 		<?php echo $args['before_thumbs_ul'] ?>
 		<ul class="swiper-wrapper <?php echo $args['class_thumbs_ul'] ?>">
-			<li class="swiper-slide <?php echo $args['class_thumbs_li'] ?>">
-				TESTEEE
-			</li>
+			<?php foreach($media_items as $media_item) { ?>
+				<li class="swiper-slide <?php echo $args['class_thumbs_li'] ?>">
+					<?php tainacan_get_single_attachment_as_html($media_item->ID) ?>
+				</li>
+			<?php }; ?>
 		</ul>
 		<?php echo $args['before_thumbs_ul'] ?>
 	</div>
 	<?php echo $args['after_thumbs_div'] ?>
+	
+<?php
+}
+
+/**
+ * Div with content necessay to render the photowipe modal
+ *
+ * @return string
+ */
+function tainacan_get_the_media_modal_layer() {
+?> 
+    <!-- add PhotoSwipe (.pswp) element to DOM - 
+    Root element of PhotoSwipe. Must have class pswp. -->
+    <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <!-- Background of PhotoSwipe. 
+                It's a separate element, as animating opacity is faster than rgba(). -->
+        <div class="pswp__bg"></div>
+
+        <!-- Slides wrapper with overflow:hidden. -->
+        <div class="pswp__scroll-wrap">
+
+            <!-- Container that holds slides. PhotoSwipe keeps only 3 slides in DOM to save memory. -->
+            <!-- don't modify these 3 pswp__item elements, data is added later on. -->
+            <div class="pswp__container">
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+                <div class="pswp__item"></div>
+            </div>
+
+            <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+            <div class="pswp__ui pswp__ui--hidden">
+
+                <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                    <div class="pswp__counter"></div>
+
+                    <button class="pswp__button pswp__button--close" title="<?php __('Close modal (Esc)', 'tainacan') ?>"></button>
+
+                    <button class="pswp__button pswp__button--share" title="<?php __('Share', 'tainacan') ?>"></button>
+
+                    <button class="pswp__button pswp__button--fs" title="<?php __('Toggle fullscreen', 'tainacan') ?>"></button>
+
+                    <button class="pswp__button pswp__button--zoom" title="<?php __('Zoom in/out', 'tainacan') ?>"></button>
+
+                    <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                    <!-- element will get class pswp__preloader--active when preloader is running -->
+                    <div class="pswp__preloader">
+                        <div class="pswp__preloader__icn">
+                            <div class="pswp__preloader__cut">
+                                <div class="pswp__preloader__donut"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                    <div class="pswp__share-tooltip"></div>
+                </div>
+
+                <button class="pswp__button pswp__button--arrow--left" title="<?php __('Anterior', 'tainacan') ?>">
+                </button>
+
+                <button class="pswp__button pswp__button--arrow--right" title="<?php __('Próximo', 'tainacan') ?>">
+                </button>
+
+                <div class="pswp__caption">
+                    <div class="pswp__caption__center"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 <?php
 }
 
@@ -389,8 +478,9 @@ function tainacan_is_view_mode_enabled($view_mode_slug) {
  */
 function tainacan_the_faceted_search($args = array()) {
 	$theme_helper = \Tainacan\Theme_Helper::get_instance();
-	echo $theme_helper->get_tainacan_items_list($args);
-	//TEST: tainacan_the_media_component(['a', 'b', '<strong>c</strong'], ['render_main_gallery' => true, 'class_main_div' => 'teste']);
+	// echo $theme_helper->get_tainacan_items_list($args);
+	$attachments = tainacan_get_the_attachments();
+	tainacan_the_media_component($attachments, ['render_main_gallery' => true, 'class_main_div' => 'teste']);
 }
 
 /**

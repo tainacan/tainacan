@@ -3,6 +3,7 @@ let path = require('path');
 module.exports = {
     entry: {
         admin: './src/views/admin/js/main.js',
+        media_component: './src/views/admin/js/media-component.js',
         theme_search: './src/views/theme-search/js/theme-main.js',
         item_submission: './src/views/item-submission/js/item-submission-main.js',
         roles: './src/views/roles/js/roles-main.js',
