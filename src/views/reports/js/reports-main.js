@@ -4,6 +4,7 @@ import router from './reports-router';
 import VTooltip from 'v-tooltip';
 import { Snackbar, Modal } from 'buefy';
 import VueApexCharts from 'vue-apexcharts';
+import cssVars from 'css-vars-ponyfill';
 import { 
     I18NPlugin,
     UserCapabilitiesPlugin,
@@ -53,3 +54,33 @@ new Vue({
     router,
     render: h => h(ReportsPage)
 });
+
+listen("load", window, function() {
+    var iconsStyle = document.createElement("style");
+    iconsStyle.setAttribute('type', 'text/css');
+    iconsStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }';
+    document.head.appendChild(iconsStyle);
+});
+
+// Initialize Ponyfill for Custom CSS properties
+cssVars({
+    // Options...
+});
+
+// Display Icons only once everything is loaded
+function listen(evnt, elem, func) {
+    if (elem.addEventListener)  // W3C DOM
+        elem.addEventListener(evnt,func,false);
+    else if (elem.attachEvent) { // IE DOM
+        var r = elem.attachEvent("on"+evnt, func);
+        return r;
+    } else if (document.head) {
+        var iconHideStyle = document.createElement("style");
+        iconHideStyle.innerText = '.tainacan-icon{ font-size: 0px !important; }'; 
+        document.head.appendChild(iconHideStyle);
+    } else {
+        var iconHideStyle = document.createElement("style");
+        iconHideStyle.innerText = '.tainacan-icon{ font-size: 0px !important; }'; 
+        document.getElementsByTagName("head")[0].appendChild(iconHideStyle);
+    }
+}

@@ -495,6 +495,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_terms_used'							 	 => __( 'Terms used', 'tainacan' ),
 	'label_number of terms'						 	 => __( 'Number of terms', 'tainacan' ),
 	'label_usage_of_terms_per_taxonomy'			 	 => __( 'Usage of terms per taxonomy', 'tainacan' ),
+	'label_loading_report'						 	 => __( 'Loading report...', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

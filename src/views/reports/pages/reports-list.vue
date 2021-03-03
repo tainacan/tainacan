@@ -48,17 +48,11 @@
                         entity-type="taxonomies"/>
             </div>
             <div class="column is-full">
-                <!-- <chart-block
+                <chart-block
                         :class="{ 'skeleton': isFetchingTaxonomiesList}"
                         class="postbox"
                         :chart-series="taxonomiesListChartSeries"
-                        :chart-options="taxonomiesListChartOptions" /> -->
-                <apexchart
-                        :class="{ 'skeleton': isFetchingTaxonomiesList}"
-                        class="postbox"
-                        height="380px"
-                        :options="taxonomiesListChartOptions" 
-                        :series="taxonomiesListChartSeries" />
+                        :chart-options="taxonomiesListChartOptions" />
             </div>
             <div class="column is-half is-one-quarter-widescreen">
                 <chart-block
@@ -193,15 +187,12 @@ export default {
                                 show: true
                             },
                             zoom: {
-                                enabled: true
+                                enabled: true,
+                                autoScaleYaxis: true,
                             }
                         },
-                        noData: {
-                            text: this.$i18n.get('loading', 'tainacan'),
-                            align: 'center',
-                            verticalAlign: 'middle',
-                            offsetX: 0,
-                            offsetY: 0
+                        title: {
+                            text: this.$i18n.get('label_usage_of_terms_per_taxonomy')
                         },
                         responsive: [{
                             breakpoint: 480,
@@ -221,7 +212,13 @@ export default {
                         },
                         xaxis: {
                             type: 'category',
+                            tickPlacement: 'on',
                             categories: taxonomiesLabels,
+                        },
+                         yaxis: {
+                            title: {
+                                text: this.$i18n.get('label_number of terms')
+                            }
                         },
                         legend: {
                             position: 'right',
