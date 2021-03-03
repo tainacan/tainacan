@@ -16,6 +16,7 @@ class REST_Reports_Controller extends REST_Controller {
 
 	public function init_objects() {
 		$this->metadatum_repository = Repositories\Metadata::get_instance();
+		$this->taxonomy_repository = Repositories\Taxonomies::get_instance();
 		$this->collections_repository = Repositories\Collections::get_instance();
 	}
 
@@ -39,6 +40,24 @@ class REST_Reports_Controller extends REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_summary'),
+					'permission_callback' => array($this, 'reports_permissions_check'),
+				),
+			)
+		);
+		register_rest_route($this->namespace, $this->rest_base . '/taxonomies/summary',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_taxonomies_summary'),
+					'permission_callback' => array($this, 'reports_permissions_check'),
+				),
+			)
+		);
+		register_rest_route($this->namespace, $this->rest_base . '/taxonomies/list',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_taxonomies_list'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
 				),
 			)
@@ -125,6 +144,83 @@ class REST_Reports_Controller extends REST_Controller {
 		}
 		$response['totals']['items']['total'] = ($response['totals']['items']['trash'] + $response['totals']['items']['draft'] + $response['totals']['items']['publish'] + $response['totals']['items']['private']);
 		return new \WP_REST_Response($response, 200);
+	}
+
+	public function get_taxonomies_summary($request) {
+		$response = array(
+			'totals'=> array(
+				'taxonomies' => array(
+					'total'   => 0,
+					'trash'   => 0,
+					'draft'   => 0,
+					'publish' => 0,
+					'private' => 0,
+					'used'    => 0,
+					'not_used'=> 0
+				)
+			)
+		);
+
+		$total_taxonomies = wp_count_posts( 'tainacan-taxonomy', 'readable' );
+
+		if (isset($total_taxonomies->publish) ||
+			isset($total_taxonomies->private) ||
+			isset($total_taxonomies->trash) ||
+			isset($total_taxonomies->draft)) {
+
+			$response['totals']['taxonomies']['trash'] = intval($total_taxonomies->trash);
+			$response['totals']['taxonomies']['publish'] = intval($total_taxonomies->publish);
+			$response['totals']['taxonomies']['draft'] = intval($total_taxonomies->draft);
+			$response['totals']['taxonomies']['private'] = intval($total_taxonomies->private);
+			$response['totals']['taxonomies']['total'] = $response['totals']['taxonomies']['trash'] + $response['totals']['taxonomies']['publish'] + $response['totals']['taxonomies']['draft'] + $response['totals']['taxonomies']['private'];
+			$response['totals']['taxonomies']['used'] = $this->query_count_used_taxononomies();
+			$response['totals']['taxonomies']['not_used'] = $response['totals']['taxonomies']['total'] - $response['totals']['taxonomies']['used'];
+		}
+		return new \WP_REST_Response($response, 200);
+	}
+
+	public function get_taxonomies_list($request) {
+		$response = array(
+			'list'=> array(
+				
+			)
+		);
+
+		$taxonomies = $this->taxonomy_repository->fetch();
+		if($taxonomies->have_posts()){
+			while ($taxonomies->have_posts()){
+				$taxonomies->the_post();
+
+				$taxonomy = new Entities\Taxonomy($taxonomies->post);
+				$total_terms = intval(wp_count_terms( $taxonomy->get_db_identifier(), array('hide_empty'=> false) ));
+				$total_terms_used = intval(wp_count_terms( $taxonomy->get_db_identifier(), array('hide_empty'=> true) ));
+				$total_terms_not_used = $total_terms - $total_terms_used;
+				
+				$response['list'][$taxonomy->get_db_identifier()] = array(
+					'id' => $taxonomy->get_id(),
+					'name' => $taxonomy->get_name(),
+					'total_terms' => $total_terms,
+					'total_terms_used' => $total_terms_used,
+					'total_terms_not_used' => $total_terms_not_used
+				);
+			}
+			wp_reset_postdata();
+		}
+		return new \WP_REST_Response($response, 200);
+	}
+
+
+	private function query_count_used_taxononomies() {
+		global $wpdb;
+		$sql_statement = $wpdb->prepare(
+			"SELECT COUNT(DISTINCT($wpdb->postmeta.meta_value))
+			 FROM $wpdb->postmeta
+			 WHERE meta_key = '_option_taxonomy_id'
+			"
+		);
+
+		$res = intval($wpdb->get_var( $sql_statement ));
+		return $res;
 	}
 
 }
