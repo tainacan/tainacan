@@ -48,11 +48,17 @@
                         entity-type="taxonomies"/>
             </div>
             <div class="column is-full">
-                <chart-block
+                <!-- <chart-block
                         :class="{ 'skeleton': isFetchingTaxonomiesList}"
                         class="postbox"
                         :chart-series="taxonomiesListChartSeries"
-                        :chart-options="taxonomiesListChartOptions" />
+                        :chart-options="taxonomiesListChartOptions" /> -->
+                <apexchart
+                        :class="{ 'skeleton': isFetchingTaxonomiesList}"
+                        class="postbox"
+                        height="380px"
+                        :options="taxonomiesListChartOptions" 
+                        :series="taxonomiesListChartSeries" />
             </div>
             <div class="column is-half is-one-quarter-widescreen">
                 <chart-block
@@ -98,7 +104,9 @@ export default {
             selectedCollection: 'default',
             isFetchingCollections: false,
             isFetchingSummary: false,
-            isFetchingTaxonomiesList: false
+            isFetchingTaxonomiesList: false,
+            taxonomiesListChartSeries: [],
+            taxonomiesListChartOptions: {}
         }
     },
     computed: {
@@ -108,62 +116,8 @@ export default {
         ...mapGetters('report', {
             reports: 'getReports',
             summary: 'getSummary',
-            taxonomiesList: 'getTaxonomiesList' 
-        }),
-        taxonomiesListChartSeries() {
-            return this.taxonomiesList ? [
-                {
-                    name: this.$i18n.get('label_terms_used'),
-                    data: Object.values(this.taxonomiesList).map((taxonomy) => { return taxonomy.total_terms_used })
-                },
-                {
-                    name: this.$i18n.get('label_terms_not_used'),
-                    data: Object.values(this.taxonomiesList).map((taxonomy) => { return taxonomy.total_terms_not_used })
-                }
-            ] : [] ;
-        },
-        taxonomiesListChartOptions() {
-            return this.taxonomiesList ? {
-                chart: {
-                    type: 'bar',
-                    height: 350,
-                    stacked: true,
-                    toolbar: {
-                        show: true
-                    },
-                    zoom: {
-                        enabled: true,
-                        autoScaleYaxis: true
-                    }
-                },
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        legend: {
-                        position: 'bottom',
-                        offsetX: -10,
-                        offsetY: 0
-                        }
-                    }
-                }],
-                plotOptions: {
-                    bar: {
-                        borderRadius: 0,
-                        horizontal: false,
-                    },
-                },
-                xaxis: {
-                    categories: Object.values(this.taxonomiesList).map((taxonomy) => { return taxonomy.name }),
-                },
-                legend: {
-                    position: 'right',
-                    offsetY: 40
-                },
-                    fill: {
-                    opacity: 1
-                }
-            } : {}
-        }
+            taxonomiesList: 'getTaxonomiesList'
+        })
     },
     watch: {
         '$route.query': {
@@ -197,6 +151,9 @@ export default {
             'fetchSummary',
             'fetchTaxonomiesList'
         ]),
+        ...mapGetters('report', [
+            'getTaxonomiesList' 
+        ]),
         loadSummary() {
             this.isFetchingSummary = true;
             this.fetchSummary({ collectionId: this.selectedCollection })
@@ -206,7 +163,77 @@ export default {
         loadTaxonomiesList() {
             this.isFetchingTaxonomiesList = true;
             this.fetchTaxonomiesList()
-                .then(() => this.isFetchingTaxonomiesList = false)
+                .then(() => {
+                    let termsUsed = [];
+                    let termsNotUsed = [];
+                    let taxonomiesLabels = [];
+                    for (const taxonomy in this.taxonomiesList) {
+                        termsUsed.push(this.taxonomiesList[taxonomy].total_terms_used);
+                        termsNotUsed.push(this.taxonomiesList[taxonomy].total_terms_not_used);
+                        taxonomiesLabels.push(this.taxonomiesList[taxonomy].name);
+                    }
+                    
+                    this.taxonomiesListChartSeries = [
+                        {
+                            name: this.$i18n.get('label_terms_used'),
+                            data: termsUsed
+                        },
+                        {
+                            name: this.$i18n.get('label_terms_not_used'),
+                            data: termsNotUsed
+                        }
+                    ];
+                    
+                    this.taxonomiesListChartOptions = {
+                        chart: {
+                            type: 'bar',
+                            height: 350,
+                            stacked: true,
+                            toolbar: {
+                                show: true
+                            },
+                            zoom: {
+                                enabled: true
+                            }
+                        },
+                        noData: {
+                            text: this.$i18n.get('loading', 'tainacan'),
+                            align: 'center',
+                            verticalAlign: 'middle',
+                            offsetX: 0,
+                            offsetY: 0
+                        },
+                        responsive: [{
+                            breakpoint: 480,
+                            options: {
+                                legend: {
+                                    position: 'bottom',
+                                    offsetX: -10,
+                                    offsetY: 0
+                                }
+                            }
+                        }],
+                        plotOptions: {
+                            bar: {
+                                borderRadius: 0,
+                                horizontal: false,
+                            },
+                        },
+                        xaxis: {
+                            type: 'category',
+                            categories: taxonomiesLabels,
+                        },
+                        legend: {
+                            position: 'right',
+                            offsetY: 40
+                        },
+                        fill: {
+                            opacity: 1
+                        }
+                    }
+
+                    this.isFetchingTaxonomiesList = false;
+                })
                 .catch(() => this.isFetchingTaxonomiesList = false);
         }
     }
