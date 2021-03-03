@@ -491,6 +491,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_switch_document_type'					 => __( 'Switch document type', 'tainacan' ),
 	'label_sending_form'							 => __( 'Sending form...', 'tainacan' ),
 	'label_form_not_loaded'							 => __( 'This form could not be loaded', 'tainacan' ),
+	'label_terms_not_used'							 => __( 'Terms not used', 'tainacan' ),
+	'label_terms_used'							 	 => __( 'Terms used', 'tainacan' ),
+	'label_number of terms'						 	 => __( 'Number of terms', 'tainacan' ),
+	'label_usage_of_terms_per_taxonomy'			 	 => __( 'Usage of terms per taxonomy', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

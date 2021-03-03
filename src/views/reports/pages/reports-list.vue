@@ -47,6 +47,13 @@
                         :summary="summary"
                         entity-type="taxonomies"/>
             </div>
+            <div class="column is-full">
+                <chart-block
+                        :class="{ 'skeleton': isFetchingTaxonomiesList}"
+                        class="postbox"
+                        :chart-series="taxonomiesListChartSeries"
+                        :chart-options="taxonomiesListChartOptions" />
+            </div>
             <div class="column is-half is-one-quarter-widescreen">
                 <chart-block
                         class="postbox"
@@ -64,12 +71,6 @@
                         class="postbox"
                         :chart-series="reports[2].chartSeries"
                         :chart-options="reports[2].chartOptions" />
-            </div>
-            <div class="column is-full">
-                <chart-block
-                        class="postbox"
-                        :chart-series="reports[3].chartSeries"
-                        :chart-options="reports[3].chartOptions" />
             </div>
             <div class="column is-full is-half-desktop">
                 <chart-block
@@ -96,7 +97,8 @@ export default {
         return {
             selectedCollection: 'default',
             isFetchingCollections: false,
-            isFetchingSummary: false
+            isFetchingSummary: false,
+            isFetchingTaxonomiesList: false
         }
     },
     computed: {
@@ -105,8 +107,63 @@ export default {
         }),
         ...mapGetters('report', {
             reports: 'getReports',
-            summary: 'getSummary' 
-        })
+            summary: 'getSummary',
+            taxonomiesList: 'getTaxonomiesList' 
+        }),
+        taxonomiesListChartSeries() {
+            return this.taxonomiesList ? [
+                {
+                    name: this.$i18n.get('label_terms_used'),
+                    data: Object.values(this.taxonomiesList).map((taxonomy) => { return taxonomy.total_terms_used })
+                },
+                {
+                    name: this.$i18n.get('label_terms_not_used'),
+                    data: Object.values(this.taxonomiesList).map((taxonomy) => { return taxonomy.total_terms_not_used })
+                }
+            ] : [] ;
+        },
+        taxonomiesListChartOptions() {
+            return this.taxonomiesList ? {
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    stacked: true,
+                    toolbar: {
+                        show: true
+                    },
+                    zoom: {
+                        enabled: true,
+                        autoScaleYaxis: true
+                    }
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        legend: {
+                        position: 'bottom',
+                        offsetX: -10,
+                        offsetY: 0
+                        }
+                    }
+                }],
+                plotOptions: {
+                    bar: {
+                        borderRadius: 0,
+                        horizontal: false,
+                    },
+                },
+                xaxis: {
+                    categories: Object.values(this.taxonomiesList).map((taxonomy) => { return taxonomy.name }),
+                },
+                legend: {
+                    position: 'right',
+                    offsetY: 40
+                },
+                    fill: {
+                    opacity: 1
+                }
+            } : {}
+        }
     },
     watch: {
         '$route.query': {
@@ -129,6 +186,8 @@ export default {
                 this.isFetchingCollections = false;
             })
             .catch(() => this.isFetchingCollections = false);
+        
+       this.loadTaxonomiesList();
     },
     methods: {
         ...mapActions('collection', [
@@ -136,12 +195,19 @@ export default {
         ]),
         ...mapActions('report', [
             'fetchSummary',
+            'fetchTaxonomiesList'
         ]),
         loadSummary() {
             this.isFetchingSummary = true;
             this.fetchSummary({ collectionId: this.selectedCollection })
                 .then(() => this.isFetchingSummary = false)
                 .catch(() => this.isFetchingSummary = false);
+        },
+        loadTaxonomiesList() {
+            this.isFetchingTaxonomiesList = true;
+            this.fetchTaxonomiesList()
+                .then(() => this.isFetchingTaxonomiesList = false)
+                .catch(() => this.isFetchingTaxonomiesList = false);
         }
     }
 }

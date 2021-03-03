@@ -5,3 +5,7 @@ export const getReports = state => {
 export const getSummary = state => {
   return state.summary;
 };
+
+export const getTaxonomiesList = state => {
+  return state.taxonomiesList;
+};

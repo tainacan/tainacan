@@ -40,3 +40,19 @@ export const fetchSummary = ({ commit }, { collectionId } ) => {
             .catch(error => reject(error));
     });
 };
+
+export const fetchTaxonomiesList = ({ commit }, ) => {
+
+    let endpoint = '/reports/taxonomies/list'
+
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get(endpoint)
+            .then(res => {
+                let taxonomiesList = res.data.list ? res.data.list : {};
+
+                commit('setTaxonomiesList', taxonomiesList);
+                resolve(taxonomiesList);
+            })
+            .catch(error => reject(error));
+    });
+};

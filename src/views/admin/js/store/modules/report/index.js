@@ -10,6 +10,9 @@ const state = {
                 chart: {
                     width: 200,
                     type: 'pie',
+                    toolbar: {
+                      show: true
+                    },
                 },
                 legend: {
                     position: 'bottom'
@@ -52,7 +55,7 @@ const state = {
                     type: 'bar',
                     height: 350,
                     stacked: true,
-                    stackType: '100%'
+                    stackType: '100%',
                 },
                 plotOptions: {
                     bar: {
@@ -645,7 +648,8 @@ const state = {
             },
         }
     ],
-    summary: {}
+    summary: {},
+    taxonomiesList: {}
 };
 function generateData (count, yrange) {
     var i = 0;
