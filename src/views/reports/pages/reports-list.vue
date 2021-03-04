@@ -84,40 +84,22 @@
                             class="skeleton postbox" />
                     </div>
                 </template>
-                <div class="column is-full is-half-widescreen">
-                    <!-- <apexchart
-                            height="380px"
-                            class="postbox"
-                            :series="reports[2].chartSeries"
-                            :options="reports[2].chartOptions" /> -->
-                </div>
-                <div class="column is-full is-half-desktop">
-                    <!-- <apexchart
-                            height="380px"
-                            class="postbox"
-                            :series="reports[4].chartSeries"
-                            :options="reports[4].chartOptions" /> -->
-                </div>
-                <div class="column is-full is-half-desktop">
-                    <!-- <apexchart
-                            height="380px"
-                            class="postbox"
-                            :series="reports[5].chartSeries"
-                            :options="reports[5].chartOptions" /> -->
-                </div>
             </div>
             <div 
                     v-if="selectedCollection && selectedCollection != 'default'"
                     class="column is-full is-two-fifths-desktop">
-                <apexchart
-                        v-if="!isFetchingMetadata"
-                        height="760px"
-                        class="postbox"
-                        :series="metadataDistributionChartSeries"
-                        :options="metadataDistributionChartOptions" />
+                <div 
+                        v-if="!isFetchingMetadata && metadata.totals && metadata.totals.metadata"
+                        :style="{ overflowY: 'auto', maxHeight: ((140 + (metadata.totals.metadata.total * 36)) <= 660 ? (140 + (metadata.totals.metadata.total * 36)) : 660) + 'px' }"
+                        class="postbox">
+                    <apexchart
+                            :height="100 + (metadata.totals.metadata.total * 36)"
+                            :series="metadataDistributionChartSeries"
+                            :options="metadataDistributionChartOptions" />
+                </div>
                 <div 
                         v-else
-                        style="min-height=760px"
+                        style="min-height=740px"
                         class="skeleton postbox" />
             </div>
         </div>
@@ -141,7 +123,8 @@ export default {
             metadataTypeChartSeries: [],
             metadataTypeChartOptions: {},
             metadataDistributionChartSeries: [],
-            metadataDistributionChartOptions: {}
+            metadataDistributionChartOptions: {},
+            metadataDistributionChartHeight: 730
         }
     },
     computed: {
@@ -204,56 +187,75 @@ export default {
             this.fetchMetadata({ collectionId: this.selectedCollection })
                 .then(() => {
 
-                    // Building Metadata Type Donut Chart
-                    let metadataTypeValues = [];
-                    let metadataTypeLabels = [];
+                    if (this.metadata.totals) {
+                        // Building Metadata Type Donut Chart
+                        let metadataTypeValues = [];
+                        let metadataTypeLabels = [];
 
-                    for (const metadataType in this.metadata.totals.metadata_per_type) {
-                        metadataTypeValues.push(this.metadata.totals.metadata_per_type[metadataType]);
-                        metadataTypeLabels.push(metadataType);
-                    }
-                    
-                    this.metadataTypeChartSeries = metadataTypeValues;
-                    this.metadataTypeChartOptions = {
-                        ...this.donutChartOptions,
-                        ...{
-                            title: {
-                                text: this.$i18n.get('metadata_types')
-                            },
-                            labels: metadataTypeLabels,
+                        for (const metadataType in this.metadata.totals.metadata_per_type) {
+                            metadataTypeValues.push(this.metadata.totals.metadata_per_type[metadataType]);
+                            metadataTypeLabels.push(metadataType);
+                        }
+                        
+                        this.metadataTypeChartSeries = metadataTypeValues;
+                        this.metadataTypeChartOptions = {
+                            ...this.donutChartOptions,
+                            ...{
+                                title: {
+                                    text: this.$i18n.get('metadata_types')
+                                },
+                                labels: metadataTypeLabels,
+                            }
                         }
                     }
 
-                    // Building Metadata Distribution Bar chart
-                    const orderedMetadataDistributions = Object.values(this.metadata.distribution).sort((a, b) => b.fill_percentage - a.fill_percentage);
-                    let metadataDistributionValues = [];
-                    let metadataDistributionValuesInverted = [];
-                    let metadataDistributionLabels = [];
+                    if (this.metadata.distribution) {
+                        // Building Metadata Distribution Bar chart
+                        const orderedMetadataDistributions = Object.values(this.metadata.distribution).sort((a, b) => b.fill_percentage - a.fill_percentage);
+                        let metadataDistributionValues = [];
+                        let metadataDistributionValuesInverted = [];
+                        let metadataDistributionLabels = [];
+                        const metadataCount = 100 + (this.metadata.totals.metadata.total * 36);
 
-                    orderedMetadataDistributions.forEach(metadataDistribution => {
-                        metadataDistributionValues.push(parseFloat(metadataDistribution.fill_percentage));
-                        metadataDistributionValuesInverted.push(100.0000 - parseFloat(metadataDistribution.fill_percentage).toFixed(4));
-                        metadataDistributionLabels.push(metadataDistribution.name);
-                    })
+                        orderedMetadataDistributions.forEach(metadataDistribution => {
+                            metadataDistributionValues.push(parseFloat(metadataDistribution.fill_percentage));
+                            metadataDistributionValuesInverted.push(100.0000 - parseFloat(metadataDistribution.fill_percentage).toFixed(4));
+                            metadataDistributionLabels.push(metadataDistribution.name);
+                        })
 
-                    this.metadataDistributionChartSeries = [
-                        { 
-                            name: this.$i18n.get('label_filled'),
-                            data: metadataDistributionValues
-                        },
-                        { 
-                            name: this.$i18n.get('label_not_filled'),
-                            data: metadataDistributionValuesInverted
-                        }
-                    ];
-                    this.metadataDistributionChartOptions = {
-                        ...this.horizontalBarChartOptions,
-                        ...{
-                            title: {
-                                text: this.$i18n.get('label_metadata_fill_distribution')
+                        this.metadataDistributionChartSeries = [
+                            { 
+                                name: this.$i18n.get('label_filled'),
+                                data: metadataDistributionValues
                             },
-                            labels: metadataDistributionLabels,
-                            colors: ['#25a189', '#a23939']
+                            { 
+                                name: this.$i18n.get('label_not_filled'),
+                                data: metadataDistributionValuesInverted
+                            }
+                        ];
+                        this.metadataDistributionChartOptions = {
+                            ...this.horizontalBarChartOptions,
+                            ...{
+                                chart: {
+                                    type: 'bar',
+                                    height: metadataCount,
+                                    stacked: true,
+                                    stackType: '100%',
+                                    toolbar: {
+                                        show: true
+                                    },
+                                    zoom: {
+                                        type: 'y',
+                                        enabled: true,
+                                        autoScaleYaxis: true,
+                                    }
+                                },
+                                title: {
+                                    text: this.$i18n.get('label_metadata_fill_distribution')
+                                },
+                                labels: metadataDistributionLabels,
+                                colors: ['#25a189', '#a23939']
+                            }
                         }
                     }
 
