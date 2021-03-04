@@ -21,6 +21,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'collections'                                    => __( 'Collections', 'tainacan' ),
 	'items'                                          => __( 'Items', 'tainacan' ),
 	'metadata'                                       => __( 'Metadata', 'tainacan' ),
+	'metadata_types'                                 => __( 'Metadata types', 'tainacan' ),
 	'filters'                                        => __( 'Filters', 'tainacan' ),
 	'taxonomies'                                     => __( 'Taxonomies', 'tainacan' ),
 	'activities'                                     => __( 'Activities', 'tainacan' ),
@@ -496,6 +497,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_number of terms'						 	 => __( 'Number of terms', 'tainacan' ),
 	'label_usage_of_terms_per_taxonomy'			 	 => __( 'Usage of terms per taxonomy', 'tainacan' ),
 	'label_loading_report'						 	 => __( 'Loading report...', 'tainacan' ),
+	'label_metadata_fill_distribution'			 	 => __( 'Metadata fill distribution', 'tainacan' ),
+	'label_not_filled'							 	 => __( 'Not filled yet', 'tainacan' ),
+	'label_filled'			 	 					 => __( 'Already filled', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

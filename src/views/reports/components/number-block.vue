@@ -1,9 +1,10 @@
 <template>
-    <div>
+    <div class="number-block">
         <p class="title is-2">
             <i-count-up
                     :delay="750"
-                    :end-val="total" />
+                    :end-val="total"
+                    :options="{ separator: ' ' }" />
         </p>
         <p class="subtitle is-3">
             <span class="icon has-text-gray">
@@ -21,7 +22,8 @@
                 <span class="value">
                     <i-count-up
                             :delay="750"
-                            :end-val="totalByStatus[statusOption.slug]" />
+                            :end-val="totalByStatus[statusOption.slug]"
+                            :options="{ separator: ' ' }" />
                     &nbsp;
                 </span>
                 <span 
@@ -57,9 +59,9 @@ export default {
         totalByStatus() {
             return {
                 'publish': this.summary && this.summary.totals && this.summary.totals[this.entityType] ? this.summary.totals[this.entityType].publish : 0,
-                'private': this.summary && this.summary.totals && this.summary.totals[this.entityType] ?  this.summary.totals[this.entityType].private : 0,
-                'draft': this.summary && this.summary.totals && this.summary.totals[this.entityType] ?  this.summary.totals[this.entityType].draft : 0,
-                'trash': this.summary && this.summary.totals && this.summary.totals[this.entityType] ?  this.summary.totals[this.entityType].trash : 0
+                'private': this.summary && this.summary.totals && this.summary.totals[this.entityType] ? this.summary.totals[this.entityType].private : 0,
+                'draft': this.summary && this.summary.totals && this.summary.totals[this.entityType] ? this.summary.totals[this.entityType].draft : 0,
+                'trash': this.summary && this.summary.totals && this.summary.totals[this.entityType] ? this.summary.totals[this.entityType].trash : 0
             }
         }
     }
@@ -67,8 +69,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.number-block {
+    min-height: 226px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content
+
     .title {
         margin-top: 0.25em;
+    }
+    .subtitle {
+        padding-left: 0;
+        padding-right: 0;
     }
     .status-list {
         display: flex;
@@ -78,4 +91,5 @@ export default {
             margin: 0 1em;
         }
     }
+}
 </style>

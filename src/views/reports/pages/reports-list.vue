@@ -25,7 +25,7 @@
                         class="postbox"
                         :source-collection="selectedCollection"
                         :summary="summary"
-                        entity-type="collections"/>
+                        entity-type="collections" />
             </div>
             <div
                     :class="{ 'is-one-third-tablet': !selectedCollection || selectedCollection == 'default' }"
@@ -45,44 +45,68 @@
                         class="postbox"
                         :source-collection="selectedCollection"
                         :summary="summary"
-                        entity-type="taxonomies"/>
+                        entity-type="taxonomies" />
             </div>
-            <div class="column is-full">
-                <chart-block
-                        :class="{ 'skeleton': isFetchingTaxonomiesList}"
+            <div 
+                v-if="!selectedCollection || selectedCollection == 'default'"
+                    class="column is-full">
+                <apexchart
+                        v-if="!isFetchingTaxonomiesList"
+                        height="380px"
                         class="postbox"
-                        :chart-series="taxonomiesListChartSeries"
-                        :chart-options="taxonomiesListChartOptions" />
+                        :series="taxonomiesListChartSeries"
+                        :options="taxonomiesListChartOptions" />
+                <div 
+                        v-else
+                        style="min-height=380px"
+                        class="skeleton postbox" />
             </div>
-            <div class="column is-half is-one-quarter-widescreen">
-                <chart-block
-                        class="postbox"
-                        :chart-series="reports[0].chartSeries"
-                        :chart-options="reports[0].chartOptions" />
-            </div>
-            <div class="column is-half is-one-quarter-widescreen">
-                <chart-block
-                        class="postbox"
-                        :chart-series="reports[1].chartSeries"
-                        :chart-options="reports[1].chartOptions" />
-            </div>
+            <template v-else>
+                <div class="column is-full is-half-desktop">
+                    <apexchart
+                            v-if="!isFetchingMetadata"
+                            height="380px"
+                            class="postbox"
+                            :series="metadataTypeChartSeries"
+                            :options="metadataTypeChartOptions" />
+                    <div 
+                        v-else
+                        style="min-height=380px"
+                        class="skeleton postbox" />
+                </div>
+                <div class="column is-full is-half-desktop">
+                     <apexchart
+                            v-if="!isFetchingMetadata"
+                            height="380px"
+                            class="postbox"
+                            :series="metadataDistributionChartSeries"
+                            :options="metadataDistributionChartOptions" />
+                    <div 
+                            v-else
+                            style="min-height=380px"
+                            class="skeleton postbox" />
+                </div>
+            </template>
             <div class="column is-full is-half-widescreen">
-                <chart-block
+                <!-- <apexchart
+                        height="380px"
                         class="postbox"
-                        :chart-series="reports[2].chartSeries"
-                        :chart-options="reports[2].chartOptions" />
+                        :series="reports[2].chartSeries"
+                        :options="reports[2].chartOptions" /> -->
             </div>
             <div class="column is-full is-half-desktop">
-                <chart-block
+                <!-- <apexchart
+                        height="380px"
                         class="postbox"
-                        :chart-series="reports[4].chartSeries"
-                        :chart-options="reports[4].chartOptions" />
+                        :series="reports[4].chartSeries"
+                        :options="reports[4].chartOptions" /> -->
             </div>
             <div class="column is-full is-half-desktop">
-                <chart-block
+                <!-- <apexchart
+                        height="380px"
                         class="postbox"
-                        :chart-series="reports[5].chartSeries"
-                        :chart-options="reports[5].chartOptions" />
+                        :series="reports[5].chartSeries"
+                        :options="reports[5].chartOptions" /> -->
             </div>
         </div>
     </div>
@@ -99,8 +123,13 @@ export default {
             isFetchingCollections: false,
             isFetchingSummary: false,
             isFetchingTaxonomiesList: false,
+            isFetchingMetadata: false,
             taxonomiesListChartSeries: [],
-            taxonomiesListChartOptions: {}
+            taxonomiesListChartOptions: {},
+            metadataTypeChartSeries: [],
+            metadataTypeChartOptions: {},
+            metadataDistributionChartSeries: [],
+            metadataDistributionChartOptions: {}
         }
     },
     computed: {
@@ -108,9 +137,12 @@ export default {
             collections: 'getCollections',
         }),
         ...mapGetters('report', {
-            reports: 'getReports',
             summary: 'getSummary',
-            taxonomiesList: 'getTaxonomiesList'
+            metadata: 'getMetadata',
+            taxonomiesList: 'getTaxonomiesList',
+            stackedBarChartOptions: 'getStackedBarChartOptions',
+            donutChartOptions: 'getDonutChartOptions',
+            horizontalBarChartOptions: 'getHorizontalBarChartOptions'
         })
     },
     watch: {
@@ -118,6 +150,11 @@ export default {
             handler(to) {
                 this.selectedCollection = to['collection'] ? to['collection'] : 'default';
                 this.loadSummary();
+
+                if (this.selectedCollection && this.selectedCollection != 'default')
+                    this.loadMetadata();
+                else
+                    this.loadTaxonomiesList(); 
             },
             immediate: true
         }
@@ -127,15 +164,7 @@ export default {
         this.selectedCollection = this.$route.query['collection'] ? this.$route.query['collection'] : 'default';
         
         // Loads collection for the select input
-        this.isFetchingCollections = true;
-        this.fetchAllCollectionNames()
-            .then(() => {
-                this.loadSummary();
-                this.isFetchingCollections = false;
-            })
-            .catch(() => this.isFetchingCollections = false);
-        
-       this.loadTaxonomiesList();
+        this.loadCollections();
     },
     methods: {
         ...mapActions('collection', [
@@ -143,29 +172,99 @@ export default {
         ]),
         ...mapActions('report', [
             'fetchSummary',
-            'fetchTaxonomiesList'
+            'fetchTaxonomiesList',
+            'fetchMetadata'
         ]),
-        ...mapGetters('report', [
-            'getTaxonomiesList' 
-        ]),
+        loadCollections() {
+            this.isFetchingCollections = true;
+            this.fetchAllCollectionNames()
+                .then(() => this.isFetchingCollections = false)
+                .catch(() => this.isFetchingCollections = false);
+        },
         loadSummary() {
             this.isFetchingSummary = true;
             this.fetchSummary({ collectionId: this.selectedCollection })
                 .then(() => this.isFetchingSummary = false)
                 .catch(() => this.isFetchingSummary = false);
         },
+        loadMetadata() {
+            this.isFetchingMetadata = true;
+            this.fetchMetadata({ collectionId: this.selectedCollection })
+                .then(() => {
+
+                    // Building Metadata Type Donut Chart
+                    let metadataTypeValues = [];
+                    let metadataTypeLabels = [];
+
+                    for (const metadataType in this.metadata.totals.metadata_per_type) {
+                        metadataTypeValues.push(this.metadata.totals.metadata_per_type[metadataType]);
+                        metadataTypeLabels.push(metadataType);
+                    }
+                    
+                    this.metadataTypeChartSeries = metadataTypeValues;
+                    this.metadataTypeChartOptions = {
+                        ...this.donutChartOptions,
+                        ...{
+                            title: {
+                                text: this.$i18n.get('metadata_types')
+                            },
+                            labels: metadataTypeLabels,
+                        }
+                    }
+
+                    // Building Metadata Distribution Bar chart
+                    const orderedMetadataDistributions = Object.values(this.metadata.distribution).sort((a, b) => b.fill_percentage - a.fill_percentage);
+                    let metadataDistributionValues = [];
+                    let metadataDistributionValuesInverted = [];
+                    let metadataDistributionLabels = [];
+
+                    orderedMetadataDistributions.forEach(metadataDistribution => {
+                        metadataDistributionValues.push(parseFloat(metadataDistribution.fill_percentage));
+                        metadataDistributionValuesInverted.push(100.0000 - parseFloat(metadataDistribution.fill_percentage).toFixed(4));
+                        metadataDistributionLabels.push(metadataDistribution.name);
+                    })
+
+                    this.metadataDistributionChartSeries = [
+                        { 
+                            name: this.$i18n.get('label_filled'),
+                            data: metadataDistributionValues
+                        },
+                        { 
+                            name: this.$i18n.get('label_not_filled'),
+                            data: metadataDistributionValuesInverted
+                        }
+                    ];
+                    this.metadataDistributionChartOptions = {
+                        ...this.horizontalBarChartOptions,
+                        ...{
+                            title: {
+                                text: this.$i18n.get('label_metadata_fill_distribution')
+                            },
+                            labels: metadataDistributionLabels,
+                            colors: ['#25a189', '#a23939']
+                        }
+                    }
+
+                    this.isFetchingMetadata = false;
+                })
+                .catch(() => this.isFetchingMetadata = false);
+        },
         loadTaxonomiesList() {
             this.isFetchingTaxonomiesList = true;
             this.fetchTaxonomiesList()
                 .then(() => {
+
+                    // Building Taxonomy term usage chart
+                    const orderedTaxonomies = Object.values(this.taxonomiesList).sort((a, b) => a.total_terms - b.total_terms);
                     let termsUsed = [];
                     let termsNotUsed = [];
                     let taxonomiesLabels = [];
-                    for (const taxonomy in this.taxonomiesList) {
-                        termsUsed.push(this.taxonomiesList[taxonomy].total_terms_used);
-                        termsNotUsed.push(this.taxonomiesList[taxonomy].total_terms_not_used);
-                        taxonomiesLabels.push(this.taxonomiesList[taxonomy].name);
-                    }
+
+                    orderedTaxonomies.forEach(taxonomy => {
+                        termsUsed.push(taxonomy.total_terms_used);
+                        termsNotUsed.push(taxonomy.total_terms_not_used);
+                        taxonomiesLabels.push(taxonomy.name);
+                    });
                     
                     this.taxonomiesListChartSeries = [
                         {
@@ -179,56 +278,24 @@ export default {
                     ];
                     
                     this.taxonomiesListChartOptions = {
-                        chart: {
-                            type: 'bar',
-                            height: 350,
-                            stacked: true,
-                            toolbar: {
-                                show: true
+                        ...this.stackedBarChartOptions, 
+                        ...{
+                            title: {
+                                text: this.$i18n.get('label_usage_of_terms_per_taxonomy')
                             },
-                            zoom: {
-                                enabled: true,
-                                autoScaleYaxis: true,
-                            }
-                        },
-                        title: {
-                            text: this.$i18n.get('label_usage_of_terms_per_taxonomy')
-                        },
-                        responsive: [{
-                            breakpoint: 480,
-                            options: {
-                                legend: {
-                                    position: 'bottom',
-                                    offsetX: -10,
-                                    offsetY: 0
+                            xaxis: {
+                                type: 'category',
+                                tickPlacement: 'on',
+                                categories: taxonomiesLabels,
+                            },
+                            yaxis: {
+                                title: {
+                                    text: this.$i18n.get('label_number of terms')
                                 }
                             }
-                        }],
-                        plotOptions: {
-                            bar: {
-                                borderRadius: 0,
-                                horizontal: false,
-                            },
-                        },
-                        xaxis: {
-                            type: 'category',
-                            tickPlacement: 'on',
-                            categories: taxonomiesLabels,
-                        },
-                         yaxis: {
-                            title: {
-                                text: this.$i18n.get('label_number of terms')
-                            }
-                        },
-                        legend: {
-                            position: 'right',
-                            offsetY: 40
-                        },
-                        fill: {
-                            opacity: 1
                         }
                     }
-
+                    
                     this.isFetchingTaxonomiesList = false;
                 })
                 .catch(() => this.isFetchingTaxonomiesList = false);
@@ -242,5 +309,6 @@ export default {
     padding: 1.125rem 1.25rem;
     margin-bottom: 0;
     height: 100%;
+    min-height: 380px;
 }
 </style>

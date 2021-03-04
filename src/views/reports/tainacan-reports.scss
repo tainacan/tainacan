@@ -1,6 +1,6 @@
 #tainacan-reports-app {
     // Tainacan Loading
-    .tainacan-icon {
-        font-size: inherit; // Will make it 1 once window.load is done; 
+    .tainacan-icon::before {
+        opacity: 0.0; // Will make it 1 once window.load is done; 
     }
 }
