@@ -15,7 +15,6 @@ import {
 Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
 
 import ReportsPage from '../reports.vue';
-import ChartBlock from '../components/chart-block.vue';
 import NumberBlock from '../components/number-block.vue';
 
 Vue.use(VueApexCharts)
@@ -37,7 +36,6 @@ Vue.use(VTooltip);
 Vue.use(Snackbar);
 Vue.use(Modal);
 
-Vue.component('chart-block', ChartBlock);
 Vue.component('number-block', NumberBlock);
 Vue.component('apexchart', VueApexCharts);
 
@@ -58,7 +56,7 @@ new Vue({
 listen("load", window, function() {
     var iconsStyle = document.createElement("style");
     iconsStyle.setAttribute('type', 'text/css');
-    iconsStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }';
+    iconsStyle.innerText = '.tainacan-icon::before{ opacity: 1.0 !important; }';
     document.head.appendChild(iconsStyle);
 });
 
@@ -76,11 +74,11 @@ function listen(evnt, elem, func) {
         return r;
     } else if (document.head) {
         var iconHideStyle = document.createElement("style");
-        iconHideStyle.innerText = '.tainacan-icon{ font-size: 0px !important; }'; 
+        iconHideStyle.innerText = '.tainacan-icon::before{ opacity: 0.0 !important; }'; 
         document.head.appendChild(iconHideStyle);
     } else {
         var iconHideStyle = document.createElement("style");
-        iconHideStyle.innerText = '.tainacan-icon{ font-size: 0px !important; }'; 
+        iconHideStyle.innerText = '.tainacan-icon::before{ opacity: 0.0 !important; }'; 
         document.getElementsByTagName("head")[0].appendChild(iconHideStyle);
     }
 }

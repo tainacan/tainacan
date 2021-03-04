@@ -1,7 +1,7 @@
 {
 "version": 3,
-"mappings": "",
-"sources": [],
+"mappings": "AAEI,4CAAuB;EACnB,OAAO,EAAE,GAAG",
+"sources": ["../../views/reports/tainacan-reports.scss"],
 "names": [],
 "file": "tainacan-reports.css"
 }

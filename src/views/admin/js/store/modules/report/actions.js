@@ -1,25 +1,5 @@
 import axios from '../../../axios';
 
-export const fetchReports = ({ commit }, {} ) => {
-
-    let endpoint = `/reports`;
-
-    return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
-            .then(res => {
-                let reports = res.data;
-
-                commit('setReports', reports);
-
-                resolve({
-                    reports: reports,
-                    total: res.headers['x-wp-total']
-                });
-            })
-            .catch(error => reject(error));
-    });
-};
-
 export const fetchSummary = ({ commit }, { collectionId } ) => {
 
     let endpoint = '/reports';
@@ -36,6 +16,27 @@ export const fetchSummary = ({ commit }, { collectionId } ) => {
 
                 commit('setSummary', summary);
                 resolve(summary);
+            })
+            .catch(error => reject(error));
+    });
+};
+
+export const fetchMetadata = ({ commit }, { collectionId } ) => {
+
+    let endpoint = '/reports';
+    
+    if (collectionId && collectionId != 'default')
+        endpoint += '/collection/' + collectionId + '/metadata';
+    else
+        endpoint += '/repository/metadata';
+
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get(endpoint)
+            .then(res => {
+                let metadata = res.data;
+
+                commit('setMetadata', metadata);
+                resolve(metadata);
             })
             .catch(error => reject(error));
     });
