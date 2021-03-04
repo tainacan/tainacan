@@ -226,7 +226,8 @@ function tainacan_the_media_component($media_items, $args) {
 /**
  * Tainacan Gallery component, used to render document, attachments and other files
  *
- * @param array        $media_items               Array of media items to be rendered inside the carousel. Default to empty array
+ * @param array        $media_items_thumbs          Array of media items to be rendered inside smaller the carousel. Default to empty array
+ * @param array        $media_items_main            Array of media items to be rendered inside main, bigger the carousel. Default to empty array
  * @param array|string $args {
  *     Optional. Array of arguments.
  *
@@ -248,7 +249,7 @@ function tainacan_the_media_component($media_items, $args) {
  * }
  * @return string
  */
-function tainacan_get_the_media_component($media_items = array(), $args = array()) {
+function tainacan_get_the_media_component($media_items_thumbs = array(), $media_items_main = array(), $args = array()) {
 	global $TAINACAN_BASE_URL;
 
 	// Modal layer for rendering photoswipe
@@ -260,16 +261,18 @@ function tainacan_get_the_media_component($media_items = array(), $args = array(
 	wp_enqueue_style( 'photoswipe', 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.css', array(), TAINACAN_VERSION);
 	wp_enqueue_style( 'photoswipe-skin', 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/default-skin/default-skin.min.css', array(), TAINACAN_VERSION);
 	wp_enqueue_script( 'photoswipe', 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe.min.js', array(), TAINACAN_VERSION, true );	 
-	wp_enqueue_script( 'photoswipe-skin', 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe-ui-default.min.js', array(), TAINACAN_VERSION, true );	 
+	wp_enqueue_script( 'photoswipe-skin', 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/4.1.3/photoswipe-ui-default.min.js', array(), TAINACAN_VERSION, true );
+
+	wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/media-component.css', array(), TAINACAN_VERSION);
 	wp_enqueue_script( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/js/media_component.js', ['swiper', 'photoswipe', 'photoswipe-skin'], TAINACAN_VERSION, true );
 ?>
 
-	<?php if ($args['render_main_gallery']) : ?>
+	<?php if ( isset($args['render_main_gallery']) && $args['render_main_gallery'] == true ) : ?>
 		<?php echo $args['before_main_div'] ?>
 		<div class="tainacan-media-component__swiper-main swiper-container <?php echo $args['class_main_div'] ?>">
 			<?php echo $args['before_main_ul'] ?>
 			<ul class="swiper-wrapper <?php echo $args['class_main_ul'] ?>">
-				<?php foreach($media_items as $media_item) { ?>
+				<?php foreach($media_items_main as $media_item) { ?>
 					<li class="swiper-slide <?php echo $args['class_main_li'] ?>">
 						<?php tainacan_get_single_attachment_as_html($media_item->ID) ?>
 					</li>
@@ -284,9 +287,9 @@ function tainacan_get_the_media_component($media_items = array(), $args = array(
 	<div class="tainacan-media-component__swiper-thumbs swiper-container <?php echo $args['class_thumbs_div'] ?>">
 		<?php echo $args['before_thumbs_ul'] ?>
 		<ul class="swiper-wrapper <?php echo $args['class_thumbs_ul'] ?>">
-			<?php foreach($media_items as $media_item) { ?>
+			<?php foreach($media_items_thumbs as $media_item) { ?>
 				<li class="swiper-slide <?php echo $args['class_thumbs_li'] ?>">
-					<?php tainacan_get_single_attachment_as_html($media_item->ID) ?>
+					<?php echo wp_get_attachment_image($media_item->ID) ?>
 				</li>
 			<?php }; ?>
 		</ul>
@@ -306,7 +309,7 @@ function tainacan_get_the_media_modal_layer() {
 ?> 
     <!-- add PhotoSwipe (.pswp) element to DOM - 
     Root element of PhotoSwipe. Must have class pswp. -->
-    <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="tainacan-photoswipe-layer pswp" tabindex="-1" role="dialog" aria-hidden="true">
 
         <!-- Background of PhotoSwipe. 
                 It's a separate element, as animating opacity is faster than rgba(). -->
@@ -480,7 +483,7 @@ function tainacan_the_faceted_search($args = array()) {
 	$theme_helper = \Tainacan\Theme_Helper::get_instance();
 	// echo $theme_helper->get_tainacan_items_list($args);
 	$attachments = tainacan_get_the_attachments();
-	tainacan_the_media_component($attachments, ['render_main_gallery' => true, 'class_main_div' => 'teste']);
+	tainacan_the_media_component($attachments, $attachments, ['render_main_gallery' => true, 'class_main_div' => 'teste']);
 }
 
 /**
