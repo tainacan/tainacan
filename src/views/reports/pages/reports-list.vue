@@ -18,95 +18,107 @@
         </select>
         <div class="columns is-multiline">
             <div 
-                    v-if="!selectedCollection || selectedCollection == 'default'"
-                    class="column is-full is-one-third-tablet has-text-centered">
+                    :class="{ 'is-three-fifths-desktop': selectedCollection && selectedCollection != 'default' }"
+                    class="column is-full columns is-multiline">
+                <div 
+                        v-if="!selectedCollection || selectedCollection == 'default'"
+                        class="column is-full is-one-third-tablet has-text-centered">
+                    <number-block
+                            :class="{ 'skeleton': isFetchingSummary }"
+                            class="postbox"
+                            :summary="summary"
+                            entity-type="collections" />
+                </div>
+                <div
+                        :class="{ 'is-one-third-tablet': !selectedCollection || selectedCollection == 'default' }"
+                        class="column is-full is-half-tablet has-text-centered">
+                    <number-block 
+                            :class="{ 'skeleton': isFetchingSummary }"
+                            class="postbox"
+                            :summary="summary"
+                            entity-type="items"/>
+                </div>
+                <div 
+                        v-if="!selectedCollection || selectedCollection == 'default'"
+                        class="column is-full is-one-third-tablet has-text-centered">
                 <number-block
-                        :class="{ 'skeleton': isFetchingSummary }"
-                        class="postbox"
-                        :source-collection="selectedCollection"
-                        :summary="summary"
-                        entity-type="collections" />
-            </div>
-            <div
-                    :class="{ 'is-one-third-tablet': !selectedCollection || selectedCollection == 'default' }"
-                    class="column is-full has-text-centered">
-                <number-block 
-                        :class="{ 'skeleton': isFetchingSummary }"
-                        class="postbox"
-                        :source-collection="selectedCollection"
-                        :summary="summary"
-                        entity-type="items"/>
-            </div>
-            <div 
-                    v-if="!selectedCollection || selectedCollection == 'default'"
-                    class="column is-full is-one-third-tablet has-text-centered">
-               <number-block
-                        :class="{ 'skeleton': isFetchingSummary }"
-                        class="postbox"
-                        :source-collection="selectedCollection"
-                        :summary="summary"
-                        entity-type="taxonomies" />
-            </div>
-            <div 
-                v-if="!selectedCollection || selectedCollection == 'default'"
-                    class="column is-full">
-                <apexchart
-                        v-if="!isFetchingTaxonomiesList"
-                        height="380px"
-                        class="postbox"
-                        :series="taxonomiesListChartSeries"
-                        :options="taxonomiesListChartOptions" />
+                            :class="{ 'skeleton': isFetchingSummary }"
+                            class="postbox"
+                            :summary="summary"
+                            entity-type="taxonomies" />
+                </div>
                 <div 
                         v-else
-                        style="min-height=380px"
-                        class="skeleton postbox" />
-            </div>
-            <template v-else>
-                <div class="column is-full is-half-desktop">
-                    <apexchart
-                            v-if="!isFetchingMetadata"
-                            height="380px"
+                        class="column is-full is-half-tablet has-text-centered">
+                <number-block
+                            :class="{ 'skeleton': isFetchingMetadata }"
                             class="postbox"
-                            :series="metadataTypeChartSeries"
-                            :options="metadataTypeChartOptions" />
-                    <div 
-                        v-else
-                        style="min-height=380px"
-                        class="skeleton postbox" />
+                            :summary="metadata"
+                            entity-type="metadata" />
                 </div>
-                <div class="column is-full is-half-desktop">
-                     <apexchart
-                            v-if="!isFetchingMetadata"
+                <div 
+                    v-if="!selectedCollection || selectedCollection == 'default'"
+                        class="column is-full">
+                    <apexchart
+                            v-if="!isFetchingTaxonomiesList"
                             height="380px"
                             class="postbox"
-                            :series="metadataDistributionChartSeries"
-                            :options="metadataDistributionChartOptions" />
+                            :series="taxonomiesListChartSeries"
+                            :options="taxonomiesListChartOptions" />
                     <div 
                             v-else
                             style="min-height=380px"
                             class="skeleton postbox" />
                 </div>
-            </template>
-            <div class="column is-full is-half-widescreen">
-                <!-- <apexchart
-                        height="380px"
-                        class="postbox"
-                        :series="reports[2].chartSeries"
-                        :options="reports[2].chartOptions" /> -->
+                <template v-else>
+                    <div class="column is-full">
+                        <apexchart
+                                v-if="!isFetchingMetadata"
+                                height="380px"
+                                class="postbox"
+                                :series="metadataTypeChartSeries"
+                                :options="metadataTypeChartOptions" />
+                        <div 
+                            v-else
+                            style="min-height=380px"
+                            class="skeleton postbox" />
+                    </div>
+                </template>
+                <div class="column is-full is-half-widescreen">
+                    <!-- <apexchart
+                            height="380px"
+                            class="postbox"
+                            :series="reports[2].chartSeries"
+                            :options="reports[2].chartOptions" /> -->
+                </div>
+                <div class="column is-full is-half-desktop">
+                    <!-- <apexchart
+                            height="380px"
+                            class="postbox"
+                            :series="reports[4].chartSeries"
+                            :options="reports[4].chartOptions" /> -->
+                </div>
+                <div class="column is-full is-half-desktop">
+                    <!-- <apexchart
+                            height="380px"
+                            class="postbox"
+                            :series="reports[5].chartSeries"
+                            :options="reports[5].chartOptions" /> -->
+                </div>
             </div>
-            <div class="column is-full is-half-desktop">
-                <!-- <apexchart
-                        height="380px"
+            <div 
+                    v-if="selectedCollection && selectedCollection != 'default'"
+                    class="column is-full is-two-fifths-desktop">
+                <apexchart
+                        v-if="!isFetchingMetadata"
+                        height="760px"
                         class="postbox"
-                        :series="reports[4].chartSeries"
-                        :options="reports[4].chartOptions" /> -->
-            </div>
-            <div class="column is-full is-half-desktop">
-                <!-- <apexchart
-                        height="380px"
-                        class="postbox"
-                        :series="reports[5].chartSeries"
-                        :options="reports[5].chartOptions" /> -->
+                        :series="metadataDistributionChartSeries"
+                        :options="metadataDistributionChartOptions" />
+                <div 
+                        v-else
+                        style="min-height=760px"
+                        class="skeleton postbox" />
             </div>
         </div>
     </div>

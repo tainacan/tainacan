@@ -92,6 +92,7 @@ const state = {
             show: true
         },
         zoom: {
+            type: 'y',
             enabled: true,
             autoScaleYaxis: true,
         }
@@ -108,6 +109,9 @@ const state = {
         type: 'category',
         tickPlacement: 'on',
         categories: [],
+      },
+      yaxis: {
+        tickPlacement: 'on',
       },
       tooltip: {
         y: {

@@ -48,7 +48,6 @@ export default {
         ICountUp
     },
     props: {
-        sourceCollection: String,
         entityType: String,
         summary: Object
     },
@@ -70,11 +69,11 @@ export default {
 
 <style lang="scss" scoped>
 .number-block {
-    min-height: 226px;
+    min-height: 210px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-content
+    align-content: center;
 
     .title {
         margin-top: 0.25em;
