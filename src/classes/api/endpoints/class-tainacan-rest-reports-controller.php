@@ -53,16 +53,7 @@ class REST_Reports_Controller extends REST_Controller {
 				),
 			)
 		);
-		register_rest_route($this->namespace, $this->rest_base . '/taxonomies/summary',
-			array(
-				array(
-					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array($this, 'get_taxonomies_summary'),
-					'permission_callback' => array($this, 'reports_permissions_check'),
-				),
-			)
-		);
-		register_rest_route($this->namespace, $this->rest_base . '/taxonomies/list',
+		register_rest_route($this->namespace, $this->rest_base . '/taxonomy',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -156,39 +147,6 @@ class REST_Reports_Controller extends REST_Controller {
 			}
 		}
 		$response['totals']['items']['total'] = ($response['totals']['items']['trash'] + $response['totals']['items']['draft'] + $response['totals']['items']['publish'] + $response['totals']['items']['private']);
-		return new \WP_REST_Response($response, 200);
-	}
-
-	public function get_taxonomies_summary($request) {
-		$response = array(
-			'totals'=> array(
-				'taxonomies' => array(
-					'total'   => 0,
-					'trash'   => 0,
-					'draft'   => 0,
-					'publish' => 0,
-					'private' => 0,
-					'used'    => 0,
-					'not_used'=> 0
-				)
-			)
-		);
-
-		$total_taxonomies = wp_count_posts( 'tainacan-taxonomy', 'readable' );
-
-		if (isset($total_taxonomies->publish) ||
-			isset($total_taxonomies->private) ||
-			isset($total_taxonomies->trash) ||
-			isset($total_taxonomies->draft)) {
-
-			$response['totals']['taxonomies']['trash'] = intval($total_taxonomies->trash);
-			$response['totals']['taxonomies']['publish'] = intval($total_taxonomies->publish);
-			$response['totals']['taxonomies']['draft'] = intval($total_taxonomies->draft);
-			$response['totals']['taxonomies']['private'] = intval($total_taxonomies->private);
-			$response['totals']['taxonomies']['total'] = $response['totals']['taxonomies']['trash'] + $response['totals']['taxonomies']['publish'] + $response['totals']['taxonomies']['draft'] + $response['totals']['taxonomies']['private'];
-			$response['totals']['taxonomies']['used'] = $this->query_count_used_taxononomies();
-			$response['totals']['taxonomies']['not_used'] = $response['totals']['taxonomies']['total'] - $response['totals']['taxonomies']['used'];
-		}
 		return new \WP_REST_Response($response, 200);
 	}
 
