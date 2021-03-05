@@ -494,8 +494,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_form_not_loaded'							 => __( 'This form could not be loaded', 'tainacan' ),
 	'label_terms_not_used'							 => __( 'Terms not used', 'tainacan' ),
 	'label_terms_used'							 	 => __( 'Terms used', 'tainacan' ),
-	'label_number of terms'						 	 => __( 'Number of terms', 'tainacan' ),
+	'label_number_of_terms'						 	 => __( 'Number of terms', 'tainacan' ),
+	'label_number_of_items'						 	 => __( 'Number of items', 'tainacan' ),
 	'label_usage_of_terms_per_taxonomy'			 	 => __( 'Usage of terms per taxonomy', 'tainacan' ),
+	'label_items_per_term'						 	 => __( 'Items per terms', 'tainacan' ),
 	'label_loading_report'						 	 => __( 'Loading report...', 'tainacan' ),
 	'label_metadata_fill_distribution'			 	 => __( 'Metadata fill distribution', 'tainacan' ),
 	'label_not_filled'							 	 => __( 'Not filled yet', 'tainacan' ),
@@ -504,6 +506,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_not_used'								 => __( 'Not used', 'tainacan' ),
 	/* translators: To be displayed with the number of Taxonomies used in the colllection */
 	'label_used'								 	 => __( 'Used', 'tainacan' ),
+	'label_select_a_taxonomy'					 	 => __( 'Select a taxonomy', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

@@ -10,6 +10,10 @@ export const getTaxonomiesList = state => {
   return state.taxonomiesList;
 };
 
+export const getTaxonomyTerms = state => {
+  return state.taxonomyTerms;
+};
+
 export const getStackedBarChartOptions = state => {
   return state.stackedBarChartOptions;
 };

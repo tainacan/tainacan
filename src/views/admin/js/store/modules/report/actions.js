@@ -57,3 +57,19 @@ export const fetchTaxonomiesList = ({ commit }, ) => {
             .catch(error => reject(error));
     });
 };
+
+export const fetchTaxonomyTerms = ({ commit }, taxonomyId) => {
+
+    let endpoint = '/reports/taxonomy/' + taxonomyId;
+
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get(endpoint)
+            .then(res => {
+                let taxonomyTerms = res.data.terms ? res.data.terms : {};
+
+                commit('setTaxonomyTerms', taxonomyTerms);
+                resolve(taxonomyTerms);
+            })
+            .catch(error => reject(error));
+    });
+};

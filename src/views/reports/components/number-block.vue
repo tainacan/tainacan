@@ -15,7 +15,7 @@
             &nbsp;{{ $i18n.get(entityType) }}
         </p>
         <p 
-                v-if="entityType == 'taxonomies'"
+                v-if="summary.totals && entityType == 'taxonomies'"
                 class="subtitle is-6">
             {{ $i18n.get('label_used') + ': ' + summary.totals[entityType].used + ' | ' + $i18n.get('label_not_used') + ': ' + summary.totals[entityType].not_used }}
         </p>

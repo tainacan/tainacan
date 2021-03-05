@@ -70,7 +70,34 @@
                             style="min-height=380px"
                             class="skeleton postbox" />
                 </div>
-                <template v-else>
+                <div 
+                    v-if="taxonomiesList != undefined && (!selectedCollection || selectedCollection == 'default')"
+                        class="column is-full">
+                    <select 
+                            v-if="!isFetchingTaxonomiesList"
+                            name="select_taxonomies"
+                            id="select_taxonomies"
+                            :placeholder="$i18n.get('label_select_a_taxonomy')"
+                            v-model="selectedTaxonomy">
+                        <option 
+                                v-for="(taxonomy, index) of taxonomiesListArray"
+                                :key="index"
+                                :value="taxonomy.id">
+                            {{ taxonomy.name }}
+                        </option>
+                    </select>
+                    <apexchart
+                            v-if="!isFetchingTaxonomiesList && selectedTaxonomy"
+                            height="380px"
+                            class="postbox"
+                            :series="taxonomyTermsChartSeries"
+                            :options="taxonomyTermsChartOptions" />
+                    <div 
+                            v-else
+                            style="min-height=380px"
+                            class="skeleton postbox" />
+                </div>
+                <template v-if="selectedCollection && selectedCollection != 'default'">
                     <div class="column is-full">
                         <apexchart
                                 v-if="!isFetchingMetadata"
@@ -114,12 +141,16 @@ export default {
     data() {
         return {
             selectedCollection: 'default',
+            selectedTaxonomy: '',
             isFetchingCollections: false,
             isFetchingSummary: false,
             isFetchingTaxonomiesList: false,
+            isFetchingTaxonomyTerms: false,
             isFetchingMetadata: false,
             taxonomiesListChartSeries: [],
             taxonomiesListChartOptions: {},
+            taxonomyTermsChartSeries: [],
+            taxonomyTermsChartOptions: {},
             metadataTypeChartSeries: [],
             metadataTypeChartOptions: {},
             metadataDistributionChartSeries: [],
@@ -134,11 +165,15 @@ export default {
         ...mapGetters('report', {
             summary: 'getSummary',
             metadata: 'getMetadata',
+            taxonomyTerms: 'getTaxonomyTerms',
             taxonomiesList: 'getTaxonomiesList',
             stackedBarChartOptions: 'getStackedBarChartOptions',
             donutChartOptions: 'getDonutChartOptions',
             horizontalBarChartOptions: 'getHorizontalBarChartOptions'
-        })
+        }),
+        taxonomiesListArray() {
+            return this.taxonomiesList && this.taxonomiesList != undefined ? Object.values(this.taxonomiesList) : [];
+        }
     },
     watch: {
         '$route.query': {
@@ -149,9 +184,14 @@ export default {
                 if (this.selectedCollection && this.selectedCollection != 'default')
                     this.loadMetadata();
                 else
-                    this.loadTaxonomiesList(); 
+                    this.loadTaxonomiesList();
+                
             },
             immediate: true
+        },
+        selectedTaxonomy() {
+            if (this.selectedTaxonomy && this.selectedTaxonomy != '')
+                this.loadTaxonomyTerms();
         }
     },
     created() {
@@ -168,6 +208,7 @@ export default {
         ...mapActions('report', [
             'fetchSummary',
             'fetchTaxonomiesList',
+            'fetchTaxonomyTerms',
             'fetchMetadata'
         ]),
         loadCollections() {
@@ -269,7 +310,7 @@ export default {
                 .then(() => {
 
                     // Building Taxonomy term usage chart
-                    const orderedTaxonomies = Object.values(this.taxonomiesList).sort((a, b) => a.total_terms - b.total_terms);
+                    const orderedTaxonomies = this.taxonomiesListArray.sort((a, b) => a.total_terms - b.total_terms);
                     let termsUsed = [];
                     let termsNotUsed = [];
                     let taxonomiesLabels = [];
@@ -279,7 +320,11 @@ export default {
                         termsNotUsed.push(taxonomy.total_terms_not_used);
                         taxonomiesLabels.push(taxonomy.name);
                     });
-                    
+
+                    // Sets taxonomy terms now that we have the 
+                    if (orderedTaxonomies.length)
+                        this.selectedTaxonomy = orderedTaxonomies[orderedTaxonomies.length - 1].id; 
+
                     this.taxonomiesListChartSeries = [
                         {
                             name: this.$i18n.get('label_terms_used'),
@@ -304,7 +349,7 @@ export default {
                             },
                             yaxis: {
                                 title: {
-                                    text: this.$i18n.get('label_number of terms')
+                                    text: this.$i18n.get('label_number_of_terms')
                                 }
                             }
                         }
@@ -313,6 +358,53 @@ export default {
                     this.isFetchingTaxonomiesList = false;
                 })
                 .catch(() => this.isFetchingTaxonomiesList = false);
+        },
+        loadTaxonomyTerms() {
+            this.isFetchingTaxonomyTerms = true;
+
+            this.fetchTaxonomyTerms(this.selectedTaxonomy)
+                .then(() => {
+
+                    // Building Taxonomy term usage chart
+                    const orderedTerms = Object.values(this.taxonomyTerms).sort((a, b) => a.count - b.count);
+                    let termsValues = [];
+                    let termsLabels = [];
+
+                    orderedTerms.forEach(term => {
+                        termsValues.push(term.count);
+                        termsLabels.push(term.name);
+                    });
+                    
+                    this.taxonomyTermsChartSeries = [
+                        {
+                            name: this.$i18n.get('label_terms_used'),
+                            data: termsValues
+                        }
+                    ];
+                    
+                    this.taxonomyTermsChartOptions = {
+                        ...this.stackedBarChartOptions, 
+                        ...{
+                            title: {
+                                text: this.$i18n.get('label_items_per_term')
+                            },
+                            xaxis: {
+                                type: 'category',
+                                tickPlacement: 'on',
+                                categories: termsLabels,
+                            },
+                            yaxis: {
+                                title: {
+                                    text: this.$i18n.get('label_number_of_items')
+                                }
+                            }
+                        }
+                    }
+                    
+                    this.isFetchingTaxonomyTerms = false;
+                })
+                .catch(() => this.isFetchingTaxonomyTerms = false);
+
         }
     }
 }
