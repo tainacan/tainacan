@@ -42,7 +42,23 @@ export const fetchMetadata = ({ commit }, { collectionId } ) => {
     });
 };
 
-export const fetchTaxonomiesList = ({ commit }, ) => {
+export const fetchCollectionsList = ({ commit }) => {
+
+    let endpoint = '/reports/collection'
+
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get(endpoint)
+            .then(res => {
+                let collectionsList = res.data.list ? res.data.list : {};
+
+                commit('setCollectionsList', collectionsList);
+                resolve(collectionsList);
+            })
+            .catch(error => reject(error));
+    });
+};
+
+export const fetchTaxonomiesList = ({ commit }) => {
 
     let endpoint = '/reports/taxonomy'
 

@@ -60,6 +60,20 @@
                     v-if="!selectedCollection || selectedCollection == 'default'"
                         class="column is-full">
                     <apexchart
+                            v-if="!isFetchingCollectionsList"
+                            height="380px"
+                            class="postbox"
+                            :series="collectionsListChartSeries"
+                            :options="collectionsListChartOptions" />
+                    <div 
+                            v-else
+                            style="min-height=380px"
+                            class="skeleton postbox" />
+                </div>
+                <div 
+                    v-if="!selectedCollection || selectedCollection == 'default'"
+                        class="column is-full">
+                    <apexchart
                             v-if="!isFetchingTaxonomiesList"
                             height="380px"
                             class="postbox"
@@ -144,9 +158,12 @@ export default {
             selectedTaxonomy: '',
             isFetchingCollections: false,
             isFetchingSummary: false,
+            isFetchingCollectionsList: false,
             isFetchingTaxonomiesList: false,
             isFetchingTaxonomyTerms: false,
             isFetchingMetadata: false,
+            collectionsListChartSeries: [],
+            collectionsListChartOptions: {},
             taxonomiesListChartSeries: [],
             taxonomiesListChartOptions: {},
             taxonomyTermsChartSeries: [],
@@ -167,6 +184,7 @@ export default {
             metadata: 'getMetadata',
             taxonomyTerms: 'getTaxonomyTerms',
             taxonomiesList: 'getTaxonomiesList',
+            collectionsList: 'getCollectionsList',
             stackedBarChartOptions: 'getStackedBarChartOptions',
             donutChartOptions: 'getDonutChartOptions',
             horizontalBarChartOptions: 'getHorizontalBarChartOptions'
@@ -183,8 +201,10 @@ export default {
 
                 if (this.selectedCollection && this.selectedCollection != 'default')
                     this.loadMetadata();
-                else
+                else {
+                    this.loadCollectionsList();
                     this.loadTaxonomiesList();
+                }
                 
             },
             immediate: true
@@ -207,6 +227,7 @@ export default {
         ]),
         ...mapActions('report', [
             'fetchSummary',
+            'fetchCollectionsList',
             'fetchTaxonomiesList',
             'fetchTaxonomyTerms',
             'fetchMetadata'
@@ -303,6 +324,69 @@ export default {
                     this.isFetchingMetadata = false;
                 })
                 .catch(() => this.isFetchingMetadata = false);
+        },
+        loadCollectionsList() {
+            this.isFetchingCollectionsList = true;
+            this.fetchCollectionsList()
+                .then(() => {
+
+                    // Building Collections items chart
+                    const orderedCollections = Object.values(this.collectionsList).sort((a, b) => a.items.total - b.items.total);
+                    let privateItems = [];
+                    let publicItems = [];
+                    let trashItems = [];
+                    let draftItems = [];
+                    let collectionsLabels = [];
+
+                    orderedCollections.forEach(collection => {
+                        privateItems.push(collection.items.private);
+                        publicItems.push(collection.items.publish);
+                        draftItems.push(collection.items.draft);
+                        trashItems.push(collection.items.trash);
+                        collectionsLabels.push(collection.name);
+                    });
+
+                    this.collectionsListChartSeries = [
+                        {
+                            name: this.$i18n.get('status_publish'),
+                            data: publicItems
+                        },
+                        {
+                            name: this.$i18n.get('status_private'),
+                            data: privateItems
+                        },
+                        {
+                            name: this.$i18n.get('status_draft'),
+                            data: draftItems
+                        },
+                        {
+                            name: this.$i18n.get('status_trash'),
+                            data: trashItems
+                        }
+                    ];
+                    
+                    this.collectionsListChartOptions = {
+                        ...this.stackedBarChartOptions, 
+                        ...{
+                            title: {
+                                text: this.$i18n.get('label_items_per_collection')
+                            },
+                            xaxis: {
+                                type: 'category',
+                                tickPlacement: 'on',
+                                categories: collectionsLabels,
+                            },
+                            yaxis: {
+                                title: {
+                                    text: this.$i18n.get('items')
+                                }
+                            }
+                        }
+                    }
+                    
+                    this.isFetchingCollectionsList = false;
+                })
+                .catch(() => this.isFetchingCollectionsList = false);
         },
         loadTaxonomiesList() {
             this.isFetchingTaxonomiesList = true;

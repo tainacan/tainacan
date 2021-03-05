@@ -6,6 +6,10 @@ export const setMetadata = (state, metadata) => {
   state.metadata = metadata;
 };
 
+export const setCollectionsList = (state, collectionsList) => {
+  state.collectionsList = collectionsList;
+};
+
 export const setTaxonomiesList = (state, taxonomiesList) => {
   state.taxonomiesList = taxonomiesList;
 };
