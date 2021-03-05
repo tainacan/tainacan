@@ -308,8 +308,8 @@ class REST_Reports_Controller extends REST_Controller {
 				'value' => $item['value'],
 				'label' => $item['label'],
 				'parent' => $item['parent'] == null ? 0 : $item['parent'],
-				'total_items' => $item['total_items'],
-				'total_children' => $item['total_children'],
+				'total_items' => intval($item['total_items']),
+				'total_children' => intval($item['total_children']),
 			];
 		}, $data['values']);
 		return new \WP_REST_Response($response, 200);
