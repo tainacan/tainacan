@@ -135,7 +135,9 @@ class REST_Reports_Controller extends REST_Controller {
 				'trash'   => 0,
 				'publish' => 0,
 				'draft'   => 0,
-				'private' => 0
+				'private' => 0,
+				'used'    => 0,
+				'not_used'=> 0
 			);
 			$total_taxonomies = wp_count_posts( 'tainacan-taxonomy', 'readable' );
 
@@ -149,6 +151,8 @@ class REST_Reports_Controller extends REST_Controller {
 				$response['totals']['taxonomies']['draft'] = intval($total_taxonomies->draft);
 				$response['totals']['taxonomies']['private'] = intval($total_taxonomies->private);
 				$response['totals']['taxonomies']['total'] = $response['totals']['taxonomies']['trash'] + $response['totals']['taxonomies']['publish'] + $response['totals']['taxonomies']['draft'] + $response['totals']['taxonomies']['private'];
+				$response['totals']['taxonomies']['used'] = $this->query_count_used_taxononomies();
+				$response['totals']['taxonomies']['not_used'] = $response['totals']['taxonomies']['total'] - $response['totals']['taxonomies']['used'];
 			}
 		}
 		$response['totals']['items']['total'] = ($response['totals']['items']['trash'] + $response['totals']['items']['draft'] + $response['totals']['items']['publish'] + $response['totals']['items']['private']);
