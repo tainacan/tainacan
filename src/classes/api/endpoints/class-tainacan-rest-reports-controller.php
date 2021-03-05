@@ -272,44 +272,39 @@ class REST_Reports_Controller extends REST_Controller {
 		global $wpdb;
 		$string_meta_ids = "'".implode("','", $meta_ids)."'";
 		$sql_statement = $wpdb->prepare(
-			"SELECT p.post_title AS 'name', m.meta_key AS id, ((m.total/$total_items) * 100) as fill_percentage
+			"SELECT p.post_title AS 'name', p.id AS id, IFNULL(((m.total/$total_items) * 100), 0) as fill_percentage
 			FROM
-				(SELECT meta_key, count(DISTINCT post_id) AS total
-				FROM $wpdb->postmeta 
-				WHERE $wpdb->postmeta.meta_key IN ($string_meta_ids)
-				AND $wpdb->postmeta.post_id IN ( 
-					SELECT id
-					FROM $wpdb->posts
-					WHERE $wpdb->posts.post_type = '$collection_post_type'
-				)
-				GROUP BY $wpdb->postmeta.meta_key) m 
-			INNER JOIN $wpdb->posts p on m.meta_key = p.id
-			UNION
-			SELECT p.post_title AS 'name', m.meta_key AS id, ((m.total/$total_items) * 100) as fill_percentage
-			FROM
+				$wpdb->posts p LEFT JOIN
 				(
-				SELECT 
-					mt.meta_key, count(DISTINCT tr.object_id) AS total
-				FROM 
-					$wpdb->term_taxonomy tt
-					INNER JOIN $wpdb->term_relationships tr ON tt.term_taxonomy_id = tr.term_taxonomy_id
-					INNER JOIN (
-						SELECT
-							post_id as 'meta_key', concat('tnc_tax_', meta_value) as 'tax_id'
-						FROM
-							$wpdb->postmeta
-						WHERE
-							meta_key='_option_taxonomy_id'
-					) mt ON tt.taxonomy = mt.tax_id
-				WHERE
-					mt.meta_key IN ($string_meta_ids)
-					AND tr.object_id IN (
-						SELECT id
-						FROM $wpdb->posts
-						WHERE $wpdb->posts.post_type = '$collection_post_type'
-					)
-				GROUP BY mt.meta_key) m 
-				INNER JOIN $wpdb->posts p on m.meta_key = p.id;"
+					SELECT meta_key, count(DISTINCT post_id) AS total
+					FROM $wpdb->postmeta 
+					WHERE $wpdb->postmeta.meta_key IN ($string_meta_ids)
+						AND $wpdb->postmeta.post_id IN ( 
+							SELECT id
+							FROM $wpdb->posts
+							WHERE $wpdb->posts.post_type = '$collection_post_type'
+						)
+					GROUP BY $wpdb->postmeta.meta_key
+					UNION
+					SELECT mt.meta_key, count(DISTINCT tr.object_id) AS total
+					FROM $wpdb->term_taxonomy tt
+						INNER JOIN $wpdb->term_relationships tr ON tt.term_taxonomy_id = tr.term_taxonomy_id
+						INNER JOIN (
+							SELECT post_id as 'meta_key', concat('tnc_tax_', meta_value) as 'tax_id'
+							FROM $wpdb->postmeta
+							WHERE meta_key='_option_taxonomy_id'
+						) mt ON tt.taxonomy = mt.tax_id
+					WHERE mt.meta_key IN ($string_meta_ids)
+						AND tr.object_id IN (
+							SELECT id
+							FROM $wpdb->posts
+							WHERE $wpdb->posts.post_type = '$collection_post_type'
+						)
+					GROUP BY mt.meta_key
+				) m
+				ON (p.id = m.meta_key)
+				WHERE p.id IN($string_meta_ids)
+			"
 		);
 		$res = $wpdb->get_results($sql_statement);
 		//return ['t' => $res, 's' => $sql_statement];
