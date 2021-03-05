@@ -48,11 +48,29 @@ class REST_Reports_Controller extends REST_Controller {
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_stats_collection_metadata'),
+					'permission_callback' => array($this, 'reports_permissions_check'),
+				),
+			)
+		);
+		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/metadata/(?P<metadata_id>[\d]+)',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_stats_metadata'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
 				),
 			)
 		);
+		register_rest_route($this->namespace, $this->rest_base . '/metadata/(?P<metadata_id>[\d]+)',
+		array(
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_stats_metadata'),
+				'permission_callback' => array($this, 'reports_permissions_check'),
+			),
+		)
+	);
 		register_rest_route($this->namespace, $this->rest_base . '/repository/summary',
 			array(
 				array(
@@ -72,14 +90,14 @@ class REST_Reports_Controller extends REST_Controller {
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/taxonomy/(?P<taxonomy_id>[\d]+)',
-		array(
 			array(
-				'methods'             => \WP_REST_Server::READABLE,
-				'callback'            => array($this, 'get_taxonomy'),
-				'permission_callback' => array($this, 'reports_permissions_check'),
-			),
-		)
-	);
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_taxonomy'),
+					'permission_callback' => array($this, 'reports_permissions_check'),
+				),
+			)
+		);
 	}
 
 	public function reports_permissions_check($request) {
@@ -229,6 +247,7 @@ class REST_Reports_Controller extends REST_Controller {
 		}
 		return new \WP_REST_Response($response, 200);
 	}
+
 	public function get_taxonomy($request) {
 		$response = array(
 			'terms'=> array()
@@ -264,6 +283,39 @@ class REST_Reports_Controller extends REST_Controller {
 	}
 
 	public function get_stats_metadata($request) {
+		// Free php session early so simultaneous requests dont get queued
+		session_write_close();
+		$response = array(
+			'list' => array()
+		);
+		$metadata_id = $request['metadata_id'];
+		$collection_id = ( isset($request['collection_id']) ) ? $request['collection_id'] : null;
+		$parent_id = 0;
+		if ( isset($request['parent']) ) {
+			$parent_id = (int) $request['parent'];
+		}
+
+		$args = [
+			'collection_id' => $collection_id,
+			'parent_id' => $parent_id,
+			'count_items'=> true,
+		];
+
+		$data = $this->metadatum_repository->fetch_all_metadatum_values($metadata_id, $args);
+		$response['list'] = array_map(function($item) {
+			return [
+				'type' => $item['type'],
+				'value' => $item['value'],
+				'label' => $item['label'],
+				'parent' => $item['parent'] == null ? 0 : $item['parent'],
+				'total_items' => $item['total_items'],
+				'total_children' => $item['total_children'],
+			];
+		}, $data['values']);
+		return new \WP_REST_Response($response, 200);
+	}
+
+	public function get_stats_collection_metadata($request) {
 		$response = array(
 			'totals'=> array(
 				'metadata' => array(
