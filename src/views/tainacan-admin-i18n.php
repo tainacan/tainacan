@@ -500,6 +500,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_metadata_fill_distribution'			 	 => __( 'Metadata fill distribution', 'tainacan' ),
 	'label_not_filled'							 	 => __( 'Not filled yet', 'tainacan' ),
 	'label_filled'			 	 					 => __( 'Already filled', 'tainacan' ),
+	/* translators: To be displayed with the number of Taxonomies not used in the colllection */
+	'label_not_used'								 => __( 'Not used', 'tainacan' ),
+	/* translators: To be displayed with the number of Taxonomies used in the colllection */
+	'label_used'								 	 => __( 'Used', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

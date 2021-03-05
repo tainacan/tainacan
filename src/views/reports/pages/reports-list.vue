@@ -193,8 +193,8 @@ export default {
                         let metadataTypeLabels = [];
 
                         for (const metadataType in this.metadata.totals.metadata_per_type) {
-                            metadataTypeValues.push(this.metadata.totals.metadata_per_type[metadataType]);
-                            metadataTypeLabels.push(metadataType);
+                            metadataTypeValues.push(this.metadata.totals.metadata_per_type[metadataType].count);
+                            metadataTypeLabels.push(this.metadata.totals.metadata_per_type[metadataType].name);
                         }
                         
                         this.metadataTypeChartSeries = metadataTypeValues;

@@ -14,6 +14,11 @@
             </span>
             &nbsp;{{ $i18n.get(entityType) }}
         </p>
+        <p 
+                v-if="entityType == 'taxonomies'"
+                class="subtitle is-6">
+            {{ $i18n.get('label_used') + ': ' + summary.totals[entityType].used + ' | ' + $i18n.get('label_not_used') + ': ' + summary.totals[entityType].not_used }}
+        </p>
         <ul class="has-text-gray status-list">
             <li 
                     v-for="(statusOption, index) of $statusHelper.getStatuses()"
@@ -81,6 +86,9 @@ export default {
     .subtitle {
         padding-left: 0;
         padding-right: 0;
+    }
+    .subtitle.is-6 {
+        margin-bottom: 0px;
     }
     .status-list {
         display: flex;
