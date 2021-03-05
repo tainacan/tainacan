@@ -62,6 +62,15 @@ class REST_Reports_Controller extends REST_Controller {
 				),
 			)
 		);
+		register_rest_route($this->namespace, $this->rest_base . '/taxonomy/(?P<taxonomy_id>[\d]+)',
+		array(
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_taxonomy'),
+				'permission_callback' => array($this, 'reports_permissions_check'),
+			),
+		)
+	);
 	}
 
 	public function reports_permissions_check($request) {
@@ -176,6 +185,39 @@ class REST_Reports_Controller extends REST_Controller {
 				);
 			}
 			wp_reset_postdata();
+		}
+		return new \WP_REST_Response($response, 200);
+	}
+	public function get_taxonomy($request) {
+		$response = array(
+			'terms'=> array()
+		);
+		$taxonomy_id = $request['taxonomy_id'];
+		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
+		$taxonomy_identifier = $taxonomy->get_db_identifier();
+		$taxonomy_total_terms = wp_count_terms($taxonomy_identifier, array('hide_empty' => false) );
+		$limit = 100;
+		$offset = 0;
+
+		if ( !$taxonomy_total_terms) {
+			$taxonomy_total_terms = 0;
+		}
+
+		while($offset < $taxonomy_total_terms) {
+			$terms = get_terms( array(
+				'taxonomy' => $taxonomy->get_db_identifier(),
+				'number' => $limit,
+				'offset' => $offset,
+				'hide_empty' => false,
+			) );
+			foreach ($terms as $term) {
+				$response['terms'][$term->term_id] = array(
+					'id' => $term->term_id,
+					'name' => $term->name,
+					'count' => $term->count
+				);
+			}
+			$offset+=$limit;
 		}
 		return new \WP_REST_Response($response, 200);
 	}
