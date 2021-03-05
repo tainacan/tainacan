@@ -44,7 +44,7 @@ export const fetchMetadata = ({ commit }, { collectionId } ) => {
 
 export const fetchTaxonomiesList = ({ commit }, ) => {
 
-    let endpoint = '/reports/taxonomies/list'
+    let endpoint = '/reports/taxonomy'
 
     return new Promise((resolve, reject) => {
         axios.tainacan.get(endpoint)
