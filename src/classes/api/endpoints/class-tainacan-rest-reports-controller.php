@@ -242,9 +242,16 @@ class REST_Reports_Controller extends REST_Controller {
 			foreach($result_metadatum as $metadatum) {
 				$meta_type =  explode('\\', $metadatum->get_metadata_type()) ;
 				$meta_type = strtolower($meta_type[sizeof($meta_type)-1]);
+				$meta_type_name = $metadatum->get_metadata_type_object()->get_name();
+				if( in_array($meta_type, ['core_description','core_title']) ) {
+					$meta_type = 'text';
+					$meta_type_name = (new \Tainacan\Metadata_Types\Text())->get_name();
+				}
 
 				$response['totals']['metadata'][$metadatum->get_status()]++;
-				$response['totals']['metadata_per_type'][$meta_type]++;
+				$response['totals']['metadata_per_type'][$meta_type]['name'] = $meta_type_name;
+				$response['totals']['metadata_per_type'][$meta_type]['count']++;
+
 				$meta_ids[] = $metadatum->get_id();
 			}
 			$response['distribution'] = $this->query_item_metadata_distribution($meta_ids, $collection->get_db_identifier());
