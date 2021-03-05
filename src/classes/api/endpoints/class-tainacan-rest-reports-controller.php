@@ -26,6 +26,15 @@ class REST_Reports_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function register_routes() {
+		register_rest_route($this->namespace, $this->rest_base . '/collection',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_collections'),
+					'permission_callback' => array($this, 'reports_permissions_check'),
+				),
+			)
+		);
 		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/summary',
 			array(
 				array(
@@ -75,6 +84,38 @@ class REST_Reports_Controller extends REST_Controller {
 
 	public function reports_permissions_check($request) {
 		return true;
+	}
+
+	public function get_collections($request) {
+		$response = array(
+			'list' => []
+		);
+		$collections = $this->collections_repository->fetch([]);
+		
+		if($collections->have_posts()) {
+			while ($collections->have_posts()) {
+				$collections->the_post();
+				$collection = new Entities\Collection($collections->post);
+				$total_items = wp_count_posts( $collection->get_db_identifier(), 'readable' );
+
+				if (isset($total_items->publish) || isset($total_items->private) ||
+					isset($total_items->trash) || isset($total_items->draft)) {
+					$response['list'][$collection->get_db_identifier()] = array(
+						'id' => $collection->get_id(),
+						'name' => $collection->get_name(),
+						'items' => array(
+							'trash' => intval($total_items->trash),
+							'draft'   => intval($total_items->draft),
+							'publish' => intval($total_items->publish),
+							'private' => intval($total_items->private),
+							'total' => $total_items->trash + $total_items->draft + $total_items->publish + $total_items->private
+						)
+					);
+				}
+			}
+			wp_reset_postdata();
+		}
+		return new \WP_REST_Response($response, 200);
 	}
 
 	public function get_summary($request) {
