@@ -78,9 +78,20 @@
                          <div 
                                 class="tainacan-list-thumbnail"
                                 v-if="item.thumbnail != undefined">
-                            <img 
+                            <blur-hash-image
+                                    v-if="item.thumbnail != undefined"
+                                    class="tainacan-list-item-thumbnail"
+                                    :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
+                                    :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium-full', 120)"
+                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
+                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                    :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">  
+                                    :transition-duration="500"
+                                />
+                            <!-- <img 
+                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)">   -->
                         </div>
                         <div class="list-metadata media-body">
                             <span 

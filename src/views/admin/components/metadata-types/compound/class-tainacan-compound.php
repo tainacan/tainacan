@@ -73,6 +73,17 @@ class Compound extends Metadata_Type {
             ]
         ];
     }
+	
+	/**
+     * Gets print-ready version of the options list in html
+     *
+     * Checks if at least one option exists, otherwise return an empty string
+     * 
+     * @return string An html content with labels and values for the options or an empty string
+     */
+    public function get_options_as_html() {
+        return '';
+    }
 
 	/**
 	 * save options and remove old children

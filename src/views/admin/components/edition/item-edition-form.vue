@@ -305,17 +305,21 @@
                                         :size="178"
                                         :file="{
                                             media_type: 'image',
-                                            thumbnails: { 'tainacan-medium': [ item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] ] },
+                                            thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
                                             title: $i18n.get('label_thumbnail'),
-                                            description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + item.thumbnail.full[0] + `'/>` 
+                                            description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_mimetype) + `'/>` 
                                         }"/>
                                 <figure
                                         v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
                                         class="image">
-                                    <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
+                                    <span 
+                                            class="image-placeholder"
+                                            v-if="item.document_type == 'empty'">
+                                        {{ $i18n.get('label_empty_thumbnail') }}
+                                    </span>
                                     <img
                                             :alt="$i18n.get('label_thumbnail')"
-                                            :src="thumbPlaceholderPath">
+                                            :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
                                 </figure>
                                 <div class="thumbnail-buttons-row">
                                     <a
@@ -628,7 +632,7 @@
                         v-if="collection && collection.current_user_can_publish_items"
                         @click="onSubmit(visibility)"
                         type="button"
-                        class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                        class="button is-success">{{ $i18n.get('label_verb_publish') }}</button>
             </div>
             <div
                     class="form-submission-footer"
@@ -673,13 +677,13 @@
                             v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
                             @click="onSubmit(visibility)"
                             type="button"
-                            class="button is-success">{{ $i18n.get('label_publish') }}</button>
+                            class="button is-success">{{ $i18n.get('label_verb_publish') }}</button>
                     <button 
                             v-else
                             @click="onSubmit(visibility, 'next')"
                             type="button"
                             class="button is-success">
-                        <span>{{ $i18n.get('label_publish') }}</span>
+                        <span>{{ $i18n.get('label_verb_publish') }}</span>
                         <span class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                         </span>
@@ -835,7 +839,6 @@ export default {
             },
             thumbnail: {},
             formErrorMessage: '',
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             thumbnailMediaFrame: undefined,
             attachmentMediaFrame: undefined,
             fileMediaFrame: undefined,

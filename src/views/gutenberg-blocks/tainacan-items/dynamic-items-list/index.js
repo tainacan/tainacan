@@ -10,6 +10,7 @@ import DynamicItemsModal from './dynamic-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
+import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import DeprecatedBlocks from './dynamic-items-list-deprecated.js';
 
@@ -139,7 +140,7 @@ registerBlockType('tainacan/dynamic-items-list', {
             type: String,
             default: ''
         },
-        osaicItemFocalPointm: {
+        mosaicItemFocalPoint: {
             type: Object,
             default: {
                 x: 0.5,
@@ -149,6 +150,14 @@ registerBlockType('tainacan/dynamic-items-list', {
         mosaicDensity: {
             type: Number,
             default: 5
+        },
+        maxColumnsCount: {
+            type: Number,
+            default: 4
+        },
+        cropImagesToSquare: {
+            type: Boolean,
+            value: true
         }
     },
     supports: {
@@ -184,11 +193,25 @@ registerBlockType('tainacan/dynamic-items-list', {
             mosaicGridRows,
             mosaicItemFocalPoint,
             sampleBackgroundImage,
-            mosaicDensity
+            mosaicDensity,
+            maxColumnsCount,
+            cropImagesToSquare
         } = attributes;
 
         // Obtains block's client id to render it on save function
         setAttributes({ blockId: clientId });
+        
+        // Sets some defaults that were not working
+        if (maxColumnsCount === undefined) {
+            maxColumnsCount = 5;
+            setAttributes({ maxColumnsCount: maxColumnsCount });
+        }
+        if (cropImagesToSquare === undefined) {  
+            cropImagesToSquare = true;    
+            setAttributes({ cropImagesToSquare: cropImagesToSquare });
+        }
+                
+        const thumbHelper = ThumbnailHelperFunctions();
         
         function prepareItem(item) {
             return (
@@ -196,22 +219,23 @@ registerBlockType('tainacan/dynamic-items-list', {
                     key={ item.id }
                     className="item-list-item"
                     style={ {
-                        marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '', 
-                        backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'medium_large')})` : 'none',
+                        backgroundImage: layout == 'mosaic' ? `url(${ thumbHelper.getSrc(item['thumbnail'], 'medium_large', item['document_mimetype']) })` : 'none',
                         backgroundPosition: layout == 'mosaic' ? `${ (mosaicItemFocalPoint && mosaicItemFocalPoint.x ? mosaicItemFocalPoint.x : 0.5) * 100 }% ${ (mosaicItemFocalPoint && mosaicItemFocalPoint.y ? mosaicItemFocalPoint.y : 0.5) * 100 }%` : 'none'
                     }}
                 >      
                     <a 
                         id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
                         href={ item.url } 
+                        onClick={ (event) => event.preventDefault() }
                         target="_blank"
                         style={ {
                             
                         } }
                         className={ (!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '') }>
                         <img
-                            src={ getItemThumbnail(item, 'tainacan-medium') }
-                            alt={ item.title ? item.title : __( 'Thumbnail', 'tainacan' ) }/>
+                            src={ thumbHelper.getSrc(item['thumbnail'], ( (layout == 'list' || cropImagesToSquare) ? 'tainacan-medium' : 'tainacan-medium-full'), item['document_mimetype']) }
+                            srcSet={ thumbHelper.getSrcSet(item['thumbnail'], ( (layout == 'list' || cropImagesToSquare) ? 'tainacan-medium' : 'tainacan-medium-full'), item['document_mimetype']) }
+                            alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : $root.__( 'Thumbnail', 'tainacan' )) }/>
                         <span>{ item.title ? item.title : '' }</span>
                     </a>
                 </li>
@@ -597,17 +621,30 @@ registerBlockType('tainacan/dynamic-items-list', {
                             <hr></hr>
                             <div>
                                 { layout == 'list' ? 
-                                    <ToggleControl
-                                        label={__('Image', 'tainacan')}
-                                        help={ showImage ? __("Toggle to show item's image", 'tainacan') : __("Do not show item's image", 'tainacan')}
-                                        checked={ showImage }
-                                        onChange={ ( isChecked ) => {
-                                                showImage = isChecked;
-                                                setAttributes({ showImage: showImage });
-                                                setContent();
-                                            } 
-                                        }
-                                    /> 
+                                    <div style={{ marginTop: '16px'}}>
+                                        <RangeControl
+                                            label={ __('Maximum number of columns on a wide screen', 'tainacan') }
+                                            value={ maxColumnsCount ? maxColumnsCount : 5 }
+                                            onChange={ ( aMaxColumnsCount ) => {
+                                                maxColumnsCount = aMaxColumnsCount;
+                                                setAttributes( { maxColumnsCount: aMaxColumnsCount } );
+                                                setContent(); 
+                                            }}
+                                            min={ 1 }
+                                            max={ 7 }
+                                        />
+                                        <ToggleControl
+                                            label={__('Image', 'tainacan')}
+                                            help={ showImage ? __("Toggle to show item's image", 'tainacan') : __("Do not show item's image", 'tainacan')}
+                                            checked={ showImage }
+                                            onChange={ ( isChecked ) => {
+                                                    showImage = isChecked;
+                                                    setAttributes({ showImage: showImage });
+                                                    setContent();
+                                                } 
+                                            }
+                                        />
+                                    </div>
                                 : null }
                                 { layout == 'grid' || layout == 'mosaic' ?
                                     <div>
@@ -635,6 +672,32 @@ registerBlockType('tainacan/dynamic-items-list', {
                                                 max={ 48 }
                                             />
                                         </div>
+                                    </div>
+                                : null }
+                                { layout == 'grid' ?
+                                    <div style={{ marginTop: '16px'}}>
+                                        <RangeControl
+                                                label={ __('Maximum number of columns on a wide screen', 'tainacan') }
+                                                value={ maxColumnsCount ? maxColumnsCount : 5 }
+                                                onChange={ ( aMaxColumnsCount ) => {
+                                                    maxColumnsCount = aMaxColumnsCount;
+                                                    setAttributes( { maxColumnsCount: aMaxColumnsCount } );
+                                                    setContent(); 
+                                                }}
+                                                min={ 1 }
+                                                max={ 7 }
+                                            />
+                                        <ToggleControl
+                                                label={__('Crop Images', 'tainacan')}
+                                                help={ cropImagesToSquare ? __('Do not use square cropeed version of the item thumbnail.', 'tainacan') : __('Toggle to use square cropped version of the item thumbnail.', 'tainacan') }
+                                                checked={ cropImagesToSquare }
+                                                onChange={ ( isChecked ) => {
+                                                        cropImagesToSquare = isChecked;
+                                                        setAttributes({ cropImagesToSquare: cropImagesToSquare });
+                                                        setContent();
+                                                    } 
+                                                }
+                                            />
                                     </div>
                                 : null }
                             </div>
@@ -919,11 +982,11 @@ registerBlockType('tainacan/dynamic-items-list', {
                         { layout !== 'mosaic' ? (
                             <ul 
                                 style={{
-                                    gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit',
+                                    gridGap: layout == 'grid' ? ((showName ? gridMargin + 24 : gridMargin) + 'px') : 'inherit',
                                     marginTop: showSearchBar || showCollectionHeader ? '-' + (Number(gridMargin)/2) : '0px',    
                                     padding: (Number(gridMargin)/4) + 'px',
                                 }}
-                                className={'items-list-edit items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')}>
+                                className={'items-list-edit items-layout-' + layout + (!showName ? ' items-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '') }>
                                 { items }
                             </ul>
                         ) : 
@@ -990,7 +1053,9 @@ registerBlockType('tainacan/dynamic-items-list', {
             mosaicGridRows,
             mosaicGridColumns,
             mosaicItemFocalPoint,
-            mosaicDensity
+            mosaicDensity,
+            maxColumnsCount,
+            cropImagesToSquare
         } = attributes;
 
         return <div 
@@ -1002,6 +1067,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                     show-search-bar={ '' + showSearchBar }
                     show-collection-header={ '' + showCollectionHeader }
                     show-collection-label={ '' + showCollectionLabel }
+                    crop-images-to-square={ '' + cropImagesToSquare }
                     layout={ layout }
                     mosaic-height={ mosaicHeight }
                     mosaic-density={ mosaicDensity }
@@ -1009,6 +1075,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                     mosaic-grid-columns={ mosaicGridColumns }
                     mosaic-item-focal-point-x={ (mosaicItemFocalPoint && mosaicItemFocalPoint.x ? mosaicItemFocalPoint.x : 0.5) } 
                     mosaic-item-focal-point-y={ (mosaicItemFocalPoint && mosaicItemFocalPoint.y ? mosaicItemFocalPoint.y : 0.5) } 
+                    max-columns-count={ maxColumnsCount }
                     collection-background-color={ collectionBackgroundColor }
                     collection-text-color={ collectionTextColor }
                     grid-margin={ gridMargin }

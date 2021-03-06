@@ -109,7 +109,11 @@
                                     </div>
                                 </div>
                             </template>
-                            <template slot="empty">{{ $i18n.get('info_no_user_found') }}</template>
+                            <template 
+                                    v-if="!isFetchingUsers"
+                                    slot="empty">
+                                {{ $i18n.get('info_no_user_found') }}
+                            </template>
                         </b-autocomplete>
                     </b-field>
 

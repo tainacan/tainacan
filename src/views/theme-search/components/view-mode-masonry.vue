@@ -62,19 +62,21 @@
                                 @click.prevent="starSlideshowFromHere(index)"
                                 class="icon slideshow-icon">
                             <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
-                        </span>                             
+                        </span>
                     </div>
 
                     <!-- Thumbnail -->
-                    <div 
+                    <blur-hash-image
                             v-if="item.thumbnail != undefined"
                             class="tainacan-masonry-item-thumbnail"
-                            :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)) + ')' }">  
-                        <img 
-                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                :style="{ minHeight: getItemImageHeight(item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px'}"
-                                :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)" >  
-                    </div>
+                            :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
+                            :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium-full', 120)"
+                            :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
+                            :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
+                            :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
+                            :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                            :transition-duration="500"
+                        />
                 </a>
             </masonry>
         </div> 
@@ -91,7 +93,6 @@ export default {
     ],
     data () {
         return {
-            itemColumnWidth: Number,
             containerWidthDiscount: Number,
             masonryCols: {default: 6, 1919: 5, 1407: 4, 1215: 3, 1023: 3, 767: 2, 343: 1}
         }
@@ -119,49 +120,13 @@ export default {
             this.masonryCols = obj;
         }
     },
-    mounted() {
-        if (this.$refs.masonryWrapper != undefined && 
-            this.$refs.masonryWrapper.children[0] != undefined && 
-            this.$refs.masonryWrapper.children[0].children[0] != undefined && 
-            this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
-                this.itemColumnWidth = this.$refs.masonryWrapper.children[0].children[0].clientWidth;
-                this.recalculateItemsHeight();
-            } else
-                this.itemColumnWidth = 202;
-    },
-    created() {
-        window.addEventListener('resize', this.recalculateItemsHeight);  
-    },
-    beforeDestroy() {
-        window.removeEventListener('resize', this.recalculateItemsHeight);
-    },
     methods: {
         randomHeightForMasonryItem() {
             let min = 120;
             let max = 380;
 
             return Math.floor(Math.random()*(max-min+1)+min);
-        },
-        getItemImageHeight(imageWidth, imageHeight) {  
-            
-            if (this.$refs.masonryWrapper != undefined && 
-                this.$refs.masonryWrapper.children[0] != undefined && 
-                this.$refs.masonryWrapper.children[0].children[0] != undefined && 
-                this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined)
-                    this.itemColumnWidth = this.$refs.masonryWrapper.children[0].children[0].clientWidth;
-                
-
-            return (imageHeight*this.itemColumnWidth)/imageWidth;
-        },
-        recalculateItemsHeight: _.debounce( function() {
-            if (this.$refs.masonryWrapper != undefined && 
-                this.$refs.masonryWrapper.children[0] != undefined && 
-                this.$refs.masonryWrapper.children[0].children[0] != undefined && 
-                this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
-                this.containerWidthDiscount = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) - this.$refs.masonryWrapper.clientWidth;
-            }
-            this.$forceUpdate();
-        }, 500)
+        }
     }
 }
 </script>

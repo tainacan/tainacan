@@ -108,12 +108,13 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 				$this->table, 
 				[
 					'data' => maybe_serialize($this->data),
+					'progress_value' => 0,
 					'user_id' => get_current_user_id(),
 					'priority' => $priority,
 					'action' => $this->action,
 					'name' => $this->get_name(),
 					'queued_on' => date('Y-m-d H:i:s'),
-                    'status' => 'waiting'
+					'status' => 'waiting'
 				]
 			);
 			$this->ID = $wpdb->insert_id;
@@ -126,7 +127,7 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 	 * Update queue
 	 *
 	 * @param string $key Key.
-	 * @param array  $data Data.
+	 * @param array|object  $batch Data.
 	 *
 	 * @return $this
 	 */
@@ -288,29 +289,30 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 			$this->write_log($batch->key, ['New Request']);
 			$newRequest = false;
 		}
-		
+
 		register_shutdown_function(function() use($batch) {
 			$error = error_get_last();
-			
-			if ( is_null($error) || 
-				! is_array($error) || 
-				! isset($error['type']) || 
-				$error['type'] !== 1 ) {
+
+			if ( is_null($error) ||
+				!is_array($error) ||
+				!isset($error['type']) ||
+				$error['type'] !== 1
+			) {
 				return;
 			}
 			
+			$error_str = "Fatal error: " . json_encode($error);
+			if ( is_array($error) ) {
+				$error_str = $error['message'] . ' - ' . $error['file'] . ' - Line: ' . $error['line'];
+			}
+
 			$this->debug('Shutdown with Fatal error captured');
-			
-			$error_str = $error['message'] . ' - ' . $error['file'] . ' - Line: ' . $error['line'].  
-			
 			$this->debug($error_str);
-			
 			$this->write_error_log($batch->key, ['Fatal Error: ' . $error_str]);
 			$this->write_error_log($batch->key, ['Process aborted']);
-			
 			$this->close( $batch->key, 'errored' );
 			$this->debug('Batch closed due to captured error');
-			
+			$this->unlock_process();
 		});
 
 		$task = $batch;

@@ -4,6 +4,7 @@
             :class="{'repository-level-page' : isNewCollection }">
         <tainacan-title 
                 :bread-crumb-items="[{ path: '', label: $i18n.get('collection') }]"/>
+        
         <form 
                 v-if="collection != null && collection != undefined && ((isNewCollection && $userCaps.hasCapability('tnc_rep_edit_collections')) || (!isNewCollection && collection.current_user_can_edit))" 
                 class="tainacan-form" 
@@ -47,13 +48,13 @@
                             <file-item
                                     v-if="collection.thumbnail != undefined && ((collection.thumbnail['tainacan-medium'] != undefined && collection.thumbnail['tainacan-medium'] != false) || (collection.thumbnail.medium != undefined && collection.thumbnail.medium != false))"
                                     :show-name="false"
-                                    :modal-on-click="false"
+                                    :modal-on-click="true"
                                     :size="178"
                                     :file="{ 
                                         media_type: 'image', 
-                                        thumbnails: { 'tainacan-medium': [ collection.thumbnail['tainacan-medium'] ? collection.thumbnail['tainacan-medium'][0] : collection.thumbnail.medium[0] ] },
+                                        thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(collection['thumbnail'], 'tainacan-medium') ] },
                                         title: $i18n.get('label_thumbnail'),
-                                        description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + collection.thumbnail.full[0] + `'/>` 
+                                        description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(collection['thumbnail'], 'full') + `'/>` 
                                     }"/>
                           <figure 
                                     v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail['tainacan-medium'] == undefined || collection.thumbnail['tainacan-medium'] == false))"
@@ -61,7 +62,7 @@
                                 <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img  
                                         :alt="$i18n.get('label_thumbnail')" 
-                                        :src="thumbPlaceholderPath">
+                                        :src="$thumbHelper.getEmptyThumbnailPlaceholder()">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a 
@@ -221,7 +222,7 @@
                                     :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')"/>
                         <div class="control">
                             <b-dropdown
-                                    class="two-columns-dropdown"
+                                    class="two-columns-dropdown enabled-view-modes-dropdown"
                                     ref="enabledViewModesDropdown"
                                     :mobile-modal="true"
                                     :disabled="Object.keys(registeredViewModes).length < 0"
@@ -247,14 +248,19 @@
                                             @input="updateViewModeslist(viewMode)"
                                             :value="checkIfViewModeEnabled(viewMode)"
                                             :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => (registeredViewModes[aViewMode] && registeredViewModes[aViewMode].full_screen != true)).length <= 1">
-                                        <span 
-                                                class="gray-icon"
-                                                :class="{ 
-                                                    'has-text-secondary' : checkIfViewModeEnabled(viewMode),
-                                                    'has-text-gray4' : !checkIfViewModeEnabled(viewMode)  
-                                                }"
-                                                v-html="registeredViewModes[viewMode].icon"/>
-                                        <span>{{ registeredViewModes[viewMode].label }}</span>
+                                        <p>
+                                            <strong>
+                                                <span 
+                                                        class="gray-icon"
+                                                        :class="{ 
+                                                            'has-text-secondary' : checkIfViewModeEnabled(viewMode),
+                                                            'has-text-gray4' : !checkIfViewModeEnabled(viewMode)  
+                                                        }"
+                                                        v-html="registeredViewModes[viewMode].icon"/>
+                                                &nbsp;{{ registeredViewModes[viewMode].label }}
+                                            </strong>
+                                        </p>
+                                        <p v-if="registeredViewModes[viewMode].description">{{ registeredViewModes[viewMode].description }}</p>
                                     </b-checkbox>
                                 </b-dropdown-item>   
                             </b-dropdown>
@@ -669,7 +675,6 @@ export default {
             isNewCollection: false,
             isMapped: false,
             mapper: false,
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             headerPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_rectangle.png',
             collections: [],
             isFetchingCollections: true,
@@ -1248,6 +1253,19 @@ export default {
         padding-top: 1.25em;
         margin-top: -1.5em;
         border-left: 1px solid var(--tainacan-gray2);
+    }
+    .enabled-view-modes-dropdown {
+        /deep/ .dropdown-item {
+            display: flex !important;
+        }
+        p {
+            white-space: normal;
+        }
+        /deep/ svg {
+            margin-left: -2px;
+            overflow: hidden;
+            vertical-align: middle;
+        }
     }
 
 </style>

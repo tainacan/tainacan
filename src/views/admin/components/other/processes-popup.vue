@@ -5,19 +5,21 @@
             class="processes-popup-backdrop" />
     <div class="processes-popup">
         <div class="popup-header">
-            <span 
-                    @click="bgProcesses.length > 0 ? showProcessesList = !showProcessesList : null"
-                    class="header-title">{{ getUnfinishedProcesses() + ' ' + $i18n.get('info_unfinished_processes') }}</span>
             <a 
                     v-if="bgProcesses.length > 0"
                     @click="showProcessesList = !showProcessesList">
-                <span class="icon has-text-blue5">
+                <span 
+                        style="margin-left: -0.5rem"
+                        class="icon has-text-blue5">
                     <i 
-                            :class="{ 'tainacan-icon-arrowup': showProcessesList,  
-                                      'tainacan-icon-arrowdown': !showProcessesList }"
+                            :class="{ 'tainacan-icon-arrowdown': showProcessesList,  
+                                      'tainacan-icon-arrowright': !showProcessesList }"
                             class="tainacan-icon tainacan-icon-18px"/>
                 </span>
-            </a>    
+            </a>
+            <span 
+                    @click="bgProcesses.length > 0 ? showProcessesList = !showProcessesList : null"
+                    class="header-title">{{ getUnfinishedProcesses() + ' ' + $i18n.get('info_unfinished_processes') }}</span>
             <a @click="$emit('closeProcessesPopup')">
                 <span class="icon has-text-blue5">
                     <i class="tainacan-icon tainacan-icon-close"/>

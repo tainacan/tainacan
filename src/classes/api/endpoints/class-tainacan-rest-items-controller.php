@@ -145,7 +145,7 @@ class REST_Items_Controller extends REST_Controller {
 			)
 		);
 		register_rest_route(
-			$this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/submission/(?P<submission_id>[\d]+)/finish',
+			$this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/submission/(?P<submission_id>[a-z0-9]+)/finish',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -283,6 +283,7 @@ class REST_Items_Controller extends REST_Controller {
 				if( isset($item_arr['thumbnail']) ) {
 					$item_arr['thumbnail_alt'] = get_post_meta( $item->get__thumbnail_id(), '_wp_attachment_image_alt', true );
 					$item_arr['thumbnail_id'] = $item->get__thumbnail_id();
+					$item_arr['document_mimetype'] = $item->get_document_mimetype(); // In case the thumbnail is requested, we need the document mime type to generate proper placeholders
 				}
 
 				$item_arr['url'] = get_permalink( $item_arr['id'] );
@@ -985,12 +986,16 @@ class REST_Items_Controller extends REST_Controller {
 
 				if ($item->validate()) {
 					$item = $this->items_repository->insert( $item );
-					$fake_id = \hexdec(\uniqid());
+					$fake_id = md5(uniqid(mt_rand(), true));
 					$id = $item->get_id();
-					set_transient('tnc_transient_submission_' . $fake_id, $id, 300);
-					$response_item = $this->prepare_item_for_response($item, $request);
-					$response_item['id'] = $fake_id;
-					return new \WP_REST_Response($response_item, 201 );
+					if (set_transient('tnc_transient_submission_' . $fake_id, $id, 300) == true) {
+						$response_item = $this->prepare_item_for_response($item, $request);
+						$response_item['id'] = $fake_id;
+						return new \WP_REST_Response($response_item, 201 );
+					} else return new \WP_REST_Response([
+						'error_message' => __('unable create submission ID.', 'tainacan'),
+					], 400);
+					
 				} else {
 					return new \WP_REST_Response([
 						'error_message' => __('One or more values are invalid.', 'tainacan'),

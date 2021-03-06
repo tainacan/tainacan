@@ -948,12 +948,14 @@
                 let descriptionMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.metadata_type_object != undefined ? metadatum.metadata_type_object.related_mapped_prop == 'description' : false);
 
                 // Updates Search
-                this.$eventBusSearch.addFetchOnly(
-                    ((thumbnailMetadatum != undefined && thumbnailMetadatum.display) ? 'thumbnail' : null) + ',' +
-                    ((creationDateMetadatum != undefined && creationDateMetadatum.display) ? 'creation_date' : null) + ',' +
-                    ((authorNameMetadatum != undefined && authorNameMetadatum.display) ? 'author_name': null) + ',' +
-                    (this.isRepositoryLevel ? 'title' : null) + ',' +
-                    (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null), false, fetchOnlyMetadatumIds.toString());
+                let fetchOnlyArray = [
+                    ((thumbnailMetadatum != undefined && thumbnailMetadatum.display) ? 'thumbnail' : null),
+                    ((creationDateMetadatum != undefined && creationDateMetadatum.display) ? 'creation_date' : null),
+                    ((authorNameMetadatum != undefined && authorNameMetadatum.display) ? 'author_name': null),
+                    (this.isRepositoryLevel ? 'title' : null),
+                    (this.isRepositoryLevel && descriptionMetadatum.display ? 'description' : null)
+                ];
+                this.$eventBusSearch.addFetchOnly(fetchOnlyArray.filter((fetchOnly) => fetchOnly != null).toString() , false, fetchOnlyMetadatumIds.toString());
 
                 // Closes dropdown
                 this.$refs.displayedMetadataDropdown.toggle();
@@ -972,7 +974,8 @@
                 this.fetchMetadata({
                     collectionId: this.collectionId,
                     isRepositoryLevel: this.isRepositoryLevel,
-                    isContextEdit: false
+                    isContextEdit: false,
+                    includeControlMetadataTypes: true
                 })
                     .then((resp) => {
                         resp.request
@@ -1028,39 +1031,41 @@
                                     let fetchOnlyMetadatumIds = [];
 
                                     for (let metadatum of this.metadata) {
-                                        if (metadatum.display !== 'never') {
+                                        if (metadatum.display !== 'never' || metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Control') {
 
-                                            let display;
+                                            if (metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Control') {
+                                                let display;
 
-                                            // Deciding display based on collection settings
-                                            if (metadatum.display == 'no')
-                                                display = false;
-                                            else if (metadatum.display == 'yes')
-                                                display = true;
+                                                // Deciding display based on collection settings
+                                                if (metadatum.display == 'no')
+                                                    display = false;
+                                                else if (metadatum.display == 'yes')
+                                                    display = true;
 
-                                            // Deciding display based on user prefs
-                                            if (prefsFetchOnlyMetaObject.length) {
-                                                let index = prefsFetchOnlyMetaObject.findIndex(metadatumId => metadatumId == metadatum.id);
+                                                // Deciding display based on user prefs
+                                                if (prefsFetchOnlyMetaObject.length) {
+                                                    let index = prefsFetchOnlyMetaObject.findIndex(metadatumId => metadatumId == metadatum.id);
 
-                                                display = index >= 0;
+                                                    display = index >= 0;
+                                                }
+
+                                                metadata.push({
+                                                        name: metadatum.name,
+                                                        metadatum: metadatum.description,
+                                                        slug: metadatum.slug,
+                                                        metadata_type: metadatum.metadata_type,
+                                                        metadata_type_object: metadatum.metadata_type_object,
+                                                        metadata_type_options: metadatum.metadata_type_options,
+                                                        id: metadatum.id,
+                                                        display: display,
+                                                        collection_id: metadatum.collection_id,
+                                                        multiple: metadatum.multiple,
+                                                });
+
+                                                if (display)
+                                                    fetchOnlyMetadatumIds.push(metadatum.id);
                                             }
 
-                                            metadata.push({
-                                                    name: metadatum.name,
-                                                    metadatum: metadatum.description,
-                                                    slug: metadatum.slug,
-                                                    metadata_type: metadatum.metadata_type,
-                                                    metadata_type_object: metadatum.metadata_type_object,
-                                                    metadata_type_options: metadatum.metadata_type_options,
-                                                    id: metadatum.id,
-                                                    display: display,
-                                                    collection_id: metadatum.collection_id,
-                                                    multiple: metadatum.multiple,
-                                            });
-
-                                            if (display)
-                                                fetchOnlyMetadatumIds.push(metadatum.id);
-                                            
                                             if (
                                                 metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
                                                 metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
@@ -1095,13 +1100,14 @@
                                         display: authorNameMetadatumDisplay
                                     });
                                     
-                                    this.$eventBusSearch.addFetchOnly(
-                                        (thumbnailMetadatumDisplay ? 'thumbnail' : null) +','+
-                                        (creationDateMetadatumDisplay ? 'creation_date' : null) +','+
-                                        (authorNameMetadatumDisplay ? 'author_name' : null) +','+
-                                        (this.isRepositoryLevel ? 'title' : null) +','+
+                                    let fetchOnlyArray = [
+                                        (thumbnailMetadatumDisplay ? 'thumbnail' : null),
+                                        (creationDateMetadatumDisplay ? 'creation_date' : null),
+                                        (authorNameMetadatumDisplay ? 'author_name' : null),
+                                        (this.isRepositoryLevel ? 'title' : null),
                                         (this.isRepositoryLevel ? 'description' : null)
-                                    , false, fetchOnlyMetadatumIds.toString());
+                                    ];
+                                    this.$eventBusSearch.addFetchOnly(fetchOnlyArray.filter((fetchOnly) => fetchOnly != null).toString() , false, fetchOnlyMetadatumIds.toString());
 
                                     // Sorting metadata
                                     if (this.isRepositoryLevel) {
@@ -1153,7 +1159,7 @@
                                     }
 
                                     for (let metadatum of this.metadata) {
-                                        if (metadatum.display !== 'never' &&
+                                        if ((metadatum.display !== 'never' || metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Control') &&
                                             metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
                                             metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
                                             metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship'&&

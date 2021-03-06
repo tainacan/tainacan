@@ -46,6 +46,13 @@ abstract class Repository {
 	}
 
 	/**
+	 * Get if creation of logs while inserting and updating entities are enable
+	 */
+	public function get_enabled_logs() {
+		return $this->use_logs;
+	}
+
+	/**
 	 * Register hooks
 	 */
 	protected function __construct() {

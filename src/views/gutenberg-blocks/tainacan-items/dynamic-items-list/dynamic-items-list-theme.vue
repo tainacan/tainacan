@@ -13,13 +13,13 @@
                 <div
                         :style="{
                             backgroundColor: collectionBackgroundColor ? collectionBackgroundColor : '', 
-                            paddingRight: collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? '' : '20px',
-                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1em' : '',
+                            paddingRight: collection && collection.thumbnail && (collection.thumbnail[( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' )] || collection.thumbnail['medium']) ? '' : '20px',
+                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail[( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' )] && !collection.thumbnail['medium'])) ? '1em' : '',
                             width: collection && collection.header_image ? '' : '100%'
                         }"
                         :class="
                             'collection-name ' + 
-                            ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
+                            ((!collection || !collection.thumbnail || (!collection.thumbnail[( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' )] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
                         ">
                     <h3 :style="{ color: collectionTextColor ? collectionTextColor : '' }">
                         <span
@@ -32,17 +32,17 @@
                     </h3>
                 </div>
                 <div
-                    v-if="collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])"   
+                    v-if="collection && collection.thumbnail && (collection.thumbnail[( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' )] || collection.thumbnail['medium'])"   
                     class="collection-thumbnail"
                     :style="{ 
-                        backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')',
+                        backgroundImage: 'url(' + (collection.thumbnail[( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' )] != undefined ? (collection.thumbnail[( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' )][0]) : (collection.thumbnail['medium'][0])) + ')',
                     }"/>
                 <div
                         class="collection-header-image"
                         :style="{
                             backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
                             minHeight: collection && collection.header_image ? '' : '80px',
-                            display: !(collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
+                            display: !(collection && collection.thumbnail && (collection.thumbnail[( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' )] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
                         }"/>
             </a>   
         </div>
@@ -151,19 +151,20 @@
             <ul
                     v-if="layout !== 'mosaic'"
                     :style="{
-                        gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
-                        marginTop: showSearchBar || showCollectionHeader ? '1.34em' : '0px'
+                        marginTop: showSearchBar || showCollectionHeader ? '1.34em' : '0px',
+                        gridGap: (showName ? gridMargin + 24 : gridMargin) + 'px',
+                        gap: (showName ? gridMargin + 24 : gridMargin) + 'px'
                     }"
                     class="items-list"
-                    :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
-                    <li
-                            :key="item"
-                            v-for="item in Number(maxItemsNumber)"
-                            class="item-list-item skeleton"
-                            :style="{ 
-                                marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
-                                height: layout == 'grid' ? '230px' : '54px'
-                            }" />      
+                    :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
+                <li
+                        :key="item"
+                        v-for="item in Number(maxItemsNumber)"
+                        class="item-list-item skeleton"
+                        :style="{ 
+                            marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
+                            height: layout == 'grid' ? '230px' : '54px'
+                        }" />      
             </ul>
             <ul
                     v-if="layout === 'mosaic'"
@@ -189,24 +190,29 @@
             <ul 
                     v-if="items.length > 0 && layout !== 'mosaic'"
                     :style="{
-                        gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit', 
+                        gridGap: layout == 'grid' ? ((showName ? gridMargin + 24 : gridMargin) + 'px') : 'inherit',
                         marginTop: showSearchBar || showCollectionHeader ? '1.35em' : '0px'
                     }"
                     class="items-list"
-                    :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
+                    :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
                 <li
                         :key="index"
                         v-for="(item, index) of items"
-                        class="item-list-item"
-                        :style="{ marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '' }">    
+                        class="item-list-item">
                     <a 
                             :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                             :href="item.url"
                             target="_blank"
                             :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
-                        <img
-                            :src="getItemThumbnail(item, 'tainacan-medium')"
-                            :alt="item.title ? item.title : $root.__('Thumbnail', 'tainacan')">
+                        <blur-hash-image
+                                v-if="showImage"
+                                :height="$thumbHelper.getHeight(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
+                                :width="$thumbHelper.getWidth(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
+                                :src="$thumbHelper.getSrc(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ), item['document_mimetype'])"
+                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ), item['document_mimetype'])"
+                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : $root.__( 'Thumbnail', 'tainacan' ))"
+                                :transition-duration="500" />
                         <span>{{ item.title ? item.title : '' }}</span>
                     </a>
                 </li>
@@ -227,18 +233,18 @@
                             gridTemplateColumns: 'repeat(' + mosaicGridColumns + ', calc((100% / ' + mosaicGridColumns + ') - (' + ((mosaicGridColumns - 1)*Number(gridMargin)) + 'px/' + mosaicGridColumns + ')))',
                             margin: gridMargin + 'px',
                             gridGap: gridMargin + 'px',
+                            gap: gridMargin + 'px'
                         }"
                         class="mosaic-container"
                         :class="'mosaic-container--' + mosaicGroup.length + '-' + mosaicGridRows + 'x' + mosaicGridColumns"
                         :key="mosaicIndex"
                         v-for="(mosaicGroup, mosaicIndex) of mosaicPartition(items)">
                     <li
-                            
                             :key="index"
                             v-for="(item, index) of mosaicGroup"
                             class="item-list-item"
                             :style="{
-                                backgroundImage: layout == 'mosaic' ? `url(${getItemThumbnail(item, 'medium_large')})` : 'none',
+                                backgroundImage: layout == 'mosaic' ? `url(${$thumbHelper.getSrc(item['thumbnail'], 'medium_large', item['document_mimetype'])})` : 'none',
                                 backgroundPosition: layout == 'mosaic' ? `${ mosaicItemFocalPointX * 100 }% ${ mosaicItemFocalPointY * 100 }%` : 'none'
                             }">          
                         <a 
@@ -246,9 +252,14 @@
                                 :href="item.url"
                                 target="_blank"
                                 :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
-                            <img
-                                :src="getItemThumbnail(item, 'tainacan-medium')"
-                                :alt="item.title ? item.title : $root.__('Thumbnail', 'tainacan')">
+                            <blur-hash-image
+                                    :height="$thumbHelper.getHeight(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
+                                    :width="$thumbHelper.getWidth(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ), item['document_mimetype'])"
+                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ), item['document_mimetype'])"
+                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
+                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : $root.__( 'Thumbnail', 'tainacan' ))"
+                                    :transition-duration="500" />
                             <span>{{ item.title ? item.title : '' }}</span>
                         </a>
                     </li>
@@ -284,6 +295,8 @@ export default {
         mosaicGridColumns: Number,
         mosaicItemFocalPointX: Number,
         mosaicItemFocalPointY: Number,
+        maxColumnsCount: Number,
+        cropImagesToSquare: Boolean,
         order: String,
         showSearchBar: Boolean,
         showCollectionHeader: Boolean,
@@ -417,19 +430,6 @@ export default {
                         this.isLoadingCollection = false;      
                     });
             }
-        },
-        getItemThumbnail(item, size) {
-            return ( 
-                item.thumbnail && item.thumbnail[size][0] && item.thumbnail[size][0] 
-                    ?
-                item.thumbnail[size][0] 
-                    :
-                (item.thumbnail && item.thumbnail['large'][0] && item.thumbnail['large'][0]
-                    ?    
-                item.thumbnail['large'][0] 
-                    : 
-                `${this.tainacanBaseUrl}/assets/images/placeholder_square.png`)
-            )
         },
         mosaicPartition(items) {
             const partition = _.groupBy(items, (item, i) => {

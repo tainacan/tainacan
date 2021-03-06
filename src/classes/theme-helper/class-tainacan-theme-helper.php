@@ -35,7 +35,7 @@ class Theme_Helper {
 		// Redirect to post type archive if no cover page is set
 		add_action('wp', array($this, 'collection_single_redirect'));
 		
-		add_action('wp_print_scripts', array($this, 'enqueue_scripts'));
+		add_action('wp_print_scripts', array($this, 'enqueue_scripts'), 90);
 		
 		// make archive for terms work with items
 		add_action('pre_get_posts', array($this, 'tax_archive_pre_get_posts'));
@@ -62,6 +62,7 @@ class Theme_Helper {
 		
 		$this->register_view_mode('table', [
 			'label' => __('Table', 'tainacan'),
+			'description' => 'The classic table display.',
 			'dynamic_metadata' => true,
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewtable tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
@@ -71,7 +72,7 @@ class Theme_Helper {
 		$this->register_view_mode('cards', [
 			'label' => __('Cards', 'tainacan'),
 			'dynamic_metadata' => false,
-			'description' => 'A cards view, displaying title, description, author name and creation date.',
+			'description' => 'A cards view, displaying cropped thumbnails, title and description.',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewcards tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'implements_skeleton' => true,
@@ -80,7 +81,7 @@ class Theme_Helper {
 		$this->register_view_mode('records', [
 			'label' => __('Records', 'tainacan'),
 			'dynamic_metadata' => true,
-			'description' => 'A records view, similiar to cards, but flexible for metadata',
+			'description' => 'A records view, similiar to cards, but flexible for metadata.',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewrecords tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'implements_skeleton' => true,
@@ -95,9 +96,9 @@ class Theme_Helper {
 			'implements_skeleton' => true
 		]);
 		$this->register_view_mode('slideshow', [
-			'label' => __('Slideshow', 'tainacan'),
+			'label' => __('Slides', 'tainacan'),
 			'dynamic_metadata' => false,
-			'description' => 'A fullscreen slideshow view.',
+			'description' => 'A fullscreen slideshow view, that shows the item document instead of just thumbnails.',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'show_pagination' => false,
@@ -106,7 +107,7 @@ class Theme_Helper {
 		$this->register_view_mode('list', [
 			'label' => __('List', 'tainacan'),
 			'dynamic_metadata' => true,
-			'description' => 'A list view, similiar to the records, but full width',
+			'description' => 'A list view, similiar to the records, but full width.',
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewlist tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'implements_skeleton' => true,
@@ -183,36 +184,36 @@ class Theme_Helper {
 	}
 	
 	/**
-     * Filters the permalink for posts to:
-     *
-     * * Replace Collection single permalink with the link to the post type archive for items of that collection
-     * 
-     * @return string new permalink
-     */
-    function permalink_filter($permalink, $post, $leavename) {
-        
-        $collection_post_type = \Tainacan\Entities\Collection::get_post_type();
-        
-        if (!is_admin() && $post->post_type == $collection_post_type) {
-            
-            $collection = new \Tainacan\Entities\Collection($post);
-            
+	 * Filters the permalink for posts to:
+	 *
+	 * * Replace Collection single permalink with the link to the post type archive for items of that collection
+	 * 
+	 * @return string new permalink
+	 */
+	function permalink_filter($permalink, $post, $leavename) {
+		
+		$collection_post_type = \Tainacan\Entities\Collection::get_post_type();
+		
+		if (!is_admin() && $post->post_type == $collection_post_type) {
+			
+			$collection = new \Tainacan\Entities\Collection($post);
+			
 			if ( $collection->is_cover_page_enabled() ) {
 				return $permalink;
 			}
 			
 			$items_post_type = $collection->get_db_identifier();
-            
-            $post_type_object = get_post_type_object($items_post_type);
-            
-            if (isset($post_type_object->rewrite) && is_array($post_type_object->rewrite) && isset($post_type_object->rewrite['slug']))
-                return get_post_type_archive_link($items_post_type);
-                
-        }
-        
-        return $permalink;
-        
-    }
+			
+			$post_type_object = get_post_type_object($items_post_type);
+			
+			if (isset($post_type_object->rewrite) && is_array($post_type_object->rewrite) && isset($post_type_object->rewrite['slug']))
+				return get_post_type_archive_link($items_post_type);
+				
+		}
+		
+		return $permalink;
+		
+	}
 	
 	function tax_archive_pre_get_posts($wp_query) {
 		
@@ -389,10 +390,48 @@ class Theme_Helper {
 		return "<div id='tainacan-item-submission-form' $props ></div>";
 	}
 
+	/**
+	 * Returns the div used by Vue to render the Items List with a powerful faceted search
+	 *
+	 * The items list bellong to a collection, to the whole repository or a taxonomy term, according to where
+	 * it is used on the loop, or to given params
+	 * 
+	 * The following params are all optional for customizing the rendered vue component
+	 *
+	 * @param array $args {
+		 *     Optional. Array of arguments.
+		 *     @type string $collection_id								Collection ID for a collection items list
+		 *     @type string $term_id									Term ID for a taxonomy term items list
+		 *     @type bool 	$hide_filters								Completely hide filter sidebar or modal
+		 *     @type bool 	$hide_hide_filters_button					Hides the button resonsible for collpasing filters sidebar on desktop
+		 *     @type bool 	$hide_search								Hides the complete search bar, including advanced search link
+		 *     @type bool 	$hide_advanced_search						Hides only the advanced search link
+		 *     @type bool	$hide_displayed_metadata_dropdown			Hides the "Displayed metadata" dropdown even if the current view modes allows it	
+		 *     @type bool	$hide_sorting_area							Completely hides all sorting controls	
+		 *     @type bool 	$hide_sort_by_button						Hides the button where user can select the metadata to sort by items (keeps the sort direction)
+		 *     @type bool 	$hide_items_thumbnail						Forces the thumbnail to be hiden on every listing. This setting also disables view modes that contain the 'requires-thumbnail' attr. By default is false or inherited from collection setting
+		 *     @type bool	$hide_exposers_button						Hides the "View as..." button, a.k.a. Exposers modal
+		 *     @type bool 	$hide_items_per_page_button					Hides the button for selecting amount of items loaded per page
+		 *     @type bool 	$hide_go_to_page_button						Hides the button for skiping to a specific page
+		 *     @type bool	$hide_pagination_area						Completely hides pagination controls
+		 *     @type int	$default_items_per_page						Default number of items per page loaded
+		 *     @type bool 	$show_filters_button_inside_search_control	Display the "hide filters" button inside of the search control instead of floating
+		 *     @type bool 	$start_with_filters_hidden					Loads the filters list hidden from start
+		 *     @type bool 	$filters_as_modal							Display the filters as a modal instead of a collapsable region on desktop
+		 *     @type bool 	$show_inline_view_mode_options				Display view modes as inline icon buttons instead of the dropdown
+		 *     @type bool 	$show_fullscreen_with_view_modes			Lists fullscreen viewmodes alongside with other view modes istead of separatelly
+		 *     @type string $default_view_mode							The default view mode
+		 *     @type bool	$is_forced_view_mode						Ignores user prefs to always render the choosen default view mode
+		 *     @type string[] $enabled_view_modes						The list os enable view modes to display
+	 * @return string  The HTML div to be used for rendering the items list vue component
+	 */
 	public function search_shortcode($args) {
-	
+		return $this->get_tainacan_items_list($args, true);
+	}
+
+	public function get_tainacan_items_list($args, $force_enqueue = false) {
 		$props = ' ';
-		
+
 		// Loads info related to view modes
 		$view_modes = tainacan_get_the_view_modes();
 		$default_view_mode = $view_modes['default_view_mode'];
@@ -412,20 +451,18 @@ class Theme_Helper {
 		}
 
 		// If in a collection page
-		$collection_id = tainacan_get_collection_id();
-		if ($collection_id) {
-			$props .= 'collection-id="' . $collection_id . '" ';
-			$collection = new  \Tainacan\Entities\Collection($collection_id);
+		$collection = tainacan_get_collection($args);
+		if ($collection) {
+			$props .= 'collection-id="' . $collection->get_id() . '" ';
 			$default_view_mode = $collection->get_default_view_mode();
 			$enabled_view_modes = $collection->get_enabled_view_modes();
-
 					
 			// Gets hideItemsThumbnail info from collection setting
 			$args['hide-items-thumbnail'] = $collection->get_hide_items_thumbnail_on_lists() == 'yes' ? true : false;
 		}
 
 		// If in a tainacan taxonomy
-		$term = tainacan_get_term();
+		$term = tainacan_get_term($args);
 		if ($term) {
 			$props .= 'term-id="' . $term->term_id . '" ';
 			$props .= 'taxonomy="' . $term->taxonomy . '" ';
@@ -441,10 +478,9 @@ class Theme_Helper {
 			}
 		}
 
-		$this->enqueue_scripts(true);
+		$this->enqueue_scripts($force_enqueue);
 
 		return "<div id='tainacan-items-page' $props ></div>";
-
 	}
 	
 	function get_items_list_slug() {
@@ -453,33 +489,33 @@ class Theme_Helper {
 	}
 	
 	function rewrite_rules( &$wp_rewrite ) {
-        
+		
 		$items_base = $this->get_items_list_slug();
 		
 		$new_rules = array(
-            $items_base . "/?$"               => "index.php?tainacan_repository_archive=1",
+			$items_base . "/?$"               => "index.php?tainacan_repository_archive=1",
 			$items_base . "/page/([0-9]+)/?$" => 'index.php?tainacan_repository_archive=1&paged=$matches[1]'
-        );
+		);
 
-        $wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
-    }
+		$wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
+	}
 
-    function rewrite_rules_query_vars( $public_query_vars ) {
-        $public_query_vars[] = "tainacan_repository_archive";
-        return $public_query_vars;
-    }
+	function rewrite_rules_query_vars( $public_query_vars ) {
+		$public_query_vars[] = "tainacan_repository_archive";
+		return $public_query_vars;
+	}
 
-    function rewrite_rule_template_include( $template ) {
-        global $wp_query;
-        if ( $wp_query->get( 'tainacan_repository_archive' ) == 1 ) {
+	function rewrite_rule_template_include( $template ) {
+		global $wp_query;
+		if ( $wp_query->get( 'tainacan_repository_archive' ) == 1 ) {
 
-            $templates = apply_filters('tainacan_repository_archive_template_hierarchy', ['tainacan/archive-repository.php', 'index.php']);
+			$templates = apply_filters('tainacan_repository_archive_template_hierarchy', ['tainacan/archive-repository.php', 'index.php']);
 			
 			return locate_template($templates, false);
 			
-        }
-        return $template;
-    }
+		}
+		return $template;
+	}
 	
 	function archive_repository_pre_get_posts($wp_query) {
 		if (!$wp_query->is_main_query() || $wp_query->get( 'tainacan_repository_archive' ) != 1)
@@ -572,6 +608,60 @@ class Theme_Helper {
 		return isset($this->registered_view_modes[$slug]) ? $this->registered_view_modes[$slug] : false;
 	}
 	
+
+	/**
+	 * When visiting a collection archive or single, returns the current collection id
+	 *
+	 * @uses get_post_type() WordPress function, which looks for the global $wp_query variable
+	 */
+	function tainacan_get_collection_id() {
+		if ( is_post_type_archive() || is_single() ) {
+			return \Tainacan\Repositories\Collections::get_instance()->get_id_by_db_identifier(get_post_type());
+		} elseif ( false !== $this->visiting_collection_cover ) {
+			return $this->visiting_collection_cover;
+		}
+		return false;
+	}
+
+	/**
+	 * When visiting a collection archive or single, returns the current collection object
+	 *
+	 * @uses tainacan_get_collection_id()
+	 * @return \Tainacan\Entities\Collection | false
+	 */
+	function tainacan_get_collection($args = []) {
+		$collection_id = isset($args['collection_id']) ? $args['collection_id'] : $this->tainacan_get_collection_id();
+		if ( $collection_id ) {
+			$TainacanCollections = \Tainacan\Repositories\Collections::get_instance();
+			$collection = $TainacanCollections->fetch($collection_id);
+			if ( $collection instanceof \Tainacan\Entities\Collection ) {
+				return $collection;
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * Gets the Tainacan Item Entity object
+	 *
+	 * If used inside the Loop of items, will get the Item object for the current post
+	 */
+	function tainacan_get_item($post_id = 0) {
+		$post = get_post( $post_id );
+
+		if (!$post)
+			return null;
+
+		if (!$this->is_post_an_item($post))
+			return null;
+
+		$item = new \Tainacan\Entities\Item($post);
+
+		return $item;
+
+	}
+
 	/**
 	 * Adds meta tags to the header to improve social sharing 
 	 */
