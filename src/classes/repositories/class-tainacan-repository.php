@@ -121,17 +121,13 @@ abstract class Repository {
 	 */
 	public function insert( $obj ) {
 		// validate
-		if ( in_array( $obj->get_status(), apply_filters( 'tainacan-status-require-validation', [
-				'publish',
-				'future',
-				'private'
-			] ) ) && ! $obj->get_validated() ) {
+        $require_validation_statuses = [ 'publish', 'future', 'private'];
+		if (in_array( $obj->get_status(), apply_filters( 'tainacan-status-require-validation', $require_validation_statuses) ) && ! $obj->get_validated() ) {
 			throw new \Exception( 'Entities must be validated before you can save them' );
 			// TODO: Throw Warning saying you must validate object before insert()
 		}
 
 		$is_update = false;
-		$old       = '';
 
 		$diffs = [];
 		do_action( 'tainacan-pre-insert', $obj );
@@ -141,7 +137,7 @@ abstract class Repository {
 
 		$map = $this->get_map();
 
-		// First iterate through the native post properties
+		// First iterate through native post properties
 		foreach ( $map as $prop => $mapped ) {
 			if ( $mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi' ) {
 				$obj->WP_Post->{$mapped['map']} = $obj->get_mapped_property( $prop );
@@ -160,7 +156,7 @@ abstract class Repository {
 			// get collection to determine post type
 			$collection = $obj->get_collection();
 
-			if ( ! $collection ) {
+			if (!$collection) {
 				return false;
 			}
 
@@ -170,8 +166,10 @@ abstract class Repository {
 			do_action( "tainacan-pre-insert-$obj_post_type", $obj );
 		}
 
-		// TODO verificar se salvou mesmo
 		$id = wp_insert_post( $obj->WP_Post );
+		if ($id instanceof \WP_Error || 0 === $id) {
+		    return false;
+        }
 
 		// reset object
 		$obj->WP_Post = get_post( $id );
