@@ -101,7 +101,7 @@
                         </option>
                     </select>
                     <apexchart
-                            v-if="!isFetchingTaxonomiesList && selectedTaxonomy"
+                            v-if="!isFetchingTaxonomiesList && !isFetchingTaxonomyTerms && selectedTaxonomy"
                             height="380px"
                             class="postbox"
                             :series="taxonomyTermsChartSeries"
@@ -143,6 +143,33 @@
                         style="min-height=740px"
                         class="skeleton postbox" />
             </div>
+            <div 
+                    v-if="metadataList != undefined"
+                    class="column is-full">
+                <select 
+                        v-if="!isFetchingMetadata"
+                        name="select_metadata"
+                        id="select_metadata"
+                        :placeholder="$i18n.get('label_select_a_metadata')"
+                        v-model="selectedMetadatum">
+                    <option 
+                            v-for="(metadatum, index) of metadataListArray"
+                            :key="index"
+                            :value="metadatum.id">
+                        {{ metadatum.name }}
+                    </option>
+                </select>
+                <apexchart
+                        v-if="!isFetchingMetadataList && !isFetchingMetadata && selectedMetadatum"
+                        height="380px"
+                        class="postbox"
+                        :series="metadataListChartSeries"
+                        :options="metadataListChartOptions" />
+                <div 
+                        v-else
+                        style="min-height=380px"
+                        class="skeleton postbox" />
+            </div>
         </div>
     </div>
 </template>
@@ -156,16 +183,20 @@ export default {
         return {
             selectedCollection: 'default',
             selectedTaxonomy: '',
+            selectedMetadatum: '',
             isFetchingCollections: false,
             isFetchingSummary: false,
             isFetchingCollectionsList: false,
             isFetchingTaxonomiesList: false,
             isFetchingTaxonomyTerms: false,
             isFetchingMetadata: false,
+            isFetchingMetadataList: false,
             collectionsListChartSeries: [],
             collectionsListChartOptions: {},
             taxonomiesListChartSeries: [],
             taxonomiesListChartOptions: {},
+            metadataListChartSeries: [],
+            metadataListChartOptions: {},
             taxonomyTermsChartSeries: [],
             taxonomyTermsChartOptions: {},
             metadataTypeChartSeries: [],
@@ -182,6 +213,7 @@ export default {
         ...mapGetters('report', {
             summary: 'getSummary',
             metadata: 'getMetadata',
+            metadataList: 'getMetadataList',
             taxonomyTerms: 'getTaxonomyTerms',
             taxonomiesList: 'getTaxonomiesList',
             collectionsList: 'getCollectionsList',
@@ -191,6 +223,9 @@ export default {
         }),
         taxonomiesListArray() {
             return this.taxonomiesList && this.taxonomiesList != undefined ? Object.values(this.taxonomiesList) : [];
+        },
+        metadataListArray() {
+            return this.metadata && this.metadata != undefined && this.metadata.distribution ? Object.values(this.metadata.distribution) : [];
         }
     },
     watch: {
@@ -198,10 +233,9 @@ export default {
             handler(to) {
                 this.selectedCollection = to['collection'] ? to['collection'] : 'default';
                 this.loadSummary();
+                this.loadMetadata();
 
-                if (this.selectedCollection && this.selectedCollection != 'default')
-                    this.loadMetadata();
-                else {
+                if (!this.selectedCollection || this.selectedCollection == 'default') {
                     this.loadCollectionsList();
                     this.loadTaxonomiesList();
                 }
@@ -212,6 +246,10 @@ export default {
         selectedTaxonomy() {
             if (this.selectedTaxonomy && this.selectedTaxonomy != '')
                 this.loadTaxonomyTerms();
+        },
+        selectedMetadatum() {
+            if (this.selectedMetadatum && this.selectedMetadatum != '')
+                this.loadMetadataList();
         }
     },
     created() {
@@ -230,7 +268,8 @@ export default {
             'fetchCollectionsList',
             'fetchTaxonomiesList',
             'fetchTaxonomyTerms',
-            'fetchMetadata'
+            'fetchMetadata',
+            'fetchMetadataList'
         ]),
         loadCollections() {
             this.isFetchingCollections = true;
@@ -272,6 +311,7 @@ export default {
                     }
 
                     if (this.metadata.distribution) {
+
                         // Building Metadata Distribution Bar chart
                         const orderedMetadataDistributions = Object.values(this.metadata.distribution).sort((a, b) => b.fill_percentage - a.fill_percentage);
                         let metadataDistributionValues = [];
@@ -284,6 +324,10 @@ export default {
                             metadataDistributionValuesInverted.push(100.0000 - parseFloat(metadataDistribution.fill_percentage).toFixed(4));
                             metadataDistributionLabels.push(metadataDistribution.name);
                         })
+
+                        // Sets first metadatum as the selected one 
+                        if (orderedMetadataDistributions.length)
+                            this.selectedMetadatum = orderedMetadataDistributions[0].id;
 
                         this.metadataDistributionChartSeries = [
                             { 
@@ -489,6 +533,51 @@ export default {
                 })
                 .catch(() => this.isFetchingTaxonomyTerms = false);
 
+        },
+        loadMetadataList() {
+            this.isFetchingMetadataList = true;
+            this.fetchMetadataList({ collectionId: this.collectionId, metadatumId: this.selectedMetadatum })
+                .then(() => {
+                    
+                    // Building Taxonomy term usage chart
+                    const orderedMetadata = Object.values(this.metadataList).sort((a, b) => a.total_items - b.total_items);
+                    let metadataItemValues = [];
+                    let metadataItemLabels = [];
+
+                    orderedMetadata.forEach(metadataItem => {
+                        metadataItemValues.push(metadataItem.total_items);
+                        metadataItemLabels.push(metadataItem.label);
+                    }); 
+
+                    this.metadataListChartSeries = [
+                        {
+                            name: this.$i18n.get('label_items_with_this_metadum_value'),
+                            data: metadataItemValues
+                        }
+                    ];
+                    
+                    this.metadataListChartOptions = {
+                        ...this.stackedBarChartOptions, 
+                        ...{
+                            title: {
+                                text: this.$i18n.get('label_amount_of_items_per_metadatum_value')
+                            },
+                            xaxis: {
+                                type: 'category',
+                                tickPlacement: 'on',
+                                categories: metadataItemLabels,
+                            },
+                            yaxis: {
+                                title: {
+                                    text: this.$i18n.get('label_number_of_items')
+                                }
+                            }
+                        }
+                    }
+                    
+                    this.isFetchingMetadataList = false;
+                })
+                .catch(() => this.isFetchingMetadataList = false);
         }
     }
 }

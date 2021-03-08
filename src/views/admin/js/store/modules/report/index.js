@@ -8,6 +8,7 @@ const state = {
     colletionsList: {},
     taxonomyTerms: {},
     metadata: {},
+    metadataList: {},
     stackedBarChartOptions: {
         chart: {
           type: 'bar',

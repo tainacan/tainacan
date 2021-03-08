@@ -28,7 +28,7 @@ export const fetchMetadata = ({ commit }, { collectionId } ) => {
     if (collectionId && collectionId != 'default')
         endpoint += '/collection/' + collectionId + '/metadata';
     else
-        endpoint += '/repository/metadata';
+        endpoint += '/metadata';
 
     return new Promise((resolve, reject) => {
         axios.tainacan.get(endpoint)
@@ -37,6 +37,27 @@ export const fetchMetadata = ({ commit }, { collectionId } ) => {
 
                 commit('setMetadata', metadata);
                 resolve(metadata);
+            })
+            .catch(error => reject(error));
+    });
+};
+
+export const fetchMetadataList = ({ commit }, { collectionId, metadatumId } ) => {
+
+    let endpoint = '/reports';
+    
+    if (collectionId && collectionId != 'default')
+        endpoint += '/collection/' + collectionId + '/metadata/' + metadatumId;
+    else
+        endpoint += '/metadata/' + metadatumId;
+
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get(endpoint)
+            .then(res => {
+                let metadataList = res.data.list;
+
+                commit('setMetadataList', metadataList);
+                resolve(metadataList);
             })
             .catch(error => reject(error));
     });

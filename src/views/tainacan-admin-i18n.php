@@ -508,6 +508,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	/* translators: To be displayed with the number of Taxonomies used in the colllection */
 	'label_used'								 	 => __( 'Used', 'tainacan' ),
 	'label_select_a_taxonomy'					 	 => __( 'Select a taxonomy', 'tainacan' ),
+	'label_items_with_this_metadum_value'		 	 => __( 'Items with this metadatum value', 'tainacan' ),
+	'label_amount_of_items_per_metadatum_value'		 => __( 'Amount of items per metadatum value', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
