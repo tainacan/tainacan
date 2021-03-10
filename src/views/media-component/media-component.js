@@ -2,8 +2,8 @@
 //
 // Counts on some HMTL markup to make a list of media link be displayed
 // as a carousel with a lightbox. Check examples in the end of the file 
-import PhotoSwipe from 'photoswipe/dist/photoswipe.js';
-import PhotoSwipeUI_Default from 'photoswipe/dist/photoswipe-ui-default.js';
+import PhotoSwipe from 'photoswipe/dist/photoswipe.min.js';
+import PhotoSwipeUI_Default from 'photoswipe/dist/photoswipe-ui-default.min.js';
 
 class TainacanMediaGallery {
 
@@ -129,7 +129,7 @@ class TainacanMediaGallery {
             // include only element nodes
             if (figureEl.nodeType !== 1)
                 continue;
-            
+            console.log(figureEl);
             linkEl = figureEl.children[0]; // <a> element
             
             // There may be a wrapper div before the a tag
@@ -173,7 +173,6 @@ class TainacanMediaGallery {
             gallery,
             options,
             items;
-        console.log(galleryElement);
         items = this.parseThumbnailElements(galleryElement);
 
         // Photoswipe options
@@ -233,7 +232,7 @@ class TainacanMediaGallery {
         // Pass data to PhotoSwipe and initialize it
         gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
         gallery.init();
-    
+        console.log(gallery)
         /* Updates PhotoSwiper instance  from Swiper */
         var swiperInstance = this.mainSwiper ? this.mainSwiper : this.thumbsSwiper;
     
@@ -303,25 +302,23 @@ class TainacanMediaGallery {
         var hash = window.location.hash.substring(1),
             params = {};
     
-        if (hash.length < 5) {
+        if (hash.length < 5)
             return params;
-        }
     
         var vars = hash.split("&");
         for (var i = 0; i < vars.length; i++) {
-            if (!vars[i]) {
-            continue;
-            }
+            if (!vars[i])
+                continue;
+            
             var pair = vars[i].split("=");
-            if (pair.length < 2) {
-            continue;
-            }
+            if (pair.length < 2) 
+                continue;
+            
             params[pair[0]] = pair[1];
         }
     
-        if (params.gid) {
+        if (params.gid)
             params.gid = parseInt(params.gid, 10);
-        }
     
         return params;
     }
@@ -332,8 +329,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (tainacan_plugin.tainacan_media_components && tainacan_plugin.tainacan_media_components.length) {
         tainacan_plugin.tainacan_media_components.forEach((component) => {
             new TainacanMediaGallery(
-                component.media_thumbs_id ? '#' + component.media_thumbs_id : null,
-                component.media_main_id ? '#' + component.media_main_id : null,
+                component.has_media_thumbs ? '#' + component.media_thumbs_id : null,
+                component.has_media_main ? '#' + component.media_main_id : null,
                 component
             );
         });
