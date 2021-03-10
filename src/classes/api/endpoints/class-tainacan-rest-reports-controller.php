@@ -107,6 +107,24 @@ class REST_Reports_Controller extends REST_Controller {
 				),
 			)
 		);
+		register_rest_route($this->namespace, $this->rest_base . '/activities',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_activities'),
+					'permission_callback' => array($this, 'reports_permissions_check'),
+				),
+			)
+		);
+		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/activities',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_activities'),
+					'permission_callback' => array($this, 'reports_permissions_check'),
+				),
+			)
+		);
 	}
 
 	public function reports_permissions_check($request) {
@@ -456,6 +474,37 @@ class REST_Reports_Controller extends REST_Controller {
 		return $res;
 	}
 
+	public function get_activities($request) {
+		$response = array(
+			'totals' => []
+		);
+		global $wpdb;
+
+		$collection_from = "";
+		if(isset($request['collection_id'])) {
+			$collection_id = $request['collection_id'];
+			$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key='collection_id' AND pm.meta_value='$collection_id')";
+		}
+		$sql_statement = $wpdb->prepare(
+			"SELECT count(p.id) as total, DAY(p.post_date) as day, MONTH(p.post_date) as month, YEAR(p.post_date) as year
+			FROM $wpdb->posts p $collection_from
+			WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN NOW() - INTERVAL 1 YEAR AND NOW()
+			GROUP BY DAY(p.post_date), MONTH(p.post_date), YEAR(p.post_date)
+			ORDER BY STR_TO_DATE(CONCAT(year,'-',month,'-',day), 'Y-m-d')"
+		);
+		$response['totals']['last_year'] = $wpdb->get_results($sql_statement);
+
+		$sql_statement = $wpdb->prepare(
+			"SELECT count(p.id) as total, p.post_author as user
+			FROM $wpdb->posts p $collection_from
+			WHERE p.post_type='tainacan-log'
+			GROUP BY p.post_author
+			ORDER BY total DESC"
+		);
+		$response['totals']['by_user'] = $wpdb->get_results($sql_statement);
+		//$response['totals']['s'] = $sql_statement;
+		return new \WP_REST_Response($response, 200);
+	}
 }
 
 ?>
