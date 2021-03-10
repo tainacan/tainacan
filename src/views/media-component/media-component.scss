@@ -1,5 +1,15 @@
-@import '../../../node_modules/photoswipe/dist/photoswipe.css';
-@import '../../../node_modules/photoswipe/dist/default-skin/default-skin.css';
+$pswp__show-hide-transition-duration: 333ms !default;
+$pswp__controls-transition-duration: 333ms !default;
+$pswp__background-color: rgba(0,0,0, 0.8) !default;
+$pswp__placeholder-color: #222 !default;
+$pswp__box-sizing-border-box: true !default; // disable .pswp * { box-sizing:border-box } (in case you already have it in your site css)
+$pswp__root-z-index: 9999999 !default;
+$pswp__assets-path: '../images/' !default; // path to skin assets folder (preloader, PNG and SVG sprite)
+$pswp__error-text-color: #CCC !default; // "Image not loaded" text color
+$pswp__include-minimal-style: true !default;
+
+@import '../../../node_modules/photoswipe/src/css/main.scss';
+@import '../../../node_modules/photoswipe/src/css/default-skin/default-skin.scss';
 
 .tainacan-media-component__swiper-main {
     width: 100%;
