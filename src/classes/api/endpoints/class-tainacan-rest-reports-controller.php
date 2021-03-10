@@ -478,22 +478,59 @@ class REST_Reports_Controller extends REST_Controller {
 		$response = array(
 			'totals' => []
 		);
-		global $wpdb;
-
-		$collection_from = "";
-		if(isset($request['collection_id'])) {
+		$collection_id = false;
+		if(isset($request['collection_id'])) { 
 			$collection_id = $request['collection_id'];
+		}
+		
+		$response['totals'] = array(
+			'last_year' => array(
+				'genreal' => $this->get_activities_general($collection_id),
+				'by_user' => $this->get_activities_general_by_user($collection_id)
+			),
+			'by_user' => $this->get_activities_users($collection_id)
+		);
+		return new \WP_REST_Response($response, 200);
+	}
+
+	private function get_activities_general($collection_id = false) {
+		global $wpdb;
+		$collection_from = "";
+		if($collection_id !== false) {
 			$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key='collection_id' AND pm.meta_value='$collection_id')";
 		}
 		$sql_statement = $wpdb->prepare(
-			"SELECT count(p.id) as total, DAY(p.post_date) as day, MONTH(p.post_date) as month, YEAR(p.post_date) as year
+			"SELECT count(p.id) as total, DAYOFWEEK(p.post_date) as day_of_week, DAY(p.post_date) as day, MONTH(p.post_date) as month, YEAR(p.post_date) as year
 			FROM $wpdb->posts p $collection_from
 			WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN NOW() - INTERVAL 1 YEAR AND NOW()
-			GROUP BY DAY(p.post_date), MONTH(p.post_date), YEAR(p.post_date)
+			GROUP BY DAYOFWEEK(p.post_date), DAY(p.post_date), MONTH(p.post_date), YEAR(p.post_date)
 			ORDER BY STR_TO_DATE(CONCAT(year,'-',month,'-',day), 'Y-m-d')"
 		);
-		$response['totals']['last_year'] = $wpdb->get_results($sql_statement);
+		return $wpdb->get_results($sql_statement);
+	}
 
+	private function get_activities_general_by_user($collection_id = false) {
+		global $wpdb;
+		$collection_from = "";
+		if($collection_id !== false) {
+			$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key='collection_id' AND pm.meta_value='$collection_id')";
+		}
+		$sql_statement = $wpdb->prepare(
+			"SELECT p.post_author  as user, count(p.id) as total, DATE(p.post_date) as date, DAYOFWEEK(p.post_date) as day_of_week
+			FROM $wpdb->posts p $collection_from
+			WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN NOW() - INTERVAL 1 YEAR AND NOW()
+			GROUP BY p.post_author, DATE(p.post_date), DAYOFWEEK(p.post_date)
+			ORDER BY DATE(p.post_date)"
+		);
+		return $wpdb->get_results($sql_statement);
+	}
+
+	private function get_activities_users($collection_id = false) {
+		global $wpdb;
+		$collection_from = "";
+		if($collection_id !== false) {
+			$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key='collection_id' AND pm.meta_value='$collection_id')";
+		}
 		$sql_statement = $wpdb->prepare(
 			"SELECT count(p.id) as total, p.post_author as user
 			FROM $wpdb->posts p $collection_from
@@ -501,9 +538,7 @@ class REST_Reports_Controller extends REST_Controller {
 			GROUP BY p.post_author
 			ORDER BY total DESC"
 		);
-		$response['totals']['by_user'] = $wpdb->get_results($sql_statement);
-		//$response['totals']['s'] = $sql_statement;
-		return new \WP_REST_Response($response, 200);
+		return $wpdb->get_results($sql_statement);
 	}
 }
 
