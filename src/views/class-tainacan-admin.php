@@ -220,7 +220,7 @@ class Admin {
 		$tainacan_admin_i18n['entities_labels'] = $entities_labels;
 
 		$components = ( has_filter( 'tainacan_register_web_components' ) ) ? apply_filters( 'tainacan_register_web_components' ) : [];
-
+	
 		$cur_user  = wp_get_current_user();
 		$user_caps = array();
 		$prefs     = array();

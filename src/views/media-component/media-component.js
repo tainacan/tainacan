@@ -1,83 +1,39 @@
-// TAINACAN MEDIA GALLERY --------------------------------------------------------
+// TAINACAN MEDIA COMPONENT --------------------------------------------------------
 //
-// Counts on some markup to make a list of media link be displayed
-// as a carousel with a lightbox. It can be used in two modes:
-
-/*
-
--- MODE 1 ---- Carousel of thumbnails only ----------------------------------------
-
-<div class="swiper-container-thumbs swiper-container">
-  <ul class="swiper-wrapper">
-    <li class="swiper-slide">
-      <a href="link-to-full-image-or-file">
-        <img href="link-to-thumbnail" alt..>
-        <span class="swiper-slide-name>File name</span>
-      </a>
-    </li>
-  </ul>
-</div>
-
-new TainacanMediaGallery(.swiper-container-thumbs, null, {...});
-
-
--- MODE 2 ---- Carousel of thumbnails with main slider ----------------------------
-
-<div class="swiper-container-main swiper-container">
-  <ul class="swiper-wrapper">
-    <li class="swiper-slide">
-      <a href="link-to-full-image-or-file">
-        <img href="link-to-medium-or-large" alt..>
-        <span class="swiper-slide-name>File name</span>
-        
-      </a>
-    </li>
-  </ul>
-</div>
-<div class="swiper-container-thumbs swiper-container">
-  <ul class="swiper-wrapper">
-    <li class="swiper-slide">
-      <img href="link-to-thumbnail" alt..>
-      <span class="swiper-slide-name>File name</span>
-    </li>
-  </ul>
-</div>
-
-new TainacanMediaGallery(.swiper-container-thumbs, .swiper-container-main, {...});
-
-*/
+// Counts on some HMTL markup to make a list of media link be displayed
+// as a carousel with a lightbox. Check examples in the end of the file 
+import PhotoSwipe from 'photoswipe/dist/photoswipe.js';
+import PhotoSwipeUI_Default from 'photoswipe/dist/photoswipe-ui-default.js';
 
 class TainacanMediaGallery {
 
     /**
-     * constructor initializes the instance
-     * @param  {String}  thumbnailsGallerySelector      html element to be queried containing the thumbnails list
-     * @param  {String}  mainGallerySelector            html element to be queried containing the main list
-     * @param  {Object}  options                        several options to be tweaked
-     * @param  {Boolean} options.autoPlay               sets swiper to autoplay
-     * @param  {Number}  options.autoPlayDelay          sets swiper to autoplay dealy in milisecs
-     * @param  {Boolean} options.showCarouselArrows     shows swiper navigation arrows
-     * @param  {Boolean} options.showCarouselDots       shows swiper naviagation dots
-     * @param  {Boolean} options.showShareButton        shows share button on lightbox
-     * @param  {Boolean} options.showTitle              shows file title on lightbox
-     * @param  {Boolean} options.showCaption            shows file caption on lightbox
-     * @param  {Boolean} options.showDescription        shows file description on 
+     * Constructor initializes the instance. Options are Snake Case because they come from PHP side
+     * @param  {String}  thumbs_gallery_selector       html element to be queried containing the thumbnails list
+     * @param  {String}  main_gallery_selector         html element to be queried containing the main list
+     * @param  {Object}  options                       several options to be tweaked
+     * @param  {Boolean} options.auto_play             sets swiper to autoplay
+     * @param  {Number}  options.auto_play_delay       sets swiper to autoplay delay in milisecs
+     * @param  {Boolean} options.show_arrows           shows swiper navigation arrows
+     * @param  {Boolean} options.show_pagination       shows swiper pagination
+     * @param  {Boolean} options.pagination_type       swiper pagination type ('bullets', 'fraction', 'progressbar')
+     * @param  {Boolean} options.show_share_button     shows share button on lightbox
      * 
-     * @return {Object}                                 TainacanMediaGallery instance
+     * @return {Object}                                TainacanMediaGallery instance
      */
-    constructor(thumbnailsGallerySelector, mainGallerySelector, options) {
-        this.thumbnailsGallerySelector = thumbnailsGallerySelector;
-        this.mainGallerySelector = mainGallerySelector;
+    constructor(thumbs_gallery_selector, main_gallery_selector, options) {
+        this.thumbs_gallery_selector = thumbs_gallery_selector;
+        this.main_gallery_selector = main_gallery_selector;
         this.thumbsSwiper = null;
         this.mainSwiper = null;
         this.options = options;
     
         this.initializeSwiper();
         
-        if (this.mainGallerySelector)
-            this.initPhotoSwipeFromDOM(this.mainGallerySelector + " .swiper-wrapper");
-        else if (this.thumbnailsGallerySelector)
-            this.initPhotoSwipeFromDOM(this.thumbnailsGallerySelector + " .swiper-wrapper");
+        if (this.main_gallery_selector)
+            this.initPhotoSwipeFromDOM(this.main_gallery_selector + " .swiper-wrapper");
+        else if (this.thumbs_gallery_selector)
+            this.initPhotoSwipeFromDOM(this.thumbs_gallery_selector + " .swiper-wrapper");
     }
   
     /* Initializes Swiper JS instances of carousels */
@@ -85,45 +41,55 @@ class TainacanMediaGallery {
   
         let autoPlay = false;
     
-        if (this.options.autoPlay) {
+        if (this.options.auto_play) {
             autoPlay = {
-            delay: this.options.autoPlayDelay ? this.options.autoPlayDelay : 3000
+            delay: this.options.auto_play_delay ? this.options.auto_play_delay : 3000
             };
         }
         
-        if (this.thumbnailsGallerySelector) {
-    
-            const thumbnailSwiperOptions = {
-            spaceBetween: 16,
-            slidesPerView: 'auto',
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-            autoplay: autoPlay,
-            centerInsufficientSlides: true
+        if (this.thumbs_gallery_selector) {
+            const thumbSwiperOptions = {
+                spaceBetween: 16,
+                slidesPerView: 'auto',
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    type: 'fraction',
+                },
+                autoplay: autoPlay,
+                centerInsufficientSlides: true
             };
-            this.thumbsSwiper = new Swiper(this.thumbnailsGallerySelector, thumbnailSwiperOptions);
+            this.thumbsSwiper = new Swiper(this.thumbs_gallery_selector, thumbSwiperOptions);
         }
     
-        if (this.mainGallerySelector) {
+        if (this.main_gallery_selector) {
     
             let mainSwiperOptions = {
-            slidesPerView: 1,
-            slidesPerGroup: 1,
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-            autoplay: autoPlay,
+                slidesPerView: 1,
+                slidesPerGroup: 1,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    type: 'progressbar',
+                },
             };
             if (this.thumbsSwiper) {
-            mainSwiperOptions.thumbs = {
-                swiper: this.thumbsSwiper,
-                autoScrollOffset: 1
+                mainSwiperOptions.thumbs = {
+                    swiper: this.thumbsSwiper,
+                    autoScrollOffset: 1
+                }
+            } else {
+                mainSwiperOptions.thumbs = {
+                    autoplay: autoPlay,
+                }
             }
-            }
-            this.mainSwiper = new Swiper(this.mainGallerySelector, mainSwiperOptions);
+            this.mainSwiper = new Swiper(this.main_gallery_selector, mainSwiperOptions);
     
         }
     }
@@ -218,7 +184,7 @@ class TainacanMediaGallery {
             captionEl: true,
             fullscreenEl: true,
             zoomEl: true,
-            shareEl: this.options.showShareButton ? this.options.showShareButton : false,
+            shareEl: this.options.show_share_button ? this.options.show_share_button : false,
             counterEl: true,
             arrowEl: true,
             preloaderEl: true,
@@ -363,9 +329,61 @@ class TainacanMediaGallery {
         return params;
     }
 }
-  
-new TainacanMediaGallery(
-    '.tainacan-media-component__swiper-thumbs',
-    '.tainacan-media-component__swiper-main',
-    { autoPlay: true, autoPlayDelay: 7000 }
-);
+
+/* Loads and instantiates media components passed to the global variable */
+document.addEventListener('DOMContentLoaded', function() {
+    if (tainacan_plugin.tainacan_media_components && tainacan_plugin.tainacan_media_components.length) {
+        tainacan_plugin.tainacan_media_components.forEach((component) => {
+            new TainacanMediaGallery(
+                component.media_thumbs_id ? '#' + component.media_thumbs_id : null,
+                component.media_main_id ? '#' + component.media_main_id : null,
+                component
+            );
+        });
+    }
+});
+
+
+/*
+
+---- Carousel of thumbnails only ----------------------------------------
+
+<div class="swiper-container-thumbs swiper-container">
+  <ul class="swiper-wrapper">
+    <li class="swiper-slide">
+      <a href="link-to-full-image-or-file">
+        <img href="link-to-thumbnail" alt..>
+        <span class="swiper-slide-name>File name</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
+new TainacanMediaGallery(.swiper-container-thumbs, null, {...});
+
+
+---- Carousel of thumbnails with main slider ----------------------------
+
+<div class="swiper-container-main swiper-container">
+  <ul class="swiper-wrapper">
+    <li class="swiper-slide">
+      <a href="link-to-full-image-or-file">
+        <img href="link-to-medium-or-large" alt..>
+        <span class="swiper-slide-name>File name</span>
+        
+      </a>
+    </li>
+  </ul>
+</div>
+<div class="swiper-container-thumbs swiper-container">
+  <ul class="swiper-wrapper">
+    <li class="swiper-slide">
+      <img href="link-to-thumbnail" alt..>
+      <span class="swiper-slide-name>File name</span>
+    </li>
+  </ul>
+</div>
+
+new TainacanMediaGallery(.swiper-container-thumbs, .swiper-container-main, {...});
+
+*/

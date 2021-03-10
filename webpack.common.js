@@ -1,4 +1,5 @@
 let path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
     entry: {
@@ -103,5 +104,11 @@ module.exports = {
     },
     performance: {
         hints: false
-    }
+    },
+    plugins: [
+        new webpack.ProvidePlugin({
+            'Swiper': 'Swiper',
+            'PhotoSwipe': 'PhotoSwipe'
+        })
+    ]
 };
