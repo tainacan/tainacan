@@ -43,7 +43,7 @@ class TainacanMediaGallery {
     
         if (this.options.auto_play) {
             autoPlay = {
-            delay: this.options.auto_play_delay ? this.options.auto_play_delay : 3000
+                delay: this.options.auto_play_delay ? this.options.auto_play_delay : 3000
             };
         }
         
@@ -106,9 +106,8 @@ class TainacanMediaGallery {
         // Parse URL and open gallery if it contains #&pid=3&gid=1
         var hashData = this.photoswipeParseHash();
         
-        if (hashData.pid && hashData.gid) {
+        if (hashData.pid && hashData.gid)
             this.openPhotoSwipe(hashData.pid, galleryElements[hashData.gid - 1], true, true);
-        }
   
     }
   
@@ -126,38 +125,41 @@ class TainacanMediaGallery {
     
         for (var i = 0; i < numNodes; i++) {
             figureEl = thumbElements[i]; // <figure> element
-    
+
             // include only element nodes
-            if (figureEl.nodeType !== 1) {
-            continue;
-            }
+            if (figureEl.nodeType !== 1)
+                continue;
             
             linkEl = figureEl.children[0]; // <a> element
             
+            // There may be a wrapper div before the a tag
+            if (linkEl.nodeName !== 'A')
+                linkEl = linkEl.children[0];
+            
             if (linkEl.classList.contains('attachment-without-image')) {
-            item = {
-                html: '<div class="attachment-without-image"><iframe id="tainacan-attachment-iframe" src="' + linkEl.href +  '"></iframe></div>'
-            }
+                item = {
+                    html: '<div class="attachment-without-image"><iframe id="tainacan-attachment-iframe" src="' + linkEl.href +  '"></iframe></div>'
+                }
             } else {
-            imgWidth = linkEl.children[0] && linkEl.children[0].attributes.getNamedItem('width') ? linkEl.children[0].attributes.getNamedItem('width').value : 140;
-            imgHeight = linkEl.children[0] && linkEl.children[0].attributes.getNamedItem('height') ? linkEl.children[0].attributes.getNamedItem('height').value : 140;
-            
-            // create slide object
-            item = {
-                src: linkEl.getAttribute("href"),
-                w: parseInt(imgWidth, 10),
-                h: parseInt(imgHeight, 10)
-            };
-            
-            if (linkEl.children[1] && linkEl.children[1].classList.contains('swiper-slide-name')) {
-                item.title = linkEl.children[1].innerText;
-            }
+                imgWidth = linkEl.children[0] && linkEl.children[0].attributes.getNamedItem('width') ? linkEl.children[0].attributes.getNamedItem('width').value : 140;
+                imgHeight = linkEl.children[0] && linkEl.children[0].attributes.getNamedItem('height') ? linkEl.children[0].attributes.getNamedItem('height').value : 140;
+                
+                // create slide object
+                item = {
+                    src: linkEl.getAttribute("href"),
+                    w: parseInt(imgWidth, 10),
+                    h: parseInt(imgHeight, 10)
+                };
+                
+                if (linkEl.children[1] && linkEl.children[1].classList.contains('swiper-slide-metadata__name'))
+                    item.title = linkEl.children[1].innerText;
             }
     
             item.el = figureEl; // save link to element for getThumbBoundsFn
             items.push(item);
         }
     
+        console.log(items);
         return items;
     };
   
@@ -171,9 +173,9 @@ class TainacanMediaGallery {
             gallery,
             options,
             items;
-    
+        console.log(galleryElement);
         items = this.parseThumbnailElements(galleryElement);
-    
+
         // Photoswipe options
         // https://photoswipe.com/documentation/options.html //
         options = {
@@ -191,44 +193,42 @@ class TainacanMediaGallery {
             bgOpacity: 0.85,
             // define gallery index (for URL)
             galleryUID: galleryElement.getAttribute("data-pswp-uid"),
-            getThumbBoundsFn: function(index) {
-            // See Options -> getThumbBoundsFn section of documentation for more info
-            var thumbnail = items[index].el,
-                pageYScroll =
-                window.pageYOffset || document.documentElement.scrollTop,
-                rect = thumbnail.getBoundingClientRect();
-    
-            return { x: rect.left, y: rect.top + pageYScroll, w: rect.width };
+                getThumbBoundsFn: function(index) {
+                // See Options -> getThumbBoundsFn section of documentation for more info
+                var thumbnail = items[index].el,
+                    pageYScroll =
+                    window.pageYOffset || document.documentElement.scrollTop,
+                    rect = thumbnail.getBoundingClientRect();
+        
+                return { x: rect.left, y: rect.top + pageYScroll, w: rect.width };
             }
         };
     
         // PhotoSwipe opened from URL
         if (fromURL) {
             if (options.galleryPIDs) {
-            // parse real index when custom PIDs are used
-            // http://photoswipe.com/documentation/faq.html#custom-pid-in-url
-            for (var j = 0; j < items.length; j++) {
-                if (items[j].pid == index) {
-                options.index = j;
-                break;
+                // parse real index when custom PIDs are used
+                // http://photoswipe.com/documentation/faq.html#custom-pid-in-url
+                for (var j = 0; j < items.length; j++) {
+                    if (items[j].pid == index) {
+                        options.index = j;
+                        break;
+                    }
                 }
-            }
             } else {
-            // in URL indexes start from 1
-            options.index = parseInt(index, 10) - 1;
+                // in URL indexes start from 1
+                options.index = parseInt(index, 10) - 1;
             }
         } else {
             options.index = parseInt(index, 10);
         }
     
         // exit if index not found
-        if (isNaN(options.index)) {
+        if (isNaN(options.index))
             return;
-        }
     
-        if (disableAnimation) {
+        if (disableAnimation)
             options.showAnimationDuration = 0;
-        }
     
         // Pass data to PhotoSwipe and initialize it
         gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
@@ -248,9 +248,8 @@ class TainacanMediaGallery {
     
         // Swiper autoplay stop when image zoom */
         gallery.listen('initialZoomIn', function() {
-            if( swiperInstance.autoplay.running){
+            if (swiperInstance.autoplay.running)
                 swiperInstance.autoplay.stop();
-            }
         });
     };
   
@@ -260,19 +259,18 @@ class TainacanMediaGallery {
         e.preventDefault ? e.preventDefault() : (e.returnValue = false);
     
         var eTarget = e.target || e.srcElement;
-    
+
         // find root element of slide
         var closest = function closest(el, fn) {
             return el && (fn(el) ? el : closest(el.parentNode, fn));
         };
-    
+        
         var clickedListItem = closest(eTarget, function(el) {
             return el.tagName && el.tagName.toUpperCase() === "LI";
         });
         
-        if (!clickedListItem) {
+        if (!clickedListItem)
             return;
-        }
     
         // find index of clicked item by looping through all child nodes
         // alternatively, you may define index via data- attribute
@@ -281,23 +279,22 @@ class TainacanMediaGallery {
             numChildNodes = childNodes.length,
             nodeIndex = 0,
             index;
-    
+
         for (var i = 0; i < numChildNodes; i++) {
-            if (childNodes[i].nodeType !== 1) {
-            continue;
-            }
+            if (childNodes[i].nodeType !== 1)
+                continue;
     
             if (childNodes[i] === clickedListItem) {
-            index = nodeIndex;
-            break;
+                index = nodeIndex;
+                break;
             }
             nodeIndex++;
         }
-    
-        if (index >= 0) {
-            // open PhotoSwipe if valid index found
+        
+        // open PhotoSwipe if valid index found
+        if (index >= 0)
             self.openPhotoSwipe(index, clickedGallery);
-        }
+
         return false;
     }
   

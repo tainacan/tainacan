@@ -382,8 +382,7 @@ function tainacan_get_the_media_component(
  *     @type string      before_slide_metadata   String to be added before the slide-metadata div
  *     @type string      after_slide_metadata    String to be added after the slide-metadata div
  *     @type string      class_slide_metadata    Class to be added to the slide-metadata div
- *     @type mixed       media_content           The content of the slide itself, such as an image, audio, video or iframe tag
- *     @type string      media_full_link         A link to wrap the content, possibly to show a full version in the main modal. If this is passed, the slide-content div is rendered as an a tag
+ *     @type mixed       media_content           The content of the slide itself, such as an image, audio, video or iframe tag. It may be wrapped by a link to the full content
  *     @type string      media_title             The media title, if available
  *     @type string      media_description       The media description, if available
  *     @type string      media_caption           The media caption, if available
@@ -401,7 +400,6 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 		'after_slide_metadata' => '',
 		'class_slide_metadata' => '',
 		'media_content' => '',
-		'media_full_link' => '',
 		'media_title' => '',
 		'media_description' => '',
 		'media_caption' => '',
@@ -412,35 +410,28 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 	if ( !empty($args['media_content']) ) : ?>
 
 		<?php echo $args['before_slide_content'] ?>
-		<?php if ($args['media_full_link']) : ?>
-			<a class="swiper-slide-content <?php echo $args['class_slide_content'] ?>" href="<?php echo $args['media_full_link'] ?>">
-		<?php else: ?>
-			<div class="swiper-slide-content <?php echo $args['class_slide_content'] ?>">
-		<?php endif; ?>
-				<?php echo $args['media_content'] ?>
-				
-				<?php echo $args['before_slide_metadata'] ?>
 
-				<?php if ( !empty($args['media_title']) || !empty($args['description']) || !empty($args['media_caption']) ) :?>
-					<div class="swiper-slide-metadata">
-						<?php if ( !empty($args['media_title']) ) :?>
-							<span class="swiper-slide-metadata__name"><?php echo $args['media_title'] ?></span>
-						<?php endif; ?>
-						<?php if ( !empty($args['media_description']) ) :?>
-							<span class="swiper-slide-metadata__description"><?php echo $args['media_description'] ?></span>
-						<?php endif; ?>
-						<?php if ( !empty($args['media_caption']) ) :?>
-							<span class="swiper-slide-metadata__caption"><?php echo $args['media_caption'] ?></span>
-						<?php endif; ?>
-					</div>
-				<?php endif; ?>
+		<div class="swiper-slide-content <?php echo $args['class_slide_content'] ?>">
+			<?php echo $args['media_content'] ?>
+			
+			<?php echo $args['before_slide_metadata'] ?>
 
-				<?php echo $args['after_slide_metadata'] ?>
-		<?php if ($args['media_full_link']) : ?>
-			</a>
-		<?php else: ?>
-			</div>
-		<?php endif; ?>
+			<?php if ( !empty($args['media_title']) || !empty($args['description']) || !empty($args['media_caption']) ) :?>
+				<div class="swiper-slide-metadata">
+					<?php if ( !empty($args['media_title']) ) :?>
+						<span class="swiper-slide-metadata__name"><?php echo $args['media_title'] ?></span>
+					<?php endif; ?>
+					<?php if ( !empty($args['media_description']) ) :?>
+						<span class="swiper-slide-metadata__description"><?php echo $args['media_description'] ?></span>
+					<?php endif; ?>
+					<?php if ( !empty($args['media_caption']) ) :?>
+						<span class="swiper-slide-metadata__caption"><?php echo $args['media_caption'] ?></span>
+					<?php endif; ?>
+				</div>
+			<?php endif; ?>
+
+			<?php echo $args['after_slide_metadata'] ?>
+		</div>
 		<?php echo $args['after_slide_content'] ?>
 		
 	<?php endif;
