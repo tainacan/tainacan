@@ -170,6 +170,21 @@
                         style="min-height=380px"
                         class="skeleton postbox" />
             </div>
+            <div 
+                    v-if="activities != undefined"
+                    class="column is-full">
+                <apexchart
+                        v-if="!isFetchingActivities"
+                        height="380px"
+                        class="postbox"
+                        type="heatmap"
+                        :series="activitiesChartSeries"
+                        :options="activitiesChartOptions" />
+                <div 
+                        v-else
+                        style="min-height=380px"
+                        class="skeleton postbox" />
+            </div>
         </div>
     </div>
 </template>
@@ -191,6 +206,7 @@ export default {
             isFetchingTaxonomyTerms: false,
             isFetchingMetadata: false,
             isFetchingMetadataList: false,
+            isFetchingActivities: false,
             collectionsListChartSeries: [],
             collectionsListChartOptions: {},
             taxonomiesListChartSeries: [],
@@ -203,7 +219,9 @@ export default {
             metadataTypeChartOptions: {},
             metadataDistributionChartSeries: [],
             metadataDistributionChartOptions: {},
-            metadataDistributionChartHeight: 730
+            metadataDistributionChartHeight: 730,
+            activitiesChartSeries: [],
+            activitiesChartOptions: {}
         }
     },
     computed: {
@@ -217,9 +235,11 @@ export default {
             taxonomyTerms: 'getTaxonomyTerms',
             taxonomiesList: 'getTaxonomiesList',
             collectionsList: 'getCollectionsList',
+            activities: 'getActivities',
             stackedBarChartOptions: 'getStackedBarChartOptions',
             donutChartOptions: 'getDonutChartOptions',
-            horizontalBarChartOptions: 'getHorizontalBarChartOptions'
+            horizontalBarChartOptions: 'getHorizontalBarChartOptions',
+            heatMapChartOptions: 'getHeatMapChartOptions'
         }),
         taxonomiesListArray() {
             return this.taxonomiesList && this.taxonomiesList != undefined ? Object.values(this.taxonomiesList) : [];
@@ -234,6 +254,7 @@ export default {
                 this.selectedCollection = to['collection'] ? to['collection'] : 'default';
                 this.loadSummary();
                 this.loadMetadata();
+                this.loadActivities();
 
                 if (!this.selectedCollection || this.selectedCollection == 'default') {
                     this.loadCollectionsList();
@@ -269,7 +290,8 @@ export default {
             'fetchTaxonomiesList',
             'fetchTaxonomyTerms',
             'fetchMetadata',
-            'fetchMetadataList'
+            'fetchMetadataList',
+            'fetchActivities'
         ]),
         loadCollections() {
             this.isFetchingCollections = true;
@@ -578,6 +600,97 @@ export default {
                     this.isFetchingMetadataList = false;
                 })
                 .catch(() => this.isFetchingMetadataList = false);
+        },
+        loadActivities() {
+            this.isFetchingActivities = true;
+            this.fetchActivities({ collectionId: this.selectedCollection })
+                .then(() => {
+
+                    const daysWithActivities = this.activities && this.activities.totals && this.activities.totals.last_year && this.activities.totals.last_year.general ? this.activities.totals.last_year.general : []; 
+                    if (daysWithActivities && daysWithActivities.length) {
+                        
+                        let everyDayOfTheYear = Array.from(new Array(7),
+                            (val,index) => {
+                                return {
+                                    name: (index + 1),
+                                    data: new Array(53).fill({x: '', y: 0})
+                                }
+                            }
+                        );
+                        
+                        const firstDayOfTheWeekWithActivity = parseInt(daysWithActivities[0].day_of_week);
+                        let dayWithActivityIndex = 0;
+                        let daysToSkip = 0;
+
+                        // Loop for each column (number of the week in the year)
+                        for (let column = 0; column < 53; column++) {
+
+                            // Loop for each line (number of the day in the week)
+                            for (let line = 0; line < 7; line++) {
+
+                                // If there are no more days with activities, get outta here
+                                if (dayWithActivityIndex >= daysWithActivities.length)
+                                    break;
+
+                                // We should only begin inserting days from firstDayOfTheWeekWithActivity
+                                if (column == 0 && line < firstDayOfTheWeekWithActivity - 1) {
+                                    continue;
+
+                                // On the first day, we don't need to calculate distances, just set the value and save the date
+                                } else if (column == 0 && line == firstDayOfTheWeekWithActivity - 1) {
+                                    everyDayOfTheYear[line].data[column] = {
+                                        x: '',
+                                        y: parseInt(daysWithActivities[dayWithActivityIndex].total)
+                                    };
+
+                                    const lastDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].year, daysWithActivities[dayWithActivityIndex].month - 1, daysWithActivities[dayWithActivityIndex].day);
+                                    dayWithActivityIndex++;
+
+                                    const nextDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].year, daysWithActivities[dayWithActivityIndex].month - 1, daysWithActivities[dayWithActivityIndex].day);
+
+                                    daysToSkip = Math.floor( (nextDayWithActivity - lastDayWithActivity) / (1000 * 60 * 60 * 24) );
+                                } else {
+                                    daysToSkip--;
+
+                                    // If we don't have more days to skip, time to update values
+                                    if ( daysToSkip <= 0) {
+                                        everyDayOfTheYear[line].data[column] = {
+                                            x: '',
+                                            y: parseInt(daysWithActivities[dayWithActivityIndex].total)
+                                        };
+
+                                        const lastDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].year, daysWithActivities[dayWithActivityIndex].month - 1, daysWithActivities[dayWithActivityIndex].day);
+                                        dayWithActivityIndex++;
+
+                                        const nextDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].year, daysWithActivities[dayWithActivityIndex].month - 1, daysWithActivities[dayWithActivityIndex].day);
+
+                                        daysToSkip = Math.floor( (nextDayWithActivity - lastDayWithActivity) / (1000 * 60 * 60 * 24) );
+                                        console.log(daysToSkip, nextDayWithActivity, lastDayWithActivity);
+                                    }
+                                }
+                            }
+                        }
+
+                        this.activitiesChartSeries = everyDayOfTheYear();
+                        this.activitiesChartOptions = {
+                             ...this.heatMapChartOptions,
+                                title: {
+                                    text: this.$i18n.get('label_activities_last_year')
+                                },
+                        }
+                    } else {
+                        this.activitiesChartSeries = [];
+                        this.activitiesChartOptions = {
+                             ...this.heatMapChartOptions,
+                                title: {
+                                    text: this.$i18n.get('label_activities_last_year')
+                                },
+                        }
+                    }
+
+                    this.isFetchingActivities = false;
+                })
+                .catch(() => this.isFetchingActivities = false);
         }
     }
 }

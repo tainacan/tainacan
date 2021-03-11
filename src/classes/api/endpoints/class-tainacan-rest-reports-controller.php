@@ -485,7 +485,7 @@ class REST_Reports_Controller extends REST_Controller {
 		
 		$response['totals'] = array(
 			'last_year' => array(
-				'genreal' => $this->get_activities_general($collection_id),
+				'general' => $this->get_activities_general($collection_id),
 				'by_user' => $this->get_activities_general_by_user($collection_id)
 			),
 			'by_user' => $this->get_activities_users($collection_id)

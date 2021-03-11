@@ -9,6 +9,7 @@ const state = {
     taxonomyTerms: {},
     metadata: {},
     metadataList: {},
+    activities: {},
     stackedBarChartOptions: {
         chart: {
           type: 'bar',
@@ -132,6 +133,18 @@ const state = {
         horizontalAlign: 'left',
         offsetX: 40,
       }
+    },
+    heatMapChartOptions: {
+      chart: {
+        height: 350,
+        type: 'heatmap',
+      },
+      dataLabels: {
+        enabled: false
+      },
+      title: {
+        text: ''
+      },
     }
 };
 

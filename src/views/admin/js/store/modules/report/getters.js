@@ -22,6 +22,10 @@ export const getTaxonomyTerms = state => {
   return state.taxonomyTerms;
 };
 
+export const getActivities = state => {
+  return state.activities;
+};
+
 export const getStackedBarChartOptions = state => {
   return state.stackedBarChartOptions;
 };
@@ -32,4 +36,8 @@ export const getHorizontalBarChartOptions = state => {
 
 export const getDonutChartOptions = state => {
   return state.donutChartOptions;
+};
+
+export const getHeatMapChartOptions = state => {
+  return state.heatMapChartOptions;
 };
