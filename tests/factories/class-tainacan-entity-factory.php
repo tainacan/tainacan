@@ -2,6 +2,8 @@
 
 namespace Tainacan\Tests\Factories;
 
+use InvalidArgumentException;
+
 class Entity_Factory {
 
 	/**
@@ -9,6 +11,7 @@ class Entity_Factory {
 	 * @var \Tainacan\Entities\Entity
 	 */
 	private   $entity;
+
 	/**
 	 * 
 	 * @var \Tainacan\Repositories\Repository
@@ -28,19 +31,18 @@ class Entity_Factory {
 	 *
 	 * @param bool $publish
 	 *
+	 * @throws InvalidArgumentException
+	 *
 	 * @return mixed
-	 * @throws \ErrorException
 	 */
 	public function create_entity($type, $args = [], $is_validated_and_in_db = false, $publish = false){
 		ini_set('display_errors', 1);
-        
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
-        
+
 		try {
 			$type = trim($type);
 
 			if(empty($type)){
-				throw new \InvalidArgumentException('The type can\'t be empty');
+				throw new InvalidArgumentException('The type can\'t be empty');
 			} elseif(!strrchr($type, '_')){
 				$type = ucfirst(strtolower($type));
 			} else {
@@ -107,7 +109,7 @@ class Entity_Factory {
 				$this->entity->validate();
 				$this->entity = $this->repository->insert( $this->entity );
 			} else {
-				throw new \InvalidArgumentException('One or more arguments are invalid.');
+				throw new InvalidArgumentException('One or more arguments are invalid.');
 			}
 		} catch (\Exception $exception){
 			echo "\n" . $exception->getMessage() . "\n";
