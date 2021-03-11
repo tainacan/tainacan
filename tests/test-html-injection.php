@@ -40,7 +40,7 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 			true
 		);
 		$collection = $Tainacan_Collections->fetch($collection->get_id());
-		// $this->assertEquals($collection->get_name(), 'collection name link link2');
+		$this->assertEquals($collection->get_name(), 'collection name link  link2');
 		
 		$metadatum = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
@@ -53,7 +53,7 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 			true
 		);
 		$metadatum = $Tainacan_Metadata->fetch($metadatum->get_id());
-		// $this->assertEquals($metadatum->get_name(), 'metadatum name link');
+		$this->assertEquals($metadatum->get_name(), 'metadatum name link');
 
 		$item = $this->tainacan_entity_factory->create_entity(
 			'item',
@@ -65,8 +65,8 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 			true
 		);
 		$item = $Tainacan_Items->fetch($item->get_id());
-		// $this->assertEquals($item->get_title(), 'title item console.log("XSS")');
-		// $this->assertEquals($item->get_description(), 'description item');
+		$this->assertEquals($item->get_title(), 'title item console.log("XSS")');
+		$this->assertEquals($item->get_description(), 'description item');
 
 		// Test metadata
 		$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);

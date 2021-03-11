@@ -304,7 +304,7 @@ class Collections extends Repository {
 	 */
 	public function insert( $collection ) {
 		$this->pre_process( $collection );		
-		$this->handle_parent_order_clone( $collection );		
+		$this->handle_parent_order_clone( $collection );
 
 		$new_collection = parent::insert( $collection );
 

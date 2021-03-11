@@ -136,7 +136,6 @@ abstract class Repository {
 			do_action( "tainacan-pre-insert-$obj_post_type", $obj );
 
 		$map = $this->get_map();
-
 		// First iterate through native post properties
 		foreach ( $map as $prop => $mapped ) {
 			if ( $mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi' ) {
@@ -153,6 +152,9 @@ abstract class Repository {
 		}
 
 		if ( $obj instanceof Entities\Item ) {
+            $sanitized_title = $this->sanitize_value($obj->get('title'));
+            $sanitized_desc = $this->sanitize_value($obj->get('description'));
+
 			// get collection to determine post type
 			$collection = $obj->get_collection();
 
@@ -162,9 +164,16 @@ abstract class Repository {
 
 			$post_t                  = $collection->get_db_identifier();
 			$obj->WP_Post->post_type = $post_t;
+            $obj->WP_Post->post_title = $sanitized_title;
+            $obj->WP_Post->post_content = $sanitized_desc;
 			$obj_post_type = 'tainacan-item';
 			do_action( "tainacan-pre-insert-$obj_post_type", $obj );
 		}
+
+		if ($obj instanceof Entities\Collection || $obj instanceof Entities\Metadatum) {
+            $sanitized = $this->sanitize_value($obj->get('name'));
+            $obj->WP_Post->post_title = $sanitized;
+        }
 
 		$id = wp_insert_post( $obj->WP_Post );
 		if ($id instanceof \WP_Error || 0 === $id) {
@@ -916,7 +925,7 @@ abstract class Repository {
 		$allowed_html = wp_kses_allowed_html('post');		
 		unset($allowed_html["a"]);
 		
-		return wp_kses(trim($content), $allowed_html);
+		return trim(wp_kses($content, $allowed_html));
 	}
 
 }
