@@ -500,11 +500,11 @@ class REST_Reports_Controller extends REST_Controller {
 			$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key='collection_id' AND pm.meta_value='$collection_id')";
 		}
 		$sql_statement = $wpdb->prepare(
-			"SELECT count(p.id) as total, DAYOFWEEK(p.post_date) as day_of_week, DAY(p.post_date) as day, MONTH(p.post_date) as month, YEAR(p.post_date) as year
+			"SELECT count(p.id) as total, DATE(p.post_date) as date, DAYOFWEEK(p.post_date) as day_of_week
 			FROM $wpdb->posts p $collection_from
 			WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN NOW() - INTERVAL 1 YEAR AND NOW()
-			GROUP BY DAYOFWEEK(p.post_date), DAY(p.post_date), MONTH(p.post_date), YEAR(p.post_date)
-			ORDER BY STR_TO_DATE(CONCAT(year,'-',month,'-',day), 'Y-m-d')"
+			GROUP BY DATE(p.post_date), DAYOFWEEK(p.post_date)
+			ORDER BY DATE(p.post_date)"
 		);
 		return $wpdb->get_results($sql_statement);
 	}
