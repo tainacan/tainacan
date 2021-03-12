@@ -21,6 +21,7 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
 
 		// Evil attempts
 		$link   = "<a href='www.tainacan.org'>link</a>";
@@ -128,6 +129,17 @@ class HTML_Injection extends TAINACAN_UnitTestCase
         /*
          * Test terms
          */
+        $term = $this->tainacan_entity_factory->create_entity(
+            'term',
+            array(
+                'taxonomy' => $taxonomy->get_db_identifier(),
+                'name'     => $css,
+            ),
+            true
+        );
+
+        $t =  $Tainacan_Terms->fetch($term->get_term_id(), $taxonomy);
+        $this->assertEquals($t->get_name(), 'my text along with some style');
 
         /*
          * Test taxonomies
