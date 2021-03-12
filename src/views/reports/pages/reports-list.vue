@@ -143,7 +143,7 @@
                         style="min-height=740px"
                         class="skeleton postbox" />
             </div>
-            <div 
+            <!-- <div 
                     v-if="metadataList != undefined"
                     class="column is-full">
                 <select 
@@ -169,7 +169,7 @@
                         v-else
                         style="min-height=380px"
                         class="skeleton postbox" />
-            </div>
+            </div> -->
             <div 
                     v-if="activities != undefined"
                     class="column is-full">
@@ -316,8 +316,8 @@ export default {
                         let metadataTypeLabels = [];
 
                         for (const metadataType in this.metadata.totals.metadata_per_type) {
-                            metadataTypeValues.push(this.metadata.totals.metadata_per_type[metadataType].count);
-                            metadataTypeLabels.push(this.metadata.totals.metadata_per_type[metadataType].name);
+                            metadataTypeValues.push(this.metadata.totals.metadata_per_type[metadataType].count ? this.metadata.totals.metadata_per_type[metadataType].count : 0);
+                            metadataTypeLabels.push(this.metadata.totals.metadata_per_type[metadataType].name ? this.metadata.totals.metadata_per_type[metadataType].name : '');
                         }
                         
                         this.metadataTypeChartSeries = metadataTypeValues;
@@ -613,7 +613,7 @@ export default {
                             (val,index) => {
                                 return {
                                     name: (index + 1),
-                                    data: new Array(53).fill({x: '', y: 0})
+                                    data: new Array(53).fill({ x: '', y: 0 })
                                 }
                             }
                         );
@@ -629,55 +629,54 @@ export default {
                             for (let line = 0; line < 7; line++) {
 
                                 // If there are no more days with activities, get outta here
-                                if (dayWithActivityIndex >= daysWithActivities.length)
-                                    break;
+                                if (dayWithActivityIndex < daysWithActivities.length - 1) {
+                                        
+                                    // We should only begin inserting days from firstDayOfTheWeekWithActivity
+                                    if (column == 0 && line < firstDayOfTheWeekWithActivity - 1) {
+                                        continue;
 
-                                // We should only begin inserting days from firstDayOfTheWeekWithActivity
-                                if (column == 0 && line < firstDayOfTheWeekWithActivity - 1) {
-                                    continue;
-
-                                // On the first day, we don't need to calculate distances, just set the value and save the date
-                                } else if (column == 0 && line == firstDayOfTheWeekWithActivity - 1) {
-                                    everyDayOfTheYear[line].data[column] = {
-                                        x: '',
-                                        y: parseInt(daysWithActivities[dayWithActivityIndex].total)
-                                    };
-
-                                    const lastDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].year, daysWithActivities[dayWithActivityIndex].month - 1, daysWithActivities[dayWithActivityIndex].day);
-                                    dayWithActivityIndex++;
-
-                                    const nextDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].year, daysWithActivities[dayWithActivityIndex].month - 1, daysWithActivities[dayWithActivityIndex].day);
-
-                                    daysToSkip = Math.floor( (nextDayWithActivity - lastDayWithActivity) / (1000 * 60 * 60 * 24) );
-                                } else {
-                                    daysToSkip--;
-
-                                    // If we don't have more days to skip, time to update values
-                                    if ( daysToSkip <= 0) {
+                                    // On the first day, we don't need to calculate distances, just set the value and save the date
+                                    } else if (column == 0 && line == firstDayOfTheWeekWithActivity - 1) {
                                         everyDayOfTheYear[line].data[column] = {
                                             x: '',
                                             y: parseInt(daysWithActivities[dayWithActivityIndex].total)
                                         };
 
-                                        const lastDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].year, daysWithActivities[dayWithActivityIndex].month - 1, daysWithActivities[dayWithActivityIndex].day);
+                                        const lastDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].date);
                                         dayWithActivityIndex++;
 
-                                        const nextDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].year, daysWithActivities[dayWithActivityIndex].month - 1, daysWithActivities[dayWithActivityIndex].day);
+                                        const nextDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].date);
 
                                         daysToSkip = Math.floor( (nextDayWithActivity - lastDayWithActivity) / (1000 * 60 * 60 * 24) );
-                                        console.log(daysToSkip, nextDayWithActivity, lastDayWithActivity);
+                                    } else {
+                                        daysToSkip--;
+
+                                        // If we don't have more days to skip, time to update values
+                                        if ( daysToSkip <= 0) {
+                                            everyDayOfTheYear[line].data[column] = {
+                                                x: '',
+                                                y: parseInt(daysWithActivities[dayWithActivityIndex].total)
+                                            };
+
+                                            const lastDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].date);
+                                            dayWithActivityIndex++;
+
+                                            const nextDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].date);
+
+                                            daysToSkip = Math.floor( (nextDayWithActivity - lastDayWithActivity) / (1000 * 60 * 60 * 24) );
+                                            console.log(lastDayWithActivity);
+                                        }
                                     }
                                 }
                             }
                         }
-
-                        this.activitiesChartSeries = everyDayOfTheYear();
+                        this.activitiesChartSeries = everyDayOfTheYear;
                         this.activitiesChartOptions = {
                              ...this.heatMapChartOptions,
                                 title: {
                                     text: this.$i18n.get('label_activities_last_year')
                                 },
-                        }
+                        };
                     } else {
                         this.activitiesChartSeries = [];
                         this.activitiesChartOptions = {

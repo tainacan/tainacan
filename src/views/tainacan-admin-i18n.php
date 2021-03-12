@@ -510,7 +510,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_select_a_taxonomy'					 	 => __( 'Select a taxonomy', 'tainacan' ),
 	'label_items_with_this_metadum_value'		 	 => __( 'Items with this metadatum value', 'tainacan' ),
 	'label_amount_of_items_per_metadatum_value'		 => __( 'Amount of items per metadatum value', 'tainacan' ),
-	
+	'label_activities_last_year'					 => __( 'Activities last year', 'tainacan' ),
+
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),

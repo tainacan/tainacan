@@ -142,6 +142,7 @@ const state = {
       dataLabels: {
         enabled: false
       },
+      colors: [ '#298596' ],
       title: {
         text: ''
       },
