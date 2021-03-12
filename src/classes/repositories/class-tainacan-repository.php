@@ -144,10 +144,10 @@ abstract class Repository {
 		}
 		$obj->WP_Post->post_type = $obj::get_post_type();
 
-        if ( $obj instanceof Entities\Taxonomy ) {
-            $sanitized = $this->sanitize_value($obj->get('name'));
-            $obj->WP_Post->post_title = $sanitized;
-        }
+		if ( $obj instanceof Entities\Taxonomy ) {
+		    $sanitized = $this->sanitize_value($obj->get('name'));
+		    $obj->WP_Post->post_title = $sanitized;
+		}
 
 		if ( $obj instanceof Entities\Log && ! ( isset( $obj->WP_Post->post_status ) && in_array( $obj->WP_Post->post_status, [
 					'publish',
@@ -157,8 +157,8 @@ abstract class Repository {
 		}
 
 		if ( $obj instanceof Entities\Item ) {
-            $sanitized_title = $this->sanitize_value($obj->get('title'));
-            $sanitized_desc = $this->sanitize_value($obj->get('description'));
+		    $sanitized_title = $this->sanitize_value($obj->get('title'));
+		    $sanitized_desc = $this->sanitize_value($obj->get('description'));
 
 			// get collection to determine post type
 			$collection = $obj->get_collection();
@@ -169,21 +169,21 @@ abstract class Repository {
 
 			$post_t                  = $collection->get_db_identifier();
 			$obj->WP_Post->post_type = $post_t;
-            $obj->WP_Post->post_title = $sanitized_title;
-            $obj->WP_Post->post_content = $sanitized_desc;
+			$obj->WP_Post->post_title = $sanitized_title;
+			$obj->WP_Post->post_content = $sanitized_desc;
 			$obj_post_type = 'tainacan-item';
 			do_action( "tainacan-pre-insert-$obj_post_type", $obj );
 		}
 
 		if ($obj instanceof Entities\Collection || $obj instanceof Entities\Metadatum) {
-            $sanitized = $this->sanitize_value($obj->get('name'));
-            $obj->WP_Post->post_title = $sanitized;
-        }
+		    $sanitized = $this->sanitize_value($obj->get('name'));
+		    $obj->WP_Post->post_title = $sanitized;
+		}
 
 		$id = wp_insert_post( $obj->WP_Post );
 		if ($id instanceof \WP_Error || 0 === $id) {
 		    return false;
-        }
+		}
 
 		// reset object
 		$obj->WP_Post = get_post( $id );
