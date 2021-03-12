@@ -121,8 +121,8 @@ abstract class Repository {
 	 */
 	public function insert( $obj ) {
 		// validate
-        $require_validation_statuses = [ 'publish', 'future', 'private'];
-		if (in_array( $obj->get_status(), apply_filters( 'tainacan-status-require-validation', $require_validation_statuses) ) && ! $obj->get_validated() ) {
+        $required_validation_statuses = ['publish', 'future', 'private'];
+		if (in_array( $obj->get_status(), apply_filters( 'tainacan-status-require-validation', $required_validation_statuses) ) && ! $obj->get_validated() ) {
 			throw new \Exception( 'Entities must be validated before you can save them' );
 			// TODO: Throw Warning saying you must validate object before insert()
 		}
@@ -143,11 +143,6 @@ abstract class Repository {
 			}
 		}
 		$obj->WP_Post->post_type = $obj::get_post_type();
-
-		if ( $obj instanceof Entities\Taxonomy ) {
-		    $sanitized = $this->sanitize_value($obj->get('name'));
-		    $obj->WP_Post->post_title = $sanitized;
-		}
 
 		if ( $obj instanceof Entities\Log && ! ( isset( $obj->WP_Post->post_status ) && in_array( $obj->WP_Post->post_status, [
 					'publish',
@@ -175,9 +170,11 @@ abstract class Repository {
 			do_action( "tainacan-pre-insert-$obj_post_type", $obj );
 		}
 
-		if ($obj instanceof Entities\Collection || $obj instanceof Entities\Metadatum) {
+		if ($obj instanceof Entities\Collection || $obj instanceof Entities\Metadatum || $obj instanceof Entities\Taxonomy) {
 		    $sanitized = $this->sanitize_value($obj->get('name'));
+            $sanitized_desc = $this->sanitize_value($obj->get('description'));
 		    $obj->WP_Post->post_title = $sanitized;
+            $obj->WP_Post->post_content = $sanitized_desc;
 		}
 
 		$id = wp_insert_post( $obj->WP_Post );

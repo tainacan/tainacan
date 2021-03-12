@@ -28,16 +28,21 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 		$css    = "my text along with some style <style>a { display: none }</style>";
 		$iframe = "<iframe src='www.tainacan.org' title='Taiancan'></iframe>";
         $text_and_link = "my very interesting name and $link as well";
+        $text_and_iframe = "description item $iframe";
 
 		// Accepted formatting
 		$strong = "I have some info to tell the world. And I can <strong> bold it </strong>";
 		$html	= "<div><h1>Main Info</h1><h3>sub title</h3><p>My structure description<p></p>and another paragraph</p></div>";
 
+		// Expected returns
+        $expected_title = 'my very interesting name and link as well';
+        $expected_desc = 'description item';
+
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
 				'name' => 'collection name <a href="www.tainacan.org">link <a href="link2.com.br"> link2 </a> </a>',
-				'description' => 'collection description',
+				'description' => $text_and_iframe,
 			),
 			true
 		);
@@ -45,7 +50,8 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 
 		// Test Collection
 		$this->assertEquals($collection->get_name(), 'collection name link  link2');
-		
+		$this->assertEquals($collection->get_description(), $expected_desc);
+
 		$metadatum = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -57,23 +63,24 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 			true
 		);
 		$metadatum = $Tainacan_Metadata->fetch($metadatum->get_id());
-		$this->assertEquals($metadatum->get_name(), 'my very interesting name and link as well');
+		$this->assertEquals($metadatum->get_name(), $expected_title);
 
 		$item = $this->tainacan_entity_factory->create_entity(
 			'item',
 			array(
 				'title'       => 'title item <script>console.log("XSS")</script>',
-				'description' => 'description item  <iframe src="www.tainacan.org" title="Taiancan"></iframe>',
+				'description' => $text_and_iframe,
 				'collection'  => $collection
 			),
 			true
 		);
 
-        $taxonomy = $this->tainacan_entity_factory->create_entity(
-            'taxonomy',
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+		    'taxonomy',
             array(
                 'name'   => $text_and_link,
                 'collections' => [$collection],
+                'description' => $text_and_iframe,
                 'status' => 'publish'
             ),
             true
@@ -81,9 +88,11 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 
 		$item = $Tainacan_Items->fetch($item->get_id());
 		$this->assertEquals($item->get_title(), 'title item console.log("XSS")');
-		$this->assertEquals($item->get_description(), 'description item');
+		$this->assertEquals($item->get_description(), $expected_desc);
 
-		// Test metadata
+		/*
+		 * Test metadata
+		 */
 		$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
 		$item_metadata->set_value($js);
 		$item_metadata->validate();
@@ -116,10 +125,15 @@ class HTML_Injection extends TAINACAN_UnitTestCase
 		$item_metadata = $Tainacan_Item_Metadata->update($item_metadata);
 		$this->assertEquals($item_metadata->get_value(), $html);
 
-		// Test terms
+        /*
+         * Test terms
+         */
 
-		// Test taxonomies
+        /*
+         * Test taxonomies
+         */
         $tx = $Tainacan_Taxonomies->fetch($taxonomy->get_id());
-        $this->assertEquals($tx->get_name(), 'my very interesting name and link as well');
+        $this->assertEquals($tx->get_name(), $expected_title);
+        $this->assertEquals($tx->get_description(), $expected_desc);
 	}
 }
