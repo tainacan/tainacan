@@ -141,7 +141,6 @@ class Taxonomies extends Repository {
 	 * @return Entities\Entity
 	 */
 	public function insert( $taxonomy ) {
-
 		$new_taxonomy = parent::insert( $taxonomy );
 		$new_taxonomy->tainacan_register_taxonomy();
 		
@@ -168,7 +167,6 @@ class Taxonomies extends Repository {
 	 * @return \WP_Query|Array an instance of wp query OR array of entities;
 	 */
 	public function fetch( $args = [], $output = null ) {
-
 		// TODO: Pegar taxonomias registradas via código
 
 		if ( is_numeric( $args ) ) {

@@ -144,6 +144,11 @@ abstract class Repository {
 		}
 		$obj->WP_Post->post_type = $obj::get_post_type();
 
+        if ( $obj instanceof Entities\Taxonomy ) {
+            $sanitized = $this->sanitize_value($obj->get('name'));
+            $obj->WP_Post->post_title = $sanitized;
+        }
+
 		if ( $obj instanceof Entities\Log && ! ( isset( $obj->WP_Post->post_status ) && in_array( $obj->WP_Post->post_status, [
 					'publish',
 					'pending'
