@@ -11,43 +11,124 @@ $pswp__include-minimal-style: true !default;
 @import '../../../node_modules/photoswipe/src/css/main.scss';
 @import '../../../node_modules/photoswipe/src/css/default-skin/default-skin.scss';
 
-.tainacan-media-component__swiper-main {
+.tainacan-media-component {
+    --swiper-theme-color: var(--tainacan-secondary, #298596);
+    --swiper-navigation-size: 44px;
+    --tainacan-media-background: var(--tainacan-background-color, #ffffff);
+    --tainacan-media-main-carousel-height: 60vh;
+    --tainacan-media-main-carousel-width: 100%;
+    --tainacan-media-thumbs-carousel-width: 100%;
+    --tainacan-media-thumbs-carousel-item-size: 140px;
+
     width: 100%;
+    height: auto;
+    display: block;
+    background-color: var(--tainacan-media-background, #ffffff);
 }
 
-// &:not(.tainacan-item-section__gallery-items) {
-//     .tainacan-item-section__attachments-file,
-//     .tainacan-item-section__attachments-file>a {
-//         cursor: zoom-in;
-//     }
-// }
+/* Style valid for both cases of carousel, main and thumbs */
+.tainacan-media-component__swiper-main,
 .tainacan-media-component__swiper-thumbs {
-    position: relative;
-    
-    .swiper-button-disabled {
-        display: none;
+    .swiper-button-prev::after,
+    .swiper-container-rtl .swiper-button-next::after {
+        content: 'previous';
     }
-    .swiper-button-next,
-    .swiper-button-prev {
-        top: 65px;
-        padding: 20px;
+
+    .swiper-button-next::after,
+    .swiper-button-prev::after {
+        font-family: "TainacanIcons";
+        opacity: 0.7;
+        transition: opacity ease 0.2s;
     }
-    .swiper-button-prev, .swiper-container-rtl .swiper-button-next {
-        left: -20px;
+    &:hover {
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+            opacity: 1;
+        }
     }
-    .swiper-button-next, .swiper-container-rtl .swiper-button-prev {
-        right: -20px;
+    ul.swiper-wrapper { 
+        list-style: none;
+        padding: 0;
     }
-    .swiper-slide-thumb-active {
-        font-weight: bold;
-        img {
-            border-bottom-color: var(--tainacan-secondary, #298596);
+}
+
+.tainacan-media-component__swiper-main {
+    width: 100%;
+    max-width: var(--tainacan-media-main-carousel-width, 100%);
+
+    ul.swiper-wrapper { 
+        display: flex;
+        align-items: center;
+    }
+    li.swiper-slide {
+        height: 100%;
+        max-width: calc(100% - var(--swiper-navigation-size, 44px) - var(--swiper-navigation-size, 44px));
+        padding: 0 var(--swiper-navigation-size, 44px);
+
+        .swiper-slide-metadata {
+            text-align: center;
+        }
+
+        .swiper-slide-metadata__name {
+            font-size: 1em;
+            font-weight: bold;
+            color: var(--tainacan-label-color, #454647);
+        }
+        .swiper-slide-metadata__caption {
+            font-size: 0.9375em;
+            color: var(--tainacan-input-color, #1d1d1d);
+        }
+        .swiper-slide-metadata__caption {
+            font-size: 0.875em;
+            color: var(--tainacan-info-color, #555758);
         }
     }
 
+    .swiper-slide-content {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+        iframe {
+            max-height: var(--tainacan-media-main-carousel-height, 60vh);
+            width: 90%;
+            max-width: 90%;
+            border: none;
+            display: block;
+        }
+    
+        a:first-of-type,
+        p:first-of-type {
+            z-index: 99;
+            padding: 0.25em 0.5em;
+            background: white;
+            border-radius: 3px;
+            word-wrap: break-word;
+        }
+        audio,
+        video {
+            width: 100%;
+            height: auto;
+            min-height: 54px;
+            padding: 12px;
+            max-height: var(--tainacan-media-main-carousel-height, 60vh);
+        }
+        img {
+            width: auto;
+            max-height: var(--tainacan-media-main-carousel-height, 60vh);
+        }
+    }
+}
+.tainacan-media-component__swiper-thumbs {
+    width: 100%;
+    max-width: var(--tainacan-media-thumbs-carousel-width, 100%);
+
     ul.swiper-wrapper { 
-        list-style: none; 
-        padding: 0;
+        max-width: calc(100% - var(--swiper-navigation-size, 44px) - var(--swiper-navigation-size, 44px));
+        margin: 0 var(--swiper-navigation-size, 44px);
     }
 
     li.swiper-slide {
@@ -55,21 +136,41 @@ $pswp__include-minimal-style: true !default;
         vertical-align: top;
         word-break: break-all;
         font-size: 0.875em;
-        max-width: calc(var(--tainacan-media-carousel-size, 140px) + 17px);
+        max-width: calc(var(--tainacan-media-thumbs-carousel-item-size, 140px) + 17px);
+        cursor: zoom-in;
         
         @media only screen and (max-width: 380px) {
             margin: 10px 0;
         }
 
         img {
-            width: var(--tainacan-media-carousel-size, 140px);
-            height: var(--tainacan-media-carousel-size, 140px);
+            width: var(--tainacan-media-thumbs-carousel-item-size, 140px);
+            height: var(--tainacan-media-thumbs-carousel-item-size, 140px);
+            max-width: var(--tainacan-media-thumbs-carousel-item-size, 140px);
+            max-height: var(--tainacan-media-thumbs-carousel-item-size, 140px);
             object-fit: cover;
-            border-bottom: 4px solid transparent;
-            transition: border-bottom-color 0.3s ease;
+            object-position: center;
+            border-bottom-width: 6px;
+            border-bottom-style: solid;
+            background-color: var(--tainacan-media-background, #ffffff);
+            border-bottom-color: rgba(255,255,255, 0.0);
+            opacity: 0.85;
+            transition: opacity 0.3s ease, border-bottom-color 0.3s ease;
 
-            &:focus {
+            &:focus,
+            &:hover {
+                opacity: 0.95;
                 outline: none;
+                border-bottom-color: var(--tainacan-secondary, #298596);
+            }
+        }
+        &.swiper-slide-thumb-active {
+            .swiper-slide-metadata__name {
+                font-weight: bold;
+            }
+            img {
+                opacity: 1.0;
+                border-bottom-color: var(--tainacan-secondary, #298596);
             }
         }
         .swiper-slide-name {
@@ -78,7 +179,7 @@ $pswp__include-minimal-style: true !default;
         }
         a {
             width: 100%;
-            max-width: var(--tainacan-media-carousel-size, 140px);
+            max-width: var(--tainacan-media-thumbs-carousel-item-size, 140px);
             text-align: center;
             word-break: break-word;
         }
@@ -89,46 +190,116 @@ $pswp__include-minimal-style: true !default;
             text-decoration: none;
             color: var(--tainacan-gray5, #454647);
         }
-        .attachment-without-image img {
-            box-sizing: border-box;
-            padding: 36px;
-            background-color: var(--tainacan-gray2, #dbdbdb);
-            object-fit: contain;
-            max-width: var(--tainacan-media-carousel-size,140px);
-            max-height: var(--tainacan-media-carousel-size,140px);
+
+        .swiper-slide-metadata__description,
+        .swiper-slide-metadata__caption {
+            display: none;
+            visibility: hidden;
         }
+    }
+
+    .swiper-start-border {
+        position: absolute;
+        height: 100%;
+        width: calc(32px + var(--swiper-navigation-size, 44px));
+        background-image: linear-gradient(90deg, var(--tainacan-media-background, #ffffff) 25%, transparent);
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+    .swiper-end-border {
+        position: absolute;
+        height: 100%;
+        width: calc(32px + var(--swiper-navigation-size, 44px));
+        background-image: linear-gradient(90deg, transparent, var(--tainacan-media-background, #ffffff) 75%);
+        top: 0;
+        right: 0;
+        z-index: 1;
+    }
+}
+.tainacan-media-component__swiper-main+.tainacan-media-component__swiper-thumbs {
+    li.swiper-slide {
+        cursor: pointer;
     }
 }
 
 // Photoswip zoom ---------------------------------
-.tainacan-photoswipe-layer .pswp__zoom-wrap .attachment-without-image {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.tainacan-photoswipe-layer {
+    .pswp__bg {
+        background-color: rgba(0, 0, 0, 0.85);
+    }
+    .pswp__ui--fit .pswp__top-bar,
+    .pswp__ui--fit .pswp__caption {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+    .pswp__button--arrow--left::before,
+    .pswp__button--arrow--right::before {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .pswp__container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-    & > iframe {
-        min-height: 80vh;
-        width: 80%;
-        border: none;
-    }
+        .tainacan-embed-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    & > a,
-    & > p {
-        z-index: 99;
-        padding: 1rem 4.33337vw;
-        background: white;
-        border-radius: var(--borderRadius, 3px);
-        word-wrap: break-word;
+        iframe {
+            min-height: 80vh;
+            width: 80%;
+            max-width: 80%;
+            border: none;
+            display: block;
+        }
+
+        a:first-of-type,
+        p:first-of-type {
+            z-index: 99;
+            padding: 1rem 4.33337vw;
+            background: var(--tainacan-media-background, #ffffff);
+            border-radius: var(--borderRadius, 3px);
+            word-wrap: break-word;
+        }
+        audio,
+        video {
+            min-height: 54px;
+            padding: 12px;
+        }
     }
-    & > audio,
-    & > video {
-        min-height: 54px;
-        padding: 12px;
+    .pswp__name {
+        color: white;
+        text-align: center;
+        font-size: 1.125em;
+        display: block;
+        height: 44px;
+        max-width: calc(100% - 240px);
+        width: 100%;
+        left: 44px;
+        position: absolute;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        line-height: 44px;
+        padding: 0 10px;
     }
-}
-.tainacan-photoswipe-layer .pswp__caption__center {
-    text-align: center;
-    font-size: 1rem;
+    .pswp__figure_caption {
+        font-size: 0.875em;
+        font-style: italic;
+    }
+    .pswp__description {
+        font-size: 0.9375em;
+    }
+    .pswp__caption__center {
+        text-align: center;
+        font-size: 1em;
+        max-width: 800px;
+    }
 }

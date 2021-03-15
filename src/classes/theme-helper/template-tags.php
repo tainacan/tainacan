@@ -64,17 +64,54 @@ function tainacan_the_metadata($args = array()) {
  *
  * Return the item document as a HTML string to be used as output.
  *
- * @param int|string $item_id       (Optional) The item ID. Default is the global $post
+ * @param int|string $item_id   (Optional) The item ID. Default is the global $post
+ * @param string $img_size      (Optional) The image size, in case of an imagen document. Default is 'large'
  *
  * @return string        The HTML output
  */
-function tainacan_get_the_document($item_id = 0) {
+function tainacan_get_the_document($item_id = 0, $img_size = 'large') {
 	$item = tainacan_get_item($item_id);
 
 	if (!$item)
 		return;
 
-	return apply_filters('tainacan-get-the-document', $item->get_document_as_html(), $item);
+	return apply_filters('tainacan-get-the-document', $item->get_document_as_html($item_id, $img_size), $item);
+}
+
+/**
+ * To be used inside The Loop
+ *
+ * Return the item document in raw form (ID if an Attachment, textual content if URL or Text)
+ *
+ * @param int|string $item_id   (Optional) The item ID. Default is the global $post
+ *
+ * @return string        The raw output
+ */
+function tainacan_get_the_document_raw($item_id = 0) {
+	$item = tainacan_get_item($item_id);
+
+	if (!$item)
+		return;
+
+	return apply_filters('tainacan_get_the_document_raw', $item->get_document($item_id), $item);
+}
+
+function tainacan_get_the_item_document_url($item_id = 0) {
+	$item = tainacan_get_item($item_id);
+
+	if (!$item)
+		return;
+
+	return apply_filters('tainacan_get_the_item_document_url', $item->get_document_download_url(), $item);
+}
+
+function tainacan_get_the_document_type($item_id = 0) {
+	$item = tainacan_get_item($item_id);
+
+	if (!$item)
+		return;
+
+	return apply_filters('tainacan_get_the_document_type', $item->get_document_type(), $item);
 }
 
 function tainacan_the_item_document_download_link($item_id = 0) {
@@ -107,9 +144,18 @@ function tainacan_the_document() {
 }
 
 /**
+ * To be used inside The Loop
+ * 
+ * echoes HTML display-ready version of an attachment
+ */
+function tainacan_get_single_attachment_as_html($attachment_id, $item_id = 0, $img_size = 'large') {
+	echo tainacan_get_attachment_as_html($attachment_id, $item_id, $img_size);
+}
+
+/**
  * Return HTML display-ready version of an attachment
  */
-function tainacan_get_single_attachment_as_html($attachment_id, $item_id = 0) {
+function tainacan_get_attachment_as_html($attachment_id, $item_id = 0, $img_size = 'large') {
 
 	$item = tainacan_get_item($item_id);
 
@@ -117,7 +163,7 @@ function tainacan_get_single_attachment_as_html($attachment_id, $item_id = 0) {
 		return '';
 	}
 
-	echo $item->get_attachment_as_html($attachment_id);
+	return $item->get_attachment_as_html($attachment_id, $img_size);
 }
 
 /**
@@ -231,26 +277,23 @@ function tainacan_the_media_component($media_id, $media_items_thumbs, $media_ite
  * @param array        $media_items_main       Array of media items to be rendered inside main, bigger the carousel. Default to empty array
  * @param array|string $args {
  *   Optional. Array of arguments.
- *     @type string      before_main_div       String to be added before the main gallery div
- *     @type string      after_main_div        String to be added after the main gallery div
- *     @type string      before_thumbs_div     String to be added before the thumbs gallery div
- *     @type string      after_thumbs_div      String to be added after the thumbs gallery div
- *     @type string      before_main_ul        String to be added before the main gallery ul
- *     @type string      after_main_ul         String to be added after the main gallery ul
- *     @type string      before_thumbs_ul      String to be added before the thumbs gallery ul
- *     @type string      after_thumbs_ul       String to be added after the thumbs gallery ul
- *     @type string      class_main_div        Class to be added to the main gallery div
- *     @type string      class_main_ul	       Class to be added to the main gallery ul
- *     @type string      class_main_li         Class to be added to the main gallery li
- *     @type string      class_thumbs_div      Class to be added to the thumbs gallery div
- *     @type string      class_thumbs_ul       Class to be added to the thumbs gallery ul
- *     @type string      class_thumbs_li       Class to be added to the thumbs gallery li
- *     @type bool        auto_play             Sets swiper to autoplay
- *     @type integer     auto_play_delay       Sets swiper to autoplay delay in milisecs
- *     @type bool        show_arrows           Shows swiper navigation arrows
- *     @type bool        show_pagination       Shows swiper pagination
- *     @type bool        pagination_type       Swiper pagination type ('bullets', 'fraction', 'progressbar')
- *     @type bool        show_share_button     Shows share button on lightbox
+ *     @type string      before_main_div          String to be added before the main gallery div
+ *     @type string      after_main_div           String to be added after the main gallery div
+ *     @type string      before_thumbs_div        String to be added before the thumbs gallery div
+ *     @type string      after_thumbs_div         String to be added after the thumbs gallery div
+ *     @type string      before_main_ul           String to be added before the main gallery ul
+ *     @type string      after_main_ul            String to be added after the main gallery ul
+ *     @type string      before_thumbs_ul         String to be added before the thumbs gallery ul
+ *     @type string      after_thumbs_ul          String to be added after the thumbs gallery ul
+ *     @type string      class_main_div           Class to be added to the main gallery div
+ *     @type string      class_main_ul	          Class to be added to the main gallery ul
+ *     @type string      class_main_li            Class to be added to the main gallery li
+ *     @type string      class_thumbs_div         Class to be added to the thumbs gallery div
+ *     @type string      class_thumbs_ul          Class to be added to the thumbs gallery ul
+ *     @type string      class_thumbs_li          Class to be added to the thumbs gallery li
+ *     @type array       swiper_main_options      Object with SwiperJS options for the main gallery
+ *     @type array       swiper_thumbs_options    Object with SwiperJS options for the thumb gallery
+ *     @type bool        show_share_button        Shows share button on lightbox
  * }
  * @return string
  */
@@ -278,11 +321,8 @@ function tainacan_get_the_media_component(
 		'class_thumbs_div' => '',
 		'class_thumbs_ul' => '',
 		'class_thumbs_li' => '',
-		'auto_play' => false,
-		'auto_play_delay' => 3000,
-		'show_arrows' => false,
-		'show_pagination' => true,
-		'pagination_type' => 'bullets',
+		'swiper_main_options' => [],
+		'swiper_thumbs_options' => [],
 		'show_share_button' => false
 	), $args);
 
@@ -291,81 +331,92 @@ function tainacan_get_the_media_component(
 	$args['media_main_id'] = $args['has_media_thumbs'] ? ( $media_id . '-main' ) : $media_id;
 	$args['media_thumbs_id'] = $args['has_media_main'] ? ( $media_id . '-thumbs' ) : $media_id;
 	
-	// Modal lightbox layer for rendering photoswipe
-	add_action('wp_footer', 'tainacan_get_the_media_modal_layer');
-	
-	wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/media-component.css', array(), TAINACAN_VERSION);
-	wp_enqueue_script( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/js/media_component.js', ['tainacan-search'], TAINACAN_VERSION, true );
-?>
+	if ( $args['has_media_main'] || $args['has_media_thumbs'] ) :
+		// Modal lightbox layer for rendering photoswipe
+		add_action('wp_footer', 'tainacan_get_the_media_modal_layer');
 
-	<?php if ( $args['has_media_main'] ) : ?>
-		
-		<!-- Slider main container -->
-		<?php echo $args['before_main_div'] ?>
-		<div id="<?php echo $args['media_main_id'] ?>" class="tainacan-media-component__swiper-main swiper-container <?php echo $args['class_main_div'] ?>">
-			
-			 <!-- Additional required wrapper -->
-			<?php echo $args['before_main_ul'] ?>
-			<ul class="swiper-wrapper <?php echo $args['class_main_ul'] ?>">
-				<?php foreach($media_items_main as $media_item) { ?>
-					<li class="swiper-slide <?php echo $args['class_main_li'] ?>">
-						<?php echo $media_item ?>
-					</li>
-				<?php }; ?>
-			</ul>
-			<?php echo $args['before_main_ul'] ?>
+		wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/media-component.css', array(), TAINACAN_VERSION);
+		wp_enqueue_script( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/js/media_component.js', ['tainacan-search'], TAINACAN_VERSION, true );
+		?>
 
-			<?php if ( $args['show_pagination'] ) : ?>
-				<!-- If we need pagination -->
-				<div class="swiper-pagination"></div>
+		<div class="tainacan-media-component">
+
+			<?php if ( $args['has_media_main'] ) : ?>
+				
+				<!-- Slider main container -->
+				<?php echo $args['before_main_div'] ?>
+				<div id="<?php echo $args['media_main_id'] ?>" class="tainacan-media-component__swiper-main swiper-container <?php echo $args['class_main_div'] ?>">
+					
+					<!-- Additional required wrapper -->
+					<?php echo $args['before_main_ul'] ?>
+					<ul class="swiper-wrapper <?php echo $args['class_main_ul'] ?>">
+						<?php foreach($media_items_main as $media_item) { ?>
+							<li class="swiper-slide <?php echo $args['class_main_li'] ?>">
+								<?php echo $media_item ?>
+							</li>
+						<?php }; ?>
+					</ul>
+					<?php echo $args['before_main_ul'] ?>
+
+					<?php if ( $args['swiper_main_options'] && isset($args['swiper_main_options']['pagination']) ) : ?>
+						<!-- If we need pagination -->
+						<div class="swiper-pagination"></div>
+					<?php endif; ?>
+
+					<?php if ( $args['swiper_main_options'] && isset($args['swiper_main_options']['navigation']) ) : ?>
+						<!-- If we need navigation buttons -->
+						<div class="swiper-button-prev"></div>
+						<div class="swiper-button-next"></div>
+					<?php endif; ?>
+				</div>
+				<?php echo $args['after_main_div'] ?>
 			<?php endif; ?>
 
-			<?php if ( $args['show_arrows'] ) : ?>
-				<!-- If we need navigation buttons -->
-				<div class="swiper-button-prev"></div>
-				<div class="swiper-button-next"></div>
+			<?php if ( $args['has_media_thumbs'] ) : ?>
+
+				<!-- Slider main container -->
+				<?php echo $args['before_thumbs_div'] ?>
+				<div id="<?php echo $args['media_thumbs_id'] ?>" class="tainacan-media-component__swiper-thumbs swiper-container <?php echo $args['class_thumbs_div'] ?>">
+					
+					<!-- Additional required wrapper -->
+					<?php echo $args['before_thumbs_ul'] ?>
+					<ul class="swiper-wrapper <?php echo $args['class_thumbs_ul'] ?>">
+						<?php foreach($media_items_thumbs as $media_item) { ?>
+							<li class="swiper-slide <?php echo $args['class_thumbs_li'] ?>">
+								<?php echo $media_item ?>
+							</li>
+						<?php }; ?>
+					</ul>
+					<?php echo $args['before_thumbs_ul'] ?>
+
+					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['pagination']) ) : ?>
+						<!-- If we need pagination -->
+						<div class="swiper-pagination"></div>
+					<?php endif; ?>
+
+					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['navigation']) ) : ?>
+						<!-- If we need navigation buttons -->
+						<div class="swiper-button-prev"></div>
+						<div class="swiper-button-next"></div>
+					<?php endif; ?>
+
+					<!-- These elements will create a gradient on the side of the carousel -->
+					<div class="swiper-start-border"></div>
+					<div class="swiper-end-border"></div>
+				</div>
+				<?php echo $args['after_thumbs_div'] ?>
 			<?php endif; ?>
+
 		</div>
-		<?php echo $args['after_main_div'] ?>
-	<?php endif; ?>
 
-	<?php if ( $args['has_media_thumbs'] ) : ?>
+		<?php 
+			wp_add_inline_script( 'tainacan-media-component', "
+				tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin != undefined && typeof tainacan_plugin.tainacan_media_components != 'undefined') ? tainacan_plugin.tainacan_media_components : [];
+				tainacan_plugin.tainacan_media_components.push(JSON.parse('" . json_encode($args) . "'));
+			", 'before' ); 
+		?>
 
-		<!-- Slider main container -->
-		<?php echo $args['before_thumbs_div'] ?>
-		<div id="<?php echo $args['media_thumbs_id'] ?>" class="tainacan-media-component__swiper-thumbs swiper-container <?php echo $args['class_thumbs_div'] ?>">
-			
-			<!-- Additional required wrapper -->
-			<?php echo $args['before_thumbs_ul'] ?>
-			<ul class="swiper-wrapper <?php echo $args['class_thumbs_ul'] ?>">
-				<?php foreach($media_items_thumbs as $media_item) { ?>
-					<li class="swiper-slide <?php echo $args['class_thumbs_li'] ?>">
-						<?php echo $media_item ?>
-					</li>
-				<?php }; ?>
-			</ul>
-			<?php echo $args['before_thumbs_ul'] ?>
-
-			<?php if ( $args['show_pagination'] ) : ?>
-				<!-- If we need pagination -->
-				<div class="swiper-pagination"></div>
-			<?php endif; ?>
-
-			<?php if ( $args['show_arrows'] ) : ?>
-				<!-- If we need navigation buttons -->
-				<div class="swiper-button-prev"></div>
-				<div class="swiper-button-next"></div>
-			<?php endif; ?>
-		</div>
-		<?php echo $args['after_thumbs_div'] ?>
-	<?php endif; ?>
-
-	<?php 
-		wp_add_inline_script( 'tainacan-media-component', "
-			tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin != undefined && typeof tainacan_plugin.tainacan_media_components != 'undefined') ? tainacan_plugin.tainacan_media_components : [];
-			tainacan_plugin.tainacan_media_components.push(JSON.parse('" . json_encode($args) . "'));
-		", 'before' ); 
-	?>
+	<?php endif; ?> <!-- End of if ($args['has_media_main'] || $args['has_media_thumbs'] ) -->
 	
 <?php
 }
@@ -383,9 +434,11 @@ function tainacan_get_the_media_component(
  *     @type string      after_slide_metadata    String to be added after the slide-metadata div
  *     @type string      class_slide_metadata    Class to be added to the slide-metadata div
  *     @type mixed       media_content           The content of the slide itself, such as an image, audio, video or iframe tag. It may be wrapped by a link to the full content
+ *     @type string      media_content_full      The media full content, either an image, an html or a link
  *     @type string      media_title             The media title, if available
  *     @type string      media_description       The media description, if available
  *     @type string      media_caption           The media caption, if available
+ *     @type string      media_type              The media type or mime_type, used to render an icon if media_content is empty
  * }
  * @return string
  */
@@ -400,41 +453,56 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 		'after_slide_metadata' => '',
 		'class_slide_metadata' => '',
 		'media_content' => '',
+		'media_content_full' => '',
 		'media_title' => '',
 		'media_description' => '',
 		'media_caption' => '',
+		'media_type' => ''
 	), $args);
 
 	ob_start();
 
-	if ( !empty($args['media_content']) ) : ?>
+?>
+	<?php echo $args['before_slide_content'] ?>
 
-		<?php echo $args['before_slide_content'] ?>
+	<div class="swiper-slide-content <?php echo $args['class_slide_content'] ?>">
 
-		<div class="swiper-slide-content <?php echo $args['class_slide_content'] ?>">
+		<?php if ( isset($args['media_content']) && !empty($args['media_content']) && $args['media_content'] !== false ) :?>
 			<?php echo $args['media_content'] ?>
-			
-			<?php echo $args['before_slide_metadata'] ?>
-
-			<?php if ( !empty($args['media_title']) || !empty($args['description']) || !empty($args['media_caption']) ) :?>
-				<div class="swiper-slide-metadata">
-					<?php if ( !empty($args['media_title']) ) :?>
-						<span class="swiper-slide-metadata__name"><?php echo $args['media_title'] ?></span>
-					<?php endif; ?>
-					<?php if ( !empty($args['media_description']) ) :?>
-						<span class="swiper-slide-metadata__description"><?php echo $args['media_description'] ?></span>
-					<?php endif; ?>
-					<?php if ( !empty($args['media_caption']) ) :?>
-						<span class="swiper-slide-metadata__caption"><?php echo $args['media_caption'] ?></span>
-					<?php endif; ?>
-				</div>
-			<?php endif; ?>
-
-			<?php echo $args['after_slide_metadata'] ?>
-		</div>
-		<?php echo $args['after_slide_content'] ?>
+		<?php else: ?>
+			<img src="<?php echo tainacan_get_the_mime_type_icon($args['media_type']) ?>" alt="<?php echo ( !empty($args['media_title']) ? $args['media_title'] : __('File', 'tainacan') ) ?>" >
+		<?php endif; ?>
 		
-	<?php endif;
+		<?php echo $args['before_slide_metadata'] ?>
+
+		<?php if ( !empty($args['media_title']) || !empty($args['description']) || !empty($args['media_caption']) ) : ?>
+			<div class="swiper-slide-metadata">
+				<?php if ( !empty($args['media_caption']) ) :?>
+					<span class="swiper-slide-metadata__caption"><?php echo $args['media_caption'] ?></span>
+					<br>
+				<?php endif; ?>	
+				<?php if ( !empty($args['media_title']) ) :?>
+					<span class="swiper-slide-metadata__name"><?php echo $args['media_title'] ?></span>
+				<?php endif; ?>
+				<?php if ( !empty($args['media_description']) ) :?>
+					<br>
+					<span class="swiper-slide-metadata__description"><?php echo $args['media_description'] ?></span>
+				<?php endif; ?>
+
+			</div>
+		<?php endif; ?>
+
+		<?php if ( !empty($args['media_content_full']) ) : ?>
+			<div class="media-full-content" style="display: none; position: absolute; visibility: hidden;"><?php echo $args['media_content_full'] ?></div>
+		<?php endif; ?>
+
+		<?php echo $args['after_slide_metadata'] ?>
+
+	</div>
+
+	<?php echo $args['after_slide_content'] ?>
+
+<?php
 
 	$content = ob_get_contents();
 	ob_end_clean();
@@ -472,15 +540,14 @@ function tainacan_get_the_media_modal_layer() {
 
                 <div class="pswp__top-bar">
 
-                <!--  Controls are self-explanatory. Order can be changed. -->
+                    <!--  Controls are self-explanatory. Order can be changed. -->
                     <div class="pswp__counter"></div>
 
+                    <div class="pswp__name"></div>
+
                     <button class="pswp__button pswp__button--close" title="<?php __('Close modal (Esc)', 'tainacan') ?>"></button>
-
                     <button class="pswp__button pswp__button--share" title="<?php __('Share', 'tainacan') ?>"></button>
-
                     <button class="pswp__button pswp__button--fs" title="<?php __('Toggle fullscreen', 'tainacan') ?>"></button>
-
                     <button class="pswp__button pswp__button--zoom" title="<?php __('Zoom in/out', 'tainacan') ?>"></button>
 
                     <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
@@ -498,11 +565,9 @@ function tainacan_get_the_media_modal_layer() {
                     <div class="pswp__share-tooltip"></div>
                 </div>
 
-                <button class="pswp__button pswp__button--arrow--left" title="<?php __('Anterior', 'tainacan') ?>">
-                </button>
+                <button class="pswp__button pswp__button--arrow--left" title="<?php __('Anterior', 'tainacan') ?>"></button>
 
-                <button class="pswp__button pswp__button--arrow--right" title="<?php __('Próximo', 'tainacan') ?>">
-                </button>
+                <button class="pswp__button pswp__button--arrow--right" title="<?php __('Próximo', 'tainacan') ?>"></button>
 
                 <div class="pswp__caption">
                     <div class="pswp__caption__center"></div>
@@ -838,4 +903,87 @@ function tainacan_get_initials($string, $one = false) {
 
 	$result = strtoupper($first . $second);
 	return apply_filters('tainacan-get-initials', $result, $string, $one);
+}
+
+/**
+ * Gets the icon mime type using our custom plugin thumbnails
+ * 
+ * @param string $mime_type The mime_type or type of the file
+ * @param string $image_size The image size
+ * 
+ * @return string
+ */
+function tainacan_get_the_mime_type_icon($mime_type, $image_size = 'medium') {
+	global $TAINACAN_BASE_URL;
+	$images_path = $TAINACAN_BASE_URL . '/assets/images/';
+
+	$icon_file = '';
+
+	switch($image_size) {
+		case 'full':
+		case 'large':
+		case 'tainacan-large-full':
+			$image_size = '';
+			break;
+		case 'small':
+		case 'tainacan-small':
+		case 'thumbnail':
+			$image_size = '_small';
+			break;
+		case '':
+		case 'medium':
+		case 'tainacan-medium':
+		case 'tainacan-medium-full':
+		case 'medium_large':
+		default:
+			$image_size = '_medium';
+	}
+
+	switch($mime_type) {
+		case 'image':
+		case 'image/png':
+		case 'image/jpeg':
+		case 'image/gif':
+		case 'image/bmp':
+		case 'image/webp':
+		case 'image/svg+xml':
+			$icon_file = 'placeholder_image';
+			break;
+		case 'audio':
+		case 'audio/midi':
+		case 'audio/mpeg':
+		case 'audio/mp3':
+		case 'audio/webm':
+		case 'audio/ogg':
+		case 'audio/wav':
+			$icon_file = 'placeholder_audio';
+			break;
+		case 'text':
+		case 'text/plain':
+		case 'text/html':
+		case 'text/css':
+		case 'text/javascript':
+		case 'text/csv':
+			$icon_file = 'placeholder_text';
+			break;
+		case 'video':
+		case 'video/webm':
+		case 'video/ogg':
+		case 'video/mpeg':
+		case 'video/mp4':
+			$icon_file = 'placeholder_video';
+			break;
+		case 'url':
+			$icon_file = 'placeholder_url';
+			break;
+		case 'application/pdf':
+			$icon_file = 'placeholder_pdf';
+			break;
+		case 'attachment':
+		case 'empty':
+		default:
+			$icon_file = 'placeholder_attachment';
+	}
+	
+	return $images_path . $icon_file . $image_size . '.png';
 }

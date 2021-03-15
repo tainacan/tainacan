@@ -1,6 +1,6 @@
 // TAINACAN MEDIA COMPONENT --------------------------------------------------------
 //
-// Counts on some HMTL markup to make a list of media link be displayed
+// Counts on some HMTL markup to make a list of media links be displayed
 // as a carousel with a lightbox. Check examples in the end of the file 
 import PhotoSwipe from 'photoswipe/dist/photoswipe.min.js';
 import PhotoSwipeUI_Default from 'photoswipe/dist/photoswipe-ui-default.min.js';
@@ -9,17 +9,14 @@ class TainacanMediaGallery {
 
     /**
      * Constructor initializes the instance. Options are Snake Case because they come from PHP side
-     * @param  {String}  thumbs_gallery_selector       html element to be queried containing the thumbnails list
-     * @param  {String}  main_gallery_selector         html element to be queried containing the main list
-     * @param  {Object}  options                       several options to be tweaked
-     * @param  {Boolean} options.auto_play             sets swiper to autoplay
-     * @param  {Number}  options.auto_play_delay       sets swiper to autoplay delay in milisecs
-     * @param  {Boolean} options.show_arrows           shows swiper navigation arrows
-     * @param  {Boolean} options.show_pagination       shows swiper pagination
-     * @param  {Boolean} options.pagination_type       swiper pagination type ('bullets', 'fraction', 'progressbar')
-     * @param  {Boolean} options.show_share_button     shows share button on lightbox
+     * @param  {String}  thumbs_gallery_selector          html element to be queried containing the thumbnails list
+     * @param  {String}  main_gallery_selector            html element to be queried containing the main list
+     * @param  {Object}  options                          several options to be tweaked
+     * @param  {Object}  options.swiper_thumbs_options    object with SwiperJS options for the thumbnails list
+     * @param  {Object}  options.swiper_main_options      object with SwiperJS options for the main list
+     * @param  {Boolean} options.show_share_button        showd share button on lightbox
      * 
-     * @return {Object}                                TainacanMediaGallery instance
+     * @return {Object}                                   TainacanMediaGallery instance
      */
     constructor(thumbs_gallery_selector, main_gallery_selector, options) {
         this.thumbs_gallery_selector = thumbs_gallery_selector;
@@ -38,31 +35,22 @@ class TainacanMediaGallery {
   
     /* Initializes Swiper JS instances of carousels */
     initializeSwiper() {
-  
-        let autoPlay = false;
-    
-        if (this.options.auto_play) {
-            autoPlay = {
-                delay: this.options.auto_play_delay ? this.options.auto_play_delay : 3000
-            };
-        }
         
         if (this.thumbs_gallery_selector) {
-            const thumbSwiperOptions = {
-                spaceBetween: 16,
+            let thumbsSwiperOptions = {
+                spaceBetween: 12,
                 slidesPerView: 'auto',
                 navigation: {
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
                 },
                 pagination: {
-                    el: '.swiper-pagination',
-                    type: 'fraction',
+                    el: '.swiper-pagination'
                 },
-                autoplay: autoPlay,
-                centerInsufficientSlides: true
+                centerInsufficientSlides: true,
             };
-            this.thumbsSwiper = new Swiper(this.thumbs_gallery_selector, thumbSwiperOptions);
+            thumbsSwiperOptions = {...thumbsSwiperOptions, ...this.options.swiper_thumbs_options };
+            this.thumbsSwiper = new Swiper(this.thumbs_gallery_selector, thumbsSwiperOptions);
         }
     
         if (this.main_gallery_selector) {
@@ -75,20 +63,16 @@ class TainacanMediaGallery {
                     prevEl: '.swiper-button-prev',
                 },
                 pagination: {
-                    el: '.swiper-pagination',
-                    type: 'progressbar',
-                },
+                    el: '.swiper-pagination'
+                }
             };
             if (this.thumbsSwiper) {
                 mainSwiperOptions.thumbs = {
                     swiper: this.thumbsSwiper,
                     autoScrollOffset: 1
                 }
-            } else {
-                mainSwiperOptions.thumbs = {
-                    autoplay: autoPlay,
-                }
             }
+            mainSwiperOptions = {...mainSwiperOptions, ...this.options.swiper_main_options };
             this.mainSwiper = new Swiper(this.main_gallery_selector, mainSwiperOptions);
     
         }
@@ -96,15 +80,15 @@ class TainacanMediaGallery {
   
     initPhotoSwipeFromDOM (gallerySelector) {
         // loop through all gallery elements and bind events
-        var galleryElements = document.querySelectorAll(gallerySelector);
+        let galleryElements = document.querySelectorAll(gallerySelector);
         
-        for (var i = 0, l = galleryElements.length; i < l; i++) {
-            galleryElements[i].setAttribute("data-pswp-uid", i + 1);
-            galleryElements[i].onclick = (event) => this.onThumbnailsClick(event, this);
-        }
+        galleryElements.forEach((galleryElement, index) => {
+            galleryElement.setAttribute("data-pswp-uid", index + 1);
+            galleryElement.onclick = (event) => this.onThumbnailsClick(event, this);
+        })
         
         // Parse URL and open gallery if it contains #&pid=3&gid=1
-        var hashData = this.photoswipeParseHash();
+        let hashData = this.photoswipeParseHash();
         
         if (hashData.pid && hashData.gid)
             this.openPhotoSwipe(hashData.pid, galleryElements[hashData.gid - 1], true, true);
@@ -114,52 +98,59 @@ class TainacanMediaGallery {
     // parse slide data (url, title, size ...) from DOM elements
     // (children of gallerySelector)
     parseThumbnailElements(el) {
-        var thumbElements = el.childNodes,
-            numNodes = thumbElements.length,
+        let thumbElements = el.childNodes,
             items = [],
-            figureEl,
-            linkEl,
-            imgWidth,
-            imgHeight,
+            liElement,
+            metadataElement,
+            fullContentElement,
             item;
     
-        for (var i = 0; i < numNodes; i++) {
-            figureEl = thumbElements[i]; // <figure> element
+        for (let i = 0; i < thumbElements.length; i++) {
+            liElement = thumbElements[i];
 
             // include only element nodes
-            if (figureEl.nodeType !== 1)
+            if (liElement.nodeType !== 1)
                 continue;
-            console.log(figureEl);
-            linkEl = figureEl.children[0]; // <a> element
-            
-            // There may be a wrapper div before the a tag
-            if (linkEl.nodeName !== 'A')
-                linkEl = linkEl.children[0];
-            
-            if (linkEl.classList.contains('attachment-without-image')) {
+
+            fullContentElement = liElement.querySelectorAll('.media-full-content *');
+
+            if ( !fullContentElement.length ) {
                 item = {
-                    html: '<div class="attachment-without-image"><iframe id="tainacan-attachment-iframe" src="' + linkEl.href +  '"></iframe></div>'
+                    html: fullContentElement.innerHTML ? fullContentElement.innerHTML : fullContentElement
                 }
+                continue;
             } else {
-                imgWidth = linkEl.children[0] && linkEl.children[0].attributes.getNamedItem('width') ? linkEl.children[0].attributes.getNamedItem('width').value : 140;
-                imgHeight = linkEl.children[0] && linkEl.children[0].attributes.getNamedItem('height') ? linkEl.children[0].attributes.getNamedItem('height').value : 140;
-                
-                // create slide object
-                item = {
-                    src: linkEl.getAttribute("href"),
-                    w: parseInt(imgWidth, 10),
-                    h: parseInt(imgHeight, 10)
-                };
-                
-                if (linkEl.children[1] && linkEl.children[1].classList.contains('swiper-slide-metadata__name'))
-                    item.title = linkEl.children[1].innerText;
+                fullContentElement = fullContentElement[fullContentElement.length - 1];
+
+                if (fullContentElement.nodeName === 'IMG') {
+                    item = {
+                        src: fullContentElement.src,
+                        w: parseInt(fullContentElement.width),
+                        h: parseInt(fullContentElement.height)
+                    };
+                } else {
+                    item = {
+                        html: fullContentElement.innerHTML ? fullContentElement.innerHTML : fullContentElement
+                    }
+                }
+            }
+
+            metadataElement = liElement.querySelector('.swiper-slide-metadata');
+            if (metadataElement) {
+                const name = metadataElement.querySelector('.swiper-slide-metadata__name');
+                const caption = metadataElement.querySelector('.swiper-slide-metadata__caption');
+                const description = metadataElement.querySelector('.swiper-slide-metadata__description');
+
+                item.title = {
+                    name,
+                    caption,
+                    description
+                }
             }
     
-            item.el = figureEl; // save link to element for getThumbBoundsFn
+            item.el = liElement; // save link to element for getThumbBoundsFn
             items.push(item);
         }
-    
-        console.log(items);
         return items;
     };
   
@@ -169,7 +160,7 @@ class TainacanMediaGallery {
       disableAnimation,
       fromURL
     ) {
-        var pswpElement = document.querySelectorAll(".pswp")[0],
+        let pswpElement = document.querySelectorAll(".pswp")[0],
             gallery,
             options,
             items;
@@ -178,29 +169,62 @@ class TainacanMediaGallery {
         // Photoswipe options
         // https://photoswipe.com/documentation/options.html //
         options = {
-            showHideOpacity: false,
+            showHideOpacity: true,
             loop: false,
-            // Buttons/elements
+            timeToIdle: 6000,
+            timeToIdleOutside: 3000,
             closeEl: true,
             captionEl: true,
             fullscreenEl: true,
             zoomEl: true,
-            shareEl: this.options.show_share_button ? this.options.show_share_button : false,
             counterEl: true,
             arrowEl: true,
             preloaderEl: true,
-            bgOpacity: 0.85,
+            shareEl: this.options.show_share_button ? this.options.show_share_button : false,
+            bgOpacity: 1,
             // define gallery index (for URL)
             galleryUID: galleryElement.getAttribute("data-pswp-uid"),
-                getThumbBoundsFn: function(index) {
-                // See Options -> getThumbBoundsFn section of documentation for more info
-                var thumbnail = items[index].el,
-                    pageYScroll =
-                    window.pageYOffset || document.documentElement.scrollTop,
+            getThumbBoundsFn: (index) => {
+                let thumbnail = items[index].el,
+                    pageYScroll = window.pageYOffset || document.documentElement.scrollTop,
                     rect = thumbnail.getBoundingClientRect();
         
                 return { x: rect.left, y: rect.top + pageYScroll, w: rect.width };
-            }
+            },
+            // Function builds caption markup
+            addCaptionHTMLFn: (item, captionEl, isFake) => {
+                // item      - slide object
+                // captionEl - caption DOM element
+                // isFake    - true when content is added to fake caption container
+                //             (used to get size of next or previous caption)
+
+                if(!item.title) {
+                    captionEl.children[0].innerHTML = '';
+                    return false;
+                }
+
+                captionEl.children[0].innerHTML = '';
+
+                if (item.title.name) {
+                    let nameElement = document.querySelector('.pswp__name');
+                    if (nameElement && item.title.name)
+                        nameElement.innerHTML = item.title.name.innerHTML;
+                    else
+                        captionEl.children[0].innerHTML += '<span class="pswp__title">' + item.title.name.innerHTML + '</span>';
+                }
+                
+                if (item.title.caption)
+                    captionEl.children[0].innerHTML += '<span class="pswp__figure_caption">' + item.title.caption.innerHTML + '</span>';
+                 
+                if (item.title.description && item.title.caption)
+                    captionEl.children[0].innerHTML += '<br>';
+
+                if (item.title.description)
+                    captionEl.children[0].innerHTML += '<span class="pswp__description">' + item.title.description.innerHTML + '</span>';
+                    
+                return true;
+            },
+
         };
     
         // PhotoSwipe opened from URL
@@ -208,7 +232,7 @@ class TainacanMediaGallery {
             if (options.galleryPIDs) {
                 // parse real index when custom PIDs are used
                 // http://photoswipe.com/documentation/faq.html#custom-pid-in-url
-                for (var j = 0; j < items.length; j++) {
+                for (let j = 0; j < items.length; j++) {
                     if (items[j].pid == index) {
                         options.index = j;
                         break;
@@ -232,13 +256,13 @@ class TainacanMediaGallery {
         // Pass data to PhotoSwipe and initialize it
         gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
         gallery.init();
-        console.log(gallery)
-        /* Updates PhotoSwiper instance  from Swiper */
-        var swiperInstance = this.mainSwiper ? this.mainSwiper : this.thumbsSwiper;
+        
+        /* Updates PhotoSwiper instance from Swiper */
+        let swiperInstance = this.mainSwiper ? this.mainSwiper : this.thumbsSwiper;
     
-        gallery.listen("unbindEvents", function() {
+        gallery.listen("unbindEvents", () => {
             // This is index of current photoswipe slide
-            var getCurrentIndex = gallery.getCurrentIndex();
+            let getCurrentIndex = gallery.getCurrentIndex();
             // Update position of the slider
             swiperInstance.slideTo(getCurrentIndex, 0, false);
             // Start swiper autoplay (on close - if swiper autoplay is true)
@@ -246,7 +270,7 @@ class TainacanMediaGallery {
         });
     
         // Swiper autoplay stop when image zoom */
-        gallery.listen('initialZoomIn', function() {
+        gallery.listen('initialZoomIn', () => {
             if (swiperInstance.autoplay.running)
                 swiperInstance.autoplay.stop();
         });
@@ -257,14 +281,14 @@ class TainacanMediaGallery {
         e = e || window.event;
         e.preventDefault ? e.preventDefault() : (e.returnValue = false);
     
-        var eTarget = e.target || e.srcElement;
+        let eTarget = e.target || e.srcElement;
 
         // find root element of slide
-        var closest = function closest(el, fn) {
+        let closest = function closest(el, fn) {
             return el && (fn(el) ? el : closest(el.parentNode, fn));
         };
         
-        var clickedListItem = closest(eTarget, function(el) {
+        let clickedListItem = closest(eTarget, function(el) {
             return el.tagName && el.tagName.toUpperCase() === "LI";
         });
         
@@ -273,13 +297,13 @@ class TainacanMediaGallery {
     
         // find index of clicked item by looping through all child nodes
         // alternatively, you may define index via data- attribute
-        var clickedGallery = clickedListItem.parentNode,
+        let clickedGallery = clickedListItem.parentNode,
             childNodes = clickedListItem.parentNode.childNodes,
             numChildNodes = childNodes.length,
             nodeIndex = 0,
             index;
 
-        for (var i = 0; i < numChildNodes; i++) {
+        for (let i = 0; i < numChildNodes; i++) {
             if (childNodes[i].nodeType !== 1)
                 continue;
     
@@ -299,18 +323,18 @@ class TainacanMediaGallery {
   
     // parse picture index and gallery index from URL (#&pid=1&gid=2)
     photoswipeParseHash() {
-        var hash = window.location.hash.substring(1),
+        const hash = window.location.hash.substring(1),
             params = {};
     
         if (hash.length < 5)
             return params;
     
-        var vars = hash.split("&");
-        for (var i = 0; i < vars.length; i++) {
+        const vars = hash.split("&");
+        for (let i = 0; i < vars.length; i++) {
             if (!vars[i])
                 continue;
             
-            var pair = vars[i].split("=");
+            const pair = vars[i].split("=");
             if (pair.length < 2) 
                 continue;
             
