@@ -893,7 +893,6 @@ abstract class Importer {
 			$author = $this->get_transient('author');
 			$this->add_log('---------------------------');
 			$this->add_log('Starting processing new item');
-			$this->add_log(date("Y-m-d H:i:s"));
 			$this->add_log('User in process: ' . $author);
 			wp_set_current_user($author);
 			$result = $this->$method_name();
