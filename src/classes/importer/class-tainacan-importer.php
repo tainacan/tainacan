@@ -345,10 +345,10 @@ abstract class Importer {
 	 * @param $messagelog
 	 */
 	public function add_log($message ){
-		$this->log[] = $message;
+		$this->log[] = '[' . date("Y-m-d H:i:s") . ']   ' . $message;
 	}
 	public function add_error_log($message ){
-		$this->error_log[] = $message;
+		$this->error_log[] = '[' . date("Y-m-d H:i:s") . ']   ' . $message;
 	}
 
 	public function add_collection(array $collection) {
