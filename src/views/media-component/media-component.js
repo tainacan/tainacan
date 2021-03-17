@@ -48,6 +48,7 @@ class TainacanMediaGallery {
                     el: '.swiper-pagination'
                 },
                 centerInsufficientSlides: true,
+                watchOverflow: true
             };
             thumbsSwiperOptions = {...thumbsSwiperOptions, ...this.options.swiper_thumbs_options };
             this.thumbsSwiper = new Swiper(this.thumbs_gallery_selector, thumbsSwiperOptions);
@@ -64,17 +65,24 @@ class TainacanMediaGallery {
                 },
                 pagination: {
                     el: '.swiper-pagination'
-                }
+                },
+                watchOverflow: true
             };
             if (this.thumbsSwiper) {
                 mainSwiperOptions.thumbs = {
                     swiper: this.thumbsSwiper,
-                    autoScrollOffset: 1
+                    autoScrollOffset: 3
                 }
             }
             mainSwiperOptions = {...mainSwiperOptions, ...this.options.swiper_main_options };
             this.mainSwiper = new Swiper(this.main_gallery_selector, mainSwiperOptions);
-    
+        }
+
+        if (this.thumbsMain && this.mainSwiper) {
+            this.mainSwiper.controller = {
+                control: this.thumbsSwiper,
+                by: 'slide'
+            }
         }
     }
   
@@ -104,19 +112,19 @@ class TainacanMediaGallery {
             metadataElement,
             fullContentElement,
             item;
-    
+        console.log(el.childNodes);
         for (let i = 0; i < thumbElements.length; i++) {
             liElement = thumbElements[i];
 
             // include only element nodes
             if (liElement.nodeType !== 1)
                 continue;
-
+            console.log(_.clone(liElement));
             fullContentElement = liElement.querySelectorAll('.media-full-content *');
-
+            console.log(fullContentElement);
             if ( !fullContentElement.length ) {
                 item = {
-                    html: fullContentElement.innerHTML ? fullContentElement.innerHTML : fullContentElement
+                    html: fullContentElement.outterHTML ? fullContentElement.outterHTML : fullContentElement
                 }
                 continue;
             } else {
@@ -130,7 +138,7 @@ class TainacanMediaGallery {
                     };
                 } else {
                     item = {
-                        html: fullContentElement.innerHTML ? fullContentElement.innerHTML : fullContentElement
+                        html: fullContentElement.outterHTML ? fullContentElement.outterHTML : fullContentElement
                     }
                 }
             }
@@ -151,6 +159,7 @@ class TainacanMediaGallery {
             item.el = liElement; // save link to element for getThumbBoundsFn
             items.push(item);
         }
+        console.log(items.length);
         return items;
     };
   

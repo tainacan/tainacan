@@ -478,15 +478,21 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 		<?php if ( !empty($args['media_title']) || !empty($args['description']) || !empty($args['media_caption']) ) : ?>
 			<div class="swiper-slide-metadata">
 				<?php if ( !empty($args['media_caption']) ) :?>
-					<span class="swiper-slide-metadata__caption"><?php echo $args['media_caption'] ?></span>
-					<br>
+					<span class="swiper-slide-metadata__caption">
+						<?php echo $args['media_caption'] ?>
+						<br>
+					</span>
 				<?php endif; ?>	
 				<?php if ( !empty($args['media_title']) ) :?>
-					<span class="swiper-slide-metadata__name"><?php echo $args['media_title'] ?></span>
+					<span class="swiper-slide-metadata__name">
+						<?php echo $args['media_title'] ?>
+					</span>
 				<?php endif; ?>
 				<?php if ( !empty($args['media_description']) ) :?>
-					<br>
-					<span class="swiper-slide-metadata__description"><?php echo $args['media_description'] ?></span>
+					<span class="swiper-slide-metadata__description">
+						<br>
+						<?php echo $args['media_description'] ?>
+					</span>
 				<?php endif; ?>
 
 			</div>
