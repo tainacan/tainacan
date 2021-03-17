@@ -1,8 +1,5 @@
 <template>
-
   <div>
-
-    
 
     <div
         v-if="processes.length > 0 && !isLoading"
@@ -163,76 +160,73 @@
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
                             </span>
                             <span
-                                v-tooltip="{
-                                        delay: {
-                                            show: 500,
-                                            hide: 300,
-                                        },
-                                        content: $i18n.get('label_process_completed_with_errors'),
-                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
-                                        placement: 'auto-start'
-                                    }"
-                                v-if=" bgProcess.status === 'finished-errors' || ( bgProcess.done > 0 && bgProcess.error_log && bgProcess.status === 'finished' ) "
-                                class="icon has-text-success">
-                                <i
-                                    style="margin-right: -5px;"
-                                    class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alert has-text-yellow2"/>
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
+                                    v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
+                                            content: $i18n.get('label_process_completed_with_errors'),
+                                            autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                            placement: 'auto-start'
+                                        }"
+                                    v-if=" bgProcess.status === 'finished-errors' || ( bgProcess.done > 0 && bgProcess.error_log && bgProcess.status === 'finished' ) "
+                                    class="icon has-text-success">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle has-text-yellow2"/>
                             </span>
                             <span
-                                v-tooltip="{
-                                        delay: {
-                                            show: 500,
-                                            hide: 300,
-                                        },
-                                        content: $i18n.get('label_process_cancelled'),
-                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
-                                        placement: 'auto-start'
-                                    }"
-                                v-if=" bgProcess.status === 'cancelled' "
-                                class="icon has-text-success">
+                                    v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
+                                            content: $i18n.get('label_process_cancelled'),
+                                            autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                            placement: 'auto-start'
+                                        }"
+                                    v-if=" bgProcess.status === 'cancelled' "
+                                    class="icon has-text-success">
                                 <i class="tainacan-icon has-text-danger tainacan-icon-1-25em tainacan-icon-repprovedcircle"/>
                             </span>
                             <span
-                                v-tooltip="{
-                                        delay: {
-                                            show: 500,
-                                            hide: 300,
-                                        },
-                                        content: $i18n.get('label_process_paused'),
-                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
-                                        placement: 'auto-start'
-                                    }"
-                                v-if=" bgProcess.status === 'paused' "
-                                class="icon has-text-gray">
+                                    v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
+                                            content: $i18n.get('label_process_paused'),
+                                            autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                            placement: 'auto-start'
+                                        }"
+                                    v-if=" bgProcess.status === 'paused' "
+                                    class="icon has-text-gray">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-pause"/>
                             </span>
                             <span
-                                v-tooltip="{
-                                        delay: {
-                                            show: 500,
-                                            hide: 300,
-                                        },
-                                        content: $i18n.get('label_process_waiting'),
-                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
-                                        placement: 'auto-start'
-                                    }"
-                                v-if=" bgProcess.status === 'waiting' "
-                                class="icon has-text-gray">
+                                    v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
+                                            content: $i18n.get('label_process_waiting'),
+                                            autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                            placement: 'auto-start'
+                                        }"
+                                    v-if=" bgProcess.status === 'waiting' "
+                                    class="icon has-text-gray">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting"/>
                             </span>
                             <span
-                                v-tooltip="{
-                                        delay: {
-                                            show: 500,
-                                            hide: 300,
-                                        },
-                                        content: $i18n.get('label_process_failed'),
-                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
-                                        placement: 'auto-start'
-                                    }"
-                                v-if="bgProcess.status === 'errored'"
-                                class="icon has-text-danger">
+                                    v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
+                                            content: $i18n.get('label_process_failed'),
+                                            autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                            placement: 'auto-start'
+                                        }"
+                                    v-if="bgProcess.status === 'errored'"
+                                    class="icon has-text-danger">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processerror" />
                             </span>
                         </div>
@@ -310,7 +304,6 @@
       </center>
     </div>
   </div>
-
 </template>
 
 <script>

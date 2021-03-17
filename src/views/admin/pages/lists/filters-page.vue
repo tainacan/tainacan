@@ -12,12 +12,31 @@
             
             <div
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
-                    :style="{ height: activeFilterList.length <= 0 && !isLoadingFilters ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
+                    :style="{ height: activeFiltersList.length <= 0 && !isLoadingFilters ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
                     class="columns"
                     ref="filterEditionPageColumns">
                 <div class="column">
+
+                    <div class="tainacan-form sub-header">
+                        <h3>{{ $i18n.get('filters') }}</h3>
+
+                        <template v-if="activeFiltersList && activeFiltersList.length > 5 && !isLoadingFilters">
+                                
+                            <b-field class="header-item">
+                                <b-input 
+                                        :placeholder="$i18n.get('instruction_type_search_filter_filter')"
+                                        v-model="filterNameFilterString"
+                                        icon="magnify"
+                                        size="is-small"
+                                        icon-right="close-circle"
+                                        icon-right-clickable
+                                        @icon-right-click="filterNameFilterString = ''" />
+                            </b-field>
+                        </template>
+                    </div>
+
                     <section 
-                            v-if="activeFilterList.length <= 0 && !isLoadingFilters"
+                            v-if="activeFiltersList.length <= 0 && !isLoadingFilters"
                             class="field is-grouped-centered section">
                         <div class="content has-text-gray has-text-centered">
                             <p>
@@ -28,32 +47,34 @@
                             <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>  
                             <p>{{ $i18n.get('info_create_filters' ) }}</p>
                         </div>
-                    </section>        
-                    <draggable 
+                    </section>
+
+                    <draggable
                             class="active-filters-area"
                             @change="handleChangeOnFilter"
                             :class="{'filters-area-receive': isDraggingFromAvailable}" 
-                            v-model="activeFilterList"
+                            v-model="activeFiltersList"
                             :group="{ name:'filters', pull: false, put: true }"
                             :sort="(openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel"
                             :handle="'.handle'" 
                             ghost-class="sortable-ghost"
                             filter=".not-sortable-item"
                             :prevent-on-filter="false"
-                            :animation="250"> 
-                        <div  
+                            :animation="250">
+                        <div
                                 class="active-filter-item" 
                                 :class="{
-                                    'not-sortable-item': (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true),
+                                    'not-sortable-item': (isRepositoryLevel || isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || filterNameFilterString != ''),
                                     'not-focusable-item': openedFilterId == filter.id, 
                                     'disabled-filter': filter.enabled == false,
                                     'inherited-filter': filter.inherited || isRepositoryLevel
                                 }" 
-                                v-for="(filter, index) in activeFilterList" 
-                                :key="filter.id">
+                                v-for="(filter, index) in activeFiltersList" 
+                                :key="filter.id"
+                                v-show="filterNameFilterString == '' || filter.name.toString().toLowerCase().indexOf(filterNameFilterString.toString().toLowerCase()) >= 0">
                             <div class="handle">
                                 <span 
-                                        :style="{ opacity: !(isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel) ? '1.0' : '0.0' }"
+                                        :style="{ opacity: !(isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel || filterNameFilterString != '') ? '1.0' : '0.0' }"
                                         v-tooltip="{
                                             content: (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true) ? $i18n.get('info_not_allowed_change_order_filters') : $i18n.get('instruction_drag_and_drop_filter_sort'),
                                             autoHide: true,
@@ -63,24 +84,6 @@
                                         class="icon grip-icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/>
                                 </span>
-                                <span 
-                                        v-tooltip="{
-                                            content: filter.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
-                                            autoHide: true,
-                                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
-                                            placement: 'auto-start'
-                                        }"
-                                        class="icon icon-level-identifier">
-                                    <i 
-                                        :class="{ 
-                                            'tainacan-icon-collections': filter.collection_id == collectionId, 
-                                            'tainacan-icon-repository': filter.collection_id != collectionId,
-                                            'has-text-turquoise5': filter.enabled && filter.collection_id != 'default', 
-                                            'has-text-blue5': filter.enabled && filter.collection_id == 'default',
-                                            'has-text-gray3': !filter.enabled  
-                                        }"
-                                        class="tainacan-icon" />
-                                </span> 
                                 <span 
                                         class="filter-name"
                                         :class="{'is-danger': formWithErrors == filter.id }">
@@ -98,10 +101,34 @@
                                     </span>
                                     <span 
                                             v-if="filter.status == 'private'"
-                                            class="icon">
+                                            class="icon"
+                                            v-tooltip="{
+                                                content: $i18n.get('status_private'),
+                                                autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                placement: 'auto-start'
+                                            }">
                                         <i class="tainacan-icon tainacan-icon-private"/>
                                     </span>
-                                </span> 
+                                    <span 
+                                            v-tooltip="{
+                                                content: filter.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
+                                                autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                placement: 'auto-start'
+                                            }"
+                                            class="icon icon-level-identifier">
+                                        <i 
+                                            :class="{ 
+                                                'tainacan-icon-collections': filter.collection_id == collectionId, 
+                                                'tainacan-icon-repository': filter.collection_id != collectionId,
+                                                'has-text-turquoise5': filter.enabled && filter.collection_id != 'default', 
+                                                'has-text-blue5': filter.enabled && filter.collection_id == 'default',
+                                                'has-text-gray3': !filter.enabled  
+                                            }"
+                                            class="tainacan-icon" />
+                                    </span> 
+                                </span>
                                 <span 
                                         class="loading-spinner" 
                                         v-if="filter.id == undefined"/>
@@ -164,7 +191,7 @@
                         v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || !isRepositoryLevel)"
                         class="column available-metadata-area">
                     <div class="field" >
-                        <h3 class="label has-text-secondary"> {{ $i18n.get('label_available_metadata') }}</h3>
+                        <h3 class="label"> {{ $i18n.get('label_available_metadata') }}</h3>
                         <draggable
                                 @change="handleChangeOnMetadata"
                                 v-if="availableMetadata.length > 0 && !isLoadingMetadatumTypes"
@@ -193,22 +220,7 @@
                                             }" 
                                             class="icon grip-icon">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/>
-                                    </span>
-                                    <span 
-                                            v-tooltip="{
-                                                content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
-                                                autoHide: true,
-                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
-                                                placement: 'auto-start'
-                                            }"
-                                            class="icon icon-level-identifier">
-                                        <i 
-                                            :class="{   
-                                                'tainacan-icon-collections has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 
-                                                'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId 
-                                            }"
-                                            class="tainacan-icon" />
-                                    </span>  
+                                    </span> 
                                     <span 
                                             v-tooltip="{
                                                 content: metadatum.name + (metadatum.parent_name ? (' (' + $i18n.get('info_child_of') + ' ' + metadatum.parent_name + ')') : ''),
@@ -225,6 +237,21 @@
                                             <em>{{ '(' + $i18n.get('info_child_of') + ' ' + metadatum.parent_name + ')' }}</em>
                                         </span>
                                     </span>
+                                    <span 
+                                            v-tooltip="{
+                                                content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
+                                                autoHide: true,
+                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                placement: 'auto-start'
+                                            }"
+                                            class="icon icon-level-identifier">
+                                        <i 
+                                            :class="{   
+                                                'tainacan-icon-collections has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 
+                                                'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId 
+                                            }"
+                                            class="tainacan-icon" />
+                                    </span> 
                                 </div>
                             </template>
                         </draggable>   
@@ -380,11 +407,12 @@ export default {
             currentFilterTypePreview: undefined,
             columnsTopY: 0,
             filtersSearchCancel: undefined,
-            metadataSearchCancel: undefined
+            metadataSearchCancel: undefined,
+            filterNameFilterString: ''
         }
     },
     computed: {
-        activeFilterList: {
+        activeFiltersList: {
             get() {
                 return this.getFilters();
             },
@@ -400,9 +428,9 @@ export default {
         '$route.query': {
             handler(newQuery) {
                 if (newQuery.edit != undefined) {
-                    let existingFilterIndex = this.activeFilterList.findIndex((filter) => filter.id == newQuery.edit);
+                    let existingFilterIndex = this.activeFiltersList.findIndex((filter) => filter.id == newQuery.edit);
                     if (existingFilterIndex >= 0)
-                        this.editFilter(this.activeFilterList[existingFilterIndex])                        
+                        this.editFilter(this.activeFiltersList[existingFilterIndex])                        
                 }
             },
             immediate: true
@@ -541,7 +569,7 @@ export default {
             this.availableMetadata.splice(metadatumIndex, 1);
             
             // Inserts it at the end of the list
-            let lastFilterIndex = this.activeFilterList.length;
+            let lastFilterIndex = this.activeFiltersList.length;
             // // Updates store with temporary Filter
             // this.addTemporaryFilter(metadatumType);
 
@@ -567,7 +595,7 @@ export default {
             this.choosenMetadatum = {};
 
             // Removes element from filters list
-            this.activeFilterList.splice(this.newFilterIndex, 1);
+            this.activeFiltersList.splice(this.newFilterIndex, 1);
         },
         handleChangeOnMetadata($event) {
             if ($event.removed) {
@@ -576,7 +604,7 @@ export default {
         },
         updateFiltersOrder() {
             let filtersOrder = [];
-            for (let filter of this.activeFilterList) {
+            for (let filter of this.activeFiltersList) {
                 filtersOrder.push({'id': filter.id, 'enabled': filter.enabled});
             }
             this.isUpdatingFiltersOrder = true;
@@ -602,7 +630,7 @@ export default {
                 }
             }
            
-            for (let activeFilter of this.activeFilterList) {
+            for (let activeFilter of this.activeFiltersList) {
                 for (let i = availableMetadata.length - 1; i >= 0 ; i--) {
                     if (activeFilter.metadatum != undefined) {
                         if (activeFilter.metadatum.metadatum_id == availableMetadata[i].id)
@@ -615,7 +643,7 @@ export default {
         },  
         onChangeEnable($event, index) {
             let filtersOrder = [];
-            for (let filter of this.activeFilterList) {
+            for (let filter of this.activeFiltersList) {
                 filtersOrder.push({'id': filter.id, 'enabled': filter.enabled});
             }
             filtersOrder[index].enabled = $event;
@@ -744,16 +772,16 @@ export default {
 
                         // Checks URL as router watcher would not wait for list to load
                         if (this.$route.query.edit != undefined) {
-                            let existingFilterIndex = this.activeFilterList.findIndex((filter) => filter.id == this.$route.query.edit);
+                            let existingFilterIndex = this.activeFiltersList.findIndex((filter) => filter.id == this.$route.query.edit);
                             if (existingFilterIndex >= 0)
-                                this.editFilter(this.activeFilterList[existingFilterIndex]);                        
+                                this.editFilter(this.activeFiltersList[existingFilterIndex]);                        
                         }
 
                         // Cancels previous Request
                         if (this.metadataSearchCancel != undefined)
                             this.metadataSearchCancel.cancel('Metadata search Canceled.');
 
-                        // Needs to be done after activeFilterList exists to compare and remove chosen metadata.
+                        // Needs to be done after activeFiltersList exists to compare and remove chosen metadata.
                         this.fetchMetadata({
                             collectionId: this.collectionId, 
                             isRepositoryLevel: this.isRepositoryLevel, 
@@ -822,6 +850,7 @@ export default {
         .column {
             overflow-x: hidden;
             overflow-y: auto;
+            padding: 0.75em 0;
 
             &>section.field {
                 position: absolute;
@@ -834,6 +863,25 @@ export default {
                 @media screen and (max-width: 769px) {
                     margin-right: 0;
                 }
+            }
+            h3 {
+                font-weight: 500;
+            }
+        }
+
+        .sub-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5em 1em 0.5em 0.5em;
+
+            .header-item {
+                margin-left: 0.75rem;
+                margin-bottom: 0px;
+            }
+
+            h3 {
+                margin-right: auto;
             }
         }
 
@@ -851,7 +899,6 @@ export default {
 
         .active-filters-area {
             font-size: 0.875em;
-            margin-right: 0.8em;
             margin-left: -0.8em;
             padding-right: 3em;
             min-height: 330px;
@@ -866,7 +913,7 @@ export default {
             }
 
             &.filters-area-receive {
-                border: 1px dashed gray;
+                border: 1px dashed var(--tainacan-gray4);
             }
 
             .collapse {
@@ -928,7 +975,7 @@ export default {
                 .controls { 
                     font-size: 0.875em;
                     position: absolute;
-                    right: 5px; 
+                    right: 10px; 
                     top: 10px;
                     .switch {
                         position: relative;
@@ -941,53 +988,42 @@ export default {
                     }
                 }
 
-                &.not-sortable-item, &.not-sortable-item:hover {
+                &.not-sortable-item,
+                &.not-sortable-item:hover {
                     cursor: default;
                     background-color: var(--tainacan-white) !important;
                 } 
-                &.not-focusable-item, &.not-focusable-item:hover {
+                &.not-focusable-item,
+                &.not-focusable-item:hover {
                     cursor: default;
                 
                     .metadatum-name {
                         color: var(--tainacan-secondary);
                     }
                 }
-                &.disabled-metadatum {
+                &.disabled-filter:not(.not-sortable-item),
+                &.disabled-filter:not(.not-sortable-item):hover {
                     color: var(--tainacan-gray3);
+                    .label-details, .not-saved {
+                        color: var(--tainacan-gray3) !important;
+                    }
                 }    
             }
+            .active-filter-item:not(:hover) .icon-level-identifier .tainacan-icon::before,
+            .active-filter-item:hover.not-sortable-item .icon-level-identifier .tainacan-icon::before {
+                color: var(--tainacan-gray3) !important;
+            }
             .active-filter-item:hover:not(.not-sortable-item) {
-                background-color: var(--tainacan-secondary);
-                border-color: var(--tainacan-secondary);
-                color: var(--tainacan-white) !important;
+                background-color: var(--tainacan-turquoise1);
+                border-color: var(--tainacan-turquoise1);
 
-                &>.field, form {
-                    background-color: var(--tainacan-white) !important;
+                .label-details, .not-saved {
+                    color: var(--tainacan-gray4) !important;
                 }
-
                 .grip-icon { 
-                    color: var(--tainacan-white);
+                    color: var(--tainacan-secondary);
                 }
 
-                .label-details, .icon, .icon-level-identifier>i {
-                    color: var(--tainacan-white) !important;
-                }
-
-                .switch.is-small {
-                    input[type="checkbox"] + .check {
-                        background-color: var(--tainacan-secondary) !important;
-                        border: 1.5px solid white !important;
-                        &::before { background-color: var(--tainacan-white) !important; }
-                    } 
-                    input[type="checkbox"]:checked + .check {
-                        border: 1.5px solid white !important;
-                        &::before { background-color: var(--tainacan-white) !important; }
-                    }
-                    &:hover input[type="checkbox"] + .check {
-                        border: 1.5px solid white !important;
-                        background-color: var(--tainacan-secondary) !important;
-                    }
-                }
             }
             .sortable-ghost {
                 border: 1px dashed var(--tainacan-gray2);
@@ -999,9 +1035,7 @@ export default {
                 position: relative;
 
                 .grip-icon { 
-                    color: var(--tainacan-gray3);
-                    top: 2px;
-                    position: relative;
+                    color: var(--tainacan-white); 
                 }
             }
         }
@@ -1026,7 +1060,7 @@ export default {
             }
 
             h3 {
-                margin: 0.2em 0em 1em 0em;
+                margin: 0.875em 0em 1em 0em;
                 font-weight: 500;
             }
 
@@ -1059,7 +1093,7 @@ export default {
                     font-weight: bold;
                     margin-left: 0.4em;
                     display: inline-block;
-                    width: calc(100% - 80px);
+                    width: calc(100% - 60px);
                 }
                 &:after,
                 &:before {
@@ -1103,56 +1137,55 @@ export default {
                 position: relative;
                 top: 2px;
             }
-            .available-metadatum-item:not(.disabled-metadatum)  {
-                &:hover{
-                    background-color: var(--tainacan-secondary);
-                    border-color: var(--tainacan-secondary);
-                    color: var(--tainacan-white) !important;
-                    position: relative;
-                    left: -4px;
+            .available-metadatum-item:not(:hover) .icon-level-identifier .tainacan-icon::before,
+            .available-filter-item:hover.not-sortable-item .icon-level-identifier .tainacan-icon::before {
+                color: var(--tainacan-gray3) !important;
+            }
+            .available-metadatum-item:not(.disabled-metadatum):hover{
+                background-color: var(--tainacan-turquoise1);
+                border-color: var(--tainacan-turquoise2);
+                position: relative;
+                left: -4px;
 
-                    &:after {
-                        border-color: transparent var(--tainacan-secondary) transparent transparent;
-                    }
-                    &:before {
-                        border-color: transparent var(--tainacan-secondary) transparent transparent;
-                    }
-                    .icon-level-identifier>i {
-                        color: var(--tainacan-white) !important;
-                    }
-                    .grip-icon {
-                        color: var(--tainacan-white) !important;
-                    }
+                &:after {
+                    border-color: transparent var(--tainacan-turquoise1) transparent transparent;
+                }
+                &:before {
+                    border-color: transparent var(--tainacan-turquoise2) transparent transparent;
+                }
+                .grip-icon {
+                    color: var(--tainacan-secondary) !important;
                 }
             }
         }
 
         .inherited-filter {
             &.active-filter-item:hover:not(.not-sortable-item) {
-                background-color: var(--tainacan-blue5);
-                border-color: var(--tainacan-blue5);
+                background-color: var(--tainacan-blue1);
+                border-color: var(--tainacan-blue2);
                 
-                .switch.is-small {
-                    input[type="checkbox"] + .check {
-                        background-color: var(--tainacan-blue5) !important;
-                    } 
-                    &:hover input[type="checkbox"] + .check {
-                        background-color: var(--tainacan-blue5) !important;
-                    }
+                .grip-icon { 
+                    color: var(--tainacan-blue5) !important; 
                 }
             }
         }
         .inherited-metadatum {
-
-            &.available-metadatum-item:hover {
-                background-color: var(--tainacan-blue5) !important;
-                border-color: var(--tainacan-blue5) !important;
+            .switch.is-small input[type="checkbox"]:checked + .check {
+                border: 1.5px solid var(--tainacan-blue5);
+                &::before { background-color: var(--tainacan-blue5); }
+            }
+            &.available-metadatum-item:not(.disabled-metadatum):hover {
+                background-color: var(--tainacan-blue1) !important;
+                border-color: var(--tainacan-blue2) !important;
             
+                .grip-icon { 
+                    color: var(--tainacan-blue5) !important; 
+                }
                 &:after {
-                    border-color: transparent var(--tainacan-blue5) transparent transparent !important;
+                    border-color: transparent var(--tainacan-blue1) transparent transparent !important;
                 }
                 &:before {
-                    border-color: transparent var(--tainacan-blue5) transparent transparent !important;
+                    border-color: transparent var(--tainacan-blue2) transparent transparent !important;
                 }
 
             }

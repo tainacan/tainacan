@@ -1047,6 +1047,70 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
 
 	}
 
+	/*
+	* @group Documents
+	*/
+	function test_item_get_thumbnail() {
+		$TainacanMedia = \Tainacan\Media::get_instance();
+		$ItemsRepo = \Tainacan\Repositories\Items::get_instance();
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'   => 'collectionComments',
+				'allow_comments' => 'closed'
+			),
+			true,
+			true
+		);
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'      => 'itemComments1',
+				'collection' => $collection,
+			),
+			true,
+			true
+		);
+
+		$orig_file = './tests/attachment/tainacan.jpg';
+		$test_file = '/tmp/tainacan.jpg';
+		copy( $orig_file, $test_file );
+		$request = new \WP_REST_Request( 'POST', '/wp/v2/media' );
+		$request->set_header( 'Content-Type', 'image/jpeg' );
+		$request->set_header( 'Content-Disposition', 'attachment; filename=codeispoetrywp.jpg' );
+		$request->set_param( 'post', $item->get_id() );
+		
+		global $TAINACAN_UPLOADING_ATTACHMENT_TO_POST;
+		$TAINACAN_UPLOADING_ATTACHMENT_TO_POST = $item->get_id();
+		
+		$request->set_body( file_get_contents( $test_file ) );
+		$response = rest_get_server()->dispatch( $request );
+		$data     = $response->get_data();
+		unset($TAINACAN_UPLOADING_ATTACHMENT_TO_POST);
+		
+		$this->assertEquals( 201, $response->get_status() );
+		$attachment = get_post( $data['id'] );
+
+		$item->set_document( $attachment->ID );
+		$item->set_document_type( 'attachment' );
+
+		if( $item->validate() ) {
+			$item = $ItemsRepo->update($item);
+		}
+		
+		$thumb_id = $ItemsRepo->get_thumbnail_id_from_document($item);
+		if (!is_null($thumb_id)) {
+			set_post_thumbnail( $item->get_id(), (int) $thumb_id );
+		}
+		
+		$thumbs = $item->get_thumbnail();
+		foreach ( $thumbs as $thumb ) {
+			if (is_array($thumb) && count($thumb) == 5) {
+				$this->assertContains($thumb[4], ['V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj', 'LATI:i~qNG~W~qNGxaNGM|xaNGxa']);
+			}
+		}
+	}
 }
 
 ?>

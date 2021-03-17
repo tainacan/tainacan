@@ -311,7 +311,7 @@ registerBlockType('tainacan/facets-list', {
                                             return prepareFacet(aChildTermFacet);
                                         })
                                         :
-                                        <p class="no-child-facet-found">{ __( 'This facet children terms do not contain items.', 'tainacan' )}</p>
+                                        <p class="no-child-facet-found">{ __( 'The child terms of this facet do not contain items.', 'tainacan' )}</p>
                                 }
                             </ul>
                         : null )

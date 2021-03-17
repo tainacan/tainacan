@@ -43,11 +43,15 @@ use \Tainacan\Repositories;
 	 *     @type string      $after_value               String to be added after each metadata value
 	 *                                                  Default '</p>'
 	 * }
+ * 
+ * @param int|string $item_id       (Optional) The item ID to retrive the metadatum as a HTML string to be used as output. Default is the global $post
+ * 
+ * 
  * @return string        The HTML output
  */
-function tainacan_get_the_metadata($args = array()) {
+function tainacan_get_the_metadata($args = array(), $item_id = 0) {
 
-	$item = tainacan_get_item();
+	$item = tainacan_get_item( $item_id );
 
 	if ($item instanceof \Tainacan\Entities\Item) {
 		return $item->get_metadata_as_html($args);
@@ -66,10 +70,12 @@ function tainacan_the_metadata($args = array()) {
  *
  * Return the item document as a HTML string to be used as output.
  *
+ * @param int|string $item_id       (Optional) The item ID. Default is the global $post
+ *
  * @return string        The HTML output
  */
-function tainacan_get_the_document() {
-	$item = tainacan_get_item();
+function tainacan_get_the_document($item_id = 0) {
+	$item = tainacan_get_item($item_id);
 
 	if (!$item)
 		return;
@@ -77,8 +83,8 @@ function tainacan_get_the_document() {
 	return apply_filters('tainacan-get-the-document', $item->get_document_as_html(), $item);
 }
 
-function tainacan_the_item_document_download_link() {
-	$item = tainacan_get_item();
+function tainacan_the_item_document_download_link($item_id = 0) {
+	$item = tainacan_get_item($item_id);
 
 	if (!$item)
 		return;
@@ -109,9 +115,9 @@ function tainacan_the_document() {
 /**
  * Return HTML display-ready version of an attachment
  */
-function tainacan_get_single_attachment_as_html($attachment_id) {
+function tainacan_get_single_attachment_as_html($attachment_id, $item_id = 0) {
 
-	$item = tainacan_get_item();
+	$item = tainacan_get_item($item_id);
 
 	if (!$attachment_id) {
 		return '';
@@ -138,15 +144,10 @@ function tainacan_has_document() {
 /**
  * When visiting a collection archive or single, returns the current collection id
  *
- * @uses get_post_type() WordPress function, which looks for the global $wp_query variable
+ * @uses get_post_type() WordPress function via Theme Helper, which looks for the global $wp_query variable
  */
 function tainacan_get_collection_id() {
-	if ( is_post_type_archive() || is_single() ) {
-		return Repositories\Collections::get_instance()->get_id_by_db_identifier(get_post_type());
-	} elseif ( false !== \Tainacan\Theme_Helper::get_instance()->visiting_collection_cover ) {
-		return \Tainacan\Theme_Helper::get_instance()->visiting_collection_cover;
-	}
-	return false;
+	return \Tainacan\Theme_Helper::get_instance()->tainacan_get_collection_id();
 }
 
 /**
@@ -155,16 +156,8 @@ function tainacan_get_collection_id() {
  * @uses tainacan_get_collection_id()
  * @return \Tainacan\Entities\Collection | false
  */
-function tainacan_get_collection() {
-	$collection_id = tainacan_get_collection_id();
-	if ( $collection_id ) {
-		$TainacanCollections = Repositories\Collections::get_instance();
-		$collection = $TainacanCollections->fetch($collection_id);
-		if ( $collection instanceof Entities\Collection ) {
-			return $collection;
-		}
-		return false;
-	}
+function tainacan_get_collection($args = []) {
+	return \Tainacan\Theme_Helper::get_instance()->tainacan_get_collection($args);
 }
 
 /**
@@ -268,9 +261,8 @@ function tainacan_get_the_view_modes() {
 	$enabled_view_modes = apply_filters( 'tainacan-enabled-view-modes-for-themes', $registered_view_modes_slugs );
 
 	// If in a collection page
-	$collection_id = tainacan_get_collection_id();
-	if ($collection_id) {
-		$collection = new  \Tainacan\Entities\Collection($collection_id);
+	$collection = tainacan_get_collection();
+	if ($collection) {
 		$default_view_mode = $collection->get_default_view_mode();
 		$enabled_view_modes = $collection->get_enabled_view_modes();
 	}
@@ -303,89 +295,40 @@ function tainacan_is_view_mode_enabled($view_mode_slug) {
  * Outputs the div used by Vue to render the Items List with a powerful faceted search
  *
  * The items list bellong to a collection, to the whole repository or a taxonomy term, according to where
- * it is used on the loop
+ * it is used on the loop, or to given params
  * 
- * The following params all optional for customizing the rendered vue component
+ * The following params are all optional for customizing the rendered vue component
  *
  * @param array $args {
 	 *     Optional. Array of arguments.
-	 *
-	 * 	   @type bool 	$hide_filters								Completely hide filter sidebar or modal
-	 * 	   @type bool 	$hide_hide_filters_button					Hides the button resonsible for collpasing filters sidebar on desktop
-	 * 	   @type bool 	$hide_search								Hides the complete search bar, including advanced search link
-	 * 	   @type bool 	$hide_advanced_search						Hides only the advanced search link
-	 *	   @type bool	$hide_displayed_metadata_dropdown			Hides the "Displayed metadata" dropdown even if the current view modes allows it	
-	 * 	   @type bool	$hide_sorting_area							Completely hides all sorting controls	
-	 * 	   @type bool 	$hide_sort_by_button						Hides the button where user can select the metadata to sort by items (keeps the sort direction)
-	 * 	   @type bool 	$hide_items_thumbnail						Forces the thumbnail to be hiden on every listing. This setting also disables view modes that contain the 'requires-thumbnail' attr. By default is false or inherited from collection setting
-	 *	   @type bool	$hide_exposers_button						Hides the "View as..." button, a.k.a. Exposers modal
-	 * 	   @type bool 	$hide_items_per_page_button					Hides the button for selecting amount of items loaded per page
-	 * 	   @type bool 	$hide_go_to_page_button						Hides the button for skiping to a specific page
-	 *	   @type bool	$hide_pagination_area						Completely hides pagination controls
-	 *	   @type int	$default_items_per_page						Default number of items per page loaded
-	 * 	   @type bool 	$show_filters_button_inside_search_control	Display the "hide filters" button inside of the search control instead of floating
-	 * 	   @type bool 	$start_with_filters_hidden					Loads the filters list hidden from start
-	 * 	   @type bool 	$filters_as_modal							Display the filters as a modal instead of a collapsable region on desktop
-	 * 	   @type bool 	$show_inline_view_mode_options				Display view modes as inline icon buttons instead of the dropdown
-	 * 	   @type bool 	$show_fullscreen_with_view_modes			Lists fullscreen viewmodes alongside with other view modes istead of separatelly
-	 * 	   @type string $default_view_mode							The default view mode
-	 * 	   @type bool	$is_forced_view_mode						Ignores user prefs to always render the choosen default view mode
-	 *	   @type string[] $enabled_view_modes						The list os enable view modes to display
+	 *     @type string $collection_id								Collection ID for a collection items list
+	 *     @type string $term_id									Term ID for a taxonomy term items list
+	 *     @type bool 	$hide_filters								Completely hide filter sidebar or modal
+	 *     @type bool 	$hide_hide_filters_button					Hides the button resonsible for collpasing filters sidebar on desktop
+	 *     @type bool 	$hide_search								Hides the complete search bar, including advanced search link
+	 *     @type bool 	$hide_advanced_search						Hides only the advanced search link
+	 *     @type bool	$hide_displayed_metadata_dropdown			Hides the "Displayed metadata" dropdown even if the current view modes allows it	
+	 *     @type bool	$hide_sorting_area							Completely hides all sorting controls	
+	 *     @type bool 	$hide_sort_by_button						Hides the button where user can select the metadata to sort by items (keeps the sort direction)
+	 *     @type bool 	$hide_items_thumbnail						Forces the thumbnail to be hiden on every listing. This setting also disables view modes that contain the 'requires-thumbnail' attr. By default is false or inherited from collection setting
+	 *     @type bool	$hide_exposers_button						Hides the "View as..." button, a.k.a. Exposers modal
+	 *     @type bool 	$hide_items_per_page_button					Hides the button for selecting amount of items loaded per page
+	 *     @type bool 	$hide_go_to_page_button						Hides the button for skiping to a specific page
+	 *     @type bool	$hide_pagination_area						Completely hides pagination controls
+	 *     @type int	$default_items_per_page						Default number of items per page loaded
+	 *     @type bool 	$show_filters_button_inside_search_control	Display the "hide filters" button inside of the search control instead of floating
+	 *     @type bool 	$start_with_filters_hidden					Loads the filters list hidden from start
+	 *     @type bool 	$filters_as_modal							Display the filters as a modal instead of a collapsable region on desktop
+	 *     @type bool 	$show_inline_view_mode_options				Display view modes as inline icon buttons instead of the dropdown
+	 *     @type bool 	$show_fullscreen_with_view_modes			Lists fullscreen viewmodes alongside with other view modes istead of separatelly
+	 *     @type string $default_view_mode							The default view mode
+	 *     @type bool	$is_forced_view_mode						Ignores user prefs to always render the choosen default view mode
+	 *     @type string[] $enabled_view_modes						The list os enable view modes to display
  * @return string  The HTML div to be used for rendering the items list vue component
  */
 function tainacan_the_faceted_search($args = array()) {
-
-	$props = ' ';
-	
-	// Loads info related to view modes
-	$view_modes = tainacan_get_the_view_modes();
-	$default_view_mode = $view_modes['default_view_mode'];
-	$enabled_view_modes = $view_modes['enabled_view_modes'];
-
-	if( isset($args['default_view_mode']) ) {
-		$default_view_mode = $args['default_view_mode'];
-		unset($args['default_view_mode']);
-	}
-
-	if( isset($args['enabled_view_modes']) ) {
-		$enabled_view_modes = $args['enabled_view_modes'];
-		if ( !in_array($default_view_mode, $enabled_view_modes) ) {
-			$default_view_mode = $enabled_view_modes[0];
-		}
-		unset($args['enabled_view_modes']);
-	}
-
-	// If in a collection page
-	$collection_id = tainacan_get_collection_id();
-	if ($collection_id) {
-		$props .= 'collection-id="' . $collection_id . '" ';
-		$collection = new  \Tainacan\Entities\Collection($collection_id);
-		$default_view_mode = $collection->get_default_view_mode();
-		$enabled_view_modes = $collection->get_enabled_view_modes();
-		
-		// Gets hideItemsThumbnail info from collection setting
-		$args['hide-items-thumbnail'] = $collection->get_hide_items_thumbnail_on_lists() == 'yes' ? true : false;
-	}
-	
-	// If in a tainacan taxonomy
-	$term = tainacan_get_term();
-	if ($term) {
-		$props .= 'term-id="' . $term->term_id . '" ';
-		$props .= 'taxonomy="' . $term->taxonomy . '" ';
-	}
-
-	$props .= 'default-view-mode="' . $default_view_mode . '" ';
-	$props .= 'enabled-view-modes="' . implode(',', $enabled_view_modes) . '" ';
-
-	// Passes arguments to custom props
-	foreach ($args as $key => $value) {
-		if ($value == true || $value == 'true') {
-			$props .= str_replace('_', '-', $key) . '="' . $value . '" ';
-		}
-	}
-
-	echo "<main id='tainacan-items-page' $props ></main>";
-
+	$theme_helper = \Tainacan\Theme_Helper::get_instance();
+	echo $theme_helper->get_tainacan_items_list($args);
 }
 
 /**
@@ -393,7 +336,15 @@ function tainacan_the_faceted_search($args = array()) {
  *
  * @return false|\WP_Term
  */
-function tainacan_get_term() {
+function tainacan_get_term($args = []) {
+	if ( isset( $args['term_id'] ) ) {
+		$term = get_term($args['term_id']);
+
+		if ( $term instanceof \WP_Error ) {
+			return false;
+		}
+		return $term;
+	}
 	if ( is_tax() ) {
 		$term = get_queried_object();
 		$theme_helper = \Tainacan\Theme_Helper::get_instance();
@@ -456,10 +407,11 @@ function tainacan_the_term_description() {
  * Return the list of attachments of the current item (by default, excluding the document and the thumbnail)
  *
  * @param string|array IDs of attachments to be excluded (by default this function already excludes the document and the thumbnail)
+ * @param int|string $item_id (Optional) The item ID to retrive attachments. Default is the global $post
  * @return array      Array of WP_Post objects. @see https://developer.wordpress.org/reference/functions/get_children/
  */
-function tainacan_get_the_attachments($exclude = null) {
-	$item = tainacan_get_item();
+function tainacan_get_the_attachments($exclude = null, $item_id = 0) {
+	$item = tainacan_get_item($item_id);
 
 	if (!$item)
 		return [];
@@ -485,20 +437,7 @@ function tainacan_register_view_mode($slug, $args = []) {
  * If used inside the Loop of items, will get the Item object for the current post
  */
 function tainacan_get_item($post_id = 0) {
-	$post = get_post( $post_id );
-
-	if (!$post)
-		return null;
-
-	$theme_helper = \Tainacan\Theme_Helper::get_instance();
-
-	if (!$theme_helper->is_post_an_item($post))
-		return null;
-
-	$item = new Entities\Item($post);
-
-	return $item;
-
+	return \Tainacan\Theme_Helper::get_instance()->tainacan_get_item($post_id);
 }
 
 /**
@@ -510,17 +449,19 @@ function tainacan_get_item($post_id = 0) {
  * @param string|integer The property to be checked. If a string is passed, it will check against
  * 	one of the native property of the item, such as title, description and creation_date.
  *  If an integer is passed, it will check against the IDs of the metadata.
+ * 
+ * @param int|string $item_id       (Optional) The item ID. Default is the global $post
  *
  * @return bool
  */
-function tainacan_current_view_displays($property) {
+function tainacan_current_view_displays($property, $item_id = 0) {
 	global $view_mode_displayed_metadata;
 
 	// Core metadata appear in fetch_only as metadata
 	if ($property == 'title' || $property == 'description') {
-		$item = tainacan_get_item();
+		$item = tainacan_get_item($item_id);
 		$core_getter_method = "get_core_{$property}_metadatum";
-        $property = $item->get_collection()->$core_getter_method()->get_id();
+		$property = $item->get_collection()->$core_getter_method()->get_id();
 	}
 
 	if (is_string($property)) {

@@ -144,8 +144,11 @@ class Item extends Entity {
 		return apply_filters("tainacan-item-get-thumbnail", $thumbs, $this);
 	}
 
-	private function get_image_blurhash($file_path, $width, $height) {
-		if (!$image = @imagecreatefromstring(file_get_contents($file_path))) {
+	public function get_image_blurhash($file_path, $width, $height) {
+		if (
+			!(version_compare(PHP_VERSION, '7.2.0') >= 0) ||
+			!$image = @imagecreatefromstring(file_get_contents($file_path))
+		) {
 			return "V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj";
 		}
 		if($image == false)
