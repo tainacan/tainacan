@@ -116,27 +116,23 @@ class TainacanMediaGallery {
     // parse slide data (url, title, size ...) from DOM elements
     // (children of gallerySelector)
     parseThumbnailElements(el) {
-        let thumbElements = el.childNodes,
-            items = [],
-            liElement,
-            metadataElement,
-            fullContentElement,
-            item;
-            
-        for (let i = 0; i < thumbElements.length; i++) {
-            liElement = thumbElements[i];
+        let items = [];
+        const galleryElements = el.childNodes;
 
-            // include only element nodes
-            if (liElement.nodeType !== 1)
-                continue;
-            
-            fullContentElement = liElement.querySelectorAll('.media-full-content *');
+        // Crossbrowser safe way to traverse nodeList
+        Array.prototype.forEach.call(galleryElements, (liElement) => {
 
-            if ( !fullContentElement.length ) {
+            // Include only element nodes
+            if (liElement.nodeType === 1) {
+
+                let item = {};
+                let fullContentElement = liElement.querySelectorAll('.media-full-content *');
+
+                if ( !fullContentElement.length ) {
                 item = {
-                    html: fullContentElement.outterHTML ? fullContentElement.outterHTML : fullContentElement
+                    html: fullContentElement.outerHTML ? fullContentElement.outerHTML : fullContentElement
                 }
-            } else {
+                } else {
                 if (fullContentElement[fullContentElement.length - 1].nodeName === 'IMG') {
                     fullContentElement = fullContentElement[fullContentElement.length - 1];
                     item = {
@@ -147,13 +143,13 @@ class TainacanMediaGallery {
                 } else {
                     fullContentElement = fullContentElement[0];
                     item = {
-                        html: fullContentElement.outterHTML ? fullContentElement.outterHTML : fullContentElement
+                        html: fullContentElement.outerHTML ? fullContentElement.outerHTML : fullContentElement
                     }
                 }
-            }
+                }
 
-            metadataElement = liElement.querySelector('.swiper-slide-metadata');
-            if (metadataElement) {
+                let metadataElement = liElement.querySelector('.swiper-slide-metadata');
+                if (metadataElement) {
                 const name = metadataElement.querySelector('.swiper-slide-metadata__name');
                 const caption = metadataElement.querySelector('.swiper-slide-metadata__caption');
                 const description = metadataElement.querySelector('.swiper-slide-metadata__description');
@@ -163,11 +159,12 @@ class TainacanMediaGallery {
                     caption,
                     description
                 }
+                }
+
+                item.el = liElement; // save link to element for getThumbBoundsFn
+                items.push(item);
             }
-    
-            item.el = liElement; // save link to element for getThumbBoundsFn
-            items.push(item);
-        }
+        });
         
         return items;
     };
