@@ -4,6 +4,7 @@
 // as a carousel with a lightbox. Check examples in the end of the file 
 import PhotoSwipe from 'photoswipe/dist/photoswipe.min.js';
 import PhotoSwipeUI_Default from 'photoswipe/dist/photoswipe-ui-default.min.js';
+const { __ } = wp.i18n;
 
 class TainacanMediaGallery {
 
@@ -26,7 +27,7 @@ class TainacanMediaGallery {
         this.options = options;
     
         this.initializeSwiper();
-        console.log(this.main_gallery_selector, this.thumbs_gallery_selector);
+        
         if (this.main_gallery_selector)
             this.initPhotoSwipeFromDOM(this.main_gallery_selector + " .swiper-wrapper");
         else if (this.thumbs_gallery_selector)
@@ -48,7 +49,13 @@ class TainacanMediaGallery {
                     el: '.swiper-pagination_' + this.thumbs_gallery_selector
                 },
                 centerInsufficientSlides: true,
-                watchOverflow: true
+                watchOverflow: true,
+                a11y: {
+                    prevSlideMessage: __( 'Previous slide', 'tainacan'),
+                    nextSlideMessage: __( 'Next slide', 'tainacan'),
+                    firstSlideMessage: __('This is the first slide', 'tainacan'),
+                    lastSlideMessage: __('This is the last slide', 'tainacan')
+                },
             };
             thumbsSwiperOptions = {...thumbsSwiperOptions, ...this.options.swiper_thumbs_options };
             this.thumbsSwiper = new Swiper(this.thumbs_gallery_selector, thumbsSwiperOptions);
@@ -66,7 +73,13 @@ class TainacanMediaGallery {
                 pagination: {
                     el: '.swiper-pagination_' + this.main_gallery_selector
                 },
-                watchOverflow: true
+                watchOverflow: true,
+                a11y: {
+                    prevSlideMessage: __( 'Previous slide', 'tainacan'),
+                    nextSlideMessage: __( 'Next slide', 'tainacan'),
+                    firstSlideMessage: __('This is the first slide', 'tainacan'),
+                    lastSlideMessage: __('This is the last slide', 'tainacan')
+                },
             };
             if (this.thumbsSwiper) {
                 mainSwiperOptions.thumbs = {
@@ -89,7 +102,7 @@ class TainacanMediaGallery {
     initPhotoSwipeFromDOM (gallerySelector) {
         // loop through all gallery elements and bind events
         let galleryElement = document.querySelector(gallerySelector);
-        console.log(galleryElement);
+        
         galleryElement.setAttribute("data-pswp-uid", this.options.media_id);
         galleryElement.onclick = (event) => this.onThumbnailsClick(event, this);
         
@@ -271,7 +284,6 @@ class TainacanMediaGallery {
             // Update position of the slider
             swiperInstance.slideTo(getCurrentIndex, 0, false);
             // Start swiper autoplay (on close - if swiper autoplay is true)
-            console.log(swiperInstance);
             if (swiperInstance.params && swiperInstance.params.autoplay && swiperInstance.params.autoplay.enabled)
                 swiperInstance.autoplay.start();
         });

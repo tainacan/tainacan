@@ -337,7 +337,7 @@ function tainacan_get_the_media_component(
 		add_action('wp_footer', 'tainacan_get_the_media_modal_layer');
 
 		wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/media-component.css', array(), TAINACAN_VERSION);
-		wp_enqueue_script( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/js/media_component.js', ['tainacan-search'], TAINACAN_VERSION, true );
+		wp_enqueue_script( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/js/media_component.js', ['tainacan-search','wp-i18n'], TAINACAN_VERSION, true );
 		?>
 
 		<div class="tainacan-media-component">
