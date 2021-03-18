@@ -328,8 +328,9 @@ function tainacan_get_the_media_component(
 
 	$args['has_media_main'] = $media_items_main && is_array($media_items_main) && count($media_items_main);
 	$args['has_media_thumbs'] = $media_items_thumbs && is_array($media_items_thumbs) && count($media_items_thumbs);
-	$args['media_main_id'] = $args['has_media_thumbs'] ? ( $media_id . '-main' ) : $media_id;
-	$args['media_thumbs_id'] = $args['has_media_main'] ? ( $media_id . '-thumbs' ) : $media_id;
+	$args['media_main_id'] = $media_id . '-main';
+	$args['media_thumbs_id'] = $media_id . '-thumbs';
+	$args['media_id'] = $media_id;
 	
 	if ( $args['has_media_main'] || $args['has_media_thumbs'] ) :
 		// Modal lightbox layer for rendering photoswipe
@@ -360,13 +361,13 @@ function tainacan_get_the_media_component(
 
 					<?php if ( $args['swiper_main_options'] && isset($args['swiper_main_options']['pagination']) ) : ?>
 						<!-- If we need pagination -->
-						<div class="swiper-pagination"></div>
+						<div class="swiper-pagination swiper-pagination_<?php echo $args['media_main_id'] ?>"></div>
 					<?php endif; ?>
 
 					<?php if ( $args['swiper_main_options'] && isset($args['swiper_main_options']['navigation']) ) : ?>
 						<!-- If we need navigation buttons -->
-						<div class="swiper-button-prev"></div>
-						<div class="swiper-button-next"></div>
+						<div class="swiper-button-prev swiper-navigation-prev_<?php echo $args['media_main_id'] ?>"></div>
+						<div class="swiper-button-next swiper-navigation-next_<?php echo $args['media_main_id'] ?>"></div>
 					<?php endif; ?>
 				</div>
 				<?php echo $args['after_main_div'] ?>
@@ -374,7 +375,7 @@ function tainacan_get_the_media_component(
 
 			<?php if ( $args['has_media_thumbs'] ) : ?>
 
-				<!-- Slider main container -->
+				<!-- Slider thumbs container -->
 				<?php echo $args['before_thumbs_div'] ?>
 				<div id="<?php echo $args['media_thumbs_id'] ?>" class="tainacan-media-component__swiper-thumbs swiper-container <?php echo $args['class_thumbs_div'] ?>">
 					
@@ -391,13 +392,13 @@ function tainacan_get_the_media_component(
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['pagination']) ) : ?>
 						<!-- If we need pagination -->
-						<div class="swiper-pagination"></div>
+						<div class="swiper-paginations wiper-pagination_<?php echo $args['media_thumbs_id'] ?>"></div>
 					<?php endif; ?>
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['navigation']) ) : ?>
 						<!-- If we need navigation buttons -->
-						<div class="swiper-button-prev"></div>
-						<div class="swiper-button-next"></div>
+						<div class="swiper-button-prev swiper-navigation-prev_<?php echo $args['media_thumbs_id'] ?>"></div>
+						<div class="swiper-button-next swiper-navigation-next_<?php echo $args['media_thumbs_id'] ?>"></div>
 					<?php endif; ?>
 
 					<!-- These elements will create a gradient on the side of the carousel -->

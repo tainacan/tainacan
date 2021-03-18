@@ -14,7 +14,7 @@ class TainacanMediaGallery {
      * @param  {Object}  options                          several options to be tweaked
      * @param  {Object}  options.swiper_thumbs_options    object with SwiperJS options for the thumbnails list
      * @param  {Object}  options.swiper_main_options      object with SwiperJS options for the main list
-     * @param  {Boolean} options.show_share_button        showd share button on lightbox
+     * @param  {Boolean} options.show_share_button        show share button on lightbox
      * 
      * @return {Object}                                   TainacanMediaGallery instance
      */
@@ -26,7 +26,7 @@ class TainacanMediaGallery {
         this.options = options;
     
         this.initializeSwiper();
-        
+        console.log(this.main_gallery_selector, this.thumbs_gallery_selector);
         if (this.main_gallery_selector)
             this.initPhotoSwipeFromDOM(this.main_gallery_selector + " .swiper-wrapper");
         else if (this.thumbs_gallery_selector)
@@ -41,11 +41,11 @@ class TainacanMediaGallery {
                 spaceBetween: 12,
                 slidesPerView: 'auto',
                 navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
+                    nextEl: '.swiper-navigation-next_' + this.thumbs_gallery_selector,
+                    prevEl: '.swiper-navigation-prev_' + this.thumbs_gallery_selector,
                 },
                 pagination: {
-                    el: '.swiper-pagination'
+                    el: '.swiper-pagination_' + this.thumbs_gallery_selector
                 },
                 centerInsufficientSlides: true,
                 watchOverflow: true
@@ -60,11 +60,11 @@ class TainacanMediaGallery {
                 slidesPerView: 1,
                 slidesPerGroup: 1,
                 navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
+                    nextEl: '.swiper-navigation-next_' + this.main_gallery_selector,
+                    prevEl: '.swiper-navigation-prev_' + this.main_gallery_selector,
                 },
                 pagination: {
-                    el: '.swiper-pagination'
+                    el: '.swiper-pagination_' + this.main_gallery_selector
                 },
                 watchOverflow: true
             };
@@ -88,19 +88,16 @@ class TainacanMediaGallery {
   
     initPhotoSwipeFromDOM (gallerySelector) {
         // loop through all gallery elements and bind events
-        let galleryElements = document.querySelectorAll(gallerySelector);
-        
-        galleryElements.forEach((galleryElement, index) => {
-            galleryElement.setAttribute("data-pswp-uid", index + 1);
-            galleryElement.onclick = (event) => this.onThumbnailsClick(event, this);
-        })
+        let galleryElement = document.querySelector(gallerySelector);
+        console.log(galleryElement);
+        galleryElement.setAttribute("data-pswp-uid", this.options.media_id);
+        galleryElement.onclick = (event) => this.onThumbnailsClick(event, this);
         
         // Parse URL and open gallery if it contains #&pid=3&gid=1
         let hashData = this.photoswipeParseHash();
         
         if (hashData.pid && hashData.gid)
-            this.openPhotoSwipe(hashData.pid, galleryElements[hashData.gid - 1], true, true);
-  
+            this.openPhotoSwipe(hashData.pid, galleryElement, true, true);
     }
   
     // parse slide data (url, title, size ...) from DOM elements
@@ -112,31 +109,30 @@ class TainacanMediaGallery {
             metadataElement,
             fullContentElement,
             item;
-        console.log(el.childNodes);
+            
         for (let i = 0; i < thumbElements.length; i++) {
             liElement = thumbElements[i];
 
             // include only element nodes
             if (liElement.nodeType !== 1)
                 continue;
-            console.log(_.clone(liElement));
+            
             fullContentElement = liElement.querySelectorAll('.media-full-content *');
-            console.log(fullContentElement);
+
             if ( !fullContentElement.length ) {
                 item = {
                     html: fullContentElement.outterHTML ? fullContentElement.outterHTML : fullContentElement
                 }
-                continue;
             } else {
-                fullContentElement = fullContentElement[fullContentElement.length - 1];
-
-                if (fullContentElement.nodeName === 'IMG') {
+                if (fullContentElement[fullContentElement.length - 1].nodeName === 'IMG') {
+                    fullContentElement = fullContentElement[fullContentElement.length - 1];
                     item = {
                         src: fullContentElement.src,
                         w: parseInt(fullContentElement.width),
                         h: parseInt(fullContentElement.height)
                     };
                 } else {
+                    fullContentElement = fullContentElement[0];
                     item = {
                         html: fullContentElement.outterHTML ? fullContentElement.outterHTML : fullContentElement
                     }
@@ -159,7 +155,7 @@ class TainacanMediaGallery {
             item.el = liElement; // save link to element for getThumbBoundsFn
             items.push(item);
         }
-        console.log(items.length);
+        
         return items;
     };
   
@@ -275,12 +271,14 @@ class TainacanMediaGallery {
             // Update position of the slider
             swiperInstance.slideTo(getCurrentIndex, 0, false);
             // Start swiper autoplay (on close - if swiper autoplay is true)
-            swiperInstance.autoplay.start();
+            console.log(swiperInstance);
+            if (swiperInstance.params && swiperInstance.params.autoplay && swiperInstance.params.autoplay.enabled)
+                swiperInstance.autoplay.start();
         });
     
         // Swiper autoplay stop when image zoom */
         gallery.listen('initialZoomIn', () => {
-            if (swiperInstance.autoplay.running)
+            if (swiperInstance.params && swiperInstance.params.autoplay && swiperInstance.params.autoplay.enabled && swiperInstance.autoplay.running)
                 swiperInstance.autoplay.stop();
         });
     };
