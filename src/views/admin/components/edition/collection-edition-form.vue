@@ -4,6 +4,7 @@
             :class="{'repository-level-page' : isNewCollection }">
         <tainacan-title 
                 :bread-crumb-items="[{ path: '', label: $i18n.get('collection') }]"/>
+        
         <form 
                 v-if="collection != null && collection != undefined && ((isNewCollection && $userCaps.hasCapability('tnc_rep_edit_collections')) || (!isNewCollection && collection.current_user_can_edit))" 
                 class="tainacan-form" 

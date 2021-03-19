@@ -9,12 +9,13 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^2.2 || ^3.0.2",
-        "wimg/php-compatibility": "*"
+        "phpcompatibility/php-compatibility": "*"
     },
     "prefer-stable" : true,
     "minimum-stability": "dev",
     "config": {
-        "vendor-dir": "src/vendor"
+        "vendor-dir": "src/vendor",
+        "platform-check": false
     },
     "scripts": {
         "post-install-cmd": "\"src/vendor/bin/phpcs\" --config-set installed_paths src/vendor/wimg/php-compatibility",
