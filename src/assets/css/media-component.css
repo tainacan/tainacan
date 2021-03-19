@@ -758,9 +758,28 @@ a.pswp__share--download:hover {
     .tainacan-media-component__swiper-thumbs li.swiper-slide.swiper-slide-thumb-active img {
       opacity: 1.0;
       border-bottom-color: var(--tainacan-secondary, #298596); }
-    .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-name {
+    .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata__name {
+      font-size: 1em;
+      color: var(--tainacan-label-color, #454647); }
+    .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata__caption {
+      font-size: 0.9375em;
+      color: var(--tainacan-input-color, #1d1d1d); }
+    .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata__caption {
+      font-size: 0.875em;
+      color: var(--tainacan-info-color, #555758); }
+    .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata {
+      text-align: center;
       display: block;
       margin-top: 0.5rem; }
+      .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata.hide-name .swiper-slide-metadata__name {
+        display: none;
+        visibility: hidden; }
+      .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata.hide-description .swiper-slide-metadata__description {
+        display: none;
+        visibility: hidden; }
+      .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata.hide-caption .swiper-slide-metadata__caption {
+        display: none;
+        visibility: hidden; }
     .tainacan-media-component__swiper-thumbs li.swiper-slide a {
       width: 100%;
       max-width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
@@ -772,10 +791,6 @@ a.pswp__share--download:hover {
       outline: none;
       text-decoration: none;
       color: var(--tainacan-gray5, #454647); }
-    .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata__description,
-    .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata__caption {
-      display: none;
-      visibility: hidden; }
   .tainacan-media-component__swiper-thumbs .swiper-start-border {
     position: absolute;
     height: 100%;

@@ -477,7 +477,7 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 		<?php echo $args['before_slide_metadata'] ?>
 
 		<?php if ( !empty($args['media_title']) || !empty($args['description']) || !empty($args['media_caption']) ) : ?>
-			<div class="swiper-slide-metadata">
+			<div class="swiper-slide-metadata  <?php echo $args['class_slide_metadata'] ?>">
 				<?php if ( !empty($args['media_caption']) ) :?>
 					<span class="swiper-slide-metadata__caption">
 						<?php echo $args['media_caption'] ?>
