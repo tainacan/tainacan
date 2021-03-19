@@ -13,7 +13,7 @@ class TainacanMediaGallery {
      * @param  {String}  thumbs_gallery_selector          html element to be queried containing the thumbnails list
      * @param  {String}  main_gallery_selector            html element to be queried containing the main list
      * @param  {Object}  options                          several options to be tweaked
-     * @param  {Object}  options.swiper_thumbs_options    object with SwiperJS options for the thumbnails list
+     * @param  {Object}  options.swiper_thumbs_options    object with SwiperJS options for the thumbnails list (https://swiperjs.com/swiper-api)
      * @param  {Object}  options.swiper_main_options      object with SwiperJS options for the main list
      * @param  {Boolean} options.show_share_button        show share button on lightbox
      * 
@@ -129,36 +129,36 @@ class TainacanMediaGallery {
                 let fullContentElement = liElement.querySelectorAll('.media-full-content *');
 
                 if ( !fullContentElement.length ) {
-                item = {
-                    html: fullContentElement.outerHTML ? fullContentElement.outerHTML : fullContentElement
-                }
-                } else {
-                if (fullContentElement[fullContentElement.length - 1].nodeName === 'IMG') {
-                    fullContentElement = fullContentElement[fullContentElement.length - 1];
-                    item = {
-                        src: fullContentElement.src,
-                        w: parseInt(fullContentElement.width),
-                        h: parseInt(fullContentElement.height)
-                    };
-                } else {
-                    fullContentElement = fullContentElement[0];
                     item = {
                         html: fullContentElement.outerHTML ? fullContentElement.outerHTML : fullContentElement
                     }
-                }
+                } else {
+                    if (fullContentElement[fullContentElement.length - 1].nodeName === 'IMG') {
+                        fullContentElement = fullContentElement[fullContentElement.length - 1];
+                        item = {
+                            src: fullContentElement.src,
+                            w: parseInt(fullContentElement.width),
+                            h: parseInt(fullContentElement.height)
+                        };
+                    } else {
+                        fullContentElement = fullContentElement[0];
+                        item = {
+                            html: fullContentElement.outerHTML ? fullContentElement.outerHTML : fullContentElement
+                        }
+                    }
                 }
 
                 let metadataElement = liElement.querySelector('.swiper-slide-metadata');
                 if (metadataElement) {
-                const name = metadataElement.querySelector('.swiper-slide-metadata__name');
-                const caption = metadataElement.querySelector('.swiper-slide-metadata__caption');
-                const description = metadataElement.querySelector('.swiper-slide-metadata__description');
+                    const name = metadataElement.querySelector('.swiper-slide-metadata__name');
+                    const caption = metadataElement.querySelector('.swiper-slide-metadata__caption');
+                    const description = metadataElement.querySelector('.swiper-slide-metadata__description');
 
-                item.title = {
-                    name,
-                    caption,
-                    description
-                }
+                    item.title = {
+                        name,
+                        caption,
+                        description
+                    }
                 }
 
                 item.el = liElement; // save link to element for getThumbBoundsFn

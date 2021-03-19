@@ -392,7 +392,7 @@ function tainacan_get_the_media_component(
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['pagination']) ) : ?>
 						<!-- If we need pagination -->
-						<div class="swiper-paginations wiper-pagination_<?php echo $args['media_thumbs_id'] ?>"></div>
+						<div class="swiper-paginations swiper-pagination_<?php echo $args['media_thumbs_id'] ?>"></div>
 					<?php endif; ?>
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['navigation']) ) : ?>
@@ -434,8 +434,8 @@ function tainacan_get_the_media_component(
  *     @type string      before_slide_metadata   String to be added before the slide-metadata div
  *     @type string      after_slide_metadata    String to be added after the slide-metadata div
  *     @type string      class_slide_metadata    Class to be added to the slide-metadata div
- *     @type mixed       media_content           The content of the slide itself, such as an image, audio, video or iframe tag. It may be wrapped by a link to the full content
- *     @type string      media_content_full      The media full content, either an image, an html or a link
+ *     @type string      media_content           The content of the slide itself, such as an image, audio, video or iframe tag. It may be wrapped by a link to the full content
+ *     @type string      media_content_full      The media full content, either an image, an html
  *     @type string      media_title             The media title, if available
  *     @type string      media_description       The media description, if available
  *     @type string      media_caption           The media caption, if available
@@ -495,7 +495,6 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 						<?php echo $args['media_description'] ?>
 					</span>
 				<?php endif; ?>
-
 			</div>
 		<?php endif; ?>
 
@@ -572,9 +571,9 @@ function tainacan_get_the_media_modal_layer() {
                     <div class="pswp__share-tooltip"></div>
                 </div>
 
-                <button class="pswp__button pswp__button--arrow--left" title="<?php __('Anterior', 'tainacan') ?>"></button>
+                <button class="pswp__button pswp__button--arrow--left" title="<?php __('Next', 'tainacan') ?>"></button>
 
-                <button class="pswp__button pswp__button--arrow--right" title="<?php __('Próximo', 'tainacan') ?>"></button>
+                <button class="pswp__button pswp__button--arrow--right" title="<?php __('Previous', 'tainacan') ?>"></button>
 
                 <div class="pswp__caption">
                     <div class="pswp__caption__center"></div>
