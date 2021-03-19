@@ -110,7 +110,7 @@
                         <p 
                                 v-else 
                                 class="no-child-facet-found">
-                            {{ $root.__( 'This facet children terms do not contain items.', 'tainacan' ) }}
+                            {{ $root.__( 'The child terms of this facet do not contain items.', 'tainacan' ) }}
                         </p>
                     </ul>
                 </transition>
