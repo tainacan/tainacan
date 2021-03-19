@@ -652,6 +652,8 @@ a.pswp__share--download:hover {
     display: flex;
     align-items: center;
     margin-bottom: 30px; }
+    .tainacan-media-component__swiper-main ul.swiper-wrapper[data-pswp-uid] li.swiper-slide img {
+      cursor: zoom-in !important; }
   .tainacan-media-component__swiper-main li.swiper-slide {
     height: 100%;
     max-width: calc(100% - var(--swiper-navigation-size, 44px) - var(--swiper-navigation-size, 44px));
@@ -699,7 +701,6 @@ a.pswp__share--download:hover {
     .tainacan-media-component__swiper-main .swiper-slide-content a:first-of-type,
     .tainacan-media-component__swiper-main .swiper-slide-content p:first-of-type {
       z-index: 99;
-      padding: 0.25em 0.5em;
       background: white;
       border-radius: 3px;
       word-wrap: break-word; }

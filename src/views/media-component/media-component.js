@@ -159,8 +159,10 @@ class TainacanMediaGallery {
                         caption,
                         description
                     }
+                } else {
+                    item.title = false;
                 }
-
+                
                 item.el = liElement; // save link to element for getThumbBoundsFn
                 items.push(item);
             }
@@ -213,25 +215,21 @@ class TainacanMediaGallery {
                 // isFake    - true when content is added to fake caption container
                 //             (used to get size of next or previous caption)
 
-                if(!item.title) {
-                    captionEl.children[0].innerHTML = '';
-                    return false;
-                }
-
                 captionEl.children[0].innerHTML = '';
-
-                if (item.title.name) {
-                    let nameElement = document.querySelector('.pswp__name');
-                    if (nameElement && item.title.name)
-                        nameElement.innerHTML = item.title.name.innerHTML;
-                    else
-                        captionEl.children[0].innerHTML += '<span class="pswp__title">' + item.title.name.innerHTML + '</span>';
-                }
                 
+                if(!item.title)
+                    return false;
+                    
                 if (item.title.caption)
                     captionEl.children[0].innerHTML += '<span class="pswp__figure_caption">' + item.title.caption.innerHTML + '</span>';
+
+                if (item.title.name && item.title.caption || (!item.title.name && item.title.caption && item.title.description) )
+                    captionEl.children[0].innerHTML += '<br>';
+
+                if (item.title.name)
+                    captionEl.children[0].innerHTML += '<span class="pswp__name">' + item.title.name.innerHTML + '</span>';
                  
-                if (item.title.description && item.title.caption)
+                if (item.title.description && item.title.name)
                     captionEl.children[0].innerHTML += '<br>';
 
                 if (item.title.description)

@@ -60,6 +60,10 @@ $pswp__include-minimal-style: true !default;
         display: flex;
         align-items: center;
         margin-bottom: 30px;
+
+        &[data-pswp-uid] li.swiper-slide img {
+            cursor: zoom-in !important;
+        }
     }
     li.swiper-slide {
         height: 100%;
@@ -124,8 +128,7 @@ $pswp__include-minimal-style: true !default;
         a:first-of-type,
         p:first-of-type {
             z-index: 99;
-            padding: 0.25em 0.5em;
-            background: white;
+            background: var(--tainacan-media-background, #ffffff);
             border-radius: 3px;
             word-wrap: break-word;
         }
