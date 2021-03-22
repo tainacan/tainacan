@@ -40,3 +40,15 @@ add_action('init', ['Tainacan\Migrations', 'run_migrations']);
 add_filter( 'wp_untrash_post_status', function( $new_status, $post_id, $previous_status ) {
 	return $previous_status;
 }, 10, 3 );
+
+add_action('the_post', function($post){
+    $post->post_content = sanitize_theme($post->post_content);
+    $post->post_title = sanitize_theme($post->post_title);
+}, 10, 2);
+
+function sanitize_theme($content) {
+    $allowed_html = wp_kses_allowed_html('post');
+    unset($allowed_html["a"]);
+
+    return trim(wp_kses($content, $allowed_html));
+}
