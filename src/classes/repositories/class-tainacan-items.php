@@ -525,14 +525,14 @@ class Items extends Repository {
 	 * @return bool
 	 */
 	public function hook_comments_open($open_comment, $post_id) {
-	    $item = self::get_entity_by_post($post_id);
+		$item = self::get_entity_by_post($post_id);
 
-	    if($item != false && $item instanceof Entities\Item) {
-    	    $collection = $item->get_collection();
-    	    if( $collection->get_allow_comments() !== 'open' ) return false;
-	    }
+		if($item != false && $item instanceof Entities\Item) {
+			$collection = $item->get_collection();
+			if( $collection != null && $collection->get_allow_comments() !== 'open' ) return false;
+		}
 
-	    return $open_comment;
+		return $open_comment;
 	}
 
 	/**
