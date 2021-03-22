@@ -36,6 +36,16 @@ trait Entity_Collection_Relation {
             if($this->collection instanceof Entities\Collection){
                 return $this->collection;
             }
+        } else {
+            $post_type = get_post($this->get_id())->post_type;
+            $matches = array();
+            $regex = '/' . Collection::$db_identifier_prefix . '([a-zA-Z0-9_]*)' . Collection::$db_identifier_sufix . '/';
+            preg_match($regex, $post_type, $matches);
+            $collection_id = $matches[1];
+            if (is_numeric($collection_id)) {
+                $this->set_collection_id($collection_id);
+                return $this->get_collection();
+            }
         }
 
         return null;
