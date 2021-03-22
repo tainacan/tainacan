@@ -37,7 +37,10 @@ trait Entity_Collection_Relation {
                 return $this->collection;
             }
         } else {
-            $post_type = get_post($this->get_id())->post_type;
+            $post = get_post($this->get_id());
+            if (!$post || !$post->post_type)
+                return null;
+            $post_type = $post->post_type;
             $matches = array();
             $regex = '/' . Collection::$db_identifier_prefix . '([a-zA-Z0-9_]*)' . Collection::$db_identifier_sufix . '/';
             preg_match($regex, $post_type, $matches);
