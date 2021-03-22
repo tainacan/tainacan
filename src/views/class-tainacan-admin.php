@@ -238,6 +238,7 @@ class Admin {
 			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
 			'nonce'                  	=> is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
 			'components'             	=> $components,
+			'classes'					=> array(),
 			'i18n'                   	=> $tainacan_admin_i18n,
 			'user_caps'              	=> $user_caps,
 			'user_prefs'             	=> $prefs,
