@@ -66,13 +66,13 @@ class TainacanMediaGallery {
             let mainSwiperOptions = {
                 slidesPerView: 1,
                 slidesPerGroup: 1,
-                navigation: {
-                    nextEl: '.swiper-navigation-next_' + this.main_gallery_selector,
-                    prevEl: '.swiper-navigation-prev_' + this.main_gallery_selector,
-                },
-                pagination: {
-                    el: '.swiper-pagination_' + this.main_gallery_selector
-                },
+                // navigation: {
+                //     nextEl: '.swiper-navigation-next_' + this.main_gallery_selector,
+                //     prevEl: '.swiper-navigation-prev_' + this.main_gallery_selector,
+                // },
+                // pagination: {
+                //     el: '.swiper-pagination_' + this.main_gallery_selector
+                // },
                 watchOverflow: true,
                 a11y: {
                     prevSlideMessage: __( 'Previous slide', 'tainacan'),

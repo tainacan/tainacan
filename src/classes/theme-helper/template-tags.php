@@ -411,10 +411,10 @@ function tainacan_get_the_media_component(
 		</div>
 
 		<?php 
-			wp_add_inline_script( 'tainacan-media-component', "
-				tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin != undefined && typeof tainacan_plugin.tainacan_media_components != 'undefined') ? tainacan_plugin.tainacan_media_components : [];
-				tainacan_plugin.tainacan_media_components.push(JSON.parse('" . json_encode($args) . "'));
-			", 'before' ); 
+			wp_add_inline_script( 'tainacan-media-component', '
+				tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin != undefined && typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : [];
+				tainacan_plugin.tainacan_media_components.push('. json_encode($args) . ');
+			', 'before' ); 
 		?>
 
 	<?php endif; ?> <!-- End of if ($args['has_media_main'] || $args['has_media_thumbs'] ) -->
