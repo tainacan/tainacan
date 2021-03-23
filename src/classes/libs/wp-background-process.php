@@ -245,7 +245,8 @@
 			$lock_duration = ( property_exists( $this, 'queue_lock_time' ) ) ? $this->queue_lock_time : ( empty($max_execution_time) ? 60 : ($max_execution_time * 1.5) ); // 1 minute
 			$lock_duration = apply_filters( $this->identifier . '_queue_lock_time', $lock_duration );
 			$this->process_lock_in_time = microtime();
-			set_site_transient( $this->identifier . '_process_lock', $this->process_lock_in_time, $lock_duration );
+			if(!$this->is_process_running())
+				set_site_transient( $this->identifier . '_process_lock', $this->process_lock_in_time, $lock_duration );
 		}
 
 		/**
