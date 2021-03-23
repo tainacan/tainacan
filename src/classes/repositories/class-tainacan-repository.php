@@ -121,7 +121,7 @@ abstract class Repository {
 	 */
 	public function insert( $obj ) {
 		// validate
-        $required_validation_statuses = ['publish', 'future', 'private'];
+		$required_validation_statuses = ['publish', 'future', 'private'];
 		if (in_array( $obj->get_status(), apply_filters( 'tainacan-status-require-validation', $required_validation_statuses) ) && ! $obj->get_validated() ) {
 			throw new \Exception( 'Entities must be validated before you can save them' );
 			// TODO: Throw Warning saying you must validate object before insert()
@@ -151,9 +151,10 @@ abstract class Repository {
 			$obj->WP_Post->post_status = 'publish';
 		}
 
+		$sanitized_title = $this->sanitize_value($obj->get('name'));
+		$sanitized_desc = $this->sanitize_value($obj->get('description'));
 		if ( $obj instanceof Entities\Item ) {
-		    $sanitized_title = $this->sanitize_value($obj->get('title'));
-		    $sanitized_desc = $this->sanitize_value($obj->get('description'));
+			$sanitized_title = $this->sanitize_value($obj->get('title'));
 
 			// get collection to determine post type
 			$collection = $obj->get_collection();
@@ -164,22 +165,15 @@ abstract class Repository {
 
 			$post_t                  = $collection->get_db_identifier();
 			$obj->WP_Post->post_type = $post_t;
-			$obj->WP_Post->post_title = $sanitized_title;
-			$obj->WP_Post->post_content = $sanitized_desc;
 			$obj_post_type = 'tainacan-item';
 			do_action( "tainacan-pre-insert-$obj_post_type", $obj );
 		}
-
-		if ($obj instanceof Entities\Collection || $obj instanceof Entities\Metadatum || $obj instanceof Entities\Taxonomy) {
-		    $sanitized = $this->sanitize_value($obj->get('name'));
-            $sanitized_desc = $this->sanitize_value($obj->get('description'));
-		    $obj->WP_Post->post_title = $sanitized;
-            $obj->WP_Post->post_content = $sanitized_desc;
-		}
+		$obj->WP_Post->post_title = $sanitized_title;
+		$obj->WP_Post->post_content = $sanitized_desc;
 
 		$id = wp_insert_post( $obj->WP_Post );
 		if ($id instanceof \WP_Error || 0 === $id) {
-		    return false;
+			return false;
 		}
 
 		// reset object
@@ -258,10 +252,12 @@ abstract class Repository {
 	}
 
 	function maybe_add_slashes( $value ) {
-		if ( is_string( $value ) && strpos( $value, '\\' ) !== false ) {
-			return wp_slash( $value );
+		if ( is_string( $value ) ) {
+			if( strpos( $value, '\\' ) !== false ) {
+				return wp_slash( $this->sanitize_value($value) );
+			}
+			return $this->sanitize_value($value);
 		}
-
 		return $value;
 	}
 
