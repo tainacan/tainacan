@@ -304,7 +304,6 @@ class Metadata extends Repository {
 		}
 	}
 
-
 	/**
 	 * fetch metadatum based on ID or WP_Query args
 	 *
@@ -676,7 +675,6 @@ class Metadata extends Repository {
 		);
 	}
 
-
 	/**
 	 * That function update the core metadatum meta key, in case of changing the collection parent
 	 *
@@ -1001,7 +999,6 @@ class Metadata extends Repository {
 		return false;
 	}
 
-
 	/**
 	 * create a metadatum entity and insert by an associative array ( attribute => value )
 	 *
@@ -1025,7 +1022,6 @@ class Metadata extends Repository {
 			throw new \ErrorException( 'The entity wasn\'t validated.' . print_r( $metadatum->get_errors(), true ) );
 		}
 	}
-
 
 	/**
 	  * Return all possible values for a metadatum

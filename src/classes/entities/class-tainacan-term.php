@@ -51,11 +51,11 @@ class Term extends Entity {
         }
     }
 
-	public function  __toString(){
-		return apply_filters("tainacan-term-to-string", $this->get_name(), $this);
+	public function __toString() {
+		return (string) apply_filters("tainacan-term-to-string", $this->get_name(), $this);
 	}
 
-	public function _toArray(){
+	public function _toArray() {
 		$term_array = parent::_toArray();
 
 		$term_id = $term_array['term_id'];

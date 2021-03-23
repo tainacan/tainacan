@@ -187,27 +187,21 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	public function update_item( $request ) {
 		$body = json_decode( $request->get_body(), true );
 
-		if($body) {
-
-			$item_id  = $request['item_id'];
+		if ($body) {
+			$item_id      = $request['item_id'];
+			$value        = $body['values'];
 			$metadatum_id = $request['metadatum_id'];
-			$value    = $body['values'];
 			$parent_meta_id = isset( $body['parent_meta_id'] ) && $body['parent_meta_id'] > 0 ? $body['parent_meta_id'] : null;
 
-			$item  = $this->item_repository->fetch( $item_id );
-			$metadatum = $this->metadatum_repository->fetch( $metadatum_id );
+			$item  = $this->item_repository->fetch($item_id);
+			$metadatum = $this->metadatum_repository->fetch($metadatum_id);
 
 			$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum, null, $parent_meta_id);
 
-			if($item_metadata->is_multiple()) {
-				$item_metadata->set_value( $value );
-			} elseif(is_array($value)) {
-				$item_metadata->set_value(implode(' ', $value));
-			} else {
-				$item_metadata->set_value($value);
-			}
+			$value = $this->get_metadata_value($item_metadata->is_multiple(), $value);
+			$item_metadata->set_value($value);
 
-			if ( $item_metadata->validate() ) {
+			if ($item_metadata->validate()) {
 				if($item->can_edit()) {
 					$updated_item_metadata = $this->item_metadata_repository->update( $item_metadata );
 
@@ -279,7 +273,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 			$endpoint_args = array_merge(
 				$endpoint_args,
 				$this->get_wp_query_params()
-            );
+			);
 		} elseif ($method === \WP_REST_Server::EDITABLE) {
 			$endpoint_args['values'] = [
 				'type'        => ['array', 'string', 'object', 'integer'],
@@ -378,6 +372,12 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 		}
 	}
 
+	private function get_metadata_value($is_multiple, $value) {
+		if ($is_multiple) {
+			return $value;
+		} elseif (is_array($value)) {
+			return implode(' ', $value);
+		}
+		return $value;
+	}
 }
-
-?>

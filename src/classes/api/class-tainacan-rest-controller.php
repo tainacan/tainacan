@@ -4,7 +4,6 @@ namespace Tainacan\API;
 
 class REST_Controller extends \WP_REST_Controller {
 
-
 	/**
 	 * REST_Controller constructor.
 	 */
@@ -624,7 +623,6 @@ class REST_Controller extends \WP_REST_Controller {
 
 	}
 
-
 	function get_permissions_schema() {
 
 		return [
@@ -655,5 +653,3 @@ class REST_Controller extends \WP_REST_Controller {
 	}
 
 }
-
-?>
