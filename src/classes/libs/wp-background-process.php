@@ -226,6 +226,7 @@
 				$this->debug('process already running');
 				return true;
 			}
+			$this->debug('process not already running');
 
 			return false;
 		}
@@ -241,10 +242,11 @@
 			$this->debug('locking process: ' . $this->identifier);
 			$this->start_time = time(); // Set start time of current process.
 			$max_execution_time = ini_get('max_execution_time');
-			$lock_duration = ( property_exists( $this, 'queue_lock_time' ) ) ? $this->queue_lock_time : ( empty($max_execution_time) ? 60 : $max_execution_time ); // 1 minute
+			$lock_duration = ( property_exists( $this, 'queue_lock_time' ) ) ? $this->queue_lock_time : ( empty($max_execution_time) ? 60 : ($max_execution_time * 1.5) ); // 1 minute
 			$lock_duration = apply_filters( $this->identifier . '_queue_lock_time', $lock_duration );
-
-			set_site_transient( $this->identifier . '_process_lock', microtime(), $lock_duration );
+			$this->process_lock_in_time = microtime();
+			if(!$this->is_process_running())
+				set_site_transient( $this->identifier . '_process_lock', $this->process_lock_in_time, $lock_duration );
 		}
 
 		/**

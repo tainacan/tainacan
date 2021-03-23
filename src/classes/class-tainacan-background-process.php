@@ -279,16 +279,14 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 	 */
 	protected function handle() {
 		$this->lock_process();
-		
-		// while we are debugging performance
-		$newRequest = true;
-		
 		$batch = $this->get_batch();
 
-		if ($newRequest) {
-			$this->write_log($batch->key, ['New Request']);
-			$newRequest = false;
+		if($this->process_lock_in_time != get_site_transient( $this->identifier . '_process_lock' )) {
+			$this->write_log($batch->key, ['New request has ignored']);
+			wp_die();
 		}
+
+		$this->write_log($batch->key, ['New Request']);
 
 		register_shutdown_function(function() use($batch) {
 			$error = error_get_last();

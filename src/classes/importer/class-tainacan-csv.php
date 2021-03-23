@@ -677,14 +677,13 @@ class CSV extends Importer {
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 
-		// $Tainacan_Items->disable_logs();
-		// $Tainacan_Metadata->disable_logs();
-		// $Tainacan_Item_Metadata->disable_logs();
 
 		$itemMetadataArray = [];
 
 		$updating_item = false;
 
+		$Tainacan_Items->disable_logs();
+		$Tainacan_Metadata->disable_logs();
 		$Tainacan_Item_Metadata->disable_logs();
 		if ( is_numeric($this->get_transient('item_id')) ) {
 			$item = $Tainacan_Items->fetch( (int) $this->get_transient('item_id') );
@@ -787,7 +786,8 @@ class CSV extends Importer {
 				$this->add_error_log( $item->get_errors() );
 				return false;
 			}
-
+			global $wpdb;
+			$wpdb->query( 'SET autocommit = 0;' );
 			foreach ( $itemMetadataArray as $itemMetadata ) {
 				if($itemMetadata instanceof Entities\Item_Metadata_Entity ) {
 					$itemMetadata->set_item( $insertedItem );  // *I told you
@@ -826,6 +826,8 @@ class CSV extends Importer {
 				//    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
 				//}
 			}
+			$wpdb->query( 'COMMIT;' );
+			$wpdb->query( 'SET autocommit = 1;' );
 
 			if ( ! $updating_item ) {
 				$insertedItem->set_status('publish' );

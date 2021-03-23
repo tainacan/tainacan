@@ -344,11 +344,13 @@ abstract class Importer {
 	 * @param $type
 	 * @param $messagelog
 	 */
-	public function add_log($message ){
-		$this->log[] = $message;
+	public function add_log($message ) {
+		$date_key = '[' . date("Y-m-d H:i:s") . '] ';
+		$this->log[$date_key] = $message;
 	}
 	public function add_error_log($message ){
-		$this->error_log[] = $message;
+		$date_key = '[' . date("Y-m-d H:i:s") . '] ';
+		$this->error_log[$date_key] = $message;
 	}
 
 	public function add_collection(array $collection) {
@@ -893,7 +895,6 @@ abstract class Importer {
 			$author = $this->get_transient('author');
 			$this->add_log('---------------------------');
 			$this->add_log('Starting processing new item');
-			$this->add_log(date("Y-m-d H:i:s"));
 			$this->add_log('User in process: ' . $author);
 			wp_set_current_user($author);
 			$result = $this->$method_name();

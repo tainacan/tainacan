@@ -146,11 +146,13 @@ abstract class Generic_Process {
 	}
 
 	public function add_log($message ) {
-		$this->log[] = $message;
+		$date_key = '[' . date("Y-m-d H:i:s") . '] ';
+		$this->log[$date_key] = $message;
 	}
 
-	public function add_error_log($message ) {
-		$this->error_log[] = $message;
+	public function add_error_log($message ){
+		$date_key = '[' . date("Y-m-d H:i:s") . '] ';
+		$this->error_log[$date_key] = $message;
 	}
 
 	public function is_finished() {
