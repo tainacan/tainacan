@@ -923,7 +923,10 @@ abstract class Repository {
 			return $content;
 		}
 
-		return sanitize_theme($content);
+		$allowed_html = wp_kses_allowed_html('post');
+		unset($allowed_html["a"]);
+	
+		return trim(wp_kses($content, $allowed_html));
 	}
 
 }
