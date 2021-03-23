@@ -168,8 +168,11 @@ abstract class Repository {
 			$obj_post_type = 'tainacan-item';
 			do_action( "tainacan-pre-insert-$obj_post_type", $obj );
 		}
-		$obj->WP_Post->post_title = $sanitized_title;
-		$obj->WP_Post->post_content = $sanitized_desc;
+
+		if ( ! $obj instanceof Entities\Log ) {
+			$obj->WP_Post->post_title = $sanitized_title;
+			$obj->WP_Post->post_content = $sanitized_desc;
+		}
 
 		$id = wp_insert_post( $obj->WP_Post );
 		if ($id instanceof \WP_Error || 0 === $id) {
