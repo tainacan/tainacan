@@ -542,7 +542,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_number_of_terms'						 	 => __( 'Number of terms', 'tainacan' ),
 	'label_number_of_items'						 	 => __( 'Number of items', 'tainacan' ),
 	'label_usage_of_terms_per_taxonomy'			 	 => __( 'Usage of terms per taxonomy', 'tainacan' ),
-	'label_items_per_term'						 	 => __( 'Items per term', 'tainacan' ),
+	'label_items_per_term_from_taxonomy'			 => __( 'Items per term from taxonomy:', 'tainacan' ),
 	'label_items_per_collection'				 	 => __( 'Items per collection', 'tainacan' ),
 	'label_loading_report'						 	 => __( 'Loading report...', 'tainacan' ),
 	'label_metadata_fill_distribution'			 	 => __( 'Metadata fill distribution', 'tainacan' ),

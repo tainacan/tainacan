@@ -1,6 +1,20 @@
 #tainacan-reports-app {
-  margin: 10px 2px 10px 2px; }
+  padding: 10px 2px 10px 2px;
+  margin: 0; }
   #tainacan-reports-app .tainacan-icon::before {
     opacity: 0.0; }
+  #tainacan-reports-app a:hover {
+    cursor: pointer; }
+  #tainacan-reports-app .wp-heading-inline {
+    margin-bottom: 2rem; }
+  #tainacan-reports-app .columns {
+    max-width: 100%;
+    align-items: flex-start;
+    justify-content: center; }
+    #tainacan-reports-app .columns .column {
+      max-width: 100%;
+      padding: 0; }
+      #tainacan-reports-app .columns .column .postbox {
+        margin: 0.75rem; }
 
 /*# sourceMappingURL=tainacan-reports.css.map */

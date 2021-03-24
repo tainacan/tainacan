@@ -87,38 +87,65 @@
                 <div 
                     v-if="taxonomiesList != undefined && (!selectedCollection || selectedCollection == 'default')"
                         class="column is-full">
-                    <select 
-                            v-if="!isFetchingTaxonomiesList"
-                            name="select_taxonomies"
-                            id="select_taxonomies"
-                            :placeholder="$i18n.get('label_select_a_taxonomy')"
-                            v-model="selectedTaxonomy">
-                        <option 
-                                v-for="(taxonomy, index) of taxonomiesListArray"
-                                :key="index"
-                                :value="taxonomy.id">
-                            {{ taxonomy.name }}
-                        </option>
-                    </select>
-                    <apexchart
-                            v-if="!isFetchingTaxonomiesList && !isFetchingTaxonomyTerms && selectedTaxonomy"
-                            height="380px"
-                            class="postbox"
-                            :series="taxonomyTermsChartSeries"
-                            :options="taxonomyTermsChartOptions" />
-                    <div 
+                    <div class="postbox">
+                        <label>{{ $i18n.get('label_items_per_term_from_taxonomy') }}&nbsp;</label>
+                        <select 
+                                v-if="!isFetchingTaxonomiesList"
+                                name="select_taxonomies"
+                                id="select_taxonomies"
+                                :placeholder="$i18n.get('label_select_a_taxonomy')"
+                                v-model="selectedTaxonomy">
+                            <option 
+                                    v-for="(taxonomy, index) of taxonomiesListArray"
+                                    :key="index"
+                                    :value="taxonomy.id">
+                                {{ taxonomy.name + ' (' + taxonomy.total_terms + ' ' + ( taxonomy.total_terms == 1 ? $i18n.get('term') : $i18n.get('terms') ) + ')' }} 
+                            </option>
+                        </select>
+                        <apexchart
+                                v-if="!isFetchingTaxonomiesList && !isFetchingTaxonomyTerms && selectedTaxonomy"
+                                height="380px"
+                                :series="taxonomyTermsChartSeries"
+                                :options="taxonomyTermsChartOptions" />
+                        <div 
                             v-else
                             style="min-height=380px"
                             class="skeleton postbox" />
+                    </div>
                 </div>
                 <template v-if="selectedCollection && selectedCollection != 'default'">
                     <div class="column is-full">
-                        <apexchart
+                        <div 
                                 v-if="!isFetchingMetadata"
-                                height="380px"
-                                class="postbox"
-                                :series="metadataTypeChartSeries"
-                                :options="metadataTypeChartOptions" />
+                                class="postbox">
+                            <label>{{ $i18n.get('metadata_types') }}&nbsp;</label>
+                            <div class="graph-mode-switch">
+                                <button 
+                                        @click="metadataTypeChartMode = 'bar'"
+                                        :class="{ 'current': metadataTypeChartMode == 'bar' }">
+                                    <span class="screen-reader-text">
+                                        Visualização em Barras
+                                    </span>
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text tainacan-icon-rotate-270" />
+                                    </span>
+                                </button>
+                                <button 
+                                        @click="metadataTypeChartMode = 'circle'"
+                                        :class="{ 'current': metadataTypeChartMode == 'circle' }">
+                                    <span class="screen-reader-text">
+                                        Visualização em Círculo
+                                    </span>
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting tainacan-icon-rotate-270" />
+                                    </span>
+                                </button>
+                            </div>
+                            <apexchart
+                                    height="380px"
+                                    :series="metadataTypeChartSeries"
+                                    :options="metadataTypeChartOptions" />
+                        </div>
                         <div 
                             v-else
                             style="min-height=380px"
@@ -131,7 +158,12 @@
                     class="column is-full is-two-fifths-desktop">
                 <div 
                         v-if="!isFetchingMetadata && metadata.totals && metadata.totals.metadata"
-                        :style="{ overflowY: 'auto', maxHeight: ((140 + (metadata.totals.metadata.total * 36)) <= 660 ? (140 + (metadata.totals.metadata.total * 36)) : 660) + 'px' }"
+                        :style="{ 
+                            marginTop: '0px',
+                            marginLeft: '1.25rem',
+                            overflowY: 'auto',
+                            maxHeight: ((140 + (metadata.totals.metadata.total * 36)) <= 660 ? (140 + (metadata.totals.metadata.total * 36)) : 660) + 'px'
+                        }"
                         class="postbox">
                     <apexchart
                             :height="100 + (metadata.totals.metadata.total * 36)"
@@ -141,48 +173,6 @@
                 <div 
                         v-else
                         style="min-height=740px"
-                        class="skeleton postbox" />
-            </div>
-            <!-- <div 
-                    v-if="metadataList != undefined"
-                    class="column is-full">
-                <select 
-                        v-if="!isFetchingMetadata"
-                        name="select_metadata"
-                        id="select_metadata"
-                        :placeholder="$i18n.get('label_select_a_metadata')"
-                        v-model="selectedMetadatum">
-                    <option 
-                            v-for="(metadatum, index) of metadataListArray"
-                            :key="index"
-                            :value="metadatum.id">
-                        {{ metadatum.name }}
-                    </option>
-                </select>
-                <apexchart
-                        v-if="!isFetchingMetadataList && !isFetchingMetadata && selectedMetadatum"
-                        height="380px"
-                        class="postbox"
-                        :series="metadataListChartSeries"
-                        :options="metadataListChartOptions" />
-                <div 
-                        v-else
-                        style="min-height=380px"
-                        class="skeleton postbox" />
-            </div> -->
-            <div 
-                    v-if="activities != undefined"
-                    class="column is-full">
-                <apexchart
-                        v-if="!isFetchingActivities"
-                        height="380px"
-                        class="postbox"
-                        type="heatmap"
-                        :series="activitiesChartSeries"
-                        :options="activitiesChartOptions" />
-                <div 
-                        v-else
-                        style="min-height=380px"
                         class="skeleton postbox" />
             </div>
         </div>
@@ -213,6 +203,7 @@ export default {
             taxonomiesListChartOptions: {},
             metadataListChartSeries: [],
             metadataListChartOptions: {},
+            metadataTypeChartMode: 'bar',
             taxonomyTermsChartSeries: [],
             taxonomyTermsChartOptions: {},
             metadataTypeChartSeries: [],
@@ -271,6 +262,9 @@ export default {
         selectedMetadatum() {
             if (this.selectedMetadatum && this.selectedMetadatum != '')
                 this.loadMetadataList();
+        },
+        metadataTypeChartMode() {
+            this.loadMetadata();
         }
     },
     created() {
@@ -320,14 +314,33 @@ export default {
                             metadataTypeLabels.push(this.metadata.totals.metadata_per_type[metadataType].name ? this.metadata.totals.metadata_per_type[metadataType].name : '');
                         }
                         
-                        this.metadataTypeChartSeries = metadataTypeValues;
-                        this.metadataTypeChartOptions = {
-                            ...this.donutChartOptions,
-                            ...{
-                                title: {
-                                    text: this.$i18n.get('metadata_types')
-                                },
-                                labels: metadataTypeLabels,
+                        this.metadataTypeChartSeries = this.metadataTypeChartMode == 'circle' ? metadataTypeValues : [{ data: metadataTypeValues }];
+
+                        if (this.metadataTypeChartMode == 'circle') {
+                            this.metadataTypeChartOptions = {
+                                ...this.donutChartOptions,
+                                ...{
+                                    title: {},
+                                    labels: metadataTypeLabels,
+                                }
+                            }
+                        } else {
+                            this.metadataTypeChartOptions = {
+                                ...this.stackedBarChartOptions,
+                                ...{
+                                    title: {},
+                                    xaxis: {
+                                        type: 'category',
+                                        tickPlacement: 'on',
+                                        categories: metadataTypeLabels,
+                                        labels: {
+                                            show: true,
+                                            trim: true,
+                                            hideOverlappingLabels: false
+                                        },
+                                        tooltip: true
+                                    }
+                                }
                             }
                         }
                     }
@@ -335,7 +348,7 @@ export default {
                     if (this.metadata.distribution) {
 
                         // Building Metadata Distribution Bar chart
-                        const orderedMetadataDistributions = Object.values(this.metadata.distribution).sort((a, b) => b.fill_percentage - a.fill_percentage);
+                        const orderedMetadataDistributions = Object.values(this.metadata.distribution).sort((a, b) => b.fill_percentage - a.fill_percentage );
                         let metadataDistributionValues = [];
                         let metadataDistributionValuesInverted = [];
                         let metadataDistributionLabels = [];
@@ -397,7 +410,7 @@ export default {
                 .then(() => {
 
                     // Building Collections items chart
-                    const orderedCollections = Object.values(this.collectionsList).sort((a, b) => a.items.total - b.items.total);
+                    const orderedCollections = Object.values(this.collectionsList).sort((a, b) =>  b.items.total - a.items.total);
                     let privateItems = [];
                     let publicItems = [];
                     let trashItems = [];
@@ -441,6 +454,12 @@ export default {
                                 type: 'category',
                                 tickPlacement: 'on',
                                 categories: collectionsLabels,
+                                labels: {
+                                    show: true,
+                                    trim: true,
+                                    hideOverlappingLabels: false
+                                },
+                                tooltip: true
                             },
                             yaxis: {
                                 title: {
@@ -460,7 +479,7 @@ export default {
                 .then(() => {
 
                     // Building Taxonomy term usage chart
-                    const orderedTaxonomies = this.taxonomiesListArray.sort((a, b) => a.total_terms - b.total_terms);
+                    const orderedTaxonomies = this.taxonomiesListArray.sort((a, b) => b.total_terms - a.total_terms);
                     let termsUsed = [];
                     let termsNotUsed = [];
                     let taxonomiesLabels = [];
@@ -470,10 +489,10 @@ export default {
                         termsNotUsed.push(taxonomy.total_terms_not_used);
                         taxonomiesLabels.push(taxonomy.name);
                     });
-
+            
                     // Sets taxonomy terms now that we have the 
                     if (orderedTaxonomies.length)
-                        this.selectedTaxonomy = orderedTaxonomies[orderedTaxonomies.length - 1].id; 
+                        this.selectedTaxonomy = orderedTaxonomies[0].id; 
 
                     this.taxonomiesListChartSeries = [
                         {
@@ -496,6 +515,12 @@ export default {
                                 type: 'category',
                                 tickPlacement: 'on',
                                 categories: taxonomiesLabels,
+                                labels: {
+                                    show: true,
+                                    trim: true,
+                                    hideOverlappingLabels: false
+                                },
+                                tooltip: true
                             },
                             yaxis: {
                                 title: {
@@ -516,7 +541,7 @@ export default {
                 .then(() => {
 
                     // Building Taxonomy term usage chart
-                    const orderedTerms = Object.values(this.taxonomyTerms).sort((a, b) => a.count - b.count);
+                    const orderedTerms = Object.values(this.taxonomyTerms).sort((a, b) => b.count - a.count);
                     let termsValues = [];
                     let termsLabels = [];
 
@@ -535,18 +560,25 @@ export default {
                     this.taxonomyTermsChartOptions = {
                         ...this.stackedBarChartOptions, 
                         ...{
-                            title: {
-                                text: this.$i18n.get('label_items_per_term')
-                            },
+                            title: {},
                             xaxis: {
                                 type: 'category',
                                 tickPlacement: 'on',
                                 categories: termsLabels,
+                                labels: {
+                                    show: true,
+                                    trim: true,
+                                    hideOverlappingLabels: false
+                                },
+                                tooltip: true
                             },
                             yaxis: {
                                 title: {
                                     text: this.$i18n.get('label_number_of_items')
                                 }
+                            },
+                            animations: {
+                                enabled: orderedTerms.length <= 40
                             }
                         }
                     }
@@ -562,7 +594,7 @@ export default {
                 .then(() => {
                     
                     // Building Taxonomy term usage chart
-                    const orderedMetadata = Object.values(this.metadataList).sort((a, b) => a.total_items - b.total_items);
+                    const orderedMetadata = Object.values(this.metadataList).sort((a, b) => b.total_items - a.total_items);
                     let metadataItemValues = [];
                     let metadataItemLabels = [];
 
@@ -664,7 +696,6 @@ export default {
                                             const nextDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].date);
 
                                             daysToSkip = Math.floor( (nextDayWithActivity - lastDayWithActivity) / (1000 * 60 * 60 * 24) );
-                                            console.log(lastDayWithActivity);
                                         }
                                     }
                                 }
@@ -701,5 +732,25 @@ export default {
     margin-bottom: 0;
     height: 100%;
     min-height: 380px;
+    background-color: var(--tainacan-gray0, #f6f6f6);
+
+    label {
+        font-weight: bold;
+        font-size: 0.875rem;
+    }
+}
+.graph-mode-switch {
+    display: inline-block;
+    button {
+        border: none !important;
+        background: none !important;
+        box-shadow: none !important;
+        padding: 0;
+        cursor: pointer;
+
+        &.current {
+            color: var(--wp-admin-theme-color, #007cba);
+        }
+    }
 }
 </style>

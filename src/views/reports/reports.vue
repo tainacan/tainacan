@@ -24,13 +24,4 @@ export default {
     .tainacan_page_tainacan_reports #wpbody {
         overflow-x: hidden;
     }
-    #tainacan-reports-app {
-        a:hover {
-            cursor: pointer;
-        }
-
-        .wp-heading-inline {
-            margin-bottom: 2rem;
-        }
-    }
 </style>
