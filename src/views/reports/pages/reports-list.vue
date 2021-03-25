@@ -70,124 +70,13 @@
                             style="min-height=380px"
                             class="skeleton postbox" />
                 </div>
-                <div 
-                    v-if="!selectedCollection || selectedCollection == 'default'"
-                        class="column is-full">
-                    <apexchart
-                            v-if="!isFetchingTaxonomiesList"
-                            height="380px"
-                            class="postbox"
-                            :series="taxonomiesListChartSeries"
-                            :options="taxonomiesListChartOptions" />
-                    <div 
-                            v-else
-                            style="min-height=380px"
-                            class="skeleton postbox" />
-                </div>
-                <div 
-                    v-if="taxonomiesList != undefined && (!selectedCollection || selectedCollection == 'default')"
-                        class="column is-full">
-                    <div class="postbox">
-                        <div class="box-header">
-                            <div class="box-header__item">
-                                <label for="select_taxonomies">{{ $i18n.get('label_items_per_term_from_taxonomy') }}&nbsp;</label>
-                                <select
-                                        v-if="!isFetchingTaxonomiesList"
-                                        name="select_taxonomies"
-                                        id="select_taxonomies"
-                                        :placeholder="$i18n.get('label_select_a_taxonomy')"
-                                        v-model="selectedTaxonomy">
-                                    <option 
-                                            v-for="(taxonomy, index) of taxonomiesListArray"
-                                            :key="index"
-                                            :value="taxonomy">
-                                        {{ taxonomy.name + ' (' + taxonomy.total_terms + ' ' + ( taxonomy.total_terms == 1 ? $i18n.get('term') : $i18n.get('terms') ) + ')' }} 
-                                    </option>
-                                </select>
-                            </div>
-                            <div 
-                                    v-if="selectedTaxonomy && selectedTaxonomy.id"
-                                    class="box-header__item">
-                                <label for="max_terms">Termos por página:</label>
-                                <input
-                                        type="number"
-                                        step="1"
-                                        min="1"
-                                        max="999"
-                                        class="screen-per-page"
-                                        name="max_terms"
-                                        id="max_terms"
-                                        maxlength="3"
-                                        :disabled="isBuildingTaxonomyTermsChart"
-                                        v-model.number="maxTermsToDisplay">
-                            </div>
-                            <div 
-                                    v-if="selectedTaxonomy && selectedTaxonomy.id"
-                                    class="box-header__item tablenav-pages">
-                                <span class="displaying-num">{{ selectedTaxonomy.total_terms + ' ' + $i18n.get('terms') }}</span>
-                                <span class="pagination-links">
-                                    <span
-                                            @click="!isBuildingTaxonomyTermsChart ? termsDisplayedPage = 1 : null"
-                                            :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingTaxonomyTermsChart}"
-                                            class="first-page button"
-                                            aria-hidden="true">
-                                        «
-                                    </span>
-                                    <span
-                                            @click="(termsDisplayedPage > 1 && !isBuildingTaxonomyTermsChart) ? termsDisplayedPage-- : null"
-                                            :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingTaxonomyTermsChart}"
-                                            class="prev-page button"
-                                            aria-hidden="true">
-                                        ‹
-                                    </span>
-                                    <span class="paging-input">
-                                        <label
-                                                for="current-page-selector"
-                                                class="screen-reader-text">
-                                            {{ $i18n.get('label_current_page') }}
-                                        </label>
-                                        <input
-                                                class="current-page"
-                                                id="current-page-selector"
-                                                type="number"
-                                                step="1"
-                                                min="1"
-                                                :disabled="isBuildingTaxonomyTermsChart"
-                                                :max="Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay)"
-                                                name="paged"
-                                                v-model.number="termsDisplayedPage"
-                                                size="1"
-                                                aria-describedby="table-paging">
-                                        <span class="tablenav-paging-text"> de <span class="total-pages">{{ Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay) }}</span></span>
-                                    </span>
-                                    <span 
-                                            @click="(!isBuildingTaxonomyTermsChart && termsDisplayedPage < Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay)) ? termsDisplayedPage++ : null"
-                                            :class="{'tablenav-pages-navspan disabled' : isBuildingTaxonomyTermsChart || termsDisplayedPage >= Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay) }"
-                                            aria-hidden="true"
-                                            class="next-page button">
-                                        ›
-                                    </span>
-                                    <span
-                                            @click="!isBuildingTaxonomyTermsChart ? termsDisplayedPage = Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay) : null"
-                                            :class="{'tablenav-pages-navspan disabled': isBuildingTaxonomyTermsChart || termsDisplayedPage >= Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay) }"
-                                            class="last-page button"
-                                            aria-hidden="true">
-                                        »
-                                    </span>
-                                </span>
-                            </div>
-                        </div>
-                        <apexchart
-                                v-if="!isFetchingTaxonomiesList && !isFetchingTaxonomyTerms && selectedTaxonomy && selectedTaxonomy.id"
-                                height="380px"
-                                :series="taxonomyTermsChartSeries"
-                                :options="taxonomyTermsChartOptions" />
-                        <div 
-                            v-else
-                            style="min-height=380px"
-                            class="skeleton postbox" />
-                    </div>
-                </div>
+
+                <terms-per-taxonomy-block 
+                        v-if="!selectedCollection || selectedCollection == 'default'"/>
+                
+                <items-per-term-block 
+                        v-if="!selectedCollection || selectedCollection == 'default'" />
+                
                 <template v-if="selectedCollection && selectedCollection != 'default'">
                     <div class="column is-full">
                         <div 
@@ -292,36 +181,26 @@ export default {
     data() {
         return {
             selectedCollection: 'default',
-            selectedTaxonomy: {},
             selectedMetadatum: '',
             isFetchingCollections: false,
             isFetchingSummary: false,
             isFetchingCollectionsList: false,
-            isFetchingTaxonomiesList: false,
-            isFetchingTaxonomyTerms: false,
             isFetchingMetadata: false,
             isBuildingMetadataTypeChart: false,
-            isBuildingTaxonomyTermsChart: false,
             isFetchingMetadataList: false,
             isFetchingActivities: false,
             collectionsListChartSeries: [],
             collectionsListChartOptions: {},
-            taxonomiesListChartSeries: [],
-            taxonomiesListChartOptions: {},
             metadataListChartSeries: [],
             metadataListChartOptions: {},
             metadataTypeChartMode: 'bar',
-            taxonomyTermsChartSeries: [],
-            taxonomyTermsChartOptions: {},
             metadataTypeChartSeries: [],
             metadataTypeChartOptions: {},
             metadataDistributionChartSeries: [],
             metadataDistributionChartOptions: {},
             metadataDistributionChartHeight: 730,
             activitiesChartSeries: [],
-            activitiesChartOptions: {},
-            maxTermsToDisplay: 64,
-            termsDisplayedPage: 1
+            activitiesChartOptions: {}
         }
     },
     computed: {
@@ -332,8 +211,6 @@ export default {
             summary: 'getSummary',
             metadata: 'getMetadata',
             metadataList: 'getMetadataList',
-            taxonomyTerms: 'getTaxonomyTerms',
-            taxonomiesList: 'getTaxonomiesList',
             collectionsList: 'getCollectionsList',
             activities: 'getActivities',
             stackedBarChartOptions: 'getStackedBarChartOptions',
@@ -341,12 +218,9 @@ export default {
             horizontalBarChartOptions: 'getHorizontalBarChartOptions',
             //heatMapChartOptions: 'getHeatMapChartOptions'
         }),
-        taxonomiesListArray() {
-            return this.taxonomiesList && this.taxonomiesList != undefined ? Object.values(this.taxonomiesList) : [];
-        },
         metadataListArray() {
             return this.metadata && this.metadata != undefined && this.metadata.distribution ? Object.values(this.metadata.distribution) : [];
-        }
+        },
     },
     watch: {
         '$route.query': {
@@ -356,18 +230,11 @@ export default {
                 this.loadMetadata();
                 this.loadActivities();
 
-                if (!this.selectedCollection || this.selectedCollection == 'default') {
+                if (!this.selectedCollection || this.selectedCollection == 'default')
                     this.loadCollectionsList();
-                    this.loadTaxonomiesList();
-                }
                 
             },
             immediate: true
-        },
-        selectedTaxonomy() {
-            this.termsDisplayedPage = 1;
-            if (this.selectedTaxonomy && this.selectedTaxonomy.id)
-                this.loadTaxonomyTerms();
         },
         selectedMetadatum() {
             if (this.selectedMetadatum && this.selectedMetadatum != '')
@@ -375,13 +242,6 @@ export default {
         },
         metadataTypeChartMode() {
             this.buildMetadataTypeChart();
-        },
-        termsDisplayedPage() {
-            this.buildTaxonomyTermsChart();
-        },
-        maxTermsToDisplay() {
-            this.termsDisplayedPage = 1;
-            this.buildTaxonomyTermsChart();
         }
     },
     created() {
@@ -398,8 +258,6 @@ export default {
         ...mapActions('report', [
             'fetchSummary',
             'fetchCollectionsList',
-            'fetchTaxonomiesList',
-            'fetchTaxonomyTerms',
             'fetchMetadata',
             'fetchMetadataList',
             'fetchActivities'
@@ -599,135 +457,12 @@ export default {
                 })
                 .catch(() => this.isFetchingCollectionsList = false);
         },
-        loadTaxonomiesList() {
-            this.isFetchingTaxonomiesList = true;
-            this.fetchTaxonomiesList()
-                .then(() => {
-
-                    // Building Taxonomy term usage chart
-                    const orderedTaxonomies = this.taxonomiesListArray.sort((a, b) => b.total_terms - a.total_terms);
-                    let termsUsed = [];
-                    let termsNotUsed = [];
-                    let taxonomiesLabels = [];
-
-                    orderedTaxonomies.forEach(taxonomy => {
-                        termsUsed.push(taxonomy.total_terms_used);
-                        termsNotUsed.push(taxonomy.total_terms_not_used);
-                        taxonomiesLabels.push(taxonomy.name);
-                    });
-            
-                    // Sets taxonomy terms now that we have the 
-                    if (orderedTaxonomies.length)
-                        this.selectedTaxonomy = orderedTaxonomies[0]; 
-
-                    this.taxonomiesListChartSeries = [
-                        {
-                            name: this.$i18n.get('label_terms_used'),
-                            data: termsUsed
-                        },
-                        {
-                            name: this.$i18n.get('label_terms_not_used'),
-                            data: termsNotUsed
-                        }
-                    ];
-                    
-                    this.taxonomiesListChartOptions = {
-                        ...this.stackedBarChartOptions, 
-                        ...{
-                            title: {
-                                text: this.$i18n.get('label_usage_of_terms_per_taxonomy')
-                            },
-                            xaxis: {
-                                type: 'category',
-                                tickPlacement: 'on',
-                                categories: taxonomiesLabels,
-                                labels: {
-                                    show: true,
-                                    trim: true,
-                                    hideOverlappingLabels: false
-                                },
-                                tooltip: true
-                            },
-                            yaxis: {
-                                title: {
-                                    text: this.$i18n.get('label_number_of_terms')
-                                }
-                            }
-                        }
-                    }
-                    
-                    this.isFetchingTaxonomiesList = false;
-                })
-                .catch(() => this.isFetchingTaxonomiesList = false);
-        },
-        buildTaxonomyTermsChart() {
-        
-            this.isBuildingTaxonomyTermsChart = true;
-
-            // Building Taxonomy term usage chart
-            let orderedTerms = Object.values(this.taxonomyTerms).sort((a, b) => b.count - a.count);
-            orderedTerms = orderedTerms.slice((this.termsDisplayedPage - 1) * this.maxTermsToDisplay, ((this.termsDisplayedPage - 1) * this.maxTermsToDisplay) + this.maxTermsToDisplay);
-            
-            let termsValues = [];
-            let termsLabels = [];
-
-            orderedTerms.forEach(term => {
-                termsValues.push(term.count);
-                termsLabels.push(term.name);
-            });
-            
-            this.taxonomyTermsChartSeries = [
-                {
-                    name: this.$i18n.get('label_terms_used'),
-                    data: termsValues
-                }
-            ];
-            
-            this.taxonomyTermsChartOptions = {
-                ...this.stackedBarChartOptions, 
-                ...{
-                    title: {},
-                    xaxis: {
-                        type: 'category',
-                        tickPlacement: 'on',
-                        categories: termsLabels,
-                        labels: {
-                            show: true,
-                            trim: true,
-                            hideOverlappingLabels: false
-                        },
-                        tooltip: true
-                    },
-                    yaxis: {
-                        title: {
-                            text: this.$i18n.get('label_number_of_items')
-                        }
-                    },
-                    animations: {
-                        enabled: orderedTerms.length <= 40
-                    }
-                }
-            }
-
-            setTimeout(() => { this.isBuildingTaxonomyTermsChart = false; }, 500);
-        },
-        loadTaxonomyTerms() {
-            this.isFetchingTaxonomyTerms = true;
-
-            this.fetchTaxonomyTerms(this.selectedTaxonomy.id)
-                .then(() => {
-                    this.buildTaxonomyTermsChart();
-                    this.isFetchingTaxonomyTerms = false;
-                })
-                .catch(() => this.isFetchingTaxonomyTerms = false);
-
-        },
         loadMetadataList() {
             this.isFetchingMetadataList = true;
             this.fetchMetadataList({ collectionId: this.collectionId, metadatumId: this.selectedMetadatum })
                 .then(() => {
                     
-                    // Building Taxonomy term usage chart
+                    // Building Metadata term usage chart
                     const orderedMetadata = Object.values(this.metadataList).sort((a, b) => b.total_items - a.total_items);
                     let metadataItemValues = [];
                     let metadataItemLabels = [];
@@ -857,47 +592,3 @@ export default {
     }
 }
 </script>
-
-<style lang="scss" scoped> 
-.postbox {
-    padding: 1.125rem 1.25rem;
-    margin-bottom: 0;
-    height: 100%;
-    min-height: 380px;
-    background-color: var(--tainacan-gray0, #f6f6f6);
-
-    label {
-        font-weight: bold;
-        font-size: 0.875rem;
-    }
-    &.metadata-distribution-box {
-        margin: 0px 0px 0.75rem 1.5rem !important;  
-        overflow-y: auto;
-    }
-
-    .box-header {
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        flex-wrap: wrap;
-
-        .box-header__item {
-            margin-bottom: 10px;
-        }
-    }
-}
-.graph-mode-switch {
-    display: inline-block;
-    button {
-        border: none !important;
-        background: none !important;
-        box-shadow: none !important;
-        padding: 0;
-        cursor: pointer;
-
-        &.current {
-            color: var(--wp-admin-theme-color, #007cba);
-        }
-    }
-}
-</style>

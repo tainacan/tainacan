@@ -74,7 +74,7 @@ export default {
 
 <style lang="scss" scoped>
 .number-block {
-    min-height: 210px;
+    min-height: 210px !important;
     display: flex;
     flex-direction: column;
     justify-content: center;

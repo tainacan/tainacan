@@ -5,6 +5,7 @@ import * as mutations from './mutations';
 const state = {
     summary: {},
     taxonomiesList: {},
+    isFetchingTaxonomiesList: false,
     colletionsList: {},
     taxonomyTerms: {},
     metadata: {},

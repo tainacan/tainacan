@@ -16,6 +16,8 @@ Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'develo
 
 import ReportsPage from '../reports.vue';
 import NumberBlock from '../components/number-block.vue';
+import ItemsPerTermBlock from '../components/items-per-term-block.vue';
+import TermsPerTaxonomyBlock from '../components/terms-per-taxonomy-block.vue';
 
 Vue.use(VueApexCharts)
 
@@ -37,6 +39,8 @@ Vue.use(Snackbar);
 Vue.use(Modal);
 
 Vue.component('number-block', NumberBlock);
+Vue.component('items-per-term-block', ItemsPerTermBlock);
+Vue.component('terms-per-taxonomy-block', TermsPerTaxonomyBlock);
 Vue.component('apexchart', VueApexCharts);
 
 // Changing title of pages
