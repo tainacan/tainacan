@@ -113,6 +113,17 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_activities'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
+					'args'                => [
+						'start' => [
+							'title'       => __( 'start Date', 'tainacan' ),
+							'type'        => 'string',
+							'format'      => 'date-time',
+						], 
+						'end' => [
+							'title'       => __( 'start Date', 'tainacan' ),
+							'type'        => 'string',
+							'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
+						]]
 				),
 			)
 		);
@@ -482,43 +493,67 @@ class REST_Reports_Controller extends REST_Controller {
 		if(isset($request['collection_id'])) { 
 			$collection_id = $request['collection_id'];
 		}
+
+		if(isset($request['start']) && isset($request['end'])) {
+			$start = new \DateTime($request['start']);
+			$end = new \DateTime($request['end']);
+			$end_limit = $start->add(new \DateInterval('P1Y'));
+			if($end > $end_limit)
+				$end = $end_limit;
+			$interval = [
+				'start' => (new \DateTime($request['start']))->format('Y-m-d H:i:s'),
+				'end' => $end->format('Y-m-d H:i:s')
+			];
+		} else {
+			$interval = [
+				'end' => (new \DateTime())->format('Y-m-d H:i:s'),
+				'start' => (new \DateTime($request['end']))->sub(new \DateInterval('P1Y')) ->format('Y-m-d H:i:s')
+			];
+		}
+		
 		
 		$response['totals'] = array(
-			'last_year' => array(
-				'general' => $this->get_activities_general($collection_id),
-				'by_user' => $this->get_activities_general_by_user($collection_id)
+			'by_interval' => array(
+				'start' => $interval['start'],
+				'end' => $interval['end'],
+				'general' => $this->get_activities_general($collection_id, $interval),
+				'by_user' => $this->get_activities_general_by_user($collection_id, $interval)
 			),
 			'by_user' => $this->get_activities_users($collection_id)
 		);
 		return new \WP_REST_Response($response, 200);
 	}
 
-	private function get_activities_general($collection_id = false) {
+	private function get_activities_general($collection_id = false, $interval) {
 		global $wpdb;
 		$collection_from = "";
+		$start = $interval['start'];
+		$end = $interval['end'];
 		if($collection_id !== false) {
 			$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key='collection_id' AND pm.meta_value='$collection_id')";
 		}
 		$sql_statement = $wpdb->prepare(
 			"SELECT count(p.id) as total, DATE(p.post_date) as date, DAYOFWEEK(p.post_date) as day_of_week
 			FROM $wpdb->posts p $collection_from
-			WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN NOW() - INTERVAL 1 YEAR AND NOW()
+			WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN '$start' AND '$end'
 			GROUP BY DATE(p.post_date), DAYOFWEEK(p.post_date)
 			ORDER BY DATE(p.post_date)"
 		);
 		return $wpdb->get_results($sql_statement);
 	}
 
-	private function get_activities_general_by_user($collection_id = false) {
+	private function get_activities_general_by_user($collection_id = false, $interval) {
 		global $wpdb;
 		$collection_from = "";
+		$start = $interval['start'];
+		$end = $interval['end'];
 		if($collection_id !== false) {
 			$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key='collection_id' AND pm.meta_value='$collection_id')";
 		}
 		$sql_statement = $wpdb->prepare(
 			"SELECT p.post_author  as user, count(p.id) as total, DATE(p.post_date) as date, DAYOFWEEK(p.post_date) as day_of_week
 			FROM $wpdb->posts p $collection_from
-			WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN NOW() - INTERVAL 1 YEAR AND NOW()
+			WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN '$start' AND '$end'
 			GROUP BY p.post_author, DATE(p.post_date), DAYOFWEEK(p.post_date)
 			ORDER BY DATE(p.post_date)"
 		);
