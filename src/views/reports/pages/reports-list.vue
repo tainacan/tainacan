@@ -88,22 +88,97 @@
                     v-if="taxonomiesList != undefined && (!selectedCollection || selectedCollection == 'default')"
                         class="column is-full">
                     <div class="postbox">
-                        <label>{{ $i18n.get('label_items_per_term_from_taxonomy') }}&nbsp;</label>
-                        <select 
-                                v-if="!isFetchingTaxonomiesList"
-                                name="select_taxonomies"
-                                id="select_taxonomies"
-                                :placeholder="$i18n.get('label_select_a_taxonomy')"
-                                v-model="selectedTaxonomy">
-                            <option 
-                                    v-for="(taxonomy, index) of taxonomiesListArray"
-                                    :key="index"
-                                    :value="taxonomy.id">
-                                {{ taxonomy.name + ' (' + taxonomy.total_terms + ' ' + ( taxonomy.total_terms == 1 ? $i18n.get('term') : $i18n.get('terms') ) + ')' }} 
-                            </option>
-                        </select>
+                        <div class="box-header">
+                            <div class="box-header__item">
+                                <label for="select_taxonomies">{{ $i18n.get('label_items_per_term_from_taxonomy') }}&nbsp;</label>
+                                <select
+                                        v-if="!isFetchingTaxonomiesList"
+                                        name="select_taxonomies"
+                                        id="select_taxonomies"
+                                        :placeholder="$i18n.get('label_select_a_taxonomy')"
+                                        v-model="selectedTaxonomy">
+                                    <option 
+                                            v-for="(taxonomy, index) of taxonomiesListArray"
+                                            :key="index"
+                                            :value="taxonomy">
+                                        {{ taxonomy.name + ' (' + taxonomy.total_terms + ' ' + ( taxonomy.total_terms == 1 ? $i18n.get('term') : $i18n.get('terms') ) + ')' }} 
+                                    </option>
+                                </select>
+                            </div>
+                            <div 
+                                    v-if="selectedTaxonomy && selectedTaxonomy.id"
+                                    class="box-header__item">
+                                <label for="max_terms">Termos por página:</label>
+                                <input
+                                        type="number"
+                                        step="1"
+                                        min="1"
+                                        max="999"
+                                        class="screen-per-page"
+                                        name="max_terms"
+                                        id="max_terms"
+                                        maxlength="3"
+                                        :disabled="isBuildingTaxonomyTermsChart"
+                                        v-model.number="maxTermsToDisplay">
+                            </div>
+                            <div 
+                                    v-if="selectedTaxonomy && selectedTaxonomy.id"
+                                    class="box-header__item tablenav-pages">
+                                <span class="displaying-num">{{ selectedTaxonomy.total_terms + ' ' + $i18n.get('terms') }}</span>
+                                <span class="pagination-links">
+                                    <span
+                                            @click="!isBuildingTaxonomyTermsChart ? termsDisplayedPage = 1 : null"
+                                            :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingTaxonomyTermsChart}"
+                                            class="first-page button"
+                                            aria-hidden="true">
+                                        «
+                                    </span>
+                                    <span
+                                            @click="(termsDisplayedPage > 1 && !isBuildingTaxonomyTermsChart) ? termsDisplayedPage-- : null"
+                                            :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingTaxonomyTermsChart}"
+                                            class="prev-page button"
+                                            aria-hidden="true">
+                                        ‹
+                                    </span>
+                                    <span class="paging-input">
+                                        <label
+                                                for="current-page-selector"
+                                                class="screen-reader-text">
+                                            {{ $i18n.get('label_current_page') }}
+                                        </label>
+                                        <input
+                                                class="current-page"
+                                                id="current-page-selector"
+                                                type="number"
+                                                step="1"
+                                                min="1"
+                                                :disabled="isBuildingTaxonomyTermsChart"
+                                                :max="Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay)"
+                                                name="paged"
+                                                v-model.number="termsDisplayedPage"
+                                                size="1"
+                                                aria-describedby="table-paging">
+                                        <span class="tablenav-paging-text"> de <span class="total-pages">{{ Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay) }}</span></span>
+                                    </span>
+                                    <span 
+                                            @click="(!isBuildingTaxonomyTermsChart && termsDisplayedPage < Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay)) ? termsDisplayedPage++ : null"
+                                            :class="{'tablenav-pages-navspan disabled' : isBuildingTaxonomyTermsChart || termsDisplayedPage >= Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay) }"
+                                            aria-hidden="true"
+                                            class="next-page button">
+                                        ›
+                                    </span>
+                                    <span
+                                            @click="!isBuildingTaxonomyTermsChart ? termsDisplayedPage = Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay) : null"
+                                            :class="{'tablenav-pages-navspan disabled': isBuildingTaxonomyTermsChart || termsDisplayedPage >= Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay) }"
+                                            class="last-page button"
+                                            aria-hidden="true">
+                                        »
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
                         <apexchart
-                                v-if="!isFetchingTaxonomiesList && !isFetchingTaxonomyTerms && selectedTaxonomy"
+                                v-if="!isFetchingTaxonomiesList && !isFetchingTaxonomyTerms && selectedTaxonomy && selectedTaxonomy.id"
                                 height="380px"
                                 :series="taxonomyTermsChartSeries"
                                 :options="taxonomyTermsChartOptions" />
@@ -124,7 +199,7 @@
                                         @click="metadataTypeChartMode = 'bar'"
                                         :class="{ 'current': metadataTypeChartMode == 'bar' }">
                                     <span class="screen-reader-text">
-                                        Visualização em Barras
+                                        {{ $i18n.get('label_bar_chart') }}
                                     </span>
                                     <span class="icon">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text tainacan-icon-rotate-270" />
@@ -134,7 +209,7 @@
                                         @click="metadataTypeChartMode = 'circle'"
                                         :class="{ 'current': metadataTypeChartMode == 'circle' }">
                                     <span class="screen-reader-text">
-                                        Visualização em Círculo
+                                        {{ $i18n.get('label_pie_chart') }}
                                     </span>
                                     <span class="icon">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting tainacan-icon-rotate-270" />
@@ -173,6 +248,39 @@
                         class="skeleton postbox metadata-distribution-box" />
             </div>
         </div>
+        <div class="columns">
+            <div 
+                    v-if="metadataList != undefined && (selectedCollection && selectedCollection != 'default')"
+                    class="column is-full">
+                <div
+                        style="margin-top: 0px"
+                        class="postbox">
+                    <label>{{ $i18n.get('label_amount_of_items_per_metadatum_value') }}&nbsp;</label>
+                    <select 
+                            v-if="!isFetchingMetadataList"
+                            name="select_metadata"
+                            id="select_metadata"
+                            :placeholder="$i18n.get('label_select_a_metadatum')"
+                            v-model="selectedMetadatum">
+                        <option 
+                                v-for="(metadatum, index) of metadataListArray"
+                                :key="index"
+                                :value="metadatum.id">
+                            {{ metadatum.name }} 
+                        </option>
+                    </select>
+                    <apexchart
+                            v-if="!isFetchingMetadataList && selectedMetadatum"
+                            height="380px"
+                            :series="metadataListChartSeries"
+                            :options="metadataListChartOptions" />
+                    <div 
+                        v-else
+                        style="min-height=380px"
+                        class="skeleton postbox" />
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -184,7 +292,7 @@ export default {
     data() {
         return {
             selectedCollection: 'default',
-            selectedTaxonomy: '',
+            selectedTaxonomy: {},
             selectedMetadatum: '',
             isFetchingCollections: false,
             isFetchingSummary: false,
@@ -193,6 +301,7 @@ export default {
             isFetchingTaxonomyTerms: false,
             isFetchingMetadata: false,
             isBuildingMetadataTypeChart: false,
+            isBuildingTaxonomyTermsChart: false,
             isFetchingMetadataList: false,
             isFetchingActivities: false,
             collectionsListChartSeries: [],
@@ -210,7 +319,9 @@ export default {
             metadataDistributionChartOptions: {},
             metadataDistributionChartHeight: 730,
             activitiesChartSeries: [],
-            activitiesChartOptions: {}
+            activitiesChartOptions: {},
+            maxTermsToDisplay: 64,
+            termsDisplayedPage: 1
         }
     },
     computed: {
@@ -228,7 +339,7 @@ export default {
             stackedBarChartOptions: 'getStackedBarChartOptions',
             donutChartOptions: 'getDonutChartOptions',
             horizontalBarChartOptions: 'getHorizontalBarChartOptions',
-            heatMapChartOptions: 'getHeatMapChartOptions'
+            //heatMapChartOptions: 'getHeatMapChartOptions'
         }),
         taxonomiesListArray() {
             return this.taxonomiesList && this.taxonomiesList != undefined ? Object.values(this.taxonomiesList) : [];
@@ -254,7 +365,8 @@ export default {
             immediate: true
         },
         selectedTaxonomy() {
-            if (this.selectedTaxonomy && this.selectedTaxonomy != '')
+            this.termsDisplayedPage = 1;
+            if (this.selectedTaxonomy && this.selectedTaxonomy.id)
                 this.loadTaxonomyTerms();
         },
         selectedMetadatum() {
@@ -263,6 +375,13 @@ export default {
         },
         metadataTypeChartMode() {
             this.buildMetadataTypeChart();
+        },
+        termsDisplayedPage() {
+            this.buildTaxonomyTermsChart();
+        },
+        maxTermsToDisplay() {
+            this.termsDisplayedPage = 1;
+            this.buildTaxonomyTermsChart();
         }
     },
     created() {
@@ -304,7 +423,7 @@ export default {
             // Building Metadata Type Donut Chart
             let metadataTypeValues = [];
             let metadataTypeLabels = [];
-
+            
             const orderedMetadataPerType = Object.values(this.metadata.totals.metadata_per_type).sort((a, b) => b.count - a.count);
             orderedMetadataPerType.forEach((metadataPerType) => {
                 metadataTypeValues.push(metadataPerType.count ? metadataPerType.count : 0);
@@ -314,15 +433,15 @@ export default {
             this.metadataTypeChartSeries = this.metadataTypeChartMode == 'circle' ? metadataTypeValues : [{ data: metadataTypeValues }];
 
             if (this.metadataTypeChartMode == 'circle') {
-                this.metadataTypeChartOptions = {
+                this.metadataTypeChartOptions = JSON.parse(JSON.stringify({
                     ...this.donutChartOptions,
                     ...{
                         title: {},
                         labels: metadataTypeLabels,
                     }
-                }
+                }));
             } else {
-                this.metadataTypeChartOptions = {
+                this.metadataTypeChartOptions = JSON.parse(JSON.stringify({
                     ...this.stackedBarChartOptions,
                     ...{
                         title: {},
@@ -338,7 +457,7 @@ export default {
                             tooltip: true
                         }
                     }
-                }
+                }));
             }
 
             setTimeout(() => { this.isBuildingMetadataTypeChart = false; }, 500);
@@ -499,7 +618,7 @@ export default {
             
                     // Sets taxonomy terms now that we have the 
                     if (orderedTaxonomies.length)
-                        this.selectedTaxonomy = orderedTaxonomies[0].id; 
+                        this.selectedTaxonomy = orderedTaxonomies[0]; 
 
                     this.taxonomiesListChartSeries = [
                         {
@@ -541,55 +660,63 @@ export default {
                 })
                 .catch(() => this.isFetchingTaxonomiesList = false);
         },
+        buildTaxonomyTermsChart() {
+        
+            this.isBuildingTaxonomyTermsChart = true;
+
+            // Building Taxonomy term usage chart
+            let orderedTerms = Object.values(this.taxonomyTerms).sort((a, b) => b.count - a.count);
+            orderedTerms = orderedTerms.slice((this.termsDisplayedPage - 1) * this.maxTermsToDisplay, ((this.termsDisplayedPage - 1) * this.maxTermsToDisplay) + this.maxTermsToDisplay);
+            
+            let termsValues = [];
+            let termsLabels = [];
+
+            orderedTerms.forEach(term => {
+                termsValues.push(term.count);
+                termsLabels.push(term.name);
+            });
+            
+            this.taxonomyTermsChartSeries = [
+                {
+                    name: this.$i18n.get('label_terms_used'),
+                    data: termsValues
+                }
+            ];
+            
+            this.taxonomyTermsChartOptions = {
+                ...this.stackedBarChartOptions, 
+                ...{
+                    title: {},
+                    xaxis: {
+                        type: 'category',
+                        tickPlacement: 'on',
+                        categories: termsLabels,
+                        labels: {
+                            show: true,
+                            trim: true,
+                            hideOverlappingLabels: false
+                        },
+                        tooltip: true
+                    },
+                    yaxis: {
+                        title: {
+                            text: this.$i18n.get('label_number_of_items')
+                        }
+                    },
+                    animations: {
+                        enabled: orderedTerms.length <= 40
+                    }
+                }
+            }
+
+            setTimeout(() => { this.isBuildingTaxonomyTermsChart = false; }, 500);
+        },
         loadTaxonomyTerms() {
             this.isFetchingTaxonomyTerms = true;
 
-            this.fetchTaxonomyTerms(this.selectedTaxonomy)
+            this.fetchTaxonomyTerms(this.selectedTaxonomy.id)
                 .then(() => {
-
-                    // Building Taxonomy term usage chart
-                    const orderedTerms = Object.values(this.taxonomyTerms).sort((a, b) => b.count - a.count);
-                    let termsValues = [];
-                    let termsLabels = [];
-
-                    orderedTerms.forEach(term => {
-                        termsValues.push(term.count);
-                        termsLabels.push(term.name);
-                    });
-                    
-                    this.taxonomyTermsChartSeries = [
-                        {
-                            name: this.$i18n.get('label_terms_used'),
-                            data: termsValues
-                        }
-                    ];
-                    
-                    this.taxonomyTermsChartOptions = {
-                        ...this.stackedBarChartOptions, 
-                        ...{
-                            title: {},
-                            xaxis: {
-                                type: 'category',
-                                tickPlacement: 'on',
-                                categories: termsLabels,
-                                labels: {
-                                    show: true,
-                                    trim: true,
-                                    hideOverlappingLabels: false
-                                },
-                                tooltip: true
-                            },
-                            yaxis: {
-                                title: {
-                                    text: this.$i18n.get('label_number_of_items')
-                                }
-                            },
-                            animations: {
-                                enabled: orderedTerms.length <= 40
-                            }
-                        }
-                    }
-                    
+                    this.buildTaxonomyTermsChart();
                     this.isFetchingTaxonomyTerms = false;
                 })
                 .catch(() => this.isFetchingTaxonomyTerms = false);
@@ -620,9 +747,7 @@ export default {
                     this.metadataListChartOptions = {
                         ...this.stackedBarChartOptions, 
                         ...{
-                            title: {
-                                text: this.$i18n.get('label_amount_of_items_per_metadatum_value')
-                            },
+                            title: {},
                             xaxis: {
                                 type: 'category',
                                 tickPlacement: 'on',
@@ -746,9 +871,19 @@ export default {
         font-size: 0.875rem;
     }
     &.metadata-distribution-box {
-        margin-top: 0px !important;
-        margin-left: 1.25rem !important;
+        margin: 0px 0px 0.75rem 1.5rem !important;  
         overflow-y: auto;
+    }
+
+    .box-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        flex-wrap: wrap;
+
+        .box-header__item {
+            margin-bottom: 10px;
+        }
     }
 }
 .graph-mode-switch {

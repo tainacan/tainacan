@@ -560,6 +560,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_detailed_list'							 => __( 'Detailed list', 'tainacan'),
 	'label_view_metadata_details'					 => __( 'View metadata details', 'tainacan'),
 	'label_filter_by_metadata_type'					 => __( 'Filter by metadatum type', 'tainacan'),
+	'label_pie_chart'								 => __( 'Pie chart', 'tainacan'),
+	'label_bar_chart'								 => __( 'Bar chart', 'tainacan'),
+	'label_terms_per_page'							 => __( 'Terms per page', 'tainacan'),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
