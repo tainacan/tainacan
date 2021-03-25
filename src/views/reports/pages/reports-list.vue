@@ -116,7 +116,7 @@
                 <template v-if="selectedCollection && selectedCollection != 'default'">
                     <div class="column is-full">
                         <div 
-                                v-if="!isFetchingMetadata"
+                                v-if="!isFetchingMetadata && !isBuildingMetadataTypeChart"
                                 class="postbox">
                             <label>{{ $i18n.get('metadata_types') }}&nbsp;</label>
                             <div class="graph-mode-switch">
@@ -158,13 +158,10 @@
                     class="column is-full is-two-fifths-desktop">
                 <div 
                         v-if="!isFetchingMetadata && metadata.totals && metadata.totals.metadata"
-                        :style="{ 
-                            marginTop: '0px',
-                            marginLeft: '1.25rem',
-                            overflowY: 'auto',
-                            maxHeight: ((140 + (metadata.totals.metadata.total * 36)) <= 660 ? (140 + (metadata.totals.metadata.total * 36)) : 660) + 'px'
+                        :style="{
+                            maxHeight: ((170 + (metadata.totals.metadata.total * 36)) <= 690 ? (170 + (metadata.totals.metadata.total * 36)) : 690) + 'px'
                         }"
-                        class="postbox">
+                        class="postbox metadata-distribution-box">
                     <apexchart
                             :height="100 + (metadata.totals.metadata.total * 36)"
                             :series="metadataDistributionChartSeries"
@@ -173,7 +170,7 @@
                 <div 
                         v-else
                         style="min-height=740px"
-                        class="skeleton postbox" />
+                        class="skeleton postbox metadata-distribution-box" />
             </div>
         </div>
     </div>
@@ -195,6 +192,7 @@ export default {
             isFetchingTaxonomiesList: false,
             isFetchingTaxonomyTerms: false,
             isFetchingMetadata: false,
+            isBuildingMetadataTypeChart: false,
             isFetchingMetadataList: false,
             isFetchingActivities: false,
             collectionsListChartSeries: [],
@@ -264,7 +262,7 @@ export default {
                 this.loadMetadataList();
         },
         metadataTypeChartMode() {
-            this.loadMetadata();
+            this.buildMetadataTypeChart();
         }
     },
     created() {
@@ -299,51 +297,60 @@ export default {
                 .then(() => this.isFetchingSummary = false)
                 .catch(() => this.isFetchingSummary = false);
         },
+        buildMetadataTypeChart() {
+
+            this.isBuildingMetadataTypeChart = true;
+
+            // Building Metadata Type Donut Chart
+            let metadataTypeValues = [];
+            let metadataTypeLabels = [];
+
+            const orderedMetadataPerType = Object.values(this.metadata.totals.metadata_per_type).sort((a, b) => b.count - a.count);
+            orderedMetadataPerType.forEach((metadataPerType) => {
+                metadataTypeValues.push(metadataPerType.count ? metadataPerType.count : 0);
+                metadataTypeLabels.push(metadataPerType.name ? metadataPerType.name : '');
+            });
+            
+            this.metadataTypeChartSeries = this.metadataTypeChartMode == 'circle' ? metadataTypeValues : [{ data: metadataTypeValues }];
+
+            if (this.metadataTypeChartMode == 'circle') {
+                this.metadataTypeChartOptions = {
+                    ...this.donutChartOptions,
+                    ...{
+                        title: {},
+                        labels: metadataTypeLabels,
+                    }
+                }
+            } else {
+                this.metadataTypeChartOptions = {
+                    ...this.stackedBarChartOptions,
+                    ...{
+                        title: {},
+                        xaxis: {
+                            type: 'category',
+                            tickPlacement: 'on',
+                            categories: metadataTypeLabels,
+                            labels: {
+                                show: true,
+                                trim: true,
+                                hideOverlappingLabels: false
+                            },
+                            tooltip: true
+                        }
+                    }
+                }
+            }
+
+            setTimeout(() => { this.isBuildingMetadataTypeChart = false; }, 500);
+            
+        },
         loadMetadata() {
             this.isFetchingMetadata = true;
             this.fetchMetadata({ collectionId: this.selectedCollection })
                 .then(() => {
 
-                    if (this.metadata.totals) {
-                        // Building Metadata Type Donut Chart
-                        let metadataTypeValues = [];
-                        let metadataTypeLabels = [];
-
-                        for (const metadataType in this.metadata.totals.metadata_per_type) {
-                            metadataTypeValues.push(this.metadata.totals.metadata_per_type[metadataType].count ? this.metadata.totals.metadata_per_type[metadataType].count : 0);
-                            metadataTypeLabels.push(this.metadata.totals.metadata_per_type[metadataType].name ? this.metadata.totals.metadata_per_type[metadataType].name : '');
-                        }
-                        
-                        this.metadataTypeChartSeries = this.metadataTypeChartMode == 'circle' ? metadataTypeValues : [{ data: metadataTypeValues }];
-
-                        if (this.metadataTypeChartMode == 'circle') {
-                            this.metadataTypeChartOptions = {
-                                ...this.donutChartOptions,
-                                ...{
-                                    title: {},
-                                    labels: metadataTypeLabels,
-                                }
-                            }
-                        } else {
-                            this.metadataTypeChartOptions = {
-                                ...this.stackedBarChartOptions,
-                                ...{
-                                    title: {},
-                                    xaxis: {
-                                        type: 'category',
-                                        tickPlacement: 'on',
-                                        categories: metadataTypeLabels,
-                                        labels: {
-                                            show: true,
-                                            trim: true,
-                                            hideOverlappingLabels: false
-                                        },
-                                        tooltip: true
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    if (this.metadata.totals)
+                        this.buildMetadataTypeChart();
 
                     if (this.metadata.distribution) {
 
@@ -737,6 +744,11 @@ export default {
     label {
         font-weight: bold;
         font-size: 0.875rem;
+    }
+    &.metadata-distribution-box {
+        margin-top: 0px !important;
+        margin-left: 1.25rem !important;
+        overflow-y: auto;
     }
 }
 .graph-mode-switch {

@@ -66,6 +66,7 @@ const state = {
           toolbar: {
             show: true
           },
+          height: 350,
       },
       title: {
           text: ''
