@@ -76,46 +76,9 @@
                 
                 <items-per-term-block 
                         v-if="!selectedCollection || selectedCollection == 'default'" />
-                
-                <template v-if="selectedCollection && selectedCollection != 'default'">
-                    <div class="column is-full">
-                        <div 
-                                v-if="!isFetchingMetadata && !isBuildingMetadataTypeChart"
-                                class="postbox">
-                            <label>{{ $i18n.get('metadata_types') }}&nbsp;</label>
-                            <div class="graph-mode-switch">
-                                <button 
-                                        @click="metadataTypeChartMode = 'bar'"
-                                        :class="{ 'current': metadataTypeChartMode == 'bar' }">
-                                    <span class="screen-reader-text">
-                                        {{ $i18n.get('label_bar_chart') }}
-                                    </span>
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text tainacan-icon-rotate-270" />
-                                    </span>
-                                </button>
-                                <button 
-                                        @click="metadataTypeChartMode = 'circle'"
-                                        :class="{ 'current': metadataTypeChartMode == 'circle' }">
-                                    <span class="screen-reader-text">
-                                        {{ $i18n.get('label_pie_chart') }}
-                                    </span>
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting tainacan-icon-rotate-270" />
-                                    </span>
-                                </button>
-                            </div>
-                            <apexchart
-                                    height="380px"
-                                    :series="metadataTypeChartSeries"
-                                    :options="metadataTypeChartOptions" />
-                        </div>
-                        <div 
-                            v-else
-                            style="min-height=380px"
-                            class="skeleton postbox" />
-                    </div>
-                </template>
+
+                <metadata-types-block
+                        v-if="selectedCollection && selectedCollection != 'default'" />
             </div>
             <div 
                     v-if="selectedCollection && selectedCollection != 'default'"
@@ -186,16 +149,12 @@ export default {
             isFetchingSummary: false,
             isFetchingCollectionsList: false,
             isFetchingMetadata: false,
-            isBuildingMetadataTypeChart: false,
             isFetchingMetadataList: false,
             isFetchingActivities: false,
             collectionsListChartSeries: [],
             collectionsListChartOptions: {},
             metadataListChartSeries: [],
             metadataListChartOptions: {},
-            metadataTypeChartMode: 'bar',
-            metadataTypeChartSeries: [],
-            metadataTypeChartOptions: {},
             metadataDistributionChartSeries: [],
             metadataDistributionChartOptions: {},
             metadataDistributionChartHeight: 730,
@@ -214,7 +173,6 @@ export default {
             collectionsList: 'getCollectionsList',
             activities: 'getActivities',
             stackedBarChartOptions: 'getStackedBarChartOptions',
-            donutChartOptions: 'getDonutChartOptions',
             horizontalBarChartOptions: 'getHorizontalBarChartOptions',
             //heatMapChartOptions: 'getHeatMapChartOptions'
         }),
@@ -239,9 +197,6 @@ export default {
         selectedMetadatum() {
             if (this.selectedMetadatum && this.selectedMetadatum != '')
                 this.loadMetadataList();
-        },
-        metadataTypeChartMode() {
-            this.buildMetadataTypeChart();
         }
     },
     created() {
@@ -274,60 +229,10 @@ export default {
                 .then(() => this.isFetchingSummary = false)
                 .catch(() => this.isFetchingSummary = false);
         },
-        buildMetadataTypeChart() {
-
-            this.isBuildingMetadataTypeChart = true;
-
-            // Building Metadata Type Donut Chart
-            let metadataTypeValues = [];
-            let metadataTypeLabels = [];
-            
-            const orderedMetadataPerType = Object.values(this.metadata.totals.metadata_per_type).sort((a, b) => b.count - a.count);
-            orderedMetadataPerType.forEach((metadataPerType) => {
-                metadataTypeValues.push(metadataPerType.count ? metadataPerType.count : 0);
-                metadataTypeLabels.push(metadataPerType.name ? metadataPerType.name : '');
-            });
-            
-            this.metadataTypeChartSeries = this.metadataTypeChartMode == 'circle' ? metadataTypeValues : [{ data: metadataTypeValues }];
-
-            if (this.metadataTypeChartMode == 'circle') {
-                this.metadataTypeChartOptions = JSON.parse(JSON.stringify({
-                    ...this.donutChartOptions,
-                    ...{
-                        title: {},
-                        labels: metadataTypeLabels,
-                    }
-                }));
-            } else {
-                this.metadataTypeChartOptions = JSON.parse(JSON.stringify({
-                    ...this.stackedBarChartOptions,
-                    ...{
-                        title: {},
-                        xaxis: {
-                            type: 'category',
-                            tickPlacement: 'on',
-                            categories: metadataTypeLabels,
-                            labels: {
-                                show: true,
-                                trim: true,
-                                hideOverlappingLabels: false
-                            },
-                            tooltip: true
-                        }
-                    }
-                }));
-            }
-
-            setTimeout(() => { this.isBuildingMetadataTypeChart = false; }, 500);
-            
-        },
         loadMetadata() {
             this.isFetchingMetadata = true;
             this.fetchMetadata({ collectionId: this.selectedCollection })
                 .then(() => {
-
-                    if (this.metadata.totals)
-                        this.buildMetadataTypeChart();
 
                     if (this.metadata.distribution) {
 
