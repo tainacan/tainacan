@@ -18,10 +18,6 @@ export const setTaxonomiesList = (state, taxonomiesList) => {
   state.taxonomiesList = taxonomiesList;
 };
 
-export const setIsFetchingTaxonomiesList = (state, isFetchingTaxomiesList) => {
-  return state.isFetchingTaxomiesList = isFetchingTaxomiesList;
-};
-
 export const setTaxonomyTerms = (state, taxonomyTerms) => {
   state.taxonomyTerms = taxonomyTerms;
 };

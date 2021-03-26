@@ -1,5 +1,5 @@
 <template>
-     <div 
+     <div
             v-if="taxonomiesList != undefined"
             class="column is-full">
         <div class="postbox">
@@ -126,11 +126,13 @@ export default {
     },
     computed: {
         ...mapGetters('report', {
-            isFetchingTaxonomiesList: 'getIsFetchingTaxonomiesList',
             taxonomyTerms: 'getTaxonomyTerms',
             taxonomiesList: 'getTaxonomiesList',
             stackedBarChartOptions: 'getStackedBarChartOptions',
         }),
+        isFetchingTaxonomiesList() {
+            return !(this.taxonomiesListArray && this.taxonomiesListArray.length);
+        },
         taxonomiesListArray() {
             return this.taxonomiesList && this.taxonomiesList != undefined ? Object.values(this.taxonomiesList) : [];
         },

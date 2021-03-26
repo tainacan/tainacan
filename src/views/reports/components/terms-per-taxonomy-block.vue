@@ -17,7 +17,7 @@
 
 
 <script>
-import { mapActions, mapMutations, mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     data() {
@@ -37,21 +37,15 @@ export default {
             return this.taxonomiesList && this.taxonomiesList != undefined ? Object.values(this.taxonomiesList) : [];
         },
     },
-    watch: {
-
-    },
-    mounted() {
+    created() {
         this.loadTaxonomiesList();
     },
     methods: {
          ...mapActions('report', [
             'fetchTaxonomiesList'
          ]),
-         ...mapMutations('report', [
-            'setIsFetchingTaxonomiesList'
-         ]),
          loadTaxonomiesList() {
-            this.setIsFetchingTaxonomiesList(true);
+            this.isFetchingTaxonomiesList = true;
             this.fetchTaxonomiesList()
                 .then(() => {
                     // Building Taxonomy term usage chart
@@ -101,9 +95,9 @@ export default {
                             }
                         }
                     }
-                    this.setIsFetchingTaxonomiesList(true);
+                    this.isFetchingTaxonomiesList = false;
                 })
-                .catch(() => this.setIsFetchingTaxonomiesList(false));
+                .catch(() => this.isFetchingTaxonomiesList = false);
         },
     }
 }
