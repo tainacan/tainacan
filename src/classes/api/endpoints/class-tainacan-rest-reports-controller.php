@@ -564,16 +564,33 @@ class REST_Reports_Controller extends REST_Controller {
 		global $wpdb;
 		$collection_from = "";
 		if($collection_id !== false) {
-			$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key='collection_id' AND pm.meta_value='$collection_id')";
+			$collection_from = "INNER JOIN $wpdb->postmeta pm_col ON p.id = pm_col.post_id AND (pm_col.meta_key='collection_id' AND pm_col.meta_value='$collection_id')";
 		}
 		$sql_statement = $wpdb->prepare(
-			"SELECT count(p.id) as total, p.post_author as user
-			FROM $wpdb->posts p $collection_from
+			"SELECT	count(p.id) as total, p.post_author as user, pm.meta_value as action
+			FROM $wpdb->posts p 
+			INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND pm.meta_key = 'action'
+			$collection_from
 			WHERE p.post_type='tainacan-log'
-			GROUP BY p.post_author
+			GROUP BY p.post_author, pm.meta_value 
 			ORDER BY total DESC"
 		);
-		return $wpdb->get_results($sql_statement);
+		$results = $wpdb->get_results($sql_statement);
+		$response = [];
+		foreach($results as $key => $result) {
+			$user = $result->user;
+			$total = $result->total;
+			$action = $result->action;
+			if(!isset($response[$user])) {
+				$response[$user] = [ 
+					'total' => 0,
+					'by_action' => []
+				];
+			}
+			$response[$user]['by_action'][$action] = $total;
+			$response[$user]['total'] += $total;
+		}
+		return $response;
 	}
 }
 
