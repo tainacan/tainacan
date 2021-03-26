@@ -251,9 +251,13 @@ class Relationship extends Metadata_Type {
 			
 			if (is_string($link)) {
 				
-				$return = "<a data-linkto='item' data-id='$id' href='$link'>";
-				$return.= $label;
-				$return .= "</a>";
+				if ( 'publish' === $item->WP_Post->post_status ) {
+					$return = "<a data-linkto='item' data-id='$id' href='$link'>";
+					$return.= $label;
+					$return .= "</a>";
+				} else {
+					$return.= $label;
+				}
 				
 			}
 			
