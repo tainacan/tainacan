@@ -582,7 +582,8 @@ class REST_Reports_Controller extends REST_Controller {
 			$total = $result->total;
 			$action = $result->action;
 			if(!isset($response[$user])) {
-				$response[$user] = [ 
+				$response[$user] = [
+					'user_id' => $user,
 					'total' => 0,
 					'by_action' => []
 				];
