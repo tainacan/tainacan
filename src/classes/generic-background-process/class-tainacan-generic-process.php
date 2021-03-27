@@ -146,7 +146,8 @@ abstract class Generic_Process {
 	}
 
 	public function add_log($message ) {
-		$date_key = '[' . date("Y-m-d H:i:s") . '] ';
+		$count = count($this->log);
+		$date_key = sprintf("[%' 9d | %s]", $count, date("Y-m-d H:i:s"));
 		$this->log[$date_key] = $message;
 	}
 
