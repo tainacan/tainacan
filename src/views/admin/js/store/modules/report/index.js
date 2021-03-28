@@ -45,12 +45,14 @@ const state = {
       xaxis: {
           type: 'category',
           tickPlacement: 'on',
-          categories: []
+          categories: [],
+          tooltip: { enabled: true }
       },
       yaxis: {
           title: {
               text: ''
-          }
+          },
+          tooltip: { enabled: true }
       },
       legend: {
           position: 'right',
@@ -114,9 +116,11 @@ const state = {
         type: 'category',
         tickPlacement: 'on',
         categories: [],
+        tooltip: { enabled: true }
       },
       yaxis: {
         tickPlacement: 'on',
+        tooltip: { enabled: true }
       },
       tooltip: {
         y: {

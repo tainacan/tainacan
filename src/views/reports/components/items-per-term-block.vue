@@ -197,7 +197,7 @@ export default {
                             trim: true,
                             hideOverlappingLabels: false
                         },
-                        tooltip: true
+                        tooltip: { enabled: true }
                     },
                     yaxis: {
                         title: {

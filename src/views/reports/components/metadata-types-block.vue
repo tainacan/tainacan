@@ -1,7 +1,7 @@
 <template>
     <div class="column is-full">
         <div 
-                v-if="metadata && metadata.totals && !isBuildingMetadataTypeChart"
+                v-if="metadata && metadata.totals && metadata.totals.metadata_per_type && !isBuildingMetadataTypeChart"
                 class="postbox">
             <label>{{ $i18n.get('metadata_types') }}&nbsp;</label>
             <div class="graph-mode-switch">
@@ -104,7 +104,7 @@ export default {
                                 trim: true,
                                 hideOverlappingLabels: false
                             },
-                            tooltip: true
+                            tooltip: { enabled: true }
                         }
                     }
                 }));

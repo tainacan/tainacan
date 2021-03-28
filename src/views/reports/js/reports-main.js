@@ -19,6 +19,8 @@ import NumberBlock from '../components/number-block.vue';
 import ItemsPerTermBlock from '../components/items-per-term-block.vue';
 import TermsPerTaxonomyBlock from '../components/terms-per-taxonomy-block.vue';
 import MetadataTypesBlock from '../components/metadata-types-block.vue';
+import MetadataDistributionBlock from '../components/metadata-distribution-block.vue';
+import MetadataListBlock from '../components/metadata-list-block.vue';
 
 Vue.use(VueApexCharts)
 
@@ -43,6 +45,8 @@ Vue.component('number-block', NumberBlock);
 Vue.component('items-per-term-block', ItemsPerTermBlock);
 Vue.component('terms-per-taxonomy-block', TermsPerTaxonomyBlock);
 Vue.component('metadata-types-block', MetadataTypesBlock);
+Vue.component('metadata-distribution-block', MetadataDistributionBlock);
+Vue.component('metadata-list-block', MetadataListBlock);
 Vue.component('apexchart', VueApexCharts);
 
 // Changing title of pages
