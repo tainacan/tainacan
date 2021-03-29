@@ -33,26 +33,56 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     data() {
         return {
             metadataListChartSeries: [],
             metadataListChartOptions: {},
-            isBuildingMetadataListArray: false
+            isBuildingMetadataListArray: false,
+            selectedMetadatum: '',
+            isFetchingMetadataList: false
         }
     },
     computed: {
         ...mapGetters('report', {
             metadata: 'getMetadata',
             metadataList: 'getMetadataList',
+            stackedBarChartOptions: 'getStackedBarChartOptions',
         }),
         metadataListArray() {
             return this.metadata && this.metadata != undefined && this.metadata.distribution ? Object.values(this.metadata.distribution) : [];
+        },
+    },
+    watch: {
+        metadataListArray: {
+            handler() {
+                this.selectedMetadatum = (this.metadataListArray.length && this.metadataListArray[0].id) ? this.metadataListArray[0].id : '';
+            },
+            immediate: true
+        },
+        selectedMetadatum: {
+            handler() {
+                if (this.selectedMetadatum)
+                    this.loadMetadataList();
+            },
+            immediate: true
         }
     },
     methods: {
+        ...mapActions('report', [
+            'fetchMetadataList'
+        ]),
+        loadMetadataList() {
+            this.isFetchingMetadataList = true;
+            this.fetchMetadataList({ collectionId: this.collectionId, metadatumId: this.selectedMetadatum })
+                .then(() => {
+                    this.buildMetadataListChart();
+                    this.isFetchingMetadataList = false;
+                })
+                .catch(() => this.isFetchingMetadataList = false);
+        },
         buildMetadataListChart() {
 
             this.isBuildingMetadataListArray = true;

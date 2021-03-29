@@ -5,23 +5,23 @@ import * as mutations from './mutations';
 const state = {
     summary: {},
     taxonomiesList: {},
-    colletionsList: {},
+    collectionsList: {},
     taxonomyTerms: {},
     metadata: {},
     metadataList: {},
     activities: {},
     stackedBarChartOptions: {
-        chart: {
-          type: 'bar',
-          height: 350,
-          stacked: true,
-          toolbar: {
-              show: true
-          },
-          zoom: {
-              enabled: true,
-              autoScaleYaxis: true,
-          }
+      chart: {
+        type: 'bar',
+        height: 350,
+        stacked: true,
+        toolbar: {
+            show: true
+        },
+        zoom: {
+            enabled: true,
+            autoScaleYaxis: true,
+        }
       },
       title: {
           text: ''

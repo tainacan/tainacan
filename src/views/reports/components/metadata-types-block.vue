@@ -47,7 +47,7 @@ export default {
             isBuildingMetadataTypeChart: false,
             metadataTypeChartMode: 'bar',
             metadataTypeChartSeries: [],
-            metadataTypeChartOptions: {},
+            metadataTypeChartOptions: {}
         }
     },
     computed: {
@@ -61,13 +61,16 @@ export default {
         metadataTypeChartMode() {
             this.buildMetadataTypeChart();
         },
-        metadata() {
-            this.buildMetadataTypeChart();
+        metadata: {
+            handler() {
+                this.buildMetadataTypeChart();
+            },
+            immediate: true
         }
     },
     methods: {
         buildMetadataTypeChart() {
-
+            
             this.isBuildingMetadataTypeChart = true;
 
             // Building Metadata Type Donut Chart

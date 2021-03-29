@@ -37,8 +37,11 @@ export default {
         })
     },
     watch: {
-        metadata() {
-            this.buildMetadataDistributionChart();
+        metadata: {
+            handler() {
+                this.buildMetadataDistributionChart();
+            },
+            immediate: true,
         }
     },
     methods: {
