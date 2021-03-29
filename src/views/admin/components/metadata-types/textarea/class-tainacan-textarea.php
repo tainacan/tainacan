@@ -59,6 +59,6 @@ class Textarea extends Metadata_Type {
 		} else {
 			$return = nl2br($this->make_clickable_links($value));
 		}
-		return $return;
+		return force_balance_tags($return);
 	}
 }

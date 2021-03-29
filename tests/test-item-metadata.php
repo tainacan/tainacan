@@ -303,12 +303,19 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 
 		$this->assertEquals($item_metadata_text->get_value_as_html(), $response_text);
 		$this->assertEquals($item_metadata_textarea->get_value_as_html(), $response_textarea);
+
+		// Poor HTML entry tests
+		$malformatted_HTML = "<p> I started my content <div> and make something else here </div> withou closing it properly";
+
+		$item_metadata_textarea->set_value($malformatted_HTML);
+		$this->assertEquals($item_metadata_textarea->get_value_as_html(), $malformatted_HTML ."</p>");
 	}
 
     /**
      * @group test_item_metadata_has_value
      */
 	function test_item_metadata_has_value() {
+		$test_value = 'has_value';
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
@@ -351,7 +358,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 
         $this->assertFalse($item_metadata_textarea->has_value());
 
-        $item_metadata_textarea->set_value('has_value');
+        $item_metadata_textarea->set_value($test_value);
         $item_metadata_textarea->validate();
         $item_metadata_textarea = $Tainacan_Item_Metadata->insert($item_metadata_textarea);
 
@@ -371,18 +378,14 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 
         $item_metadata_text = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum_text);
 
-        $item_metadata_text->set_value([
-            ''
-        ]);
+        $item_metadata_text->set_value([ $value_textarea ]);
 
         $item_metadata_text->validate();
         $item_metadata = $Tainacan_Item_Metadata->insert($item_metadata_text);
 
         $this->assertFalse($item_metadata->has_value());
 
-		$item_metadata_text->set_value([
-            'has_value'
-        ]);
+		$item_metadata_text->set_value([ $test_value ]);
 
         $item_metadata_text->validate();
         $item_metadata_text = $Tainacan_Item_Metadata->insert($item_metadata_text);
