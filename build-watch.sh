@@ -1,6 +1,5 @@
 #!/bin/bash
-## Run the build script whenever there is a change in src folder
-
+## Runs build script whenever there is a change in src folder
 
 echo 'Watching changes on src/'
 
