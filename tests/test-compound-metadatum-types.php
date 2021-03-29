@@ -347,7 +347,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		
 	}
 
-	function teste_validations_metadada_order() {
+	function test_validations_metadada_order() {
 
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		
