@@ -1,17 +1,15 @@
 <template>
-     <div
-            v-if="taxonomiesList != undefined"
-            class="column is-full">
+     <div v-if="taxonomiesList != undefined">
         <div class="postbox">
             <div class="box-header">
                 <div class="box-header__item">
                     <label 
-                            v-if="!isFetchingTaxonomiesList"
+                            v-if="!isFetchingData"
                             for="select_taxonomies">
                         {{ $i18n.get('label_items_per_term_from_taxonomy') }}&nbsp;
                     </label>
                     <select
-                            v-if="!isFetchingTaxonomiesList"
+                            v-if="!isFetchingData"
                             name="select_taxonomies"
                             id="select_taxonomies"
                             :placeholder="$i18n.get('label_select_a_taxonomy')"
@@ -37,7 +35,7 @@
                             name="max_terms"
                             id="max_terms"
                             maxlength="3"
-                            :disabled="isBuildingTaxonomyTermsChart"
+                            :disabled="isBuildingChart"
                             v-model.number="maxTermsToDisplay">
                 </div>
                 <div 
@@ -46,15 +44,15 @@
                     <span class="displaying-num">{{ selectedTaxonomy.total_terms + ' ' + $i18n.get('terms') }}</span>
                     <span class="pagination-links">
                         <span
-                                @click="!isBuildingTaxonomyTermsChart ? termsDisplayedPage = 1 : null"
-                                :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingTaxonomyTermsChart}"
+                                @click="!isBuildingChart ? termsDisplayedPage = 1 : null"
+                                :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingChart}"
                                 class="first-page button"
                                 aria-hidden="true">
                             «
                         </span>
                         <span
-                                @click="(termsDisplayedPage > 1 && !isBuildingTaxonomyTermsChart) ? termsDisplayedPage-- : null"
-                                :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingTaxonomyTermsChart}"
+                                @click="(termsDisplayedPage > 1 && !isBuildingChart) ? termsDisplayedPage-- : null"
+                                :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingChart}"
                                 class="prev-page button"
                                 aria-hidden="true">
                             ‹
@@ -71,7 +69,7 @@
                                     type="number"
                                     step="1"
                                     min="1"
-                                    :disabled="isBuildingTaxonomyTermsChart || maxTermsToDisplay >= selectedTaxonomy.total_terms"
+                                    :disabled="isBuildingChart || maxTermsToDisplay >= selectedTaxonomy.total_terms"
                                     :max="Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay)"
                                     name="paged"
                                     v-model.number="termsDisplayedPage"
@@ -80,15 +78,15 @@
                             <span class="tablenav-paging-text"> de <span class="total-pages">{{ Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay) }}</span></span>
                         </span>
                         <span 
-                                @click="(!isBuildingTaxonomyTermsChart && termsDisplayedPage < Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay)) ? termsDisplayedPage++ : null"
-                                :class="{'tablenav-pages-navspan disabled' : isBuildingTaxonomyTermsChart || termsDisplayedPage >= Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay) }"
+                                @click="(!isBuildingChart && termsDisplayedPage < Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay)) ? termsDisplayedPage++ : null"
+                                :class="{'tablenav-pages-navspan disabled' : isBuildingChart || termsDisplayedPage >= Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay) }"
                                 aria-hidden="true"
                                 class="next-page button">
                             ›
                         </span>
                         <span
-                                @click="!isBuildingTaxonomyTermsChart ? termsDisplayedPage = Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay) : null"
-                                :class="{'tablenav-pages-navspan disabled': isBuildingTaxonomyTermsChart || termsDisplayedPage >= Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay) }"
+                                @click="!isBuildingChart ? termsDisplayedPage = Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay) : null"
+                                :class="{'tablenav-pages-navspan disabled': isBuildingChart || termsDisplayedPage >= Math.ceil(selectedTaxonomy.total_terms/maxTermsToDisplay) }"
                                 class="last-page button"
                                 aria-hidden="true">
                             »
@@ -97,42 +95,37 @@
                 </div>
             </div>
             <apexchart
-                    v-if="!isFetchingTaxonomiesList && !isFetchingTaxonomyTerms && selectedTaxonomy && selectedTaxonomy.id"
+                    v-if="!isFetchingData && !isBuildingChart && !isFetchingTaxonomyTerms && selectedTaxonomy && selectedTaxonomy.id"
                     height="380px"
-                    :series="taxonomyTermsChartSeries"
-                    :options="taxonomyTermsChartOptions" />
+                    :series="chartSeries"
+                    :options="chartOptions" />
             <div 
-                v-else
-                style="min-height=380px"
-                class="skeleton postbox" />
+                    v-else
+                    style="min-height=380px"
+                    class="skeleton postbox" />
         </div>
     </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {
+    mixins: [ reportsChartMixin ],
     data() {
         return {
             isFetchingTaxonomyTerms: false,
-            isBuildingTaxonomyTermsChart: false,
             selectedTaxonomy: {},
             maxTermsToDisplay: 64,
-            termsDisplayedPage: 1,
-            taxonomyTermsChartSeries: [],
-            taxonomyTermsChartOptions: {},
+            termsDisplayedPage: 1
         }
     },
     computed: {
         ...mapGetters('report', {
-            taxonomyTerms: 'getTaxonomyTerms',
             taxonomiesList: 'getTaxonomiesList',
             stackedBarChartOptions: 'getStackedBarChartOptions',
         }),
-        isFetchingTaxonomiesList() {
-            return !(this.taxonomiesListArray && this.taxonomiesListArray.length);
-        },
         taxonomiesListArray() {
             return this.taxonomiesList && this.taxonomiesList != undefined ? Object.values(this.taxonomiesList) : [];
         },
@@ -162,15 +155,15 @@ export default {
         }
     },
     methods: {
-         ...mapActions('report', [
+        ...mapActions('report', [
             'fetchTaxonomyTerms'
-         ]),
+        ]),
         buildTaxonomyTermsChart() {
         
-            this.isBuildingTaxonomyTermsChart = true;
+            this.isBuildingChart = true;
 
             // Building Taxonomy term usage chart
-            let orderedTerms = Object.values(this.taxonomyTerms).sort((a, b) => b.count - a.count);
+            let orderedTerms = Object.values(this.chartData).sort((a, b) => b.count - a.count);
             orderedTerms = orderedTerms.slice((this.termsDisplayedPage - 1) * this.maxTermsToDisplay, ((this.termsDisplayedPage - 1) * this.maxTermsToDisplay) + this.maxTermsToDisplay);
             
             let termsValues = [];
@@ -181,13 +174,13 @@ export default {
                 termsLabels.push(term.name);
             });
             
-            this.taxonomyTermsChartSeries = [
+            this.chartSeries = [
                 {
                     name: this.$i18n.get('label_terms_used'),
                     data: termsValues
                 }
             ];
-            this.taxonomyTermsChartOptions = {
+            this.chartOptions = {
                 ...this.stackedBarChartOptions, 
                 ...{
                     title: {},
@@ -213,9 +206,7 @@ export default {
                 }
             }
 
-            setTimeout(() => { 
-                this.isBuildingTaxonomyTermsChart = false;
-            }, 500);
+            setTimeout(() => this.isBuildingChart = false, 500);
         },
         loadTaxonomyTerms() {
             this.isFetchingTaxonomyTerms = true;

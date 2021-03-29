@@ -1,15 +1,15 @@
 <template>
-    <div class="column is-full is-two-fifths-desktop">
+    <div>
         <div 
-                v-if="metadata.totals && metadata.totals.metadata && !isBuildingMetadataDistributionChart"
+                v-if="!isFetchingData && chartData.totals && chartData.totals.metadata && !isBuildingChart"
                 :style="{
-                    maxHeight: ((170 + (metadata.totals.metadata.total * 36)) <= 690 ? (170 + (metadata.totals.metadata.total * 36)) : 690) + 'px'
+                    maxHeight: ((170 + (chartData.totals.metadata.total * 36)) <= 690 ? (170 + (chartData.totals.metadata.total * 36)) : 690) + 'px'
                 }"
                 class="postbox metadata-distribution-box">
             <apexchart
-                    :height="100 + (metadata.totals.metadata.total * 36)"
-                    :series="metadataDistributionChartSeries"
-                    :options="metadataDistributionChartOptions" />
+                    :height="100 + (chartData.totals.metadata.total * 36)"
+                    :series="chartSeries"
+                    :options="chartOptions" />
         </div>
         <div 
                 v-else
@@ -20,24 +20,22 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {
+    mixins: [ reportsChartMixin ],
     data() {
         return {
-            metadataDistributionChartSeries: [],
-            metadataDistributionChartOptions: {},
-            metadataDistributionChartHeight: 730,
-            isBuildingMetadataDistributionChart: false
+            metadataDistributionChartHeight: 730
         }
     },
     computed: {
         ...mapGetters('report', {
-            metadata: 'getMetadata',
             horizontalBarChartOptions: 'getHorizontalBarChartOptions',
         })
     },
     watch: {
-        metadata: {
+        chartData: {
             handler() {
                 this.buildMetadataDistributionChart();
             },
@@ -46,15 +44,15 @@ export default {
     },
     methods: {
         buildMetadataDistributionChart() {
-            this.isBuildingMetadataDistributionChart = true;
+            this.isBuildingChart = true;
 
-            if (this.metadata.distribution) {
+            if (this.chartData.distribution) {
                 // Building Metadata Distribution Bar chart
-                const orderedMetadataDistributions = Object.values(this.metadata.distribution).sort((a, b) => b.fill_percentage - a.fill_percentage );
+                const orderedMetadataDistributions = Object.values(this.chartData.distribution).sort((a, b) => b.fill_percentage - a.fill_percentage );
                 let metadataDistributionValues = [];
                 let metadataDistributionValuesInverted = [];
                 let metadataDistributionLabels = [];
-                const metadataCount = 100 + (this.metadata.totals.metadata.total * 36);
+                const metadataCount = 100 + (this.chartData.totals.metadata.total * 36);
 
                 orderedMetadataDistributions.forEach(metadataDistribution => {
                     metadataDistributionValues.push(parseFloat(metadataDistribution.fill_percentage));
@@ -66,7 +64,7 @@ export default {
                 if (orderedMetadataDistributions.length)
                     this.selectedMetadatum = orderedMetadataDistributions[0].id;
 
-                this.metadataDistributionChartSeries = [
+                this.chartSeries = [
                     { 
                         name: this.$i18n.get('label_filled'),
                         data: metadataDistributionValues
@@ -76,7 +74,7 @@ export default {
                         data: metadataDistributionValuesInverted
                     }
                 ];
-                this.metadataDistributionChartOptions = {
+                this.chartOptions = {
                     ...this.horizontalBarChartOptions,
                     ...{
                         chart: {
@@ -102,7 +100,7 @@ export default {
                 }
             }
 
-            setTimeout(() => this.isBuildingMetadataDistributionChart = false, 300);
+            setTimeout(() => this.isBuildingChart = false, 300);
         }
     }
 }

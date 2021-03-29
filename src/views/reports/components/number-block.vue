@@ -93,6 +93,7 @@ export default {
     .status-list {
         display: flex;
         justify-content: center;
+        font-size: 0.875rem;
 
         li {
             margin: 0 1em;

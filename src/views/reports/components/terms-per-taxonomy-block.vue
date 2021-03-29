@@ -1,13 +1,11 @@
 <template>
-    <div 
-            v-if="taxonomiesList != undefined"
-            class="column is-full">
+    <div v-if="chartData != undefined">
         <apexchart
-                v-if="!isFetchingTaxonomiesList"
+                v-if="!isFetchingData && taxonomiesListArray && taxonomiesListArray.length && !isBuildingChart"
                 height="380px"
                 class="postbox"
-                :series="taxonomiesListChartSeries"
-                :options="taxonomiesListChartOptions" />
+                :series="chartSeries"
+                :options="chartOptions" />
         <div 
                 v-else
                 style="min-height=380px"
@@ -17,88 +15,81 @@
 
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
+import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {
-    data() {
-        return {
-            isFetchingTaxonomiesList: false,
-            taxonomiesListChartSeries: [],
-            taxonomiesListChartOptions: {},
-        }
-    },
+    mixins: [ reportsChartMixin ],
     computed: {
         ...mapGetters('report', {
-            taxonomiesList: 'getTaxonomiesList',
             stackedBarChartOptions: 'getStackedBarChartOptions',
-            isFetchingTaxonomiesList: 'getIsFetchingTaxonomiesList',
         }),
         taxonomiesListArray() {
-            return this.taxonomiesList && this.taxonomiesList != undefined ? Object.values(this.taxonomiesList) : [];
+            return this.chartData && this.chartData != undefined ? Object.values(this.chartData) : [];
         },
     },
-    created() {
-        this.loadTaxonomiesList();
+    watch: {
+        taxonomiesListArray: {
+            handler() {
+                this.buildTaxonomiesList();
+            },
+            immediate: true
+        }
     },
     methods: {
-         ...mapActions('report', [
-            'fetchTaxonomiesList'
-         ]),
-         loadTaxonomiesList() {
-            this.isFetchingTaxonomiesList = true;
-            this.fetchTaxonomiesList()
-                .then(() => {
-                    // Building Taxonomy term usage chart
-                    const orderedTaxonomies = this.taxonomiesListArray.sort((a, b) => b.total_terms - a.total_terms);
-                    let termsUsed = [];
-                    let termsNotUsed = [];
-                    let taxonomiesLabels = [];
+         buildTaxonomiesList() {
+            // Building Taxonomy term usage chart
+            this.isBuildingChart = true;
 
-                    orderedTaxonomies.forEach(taxonomy => {
-                        termsUsed.push(taxonomy.total_terms_used);
-                        termsNotUsed.push(taxonomy.total_terms_not_used);
-                        taxonomiesLabels.push(taxonomy.name);
-                    });
+            const orderedTaxonomies = this.taxonomiesListArray.sort((a, b) => b.total_terms - a.total_terms);
+            let termsUsed = [];
+            let termsNotUsed = [];
+            let taxonomiesLabels = [];
 
-                    this.taxonomiesListChartSeries = [
-                        {
-                            name: this.$i18n.get('label_terms_used'),
-                            data: termsUsed
+            orderedTaxonomies.forEach(taxonomy => {
+                termsUsed.push(taxonomy.total_terms_used);
+                termsNotUsed.push(taxonomy.total_terms_not_used);
+                taxonomiesLabels.push(taxonomy.name);
+            });
+
+            this.chartSeries = [
+                {
+                    name: this.$i18n.get('label_terms_used'),
+                    data: termsUsed
+                },
+                {
+                    name: this.$i18n.get('label_terms_not_used'),
+                    data: termsNotUsed
+                }
+            ];
+            
+            this.chartOptions = {
+                ...this.stackedBarChartOptions, 
+                ...{
+                    title: {
+                        text: this.$i18n.get('label_usage_of_terms_per_taxonomy')
+                    },
+                    xaxis: {
+                        type: 'category',
+                        tickPlacement: 'on',
+                        categories: taxonomiesLabels,
+                        labels: {
+                            show: true,
+                            trim: true,
+                            hideOverlappingLabels: false
                         },
-                        {
-                            name: this.$i18n.get('label_terms_not_used'),
-                            data: termsNotUsed
-                        }
-                    ];
-                    
-                    this.taxonomiesListChartOptions = {
-                        ...this.stackedBarChartOptions, 
-                        ...{
-                            title: {
-                                text: this.$i18n.get('label_usage_of_terms_per_taxonomy')
-                            },
-                            xaxis: {
-                                type: 'category',
-                                tickPlacement: 'on',
-                                categories: taxonomiesLabels,
-                                labels: {
-                                    show: true,
-                                    trim: true,
-                                    hideOverlappingLabels: false
-                                },
-                                tooltip: { enabled: true }
-                            },
-                            yaxis: {
-                                title: {
-                                    text: this.$i18n.get('label_number_of_terms')
-                                }
-                            }
+                        tooltip: { enabled: true }
+                    },
+                    yaxis: {
+                        title: {
+                            text: this.$i18n.get('label_number_of_terms')
                         }
                     }
-                    this.isFetchingTaxonomiesList = false;
-                })
-                .catch(() => this.isFetchingTaxonomiesList = false);
-        },
+                }
+            }
+
+            setTimeout(() => this.isBuildingChart = false, 500);
+        }
     }
 }
 </script>

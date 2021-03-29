@@ -57,23 +57,45 @@
                             entity-type="metadata" />
                 </div>
                 <collections-list-block
+                        class="column is-full"
+                        :chart-data="collectionsList"
+                        :is-fetching-data="isFetchingCollectionsList"
                         v-if="isRepositoryLevel" />
 
-                <terms-per-taxonomy-block 
+                <terms-per-taxonomy-block
+                        class="column is-full"
+                        :chart-data="taxonomyList"
+                        :is-fetching-data="isFetchingTaxonomiesList"
                         v-if="isRepositoryLevel"/>
                 
-                <items-per-term-block 
+                <items-per-term-block
+                        class="column is-full"
+                        :chart-data="taxonomyTerms"
+                        :is-fetching-data="isFetchingTaxonomiesList"
                         v-if="isRepositoryLevel" />
 
                 <metadata-types-block
+                        class="column is-full"
+                        :chart-data="metadata"
+                        :is-fetching-data="isFetchingMetadata"
                         v-if="!isRepositoryLevel" />
             </div>
-            <metadata-distribution-block 
+            <metadata-distribution-block
+                    class="column is-full is-two-fifths-desktop"
+                    :chart-data="metadata"
+                    :is-fetching-data="isFetchingMetadata"
                     v-if="!isRepositoryLevel"/>
         </div>
         <div class="columns">
-            <metadata-list-block 
+            <metadata-list-block
+                    class="column is-full"
+                    :chart-data="metadataList"
                     v-if="!isRepositoryLevel" />
+            <!-- <activities-block
+                    class="column is-full"
+                    :chart-data="activities"
+                    :is-fetching-data="isFetchingActivities"
+                    v-if="isRepositoryLevel" /> -->
         </div>
     </div>
 </template>
@@ -91,8 +113,7 @@ export default {
             isFetchingCollectionsList: false,
             isFetchingMetadata: false,
             isFetchingActivities: false,
-            activitiesChartSeries: [],
-            activitiesChartOptions: {}
+            isFetchingTaxonomiesList: false
         }
     },
     computed: {
@@ -102,8 +123,11 @@ export default {
         ...mapGetters('report', {
             summary: 'getSummary',
             metadata: 'getMetadata',
+            collectionsList: 'getCollectionsList',
+            metadataList: 'getMetadataList',
+            taxonomyTerms: 'getTaxonomyTerms',
             activities: 'getActivities',
-            //heatMapChartOptions: 'getHeatMapChartOptions'
+            taxonomyList: 'getTaxonomiesList',
         }),
         isRepositoryLevel() {
             return !this.selectedCollection || this.selectedCollection == 'default';
@@ -117,8 +141,9 @@ export default {
                 this.loadMetadata();
                 this.loadActivities();
 
-                if (!this.selectedCollection || this.selectedCollection == 'default')
+                if (this.isRepositoryLevel)
                     this.loadCollectionsList();
+                    this.loadTaxonomiesList();
                 
             },
             immediate: true
@@ -139,6 +164,7 @@ export default {
             'fetchSummary',
             'fetchCollectionsList',
             'fetchMetadata',
+            'fetchTaxonomiesList',
             'fetchActivities'
         ]),
         loadCollections() {
@@ -165,93 +191,16 @@ export default {
                 .then(() => this.isFetchingCollectionsList = false)
                 .catch(() => this.isFetchingCollectionsList = false);
         },
+        loadTaxonomiesList() {
+            this.isFetchingTaxonomiesList = true;
+            this.fetchTaxonomiesList()
+                .then(() => this.isFetchingTaxonomiesList = false)
+                .catch(() => this.isFetchingTaxonomiesList = false);
+        },
         loadActivities() {
             this.isFetchingActivities = true;
             this.fetchActivities({ collectionId: this.selectedCollection })
-                .then(() => {
-
-                    const daysWithActivities = this.activities && this.activities.totals && this.activities.totals.last_year && this.activities.totals.last_year.general ? this.activities.totals.last_year.general : []; 
-                    if (daysWithActivities && daysWithActivities.length) {
-                        
-                        let everyDayOfTheYear = Array.from(new Array(7),
-                            (val,index) => {
-                                return {
-                                    name: (index + 1),
-                                    data: new Array(53).fill({ x: '', y: 0 })
-                                }
-                            }
-                        );
-                        
-                        const firstDayOfTheWeekWithActivity = parseInt(daysWithActivities[0].day_of_week);
-                        let dayWithActivityIndex = 0;
-                        let daysToSkip = 0;
-
-                        // Loop for each column (number of the week in the year)
-                        for (let column = 0; column < 53; column++) {
-
-                            // Loop for each line (number of the day in the week)
-                            for (let line = 0; line < 7; line++) {
-
-                                // If there are no more days with activities, get outta here
-                                if (dayWithActivityIndex < daysWithActivities.length - 1) {
-                                        
-                                    // We should only begin inserting days from firstDayOfTheWeekWithActivity
-                                    if (column == 0 && line < firstDayOfTheWeekWithActivity - 1) {
-                                        continue;
-
-                                    // On the first day, we don't need to calculate distances, just set the value and save the date
-                                    } else if (column == 0 && line == firstDayOfTheWeekWithActivity - 1) {
-                                        everyDayOfTheYear[line].data[column] = {
-                                            x: '',
-                                            y: parseInt(daysWithActivities[dayWithActivityIndex].total)
-                                        };
-
-                                        const lastDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].date);
-                                        dayWithActivityIndex++;
-
-                                        const nextDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].date);
-
-                                        daysToSkip = Math.floor( (nextDayWithActivity - lastDayWithActivity) / (1000 * 60 * 60 * 24) );
-                                    } else {
-                                        daysToSkip--;
-
-                                        // If we don't have more days to skip, time to update values
-                                        if ( daysToSkip <= 0) {
-                                            everyDayOfTheYear[line].data[column] = {
-                                                x: '',
-                                                y: parseInt(daysWithActivities[dayWithActivityIndex].total)
-                                            };
-
-                                            const lastDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].date);
-                                            dayWithActivityIndex++;
-
-                                            const nextDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].date);
-
-                                            daysToSkip = Math.floor( (nextDayWithActivity - lastDayWithActivity) / (1000 * 60 * 60 * 24) );
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        this.activitiesChartSeries = everyDayOfTheYear;
-                        this.activitiesChartOptions = {
-                             ...this.heatMapChartOptions,
-                                title: {
-                                    text: this.$i18n.get('label_activities_last_year')
-                                },
-                        };
-                    } else {
-                        this.activitiesChartSeries = [];
-                        this.activitiesChartOptions = {
-                             ...this.heatMapChartOptions,
-                                title: {
-                                    text: this.$i18n.get('label_activities_last_year')
-                                },
-                        }
-                    }
-
-                    this.isFetchingActivities = false;
-                })
+                .then(() => this.isFetchingActivities = false)
                 .catch(() => this.isFetchingActivities = false);
         }
     }

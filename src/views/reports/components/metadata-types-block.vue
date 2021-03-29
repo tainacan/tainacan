@@ -1,7 +1,7 @@
 <template>
-    <div class="column is-full">
+    <div>
         <div 
-                v-if="metadata && metadata.totals && metadata.totals.metadata_per_type && !isBuildingMetadataTypeChart"
+                v-if="!isFetchingData && chartData && chartData.totals && chartData.totals.metadata_per_type && !isBuildingChart"
                 class="postbox">
             <label>{{ $i18n.get('metadata_types') }}&nbsp;</label>
             <div class="graph-mode-switch">
@@ -28,8 +28,8 @@
             </div>
             <apexchart
                     height="380px"
-                    :series="metadataTypeChartSeries"
-                    :options="metadataTypeChartOptions" />
+                    :series="chartSeries"
+                    :options="chartOptions" />
         </div>
         <div 
             v-else
@@ -40,19 +40,17 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {
+    mixins: [ reportsChartMixin ],
     data() {
         return {
-            isBuildingMetadataTypeChart: false,
-            metadataTypeChartMode: 'bar',
-            metadataTypeChartSeries: [],
-            metadataTypeChartOptions: {}
+            metadataTypeChartMode: 'bar'
         }
     },
     computed: {
         ...mapGetters('report', {
-            metadata: 'getMetadata',
             donutChartOptions: 'getDonutChartOptions',
             stackedBarChartOptions: 'getStackedBarChartOptions',
         })
@@ -61,9 +59,10 @@ export default {
         metadataTypeChartMode() {
             this.buildMetadataTypeChart();
         },
-        metadata: {
+        chartData: {
             handler() {
-                this.buildMetadataTypeChart();
+                if (this.chartData && this.chartData.totals)
+                    this.buildMetadataTypeChart();
             },
             immediate: true
         }
@@ -71,22 +70,22 @@ export default {
     methods: {
         buildMetadataTypeChart() {
             
-            this.isBuildingMetadataTypeChart = true;
+            this.isBuildingChart = true;
 
             // Building Metadata Type Donut Chart
             let metadataTypeValues = [];
             let metadataTypeLabels = [];
             
-            const orderedMetadataPerType = Object.values(this.metadata.totals.metadata_per_type).sort((a, b) => b.count - a.count);
+            const orderedMetadataPerType = Object.values(this.chartData.totals.metadata_per_type).sort((a, b) => b.count - a.count);
             orderedMetadataPerType.forEach((metadataPerType) => {
                 metadataTypeValues.push(metadataPerType.count ? metadataPerType.count : 0);
                 metadataTypeLabels.push(metadataPerType.name ? metadataPerType.name : '');
             });
             
-            this.metadataTypeChartSeries = this.metadataTypeChartMode == 'circle' ? metadataTypeValues : [{ data: metadataTypeValues }];
+            this.chartSeries = this.metadataTypeChartMode == 'circle' ? metadataTypeValues : [{ data: metadataTypeValues }];
 
             if (this.metadataTypeChartMode == 'circle') {
-                this.metadataTypeChartOptions = JSON.parse(JSON.stringify({
+                this.chartOptions = JSON.parse(JSON.stringify({
                     ...this.donutChartOptions,
                     ...{
                         title: {},
@@ -94,7 +93,7 @@ export default {
                     }
                 }));
             } else {
-                this.metadataTypeChartOptions = JSON.parse(JSON.stringify({
+                this.chartOptions = JSON.parse(JSON.stringify({
                     ...this.stackedBarChartOptions,
                     ...{
                         title: {},
@@ -113,7 +112,7 @@ export default {
                 }));
             }
 
-            setTimeout(() => { this.isBuildingMetadataTypeChart = false; }, 500);
+            setTimeout(() => { this.isBuildingChart = false; }, 500);
         },
     }
 }

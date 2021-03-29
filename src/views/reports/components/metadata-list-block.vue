@@ -1,7 +1,5 @@
 <template>
-    <div
-            v-if="metadataList != undefined"
-            class="column is-full">
+    <div v-if="chartData != undefined">
         <div
                 style="margin-top: 0px"
                 class="postbox">
@@ -22,8 +20,8 @@
             <apexchart
                     v-if="!isFetchingMetadataList && selectedMetadatum"
                     height="380px"
-                    :series="metadataListChartSeries"
-                    :options="metadataListChartOptions" />
+                    :series="chartSeries"
+                    :options="chartOptions" />
             <div 
                 v-else
                 style="min-height=380px"
@@ -34,13 +32,12 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {
+    mixins: [ reportsChartMixin ],
     data() {
         return {
-            metadataListChartSeries: [],
-            metadataListChartOptions: {},
-            isBuildingMetadataListArray: false,
             selectedMetadatum: '',
             isFetchingMetadataList: false
         }
@@ -48,7 +45,6 @@ export default {
     computed: {
         ...mapGetters('report', {
             metadata: 'getMetadata',
-            metadataList: 'getMetadataList',
             stackedBarChartOptions: 'getStackedBarChartOptions',
         }),
         metadataListArray() {
@@ -85,10 +81,10 @@ export default {
         },
         buildMetadataListChart() {
 
-            this.isBuildingMetadataListArray = true;
+            this.isBuildingChart = true;
 
             // Building Metadata term usage chart
-            const orderedMetadata = Object.values(this.metadataList).sort((a, b) => b.total_items - a.total_items);
+            const orderedMetadata = Object.values(this.chartData).sort((a, b) => b.total_items - a.total_items);
             let metadataItemValues = [];
             let metadataItemLabels = [];
 
@@ -97,14 +93,14 @@ export default {
                 metadataItemLabels.push(metadataItem.label);
             }); 
 
-            this.metadataListChartSeries = [
+            this.chartSeries = [
                 {
                     name: this.$i18n.get('label_items_with_this_metadum_value'),
                     data: metadataItemValues
                 }
             ];
             
-            this.metadataListChartOptions = {
+            this.chartOptions = {
                 ...this.stackedBarChartOptions, 
                 ...{
                     title: {},
@@ -121,7 +117,7 @@ export default {
                 }
             }
 
-            setTimeout(() => this.isBuildingMetadataListArray = false, 500);
+            setTimeout(() => this.isBuildingChart = false, 500);
         }
     }
 }

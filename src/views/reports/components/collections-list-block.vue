@@ -1,11 +1,11 @@
 <template>
-    <div class="column is-full">
+    <div>
         <apexchart
-                v-if="!isBuildingCollectionsList && collectionsList && Object.values(collectionsList).length"
+                v-if="!isBuildingChart && chartData && Object.values(chartData).length"
                 height="380px"
                 class="postbox"
-                :series="collectionsListChartSeries"
-                :options="collectionsListChartOptions" />
+                :series="chartSeries"
+                :options="chartOptions" />
         <div 
                 v-else
                 style="min-height=380px"
@@ -15,23 +15,17 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {
-    data() {
-        return {
-            isBuildingCollectionsList: false,
-            metadataListChartSeries: [],
-            metadataListChartOptions: {},
-        }
-    },
+    mixins: [ reportsChartMixin ],
     computed: {
         ...mapGetters('report', {
-            collectionsList: 'getCollectionsList',
             stackedBarChartOptions: 'getStackedBarChartOptions',
         }),
     },
     watch: {
-        collectionsList: {
+        chartData: {
             handler() {
                 this.buildCollectionsList();
             },
@@ -41,10 +35,10 @@ export default {
     methods: {
         buildCollectionsList() {
 
-            this.isBuildingCollectionsList = true;
+            this.isBuildingChart = true;
 
             // Building Collections items chart
-            const orderedCollections = Object.values(this.collectionsList).sort((a, b) =>  b.items.total - a.items.total);
+            const orderedCollections = Object.values(this.chartData).sort((a, b) =>  b.items.total - a.items.total);
             let privateItems = [];
             let publicItems = [];
             let trashItems = [];
@@ -59,7 +53,7 @@ export default {
                 collectionsLabels.push(collection.name);
             });
 
-            this.collectionsListChartSeries = [
+            this.chartSeries = [
                 {
                     name: this.$i18n.get('status_publish'),
                     data: publicItems
@@ -78,7 +72,7 @@ export default {
                 }
             ];
             
-            this.collectionsListChartOptions = {
+            this.chartOptions = {
                 ...this.stackedBarChartOptions, 
                 ...{
                     title: {
@@ -103,7 +97,7 @@ export default {
                 }
             }
 
-            this.isBuildingCollectionsList = false;
+            this.isBuildingChart = false;
         }
     }
 }
