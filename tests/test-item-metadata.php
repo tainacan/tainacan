@@ -305,9 +305,12 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$this->assertEquals($item_metadata_textarea->get_value_as_html(), $response_textarea);
 
 		// Poor HTML entry tests
-		$malformatted_HTML = "<p> I started my content <div> and make something else here </div> withou closing it properly";
+		$malformatted_HTML = "<p> I started my content <div> and make something else here </div> without closing its HTML properly";
 
+		$item_metadata_text->set_value($malformatted_HTML);
 		$item_metadata_textarea->set_value($malformatted_HTML);
+
+		$this->assertEquals($item_metadata_text->get_value_as_html(), $malformatted_HTML ."</p>");
 		$this->assertEquals($item_metadata_textarea->get_value_as_html(), $malformatted_HTML ."</p>");
 	}
 
