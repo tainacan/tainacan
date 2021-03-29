@@ -70,7 +70,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
     /**
      * Teste da insercao de um metadado simples com o tipo
      */
-    function teste_required(){
+    function test_required(){
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
@@ -125,7 +125,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         $this->assertEquals('teste_value', $item_metadata->get_value());
     }
     
-    function teste_collection_key(){
+    function test_collection_key(){
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
@@ -193,7 +193,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$this->assertFalse($n_item_metadata2->validate(), 'Collection key should not validate another item metadatada with the same value');
     }
     
-    function teste_fetch(){
+    function test_fetch(){
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
