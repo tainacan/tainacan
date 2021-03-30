@@ -32,6 +32,18 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_collections'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
+					'args'                => [
+						'force' => [
+							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'type'        => 'string',
+							'default' 	  => 'no',
+							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'enum'    	  => array(
+								'no',
+								'yes'
+							)
+						]
+					]
 				),
 			)
 		);
@@ -41,6 +53,18 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_summary'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
+					'args'                => [
+						'force' => [
+							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'type'        => 'string',
+							'default' 	  => 'no',
+							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'enum'    	  => array(
+								'no',
+								'yes'
+							)
+						]
+					]
 				),
 			)
 		);
@@ -50,6 +74,18 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_stats_collection_metadata'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
+					'args'                => [
+						'force' => [
+							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'type'        => 'string',
+							'default' 	  => 'no',
+							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'enum'    	  => array(
+								'no',
+								'yes'
+							)
+						]
+					]
 				),
 			)
 		);
@@ -59,6 +95,18 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_stats_metadata'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
+					'args'                => [
+						'force' => [
+							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'type'        => 'string',
+							'default' 	  => 'no',
+							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'enum'    	  => array(
+								'no',
+								'yes'
+							)
+						]
+					]
 				),
 			)
 		);
@@ -68,6 +116,18 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_stats_metadata'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
+					'args'                => [
+						'force' => [
+							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'type'        => 'string',
+							'default' 	  => 'no',
+							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'enum'    	  => array(
+								'no',
+								'yes'
+							)
+						]
+					]
 				),
 			)
 		);
@@ -77,6 +137,18 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_stats_collection_metadata'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
+					'args'                => [
+						'force' => [
+							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'type'        => 'string',
+							'default' 	  => 'no',
+							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'enum'    	  => array(
+								'no',
+								'yes'
+							)
+						]
+					]
 				),
 			)
 		);
@@ -86,6 +158,18 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_summary'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
+					'args'                => [
+						'force' => [
+							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'type'        => 'string',
+							'default' 	  => 'no',
+							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'enum'    	  => array(
+								'no',
+								'yes'
+							)
+						]
+					]
 				),
 			)
 		);
@@ -95,6 +179,18 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_taxonomies_list'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
+					'args'                => [
+						'force' => [
+							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'type'        => 'string',
+							'default' 	  => 'no',
+							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'enum'    	  => array(
+								'no',
+								'yes'
+							)
+						]
+					]
 				),
 			)
 		);
@@ -104,6 +200,18 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_taxonomy'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
+					'args'                => [
+						'force' => [
+							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'type'        => 'string',
+							'default' 	  => 'no',
+							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'enum'    	  => array(
+								'no',
+								'yes'
+							)
+						]
+					]
 				),
 			)
 		);
@@ -123,7 +231,18 @@ class REST_Reports_Controller extends REST_Controller {
 							'title'       => __( 'start Date', 'tainacan' ),
 							'type'        => 'string',
 							'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
-						]]
+						],
+						'force' => [
+							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'type'        => 'string',
+							'default' 	  => 'no',
+							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'enum'    	  => array(
+								'no',
+								'yes'
+							)
+						]
+					]
 				),
 			)
 		);
@@ -133,6 +252,28 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_activities'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
+					'args'                => [
+						'start' => [
+							'title'       => __( 'start Date', 'tainacan' ),
+							'type'        => 'string',
+							'format'      => 'date-time',
+						], 
+						'end' => [
+							'title'       => __( 'start Date', 'tainacan' ),
+							'type'        => 'string',
+							'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
+						],
+						'force' => [
+							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'type'        => 'string',
+							'default' 	  => 'no',
+							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'enum'    	  => array(
+								'no',
+								'yes'
+							)
+						]
+					]
 				),
 			)
 		);
@@ -146,6 +287,9 @@ class REST_Reports_Controller extends REST_Controller {
 		$response = array(
 			'list' => []
 		);
+		$key_cache_object = 'collections';
+		$cached_object = $this->get_cache_object($key_cache_object, $request);
+		if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 		$collections = $this->collections_repository->fetch([]);
 		
 		if($collections->have_posts()) {
@@ -171,6 +315,7 @@ class REST_Reports_Controller extends REST_Controller {
 			}
 			wp_reset_postdata();
 		}
+		$this->set_cache_object($key_cache_object, $response);
 		return new \WP_REST_Response($response, 200);
 	}
 
@@ -188,6 +333,11 @@ class REST_Reports_Controller extends REST_Controller {
 		);
 		if(isset($request['collection_id'])) {
 			$collection_id = $request['collection_id'];
+			
+			$key_cache_object = 'summary_' . $collection_id;
+			$cached_object = $this->get_cache_object($key_cache_object, $request);
+			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
+			
 			$collection = $this->collections_repository->fetch($collection_id);
 			$total_items = wp_count_posts( $collection->get_db_identifier(), 'readable' );
 			if (isset($total_items->publish) ||
@@ -201,6 +351,10 @@ class REST_Reports_Controller extends REST_Controller {
 				$response['totals']['items']['private'] = intval($total_items->private);
 			}
 		} else {
+			$key_cache_object = 'summary';
+			$cached_object = $this->get_cache_object($key_cache_object, $request);
+			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
+
 			$collections = $this->collections_repository->fetch([]);
 			$response['totals']['collections'] = array(
 				'total' => 0,
@@ -253,6 +407,7 @@ class REST_Reports_Controller extends REST_Controller {
 			}
 		}
 		$response['totals']['items']['total'] = ($response['totals']['items']['trash'] + $response['totals']['items']['draft'] + $response['totals']['items']['publish'] + $response['totals']['items']['private']);
+		$this->set_cache_object($key_cache_object, $response);
 		return new \WP_REST_Response($response, 200);
 	}
 
@@ -262,6 +417,10 @@ class REST_Reports_Controller extends REST_Controller {
 				
 			)
 		);
+
+		$key_cache_object = 'taxonomies_list';
+		$cached_object = $this->get_cache_object($key_cache_object, $request);
+		if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 
 		$taxonomies = $this->taxonomy_repository->fetch();
 		if($taxonomies->have_posts()){
@@ -283,6 +442,7 @@ class REST_Reports_Controller extends REST_Controller {
 			}
 			wp_reset_postdata();
 		}
+		$this->set_cache_object($key_cache_object, $response);
 		return new \WP_REST_Response($response, 200);
 	}
 
@@ -299,6 +459,10 @@ class REST_Reports_Controller extends REST_Controller {
 
 		if ( !$taxonomy_total_terms) {
 			$taxonomy_total_terms = 0;
+		} else {
+			$key_cache_object = 'taxonomy_' . $taxonomy_identifier;
+			$cached_object = $this->get_cache_object($key_cache_object, $request);
+			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 		}
 
 		while($offset < $taxonomy_total_terms) {
@@ -317,6 +481,7 @@ class REST_Reports_Controller extends REST_Controller {
 			}
 			$offset+=$limit;
 		}
+		$this->set_cache_object($key_cache_object, $response);
 		return new \WP_REST_Response($response, 200);
 	}
 
@@ -332,6 +497,10 @@ class REST_Reports_Controller extends REST_Controller {
 		if ( isset($request['parent']) ) {
 			$parent_id = (int) $request['parent'];
 		}
+
+		$key_cache_object = "stats_metadata_$metadata_id-$collection_id-$parent_id";
+		$cached_object = $this->get_cache_object($key_cache_object, $request);
+		if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 
 		$args = [
 			'collection_id' => $collection_id,
@@ -350,6 +519,8 @@ class REST_Reports_Controller extends REST_Controller {
 				'total_children' => intval($item['total_children']),
 			];
 		}, $data['values']);
+
+		$this->set_cache_object($key_cache_object, $response);
 		return new \WP_REST_Response($response, 200);
 	}
 
@@ -370,6 +541,11 @@ class REST_Reports_Controller extends REST_Controller {
 
 		if(isset($request['collection_id'])) {
 			$collection_id = $request['collection_id'];
+
+			$key_cache_object = 'stats_collection_metadata_' . $collection_id;
+			$cached_object = $this->get_cache_object($key_cache_object, $request);
+			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
+
 			$collection = new Entities\Collection( $collection_id );
 			$result_metadatum = $this->metadatum_repository->fetch_by_collection( $collection, [] );
 			$response['totals']['metadata']['total'] = count($result_metadatum);
@@ -401,8 +577,12 @@ class REST_Reports_Controller extends REST_Controller {
 					]
 				]
 			];
-			$result_metadatum = $this->metadatum_repository->fetch( $args, 'OBJECT' );
 
+			$key_cache_object = 'stats_collection_metadata';
+			$cached_object = $this->get_cache_object($key_cache_object, $request);
+			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
+
+			$result_metadatum = $this->metadatum_repository->fetch( $args, 'OBJECT' );
 			$meta_ids=[];
 			foreach($result_metadatum as $metadatum) {
 				$meta_type =  explode('\\', $metadatum->get_metadata_type()) ;
@@ -422,6 +602,7 @@ class REST_Reports_Controller extends REST_Controller {
 			$response['distribution'] = $this->query_item_metadata_distribution($meta_ids, 'default');
 			
 		}
+		$this->set_cache_object($key_cache_object, $response);
 		return new \WP_REST_Response($response, 200);
 	}
 
@@ -497,6 +678,11 @@ class REST_Reports_Controller extends REST_Controller {
 		if(isset($request['start']) && isset($request['end'])) {
 			$start = new \DateTime($request['start']);
 			$end = new \DateTime($request['end']);
+
+			$key_cache_object = 'activities_' . $start->format('Y-m-d') . '_' . $collection_id;
+			$cached_object = $this->get_cache_object($key_cache_object, $request);
+			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
+
 			$end_limit = $start->add(new \DateInterval('P1Y'));
 			if($end > $end_limit)
 				$end = $end_limit;
@@ -505,13 +691,15 @@ class REST_Reports_Controller extends REST_Controller {
 				'end' => $end->format('Y-m-d H:i:s')
 			];
 		} else {
+			$key_cache_object = 'activities_' . $collection_id;
+			$cached_object = $this->get_cache_object($key_cache_object, $request);
+			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 			$interval = [
 				'end' => (new \DateTime())->format('Y-m-d H:i:s'),
 				'start' => (new \DateTime($request['end']))->sub(new \DateInterval('P1Y')) ->format('Y-m-d H:i:s')
 			];
 		}
-		
-		
+
 		$response['totals'] = array(
 			'by_interval' => array(
 				'start' => $interval['start'],
@@ -521,6 +709,7 @@ class REST_Reports_Controller extends REST_Controller {
 			),
 			'by_user' => $this->get_activities_users($collection_id)
 		);
+		$this->set_cache_object($key_cache_object, $response);
 		return new \WP_REST_Response($response, 200);
 	}
 
@@ -597,6 +786,22 @@ class REST_Reports_Controller extends REST_Controller {
 			$response[$user]['total'] += $total;
 		}
 		return array_values($response);
+	}
+
+	private $prefix_transient_cahce = 'reports_tnc_';
+
+	private function get_cache_object($key, $request) {
+		if ( !isset($request['force']) || $request['force'] == 'no' ) {
+			$transient = get_transient($this->prefix_transient_cahce . $key);
+			return $transient;
+		}
+		return false;
+	}
+
+	private function set_cache_object($key, $data) {
+		$expiration = 604800; //one week
+		$data['report_cached_on'] = (new \DateTime())->format('Y-m-d H:i:s');
+		return set_transient($this->prefix_transient_cahce . $key, $data, $expiration);
 	}
 }
 
