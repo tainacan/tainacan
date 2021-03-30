@@ -668,9 +668,17 @@ class REST_Reports_Controller extends REST_Controller {
 		$data =$wpdb->get_results($sql_statement);
 		$arr = array();
 		foreach ($data as $item) {
-			$arr[$item->user_id][] = $item;
+			if(!isset($arr[$item->user_id])) {
+				$arr[$item->user_id] = [
+					'user_id' => $item->user_id,
+					'total' => 0,
+					'by_date' => []
+				];
+			}
+			$arr[$item->user_id]['by_date'][] = $item;
+			$arr[$item->user_id]['total'] += $item->total;
 		}
-		return $arr;
+		return array_values($arr);
 	}
 
 	private function get_activities_users($collection_id = false) {
