@@ -89,48 +89,6 @@ class REST_Reports_Controller extends REST_Controller {
 				),
 			)
 		);
-		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/metadata/(?P<metadata_id>[\d]+)',
-			array(
-				array(
-					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array($this, 'get_stats_metadata'),
-					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
-				),
-			)
-		);
-		register_rest_route($this->namespace, $this->rest_base . '/metadata/(?P<metadata_id>[\d]+)',
-			array(
-				array(
-					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array($this, 'get_stats_metadata'),
-					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
-				),
-			)
-		);
 		register_rest_route($this->namespace, $this->rest_base . '/metadata',
 			array(
 				array(
@@ -481,45 +439,6 @@ class REST_Reports_Controller extends REST_Controller {
 			}
 			$offset+=$limit;
 		}
-		$this->set_cache_object($key_cache_object, $response);
-		return new \WP_REST_Response($response, 200);
-	}
-
-	public function get_stats_metadata($request) {
-		// Free php session early so simultaneous requests dont get queued
-		session_write_close();
-		$response = array(
-			'list' => array()
-		);
-		$metadata_id = $request['metadata_id'];
-		$collection_id = ( isset($request['collection_id']) ) ? $request['collection_id'] : null;
-		$parent_id = 0;
-		if ( isset($request['parent']) ) {
-			$parent_id = (int) $request['parent'];
-		}
-
-		$key_cache_object = "stats_metadata_$metadata_id-$collection_id-$parent_id";
-		$cached_object = $this->get_cache_object($key_cache_object, $request);
-		if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
-
-		$args = [
-			'collection_id' => $collection_id,
-			'parent_id' => $parent_id,
-			'count_items'=> true,
-		];
-
-		$data = $this->metadatum_repository->fetch_all_metadatum_values($metadata_id, $args);
-		$response['list'] = array_map(function($item) {
-			return [
-				'type' => $item['type'],
-				'value' => $item['value'],
-				'label' => $item['label'],
-				'parent' => $item['parent'] == null ? 0 : $item['parent'],
-				'total_items' => intval($item['total_items']),
-				'total_children' => intval($item['total_children']),
-			];
-		}, $data['values']);
-
 		$this->set_cache_object($key_cache_object, $response);
 		return new \WP_REST_Response($response, 200);
 	}
