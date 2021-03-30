@@ -551,13 +551,18 @@ class REST_Reports_Controller extends REST_Controller {
 			$collection_from = "INNER JOIN $wpdb->postmeta pm ON p.id = pm.post_id AND (pm.meta_key='collection_id' AND pm.meta_value='$collection_id')";
 		}
 		$sql_statement = $wpdb->prepare(
-			"SELECT p.post_author  as user, count(DISTINCT (unix_timestamp(p.post_date) DIV 60)) as total, DATE(p.post_date) as date
+			"SELECT p.post_author  as user_id, count(DISTINCT (unix_timestamp(p.post_date) DIV 60)) as total, DATE(p.post_date) as date
 			FROM $wpdb->posts p $collection_from
 			WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN '$start' AND '$end'
 			GROUP BY p.post_author, DATE(p.post_date)
 			ORDER BY DATE(p.post_date)"
 		);
-		return $wpdb->get_results($sql_statement);
+		$data =$wpdb->get_results($sql_statement);
+		$arr = array();
+		foreach ($data as $item) {
+			$arr[$item->user_id][] = $item;
+		}
+		return $arr;
 	}
 
 	private function get_activities_users($collection_id = false) {
