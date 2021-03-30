@@ -144,14 +144,22 @@ const state = {
         height: 200,
         type: 'area',
         toolbar: {
-          autoSelected: 'selection',
+          show: true,
+          tools: {
+              download: true,
+              selection: false,
+              zoom: true,
+              zoomin: true,
+              zoomout: true,
+              pan: true,
+          }
         },
       },
       dataLabels: {
         enabled: false
       },
       stroke: {
-        width: 0,
+        width: 1,
         curve: 'smooth'
       },
       fill: {
@@ -160,8 +168,8 @@ const state = {
         gradient: {
           shade: 'light',
           type: "vertical",
-          opacityFrom: 0.9,
-          opacityTo: 0.85,
+          opacityFrom: 0.65,
+          opacityTo: 0.35,
         }
       },
       legend: {

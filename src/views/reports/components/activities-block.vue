@@ -5,15 +5,17 @@
                 class="postbox">
             <div class="users-charts columns is-multiline">
                 <div 
-                        class="users-charts__card column is-one-third is-half-tablet"
+                        class="users-charts__card column is-one-third is-half-desktop"
                         v-for="(chartSeries, index) of chartSeriesByUser"
                         :key="index">
                     <div 
                             v-if="chartSeries[0].userId == 0"
                             class="users-charts__card--header">
                         <div class="anonymous-user-avatar" />
-                        <p>{{ $i18n.get('label_anonymous_user') }}</p>
-                        <span>{{ chartSeries[0].total }}</span>
+                        <div class="users-charts__card--header-text">
+                            <p>{{ $i18n.get('label_anonymous_user') }}</p>
+                            <span>{{ chartSeries[0].total }}</span>
+                        </div>
                     </div>
                     <div 
                             v-if="chartSeries[0].userId != 0 && users[chartSeries[0].userId]"
@@ -93,20 +95,23 @@ export default {
             this.isBuildingChart =  true;
 
             const daysWithActivities = (this.chartData.totals.by_interval && this.chartData.totals.by_interval.general) ? this.chartData.totals.by_interval.general : []; 
-           
-           this.chartSeries = [{
-               data: []
-           }];
-           let maximumOfActivitiesInADay = 0;
-           daysWithActivities.forEach((activity) => {
+            const startDate = new Date(this.chartData.totals.by_interval.start).getTime();
+            const endDate = new Date(this.chartData.totals.by_interval.end).getTime();
+
+            this.chartSeries = [{
+                data: []
+            }];
+
+            let maximumOfActivitiesInADay = 0;
+            daysWithActivities.forEach((activity) => {
                 this.chartSeries[0].data.push({
                     x: new Date(activity.date).getTime(),
-                    y: activity.total
+                    y: parseInt(activity.total)
                 });
-                if (maximumOfActivitiesInADay < activity.total)
-                    maximumOfActivitiesInADay = activity.total
+                if (maximumOfActivitiesInADay < parseInt(activity.total))
+                    maximumOfActivitiesInADay = parseInt(activity.total)
             });
-            console.log(maximumOfActivitiesInADay);
+
             this.chartOptions = {
                 ...this.areaChartOptions,
                 title: {
@@ -118,28 +123,44 @@ export default {
                     type: 'area',
                     group: 'activities',
                     toolbar: {
-                        autoSelected: 'selection',
+                        show: true,
+                        tools: {
+                            download: true,
+                            selection: false,
+                            zoom: true,
+                            zoomin: true,
+                            zoomout: true,
+                            pan: true,
+                        }
                     },
+                },
+                xaxis: {
+                    type: 'datetime',
+                    min: startDate,
+                    max: endDate
+                },
+                yaxis: {
+                    max: maximumOfActivitiesInADay,
+                    tickAmount: 4,
+                    labels: {
+                        minWidth: 48
+                    }
                 },
                 colors: ['#01295c'],
             };
 
-            const daysWithActivitiesByUser = this.chartData.totals.by_interval.by_user;
-            const totalOfActivitiesByUser = this.chartData.totals.by_user.sort((a, b) => b.total - a.total);
+            const daysWithActivitiesByUser = JSON.parse(JSON.stringify(this.chartData.totals.by_interval.by_user)).sort((a, b) => parseInt(b.total) - parseInt(a.total));
             
-            totalOfActivitiesByUser.forEach((totalActivityByUser) => {
+            daysWithActivitiesByUser.forEach((daysWithActivityByUser) => {
                 this.chartSeriesByUser.push([{
-                    total: totalActivityByUser.total,
-                    userId: totalActivityByUser.user_id,
-                    data: daysWithActivitiesByUser[totalActivityByUser.user_id] ? daysWithActivitiesByUser[totalActivityByUser.user_id].map((activity) => { 
+                    total: daysWithActivityByUser.total,
+                    userId: daysWithActivityByUser.user_id,
+                    data: daysWithActivityByUser.by_date.map((activity) => { 
                         return {
                             x: new Date(activity.date).getTime(),
-                            y: activity.total
+                            y: parseInt(activity.total)
                         } 
-                    }) : [{
-                        x: null,
-                        y: 0
-                    }]
+                    })
                 }]);
                 this.chartOptionsByUser.push({
                     ...this.areaChartOptions,
@@ -147,13 +168,32 @@ export default {
                         text: ''
                     },
                     chart: {
-                        id: 'userschart-' + totalActivityByUser.user_id,
+                        id: 'userschart-' + daysWithActivityByUser.user_id,
                         height: 160,
                         type: 'area',
                         group: 'activities',
                         toolbar: {
-                            show: false,
-                            autoSelected: 'pan'
+                            show: true,
+                            tools: {
+                                download: true,
+                                selection: false,
+                                zoom: true,
+                                zoomin: true,
+                                zoomout: true,
+                                pan: true,
+                            }
+                        },
+                    },
+                    xaxis: {
+                        type: 'datetime',
+                        min: startDate,
+                        max: endDate
+                    },
+                    yaxis: {
+                        max: maximumOfActivitiesInADay,
+                        tickAmount: 4,
+                        labels: {
+                            minWidth: 48
                         }
                     }
                 });
@@ -179,6 +219,7 @@ export default {
         .users-charts__card--header {
             display: flex;
             align-items: center;
+            padding: 6px 12px 2px 12px;
 
             img,
             .anonymous-user-avatar {
@@ -186,7 +227,18 @@ export default {
                 border-radius: 2px;
                 width: 32px;
                 height: 32px;
-                background-color: var(--tainacan-gray1, #f2f2f2);
+                background-color: var(--tainacan-gray2, #dbdbdb);
+            }
+            .anonymous-user-avatar:before {
+                content: "?";
+                color: var(--tainacan-gray5, #454647);
+                font-size: 1.5em;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
             }
 
             .users-charts__card--header-text {
