@@ -158,7 +158,6 @@ const state = {
           }
         },
       },
-      colors: ['#7BD39A'],
       dataLabels: {
         enabled: false
       },

@@ -1,9 +1,29 @@
 <template>
     <div>
         <div 
-                v-if="!isFetchingData && chartData && !isBuildingChart"
+                v-if="!isFetchingData && chartData && !isBuildingChart && !isFetchingUsers"
                 class="postbox">
+            <div class="users-charts">
+                <template v-if="!isFetchingUsers">
+                    <div 
+                            class="users-charts__card"
+                            v-for="(user, index) of users"
+                            :key="index">
+                        <div class="users-charts__card--header">
+                            <img :src="user.avatar_urls['48']">
+                            <p>{{ user.name }}</p>
+                        </div>
+                        <apexchart
+                                type="area"
+                                height="160"
+                                :series="chartSeriesByUser[user.id]"
+                                :options="chartOptionsByUser" />
+                    </div>
+                </template>
+            </div>
             <apexchart
+                    type="area"
+                    height="200"
                     :series="chartSeries"
                     :options="chartOptions" />
         </div>
@@ -15,100 +35,103 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {
     mixins: [ reportsChartMixin ],
+    data() {
+        return {
+            isFetchingUsers: false,
+            users: [],
+            chartSeriesByUser: [],
+            chartOptionsByUser: {}
+        }
+    },
+    computed: {
+        ...mapGetters('report', {
+            areaChartOptions: 'getAreaChartOptions',
+        })
+    },
     watch: {
         chartData: {
             handler() {
-                if (this.chartData)
+                if (this.chartData && this.chartData.totals)
                     this.buildActivitiesChart();
             },
             immediate: true
         }
     },
+    created() {
+        this.isFetchingUsers = true;
+        this.fetchUsers({ search: '' })
+            .then((resp) => {
+                this.users = resp.users;
+                this.isFetchingUsers = false;
+            })
+            .catch(() => {
+                this.isFetchingUsers = false;
+            })
+    },
     methods: {
+        ...mapActions('activity', {
+            fetchUsers: 'fetchUsers',
+        }),
         buildActivitiesChart() {
             this.isBuildingChart =  true;
 
-            const daysWithActivities = this.chartData && this.chartData.totals && this.chartData.totals.last_year && this.chartData.totals.last_year.general ? this.chartData.totals.last_year.general : []; 
-            if (daysWithActivities && daysWithActivities.length) {
-                
-                let everyDayOfTheYear = Array.from(new Array(7),
-                    (val,index) => {
+            const daysWithActivities = (this.chartData.totals.by_interval && this.chartData.totals.by_interval.general) ? this.chartData.totals.by_interval.general : []; 
+           
+            this.chartSeries = [{ 
+                data: daysWithActivities.map((activity) => { 
+                    return {
+                        x: new Date(activity.date).getTime(),
+                        y: activity.total
+                    } 
+                })
+            }];
+            const daysWithActivitiesByUser = this.chartData.totals.by_interval.by_user;
+            Object.keys(daysWithActivitiesByUser).forEach((userId) => {
+                this.chartSeriesByUser[userId] = [{ 
+                    data: daysWithActivitiesByUser[userId].map((activity) => { 
                         return {
-                            name: (index + 1),
-                            data: new Array(53).fill({ x: '', y: 0 })
-                        }
+                            x: new Date(activity.date).getTime(),
+                            y: activity.total
+                        } 
+                    })
+                }];
+            }); 
+            this.chartOptions = {
+                ...this.areaChartOptions,
+                title: {
+                    text: this.$i18n.get('label_activities_last_year')
+                },
+                chart: {
+                    id: 'generalchart',
+                    height: 200,
+                    type: 'area',
+                    group: 'activities',
+                    toolbar: {
+                        autoSelected: 'selection',
+                    },
+                },
+                colors: ['#01295c'],
+            };
+
+            this.chartOptionsByUser = {
+                ...this.areaChartOptions,
+                title: {
+                    text: ''
+                },
+                chart: {
+                    id: 'userschart',
+                    height: 160,
+                    type: 'area',
+                    group: 'activities',
+                    toolbar: {
+                        show: false,
+                        autoSelected: 'pan'
                     }
-                );
-                
-                const firstDayOfTheWeekWithActivity = parseInt(daysWithActivities[0].day_of_week);
-                let dayWithActivityIndex = 0;
-                let daysToSkip = 0;
-
-                // Loop for each column (number of the week in the year)
-                for (let column = 0; column < 53; column++) {
-
-                    // Loop for each line (number of the day in the week)
-                    for (let line = 0; line < 7; line++) {
-
-                        // If there are no more days with chartData, get outta here
-                        if (dayWithActivityIndex < daysWithActivities.length - 1) {
-                                
-                            // We should only begin inserting days from firstDayOfTheWeekWithActivity
-                            if (column == 0 && line < firstDayOfTheWeekWithActivity - 1) {
-                                continue;
-
-                            // On the first day, we don't need to calculate distances, just set the value and save the date
-                            } else if (column == 0 && line == firstDayOfTheWeekWithActivity - 1) {
-                                everyDayOfTheYear[line].data[column] = {
-                                    x: '',
-                                    y: parseInt(daysWithActivities[dayWithActivityIndex].total)
-                                };
-
-                                const lastDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].date);
-                                dayWithActivityIndex++;
-
-                                const nextDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].date);
-
-                                daysToSkip = Math.floor( (nextDayWithActivity - lastDayWithActivity) / (1000 * 60 * 60 * 24) );
-                            } else {
-                                daysToSkip--;
-
-                                // If we don't have more days to skip, time to update values
-                                if ( daysToSkip <= 0) {
-                                    everyDayOfTheYear[line].data[column] = {
-                                        x: '',
-                                        y: parseInt(daysWithActivities[dayWithActivityIndex].total)
-                                    };
-
-                                    const lastDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].date);
-                                    dayWithActivityIndex++;
-
-                                    const nextDayWithActivity = new Date(daysWithActivities[dayWithActivityIndex].date);
-
-                                    daysToSkip = Math.floor( (nextDayWithActivity - lastDayWithActivity) / (1000 * 60 * 60 * 24) );
-                                }
-                            }
-                        }
-                    }
-                }
-                this.chartSeries = everyDayOfTheYear;
-                this.chartOptions = {
-                        ...this.heatMapChartOptions,
-                        title: {
-                            text: this.$i18n.get('label_activities_last_year')
-                        },
-                };
-            } else {
-                this.chartSeries = [];
-                this.chartOptions = {
-                        ...this.heatMapChartOptions,
-                        title: {
-                            text: this.$i18n.get('label_activities_last_year')
-                        },
                 }
             }
 
@@ -117,3 +140,37 @@ export default {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.postbox {
+    display: flex;
+    flex-direction: column-reverse;
+}
+.users-charts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+
+    .users-charts__card {
+        width: calc(33.3333% - 48px);
+        max-width: calc(33.3333% - 48px);
+        padding: 24px;
+
+        .users-charts__card--header {
+            display: flex;
+            align-items: center;
+
+            img {
+                margin-right: 0.75em;
+                border-radius: 2px;
+                width: 32px;
+                height: 32px;
+            }
+            p {
+                font-weight: bold;
+                font-size: 1.125em;
+            }
+        }
+    }
+}
+</style>
