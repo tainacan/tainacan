@@ -563,6 +563,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_pie_chart'								 => __( 'Pie chart', 'tainacan'),
 	'label_bar_chart'								 => __( 'Bar chart', 'tainacan'),
 	'label_terms_per_page'							 => __( 'Terms per page', 'tainacan'),
+	'label_anonymous_user'							 => __( 'Anonymous User', 'tainacan'),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

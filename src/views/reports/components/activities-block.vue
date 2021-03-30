@@ -3,23 +3,33 @@
         <div 
                 v-if="!isFetchingData && chartData && !isBuildingChart && !isFetchingUsers"
                 class="postbox">
-            <div class="users-charts">
-                <template v-if="!isFetchingUsers">
+            <div class="users-charts columns is-multiline">
+                <div 
+                        class="users-charts__card column is-one-third is-half-tablet"
+                        v-for="(chartSeries, index) of chartSeriesByUser"
+                        :key="index">
                     <div 
-                            class="users-charts__card"
-                            v-for="(user, index) of users"
-                            :key="index">
-                        <div class="users-charts__card--header">
-                            <img :src="user.avatar_urls['48']">
-                            <p>{{ user.name }}</p>
-                        </div>
-                        <apexchart
-                                type="area"
-                                height="160"
-                                :series="chartSeriesByUser[user.id]"
-                                :options="chartOptionsByUser" />
+                            v-if="chartSeries[0].userId == 0"
+                            class="users-charts__card--header">
+                        <div class="anonymous-user-avatar" />
+                        <p>{{ $i18n.get('label_anonymous_user') }}</p>
+                        <span>{{ chartSeries[0].total }}</span>
                     </div>
-                </template>
+                    <div 
+                            v-if="chartSeries[0].userId != 0 && users[chartSeries[0].userId]"
+                            class="users-charts__card--header">
+                        <img :src="users[chartSeries[0].userId].avatar_urls['48']">
+                        <div class="users-charts__card--header-text">
+                            <p>{{ users[chartSeries[0].userId].name }}</p>
+                            <span>{{ chartSeries[0].total }}</span>
+                        </div>
+                    </div>
+                    <apexchart
+                            type="area"
+                            height="160"
+                            :series="chartSeries"
+                            :options="chartOptionsByUser[index]" />
+                </div>
             </div>
             <apexchart
                     type="area"
@@ -43,9 +53,9 @@ export default {
     data() {
         return {
             isFetchingUsers: false,
-            users: [],
+            users: {},
             chartSeriesByUser: [],
-            chartOptionsByUser: {}
+            chartOptionsByUser: []
         }
     },
     computed: {
@@ -66,7 +76,9 @@ export default {
         this.isFetchingUsers = true;
         this.fetchUsers({ search: '' })
             .then((resp) => {
-                this.users = resp.users;
+                resp.users.forEach((user) => {
+                    this.users[user.id] = user;
+                });
                 this.isFetchingUsers = false;
             })
             .catch(() => {
@@ -82,25 +94,19 @@ export default {
 
             const daysWithActivities = (this.chartData.totals.by_interval && this.chartData.totals.by_interval.general) ? this.chartData.totals.by_interval.general : []; 
            
-            this.chartSeries = [{ 
-                data: daysWithActivities.map((activity) => { 
-                    return {
-                        x: new Date(activity.date).getTime(),
-                        y: activity.total
-                    } 
-                })
-            }];
-            const daysWithActivitiesByUser = this.chartData.totals.by_interval.by_user;
-            Object.keys(daysWithActivitiesByUser).forEach((userId) => {
-                this.chartSeriesByUser[userId] = [{ 
-                    data: daysWithActivitiesByUser[userId].map((activity) => { 
-                        return {
-                            x: new Date(activity.date).getTime(),
-                            y: activity.total
-                        } 
-                    })
-                }];
-            }); 
+           this.chartSeries = [{
+               data: []
+           }];
+           let maximumOfActivitiesInADay = 0;
+           daysWithActivities.forEach((activity) => {
+                this.chartSeries[0].data.push({
+                    x: new Date(activity.date).getTime(),
+                    y: activity.total
+                });
+                if (maximumOfActivitiesInADay < activity.total)
+                    maximumOfActivitiesInADay = activity.total
+            });
+            console.log(maximumOfActivitiesInADay);
             this.chartOptions = {
                 ...this.areaChartOptions,
                 title: {
@@ -118,23 +124,41 @@ export default {
                 colors: ['#01295c'],
             };
 
-            this.chartOptionsByUser = {
-                ...this.areaChartOptions,
-                title: {
-                    text: ''
-                },
-                chart: {
-                    id: 'userschart',
-                    height: 160,
-                    type: 'area',
-                    group: 'activities',
-                    toolbar: {
-                        show: false,
-                        autoSelected: 'pan'
+            const daysWithActivitiesByUser = this.chartData.totals.by_interval.by_user;
+            const totalOfActivitiesByUser = this.chartData.totals.by_user.sort((a, b) => b.total - a.total);
+            
+            totalOfActivitiesByUser.forEach((totalActivityByUser) => {
+                this.chartSeriesByUser.push([{
+                    total: totalActivityByUser.total,
+                    userId: totalActivityByUser.user_id,
+                    data: daysWithActivitiesByUser[totalActivityByUser.user_id] ? daysWithActivitiesByUser[totalActivityByUser.user_id].map((activity) => { 
+                        return {
+                            x: new Date(activity.date).getTime(),
+                            y: activity.total
+                        } 
+                    }) : [{
+                        x: null,
+                        y: 0
+                    }]
+                }]);
+                this.chartOptionsByUser.push({
+                    ...this.areaChartOptions,
+                    title: {
+                        text: ''
+                    },
+                    chart: {
+                        id: 'userschart-' + totalActivityByUser.user_id,
+                        height: 160,
+                        type: 'area',
+                        group: 'activities',
+                        toolbar: {
+                            show: false,
+                            autoSelected: 'pan'
+                        }
                     }
-                }
-            }
-
+                });
+            }); 
+            
             setTimeout(() => this.isBuildingChart = false, 500);
         }
     }
@@ -147,28 +171,36 @@ export default {
     flex-direction: column-reverse;
 }
 .users-charts {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
+    padding: 12px;
 
     .users-charts__card {
-        width: calc(33.3333% - 48px);
-        max-width: calc(33.3333% - 48px);
         padding: 24px;
 
         .users-charts__card--header {
             display: flex;
             align-items: center;
 
-            img {
+            img,
+            .anonymous-user-avatar {
                 margin-right: 0.75em;
                 border-radius: 2px;
                 width: 32px;
                 height: 32px;
+                background-color: var(--tainacan-gray1, #f2f2f2);
             }
-            p {
-                font-weight: bold;
-                font-size: 1.125em;
+
+            .users-charts__card--header-text {
+                display: flex;
+                flex-direction: column;
+                
+                p {
+                    font-weight: bold;
+                    font-size: 1.0em;
+                    margin: 0;
+                }
+                span {
+                    color: var(--tainacan-secondary, #298596);
+                }
             }
         }
     }

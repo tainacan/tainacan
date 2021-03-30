@@ -146,17 +146,6 @@ const state = {
         toolbar: {
           autoSelected: 'selection',
         },
-        // brush: {
-        //   enabled: true,
-        //   target: 'chartyear'
-        // },
-        selection: {
-          enabled: true,
-          xaxis: {
-            min: new Date('2010-03-29').getTime(),
-            max: new Date('2020-03-29').getTime()
-          }
-        },
       },
       dataLabels: {
         enabled: false
@@ -167,7 +156,13 @@ const state = {
       },
       fill: {
         opacity: 1,
-        type: 'solid'
+        type: 'gradient',
+        gradient: {
+          shade: 'light',
+          type: "vertical",
+          opacityFrom: 0.9,
+          opacityTo: 0.85,
+        }
       },
       legend: {
         position: 'top',
@@ -176,6 +171,11 @@ const state = {
       xaxis: {
         type: 'datetime'
       },
+      yaxis: {
+        labels: {
+            minWidth: 64
+        }
+      }
     }
 };
 
