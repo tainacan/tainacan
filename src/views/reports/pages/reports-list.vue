@@ -18,10 +18,10 @@
         </select>
         <div class="columns is-multiline">
             <div 
-                    :class="{ 'is-three-fifths-desktop': selectedCollection && selectedCollection != 'default' }"
+                    :class="{ 'is-three-fifths-desktop': !isRepositoryLevel }"
                     class="column is-full columns is-multiline">
                 <div 
-                        v-if="!selectedCollection || selectedCollection == 'default'"
+                        v-if="isRepositoryLevel"
                         class="column is-full is-one-third-tablet has-text-centered">
                     <number-block
                             :class="{ 'skeleton': isFetchingSummary }"
@@ -30,7 +30,7 @@
                             entity-type="collections" />
                 </div>
                 <div
-                        :class="{ 'is-one-third-tablet': !selectedCollection || selectedCollection == 'default' }"
+                        :class="{ 'is-one-third-tablet': isRepositoryLevel }"
                         class="column is-full is-half-tablet has-text-centered">
                     <number-block 
                             :class="{ 'skeleton': isFetchingSummary }"
@@ -39,9 +39,9 @@
                             entity-type="items"/>
                 </div>
                 <div 
-                        v-if="!selectedCollection || selectedCollection == 'default'"
+                        v-if="isRepositoryLevel"
                         class="column is-full is-one-third-tablet has-text-centered">
-                <number-block
+                    <number-block
                             :class="{ 'skeleton': isFetchingSummary }"
                             class="postbox"
                             :summary="summary"
@@ -50,88 +50,30 @@
                 <div 
                         v-else
                         class="column is-full is-half-tablet has-text-centered">
-                <number-block
+                    <number-block
                             :class="{ 'skeleton': isFetchingMetadata }"
                             class="postbox"
                             :summary="metadata"
                             entity-type="metadata" />
                 </div>
-                <div 
-                    v-if="!selectedCollection || selectedCollection == 'default'"
-                        class="column is-full">
-                    <apexchart
-                            v-if="!isFetchingCollectionsList"
-                            height="380px"
-                            class="postbox"
-                            :series="collectionsListChartSeries"
-                            :options="collectionsListChartOptions" />
-                    <div 
-                            v-else
-                            style="min-height=380px"
-                            class="skeleton postbox" />
-                </div>
+                <collections-list-block
+                        v-if="isRepositoryLevel" />
 
                 <terms-per-taxonomy-block 
-                        v-if="!selectedCollection || selectedCollection == 'default'"/>
+                        v-if="isRepositoryLevel"/>
                 
                 <items-per-term-block 
-                        v-if="!selectedCollection || selectedCollection == 'default'" />
+                        v-if="isRepositoryLevel" />
 
                 <metadata-types-block
-                        v-if="selectedCollection && selectedCollection != 'default'" />
+                        v-if="!isRepositoryLevel" />
             </div>
-            <div 
-                    v-if="selectedCollection && selectedCollection != 'default'"
-                    class="column is-full is-two-fifths-desktop">
-                <div 
-                        v-if="!isFetchingMetadata && metadata.totals && metadata.totals.metadata"
-                        :style="{
-                            maxHeight: ((170 + (metadata.totals.metadata.total * 36)) <= 690 ? (170 + (metadata.totals.metadata.total * 36)) : 690) + 'px'
-                        }"
-                        class="postbox metadata-distribution-box">
-                    <apexchart
-                            :height="100 + (metadata.totals.metadata.total * 36)"
-                            :series="metadataDistributionChartSeries"
-                            :options="metadataDistributionChartOptions" />
-                </div>
-                <div 
-                        v-else
-                        style="min-height=740px"
-                        class="skeleton postbox metadata-distribution-box" />
-            </div>
+            <metadata-distribution-block 
+                    v-if="!isRepositoryLevel"/>
         </div>
         <div class="columns">
-            <div 
-                    v-if="metadataList != undefined && (selectedCollection && selectedCollection != 'default')"
-                    class="column is-full">
-                <div
-                        style="margin-top: 0px"
-                        class="postbox">
-                    <label>{{ $i18n.get('label_amount_of_items_per_metadatum_value') }}&nbsp;</label>
-                    <select 
-                            v-if="!isFetchingMetadataList"
-                            name="select_metadata"
-                            id="select_metadata"
-                            :placeholder="$i18n.get('label_select_a_metadatum')"
-                            v-model="selectedMetadatum">
-                        <option 
-                                v-for="(metadatum, index) of metadataListArray"
-                                :key="index"
-                                :value="metadatum.id">
-                            {{ metadatum.name }} 
-                        </option>
-                    </select>
-                    <apexchart
-                            v-if="!isFetchingMetadataList && selectedMetadatum"
-                            height="380px"
-                            :series="metadataListChartSeries"
-                            :options="metadataListChartOptions" />
-                    <div 
-                        v-else
-                        style="min-height=380px"
-                        class="skeleton postbox" />
-                </div>
-            </div>
+            <metadata-list-block 
+                    v-if="!isRepositoryLevel" />
         </div>
     </div>
 </template>
@@ -144,20 +86,11 @@ export default {
     data() {
         return {
             selectedCollection: 'default',
-            selectedMetadatum: '',
             isFetchingCollections: false,
             isFetchingSummary: false,
             isFetchingCollectionsList: false,
             isFetchingMetadata: false,
-            isFetchingMetadataList: false,
             isFetchingActivities: false,
-            collectionsListChartSeries: [],
-            collectionsListChartOptions: {},
-            metadataListChartSeries: [],
-            metadataListChartOptions: {},
-            metadataDistributionChartSeries: [],
-            metadataDistributionChartOptions: {},
-            metadataDistributionChartHeight: 730,
             activitiesChartSeries: [],
             activitiesChartOptions: {}
         }
@@ -169,16 +102,12 @@ export default {
         ...mapGetters('report', {
             summary: 'getSummary',
             metadata: 'getMetadata',
-            metadataList: 'getMetadataList',
-            collectionsList: 'getCollectionsList',
             activities: 'getActivities',
-            stackedBarChartOptions: 'getStackedBarChartOptions',
-            horizontalBarChartOptions: 'getHorizontalBarChartOptions',
             //heatMapChartOptions: 'getHeatMapChartOptions'
         }),
-        metadataListArray() {
-            return this.metadata && this.metadata != undefined && this.metadata.distribution ? Object.values(this.metadata.distribution) : [];
-        },
+        isRepositoryLevel() {
+            return !this.selectedCollection || this.selectedCollection == 'default';
+        }
     },
     watch: {
         '$route.query': {
@@ -193,10 +122,6 @@ export default {
                 
             },
             immediate: true
-        },
-        selectedMetadatum() {
-            if (this.selectedMetadatum && this.selectedMetadatum != '')
-                this.loadMetadataList();
         }
     },
     created() {
@@ -214,7 +139,6 @@ export default {
             'fetchSummary',
             'fetchCollectionsList',
             'fetchMetadata',
-            'fetchMetadataList',
             'fetchActivities'
         ]),
         loadCollections() {
@@ -232,178 +156,14 @@ export default {
         loadMetadata() {
             this.isFetchingMetadata = true;
             this.fetchMetadata({ collectionId: this.selectedCollection })
-                .then(() => {
-
-                    if (this.metadata.distribution) {
-
-                        // Building Metadata Distribution Bar chart
-                        const orderedMetadataDistributions = Object.values(this.metadata.distribution).sort((a, b) => b.fill_percentage - a.fill_percentage );
-                        let metadataDistributionValues = [];
-                        let metadataDistributionValuesInverted = [];
-                        let metadataDistributionLabels = [];
-                        const metadataCount = 100 + (this.metadata.totals.metadata.total * 36);
-
-                        orderedMetadataDistributions.forEach(metadataDistribution => {
-                            metadataDistributionValues.push(parseFloat(metadataDistribution.fill_percentage));
-                            metadataDistributionValuesInverted.push(100.0000 - parseFloat(metadataDistribution.fill_percentage).toFixed(4));
-                            metadataDistributionLabels.push(metadataDistribution.name);
-                        })
-
-                        // Sets first metadatum as the selected one 
-                        if (orderedMetadataDistributions.length)
-                            this.selectedMetadatum = orderedMetadataDistributions[0].id;
-
-                        this.metadataDistributionChartSeries = [
-                            { 
-                                name: this.$i18n.get('label_filled'),
-                                data: metadataDistributionValues
-                            },
-                            { 
-                                name: this.$i18n.get('label_not_filled'),
-                                data: metadataDistributionValuesInverted
-                            }
-                        ];
-                        this.metadataDistributionChartOptions = {
-                            ...this.horizontalBarChartOptions,
-                            ...{
-                                chart: {
-                                    type: 'bar',
-                                    height: metadataCount,
-                                    stacked: true,
-                                    stackType: '100%',
-                                    toolbar: {
-                                        show: true
-                                    },
-                                    zoom: {
-                                        type: 'y',
-                                        enabled: true,
-                                        autoScaleYaxis: true,
-                                    }
-                                },
-                                title: {
-                                    text: this.$i18n.get('label_metadata_fill_distribution')
-                                },
-                                labels: metadataDistributionLabels,
-                                colors: ['#25a189', '#a23939']
-                            }
-                        }
-                    }
-
-                    this.isFetchingMetadata = false;
-                })
+                .then(() => this.isFetchingMetadata = false)
                 .catch(() => this.isFetchingMetadata = false);
         },
         loadCollectionsList() {
             this.isFetchingCollectionsList = true;
             this.fetchCollectionsList()
-                .then(() => {
-
-                    // Building Collections items chart
-                    const orderedCollections = Object.values(this.collectionsList).sort((a, b) =>  b.items.total - a.items.total);
-                    let privateItems = [];
-                    let publicItems = [];
-                    let trashItems = [];
-                    let draftItems = [];
-                    let collectionsLabels = [];
-
-                    orderedCollections.forEach(collection => {
-                        privateItems.push(collection.items.private);
-                        publicItems.push(collection.items.publish);
-                        draftItems.push(collection.items.draft);
-                        trashItems.push(collection.items.trash);
-                        collectionsLabels.push(collection.name);
-                    });
-
-                    this.collectionsListChartSeries = [
-                        {
-                            name: this.$i18n.get('status_publish'),
-                            data: publicItems
-                        },
-                        {
-                            name: this.$i18n.get('status_private'),
-                            data: privateItems
-                        },
-                        {
-                            name: this.$i18n.get('status_draft'),
-                            data: draftItems
-                        },
-                        {
-                            name: this.$i18n.get('status_trash'),
-                            data: trashItems
-                        }
-                    ];
-                    
-                    this.collectionsListChartOptions = {
-                        ...this.stackedBarChartOptions, 
-                        ...{
-                            title: {
-                                text: this.$i18n.get('label_items_per_collection')
-                            },
-                            xaxis: {
-                                type: 'category',
-                                tickPlacement: 'on',
-                                categories: collectionsLabels,
-                                labels: {
-                                    show: true,
-                                    trim: true,
-                                    hideOverlappingLabels: false
-                                },
-                                tooltip: true
-                            },
-                            yaxis: {
-                                title: {
-                                    text: this.$i18n.get('items')
-                                }
-                            }
-                        }
-                    }
-                    
-                    this.isFetchingCollectionsList = false;
-                })
+                .then(() => this.isFetchingCollectionsList = false)
                 .catch(() => this.isFetchingCollectionsList = false);
-        },
-        loadMetadataList() {
-            this.isFetchingMetadataList = true;
-            this.fetchMetadataList({ collectionId: this.collectionId, metadatumId: this.selectedMetadatum })
-                .then(() => {
-                    
-                    // Building Metadata term usage chart
-                    const orderedMetadata = Object.values(this.metadataList).sort((a, b) => b.total_items - a.total_items);
-                    let metadataItemValues = [];
-                    let metadataItemLabels = [];
-
-                    orderedMetadata.forEach(metadataItem => {
-                        metadataItemValues.push(metadataItem.total_items);
-                        metadataItemLabels.push(metadataItem.label);
-                    }); 
-
-                    this.metadataListChartSeries = [
-                        {
-                            name: this.$i18n.get('label_items_with_this_metadum_value'),
-                            data: metadataItemValues
-                        }
-                    ];
-                    
-                    this.metadataListChartOptions = {
-                        ...this.stackedBarChartOptions, 
-                        ...{
-                            title: {},
-                            xaxis: {
-                                type: 'category',
-                                tickPlacement: 'on',
-                                categories: metadataItemLabels,
-                            },
-                            yaxis: {
-                                title: {
-                                    text: this.$i18n.get('label_number_of_items')
-                                }
-                            }
-                        }
-                    }
-                    
-                    this.isFetchingMetadataList = false;
-                })
-                .catch(() => this.isFetchingMetadataList = false);
         },
         loadActivities() {
             this.isFetchingActivities = true;

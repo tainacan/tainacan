@@ -1,7 +1,7 @@
 <template>
     <div class="column is-full">
         <div 
-                v-if="metadata && metadata.totals && !isBuildingMetadataTypeChart"
+                v-if="metadata && metadata.totals && metadata.totals.metadata_per_type && !isBuildingMetadataTypeChart"
                 class="postbox">
             <label>{{ $i18n.get('metadata_types') }}&nbsp;</label>
             <div class="graph-mode-switch">
@@ -47,7 +47,7 @@ export default {
             isBuildingMetadataTypeChart: false,
             metadataTypeChartMode: 'bar',
             metadataTypeChartSeries: [],
-            metadataTypeChartOptions: {},
+            metadataTypeChartOptions: {}
         }
     },
     computed: {
@@ -61,13 +61,16 @@ export default {
         metadataTypeChartMode() {
             this.buildMetadataTypeChart();
         },
-        metadata() {
-            this.buildMetadataTypeChart();
+        metadata: {
+            handler() {
+                this.buildMetadataTypeChart();
+            },
+            immediate: true
         }
     },
     methods: {
         buildMetadataTypeChart() {
-
+            
             this.isBuildingMetadataTypeChart = true;
 
             // Building Metadata Type Donut Chart
@@ -104,7 +107,7 @@ export default {
                                 trim: true,
                                 hideOverlappingLabels: false
                             },
-                            tooltip: true
+                            tooltip: { enabled: true }
                         }
                     }
                 }));

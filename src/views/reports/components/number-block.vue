@@ -15,7 +15,7 @@
             &nbsp;{{ $i18n.get(entityType) }}
         </p>
         <p 
-                v-if="summary.totals && entityType == 'taxonomies'"
+                v-if="summary.totals && summary.totals[entityType] && entityType == 'taxonomies'"
                 class="subtitle is-6">
             {{ $i18n.get('label_used') + ': ' + summary.totals[entityType].used + ' | ' + $i18n.get('label_not_used') + ': ' + summary.totals[entityType].not_used }}
         </p>
@@ -58,14 +58,14 @@ export default {
     },
     computed: {
         total() {
-            return this.summary && this.summary.totals && this.summary.totals[this.entityType] ? this.summary.totals[this.entityType].total : 0;
+            return this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].total ? this.summary.totals[this.entityType].total : 0;
         },
         totalByStatus() {
             return {
-                'publish': this.summary && this.summary.totals && this.summary.totals[this.entityType] ? this.summary.totals[this.entityType].publish : 0,
-                'private': this.summary && this.summary.totals && this.summary.totals[this.entityType] ? this.summary.totals[this.entityType].private : 0,
-                'draft': this.summary && this.summary.totals && this.summary.totals[this.entityType] ? this.summary.totals[this.entityType].draft : 0,
-                'trash': this.summary && this.summary.totals && this.summary.totals[this.entityType] ? this.summary.totals[this.entityType].trash : 0
+                'publish': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].publish ? this.summary.totals[this.entityType].publish : 0,
+                'private': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].private ? this.summary.totals[this.entityType].private : 0,
+                'draft': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].draft ? this.summary.totals[this.entityType].draft : 0,
+                'trash': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].trash ? this.summary.totals[this.entityType].trash : 0
             }
         }
     }

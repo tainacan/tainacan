@@ -145,10 +145,13 @@ export default {
             },
             immediate: true
         },
-        selectedTaxonomy() {
-            this.termsDisplayedPage = 1;
-            if (this.selectedTaxonomy && this.selectedTaxonomy.id)
-                this.loadTaxonomyTerms();
+        selectedTaxonomy: {
+            handler() {
+                this.termsDisplayedPage = 1;
+                if (this.selectedTaxonomy && this.selectedTaxonomy.id)
+                    this.loadTaxonomyTerms();
+            },
+            immediate: true
         },
         termsDisplayedPage() {
             this.buildTaxonomyTermsChart();
@@ -197,7 +200,7 @@ export default {
                             trim: true,
                             hideOverlappingLabels: false
                         },
-                        tooltip: true
+                        tooltip: { enabled: true }
                     },
                     yaxis: {
                         title: {
