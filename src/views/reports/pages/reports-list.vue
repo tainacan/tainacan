@@ -91,11 +91,11 @@
                     class="column is-full"
                     :chart-data="metadataList"
                     v-if="!isRepositoryLevel" />
-            <!-- <activities-block
+            <activities-block
                     class="column is-full"
                     :chart-data="activities"
                     :is-fetching-data="isFetchingActivities"
-                    v-if="isRepositoryLevel" /> -->
+                    v-if="isRepositoryLevel" />
         </div>
     </div>
 </template>

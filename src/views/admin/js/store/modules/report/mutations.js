@@ -41,3 +41,7 @@ export const setDonutChartOptions = (state, donutChartOptions) => {
 export const setHeatMapChartOptions = (state, heatMapChartOptions) => {
   state.heatMapChartOptions = heatMapChartOptions;
 };
+
+export const setAreaChartOptions = (state, areaChartOptions) => {
+  state.areaChartOptions = areaChartOptions;
+};

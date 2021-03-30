@@ -139,17 +139,43 @@ const state = {
         offsetX: 40,
       }
     },
-    heatMapChartOptions: {
+    areaChartOptions: {
       chart: {
-        height: 350,
-        type: 'heatmap',
+        height: 200,
+        type: 'area',
+        toolbar: {
+          autoSelected: 'selection',
+        },
+        // brush: {
+        //   enabled: true,
+        //   target: 'chartyear'
+        // },
+        selection: {
+          enabled: true,
+          xaxis: {
+            min: new Date('2010-03-29').getTime(),
+            max: new Date('2020-03-29').getTime()
+          }
+        },
       },
+      colors: ['#7BD39A'],
       dataLabels: {
         enabled: false
       },
-      colors: [ '#298596' ],
-      title: {
-        text: ''
+      stroke: {
+        width: 0,
+        curve: 'smooth'
+      },
+      fill: {
+        opacity: 1,
+        type: 'solid'
+      },
+      legend: {
+        position: 'top',
+        horizontalAlign: 'left'
+      },
+      xaxis: {
+        type: 'datetime'
       },
     }
 };

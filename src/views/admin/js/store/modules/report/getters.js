@@ -41,3 +41,7 @@ export const getDonutChartOptions = state => {
 export const getHeatMapChartOptions = state => {
   return state.heatMapChartOptions;
 };
+
+export const getAreaChartOptions = state => {
+  return state.areaChartOptions;
+};
