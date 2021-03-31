@@ -15,8 +15,9 @@ class REST_Reports_Controller extends REST_Controller {
 	}
 
 	public function init_objects() {
-		$this->metadatum_repository = Repositories\Metadata::get_instance();
+		$this->items_repository = Repositories\Items::get_instance();
 		$this->taxonomy_repository = Repositories\Taxonomies::get_instance();
+		$this->metadatum_repository = Repositories\Metadata::get_instance();
 		$this->collections_repository = Repositories\Collections::get_instance();
 	}
 
@@ -220,6 +221,31 @@ class REST_Reports_Controller extends REST_Controller {
 							'title'       => __( 'start Date', 'tainacan' ),
 							'type'        => 'string',
 							'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
+						],
+						'force' => [
+							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'type'        => 'string',
+							'default' 	  => 'no',
+							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'enum'    	  => array(
+								'no',
+								'yes'
+							)
+						]
+					]
+				),
+			)
+		);
+		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/metadata/(?P<metadata_id>[\d]+)',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_metadata'),
+					'permission_callback' => array($this, 'reports_permissions_check'),
+					'args'                => [
+						'parent' => [
+							'title'       => __( 'parent', 'tainacan' ),
+							'type'        => 'integer',
 						],
 						'force' => [
 							'title'       => __( 'Force regenerete', 'tainacan' ),
@@ -443,6 +469,51 @@ class REST_Reports_Controller extends REST_Controller {
 		return new \WP_REST_Response($response, 200);
 	}
 
+	public function get_metadata($request) {
+		$response = array(
+			'list' => array()
+		);
+		$collection_id = $request['collection_id'];
+		$taxonomy_metadata_id = $request['metadata_id'];;
+		$parent_id = 0;
+		if ( isset($request['parent']) ) {
+			$parent_id = (int) $request['parent'];
+		}
+		
+		$key_cache_object = "facet_taxonomy_$taxonomy_metadata_id-$collection_id-$parent_id";
+		$cached_object = $this->get_cache_object($key_cache_object, $request);
+		if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
+
+		$metadatum = $this->metadatum_repository->fetch($taxonomy_metadata_id);
+		$metadatum_type = $metadatum->get_metadata_type();
+		if($metadatum_type != 'Tainacan\Metadata_Types\Taxonomy') {
+			return new \WP_REST_Response([
+				'error_message' => __('Only taxonomy metadata type has allowed.', 'tainacan'),
+				'metadatum_type'          => $metadatum_type
+			], 400);
+		}
+
+		$args = [
+			'collection_id' => $collection_id,
+			'parent_id' => $parent_id,
+			'count_items'=> true,
+		];
+		$data = $this->metadatum_repository->fetch_all_metadatum_values($taxonomy_metadata_id, $args);
+		$response['list'] = array_map(function($item) {
+			return [
+				'type' => $item['type'],
+				'value' => $item['value'],
+				'label' => $item['label'],
+				'parent' => $item['parent'] == null ? 0 : $item['parent'],
+				'total_items' => intval($item['total_items']),
+				'total_children' => intval($item['total_children']),
+			];
+		}, $data['values']);
+
+		$this->set_cache_object($key_cache_object, $response);
+		return new \WP_REST_Response($response, 200);
+	}
+
 	public function get_stats_collection_metadata($request) {
 		$response = array(
 			'totals'=> array(
@@ -594,15 +665,15 @@ class REST_Reports_Controller extends REST_Controller {
 			$collection_id = $request['collection_id'];
 		}
 
-		if(isset($request['start']) && isset($request['end'])) {
+		if( isset($request['start']) ) {
 			$start = new \DateTime($request['start']);
-			$end = new \DateTime($request['end']);
 
 			$key_cache_object = 'activities_' . $start->format('Y-m-d') . '_' . $collection_id;
 			$cached_object = $this->get_cache_object($key_cache_object, $request);
 			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 
 			$end_limit = $start->add(new \DateInterval('P1Y'));
+			$end = isset($request['end']) ? new \DateTime($request['end']) : $end_limit;
 			if($end > $end_limit)
 				$end = $end_limit;
 			$interval = [
