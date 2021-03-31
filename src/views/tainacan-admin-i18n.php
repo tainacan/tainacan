@@ -555,7 +555,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_select_a_taxonomy'					 	 => __( 'Select a taxonomy', 'tainacan' ),
 	'label_items_with_this_metadum_value'		 	 => __( 'Items with this metadatum value', 'tainacan' ),
 	'label_amount_of_items_per_metadatum_value'		 => __( 'Amount of items per metadatum value', 'tainacan' ),
-	'label_activities_last_year'					 => __( 'Activities last year', 'tainacan' ),
+	'label_activities_during_year'					 => __( 'Activities during the year', 'tainacan' ),
 	'label_compact_list'							 => __( 'Compact list', 'tainacan'),
 	'label_detailed_list'							 => __( 'Detailed list', 'tainacan'),
 	'label_view_metadata_details'					 => __( 'View metadata details', 'tainacan'),
@@ -564,6 +564,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_bar_chart'								 => __( 'Bar chart', 'tainacan'),
 	'label_terms_per_page'							 => __( 'Terms per page', 'tainacan'),
 	'label_anonymous_user'							 => __( 'Anonymous User', 'tainacan'),
+	'label_select_a_year'							 => __( 'Select a year', 'tainacan'),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -730,7 +731,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_warning_taxonomy_not_saved'                => __( 'Are you sure? The taxonomy is not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_terms_not_saved'                   => __( 'Are you sure? There are terms not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_orphan_terms'                      => __( 'Are you sure? This term is parent of other terms. These will be converted to root terms.', 'tainacan' ),
-	'info_no_activities'                             => __( 'No activities yet.', 'tainacan' ),
+	'info_no_activities'                             => __( 'No activities found.', 'tainacan' ),
 	'info_logs_before'                               => __( 'Before', 'tainacan' ),
 	'info_logs_after'                                => __( 'After', 'tainacan' ),
 	'info_there_is_no_metadatum'                     => __( 'There is no metadata here yet.', 'tainacan' ),

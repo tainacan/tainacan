@@ -3,50 +3,56 @@
         <div 
                 :class="{ 'skeleton': isFetchingData || !chartData || isBuildingChart || isFetchingUsers }"
                 class="postbox">
-            <div class="box-header">
-                <div 
-                        v-if="currentStart && currentEnd"
-                        class="box-header__item tablenav-pages">
-                    <label>
-                        {{ $i18n.get('label_activities_last_year') }}&nbsp;
+            <div 
+                    v-if="currentStart && currentEnd"
+                    class="box-header">
+                <div class="box-header__item tablenav-pages">
+                    <label for="start_year">
+                        {{ $i18n.get('label_activities_during_year') }}&nbsp;
                     </label>
                     <span class="pagination-links">
                         <span
-                                @click="(!isBuildingChart && currentStart.getFullYear() > minYear) ? decreaseYear() : null"
-                                :class="{'tablenav-pages-navspan disabled' : isBuildingChart || currentStart.getFullYear() <= minYear}"
+                                @click="(!isBuildingChart && currentStart.getFullYear() > (minYear + 1)) ? decreaseYear() : null"
+                                :class="{'tablenav-pages-navspan disabled' : isBuildingChart || currentStart.getFullYear() <= (minYear + 1) }"
                                 class="prev-page button"
                                 aria-hidden="true">
                             ‹
                         </span>
-                        <input
-                                type="number"
-                                step="1"
-                                :min="minYear"
-                                :max="maxYear"
-                                class="screen-per-page"
+                        <select
                                 name="start_year"
                                 id="start_year"
-                                maxlength="6"
+                                :placeholder="$i18n.get('label_select_a_year')"
                                 :disabled="isBuildingChart"
                                 :value="currentStart.getFullYear()"
                                 @input="($event) => setStartYear($event.target.value)">
+                            <option 
+                                    v-for="index of (maxYear - minYear)"
+                                    :key="index"
+                                    :value="index + minYear">
+                                {{ index + minYear }}
+                            </option>
+                        </select>
                         <span 
-                                @click="(!isBuildingChart && currentStart.getFullYear() <= maxYear) ? increaseYear() : null"
-                                :class="{ 'tablenav-pages-navspan disabled': isBuildingChart || currentStart.getFullYear() > maxYear}"
+                                @click="(!isBuildingChart && currentStart.getFullYear() <= (maxYear - 1)) ? increaseYear() : null"
+                                :class="{ 'tablenav-pages-navspan disabled': isBuildingChart || currentStart.getFullYear() > (maxYear - 1) }"
                                 aria-hidden="true"
                                 class="next-page button">
                             ›
                         </span>
-                        <span class="paging-input">
-                            {{ currentStart.toDateString() }} - {{ currentEnd.toDateString() }}
-                        </span>
+                    </span>
+                </div>
+                <div class="box-header__item">
+                    <label>{{ $i18n.get('instruction_filter_activities_date') + ': ' }}</label>
+                    <span class="paging-input">
+                        {{ currentStart.toDateString() }} - {{ currentEnd.toDateString() }}
                     </span>
                 </div>
             </div>
             <template v-if="!isFetchingData && chartData && !isBuildingChart && !isFetchingUsers">
                 <div class="users-charts columns is-multiline">
                     <div 
-                            class="users-charts__card column is-one-third is-half-desktop"
+                            class="users-charts__card column"
+                            :class="chartSeriesByUser.length > 1 ? 'is-one-third is-half-desktop' : 'is-full'"
                             v-for="(chartSeries, index) of chartSeriesByUser"
                             :key="index">
                         <div 
@@ -97,8 +103,8 @@ export default {
             users: {},
             chartSeriesByUser: [],
             chartOptionsByUser: [],
-            maxYear: new Date().getFullYear() + 1,
-            minYear: 2018,
+            maxYear: new Date().getFullYear(),
+            minYear: 2017,
             currentStart: '',
             currentEnd: ''
         }
@@ -212,7 +218,6 @@ export default {
                 },
                 colors: ['#01295c'],
             };
-            console.log(this.chartSeries, this.chartOptions, this.currentStart, this.currentEnd);
             const daysWithActivitiesByUser = JSON.parse(JSON.stringify(this.chartData.totals.by_interval.by_user)).sort((a, b) => parseInt(b.total) - parseInt(a.total));
 
             this.chartSeriesByUser = [];
