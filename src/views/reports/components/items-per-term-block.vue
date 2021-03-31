@@ -1,10 +1,12 @@
 <template>
-     <div v-if="taxonomiesList != undefined">
+     <div v-if="isRepositoryLevel ? taxonomiesList != undefined : metadataList != undefined">
         <div 
                 :class="{ 'skeleton': isFetchingData || isBuildingChart || isFetchingTaxonomyTerms || !selectedTaxonomy || !selectedTaxonomy.id }"
                 class="postbox">
             <div class="box-header">
-                <div class="box-header__item">
+                <div 
+                        v-if="isRepositoryLevel"
+                        class="box-header__item">
                     <label 
                             v-if="!isFetchingData"
                             for="select_taxonomies">
@@ -21,6 +23,28 @@
                                 :key="index"
                                 :value="taxonomy">
                             {{ taxonomy.name + ' (' + taxonomy.total_terms + ' ' + ( taxonomy.total_terms == 1 ? $i18n.get('term') : $i18n.get('terms') ) + ')' }} 
+                        </option>
+                    </select>
+                </div>
+                <div 
+                        v-else
+                        class="box-header__item">
+                    <label 
+                            v-if="!isFetchingData"
+                            for="select_taxonomies">
+                        {{ $i18n.get('label_items_per_term_from_taxonomy') }}&nbsp;
+                    </label>
+                    <select
+                            v-if="!isFetchingData"
+                            name="select_taxonomies"
+                            id="select_taxonomies"
+                            :placeholder="$i18n.get('label_select_a_taxonomy')"
+                            v-model="selectedTaxonomy">
+                        <option 
+                                v-for="(taxonomy, index) of metadataList"
+                                :key="index"
+                                :value="{ id: taxonomy.metadata_type_options.taxonomy_id, name: taxonomy.name }">
+                            {{ taxonomy.name }}
                         </option>
                     </select>
                 </div>
@@ -111,6 +135,9 @@ import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {
     mixins: [ reportsChartMixin ],
+    props: {
+        isRepositoryLevel: false
+    },
     data() {
         return {
             isFetchingTaxonomyTerms: false,
@@ -120,13 +147,15 @@ export default {
         }
     },
     computed: {
+
         ...mapGetters('report', {
             taxonomiesList: 'getTaxonomiesList',
+            metadataList: 'getMetadataList',
             stackedBarChartOptions: 'getStackedBarChartOptions',
         }),
         taxonomiesListArray() {
             return this.taxonomiesList && this.taxonomiesList != undefined ? Object.values(this.taxonomiesList) : [];
-        },
+        }
     },
     watch: {
         taxonomiesListArray: {
@@ -155,6 +184,9 @@ export default {
     methods: {
         ...mapActions('report', [
             'fetchTaxonomyTerms'
+        ]),
+        ...mapActions('metadata', [
+            'fetchMetadata'
         ]),
         buildTaxonomyTermsChart() {
         

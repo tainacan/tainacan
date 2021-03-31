@@ -20,7 +20,6 @@ import ItemsPerTermBlock from '../components/items-per-term-block.vue';
 import TermsPerTaxonomyBlock from '../components/terms-per-taxonomy-block.vue';
 import MetadataTypesBlock from '../components/metadata-types-block.vue';
 import MetadataDistributionBlock from '../components/metadata-distribution-block.vue';
-import MetadataListBlock from '../components/metadata-list-block.vue';
 import CollectionsListBlock from '../components/collections-list-block.vue';
 import ActivitiesBlock from '../components/activities-block.vue';
 
@@ -48,7 +47,6 @@ Vue.component('items-per-term-block', ItemsPerTermBlock);
 Vue.component('terms-per-taxonomy-block', TermsPerTaxonomyBlock);
 Vue.component('metadata-types-block', MetadataTypesBlock);
 Vue.component('metadata-distribution-block', MetadataDistributionBlock);
-Vue.component('metadata-list-block', MetadataListBlock);
 Vue.component('collections-list-block', CollectionsListBlock);
 Vue.component('activities-block', ActivitiesBlock);
 Vue.component('apexchart', VueApexCharts);

@@ -62,29 +62,31 @@
                         :is-fetching-data="isFetchingCollectionsList"
                         v-if="isRepositoryLevel" />
 
-                <terms-per-taxonomy-block
-                        class="column is-full"
-                        :chart-data="taxonomyList"
-                        :is-fetching-data="isFetchingTaxonomiesList"
-                        v-if="isRepositoryLevel"/>
-                
-                <items-per-term-block
-                        class="column is-full"
-                        :chart-data="taxonomyTerms"
-                        :is-fetching-data="isFetchingTaxonomiesList"
-                        v-if="isRepositoryLevel" />
-
                 <metadata-types-block
                         class="column is-full"
                         :chart-data="metadata"
                         :is-fetching-data="isFetchingMetadata"
                         v-if="!isRepositoryLevel" />
+
+                <terms-per-taxonomy-block
+                        class="column is-full"
+                        :chart-data="taxonomyList"
+                        :is-fetching-data="isFetchingTaxonomiesList"
+                        v-if="isRepositoryLevel"/>
             </div>
             <metadata-distribution-block
                     class="column is-full is-two-fifths-desktop"
                     :chart-data="metadata"
                     :is-fetching-data="isFetchingMetadata"
                     v-if="!isRepositoryLevel"/>
+
+            <items-per-term-block
+                        class="column is-full"
+                        :chart-data="taxonomyTerms"
+                        :is-fetching-data="isRepositoryLevel ? isFetchingTaxonomiesList : isFetchingMetadataList"
+                        :is-repository-level="isRepositoryLevel"
+                        v-if="isRepositoryLevel" />
+
             <activities-block
                     class="column is-full"
                     :chart-data="activities"
@@ -138,6 +140,8 @@ export default {
                 if (this.isRepositoryLevel) {
                     this.loadCollectionsList();
                     this.loadTaxonomiesList();
+                } else {
+                    this.loadMetadataList();
                 }
             },
             immediate: true
@@ -158,6 +162,7 @@ export default {
             'fetchSummary',
             'fetchCollectionsList',
             'fetchMetadata',
+            'fetchMetadataList',
             'fetchTaxonomiesList',
             'fetchActivities'
         ]),
@@ -190,6 +195,12 @@ export default {
             this.fetchTaxonomiesList()
                 .then(() => this.isFetchingTaxonomiesList = false)
                 .catch(() => this.isFetchingTaxonomiesList = false);
+        },
+        loadMetadataList() {
+            this.isFetchingMetadataList = true;
+            this.fetchMetadataList({ collectionId: this.selectedCollection, onlyTaxonomies: true })
+                .then(() => this.isFetchingMetadataList = false)
+                .catch(() => this.isFetchingMetadataList = false);
         },
         loadActivities(startDate) {
             this.isFetchingActivities = true;

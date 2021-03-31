@@ -52,7 +52,7 @@
                 <div class="users-charts columns is-multiline">
                     <div 
                             class="users-charts__card column"
-                            :class="chartSeriesByUser.length > 1 ? 'is-one-third is-half-desktop' : 'is-full'"
+                            :class="chartSeriesByUser.length > 1 ? 'is-full' : 'is-full'"
                             v-for="(chartSeries, index) of chartSeriesByUser"
                             :key="index">
                         <div 
@@ -153,6 +153,12 @@ export default {
 
             this.$emit('time-range-update', newStart.toISOString());
         },
+        getDaysArray(start, end) {
+            let everyDay = [];
+            for (let day = new Date(start); day <= end; day.setDate(day.getDate() + 1 ) )
+                everyDay.push(new Date(day));
+            return everyDay;
+        },
         buildActivitiesChart() {
             this.isBuildingChart =  true;
 
@@ -169,15 +175,18 @@ export default {
                 this.chartSeries = [];
 
             let maximumOfActivitiesInADay = 0;
-            daysWithActivities.forEach((activity) => {
-                this.chartSeries[0].data.push({
-                    x: new Date(activity.date).getTime(),
-                    y: parseInt(activity.total)
-                });
-                if (maximumOfActivitiesInADay < parseInt(activity.total))
-                    maximumOfActivitiesInADay = parseInt(activity.total)
-            });
+            let everyDay = this.getDaysArray(this.currentStart, this.currentEnd);
 
+            everyDay.forEach((aDayInTheLifeTime) => {
+                const aDayWithSomeActivityIndex = daysWithActivities.findIndex(activity => new Date(activity.date).toISOString().slice(0,10) == aDayInTheLifeTime.toISOString().slice(0,10));
+                this.chartSeries[0].data.push({
+                    x: aDayInTheLifeTime.getTime(),
+                    y: aDayWithSomeActivityIndex >= 0 ? parseInt(daysWithActivities[aDayWithSomeActivityIndex].total) : 0
+                });
+                if (aDayWithSomeActivityIndex >= 0 && maximumOfActivitiesInADay < parseInt(daysWithActivities[aDayWithSomeActivityIndex].total))
+                    maximumOfActivitiesInADay = parseInt(daysWithActivities[aDayWithSomeActivityIndex].total);
+            });
+            
             this.chartOptions = {
                 ...this.areaChartOptions,
                 title: {
@@ -222,16 +231,23 @@ export default {
 
             this.chartSeriesByUser = [];
             this.chartOptionsByUser = []
+
             daysWithActivitiesByUser.forEach((daysWithActivityByUser) => {
+
+                let perUserSeries = [];
+                everyDay.forEach((aDayInTheLifeTime) => {
+                    const aDayWithSomeActivityIndex = daysWithActivityByUser.by_date.findIndex(activity => new Date(activity.date).toISOString().slice(0,10) == aDayInTheLifeTime.toISOString().slice(0,10));
+                    perUserSeries.push({
+                        x: aDayInTheLifeTime.getTime(),
+                        y: aDayWithSomeActivityIndex >= 0 ? parseInt(daysWithActivityByUser.by_date[aDayWithSomeActivityIndex].total) : 0
+                    });
+                });
+
                 this.chartSeriesByUser.push([{
                     total: daysWithActivityByUser.total,
                     userId: daysWithActivityByUser.user_id,
-                    data: daysWithActivityByUser.by_date.map((activity) => { 
-                        return {
-                            x: new Date(activity.date).getTime(),
-                            y: parseInt(activity.total)
-                        } 
-                    })
+                    name: this.$i18n.get('activities'),
+                    data: perUserSeries
                 }]);
                 this.chartOptionsByUser.push({
                     ...this.areaChartOptions,
