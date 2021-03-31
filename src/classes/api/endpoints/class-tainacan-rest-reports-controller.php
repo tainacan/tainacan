@@ -665,15 +665,15 @@ class REST_Reports_Controller extends REST_Controller {
 			$collection_id = $request['collection_id'];
 		}
 
-		if(isset($request['start']) && isset($request['end'])) {
+		if( isset($request['start']) ) {
 			$start = new \DateTime($request['start']);
-			$end = new \DateTime($request['end']);
 
 			$key_cache_object = 'activities_' . $start->format('Y-m-d') . '_' . $collection_id;
 			$cached_object = $this->get_cache_object($key_cache_object, $request);
 			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 
 			$end_limit = $start->add(new \DateInterval('P1Y'));
+			$end = isset($request['end']) ? new \DateTime($request['end']) : $end_limit;
 			if($end > $end_limit)
 				$end = $end_limit;
 			$interval = [
