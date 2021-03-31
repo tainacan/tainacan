@@ -111,14 +111,20 @@ export const fetchTaxonomyTerms = ({ commit }, taxonomyId) => {
     });
 };
 
-export const fetchActivities = ({ commit }, { collectionId } ) => {
+export const fetchActivities = ({ commit }, { collectionId, startDate, force } ) => {
 
     let endpoint = '/reports';
     
     if (collectionId && collectionId != 'default')
-        endpoint += '/collection/' + collectionId + '/activities';
+        endpoint += '/collection/' + collectionId + '/activities?';
     else
-        endpoint += '/activities';
+        endpoint += '/activities?';
+
+    if (startDate)
+        endpoint += '&start=' + startDate;
+
+    if (startDate || force)
+        endpoint += '&force=yes';
 
     return new Promise((resolve, reject) => {
         axios.tainacan.get(endpoint)

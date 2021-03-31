@@ -1,48 +1,87 @@
 <template>
     <div>
         <div 
-                v-if="!isFetchingData && chartData && !isBuildingChart && !isFetchingUsers"
+                :class="{ 'skeleton': isFetchingData || !chartData || isBuildingChart || isFetchingUsers }"
                 class="postbox">
-            <div class="users-charts columns is-multiline">
+            <div class="box-header">
                 <div 
-                        class="users-charts__card column is-one-third is-half-desktop"
-                        v-for="(chartSeries, index) of chartSeriesByUser"
-                        :key="index">
-                    <div 
-                            v-if="chartSeries[0].userId == 0"
-                            class="users-charts__card--header">
-                        <div class="anonymous-user-avatar" />
-                        <div class="users-charts__card--header-text">
-                            <p>{{ $i18n.get('label_anonymous_user') }}</p>
-                            <span>{{ chartSeries[0].total }}</span>
-                        </div>
-                    </div>
-                    <div 
-                            v-if="chartSeries[0].userId != 0 && users[chartSeries[0].userId]"
-                            class="users-charts__card--header">
-                        <img :src="users[chartSeries[0].userId].avatar_urls['48']">
-                        <div class="users-charts__card--header-text">
-                            <p>{{ users[chartSeries[0].userId].name }}</p>
-                            <span>{{ chartSeries[0].total }}</span>
-                        </div>
-                    </div>
-                    <apexchart
-                            type="area"
-                            height="160"
-                            :series="chartSeries"
-                            :options="chartOptionsByUser[index]" />
+                        v-if="currentStart && currentEnd"
+                        class="box-header__item tablenav-pages">
+                    <label>
+                        {{ $i18n.get('label_activities_last_year') }}&nbsp;
+                    </label>
+                    <span class="pagination-links">
+                        <span
+                                @click="(!isBuildingChart && currentStart.getFullYear() > minYear) ? decreaseYear() : null"
+                                :class="{'tablenav-pages-navspan disabled' : isBuildingChart || currentStart.getFullYear() <= minYear}"
+                                class="prev-page button"
+                                aria-hidden="true">
+                            ‹
+                        </span>
+                        <input
+                                type="number"
+                                step="1"
+                                :min="minYear"
+                                :max="maxYear"
+                                class="screen-per-page"
+                                name="start_year"
+                                id="start_year"
+                                maxlength="6"
+                                :disabled="isBuildingChart"
+                                :value="currentStart.getFullYear()"
+                                @input="($event) => setStartYear($event.target.value)">
+                        <span 
+                                @click="(!isBuildingChart && currentStart.getFullYear() <= maxYear) ? increaseYear() : null"
+                                :class="{ 'tablenav-pages-navspan disabled': isBuildingChart || currentStart.getFullYear() > maxYear}"
+                                aria-hidden="true"
+                                class="next-page button">
+                            ›
+                        </span>
+                        <span class="paging-input">
+                            {{ currentStart.toDateString() }} - {{ currentEnd.toDateString() }}
+                        </span>
+                    </span>
                 </div>
             </div>
-            <apexchart
-                    type="area"
-                    height="200"
-                    :series="chartSeries"
-                    :options="chartOptions" />
+            <template v-if="!isFetchingData && chartData && !isBuildingChart && !isFetchingUsers">
+                <div class="users-charts columns is-multiline">
+                    <div 
+                            class="users-charts__card column is-one-third is-half-desktop"
+                            v-for="(chartSeries, index) of chartSeriesByUser"
+                            :key="index">
+                        <div 
+                                v-if="chartSeries[0].userId == 0"
+                                class="users-charts__card--header">
+                            <div class="anonymous-user-avatar" />
+                            <div class="users-charts__card--header-text">
+                                <p>{{ $i18n.get('label_anonymous_user') }}</p>
+                                <span>{{ chartSeries[0].total }}</span>
+                            </div>
+                        </div>
+                        <div 
+                                v-if="chartSeries[0].userId != 0 && users[chartSeries[0].userId]"
+                                class="users-charts__card--header">
+                            <img :src="users[chartSeries[0].userId].avatar_urls['48']">
+                            <div class="users-charts__card--header-text">
+                                <p>{{ users[chartSeries[0].userId].name }}</p>
+                                <span>{{ chartSeries[0].total }}</span>
+                            </div>
+                        </div>
+                        <apexchart
+                                type="area"
+                                height="160"
+                                :series="chartSeries"
+                                :options="chartOptionsByUser[index]" />
+                    </div>
+                </div>
+                <apexchart
+                        type="area"
+                        height="200"
+                        :series="chartSeries"
+                        :options="chartOptions" />
+            
+            </template>
         </div>
-        <div 
-                v-else
-                style="min-height=740px"
-                class="skeleton postbox" />
     </div>
 </template>
 
@@ -57,7 +96,11 @@ export default {
             isFetchingUsers: false,
             users: {},
             chartSeriesByUser: [],
-            chartOptionsByUser: []
+            chartOptionsByUser: [],
+            maxYear: new Date().getFullYear() + 1,
+            minYear: 2018,
+            currentStart: '',
+            currentEnd: ''
         }
     },
     computed: {
@@ -72,7 +115,7 @@ export default {
                     this.buildActivitiesChart();
             },
             immediate: true
-        }
+        },
     },
     created() {
         this.isFetchingUsers = true;
@@ -91,16 +134,33 @@ export default {
         ...mapActions('activity', {
             fetchUsers: 'fetchUsers',
         }),
+        increaseYear() {
+            this.setStartYear(this.currentEnd.getFullYear());
+        },
+        decreaseYear() {
+            let currentStartDate = new Date(this.currentStart.getTime());
+            this.setStartYear(new Date(currentStartDate.setFullYear(currentStartDate.getFullYear() - 1)).getFullYear());
+        },
+        setStartYear(newStartYear) {
+            let currentStartDate = new Date(this.currentStart.getTime());
+            const newStart = new Date(currentStartDate.setFullYear(newStartYear));
+
+            this.$emit('time-range-update', newStart.toISOString());
+        },
         buildActivitiesChart() {
             this.isBuildingChart =  true;
 
             const daysWithActivities = (this.chartData.totals.by_interval && this.chartData.totals.by_interval.general) ? this.chartData.totals.by_interval.general : []; 
-            const startDate = new Date(this.chartData.totals.by_interval.start).getTime();
-            const endDate = new Date(this.chartData.totals.by_interval.end).getTime();
+            this.currentStart = new Date(this.chartData.totals.by_interval.start);
+            this.currentEnd = new Date(this.chartData.totals.by_interval.end);
 
-            this.chartSeries = [{
-                data: []
-            }];
+            if (daysWithActivities.length)
+                this.chartSeries = [{
+                    name: this.$i18n.get('activities'),
+                    data: []
+                }];
+            else
+                this.chartSeries = [];
 
             let maximumOfActivitiesInADay = 0;
             daysWithActivities.forEach((activity) => {
@@ -115,7 +175,10 @@ export default {
             this.chartOptions = {
                 ...this.areaChartOptions,
                 title: {
-                    text: this.$i18n.get('label_activities_last_year')
+                    text: ''
+                },
+                noData: {
+                    text: daysWithActivities.length ? this.$i18n.get('label_loading_report') : this.$i18n.get('info_no_activities')
                 },
                 chart: {
                     id: 'generalchart',
@@ -136,10 +199,11 @@ export default {
                 },
                 xaxis: {
                     type: 'datetime',
-                    min: startDate,
-                    max: endDate
+                    min: this.currentStart.getTime(),
+                    max: this.currentEnd.getTime()
                 },
                 yaxis: {
+                    show: daysWithActivities.length,
                     max: maximumOfActivitiesInADay,
                     tickAmount: 4,
                     labels: {
@@ -148,9 +212,11 @@ export default {
                 },
                 colors: ['#01295c'],
             };
-
+            console.log(this.chartSeries, this.chartOptions, this.currentStart, this.currentEnd);
             const daysWithActivitiesByUser = JSON.parse(JSON.stringify(this.chartData.totals.by_interval.by_user)).sort((a, b) => parseInt(b.total) - parseInt(a.total));
-            
+
+            this.chartSeriesByUser = [];
+            this.chartOptionsByUser = []
             daysWithActivitiesByUser.forEach((daysWithActivityByUser) => {
                 this.chartSeriesByUser.push([{
                     total: daysWithActivityByUser.total,
@@ -186,8 +252,8 @@ export default {
                     },
                     xaxis: {
                         type: 'datetime',
-                        min: startDate,
-                        max: endDate
+                        min: this.currentStart.getTime(),
+                        max: this.currentEnd.getTime()
                     },
                     yaxis: {
                         max: maximumOfActivitiesInADay,
@@ -208,9 +274,16 @@ export default {
 <style lang="scss" scoped>
 .postbox {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 280px !important;
+    
+    .screen-per-page {
+        width: 6em;
+    }
 }
 .users-charts {
+    order: 3;
     padding: 12px;
 
     .users-charts__card {

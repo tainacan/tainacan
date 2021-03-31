@@ -1,6 +1,8 @@
 <template>
      <div v-if="taxonomiesList != undefined">
-        <div class="postbox">
+        <div 
+                :class="{ 'skeleton': isFetchingData || isBuildingChart || isFetchingTaxonomyTerms || !selectedTaxonomy || !selectedTaxonomy.id }"
+                class="postbox">
             <div class="box-header">
                 <div class="box-header__item">
                     <label 
@@ -99,10 +101,6 @@
                     height="380px"
                     :series="chartSeries"
                     :options="chartOptions" />
-            <div 
-                    v-else
-                    style="min-height=380px"
-                    class="skeleton postbox" />
         </div>
     </div>
 </template>
