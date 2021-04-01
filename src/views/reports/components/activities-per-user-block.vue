@@ -80,7 +80,16 @@ export default {
                 orderedActivitiesPerUsers.forEach(activityPerUser => {
                     activityPerUserLabels.push(activityPerUser.user_id == 0 ? this.$i18n.get('label_anonymous_user') : activityPerUser.user.name);
                     activityPerUserValues.forEach((activity) => {
-                        activity.data.push( activityPerUser.by_action[activity.id] ? activityPerUser.by_action[activity.id] : 0 );
+                        if (activity.id == 'others') {
+                            let otherActionsTotal = 0;
+                            Object.keys(activityPerUser.by_action).forEach((action) => {
+                                if (validActions.indexOf(action) < 0)
+                                    otherActionsTotal += (activityPerUser.by_action[action] ? activityPerUser.by_action[action] : 0);
+                            });
+                            activity.data.push(otherActionsTotal);
+                        } else {
+                            activity.data.push( activityPerUser.by_action[activity.id] ? activityPerUser.by_action[activity.id] : 0 );
+                        }
                     });
                 })
                 
