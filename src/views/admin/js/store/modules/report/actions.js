@@ -126,7 +126,7 @@ export const fetchActivities = ({ commit }, { collectionId, startDate, force } )
     if (startDate)
         endpoint += '&start=' + startDate;
 
-    if (startDate || force)
+    if (force)
         endpoint += '&force=yes';
 
     return new Promise((resolve, reject) => {

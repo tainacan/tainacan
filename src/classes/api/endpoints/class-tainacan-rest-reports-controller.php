@@ -672,7 +672,7 @@ class REST_Reports_Controller extends REST_Controller {
 			$cached_object = $this->get_cache_object($key_cache_object, $request);
 			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 
-			$end_limit = $start->add(new \DateInterval('P1Y'));
+			$end_limit = $start->add(new \DateInterval('P1Y1D'))->setTime(0,0,0);
 			$end = isset($request['end']) ? new \DateTime($request['end']) : $end_limit;
 			if($end > $end_limit)
 				$end = $end_limit;
@@ -684,9 +684,10 @@ class REST_Reports_Controller extends REST_Controller {
 			$key_cache_object = 'activities_' . $collection_id;
 			$cached_object = $this->get_cache_object($key_cache_object, $request);
 			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
+			$end = (new \DateTime())->add(new \DateInterval('P1D'))->setTime(0,0,0);
 			$interval = [
-				'end' => (new \DateTime())->format('Y-m-d H:i:s'),
-				'start' => (new \DateTime($request['end']))->sub(new \DateInterval('P1Y')) ->format('Y-m-d H:i:s')
+				'end' => $end->format('Y-m-d H:i:s'),
+				'start' => $end->sub(new \DateInterval('P1Y1D'))->format('Y-m-d H:i:s')
 			];
 		}
 
@@ -738,9 +739,24 @@ class REST_Reports_Controller extends REST_Controller {
 		);
 		$data =$wpdb->get_results($sql_statement);
 		$arr = array();
+		$avatar_sizes = rest_get_avatar_sizes();
 		foreach ($data as $item) {
 			if(!isset($arr[$item->user_id])) {
+				$user_data = get_userdata($item->user_id);
+				$urls = array();
+				foreach ( $avatar_sizes as $size ) {
+					$urls[ $size ] = get_avatar_url( $user_data, array( 'size' => $size ) );
+				}
 				$arr[$item->user_id] = [
+					'user' => !$user_data ? [] : [
+						'id' => $user_data->ID,
+						'username' => $user_data->user_login,
+						'name' => $user_data->display_name,
+						'first_name' => $user_data->first_name,
+						'last_name' => $user_data->last_name,
+						'email' => $user_data->user_email,
+						'avatar_urls' => $urls,
+					],
 					'user_id' => $item->user_id,
 					'total' => 0,
 					'by_date' => []
@@ -769,12 +785,27 @@ class REST_Reports_Controller extends REST_Controller {
 		);
 		$results = $wpdb->get_results($sql_statement);
 		$response = [];
+		$avatar_sizes = rest_get_avatar_sizes();
 		foreach($results as $key => $result) {
 			$user = $result->user;
 			$total = $result->total;
 			$action = $result->action;
 			if(!isset($response[$user])) {
+				$user_data = get_userdata($user);
+				$urls = array();
+				foreach ( $avatar_sizes as $size ) {
+					$urls[ $size ] = get_avatar_url( $user_data, array( 'size' => $size ) );
+				}
 				$response[$user] = [
+					'user' => !$user_data ? [] : [
+						'id' => $user_data->ID,
+						'username' => $user_data->user_login,
+						'name' => $user_data->display_name,
+						'first_name' => $user_data->first_name,
+						'last_name' => $user_data->last_name,
+						'email' => $user_data->user_email,
+						'avatar_urls' => $urls,
+					],
 					'user_id' => $user,
 					'total' => 0,
 					'by_action' => []
