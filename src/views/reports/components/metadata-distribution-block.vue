@@ -90,7 +90,21 @@ export default {
                             text: this.$i18n.get('label_metadata_fill_distribution')
                         },
                         labels: metadataDistributionLabels,
-                        colors: ['#25a189', '#a23939']
+                        colors: ['#25a189', '#a23939'],
+                        tooltip: {
+                            y: {
+                                formatter: (val) => val + "%"
+                            }
+                        },
+                        yaxis: {
+                            title: {
+                                text: ''
+                            },
+                            labels: {
+                                maxWidth: 100
+                            },
+                            tooltip: { enabled: true }
+                        },
                     }
                 }
             }

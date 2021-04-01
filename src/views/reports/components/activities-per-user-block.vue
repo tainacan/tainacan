@@ -85,6 +85,7 @@ export default {
                 })
                 
                 this.chartSeries = activityPerUserValues;
+   
                 this.chartOptions = {
                     ...this.horizontalBarChartOptions,
                     ...{

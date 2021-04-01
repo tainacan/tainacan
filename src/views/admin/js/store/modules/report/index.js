@@ -123,11 +123,7 @@ const state = {
         tooltip: { enabled: true }
       },
       tooltip: {
-        y: {
-          formatter: function (val) {
-            return val + "%"
-          }
-        }
+        enabled: true
       },
       fill: {
         opacity: 1

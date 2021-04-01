@@ -19,6 +19,7 @@
         <div class="columns is-multiline">
             <div 
                     :class="{ 'is-three-fifths-desktop': !isRepositoryLevel }"
+                    style="margin-bottom: 0px;"
                     class="column is-full columns is-multiline">
                 <div 
                         v-if="isRepositoryLevel"
@@ -87,16 +88,17 @@
                         :is-repository-level="isRepositoryLevel"
                         v-if="isRepositoryLevel" />
 
+            <activities-per-user-block
+                    class="column is-full is-two-fifths-tablet"
+                    :chart-data="activities"
+                    :is-fetching-data="isFetchingActivities" />
+
             <activities-block
                     class="column is-full is-three-fifths-tablet"
                     :chart-data="activities"
                     :is-fetching-data="isFetchingActivities"
                     @time-range-update="loadActivities" />
             
-            <activities-per-user-block
-                    class="column is-full is-two-fifths-tablet"
-                    :chart-data="activities"
-                    :is-fetching-data="isFetchingActivities" />
         </div>
     </div>
 </template>
