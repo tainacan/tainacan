@@ -565,6 +565,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_terms_per_page'							 => __( 'Terms per page', 'tainacan'),
 	'label_anonymous_user'							 => __( 'Anonymous User', 'tainacan'),
 	'label_select_a_year'							 => __( 'Select a year', 'tainacan'),
+	'label_all_users'							 	 => __( 'All users', 'tainacan'),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

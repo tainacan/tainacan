@@ -51,8 +51,7 @@
             <template v-if="!isFetchingData && chartData && !isBuildingChart && !isFetchingUsers">
                 <div class="users-charts columns is-multiline">
                     <div 
-                            class="users-charts__card column"
-                            :class="chartSeriesByUser.length > 1 ? 'is-full' : 'is-full'"
+                            class="users-charts__card column is-full"
                             v-for="(chartSeries, index) of chartSeriesByUser"
                             :key="index">
                         <div 
@@ -75,7 +74,7 @@
                         </div>
                         <apexchart
                                 type="area"
-                                height="160"
+                                height="140"
                                 :series="chartSeries"
                                 :options="chartOptionsByUser[index]" />
                     </div>
@@ -190,7 +189,10 @@ export default {
             this.chartOptions = {
                 ...this.areaChartOptions,
                 title: {
-                    text: ''
+                    text: this.$i18n.get('label_all_users'),
+                    style: {
+                        fontSize:  '13px'
+                    }
                 },
                 noData: {
                     text: daysWithActivities.length ? this.$i18n.get('label_loading_report') : this.$i18n.get('info_no_activities')
@@ -256,7 +258,7 @@ export default {
                     },
                     chart: {
                         id: 'userschart-' + daysWithActivityByUser.user_id,
-                        height: 160,
+                        height: 140,
                         type: 'area',
                         group: 'activities',
                         toolbar: {
@@ -308,12 +310,15 @@ export default {
     padding: 12px;
 
     .users-charts__card {
-        padding: 24px;
+        padding: 20px !important;
 
         .users-charts__card--header {
             display: flex;
             align-items: center;
             padding: 6px 12px 2px 12px;
+            position: absolute;
+            top: 4px;
+            left: 26px;
 
             img,
             .anonymous-user-avatar {
@@ -343,6 +348,10 @@ export default {
                     font-weight: bold;
                     font-size: 1.0em;
                     margin: 0;
+                    max-width: 150px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
                 span {
                     color: var(--tainacan-secondary, #298596);
