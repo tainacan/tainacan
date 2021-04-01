@@ -1,7 +1,7 @@
 <template>
     <div>
         <div 
-                :class="{ 'skeleton': isFetchingData || !chartData || isBuildingChart || isFetchingUsers }"
+                :class="{ 'skeleton': isFetchingData || !chartData || isBuildingChart }"
                 class="postbox">
             <div 
                     v-if="currentStart && currentEnd"
@@ -48,7 +48,7 @@
                     </span>
                 </div>
             </div>
-            <template v-if="!isFetchingData && chartData && !isBuildingChart && !isFetchingUsers">
+            <template v-if="!isFetchingData && chartData && !isBuildingChart">
                 <div class="users-charts columns is-multiline">
                     <div 
                             class="users-charts__card column is-full"
@@ -64,11 +64,11 @@
                             </div>
                         </div>
                         <div 
-                                v-if="chartSeries[0].userId != 0 && users[chartSeries[0].userId]"
+                                v-if="chartSeries[0].userId != 0 && chartSeries[0].userId"
                                 class="users-charts__card--header">
-                            <img :src="users[chartSeries[0].userId].avatar_urls['48']">
+                            <img :src="chartSeries[0].userImg">
                             <div class="users-charts__card--header-text">
-                                <p>{{ users[chartSeries[0].userId].name }}</p>
+                                <p>{{ chartSeries[0].userName }}</p>
                                 <span>{{ chartSeries[0].total }}</span>
                             </div>
                         </div>
@@ -91,15 +91,13 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {
     mixins: [ reportsChartMixin ],
     data() {
         return {
-            isFetchingUsers: false,
-            users: {},
             chartSeriesByUser: [],
             chartOptionsByUser: [],
             maxYear: new Date().getFullYear(),
@@ -122,23 +120,7 @@ export default {
             immediate: true
         },
     },
-    created() {
-        this.isFetchingUsers = true;
-        this.fetchUsers({ search: '' })
-            .then((resp) => {
-                resp.users.forEach((user) => {
-                    this.users[user.id] = user;
-                });
-                this.isFetchingUsers = false;
-            })
-            .catch(() => {
-                this.isFetchingUsers = false;
-            })
-    },
     methods: {
-        ...mapActions('activity', {
-            fetchUsers: 'fetchUsers',
-        }),
         increaseYear() {
             this.setStartYear(this.currentEnd.getFullYear());
         },
@@ -248,6 +230,8 @@ export default {
                 this.chartSeriesByUser.push([{
                     total: daysWithActivityByUser.total,
                     userId: daysWithActivityByUser.user_id,
+                    userName: daysWithActivityByUser.user.name,
+                    userImg: daysWithActivityByUser.user.avatar_urls ? daysWithActivityByUser.user.avatar_urls['48'] : '',
                     name: this.$i18n.get('activities'),
                     data: perUserSeries
                 }]);

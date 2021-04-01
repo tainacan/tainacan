@@ -78,7 +78,7 @@ export default {
                 });
 
                 orderedActivitiesPerUsers.forEach(activityPerUser => {
-                    activityPerUserLabels.push(activityPerUser.user_id);
+                    activityPerUserLabels.push(activityPerUser.user_id == 0 ? this.$i18n.get('label_anonymous_user') : activityPerUser.user.name);
                     activityPerUserValues.forEach((activity) => {
                         activity.data.push( activityPerUser.by_action[activity.id] ? activityPerUser.by_action[activity.id] : 0 );
                     });
@@ -105,7 +105,26 @@ export default {
                         title: {
                             text: this.$i18n.get('label_activitiy_per_user')
                         },
-                        labels: activityPerUserLabels
+                        labels: activityPerUserLabels,
+                        yaxis: {
+                            title: {
+                                text: ''
+                            },
+                            labels: {
+                                maxWidth: 100
+                            },
+                            tooltip: { enabled: true }
+                        },
+                        tooltip: {
+                            custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+                                return  '<div class="user-activity-tooltip">' +
+                                        (orderedActivitiesPerUsers[dataPointIndex].user_id != 0 ? ('<img src="' + orderedActivitiesPerUsers[dataPointIndex].user.avatar_urls['24'] + '">&nbsp;') : '') + 
+                                        "<span><strong>" + w.globals.labels[dataPointIndex] + "</strong>" +
+                                        ":&nbsp; " +
+                                        series[seriesIndex][dataPointIndex] +
+                                "</span></div>"
+                            }
+                        }
                     }
                 }
             }
