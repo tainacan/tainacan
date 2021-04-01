@@ -24,11 +24,6 @@ import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {
     mixins: [ reportsChartMixin ],
-    data() {
-        return {
-            metadataDistributionChartHeight: 730
-        }
-    },
     computed: {
         ...mapGetters('report', {
             horizontalBarChartOptions: 'getHorizontalBarChartOptions',
@@ -105,3 +100,10 @@ export default {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.postbox.metadata-distribution-box {
+    margin: 0px 0px 0.75rem 1.5rem !important;  
+    overflow-y: auto;
+}
+</style>

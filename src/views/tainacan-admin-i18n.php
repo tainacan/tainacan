@@ -566,6 +566,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_anonymous_user'							 => __( 'Anonymous User', 'tainacan'),
 	'label_select_a_year'							 => __( 'Select a year', 'tainacan'),
 	'label_all_users'							 	 => __( 'All users', 'tainacan'),
+	'label_activitiy_per_user'						 => __( 'Activities per user', 'tainacan'),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -845,6 +846,20 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_recaptcha_link_%s'						 =>	__( 'Remember to configure your website reCAPTCHA keys on <a href="%s" target="_blank">the item submission repository page</a>.', 'tainacan'),
 	'info_form_not_loaded'					 		 =>	__( 'There are probably not enought permissions to display it here.', 'tainacan'),
 	'info_validating_slug'					 		 =>	__( 'Validating slug...', 'tainacan'),
+
+	/* Activity actions */
+	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
+	'action_update'					=> __( 'General Updates', 'tainacan'),
+	'action_create'					=> __( 'General Creations', 'tainacan'),
+	'action_update-metadata-order'	=> __( 'Metadata Order Updates', 'tainacan'),
+	'action_trash'					=> __( 'Trashing', 'tainacan'),
+	'action_new-attachment'			=> __( 'Addition of Attachments', 'tainacan'),
+	'action_update-filters-order'	=> __( 'Filter Order Updates', 'tainacan'),
+	'action_update-document'		=> __( 'Document Updates', 'tainacan'),
+	'action_delete'					=> __( 'General Deletions', 'tainacan'),
+	'action_delete-attachment'		=> __( 'Deletion of Attachments', 'tainacan'),
+	'action_update-thumbnail'		=> __( 'Thumbnail Updates', 'tainacan'),
+	'action_others'					=> __( 'Other Actions', 'tainacan'),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),

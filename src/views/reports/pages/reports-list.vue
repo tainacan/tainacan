@@ -88,10 +88,15 @@
                         v-if="isRepositoryLevel" />
 
             <activities-block
-                    class="column is-full"
+                    class="column is-full is-three-fifths-tablet"
                     :chart-data="activities"
                     :is-fetching-data="isFetchingActivities"
                     @time-range-update="loadActivities" />
+            
+            <activities-per-user-block
+                    class="column is-full is-two-fifths-tablet"
+                    :chart-data="activities"
+                    :is-fetching-data="isFetchingActivities" />
         </div>
     </div>
 </template>

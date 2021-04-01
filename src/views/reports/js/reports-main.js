@@ -22,6 +22,7 @@ import MetadataTypesBlock from '../components/metadata-types-block.vue';
 import MetadataDistributionBlock from '../components/metadata-distribution-block.vue';
 import CollectionsListBlock from '../components/collections-list-block.vue';
 import ActivitiesBlock from '../components/activities-block.vue';
+import ActivitiesPerUserBlock from '../components/activities-per-user-block.vue';
 
 Vue.use(VueApexCharts)
 
@@ -49,6 +50,7 @@ Vue.component('metadata-types-block', MetadataTypesBlock);
 Vue.component('metadata-distribution-block', MetadataDistributionBlock);
 Vue.component('collections-list-block', CollectionsListBlock);
 Vue.component('activities-block', ActivitiesBlock);
+Vue.component('activities-per-user-block', ActivitiesPerUserBlock);
 Vue.component('apexchart', VueApexCharts);
 
 // Changing title of pages
