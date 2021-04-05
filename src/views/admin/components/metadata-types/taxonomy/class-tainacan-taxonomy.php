@@ -338,7 +338,6 @@ class Taxonomy extends Metadata_Type {
 		$return = '';
 
 		if ( $item_metadata->is_multiple() ) {
-
 			$count = 1;
 			$total = sizeof($value);
 			$prefix = $item_metadata->get_multivalue_prefix();
@@ -346,7 +345,6 @@ class Taxonomy extends Metadata_Type {
 			$separator = $item_metadata->get_multivalue_separator();
 
 			foreach ( $value as $term ) {
-
 				$count ++;
 
 				if ( is_integer($term) ) {
@@ -355,29 +353,22 @@ class Taxonomy extends Metadata_Type {
 
 				if ( $term instanceof \Tainacan\Entities\Term ) {
 					$return .= $prefix;
-
 					$return .= $this->get_term_hierarchy_html($term);
-
 					$return .= $suffix;
 
 					if ( $count <= $total ) {
 						$return .= $separator;
 					}
-
 				}
-
 			}
 
 		} else {
-
 			if ( $value instanceof \Tainacan\Entities\Term ) {
 				$return .= $this->get_term_hierarchy_html($value);
 			}
-
 		}
 
 		return $return;
-
 	}
 
 	private function get_term_hierarchy_html( \Tainacan\Entities\Term $term ) {

@@ -77,9 +77,9 @@ class Date extends Metadata_Type {
 					$return .= $separator;
 			}
 		} else {
-			
 			$return = $this->format_date_value($value);
 		}
+
 		return $return;
 	}
 
