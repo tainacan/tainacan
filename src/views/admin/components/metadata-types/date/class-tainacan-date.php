@@ -35,31 +35,21 @@ class Date extends Metadata_Type {
             foreach ($value as $date_value) {
                 $d = \DateTime::createFromFormat($format, $date_value);
                 if (!$d || $d->format($format) !== $date_value) {
-                    $this->add_error( 
-                        sprintf(
-                            __('Invalid date format. Expected format is YYYY-MM-DD, got %s.', 'tainacan'),
-                            $date_value
-                        )
-                    );
+                    $this->add_error($this->format_error_msg($date_value));
                     return false;
                 }
             }
-            return True;
+            return true;
         }
         
         $d = \DateTime::createFromFormat($format, $value);
         
         if (!$d || $d->format($format) !== $value) {
-            $this->add_error( 
-                sprintf(
-                    __('Invalid date format. Expected format is YYYY-MM-DD, got %s.', 'tainacan'),
-                    $value
-                )
-            );
+            $this->add_error($this->format_error_msg($value));
+
             return false;
         }
         return true;
-        
     }
 	
 	/**
@@ -97,6 +87,13 @@ class Date extends Metadata_Type {
 		if (empty($value))
 			return "";
 		return mysql2date(get_option('date_format'), ($value));
+	}
+
+	private function format_error_msg($value) {
+		return sprintf(
+			__('Invalid date format. Expected format is YYYY-MM-DD, got %s.', 'tainacan'),
+			$value
+		);
 	}
 
 }
