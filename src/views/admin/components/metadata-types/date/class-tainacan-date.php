@@ -80,20 +80,23 @@ class Date extends Metadata_Type {
 				if( empty( $el ) ) 
 					continue;
 				$return .= $prefix;
-				$return .= mysql2date(get_option('date_format'), ($el));
+				$return .= $this->format_date_value($el);
 				$return .= $suffix;
 				$count ++;
 				if ($count < $total)
 					$return .= $separator;
 			}
 		} else {
-			if( empty( $value ) )
-				return "";
-			$return = mysql2date(get_option('date_format'), ($value));
+			
+			$return = $this->format_date_value($value);
 		}
 		return $return;
-		
 	}
 
+	private function format_date_value($value) {
+		if (empty($value))
+			return "";
+		return mysql2date(get_option('date_format'), ($value));
+	}
 
 }
