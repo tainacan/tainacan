@@ -21,8 +21,6 @@ class Media {
 
 	protected function __construct() {
 		add_action( 'init', [$this, 'add_attachment_page_rewrite_rule'] );
-		add_action( 'admin_enqueue_scripts', array( &$this, 'add_css' ) );
-		add_action( 'wp_enqueue_scripts', array( &$this, 'add_css' ) );
 
 		add_filter( 'query_vars', [$this, 'attachment_page_add_var'] );
 		add_action( 'template_redirect', [$this, 'attachment_page'] );
@@ -367,6 +365,7 @@ class Media {
 			$output .= $img;
 
 		} else {
+			$this->add_css();
 			wp_print_styles('tainacan-media-page');
 			global $wp_embed;
 

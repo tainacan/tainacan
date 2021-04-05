@@ -725,7 +725,7 @@ class Item extends Entity {
 			}
 			$output .= $_embed;
 		} elseif ( $type == 'text' ) {
-			$output .= $this->get_document();
+			$output .= '<article>' . $this->get_document() . '</article>';
 		} elseif ( $type == 'attachment' ) {
 
 			if ( wp_attachment_is_image($this->get_document()) ) {

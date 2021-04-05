@@ -238,6 +238,7 @@ class Admin {
 			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
 			'nonce'                  	=> is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
 			'components'             	=> $components,
+			'classes'                	=> array(),
 			'i18n'                   	=> $tainacan_admin_i18n,
 			'user_caps'              	=> $user_caps,
 			'user_prefs'             	=> $prefs,
@@ -247,7 +248,7 @@ class Admin {
 			'theme_collection_list_url' => get_post_type_archive_link( 'tainacan-collection' ),
 			'custom_header_support'  	=> get_theme_support('custom-header'),
 			'registered_view_modes'  	=> \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes(),
-		    'exposer_mapper_param'   	=> \Tainacan\Mappers_Handler::MAPPER_PARAM,
+			'exposer_mapper_param'   	=> \Tainacan\Mappers_Handler::MAPPER_PARAM,
 			'exposer_type_param'     	=> \Tainacan\Exposers_Handler::TYPE_PARAM,
 			'repository_name'	 		=> get_bloginfo('name'),
 			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
@@ -266,13 +267,13 @@ class Admin {
 		$metadata_types = $Tainacan_Metadata->fetch_metadata_types();
 
 		foreach( $maps as $type => $map ){
-		    foreach ( $map as $metadatum => $details){
-                $settings['i18n']['helpers_label'][$type][$metadatum] = [ 'title' => $details['title'], 'description' => $details['description'] ];
-            }
-        }
-        foreach ( $metadata_types as $index => $metadata_type){
-		    $class = new $metadata_type;
-            $settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
+			foreach ( $map as $metadatum => $details){
+				$settings['i18n']['helpers_label'][$type][$metadatum] = [ 'title' => $details['title'], 'description' => $details['description'] ];
+			}
+		}
+		foreach ( $metadata_types as $index => $metadata_type){
+			$class = new $metadata_type;
+			$settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
 		}
 
 		$filter_types = $Tainacan_Filters->fetch_filter_types();

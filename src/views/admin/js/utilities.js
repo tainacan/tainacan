@@ -39,6 +39,7 @@ export const ThumbnailHelperFunctions = () => {
                     break;
                 case 'audio/midi':
                 case 'audio/mpeg':
+                case 'audio/mp3':
                 case 'audio/webm':
                 case 'audio/ogg':
                 case 'audio/wav':
@@ -55,6 +56,7 @@ export const ThumbnailHelperFunctions = () => {
                 case 'video/webm':
                 case 'video/ogg':
                 case 'video/mpeg':
+                case 'video/mp4':
                     imageSrc = 'placeholder_video';
                     break;
                 case 'url':
