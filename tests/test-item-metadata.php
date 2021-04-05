@@ -9,7 +9,7 @@ namespace Tainacan\Tests;
  */
 
 /**
- * Sample test case.
+ * Item_Metadata test case.
  */
 class Item_Metadata extends TAINACAN_UnitTestCase {
 
@@ -247,8 +247,6 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	}
 	
 	function test_metadata_text_textarea() {
-		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
-
         $collection = $this->tainacan_entity_factory->create_entity(
 	        'collection',
 	        array(
@@ -395,4 +393,52 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 
         $this->assertTrue($item_metadata_text->has_value());
     }
+
+	function test_metadata_numeric_html() {
+		$collection = $this->tainacan_entity_factory->create_entity('collection', ['name' => 'My Collection'], true);
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+            array(
+				'title'       => 'My test item',
+				'description' => 'item description',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+		$metadatum_numeric = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Numeric important meta',
+				'description'   => 'and its description',
+				'collection_id' => $collection->get_id(),
+				'metadata_type' => 'Tainacan\Metadata_Types\Numeric',
+				'status'      	=> 'publish'
+			),
+			true
+		);
+
+		$metadatum_numeric_multiple = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Numeric important meta',
+				'description'   => 'and its description',
+				'collection_id' => $collection->get_id(),
+				'metadata_type' => 'Tainacan\Metadata_Types\Numeric',
+				'status'      	=> 'publish',
+				'multiple'		=> 'yes'
+			),
+			true
+		);
+
+		$item_metadata_numeric = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum_numeric);
+		$item_metadata_numeric->set_value(10);
+		$item_metadata_numeric->validate();
+		$this->assertEquals($item_metadata_numeric->get_value_as_html(), 10);
+
+		$item_metadata_numeric_mult = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum_numeric_multiple);
+		$item_metadata_numeric_mult->set_value([10,22,4]);
+		$item_metadata_numeric_mult->validate();
+		$this->assertEquals($item_metadata_numeric_mult->get_value_as_html(), '10<span class="multivalue-separator"> | </span>22<span class="multivalue-separator"> | </span>4');
+	}
 }

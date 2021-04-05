@@ -37,5 +37,4 @@ class Numeric extends Metadata_Type {
             ]
         ];
     }
-    
 }
