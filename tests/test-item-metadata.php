@@ -546,4 +546,48 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$user_meta_multi->validate();
 		$this->assertEquals($user_meta_multi->get_value_as_html(), 'User Name<span class="multivalue-separator"> | </span>User Name 2');
 	}
+
+	function test_selectbox_metadata_html() {
+		$selectbox_metadata = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'My selectbox meta',
+				'status'        => 'publish',
+				'collection'    => $this->collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Selectbox',
+				'metadata_type_options' => [
+					'options' => ['tainacan', 'wordpress', 'php']
+				]
+			),
+			true
+		);
+
+		$selectbox_metadata_multiple = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'My selectbox meta',
+				'status'        => 'publish',
+				'collection'    => $this->collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Selectbox',
+				'multiple'		=> 'yes',
+				'metadata_type_options' => [
+					'options' => ['tainacan', 'wordpress', 'php']
+				]
+			),
+			true
+		);
+
+		$sb_meta = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $selectbox_metadata);
+		$sb_meta->set_value('tainacan');
+		$sb_meta->validate();
+		$this->assertEquals($sb_meta->get_value_as_html(), 'tainacan');
+
+		$sb_meta->set_value('php');
+		$this->assertEquals($sb_meta->get_value_as_html(), 'php');
+
+		$sb_meta_multi = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $selectbox_metadata_multiple);
+		$sb_meta_multi->set_value(['tainacan', 'wordpress']);
+		$sb_meta_multi->validate();
+		$this->assertEquals($sb_meta_multi->get_value_as_html(), 'tainacan<span class="multivalue-separator"> | </span>wordpress');
+	}
 }
