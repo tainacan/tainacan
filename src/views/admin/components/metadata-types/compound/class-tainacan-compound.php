@@ -207,9 +207,9 @@ class Compound extends Metadata_Type {
 					$elements[] = '<div class="tainacan-compound-metadatum">' . implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate)) . "</div> \n" ;
 				}
 			}
-			$return = '<div class="tainacan-compound-group">' . implode($separator, $elements) . '</div>';
+			$return = implode($separator, $elements);
 		} else {
-			$metadata_value =  array_fill(0, count($value), null);
+			$metadata_value = array_fill(0, count($value), null);
 			$metadata_value_not_ordinate = [];
 			foreach ( $value as $meta_id => $meta ) {
 				$index = array_search( $meta_id, array_column( $order, 'id' ) );
@@ -220,12 +220,12 @@ class Compound extends Metadata_Type {
 					} else {
 						$metadata_value_not_ordinate[] = $html;
 					}
-				}	
-			}			
-			$return = '<div class="tainacan-compound-group">' . implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate)) . "</div> \n";			
+				}
+			}
+			$return = implode("\n", array_merge($metadata_value, $metadata_value_not_ordinate));
 		}
 		
-		return $return;
+		return "<div class='tainacan-compound-group'> {$return} </div>";
 	}
 
 	private function get_meta_html(Item_Metadata_Entity $meta) {
