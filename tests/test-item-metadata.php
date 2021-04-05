@@ -415,7 +415,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         $this->assertTrue($item_metadata_text->has_value());
     }
 
-	function test_metadata_numeric_html() {			
+	function test_numeric_metadata_html() {			
 		// Simple numeric metadata
 		$metadatum_numeric = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
@@ -454,7 +454,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$this->assertEquals($item_metadata_numeric_mult->get_value_as_html(), '10<span class="multivalue-separator"> | </span>22<span class="multivalue-separator"> | </span>4');
 	}
 
-	function test_metadata_date_html() {
+	function test_date_metadata_html() {
 		// Simple date metadata
 		$metadatum_date = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
@@ -501,5 +501,49 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$item_metadata_date_mult->set_value(["2021-04-05", "2021-12-30"]); 
 		$item_metadata_date_mult->validate();
 		$this->assertEquals($item_metadata_date_mult->get_value_as_html(), 'April 5, 2021<span class="multivalue-separator"> | </span>December 30, 2021');
+	}
+
+	function test_user_metadata_html() {
+		$user_metadata = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'User metadata',
+				'description'   => 'and its description',
+				'collection_id' => $this->collection->get_id(),
+				'metadata_type' => 'Tainacan\Metadata_Types\User',
+				'status'      	=> 'publish'
+			),
+			true
+		);
+
+		$user_meta = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $user_metadata);
+		// Empty val
+		$this->assertEmpty($user_meta->get_value_as_html());
+
+		$new_user = $this->factory()->user->create(array( 'role' => 'subscriber', 'display_name' => 'User Name' ));
+
+		$user_meta->set_value($new_user);
+		$user_meta->validate();
+		$this->assertEquals($user_meta->get_value_as_html(), "User Name");
+		
+		$user_metadata_multiple = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'User metadata',
+				'description'   => 'and its description',
+				'collection_id' => $this->collection->get_id(),
+				'metadata_type' => 'Tainacan\Metadata_Types\User',
+				'status'      	=> 'publish',
+				'multiple'		=> 'yes'
+			),
+			true
+		);
+		$user_meta_multi = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $user_metadata_multiple);
+		$this->assertEmpty($user_meta_multi->get_value_as_html());
+
+		$sec_user = $this->factory()->user->create(array( 'role' => 'subscriber', 'display_name' => 'User Name 2' ));
+		$user_meta_multi->set_value([$new_user, $sec_user]);
+		$user_meta_multi->validate();
+		$this->assertEquals($user_meta_multi->get_value_as_html(), 'User Name<span class="multivalue-separator"> | </span>User Name 2');
 	}
 }
