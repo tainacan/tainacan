@@ -3,7 +3,7 @@
 namespace Tainacan\Tests;
 
 /**
- * Class TestCollections
+ * Class Item_Metadata
  *
  * @package Test_Tainacan
  */
@@ -406,6 +406,8 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
+
+		// Simple numeric metadata
 		$metadatum_numeric = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -418,6 +420,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			true
 		);
 
+		// Multiple numeric metadata
 		$metadatum_numeric_multiple = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -440,5 +443,66 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$item_metadata_numeric_mult->set_value([10,22,4]);
 		$item_metadata_numeric_mult->validate();
 		$this->assertEquals($item_metadata_numeric_mult->get_value_as_html(), '10<span class="multivalue-separator"> | </span>22<span class="multivalue-separator"> | </span>4');
+	}
+
+	function test_metadata_date_html() {
+		$collection = $this->tainacan_entity_factory->create_entity('collection', ['name' => 'My Collection'], true);
+		$item = $this->tainacan_entity_factory->create_entity(
+			'item',
+            array(
+				'title'       => 'My test item',
+				'description' => 'item description',
+				'collection'  => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		// Simple date metadata
+		$metadatum_date = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Date important meta',
+				'description'   => 'and its description',
+				'collection_id' => $collection->get_id(),
+				'metadata_type' => 'Tainacan\Metadata_Types\Date',
+				'status'      	=> 'publish'
+			),
+			true
+		);
+
+		// Multiple date metadata
+		$metadatum_date_multiple = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Date meta',
+				'description'   => 'and its description',
+				'collection_id' => $collection->get_id(),
+				'metadata_type' => 'Tainacan\Metadata_Types\Date',
+				'status'      	=> 'publish',
+				'multiple'		=> 'yes'
+			),
+			true
+		);
+
+		$item_metadata_date = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum_date);
+		// Invalid date value
+		$item_metadata_date->set_value(10);
+		$item_metadata_date->validate();
+		$this->assertFalse($item_metadata_date->get_value_as_html());
+
+		$item_metadata_date->set_value("2021-04-05");
+		$item_metadata_date->validate();
+		$this->assertEquals($item_metadata_date->get_value_as_html(), "April 5, 2021");
+
+		$item_metadata_date_mult = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum_date_multiple);
+		// Invalid date values
+		$item_metadata_date_mult->set_value([10,22,4]);
+		$item_metadata_date_mult->validate();
+		$this->assertEquals($item_metadata_date_mult->get_value_as_html(), '<span class="multivalue-separator"> | </span><span class="multivalue-separator"> | </span>');
+		
+		$item_metadata_date_mult->set_value(["2021-04-05", "2021-12-30"]); 
+		$item_metadata_date_mult->validate();
+		$this->assertEquals($item_metadata_date_mult->get_value_as_html(), 'April 5, 2021<span class="multivalue-separator"> | </span>December 30, 2021');
 	}
 }

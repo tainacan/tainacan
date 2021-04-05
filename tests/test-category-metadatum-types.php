@@ -794,9 +794,6 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 		$checkMeta = $Tainacan_Metadata->fetch( $metadatum->get_id() );
 
 		$this->assertEquals('no', $checkMeta->get_metadata_type_options()['allow_new_terms']);
-
-
-
 	}
 
 }

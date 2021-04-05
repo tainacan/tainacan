@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Date extends Metadata_Type {
 
-    function __construct(){
+    function __construct() {
         // call metadatum type constructor
         parent::__construct();
         $this->set_primitive_type('date');

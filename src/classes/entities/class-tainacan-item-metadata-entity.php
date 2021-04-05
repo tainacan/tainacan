@@ -136,7 +136,7 @@ class Item_Metadata_Entity extends Entity {
 	 * Get the value as a HTML string, with markup and links
 	 * @return string
 	 */
-	public function get_value_as_html(){
+	public function get_value_as_html() {
 		$metadatum = $this->get_metadatum();
 		
 		if (is_object($metadatum)) {
@@ -153,7 +153,6 @@ class Item_Metadata_Entity extends Entity {
 		$return = '';
 		
 		if ( $this->is_multiple() ) {
-			
 			$total = sizeof($value);
 			$count = 0;
 			$prefix = $this->get_multivalue_prefix();
@@ -162,11 +161,8 @@ class Item_Metadata_Entity extends Entity {
 			
 			foreach ($value as $v) {
 				$return .= $prefix;
-				
 				$return .= (string) $v;
-				
 				$return .= $suffix;
-				
 				$count ++;
 				if ($count < $total)
 					$return .= $separator;
