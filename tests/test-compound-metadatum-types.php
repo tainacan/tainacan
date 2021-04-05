@@ -124,7 +124,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-
+ 
 		$metadatum = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -200,9 +200,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		$item_metadata->validate();
 		$item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
 		
-		$compoundItem = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum);
-		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->postmeta WHERE post_id = {$i->get_id()}"));
-		//var_dump($wpdb->get_results("SELECT * FROM $wpdb->posts WHERE parent = {$metadatum->get_id()}"));
+		$compoundItem = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum);		
 		$compoundValue = $compoundItem->get_value();
 
 		$this->assertTrue( is_array($compoundValue), 'value of a compound should return array' );
