@@ -13,6 +13,27 @@ namespace Tainacan\Tests;
  */
 class Item_Metadata extends TAINACAN_UnitTestCase {
 
+	private $collection = null;
+	private $item = null;
+
+	public function setUp() {
+		parent::setUp();
+		$c = $this->tainacan_entity_factory->create_entity('collection', ['name' => 'My Collection'], true);
+		$i = $this->tainacan_entity_factory->create_entity(
+			'item',
+            array(
+				'title'       => 'My test item',
+				'description' => 'item description',
+				'collection'  => $c,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$this->collection = $c;
+		$this->item = $i;
+	}
+
     /**
      * Teste da insercao de um metadado simples sem o tipo
      */
@@ -394,26 +415,14 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         $this->assertTrue($item_metadata_text->has_value());
     }
 
-	function test_metadata_numeric_html() {
-		$collection = $this->tainacan_entity_factory->create_entity('collection', ['name' => 'My Collection'], true);
-		$item = $this->tainacan_entity_factory->create_entity(
-			'item',
-            array(
-				'title'       => 'My test item',
-				'description' => 'item description',
-				'collection'  => $collection,
-				'status'      => 'publish'
-			),
-			true
-		);
-
+	function test_metadata_numeric_html() {			
 		// Simple numeric metadata
 		$metadatum_numeric = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
 				'name'          => 'Numeric important meta',
 				'description'   => 'and its description',
-				'collection_id' => $collection->get_id(),
+				'collection_id' => $this->collection->get_id(),
 				'metadata_type' => 'Tainacan\Metadata_Types\Numeric',
 				'status'      	=> 'publish'
 			),
@@ -426,7 +435,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			array(
 				'name'          => 'Numeric important meta',
 				'description'   => 'and its description',
-				'collection_id' => $collection->get_id(),
+				'collection_id' => $this->collection->get_id(),
 				'metadata_type' => 'Tainacan\Metadata_Types\Numeric',
 				'status'      	=> 'publish',
 				'multiple'		=> 'yes'
@@ -434,37 +443,25 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			true
 		);
 
-		$item_metadata_numeric = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum_numeric);
+		$item_metadata_numeric = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $metadatum_numeric);
 		$item_metadata_numeric->set_value(10);
 		$item_metadata_numeric->validate();
 		$this->assertEquals($item_metadata_numeric->get_value_as_html(), 10);
 
-		$item_metadata_numeric_mult = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum_numeric_multiple);
+		$item_metadata_numeric_mult = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $metadatum_numeric_multiple);
 		$item_metadata_numeric_mult->set_value([10,22,4]);
 		$item_metadata_numeric_mult->validate();
 		$this->assertEquals($item_metadata_numeric_mult->get_value_as_html(), '10<span class="multivalue-separator"> | </span>22<span class="multivalue-separator"> | </span>4');
 	}
 
 	function test_metadata_date_html() {
-		$collection = $this->tainacan_entity_factory->create_entity('collection', ['name' => 'My Collection'], true);
-		$item = $this->tainacan_entity_factory->create_entity(
-			'item',
-            array(
-				'title'       => 'My test item',
-				'description' => 'item description',
-				'collection'  => $collection,
-				'status'      => 'publish'
-			),
-			true
-		);
-
 		// Simple date metadata
 		$metadatum_date = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
 				'name'          => 'Date important meta',
 				'description'   => 'and its description',
-				'collection_id' => $collection->get_id(),
+				'collection_id' => $this->collection->get_id(),
 				'metadata_type' => 'Tainacan\Metadata_Types\Date',
 				'status'      	=> 'publish'
 			),
@@ -477,7 +474,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			array(
 				'name'          => 'Date meta',
 				'description'   => 'and its description',
-				'collection_id' => $collection->get_id(),
+				'collection_id' => $this->collection->get_id(),
 				'metadata_type' => 'Tainacan\Metadata_Types\Date',
 				'status'      	=> 'publish',
 				'multiple'		=> 'yes'
@@ -485,7 +482,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			true
 		);
 
-		$item_metadata_date = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum_date);
+		$item_metadata_date = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $metadatum_date);
 		// Invalid date value
 		$item_metadata_date->set_value(10);
 		$item_metadata_date->validate();
@@ -495,7 +492,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$item_metadata_date->validate();
 		$this->assertEquals($item_metadata_date->get_value_as_html(), "April 5, 2021");
 
-		$item_metadata_date_mult = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum_date_multiple);
+		$item_metadata_date_mult = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $metadatum_date_multiple);
 		// Invalid date values
 		$item_metadata_date_mult->set_value([10,22,4]);
 		$item_metadata_date_mult->validate();
