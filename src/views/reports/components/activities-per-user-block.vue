@@ -17,6 +17,7 @@
                 v-else
                 style="min-height=800px"
                 class="skeleton postbox activities-per-user-box" />
+        <slot />
     </div>
 </template>
 

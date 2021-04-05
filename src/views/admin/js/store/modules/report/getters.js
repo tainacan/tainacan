@@ -45,3 +45,7 @@ export const getHeatMapChartOptions = state => {
 export const getAreaChartOptions = state => {
   return state.areaChartOptions;
 };
+
+export const getReportsLatestCachedOn = state => {
+  return state.reportsLatestCachedOn;
+};

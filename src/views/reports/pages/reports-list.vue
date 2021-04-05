@@ -29,6 +29,20 @@
                             class="postbox"
                             :summary="summary"
                             entity-type="collections" />
+                    <div 
+                            v-if="summaryLatestCachedOn"
+                            class="box-last-cached-on">
+                        <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(summaryLatestCachedOn).toLocaleString() }}</span>
+                        <button 
+                                @click="loadSummary(true)">
+                            <span class="screen-reader-text">
+                                {{ $i18n.get('label_get_latest_report') }}
+                            </span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                            </span>
+                        </button>
+                    </div>
                 </div>
                 <div
                         :class="{ 'is-one-third-tablet': isRepositoryLevel }"
@@ -38,6 +52,20 @@
                             class="postbox"
                             :summary="summary"
                             entity-type="items"/>
+                    <div 
+                            v-if="summaryLatestCachedOn"
+                            class="box-last-cached-on">
+                        <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(summaryLatestCachedOn).toLocaleString() }}</span>
+                        <button 
+                                @click="loadSummary(true)">
+                            <span class="screen-reader-text">
+                                {{ $i18n.get('label_get_latest_report') }}
+                            </span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                            </span>
+                        </button>
+                    </div>
                 </div>
                 <div 
                         v-if="isRepositoryLevel"
@@ -47,6 +75,20 @@
                             class="postbox"
                             :summary="summary"
                             entity-type="taxonomies" />
+                    <div 
+                            v-if="summaryLatestCachedOn"
+                            class="box-last-cached-on">
+                        <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(summaryLatestCachedOn).toLocaleString() }}</span>
+                        <button 
+                                @click="loadSummary(true)">
+                            <span class="screen-reader-text">
+                                {{ $i18n.get('label_get_latest_report') }}
+                            </span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                            </span>
+                        </button>
+                    </div>
                 </div>
                 <div 
                         v-else
@@ -56,30 +98,104 @@
                             class="postbox"
                             :summary="metadata"
                             entity-type="metadata" />
+                    <div 
+                            v-if="summaryLatestCachedOn"
+                            class="box-last-cached-on">
+                        <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(summaryLatestCachedOn).toLocaleString() }}</span>
+                        <button 
+                                @click="loadSummary(true)">
+                            <span class="screen-reader-text">
+                                {{ $i18n.get('label_get_latest_report') }}
+                            </span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                            </span>
+                        </button>
+                    </div>
                 </div>
                 <collections-list-block
                         class="column is-full"
                         :chart-data="collectionsList"
                         :is-fetching-data="isFetchingCollectionsList"
-                        v-if="isRepositoryLevel" />
+                        v-if="isRepositoryLevel">
+                    <div 
+                            v-if="collectionsLatestCachedOn"
+                            class="box-last-cached-on">
+                        <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(collectionsLatestCachedOn).toLocaleString() }}</span>
+                        <button 
+                                @click="loadCollectionsList(true)">
+                            <span class="screen-reader-text">
+                                {{ $i18n.get('label_get_latest_report') }}
+                            </span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                            </span>
+                        </button>
+                    </div>
+                </collections-list-block>
 
                 <metadata-types-block
                         class="column is-full"
                         :chart-data="metadata"
                         :is-fetching-data="isFetchingMetadata"
-                        v-if="!isRepositoryLevel" />
+                        v-if="!isRepositoryLevel">
+                    <div 
+                            v-if="metadataLatestCachedOn"
+                            class="box-last-cached-on">
+                        <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(metadataLatestCachedOn).toLocaleString() }}</span>
+                        <button 
+                                @click="loadMetadata(true)">
+                            <span class="screen-reader-text">
+                                {{ $i18n.get('label_get_latest_report') }}
+                            </span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                            </span>
+                        </button>
+                    </div>
+                </metadata-types-block>
 
                 <terms-per-taxonomy-block
                         class="column is-full"
                         :chart-data="taxonomyList"
                         :is-fetching-data="isFetchingTaxonomiesList"
-                        v-if="isRepositoryLevel"/>
+                        v-if="isRepositoryLevel">
+                    <div 
+                            v-if="taxonomiesLatestCachedOn"
+                            class="box-last-cached-on">
+                        <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(taxonomiesLatestCachedOn).toLocaleString() }}</span>
+                        <button 
+                                @click="loadTaxonomiesList(true)">
+                            <span class="screen-reader-text">
+                                {{ $i18n.get('label_get_latest_report') }}
+                            </span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                            </span>
+                        </button>
+                    </div>
+                </terms-per-taxonomy-block>
             </div>
             <metadata-distribution-block
                     class="column is-full is-two-fifths-desktop"
                     :chart-data="metadata"
                     :is-fetching-data="isFetchingMetadata"
-                    v-if="!isRepositoryLevel"/>
+                    v-if="!isRepositoryLevel">
+                <div 
+                        v-if="metadataLatestCachedOn"
+                        class="box-last-cached-on">
+                    <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(metadataLatestCachedOn).toLocaleString() }}</span>
+                    <button 
+                            @click="loadMetadata(true)">
+                        <span class="screen-reader-text">
+                            {{ $i18n.get('label_get_latest_report') }}
+                        </span>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                        </span>
+                    </button>
+                </div>
+            </metadata-distribution-block>
 
             <items-per-term-block
                         class="column is-full"
@@ -91,13 +207,43 @@
             <activities-per-user-block
                     class="column is-full is-two-fifths-tablet"
                     :chart-data="activities"
-                    :is-fetching-data="isFetchingActivities" />
+                    :is-fetching-data="isFetchingActivities">
+                <div 
+                        v-if="activitiesLatestCachedOn"
+                        class="box-last-cached-on">
+                    <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(activitiesLatestCachedOn).toLocaleString() }}</span>
+                    <button 
+                            @click="loadActivities(true)">
+                        <span class="screen-reader-text">
+                            {{ $i18n.get('label_get_latest_report') }}
+                        </span>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                        </span>
+                    </button>
+                </div>
+            </activities-per-user-block>
 
             <activities-block
                     class="column is-full is-three-fifths-tablet"
                     :chart-data="activities"
                     :is-fetching-data="isFetchingActivities"
-                    @time-range-update="loadActivities" />
+                    @time-range-update="loadActivities">
+                <div 
+                        v-if="activitiesLatestCachedOn"
+                        class="box-last-cached-on">
+                    <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(activitiesLatestCachedOn).toLocaleString() }}</span>
+                    <button 
+                            @click="loadActivities(true)">
+                        <span class="screen-reader-text">
+                            {{ $i18n.get('label_get_latest_report') }}
+                        </span>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                        </span>
+                    </button>
+                </div>
+            </activities-block>
             
         </div>
     </div>
@@ -131,9 +277,25 @@ export default {
             taxonomyTerms: 'getTaxonomyTerms',
             activities: 'getActivities',
             taxonomyList: 'getTaxonomiesList',
+            reportsLatestCachedOn: 'getReportsLatestCachedOn'
         }),
         isRepositoryLevel() {
             return !this.selectedCollection || this.selectedCollection == 'default';
+        },
+        summaryLatestCachedOn() {
+            return this.reportsLatestCachedOn['summary-' + (this.collectionId ? this.collectionId : 'default')];
+        },
+        metadataLatestCachedOn() {
+            return this.reportsLatestCachedOn['metadata-' + (this.collectionId ? this.collectionId : 'default')];
+        },
+        collectionsLatestCachedOn() {
+            return this.reportsLatestCachedOn['collections'];
+        },
+        taxonomiesLatestCachedOn() {
+            return this.reportsLatestCachedOn['taxonomies'];
+        },
+        activitiesLatestCachedOn() {
+            return this.reportsLatestCachedOn['activities'];
         }
     },
     watch: {
@@ -179,27 +341,27 @@ export default {
                 .then(() => this.isFetchingCollections = false)
                 .catch(() => this.isFetchingCollections = false);
         },
-        loadSummary() {
+        loadSummary(force) {
             this.isFetchingSummary = true;
-            this.fetchSummary({ collectionId: this.selectedCollection })
+            this.fetchSummary({ collectionId: this.selectedCollection, force: force })
                 .then(() => this.isFetchingSummary = false)
                 .catch(() => this.isFetchingSummary = false);
         },
-        loadMetadata() {
+        loadMetadata(force) {
             this.isFetchingMetadata = true;
-            this.fetchMetadata({ collectionId: this.selectedCollection })
+            this.fetchMetadata({ collectionId: this.selectedCollection, force: force })
                 .then(() => this.isFetchingMetadata = false)
                 .catch(() => this.isFetchingMetadata = false);
         },
-        loadCollectionsList() {
+        loadCollectionsList(force) {
             this.isFetchingCollectionsList = true;
-            this.fetchCollectionsList()
+            this.fetchCollectionsList(force)
                 .then(() => this.isFetchingCollectionsList = false)
                 .catch(() => this.isFetchingCollectionsList = false);
         },
-        loadTaxonomiesList() {
+        loadTaxonomiesList(force) {
             this.isFetchingTaxonomiesList = true;
-            this.fetchTaxonomiesList()
+            this.fetchTaxonomiesList(force)
                 .then(() => this.isFetchingTaxonomiesList = false)
                 .catch(() => this.isFetchingTaxonomiesList = false);
         },

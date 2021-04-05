@@ -15,6 +15,7 @@
                 v-else
                 style="min-height=740px"
                 class="skeleton postbox metadata-distribution-box" />
+        <slot />
     </div>
 </template>
 
@@ -117,7 +118,8 @@ export default {
 
 <style lang="scss" scoped>
 .postbox.metadata-distribution-box {
-    margin: 0px 0px 0.75rem 1.5rem !important;  
+    margin: 0px 0px 0.75rem 1.5rem !important;
+    padding-bottom: 2rem;
     overflow-y: auto;
 }
 </style>

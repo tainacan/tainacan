@@ -1,6 +1,6 @@
 import axios from '../../../axios';
 
-export const fetchSummary = ({ commit }, { collectionId } ) => {
+export const fetchSummary = ({ commit }, { collectionId, force } ) => {
 
     let endpoint = '/reports';
     
@@ -9,19 +9,23 @@ export const fetchSummary = ({ commit }, { collectionId } ) => {
     else
         endpoint += '/repository/summary';
 
+    if (force && force === true)
+        endpoint += '?force=yes'
+
     return new Promise((resolve, reject) => {
         axios.tainacan.get(endpoint)
             .then(res => {
                 let summary = res.data;
 
                 commit('setSummary', summary);
+                commit('setReportLatestCachedOn', { report: 'summary-' + (collectionId ? collectionId : 'default'), reportLatestCachedOn: res.data.report_cached_on });
                 resolve(summary);
             })
             .catch(error => reject(error));
     });
 };
 
-export const fetchMetadata = ({ commit }, { collectionId } ) => {
+export const fetchMetadata = ({ commit }, { collectionId, force } ) => {
 
     let endpoint = '/reports';
     
@@ -30,12 +34,16 @@ export const fetchMetadata = ({ commit }, { collectionId } ) => {
     else
         endpoint += '/metadata';
 
+    if (force && force === true)
+        endpoint += '?force=yes';
+
     return new Promise((resolve, reject) => {
         axios.tainacan.get(endpoint)
             .then(res => {
                 let metadata = res.data;
 
                 commit('setMetadata', metadata);
+                commit('setReportLatestCachedOn', { report: 'metadata-' + (collectionId ? collectionId : 'default'), reportLatestCachedOn: res.data.report_cached_on });
                 resolve(metadata);
             })
             .catch(error => reject(error));
@@ -66,9 +74,12 @@ export const fetchMetadataList = ({ commit }, { collectionId, onlyTaxonomies } )
     });
 };
 
-export const fetchCollectionsList = ({ commit }) => {
+export const fetchCollectionsList = ({ commit }, force) => {
 
-    let endpoint = '/reports/collection'
+    let endpoint = '/reports/collection';
+    
+    if (force && force === true)
+        endpoint += '?force=yes';
 
     return new Promise((resolve, reject) => {
         axios.tainacan.get(endpoint)
@@ -76,15 +87,19 @@ export const fetchCollectionsList = ({ commit }) => {
                 let collectionsList = res.data.list ? res.data.list : {};
 
                 commit('setCollectionsList', collectionsList);
+                commit('setReportLatestCachedOn', { report: 'collections', reportLatestCachedOn: res.data.report_cached_on });
                 resolve(collectionsList);
             })
             .catch(error => reject(error));
     });
 };
 
-export const fetchTaxonomiesList = ({ commit }) => {
+export const fetchTaxonomiesList = ({ commit }, force) => {
 
-    let endpoint = '/reports/taxonomy'
+    let endpoint = '/reports/taxonomy';
+
+    if (force && force === true)
+        endpoint += '?force=yes';
 
     return new Promise((resolve, reject) => {
         axios.tainacan.get(endpoint)
@@ -92,6 +107,7 @@ export const fetchTaxonomiesList = ({ commit }) => {
                 let taxonomiesList = res.data.list ? res.data.list : {};
 
                 commit('setTaxonomiesList', taxonomiesList);
+                commit('setReportLatestCachedOn', { report: 'taxonomies', reportLatestCachedOn: res.data.report_cached_on });
                 resolve(taxonomiesList);
             })
             .catch(error => reject(error));
@@ -135,6 +151,7 @@ export const fetchActivities = ({ commit }, { collectionId, startDate, force } )
                 let activities = res.data;
 
                 commit('setActivities', activities);
+                commit('setReportLatestCachedOn', { report: 'activities', reportLatestCachedOn: res.data.report_cached_on });
                 resolve(activities);
             })
             .catch(error => reject(error));

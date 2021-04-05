@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 export const setSummary = (state, summary) => {
   state.summary = summary;
 };
@@ -44,4 +46,8 @@ export const setHeatMapChartOptions = (state, heatMapChartOptions) => {
 
 export const setAreaChartOptions = (state, areaChartOptions) => {
   state.areaChartOptions = areaChartOptions;
+};
+
+export const setReportLatestCachedOn = (state, { report, reportLatestCachedOn }) => {
+  Vue.set(state.reportsLatestCachedOn, report, reportLatestCachedOn);
 };

@@ -567,6 +567,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_select_a_year'							 => __( 'Select a year', 'tainacan'),
 	'label_all_users'							 	 => __( 'All users', 'tainacan'),
 	'label_activitiy_per_user'						 => __( 'Activities per user', 'tainacan'),
+	'label_report_generated_on'						 => __( 'Report generated on', 'tainacan'),
+	'label_get_latest_report'						 => __( 'Get latest report', 'tainacan'),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
