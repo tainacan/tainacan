@@ -409,14 +409,18 @@ function tainacan_get_the_media_component(
 			<?php endif; ?>
 
 		</div>
-
-		<?php 
+			
+		<?php if ( isset( $_REQUEST['wp_customize'] ) ) : ?>
+			<script>
+				tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin != undefined && typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : {};
+				tainacan_plugin.tainacan_media_components['<?php echo $args['media_id'] ?>'] = <?php echo json_encode($args) ?>;
+			</script>	
+		<?php else :
 			wp_add_inline_script( 'tainacan-media-component', '
-				tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin != undefined && typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : [];
-				tainacan_plugin.tainacan_media_components.push('. json_encode($args) . ');
-			', 'before' ); 
-		?>
-
+				tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin != undefined && typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : {};
+				tainacan_plugin.tainacan_media_components["' . $args['media_id'] . '"] = '. json_encode($args) . ';
+			', 'before' );
+		endif; ?>
 	<?php endif; ?> <!-- End of if ($args['has_media_main'] || $args['has_media_thumbs'] ) -->
 	
 <?php
