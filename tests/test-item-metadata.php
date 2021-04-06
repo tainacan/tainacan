@@ -659,4 +659,30 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		
 		return "<a data-linkto='item' data-id='${id}' href='${URL}'>${title}</a>";
 	}
+
+	function test_taxonomy_metadata_html() {
+		$taxonomy = $this->tainacan_entity_factory->create_entity(
+			'taxonomy',
+			array(
+				'name'   => 'My Taxonomy test',
+				'collections' => [$this->collection],
+				'status' => 'publish'
+			),
+			true
+		);
+
+		$meta = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'   => 'My tax meta',
+				'status' => 'publish',
+				'collection' => $this->collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Taxonomy',
+				'metadata_type_options' => [
+					'taxonomy_id' => $taxonomy->get_id(),
+				]
+			),
+			true
+		);
+	}
 }

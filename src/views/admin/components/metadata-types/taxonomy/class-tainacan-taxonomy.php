@@ -332,9 +332,7 @@ class Taxonomy extends Metadata_Type {
 	 * @return string The HTML representation of the value, containing one or multiple terms, separated by comma, linked to term page
 	 */
 	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
-
 		$value = $item_metadata->get_value();
-
 		$return = '';
 
 		if ( $item_metadata->is_multiple() ) {
@@ -345,7 +343,7 @@ class Taxonomy extends Metadata_Type {
 			$separator = $item_metadata->get_multivalue_separator();
 
 			foreach ( $value as $term ) {
-				$count ++;
+				$count++;
 
 				if ( is_integer($term) ) {
 					$term = \Tainacan\Repositories\Terms::get_instance()->fetch($term, $this->get_option('taxonomy_id'));
@@ -361,7 +359,6 @@ class Taxonomy extends Metadata_Type {
 					}
 				}
 			}
-
 		} else {
 			if ( $value instanceof \Tainacan\Entities\Term ) {
 				$return .= $this->get_term_hierarchy_html($value);
@@ -372,9 +369,7 @@ class Taxonomy extends Metadata_Type {
 	}
 
 	private function get_term_hierarchy_html( \Tainacan\Entities\Term $term ) {
-
 		$terms = [];
-
 		$terms[] = $this->term_to_html($term);
 
 		while ($term->get_parent() > 0) {
@@ -383,11 +378,9 @@ class Taxonomy extends Metadata_Type {
 		}
 
 		$terms = \array_reverse($terms);
-
 		$glue = apply_filters('tainacan-terms-hierarchy-html-separator', '<span class="hierarchy-separator"> > </span>');
 
 		return \implode($glue, $terms);
-
 	}
 
 	private function term_to_html($term) {
