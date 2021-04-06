@@ -10,7 +10,7 @@ class Entity_Factory {
 	 * 
 	 * @var \Tainacan\Entities\Entity
 	 */
-	private   $entity;
+	private $entity;
 
 	/**
 	 * 
@@ -118,5 +118,3 @@ class Entity_Factory {
 		return $this->entity;
 	}
 }
-
-?>
