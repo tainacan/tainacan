@@ -590,4 +590,57 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$sb_meta_multi->validate();
 		$this->assertEquals($sb_meta_multi->get_value_as_html(), 'tainacan<span class="multivalue-separator"> | </span>wordpress');
 	}
+
+	function test_relationship_metadata_html() {
+		$referenced_collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			['name' => 'INXS Songs'],
+			true
+		);
+		$mystify = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'Mystify',
+				'description' => '"Mystify" is the 9th track of INXS 6th album "Kick".',
+				'collection'  => $referenced_collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+		$expected_return = $this->relationship_expected_return($mystify->get_id(), $mystify->get_title());
+
+		$relationship_metadata = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Relationship meta',
+				'description'	=> 'My desc',
+				'collection'    => $this->collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Relationship',
+				'status'        => 'publish',
+				'metadata_type_options' => [
+					'collection_id' => $referenced_collection->get_id(),
+					'search' => $referenced_collection->get_core_title_metadatum()->get_id()
+				]
+			),
+			true
+		);
+
+		$rel_meta = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $relationship_metadata);
+		$rel_meta->validate();
+		$this->assertEquals($rel_meta->get_value_as_html(), '');
+
+		$rel_meta->set_value($mystify->get_id());
+		$rel_meta->validate();
+		$this->assertEquals($rel_meta->get_value_as_html(), $expected_return);
+
+		$rel_meta->set_value([$this->collection->get_id()]);
+		$rel_meta->validate();
+		$this->assertEquals($rel_meta->get_value_as_html(), '');
+	}
+
+	private function relationship_expected_return($id, $title) {
+		$URL = get_permalink($id);
+		
+		return "<a data-linkto='item' data-id='${id}' href='${URL}'>${title}</a>";
+	}
 }

@@ -157,7 +157,7 @@ class Relationship extends Metadata_Type {
 	 * @param  Item_Metadata_Entity $item_metadata 
 	 * @return string The HTML representation of the value, containing one or multiple items names, linked to the item page
 	 */
-	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {		
 		$value = $item_metadata->get_value();
 		
 		$return = '';
@@ -170,11 +170,10 @@ class Relationship extends Metadata_Type {
 			
 			foreach ( $value as $item_id ) {
 				try {
-					//$item = new \Tainacan\Entities\Item($item_id);
 					$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 					$item = $Tainacan_Items->fetch( (int) $item_id);
 					
-					$count ++;
+					$count++;
 					
 					if ( $item instanceof \Tainacan\Entities\Item ) {
 						$return .= $prefix;
@@ -196,12 +195,11 @@ class Relationship extends Metadata_Type {
 				if ( $item instanceof \Tainacan\Entities\Item ) {
 					$return .= $this->get_item_html($item);
 				}
-				
 			} catch (\Exception $e) {
 				// item not found 
 			}
 		}
-		
+
 		return $return;
 	}
 
