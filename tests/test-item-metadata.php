@@ -654,12 +654,6 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$this->assertEquals($item_metadata_relationship->get_value_as_html(), "${expected_return}${separator}${expected_return2}");
 	}
 
-	private function relationship_expected_return($id, $title) {
-		$URL = get_permalink($id);
-		
-		return "<a data-linkto='item' data-id='${id}' href='${URL}'>${title}</a>";
-	}
-
 	function test_taxonomy_metadata_html() {
 		$taxonomy = $this->tainacan_entity_factory->create_entity(
 			'taxonomy',
@@ -680,6 +674,15 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			true
 		);
 
+		$term2 = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy->get_db_identifier(),
+				'name'     => 'Second term from my tax',
+			),
+			true
+		);
+
 		$taxonomy_meta = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -695,8 +698,23 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		);
 
 		$item_taxonomy_metadata = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $taxonomy_meta);
+		$item_taxonomy_metadata->set_value('');
+		$item_taxonomy_metadata->validate();
+		$this->assertEmpty($item_taxonomy_metadata->get_value_as_html());
+		
 		$item_taxonomy_metadata->set_value($term);
 		$item_taxonomy_metadata->validate();
 		$this->assertEquals($item_taxonomy_metadata->get_value_as_html(), "<a data-linkto='term' data-id='2' href='http://example.org/?tnc_tax_273=first-term-from-my-tax'>first term from my tax</a>");
+
+		$taxonomy_meta->set_multiple('yes');
+		$item_taxonomy_metadata->set_value([ $term, $term2 ]);
+		$item_taxonomy_metadata->validate();
+		$this->assertEquals($item_taxonomy_metadata->get_value_as_html(), "<a data-linkto='term' data-id='2' href='http://example.org/?tnc_tax_273=first-term-from-my-tax'>first term from my tax</a><span class=\"multivalue-separator\"> | </span><a data-linkto='term' data-id='3' href='http://example.org/?tnc_tax_273=second-term-from-my-tax'>Second term from my tax</a>");
+	}
+
+	private function relationship_expected_return($id, $title) {
+		$URL = get_permalink($id);
+		
+		return "<a data-linkto='item' data-id='${id}' href='${URL}'>${title}</a>";
 	}
 }
