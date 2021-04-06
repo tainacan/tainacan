@@ -15,6 +15,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 
 	private $collection = null;
 	private $item = null;
+	private $separator = '<span class="multivalue-separator"> | </span>';
 
 	public function setUp() {
 		parent::setUp();
@@ -451,7 +452,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$item_metadata_numeric_mult = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $metadatum_numeric_multiple);
 		$item_metadata_numeric_mult->set_value([10,22,4]);
 		$item_metadata_numeric_mult->validate();
-		$this->assertEquals($item_metadata_numeric_mult->get_value_as_html(), '10<span class="multivalue-separator"> | </span>22<span class="multivalue-separator"> | </span>4');
+		$this->assertEquals($item_metadata_numeric_mult->get_value_as_html(), "10" . $this->separator . "22" . $this->separator . "4");
 	}
 
 	function test_date_metadata_html() {
@@ -496,11 +497,11 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		// Invalid date values
 		$item_metadata_date_mult->set_value([10,22,4]);
 		$item_metadata_date_mult->validate();
-		$this->assertEquals($item_metadata_date_mult->get_value_as_html(), '<span class="multivalue-separator"> | </span><span class="multivalue-separator"> | </span>');
+		$this->assertEquals($item_metadata_date_mult->get_value_as_html(),  $this->separator . $this->separator );
 		
 		$item_metadata_date_mult->set_value(["2021-04-05", "2021-12-30"]); 
 		$item_metadata_date_mult->validate();
-		$this->assertEquals($item_metadata_date_mult->get_value_as_html(), 'April 5, 2021<span class="multivalue-separator"> | </span>December 30, 2021');
+		$this->assertEquals($item_metadata_date_mult->get_value_as_html(), 'April 5, 2021' . $this->separator . 'December 30, 2021');
 	}
 
 	function test_user_metadata_html() {
@@ -544,7 +545,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$sec_user = $this->factory()->user->create(array( 'role' => 'subscriber', 'display_name' => 'User Name 2' ));
 		$user_meta_multi->set_value([$new_user, $sec_user]);
 		$user_meta_multi->validate();
-		$this->assertEquals($user_meta_multi->get_value_as_html(), 'User Name<span class="multivalue-separator"> | </span>User Name 2');
+		$this->assertEquals($user_meta_multi->get_value_as_html(), 'User Name' . $this->separator . 'User Name 2');
 	}
 
 	function test_selectbox_metadata_html() {
@@ -588,7 +589,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$sb_meta_multi = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $selectbox_metadata_multiple);
 		$sb_meta_multi->set_value(['tainacan', 'wordpress']);
 		$sb_meta_multi->validate();
-		$this->assertEquals($sb_meta_multi->get_value_as_html(), 'tainacan<span class="multivalue-separator"> | </span>wordpress');
+		$this->assertEquals($sb_meta_multi->get_value_as_html(), 'tainacan' . $this->separator . 'wordpress');
 	}
 
 	function test_relationship_metadata_html() {
@@ -619,7 +620,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		);
 		$expected_return  = $this->relationship_expected_return($mystify->get_id(), $mystify->get_title());
 		$expected_return2 = $this->relationship_expected_return($disappear->get_id(), $disappear->get_title());
-		$separator = '<span class="multivalue-separator"> | </span>';
+		#$separator = '<span class="multivalue-separator"> | </span>';
 
 		$relationship_metadata = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
@@ -651,7 +652,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 
 		$relationship_metadata->set_multiple('yes');
 		$item_metadata_relationship->set_value([ $mystify->get_id(), $disappear->get_id() ]);
-		$this->assertEquals($item_metadata_relationship->get_value_as_html(), "${expected_return}${separator}${expected_return2}");
+		$this->assertEquals($item_metadata_relationship->get_value_as_html(), "${expected_return}" . $this->separator . "${expected_return2}");
 	}
 
 	function test_taxonomy_metadata_html() {
