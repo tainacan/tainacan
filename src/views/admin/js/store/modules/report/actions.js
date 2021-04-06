@@ -151,7 +151,7 @@ export const fetchActivities = ({ commit }, { collectionId, startDate, force } )
                 let activities = res.data;
 
                 commit('setActivities', activities);
-                commit('setReportLatestCachedOn', { report: 'activities', reportLatestCachedOn: res.data.report_cached_on });
+                commit('setReportLatestCachedOn', { report: 'activities-' + (collectionId ? collectionId : 'default') + (startDate ? '-' + startDate : ''), reportLatestCachedOn: res.data.report_cached_on });
                 resolve(activities);
             })
             .catch(error => reject(error));

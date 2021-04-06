@@ -262,7 +262,8 @@ export default {
             isFetchingCollectionsList: false,
             isFetchingMetadata: false,
             isFetchingActivities: false,
-            isFetchingTaxonomiesList: false
+            isFetchingTaxonomiesList: false,
+            activitiesStartDate: ''
         }
     },
     computed: {
@@ -295,7 +296,7 @@ export default {
             return this.reportsLatestCachedOn['taxonomies'];
         },
         activitiesLatestCachedOn() {
-            return this.reportsLatestCachedOn['activities'];
+            return this.reportsLatestCachedOn['activities-' + (this.collectionId ? this.collectionId : 'default') + (this.activitiesStartDate ? '-' + this.activitiesStartDate : '')];
         }
     },
     watch: {
@@ -376,6 +377,7 @@ export default {
             this.fetchActivities({ collectionId: this.selectedCollection, startDate: startDate })
                 .then(() => this.isFetchingActivities = false)
                 .catch(() => this.isFetchingActivities = false);
+            this.activitiesStartDate = startDate;
         }
     }
 }
