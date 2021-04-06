@@ -671,7 +671,16 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			true
 		);
 
-		$meta = $this->tainacan_entity_factory->create_entity(
+		$term = $this->tainacan_entity_factory->create_entity(
+			'term',
+			array(
+				'taxonomy' => $taxonomy->get_db_identifier(),
+				'name'     => 'first term from my tax',
+			),
+			true
+		);
+
+		$taxonomy_meta = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
 				'name'   => 'My tax meta',
@@ -684,5 +693,10 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
+
+		$item_taxonomy_metadata = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $taxonomy_meta);
+		$item_taxonomy_metadata->set_value($term);
+		$item_taxonomy_metadata->validate();
+		$this->assertEquals($item_taxonomy_metadata->get_value_as_html(), "<a data-linkto='term' data-id='2' href='http://example.org/?tnc_tax_273=first-term-from-my-tax'>first term from my tax</a>");
 	}
 }
