@@ -33,7 +33,11 @@ Apex.colors = [
     '#e69810', // Tainacan Yellow
     '#a23939', // Tainacan Red
     '#592570', // Tainacan Purple
-    '#ed4f63'  // Tainacan Pink
+    '#ed4f63', // Tainacan Pink
+    '#b46659',  // Tainacan Brown
+    '#e5721c',  // Tainacan Orange
+    '#04a5ff',  // Tainacan Other Blue
+    '#454647'  // Tainacan Dark Gray
 ];
 
 Vue.use(I18NPlugin);

@@ -195,6 +195,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_button_delete_thumb'                      => __( 'Button Delete Thumbnail', 'tainacan' ),
 	'label_collections_per_page'                     => __( 'Collections per Page:', 'tainacan' ),
 	'label_taxonomies_per_page'                      => __( 'Taxonomies per Page:', 'tainacan' ),
+	'label_terms_per_page'                           => __( 'Terms per Page:', 'tainacan' ),
 	'label_activities_per_page'                      => __( 'Activities per Page:', 'tainacan' ),
 	'label_items_per_page'                           => __( 'Items per Page:', 'tainacan' ),
 	'label_attachments_per_page'                     => __( 'Attachments per Page:', 'tainacan' ),

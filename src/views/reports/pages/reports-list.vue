@@ -202,7 +202,7 @@
                         :chart-data="taxonomyTerms"
                         :is-fetching-data="isRepositoryLevel ? isFetchingTaxonomiesList : isFetchingMetadataList"
                         :is-repository-level="isRepositoryLevel"
-                        v-if="isRepositoryLevel" />
+                        :collection-id="selectedCollection" />
 
             <activities-per-user-block
                     class="column is-full is-two-fifths-tablet"
