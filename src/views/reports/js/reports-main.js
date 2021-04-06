@@ -17,6 +17,7 @@ Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'develo
 import ReportsPage from '../reports.vue';
 import NumberBlock from '../components/number-block.vue';
 import ItemsPerTermBlock from '../components/items-per-term-block.vue';
+import ItemsPerTermCollectionBlock from '../components/items-per-term-collection-block.vue';
 import TermsPerTaxonomyBlock from '../components/terms-per-taxonomy-block.vue';
 import MetadataTypesBlock from '../components/metadata-types-block.vue';
 import MetadataDistributionBlock from '../components/metadata-distribution-block.vue';
@@ -49,6 +50,7 @@ Vue.use(Modal);
 
 Vue.component('number-block', NumberBlock);
 Vue.component('items-per-term-block', ItemsPerTermBlock);
+Vue.component('items-per-term-collection-block', ItemsPerTermCollectionBlock);
 Vue.component('terms-per-taxonomy-block', TermsPerTaxonomyBlock);
 Vue.component('metadata-types-block', MetadataTypesBlock);
 Vue.component('metadata-distribution-block', MetadataDistributionBlock);

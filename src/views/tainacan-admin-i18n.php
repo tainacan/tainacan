@@ -544,6 +544,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_number_of_items'						 	 => __( 'Number of items', 'tainacan' ),
 	'label_usage_of_terms_per_taxonomy'			 	 => __( 'Usage of terms per taxonomy', 'tainacan' ),
 	'label_items_per_term_from_taxonomy'			 => __( 'Items per term from taxonomy:', 'tainacan' ),
+	'label_items_per_term_from_taxonomy_metadatum'	 => __( 'Items per term from taxonomy metadatum:', 'tainacan' ),
+	'label_items_per_child_terms_of'				 => __( 'Items per child terms of:', 'tainacan' ),
 	'label_items_per_collection'				 	 => __( 'Items per collection', 'tainacan' ),
 	'label_loading_report'						 	 => __( 'Loading report...', 'tainacan' ),
 	'label_metadata_fill_distribution'			 	 => __( 'Metadata fill distribution', 'tainacan' ),
@@ -552,8 +554,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	/* translators: To be displayed with the number of Taxonomies not used in the colllection */
 	'label_not_used'								 => __( 'Not used', 'tainacan' ),
 	/* translators: To be displayed with the number of Taxonomies used in the colllection */
-	'label_used'								 	 => __( 'Used', 'tainacan' ),
 	'label_select_a_taxonomy'					 	 => __( 'Select a taxonomy', 'tainacan' ),
+	'label_used'								 	 => __( 'Used', 'tainacan' ),
+	'label_select_a_taxonomy_metadatum'			 	 => __( 'Select a taxonomy metadatum', 'tainacan' ),
 	'label_items_with_this_metadum_value'		 	 => __( 'Items with this metadatum value', 'tainacan' ),
 	'label_amount_of_items_per_metadatum_value'		 => __( 'Amount of items per metadatum value', 'tainacan' ),
 	'label_activities_during_year'					 => __( 'Activities during the year', 'tainacan' ),

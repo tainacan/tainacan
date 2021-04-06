@@ -24,6 +24,10 @@ export const setTaxonomyTerms = (state, taxonomyTerms) => {
   state.taxonomyTerms = taxonomyTerms;
 };
 
+export const setTaxonomyChildTerms = (state, taxonomyTerms) => {
+  state.taxonomyChildTerms = taxonomyTerms;
+};
+
 export const setActivities = (state, activities) => {
   state.activities = activities;
 };

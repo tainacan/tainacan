@@ -114,17 +114,20 @@ export const fetchTaxonomiesList = ({ commit }, force) => {
     });
 };
 
-export const fetchTaxonomyTerms = ({ commit }, { taxonomyId, collectionId, force }) => {
+export const fetchTaxonomyTerms = ({ commit }, { taxonomyId, collectionId, parentTerm, force }) => {
 
     let endpoint = '/reports';
     
     if (collectionId && collectionId != 'default')
-        endpoint += '/collection/' + collectionId + '/metadata/' + taxonomyId;
+        endpoint += '/collection/' + collectionId + '/metadata/' + taxonomyId + '?';
     else
-        endpoint += '/taxonomy/' + taxonomyId;
+        endpoint += '/taxonomy/' + taxonomyId + '?';
 
     if (force)
-        endpoint += '?force=yes';
+        endpoint += '&force=yes';
+
+    if (parentTerm)
+        endpoint += '&parent=' + parentTerm;
 
     return new Promise((resolve, reject) => {
         axios.tainacan.get(endpoint)
@@ -135,7 +138,11 @@ export const fetchTaxonomyTerms = ({ commit }, { taxonomyId, collectionId, force
                 else
                     taxonomyTerms = res.data.terms ? Object.values(res.data.terms) : [];
 
-                commit('setTaxonomyTerms', taxonomyTerms);
+                if (parentTerm)
+                    commit('setTaxonomyChildTerms', taxonomyTerms);
+                else
+                    commit('setTaxonomyTerms', taxonomyTerms);
+                
                 commit('setReportLatestCachedOn', { report: 'taxonomy-terms-' + (collectionId ? collectionId : 'default') + '-' + taxonomyId, reportLatestCachedOn: res.data.report_cached_on });
                 resolve(taxonomyTerms);
             })

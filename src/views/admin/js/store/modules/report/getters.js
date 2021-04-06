@@ -22,6 +22,10 @@ export const getTaxonomyTerms = state => {
   return state.taxonomyTerms;
 };
 
+export const getTaxonomyChildTerms = state => {
+  return state.taxonomyChildTerms;
+};
+
 export const getActivities = state => {
   return state.activities;
 };

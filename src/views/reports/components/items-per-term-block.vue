@@ -1,5 +1,5 @@
 <template>
-     <div v-if="isRepositoryLevel ? taxonomiesList != undefined : metadataList != undefined">
+     <div v-if="taxonomiesList != undefined">
         <div 
                 :class="{ 'skeleton': isFetchingData || isBuildingChart || isFetchingTaxonomyTerms || !selectedTaxonomy || !selectedTaxonomy.id }"
                 class="postbox">
@@ -20,7 +20,7 @@
                                 v-for="(taxonomy, index) of taxonomiesListArray"
                                 :key="index"
                                 :value="taxonomy">
-                            {{ taxonomy.name + (isRepositoryLevel ? (' (' + taxonomy.total_terms + ' ' + ( taxonomy.total_terms == 1 ? $i18n.get('term') : $i18n.get('terms') ) + ')') : '') }} 
+                            {{ taxonomy.name + ' (' + taxonomy.total_terms + ' ' + ( taxonomy.total_terms == 1 ? $i18n.get('term') : $i18n.get('terms') ) + ')' }} 
                         </option>
                     </select>
                 </div>
@@ -125,10 +125,6 @@ import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {
     mixins: [ reportsChartMixin ],
-    props: {
-        isRepositoryLevel: false,
-        collectionId: ''
-    },
     data() {
         return {
             isFetchingTaxonomyTerms: false,
@@ -140,18 +136,14 @@ export default {
     computed: {
         ...mapGetters('report', {
             taxonomiesList: 'getTaxonomiesList',
-            metadataList: 'getMetadataList',
             stackedBarChartOptions: 'getStackedBarChartOptions',
             reportsLatestCachedOn: 'getReportsLatestCachedOn'
         }),
         taxonomiesListArray() {
-            if (this.isRepositoryLevel)
-                return this.taxonomiesList && this.taxonomiesList != undefined ? Object.values(this.taxonomiesList) : [];
-            else
-                return this.metadataList && this.metadataList != undefined && Array.isArray(this.metadataList) ? this.metadataList : [];
+            return this.taxonomiesList && this.taxonomiesList != undefined ? Object.values(this.taxonomiesList) : [];
         },
         taxonomyTermsLatestCachedOn() {
-            return this.reportsLatestCachedOn['taxonomy-terms-' + (this.collectionId ? this.collectionId : 'default') + '-' + this.selectedTaxonomy.id];
+            return this.reportsLatestCachedOn['taxonomy-terms-' + this.selectedTaxonomy.id];
         },
         currentTotalTerms() {
             return Array.isArray(this.chartData) ? this.chartData.length : 0 
@@ -185,31 +177,21 @@ export default {
         ...mapActions('report', [
             'fetchTaxonomyTerms'
         ]),
-        ...mapActions('metadata', [
-            'fetchMetadata'
-        ]),
         buildTaxonomyTermsChart() {
         
             this.isBuildingChart = true;
             
             // Building Taxonomy term usage chart
-            let orderedTerms = JSON.parse(JSON.stringify(this.chartData)).sort((a, b) => { return this.isRepositoryLevel ? b.count - a.count : b.total_items - a.total_items });
+            let orderedTerms = JSON.parse(JSON.stringify(this.chartData)).sort((a, b) => b.count - a.count);
             orderedTerms = orderedTerms.slice((this.termsDisplayedPage - 1) * this.maxTermsToDisplay, ((this.termsDisplayedPage - 1) * this.maxTermsToDisplay) + this.maxTermsToDisplay);
             
             let termsValues = [];
             let termsLabels = [];
 
-            if (this.isRepositoryLevel) {
-                orderedTerms.forEach(term => {
-                    termsValues.push(term.count);
-                    termsLabels.push(term.name);
-                });
-            } else {
-                orderedTerms.forEach(term => {
-                    termsValues.push(term.total_items);
-                    termsLabels.push(term.label);
-                });
-            }
+            orderedTerms.forEach(term => {
+                termsValues.push(term.count);
+                termsLabels.push(term.name);
+            });           
             
             this.chartSeries = [
                 {
@@ -248,7 +230,7 @@ export default {
         loadTaxonomyTerms(force) {
             this.isFetchingTaxonomyTerms = true;
             
-            this.fetchTaxonomyTerms({ taxonomyId: this.selectedTaxonomy.id, collectionId: this.collectionId, force: force })
+            this.fetchTaxonomyTerms({ taxonomyId: this.selectedTaxonomy.id, force: force })
                 .then(() => {
                     this.buildTaxonomyTermsChart();
                     this.isFetchingTaxonomyTerms = false;
