@@ -607,7 +607,19 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-		$expected_return = $this->relationship_expected_return($mystify->get_id(), $mystify->get_title());
+		$disappear = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'       => 'Disappear',
+				'description' => '"Disappear" is the second single from INXS 7th album "X".It was released in December 1990.',
+				'collection'  => $referenced_collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+		$expected_return  = $this->relationship_expected_return($mystify->get_id(), $mystify->get_title());
+		$expected_return2 = $this->relationship_expected_return($disappear->get_id(), $disappear->get_title());
+		$separator = '<span class="multivalue-separator"> | </span>';
 
 		$relationship_metadata = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
@@ -625,17 +637,21 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			true
 		);
 
-		$rel_meta = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $relationship_metadata);
-		$rel_meta->validate();
-		$this->assertEquals($rel_meta->get_value_as_html(), '');
+		$item_metadata_relationship = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $relationship_metadata);
+		$item_metadata_relationship->validate();
+		$this->assertEquals($item_metadata_relationship->get_value_as_html(), '');
 
-		$rel_meta->set_value($mystify->get_id());
-		$rel_meta->validate();
-		$this->assertEquals($rel_meta->get_value_as_html(), $expected_return);
+		$item_metadata_relationship->set_value($mystify->get_id());
+		$item_metadata_relationship->validate();
+		$this->assertEquals($item_metadata_relationship->get_value_as_html(), $expected_return);
 
-		$rel_meta->set_value([$this->collection->get_id()]);
-		$rel_meta->validate();
-		$this->assertEquals($rel_meta->get_value_as_html(), '');
+		$item_metadata_relationship->set_value([$this->collection->get_id()]);
+		$item_metadata_relationship->validate();
+		$this->assertEquals($item_metadata_relationship->get_value_as_html(), '');
+
+		$relationship_metadata->set_multiple('yes');
+		$item_metadata_relationship->set_value([ $mystify->get_id(), $disappear->get_id() ]);
+		$this->assertEquals($item_metadata_relationship->get_value_as_html(), "${expected_return}${separator}${expected_return2}");
 	}
 
 	private function relationship_expected_return($id, $title) {
