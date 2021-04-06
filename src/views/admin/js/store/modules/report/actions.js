@@ -114,9 +114,12 @@ export const fetchTaxonomiesList = ({ commit }, force) => {
     });
 };
 
-export const fetchTaxonomyTerms = ({ commit }, taxonomyId) => {
+export const fetchTaxonomyTerms = ({ commit }, { taxonomyId, force }) => {
 
     let endpoint = '/reports/taxonomy/' + taxonomyId;
+
+    if (force)
+        endpoint += '?force=yes';
 
     return new Promise((resolve, reject) => {
         axios.tainacan.get(endpoint)
@@ -124,6 +127,7 @@ export const fetchTaxonomyTerms = ({ commit }, taxonomyId) => {
                 let taxonomyTerms = res.data.terms ? res.data.terms : {};
 
                 commit('setTaxonomyTerms', taxonomyTerms);
+                commit('setReportLatestCachedOn', { report: 'taxonomy-terms-' + taxonomyId, reportLatestCachedOn: res.data.report_cached_on });
                 resolve(taxonomyTerms);
             })
             .catch(error => reject(error));

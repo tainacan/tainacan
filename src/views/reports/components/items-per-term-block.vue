@@ -126,6 +126,20 @@
                     :series="chartSeries"
                     :options="chartOptions" />
         </div>
+        <div 
+                v-if="taxonomyTermsLatestCachedOn"
+                class="box-last-cached-on">
+            <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(taxonomyTermsLatestCachedOn).toLocaleString() }}</span>
+            <button 
+                    @click="loadTaxonomyTerms(true)">
+                <span class="screen-reader-text">
+                    {{ $i18n.get('label_get_latest_report') }}
+                </span>
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
+                </span>
+            </button>
+        </div>
     </div>
 </template>
 
@@ -147,14 +161,17 @@ export default {
         }
     },
     computed: {
-
         ...mapGetters('report', {
             taxonomiesList: 'getTaxonomiesList',
             metadataList: 'getMetadataList',
             stackedBarChartOptions: 'getStackedBarChartOptions',
+            reportsLatestCachedOn: 'getReportsLatestCachedOn'
         }),
         taxonomiesListArray() {
             return this.taxonomiesList && this.taxonomiesList != undefined ? Object.values(this.taxonomiesList) : [];
+        },
+        taxonomyTermsLatestCachedOn() {
+            return this.reportsLatestCachedOn['taxonomy-terms-' + this.selectedTaxonomy.id];
         }
     },
     watch: {
@@ -238,10 +255,10 @@ export default {
 
             setTimeout(() => this.isBuildingChart = false, 500);
         },
-        loadTaxonomyTerms() {
+        loadTaxonomyTerms(force) {
             this.isFetchingTaxonomyTerms = true;
 
-            this.fetchTaxonomyTerms(this.selectedTaxonomy.id)
+            this.fetchTaxonomyTerms({ taxonomyId: this.selectedTaxonomy.id, force: force })
                 .then(() => {
                     this.buildTaxonomyTermsChart();
                     this.isFetchingTaxonomyTerms = false;
