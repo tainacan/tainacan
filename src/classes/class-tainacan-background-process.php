@@ -191,6 +191,9 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 		if ($status == 'finished') {
 			$params['progress_label'] = __('Process completed','tainacan');
 			$params['progress_value'] = 100;
+		} else if ($status == 'finished-errors') {
+			$params['progress_label'] = __('Process completed with errors','tainacan');
+			$params['progress_value'] = 100;
 		}
 		$wpdb->update(
 			$this->table, 
