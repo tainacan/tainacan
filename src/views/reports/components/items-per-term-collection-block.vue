@@ -4,11 +4,13 @@
                 :class="{ 'skeleton': isFetchingData || isBuildingChart || isFetchingMetadatumTerms || !selectedMetadatum || !selectedMetadatum.id }"
                 class="postbox">
             <div 
-                    :style="selectedParentTerm ? 'margin-left: 0px;' : ''"
-                    :class="selectedParentTerm ? 'columns' : ''">
-                <div :class="selectedParentTerm ? 'column is-half' : ''">
+                    :style="!isChildColumnCollapsed ? 'margin-left: 0px;' : ''"
+                    :class="!isChildColumnCollapsed ? 'columns is-6' : ''">
+                <div :class="!isChildColumnCollapsed ? 'column is-half' : ''">
                     <div class="box-header">
-                        <div class="box-header__item">
+                        <div 
+                                v-if="selectedParentTerm.length <= 1"
+                                class="box-header__item">
                             <label 
                                     v-if="!isFetchingData"
                                     for="select_metadata_for_terms">
@@ -27,6 +29,21 @@
                                     {{ metadatum.name }} 
                                 </option>
                             </select>
+                        </div>
+                        <div
+                                v-else
+                                class="box-header__item"
+                                style="display: flex; align-items: baseline;">
+                            
+                            <button
+                                    class="button button-secondary"
+                                    @click="backToParentTerm">
+                                {{ $i18n.get('label_parent_term') }}
+                            </button>&nbsp;
+                            <p 
+                                    v-if="!isFetchingMetadatumChildTerms">
+                                &nbsp;{{ $i18n.get('label_items_per_child_terms_of') }}&nbsp; <strong>{{ selectedParentTerm[selectedParentTerm.length - 2].label }}</strong>
+                            </p>
                         </div>
                         <div 
                                 v-if="selectedMetadatum && selectedMetadatum.id && currentTotalTerms >= 56"
@@ -105,94 +122,118 @@
                             height="380px"
                             :series="chartSeries"
                             :options="chartOptions" />
+                    <button 
+                            v-if=" !isFetchingData && !isFetchingMetadatumTerms && selectedMetadatum"
+                            @click="isChildColumnCollapsed = !isChildColumnCollapsed"
+                            class="button-secondary hide-column-button">
+                        <span class="icon">
+                            <i 
+                                    :class="isChildColumnCollapsed ? 'tainacan-icon-arrowleft' : 'tainacan-icon-arrowright'"
+                                    class="tainacan-icon tainacan-icon-1-25em" />
+                        </span>
+                    </button>
                 </div>
                 <div 
-                        v-if="!isFetchingData && !isFetchingMetadatumTerms && selectedMetadatum && selectedParentTerm"
-                        class="column is-half">
-                    <div class="box-header">
-                        <div class="box-header__item">
-                            <label 
-                                    v-if="!isFetchingMetadatumChildTerms">
-                                {{ $i18n.get('label_items_per_child_terms_of') }}&nbsp; <em>{{ selectedParentTerm }}</em>
-                            </label>
+                        v-if="!isChildColumnCollapsed && !isFetchingData && !isFetchingMetadatumTerms && selectedMetadatum"
+                        class="child-term-column column is-half">
+                    <div v-if="selectedParentTerm[selectedParentTerm.length - 1]">
+                        <div class="box-header">
+                            <div class="box-header__item">
+                                <p 
+                                        v-if="!isFetchingMetadatumChildTerms">
+                                    {{ $i18n.get('label_items_per_child_terms_of') }}&nbsp; <strong>{{ selectedParentTerm[selectedParentTerm.length - 1].label }}</strong>
+                                </p>
+                            </div>
+                            <div 
+                                    v-if="currentTotalChildTerms >= 56"
+                                    class="box-header__item">
+                                <label for="max_terms">{{ $i18n.get('label_terms_per_page') }}</label>
+                                <input
+                                        type="number"
+                                        step="1"
+                                        min="1"
+                                        max="999"
+                                        class="screen-per-page"
+                                        name="max_terms"
+                                        id="max_terms"
+                                        maxlength="3"
+                                        :disabled="isBuildingChildrenChart"
+                                        v-model.number="maxChildTermsToDisplay">
+                            </div>
+                            <div 
+                                    v-if="currentTotalChildTerms >= 56"
+                                    class="box-header__item tablenav-pages">
+                                <span class="displaying-num">{{ currentTotalChildTerms + ' ' + $i18n.get('terms') }}</span>
+                                <span class="pagination-links">
+                                    <span
+                                            @click="!isBuildingChildrenChart ? childTermsDisplayedPage = 1 : null"
+                                            :class="{'tablenav-pages-navspan disabled' : childTermsDisplayedPage <= 1 || isBuildingChildrenChart}"
+                                            class="first-page button"
+                                            aria-hidden="true">
+                                        «
+                                    </span>
+                                    <span
+                                            @click="(childTermsDisplayedPage > 1 && !isBuildingChildrenChart) ? childTermsDisplayedPage-- : null"
+                                            :class="{'tablenav-pages-navspan disabled' : childTermsDisplayedPage <= 1 || isBuildingChildrenChart}"
+                                            class="prev-page button"
+                                            aria-hidden="true">
+                                        ‹
+                                    </span>
+                                    <span class="paging-input">
+                                        <label
+                                                for="current-page-selector"
+                                                class="screen-reader-text">
+                                            {{ $i18n.get('label_current_page') }}
+                                        </label>
+                                        <input
+                                                class="current-page"
+                                                id="current-page-selector"
+                                                type="number"
+                                                step="1"
+                                                min="1"
+                                                :disabled="isBuildingChildrenChart || maxChildTermsToDisplay >= currentTotalChildTerms"
+                                                :max="Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay)"
+                                                name="paged"
+                                                v-model.number="childTermsDisplayedPage"
+                                                size="1"
+                                                aria-describedby="table-paging">
+                                        <span class="tablenav-paging-text"> {{ $i18n.get('info_of') }} <span class="total-pages">{{ Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) }}</span></span>
+                                    </span>
+                                    <span 
+                                            @click="(!isBuildingChildrenChart && childTermsDisplayedPage < Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay)) ? childTermsDisplayedPage++ : null"
+                                            :class="{'tablenav-pages-navspan disabled' : isBuildingChildrenChart || childTermsDisplayedPage >= Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) }"
+                                            aria-hidden="true"
+                                            class="next-page button">
+                                        ›
+                                    </span>
+                                    <span
+                                            @click="!isBuildingChildrenChart ? childTermsDisplayedPage = Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) : null"
+                                            :class="{'tablenav-pages-navspan disabled': isBuildingChildrenChart || childTermsDisplayedPage >= Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) }"
+                                            class="last-page button"
+                                            aria-hidden="true">
+                                        »
+                                    </span>
+                                </span>
+                            </div>
                         </div>
-                        <div 
-                                v-if="currentTotalChildTerms >= 56"
-                                class="box-header__item">
-                            <label for="max_terms">{{ $i18n.get('label_terms_per_page') }}</label>
-                            <input
-                                    type="number"
-                                    step="1"
-                                    min="1"
-                                    max="999"
-                                    class="screen-per-page"
-                                    name="max_terms"
-                                    id="max_terms"
-                                    maxlength="3"
-                                    :disabled="isBuildingChildrenChart"
-                                    v-model.number="maxChildTermsToDisplay">
-                        </div>
-                        <div 
-                                v-if="currentTotalChildTerms >= 56"
-                                class="box-header__item tablenav-pages">
-                            <span class="displaying-num">{{ currentTotalChildTerms + ' ' + $i18n.get('terms') }}</span>
-                            <span class="pagination-links">
-                                <span
-                                        @click="!isBuildingChildrenChart ? childTermsDisplayedPage = 1 : null"
-                                        :class="{'tablenav-pages-navspan disabled' : childTermsDisplayedPage <= 1 || isBuildingChildrenChart}"
-                                        class="first-page button"
-                                        aria-hidden="true">
-                                    «
-                                </span>
-                                <span
-                                        @click="(childTermsDisplayedPage > 1 && !isBuildingChildrenChart) ? childTermsDisplayedPage-- : null"
-                                        :class="{'tablenav-pages-navspan disabled' : childTermsDisplayedPage <= 1 || isBuildingChildrenChart}"
-                                        class="prev-page button"
-                                        aria-hidden="true">
-                                    ‹
-                                </span>
-                                <span class="paging-input">
-                                    <label
-                                            for="current-page-selector"
-                                            class="screen-reader-text">
-                                        {{ $i18n.get('label_current_page') }}
-                                    </label>
-                                    <input
-                                            class="current-page"
-                                            id="current-page-selector"
-                                            type="number"
-                                            step="1"
-                                            min="1"
-                                            :disabled="isBuildingChildrenChart || maxChildTermsToDisplay >= currentTotalChildTerms"
-                                            :max="Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay)"
-                                            name="paged"
-                                            v-model.number="childTermsDisplayedPage"
-                                            size="1"
-                                            aria-describedby="table-paging">
-                                    <span class="tablenav-paging-text"> {{ $i18n.get('info_of') }} <span class="total-pages">{{ Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) }}</span></span>
-                                </span>
-                                <span 
-                                        @click="(!isBuildingChildrenChart && childTermsDisplayedPage < Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay)) ? childTermsDisplayedPage++ : null"
-                                        :class="{'tablenav-pages-navspan disabled' : isBuildingChildrenChart || childTermsDisplayedPage >= Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) }"
-                                        aria-hidden="true"
-                                        class="next-page button">
-                                    ›
-                                </span>
-                                <span
-                                        @click="!isBuildingChildrenChart ? childTermsDisplayedPage = Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) : null"
-                                        :class="{'tablenav-pages-navspan disabled': isBuildingChildrenChart || childTermsDisplayedPage >= Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) }"
-                                        class="last-page button"
-                                        aria-hidden="true">
-                                    »
-                                </span>
-                            </span>
-                        </div>
+                        <apexchart
+                                v-if="!isBuildingChildrenChart && !isFetchingMetadatumChildTerms"
+                                height="380px"
+                                :series="childrenChartSeries"
+                                :options="childrenChartOptions" />
                     </div>
-                    <apexchart
-                            v-if="!isBuildingChildrenChart && !isFetchingMetadatumChildTerms"
-                            height="380px"
-                            :series="childrenChartSeries"
-                            :options="childrenChartOptions" />
+                    <div 
+                            v-else
+                            class="child-term-placeholder">
+                        <p class="title is-4">
+                            <span class="icon has-text-gray">
+                                <i class="tainacan-icon tainacan-icon-taxonomies tainacan-icon-1-125em" />
+                            </span>
+                            &nbsp;{{ $i18n.get('label_children_terms') }}
+                        </p>
+                        <br>
+                        <p class="subtitle is-6">{{ $i18n.get('info_child_terms_chart') }}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -214,7 +255,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {
@@ -228,18 +269,20 @@ export default {
             selectedMetadatum: {},
             maxTermsToDisplay: 56,
             termsDisplayedPage: 1,
-            selectedParentTerm: '',
+            selectedParentTerm: [],
             isFetchingMetadatumChildTerms: false,
             isBuildingChildrenChart: false,
             childrenChartSeries: [],
             childrenChartOptions: {},
             maxChildTermsToDisplay: 56,
-            childTermsDisplayedPage: 1
+            childTermsDisplayedPage: 1,
+            isChildColumnCollapsed: false
         }
     },
     computed: {
         ...mapGetters('report', {
             metadataList: 'getMetadataList',
+            taxonomyTerms: 'getTaxonomyTerms',
             taxonomyChildTerms: 'getTaxonomyChildTerms',
             stackedBarChartOptions: 'getStackedBarChartOptions',
             reportsLatestCachedOn: 'getReportsLatestCachedOn'
@@ -251,7 +294,7 @@ export default {
             return this.reportsLatestCachedOn['taxonomy-terms-' + (this.collectionId ? this.collectionId : 'default') + '-' + this.selectedMetadatum.id];
         },
         currentTotalTerms() {
-            return Array.isArray(this.chartData) ? this.chartData.length : 0 
+            return Array.isArray(this.taxonomyTerms) ? this.taxonomyTerms.length : 0 
         },
         currentTotalChildTerms() {
             return Array.isArray(this.taxonomyChildTerms) ? this.taxonomyChildTerms.length : 0 
@@ -268,8 +311,10 @@ export default {
         selectedMetadatum: {
             handler() {
                 this.termsDisplayedPage = 1;
-                if (this.selectedMetadatum && this.selectedMetadatum.id)
+                if (this.selectedMetadatum && this.selectedMetadatum.id) {
+                    this.selectedParentTerm = [];
                     this.loadMetadatumTerms();
+                }
             },
             immediate: true
         },
@@ -281,7 +326,7 @@ export default {
             this.buildMetadatumTermsChart();
         },
         selectedParentTerm() {
-            if (this.selectedParentTerm) {
+            if (this.selectedParentTerm[this.selectedParentTerm.length - 1] && this.selectedParentTerm[this.selectedParentTerm.length - 1].id) {
                 this.loadMetadatumChildTerms();
             }
         }
@@ -290,15 +335,17 @@ export default {
         ...mapActions('report', [
             'fetchTaxonomyTerms'
         ]),
+        ...mapMutations('report', [
+            'setTaxonomyTerms'
+        ]),
         ...mapActions('metadata', [
             'fetchMetadata'
         ]),
         buildMetadatumTermsChart() {
-        
             this.isBuildingChart = true;
             
             // Building Taxonomy term usage chart
-            let orderedTerms = JSON.parse(JSON.stringify(this.chartData)).sort((a, b) => b.total_items - a.total_items );
+            let orderedTerms = JSON.parse(JSON.stringify(this.taxonomyTerms)).sort((a, b) => b.total_items - a.total_items );
             orderedTerms = orderedTerms.slice((this.termsDisplayedPage - 1) * this.maxTermsToDisplay, ((this.termsDisplayedPage - 1) * this.maxTermsToDisplay) + this.maxTermsToDisplay);
             
             let termsValues = [];
@@ -311,7 +358,7 @@ export default {
             
             this.chartSeries = [
                 {
-                    name: this.$i18n.get('label_terms_used'),
+                    name: this.$i18n.get('label_items_per_term'),
                     data: termsValues
                 }
             ];
@@ -343,12 +390,27 @@ export default {
                         },
                         events: {
                             dataPointSelection: (event, chartContext, config) => {
-                                if (config.dataPointIndex >=0 && orderedTerms[config.dataPointIndex] && orderedTerms[config.dataPointIndex].total_children) {
-                                    this.selectedParentTerm = orderedTerms[config.dataPointIndex].value;
-                                    console.log(orderedTerms[config.dataPointIndex])
+                                if (config.dataPointIndex >=0 && orderedTerms[config.dataPointIndex]) {
+                                    this.selectedParentTerm.push({
+                                        id: orderedTerms[config.dataPointIndex].value,
+                                        label: orderedTerms[config.dataPointIndex].label
+                                    })
                                 }
                             }
                         },
+                    },
+                    tooltip: {
+                        custom: ({ dataPointIndex }) => {
+                            return `<div class="tainacan-custom-tooltip">
+                                    <div class="tainacan-custom-tooltip__header">` + orderedTerms[dataPointIndex].label + `</div>
+                                    <div class="tainacan-custom-tooltip__body">
+                                        <span>` + this.$i18n.get('label_items_per_term') + `: <strong>` + orderedTerms[dataPointIndex].total_items + `</strong></span>
+                                        `+ (orderedTerms[dataPointIndex].total_children 
+                                            ? (`<span>` + this.$i18n.getWithVariables(orderedTerms[dataPointIndex].total_children > 1 ? 'instruction_click_to_see_%s_child_terms' : 'instruction_click_to_see_%s_child_term', [ orderedTerms[dataPointIndex].total_children ]) + `</span>`) 
+                                            : ``
+                                        ) +
+                                    `</div></div>`;
+                        }
                     },
                     yaxis: {
                         title: {
@@ -357,6 +419,9 @@ export default {
                     },
                     animations: {
                         enabled: orderedTerms.length <= 40
+                    },
+                    noData: {
+                        text: '0 ' + this.$i18n.get('label_items_with_this_metadum_value')
                     }
                 }
             }
@@ -381,7 +446,7 @@ export default {
             
             this.childrenChartSeries = [
                 {
-                    name: this.$i18n.get('label_terms_used'),
+                    name: this.$i18n.get('label_items_per_term'),
                     data: termsValues
                 }
             ];
@@ -413,9 +478,13 @@ export default {
                         },
                         events: {
                             dataPointSelection: (event, chartContext, config) => {
-                                if (config.dataPointIndex >= 0 && orderedTerms[config.dataPointIndex] && orderedTerms[config.dataPointIndex].total_children) {
-                                    this.selectedParentTerm = orderedTerms[config.dataPointIndex].value;
-                                    console.log(orderedTerms[config.dataPointIndex])
+                                if (config.dataPointIndex >= 0 && orderedTerms[config.dataPointIndex]) {
+                                    this.selectedParentTerm.push({
+                                        id: orderedTerms[config.dataPointIndex].value,
+                                        label: orderedTerms[config.dataPointIndex].label
+                                    });
+                                    this.setTaxonomyTerms(this.taxonomyChildTerms);
+                                    this.buildMetadatumTermsChart();
                                 }
                             }
                         },
@@ -425,22 +494,41 @@ export default {
                             text: this.$i18n.get('label_number_of_items')
                         }
                     },
+                    tooltip: {
+                        custom: ({ dataPointIndex }) => {
+                            return `<div class="tainacan-custom-tooltip">
+                                    <div class="tainacan-custom-tooltip__header">` + orderedTerms[dataPointIndex].label + `</div>
+                                    <div class="tainacan-custom-tooltip__body">
+                                        <span>` + this.$i18n.get('label_items_per_term') + `: <strong>` + orderedTerms[dataPointIndex].total_items + `</strong></span>
+                                        `+ (orderedTerms[dataPointIndex].total_children 
+                                            ? (`<span>` + this.$i18n.getWithVariables(orderedTerms[dataPointIndex].total_children > 1 ? 'instruction_click_to_see_%s_child_terms' : 'instruction_click_to_see_%s_child_term', [ orderedTerms[dataPointIndex].total_children ]) + `</span>`) 
+                                            : ``
+                                        ) +
+                                    `</div></div>`;
+                        }
+                    },
                     animations: {
                         enabled: orderedTerms.length <= 40
+                    },
+                    noData: {
+                        text: this.$i18n.get('label_items_with_this_metadum_value')
                     }
                 }
             }
 
             setTimeout(() => this.isBuildingChildrenChart = false, 500);
-            setTimeout(() => console.log(this.childrenChartSeries, this.isBuildingChildrenChart, this.isFetchingMetadatumChildTerms), 1000);
         },
         loadMetadatumTerms(force) {
             this.isFetchingMetadatumTerms = true;
             
-            this.fetchTaxonomyTerms({ taxonomyId: this.selectedMetadatum.id, collectionId: this.collectionId, force: force })
+            this.fetchTaxonomyTerms({
+                    taxonomyId: this.selectedMetadatum.id,
+                    collectionId: this.collectionId,
+                    parentTerm: this.selectedParentTerm.length > 1 ? this.selectedParentTerm[this.selectedParentTerm.length - 2].id : null,
+                    force: force
+                })
                 .then(() => {
                     this.buildMetadatumTermsChart();
-                    this.selectedParentTerm = '';
                     this.isFetchingMetadatumTerms = false;
                 })
                 .catch(() => this.isFetchingMetadatumTerms = false);
@@ -448,13 +536,56 @@ export default {
         loadMetadatumChildTerms(force) {
             this.isFetchingMetadatumChildTerms = true;
             
-            this.fetchTaxonomyTerms({ taxonomyId: this.selectedMetadatum.id, collectionId: this.collectionId, parentTerm: this.selectedParentTerm, force: force })
+            this.fetchTaxonomyTerms({
+                    taxonomyId: this.selectedMetadatum.id,
+                    collectionId: this.collectionId,
+                    parentTerm: this.selectedParentTerm[this.selectedParentTerm.length - 1].id,
+                    force: force
+                })
                 .then(() => {
                     this.buildMetadatumChildTermsChart();
                     this.isFetchingMetadatumChildTerms = false;
                 })
                 .catch(() => this.isFetchingMetadatumChildTerms = false);
+        },
+        backToParentTerm() {
+            this.selectedParentTerm.pop();
+            this.loadMetadatumTerms();
         }
     }
 }
 </script>
+
+<style lang="scss" scoped>
+.child-term-column {
+    border-left: 1px dashed var(--tainacan-block-gray3, #cbcbcb);
+
+    &>* {
+        margin-left: 1.25rem;
+    }
+}
+.hide-column-button {
+    position: absolute;
+    right: 0;
+    top: calc(50% - 1rem);
+    margin: 0;
+    margin-right: -0.875rem;
+    padding: 0px;
+    border: 1px solid;
+    background-color: white;
+    z-index: 9;
+}
+.child-term-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    min-height: 380px;
+    flex-direction: column;
+    opacity: 0.75;
+
+    p {
+        color: var(--tainacan-block-gray4, #555758);
+    }
+}
+</style>

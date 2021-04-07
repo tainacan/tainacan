@@ -65,10 +65,30 @@
       cursor: pointer; }
       #tainacan-reports-app .graph-mode-switch button.current {
         color: var(--wp-admin-theme-color, #007cba); }
-  #tainacan-reports-app .user-activity-tooltip {
-    padding: 8px 10px;
+  #tainacan-reports-app .tainacan-custom-tooltip {
+    padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center; }
+    align-items: flex-start;
+    flex-direction: column; }
+    #tainacan-reports-app .tainacan-custom-tooltip .tainacan-custom-tooltip__header {
+      background-color: var(--tainacan-block-gray1, #f2f2f2);
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100%;
+      padding: 6px 10px 4px 10px; }
+    #tainacan-reports-app .tainacan-custom-tooltip .tainacan-custom-tooltip__header + .tainacan-custom-tooltip__body {
+      padding: 4px 10px 6px 10px; }
+    #tainacan-reports-app .tainacan-custom-tooltip .tainacan-custom-tooltip__body {
+      width: 100%;
+      padding: 6px 10px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      flex-direction: column; }
+      #tainacan-reports-app .tainacan-custom-tooltip .tainacan-custom-tooltip__body p {
+        margin-bottom: 4px;
+        font-size: 0.85rem; }
 
 /*# sourceMappingURL=tainacan-reports.css.map */

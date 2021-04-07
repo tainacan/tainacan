@@ -127,12 +127,12 @@ export default {
                         },
                         tooltip: {
                             custom: ({ series, seriesIndex, dataPointIndex, w }) => {
-                                return  '<div class="user-activity-tooltip">' +
+                                return  '<div class="tainacan-custom-tooltip"><div class="tainacan-custom-tooltip__header">' +
                                         (orderedActivitiesPerUsers[dataPointIndex].user_id != 0 ? ('<img src="' + orderedActivitiesPerUsers[dataPointIndex].user.avatar_urls['24'] + '">&nbsp;') : '') + 
-                                        "<span><strong>" + w.globals.labels[dataPointIndex] + "</strong>" +
-                                        ":&nbsp; " +
+                                        "<span><strong>" + w.globals.labels[dataPointIndex] + '</strong></span></div><div class="tainacan-custom-tooltip__body">' +
+                                        w.globals.seriesNames[seriesIndex] + ":&nbsp; <strong>" +
                                         series[seriesIndex][dataPointIndex] +
-                                "</span></div>"
+                                "</strong></div></div>"
                             }
                         }
                     }

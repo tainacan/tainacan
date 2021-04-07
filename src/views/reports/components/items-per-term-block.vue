@@ -195,7 +195,7 @@ export default {
             
             this.chartSeries = [
                 {
-                    name: this.$i18n.get('label_terms_used'),
+                    name: this.$i18n.get('label_items_per_term'),
                     data: termsValues
                 }
             ];

@@ -543,6 +543,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_number_of_terms'						 	 => __( 'Number of terms', 'tainacan' ),
 	'label_number_of_items'						 	 => __( 'Number of items', 'tainacan' ),
 	'label_usage_of_terms_per_taxonomy'			 	 => __( 'Usage of terms per taxonomy', 'tainacan' ),
+	'label_items_per_term'							 => __( 'Items per term', 'tainacan' ),
 	'label_items_per_term_from_taxonomy'			 => __( 'Items per term from taxonomy:', 'tainacan' ),
 	'label_items_per_term_from_taxonomy_metadatum'	 => __( 'Items per term from taxonomy metadatum:', 'tainacan' ),
 	'label_items_per_child_terms_of'				 => __( 'Items per child terms of:', 'tainacan' ),
@@ -633,7 +634,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_click_error_to_go_to_metadata'		 => __( 'Click on the error to go to the metadata:', 'tainacan'),
 	'instruction_click_to_see_or_search'			 => __( 'Click to see options or type to search...', 'tainacan'),
 	'instruction_select_one_or_more_collections'	 => __( 'Select one or more collections', 'tainacan'),
-	'instruction_thumbnail_alt'					 => __( 'Type here a descriptive text for the image thumbnail...', 'tainacan'),
+	'instruction_thumbnail_alt'						 => __( 'Type here a descriptive text for the image thumbnail...', 'tainacan'),
+	'instruction_click_to_see_%s_child_terms'	 	 => __( 'Click to see %s child terms', 'tainacan'),
+	'instruction_click_to_see_%s_child_term'	 	 => __( 'Click to see %s child term', 'tainacan'),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every published item, including those visible only to editors.', 'tainacan' ),
@@ -852,7 +855,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_recaptcha_link_%s'						 =>	__( 'Remember to configure your website reCAPTCHA keys on <a href="%s" target="_blank">the item submission repository page</a>.', 'tainacan'),
 	'info_form_not_loaded'					 		 =>	__( 'There are probably not enought permissions to display it here.', 'tainacan'),
 	'info_validating_slug'					 		 =>	__( 'Validating slug...', 'tainacan'),
-
+	'info_child_terms_chart'						 => __( 'Click on the term bar on the chart aside to see its child terms in this panel', 'tainacan' ),
+	
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
 	'action_update'					=> __( 'General Updates', 'tainacan'),
