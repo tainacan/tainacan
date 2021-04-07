@@ -470,7 +470,7 @@ class Item_Metadata_Entity extends Entity {
 			return false;
 		}
 
-		if (empty($value)) {
+		if (empty($value) && $value !== '0' && $value !== 0) {
 			if ($this->is_required()) {
 				$validation_statuses = ['publish', 'future', 'private'];
 				if (in_array($item->get_status(), apply_filters( 'tainacan-status-require-validation', $validation_statuses) )) {
