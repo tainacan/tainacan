@@ -416,7 +416,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         $this->assertTrue($item_metadata_text->has_value());
     }
 
-	function test_numeric_metadata_html() {			
+	function test_numeric_metadata_html() {
 		// Simple numeric metadata
 		$metadatum_numeric = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
@@ -620,7 +620,6 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		);
 		$expected_return  = $this->relationship_expected_return($mystify->get_id(), $mystify->get_title());
 		$expected_return2 = $this->relationship_expected_return($disappear->get_id(), $disappear->get_title());
-		#$separator = '<span class="multivalue-separator"> | </span>';
 
 		$relationship_metadata = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
@@ -711,6 +710,44 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$item_taxonomy_metadata->set_value([ $term, $term2 ]);
 		$item_taxonomy_metadata->validate();
 		$this->assertEquals($item_taxonomy_metadata->get_value_as_html(), "<a data-linkto='term' data-id='2' href='http://example.org/?tnc_tax_273=first-term-from-my-tax'>first term from my tax</a><span class=\"multivalue-separator\"> | </span><a data-linkto='term' data-id='3' href='http://example.org/?tnc_tax_273=second-term-from-my-tax'>Second term from my tax</a>");
+	}
+
+	function test_compound_metadata_html() {
+		$coumpound_meta = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'My compound Meta',
+				'status'        => 'publish',
+				'collection'    => $this->collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Compound',
+			),
+			true
+		);
+		$text_meta = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'My Text meta',
+				'status'        => 'publish',
+				'collection'    => $this->collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Text',
+				'parent'        => $coumpound_meta->get_id()
+			),
+			true
+		);
+		$textarea_meta = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'My Textarea meta!',
+				'status'        => 'publish',
+				'collection'    => $this->collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\Textarea',
+				'parent'        => $coumpound_meta->get_id()
+			),
+			true
+		);
+		$item_compound_metadata = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $coumpound_meta);
+		$item_compound_metadata->set_value(['invalid meta value!']);
+		$this->assertEquals($item_compound_metadata->get_value_as_html(), "<div class='tainacan-compound-group'>  </div>");
 	}
 
 	private function relationship_expected_return($id, $title) {
