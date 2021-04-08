@@ -85,6 +85,29 @@ export default {
                         title: {
                             text: this.$i18n.get('label_number_of_terms')
                         }
+                    },
+                    colors: ['#298596', '#dbdbdb'],
+                    fill: {
+                        colors: ['#298596', '#dbdbdb']
+                    },
+                    dataLabels: {
+                        style: {
+                            colors: ['#ffffff', '#454647']
+                        }
+                    },
+                    states: {
+                        normal: {
+                            filter: {
+                                type: 'none',
+                                value: 0,
+                            }
+                        },
+                        hover: {
+                            filter: {
+                                type: 'darken',
+                                value: 0.9,
+                            }
+                        },
                     }
                 }
             }

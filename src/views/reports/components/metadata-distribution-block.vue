@@ -91,7 +91,6 @@ export default {
                             text: this.$i18n.get('label_metadata_fill_distribution')
                         },
                         labels: metadataDistributionLabels,
-                        colors: ['#25a189', '#a23939'],
                         tooltip: {
                             y: {
                                 formatter: (val) => val + "%"
@@ -106,6 +105,29 @@ export default {
                             },
                             tooltip: { enabled: true }
                         },
+                        colors: ['#298596', '#dbdbdb'],
+                        fill: {
+                            colors: ['#298596', '#dbdbdb']
+                        },
+                        dataLabels: {
+                            style: {
+                                colors: ['#ffffff', '#454647']
+                            }
+                        },
+                        states: {
+                            normal: {
+                                filter: {
+                                    type: 'none',
+                                    value: 0,
+                                }
+                            },
+                            hover: {
+                                filter: {
+                                    type: 'darken',
+                                    value: 0.85,
+                                }
+                            },
+                        }
                     }
                 }
             }

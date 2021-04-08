@@ -6,7 +6,7 @@
             <div 
                     :style="!isChildColumnCollapsed ? 'margin-left: 0px;' : ''"
                     :class="!isChildColumnCollapsed ? 'columns is-6' : ''">
-                <div :class="!isChildColumnCollapsed ? 'column is-half' : ''">
+                <div :class="!isChildColumnCollapsed ? 'column is-half is-full-tablet' : ''">
                     <div class="box-header">
                         <div 
                                 v-if="selectedParentTerm.length <= 1"
@@ -135,7 +135,7 @@
                 </div>
                 <div 
                         v-if="!isChildColumnCollapsed && !isFetchingData && !isFetchingMetadatumTerms && selectedMetadatum"
-                        class="child-term-column column is-half">
+                        class="child-term-column column is-half is-full-tablet">
                     <div v-if="selectedParentTerm[selectedParentTerm.length - 1]">
                         <div class="box-header">
                             <div class="box-header__item">

@@ -83,8 +83,8 @@ export default {
                 metadataTypeLabels.push(metadataPerType.name ? metadataPerType.name : '');
             });
             
-            this.chartSeries = this.metadataTypeChartMode == 'circle' ? metadataTypeValues : [{ data: metadataTypeValues }];
-
+            this.chartSeries = this.metadataTypeChartMode == 'circle' ? metadataTypeValues : [ { name: this.$i18n.get('label_amount_of_metadata_of_type'), data: metadataTypeValues } ];
+            console.log(this.chartSeries)
             if (this.metadataTypeChartMode == 'circle') {
                 this.chartOptions = JSON.parse(JSON.stringify({
                     ...this.donutChartOptions,
@@ -97,6 +97,18 @@ export default {
                 this.chartOptions = JSON.parse(JSON.stringify({
                     ...this.stackedBarChartOptions,
                     ...{
+                        chart: {
+                            type: 'bar',
+                            height: 350,
+                            stacked: false,
+                            toolbar: {
+                                show: true
+                            },
+                            zoom: {
+                                enabled: true,
+                                autoScaleYaxis: true,
+                            }
+                        },
                         title: {},
                         xaxis: {
                             type: 'category',
