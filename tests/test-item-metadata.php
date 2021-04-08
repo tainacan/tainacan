@@ -24,7 +24,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$c = $this->tainacan_entity_factory->create_entity('collection', ['name' => 'My Collection'], true);
 		$i = $this->tainacan_entity_factory->create_entity(
 			'item',
-            array(
+			array(
 				'title'       => 'My test item',
 				'description' => 'item description',
 				'collection'  => $c,
