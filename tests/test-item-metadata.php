@@ -2,6 +2,8 @@
 
 namespace Tainacan\Tests;
 
+use Tainacan\Entities\Item_Metadata_Entity;
+
 /**
  * Class Item_Metadata
  *
@@ -39,14 +41,13 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
      * Teste da insercao de um metadado simples sem o tipo
      */
     function test_add() {
-
         $Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
         $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(
         	'collection',
 	        array(
-	        	'name' => 'teste',
+	        	'name' => 'test',
 		        'description' => 'No description',
 	        ),
 	        true
@@ -55,10 +56,10 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	    $metadatum = $this->tainacan_entity_factory->create_entity(
         	'metadatum',
 	        array(
-	        	'name'              => 'metadado',
-		        'description'       => 'descricao',
-		        'collection'        => $collection,
-		        'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+	        	'name'          => 'metadado',
+		        'description'   => 'descricao',
+		        'collection'    => $collection,
+		        'metadata_type' => 'Tainacan\Metadata_Types\Text',
 	        ),
 	        true
         );
@@ -68,8 +69,8 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         $i = $this->tainacan_entity_factory->create_entity(
         	'item',
 	        array(
-	        	'title'       => 'item teste',
-		        'description' => 'adasdasdsa',
+	        	'title'       => 'item teste title',
+		        'description' => 'item description',
 		        'collection'  => $collection
 	        ),
 	        true
@@ -79,7 +80,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         
         $item = $Tainacan_Items->fetch($i->get_id());
 
-        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $test);
+        $item_metadata = new Item_Metadata_Entity($item, $test);
         $item_metadata->set_value('teste_value');
 		
 		$item_metadata->validate();
@@ -133,7 +134,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
         
         $item = $Tainacan_Items->fetch($i->get_id());
-        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($item, $test);
+        $item_metadata = new Item_Metadata_Entity($item, $test);
         
         // false because its required
         $this->assertFalse($item_metadata->validate());
@@ -198,7 +199,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 
         $value = 'teste_val';
         
-        $item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum);
+        $item_metadata = new Item_Metadata_Entity($i, $metadatum);
         $item_metadata->set_value($value);
 
         $this->assertTrue($item_metadata->validate());
@@ -206,11 +207,11 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         $item_metadata->validate();
         $item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
 
-        $n_item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum);
+        $n_item_metadata = new Item_Metadata_Entity($i, $metadatum);
         $n_item_metadata->set_value($value);
 		$this->assertTrue($n_item_metadata->validate(), 'trying to validate the same item with same value should be ok');
 
-		$n_item_metadata2 = new \Tainacan\Entities\Item_Metadata_Entity($i2, $metadatum);
+		$n_item_metadata2 = new Item_Metadata_Entity($i2, $metadatum);
 		$n_item_metadata2->set_value($value);
 		$this->assertFalse($n_item_metadata2->validate(), 'Collection key should not validate another item metadatada with the same value');
     }
@@ -311,11 +312,11 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		);
 		
 		$value_text = 'GOOGLE: www.google.com';
-		$item_metadata_text = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum_text);
+		$item_metadata_text = new Item_Metadata_Entity($i, $metadatum_text);
 		$item_metadata_text->set_value($value_text);
 		
 		$value_textarea = 'GOOGLE: www.google.com \n GOOGLE: https://www.google.com';
-		$item_metadata_textarea = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum_textarea);
+		$item_metadata_textarea = new Item_Metadata_Entity($i, $metadatum_textarea);
 		$item_metadata_textarea->set_value($value_textarea);
 
 		$response_text = 'GOOGLE: <a href="http://www.google.com" target="_blank" title="www.google.com">www.google.com</a>';
@@ -325,13 +326,13 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$this->assertEquals($item_metadata_textarea->get_value_as_html(), $response_textarea);
 
 		// Poor HTML entry tests
-		$malformatted_HTML = "<p> I started my content <div> and make something else here </div> without closing its HTML properly";
+		$badFormatted_HTML = "<p> I started my content <div> and make something else here </div> without closing its HTML properly";
 
-		$item_metadata_text->set_value($malformatted_HTML);
-		$item_metadata_textarea->set_value($malformatted_HTML);
+		$item_metadata_text->set_value($badFormatted_HTML);
+		$item_metadata_textarea->set_value($badFormatted_HTML);
 
-		$this->assertEquals($item_metadata_text->get_value_as_html(), $malformatted_HTML ."</p>");
-		$this->assertEquals($item_metadata_textarea->get_value_as_html(), $malformatted_HTML ."</p>");
+		$this->assertEquals($item_metadata_text->get_value_as_html(), $badFormatted_HTML ."</p>");
+		$this->assertEquals($item_metadata_textarea->get_value_as_html(), $badFormatted_HTML ."</p>");
 	}
 
     /**
@@ -373,7 +374,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
         );
 
         $value_textarea = '';
-        $item_metadata_textarea = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum_textarea);
+        $item_metadata_textarea = new Item_Metadata_Entity($i, $metadatum_textarea);
         $item_metadata_textarea->set_value($value_textarea);
 
         $item_metadata_textarea->validate();
@@ -399,7 +400,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
             true
         );
 
-        $item_metadata_text = new \Tainacan\Entities\Item_Metadata_Entity($i, $metadatum_text);
+        $item_metadata_text = new Item_Metadata_Entity($i, $metadatum_text);
 
         $item_metadata_text->set_value([ $value_textarea ]);
 
@@ -444,12 +445,12 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			true
 		);
 
-		$item_metadata_numeric = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $metadatum_numeric);
+		$item_metadata_numeric = new Item_Metadata_Entity($this->item, $metadatum_numeric);
 		$item_metadata_numeric->set_value(10);
 		$item_metadata_numeric->validate();
 		$this->assertEquals($item_metadata_numeric->get_value_as_html(), 10);
 
-		$item_metadata_numeric_mult = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $metadatum_numeric_multiple);
+		$item_metadata_numeric_mult = new Item_Metadata_Entity($this->item, $metadatum_numeric_multiple);
 		$item_metadata_numeric_mult->set_value([10,22,4]);
 		$item_metadata_numeric_mult->validate();
 		$this->assertEquals($item_metadata_numeric_mult->get_value_as_html(), "10" . $this->separator . "22" . $this->separator . "4");
@@ -483,7 +484,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			true
 		);
 
-		$item_metadata_date = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $metadatum_date);
+		$item_metadata_date = new Item_Metadata_Entity($this->item, $metadatum_date);
 		// Invalid date value
 		$item_metadata_date->set_value(10);
 		$item_metadata_date->validate();
@@ -493,7 +494,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$item_metadata_date->validate();
 		$this->assertEquals($item_metadata_date->get_value_as_html(), "April 5, 2021");
 
-		$item_metadata_date_mult = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $metadatum_date_multiple);
+		$item_metadata_date_mult = new Item_Metadata_Entity($this->item, $metadatum_date_multiple);
 		// Invalid date values
 		$item_metadata_date_mult->set_value([10,22,4]);
 		$item_metadata_date_mult->validate();
@@ -517,7 +518,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			true
 		);
 
-		$user_meta = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $user_metadata);
+		$user_meta = new Item_Metadata_Entity($this->item, $user_metadata);
 		// Empty val
 		$this->assertEmpty($user_meta->get_value_as_html());
 
@@ -539,7 +540,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-		$user_meta_multi = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $user_metadata_multiple);
+		$user_meta_multi = new Item_Metadata_Entity($this->item, $user_metadata_multiple);
 		$this->assertEmpty($user_meta_multi->get_value_as_html());
 
 		$sec_user = $this->factory()->user->create(array( 'role' => 'subscriber', 'display_name' => 'User Name 2' ));
@@ -578,7 +579,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			true
 		);
 
-		$sb_meta = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $selectbox_metadata);
+		$sb_meta = new Item_Metadata_Entity($this->item, $selectbox_metadata);
 		$sb_meta->set_value('tainacan');
 		$sb_meta->validate();
 		$this->assertEquals($sb_meta->get_value_as_html(), 'tainacan');
@@ -586,7 +587,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$sb_meta->set_value('php');
 		$this->assertEquals($sb_meta->get_value_as_html(), 'php');
 
-		$sb_meta_multi = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $selectbox_metadata_multiple);
+		$sb_meta_multi = new Item_Metadata_Entity($this->item, $selectbox_metadata_multiple);
 		$sb_meta_multi->set_value(['tainacan', 'wordpress']);
 		$sb_meta_multi->validate();
 		$this->assertEquals($sb_meta_multi->get_value_as_html(), 'tainacan' . $this->separator . 'wordpress');
@@ -637,7 +638,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			true
 		);
 
-		$item_metadata_relationship = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $relationship_metadata);
+		$item_metadata_relationship = new Item_Metadata_Entity($this->item, $relationship_metadata);
 		$item_metadata_relationship->validate();
 		$this->assertEquals($item_metadata_relationship->get_value_as_html(), '');
 
@@ -697,7 +698,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 			true
 		);
 
-		$item_taxonomy_metadata = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $taxonomy_meta);
+		$item_taxonomy_metadata = new Item_Metadata_Entity($this->item, $taxonomy_meta);
 		$item_taxonomy_metadata->set_value('');
 		$item_taxonomy_metadata->validate();
 		$this->assertEmpty($item_taxonomy_metadata->get_value_as_html());
@@ -713,7 +714,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	}
 
 	function test_compound_metadata_html() {
-		$coumpound_meta = $this->tainacan_entity_factory->create_entity(
+		$compound_meta = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
 				'name' => 'My compound Meta',
@@ -730,7 +731,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 				'status'        => 'publish',
 				'collection'    => $this->collection,
 				'metadata_type' => 'Tainacan\Metadata_Types\Text',
-				'parent'        => $coumpound_meta->get_id()
+				'parent'        => $compound_meta->get_id()
 			),
 			true
 		);
@@ -741,11 +742,11 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 				'status'        => 'publish',
 				'collection'    => $this->collection,
 				'metadata_type' => 'Tainacan\Metadata_Types\Textarea',
-				'parent'        => $coumpound_meta->get_id()
+				'parent'        => $compound_meta->get_id()
 			),
 			true
 		);
-		$item_compound_metadata = new \Tainacan\Entities\Item_Metadata_Entity($this->item, $coumpound_meta);
+		$item_compound_metadata = new Item_Metadata_Entity($this->item, $compound_meta);
 		$item_compound_metadata->set_value(['invalid meta value!']);
 		$this->assertEquals($item_compound_metadata->get_value_as_html(), "<div class='tainacan-compound-group'>  </div>");
 	}
