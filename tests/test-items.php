@@ -48,7 +48,7 @@ class Items extends TAINACAN_UnitTestCase {
 		$this->assertTrue(current_user_can($collection->get_items_capabilities()->edit_post, $item->get_id()), 'Administrator cannot edit an item!');
 	}
 
-	function teste_query(){
+	function test_query(){
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -246,7 +246,7 @@ class Items extends TAINACAN_UnitTestCase {
 
 	}
 
-	function teste_meta_query_in(){
+	function test_meta_query_in(){
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(

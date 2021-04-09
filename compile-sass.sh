@@ -5,8 +5,7 @@ command -v sass >/dev/null 2>&1 || {
   echo >&2 "Sass parece não estar disponivel.";
   exit 1;
 }
- 
-# Define o caminho.
+
 echo "Compilando Sass..."
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-1 src/views/admin/scss/tainacan-admin.scss:src/assets/css/tainacan-admin.css

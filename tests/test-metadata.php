@@ -200,7 +200,6 @@ class Metadata extends TAINACAN_UnitTestCase {
 		$this->assertEquals( 9, sizeof( $Tainacan_Metadata->fetch_metadata_types() ) );
 	}
 
-
 	/**
 	 *
 	 */
@@ -426,9 +425,7 @@ class Metadata extends TAINACAN_UnitTestCase {
 		
 	}
 	
-	function test_relatioship_get_collection_method() {
-		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
-		
+	function test_relationship_get_collection_method() {
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -460,17 +457,16 @@ class Metadata extends TAINACAN_UnitTestCase {
 				),
 				true
 		);
-			
+
 		$object = $metadatum->get_metadata_type_object();
 		
 		$colCheck = $object->get_collection();
 		
 		$this->assertTrue( $colCheck instanceof \Tainacan\Entities\Collection );
 		$this->assertEquals($collection2->get_id(), $colCheck->get_id());
-		
 	}
 
-	public function test_update_taxonomy_cascate_status() {
+	function test_update_taxonomy_cascate_status() {
 		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 

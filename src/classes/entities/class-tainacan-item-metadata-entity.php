@@ -31,7 +31,6 @@ class Item_Metadata_Entity extends Entity {
 	 * @param int $meta_id ID for a specific meta row 
 	 */
 	function __construct(Item $item = null, Metadatum $metadatum = null, $meta_id = null, $parent_meta_id = null) {
-
 		$this->set_item($item);
 		$this->set_metadatum($metadatum);
 
@@ -136,17 +135,15 @@ class Item_Metadata_Entity extends Entity {
 	 * Get the value as a HTML string, with markup and links
 	 * @return string
 	 */
-	public function  get_value_as_html(){
+	public function get_value_as_html() {
 		$metadatum = $this->get_metadatum();
 		
 		if (is_object($metadatum)) {
 			$fto = $metadatum->get_metadata_type_object();
 			if (is_object($fto)) {
-				
 				if ( method_exists($fto, 'get_value_as_html') ) {
 					return $fto->get_value_as_html($this);
 				}
-				
 			}
 		}
 		
@@ -155,7 +152,6 @@ class Item_Metadata_Entity extends Entity {
 		$return = '';
 		
 		if ( $this->is_multiple() ) {
-			
 			$total = sizeof($value);
 			$count = 0;
 			$prefix = $this->get_multivalue_prefix();
@@ -163,25 +159,19 @@ class Item_Metadata_Entity extends Entity {
 			$separator = $this->get_multivalue_separator();
 			
 			foreach ($value as $v) {
-				
 				$return .= $prefix;
-				
 				$return .= (string) $v;
-				
 				$return .= $suffix;
-				
 				$count ++;
 				if ($count < $total)
 					$return .= $separator;
 			}
-			
+
 		} else {
 			$return = (string) $value;
 		}
 
 		return $return;
-		
-		
 	}
 
 	/**
