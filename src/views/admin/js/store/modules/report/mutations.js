@@ -52,6 +52,10 @@ export const setAreaChartOptions = (state, areaChartOptions) => {
   state.areaChartOptions = areaChartOptions;
 };
 
+export const setTreeMapChartOptions = (state, areaChartOptions) => {
+  state.threeMapChartOptions = areaChartOptions;
+};
+
 export const setReportLatestCachedOn = (state, { report, reportLatestCachedOn }) => {
   Vue.set(state.reportsLatestCachedOn, report, reportLatestCachedOn);
 };

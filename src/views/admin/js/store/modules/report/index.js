@@ -182,6 +182,18 @@ const state = {
             minWidth: 64
         }
       }
+    },
+    treeMapOptions: {
+      legend: {
+        show: false
+      },
+      chart: {
+        height: 350,
+        type: 'treemap'
+      },
+      title: {
+        text: ''
+      }
     }
 };
 

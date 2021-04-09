@@ -114,7 +114,7 @@ export const fetchTaxonomiesList = ({ commit }, force) => {
     });
 };
 
-export const fetchTaxonomyTerms = ({ commit }, { taxonomyId, collectionId, parentTerm, force }) => {
+export const fetchTaxonomyTerms = ({ commit }, { taxonomyId, collectionId, parentTerm, isChildChart, force }) => {
 
     let endpoint = '/reports';
     
@@ -138,12 +138,19 @@ export const fetchTaxonomyTerms = ({ commit }, { taxonomyId, collectionId, paren
                 else
                     taxonomyTerms = res.data.terms ? Object.values(res.data.terms) : [];
 
-                if (parentTerm)
+                if (isChildChart) {
                     commit('setTaxonomyChildTerms', taxonomyTerms);
-                else
+                    commit('setReportLatestCachedOn', { 
+                        report: 'taxonomy-terms-' + (collectionId ? collectionId : 'default') + '-' + taxonomyId + (parentTerm ? '-' + parentTerm : '') + '-is-child-chart',
+                        reportLatestCachedOn: res.data.report_cached_on
+                    });
+                } else {
                     commit('setTaxonomyTerms', taxonomyTerms);
-                
-                commit('setReportLatestCachedOn', { report: 'taxonomy-terms-' + (collectionId ? collectionId : 'default') + '-' + taxonomyId, reportLatestCachedOn: res.data.report_cached_on });
+                    commit('setReportLatestCachedOn', { 
+                        report: 'taxonomy-terms-' + (collectionId ? collectionId : 'default') + '-' + taxonomyId + (parentTerm ? '-' + parentTerm : ''),
+                        reportLatestCachedOn: res.data.report_cached_on
+                    });
+                }
                 resolve(taxonomyTerms);
             })
             .catch(error => reject(error));

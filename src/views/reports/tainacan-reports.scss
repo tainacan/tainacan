@@ -33,7 +33,7 @@
                 bottom: calc(1px + 0.75rem);
                 right: calc(1px + 0.75rem);
                 display: inline-block;
-                padding: 2px 10px;
+                padding: 0px 10px;
                 background-color: var(--tainacan-block-gray2, #dbdbdb);
                 color: var(--tainacan-block-gray4, #555758);
                 font-size: 0.875em;
@@ -52,6 +52,7 @@
                 }
             }
             .postbox:hover+.box-last-cached-on,
+            .postbox:hover+.box-last-cached-on+.box-last-cached-on,
             .box-last-cached-on:hover {
                 opacity: 1.0;
             }

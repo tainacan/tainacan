@@ -50,6 +50,10 @@ export const getAreaChartOptions = state => {
   return state.areaChartOptions;
 };
 
+export const getTreeMapChartOptions = state => {
+  return state.treeMapChartOptions;
+};
+
 export const getReportsLatestCachedOn = state => {
   return state.reportsLatestCachedOn;
 };

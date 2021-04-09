@@ -84,7 +84,7 @@ export default {
             });
             
             this.chartSeries = this.metadataTypeChartMode == 'circle' ? metadataTypeValues : [ { name: this.$i18n.get('label_amount_of_metadata_of_type'), data: metadataTypeValues } ];
-            console.log(this.chartSeries)
+            
             if (this.metadataTypeChartMode == 'circle') {
                 this.chartOptions = JSON.parse(JSON.stringify({
                     ...this.donutChartOptions,
