@@ -8,12 +8,36 @@
 .tainacan-embed-container:not(.tainacan-embed-without-iframe) {
   padding-bottom: 56.25%;
   padding-top: 30px;
+  width: 100%;
+  margin: auto;
+}
+.tainacan-embed-container .twitter-tweet {
+  margin: 0 auto;
+}
+.tainacan-embed-container iframe.wp-embedded-content {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  margin: auto !important;
+  width: auto !important;
+  top: 50%;
+  bottom: 50%;
+}
+@media screen and (max-width: 1024px) {
+  .tainacan-embed-container iframe.wp-embedded-content {
+    position: relative;
+  }
+}
+.tainacan-embed-container #tainacan-attachment-iframe { /* PDF */
+  width: 100%;
 }
 .tainacan-embed-container iframe,
 .tainacan-embed-container object,
 .tainacan-embed-container embed {
   position: absolute;
   top: 0;
+  right: 0;
+  bottom: 0;
   left: 0;
   width: 100%;
   height: 100%; 
