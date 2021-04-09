@@ -11,56 +11,58 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Date extends Metadata_Type {
 
-    function __construct(){
-        // call metadatum type constructor
-        parent::__construct();
-        $this->set_primitive_type('date');
-        $this->set_component('tainacan-date');
-        $this->set_name( __('Date', 'tainacan') );
-        $this->set_description( __('Exact date type, with day, month and year.', 'tainacan') );
-        $this->set_preview_template('
-            <div>
-                <div class="control is-inline">
-                    <input type="text" placeholder="' . __('mm/dd/yyyy') . '" class="input"></input>
-                </div>
-            </div>
-        ');
-    }
+	function __construct(){
+		// call metadatum type constructor
+		parent::__construct();
+		$this->set_primitive_type('date');
+		$this->set_component('tainacan-date');
+		$this->set_name( __('Date', 'tainacan') );
+		$this->set_description( __('Exact date type, with day, month and year.', 'tainacan') );
+		$this->set_preview_template('
+			<div>
+				<div class="control is-inline">
+					<input type="text" placeholder="' . __('mm/dd/yyyy') . '" class="input"></input>
+				</div>
+			</div>
+		');
 
-    public function validate( Item_Metadata_Entity $item_metadata) {
-        $value = $item_metadata->get_value();
-        $format = 'Y-m-d';
+		$this->output_date_format = get_option('date_format');
+	}
 
-        if (is_array($value)) {
-            foreach ($value as $date_value) {
-                $d = \DateTime::createFromFormat($format, $date_value);
-                if (!$d || $d->format($format) !== $date_value) {
-                    $this->add_error( 
-                        sprintf(
-                            __('Invalid date format. Expected format is YYYY-MM-DD, got %s.', 'tainacan'),
-                            $date_value
-                        )
-                    );
-                    return false;
-                }
-            }
-            return True;
-        }
-        
-        $d = \DateTime::createFromFormat($format, $value);
-        
-        if (!$d || $d->format($format) !== $value) {
-            $this->add_error( 
-                sprintf(
-                    __('Invalid date format. Expected format is YYYY-MM-DD, got %s.', 'tainacan'),
-                    $value
-                )
-            );
-            return false;
-        }
-        return true;
-        
-    }
+	public function validate( Item_Metadata_Entity $item_metadata) {
+		$value = $item_metadata->get_value();
+		$format = 'Y-m-d';
+
+		if (is_array($value)) {
+			foreach ($value as $date_value) {
+				$d = \DateTime::createFromFormat($format, $date_value);
+				if (!$d || $d->format($format) !== $date_value) {
+					$this->add_error( 
+						sprintf(
+							__('Invalid date format. Expected format is YYYY-MM-DD, got %s.', 'tainacan'),
+							$date_value
+						)
+					);
+					return false;
+				}
+			}
+			return True;
+		}
+		
+		$d = \DateTime::createFromFormat($format, $value);
+		
+		if (!$d || $d->format($format) !== $value) {
+			$this->add_error(
+				sprintf(
+					__('Invalid date format. Expected format is YYYY-MM-DD, got %s.', 'tainacan'),
+					$value
+				)
+			);
+			return false;
+		}
+		return true;
+		
+	}
 	
 	/**
 	 * Get the value as a HTML string with proper date format set in admin
@@ -80,7 +82,7 @@ class Date extends Metadata_Type {
 				if( empty( $el ) ) 
 					continue;
 				$return .= $prefix;
-				$return .= mysql2date(get_option('date_format'), ($el));
+				$return .= mysql2date($this->output_date_format, ($el));
 				$return .= $suffix;
 				$count ++;
 				if ($count < $total)
@@ -89,7 +91,7 @@ class Date extends Metadata_Type {
 		} else {
 			if( empty( $value ) )
 				return "";
-			$return = mysql2date(get_option('date_format'), ($value));
+			$return = mysql2date($this->output_date_format, ($value));
 		}
 		return $return;
 		

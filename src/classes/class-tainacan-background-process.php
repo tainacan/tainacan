@@ -191,6 +191,9 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 		if ($status == 'finished') {
 			$params['progress_label'] = __('Process completed','tainacan');
 			$params['progress_value'] = 100;
+		} else if ($status == 'finished-errors') {
+			$params['progress_label'] = __('Process completed with errors','tainacan');
+			$params['progress_value'] = 100;
 		}
 		$wpdb->update(
 			$this->table, 
@@ -282,11 +285,11 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 		$batch = $this->get_batch();
 
 		if($this->process_lock_in_time != get_site_transient( $this->identifier . '_process_lock' )) {
-			$this->write_log($batch->key, ['New request has ignored']);
+			$this->write_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'New request has ignored']]);
 			wp_die();
 		}
-
-		$this->write_log($batch->key, ['New Request']);
+		
+		$this->write_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'New Request']]);
 
 		register_shutdown_function(function() use($batch) {
 			$error = error_get_last();
@@ -306,8 +309,8 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 
 			$this->debug('Shutdown with Fatal error captured');
 			$this->debug($error_str);
-			$this->write_error_log($batch->key, ['Fatal Error: ' . $error_str]);
-			$this->write_error_log($batch->key, ['Process aborted']);
+			$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Fatal Error: ' . $error_str]] );
+			$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Process aborted']]);
 			$this->close( $batch->key, 'errored' );
 			$this->debug('Batch closed due to captured error');
 			$this->unlock_process();
@@ -321,8 +324,8 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 				$task = $this->task( $task );
 			} catch (\Exception $e) {
 				// TODO: Add Stacktrace
-				$this->write_error_log($batch->key, ['Fatal Error: ' . $e->getMessage()]);
-				$this->write_error_log($batch->key, ['Process aborted']);
+				$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Fatal Error: ' . $e->getMessage()]]);
+				$this->write_error_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Process aborted']]);
 				$task = false;
 				$close_status = 'errored';
 			}
@@ -350,7 +353,7 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 		} else {
 			$this->debug('Complete');
 			$this->complete();
-			$this->write_log($batch->key, ['Process Finished']);
+			$this->write_log($batch->key, [['datetime' => date("Y-m-d H:i:s"), 'message' => 'Process Finished']] );
 		}
 
 		$this->debug('dying');
@@ -434,18 +437,21 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 	private function recursive_stingify_log_array(array $log, $break = true) {
 		$return = '';
 		foreach ($log as $k => $l) {
+			$l_datetime = $l['datetime'];
+			$l_message = $l['message'];
+
+			$return .= "[$l_datetime]   ";
 			if (!is_numeric($k)) {
 				$return .= $k . ': ';
 			}
-			if (is_array($l)) {
-				//$return .= $this->recursive_stingify_log_array($l, false);
-				$return .= print_r($l, true);
-			} elseif (is_string($l)) {
-				$return .= $l;
+			if (is_array($l_message)) {
+				//$return .= $this->recursive_stingify_log_array($l_message, false);
+				$return .= print_r($l_message, true);
+			} elseif (is_string($l_message)) {
+				$return .= $l_message;
 			}
 			$return .="\n";
 			//$return .= $break ? "\n" : ', ';
-			
 		}
 		
 		return $return;

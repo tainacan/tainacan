@@ -345,14 +345,10 @@ abstract class Importer {
 	 * @param $messagelog
 	 */
 	public function add_log($message ) {
-		$count = count($this->log);
-		$date_key = sprintf("[%' 9d | %s]", $count, date("Y-m-d H:i:s"));
-		$this->log[$date_key] = $message;
+		$this->log[] = ['datetime' => date("Y-m-d H:i:s"), 'message' => $message];
 	}
-	public function add_error_log($message ){
-		$count = count($this->log);
-		$date_key = sprintf("[%' 9d | %s]", $count, date("Y-m-d H:i:s"));
-		$this->error_log[$date_key] = $message;
+	public function add_error_log($message ) {
+		$this->error_log[] = ['datetime' => date("Y-m-d H:i:s"), 'message' => $message];
 	}
 
 	public function add_collection(array $collection) {
