@@ -705,12 +705,15 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		
 		$item_taxonomy_metadata->set_value($term);
 		$item_taxonomy_metadata->validate();
-		$this->assertEquals($item_taxonomy_metadata->get_value_as_html(), "<a data-linkto='term' data-id='2' href='http://example.org/?tnc_tax_273=first-term-from-my-tax'>first term from my tax</a>");
+		$term_id = $term->get_id();
+		$this->assertEquals($item_taxonomy_metadata->get_value_as_html(), "<a data-linkto='term' data-id='{$term_id}' href='http://example.org/?tnc_tax_273=first-term-from-my-tax'>first term from my tax</a>");
 
 		$taxonomy_meta->set_multiple('yes');
 		$item_taxonomy_metadata->set_value([ $term, $term2 ]);
 		$item_taxonomy_metadata->validate();
-		$this->assertEquals($item_taxonomy_metadata->get_value_as_html(), "<a data-linkto='term' data-id='2' href='http://example.org/?tnc_tax_273=first-term-from-my-tax'>first term from my tax</a><span class=\"multivalue-separator\"> | </span><a data-linkto='term' data-id='3' href='http://example.org/?tnc_tax_273=second-term-from-my-tax'>Second term from my tax</a>");
+		$term_id = $term->get_id();
+		$term_id2 = $term2->get_id();
+		$this->assertEquals($item_taxonomy_metadata->get_value_as_html(), "<a data-linkto='term' data-id='{$term_id}' href='http://example.org/?tnc_tax_273=first-term-from-my-tax'>first term from my tax</a><span class=\"multivalue-separator\"> | </span><a data-linkto='term' data-id='{$term_id2}' href='http://example.org/?tnc_tax_273=second-term-from-my-tax'>Second term from my tax</a>");
 	}
 
 	function test_compound_metadata_html() {
