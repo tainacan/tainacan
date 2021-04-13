@@ -14,7 +14,8 @@
     #tainacan-reports-app .columns .column {
       max-width: 100%;
       padding: 0;
-      position: relative; }
+      position: relative;
+      box-sizing: content-box; }
       #tainacan-reports-app .columns .column .postbox {
         margin: 0.75rem; }
       #tainacan-reports-app .columns .column .box-last-cached-on {
