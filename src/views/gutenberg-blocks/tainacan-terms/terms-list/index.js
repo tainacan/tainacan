@@ -128,7 +128,7 @@ registerBlockType('tainacan/terms-list', {
                         <Button
                             onClick={ () => removeTermOfId(term.id) }
                             icon="no-alt"
-                            label={__('Remove', 'tainacan')}/>
+                            aria-label={__('Remove', 'tainacan')}/>
                     }         
                     <a 
                         id={ isNaN(term.id) ? term.id : 'term-id-' + term.id }

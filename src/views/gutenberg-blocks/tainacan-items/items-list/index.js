@@ -135,7 +135,7 @@ registerBlockType('tainacan/items-list', {
                         <Button
                             onClick={ () => removeItemOfId(item.id) }
                             icon="no-alt"
-                            label={__('Remove', 'tainacan')}/>
+                            aria-label={__('Remove', 'tainacan')}/>
                     }
                     <a 
                         id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }

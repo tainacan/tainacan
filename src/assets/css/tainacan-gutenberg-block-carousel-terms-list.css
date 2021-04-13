@@ -270,6 +270,8 @@
         top: 0px;
         justify-content: center;
         z-index: 999; }
+        .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item button .dashicon {
+          margin: 0px; }
       .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item:hover button {
         height: auto;
         visibility: visible;
