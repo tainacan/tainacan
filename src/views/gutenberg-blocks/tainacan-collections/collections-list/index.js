@@ -131,7 +131,8 @@ registerBlockType('tainacan/collections-list', {
                         <Button
                             onClick={ () => removeCollectionOfId(collection.id) }
                             icon="no-alt"
-                            aria-label={__('Remove', 'tainacan')} />
+                            showTooltip={false}
+                            label={__('Remove', 'tainacan')} />
                     }
                     <a 
                         id={ isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id }
