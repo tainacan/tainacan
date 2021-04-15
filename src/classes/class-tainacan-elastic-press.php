@@ -83,10 +83,10 @@ class Elastic_Press {
 			return $formatted_args;
 		 } );
 		 
-		// add_action('ep_add_query_log', function($query) { //using to DEBUG
+		//add_action('ep_add_query_log', function($query) { //using to DEBUG
 		// 	error_log("DEGUG:");
 		// 	error_log($query["args"]["body"]);
-		// });
+		//});
 	}
 
 	function elasticpress_config_mapping( $mapping ) {
@@ -565,7 +565,7 @@ class Elastic_Press {
 								"terms"=>array(
 									"script" => [
 										"lang" 	=> "painless",
-										"source"=> "def c= ['']; if(!params._source.meta.empty && params._source.$meta_label != null) { for(meta in params._source.$meta_label) { if([$meta_id_inlcude].contains(meta.raw)) { c.add(meta.raw); }}} return c;"
+										"source"=> "def c= []; if(!params._source.meta.empty && params._source.$meta_label != null) { for(meta in params._source.$meta_label) { if([$meta_id_inlcude].contains(meta.raw)) { c.add(meta.raw); }}} return c;"
 									]
 									//"field"=> $filter['field']
 								)
