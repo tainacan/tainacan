@@ -45,7 +45,7 @@
                             :style="{ height: isModal ? 'auto' : '0px' }"
                             class="modal-card-body tainacan-checkbox-list-container">
                         <a
-                                v-if="isUsingElasticSearch ? lastTermOnFirstPage != checkboxListOffset : checkboxListOffset"
+                                v-if="isUsingElasticSearch ? lastTermOnFirstPage.length && lastTermOnFirstPage[0] != checkboxListOffset : checkboxListOffset"
                                 role="button"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="previousSearchPage">
@@ -420,7 +420,8 @@
             optionName(newValue, oldValue) {
                 if (newValue != oldValue) {
                     this.noMoreSearchPage = false;
-                    this.checkboxListOffset = 0;
+                    this.checkboxListOffset = this.isUsingElasticSearch ? '' : 0;
+                    this.lastTermOnFirstPage = [];
                 }
             }
         },
@@ -540,13 +541,13 @@
                 if (this.isUsingElasticSearch) {
                     this.previousLastTerms.pop();
 
-                    if (this.previousLastTerms.length > 0) {
-                        this.autoComplete(this.previousLastTerms.pop());
-                        this.previousLastTerms.push(this.checkboxListOffset);
-                    } else {
-                        this.autoComplete();
-                    }
-
+                    if (this.previousLastTerms.length > 0)
+                        this.checkboxListOffset = this.previousLastTerms[this.previousLastTerms.length - 1];
+                    else
+                        this.checkboxListOffset = '';
+                    
+                    this.autoComplete();
+                    
                 } else {
 
                     this.checkboxListOffset -= this.maxNumSearchResultsShow;
@@ -577,7 +578,7 @@
             },
             nextSearchPage() {
     
-                if (this.isUsingElasticSearch)
+                if (this.isUsingElasticSearch && this.checkboxListOffset)
                     this.previousLastTerms.push(this.checkboxListOffset);
 
                 if (!this.noMoreSearchPage && !this.isUsingElasticSearch) {
@@ -659,10 +660,9 @@
 
                                 this.noMoreSearchPage = !res.data.last_term || !res.data.last_term.es_term;
                             
-                                if (!this.lastTermOnFirstPage || this.lastTermOnFirstPage == this.checkboxListOffset) {
-                                    this.lastTermOnFirstPage = this.checkboxListOffset;
-                                    this.previousLastTerms.push(0);
-                                }
+                                if (this.checkboxListOffset)
+                                    this.lastTermOnFirstPage.push(this.checkboxListOffset);
+
                             }
 
                         }).catch((error) => {
