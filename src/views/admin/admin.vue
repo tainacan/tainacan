@@ -20,15 +20,16 @@
                     @click="isMenuCompressed = !isMenuCompressed">          
                 <span
                         v-tooltip="{
-                            content: $i18n.get('label_shrink_menu'),
+                            content: isMenuCompressed ? $i18n.get('label_expand_menu') : $i18n.get('label_shrink_menu'),
                             autoHide: true,
                             placement: 'auto-end',
                             classes: ['tooltip', 'repository-tooltip']     
                         }"
                         class="icon">
-                    <i 
-                            :class="{ 'tainacan-icon-arrowleft' : !isMenuCompressed, 'tainacan-icon-arrowright' : isMenuCompressed }"
-                            class="tainacan-icon tainacan-icon-1-25em"/>
+                    <i
+                        :class="{ 'tainacan-icon-arrowleft' : !isMenuCompressed, 'tainacan-icon-arrowright' : isMenuCompressed }"
+                        class="tainacan-icon tainacan-icon-1-25em"
+                    />
                 </span>
             </button>
             <tainacan-header />
