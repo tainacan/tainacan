@@ -7,8 +7,6 @@ namespace Tainacan\Tests;
  *
  */
 class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
-
-
 	public function setUp() {
 		parent::setUp();
 		// reset WP_Roles object. Possible bug was cleaning database between tests, but not the object
@@ -35,7 +33,6 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$data = $name_response->get_data();
 		$this->assertArrayHasKey('tainacan-new-role', $data);
 		$this->assertEquals('New role', $data['tainacan-new-role']['name']);
-
 	}
 
 	public function test_create_remove_roles() {
@@ -58,13 +55,9 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$name_response = $this->server->dispatch($request);
 		$data = $name_response->get_data();
 		$this->assertArrayNotHasKey('tainacan-super-role', $data);
-
-
-
 	}
 
 	public function test_edit_role() {
-
 		$request = new \WP_REST_Request('POST', $this->namespace . '/roles');
 
 		$request->set_query_params(['name' => 'New role']);
@@ -92,29 +85,24 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('Changed name', $role['name']);
 
 		$request = new \WP_REST_Request('PATCH', $this->namespace . '/roles/tainacan-new-role');
-
 		$request->set_query_params(
 			[
 				'add_cap' => 'manage_options'
 			]
 		);
-
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals( 400, $response->get_status() );
 
 		$request = new \WP_REST_Request('PATCH', $this->namespace . '/roles/tainacan-new-role');
-
 		$request->set_query_params(
 			[
 				'add_cap' => 'manage_tainacan_collection_234'
 			]
 		);
-
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals( 200, $response->get_status() );
-
 	}
 
 	public function test_edit_role_validation() {
@@ -171,33 +159,27 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals( 200, $response->get_status() );
-
 	}
 
 	public function test_get_role() {
 		$request = new \WP_REST_Request('GET', $this->namespace . '/roles/administrator');
-
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals( 200, $response->get_status() );
 
 		$data = $response->get_data();
-
 		$this->assertEquals( translate_user_role('Administrator'), $data['name'] );
 		$this->assertArrayHasKey('manage_tainacan', $data['capabilities']);
 		$this->assertTrue($data['capabilities']['manage_tainacan']);
-
 	}
 
 	public function test_get_roles() {
 		$request = new \WP_REST_Request('GET', $this->namespace . '/roles');
-
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals( 200, $response->get_status() );
 
 		$data = $response->get_data();
-
 		foreach (\tainacan_roles()->get_tainacan_roles() as $role => $r) {
 			$this->assertArrayHasKey($role, $data);
 		}
@@ -210,7 +192,6 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$request->set_query_params(['name' => 'New role']);
 
 		$create = $this->server->dispatch($request);
-		//var_dump($create);
 		$this->assertEquals( 201, $create->get_status() );
 
 		$request = new \WP_REST_Request('PATCH', $this->namespace . '/roles/tainacan-new-role');
@@ -267,7 +248,6 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 	}
 
 	public function test_get_collection_caps() {
-
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
@@ -290,9 +270,7 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$contributor->add_cap( 'tnc_col_all_edit_items' );
 		$contributor->add_cap( 'tnc_col_all_edit_published_items' );
 
-
 		$request = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collection->get_id() . '/capabilities');
-
 		$response = $this->server->dispatch($request);
 		$this->assertEquals( 200, $response->get_status() );
 
@@ -308,11 +286,9 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertArrayHasKey('contributor', $caps['tnc_col_' . $collection->get_id() . '_edit_published_items']['roles_inherited']);
 
 		$this->assertArrayHasKey('administrator', $caps['tnc_col_' . $collection->get_id() . '_delete_published_items']['roles_inherited']);
-
 	}
 
 	function test_get_repo_capabilities() {
-
 		$role = add_role('test', 'test', ['tnc_rep_edit_metadata'=>true]);
 
 		$request = new \WP_REST_Request('GET', $this->namespace . '/capabilities');
@@ -329,12 +305,9 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertArrayNotHasKey('editor', $caps['manage_tainacan']['roles_inherited']);
 		$this->assertArrayNotHasKey('administrator', $caps['manage_tainacan']['roles_inherited']);
-
-
 	}
 
 	function test_edit_collection_users_permission() {
-
 		global $current_user;
 		$subscriber = $this->factory()->user->create(array( 'role' => 'subscriber' ));
 
@@ -349,7 +322,6 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 				'add_cap' => 'tnc_col_12_edit_items'
 			]
 		);
-
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals( 403, $response->get_status(), 'should not be permitted');
@@ -358,21 +330,17 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$current_user = $sub_user;
 
 		$request = new \WP_REST_Request('PATCH', $this->namespace . '/roles/contributor');
-
 		$request->set_query_params(
 			[
 				'name' => 'Changed name',
 				'add_cap' => 'tnc_col_12_edit_items'
 			]
 		);
-
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals( 403, $response->get_status(), 'should still not be permitted because edits name');
 
-
 		$request = new \WP_REST_Request('PATCH', $this->namespace . '/roles/contributor');
-
 		$request->set_query_params(
 			[
 				'add_cap' => 'tnc_rep_edit_metadata'
@@ -383,9 +351,7 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertEquals( 403, $response->get_status(), 'should not be permitted');
 
-
 		$request = new \WP_REST_Request('PATCH', $this->namespace . '/roles/contributor');
-
 		$request->set_query_params(
 			[
 				'add_cap' => 'tnc_col_12_edit_items'
@@ -395,13 +361,8 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals( 200, $response->get_status(), 'should be permitted');
-
-
 	}
 
-	/**
-	 * @group xis
-	 */
 	public function test_create_get_roles_with_caps() {
 
 		$request = new \WP_REST_Request('POST', $this->namespace . '/roles');
@@ -418,7 +379,6 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals( 201, $create->get_status() );
 
 		$request = new \WP_REST_Request('GET', $this->namespace . '/roles');
-
 		//$request->set_query_params($name_query);
 
 		$name_response = $this->server->dispatch($request);
@@ -430,13 +390,10 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertArrayHasKey('tnc_rep_edit_collections', $role['capabilities']);
 		$this->assertTrue($role['capabilities']['tnc_rep_edit_collections']);
-
 	}
 
 	public function test_edit_role_with_caps() {
-
 		$request = new \WP_REST_Request('POST', $this->namespace . '/roles');
-
 		$request->set_query_params([
 			'name' => 'New role',
 			'capabilities' => [
@@ -468,8 +425,6 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertArrayHasKey('manage_tainacan_collection_123', $data['capabilities']);
 		$this->assertTrue($data['capabilities']['manage_tainacan_collection_123']);
 
-
-
 	 	// EDIT
 		$request = new \WP_REST_Request('PATCH', $this->namespace . '/roles/tainacan-new-role');
 
@@ -491,7 +446,6 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals( 200, $response->get_status() );
 
 		$request = new \WP_REST_Request('GET', $this->namespace . '/roles/tainacan-new-role');
-
 		$response = $this->server->dispatch($request);
 
 		$this->assertEquals( 200, $response->get_status() );
@@ -510,27 +464,18 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 
 		$this->assertArrayNotHasKey('tnc_rep_edit_taxonomies', $data['capabilities']);
 		$this->assertArrayNotHasKey('manage_tainacan_collection_123', $data['capabilities']);
-
-
-
 	}
 
 	function test_new_role_can_read() {
 
 		$request = new \WP_REST_Request('POST', $this->namespace . '/roles');
-
 		$request->set_query_params(['name' => 'New role']);
-
 		$create = $this->server->dispatch($request);
 
 		$this->assertEquals( 201, $create->get_status() );
-
 		$role = get_role('tainacan-new-role');
 
 		$this->assertTrue( $role->has_cap( 'read' ) );
-
 	}
 
 }
-
-?>
