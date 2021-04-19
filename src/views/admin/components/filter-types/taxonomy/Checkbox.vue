@@ -280,7 +280,6 @@
                         //     });
                     }
                 }
-
                 this.$emit('sendValuesToTags', { label: onlyLabels, taxonomy: this.taxonomy, value: this.selected });
             },
             onSelect() {

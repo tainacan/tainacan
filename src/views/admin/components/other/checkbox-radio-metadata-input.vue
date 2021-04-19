@@ -365,8 +365,6 @@
                 activeTab: 0,
                 selectedTagsName: {},
                 isSelectedTermsLoading: false,
-                previousLastTerms: [],
-                lastTermOnFirstPage: null,
                 expandResultsSection: false
             }
         },

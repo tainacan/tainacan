@@ -517,7 +517,7 @@ class Elastic_Press {
 				if (!empty($filter['include'])) {
 					$custom_filter_include = $custom_filter;
 					$custom_filter_include['bool']['must'][] = ["bool" => [ "must"=> [ [ "terms" => ["$field.term_id" => $filter['include'] ] ] ] ] ];
-					$terms_id_inlcude = \implode( "|", $filter['include']);
+					$terms_id_include = \implode( "|", $filter['include']);
 					$aggs[$id.'.include'] = [
 						"filter" => $custom_filter_include,
 						"aggs"	=> array(
@@ -525,14 +525,14 @@ class Elastic_Press {
 								"terms"=>array(
 									"order" => ["_key" => "asc" ],
 									"field" => "$field.term_name.id",
-									"include" => "(.)*.($terms_id_inlcude).parent=$parent",
+									"include" => "(.)*.($terms_id_include).parent=$parent",
 									"min_doc_count" => 0
 								)
 								// "terms"=>array(
 								// 	"script" => [
 								// 		"lang" 	=> "painless",
-								// 		"source" => "def c= ['']; for (int i = 0; i < doc['$field.term_id'].length; ++i) { if( [$terms_id_inlcude].contains(doc['$field.term_id'][i]) ) { c.add(doc['$field.term_name.id'][i]); } } return c;"
-								// 		//"source"=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if( [$terms_id_inlcude].contains(term.term_id) ) { c.add(term.term_id); }}} return c;"
+								// 		"source" => "def c= ['']; for (int i = 0; i < doc['$field.term_id'].length; ++i) { if( [$terms_id_include].contains(doc['$field.term_id'][i]) ) { c.add(doc['$field.term_name.id'][i]); } } return c;"
+								// 		//"source"=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if( [$terms_id_include].contains(term.term_id) ) { c.add(term.term_id); }}} return c;"
 								// 	]
 								// )
 							)
@@ -632,6 +632,9 @@ class Elastic_Press {
 			$field = $filter['field'];
 			if ($filter['metadata_type'] == 'Tainacan\Metadata_Types\Taxonomy') {
 				$parent = $filter['parent'];
+				$source = !empty($search) ?
+					"if ( doc.containsKey('$field.term_name.id') ) {List l = new ArrayList(doc['$field.term_name.id']); return l;} return[];" :
+					"if ( doc.containsKey('$field.term_name.id') ) {List l = new ArrayList(doc['$field.term_name.id']); l.removeIf(item->!item.endsWith('.parent=$parent')); return l;} return[];" ;
 				$aggs[$id] = [
 					"composite"	=> array(
 						"size" => $filter['pagesize'],
@@ -641,7 +644,8 @@ class Elastic_Press {
 									"order" => "asc",
 									"script" => [
 										"lang"		=> "painless",
-										"source" => "if ( doc.containsKey('$field.term_name.id') ) {List l = new ArrayList(doc['$field.term_name.id']); l.removeIf(item->!item.endsWith('.parent=$parent')); return l;} return[];"
+										"source" => $source
+										//"source" => "if ( doc.containsKey('$field.term_name.id') ) {List l = new ArrayList(doc['$field.term_name.id']); l.removeIf(item->!item.endsWith('.parent=$parent')); return l;} return[];"
 										//"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_name.id'][i]; }}",
 										//"source" => "for (int i = 0; i < doc['$field.parent'].length; ++i) { if (doc['$field.parent'][i] == $parent) { return doc['$field.term_id'][i]; }}",
 										//"source"	=> "def c= ['']; if(!params._source.terms.empty && params._source.$field != null) { for(term in params._source.$field) { if(term.parent==$parent) { c.add(term.term_id); }}} return c;"
