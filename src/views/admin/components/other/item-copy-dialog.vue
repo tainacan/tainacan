@@ -39,6 +39,8 @@
                             :label="$i18n.get('label_number_of_copies') + ':'">
                         <b-numberinput
                                 ref="copy-count-numerbinput"
+                                :aria-minus-label="$i18n.get('label_decrease')"
+                                :aria-plus-label="$i18n.get('label_increase')"
                                 min="1" 
                                 :value="copyCount"
                                 step="1"
@@ -49,7 +51,7 @@
             <footer class="modal-card-foot form-submit">
                 <button 
                         type="submit"
-                        class="button"
+                        class="button is-outlined"
                         :disabled="isLoading"
                         @click="onConfirm(newItems); $parent.close();">
                     {{ hasCopied ? $i18n.get('label_return_to_list') : $i18n.get('cancel') }}
