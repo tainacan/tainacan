@@ -121,7 +121,8 @@ registerBlockType('tainacan/collections-list', {
                     key={ collection.id }
                     className="collection-list-item"
                     style={{ marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}}>
-                    { tainacan_blocks.wp_version < '5.4' ?
+                    { 
+                        tainacan_blocks.wp_version < '5.4' ?
                         <IconButton
                             onClick={ () => removeCollectionOfId(collection.id) }
                             icon="no-alt"
@@ -130,7 +131,8 @@ registerBlockType('tainacan/collections-list', {
                         <Button
                             onClick={ () => removeCollectionOfId(collection.id) }
                             icon="no-alt"
-                            label={__('Remove', 'tainacan')}/>
+                            showTooltip={false}
+                            label={__('Remove', 'tainacan')} />
                     }
                     <a 
                         id={ isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id }
@@ -156,7 +158,7 @@ registerBlockType('tainacan/collections-list', {
             setAttributes({
                 content: (
                     <ul 
-                        style={{ gridTemplateColumns: layout == 'grid' ? 'repeat(auto-fill, ' +  (gridMargin + (showName ? 220 : 185)) + 'px)' : 'inherit' }}
+                        style={{ gridTemplateColumns: layout == 'grid' ? ('repeat(auto-fill, ' + (gridMargin + (showName ? 220 : 185)) + 'px)') : 'inherit' }}
                         className={'collections-list  collections-layout-' + layout + (!showName ? ' collections-list-without-margin' : '')}>
                         { selectedCollectionsHTML }
                     </ul>
@@ -353,7 +355,7 @@ registerBlockType('tainacan/collections-list', {
     },
     save({ attributes, className }){
         const { content } = attributes;
-        return <div className={className}>{ content }</div>
+        return <div className={ className }>{ content }</div>
     },
     deprecated: DeprecatedBlocks
 });

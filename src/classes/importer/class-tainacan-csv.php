@@ -12,7 +12,8 @@ class CSV extends Importer {
 			'delimiter' => ',',
 			'multivalued_delimiter' => '||',
 			'encode' => 'utf8',
-			'enclosure' => ''
+			'enclosure' => '',
+			'escape_empty_value' => '[empty value]'
 		]);
 	}
 
@@ -385,6 +386,31 @@ class CSV extends Importer {
 					</div>
 				</div>
 			</div>
+
+			<div class="column">
+				<div class="field">
+					<label class="label"><?php _e('Empty value', 'tainacan'); ?></label>
+					<span class="help-wrapper">
+						<a class="help-button has-text-secondary">
+							<span class="icon is-small">
+								<i class="tainacan-icon tainacan-icon-help" ></i>
+							</span>
+						</a>
+						<div class="help-tooltip">
+							<div class="help-tooltip-header">
+								<h5><?php _e('Empty value', 'tainacan'); ?></h5>
+							</div>
+							<div class="help-tooltip-body">
+								<p><?php _e('The string representing a value not informed for the metadata. (e.g. \EMPTY)', 'tainacan'); ?></p>
+							</div>
+						</div>
+					</span>
+					<div class="control is-clearfix">
+						<input class="input" type="text" name="escape_empty_value" value="<?php echo $this->get_option('escape_empty_value'); ?>">
+					</div>
+				</div>
+			</div>
+			
 		</div>
 
 		<div class="columns">
@@ -677,14 +703,13 @@ class CSV extends Importer {
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 
-		// $Tainacan_Items->disable_logs();
-		// $Tainacan_Metadata->disable_logs();
-		// $Tainacan_Item_Metadata->disable_logs();
 
 		$itemMetadataArray = [];
 
 		$updating_item = false;
 
+		$Tainacan_Items->disable_logs();
+		$Tainacan_Metadata->disable_logs();
 		$Tainacan_Item_Metadata->disable_logs();
 		if ( is_numeric($this->get_transient('item_id')) ) {
 			$item = $Tainacan_Items->fetch( (int) $this->get_transient('item_id') );
@@ -739,7 +764,9 @@ class CSV extends Importer {
 
 				if ($metadatum instanceof Entities\Metadatum) {
 					$singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatum); // *empty item will be replaced by inserted in the next foreach
-					if( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy' ) {
+					if ($this->is_clear_value($values)) {
+						$singleItemMetadata->set_value("");
+					} else if( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Taxonomy' ) {
 						if( !is_array( $values ) ) {
 							$tmp = $this->insert_hierarchy( $metadatum, $values);
 							if ($tmp !== false) {
@@ -787,7 +814,8 @@ class CSV extends Importer {
 				$this->add_error_log( $item->get_errors() );
 				return false;
 			}
-
+			global $wpdb;
+			$wpdb->query( 'SET autocommit = 0;' );
 			foreach ( $itemMetadataArray as $itemMetadata ) {
 				if($itemMetadata instanceof Entities\Item_Metadata_Entity ) {
 					$itemMetadata->set_item( $insertedItem );  // *I told you
@@ -826,6 +854,8 @@ class CSV extends Importer {
 				//    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
 				//}
 			}
+			$wpdb->query( 'COMMIT;' );
+			$wpdb->query( 'SET autocommit = 1;' );
 
 			if ( ! $updating_item ) {
 				$insertedItem->set_status('publish' );
@@ -870,6 +900,16 @@ class CSV extends Importer {
 		} else {
 			return ( trim( $value ) === '' );
 		}
+	}
+
+	/**
+	 * @param $value
+	 * @return bool
+	 */
+	private function is_clear_value($value) {
+		if( !empty($value) && is_array($value) )
+			return false;
+		return $this->get_option('escape_empty_value') == $value;
 	}
 
 	/**

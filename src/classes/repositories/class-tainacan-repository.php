@@ -6,7 +6,6 @@ use Tainacan\Entities;
 use Tainacan\Entities\Entity;
 use Tainacan;
 use Tainacan\Repositories;
-use \Respect\Validation\Validator as v;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
@@ -122,17 +121,13 @@ abstract class Repository {
 	 */
 	public function insert( $obj ) {
 		// validate
-		if ( in_array( $obj->get_status(), apply_filters( 'tainacan-status-require-validation', [
-				'publish',
-				'future',
-				'private'
-			] ) ) && ! $obj->get_validated() ) {
+		$required_validation_statuses = ['publish', 'future', 'private'];
+		if (in_array( $obj->get_status(), apply_filters( 'tainacan-status-require-validation', $required_validation_statuses) ) && ! $obj->get_validated() ) {
 			throw new \Exception( 'Entities must be validated before you can save them' );
 			// TODO: Throw Warning saying you must validate object before insert()
 		}
 
 		$is_update = false;
-		$old       = '';
 
 		$diffs = [];
 		do_action( 'tainacan-pre-insert', $obj );
@@ -141,8 +136,7 @@ abstract class Repository {
 			do_action( "tainacan-pre-insert-$obj_post_type", $obj );
 
 		$map = $this->get_map();
-
-		// First iterate through the native post properties
+		// First iterate through native post properties
 		foreach ( $map as $prop => $mapped ) {
 			if ( $mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi' ) {
 				$obj->WP_Post->{$mapped['map']} = $obj->get_mapped_property( $prop );
@@ -157,11 +151,15 @@ abstract class Repository {
 			$obj->WP_Post->post_status = 'publish';
 		}
 
+		$sanitized_title = $this->sanitize_value($obj->get('name'));
+		$sanitized_desc = $this->sanitize_value($obj->get('description'));
 		if ( $obj instanceof Entities\Item ) {
+			$sanitized_title = $this->sanitize_value($obj->get('title'));
+
 			// get collection to determine post type
 			$collection = $obj->get_collection();
 
-			if ( ! $collection ) {
+			if (!$collection) {
 				return false;
 			}
 
@@ -171,8 +169,15 @@ abstract class Repository {
 			do_action( "tainacan-pre-insert-$obj_post_type", $obj );
 		}
 
-		// TODO verificar se salvou mesmo
+		if ( ! $obj instanceof Entities\Log ) {
+			$obj->WP_Post->post_title = $sanitized_title;
+			$obj->WP_Post->post_content = $sanitized_desc;
+		}
+
 		$id = wp_insert_post( $obj->WP_Post );
+		if ($id instanceof \WP_Error || 0 === $id) {
+			return false;
+		}
 
 		// reset object
 		$obj->WP_Post = get_post( $id );
@@ -250,10 +255,12 @@ abstract class Repository {
 	}
 
 	function maybe_add_slashes( $value ) {
-		if ( is_string( $value ) && strpos( $value, '\\' ) !== false ) {
-			return wp_slash( $value );
+		if ( is_string( $value ) ) {
+			if( strpos( $value, '\\' ) !== false ) {
+				return wp_slash( $this->sanitize_value($value) );
+			}
+			return $this->sanitize_value($value);
 		}
-
 		return $value;
 	}
 
@@ -911,6 +918,16 @@ abstract class Repository {
 
 	}
 
+	protected function sanitize_value($content) {
+		if (is_numeric($content) || empty($content) ) {
+			return $content;
+		}
+
+		$allowed_html = wp_kses_allowed_html('post');
+		unset($allowed_html["a"]);
+	
+		return trim(wp_kses($content, $allowed_html));
+	}
+
 }
 
-?>

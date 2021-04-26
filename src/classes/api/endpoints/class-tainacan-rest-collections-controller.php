@@ -13,79 +13,79 @@ use Tainacan\Entities\Collection;
  * @uses Entities\Collection and Repositories\Collections
  * */
 class REST_Collections_Controller extends REST_Controller {
-    private $collections_repository;
-    private $collection;
+	private $collections_repository;
+	private $collection;
 
 	/**
 	 * REST_Collections_Controller constructor.
 	 * Define the namespace, rest base and instantiate your attributes.
 	 */
 	public function __construct(){
-        $this->rest_base = 'collections';
+		$this->rest_base = 'collections';
 		parent::__construct();
-        add_action('init', array(&$this, 'init_objects'), 11);
-    }
+		add_action('init', array(&$this, 'init_objects'), 11);
+	}
 
-    /**
-     * Initialize objects after post_type register
-     */
-    public function init_objects() {
-    	$this->collections_repository = Repositories\Collections::get_instance();
-    	$this->collection = new Entities\Collection();
-    }
+	/**
+	 * Initialize objects after post_type register
+	 */
+	public function init_objects() {
+		$this->collections_repository = Repositories\Collections::get_instance();
+		$this->collection = new Entities\Collection();
+	}
 
 	/**
 	 * Register the collections route and their endpoints
 	 */
 	public function register_routes(){
-        register_rest_route($this->namespace, '/' . $this->rest_base, array(
-            array(
-                'methods'             => \WP_REST_Server::READABLE,
-                'callback'            => array($this, 'get_items'),
-                'permission_callback' => array($this, 'get_items_permissions_check'),
-	            'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
-            ),
-	        array(
-		        'methods'             => \WP_REST_Server::CREATABLE,
-		        'callback'            => array($this, 'create_item'),
-		        'permission_callback' => array($this, 'create_item_permissions_check'),
-		        'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
-	        ),
+		register_rest_route($this->namespace, '/' . $this->rest_base, array(
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_items'),
+				'permission_callback' => array($this, 'get_items_permissions_check'),
+				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
+			),
+			array(
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => array($this, 'create_item'),
+				'permission_callback' => array($this, 'create_item_permissions_check'),
+				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
+			),
 			'schema'                => [$this, 'get_schema'],
-        ));
-        register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)', array(
-            array(
-                'methods'             => \WP_REST_Server::READABLE,
-                'callback'            => array($this, 'get_item'),
-                'permission_callback' => array($this, 'get_item_permissions_check'),
-	            'args'                => $this->get_wp_query_params(),
+		));
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)', array(
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_item'),
+				'permission_callback' => array($this, 'get_item_permissions_check'),
+				'args'                => $this->get_wp_query_params(),
 
-            ),
-            array(
-                'methods'             => \WP_REST_Server::EDITABLE,
-                'callback'            => array($this, 'update_item'),
-                'permission_callback' => array($this, 'update_item_permissions_check'),
-                'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE),
-            ),
-            array(
-                'methods'             => \WP_REST_Server::DELETABLE,
-                'callback'            => array($this, 'delete_item'),
-                'permission_callback' => array($this, 'delete_item_permissions_check'),
-	            'args'                => array(
-	            	'permanently' => array(
-		                'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection'),
+			),
+			array(
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => array($this, 'update_item'),
+				'permission_callback' => array($this, 'update_item_permissions_check'),
+				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE),
+			),
+			array(
+				'methods'             => \WP_REST_Server::DELETABLE,
+				'callback'            => array($this, 'delete_item'),
+				'permission_callback' => array($this, 'delete_item_permissions_check'),
+				'args'                => array(
+					'permanently' => array(
+						'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection'),
 						'default'     => '0',
-		            ),
-	            )
-            ),
+					),
+				)
+			),
 			'schema'                => [$this, 'get_schema'],
 		));
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)/metadata_order', array(
-            array(
-                'methods'             => \WP_REST_Server::EDITABLE,
-                'callback'            => array($this, 'update_metadata_order'),
-                'permission_callback' => array($this, 'update_metadata_order_permissions_check'),
-                'args'                => [
+			array(
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => array($this, 'update_metadata_order'),
+				'permission_callback' => array($this, 'update_metadata_order_permissions_check'),
+				'args'                => [
 					'metadata_order' => [
 						'description' => __( 'The order of the metadata in the collection, an array of objects with integer id and bool enabled.', 'tainacan' ),
 						'required' => true,
@@ -96,11 +96,11 @@ class REST_Collections_Controller extends REST_Controller {
 			'schema'                => [$this, 'get_schema'],
 		));
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)/filters_order', array(
-            array(
-                'methods'             => \WP_REST_Server::EDITABLE,
-                'callback'            => array($this, 'update_filters_order'),
-                'permission_callback' => array($this, 'update_filters_order_permissions_check'),
-                'args'                => [
+			array(
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => array($this, 'update_filters_order'),
+				'permission_callback' => array($this, 'update_filters_order_permissions_check'),
+				'args'                => [
 					'filters_order' => [
 						'description' => __( 'The order of the filters in the collection, an array of objects with integer id and bool enabled.', 'tainacan' ),
 						'required' => true,
@@ -109,8 +109,8 @@ class REST_Collections_Controller extends REST_Controller {
 				],
 			),
 			'schema'                => [$this, 'get_schema'],
-        ));
-    }
+		));
+	}
 
 	/**
 	 * Return a array of Collections objects in JSON
@@ -123,7 +123,7 @@ class REST_Collections_Controller extends REST_Controller {
 	public function get_items($request){
 		$args = $this->prepare_filters($request);
 
-        $collections = $this->collections_repository->fetch($args);
+		$collections = $this->collections_repository->fetch($args);
 
 		$response = [];
 		if($collections->have_posts()){
@@ -141,17 +141,17 @@ class REST_Collections_Controller extends REST_Controller {
 		$total_collections  = $collections->found_posts;
 		$max_pages = ceil($total_collections / (int) $collections->query_vars['posts_per_page']);
 
-        $rest_response = new \WP_REST_Response($response, 200);
+		$rest_response = new \WP_REST_Response($response, 200);
 
-        $rest_response->header('X-WP-Total', (int) $total_collections);
-        $rest_response->header('X-WP-TotalPages', (int) $max_pages);
+		$rest_response->header('X-WP-Total', (int) $total_collections);
+		$rest_response->header('X-WP-TotalPages', (int) $max_pages);
 
 		$total_collections = wp_count_posts( 'tainacan-collection', 'readable' );
 
 		if (isset($total_collections->publish) ||
-		    isset($total_collections->private) ||
-		    isset($total_collections->trash) ||
-		    isset($total_collections->draft)) {
+			isset($total_collections->private) ||
+			isset($total_collections->trash) ||
+			isset($total_collections->draft)) {
 
 			$rest_response->header('X-Tainacan-total-collections-trash', $total_collections->trash);
 			$rest_response->header('X-Tainacan-total-collections-publish', $total_collections->publish);
@@ -159,8 +159,8 @@ class REST_Collections_Controller extends REST_Controller {
 			$rest_response->header('X-Tainacan-total-collections-private', $total_collections->private);
 		}
 
-        return $rest_response;
-    }
+		return $rest_response;
+	}
 
 	/**
 	 * Return a Collection object in JSON
@@ -170,13 +170,13 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_item($request){
-        $collection_id = $request['collection_id'];
-        $collection = $this->collections_repository->fetch($collection_id);
+		$collection_id = $request['collection_id'];
+		$collection = $this->collections_repository->fetch($collection_id);
 
-        $response = $this->prepare_item_for_response($collection, $request );
+		$response = $this->prepare_item_for_response($collection, $request );
 
-        return new \WP_REST_Response($response, 200);
-    }
+		return new \WP_REST_Response($response, 200);
+	}
 
 	/**
 	 *
@@ -188,14 +188,14 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @return mixed|string|void|\WP_Error|\WP_REST_Response
 	 */
 	public function prepare_item_for_response($item, $request){
-        if(!empty($item)){
+		if(!empty($item)){
 
-        	if(!isset($request['fetch_only'])) {
+			if(!isset($request['fetch_only'])) {
 
-		        $item_arr = $item->_toArray();
+				$item_arr = $item->_toArray();
 
-		        if ( $request['context'] === 'edit' ) {
-			        $item_arr['current_user_can_edit'] = $item->can_edit();
+				if ( $request['context'] === 'edit' ) {
+					$item_arr['current_user_can_edit'] = $item->can_edit();
 					$item_arr['current_user_can_delete'] = $item->can_delete();
 
 					$collection_caps = \tainacan_roles()->get_collection_caps_slugs();
@@ -208,24 +208,24 @@ class REST_Collections_Controller extends REST_Controller {
 						$item_arr[$cap_key] = current_user_can( $cap_check );
 					}
 
-		        }
+				}
 
-	        } else {
-		        $attributes_to_filter = $request['fetch_only'];
+			} else {
+				$attributes_to_filter = $request['fetch_only'];
 
-		        # Always returns id
-		        if(is_array($attributes_to_filter)) {
+				# Always returns id
+				if(is_array($attributes_to_filter)) {
 					$attributes_to_filter[] = 'id';
-		        } elseif(!strstr($attributes_to_filter, ',')){
-			        $attributes_to_filter = array($attributes_to_filter, 'id');
-		        } else {
-		        	$attributes_to_filter .= ',id';
-		        }
+				} elseif(!strstr($attributes_to_filter, ',')){
+					$attributes_to_filter = array($attributes_to_filter, 'id');
+				} else {
+					$attributes_to_filter .= ',id';
+				}
 
-		        $item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
+				$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
 
-		        if ( $request['context'] === 'edit' ) {
-			        $item_arr['current_user_can_edit'] = $item->can_edit();
+				if ( $request['context'] === 'edit' ) {
+					$item_arr['current_user_can_edit'] = $item->can_edit();
 					$item_arr['current_user_can_delete'] = $item->can_delete();
 
 					$collection_caps = \tainacan_roles()->get_collection_caps_slugs();
@@ -307,10 +307,10 @@ class REST_Collections_Controller extends REST_Controller {
 			}
 
 			return $item_arr;
-        }
+		}
 
-        return $item;
-    }
+		return $item;
+	}
 
 	/**
 	 *
@@ -391,8 +391,8 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function create_item_permissions_check( $request ) {
-	    return  current_user_can($this->collections_repository->get_capabilities()->edit_posts);
-    }
+		return  current_user_can($this->collections_repository->get_capabilities()->edit_posts);
+	}
 
 	/**
 	 * Prepare collection for insertion on database
@@ -408,8 +408,8 @@ class REST_Collections_Controller extends REST_Controller {
 			if(method_exists($this->collection, $set_)) $this->collection->$set_($value);
 		}
 
-        return $this->collection;
-    }
+		return $this->collection;
+	}
 
 	/**
 	 * Delete a collection
@@ -424,9 +424,9 @@ class REST_Collections_Controller extends REST_Controller {
 
 		if(! $collection instanceof Entities\Collection) {
 			return new \WP_REST_Response([
-		    	'error_message' => __('Collection with this ID was not found', 'tainacan' ),
-			    'collection_id' => $collection_id
-		    ], 400);
+				'error_message' => __('Collection with this ID was not found', 'tainacan' ),
+				'collection_id' => $collection_id
+			], 400);
 		}
 
 		if($permanently == true) {
@@ -438,7 +438,7 @@ class REST_Collections_Controller extends REST_Controller {
 		$prepared_collection = $this->prepare_item_for_response($collection, $request);
 
 		return new \WP_REST_Response($prepared_collection, 200);
-    }
+	}
 
 	/**
 	 * Verify if current user has permission to delete a collection
@@ -456,7 +456,7 @@ class REST_Collections_Controller extends REST_Controller {
 		}
 
 		return false;
-    }
+	}
 
 	/**
 	 * Update a collection
@@ -466,48 +466,48 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @return string|\WP_Error|\WP_REST_Response
 	 */
 	public function update_item( $request ) {
-	    $collection_id = $request['collection_id'];
+		$collection_id = $request['collection_id'];
 
-	    $body = json_decode($request->get_body(), true);
+		$body = json_decode($request->get_body(), true);
 
-	    if(!empty($body)){
-	    	$attributes = [];
+		if(!empty($body)){
+			$attributes = [];
 
-	    	foreach ($body as $att => $value){
-	    		$attributes[$att] = $value;
-		    }
+			foreach ($body as $att => $value){
+				$attributes[$att] = $value;
+			}
 
-		    $collection = $this->collections_repository->fetch($collection_id);
+			$collection = $this->collections_repository->fetch($collection_id);
 
-	    	if($collection) {
-			    $prepared_collection = $this->prepare_item_for_updating( $collection, $attributes );
+			if($collection) {
+				$prepared_collection = $this->prepare_item_for_updating( $collection, $attributes );
 
-			    if ( $prepared_collection->validate() ) {
-				    $updated_collection = $this->collections_repository->update( $collection );
+				if ( $prepared_collection->validate() ) {
+					$updated_collection = $this->collections_repository->update( $collection );
 
-				    $response = $this->prepare_item_for_response($updated_collection, $request);
+					$response = $this->prepare_item_for_response($updated_collection, $request);
 
-				    return new \WP_REST_Response( $response, 200 );
-			    }
+					return new \WP_REST_Response( $response, 200 );
+				}
 
-			    return new \WP_REST_Response([
-				    'error_message' => __('One or more values are invalid.', 'tainacan'),
-				    'errors'        => $prepared_collection->get_errors(),
-				    'collection'    => $this->prepare_item_for_response($prepared_collection, $request)
-			    ], 400);
-		    }
+				return new \WP_REST_Response([
+					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'errors'        => $prepared_collection->get_errors(),
+					'collection'    => $this->prepare_item_for_response($prepared_collection, $request)
+				], 400);
+			}
 
-		    return new \WP_REST_Response([
-		    	'error_message' => __('Collection with this ID was not found', 'tainacan' ),
-			    'collection_id' => $collection_id
-		    ], 400);
-	    }
+			return new \WP_REST_Response([
+				'error_message' => __('Collection with this ID was not found', 'tainacan' ),
+				'collection_id' => $collection_id
+			], 400);
+		}
 
-	    return new \WP_REST_Response([
-	    	'error_message' => __('The body could not be empty', 'tainacan'),
-		    'body'          => $body
-	    ], 400);
-    }
+		return new \WP_REST_Response([
+			'error_message' => __('The body could not be empty', 'tainacan'),
+			'body'          => $body
+		], 400);
+	}
 
 
 	/**
@@ -557,43 +557,43 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @return string|\WP_Error|\WP_REST_Response
 	 */
 	public function update_metadata_order( $request ) {
-	    $collection_id = $request['collection_id'];
+		$collection_id = $request['collection_id'];
 
-	    $body = json_decode($request->get_body(), true);
+		$body = json_decode($request->get_body(), true);
 
-	    if( !empty($body) && isset($body['metadata_order']) ) {
+		if( !empty($body) && isset($body['metadata_order']) ) {
 
-		    $collection = $this->collections_repository->fetch($collection_id);
+			$collection = $this->collections_repository->fetch($collection_id);
 
-	    	if( $collection instanceof Entities\Collection) {
-			    $collection->set_metadata_order( $body['metadata_order'] );
+			if( $collection instanceof Entities\Collection) {
+				$collection->set_metadata_order( $body['metadata_order'] );
 
-			    if ( $collection->validate() ) {
-				    $updated_collection = $this->collections_repository->update( $collection );
+				if ( $collection->validate() ) {
+					$updated_collection = $this->collections_repository->update( $collection );
 
-				    $response = $this->prepare_item_for_response($updated_collection, $request);
+					$response = $this->prepare_item_for_response($updated_collection, $request);
 
-				    return new \WP_REST_Response( $response, 200 );
-			    }
+					return new \WP_REST_Response( $response, 200 );
+				}
 
-			    return new \WP_REST_Response([
-				    'error_message' => __('One or more values are invalid.', 'tainacan'),
-				    'errors'        => $collection->get_errors(),
-				    'collection'    => $this->prepare_item_for_response($collection, $request)
-			    ], 400);
-		    }
+				return new \WP_REST_Response([
+					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'errors'        => $collection->get_errors(),
+					'collection'    => $this->prepare_item_for_response($collection, $request)
+				], 400);
+			}
 
-		    return new \WP_REST_Response([
-		    	'error_message' => __('Collection with this ID was not found', 'tainacan' ),
-			    'collection_id' => $collection_id
-		    ], 400);
-	    }
+			return new \WP_REST_Response([
+				'error_message' => __('Collection with this ID was not found', 'tainacan' ),
+				'collection_id' => $collection_id
+			], 400);
+		}
 
-	    return new \WP_REST_Response([
-	    	'error_message' => __('The body could not be empty', 'tainacan'),
-		    'body'          => $body
-	    ], 400);
-    }
+		return new \WP_REST_Response([
+			'error_message' => __('The body could not be empty', 'tainacan'),
+			'body'          => $body
+		], 400);
+	}
 
 
 	/**
@@ -622,43 +622,43 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @return string|\WP_Error|\WP_REST_Response
 	 */
 	public function update_filters_order( $request ) {
-	    $collection_id = $request['collection_id'];
+		$collection_id = $request['collection_id'];
 
-	    $body = json_decode($request->get_body(), true);
+		$body = json_decode($request->get_body(), true);
 
-	    if( !empty($body) && isset($body['filters_order']) ) {
+		if( !empty($body) && isset($body['filters_order']) ) {
 
-		    $collection = $this->collections_repository->fetch($collection_id);
+			$collection = $this->collections_repository->fetch($collection_id);
 
-	    	if( $collection instanceof Entities\Collection) {
-			    $collection->set_filters_order( $body['filters_order'] );
+			if( $collection instanceof Entities\Collection) {
+				$collection->set_filters_order( $body['filters_order'] );
 
-			    if ( $collection->validate() ) {
-				    $updated_collection = $this->collections_repository->update( $collection );
+				if ( $collection->validate() ) {
+					$updated_collection = $this->collections_repository->update( $collection );
 
-				    $response = $this->prepare_item_for_response($updated_collection, $request);
+					$response = $this->prepare_item_for_response($updated_collection, $request);
 
-				    return new \WP_REST_Response( $response, 200 );
-			    }
+					return new \WP_REST_Response( $response, 200 );
+				}
 
-			    return new \WP_REST_Response([
-				    'error_message' => __('One or more values are invalid.', 'tainacan'),
-				    'errors'        => $prepared_collection->get_errors(),
-				    'collection'    => $this->prepare_item_for_response($prepared_collection, $request)
-			    ], 400);
-		    }
+				return new \WP_REST_Response([
+					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'errors'        => $prepared_collection->get_errors(),
+					'collection'    => $this->prepare_item_for_response($prepared_collection, $request)
+				], 400);
+			}
 
-		    return new \WP_REST_Response([
-		    	'error_message' => __('Collection with this ID was not found', 'tainacan' ),
-			    'collection_id' => $collection_id
-		    ], 400);
-	    }
+			return new \WP_REST_Response([
+				'error_message' => __('Collection with this ID was not found', 'tainacan' ),
+				'collection_id' => $collection_id
+			], 400);
+		}
 
-	    return new \WP_REST_Response([
-	    	'error_message' => __('The body could not be empty', 'tainacan'),
-		    'body'          => $body
-	    ], 400);
-    }
+		return new \WP_REST_Response([
+			'error_message' => __('The body could not be empty', 'tainacan'),
+			'body'          => $body
+		], 400);
+	}
 
 
 	/**
@@ -677,7 +677,7 @@ class REST_Collections_Controller extends REST_Controller {
 		}
 
 		return false;
-    }
+	}
 
 	/**
 	 * @param string $method
@@ -688,17 +688,17 @@ class REST_Collections_Controller extends REST_Controller {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
 
-            $endpoint_args['name'] = array(
-    	    	'description' => __('Limits the result set to collections with a specific name'),
-    		    'type'        => 'string',
-    	    );
+			$endpoint_args['name'] = array(
+				'description' => __('Limits the result set to collections with a specific name'),
+				'type'        => 'string',
+			);
 
-            $endpoint_args = array_merge(
-                $endpoint_args,
-                parent::get_wp_query_params(),
-                parent::get_fetch_only_param(),
-                parent::get_meta_queries_params()
-            );
+			$endpoint_args = array_merge(
+				$endpoint_args,
+				parent::get_wp_query_params(),
+				parent::get_fetch_only_param(),
+				parent::get_meta_queries_params()
+			);
 
 		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
 			$map = $this->collections_repository->get_map();
@@ -715,8 +715,8 @@ class REST_Collections_Controller extends REST_Controller {
 			$endpoint_args = $map;
 		}
 
-	    return $endpoint_args;
-    }
+		return $endpoint_args;
+	}
 
 	function get_schema() {
 		$schema = [

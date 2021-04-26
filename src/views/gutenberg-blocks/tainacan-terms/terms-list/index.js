@@ -128,6 +128,7 @@ registerBlockType('tainacan/terms-list', {
                         <Button
                             onClick={ () => removeTermOfId(term.id) }
                             icon="no-alt"
+                            showTooltip={false}
                             label={__('Remove', 'tainacan')}/>
                     }         
                     <a 

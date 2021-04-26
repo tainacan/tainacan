@@ -1,8 +1,10 @@
 let path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
     entry: {
         admin: './src/views/admin/js/main.js',
+        media_component: './src/views/media-component/media-component.js',
         theme_search: './src/views/theme-search/js/theme-main.js',
         item_submission: './src/views/item-submission/js/item-submission-main.js',
         roles: './src/views/roles/js/roles-main.js',
@@ -103,5 +105,11 @@ module.exports = {
     },
     performance: {
         hints: false
-    }
+    },
+    plugins: [
+        new webpack.ProvidePlugin({
+            'Swiper': 'Swiper',
+            'PhotoSwipe': 'PhotoSwipe'
+        })
+    ]
 };

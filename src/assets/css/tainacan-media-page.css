@@ -16,7 +16,6 @@ body:not([class]) > iframe {
   min-height: 80vh;
   border: none;
 }
-body:not([class]) > audio,
 body:not([class]) > video {
   width: 100%;
   height: auto;
@@ -25,6 +24,11 @@ body:not([class]) > video {
 }
 body:not([class]) > audio {
   width: 100%;
+  height: auto;
+  border-radius: 20px;
+  background: black;
+  min-height: 38px;
+  max-height: 100%;
 }
 body:not([class]) > a,
 body:not([class]) > p {

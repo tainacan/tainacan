@@ -574,7 +574,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_activitiy_per_user'						 => __( 'Activities per user', 'tainacan'),
 	'label_report_generated_on'						 => __( 'Report generated on', 'tainacan'),
 	'label_get_latest_report'						 => __( 'Get latest report', 'tainacan'),
-	
+	'label_decrease'								 => __( 'Decrease', 'tainacan'),
+	'label_increase'								 => __( 'Increase', 'tainacan'),
+
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -855,6 +857,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_recaptcha_link_%s'						 =>	__( 'Remember to configure your website reCAPTCHA keys on <a href="%s" target="_blank">the item submission repository page</a>.', 'tainacan'),
 	'info_form_not_loaded'					 		 =>	__( 'There are probably not enought permissions to display it here.', 'tainacan'),
 	'info_validating_slug'					 		 =>	__( 'Validating slug...', 'tainacan'),
+
 	'label_amount_of_metadata_of_type'	 			 =>	__( 'Amount of metadata of this type', 'tainacan'),
 	'info_child_terms_chart'						 => __( 'Click on the term bar on the chart aside to see its child terms (if any) in this panel', 'tainacan' ),
 	
@@ -871,6 +874,10 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'action_delete-attachment'		=> __( 'Deletion of Attachments', 'tainacan'),
 	'action_update-thumbnail'		=> __( 'Thumbnail Updates', 'tainacan'),
 	'action_others'					=> __( 'Other Actions', 'tainacan'),
+	'info_applied_filters'							 => __( 'filters applied', 'tainacan'),
+	'info_items_found'							 	 => __( 'items found', 'tainacan'),
+	'info_applied_filter'							 => __( 'filter applied', 'tainacan'),
+	'info_item_found'							 	 => __( 'item found', 'tainacan'),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),

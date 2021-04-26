@@ -14,7 +14,7 @@ namespace Tainacan\Tests;
 class Filters extends TAINACAN_UnitTestCase {
 
 
-    function teste_add(){
+    function test_add(){
         $Tainacan_Filters = \Tainacan\Repositories\Filters::get_instance();
 
         $collection = $this->tainacan_entity_factory->create_entity(

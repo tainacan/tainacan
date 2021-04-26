@@ -135,6 +135,7 @@ registerBlockType('tainacan/items-list', {
                         <Button
                             onClick={ () => removeItemOfId(item.id) }
                             icon="no-alt"
+                            showTooltip={false}
                             label={__('Remove', 'tainacan')}/>
                     }
                     <a 

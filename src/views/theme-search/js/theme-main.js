@@ -48,7 +48,7 @@ import {
     ThumbnailHelperPlugin
 } from '../../admin/js/utilities';
 
-document.addEventListener("DOMContentLoaded", () => {
+function mountTainacanItemsListComponent() {
 
     // Mount only if the div exists
     if (document.getElementById('tainacan-items-page')) {
@@ -247,4 +247,22 @@ document.addEventListener("DOMContentLoaded", () => {
             // Options...
         });
     }
+}
+
+// Checks if document is loaded
+const performWhenDocumentIsLoaded = callback => {
+	if (/comp|inter|loaded/.test(document.readyState))
+		cb();
+	else
+		document.addEventListener('DOMContentLoaded', callback, false);
+}
+
+// Mounts when page is loaded
+performWhenDocumentIsLoaded(() => {
+    mountTainacanItemsListComponent();
+});
+
+// Also if a theme or plugin requested a reset...
+document.addEventListener("TainacanReloadItemsListComponent", () => {
+    mountTainacanItemsListComponent();
 });

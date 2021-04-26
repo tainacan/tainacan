@@ -242,6 +242,8 @@
         top: 0px;
         justify-content: center;
         z-index: 999; }
+        .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item button .dashicon {
+          margin: 0px; }
       .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item:hover button {
         height: auto;
         visibility: visible;

@@ -2,7 +2,7 @@
 /*
 Plugin Name: Tainacan
 Plugin URI: https://tainacan.org/
-Description: Open source, powerfull and flexible repository platform for WordPress. Manage and publish you digital collections as easily as publishing a post to your blog, while having all the tools of a professional respository platform.
+Description: Open source, powerful and flexible repository platform for WordPress. Manage and publish you digital collections as easily as publishing a post to your blog, while having all the tools of a professional repository platform.
 Author: Tainacan.org
 Version: 0.17.4
 Text Domain: tainacan

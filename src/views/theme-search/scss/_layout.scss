@@ -79,7 +79,7 @@
 	}
 }
 .filters-menu:not(.filters-menu-modal) {
-	z-index: 99999;
+	z-index: 99;
 	float: left;
 	max-width: var(--tainacan-filter-menu-width-theme);
 	min-width: 154px;
@@ -96,6 +96,7 @@
 
 	@media screen and (max-width: 768px) {
 		padding: 0;
+		z-index: 99999;
 
 		.modal-content { 
 			top: 0;

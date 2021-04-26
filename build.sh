@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Loads user-defined variables at build-config file
 source build-config.cfg
 
 ## Only run npm build if there was a change in a .js or .vue file

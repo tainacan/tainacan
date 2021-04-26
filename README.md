@@ -20,17 +20,23 @@ Tainacan is a software solution for building, managing and publishing digital re
 
 ### Features
 
-**Easy installation**. As a WordPress plugin, Tainacan can be easily installed on and integrated to an existing WordPress website.
+#### Easy install
+- As a WordPress plugin, Tainacan can be easily installed on and integrated to an existing WordPress website.
 
-**Metadata and filters**. Use a metadata standard or choose whatever set of metadata you want to describe the items in your collections. You can choose which metadata will be used as a filter when browsing the collection.
+#### Metadata and filters
+- Use standard metadata or choose whatever set of metadata you want to describe the items in your collections. You can choose which metadata will be used as a filter when browsing the collection.
 
-**Faceted search**. Browse your collection (and let the public browse it) using a faceted search interface with the filters you have chosen.
+#### Faceted search
+- Browse (and let the public browse it) your collection using a faceted search interface with filters you have chosen.
 
-**Manage taxonomies**. Manage vocabularies that can be used accross all your collections.
+#### Manage taxonomies
+- Manage vocabularies that can be used accross all your collections.
 
-**Themes**. Tainacan [has its own default theme](https://wordpress.org/themes/tainacan-interface/), which helps you present your collections in a beautiful and effective way as it is developed to incorporate all of Tainacan functionalities. However, it will also work with any WordPress theme. For developers, it will be easy to add Tainacan specific features to an existing theme.
+#### Themes
+- Tainacan [has its own default theme](https://wordpress.org/themes/tainacan-interface/), which helps you present your collections in a beautiful and effective way as it is developed to incorporate all of Tainacan functionalities. However, it will also work with any WordPress theme. For developers, it will be easy to add Tainacan specific features to an existing theme.
 
-**API and interoperability**. Tainacan implements a RESTful API (read and write) to allow other applications to interact with your repository. Expose you collection in different formats, such as JSON, JSON-LD and OAI-PMH. If your collection uses a custom standard, you can map it to well-known stardards such as DublinCore.
+#### API and interoperability
+- Tainacan implements a RESTful API (read and write) to allow other applications to interact with your repository. Expose you collection in different formats, such as JSON, JSON-LD and OAI-PMH. If your collection uses a custom standard, you can map it to well-known stardards such as DublinCore.
 
 ### Showcases
 

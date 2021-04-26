@@ -51,11 +51,11 @@ class Term extends Entity {
         }
     }
 
-	public function  __toString(){
-		return apply_filters("tainacan-term-to-string", $this->get_name(), $this);
+	public function __toString() {
+		return (string) apply_filters("tainacan-term-to-string", $this->get_name(), $this);
 	}
 
-	public function _toArray(){
+	public function _toArray() {
 		$term_array = parent::_toArray();
 
 		$term_id = $term_array['term_id'];
@@ -245,25 +245,19 @@ class Term extends Entity {
 	}
 
 	public function _toHtml() {
-		
 		$return = '';
 		$id = $this->get_id();
 		
 		if ( $id ) {
-			
 			$link = get_term_link( (int) $id );
 			
 			if (is_string($link)) {
-				
 				$return = "<a data-linkto='term' data-id='$id' href='$link'>";
 				$return.= $this->get_name();
 				$return .= "</a>";
-				
 			}
-			
 		}
 
-		return apply_filters('tainacan-term-to-html', $return, $this);
-		
+		return apply_filters('tainacan-term-to-html', $return, $this);		
 	}
 }

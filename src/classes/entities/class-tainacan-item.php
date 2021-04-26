@@ -500,26 +500,20 @@ class Item extends Entity {
 
 
 	public function _toHtml() {
-
 		$return = '';
 		$id = $this->get_id();
 
 		if ( $id ) {
-
 			$link = get_permalink( (int) $id );
 
 			if (is_string($link)) {
-
 				$return = "<a data-linkto='item' data-id='$id' href='$link'>";
 				$return.= $this->get_title();
 				$return .= "</a>";
-
 			}
-
 		}
 
 		return $return;
-
 	}
 
 	/**
@@ -725,7 +719,7 @@ class Item extends Entity {
 			}
 			$output .= $_embed;
 		} elseif ( $type == 'text' ) {
-			$output .= $this->get_document();
+			$output .= '<article>' . $this->get_document() . '</article>';
 		} elseif ( $type == 'attachment' ) {
 
 			if ( wp_attachment_is_image($this->get_document()) ) {

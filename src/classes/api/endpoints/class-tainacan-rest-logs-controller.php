@@ -9,7 +9,6 @@ use Tainacan\Repositories\Repository;
 
 class REST_Logs_Controller extends REST_Controller {
 	private $logs_repository;
-	private $log;
 
 	/**
 	 * REST_Logs_Controller constructor.
@@ -364,5 +363,3 @@ class REST_Logs_Controller extends REST_Controller {
 		return $schema;
 	}
 }
-
-?>

@@ -36,3 +36,5 @@ src/assets/css/tainacan-reports.css.map
 src/.DS_Store
 src/assets/css/tainacan-gutenberg-block-dynamic-items-list.css
 src/assets/css/tainacan-gutenberg-block-dynamic-items-list.css.map
+tests/wordpress-test
+tests/wordpress-tests-lib

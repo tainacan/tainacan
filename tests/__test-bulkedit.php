@@ -1154,8 +1154,6 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 		]);
 
 		$this->assertEquals(7, $bulk->count_posts());
-
-
 	}
 
 	/**
@@ -1206,8 +1204,6 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 		$item_id = $bulk->get_item_id_by_index(30);
 
 		$this->assertFalse($item_id);
-
-
 	}
 
 	function test_set_multiple_tax_meta() {
@@ -1228,13 +1224,7 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 			'collection_id' => $this->collection->get_id()
 		]);
 
-
-
-
 		$bulk->set_value($this->category, ['super', 'dooper']);
-
-
-
 
 		$items = $Tainacan_Items->fetch([
 			'tax_query' => [
@@ -1342,6 +1332,4 @@ class BulkEdit extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals(5, $items->found_posts);
 
 	}
-
-
 }

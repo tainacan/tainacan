@@ -25,7 +25,7 @@ class Item_Metadata extends Repository {
 	}
 
 	/**
-	 * @param Entities\Entity $item_metadata
+	 * @param Entities\Item_Metadata_Entity $item_metadata
 	 *
 	 * @return Entities\Entity|Entities\Item_Metadata_Entity
 	 * @throws \Exception
@@ -40,8 +40,6 @@ class Item_Metadata extends Repository {
 		do_action( 'tainacan-pre-insert', $item_metadata );
 		do_action( 'tainacan-pre-insert-Item_Metadata_Entity', $item_metadata );
 		
-		$new = $item_metadata->get_value();
-
 		$unique = ! $item_metadata->is_multiple();
 
 		$metadata_type = $item_metadata->get_metadatum()->get_metadata_type_object();
@@ -70,14 +68,14 @@ class Item_Metadata extends Repository {
 			return $item_metadata;
 		} else {
 			if ( $unique ) {
-				
+				$item_metadata_value = $this->sanitize_value( $item_metadata->get_value() );
 				if ( !is_numeric($item_metadata->get_value()) && empty( $item_metadata->get_value() ) ) {
 					if ( $item_metadata->get_metadatum()->get_parent() > 0 )
 						delete_metadata_by_mid( 'post', $item_metadata->get_meta_id() );
 					else
 						delete_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id() );
 				} elseif ( is_int( $item_metadata->get_meta_id() ) ) {
-					update_metadata_by_mid( 'post', $item_metadata->get_meta_id(), $item_metadata->get_value() );
+					update_metadata_by_mid( 'post', $item_metadata->get_meta_id(), $item_metadata_value );
 				} else {
 
 					/**
@@ -87,10 +85,10 @@ class Item_Metadata extends Repository {
 					 * and not update an existing. This is the case of a multiple compound metadatum.
 					 */
 					if ( $item_metadata->get_metadatum()->get_parent() > 0 && is_null( $item_metadata->get_meta_id() ) ) {
-						$added_meta_id  = add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), wp_slash( $item_metadata->get_value() ) );
+						$added_meta_id  = add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), wp_slash( $item_metadata_value ) );
 						$added_compound = $this->add_compound_value( $item_metadata, $added_meta_id );
 					} else {
-						update_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), wp_slash( $item_metadata->get_value() ) );
+						update_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), wp_slash( $item_metadata_value ) );
 					}
 
 				}
@@ -105,7 +103,8 @@ class Item_Metadata extends Repository {
 						if ( !is_numeric($value) && empty($value) ) {
 							continue;
 						}
-						add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), wp_slash( $value ) );
+						$item_metadata_value = $this->sanitize_value( $value );
+						add_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id(), wp_slash( $item_metadata_value ) );
 					}
 				}
 			}
@@ -142,7 +141,7 @@ class Item_Metadata extends Repository {
 			$set_method = 'set_' . $metadata_type->get_related_mapped_prop();
 
 			$value = $item_metadata->get_value();
-			$item->$set_method( is_array( $value ) ? $value[0] : $value );
+			$item->$set_method( $this->sanitize_value( is_array( $value ) ? $value[0] : $value ) );
 
 			if ( $item->validate_core_metadata() ) {
 				$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
@@ -185,6 +184,7 @@ class Item_Metadata extends Repository {
 						$insert[] = $exists->term_id;
 					} else {
 						$create_term = new Entities\Term();
+						$new_term = $this->sanitize_value($new_term);
 						$create_term->set_name($new_term);
 						$create_term->set_taxonomy( $taxonomy->get_db_identifier() );
 						if ($create_term->validate()) { // Item_Metadata Entity was validated before, so this should be fine

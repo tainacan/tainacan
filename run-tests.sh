@@ -1,4 +1,4 @@
 #!/bin/bash
 
-echo "Running unit tests in PHPUnit..."
+echo "Running all unit tests [PHPUnit] ..."
 phpunit

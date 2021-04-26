@@ -241,6 +241,7 @@ export default class ItemsModal extends React.Component {
             className="wp-block-tainacan-modal dynamic-modal"
             title={ __('Select items to add on block', 'tainacan', 'tainacan')}
             onRequestClose={ () => this.cancelSelection() }
+            shouldCloseOnClickOutside={ false }
             contentLabel={ __('Select items that will be added on block', 'tainacan', 'tainacan')}>
             <iframe
                     id="itemsFrame"
