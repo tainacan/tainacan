@@ -697,14 +697,14 @@ registerBlockType('tainacan/carousel-items-list', {
                         </p>
                         <Button
                             isPrimary
-                            type="submit"
+                            type="button"
                             onClick={ () => openCarouseltemsModal('selection') }>
                             {__('Select Items', 'tainacan')}
                         </Button> 
                         <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
                         <Button
                             isPrimary
-                            type="submit"
+                            type="button"
                             onClick={ () => openCarouseltemsModal('search') }>
                             {__('Configure a search', 'tainacan')}
                         </Button>    

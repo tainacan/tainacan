@@ -483,7 +483,7 @@ registerBlockType('tainacan/carousel-terms-list', {
                         </p>
                         <Button
                             isPrimary
-                            type="submit"
+                            type="button"
                             onClick={ () => openCarouselModal() }>
                             {__('Select Terms', 'tainacan')}
                         </Button>   

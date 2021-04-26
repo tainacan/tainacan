@@ -299,7 +299,7 @@ export default class CollectionsModal extends React.Component {
                     </Button>
                     <Button 
                         isPrimary
-                        type="submit"
+                        type="button"
                         onClick={ () => this.applySelectedCollections() }>
                         {__('Finish', 'tainacan')}
                     </Button>

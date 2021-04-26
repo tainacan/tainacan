@@ -966,7 +966,7 @@ registerBlockType('tainacan/dynamic-items-list', {
                         </p>
                         <Button
                             isPrimary
-                            type="submit"
+                            type="button"
                             onClick={ () => openDynamicItemsModal() }>
                             {__('Configure search', 'tainacan')}
                         </Button>   

@@ -336,7 +336,7 @@ registerBlockType('tainacan/collections-list', {
                         </p>
                         <Button
                             isPrimary
-                            type="submit"
+                            type="button"
                             onClick={ () => openCollectionsModal() }>
                             {__('Select collections', 'tainacan')}
                         </Button>   

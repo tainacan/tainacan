@@ -344,7 +344,7 @@ registerBlockType('tainacan/items-list', {
                         </p>
                         <Button
                             isPrimary
-                            type="submit"
+                            type="button"
                             onClick={ () => openItemsModal() }>
                             {__('Select items', 'tainacan')}
                         </Button>   

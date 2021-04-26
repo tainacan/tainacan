@@ -632,7 +632,7 @@ registerBlockType('tainacan/item-submission-form', {
                             </p>
                             <Button
                                 isPrimary
-                                type="submit"
+                                type="button"
                                 onClick={ () => openCollectionModal() }>
                                 { __('Select a target Collection', 'tainacan')}
                             </Button>
