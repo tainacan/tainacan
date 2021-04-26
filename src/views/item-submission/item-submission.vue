@@ -17,7 +17,10 @@
             :document-section-label="$root.documentSectionLabel"
             :thumbnail-section-label="$root.thumbnailSectionLabel"
             :attachments-section-label="$root.attachmentsSectionLabel"
-            :metadata-section-label="$root.metadataSectionLabel" />
+            :metadata-section-label="$root.metadataSectionLabel"
+            :show-item-link-button="$root.showItemLinkButton"
+            :item-link-button-label="$root.itemLinkButtonLabel"
+             />
 </template>
 
 <script>
