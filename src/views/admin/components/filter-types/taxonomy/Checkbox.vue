@@ -180,10 +180,11 @@
                     });
                     promise.request
                         .then((res) => {
-                            this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data);
                             this.isLoadingOptions = false;
-                            
-                            this.$emit('updateParentCollapse', res.data.values.length > 0 );
+                            this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data);
+
+                            if (res && res.data && res.data.values)
+                                this.$emit('updateParentCollapse', res.data.values.length > 0 );
                         })
                         .catch( error => {
                             if (isCancel(error)) {
@@ -279,7 +280,6 @@
                         //     });
                     }
                 }
-
                 this.$emit('sendValuesToTags', { label: onlyLabels, taxonomy: this.taxonomy, value: this.selected });
             },
             onSelect() {

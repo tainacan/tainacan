@@ -36,6 +36,7 @@
         computed: {
             filterTags() {
                 let tags = this.getFilterTags();
+                
                 let flattenTags = [];
                 for (let tag of tags) {
                     if (Array.isArray(tag.label)) {

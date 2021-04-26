@@ -110,7 +110,9 @@
                 promise.request
                     .then((res) => {
                         this.updateSelectedValues();
-                        this.$emit('updateParentCollapse', res.data.values.length > 0 );
+                        
+                        if (res && res.data && res.data.values)
+                            this.$emit('updateParentCollapse', res.data.values.length > 0 );
                     })
                     .catch( (error) => {
                         if (isCancel(error)) {
@@ -133,7 +135,6 @@
                 });
             },
             updateSelectedValues() {
-                
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
