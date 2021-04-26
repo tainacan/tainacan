@@ -92,8 +92,8 @@ function tainacan_autoload($class_name) {
 			$dir = TAINACAN_TAPI_DIR;
 			if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
 		} else if( isset( $class_path[1] ) && $class_path[1] === 'OAIPMHExpose' ){
-            $dir = TAINACAN_OAIPMH_DIR;
-            if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
+			$dir = TAINACAN_OAIPMH_DIR;
+			if(count($class_path) > 3) $dir .= strtolower($class_path[2]).DIRECTORY_SEPARATOR;
 		} else if( isset( $class_path[1] ) && substr($class_path[1], 0, 3) === 'Cli' ){
 			$dir = TAINACAN_CLI_DIR;
 		} else if( isset( $class_path[1] ) && $class_path[1] === 'Metadata_Types' ) {
