@@ -208,9 +208,7 @@ class Taxonomies extends Repository {
 	 * @return array Entities\Taxonomy
 	 * @throws \Exception
 	 */
-	public function fetch_by_collection( Entities\Collection $collection, $args = [] ) {
-		$collection_id = $collection->get_id();
-
+	public function fetch_by_collection( Entities\Collection $collection, $args = [], $output = 'OBJECT' ) {
 		$Tainacan_Metadata = Metadata::get_instance();
 		
 		// get all taxonomy metadata in this collection
@@ -234,7 +232,7 @@ class Taxonomies extends Repository {
 		];
 		
 		$args = array_merge($args, $newargs);
-		return $this->fetch($args, 'OBJECT');
+		return $this->fetch($args, $output);
 
 	}
 	
