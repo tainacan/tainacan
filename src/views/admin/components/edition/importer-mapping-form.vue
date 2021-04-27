@@ -37,7 +37,6 @@
             <p>{{ $i18n.get('info_metadata_mapping_helper') }}</p>
             <br>
 
-
             <b-loading 
                     :is-full-page="false"
                     :active.sync="isLoadingSourceInfo" 
@@ -246,7 +245,17 @@
                     </div>
                 </b-modal>
                 <a
-                        v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
+                        v-if="importerSourceInfo.source_metadata && importerSourceInfo.source_metadata.length > 0"
+                        style="margin-left: 2rem; font-size: 0.875em;"
+                        class="is-inline is-pulled-right add-link has-text-secondary"
+                        @click="createAllMetadata()">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-approvedcircle"/>
+                    </span>
+                    {{ $i18n.get('label_set_all_create_metadada') }}
+                </a>
+                <a
+                        v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata &&importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
                         style="font-size: 0.875em;"
                         class="is-inline is-pulled-right add-link has-text-secondary"
                         @click="createNewMetadatum()">
@@ -404,7 +413,7 @@ export default {
             metadataSearchCancel: undefined,
             showTitlePromptModal: false,
             selectedTitle: undefined,
-            formErrorMessage: ''
+            formErrorMessage: '',
         }
     },
     computed: {
@@ -785,6 +794,12 @@ export default {
             
             this.showTitlePromptModal = false;
             this.onRunImporter();
+        },
+        createAllMetadata() {
+            this.mappedCollection['mapping'] = {};
+            this.importerSourceInfo.source_metadata.forEach((metadatum, index) => {
+                this.mappedCollection['mapping']['create_metadata'+ index] = metadatum;
+            });
         }
     }
 }
