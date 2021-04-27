@@ -101,7 +101,7 @@ export default {
         return {
             chartSeriesByUser: [],
             chartOptionsByUser: [],
-            maxYear: new Date().getFullYear(),
+            maxYear: new Date().getFullYear() - 1,
             minYear: 2017,
             currentStart: '',
             currentEnd: ''
