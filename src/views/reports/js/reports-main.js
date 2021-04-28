@@ -41,6 +41,30 @@ Apex.colors = [
     '#454647'  // Tainacan Dark Gray
 ];
 
+/* Sets some locale configs */
+import enLocaleConfig from 'apexcharts/dist/locales/en.json';
+import esLocaleConfig from 'apexcharts/dist/locales/es.json';
+import frLocaleConfig from 'apexcharts/dist/locales/fr.json';
+import ptBrLocaleConfig from 'apexcharts/dist/locales/pt-br.json';
+
+const availableLocales = ['en', 'es', 'fr', 'pt-br'];
+const browserLanguage = navigator.language.toLocaleLowerCase();
+
+if (availableLocales.indexOf(browserLanguage) >= 0) {
+    let localeConfig = {};
+
+    switch(browserLanguage) {
+        case 'es': localeConfig = esLocaleConfig; break;
+        case 'fr': localeConfig = frLocaleConfig; break;
+        case 'pt-br': localeConfig = ptBrLocaleConfig; break;
+        case 'en': default: localeConfig = enLocaleConfig; break;
+    }
+    Apex.chart = {
+        defaultLocale: browserLanguage,
+        locales: [ localeConfig ]
+    }
+}
+
 Vue.use(I18NPlugin);
 Vue.use(UserCapabilitiesPlugin);
 Vue.use(StatusHelperPlugin);
