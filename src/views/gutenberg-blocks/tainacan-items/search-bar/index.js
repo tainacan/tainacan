@@ -523,7 +523,7 @@ registerBlockType('tainacan/search-bar', {
                         </p>
                         <Button
                             isPrimary
-                            type="submit"
+                            type="button"
                             onClick={ () => openSearchBarModal() }>
                             {__('Select search source', 'tainacan')}
                         </Button>   

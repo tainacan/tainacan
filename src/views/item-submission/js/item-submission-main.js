@@ -117,7 +117,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 documentSectionLabel: '',
                 thumbnailSectionLabel: '',
                 attachmentsSectionLabel: '',
-                metadataSectionLabel: ''
+                metadataSectionLabel: '',
+                showItemLinkButton: false,
+                itemLinkButtonLabel: ''
             },
             beforeMount () {
                 // Collection source settings
@@ -159,7 +161,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.sentFormHeading = this.$el.attributes['sent-form-heading'].value;
                 if (this.$el.attributes['sent-form-message'] != undefined)
                     this.sentFormMessage = this.$el.attributes['sent-form-message'].value;
-
+                if (this.$el.attributes['item-link-button-label'] != undefined)
+                    this.itemLinkButtonLabel = this.$el.attributes['item-link-button-label'].value;
+                if (this.$el.attributes['show-item-link-button'] != undefined)
+                    this.showItemLinkButton = this.isParameterTrue('show-item-link-button');
+  
                 // List of metadata
                 if (this.$el.attributes['enabled-metadata'] != undefined && this.$el.attributes['enabled-metadata'].value)
                     this.enabledMetadata = this.$el.attributes['enabled-metadata'].value.split(',');

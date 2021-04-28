@@ -919,14 +919,14 @@ registerBlockType('tainacan/facets-list', {
                                 <div style={{ display: 'flex' }}>
                                     <Button
                                         isPrimary
-                                        type="submit"
+                                        type="button"
                                         onClick={ () => openParentTermModal() }>
                                         {__('Change parent term', 'tainacan')}
                                     </Button>
                                     <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
                                     <Button
                                         isPrimary
-                                        type="submit"
+                                        type="button"
                                         onClick={ () => openMetadataModal() }>
                                         {__('Change facets source', 'tainacan')}
                                     </Button>
@@ -934,7 +934,7 @@ registerBlockType('tainacan/facets-list', {
                             : 
                             <Button
                                 isPrimary
-                                type="submit"
+                                type="button"
                                 onClick={ () => openMetadataModal() }>
                                 {__('Select facets', 'tainacan')}
                             </Button>

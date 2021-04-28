@@ -503,7 +503,7 @@ registerBlockType('tainacan/carousel-collections-list', {
                         </p>
                         <Button
                             isPrimary
-                            type="submit"
+                            type="button"
                             onClick={ () => openCarouselModal() }>
                             {__('Select Collections', 'tainacan')}
                         </Button>   

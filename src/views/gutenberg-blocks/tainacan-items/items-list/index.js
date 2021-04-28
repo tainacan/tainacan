@@ -8,7 +8,7 @@ const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2
 
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import ItemsModal from './items-modal.js';
-import DeprecatedBlocks from './items-list-deprecated.js'
+import DeprecatedBlocks from './items-list-deprecated.js';
 
 registerBlockType('tainacan/items-list', {
     title: __('Tainacan Items List', 'tainacan'),
@@ -344,7 +344,7 @@ registerBlockType('tainacan/items-list', {
                         </p>
                         <Button
                             isPrimary
-                            type="submit"
+                            type="button"
                             onClick={ () => openItemsModal() }>
                             {__('Select items', 'tainacan')}
                         </Button>   

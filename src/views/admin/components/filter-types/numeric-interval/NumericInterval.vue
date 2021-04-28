@@ -2,6 +2,8 @@
     <div>
         <b-numberinput
                 :aria-labelledby="'filter-label-id-' + filter.id"
+                :aria-minus-label="$i18n.get('label_decrease')"
+                :aria-plus-label="$i18n.get('label_increase')"
                 size="is-small"
                 @input="($event) => { resetPage(); validadeValues($event) }"
                 :step="filterTypeOptions.step"
@@ -14,6 +16,8 @@
         </p>
         <b-numberinput
                 :aria-labelledby="'filter-label-id-' + filter.id"
+                :aria-minus-label="$i18n.get('label_decrease')"
+                :aria-plus-label="$i18n.get('label_increase')"
                 size="is-small"
                 @input="($event) => { resetPage(); validadeValues($event) }"
                 :step="filterTypeOptions.step"

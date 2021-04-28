@@ -22,6 +22,9 @@ import tainacan from '../../js/axios.js';
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import CollectionModal from '../../tainacan-facets/faceted-search/collection-modal.js';
 
+
+import DeprecatedBlocks from './item-submission-deprecated.js';
+
 registerBlockType('tainacan/item-submission-form', {
     title: __('Tainacan Item Submission Form', 'tainacan'),
     icon:
@@ -160,6 +163,14 @@ registerBlockType('tainacan/item-submission-form', {
         metadataSectionLabel: {
             type: String,
             default: __( 'Metadata', 'tainacan' )
+        },
+        showItemLinkButton: {
+            type: Boolean,
+            default: false
+        },
+        itemLinkButtonLabel: {
+            type: String,
+            default: __( 'Go to the item page', 'tainacan' )
         }
     },
     supports: {
@@ -197,7 +208,9 @@ registerBlockType('tainacan/item-submission-form', {
             documentSectionLabel,
             attachmentsSectionLabel,
             thumbnailSectionLabel,
-            metadataSectionLabel
+            metadataSectionLabel,
+            showItemLinkButton,
+            itemLinkButtonLabel
         } = attributes;
 
         const fontSizes = [
@@ -315,6 +328,26 @@ registerBlockType('tainacan/item-submission-form', {
                                         setAttributes({ sentFormMessage: sentFormMessage });
                                     } }
                                 />
+                                <ToggleControl
+                                    label={__('Show item link button', 'tainacan') }
+                                    help={ showItemLinkButton ? __('Do not show a button that links to the item public page.', 'tainacan') : __('Toggle to show a button that links to the item public page.', 'tainacan')}
+                                    checked={ showItemLinkButton }
+                                    onChange={ ( isChecked ) => {
+                                            showItemLinkButton = isChecked;
+                                            setAttributes({ showItemLinkButton: isChecked });
+                                        }  
+                                    }
+                                />
+                                { showItemLinkButton ? 
+                                    <TextControl
+                                        label={ __('Label for the item button', 'tainacan') }
+                                        value={ itemLinkButtonLabel }
+                                        onChange={ ( updatedLinkButtonName ) =>{
+                                            itemLinkButtonLabel = updatedLinkButtonName;
+                                            setAttributes({ itemLinkButtonLabel: itemLinkButtonLabel });
+                                        } }
+                                    />
+                                : null }
                             </PanelBody>
                         </InspectorControls>
                         <InspectorControls>
@@ -632,7 +665,7 @@ registerBlockType('tainacan/item-submission-form', {
                             </p>
                             <Button
                                 isPrimary
-                                type="submit"
+                                type="button"
                                 onClick={ () => openCollectionModal() }>
                                 { __('Select a target Collection', 'tainacan')}
                             </Button>
@@ -809,6 +842,8 @@ registerBlockType('tainacan/item-submission-form', {
             enabledMetadata,
             sentFormHeading,
             sentFormMessage,
+            showItemLinkButton,
+            itemLinkButtonLabel
         } = attributes;
         
         return <div 
@@ -843,8 +878,11 @@ registerBlockType('tainacan/item-submission-form', {
                     document-section-label={ documentSectionLabel }
                     thumbnail-section-label={ thumbnailSectionLabel }
                     attachments-section-label={ attachmentsSectionLabel }
-                    metadata-section-label={ metadataSectionLabel } >
+                    metadata-section-label={ metadataSectionLabel }
+                    show-item-link-button={ showItemLinkButton ? showItemLinkButton.toString() : 'false' }
+                    item-link-button-label={ itemLinkButtonLabel ? itemLinkButtonLabel : __( 'Go to the item page', 'tainacan' ) } >
             </div>
         </div>
-    }
+    },
+    deprecated: DeprecatedBlocks
 });

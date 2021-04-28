@@ -30,6 +30,8 @@ report.txt
 demosaved.csv
 src/assets/css/tainacan-embeds.css
 src/assets/css/tainacan-embeds.css.map
+src/assets/css/tainacan-reports.css
+src/assets/css/tainacan-reports.css.map
 .DS_Store
 src/.DS_Store
 src/assets/css/tainacan-gutenberg-block-dynamic-items-list.css
