@@ -1,5 +1,6 @@
 let path = require('path');
 const webpack = require('webpack');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -110,6 +111,9 @@ module.exports = {
         new webpack.ProvidePlugin({
             'Swiper': 'Swiper',
             'PhotoSwipe': 'PhotoSwipe'
-        })
+        }),
+        new MomentLocalesPlugin({
+            localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'es-in', 'pt-br', 'pt', 'es', 'es-us', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv'],
+        }),
     ]
 };

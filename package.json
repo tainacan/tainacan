@@ -49,6 +49,7 @@
     "eslint-loader": "^2.2.1",
     "eslint-plugin-vue": "^5.2.3",
     "file-loader": "^2.0.0",
+    "moment-locales-webpack-plugin": "^1.2.0",
     "postcss-loader": "^3.0.0",
     "sass-loader": "^7.3.1",
     "style-loader": "^0.23.1",
