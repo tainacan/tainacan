@@ -59,7 +59,7 @@ abstract class Importer {
 	private $options = [];
 
 	/**
-	 * Stores the default options for the importer options
+	 * Stores default options for importer options
 	 * @var array
 	 */
 	protected $default_options = [];
@@ -114,7 +114,7 @@ abstract class Importer {
 	private $error_log = [];
 
 	/**
-	 * Wether to abort importer execution.
+	 * Whether to abort importer execution.
 	 * @var bool
 	 */
 	private $abort = false;
@@ -137,7 +137,6 @@ abstract class Importer {
 	];
 
 	public function __construct($attributess = array()) {
-
 		$this->id = uniqid();
 
 		$author = get_current_user_id();
@@ -153,8 +152,6 @@ abstract class Importer {
 				}
 			}
 		}
-
-
 	}
 
 	public function _to_Array($short = false) {
@@ -193,8 +190,7 @@ abstract class Importer {
 	 * @param $url string
 	 * @return bool
 	 */
-	public function set_url($url)
-	{
+	public function set_url($url) {
 		if(!empty($url) && !is_array($url))
 		{
 			$this->url = rtrim(trim($url), "/");
@@ -207,8 +203,7 @@ abstract class Importer {
 	/**
 	 * @return string  or bool
 	 */
-	public function get_url()
-	{
+	public function get_url() {
 		if(!empty($this->url))
 		{
 			return $this->url;
@@ -559,7 +554,6 @@ abstract class Importer {
 			$step = $steps[$current_step];
 
 			if ($step['callback'] == 'process_collections') {
-
 				$totalItems = 0;
 				$currentItem = $this->get_current_collection_item();
 				$current_collection = $this->get_current_collection();
@@ -577,18 +571,12 @@ abstract class Importer {
 				if ($totalItems > 0) {
 					$value = round( ($currentItem/$totalItems) * 100 );
 				}
-
-
 			} else {
-
 				if ( isset($step['total']) && is_numeric($step['total']) && $step['total'] > 0 ) {
 					$current = $this->get_in_step_count();
 					$value = round( ($current/$step['total']) * 100 );
 				}
-
 			}
-
-
 		}
 		return $value;
 	}
