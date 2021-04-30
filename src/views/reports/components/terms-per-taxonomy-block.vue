@@ -8,7 +8,7 @@
                 :options="chartOptions" />
         <div 
                 v-else
-                style="min-height=380px"
+                style="min-height:380px"
                 class="skeleton postbox" />
         <slot />
     </div>

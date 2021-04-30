@@ -7,13 +7,13 @@
                 }"
                 class="postbox metadata-distribution-box">
             <apexchart
-                    :height="100 + (chartData.totals.metadata.total * 36)"
+                    :height="100 + (chartData.totals.metadata.total * 36) > 630 ? 100 + (chartData.totals.metadata.total * 36) : 630"
                     :series="chartSeries"
                     :options="chartOptions" />
         </div>
         <div 
                 v-else
-                style="min-height=740px"
+                style="min-height:740px"
                 class="skeleton postbox metadata-distribution-box" />
         <slot />
     </div>
@@ -101,7 +101,7 @@ export default {
                                 text: ''
                             },
                             labels: {
-                                maxWidth: 100
+                                maxWidth: 110
                             },
                             tooltip: { enabled: true }
                         },
@@ -143,5 +143,6 @@ export default {
     margin: 0px 0px 0.75rem 1.5rem !important;
     padding-bottom: 2rem;
     overflow-y: auto;
+    min-height: 690px !important;
 }
 </style>

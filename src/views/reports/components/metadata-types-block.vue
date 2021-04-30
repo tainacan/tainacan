@@ -33,7 +33,7 @@
         </div>
         <div 
             v-else
-            style="min-height=380px"
+            style="min-height: 390px"
             class="skeleton postbox" />
         <slot />
     </div>
