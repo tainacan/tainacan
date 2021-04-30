@@ -362,9 +362,16 @@ export default {
         termsDisplayedPage() {
             this.buildMetadatumTermsChart();
         },
+        childTermsDisplayedPage() {
+            this.buildMetadatumChildTermsChart();
+        },
         maxTermsToDisplay() {
             this.termsDisplayedPage = 1;
             this.buildMetadatumTermsChart();
+        },
+        maxChildTermsToDisplay() {
+            this.childTermsDisplayedPage = 1;
+            this.buildMetadatumChildTermsChart();
         },
         selectedParentTerm() {
             if (this.selectedParentTerm[this.selectedParentTerm.length - 1] && this.selectedParentTerm[this.selectedParentTerm.length - 1].id) {
@@ -430,6 +437,9 @@ export default {
                         },
                         dataLabels: {
                             enabled: true,
+                            style: {
+                                fontSize: '16px',
+                            },
                             formatter: function(text, op) {
                                 return [text, op.value]
                             },
@@ -487,7 +497,7 @@ export default {
                         chart: {
                             type: 'bar',
                             height: 350,
-                            stacked: true,
+                            stacked: false,
                             toolbar: {
                                 show: true
                             },
@@ -588,6 +598,9 @@ export default {
                         },
                         dataLabels: {
                             enabled: true,
+                            style: {
+                                fontSize: '16px',
+                            },
                             formatter: function(text, op) {
                                 return [text, op.value]
                             },

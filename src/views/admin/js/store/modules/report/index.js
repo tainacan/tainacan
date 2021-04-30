@@ -183,7 +183,7 @@ const state = {
         }
       }
     },
-    treeMapOptions: {
+    treeMapChartOptions: {
       legend: {
         show: false
       },
@@ -193,6 +193,11 @@ const state = {
       },
       title: {
         text: ''
+      },
+      plotOptions: {
+        treemap: {
+          enableShades: false
+        }
       }
     }
 };
