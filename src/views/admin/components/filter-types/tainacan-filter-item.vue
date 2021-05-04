@@ -128,6 +128,7 @@
                 align-items: center;
                 border: none;
                 background-color: transparent;
+                color: var(--tainacan-label-color);
                 text-align: left;
                 cursor: pointer;
                 outline: none;
