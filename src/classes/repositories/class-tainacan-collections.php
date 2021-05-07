@@ -192,7 +192,7 @@ class Collections extends Repository {
 		        'title'       => __( 'Allow Items Comments', 'tainacan' ),
 		        'type'        => 'string',
 		        'description' => __( 'Collection items comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
-		        'default'     => 'open',
+		        'default'     => 'closed',
 		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 			],
 			'submission_anonymous_user'  => [
