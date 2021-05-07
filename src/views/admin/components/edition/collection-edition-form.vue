@@ -204,7 +204,7 @@
                             :label="$i18n.getHelperTitle('collections', 'hide_items_thumbnail_on_lists')">
                         &nbsp;
                         <b-switch
-                                id="tainacan-checkbox-comment-status" 
+                                id="tainacan-checkbox-hide-items-thumbnail-on-lists"
                                 size="is-small"
                                 true-value="yes" 
                                 false-value="no"
@@ -654,7 +654,7 @@ export default {
                 files:[],
                 enabled_view_modes: [],
                 default_view_mode: [],
-                allow_comments: '',
+                allow_comments: 'closed',
                 allows_submission: 'no',
                 submission_default_status: 'draft',
                 submission_anonymous_user: 'no',
