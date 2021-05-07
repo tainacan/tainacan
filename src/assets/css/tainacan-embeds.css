@@ -1,20 +1,24 @@
-.tainacan-embed-container {
+body:not(.wp-embed-responsive) .tainacan-embed-container,
+body.wp-embed-responsive :not(.wp-block-embed__wrapper)>.tainacan-embed-container {
   position: relative;
-  height: 0;
   overflow: hidden;
   max-width: 100%;
   height: auto;
 }
-.tainacan-embed-container:not(.tainacan-embed-without-iframe) {
+
+body:not(.wp-embed-responsive) .tainacan-embed-container:not(.tainacan-embed-without-iframe),
+body.wp-embed-responsive :not(.wp-block-embed__wrapper)>.tainacan-embed-container:not(.tainacan-embed-without-iframe) {
   padding-bottom: 56.25%;
   padding-top: 30px;
   width: 100%;
   margin: auto;
 }
-.tainacan-embed-container .twitter-tweet {
+body:not(.wp-embed-responsive) .tainacan-embed-container .twitter-tweet,
+body.wp-embed-responsive :not(.wp-block-embed__wrapper)>.tainacan-embed-container .twitter-tweet {
   margin: 0 auto;
 }
-.tainacan-embed-container iframe.wp-embedded-content {
+body:not(.wp-embed-responsive) .tainacan-embed-container iframe.wp-embedded-content,
+body.wp-embed-responsive :not(.wp-block-embed__wrapper)>.tainacan-embed-container iframe.wp-embedded-content {
   display: flex !important;
   align-items: center;
   justify-content: center;
@@ -24,16 +28,22 @@
   bottom: 50%;
 }
 @media screen and (max-width: 1024px) {
-  .tainacan-embed-container iframe.wp-embedded-content {
+  body:not(.wp-embed-responsive) .tainacan-embed-container iframe.wp-embedded-content,
+  body.wp-embed-responsive :not(.wp-block-embed__wrapper)>.tainacan-embed-container iframe.wp-embedded-content {
     position: relative;
   }
 }
-.tainacan-embed-container #tainacan-attachment-iframe { /* PDF */
+body:not(.wp-embed-responsive) .tainacan-embed-container #tainacan-attachment-iframe ,
+body.wp-embed-responsive :not(.wp-block-embed__wrapper)>.tainacan-embed-container #tainacan-attachment-iframe { /* PDF */
   width: 100%;
 }
-.tainacan-embed-container iframe,
-.tainacan-embed-container object,
-.tainacan-embed-container embed {
+
+body:not(.wp-embed-responsive) .tainacan-embed-container iframe,
+body:not(.wp-embed-responsive) .tainacan-embed-container object,
+body:not(.wp-embed-responsive) .tainacan-embed-container embed,
+body.wp-embed-responsive :not(.wp-block-embed__wrapper)>.tainacan-embed-container iframe,
+body.wp-embed-responsive :not(.wp-block-embed__wrapper)>.tainacan-embed-container object,
+body.wp-embed-responsive :not(.wp-block-embed__wrapper)>.tainacan-embed-container embed {
   position: absolute;
   top: 0;
   right: 0;
