@@ -288,7 +288,6 @@ abstract class Importer {
 		$this->default_options = $options;
 	}
 
-
 	public function set_steps($steps) {
 		$this->steps = $steps;
 	}
@@ -296,7 +295,6 @@ abstract class Importer {
 	public function get_steps() {
 		return $this->steps;
 	}
-
 
 	private function get_transients() {
 		return $this->transients;

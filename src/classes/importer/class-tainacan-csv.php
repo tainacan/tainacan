@@ -36,13 +36,15 @@ class CSV extends Importer {
 			}
 
 			$columns = [];
-
-			if( $rawColumns ) {
+			if ($rawColumns) {
 				foreach( $rawColumns as $index => $rawColumn ) {
 					if( strpos($rawColumn,'special_') === 0 ) {
 						if( $rawColumn === 'special_document' ) {
 							$this->set_option('document_index', $index);
-						} else if( $rawColumn === 'special_attachments' || 
+						} else if ($rawColumn === 'special_document|REPLACE') {
+							$this->set_option('document_import_mode', 'replace');
+							$this->set_option('document_index', $index);
+                        } else if( $rawColumn === 'special_attachments' ||
 											 $rawColumn === 'special_attachments|APPEND' || 
 											 $rawColumn === 'special_attachments|REPLACE' ) {
 							$this->set_option('attachment_index', $index);
@@ -515,6 +517,20 @@ class CSV extends Importer {
 		} else if( strpos($column_value,'file:') === 0 ) {
 			$correct_value = trim(substr($column_value, 5));
 			if( isset(parse_url($correct_value)['scheme'] ) ) {
+				if ($this->get_option('document_import_mode') === 'replace' ) {
+					$this->add_log('Item Document will be replaced ... ');
+					$previous = [
+						'post_parent'  => $item_inserted->get_id(),
+						'post_type'    => 'attachment',
+						'post_status'  => 'any',
+						'post__not_in' => [$item_inserted->get_document()]
+					];
+					$attchs = new \WP_Query($previous);
+					foreach ($attchs as $_att) {
+						wp_delete_attachment($_att->ID, true);
+					}
+					$this->add_log('Deleted all previous Item Documents ... ');
+				}
 				$id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
 
 				if(!$id){
@@ -624,10 +640,10 @@ class CSV extends Importer {
 			$line = substr($line, $cut_start);
 		}
 
-		$end = substr($line, ( strlen($line)  -  strlen($this->get_option('enclosure')) ) , strlen($this->get_option('enclosure')));
+		$end = substr($line, ( strlen($line) - strlen($this->get_option('enclosure')) ) , strlen($this->get_option('enclosure')));
 
 		if( $this->get_option('enclosure') === $end ) {
-			$line = substr($line, 0,  ( strlen($line)  -  strlen($this->get_option('enclosure')) ) );
+			$line = substr($line, 0, ( strlen($line) - strlen($this->get_option('enclosure')) ) );
 		}
 
 		$delimiter = $this->get_option('enclosure').$this->get_option('delimiter').$this->get_option('enclosure');
@@ -681,7 +697,7 @@ class CSV extends Importer {
 	 *                              its value or values
 	 * @param integer $collection_index The index in the $this->collections array of the collection the item is being inserted into
 	 *
-	 * @return Tainacan\Entities\Item Item inserted
+	 * @return bool|Tainacan\Entities\Item Item inserted
 	 */
 	public function insert( $processed_item, $collection_index ) {
 		remove_action( 'post_updated', 'wp_save_post_revision' );
@@ -916,7 +932,7 @@ class CSV extends Importer {
 	 * @param $metadatum the metadata
 	 * @param $values the categories names
 	 *
-	 * @return array empty with no category or array with IDs
+	 * @return bool|array empty with no category or array with IDs
 	 */
 	private function insert_hierarchy( $metadatum, $values ){
 
@@ -982,13 +998,12 @@ class CSV extends Importer {
 	/**
 	 * @param $collection_id
 	 *
-	 * @return array/bool false if has no mapping or associated array with metadata id and header
+	 * @return array|bool false if has no mapping or associated array with metadata id and header
 	 */
 	public function get_mapping( $collection_id ){
 		$mapping = get_post_meta( $collection_id, 'metadata_mapping', true );
-		return ( $mapping ) ? $mapping : false;
+		return $mapping ?: false;
 	}
-
 
 	/**
 	 * @inheritdoc
