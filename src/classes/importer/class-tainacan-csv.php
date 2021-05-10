@@ -44,7 +44,7 @@ class CSV extends Importer {
 						} else if ($rawColumn === 'special_document|REPLACE') {
 							$this->set_option('document_import_mode', 'replace');
 							$this->set_option('document_index', $index);
-                        } else if( $rawColumn === 'special_attachments' ||
+						} else if( $rawColumn === 'special_attachments' ||
 											 $rawColumn === 'special_attachments|APPEND' || 
 											 $rawColumn === 'special_attachments|REPLACE' ) {
 							$this->set_option('attachment_index', $index);
@@ -520,7 +520,7 @@ class CSV extends Importer {
 				if ($this->get_option('document_import_mode') === 'replace' ) {
 					$this->add_log('Item Document will be replaced ... ');
 					$this->delete_previous_document_imgs($item_inserted->get_id(), $item_inserted->get_document());
-					$this->add_log('Deleted all previous Item Documents ... ');
+					$this->add_log('Deleted previous Item Documents ... ');
 				}
 				$id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
 
@@ -1078,16 +1078,18 @@ class CSV extends Importer {
 		return $message;
 	}
 
-	private function delete_previous_document_imgs($item_id, $curent_document) {		
+	private function delete_previous_document_imgs($item_id, $item_document) {
 		$previous_imgs = [
 			'post_parent'  => $item_id,
 			'post_type'    => 'attachment',
 			'post_status'  => 'any',
-			'post__not_in' => [$curent_document]
+			'post__not_in' => [$item_document]
 		];
-		$attchs = new \WP_Query($previous_imgs);
-		foreach ($attchs as $_att) {
-			wp_delete_attachment($_att->ID, true);
+		$posts_query  = new \WP_Query();
+		$attachs = $posts_query->query($previous_imgs);
+		foreach ($attachs as $att) {
+			$this->add_log( "Deleting attachment [". $att->ID . "] " . $att->post_title);
+			wp_delete_attachment($att->ID, true);
 		}
 	}
 
