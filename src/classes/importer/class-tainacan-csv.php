@@ -516,19 +516,10 @@ class CSV extends Importer {
 			}
 		} else if( strpos($column_value,'file:') === 0 ) {
 			$correct_value = trim(substr($column_value, 5));
-			if( isset(parse_url($correct_value)['scheme'] ) ) {
+			if (isset(parse_url($correct_value)['scheme'] )) {
 				if ($this->get_option('document_import_mode') === 'replace' ) {
 					$this->add_log('Item Document will be replaced ... ');
-					$previous = [
-						'post_parent'  => $item_inserted->get_id(),
-						'post_type'    => 'attachment',
-						'post_status'  => 'any',
-						'post__not_in' => [$item_inserted->get_document()]
-					];
-					$attchs = new \WP_Query($previous);
-					foreach ($attchs as $_att) {
-						wp_delete_attachment($_att->ID, true);
-					}
+					$this->delete_previous_document_imgs($item_inserted->get_id(), $item_inserted->get_document());
 					$this->add_log('Deleted all previous Item Documents ... ');
 				}
 				$id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
@@ -587,15 +578,7 @@ class CSV extends Importer {
 				break;
 			case 'REPLACE':
 				$this->add_log('Attachment REPLACE file ');
-				$args['post_parent'] = $item_inserted->get_id();
-				$args['post_type'] = 'attachment';
-				$args['post_status'] = 'any';
-				$args['post__not_in'] = [$item_inserted->get_document()];
-				$posts_query  = new \WP_Query();
-				$query_result = $posts_query->query( $args );
-				foreach ( $query_result as $post ) {
-					wp_delete_attachment( $post->ID, true );
-				}
+				$this->delete_previous_document_imgs($item_inserted->get_id(), $item_inserted->get_document());
 				break;
 		}
 
@@ -934,8 +917,7 @@ class CSV extends Importer {
 	 *
 	 * @return bool|array empty with no category or array with IDs
 	 */
-	private function insert_hierarchy( $metadatum, $values ){
-
+	private function insert_hierarchy( $metadatum, $values ) {
 		if (empty($values)) {
 			return false;
 		}
@@ -1094,6 +1076,19 @@ class CSV extends Importer {
 		$message .= " <b> ${author} </b><br/>";
 
 		return $message;
+	}
+
+	private function delete_previous_document_imgs($item_id, $curent_document) {		
+		$previous_imgs = [
+			'post_parent'  => $item_id,
+			'post_type'    => 'attachment',
+			'post_status'  => 'any',
+			'post__not_in' => [$curent_document]
+		];
+		$attchs = new \WP_Query($previous_imgs);
+		foreach ($attchs as $_att) {
+			wp_delete_attachment($_att->ID, true);
+		}
 	}
 
 }
