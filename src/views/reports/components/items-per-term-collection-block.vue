@@ -427,10 +427,13 @@ export default {
                             events: {
                                 dataPointSelection: (event, chartContext, config) => {
                                     if (config.dataPointIndex >= 0 && orderedTerms[config.dataPointIndex]) {
-                                        this.selectedParentTerm.push({
-                                            id: orderedTerms[config.dataPointIndex].value,
-                                            label: orderedTerms[config.dataPointIndex].label
-                                        })
+                                        const existingParentTermIndex = this.selectedParentTerm.findIndex((term) => term.id == orderedTerms[config.dataPointIndex].value);
+                                        if (existingParentTermIndex < 0) {
+                                            this.selectedParentTerm.push({
+                                                id: orderedTerms[config.dataPointIndex].value,
+                                                label: orderedTerms[config.dataPointIndex].label
+                                            })
+                                        }
                                     }
                                 }
                             },
@@ -507,11 +510,18 @@ export default {
                             },
                             events: {
                                 dataPointSelection: (event, chartContext, config) => {
-                                    if (config.dataPointIndex >=0 && orderedTerms[config.dataPointIndex]) {
-                                        this.selectedParentTerm.push({
-                                            id: orderedTerms[config.dataPointIndex].value,
-                                            label: orderedTerms[config.dataPointIndex].label
-                                        })
+                                    if (config.dataPointIndex >= 0 && orderedTerms[config.dataPointIndex]) {
+                                        const existingParentTermIndex = this.selectedParentTerm.findIndex((term) => term.id == orderedTerms[config.dataPointIndex].value);
+                                        if (existingParentTermIndex < 0) {
+                                            // Removes siblings from the hierarchy, if existing
+                                            if (this.selectedParentTerm.length && (this.selectedParentTerm[this.selectedParentTerm.length - 1].id != orderedTerms[config.dataPointIndex].parent) )
+                                                this.selectedParentTerm.pop();
+
+                                            this.selectedParentTerm.push({
+                                                id: orderedTerms[config.dataPointIndex].value,
+                                                label: orderedTerms[config.dataPointIndex].label
+                                            });
+                                        }
                                     }
                                 }
                             },
@@ -580,18 +590,26 @@ export default {
                             events: {
                                 dataPointSelection: (event, chartContext, config) => {
                                     if (config.dataPointIndex >= 0 && orderedTerms[config.dataPointIndex]) {
-                                        const previousMetadatumChildTermsLatestCachedOn = this.metadatumChildTermsLatestCachedOn ? this.metadatumChildTermsLatestCachedOn.replace('-is-child-chart', '') : '';
-                                        this.selectedParentTerm.push({
-                                            id: orderedTerms[config.dataPointIndex].value,
-                                            label: orderedTerms[config.dataPointIndex].label
-                                        });
-                                        
-                                        this.setTaxonomyTerms(this.taxonomyChildTerms);
-                                        this.setReportLatestCachedOn({
-                                            report: 'taxonomy-terms-' + (this.collectionId ? this.collectionId : 'default') + '-' + this.selectedMetadatum.id + (this.selectedParentTerm.length > 2 && this.selectedParentTerm[this.selectedParentTerm.length - 2] && this.selectedParentTerm[this.selectedParentTerm.length - 2].id ? '-' + this.selectedParentTerm[this.selectedParentTerm.length - 1].id : ''),
-                                            reportLatestCachedOn: previousMetadatumChildTermsLatestCachedOn
-                                        });
-                                        this.buildMetadatumTermsChart();
+                                        const existingParentTermIndex = this.selectedParentTerm.findIndex((term) => term.id == orderedTerms[config.dataPointIndex].value);
+                                        if (existingParentTermIndex < 0) {
+
+                                            // Removes siblings from the hierarchy, if existing
+                                            if (this.selectedParentTerm.length && (this.selectedParentTerm[this.selectedParentTerm.length - 1].id != orderedTerms[config.dataPointIndex].parent) )
+                                                this.selectedParentTerm.pop();
+
+                                            const previousMetadatumChildTermsLatestCachedOn = this.metadatumChildTermsLatestCachedOn ? this.metadatumChildTermsLatestCachedOn.replace('-is-child-chart', '') : '';
+                                            this.selectedParentTerm.push({
+                                                id: orderedTerms[config.dataPointIndex].value,
+                                                label: orderedTerms[config.dataPointIndex].label
+                                            });
+                                            
+                                            this.setTaxonomyTerms(this.taxonomyChildTerms);
+                                            this.setReportLatestCachedOn({
+                                                report: 'taxonomy-terms-' + (this.collectionId ? this.collectionId : 'default') + '-' + this.selectedMetadatum.id + (this.selectedParentTerm.length > 2 && this.selectedParentTerm[this.selectedParentTerm.length - 2] && this.selectedParentTerm[this.selectedParentTerm.length - 2].id ? '-' + this.selectedParentTerm[this.selectedParentTerm.length - 1].id : ''),
+                                                reportLatestCachedOn: previousMetadatumChildTermsLatestCachedOn
+                                            });
+                                            this.buildMetadatumTermsChart();
+                                        }
                                     }
                                 }
                             },
