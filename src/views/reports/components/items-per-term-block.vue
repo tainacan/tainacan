@@ -143,7 +143,7 @@ export default {
             return this.taxonomiesList && this.taxonomiesList != undefined ? Object.values(this.taxonomiesList) : [];
         },
         taxonomyTermsLatestCachedOn() {
-            return this.reportsLatestCachedOn['taxonomy-terms-' + this.selectedTaxonomy.id];
+            return this.reportsLatestCachedOn['taxonomy-terms-default-' + this.selectedTaxonomy.id];
         },
         currentTotalTerms() {
             return Array.isArray(this.chartData) ? this.chartData.length : 0 
