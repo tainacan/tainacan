@@ -481,6 +481,52 @@ class TAINACAN_REST_Items_Controller extends TAINACAN_UnitApiTestCase {
         $this->assertEquals(201, $response->get_status());
     }
 
+	public function test_create_default_user_value_metadata() {
+		$user_id = get_current_user_id();
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'        => 'Agile',
+				'description' => 'Agile methods',
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'creator',
+				'description' => 'description of creator',
+				'collection' => $collection,
+				'metadata_type' => 'Tainacan\Metadata_Types\User',
+				'status'	 => 'publish',
+				'metadata_type_options' => [
+					'default_author' => 'yes',
+				]
+			),
+			true
+		);
+
+		$item_json = json_encode([
+			'status' => "auto-draft",
+			'collection_id' => $collection->get_id()
+		]);
+
+		$request  = new \WP_REST_Request('POST', $this->namespace . '/collection/' . $collection->get_id() . '/items');
+		$request->set_body($item_json);
+		$response_item = $this->server->dispatch($request);
+		$data_item = $response_item->get_data();
+
+		$request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $data_item['id'] . '/metadata');
+		$this->server->dispatch($request);
+		$request = new \WP_REST_Request('GET', $this->namespace . '/item/' . $data_item['id'] . '/metadata/' . $metadatum->get_id());
+		$response = $this->server->dispatch($request);
+		$data = $response->get_data();
+		$this->assertEquals($data['value'], $user_id);
+	}
+
 	/**
 	 * @group duplicate
 	 */
