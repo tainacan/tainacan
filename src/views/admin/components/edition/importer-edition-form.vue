@@ -500,7 +500,7 @@ export default {
         margin: 12px 0 6px 0;
     }
 
-    .modal .animation-content {
+    .tainacan-modal .animation-content {
         width: 100%;
         z-index: 99999;
 

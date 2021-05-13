@@ -143,7 +143,8 @@
                         capability: this.capabilities[capabilityKey],
                         capabilityKey: capabilityKey
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             },
             getCompleteRolesList(roles, rolesInherited) {

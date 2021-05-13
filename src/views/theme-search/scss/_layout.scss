@@ -97,6 +97,7 @@
 	@media screen and (max-width: 768px) {
 		padding: 0;
 		z-index: 99999;
+		max-width: 100%;
 
 		.modal-content { 
 			top: 0;

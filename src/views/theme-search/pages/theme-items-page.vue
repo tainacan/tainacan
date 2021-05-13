@@ -410,7 +410,7 @@
                 :auto-focus="filtersAsModal"
                 :trap-focus="filtersAsModal"
                 full-screen
-                :custom-class="'tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"
+                :custom-class="'tainacan-modal tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"
                 :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']">
             <filters-items-list
                     :is-loading-items="isLoadingItems"
@@ -879,7 +879,8 @@
                         collectionId: this.collectionId,
                         totalItems: this.totalItems
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             },
             updateSearch() {
@@ -1171,7 +1172,8 @@
                             showNeverShowAgainOption: offerCheckbox && tainacan_plugin.user_caps != undefined && Object.keys(tainacan_plugin.user_caps).length != undefined && Object.keys(tainacan_plugin.user_caps).length > 0,
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
                         },
-                        trapFocus: true
+                        trapFocus: true,
+                        customClass: 'tainacan-modal'
                     });
             },
             hideFiltersOnMobile: _.debounce( function() {
@@ -1232,12 +1234,12 @@
         width: 100vw;
         height: 100vh;
         z-index: 999999999;
-        background-color: var(--tainacan-black);
+        background-color: var(--tainacan-black) !important;
         transition: background-color 0.3s ease, width 0.3s ease, height 0.3s ease;
         animation: open-full-screen 0.4s ease;
 
         .filters-menu {
-            display: none;
+            display: none !important;
         }
         .metadata-alert {
             position: absolute;
@@ -1606,6 +1608,7 @@
         padding-left: var(--tainacan-one-column);
         padding-right: var(--tainacan-one-column);
         min-height: 50vh;
+        margin-top: 12px;
         //height: calc(100% - 82px);
     }
 

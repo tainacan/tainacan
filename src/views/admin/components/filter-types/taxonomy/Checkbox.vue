@@ -314,7 +314,8 @@
                         } 
                     },
                     width: 'calc(100% - (4 * var(--tainacan-one-column)))',
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             },
             prepareOptionsForTaxonomy(items) {
@@ -351,7 +352,7 @@
 <style lang="scss" scoped>
 
     .view-all-button {
-        font-size: 0.75em;
+        font-size: 0.75em !important;
         padding: 0.1em 1em;
     }
 

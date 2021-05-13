@@ -187,7 +187,8 @@
                         collectionId: this.collectionId
                     },
                     width: 'calc(100% - (2 * var(--tainacan-one-column)))',
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 }); 
 
                 this.$parent.close();
@@ -215,7 +216,6 @@
     .modal-card-foot {
         margin-top: 12px;
     }
-
 
 </style>
 

@@ -183,7 +183,8 @@
                         approveActivity: (activityId) => this.approveActivity(activityId),
                         notApproveActivity: (activityId) => this.notApproveActivity(activityId)
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             },
         }
