@@ -1,5 +1,5 @@
 <template>
-     <div v-if="taxonomiesList != undefined">
+    <div v-if="taxonomiesList != undefined">
         <div 
                 :class="{ 'skeleton': isFetchingData || isBuildingChart || isFetchingTaxonomyTerms || !selectedTaxonomy || !selectedTaxonomy.id }"
                 class="postbox">
@@ -115,6 +115,21 @@
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
                 </span>
             </button>
+        </div>
+        <div 
+                v-if="!isFetchingData && !isBuildingChart && (!taxonomiesListArray || !taxonomiesListArray.length)"
+                style="min-height:380px"
+                class="postbox">
+            <div class="empty-postbox-placeholder">
+                <p class="title is-4">
+                    <span class="icon has-text-gray">
+                        <i class="tainacan-icon tainacan-icon-taxonomies tainacan-icon-1-125em" />
+                    </span>
+                    &nbsp;{{ $i18n.get('taxonomies') }}
+                </p>
+                <br>
+                <p class="subtitle is-6">{{ $i18n.get('info_no_taxonomy_created') }}</p>
+            </div>
         </div>
     </div>
 </template>

@@ -246,7 +246,7 @@
                     </div>
                     <div 
                             v-else
-                            class="child-term-placeholder">
+                            class="empty-postbox-placeholder">
                         <p class="title is-4">
                             <span class="icon has-text-gray">
                                 <i class="tainacan-icon tainacan-icon-taxonomies tainacan-icon-1-125em" />
@@ -790,18 +790,5 @@ export default {
     border: 1px solid;
     background-color: white;
     z-index: 9;
-}
-.child-term-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    min-height: 380px;
-    flex-direction: column;
-    opacity: 0.75;
-
-    p {
-        color: var(--tainacan-block-gray4, #555758);
-    }
 }
 </style>
