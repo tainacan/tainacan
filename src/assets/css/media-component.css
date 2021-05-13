@@ -687,17 +687,37 @@ a.pswp__share--download:hover {
   .tainacan-media-component__swiper-main .swiper-slide-content {
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column; }
-    .tainacan-media-component__swiper-main .swiper-slide-content .tainacan-embed-container {
+    display: block;
+    text-align: center; }
+    .tainacan-media-component__swiper-main .swiper-slide-content .tainacan-content-embed {
       width: 100%;
       height: auto; }
+      .tainacan-media-component__swiper-main .swiper-slide-content .tainacan-content-embed.tainacan-has-aspect-ratio {
+        max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 2) / 1);
+        /* Default to 2:1 aspect ratio. */
+        margin-left: auto;
+        margin-right: auto; }
+      .tainacan-media-component__swiper-main .swiper-slide-content .tainacan-content-embed.tainacan-embed-aspect-21-9 {
+        max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 21) / 9); }
+      .tainacan-media-component__swiper-main .swiper-slide-content .tainacan-content-embed.tainacan-embed-aspect-18-9 {
+        max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 18) / 9); }
+      .tainacan-media-component__swiper-main .swiper-slide-content .tainacan-content-embed.tainacan-embed-aspect-16-9 {
+        max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 16) / 9); }
+      .tainacan-media-component__swiper-main .swiper-slide-content .tainacan-content-embed.tainacan-embed-aspect-4-3 {
+        max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 4) / 3); }
+      .tainacan-media-component__swiper-main .swiper-slide-content .tainacan-content-embed.tainacan-embed-aspect-1-1 {
+        max-width: var(--tainacan-media-main-carousel-height, 60vh); }
+      .tainacan-media-component__swiper-main .swiper-slide-content .tainacan-content-embed.tainacan-embed-aspect-3-4 {
+        max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 3) / 4); }
+      .tainacan-media-component__swiper-main .swiper-slide-content .tainacan-content-embed.tainacan-embed-aspect-9-16 {
+        max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 9) / 16); }
+      .tainacan-media-component__swiper-main .swiper-slide-content .tainacan-content-embed.tainacan-embed-aspect-1-2 {
+        max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 1) / 2); }
     .tainacan-media-component__swiper-main .swiper-slide-content iframe {
       max-height: var(--tainacan-media-main-carousel-height, 60vh);
-      width: 100%;
       max-width: 100%;
+      margin-left: auto;
+      margin-right: auto;
       border: none;
       display: block;
       background-image: url("../images/preloader.gif");
@@ -724,6 +744,9 @@ a.pswp__share--download:hover {
     .tainacan-media-component__swiper-main .swiper-slide-content img {
       width: auto;
       max-height: var(--tainacan-media-main-carousel-height, 60vh); }
+    .tainacan-media-component__swiper-main .swiper-slide-content .twitter-tweet {
+      margin-left: auto;
+      margin-right: auto; }
 
 .tainacan-media-component__swiper-thumbs {
   width: 100%;
@@ -833,27 +856,53 @@ a.pswp__share--download:hover {
   justify-content: center; }
   .tainacan-photoswipe-layer .pswp__container .attachment-without-image {
     width: 100%;
-    height: 100%;
+    height: calc(100% - 44px);
     display: flex;
+    justify-content: center;
     align-items: center;
-    justify-content: center; }
-    .tainacan-photoswipe-layer .pswp__container .attachment-without-image.tainacan-embed-container:not(.tainacan-embed-without-iframe) {
-      padding: 0px; }
-    .tainacan-photoswipe-layer .pswp__container .attachment-without-image .tainacan-embed-container .twitter-tweet {
-      width: 100vw !important; }
-  .tainacan-photoswipe-layer .pswp__container iframe {
+    text-align: center;
     padding: 44px;
-    min-height: 90vh;
-    max-height: 90vh;
-    height: 100%;
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
+    margin-top: 22px; }
+    .tainacan-photoswipe-layer .pswp__container .attachment-without-image > iframe:not(.wp-embedded-content) {
+      width: 90vw;
+      height: 90vh;
+      border: none;
+      margin: 44px;
+      display: block;
+      background-image: url("../images/preloader.gif");
+      background-repeat: no-repeat;
+      background-position: center; }
+  .tainacan-photoswipe-layer .pswp__container .pswp__zoom-wrap > iframe#iframePDF {
+    width: 90vw;
+    height: 90vh;
     border: none;
+    margin: 44px auto;
     display: block;
     background-image: url("../images/preloader.gif");
     background-repeat: no-repeat;
     background-position: center; }
+  .tainacan-photoswipe-layer .pswp__container .tainacan-content-embed {
+    width: 100%;
+    height: auto; }
+    .tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-has-aspect-ratio {
+      max-width: calc((90vh * 2) / 1);
+      /* Default to 2:1 aspect ratio. */
+      margin-left: auto;
+      margin-right: auto; }
+    .tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-21-9 {
+      max-width: calc((90vh * 21) / 9); }
+    .tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-18-9 {
+      max-width: calc((90vh * 18) / 9); }
+    .tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-16-9 {
+      max-width: calc((90vh * 16) / 9); }
+    .tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-4-3 {
+      max-width: calc((90vh * 4) / 3); }
+    .tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-1-1 {
+      max-width: 90vh; }
+    .tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-9-16 {
+      max-width: calc((90vh * 9) / 16); }
+    .tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-1-2 {
+      max-width: calc((90vh * 1) / 2); }
   .tainacan-photoswipe-layer .pswp__container a:first-of-type,
   .tainacan-photoswipe-layer .pswp__container p:first-of-type,
   .tainacan-photoswipe-layer .pswp__container article:first-of-type {
