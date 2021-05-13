@@ -12,8 +12,8 @@ function tainacan_blocks_initialize() {
 		add_action('init', 'tainacan_blocks_add_plugin_settings', 90);
 		add_action('init', 'tainacan_blocks_add_plugin_admin_settings', 90);
 		add_action('init', 'register_tainacan_blocks_add_gutenberg_blocks');
-		add_action('wp_enqueue_scripts', 'unregister_taiancan_blocks');
-		add_action('admin_enqueue_scripts', 'unregister_taiancan_blocks');
+		add_action('wp_enqueue_scripts', 'unregister_tainacan_blocks');
+		add_action('admin_enqueue_scripts', 'unregister_tainacan_blocks');
 	}
 }
 
@@ -33,11 +33,11 @@ function register_tainacan_blocks_add_gutenberg_blocks() {
 	tainacan_blocks_register_tainacan_carousel_collections_list();
 }
 
-function unregister_taiancan_blocks() {
+function unregister_tainacan_blocks() {
 	global $post;
 	if(!$post) return;
 
-	$not_allowed =  apply_filters('posts-names-to-unregister-taiancan-blocks', []);
+	$not_allowed =  apply_filters('posts-names-to-unregister-tainacan-blocks', []);
 	$current_page = $post->post_name;
 
 	if ( in_array($current_page, $not_allowed) ) {
