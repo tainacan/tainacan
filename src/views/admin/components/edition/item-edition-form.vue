@@ -217,7 +217,8 @@
                                 scroll="keep"
                                 trap-focus
                                 aria-modal
-                                aria-role="dialog">
+                                aria-role="dialog"
+                                custom-class="tainacan-modal">
                             <div class="tainacan-modal-content">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('instruction_write_text') }}</h2>
@@ -258,7 +259,8 @@
                                 role="dialog"
                                 tabindex="-1"
                                 aria-modal
-                                aria-role="dialog">
+                                aria-role="dialog"
+                                custom-class="tainacan-modal">
                             <div class="tainacan-modal-content">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('instruction_insert_url') }}</h2>
@@ -991,7 +993,8 @@ export default {
                         next();
                     },
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         } else {
             next()
@@ -1359,7 +1362,8 @@ export default {
                             });
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
 
         },
@@ -1480,7 +1484,8 @@ export default {
                         this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId))
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
         loadExistingItem() {

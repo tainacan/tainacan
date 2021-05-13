@@ -299,7 +299,8 @@
                             next();
                         }
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });  
             } else if (this.isEditingTerm) {
                 this.$buefy.modal.open({
@@ -313,7 +314,8 @@
                             next();
                         }
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });  
             } else {
                 next();

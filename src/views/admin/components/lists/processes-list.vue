@@ -420,7 +420,8 @@
                                 });
                         }
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             },
             deleteSelected() {
@@ -459,7 +460,8 @@
                             this.allOnPageSelected = false;
                         }
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             },
             getDate(rawDate) {
@@ -484,7 +486,8 @@
                             this.updateProcess({ id: this.processes[index].ID, status: 'closed' });
                         },
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             },
             onHeartBitTickList(event, data) {

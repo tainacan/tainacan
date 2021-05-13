@@ -182,7 +182,8 @@
                         :active.sync="isNewMetadatumModalActive"
                         trap-focus
                         aria-modal
-                        aria-role="dialog">
+                        aria-role="dialog"
+                        custom-class="tainacan-modal">
                     <div 
                             autofocus="true"
                             tabindex="-1"
@@ -302,7 +303,8 @@
                 autofocus
                 role="dialog"
                 tabindex="-1"
-                aria-modal>
+                aria-modal
+                custom-class="tainacan-modal">
             <form class="tainacan-modal-content tainacan-form">
                 <div class="tainacan-modal-title">
                     <h2>{{ $i18n.get('instruction_select_title_mapping') }}</h2>
@@ -954,7 +956,7 @@ export default {
         }
     }
 
-    .modal .animation-content {
+    .tainacan-modal .animation-content {
         width: 100%;
         z-index: 99999;
 

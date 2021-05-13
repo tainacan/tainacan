@@ -85,7 +85,7 @@
                 <template v-if="isMultiple">
                     <a 
                             @click="addValue"
-                            class="is-block add-link">
+                            class="is-inline-block add-link">
                         <span class="icon is-small">
                             <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                         </span>

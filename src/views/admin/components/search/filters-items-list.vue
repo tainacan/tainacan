@@ -497,7 +497,7 @@
     .collapse-all {
         display: inline-flex;
         align-items: center;
-        margin-left: -0.65em;
+        margin-left: -0.5em !important;
     }
     .collapse-all__text {
         font-size: 0.75em !important;

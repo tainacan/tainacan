@@ -276,7 +276,8 @@
                                 });
                         }
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             },
             deleteSelected() {
@@ -315,7 +316,8 @@
                             this.allOnPageSelected = false;
                         }
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             },
             onClickTaxonomy($event, taxonomyId, index) {

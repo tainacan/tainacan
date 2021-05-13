@@ -95,16 +95,20 @@
 
         &:not(:last-child) {
             margin-bottom: 0;
-            padding-bottom: 0.75em;
+            padding-bottom: 0.25em;
         }
 
         .collapse-trigger {
             margin-left: -7px;
+            button {
+                background-color: inherit !important;
+                color: inherit !important;
+            }
             .icon {
                 margin-right: 5px;
             }
             .collapse-label {
-                display: inline-block;
+                display: inline;
                 width: 100%;
                 overflow-x: hidden;
                 text-overflow: ellipsis;
