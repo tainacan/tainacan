@@ -12,6 +12,7 @@ const state = {
     metadata: {},
     metadataList: {},
     activities: {},
+    startDate: '',
     stackedBarChartOptions: {
       chart: {
         type: 'bar',

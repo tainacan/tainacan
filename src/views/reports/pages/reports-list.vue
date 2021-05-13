@@ -218,7 +218,7 @@
                         class="box-last-cached-on">
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(activitiesLatestCachedOn).toLocaleString() }}</span>
                     <button 
-                            @click="loadActivities(true)">
+                            @click="loadActivities(null, true)">
                         <span class="screen-reader-text">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
@@ -239,7 +239,7 @@
                         class="box-last-cached-on">
                     <span>{{ $i18n.get('label_report_generated_on') + ': ' + new Date(activitiesLatestCachedOn).toLocaleString() }}</span>
                     <button 
-                            @click="loadActivities(true)">
+                            @click="loadActivities(null, true)">
                         <span class="screen-reader-text">
                             {{ $i18n.get('label_get_latest_report') }}
                         </span>
@@ -283,7 +283,8 @@ export default {
             taxonomyTerms: 'getTaxonomyTerms',
             activities: 'getActivities',
             taxonomyList: 'getTaxonomiesList',
-            reportsLatestCachedOn: 'getReportsLatestCachedOn'
+            reportsLatestCachedOn: 'getReportsLatestCachedOn',
+            startDate: 'getStartDate'
         }),
         isRepositoryLevel() {
             return !this.selectedCollection || this.selectedCollection == 'default';
@@ -377,9 +378,12 @@ export default {
                 .then(() => this.isFetchingMetadataList = false)
                 .catch(() => this.isFetchingMetadataList = false);
         },
-        loadActivities(startDate) {
+        loadActivities(startDate, force) {
+            if (startDate == null)
+                startDate = this.startDate;
+
             this.isFetchingActivities = true;
-            this.fetchActivities({ collectionId: this.selectedCollection, startDate: startDate })
+            this.fetchActivities({ collectionId: this.selectedCollection, startDate: startDate, force: force })
                 .then(() => this.isFetchingActivities = false)
                 .catch(() => this.isFetchingActivities = false);
             this.activitiesStartDate = startDate;
