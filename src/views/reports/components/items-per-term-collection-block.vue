@@ -1,6 +1,7 @@
 <template>
      <div v-if="metadataList != undefined">
         <div 
+                v-if="metadataListArray.length"
                 :class="{ 'skeleton': isFetchingData || isBuildingChart || isFetchingMetadatumTerms || !selectedMetadatum || !selectedMetadatum.id }"
                 class="postbox">
             <div 
@@ -286,6 +287,21 @@
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
                 </span>
             </button>
+        </div>
+        <div 
+                v-if="!isFetchingData && !isBuildingChart && (!metadataListArray || !metadataListArray.length)"
+                style="min-height:380px"
+                class="postbox">
+            <div class="empty-postbox-placeholder">
+                <p class="title is-4">
+                    <span class="icon has-text-gray">
+                        <i class="tainacan-icon tainacan-icon-metadata tainacan-icon-1-125em" />
+                    </span>
+                    &nbsp;{{ $i18n.get('label_items_per_term_from_taxonomy_metadatum') }}
+                </p>
+                <br>
+                <p class="subtitle is-6">{{ $i18n.get('info_no_taxonomy_metadata_created') }}</p>
+            </div>
         </div>
     </div>
 </template>

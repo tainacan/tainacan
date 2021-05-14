@@ -1,6 +1,7 @@
 <template>
     <div v-if="taxonomiesList != undefined">
         <div 
+                v-if="taxonomiesListArray.length"
                 :class="{ 'skeleton': isFetchingData || isBuildingChart || isFetchingTaxonomyTerms || !selectedTaxonomy || !selectedTaxonomy.id }"
                 class="postbox">
             <div class="box-header">
