@@ -453,7 +453,7 @@
                     <!-- Comment Status ------------------------ --> 
                     <b-field
                             :addons="false" 
-                            :label="$i18n.get('label_allow_comments')">
+                            :label="$i18n.getHelperTitle('collections', 'allow_comments')">
                         &nbsp;
                         <b-switch
                                 id="tainacan-checkbox-comment-status" 
