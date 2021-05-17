@@ -68,7 +68,7 @@ $pswp__include-minimal-style: true !default;
     li.swiper-slide {
         height: 100%;
         max-width: calc(100% - var(--swiper-navigation-size, 44px) - var(--swiper-navigation-size, 44px));
-        min-width: 100%;
+        //min-width: 100%;
         padding: 0 var(--swiper-navigation-size, 44px);
         opacity: 1.0;
         transition: opacity 0.2s linear;
@@ -166,6 +166,7 @@ $pswp__include-minimal-style: true !default;
             background: var(--tainacan-media-background, #ffffff);
             border-radius: 3px;
             word-wrap: break-word;
+            padding: 1rem 2rem;
         }
         audio {
             background: black;
