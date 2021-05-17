@@ -193,10 +193,10 @@
                             </p>
                             <div class="control">
                                 <button
-                                        :class="{ 'is-loading': isLoadingTaxonomy }"
+                                        :class="{ 'is-loading': isLoadingTaxonomy, 'is-success': !isLoadingTaxonomy }"
                                         id="button-submit-taxonomy-creation"
                                         @click.prevent="onSubmit"
-                                        class="button is-success">{{ $i18n.get('save') }}</button>
+                                        class="button">{{ $i18n.get('save') }}</button>
                             </div>
                         </div>
                     </form>

@@ -82,6 +82,11 @@ button.link-style:active {
         height: 1.625em !important;
         line-height: 0.75em;
     }
+    &.is-loading {
+        color: transparent !important;
+        background-color: transparent !important;
+        border-color: var(--tainacan-gray2) !important;
+    }
     &:not(.is-small):not(.is-medium):not(.is-large) {
         height: 1.875em !important;
         font-size: 0.875em !important;

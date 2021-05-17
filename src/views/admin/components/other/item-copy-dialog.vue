@@ -58,9 +58,9 @@
                 </button>
                 <button 
                         v-if="!hasCopied"
-                        :class="{'is-loading': isLoading }"
+                        :class="{'is-loading': isLoading, 'is-success': !isLoading }"
                         type="submit"
-                        class="button is-success"
+                        class="button"
                         :disabled="copyCount <= 0 || isNaN(copyCount)"
                         @click="generateCopies();">
                     {{ $i18n.get('run') }}

@@ -287,8 +287,8 @@
                             :disabled="sessionId == undefined || importer == undefined"
                             id="button-submit-importer-mapping"
                             @click.prevent="onRunImporter"
-                            :class="{'is-loading': isLoadingRun }"
-                            class="button is-success">{{ $i18n.get('run') }}</button>
+                            :class="{ 'is-loading': isLoadingRun, 'is-success': !isLoadingRun }"
+                            class="button">{{ $i18n.get('run') }}</button>
                 </div>
             </div>
         </form>

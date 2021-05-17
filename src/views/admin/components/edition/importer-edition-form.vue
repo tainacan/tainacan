@@ -167,8 +167,8 @@
                                     (importer.accepts.file && importer.accepts.url && !importerFile && !url)"
                             id="button-submit-importer-creation"
                             @click.prevent="onFinishImporter()"
-                            :class="{'is-loading': isLoadingRun }"
-                            class="button is-success">{{ $i18n.get('run') }}</button>
+                            :class="{ 'is-loading': isLoadingRun, 'is-success': !isLoadingRun }"
+                            class="button">{{ $i18n.get('run') }}</button>
                 </div>
                 <div 
                         v-if="importer.manual_mapping"
@@ -184,8 +184,8 @@
                                     (importer.accepts.file && importer.accepts.url && !importerFile && !url)"
                             id="button-submit-collection-creation"
                             @click.prevent="onFinishImporter()"
-                            :class="{'is-loading': isLoadingUpload }"
-                            class="button is-success">{{ $i18n.get('next') }}</button>
+                            :class="{ 'is-loading': isLoadingUpload, 'is-success': !isLoadingUpload }"
+                            class="button">{{ $i18n.get('next') }}</button>
                 </div>
             </div>
         </form>
