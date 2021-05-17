@@ -536,5 +536,3 @@ class TAINACAN_REST_Exposers extends TAINACAN_UnitApiTestCase {
 	} */// TODO automate test this
 	
 }
-
-?>

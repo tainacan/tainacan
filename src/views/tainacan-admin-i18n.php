@@ -474,6 +474,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_page'								 	 => __( 'Page', 'tainacan' ),
 	'label_current_page'							 => __( 'Current page', 'tainacan' ),
 	'label_shrink_menu'								 => __( 'Shrink menu', 'tainacan' ),
+	'label_expand_menu'								 => __( 'Expand menu', 'tainacan' ),
 	'label_document_uploaded'						 => __( 'Document uploaded', 'tainacan' ),
 	/* translators: Filter of the repository, not a repository of filter! */
 	'label_repository_filter'						 => __( 'Repository filter', 'tainacan' ),

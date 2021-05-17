@@ -6,7 +6,6 @@ use \Tainacan\Entities;
 class Old_Tainacan extends Importer{
 
     protected $steps = [
-		
 		[
             'name' => 'Create Taxonomies',
             'progress_label' => 'Creating taxonomies',
@@ -33,7 +32,6 @@ class Old_Tainacan extends Importer{
             'callback' => 'link_relationships',
             'total' => 5
 		]
-		
 	];
     
     protected $tainacan_api_address, $wordpress_api_address, $actual_collection;
@@ -64,8 +62,7 @@ class Old_Tainacan extends Importer{
      * 
      */
     public function create_taxonomies() {
-
-        if(!$this->get_url()){
+        if (!$this->get_url()) {
             $this->add_error_log('Site url not found');
             $this->abort();
             return false;
@@ -74,57 +71,49 @@ class Old_Tainacan extends Importer{
         $this->add_log('Creating taxonomies');
 		
 		foreach ($this->get_taxonomies() as $taxonomy) {
+			$tax = new Entities\Taxonomy();
+			$tax->set_name( $taxonomy->name );
+			$tax->set_description( $taxonomy->description );
+			$tax->set_allow_insert('yes');
+			$tax->set_status('publish');    
 
-            $tax = new Entities\Taxonomy();
-            $tax->set_name( $taxonomy->name );
-            $tax->set_description( $taxonomy->description );
-            $tax->set_allow_insert('yes');
-            $tax->set_status('publish');    
-
-            if ($tax->validate()) {
-                $tax = $this->tax_repo->insert($tax);
+			if ($tax->validate()) {
+				$tax = $this->tax_repo->insert($tax);
 				
 				$this->add_log('Taxonomy ' . $tax->get_name() . ' created, id from Old'. $taxonomy->term_id );
+				$this->add_transient('tax_' . $taxonomy->term_id . '_id', $tax->get_id());
+				$this->add_transient('tax_' . $taxonomy->term_id . '_name', $tax->get_name());
 
-                $this->add_transient('tax_' . $taxonomy->term_id . '_id', $tax->get_id());
-                $this->add_transient('tax_' . $taxonomy->term_id . '_name', $tax->get_name());
-
-                if (isset($taxonomy->children) && $tax) {
-                    $this->add_all_terms($tax, $taxonomy->children);
-                }
-
+				if (isset($taxonomy->children) && $tax) {
+					$this->add_all_terms($tax, $taxonomy->children);
+				}
             } else {
-                $this->add_log('Error creating taxonomy ' . $taxonomy->name );
-                $this->add_log($tax->get_errors());
-                
-            }
+				$this->add_log('Error creating taxonomy ' . $taxonomy->name );
+				$this->add_log($tax->get_errors());
+			}
+		}
 
-        }
-		
 		return false;
-    }
+	}
     
     /**
      * create the repository metadata which each collection inherits by default
      * 
      */
-    public function create_repo_metadata(){
-
-        $this->add_log('Creating repository metadata');
+    public function create_repo_metadata() {
+		$this->add_log('Creating repository metadata');
 		
 		foreach ($this->get_repo_metadata() as $metadata) {
+			if (isset($metadata->slug) && strpos($metadata->slug, 'socialdb_property_fixed') === false) {
+				$metadatum_id = $this->create_metadata( $metadata );
+			} elseif ( strpos($metadata->slug, 'socialdb_property_fixed_tags') !== false ) {
+				$metadatum_id = $this->create_metadata( $metadata );
+			}
+		}
 
-            if (isset($metadata->slug) && strpos($metadata->slug, 'socialdb_property_fixed') === false) {
-                $metadatum_id = $this->create_metadata( $metadata );  
-            } elseif ( strpos($metadata->slug, 'socialdb_property_fixed_tags') !== false ){
-                $metadatum_id = $this->create_metadata( $metadata );     
-            }
-
-        }
-
-        $this->add_log('FInished repository metadata');
-        return false;
-    }
+		$this->add_log('FInished repository metadata');
+		return false;
+	}
 
     /**
      * create all collections and its metadata

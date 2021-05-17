@@ -316,11 +316,9 @@ class Test_Importer extends Importer {
 					</div>
 				</div>
 			</div>
-	
 		</div>
 
 	   <?php
-
 		return ob_get_clean();
     }
 	
@@ -334,7 +332,6 @@ class Test_Importer extends Importer {
 		if ($tax1->validate()) {
 			$tax1 = $this->tax_repo->insert($tax1);
 		} else {
-			
 			/**
 			 * In these set up steps, if we have an error adding 
 			 * a taxonomy, collection or metadatum, there is no point 
@@ -345,14 +342,12 @@ class Test_Importer extends Importer {
 			$this->add_error_log('Error creating taxonomy Color');
 			$this->add_error_log($tax1->get_errors());
 			$this->abort();
-			return false;
-			
+			return false;	
 		}
 		
 		$this->add_transient('tax_1_id', $tax1->get_id());
 		
 		return false;
-		
 	}
 	
 	public function create_collections() {
@@ -366,10 +361,8 @@ class Test_Importer extends Importer {
 			$this->add_error_log('Error creating Collection 1');
 			$this->add_error_log($col1->get_errors());
 			$this->abort();
-			return false;
-			
+			return false;	
 		}
-		
 		
 		$col1_map = [];
 		
@@ -696,8 +689,7 @@ class Test_Importer extends Importer {
 	 * @param $collection
 	 * 
 	 */
-	private function create_metadata( $args, $collection ){
-
+	private function create_metadata( $args, $collection ) {
 		$metadatum = new Entities\Metadatum();
 		$metadatum->set_name($args['name']);
 		$metadatum->set_collection($collection);
@@ -758,7 +750,6 @@ class Test_Importer extends Importer {
 		return $array;
 	}
 
-
 	public function get_col2_item($index) {
 		return [
 			'field1' => 'Collection 2 item ' . $index,
@@ -766,7 +757,5 @@ class Test_Importer extends Importer {
 			'field3' => 'Collection 2 whatever ' . $index,
 		];
 	}
-	
-	
-	
+
 }
