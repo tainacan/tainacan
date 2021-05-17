@@ -88,7 +88,7 @@
             v-if="isMultiple"
             :disabled="itemMetadatum.item.id && (childItemMetadataGroups.length > 0 && !someValueOnLastInput)"
             @click="addGroup"
-            class="is-block add-link">
+            class="is-inline-block add-link">
         <span class="icon is-small">
             <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
         </span>

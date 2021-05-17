@@ -37,7 +37,6 @@
             <p>{{ $i18n.get('info_metadata_mapping_helper') }}</p>
             <br>
 
-
             <b-loading 
                     :is-full-page="false"
                     :active.sync="isLoadingSourceInfo" 
@@ -183,7 +182,8 @@
                         :active.sync="isNewMetadatumModalActive"
                         trap-focus
                         aria-modal
-                        aria-role="dialog">
+                        aria-role="dialog"
+                        custom-class="tainacan-modal">
                     <div 
                             autofocus="true"
                             tabindex="-1"
@@ -246,7 +246,17 @@
                     </div>
                 </b-modal>
                 <a
-                        v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
+                        v-if="importerSourceInfo.source_metadata && importerSourceInfo.source_metadata.length > 0"
+                        style="margin-left: 2rem; font-size: 0.875em;"
+                        class="is-inline is-pulled-right add-link has-text-secondary"
+                        @click="createAllMetadata()">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-approvedcircle"/>
+                    </span>
+                    {{ $i18n.get('label_set_all_create_metadada') }}
+                </a>
+                <a
+                        v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata &&importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
                         style="font-size: 0.875em;"
                         class="is-inline is-pulled-right add-link has-text-secondary"
                         @click="createNewMetadatum()">
@@ -293,7 +303,8 @@
                 autofocus
                 role="dialog"
                 tabindex="-1"
-                aria-modal>
+                aria-modal
+                custom-class="tainacan-modal">
             <form class="tainacan-modal-content tainacan-form">
                 <div class="tainacan-modal-title">
                     <h2>{{ $i18n.get('instruction_select_title_mapping') }}</h2>
@@ -404,7 +415,7 @@ export default {
             metadataSearchCancel: undefined,
             showTitlePromptModal: false,
             selectedTitle: undefined,
-            formErrorMessage: ''
+            formErrorMessage: '',
         }
     },
     computed: {
@@ -785,6 +796,12 @@ export default {
             
             this.showTitlePromptModal = false;
             this.onRunImporter();
+        },
+        createAllMetadata() {
+            this.mappedCollection['mapping'] = {};
+            this.importerSourceInfo.source_metadata.forEach((metadatum, index) => {
+                this.mappedCollection['mapping']['create_metadata'+ index] = metadatum;
+            });
         }
     }
 }
@@ -939,7 +956,7 @@ export default {
         }
     }
 
-    .modal .animation-content {
+    .tainacan-modal .animation-content {
         width: 100%;
         z-index: 99999;
 

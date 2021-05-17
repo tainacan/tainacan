@@ -12,6 +12,7 @@ const state = {
     metadata: {},
     metadataList: {},
     activities: {},
+    startDate: '',
     stackedBarChartOptions: {
       chart: {
         type: 'bar',
@@ -183,7 +184,7 @@ const state = {
         }
       }
     },
-    treeMapOptions: {
+    treeMapChartOptions: {
       legend: {
         show: false
       },
@@ -193,6 +194,11 @@ const state = {
       },
       title: {
         text: ''
+      },
+      plotOptions: {
+        treemap: {
+          enableShades: false
+        }
       }
     }
 };

@@ -298,7 +298,8 @@
                     :active.sync="isSelectingFilterType"
                     trap-focus
                     aria-modal
-                    aria-role="dialog">
+                    aria-role="dialog"
+                    custom-class="tainacan-modal">
                 <div 
                         autofocus
                         role="dialog"
@@ -455,7 +456,8 @@ export default {
                         next();
                     },
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });  
         } else {
             next()

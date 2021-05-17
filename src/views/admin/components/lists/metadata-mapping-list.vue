@@ -142,7 +142,8 @@
                 :active.sync="isMapperMetadataCreating"
                 trap-focus
                 aria-modal
-                aria-role="dialog">
+                aria-role="dialog"
+                custom-class="tainacan-modal">
             <div 
                     autofocus
                     role="dialog"

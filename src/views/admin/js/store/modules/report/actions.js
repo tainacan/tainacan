@@ -55,12 +55,12 @@ export const fetchMetadataList = ({ commit }, { collectionId, onlyTaxonomies } )
     let endpoint = '';
     
     if (collectionId && collectionId != 'default')
-        endpoint += '/collection/' + collectionId + '/metadata/';
+        endpoint += '/collection/' + collectionId + '/metadata/?nopaging=1';
     else
-        endpoint += '/metadata/';
+        endpoint += '/metadata/?nopaging=1';
 
     if (onlyTaxonomies)
-        endpoint += '?metaquery[0][key]=metadata_type&metaquery[0][value]=Tainacan\\Metadata_Types\\Taxonomy';
+        endpoint += '&metaquery[0][key]=metadata_type&metaquery[0][value]=Tainacan\\Metadata_Types\\Taxonomy';
 
     return new Promise((resolve, reject) => {
         axios.tainacan.get(endpoint)

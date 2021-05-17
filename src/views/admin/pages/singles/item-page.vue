@@ -433,7 +433,8 @@
                         itemURL: this.item.url,
                         totalItems: 1,
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             }
         }

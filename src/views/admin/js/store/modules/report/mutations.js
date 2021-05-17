@@ -32,6 +32,10 @@ export const setActivities = (state, activities) => {
   state.activities = activities;
 };
 
+export const setStartDate = (state, startDate) => {
+  state.startDate = startDate;
+};
+
 export const setStackedBarChartOptions = (state, stackedBarChartOptions) => {
   state.stackedBarChartOptions = stackedBarChartOptions;
 };

@@ -57,6 +57,16 @@
       #tainacan-reports-app .postbox .box-header .box-header__item {
         margin-bottom: 10px;
         line-height: 2rem; }
+  #tainacan-reports-app .empty-postbox-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    min-height: 380px;
+    flex-direction: column;
+    opacity: 0.75; }
+    #tainacan-reports-app .empty-postbox-placeholder p {
+      color: var(--tainacan-block-gray4, #555758); }
   #tainacan-reports-app .graph-mode-switch {
     display: inline-block; }
     #tainacan-reports-app .graph-mode-switch button {

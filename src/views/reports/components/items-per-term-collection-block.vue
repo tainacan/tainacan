@@ -1,6 +1,7 @@
 <template>
      <div v-if="metadataList != undefined">
         <div 
+                v-if="metadataListArray.length"
                 :class="{ 'skeleton': isFetchingData || isBuildingChart || isFetchingMetadatumTerms || !selectedMetadatum || !selectedMetadatum.id }"
                 class="postbox">
             <div 
@@ -246,7 +247,7 @@
                     </div>
                     <div 
                             v-else
-                            class="child-term-placeholder">
+                            class="empty-postbox-placeholder">
                         <p class="title is-4">
                             <span class="icon has-text-gray">
                                 <i class="tainacan-icon tainacan-icon-taxonomies tainacan-icon-1-125em" />
@@ -286,6 +287,21 @@
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-rotate-270" />
                 </span>
             </button>
+        </div>
+        <div 
+                v-if="!isFetchingData && !isBuildingChart && (!metadataListArray || !metadataListArray.length)"
+                style="min-height:380px"
+                class="postbox">
+            <div class="empty-postbox-placeholder">
+                <p class="title is-4">
+                    <span class="icon has-text-gray">
+                        <i class="tainacan-icon tainacan-icon-metadata tainacan-icon-1-125em" />
+                    </span>
+                    &nbsp;{{ $i18n.get('label_items_per_term_from_taxonomy_metadatum') }}
+                </p>
+                <br>
+                <p class="subtitle is-6">{{ $i18n.get('info_no_taxonomy_metadata_created') }}</p>
+            </div>
         </div>
     </div>
 </template>
@@ -362,9 +378,16 @@ export default {
         termsDisplayedPage() {
             this.buildMetadatumTermsChart();
         },
+        childTermsDisplayedPage() {
+            this.buildMetadatumChildTermsChart();
+        },
         maxTermsToDisplay() {
             this.termsDisplayedPage = 1;
             this.buildMetadatumTermsChart();
+        },
+        maxChildTermsToDisplay() {
+            this.childTermsDisplayedPage = 1;
+            this.buildMetadatumChildTermsChart();
         },
         selectedParentTerm() {
             if (this.selectedParentTerm[this.selectedParentTerm.length - 1] && this.selectedParentTerm[this.selectedParentTerm.length - 1].id) {
@@ -420,16 +443,22 @@ export default {
                             events: {
                                 dataPointSelection: (event, chartContext, config) => {
                                     if (config.dataPointIndex >= 0 && orderedTerms[config.dataPointIndex]) {
-                                        this.selectedParentTerm.push({
-                                            id: orderedTerms[config.dataPointIndex].value,
-                                            label: orderedTerms[config.dataPointIndex].label
-                                        })
+                                        const existingParentTermIndex = this.selectedParentTerm.findIndex((term) => term.id == orderedTerms[config.dataPointIndex].value);
+                                        if (existingParentTermIndex < 0) {
+                                            this.selectedParentTerm.push({
+                                                id: orderedTerms[config.dataPointIndex].value,
+                                                label: orderedTerms[config.dataPointIndex].label
+                                            })
+                                        }
                                     }
                                 }
                             },
                         },
                         dataLabels: {
                             enabled: true,
+                            style: {
+                                fontSize: '16px',
+                            },
                             formatter: function(text, op) {
                                 return [text, op.value]
                             },
@@ -487,7 +516,7 @@ export default {
                         chart: {
                             type: 'bar',
                             height: 350,
-                            stacked: true,
+                            stacked: false,
                             toolbar: {
                                 show: true
                             },
@@ -497,11 +526,18 @@ export default {
                             },
                             events: {
                                 dataPointSelection: (event, chartContext, config) => {
-                                    if (config.dataPointIndex >=0 && orderedTerms[config.dataPointIndex]) {
-                                        this.selectedParentTerm.push({
-                                            id: orderedTerms[config.dataPointIndex].value,
-                                            label: orderedTerms[config.dataPointIndex].label
-                                        })
+                                    if (config.dataPointIndex >= 0 && orderedTerms[config.dataPointIndex]) {
+                                        const existingParentTermIndex = this.selectedParentTerm.findIndex((term) => term.id == orderedTerms[config.dataPointIndex].value);
+                                        if (existingParentTermIndex < 0) {
+                                            // Removes siblings from the hierarchy, if existing
+                                            if (this.selectedParentTerm.length && (this.selectedParentTerm[this.selectedParentTerm.length - 1].id != orderedTerms[config.dataPointIndex].parent) )
+                                                this.selectedParentTerm.pop();
+
+                                            this.selectedParentTerm.push({
+                                                id: orderedTerms[config.dataPointIndex].value,
+                                                label: orderedTerms[config.dataPointIndex].label
+                                            });
+                                        }
                                     }
                                 }
                             },
@@ -570,24 +606,35 @@ export default {
                             events: {
                                 dataPointSelection: (event, chartContext, config) => {
                                     if (config.dataPointIndex >= 0 && orderedTerms[config.dataPointIndex]) {
-                                        const previousMetadatumChildTermsLatestCachedOn = this.metadatumChildTermsLatestCachedOn ? this.metadatumChildTermsLatestCachedOn.replace('-is-child-chart', '') : '';
-                                        this.selectedParentTerm.push({
-                                            id: orderedTerms[config.dataPointIndex].value,
-                                            label: orderedTerms[config.dataPointIndex].label
-                                        });
-                                        
-                                        this.setTaxonomyTerms(this.taxonomyChildTerms);
-                                        this.setReportLatestCachedOn({
-                                            report: 'taxonomy-terms-' + (this.collectionId ? this.collectionId : 'default') + '-' + this.selectedMetadatum.id + (this.selectedParentTerm.length > 2 && this.selectedParentTerm[this.selectedParentTerm.length - 2] && this.selectedParentTerm[this.selectedParentTerm.length - 2].id ? '-' + this.selectedParentTerm[this.selectedParentTerm.length - 1].id : ''),
-                                            reportLatestCachedOn: previousMetadatumChildTermsLatestCachedOn
-                                        });
-                                        this.buildMetadatumTermsChart();
+                                        const existingParentTermIndex = this.selectedParentTerm.findIndex((term) => term.id == orderedTerms[config.dataPointIndex].value);
+                                        if (existingParentTermIndex < 0) {
+
+                                            // Removes siblings from the hierarchy, if existing
+                                            if (this.selectedParentTerm.length && (this.selectedParentTerm[this.selectedParentTerm.length - 1].id != orderedTerms[config.dataPointIndex].parent) )
+                                                this.selectedParentTerm.pop();
+
+                                            const previousMetadatumChildTermsLatestCachedOn = this.metadatumChildTermsLatestCachedOn ? this.metadatumChildTermsLatestCachedOn.replace('-is-child-chart', '') : '';
+                                            this.selectedParentTerm.push({
+                                                id: orderedTerms[config.dataPointIndex].value,
+                                                label: orderedTerms[config.dataPointIndex].label
+                                            });
+                                            
+                                            this.setTaxonomyTerms(this.taxonomyChildTerms);
+                                            this.setReportLatestCachedOn({
+                                                report: 'taxonomy-terms-' + (this.collectionId ? this.collectionId : 'default') + '-' + this.selectedMetadatum.id + (this.selectedParentTerm.length > 2 && this.selectedParentTerm[this.selectedParentTerm.length - 2] && this.selectedParentTerm[this.selectedParentTerm.length - 2].id ? '-' + this.selectedParentTerm[this.selectedParentTerm.length - 1].id : ''),
+                                                reportLatestCachedOn: previousMetadatumChildTermsLatestCachedOn
+                                            });
+                                            this.buildMetadatumTermsChart();
+                                        }
                                     }
                                 }
                             },
                         },
                         dataLabels: {
                             enabled: true,
+                            style: {
+                                fontSize: '16px',
+                            },
                             formatter: function(text, op) {
                                 return [text, op.value]
                             },
@@ -759,18 +806,5 @@ export default {
     border: 1px solid;
     background-color: white;
     z-index: 9;
-}
-.child-term-placeholder {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    min-height: 380px;
-    flex-direction: column;
-    opacity: 0.75;
-
-    p {
-        color: var(--tainacan-block-gray4, #555758);
-    }
 }
 </style>

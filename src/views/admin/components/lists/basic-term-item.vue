@@ -104,7 +104,8 @@ export default {
                         message: this.$i18n.get('info_warning_terms_not_saved'),
                         onConfirm: () => { this.removeTerm(); },
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });  
             } else {
                 this.removeTerm();
@@ -125,7 +126,8 @@ export default {
                         this.$eventBusTermsList.onDeleteBasicTermItem(this.term);
                     }                
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });  
         },
         eventOnEditTerm() {

@@ -329,8 +329,8 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
         $this->assertEquals(0, $check_deleted);
 
         $core_metadata_son3 = $collection_son->get_core_metadata();
-        
-        $this->assertEquals( $core_metadata_son3[0]->get_id(), $core_metadata_parent2[0]->get_id() );
+        $core_metadata_parent2_ids = array_map(function($meta) { return $meta->get_id(); }, $core_metadata_parent2);
+        $this->assertContains( $core_metadata_son3[0]->get_id(), $core_metadata_parent2_ids );
 
         $it3 = get_post_meta($collection_son_item->get_id());
 
@@ -350,7 +350,8 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
 
         $core_metadata_son4 = $collection_son->get_core_metadata();
         
-        $this->assertEquals( $core_metadata_son4[0]->get_id(), $core_metadata_parent[0]->get_id() );
+        $core_metadata_parent_ids = array_map(function($meta) { return $meta->get_id(); }, $core_metadata_parent);
+        $this->assertContains( $core_metadata_son4[0]->get_id(), $core_metadata_parent_ids);
 
         $it4 = get_post_meta($collection_son_item->get_id());
 

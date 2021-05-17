@@ -63,7 +63,8 @@
         </a>
         <b-modal 
                 :width="1200"
-                :active.sync="createNewItemModal">
+                :active.sync="createNewItemModal"
+                custom-class="tainacan-modal">
             <iframe 
                     :id="newItemFrame"
                     width="100%"

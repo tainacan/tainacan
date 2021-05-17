@@ -275,7 +275,7 @@
                 <a 
                         :disabled="dones.every((item) => item === true) === false"
                         @click="addEditionCriterion()"
-                        class="has-text-right is-block add-link">
+                        class="has-text-right is-inline-block add-link">
                     <span class="icon is-small">
                         <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                     </span>

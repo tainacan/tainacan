@@ -474,6 +474,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_page'								 	 => __( 'Page', 'tainacan' ),
 	'label_current_page'							 => __( 'Current page', 'tainacan' ),
 	'label_shrink_menu'								 => __( 'Shrink menu', 'tainacan' ),
+	'label_expand_menu'								 => __( 'Expand menu', 'tainacan' ),
 	'label_document_uploaded'						 => __( 'Document uploaded', 'tainacan' ),
 	/* translators: Filter of the repository, not a repository of filter! */
 	'label_repository_filter'						 => __( 'Repository filter', 'tainacan' ),
@@ -542,6 +543,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_terms_used'							 	 => __( 'Terms used', 'tainacan' ),
 	'label_number_of_terms'						 	 => __( 'Number of terms', 'tainacan' ),
 	'label_number_of_items'						 	 => __( 'Number of items', 'tainacan' ),
+	'label_number_of_metadata'					 	 => __( 'Number of metadata', 'tainacan' ),
 	'label_usage_of_terms_per_taxonomy'			 	 => __( 'Usage of terms per taxonomy', 'tainacan' ),
 	'label_items_per_term'							 => __( 'Items per term', 'tainacan' ),
 	'label_items_per_term_from_taxonomy'			 => __( 'Items per term from taxonomy:', 'tainacan' ),
@@ -576,6 +578,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_get_latest_report'						 => __( 'Get latest report', 'tainacan'),
 	'label_decrease'								 => __( 'Decrease', 'tainacan'),
 	'label_increase'								 => __( 'Increase', 'tainacan'),
+	'label_set_all_create_metadada'					 => __( 'Set every metadata to be created', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -857,7 +860,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_recaptcha_link_%s'						 =>	__( 'Remember to configure your website reCAPTCHA keys on <a href="%s" target="_blank">the item submission repository page</a>.', 'tainacan'),
 	'info_form_not_loaded'					 		 =>	__( 'There are probably not enought permissions to display it here.', 'tainacan'),
 	'info_validating_slug'					 		 =>	__( 'Validating slug...', 'tainacan'),
-
+	'info_no_taxonomy_metadata_created'		 		 =>	__( 'No taxonomy metadata created yet', 'tainacan'),
 	'label_amount_of_metadata_of_type'	 			 =>	__( 'Amount of metadata of this type', 'tainacan'),
 	'info_child_terms_chart'						 => __( 'Click on the term bar on the chart aside to see its child terms (if any) in this panel', 'tainacan' ),
 	

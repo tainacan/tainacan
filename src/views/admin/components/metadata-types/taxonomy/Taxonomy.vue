@@ -50,7 +50,8 @@
                 trap-focus
                 aria-role="dialog"
                 aria-modal
-                :can-cancel="['outside', 'escape']">
+                :can-cancel="['outside', 'escape']"
+                custom-class="tainacan-modal">
             <term-edition-form 
                     :taxonomy-id="taxonomyId"
                     :edit-form="{ id: 'new', name: newTermName ? newTermName : '' }"

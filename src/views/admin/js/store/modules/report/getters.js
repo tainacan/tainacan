@@ -30,6 +30,10 @@ export const getActivities = state => {
   return state.activities;
 };
 
+export const getStartDate = state => {
+  return state.startDate;
+};
+
 export const getStackedBarChartOptions = state => {
   return state.stackedBarChartOptions;
 };

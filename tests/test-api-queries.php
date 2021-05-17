@@ -8,9 +8,7 @@ namespace Tainacan\Tests;
 class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 
 	public function test_queries(){
-
 		// Populate the database
-
 		$collectionB = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			[
@@ -57,8 +55,8 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 			),
 			true
 		);
-		// Create Term
 
+		// Create Term
 		$termA = $this->tainacan_entity_factory->create_entity(
 			'term',
 			array(
@@ -173,8 +171,6 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 		$this->assertCount(1, $data1);
 		$this->assertEquals($collectionB->get_name(), $data1[0]['name']);
 
-
-
 		// Search collection with a specific keyword and not other keyword
 		$search_query = ['search' => 'Collection -A'];
 
@@ -190,14 +186,9 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 		$names = [$data2[0]['name'], $data2[1]['name']];
 		$this->assertNotContains('A', $names);
 
-
-
 		/* Meta Query:
-		 *
 		 * Fetch items from a collection desc ordered by metadatumA1 and its only in range A to F.
-		 *
 		 * */
-
 		$meta_query = [
 			'metakey'   => $metadatumA1->get_id(),
 			'orderby'   => 'meta_value',
@@ -212,16 +203,11 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 		];
 
 		$meta_query_request = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $collectionA->get_id() . '/items');
-
 		$meta_query_request->set_query_params($meta_query);
-
 		$meta_query_response = $this->server->dispatch($meta_query_request);
 		$data3 = $meta_query_response->get_data()['items'];
-
 		$this->assertCount(2, $data3);
-
 		$metadatumA1_slug = $metadatumA1->get_slug();
-
 		$values = [$data3[0]['metadata'][$metadatumA1_slug]['value'], $data3[1]['metadata'][$metadatumA1_slug]['value']];
 
 		$this->assertNotContains('G', $values);
@@ -230,13 +216,9 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals('E', $data3[0]['metadata'][$metadatumA1_slug]['value']);
 		$this->assertEquals('D', $data3[1]['metadata'][$metadatumA1_slug]['value']);
 
-
 		/* Date Query:
-		 *
 		 * Fetch posts for today
-		 *
 		 * */
-
 		$today = getdate();
 
 		$date_query = [
@@ -268,11 +250,8 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 		$this->assertCount(0, $data5);
 
 		/* Tax Query
-		 *
 		 * Fetch items under a taxonomy with a specific term
-		 *
 		 * */
-
 		$tax_query = [
 			'taxquery' => [
 				[
@@ -301,5 +280,3 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 		$this->assertNotContains('Item A-3', $itemsA1_A2);
 	}
 }
-
-?>

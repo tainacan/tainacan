@@ -46,7 +46,7 @@ class Items extends Repository {
 				'title'       => __( 'Status', 'tainacan' ),
 				'type'        => 'string',
 				'default'     => 'draft',
-				'description' => __( 'The posts status', 'tainacan' )
+				'description' => __( 'The current situation of the item. Notice that the item visibility also depends on the collection status.', 'tainacan' )
 			],
 			'description'       => [
 				'map'         => 'post_content',

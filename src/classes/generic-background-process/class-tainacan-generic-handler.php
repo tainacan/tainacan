@@ -38,7 +38,7 @@ class Generic_Process_Handler {
 		$data = $process_object->_to_Array(true);
 		$process = $this->get_generic_process_by_object($process_object);
 		
-		$process_name = sprintf( __('%s process', 'tainacan'), $process['name'] );
+		$process_name = sprintf( __('%s processing', 'tainacan'), $process['name'] );
 
 		$bg_process = $this->bg_process->data($data)->set_name($process_name)->save();
 		if ( is_wp_error($bg_process->dispatch()) ) {

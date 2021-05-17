@@ -84,6 +84,21 @@
             }
         }
     }
+
+    .empty-postbox-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        min-height: 380px;
+        flex-direction: column;
+        opacity: 0.75;
+    
+        p {
+            color: var(--tainacan-block-gray4, #555758);
+        }
+    }
+    
     .graph-mode-switch {
         display: inline-block;
         button {

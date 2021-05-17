@@ -636,7 +636,7 @@ class REST_Reports_Controller extends REST_Controller {
 				) m
 				ON (p.id = m.meta_key)
 				WHERE p.id IN($string_meta_ids)
-			"
+			", []
 		);
 		$res = $wpdb->get_results($sql_statement);
 		//return ['t' => $res, 's' => $sql_statement];
@@ -649,7 +649,7 @@ class REST_Reports_Controller extends REST_Controller {
 			"SELECT COUNT(DISTINCT($wpdb->postmeta.meta_value))
 			 FROM $wpdb->postmeta
 			 WHERE meta_key = '_option_taxonomy_id'
-			"
+			", []
 		);
 
 		$res = intval($wpdb->get_var( $sql_statement ));
@@ -717,7 +717,7 @@ class REST_Reports_Controller extends REST_Controller {
 			FROM $wpdb->posts p $collection_from
 			WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN '$start' AND '$end'
 			GROUP BY DATE(p.post_date)
-			ORDER BY DATE(p.post_date)"
+			ORDER BY DATE(p.post_date)", []
 		);
 		return $wpdb->get_results($sql_statement);
 	}
@@ -735,7 +735,7 @@ class REST_Reports_Controller extends REST_Controller {
 			FROM $wpdb->posts p $collection_from
 			WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN '$start' AND '$end'
 			GROUP BY p.post_author, DATE(p.post_date)
-			ORDER BY DATE(p.post_date)"
+			ORDER BY DATE(p.post_date)", []
 		);
 		$data =$wpdb->get_results($sql_statement);
 		$arr = array();
@@ -781,7 +781,7 @@ class REST_Reports_Controller extends REST_Controller {
 			$collection_from
 			WHERE p.post_type='tainacan-log'
 			GROUP BY p.post_author, pm.meta_value 
-			ORDER BY total DESC"
+			ORDER BY total DESC", []
 		);
 		$results = $wpdb->get_results($sql_statement);
 		$response = [];

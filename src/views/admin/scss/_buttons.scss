@@ -6,11 +6,11 @@ button.link-style:active {
     cursor: pointer;
     font-size: inherit;
     text-transform: inherit;
-    color: var(--tainacan-secondary);
+    color: var(--tainacan-secondary) !important;
     padding: 0;
     margin: 0;
     font-weight: normal;
-    background: transparent;
+    background: transparent !important;
 
     &:hover {
         text-decoration: underline;
