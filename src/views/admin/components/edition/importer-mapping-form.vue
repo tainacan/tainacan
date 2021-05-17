@@ -47,6 +47,26 @@
                     v-if="importerSourceInfo != undefined && 
                             importerSourceInfo != null &&
                             !isLoading">
+                <a
+                        v-if="importerSourceInfo.source_metadata && importerSourceInfo.source_metadata.length > 0"
+                        style="margin-left: 2rem; font-size: 0.875em;"
+                        class="is-inline is-pulled-right add-link has-text-secondary"
+                        @click="createAllMetadata()">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-approvedcircle"/>
+                    </span>
+                    {{ $i18n.get('label_set_all_create_metadada') }}
+                </a>
+                <a
+                        v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata &&importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
+                        style="font-size: 0.875em;"
+                        class="is-inline is-pulled-right add-link has-text-secondary"
+                        @click="createNewMetadatum()">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-add"/>
+                    </span>
+                    {{ $i18n.get('label_add_more_metadata') }}
+                </a>
                 <div 
                         class="mapping-header"
                         v-if="importerSourceInfo.source_metadata.length > 0 || (importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0)">
@@ -245,25 +265,6 @@
                         </div>
                     </div>
                 </b-modal>
-                <a
-                        v-if="importerSourceInfo.source_metadata && importerSourceInfo.source_metadata.length > 0"
-                        style="margin-left: 2rem; font-size: 0.875em;"
-                        class="is-inline is-pulled-right add-link has-text-secondary"
-                        @click="createAllMetadata()">
-                    <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-approvedcircle"/>
-                    </span>
-                    {{ $i18n.get('label_set_all_create_metadada') }}
-                </a>
-                <a
-                        v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata &&importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
-                        style="font-size: 0.875em;"
-                        class="is-inline is-pulled-right add-link has-text-secondary"
-                        @click="createNewMetadatum()">
-                    <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-add"/>
-                    </span>
-                    {{ $i18n.get('label_add_more_metadata') }}</a>
             </div>
             <div 
                     v-if="importerSourceInfo == undefined || 
@@ -928,6 +929,7 @@ export default {
     }
 
     .mapping-header {
+        width: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
