@@ -11,8 +11,20 @@
         cursor: pointer;
     }
 
-    .wp-heading-inline {
-        margin-bottom: 2rem;
+    .tainacan-reports-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 24px 36px 0px;
+
+        .wp-heading-inline {
+            margin: 0rem;
+        }
+
+        select {
+            margin-right: auto;
+            margin-left: 6px;
+        }
     }
 
     .columns {

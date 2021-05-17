@@ -1,21 +1,29 @@
 <template>
     <div>
-        <h1 class="wp-heading-inline">{{ $route.meta.title }}</h1>
-        <select 
-                name="select_collections"
-                id="select_collections"
-                @input="(inputEvent) => $router.push({ query: { collection: inputEvent.target.value } })"
-                :value="selectedCollection">
-            <option value="default">
-                {{ $i18n.get('repository') }}
-            </option>
-            <option 
-                    v-for="(collection, index) of collections"
-                    :key="index"
-                    :value="collection.id">
-                {{ collection.name }}
-            </option>
-        </select>
+        <div class="tainacan-reports-header">
+            <h1 class="wp-heading-inline">{{ $route.meta.title }}</h1>
+            <select 
+                    name="select_collections"
+                    id="select_collections"
+                    @input="(inputEvent) => $router.push({ query: { collection: inputEvent.target.value } })"
+                    :value="selectedCollection">
+                <option value="default">
+                    {{ $i18n.get('repository') }}
+                </option>
+                <option 
+                        v-for="(collection, index) of collections"
+                        :key="index"
+                        :value="collection.id">
+                    {{ collection.name }}
+                </option>
+            </select>
+            <a 
+                    v-if="!isRepositoryLevel && collectionEditionPage"
+                    :href="collectionEditionPage"
+                    class="page-title-action">
+                {{ $i18n.get('label_manage_collection') }}
+            </a>
+        </div>
         <div class="columns is-multiline">
             <div 
                     :class="{ 'is-three-fifths-desktop': !isRepositoryLevel }"
@@ -286,14 +294,17 @@ export default {
             reportsLatestCachedOn: 'getReportsLatestCachedOn',
             startDate: 'getStartDate'
         }),
+        collectionEditionPage() {
+            return (this.selectedCollection && this.selectedCollection != 'default') ? (tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#/collections/' + this.selectedCollection) : '';
+        },
         isRepositoryLevel() {
             return !this.selectedCollection || this.selectedCollection == 'default';
         },
         summaryLatestCachedOn() {
-            return this.reportsLatestCachedOn['summary-' + (this.collectionId ? this.collectionId : 'default')];
+            return this.reportsLatestCachedOn['summary-' + (this.selectedCollection ? this.selectedCollection : 'default')];
         },
         metadataLatestCachedOn() {
-            return this.reportsLatestCachedOn['metadata-' + (this.collectionId ? this.collectionId : 'default')];
+            return this.reportsLatestCachedOn['metadata-' + (this.selectedCollection ? this.selectedCollection : 'default')];
         },
         collectionsLatestCachedOn() {
             return this.reportsLatestCachedOn['collections'];
@@ -302,7 +313,7 @@ export default {
             return this.reportsLatestCachedOn['taxonomies'];
         },
         activitiesLatestCachedOn() {
-            return this.reportsLatestCachedOn['activities-' + (this.collectionId ? this.collectionId : 'default') + (this.activitiesStartDate ? '-' + this.activitiesStartDate : '')];
+            return this.reportsLatestCachedOn['activities-' + (this.selectedCollection ? this.selectedCollection : 'default') + (this.activitiesStartDate ? '-' + this.activitiesStartDate : '')];
         }
     },
     watch: {

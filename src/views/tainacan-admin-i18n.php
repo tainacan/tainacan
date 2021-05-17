@@ -578,6 +578,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_decrease'								 => __( 'Decrease', 'tainacan'),
 	'label_increase'								 => __( 'Increase', 'tainacan'),
 	'label_set_all_create_metadada'					 => __( 'Set every metadata to be created', 'tainacan'),
+	'label_manage_collection'						 => __( 'Manage collection', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

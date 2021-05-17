@@ -32,7 +32,7 @@
             />
             
         <div 
-                v-if="allowNew"
+                v-if="displayCreateNewTerm"
                 class="add-new-term">
             <a
                     @click="openTermCreationModal"
@@ -104,6 +104,9 @@
                     return this.itemMetadatum.metadatum.metadata_type_options.input_type;
                 else
                     return '';
+            },
+            displayCreateNewTerm() {
+                return this.allowNew;
             }
         },
         watch: {
@@ -116,7 +119,7 @@
 
             this.taxonomyId = metadata_type_options.taxonomy_id;
             this.taxonomy = metadata_type_options.taxonomy;
-
+            
             if (this.itemMetadatum.item && this.itemMetadatum.item.id && metadata_type_options && metadata_type_options.allow_new_terms && this.itemMetadatum.item) 
                 this.allowNew = metadata_type_options.allow_new_terms == 'yes';
 
