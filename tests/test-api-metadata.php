@@ -952,5 +952,3 @@ class TAINACAN_REST_Metadata_Controller extends TAINACAN_UnitApiTestCase {
 	}
 
 }
-
-?>
