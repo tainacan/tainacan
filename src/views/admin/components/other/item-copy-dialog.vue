@@ -5,7 +5,7 @@
             role="alertdialog"
             tabindex="-1"
             aria-modal
-            class="tainacan-form dialog"
+            class="tainacan-form tainacan-dialog dialog"
             ref="itemCopyDialog">
         <div    
                 class="modal-card" 
