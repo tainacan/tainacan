@@ -15,6 +15,7 @@ import {
 Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
 
 import ReportsPage from '../reports.vue';
+import TainacanReportsSubheader from '../components/tainacan-reports-subheader.vue';
 import NumberBlock from '../components/number-block.vue';
 import ItemsPerTermBlock from '../components/items-per-term-block.vue';
 import ItemsPerTermCollectionBlock from '../components/items-per-term-collection-block.vue';
@@ -72,6 +73,7 @@ Vue.use(VTooltip);
 Vue.use(Snackbar);
 Vue.use(Modal);
 
+Vue.component('tainacan-reports-subheader', TainacanReportsSubheader);
 Vue.component('number-block', NumberBlock);
 Vue.component('items-per-term-block', ItemsPerTermBlock);
 Vue.component('items-per-term-collection-block', ItemsPerTermCollectionBlock);

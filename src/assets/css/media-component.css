@@ -727,7 +727,8 @@ a.pswp__share--download:hover {
       z-index: 99;
       background: var(--tainacan-media-background, #ffffff);
       border-radius: 3px;
-      word-wrap: break-word; }
+      word-wrap: break-word;
+      padding: 1rem 2rem; }
     .tainacan-media-component__swiper-main .swiper-slide-content audio {
       background: black;
       min-height: 38px;

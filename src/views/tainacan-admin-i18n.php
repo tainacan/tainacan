@@ -580,6 +580,13 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_increase'								 => __( 'Increase', 'tainacan'),
 	'label_set_all_create_metadada'					 => __( 'Set every metadata to be created', 'tainacan'),
 	'label_manage_collection'						 => __( 'Manage collection', 'tainacan'),
+	'label_chart_controls'							 => __( 'Chart controls', 'tainacan'),
+	'label_increase_zoom'							 => __( 'Increase zoom', 'tainacan'),
+	'label_decrease_zoom'							 => __( 'Decrease zoom', 'tainacan'),
+	'label_zoom_by_selection'						 => __( 'Zoom by selection', 'tainacan'),
+	'label_pan_selection'							 => __( 'Pan selection', 'tainacan'),
+	'label_reset_zoom'								 => __( 'Reset zoom', 'tainacan'),
+	'label_chart_export_options'					 => __( 'Chart export options', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

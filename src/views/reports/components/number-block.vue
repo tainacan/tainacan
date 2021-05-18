@@ -23,7 +23,7 @@
             <li 
                     v-for="(statusOption, index) of $statusHelper.getStatuses()"
                     :key="index"
-                    v-if="(statusOption.slug != 'private' || (statusOption.slug == 'private' && $userCaps.hasCapability('tnc_rep_read_private_collections')) && totalByStatus[statusOption.slug])">
+                    v-if="(statusOption.slug != 'draft' || entityType != 'collections') && (statusOption.slug != 'private' || (statusOption.slug == 'private' && $userCaps.hasCapability('tnc_rep_read_private_collections')) && totalByStatus[statusOption.slug])">
                 <span class="value">
                     <i-count-up
                             :delay="750"

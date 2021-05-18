@@ -24,6 +24,7 @@
                 {{ $i18n.get('label_manage_collection') }}
             </a>
         </div>
+        <tainacan-reports-subheader />
         <div class="columns is-multiline">
             <div 
                     :class="{ 'is-three-fifths-desktop': !isRepositoryLevel }"
