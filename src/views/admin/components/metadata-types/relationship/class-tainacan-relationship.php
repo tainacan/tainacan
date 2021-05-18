@@ -228,9 +228,15 @@ class Relationship extends Metadata_Type {
 			}
 			
 			if (is_string($link)) {
-				$return = "<a data-linkto='item' data-id='$id' href='$link'>";
-				$return.= $label;
-				$return .= "</a>";
+				if ( is_user_logged_in() ||
+					\is_post_status_viewable( $item->get_status() ) &&
+					\is_post_status_viewable($item->get_collection()->get_status()) ) {
+					$return = "<a data-linkto='item' data-id='$id' href='$link'>";
+					$return.= $label;
+					$return .= "</a>";
+				} else {
+					$return.= $label;
+				}
 			}
 		}
 
