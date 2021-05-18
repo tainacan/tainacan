@@ -311,7 +311,9 @@ class REST_Reports_Controller extends REST_Controller {
 					'trash'   => 0,
 					'draft'   => 0,
 					'publish' => 0,
-					'private' => 0
+					'private' => 0,
+					'restrict' => 0,
+					'not_restrict' => 0
 				)
 			)
 		);
@@ -339,7 +341,7 @@ class REST_Reports_Controller extends REST_Controller {
 			$cached_object = $this->get_cache_object($key_cache_object, $request);
 			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 
-			$collections = $this->collections_repository->fetch([]);
+			$collections = $this->collections_repository->fetch(['status'=> ['publish', 'private', 'trash']]);
 			$response['totals']['collections'] = array(
 				'total' => 0,
 				'trash'   => 0,
@@ -354,12 +356,20 @@ class REST_Reports_Controller extends REST_Controller {
 					$response['totals']['collections']['total']++;
 					$total_items = wp_count_posts( $collection->get_db_identifier(), 'readable' );
 
-					if (isset($total_items->publish) || isset($total_items->private) ||
-						isset($total_items->trash) || isset($total_items->draft)) {
-							$response['totals']['items']['trash']   += $total_items->trash;
-							$response['totals']['items']['draft']   += $total_items->draft;
-							$response['totals']['items']['publish'] += $total_items->publish;
-							$response['totals']['items']['private'] += $total_items->private;
+					$response['totals']['items']['trash']   += isset($total_items->trash)  ? intval($total_items->trash)   : 0;
+					$response['totals']['items']['draft']   += isset($total_items->draft)  ? intval($total_items->draft)   : 0;
+					$response['totals']['items']['publish'] += isset($total_items->publish)? intval($total_items->publish) : 0;
+					$response['totals']['items']['private'] += isset($total_items->private)? intval($total_items->private) : 0;
+					
+					if ( \is_post_status_viewable( $collection->get_status() ) === true ) {
+						$response['totals']['items']['not_restrict'] += isset($total_items->publish) ? intval($total_items->publish) : 0;
+					} else {
+						$response['totals']['items']['restrict'] += (
+							(isset($total_items->trash) ? intval($total_items->trash) : 0) +
+							(isset($total_items->draft) ? intval($total_items->draft) : 0) +
+							(isset($total_items->publish) ? intval($total_items->publish) : 0) +
+							(isset($total_items->private) ? intval($total_items->private) : 0)
+						);
 					}
 				}
 				wp_reset_postdata();
@@ -376,19 +386,13 @@ class REST_Reports_Controller extends REST_Controller {
 			);
 			$total_taxonomies = wp_count_posts( 'tainacan-taxonomy', 'readable' );
 
-			if (isset($total_taxonomies->publish) ||
-				isset($total_taxonomies->private) ||
-				isset($total_taxonomies->trash) ||
-				isset($total_taxonomies->draft)) {
-
-				$response['totals']['taxonomies']['trash'] = intval($total_taxonomies->trash);
-				$response['totals']['taxonomies']['publish'] = intval($total_taxonomies->publish);
-				$response['totals']['taxonomies']['draft'] = intval($total_taxonomies->draft);
-				$response['totals']['taxonomies']['private'] = intval($total_taxonomies->private);
-				$response['totals']['taxonomies']['total'] = $response['totals']['taxonomies']['trash'] + $response['totals']['taxonomies']['publish'] + $response['totals']['taxonomies']['draft'] + $response['totals']['taxonomies']['private'];
-				$response['totals']['taxonomies']['used'] = $this->query_count_used_taxononomies();
-				$response['totals']['taxonomies']['not_used'] = $response['totals']['taxonomies']['total'] - $response['totals']['taxonomies']['used'];
-			}
+			$response['totals']['taxonomies']['trash']   = isset($total_taxonomies->trash)  ? intval($total_taxonomies->trash)   : 0;
+			$response['totals']['taxonomies']['draft']   = isset($total_taxonomies->draft)  ? intval($total_taxonomies->draft)   : 0;
+			$response['totals']['taxonomies']['publish'] = isset($total_taxonomies->publish)? intval($total_taxonomies->publish) : 0;
+			$response['totals']['taxonomies']['private'] = isset($total_taxonomies->private)? intval($total_taxonomies->private) : 0;
+			$response['totals']['taxonomies']['total'] = $response['totals']['taxonomies']['trash'] + $response['totals']['taxonomies']['publish'] + $response['totals']['taxonomies']['draft'] + $response['totals']['taxonomies']['private'];
+			$response['totals']['taxonomies']['used'] = $this->query_count_used_taxononomies();
+			$response['totals']['taxonomies']['not_used'] = $response['totals']['taxonomies']['total'] - $response['totals']['taxonomies']['used'];
 		}
 		$response['totals']['items']['total'] = ($response['totals']['items']['trash'] + $response['totals']['items']['draft'] + $response['totals']['items']['publish'] + $response['totals']['items']['private']);
 		$this->set_cache_object($key_cache_object, $response);
