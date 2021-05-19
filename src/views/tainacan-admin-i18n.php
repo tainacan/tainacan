@@ -110,8 +110,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	/* translators: The noun for the trash status, not the verb */
 	'status_trash'                                   => __( 'Trash', 'tainacan' ),
 	'status_auto-draft'                              => __( 'Automatic draft', 'tainacan' ),
-	'publish_visibility'                             => __( 'Public (visible to everyone)', 'tainacan' ),
-	'private_visibility'                             => __( 'Private (visible only for editors)', 'tainacan' ),
+	'label_open_access'                              => __( 'Open access', 'tainacan' ),
+	'label_restrict_access'                          => __( 'Restrict access', 'tainacan' ),
 
 	// Page Titles (used mainly on Router)
 	'title_repository_collections_page'              => __( 'Repository Collections', 'tainacan' ),

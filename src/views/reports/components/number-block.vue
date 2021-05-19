@@ -1,5 +1,7 @@
 <template>
-    <div class="number-block">
+    <div 
+            :class="'number-block--' + entityType"
+            class="number-block">
         <p class="title is-2">
             <i-count-up
                     :delay="750"
@@ -42,6 +44,34 @@
                 <!-- {{ statusOption.name }} -->
             </li>
         </ul>
+        <ul 
+                v-if="entityType == 'items' && (totalByVisibility['not_restrict'] || totalByVisibility['restrict'])"
+                class="has-text-gray status-list">
+            <li>
+                <span class="value">
+                    <i-count-up
+                            :delay="750"
+                            :end-val="totalByVisibility['not_restrict']"
+                            :options="{ separator: ' ' }" />
+                    &nbsp;
+                </span>
+                <span class="icon has-text-gray">
+                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-see" />
+                </span>
+            </li>
+             <li>
+                <span class="value">
+                    <i-count-up
+                            :delay="750"
+                            :end-val="totalByVisibility['restrict']"
+                            :options="{ separator: ' ' }" />
+                    &nbsp;
+                </span>
+                <span class="icon has-text-gray">
+                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-see" />
+                </span>
+            </li>
+        </ul>
     </div>
 </template>
 
@@ -65,7 +95,13 @@ export default {
                 'publish': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].publish ? this.summary.totals[this.entityType].publish : 0,
                 'private': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].private ? this.summary.totals[this.entityType].private : 0,
                 'draft': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].draft ? this.summary.totals[this.entityType].draft : 0,
-                'trash': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].trash ? this.summary.totals[this.entityType].trash : 0
+                'trash': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].trash ? this.summary.totals[this.entityType].trash : 0,
+            }
+        },
+        totalByVisibility() {
+            return {
+                'not_restrict': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].not_restrict ? this.summary.totals[this.entityType].not_restrict : 0,
+                'restrict': this.summary && this.summary.totals && this.summary.totals[this.entityType] && this.summary.totals[this.entityType].restrict ? this.summary.totals[this.entityType].restrict : 0,
             }
         }
     }
@@ -97,6 +133,14 @@ export default {
 
         li {
             margin: 0 1em;
+        }
+    }
+    &.number-block--items {
+        .subtitle {
+            margin-bottom: 1.25rem;
+        }
+        .status-list {
+            margin: 0.25em 0 0.1em 0;
         }
     }
 }

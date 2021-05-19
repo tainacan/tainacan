@@ -154,23 +154,42 @@
                             </div>
                         </div>
 
-                        <!-- Visibility (status public or private) -------------------------------- -->
+                        <!-- Status (status public or private) -------------------------------- -->
                         <div class="column is-narrow">
                             
                             <div class="section-label">
-                                <label>{{ $i18n.get('label_visibility') }}</label>
+                                <label>{{ $i18n.getHelperTitle('items', 'status') }}</label>
                             </div>
                             <div class="section-status">
                                 <div class="field has-addons">
                                     <span v-if="item.status != 'private'">
                                         <span class="icon">
                                             <i class="tainacan-icon tainacan-icon-public"/>
-                                        </span> {{ $i18n.get('publish_visibility') }}
+                                        </span> {{ $i18n.get('status_public') }}
                                     </span>
                                     <span v-if="item.status == 'private'">
                                         <span class="icon">
                                             <i class="tainacan-icon tainacan-icon-private"/>
-                                        </span>  {{ $i18n.get('private_visibility') }}
+                                        </span>  {{ $i18n.get('status_private') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visibility -->
+                        <div class="column is-narrow">
+                            <div class="section-label">
+                                <label>{{ $i18n.get('label_visibility') }}</label>
+                            </div>
+                            <div class="section-status">
+                                <div class="field has-addons">
+                                    <span>
+                                        <span class="icon">
+                                            <i 
+                                                    :class="'tainacan-icon-' + (itemVisibility == 'open_access' ? 'see' : 'see')"
+                                                    class="tainacan-icon"/>
+                                        </span>
+                                        {{ $i18n.get('label_' + itemVisibility) }}
                                     </span>
                                 </div>
                             </div>
@@ -369,6 +388,9 @@
             },
             totalAttachments() {
                 return this.getTotalAttachments();
+            },
+            itemVisibility() {
+                return (this.collection && this.collection.status == 'public' && this.item && this.item.status == 'public') ? 'open_access' : 'restrict_access'
             }
         },
         created() {

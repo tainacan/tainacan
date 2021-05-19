@@ -421,11 +421,11 @@
                                     style="flex-wrap: wrap"
                                     class="column is-narrow">
                                 <div class="section-label">
-                                    <label>{{ $i18n.get('label_visibility') }}</label>
+                                    <label>{{ $i18n.get('label_status') }}</label>
                                     <span class="required-metadatum-asterisk">*</span>
                                     <help-button
-                                            :title="$i18n.get('label_visibility')"
-                                            :message="$i18n.get('info_visibility_helper')"/>
+                                            :title="$i18n.getHelperTitle('items', 'status')"
+                                            :message="$i18n.getHelperMessage('items', 'status')"/>
                                 </div>
                                 <div class="section-status">
                                     <div
@@ -438,7 +438,7 @@
                                             <span class="icon">
                                                 <i class="tainacan-icon tainacan-icon-public"/>
                                             </span>
-                                            {{ $i18n.get('publish_visibility') }}
+                                            {{ $i18n.get('status_public') }}
                                         </b-radio>
                                         <b-radio
                                                 v-model="visibility"
@@ -447,7 +447,7 @@
                                             <span class="icon">
                                                 <i class="tainacan-icon tainacan-icon-private"/>
                                             </span>
-                                            {{ $i18n.get('private_visibility') }}
+                                            {{ $i18n.get('status_private') }}
                                         </b-radio>
                                     </div>
                                 </div>

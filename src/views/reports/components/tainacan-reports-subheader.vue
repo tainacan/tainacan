@@ -30,18 +30,18 @@
             <ul class="tainacan-reports-subheader-box__content">
                 <li>
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-public"/>
+                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-see"/>
                     </span>
                     <span>
-                        {{ $i18n.get('publish_visibility') }}
+                        {{ $i18n.get('label_open_access') }}
                     </span>
                 </li>
                 <li>
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-private"/>
+                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-private"/>
                     </span>
                     <span>
-                        {{ $i18n.get('private_visibility') }}
+                        {{ $i18n.get('label_restrict_access') }}
                     </span>
                 </li>
             </ul>
