@@ -79,7 +79,7 @@
                     :message="$i18n.getHelperMessage('tainacan-taxonomy', 'visible_options_list')"/>
         </b-field>
         <b-field
-                v-if="taxonomy_id && taxonomies.length && isTremCreationAllowedOnCurrentTaxonomy" 
+                v-if="taxonomy_id && taxonomies.length && isTermCreationAllowedOnCurrentTaxonomy" 
                 :addons="false"
                 :label="$i18n.get('label_taxonomy_allow_new_terms')">
                 &nbsp;
@@ -201,7 +201,7 @@
                 }
                 return true;
             },
-            isTremCreationAllowedOnCurrentTaxonomy() {
+            isTermCreationAllowedOnCurrentTaxonomy() {
                 const currentTaxonomy = this.taxonomies.find((taxonomy) => taxonomy.id == this.taxonomy_id);
                 return currentTaxonomy ? currentTaxonomy.allow_insert == 'yes' : false;
             }
