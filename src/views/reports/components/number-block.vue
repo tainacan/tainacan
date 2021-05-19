@@ -134,6 +134,10 @@ export default {
         li {
             margin: 0 1em;
         }
+        .value {
+            text-align: center;
+            display: inline-flex;
+        }
     }
     &.number-block--items {
         .subtitle {

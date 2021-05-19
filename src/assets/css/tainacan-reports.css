@@ -47,6 +47,8 @@
     #tainacan-reports-app .tainacan-reports-subheader .apexcharts-pan-icon svg {
       fill: transparent;
       stroke: var(--tainacan-block-gray4, #555758); }
+    #tainacan-reports-app .tainacan-reports-subheader .apexcharts-reset-icon {
+      margin-left: 0; }
   #tainacan-reports-app .columns {
     max-width: 100%;
     align-items: flex-start;
