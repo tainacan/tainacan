@@ -50,9 +50,20 @@
 
             &.tainacan-reports-subheader-box__content--two-columns li {
                 flex-basis: calc(50% - 8px);
+
+                @media screen and (max-width: 986px) {
+                    flex-basis: 100%;
+                }
             } 
             &.tainacan-reports-subheader-box__content--three-columns li {
                 flex-basis: calc(33.3333% - 8px);
+
+                @media screen and (max-width: 1024px) {
+                    flex-basis: calc(50% - 8px);
+                }
+                @media screen and (max-width: 768px) {
+                    flex-basis: 100%;
+                }
             } 
         }
 

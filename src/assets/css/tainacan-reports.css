@@ -33,8 +33,17 @@
       flex-wrap: wrap; }
       #tainacan-reports-app .tainacan-reports-subheader .tainacan-reports-subheader-box__content.tainacan-reports-subheader-box__content--two-columns li {
         flex-basis: calc(50% - 8px); }
+        @media screen and (max-width: 986px) {
+          #tainacan-reports-app .tainacan-reports-subheader .tainacan-reports-subheader-box__content.tainacan-reports-subheader-box__content--two-columns li {
+            flex-basis: 100%; } }
       #tainacan-reports-app .tainacan-reports-subheader .tainacan-reports-subheader-box__content.tainacan-reports-subheader-box__content--three-columns li {
         flex-basis: calc(33.3333% - 8px); }
+        @media screen and (max-width: 1024px) {
+          #tainacan-reports-app .tainacan-reports-subheader .tainacan-reports-subheader-box__content.tainacan-reports-subheader-box__content--three-columns li {
+            flex-basis: calc(50% - 8px); } }
+        @media screen and (max-width: 768px) {
+          #tainacan-reports-app .tainacan-reports-subheader .tainacan-reports-subheader-box__content.tainacan-reports-subheader-box__content--three-columns li {
+            flex-basis: 100%; } }
     #tainacan-reports-app .tainacan-reports-subheader .tainacan-reports-subheader-box__content li {
       display: flex;
       align-items: center;
