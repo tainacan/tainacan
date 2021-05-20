@@ -199,8 +199,10 @@ class CSV extends Importer {
 				$returnValue = [];
 				foreach($valueToInsert as $index => $metadatumValue) {
 					$childrenHeaders = str_getcsv($compoundHeaders[$key], $this->get_option('delimiter'), $this->get_option('enclosure'));
-					$childrenValue = str_getcsv($metadatumValue, $this->get_option('delimiter'), $this->get_option('enclosure'));
-					
+					$childrenValue = $this->is_clear_value($metadatumValue) ? 
+						array_fill(0, sizeof($childrenHeaders), $this->get_option('escape_empty_value') ) :
+						str_getcsv($metadatumValue, $this->get_option('delimiter'), $this->get_option('enclosure'));
+
 					if ( sizeof($childrenHeaders) != sizeof($childrenValue) ) {
 						$this->add_error_log('Mismatch count headers childrens and row columns. file value:' . $metadatumValue);
 						return false;
@@ -789,7 +791,12 @@ class CSV extends Importer {
 							foreach($children_mapping as $tainacan_children_metadatum_id => $tainacan_children_header) {
 								$metadatumChildren = $Tainacan_Metadata->fetch( $tainacan_children_metadatum_id, 'OBJECT' );
 								$compoundItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatumChildren);
-								$compoundItemMetadata->set_value($compoundValue[$tainacan_children_header]);
+								$childrenCompoundvalue = $compoundValue[$tainacan_children_header];
+								if ($this->is_clear_value($childrenCompoundvalue)) {
+									$compoundItemMetadata->set_value("");
+								} else {
+									$compoundItemMetadata->set_value($childrenCompoundvalue);
+								}
 								$tmp[] = $compoundItemMetadata;
 							}
 							$singleItemMetadata[] = $tmp;
@@ -876,12 +883,18 @@ class CSV extends Importer {
 		}
 	}
 
+	private function is_assoc(array $arr) {
+		if (array() === $arr) return false;
+		return array_keys($arr) !== range(0, count($arr) - 1);
+	}
+
 	private function deleteAllValuesCompoundItemMetadata($item, $compoundMetadataID) {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$compound_metadata = $Tainacan_Metadata->fetch($compoundMetadataID, 'OBJECT');
 		$compound_item_metadata = new Entities\Item_Metadata_Entity($item, $compound_metadata);
 		$compound_item_metadata_value = $compound_item_metadata->get_value();
+		$compound_item_metadata_value = $this->is_assoc($compound_item_metadata_value) ? [$compound_item_metadata_value] : $compound_item_metadata_value;
 		foreach($compound_item_metadata_value as $item_metadata_value) {
 			foreach ($item_metadata_value as $itemMetadata) {
 				$Tainacan_Item_Metadata->remove_compound_value($item, $compound_metadata, $itemMetadata->get_parent_meta_id());
