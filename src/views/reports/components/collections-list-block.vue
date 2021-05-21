@@ -25,6 +25,7 @@
                 v-if="isBuildingChart || isFetchingData"
                 style="min-height:380px"
                 class="skeleton postbox" />
+        <slot />
     </div>
 </template>
 
