@@ -335,6 +335,17 @@ class REST_Reports_Controller extends REST_Controller {
 				$response['totals']['items']['draft']   = intval($total_items->draft);
 				$response['totals']['items']['publish'] = intval($total_items->publish);
 				$response['totals']['items']['private'] = intval($total_items->private);
+
+				if ( \is_post_status_viewable( $collection->get_status() ) === true ) {
+					$response['totals']['items']['not_restrict'] += isset($total_items->publish) ? intval($total_items->publish) : 0;
+				} else {
+					$response['totals']['items']['restrict'] += (
+						//(isset($total_items->trash) ? intval($total_items->trash) : 0) +
+						(isset($total_items->draft) ? intval($total_items->draft) : 0) +
+						(isset($total_items->publish) ? intval($total_items->publish) : 0) +
+						(isset($total_items->private) ? intval($total_items->private) : 0)
+					);
+				}
 			}
 		} else {
 			$key_cache_object = 'summary';
@@ -365,7 +376,7 @@ class REST_Reports_Controller extends REST_Controller {
 						$response['totals']['items']['not_restrict'] += isset($total_items->publish) ? intval($total_items->publish) : 0;
 					} else {
 						$response['totals']['items']['restrict'] += (
-							(isset($total_items->trash) ? intval($total_items->trash) : 0) +
+							//(isset($total_items->trash) ? intval($total_items->trash) : 0) +
 							(isset($total_items->draft) ? intval($total_items->draft) : 0) +
 							(isset($total_items->publish) ? intval($total_items->publish) : 0) +
 							(isset($total_items->private) ? intval($total_items->private) : 0)
@@ -554,10 +565,22 @@ class REST_Reports_Controller extends REST_Controller {
 				}
 
 				$response['totals']['metadata'][$metadatum->get_status()]++;
-				$response['totals']['metadata_per_type'][$meta_type]['name'] = $meta_type_name;
+				if ( !isset($response['totals']['metadata_per_type'][$meta_type]) ) {
+					$response['totals']['metadata_per_type'][$meta_type] = array(
+						'name' => $meta_type_name,
+						'count' => 0,
+					);
+				}
 				$response['totals']['metadata_per_type'][$meta_type]['count']++;
 
-				$meta_ids[] = $metadatum->get_id();
+				if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' ) {
+					$metadatum_childs = $this->metadatum_repository->fetch(['parent' => $metadatum->get_id()], 'OBJECT');
+					foreach($metadatum_childs as $childs) {
+						$meta_ids[] = $childs->get_id();
+					}
+				} else {
+					$meta_ids[] = $metadatum->get_id();
+				}
 			}
 			$response['distribution'] = $this->query_item_metadata_distribution($meta_ids, $collection->get_db_identifier());
 			//wp_count_posts()
@@ -608,9 +631,11 @@ class REST_Reports_Controller extends REST_Controller {
 		global $wpdb;
 		$string_meta_ids = "'".implode("','", $meta_ids)."'";
 		$sql_statement = $wpdb->prepare(
-			"SELECT p.post_title AS 'name', p.id AS id, IFNULL(((m.total/$total_items) * 100), 0) as fill_percentage
+			"SELECT p.post_title AS 'name', pp.post_title AS 'parent_name', p.id AS id, IFNULL(((m.total/$total_items) * 100), 0) as fill_percentage
 			FROM
-				$wpdb->posts p LEFT JOIN
+				$wpdb->posts p 
+				LEFT JOIN $wpdb->posts pp ON (p.post_parent = pp.id)
+				LEFT JOIN
 				(
 					SELECT meta_key, count(DISTINCT post_id) AS total
 					FROM $wpdb->postmeta 
