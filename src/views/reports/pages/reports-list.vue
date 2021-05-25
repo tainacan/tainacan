@@ -84,7 +84,8 @@
                             :class="{ 'skeleton': isFetchingSummary }"
                             class="postbox"
                             :summary="summary"
-                            entity-type="taxonomies" />
+                            entity-type="taxonomies"
+                            :is-repository-level="isRepositoryLevel" />
                     <div 
                             v-if="summaryLatestCachedOn"
                             class="box-last-cached-on">
