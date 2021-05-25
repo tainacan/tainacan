@@ -16,11 +16,6 @@
             </span>
             &nbsp;{{ $i18n.get(entityType) }}
         </p>
-        <p 
-                v-if="summary.totals && summary.totals[entityType] && entityType == 'taxonomies'"
-                class="subtitle is-6">
-            {{ $i18n.get('label_used') + ': ' + summary.totals[entityType].used + ' | ' + $i18n.get('label_not_used') + ': ' + summary.totals[entityType].not_used }}
-        </p>
         <!-- <pre>{{ currentHoveredStatus }}</pre> -->
         <ul class="has-text-gray status-list">
             <li 
@@ -47,6 +42,11 @@
                 <!-- {{ statusOption.name }} -->
             </li>
         </ul>
+        <p 
+                v-if="summary.totals && summary.totals[entityType] && entityType == 'taxonomies'"
+                class="terms-used-info subtitle is-6">
+            {{ $i18n.get('label_used') + ': ' + summary.totals[entityType].used + ' | ' + $i18n.get('label_not_used') + ': ' + summary.totals[entityType].not_used }}
+        </p>
         <div 
                 class="visibility-charts"
                 v-if="entityType === 'items' && !isBuildingChart && isRepositoryLevel">
@@ -250,24 +250,32 @@ export default {
             display: inline-flex;
         }
     }
-    &.number-block--items {
+    &.number-block--items .status-list {
+        .tainacan-icon-private {
+            color: #01295c !important; 
+        }
+        .tainacan-icon-draft {
+            color: #25a189 !important;
+        }
+        .tainacan-icon-delete {
+            color: #e69810 !important;
+        }
+    }
+    &.number-block--items,
+    &.number-block--taxonomy {
         .subtitle {
             margin-bottom: 1.25rem;
         }
         .status-list {
             margin: 0.25em 0 0.1em 0;
-
-            .tainacan-icon-private {
-                opacity: 0.75;
-            }
-            .tainacan-icon-draft {
-                opacity: 0.6;
-            }
-            .tainacan-icon-delete {
-                opacity: 0.5;
-            }
         }
     }
+}
+.terms-used-info {
+    border-top: 1px solid #cbcbcb;
+    margin-top: 6px;
+    margin-bottom: 0px !important;
+    padding: 12px;
 }
 .visibility-charts {
     display: flex;
@@ -288,13 +296,13 @@ export default {
         transition: width 0.2s ease, background-color 0.2s ease;
 
         &:nth-child(3) {
-            opacity: 0.75;
+            background-color: #01295c;
         }
         &:nth-child(4) {
-            opacity: 0.6;
+            background-color: #25a189;
         }
         &:nth-child(5) {
-            opacity: 0.5;
+            background-color: #e69810;
         }
         &:nth-child(6) {
             opacity: 0.35;
