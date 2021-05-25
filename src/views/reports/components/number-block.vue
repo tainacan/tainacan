@@ -262,7 +262,7 @@ export default {
         }
     }
     &.number-block--items,
-    &.number-block--taxonomy {
+    &.number-block--taxonomies {
         .subtitle {
             margin-bottom: 1.25rem;
         }
