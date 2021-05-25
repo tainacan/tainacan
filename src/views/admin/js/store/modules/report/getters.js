@@ -42,6 +42,10 @@ export const getHorizontalBarChartOptions = state => {
   return state.horizontalBarChartOptions;
 };
 
+export const getVisibilityHorizontalBarChartOptions = state => {
+  return state.visibilityHorizontalBarChartOptions;
+};
+
 export const getDonutChartOptions = state => {
   return state.donutChartOptions;
 };

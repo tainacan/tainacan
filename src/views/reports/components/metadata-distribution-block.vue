@@ -112,7 +112,10 @@ export default {
                         dataLabels: {
                             style: {
                                 colors: ['#ffffff', '#454647']
-                            }
+                            },
+                            formatter(val) {
+                                return (!Number.isNaN(val) && val > 0) ? (val.toFixed(2) + '%') : ''
+                            },
                         },
                         states: {
                             normal: {
