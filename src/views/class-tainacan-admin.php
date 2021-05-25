@@ -62,7 +62,7 @@ class Admin {
 			$this->menu_slug,
 			__('Reports', 'tainacan'),
 			__('Reports', 'tainacan'),
-			'read',
+			'manage_tainacan',
 			'tainacan_reports',
 			array( &$this, 'reports_page' )
 		);

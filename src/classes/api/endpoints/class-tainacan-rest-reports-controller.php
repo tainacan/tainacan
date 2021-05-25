@@ -264,7 +264,7 @@ class REST_Reports_Controller extends REST_Controller {
 	}
 
 	public function reports_permissions_check($request) {
-		return true;
+		return \is_user_logged_in() && current_user_can('read');
 	}
 
 	public function get_collections($request) {
