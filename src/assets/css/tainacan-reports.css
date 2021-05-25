@@ -153,5 +153,8 @@
       #tainacan-reports-app .tainacan-custom-tooltip .tainacan-custom-tooltip__body p {
         margin-bottom: 4px;
         font-size: 0.85rem; }
+  #tainacan-reports-app .apexcharts-legend-series {
+    display: flex;
+    align-items: center; }
 
 /*# sourceMappingURL=tainacan-reports.css.map */

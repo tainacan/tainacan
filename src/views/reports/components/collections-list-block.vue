@@ -71,19 +71,19 @@ export default {
 
             this.chartSeries = [
                 {
-                    name: this.$i18n.get('status_publish'),
+                    name: 'public',//this.$i18n.get('status_publish'),
                     data: publicItems
                 },
                 {
-                    name: this.$i18n.get('status_private'),
+                    name: 'private',//this.$i18n.get('status_private'),
                     data: privateItems
                 },
                 {
-                    name: this.$i18n.get('status_draft'),
+                    name: 'draft',//this.$i18n.get('status_draft'),
                     data: draftItems
                 },
                 {
-                    name: this.$i18n.get('status_trash'),
+                    name: 'trash',//this.$i18n.get('status_trash'),
                     data: trashItems
                 }
             ];
@@ -103,11 +103,26 @@ export default {
                             trim: true,
                             hideOverlappingLabels: false
                         },
-                        tooltip: { enabled: true }
                     },
                     yaxis: {
                         title: {
                             text: this.$i18n.get('items')
+                        }
+                    },
+                    tooltip: {
+                        custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+                            return `<div class="tainacan-custom-tooltip">
+                                    <div class="tainacan-custom-tooltip__header">` + collectionsLabels[dataPointIndex] + `</div>
+                                    <div class="tainacan-custom-tooltip__body">
+                                        <span>` + this.$i18n.get('status_' + w.config.series[seriesIndex].name) + `: <strong>` + series[seriesIndex][dataPointIndex] + `</strong></span>` +
+                                    `</div></div>`;
+                        }
+                    },
+                    legend: {
+                        position: 'right',
+                        offsetY: 40,
+                        formatter: (seriesName) => {
+                            return ['<span class="icon"><i class="tainacan-icon tainacan-icon-' + (seriesName != 'trash' ? seriesName : 'delete') + '"></i></span>' + this.$i18n.get('status_' + seriesName) ]
                         }
                     }
                 }
