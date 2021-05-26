@@ -18,7 +18,7 @@
         "platform-check": false
     },
     "scripts": {
-        "post-install-cmd": "\"src/vendor/bin/phpcs\" --config-set installed_paths src/vendor/wimg/php-compatibility",
-        "post-update-cmd" : "\"src/vendor/bin/phpcs\" --config-set installed_paths src/vendor/wimg/php-compatibility"
+        "post-install-cmd": "\"src/vendor/bin/phpcs\" --config-set installed_paths src/vendor/phpcompatibility/php-compatibility",
+        "post-update-cmd" : "\"src/vendor/bin/phpcs\" --config-set installed_paths src/vendor/phpcompatibility/php-compatibility"
     }
 }
