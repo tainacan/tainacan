@@ -89,7 +89,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'finish'                                         => __( 'Finish', 'tainacan' ),
 	'select_to_create'                               => __( 'select to create', 'tainacan' ),
 	'new_bulk_edition_criterion'                     => __( 'New bulk edition criterion', 'tainacan' ),
-	'clear_radio'                                    => __( 'Clear selected radio', 'tainacan' ),
 	'undo'                                           => __( 'Undo', 'tainacan' ),
 	'delete'                                    	 => __( 'Delete', 'tainacan' ),
 	'skip'	                                    	 => __( 'Skip', 'tainacan' ),
