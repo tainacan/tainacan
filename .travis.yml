@@ -33,7 +33,7 @@ install:
 - sudo mv  ./tests/bootstrap-config-sample.php ./tests/bootstrap-config.php
 - sudo ./tests/bin/install-wp-tests.sh test travis "" /tmp/wordpress localhost latest
   true 
-- if [[ $TRAVIS_PHP_VERSION = 7.1 || $TRAVIS_PHP_VERSION = 5.6 ]]; then composer install --ignore-platform-reqs; else composer install fi
+- if [[ $TRAVIS_PHP_VERSION = 7.1 || $TRAVIS_PHP_VERSION = 5.6 ]]; then composer install --ignore-platform-reqs; else composer install; fi
 - sudo mkdir /tmp/wordpress/wordpress-test/wp-content/uploads
 - sudo chmod -R 777 /tmp/wordpress/wordpress-test/wp-content/uploads
 - sudo wget https://phar.phpunit.de/phpunit-6.5.7.phar -P /tmp 
