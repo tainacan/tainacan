@@ -35,10 +35,10 @@ class REST_Reports_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'reports_permissions_check'),
 					'args'                => [
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -56,10 +56,10 @@ class REST_Reports_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'reports_permissions_check'),
 					'args'                => [
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -77,10 +77,10 @@ class REST_Reports_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'reports_permissions_check'),
 					'args'                => [
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -98,10 +98,10 @@ class REST_Reports_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'reports_permissions_check'),
 					'args'                => [
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -119,10 +119,10 @@ class REST_Reports_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'reports_permissions_check'),
 					'args'                => [
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -140,10 +140,10 @@ class REST_Reports_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'reports_permissions_check'),
 					'args'                => [
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -161,10 +161,10 @@ class REST_Reports_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'reports_permissions_check'),
 					'args'                => [
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -192,10 +192,10 @@ class REST_Reports_Controller extends REST_Controller {
 							'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
 						],
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -223,10 +223,10 @@ class REST_Reports_Controller extends REST_Controller {
 							'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
 						],
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -248,10 +248,10 @@ class REST_Reports_Controller extends REST_Controller {
 							'type'        => 'integer',
 						],
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
