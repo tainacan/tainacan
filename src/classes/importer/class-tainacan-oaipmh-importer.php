@@ -739,7 +739,7 @@ class Oaipmh_Importer extends Importer {
 			$this->add_log('ERROR on get repo name');
 			$this->add_error_log('Error in fetch remote total items');
 			$this->abort();
-			return __('Imported Repo');
+			return __('Imported repository');
 		} else {
 
 			try {
@@ -749,10 +749,10 @@ class Oaipmh_Importer extends Importer {
 					return (string) $xml->Identify->repositoryName;
 				}
 			} catch (Exception $e) {
-				return __('Imported Repo');
+				return __('Imported repository');
 			}
 
-			return __('Imported Repo');
+			return __('Imported repository');
 
 		}
 	}
