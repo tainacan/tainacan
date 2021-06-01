@@ -295,7 +295,6 @@ export default {
             if (currentParams.admin_view_mode != undefined)
                 delete currentParams.admin_view_mode;
 
-            
             // Handles pagination of this link
             delete currentParams.paged;
             if (this.itemId != null && this.itemId != undefined)

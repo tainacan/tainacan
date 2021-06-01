@@ -286,7 +286,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_collapse_all'                             => __( 'Collapse all', 'tainacan' ),
 	'label_view_term'                                => __( 'View Term', 'tainacan' ),
 	/* translators: 'Published' here refers to the sum of public and private items, not including draft or trashed ones. The are visible to those with permission */
-	'label_all_published_items'                      => __( 'All published items', 'tainacan' ),
+	'label_all_items'                      			 => __( 'All items', 'tainacan' ),
 	'label_all_collections'                          => __( 'All collections', 'tainacan' ),
 	'label_all_taxonomies'                           => __( 'All taxonomies', 'tainacan' ),
 	'label_bulk_actions'                             => __( 'Bulk actions', 'tainacan' ),
@@ -641,7 +641,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_click_to_see_%s_child_term'	 	 => __( 'Click to see %s child term', 'tainacan'),
 
 	// Info. Other feedback to user.
-	'info_items_tab_all'                			 => __( 'Every published item, including those visible only to editors.', 'tainacan' ),
+	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
 	'info_items_tab_publish'                         => __( 'Only items that are visible to everyone.', 'tainacan' ),
 	'info_items_tab_private'                         => __( 'Items visible only to editors.', 'tainacan' ),
 	'info_items_tab_draft'                           => __( 'Draft items, not published.', 'tainacan' ),
@@ -653,7 +653,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_collections_tab_draft'                     => __( 'Draft collections, not published.', 'tainacan' ),
 	'info_collections_tab_trash'                     => __( 'Collections that were sent to trash.', 'tainacan' ),
 
-	'info_taxonomies_tab_all'                	     => __( 'Every published taxonomy, including those visible only to editors.', 'tainacan' ),
+	'info_taxonomies_tab_all'                	     => __( 'Every taxonomy, except by those sent to trash.', 'tainacan' ),
 	'info_taxonomies_tab_publish'                    => __( 'Only taxonomies that are visible to everyone.', 'tainacan' ),
 	'info_taxonomies_tab_private'                    => __( 'Taxonomies visible only to editors.', 'tainacan' ),
 	'info_taxonomies_tab_draft'                      => __( 'Draft taxonomies, not published.', 'tainacan' ),

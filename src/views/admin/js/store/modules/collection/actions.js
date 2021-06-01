@@ -38,17 +38,21 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 if (postQueries.advancedSearch)
                     advancedSearchResults = postQueries.advancedSearch;
             }
+
+            // Admin default tab should load publish, private and draft statuses
+            if (!isOnTheme && !postQueries.status) {
+                postQueries.status = 'publish,private,draft';
+                dispatch('search/setStatus', 'publish,private,draft', { root: true });
+            }
                 
             let query = qs.stringify(postQueries);
-
+            
             // Guarantees at least empty fetch_only are passed in case none is found
-            if (postQueries.fetch_only == ''){
+            if (postQueries.fetch_only == '')
                 dispatch('search/add_fetch_only', '', { root: true });
-            }
                     
-            if (postQueries.fetch_only_meta == ''){
+            if (postQueries.fetch_only_meta == '')
                 dispatch('search/add_fetch_only_meta', '', { root: true });
-            }
 
             // Differentiates between repository level and collection level queries
             let endpoint = '/collection/'+ collectionId +'/items?';

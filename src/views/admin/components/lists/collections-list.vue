@@ -357,7 +357,7 @@ export default {
                 this.selectedCollections.splice(i, 1, !this.allCollectionsOnPageSelected);
         },
         getTotalItems(total_items) {
-            return Number(total_items['publish']) + Number(total_items['private']);
+            return Number(total_items['publish']) + Number(total_items['private']) + Number(total_items['draft']);
         },
         deleteOneCollection(collectionId) {
             this.$buefy.modal.open({

@@ -112,7 +112,7 @@
                     <ul>
                         <li 
                                 @click="onChangeTab('')"
-                                :class="{ 'is-active': status == undefined || status == ''}"
+                                :class="{ 'is-active': status == undefined || status == ''|| status == 'publish,private,draft'}"
                                 v-tooltip="{
                                     content: $i18n.get('info_taxonomies_tab_all'),
                                     autoHide: true,
@@ -120,7 +120,7 @@
                                 }">
                             <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                                 {{ `${$i18n.get('label_all_taxonomies')}` }}
-                                <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish)})` : '' }}</span>
+                                <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish) + Number(repositoryTotalTaxonomies.draft)})` : '' }}</span>
                             </a>
                         </li>
                         <li 
@@ -129,7 +129,7 @@
                                 v-if="statusOption.slug != 'private' || (statusOption.slug == 'private' && $userCaps.hasCapability('tnc_rep_read_private_taxonomies'))"
                                 @click="onChangeTab(statusOption.slug)"
                                 :class="{ 'is-active': status == statusOption.slug}"
-                                :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '', marginLeft: statusOption.slug == 'draft' ? 'auto' : '' }"
+                                :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
                                 v-tooltip="{
                                     content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('taxonomies')]),
                                     autoHide: true,
