@@ -727,6 +727,12 @@
                             &nbsp;
                             <!-- nothing to show on header for checkboxes -->
                         </th>
+
+                        <!-- Status -->
+                        <th v-if="isOnAllItemsTabs">
+                            &nbsp;
+                        </th>
+
                         <!-- Displayed Metadata -->
                         <th
                                 v-for="(column, index) in displayedMetadata"
@@ -773,7 +779,24 @@
                                     :value="getSelectedItemChecked(item.id)"
                                     @input="setSelectedItemChecked(item.id)"/>
                         </td>
-
+                        <td 
+                                v-if="isOnAllItemsTabs"
+                                class="status-cell">
+                            <span 
+                                    v-if="$statusHelper.hasIcon(item.status)"
+                                    class="icon has-text-gray"
+                                    v-tooltip="{
+                                        content: $i18n.get('status_' + item.status),
+                                        autoHide: true,
+                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        placement: 'auto-start'
+                                    }">
+                                <i 
+                                        class="tainacan-icon tainacan-icon-1em"
+                                        :class="$statusHelper.getIcon(item.status)"
+                                        />
+                            </span>
+                        </td>
                         <!-- Item Displayed Metadata -->
                         <td
                                 :key="columnIndex"
@@ -1164,6 +1187,10 @@ export default {
         totalPages(){
             return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
         },
+        isOnAllItemsTabs() {
+            const currentStatus = this.getStatus();
+            return !currentStatus || (currentStatus.indexOf(',') > 0);
+        }
     },
     watch: {
         isAllItemsSelected(value) {
@@ -1214,6 +1241,7 @@ export default {
         ...mapGetters('search', [
             'getOrder',
             'getOrderBy',
+            'getStatus',
             'getSelectedItems',
             'getHighlightedItem',
             'getItemsPerPage'
