@@ -86,7 +86,7 @@ class CSV extends Importer {
 			if( $rawColumns ) {
 				foreach( $rawColumns as $index => $rawColumn ) {
 					if( strpos($rawColumn,'special_') === 0 ) {
-						if( in_array( $rawColumn, ['special_document', 'special_attachments', 'special_item_status', 'special_item_id', 'special_comment_status', 'special_attachments|APPEND', 'special_attachments|REPLACE'] ) ) {
+						if( in_array( $rawColumn, ['special_document', 'special_attachments', 'special_item_status', 'special_item_id', 'special_comment_status', 'special_attachments|APPEND', 'special_attachments|REPLACE', 'special_document|REPLACE'] ) ) {
 							$columns[] = $rawColumn;
 						}
 					}
@@ -518,12 +518,14 @@ class CSV extends Importer {
 			}
 		} else if( strpos($column_value,'file:') === 0 ) {
 			$correct_value = trim(substr($column_value, 5));
+			//removing the old document attachment
+			if ($this->get_option('document_import_mode') === 'replace' && $item_inserted->get_document_type() == 'attachment' ) {
+				$this->add_log('Item Document will be replaced ... ');
+				wp_delete_attachment($item_inserted->get_document(), true);
+				$this->add_log('Deleted previous Item Documents ... ');
+			}
+
 			if (isset(parse_url($correct_value)['scheme'] )) {
-				if ($this->get_option('document_import_mode') === 'replace' ) {
-					$this->add_log('Item Document will be replaced ... ');
-					$this->delete_previous_document_imgs($item_inserted->get_id(), $item_inserted->get_document());
-					$this->add_log('Deleted previous Item Documents ... ');
-				}
 				$id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
 
 				if(!$id){
