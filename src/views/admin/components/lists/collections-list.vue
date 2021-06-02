@@ -93,6 +93,10 @@
                             &nbsp;
                             <!-- nothing to show on header -->
                         </th>
+                        <!-- Status icon -->
+                        <th v-if="isOnAllCollectionsTab">
+                            &nbsp;
+                        </th>
                         <!-- Thumbnail -->
                         <th class="thumbnail-cell">
                             <div class="th-wrap">{{ $i18n.get('label_thumbnail') }}</div>
@@ -136,6 +140,25 @@
                                 :class="{ 'is-selecting': isSelectingCollections }"
                                 class="checkbox-cell">
                             <b-checkbox v-model="selectedCollections[index]"/> 
+                        </td>
+                        <!-- Status icon -->
+                        <td 
+                                v-if="isOnAllCollectionsTab"
+                                class="status-cell">
+                            <span 
+                                    v-if="$statusHelper.hasIcon(collection.status)"
+                                    class="icon has-text-gray"
+                                    v-tooltip="{
+                                        content: $i18n.get('status_' + collection.status),
+                                        autoHide: true,
+                                        classes: ['tooltip', 'repository-tooltip'],
+                                        placement: 'auto-start'
+                                    }">
+                                <i 
+                                        class="tainacan-icon tainacan-icon-1em"
+                                        :class="$statusHelper.getIcon(collection.status)"
+                                        />
+                            </span>
                         </td>
                         <!-- Thumbnail -->
                         <td 
@@ -315,7 +338,7 @@ export default {
         page: 1,
         collectionsPerPage: 12,
         collections: Array,
-        isOnTrash: false
+        status: ''
     },
     data(){
         return {
@@ -326,6 +349,14 @@ export default {
             cursorPosY: -1,
             contextMenuIndex: null,
             contextMenuCollection: null
+        }
+    },
+    computed: {
+        isOnTrash() {
+            return this.status == 'trash';
+        },
+        isOnAllCollectionsTab() {
+            return !this.status || (this.status.indexOf(',') > 0);
         }
     },
     watch: {

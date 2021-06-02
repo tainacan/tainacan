@@ -154,7 +154,7 @@
                     <taxonomies-list
                             :is-loading="isLoading"
                             :total="total"
-                            :is-on-trash="status == 'trash'"
+                            :status="status"
                             :page="page"
                             :taxonomies-per-page="taxonomiesPerPage"
                             :taxonomies="taxonomies"/>
@@ -238,7 +238,6 @@
 <script>
     import TaxonomiesList from "../../components/lists/taxonomies-list.vue";
     import { mapActions, mapGetters } from 'vuex';
-    //import moment from 'moment'
 
     export default {
         name: 'TaxonomyPage',
@@ -306,6 +305,7 @@
                 'getRepositoryTotalTaxonomies'
             ]),
             onChangeTab(status) {
+                this.page = 1;
                 this.status = status;
                 this.load();
             },
