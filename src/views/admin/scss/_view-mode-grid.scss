@@ -108,6 +108,11 @@
                 text-align: left;
                 color: var(--tainacan-heading-color);
             }
+
+            .icon:not(.slideshow-icon) {
+                float: left;
+                margin-top: -1px;
+            }
         } 
     
     }

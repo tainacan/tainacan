@@ -120,6 +120,10 @@
                 transform: scale(0.0);
                 transition: transform 0.2s ease;
             }
+            .icon:not(.slideshow-icon) {
+                float: left;
+                margin-top: -1px;
+            }
         }
         &:hover,
         &:focus {
