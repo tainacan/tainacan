@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Gets all divs with content created by our block;
     let blocks = document.getElementsByClassName('wp-block-tainacan-carousel-items-list');
-    
+
     if (blocks) {
         let blockIds = Object.values(blocks).map((block) => block.id);
 
@@ -90,6 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.collectionTextColor = this.$el.attributes['collection-text-color'] != undefined ? this.$el.attributes['collection-text-color'].value : undefined;
                     this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
                     this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
+
+                    console.log(this.collectionId);
                 },
                 methods: {
                     __(text, domain) {
