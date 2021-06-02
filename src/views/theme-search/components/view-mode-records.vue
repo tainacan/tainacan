@@ -210,7 +210,6 @@ export default {
 
     .tainacan-records-container .tainacan-record .metadata-title {
         padding: 0.6em 0.875em;
-        margin-bottom: 0px;
     }
 </style>
 

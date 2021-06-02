@@ -417,7 +417,6 @@
                     <div
                             :style="{ 
                                 'padding-left': !collectionId || $route.query.readmode || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) ? '0.5em !important' : (isOnAllItemsTabs ? '2.125em' : '2.75em'),
-                                'margin-bottom': item.current_user_can_edit && !$route.query.iframemode ? '-26px' : '0px'
                             }"
                             class="metadata-title">
                         <p
@@ -613,7 +612,6 @@
                             class="metadata-title"
                             :style="{
                                 'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '1.5em !important' : (isOnAllItemsTabs ? '2.0em' : '2.75em'),    
-                                'margin-bottom': item.current_user_can_edit || $route.query.iframemode ? '-27px' : '0px'
                             }">
                         <span 
                                 v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"

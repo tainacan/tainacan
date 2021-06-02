@@ -129,7 +129,6 @@ export default {
 
     .tainacan-list-container .tainacan-list .metadata-title {
         padding: 0.5em 0.875em;
-        margin-bottom: 0px;
     }
 </style>
 
