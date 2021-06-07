@@ -180,7 +180,6 @@
                     
                     // This routine avoids calling the API if the value did not changed
                     switch(this.itemMetadatum.value.constructor.name) {
-
                         // Multivalored Metadata requires checking the whole array
                         case 'Array': {
                             
@@ -188,11 +187,11 @@
                             let currentValues = [];
                             
                             // An array of terms
-                            if (this.values.length && this.values[0].constructor.name == 'Object')
+                            if (this.values.length && this.values[0] && this.values[0].constructor.name == 'Object')
                                 currentValues = this.values.map(term => term.value)
                             else
                                 currentValues = this.values;
-                            
+                                
                             if (Array.isArray(currentValues)) {
                                 for (let value of currentValues) {
                                     let foundIndex = this.itemMetadatum.value.findIndex(element => value == element.id);
