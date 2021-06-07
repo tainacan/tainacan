@@ -231,7 +231,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $result = $this->prepare_item_for_response($result, $request);
 
         return new \WP_REST_Response( $result, 200 );
-
     }
 
     public function prepare_item_for_response($item, $request) {
@@ -309,8 +308,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $result = $this->prepare_item_for_response($result, $request);
 
         return new \WP_REST_Response( $result, 200 );
-
-
     }
 
     public function delete_item( $request ) {
@@ -334,7 +331,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
         // TODO: delete log files
 
         return new \WP_REST_Response( $result, 200 );
-
     }
 
     public function get_log_url($id, $action, $type = '') {
@@ -352,7 +348,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
         $logs_url = $upload_url . 'tainacan/' . $filename;
 
         return $logs_url;
-
     }
 
 }

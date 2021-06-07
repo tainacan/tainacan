@@ -16,7 +16,7 @@ SKIP_DB_CREATE=${7-false}
 
 download() {
     if [ `which curl` ]; then
-        curl -s "$1" > "$2";
+        curl -s -L "$1" > "$2";
     elif [ `which wget` ]; then
         wget -nv -O "$2" "$1"
     fi
@@ -91,6 +91,7 @@ install_test_suite() {
 		sed $ioption "s/yourusernamehere/$DB_USER/" "$WP_TESTS_DIR"/wp-tests-config.php
 		sed $ioption "s/yourpasswordhere/$DB_PASS/" "$WP_TESTS_DIR"/wp-tests-config.php
 		sed $ioption "s|localhost|${DB_HOST}|" "$WP_TESTS_DIR"/wp-tests-config.php
+		sed $ioption "$ a if ( ! defined( 'WP_RUN_CORE_TESTS' ) ) define('WP_RUN_CORE_TESTS', false);" "$WP_TESTS_DIR"/wp-tests-config.php
 	fi
 
 }

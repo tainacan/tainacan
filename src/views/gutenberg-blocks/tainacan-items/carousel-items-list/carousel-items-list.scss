@@ -270,7 +270,7 @@
 
             img {
                 height: auto;
-
+                display: block;
                 padding: 0px;
                 margin-bottom: 0.5em;
             }
@@ -294,6 +294,8 @@
                 top: 0px;
                 justify-content: center;
                 z-index: 999;
+
+                .dashicon { margin: 0px; }
             }
     
             &:hover button {

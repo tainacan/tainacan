@@ -4,6 +4,7 @@
             :class="{'repository-level-page' : isNewCollection }">
         <tainacan-title 
                 :bread-crumb-items="[{ path: '', label: $i18n.get('collection') }]"/>
+        
         <form 
                 v-if="collection != null && collection != undefined && ((isNewCollection && $userCaps.hasCapability('tnc_rep_edit_collections')) || (!isNewCollection && collection.current_user_can_edit))" 
                 class="tainacan-form" 
@@ -47,13 +48,13 @@
                             <file-item
                                     v-if="collection.thumbnail != undefined && ((collection.thumbnail['tainacan-medium'] != undefined && collection.thumbnail['tainacan-medium'] != false) || (collection.thumbnail.medium != undefined && collection.thumbnail.medium != false))"
                                     :show-name="false"
-                                    :modal-on-click="false"
+                                    :modal-on-click="true"
                                     :size="178"
                                     :file="{ 
                                         media_type: 'image', 
-                                        thumbnails: { 'tainacan-medium': [ collection.thumbnail['tainacan-medium'] ? collection.thumbnail['tainacan-medium'][0] : collection.thumbnail.medium[0] ] },
+                                        thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(collection['thumbnail'], 'tainacan-medium') ] },
                                         title: $i18n.get('label_thumbnail'),
-                                        description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + collection.thumbnail.full[0] + `'/>` 
+                                        description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(collection['thumbnail'], 'full') + `'/>` 
                                     }"/>
                           <figure 
                                     v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail['tainacan-medium'] == undefined || collection.thumbnail['tainacan-medium'] == false))"
@@ -61,7 +62,7 @@
                                 <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
                                 <img  
                                         :alt="$i18n.get('label_thumbnail')" 
-                                        :src="thumbPlaceholderPath">
+                                        :src="$thumbHelper.getEmptyThumbnailPlaceholder()">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a 
@@ -203,7 +204,7 @@
                             :label="$i18n.getHelperTitle('collections', 'hide_items_thumbnail_on_lists')">
                         &nbsp;
                         <b-switch
-                                id="tainacan-checkbox-comment-status" 
+                                id="tainacan-checkbox-hide-items-thumbnail-on-lists"
                                 size="is-small"
                                 true-value="yes" 
                                 false-value="no"
@@ -406,7 +407,8 @@
                     </b-field>
 
                     <!-- Parent Collection -------------------------------- --> 
-                    <b-field
+                    <!-- DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY -->
+                    <!-- <b-field
                             :addons="false" 
                             :label="$i18n.get('label_parent_collection')"
                             :type="editFormErrors['parent'] != undefined ? 'is-danger' : ''" 
@@ -429,7 +431,7 @@
                                     :value="anotherCollection.id">{{ anotherCollection.name }}
                             </option>
                         </b-select>
-                    </b-field>
+                    </b-field> -->
 
                     <!-- Slug -------------------------------- --> 
                     <b-field
@@ -452,7 +454,7 @@
                     <!-- Comment Status ------------------------ --> 
                     <b-field
                             :addons="false" 
-                            :label="$i18n.get('label_allow_comments')">
+                            :label="$i18n.getHelperTitle('collections', 'allow_comments')">
                         &nbsp;
                         <b-switch
                                 id="tainacan-checkbox-comment-status" 
@@ -653,7 +655,7 @@ export default {
                 files:[],
                 enabled_view_modes: [],
                 default_view_mode: [],
-                allow_comments: '',
+                allow_comments: 'closed',
                 allows_submission: 'no',
                 submission_default_status: 'draft',
                 submission_anonymous_user: 'no',
@@ -674,10 +676,9 @@ export default {
             isNewCollection: false,
             isMapped: false,
             mapper: false,
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             headerPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_rectangle.png',
-            collections: [],
-            isFetchingCollections: true,
+            //collections: [],              DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY
+            //isFetchingCollections: true,  DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY
             thumbnailMediaFrame: undefined,
             headerImageMediaFrame: undefined,
             viewModesList: [],
@@ -778,21 +779,22 @@ export default {
                 }
 
                 // Generates options for parent collection
-                this.isFetchingCollections = true;
-                this.fetchAllCollectionNames()
-                    .then((resp) => {
-                        resp.request.then((collections) => {
-                            this.collections = collections;
-                            this.isFetchingCollections = false;
-                        })
-                        .catch((error) => {
-                            this.$console.error(error);
-                            this.isFetchingCollections = false;
-                        }); 
-                    })
-                    .catch(() => {
-                        this.isFetchingCollections = false;
-                    }); 
+                // DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY
+                // this.isFetchingCollections = true;
+                // this.fetchAllCollectionNames()
+                //     .then((resp) => {
+                //         resp.request.then((collections) => {
+                //             this.collections = collections;
+                //             this.isFetchingCollections = false;
+                //         })
+                //         .catch((error) => {
+                //             this.$console.error(error);
+                //             this.isFetchingCollections = false;
+                //         }); 
+                //     })
+                //     .catch(() => {
+                //         this.isFetchingCollections = false;
+                //     }); 
 
                 this.isLoading = false; 
             });
@@ -949,22 +951,23 @@ export default {
                 this.form.status = 'publish';
 
                 // Generates options for parent collection
-                this.isFetchingCollections = true;
-                this.fetchAllCollectionNames()
-                    .then((resp) => {
-                        resp.request.then((collections) => {
-                            this.collections = collections;
-                            this.isFetchingCollections = false;
-                        })
-                        .catch((error) => {
-                            this.$console.error(error);
-                            this.isFetchingCollections = false;
-                        });
-                    })
-                    .catch((error) => {
-                        this.$console.error(error);
-                        this.isFetchingCollections = false;
-                    });
+                // DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY
+                // this.isFetchingCollections = true;
+                // this.fetchAllCollectionNames()
+                //     .then((resp) => {
+                //         resp.request.then((collections) => {
+                //             this.collections = collections;
+                //             this.isFetchingCollections = false;
+                //         })
+                //         .catch((error) => {
+                //             this.$console.error(error);
+                //             this.isFetchingCollections = false;
+                //         });
+                //     })
+                //     .catch((error) => {
+                //         this.$console.error(error);
+                //         this.isFetchingCollections = false;
+                //     });
 
                 this.isLoading = false;
                 

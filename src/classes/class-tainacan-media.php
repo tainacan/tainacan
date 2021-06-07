@@ -21,8 +21,6 @@ class Media {
 
 	protected function __construct() {
 		add_action( 'init', [$this, 'add_attachment_page_rewrite_rule'] );
-		add_action( 'admin_enqueue_scripts', array( &$this, 'add_css' ) );
-		add_action( 'wp_enqueue_scripts', array( &$this, 'add_css' ) );
 
 		add_filter( 'query_vars', [$this, 'attachment_page_add_var'] );
 		add_action( 'template_redirect', [$this, 'attachment_page'] );
@@ -105,7 +103,6 @@ class Media {
 		 * @return string the file path
 		 */
 		public function save_remote_file($url) {
-
 				set_time_limit(0);
 
 				$filename = tempnam(sys_get_temp_dir(), basename($url));
@@ -136,7 +133,7 @@ class Media {
 				# Assign a callback function to the CURL Write-Function
 				curl_setopt($ch, CURLOPT_WRITEFUNCTION, $callback);
 
-				# Exceute the download - note we DO NOT put the result into a variable!
+				# Execute the download - note we DO NOT put the result into a variable!
 				curl_exec($ch);
 				if (curl_errno($ch)) {
 					$error_msg = curl_error($ch);
@@ -367,6 +364,7 @@ class Media {
 			$output .= $img;
 
 		} else {
+			$this->add_css();
 			wp_print_styles('tainacan-media-page');
 			global $wp_embed;
 

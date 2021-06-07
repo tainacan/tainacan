@@ -79,10 +79,6 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 	        true
         );
 
-
-
-
-
 		$term = $this->tainacan_entity_factory->create_entity(
 		    'term',
 		    array(
@@ -237,10 +233,6 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
         );
 
 		$this->assertContains($tax3->get_db_identifier(), get_object_taxonomies($collection->get_db_identifier()), 'Taxonommy used by repository level metadatum must be assigned to all collections post types');
-
-
-
-
     }
 
 	function test_relate_taxonomy_match() {
@@ -794,9 +786,6 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 		$checkMeta = $Tainacan_Metadata->fetch( $metadatum->get_id() );
 
 		$this->assertEquals('no', $checkMeta->get_metadata_type_options()['allow_new_terms']);
-
-
-
 	}
 
 }

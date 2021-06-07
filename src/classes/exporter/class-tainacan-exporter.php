@@ -193,7 +193,8 @@ abstract class Exporter {
 		$current_collection_item = $this->get_current_collection_item();
 		$collections = $this->get_collections();
 		$collection = $collections[$current_collection];
-		$current_collection_item ++;
+		$length_items = $this->get_step_length_items();
+		$current_collection_item += $length_items;
 		$this->set_current_collection_item($current_collection_item);
 		if ($current_collection_item >= $collection['total_items']) {
 			return $this->next_collection();
@@ -246,6 +247,10 @@ abstract class Exporter {
 
 	public function get_current_collection_item() {
 		return $this->current_collection_item;
+	}
+
+	public function get_step_length_items() {
+		return apply_filters('exporter_step_length_items', 20, $this->get_current_step());
 	}
 
 	public function set_current_collection_item($value) {
@@ -350,11 +355,11 @@ abstract class Exporter {
 	}
 
 	public function add_log($message ) {
-		$this->log[] = $message;
+		$this->log[] = ['datetime' => date("Y-m-d H:i:s"), 'message' => $message];
 	}
 
 	public function add_error_log($message ) {
-		$this->error_log[] = $message;
+		$this->error_log[] = ['datetime' => date("Y-m-d H:i:s"), 'message' => $message];
 	}
 
 	public function is_finished() {
@@ -562,20 +567,19 @@ abstract class Exporter {
 			$this->add_error_log('Collection misconfigured');
 			return false;
 		}
-		$this->add_log('Processing item ' . $current_collection_item);
+		$length_items = $this->get_step_length_items();
+		$this->add_log("Processing batch with $length_items items, starting from item $current_collection_item");
 
 		$this->process_header($current_collection_item, $collection_definition);
-
+		$init = microtime(true);
 		$processed_items = $this->get_items($current_collection_item, $collection_definition);
 		foreach ($processed_items as $processed_item) {
-			$init = microtime(true);
 			$this->process_item( $processed_item['item'], $processed_item['metadata'] );
-			$final = microtime(true);
-			$total = ($final - $init);
-			$time_log = sprintf( __('Processed in %f seconds', 'tainacan'), $total );
-
-			$this->add_log($time_log);
 		}
+		$final = microtime(true);
+		$total = ($final - $init);
+		$time_log = sprintf( __('Processed in %f seconds', 'tainacan'), $total );
+		$this->add_log($time_log);
 
 		$this->process_footer($current_collection_item, $collection_definition);
 		return $this->next_item();
@@ -595,7 +599,7 @@ abstract class Exporter {
 	}
 
 	private function process_footer($current_collection_item, $collection_definition) {
-		if ($current_collection_item == $collection_definition['total_items']-1) {
+		if ($current_collection_item > $collection_definition['total_items']) {
 			$this->output_footer();
 		}
 	}
@@ -608,17 +612,18 @@ abstract class Exporter {
 	private function get_items($index, $collection_definition) {
 		$collection_id = $collection_definition['id'];
 		$tainacan_items = \Tainacan\Repositories\Items::get_instance();
-		
+		$per_page = $this->get_step_length_items();
+		$page = intdiv($index, $per_page) + 1;
 		$filters = [
-			'posts_per_page' => 1,
-			'paged'   => $index+1,
+			'posts_per_page' => $per_page,
+			'paged'   => $page,
 			'order'   => 'DESC',
 			'orderby' => 'ID'
 		];
 
-		$this->add_log('Proccessing item index ' . $index . ' in collection ' . $collection_definition['id'] );
+		$this->add_log("Retrieving $per_page items on page index: $index, in collection " . $collection_definition['id'] );
 		$items = $tainacan_items->fetch($filters, $collection_id, 'WP_Query');
-		
+
 		if ( !isset($collection_definition['total_items']) ) {
 			$collection_definition['total_items'] = $items->found_posts;
 			$this->update_current_collection($collection_definition);
@@ -805,7 +810,7 @@ abstract class Exporter {
 
 		if (method_exists($this, $method_name)) {
 			$author = $this->get_transient('author');
-			$this->add_log('User in process: ' . $author . ' (' . date("Y-m-d H:i:s") . ')');
+			$this->add_log('User in process: ' . $author);
 			wp_set_current_user($author);
 			$result = $this->$method_name();
 		} else {

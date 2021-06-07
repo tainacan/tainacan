@@ -403,6 +403,14 @@
                     </p>
                     <h2 v-if="sentFormHeading">{{ sentFormHeading }}</h2>
                     <p v-if="sentFormMessage">{{ sentFormMessage }}</p>
+                    <p v-if="showItemLinkButton && linkToCreatedItem">
+                        <a 
+                                style="text-decoration: none"
+                                :href="linkToCreatedItem"
+                                class="button is-secondary">
+                            {{ itemLinkButtonLabel }}
+                        </a>
+                    </p>
                     <br>
                 </div>
             </section>
@@ -453,6 +461,8 @@ export default {
         thumbnailSectionLabel: String,
         attachmentsSectionLabel: String,
         metadataSectionLabel: String,
+        showItemLinkButton: Boolean,
+        itemLinkButtonLabel: String
     },
     data(){
         return {
@@ -475,7 +485,8 @@ export default {
             showThumbnailInput: false,
             couldLoadCollection: true,
             useCaptcha: 'no',
-            captchaSiteKey: tainacan_plugin['item_submission_captcha_site_key']
+            captchaSiteKey: tainacan_plugin['item_submission_captcha_site_key'],
+            linkToCreatedItem: ''
         }
     },
     computed: {
@@ -600,9 +611,11 @@ export default {
 
                     if (fakeItemId) {
                         this.finishItemSubmission({ itemSubmission: this.itemSubmission, fakeItemId: fakeItemId })
-                            .then(() => {
+                            .then((item) => {
                                 this.hasSentForm = true;
                                 this.isUploading = false;
+
+                                this.linkToCreatedItem = item.url;
                             })
                             .catch((errors) => { 
                                 if (errors.errors) {

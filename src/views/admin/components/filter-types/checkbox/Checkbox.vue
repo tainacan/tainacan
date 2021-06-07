@@ -110,7 +110,9 @@
                 promise.request
                     .then((res) => {
                         this.updateSelectedValues();
-                        this.$emit('updateParentCollapse', res.data.values.length > 0 );
+                        
+                        if (res && res.data && res.data.values)
+                            this.$emit('updateParentCollapse', res.data.values.length > 0 );
                     })
                     .catch( (error) => {
                         if (isCancel(error)) {
@@ -133,7 +135,6 @@
                 });
             },
             updateSelectedValues() {
-                
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
@@ -180,7 +181,8 @@
                             this.loadOptions();
                         } 
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             },
         }
@@ -191,7 +193,7 @@
 
     
     .view-all-button {
-        font-size: 0.75em;
+        font-size: 0.75em !important;
         padding: 0.1em 1em;
     }
 

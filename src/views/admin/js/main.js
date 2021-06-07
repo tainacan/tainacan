@@ -10,6 +10,7 @@ import VueMasonry from 'vue-masonry-css';
 import draggable from 'vuedraggable';
 import VueTheMask from 'vue-the-mask';
 import cssVars from 'css-vars-ponyfill';
+import VueBlurHash from 'vue-blurhash';
 
 // Vue Dev Tools!
 Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
@@ -62,7 +63,18 @@ import store from './store/store'
 import router from './router'
 import eventBusSearch from './event-bus-search';
 import eventBusTermsList from './event-bus-terms-list.js';
-import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, UserCapabilitiesPlugin, StatusHelperPlugin, CommentsStatusHelperPlugin } from './utilities';
+import { 
+    I18NPlugin,
+    UserPrefsPlugin,
+    RouterHelperPlugin,
+    ConsolePlugin,
+    UserCapabilitiesPlugin,
+    StatusHelperPlugin,
+    CommentsStatusHelperPlugin 
+} from './admin-utilities';
+import { 
+    ThumbnailHelperPlugin
+} from './utilities';
 
 /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
 if (typeof window.tainacan_extra_plugins != "undefined") {
@@ -76,10 +88,12 @@ Vue.use(Buefy, {
 });
 Vue.use(VTooltip);
 Vue.use(VueMasonry);
+Vue.use(VueBlurHash);
 Vue.use(I18NPlugin);
 Vue.use(UserPrefsPlugin);
 Vue.use(RouterHelperPlugin);
 Vue.use(UserCapabilitiesPlugin);
+Vue.use(ThumbnailHelperPlugin);
 Vue.use(StatusHelperPlugin);
 Vue.use(ConsolePlugin, {visual: false});
 Vue.use(VueTheMask);

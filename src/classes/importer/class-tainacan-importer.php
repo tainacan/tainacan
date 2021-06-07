@@ -5,14 +5,14 @@ use Tainacan\Entities;
 
 abstract class Importer {
 
-    /**
-     * The ID for this importer session
-     *
-     * When creating a new importer session via API, an id is returned and used to access this
-     * importer instance. This is temporarily stored in the database and discarded after the bg process is triggered
-     *
-     * @var identifier
-     */
+	/**
+	 * The ID for this importer session
+	 *
+	 * When creating a new importer session via API, an id is returned and used to access this
+	 * importer instance. This is temporarily stored in the database and discarded after the bg process is triggered
+	 *
+	 * @var identifier
+	 */
 	private $id;
 
 	/**
@@ -59,7 +59,7 @@ abstract class Importer {
 	private $options = [];
 
 	/**
-	 * Stores the default options for the importer options
+	 * Stores default options for importer options
 	 * @var array
 	 */
 	protected $default_options = [];
@@ -114,7 +114,7 @@ abstract class Importer {
 	private $error_log = [];
 
 	/**
-	 * Wether to abort importer execution.
+	 * Whether to abort importer execution.
 	 * @var bool
 	 */
 	private $abort = false;
@@ -136,8 +136,7 @@ abstract class Importer {
 		'tmp_file'
 	];
 
-    public function __construct($attributess = array()) {
-
+	public function __construct($attributess = array()) {
 		$this->id = uniqid();
 
 		$author = get_current_user_id();
@@ -153,8 +152,6 @@ abstract class Importer {
 				}
 			}
 		}
-
-
 	}
 
 	public function _to_Array($short = false) {
@@ -181,41 +178,39 @@ abstract class Importer {
 	/////////////////////
 	// Getters and setters
 
-    /**
-     * @return string
-     */
-    public function get_id(){
-        return $this->id;
-    }
+	/**
+	 * @return string
+	 */
+	public function get_id(){
+		return $this->id;
+	}
 
-    /**
-     * Set URL
-     * @param $url string
-     * @return bool
-     */
-    public function set_url($url)
-    {
-        if(!empty($url) && !is_array($url))
-        {
-            $this->url = rtrim(trim($url), "/");
-            return true;
-        }
+	/**
+	 * Set URL
+	 * @param $url string
+	 * @return bool
+	 */
+	public function set_url($url) {
+		if(!empty($url) && !is_array($url))
+		{
+			$this->url = rtrim(trim($url), "/");
+			return true;
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    /**
-     * @return string  or bool
-     */
-    public function get_url()
-    {
-        if(!empty($this->url))
-        {
-            return $this->url;
-        }
+	/**
+	 * @return string  or bool
+	 */
+	public function get_url() {
+		if(!empty($this->url))
+		{
+			return $this->url;
+		}
 
-        return false;
-    }
+		return false;
+	}
 
 	public function get_current_step() {
 		return $this->current_step;
@@ -250,12 +245,12 @@ abstract class Importer {
 	}
 
 	public function get_tmp_file(){
-        return $this->tmp_file;
-    }
+		return $this->tmp_file;
+	}
 
 	public function set_tmp_file($filepath){
-        $this->tmp_file = $filepath;
-    }
+		$this->tmp_file = $filepath;
+	}
 
 	public function get_collections() {
 		return $this->collections;
@@ -266,13 +261,13 @@ abstract class Importer {
 	}
 
 	/**
-     * Gets the options for this importer, including default values for options
-     * that were not set yet.
-     * @return array Importer options
-     */
-    public function get_options() {
-        return array_merge($this->default_options, $this->options);
-    }
+	 * Gets the options for this importer, including default values for options
+	 * that were not set yet.
+	 * @return array Importer options
+	 */
+	public function get_options() {
+		return array_merge($this->default_options, $this->options);
+	}
 
 	/**
 	 * Set the options array
@@ -293,15 +288,13 @@ abstract class Importer {
 		$this->default_options = $options;
 	}
 
-
-    public function set_steps($steps) {
-        $this->steps = $steps;
-    }
+	public function set_steps($steps) {
+		$this->steps = $steps;
+	}
 
 	public function get_steps() {
-        return $this->steps;
-    }
-
+		return $this->steps;
+	}
 
 	private function get_transients() {
 		return $this->transients;
@@ -323,33 +316,33 @@ abstract class Importer {
 	// Utilities
 
 
-    /**
-     * @param $file File to be managed by importer
-     * @return bool
-     */
-    public function add_file( $file ){
-        $new_file = $this->upload_file( $file );
-        if ( is_numeric( $new_file ) ) {
+	/**
+	 * @param $file File to be managed by importer
+	 * @return bool
+	 */
+	public function add_file( $file ){
+		$new_file = $this->upload_file( $file );
+		if ( is_numeric( $new_file ) ) {
 			$this->tmp_file = get_attached_file( $new_file );
 			return true;
-        } else {
-            return false;
-        }
-    }
+		} else {
+			return false;
+		}
+	}
 
 
-    /**
-     * log the actions from importer
-     *
-     * @param $type
-     * @param $messagelog
-     */
-    public function add_log($message ){
-        $this->log[] = $message;
-    }
-	public function add_error_log($message ){
-        $this->error_log[] = $message;
-    }
+	/**
+	 * log the actions from importer
+	 *
+	 * @param $type
+	 * @param $messagelog
+	 */
+	public function add_log($message ) {
+		$this->log[] = ['datetime' => date("Y-m-d H:i:s"), 'message' => $message];
+	}
+	public function add_error_log($message ) {
+		$this->error_log[] = ['datetime' => date("Y-m-d H:i:s"), 'message' => $message];
+	}
 
 	public function add_collection(array $collection) {
 		if (isset($collection['id'])) {
@@ -367,17 +360,17 @@ abstract class Importer {
 		}
 	}
 
-    /**
-     * internal function to upload the file
-     *
-     * @param $path_file
-     * @return array $response
-     */
-    private function upload_file( $file_array ){
-        //$name = basename( $path_file );
-        //$file_array['name'] = $name;
-        //$file_array['tmp_name'] = $path_file;
-        //$file_array['size'] = filesize( $path_file );
+	/**
+	 * internal function to upload the file
+	 *
+	 * @param $path_file
+	 * @return array $response
+	 */
+	private function upload_file( $file_array ){
+		//$name = basename( $path_file );
+		//$file_array['name'] = $name;
+		//$file_array['tmp_name'] = $path_file;
+		//$file_array['size'] = filesize( $path_file );
 
 		if ( !function_exists('media_handle_upload') ) {
 			require_once(ABSPATH . "wp-admin" . '/includes/image.php');
@@ -386,36 +379,36 @@ abstract class Importer {
 		}
 		//var_dump(media_handle_sideload( $file_array, 0 )); die;
 		return media_handle_sideload( $file_array, 0 );
-    }
+	}
 
-    /**
-     * get the content form url and creates a file
-     *
-     * @param $url
-     * @return array
-     */
-    public function fetch_from_remote( $url ){
-        $tmp = wp_remote_get( $url );
-        if( !is_wp_error($tmp) && isset( $tmp['body'] ) ){
-            $file = fopen( $this->get_id().'.txt', 'w' );
-            fwrite( $file, $tmp['body'] );
-            fclose( $file );
-            return $this->add_file( $this->get_id().'.txt' );
-        }
-    }
+	/**
+	 * get the content form url and creates a file
+	 *
+	 * @param $url
+	 * @return array
+	 */
+	public function fetch_from_remote( $url ){
+		$tmp = wp_remote_get( $url );
+		if( !is_wp_error($tmp) && isset( $tmp['body'] ) ){
+			$file = fopen( $this->get_id().'.txt', 'w' );
+			fwrite( $file, $tmp['body'] );
+			fclose( $file );
+			return $this->add_file( $this->get_id().'.txt' );
+		}
+	}
 
-    /**
-     * Gets one option from the options array.
-     *
-     * Checks if option exist or if it have a default value. Otherwise return an empty string
-     *
-     * @param  string $key the desired option
-     * @return mixed the option value, the default value or an empty string
-     */
-    public function get_option($key) {
-        $options = $this->get_options();
-        return isset($options[$key]) ? $options[$key] : '';
-    }
+	/**
+	 * Gets one option from the options array.
+	 *
+	 * Checks if option exist or if it have a default value. Otherwise return an empty string
+	 *
+	 * @param  string $key the desired option
+	 * @return mixed the option value, the default value or an empty string
+	 */
+	public function get_option($key) {
+		$options = $this->get_options();
+		return isset($options[$key]) ? $options[$key] : '';
+	}
 
 	/**
 	 * Adds a new method accepeted by the importer
@@ -464,15 +457,15 @@ abstract class Importer {
 		return null;
 	}
 
-    public function is_finished()
-    {
-        if($this->current_step >= count($this->steps))
-        {
-            return true;
-        }
+	public function is_finished()
+	{
+		if($this->current_step >= count($this->steps))
+		{
+			return true;
+		}
 
-        return false;
-    }
+		return false;
+	}
 
 	/**
 	 * Cancel Scheduled abortion at the end of run()
@@ -559,7 +552,6 @@ abstract class Importer {
 			$step = $steps[$current_step];
 
 			if ($step['callback'] == 'process_collections') {
-
 				$totalItems = 0;
 				$currentItem = $this->get_current_collection_item();
 				$current_collection = $this->get_current_collection();
@@ -577,18 +569,12 @@ abstract class Importer {
 				if ($totalItems > 0) {
 					$value = round( ($currentItem/$totalItems) * 100 );
 				}
-
-
 			} else {
-
 				if ( isset($step['total']) && is_numeric($step['total']) && $step['total'] > 0 ) {
 					$current = $this->get_in_step_count();
 					$value = round( ($current/$step['total']) * 100 );
 				}
-
 			}
-
-
 		}
 		return $value;
 	}
@@ -628,26 +614,26 @@ abstract class Importer {
 	// Abstract methods
 
 
-    /**
-     * get the metadata of file/url to allow mapping
-     * should return an array
-     *
-     * Used when $manual_mapping is set to true, to build the mapping interface
-     *
-     * @return array $metadata_source the metadata from the source
-     */
-    public function get_source_metadata() {}
+	/**
+	 * get the metadata of file/url to allow mapping
+	 * should return an array
+	 *
+	 * Used when $manual_mapping is set to true, to build the mapping interface
+	 *
+	 * @return array $metadata_source the metadata from the source
+	 */
+	public function get_source_metadata() {}
 
-    /**
-     * get values for a single item
-     *
-     * @param  $index
-     * @return array with metadatum_source's as the index and values for the
-     * item
-     *
-     * Ex: [ 'Metadatum1' => 'value1', 'Metadatum2' => [ 'value2','value3' ]
-     */
-    abstract public function process_item( $index, $collection_id );
+	/**
+	 * get values for a single item
+	 *
+	 * @param  $index
+	 * @return array with metadatum_source's as the index and values for the
+	 * item
+	 *
+	 * Ex: [ 'Metadatum1' => 'value1', 'Metadatum2' => [ 'value2','value3' ]
+	 */
+	abstract public function process_item( $index, $collection_id );
 
 
 
@@ -679,11 +665,11 @@ abstract class Importer {
 	////////////////////////////////////////
 	// Core methods
 
-    /**
-     * process an item from the collections queue
-     *
-     */
-    public function process_collections() {
+	/**
+	 * process an item from the collections queue
+	 *
+	 */
+	public function process_collections() {
 
 		$current_collection = $this->get_current_collection();
 		$collections = $this->get_collections();
@@ -705,7 +691,7 @@ abstract class Importer {
 		}
 
 		return $this->next_item();
-    }
+	}
 
 	protected function next_item() {
 
@@ -718,8 +704,8 @@ abstract class Importer {
 		$this->set_current_collection_item($current_collection_item);
 
 		if( $this->get_transient('change_total') ){
-            $collection['total_items'] = $this->get_transient('change_total');
-        }
+			$collection['total_items'] = $this->get_transient('change_total');
+		}
 
 		if ($current_collection_item >= $collection['total_items']) {
 			return $this->next_collection();
@@ -763,23 +749,23 @@ abstract class Importer {
 		return false;
 	}
 
-    /**
-     * insert processed item from source to Tainacan
-     *
-     * @param array $processed_item Associative array with metadatum source's as index with
-     *                              its value or values
-     * @param integet $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
-     *
-     * @return Tainacan\Entities\Item Item inserted
-     */
-    public function insert( $processed_item, $collection_index ) {
+	/**
+	 * insert processed item from source to Tainacan
+	 *
+	 * @param array $processed_item Associative array with metadatum source's as index with
+	 *                              its value or values
+	 * @param integet $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
+	 *
+	 * @return Tainacan\Entities\Item Item inserted
+	 */
+	public function insert( $processed_item, $collection_index ) {
 
 		remove_action( 'post_updated', 'wp_save_post_revision' );
 		$collections = $this->get_collections();
 		$collection_definition = isset($collections[$collection_index]) ? $collections[$collection_index] : false;
 		if ( !$collection_definition || !is_array($collection_definition) || !isset($collection_definition['id']) || !isset($collection_definition['mapping']) ) {
 			$this->add_error_log('Collection misconfigured');
-            return false;
+			return false;
 		}
 
 		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_definition['id']);
@@ -790,96 +776,96 @@ abstract class Importer {
 		}
 
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
-        $Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
+		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 
 		$Tainacan_Items->disable_logs();
 		$Tainacan_Metadata->disable_logs();
 		$Tainacan_Item_Metadata->disable_logs();
 
-        $item = new Entities\Item( ( $this->get_transient('item_id') ) ? $this->get_transient('item_id') : 0 );
+		$item = new Entities\Item( ( $this->get_transient('item_id') ) ? $this->get_transient('item_id') : 0 );
 		$itemMetadataArray = [];
 
-        if( is_array( $processed_item ) ){
-            foreach ( $processed_item as $metadatum_source => $values ){
-                $tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
-                $metadatum = $Tainacan_Metadata->fetch( $tainacan_metadatum_id );
+		if( is_array( $processed_item ) ){
+			foreach ( $processed_item as $metadatum_source => $values ){
+				$tainacan_metadatum_id = array_search( $metadatum_source, $collection_definition['mapping'] );
+				$metadatum = $Tainacan_Metadata->fetch( $tainacan_metadatum_id );
 
-                if( $metadatum instanceof Entities\Metadatum ){
-                    $singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatum); // *empty item will be replaced by inserted in the next foreach
-                    $singleItemMetadata->set_value( $values );
-                    $itemMetadataArray[] = $singleItemMetadata;
-                } else {
+				if( $metadatum instanceof Entities\Metadatum ){
+					$singleItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatum); // *empty item will be replaced by inserted in the next foreach
+					$singleItemMetadata->set_value( $values );
+					$itemMetadataArray[] = $singleItemMetadata;
+				} else {
 					$this->add_error_log('Metadata ' . $metadatum_source . ' not found');
 				}
 
-            }
-        }
+			}
+		}
 
-        if( !empty( $itemMetadataArray ) && $collection instanceof Entities\Collection ){
+		if( !empty( $itemMetadataArray ) && $collection instanceof Entities\Collection ){
 			$item->set_collection( $collection );
 
-            if( $item->validate() ){
+			if( $item->validate() ){
 				$insertedItem = $Tainacan_Items->insert( $item );
-            } else {
-                $this->add_error_log( 'Error inserting item' );
-                $this->add_error_log( $item->get_errors() );
-                return false;
-            }
+			} else {
+				$this->add_error_log( 'Error inserting item' );
+				$this->add_error_log( $item->get_errors() );
+				return false;
+			}
 
-            foreach ( $itemMetadataArray as $itemMetadata ) {
-                $itemMetadata->set_item( $insertedItem );  // *I told you
+			foreach ( $itemMetadataArray as $itemMetadata ) {
+				$itemMetadata->set_item( $insertedItem );  // *I told you
 
-                if( $itemMetadata->validate() ){
+				if( $itemMetadata->validate() ){
 					$result = $Tainacan_Item_Metadata->insert( $itemMetadata );
-                } else {
-                    $this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name());
-                    $this->add_error_log($itemMetadata->get_errors());
-                    continue;
-                }
+				} else {
+					$this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name());
+					$this->add_error_log($itemMetadata->get_errors());
+					continue;
+				}
 
-                //if( $result ){
-                //	$values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() ) : $itemMetadata->get_value();
-                //    $this->add_log( 'Item ' . $insertedItem->get_id() .
-                //        ' has inserted the values: ' . $values . ' on metadata: ' . $itemMetadata->get_metadatum()->get_name() );
-                //} else {
-                //    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
-                //}
+				//if( $result ){
+				//	$values = ( is_array( $itemMetadata->get_value() ) ) ? implode( PHP_EOL, $itemMetadata->get_value() ) : $itemMetadata->get_value();
+				//    $this->add_log( 'Item ' . $insertedItem->get_id() .
+				//        ' has inserted the values: ' . $values . ' on metadata: ' . $itemMetadata->get_metadatum()->get_name() );
+				//} else {
+				//    $this->add_error_log( 'Item ' . $insertedItem->get_id() . ' has an error' );
+				//}
 			}
 
 			$insertedItem->set_status('publish' );
 
-            if($insertedItem->validate()) {
+			if($insertedItem->validate()) {
 				$insertedItem = $Tainacan_Items->update( $insertedItem );
 
 				$this->after_inserted_item(  $insertedItem, $collection_index );
-            } else {
-	            $this->add_error_log( 'Error publishing Item'  );
-	            $this->add_error_log( $insertedItem->get_errors() );
-	            return false;
+			} else {
+				$this->add_error_log( 'Error publishing Item'  );
+				$this->add_error_log( $insertedItem->get_errors() );
+				return false;
 			}
 
-            return $insertedItem;
+			return $insertedItem;
 
-        } else {
-            $this->add_error_log(  'Collection not set');
-            return false;
-        }
+		} else {
+			$this->add_error_log(  'Collection not set');
+			return false;
+		}
 
 	}
 
 	/**
 	 * allow importers executes process after item is insertes
 	 * @param array $insertedItem Associative array with inserted item
-     * @param integer $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
+	 * @param integer $collection_index The index in the $this->collections array of the collection the item is beeing inserted into
 	 *
 	 */
 	public function after_inserted_item($insertedItem, $collection_index){}
 
-    /**
-     * runs one iteration
-     */
-    public function run(){
+	/**
+	 * runs one iteration
+	 */
+	public function run(){
 
 		if ($this->is_finished()) {
 			return false;
@@ -893,7 +879,6 @@ abstract class Importer {
 			$author = $this->get_transient('author');
 			$this->add_log('---------------------------');
 			$this->add_log('Starting processing new item');
-			$this->add_log(date("Y-m-d H:i:s"));
 			$this->add_log('User in process: ' . $author);
 			wp_set_current_user($author);
 			$result = $this->$method_name();
@@ -911,41 +896,41 @@ abstract class Importer {
 		}
 
 		return $return;
-    }
+	}
 
-    /**
-     * @param $metadata_description
-     * @param $collection_id
-     * @return bool
-     * @throws \Exception
-     */
-    public function create_new_metadata( $metadata_description, $collection_id, $parent_id = null){
-        $taxonomy_repo = \Tainacan\Repositories\Taxonomies::get_instance();
-        $metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
+	/**
+	 * @param $metadata_description
+	 * @param $collection_id
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function create_new_metadata( $metadata_description, $collection_id, $parent_id = null){
+		$taxonomy_repo = \Tainacan\Repositories\Taxonomies::get_instance();
+		$metadata_repo = \Tainacan\Repositories\Metadata::get_instance();
 
-        if(is_array($metadata_description)) {
-            $parent_metadata_description = key($metadata_description);
-            $parent_compound = $this->create_new_metadata($parent_metadata_description, $collection_id);
-            if($parent_compound == false) return false;
-            $children_mapping = [];
-            foreach($metadata_description[$parent_metadata_description] as $children_metadata_description) {
-                $children_compound = $this->create_new_metadata($children_metadata_description, $collection_id, $parent_compound->get_id());
-                if ( $children_compound == false )
-                    return false;
-                $children_mapping[$children_compound->get_id()] = $children_metadata_description;
-            }
-            return [$parent_compound, $children_mapping];
-        }
-        $properties =  array_filter( explode('|', $metadata_description) );
+		if(is_array($metadata_description)) {
+			$parent_metadata_description = key($metadata_description);
+			$parent_compound = $this->create_new_metadata($parent_metadata_description, $collection_id);
+			if($parent_compound == false) return false;
+			$children_mapping = [];
+			foreach($metadata_description[$parent_metadata_description] as $children_metadata_description) {
+				$children_compound = $this->create_new_metadata($children_metadata_description, $collection_id, $parent_compound->get_id());
+				if ( $children_compound == false )
+					return false;
+				$children_mapping[$children_compound->get_id()] = $children_metadata_description;
+			}
+			return [$parent_compound, $children_mapping];
+		}
+		$properties =  array_filter( explode('|', $metadata_description) );
 
-        if( is_array($properties) && count($properties) < 2 ){
-            $properties[1] = 'text';
-        } else if( !$properties ){
-            return false;
-        }
+		if( is_array($properties) && count($properties) < 2 ){
+			$properties[1] = 'text';
+		} else if( !$properties ){
+			return false;
+		}
 
-        $name = $properties[0];
-        $type = $properties[1];
+		$name = $properties[0];
+		$type = $properties[1];
 
 		$supported_types = \Tainacan\Repositories\Metadata::get_instance()->fetch_metadata_types('NAME');
 		$supported_types = array_map('strtolower', $supported_types);
@@ -956,89 +941,89 @@ abstract class Importer {
 			$type = 'text';
 		}
 
-        $newMetadatum = new Entities\Metadatum();
-        $newMetadatum->set_name($name);
+		$newMetadatum = new Entities\Metadatum();
+		$newMetadatum->set_name($name);
 
-        $type = ucfirst($type);
-        $newMetadatum->set_metadata_type('Tainacan\Metadata_Types\\'.$type);
-        $newMetadatum->set_collection_id( (isset($collection_id)) ? $collection_id : 'default');
-        $newMetadatum->set_status('auto-draft');
-        if($newMetadatum->validate()) {
-            $newMetadatum = $metadata_repo->insert( $newMetadatum );
-        } else {
-            $this->add_log('Error creating metadata ' . $name . ' in collection ' . $collection_id);
-            $this->add_log($newMetadatum->get_errors());
-            return false;
-        }
-        $newMetadatum->set_status('publish');
+		$type = ucfirst($type);
+		$newMetadatum->set_metadata_type('Tainacan\Metadata_Types\\'.$type);
+		$newMetadatum->set_collection_id( (isset($collection_id)) ? $collection_id : 'default');
+		$newMetadatum->set_status('auto-draft');
+		if($newMetadatum->validate()) {
+			$newMetadatum = $metadata_repo->insert( $newMetadatum );
+		} else {
+			$this->add_log('Error creating metadata ' . $name . ' in collection ' . $collection_id);
+			$this->add_log($newMetadatum->get_errors());
+			return false;
+		}
+		$newMetadatum->set_status('publish');
 
-        if( strcmp(strtolower($type), "taxonomy") === 0 ){
-            $taxonomy = new Entities\Taxonomy();
-            $taxonomy->set_name($name);
-            $taxonomy->set_status('publish');
-            $taxonomy->set_allow_insert('yes');
+		if( strcmp(strtolower($type), "taxonomy") === 0 ){
+			$taxonomy = new Entities\Taxonomy();
+			$taxonomy->set_name($name);
+			$taxonomy->set_status('publish');
+			$taxonomy->set_allow_insert('yes');
 
-            if( $taxonomy->validate() ){
-                $inserted_tax = $taxonomy_repo->insert( $taxonomy );
-                if(is_array($properties) && in_array( 'multiple', $properties) ){
-                    $newMetadatum->set_metadata_type_options([
-                        'taxonomy_id' => $inserted_tax->get_id(),
-                        'allow_new_terms' => 'yes',
-                        'input_type' => 'tainacan-taxonomy-checkbox'
-                    ]);
-                } else {
-                    $newMetadatum->set_metadata_type_options([
-                        'taxonomy_id' => $inserted_tax->get_id(),
-                        'allow_new_terms' => 'no',
-                        'input_type' => 'tainacan-taxonomy-radio'
-                    ]);
-                }
-            }
-        }
+			if( $taxonomy->validate() ){
+				$inserted_tax = $taxonomy_repo->insert( $taxonomy );
+				if(is_array($properties) && in_array( 'multiple', $properties) ){
+					$newMetadatum->set_metadata_type_options([
+						'taxonomy_id' => $inserted_tax->get_id(),
+						'allow_new_terms' => 'yes',
+						'input_type' => 'tainacan-taxonomy-checkbox'
+					]);
+				} else {
+					$newMetadatum->set_metadata_type_options([
+						'taxonomy_id' => $inserted_tax->get_id(),
+						'allow_new_terms' => 'no',
+						'input_type' => 'tainacan-taxonomy-radio'
+					]);
+				}
+			}
+		}
 
-        /*Properties of metadatum*/
-        if( is_array($properties) && in_array( 'required', $properties)){
-            $newMetadatum->set_required('yes');
-        }
+		/*Properties of metadatum*/
+		if( is_array($properties) && in_array( 'required', $properties)){
+			$newMetadatum->set_required('yes');
+		}
 
-        if(is_array($properties) && in_array( 'multiple', $properties) ){
-            $newMetadatum->set_multiple('yes');
-        }
+		if(is_array($properties) && in_array( 'multiple', $properties) ){
+			$newMetadatum->set_multiple('yes');
+		}
 
-        if( is_array($properties) && in_array( 'display_yes', $properties) ){
-            $newMetadatum->set_display('yes');
-        } else if(is_array($properties) && in_array( 'display_no', $properties) ){
-            $newMetadatum->set_display('no');
-        }  else if(is_array($properties) && in_array( 'display_never', $properties) ){
-            $newMetadatum->set_display('never');
-        }
+		if( is_array($properties) && in_array( 'display_yes', $properties) ){
+			$newMetadatum->set_display('yes');
+		} else if(is_array($properties) && in_array( 'display_no', $properties) ){
+			$newMetadatum->set_display('no');
+		}  else if(is_array($properties) && in_array( 'display_never', $properties) ){
+			$newMetadatum->set_display('never');
+		}
 
-        if( is_array($properties) && in_array( 'status_public', $properties) ){
-            $newMetadatum->set_status('publish');
-        } else if( is_array($properties) && in_array( 'status_private', $properties) ){
-            $newMetadatum->set_status('private');
-        }
+		if( is_array($properties) && in_array( 'status_public', $properties) ){
+			$newMetadatum->set_status('publish');
+		} else if( is_array($properties) && in_array( 'status_private', $properties) ){
+			$newMetadatum->set_status('private');
+		}
 
-        if( is_array($properties) && in_array( 'collection_key_yes', $properties) ){
-            $newMetadatum->set_collection_key('yes');
-        } else if( is_array($properties) && in_array( 'collection_key_no', $properties) ){
-            $newMetadatum->set_collection_key('no');
-        }
+		if( is_array($properties) && in_array( 'collection_key_yes', $properties) ){
+			$newMetadatum->set_collection_key('yes');
+		} else if( is_array($properties) && in_array( 'collection_key_no', $properties) ){
+			$newMetadatum->set_collection_key('no');
+		}
 
-        if(isset($parent_id) && $parent_id != null) {
-            $newMetadatum->set_parent($parent_id);
-        }
+		if(isset($parent_id) && $parent_id != null) {
+			$newMetadatum->set_parent($parent_id);
+		}
 
-        if($newMetadatum->validate()){
-            $inserted_metadata = $metadata_repo->insert( $newMetadatum );
+		if($newMetadatum->validate()){
+			$inserted_metadata = $metadata_repo->insert( $newMetadatum );
 
-            $this->add_log('Metadata created: ' . $inserted_metadata->get_name());
-            return $inserted_metadata;
-        } else {
-            $this->add_log('Error creating metadata ' . $name . ' in collection ' . $collection_id);
-            $this->add_log($newMetadatum->get_errors());
+			$this->add_log('Metadata created: ' . $inserted_metadata->get_name());
+			return $inserted_metadata;
+		} else {
+			$this->add_log('Error creating metadata ' . $name . ' in collection ' . $collection_id);
+			$this->add_log($newMetadatum->get_errors());
 
-            return false;
-        }
-    }
+			return false;
+		}
+	}
 }

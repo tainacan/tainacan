@@ -321,7 +321,7 @@ class Terms extends Repository {
 
 			$terms = get_terms($args);
 
-			if (empty($terms)) {
+			if (empty($terms) || $terms instanceof \WP_Error) {
 				return false;
 			}
 

@@ -1,11 +1,15 @@
 let path = require('path');
+const webpack = require('webpack');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 module.exports = {
     entry: {
         admin: './src/views/admin/js/main.js',
+        media_component: './src/views/media-component/media-component.js',
         theme_search: './src/views/theme-search/js/theme-main.js',
         item_submission: './src/views/item-submission/js/item-submission-main.js',
         roles: './src/views/roles/js/roles-main.js',
+        reports: './src/views/reports/js/reports-main.js',
 
         block_terms_list: './src/views/gutenberg-blocks/tainacan-terms/terms-list/index.js',
         
@@ -102,5 +106,14 @@ module.exports = {
     },
     performance: {
         hints: false
-    }
+    },
+    plugins: [
+        new webpack.ProvidePlugin({
+            'Swiper': 'Swiper',
+            'PhotoSwipe': 'PhotoSwipe'
+        }),
+        new MomentLocalesPlugin({
+            localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'es-in', 'pt-br', 'pt', 'es', 'es-us', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv'],
+        }),
+    ]
 };

@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import CarouselCollectionsListTheme from './carousel-collections-list-theme.vue';
+import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
+import VueBlurHash from 'vue-blurhash';
 
 // Vue Dev Tools!
 Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
@@ -78,6 +80,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             };
 
+            Vue.use(VueBlurHash);
+            Vue.use(ThumbnailHelperPlugin);
             new Vue( Object.assign({ el: '#' + blockId }, vueOptions) );
         }
     }

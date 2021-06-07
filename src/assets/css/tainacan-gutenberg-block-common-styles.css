@@ -158,6 +158,10 @@
           .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item label,
           .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-radio-control__option label {
             max-width: 80%; } }
+    .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option .components-radio-control__input,
+    .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-radio-control__option .components-radio-control__input {
+      min-width: 20px;
+      min-height: 20px; }
     .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option .components-radio-control__input::before,
     .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-radio-control__option .components-radio-control__input::before {
       border-width: 0px; }

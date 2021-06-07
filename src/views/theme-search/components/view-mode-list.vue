@@ -48,7 +48,7 @@
                                         show: 500,
                                         hide: 300,
                                     },
-                                    content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                    content: item.metadata != undefined ? renderMetadata(item, column) : '',
                                     html: true,
                                     autoHide: false,
                                     placement: 'auto-start'
@@ -56,7 +56,7 @@
                                 v-for="(column, metadatumIndex) in displayedMetadata"
                                 :key="metadatumIndex"
                                 v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                v-html="item.metadata != undefined && collectionId ? renderMetadata(item.metadata, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                 
+                                v-html="item.metadata != undefined && collectionId ? renderMetadata(item, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                 
                         <span 
                                 v-if="isSlideshowViewModeEnabled"
                                 v-tooltip="{
@@ -78,19 +78,30 @@
                          <div 
                                 class="tainacan-list-thumbnail"
                                 v-if="item.thumbnail != undefined">
-                            <img 
+                            <blur-hash-image
+                                    v-if="item.thumbnail != undefined"
+                                    class="tainacan-list-item-thumbnail"
+                                    :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
+                                    :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium-full', 120)"
+                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
+                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                    :src="item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][0] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[0] : thumbPlaceholderPath)">  
+                                    :transition-duration="500"
+                                />
+                            <!-- <img 
+                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)">   -->
                         </div>
                         <div class="list-metadata media-body">
                             <span 
                                     v-for="(column, metadatumIndex) in displayedMetadata"
                                     :key="metadatumIndex"
                                     :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }"
-                                    v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
+                                    v-if="renderMetadata(item, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
                                 <h3 class="metadata-label">{{ column.name }}</h3>
                                 <p      
-                                        v-html="renderMetadata(item.metadata, column)"
+                                        v-html="renderMetadata(item, column)"
                                         class="metadata-value"/>
                             </span>
                         </div>

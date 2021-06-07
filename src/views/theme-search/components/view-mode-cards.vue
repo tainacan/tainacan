@@ -67,20 +67,24 @@
                                 @click.prevent="starSlideshowFromHere(index)"
                                 class="icon slideshow-icon">
                             <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
-                        </span>              
+                        </span>
                     </div>
-                    <!-- Remaining metadata -->  
+                    <!-- Remaining metadata -->
                     <div class="media">
                         <div 
                                 v-if="!shouldHideItemsThumbnail"
-                                :style="{ backgroundImage: 'url(' + (item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)) + ')' }"
                                 class="card-thumbnail">
-                            <img 
-                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                    v-if="item.thumbnail != undefined"
-                                    :src="item['thumbnail']['tainacan-medium'] ? item['thumbnail']['tainacan-medium'][0] : (item['thumbnail'].medium ? item['thumbnail'].medium[0] : thumbPlaceholderPath)">  
+                        <blur-hash-image
+                                v-if="item.thumbnail != undefined"
+                                :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
+                                :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 120)"
+                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
+                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                :transition-duration="500"
+                        />
                         </div>
-                        <div class="skeleton"/>
                         
                         <div class="list-metadata media-body">
                            <!-- Description -->

@@ -7,8 +7,6 @@ namespace Tainacan\Tests;
  */
 class TAINACAN_REST_Private_Files extends TAINACAN_UnitApiTestCase {
 
-
-	
 	public function test_create_item() {
 		
 		$orig_file       = './tests/attachment/codeispoetrywp.jpg';
@@ -62,12 +60,9 @@ class TAINACAN_REST_Private_Files extends TAINACAN_UnitApiTestCase {
 		$folder = 'tainacan-items/' . $this->collection->get_id() . '/' . $this->item->get_id();
 		
 		$this->assertContains( $folder, $attachment_data['file'] );
-
-		
 	}
 	
 	function test_internal_api() {
-		
 		$orig_file       = './tests/attachment/codeispoetrywp.jpg';
 		$this->test_file = '/tmp/codeispoetrywp.jpg';
 		copy( $orig_file, $this->test_file );
@@ -94,15 +89,10 @@ class TAINACAN_REST_Private_Files extends TAINACAN_UnitApiTestCase {
 		);
 		
 		$attachment_id = \Tainacan\Media::get_instance()->insert_attachment_from_file($this->test_file, $this->item->get_id());
-		
 		$attachment_data = wp_get_attachment_metadata($attachment_id);
-		
 		$folder = 'tainacan-items/' . $this->collection->get_id() . '/' . $this->item->get_id();
 		
 		$this->assertContains( $folder, $attachment_data['file'] );
-		
 	}
 
 }
-
-?>

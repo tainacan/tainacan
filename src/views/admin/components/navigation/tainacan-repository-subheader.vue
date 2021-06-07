@@ -116,7 +116,8 @@ export default {
                     sourceCollection: this.collection.id,
                     hideWhenManualCollection: true
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         }
     }

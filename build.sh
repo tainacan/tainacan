@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Loads user-defined variables at build-config file
 source build-config.cfg
 
 ## Only run npm build if there was a change in a .js or .vue file
@@ -18,7 +19,7 @@ if [ $current_OS == "Darwin" ]; then
     find ./package.json -type f \( -name "package.json" -or -name "package-lock.json" \) -exec md5 {} \; | sort -k 2 | md5 > last-package-build.md5
 else
     find src *.js -type f \( -name "*.js" -or -name "*.vue" -or -name "webpack.common.js" -or -name "webpack.dev.js" -or -name "webpack.prod.js" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-js-build.md5
-    find ./src/views/admin/scss/ ./src/views/gutenberg-blocks ./src/views/gutenberg-blocks/tainacan-collections/collections-list ./src/views/gutenberg-blocks/tainacan-facets/facets-list ./src/views/gutenberg-blocks/tainacan-items/dynamic-items-list ./src/views/gutenberg-blocks/tainacan-items/items-list ./src/views/gutenberg-blocks/tainacan-terms/terms-list -type f \( -name "*.scss" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-sass-build.md5
+    find ./src/views/admin/scss/ ./src/views/roles/ ./src/views/media-component/ ./src/views/reports/ ./src/views/gutenberg-blocks ./src/views/gutenberg-blocks/tainacan-collections/collections-list ./src/views/gutenberg-blocks/tainacan-facets/facets-list ./src/views/gutenberg-blocks/tainacan-items/dynamic-items-list ./src/views/gutenberg-blocks/tainacan-items/items-list ./src/views/gutenberg-blocks/tainacan-terms/terms-list -type f \( -name "*.scss" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-sass-build.md5
     find ./composer.json -type f \( -name "composer.json" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-composer-build.md5
     find ./package.json -type f \( -name "package.json" -or -name "package-lock.json" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-package-build.md5
 fi

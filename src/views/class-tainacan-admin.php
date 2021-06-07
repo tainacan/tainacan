@@ -58,6 +58,15 @@ class Admin {
 			array( &$this, 'roles_page' )
 		);
 
+		$reports_page_suffix = add_submenu_page(
+			$this->menu_slug,
+			__('Reports', 'tainacan'),
+			__('Reports', 'tainacan'),
+			'manage_tainacan',
+			'tainacan_reports',
+			array( &$this, 'reports_page' )
+		);
+
 		add_submenu_page(
 			$this->menu_slug,
 			__('Item Submission', 'tainacan'),
@@ -69,6 +78,7 @@ class Admin {
 
 		add_action( 'load-' . $page_suffix, array( &$this, 'load_admin_page' ) );
 		add_action( 'load-' . $roles_page_suffix, array( &$this, 'load_roles_page' ) );
+		add_action( 'load-' . $reports_page_suffix, array( &$this, 'load_reports_page' ) );
 	}
 
 	function load_admin_page() {
@@ -80,6 +90,11 @@ class Admin {
 	function load_roles_page() {
 		add_action( 'admin_enqueue_scripts', array( &$this, 'add_roles_css' ), 90 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'add_roles_js' ), 90 );
+	}
+
+	function load_reports_page() {
+		add_action( 'admin_enqueue_scripts', array( &$this, 'add_reports_css' ), 90 );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'add_reports_js' ), 90 );
 	}
 
 	function login_styles_reset( $style ) {
@@ -128,6 +143,34 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 		// TODO move it to a separate file and start the Vue project
 		echo "<div id='tainacan-roles-app'></div>";
+	}
+
+	function add_reports_css() {
+		global $TAINACAN_BASE_URL;
+
+		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/tainacanicons.css', [], TAINACAN_VERSION );
+		wp_enqueue_style( 'tainacan-reports-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-reports.css', [], TAINACAN_VERSION );
+	}
+
+	function add_reports_js() {
+
+		global $TAINACAN_BASE_URL;
+
+		wp_enqueue_script( 'tainacan-reports', $TAINACAN_BASE_URL . '/assets/js/reports.js', ['underscore', 'wp-i18n'], TAINACAN_VERSION, true );
+		wp_set_script_translations('tainacan-reports', 'tainacan');
+
+		$settings = $this->get_admin_js_localization_params();
+		wp_localize_script( 'tainacan-reports', 'tainacan_plugin', $settings );
+		wp_enqueue_script('underscore');
+		wp_enqueue_script('wp-i18n');
+
+		do_action('tainacan-enqueue-reports-scripts');
+	}
+
+	function reports_page() {
+		global $TAINACAN_BASE_URL;
+		// TODO move it to a separate file and start the Vue project
+		echo "<div id='tainacan-reports-app'></div>";
 	}
 
 	function add_admin_css() {
@@ -238,6 +281,7 @@ class Admin {
 			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
 			'nonce'                  	=> is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
 			'components'             	=> $components,
+			'classes'                	=> array(),
 			'i18n'                   	=> $tainacan_admin_i18n,
 			'user_caps'              	=> $user_caps,
 			'user_prefs'             	=> $prefs,
@@ -247,7 +291,7 @@ class Admin {
 			'theme_collection_list_url' => get_post_type_archive_link( 'tainacan-collection' ),
 			'custom_header_support'  	=> get_theme_support('custom-header'),
 			'registered_view_modes'  	=> \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes(),
-		    'exposer_mapper_param'   	=> \Tainacan\Mappers_Handler::MAPPER_PARAM,
+			'exposer_mapper_param'   	=> \Tainacan\Mappers_Handler::MAPPER_PARAM,
 			'exposer_type_param'     	=> \Tainacan\Exposers_Handler::TYPE_PARAM,
 			'repository_name'	 		=> get_bloginfo('name'),
 			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
@@ -266,13 +310,13 @@ class Admin {
 		$metadata_types = $Tainacan_Metadata->fetch_metadata_types();
 
 		foreach( $maps as $type => $map ){
-		    foreach ( $map as $metadatum => $details){
-                $settings['i18n']['helpers_label'][$type][$metadatum] = [ 'title' => $details['title'], 'description' => $details['description'] ];
-            }
-        }
-        foreach ( $metadata_types as $index => $metadata_type){
-		    $class = new $metadata_type;
-            $settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
+			foreach ( $map as $metadatum => $details){
+				$settings['i18n']['helpers_label'][$type][$metadatum] = [ 'title' => $details['title'], 'description' => $details['description'] ];
+			}
+		}
+		foreach ( $metadata_types as $index => $metadata_type){
+			$class = new $metadata_type;
+			$settings['i18n']['helpers_label'][$class->get_component()] = $class->get_form_labels();
 		}
 
 		$filter_types = $Tainacan_Filters->fetch_filter_types();

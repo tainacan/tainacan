@@ -82,8 +82,8 @@ class Taxonomy extends Metadata_Type {
 	public function get_form_labels(){
 		return [
 			'taxonomy_id' => [
-				'title' => __( 'Related Collection', 'tainacan' ),
-				'description' => __( 'Select the collection to fetch items', 'tainacan' ),
+				'title' => __( 'Related Taxonomy', 'tainacan' ),
+				'description' => __( 'Select the taxonomy to fetch terms', 'tainacan' ),
 			],
 			'input_type' => [
 				'title' => __( 'Input type', 'tainacan' ),
@@ -103,6 +103,102 @@ class Taxonomy extends Metadata_Type {
 			]
 		];
 	}
+
+	/**
+     * Gets print-ready version of the options list in html
+     *
+     * Checks if at least one option exists, otherwise return an empty string
+     * 
+     * @return string An html content with labels and values for the options or an empty string
+     */
+    public function get_options_as_html() {
+        $options_as_html = '';
+        $options = $this->get_options();
+		
+        if ( count($options) > 0 ) {
+
+			// Remove this option as it doesn't matter if using a taginput
+			if ( isset($options['visible_options_list']) && isset($options['input_type']) && $options['input_type'] == 'tainacan-taxonomy-tag-input' )
+				unset($options['visible_options_list']);
+
+			$form_labels = $this->get_form_labels();
+				
+			foreach($options as $option_label => $option_value) {
+
+				if ( $option_value != '' ) {
+					$options_as_html .= '<div class="field"><div class="label">' . ( isset($form_labels[$option_label]) && isset($form_labels[$option_label]['title']) ? $form_labels[$option_label]['title'] : $option_label ) .'</div>';
+					
+					$readable_option_value = '';
+
+					switch($option_label) {
+						
+						case 'taxonomy_id':
+							$taxonomy = \tainacan_taxonomies()->fetch( (int) $option_value );
+							if ( $taxonomy instanceof \Tainacan\Entities\Taxonomy )
+								$readable_option_value = $taxonomy->get_name();
+							else
+								$readable_option_value = $option_value;
+						break;
+
+						case 'input_type':
+								if ($option_value == 'tainacan-taxonomy-radio')
+									$readable_option_value = __('Radio', 'tainacan');
+								else if ($option_value == 'tainacan-taxonomy-checkbox')
+									$readable_option_value = __('Checkbox', 'tainacan');
+								else if ($option_value == 'tainacan-taxonomy-tag-input')
+									$readable_option_value = __('Taginput', 'tainacan');
+								else
+									$readable_option_value = $option_value;
+						break;
+
+						case 'visible_options_list':
+							if ($option_value == 1)
+								$readable_option_value = __('Yes', 'tainacan');
+							else if ($option_value == 0)
+								$readable_option_value = __('No', 'tainacan');
+							else
+								$readable_option_value = $option_value;
+						break;
+
+						case 'allow_new_terms':
+							if ($option_value == 'yes')
+								$readable_option_value = __('Yes', 'tainacan');
+							else if ($option_value == 'no')
+								$readable_option_value = __('No', 'tainacan');
+							else
+								$readable_option_value = $option_value;
+						break;
+
+						case 'link_filtered_by_collections':
+							if (count($option_value) > 0) {
+								$collections = \tainacan_collections()->fetch( [ 'post__in' => $option_value ], 'OBJECT' );
+								
+								if ( is_array($collections) ) {
+									
+									$collection_names = '';
+									for ($i = 0; $i < count($collections); $i++) {
+										$collection_names .= $collections[$i]->get_name();
+										if ($i < count($collections) - 1)
+											$collection_names .= ', ';
+									}
+
+									$readable_option_value = $collection_names;
+								}
+								else
+									$readable_option_value = $option_value;
+							} else
+								$readable_option_value = __( 'None', 'tainacan' );
+						break;
+
+						default:
+							$readable_option_value = $option_value;
+					}
+					$options_as_html .= '<div class="value">' . $readable_option_value . '</div></div>';
+				}
+            }
+        }
+        return $options_as_html;
+    }
 
 	public function validate_options( Metadatum $metadatum) {
 
@@ -197,8 +293,8 @@ class Taxonomy extends Metadata_Type {
 
 		$item = $item_metadata->get_item();
 
-		if ( !in_array($item->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
-			return true;
+		// if ( !in_array($item->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
+		// 	return true;
 
 		$valid = true;
 
@@ -227,7 +323,6 @@ class Taxonomy extends Metadata_Type {
 		}
 
 		return $valid;
-
 	}
 	
 	/**
@@ -236,13 +331,10 @@ class Taxonomy extends Metadata_Type {
 	 * @return string The HTML representation of the value, containing one or multiple terms, separated by comma, linked to term page
 	 */
 	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
-
-		$value = $item_metadata->get_value();
-
+		$value = $item_metadata->get_value();		
 		$return = '';
 
 		if ( $item_metadata->is_multiple() ) {
-
 			$count = 1;
 			$total = sizeof($value);
 			$prefix = $item_metadata->get_multivalue_prefix();
@@ -250,8 +342,7 @@ class Taxonomy extends Metadata_Type {
 			$separator = $item_metadata->get_multivalue_separator();
 
 			foreach ( $value as $term ) {
-
-				$count ++;
+				$count++;
 
 				if ( is_integer($term) ) {
 					$term = \Tainacan\Repositories\Terms::get_instance()->fetch($term, $this->get_option('taxonomy_id'));
@@ -259,35 +350,25 @@ class Taxonomy extends Metadata_Type {
 
 				if ( $term instanceof \Tainacan\Entities\Term ) {
 					$return .= $prefix;
-
 					$return .= $this->get_term_hierarchy_html($term);
-
 					$return .= $suffix;
 
 					if ( $count <= $total ) {
 						$return .= $separator;
 					}
-
 				}
-
 			}
-
 		} else {
-
 			if ( $value instanceof \Tainacan\Entities\Term ) {
 				$return .= $this->get_term_hierarchy_html($value);
 			}
-
 		}
 
 		return $return;
-
 	}
 
 	private function get_term_hierarchy_html( \Tainacan\Entities\Term $term ) {
-
 		$terms = [];
-
 		$terms[] = $this->term_to_html($term);
 
 		while ($term->get_parent() > 0) {
@@ -296,11 +377,9 @@ class Taxonomy extends Metadata_Type {
 		}
 
 		$terms = \array_reverse($terms);
-
 		$glue = apply_filters('tainacan-terms-hierarchy-html-separator', '<span class="hierarchy-separator"> > </span>');
 
 		return \implode($glue, $terms);
-
 	}
 
 	private function term_to_html($term) {

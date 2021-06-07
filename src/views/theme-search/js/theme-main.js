@@ -5,6 +5,7 @@ import VTooltip from 'v-tooltip';
 import VueMasonry from 'vue-masonry-css';
 import cssVars from 'css-vars-ponyfill';
 import qs from 'qs';
+import VueBlurHash from 'vue-blurhash';
 
 // Vue Dev Tools!
 Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
@@ -38,9 +39,16 @@ import ViewModeList from '../components/view-mode-list.vue';
 import store from '../../admin/js/store/store';
 import routerTheme from './theme-router.js';
 import eventBusSearch from '../../admin/js/event-bus-search';
-import { I18NPlugin, UserPrefsPlugin, ConsolePlugin } from '../../admin/js/utilities';
+import { 
+    I18NPlugin,
+    UserPrefsPlugin,
+    ConsolePlugin
+} from '../../admin/js/admin-utilities';
+import { 
+    ThumbnailHelperPlugin
+} from '../../admin/js/utilities';
 
-document.addEventListener("DOMContentLoaded", () => {
+function mountTainacanItemsListComponent() {
 
     // Mount only if the div exists
     if (document.getElementById('tainacan-items-page')) {
@@ -76,8 +84,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         Vue.use(VTooltip);
         Vue.use(VueMasonry);
+        Vue.use(VueBlurHash);
         Vue.use(I18NPlugin);
         Vue.use(UserPrefsPlugin);
+        Vue.use(ThumbnailHelperPlugin);
         Vue.use(ConsolePlugin, {visual: false});
 
         /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
@@ -237,4 +247,22 @@ document.addEventListener("DOMContentLoaded", () => {
             // Options...
         });
     }
+}
+
+// Checks if document is loaded
+const performWhenDocumentIsLoaded = callback => {
+	if (/comp|inter|loaded/.test(document.readyState))
+		cb();
+	else
+		document.addEventListener('DOMContentLoaded', callback, false);
+}
+
+// Mounts when page is loaded
+performWhenDocumentIsLoaded(() => {
+    mountTainacanItemsListComponent();
+});
+
+// Also if a theme or plugin requested a reset...
+document.addEventListener("TainacanReloadItemsListComponent", () => {
+    mountTainacanItemsListComponent();
 });

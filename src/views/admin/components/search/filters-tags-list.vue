@@ -3,7 +3,13 @@
         <div 
                 class="is-inline-flex"
                 v-if="filterTags != undefined && filterTags.length > 0">
-            <p style="margin-bottom: 0;"><strong>{{ totalItems }}</strong>{{ ' itens encontrados, ' }}<strong>{{ filterTags.length }}</strong>{{ ' filtros aplicados: ' }}&nbsp;&nbsp;</p>
+            <p style="margin-bottom: 0;">
+                <strong>{{ totalItems }}</strong>
+                {{ ' ' + ( totalItems == 1 ? $i18n.get('info_item_found') : $i18n.get('info_items_found') ) + ', ' }}
+                <strong>{{ filterTags.length }}</strong>
+                {{ ' ' + ( filterTags.length == 1 ? $i18n.get('info_applied_filter') : $i18n.get('info_applied_filters') ) + ': ' }}
+                &nbsp;&nbsp;
+            </p>
             <b-tag            
                     v-for="(filterTag, index) of filterTags"
                     :key="index"       
@@ -30,6 +36,7 @@
         computed: {
             filterTags() {
                 let tags = this.getFilterTags();
+                
                 let flattenTags = [];
                 for (let tag of tags) {
                     if (Array.isArray(tag.label)) {

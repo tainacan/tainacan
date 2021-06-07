@@ -128,6 +128,7 @@ registerBlockType('tainacan/terms-list', {
                         <Button
                             onClick={ () => removeTermOfId(term.id) }
                             icon="no-alt"
+                            showTooltip={false}
                             label={__('Remove', 'tainacan')}/>
                     }         
                     <a 
@@ -319,7 +320,7 @@ registerBlockType('tainacan/terms-list', {
                         </p>
                         <Button
                             isPrimary
-                            type="submit"
+                            type="button"
                             onClick={ () => openTermsModal() }>
                             {__('Select terms', 'tainacan')}
                         </Button>   

@@ -44,8 +44,8 @@ class Taxonomy extends Entity {
 	 */
 	static $db_identifier_prefix = 'tnc_tax_';
 
-	public function  __toString(){
-		return apply_filters("tainacan-taxonomy-to-string", $this->get_name(), $this);
+	public function __toString() {
+		return (string) apply_filters("tainacan-taxonomy-to-string", $this->get_name(), $this);
 	}
 
 	/**
@@ -54,18 +54,19 @@ class Taxonomy extends Entity {
 	 * @return bool
 	 */
 	function tainacan_register_taxonomy() {
-        $labels = array(
-            'name'              => $this->get_name(),
-            'singular_name'     => $this->get_name(),
-            'search_items'      => __( sprintf('Search terms in %s', $this->get_name()), 'tainacan' ),
-            'all_items'         => __( sprintf('All terms in %s', $this->get_name()), 'tainacan' ),
+	    $taxonomy_name = $this->get_name();
+	    $labels = array(
+            'name'              => $taxonomy_name,
+            'singular_name'     => $taxonomy_name,
+            'search_items'      => __( sprintf('Search terms in %s', $taxonomy_name), 'tainacan' ),
+            'all_items'         => __( sprintf('All terms in %s', $taxonomy_name), 'tainacan' ),
             'parent_item'       => __( 'Parent term', 'tainacan' ),
             'parent_item_colon' => __( 'Parent term:', 'tainacan' ),
             'edit_item'         => __( 'Edit term', 'tainacan' ),
             'update_item'       => __( 'Update term', 'tainacan' ),
             'add_new_item'      => __( 'Add New term', 'tainacan' ),
             'new_item_name'     => __( 'New Genre term', 'tainacan' ),
-            'menu_name'         => $this->get_name(),
+            'menu_name'         => $taxonomy_name,
         );
 
 		$enabled_post_types = $this->get_enabled_post_types();
@@ -87,8 +88,6 @@ class Taxonomy extends Entity {
         if (taxonomy_exists($this->get_db_identifier())){
             unregister_taxonomy($this->get_db_identifier());
         }
-
-
 
         register_taxonomy(
             $this->get_db_identifier(),

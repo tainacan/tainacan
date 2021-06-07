@@ -168,7 +168,7 @@ class Metadatum extends Entity {
 	/**
 	 * Return the an object child of \Tainacan\metadatum_Types\Metadata_Type with options
 	 *
-	 * @return \Tainacan\Metadata_Types\Metadata_Type The metadatum type class with filled options
+	 * @return \Tainacan\Metadata_Types\Metadata_Type|Object The metadatum type class with filled options
 	 */
 	function get_metadata_type_object(){
 		$class_name = $this->get_metadata_type();

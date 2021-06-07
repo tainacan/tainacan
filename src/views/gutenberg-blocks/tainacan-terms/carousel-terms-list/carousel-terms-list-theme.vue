@@ -29,45 +29,30 @@
                                 :href="term.url"
                                 target="_blank">
                             <div class="term-items-grid">
-                                <img 
-                                    :src="
-                                        termItems[term.id][0] && termItems[term.id][0].thumbnail && termItems[term.id][0].thumbnail['tainacan-medium'][0] && termItems[term.id][0].thumbnail['tainacan-medium'][0] 
-                                            ?
-                                        termItems[term.id][0].thumbnail['tainacan-medium'][0] 
-                                            :
-                                        (termItems[term.id][0] && termItems[term.id][0].thumbnail && termItems[term.id][0].thumbnail['thumbnail'][0] && termItems[term.id][0].thumbnail['thumbnail'][0]
-                                            ?    
-                                        termItems[term.id][0].thumbnail['thumbnail'][0] 
-                                            : 
-                                        `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
-                                    "
-                                    :alt="termItems[term.id][0] && termItems[term.id][0].name ? termItems[term.id][0].name : $root.__( 'Thumbnail', 'tainacan' ) ">
-                                <img
-                                    :src=" 
-                                        termItems[term.id][1] && termItems[term.id][1].thumbnail && termItems[term.id][1].thumbnail['tainacan-medium'][0] && termItems[term.id][1].thumbnail['tainacan-medium'][0] 
-                                            ?
-                                        termItems[term.id][1].thumbnail['tainacan-medium'][0] 
-                                            :
-                                        (termItems[term.id][1] && termItems[term.id][1].thumbnail && termItems[term.id][1].thumbnail['thumbnail'][0] && termItems[term.id][1].thumbnail['thumbnail'][0]
-                                            ?    
-                                        termItems[term.id][1].thumbnail['thumbnail'][0] 
-                                            : 
-                                        `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
-                                    "
-                                    :alt="termItems[term.id][1] && termItems[term.id][1].name ? termItems[term.id][1].name : $root.__( 'Thumbnail', 'tainacan' ) ">
-                                <img
-                                    :src=" 
-                                        termItems[term.id][2] && termItems[term.id][2].thumbnail && termItems[term.id][2].thumbnail['tainacan-medium'][0] && termItems[term.id][2].thumbnail['tainacan-medium'][0] 
-                                            ?
-                                        termItems[term.id][2].thumbnail['tainacan-medium'][0] 
-                                            :
-                                        (termItems[term.id][2] && termItems[term.id][2].thumbnail && termItems[term.id][2].thumbnail['thumbnail'][0] && termItems[term.id][2].thumbnail['thumbnail'][0]
-                                            ?    
-                                        termItems[term.id][2].thumbnail['thumbnail'][0] 
-                                            : 
-                                        `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
-                                    "
-                                    :alt="termItems[term.id][2] && termItems[term.id][2].name ? termItems[term.id][2].name : $root.__( 'Thumbnail', 'tainacan' ) ">
+                                <blur-hash-image
+                                        :height="termItems[term.id][2] ? $thumbHelper.getHeight(termItems[term.id][0]['thumbnail'], 'tainacan-medium') : 275"
+                                        :width="termItems[term.id][0] ? $thumbHelper.getWidth(termItems[term.id][0]['thumbnail'], 'tainacan-medium') : 275"
+                                        :src="termItems[term.id][0] ? $thumbHelper.getSrc(termItems[term.id][0]['thumbnail'], 'tainacan-medium', termItems[term.id][0]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
+                                        :srcset="termItems[term.id][0] ? $thumbHelper.getSrcSet(termItems[term.id][0]['thumbnail'], 'tainacan-medium', termItems[term.id][0]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
+                                        :hash="termItems[term.id][0] ? $thumbHelper.getBlurhashString(termItems[term.id][0]['thumbnail'], 'tainacan-medium') : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
+                                        :alt="termItems[term.id][0] && termItems[term.id][0].thumbnail_alt ? termItems[term.id][0].thumbnail_alt : (termItems[term.id][0] && termItems[term.id][0].name ? termItems[term.id][0].name : $root.__( 'Thumbnail', 'tainacan' ))"
+                                        :transition-duration="500" />
+                                <blur-hash-image
+                                        :height="termItems[term.id][1] ? $thumbHelper.getHeight(termItems[term.id][1]['thumbnail'], 'tainacan-medium') : 275"
+                                        :width="termItems[term.id][1] ? $thumbHelper.getWidth(termItems[term.id][1]['thumbnail'], 'tainacan-medium') : 275"
+                                        :src="termItems[term.id][1] ? $thumbHelper.getSrc(termItems[term.id][1]['thumbnail'], 'tainacan-medium', termItems[term.id][1]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
+                                        :srcset="termItems[term.id][1] ? $thumbHelper.getSrcSet(termItems[term.id][1]['thumbnail'], 'tainacan-medium', termItems[term.id][1]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
+                                        :hash="termItems[term.id][1] ? $thumbHelper.getBlurhashString(termItems[term.id][1]['thumbnail'], 'tainacan-medium') : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
+                                        :alt="termItems[term.id][1] && termItems[term.id][1].thumbnail_alt ? termItems[term.id][1].thumbnail_alt : (termItems[term.id][1] && termItems[term.id][1].name ? termItems[term.id][1].name : $root.__( 'Thumbnail', 'tainacan' ))"
+                                        :transition-duration="500" />
+                                <blur-hash-image
+                                        :height="termItems[term.id][2] ? $thumbHelper.getHeight(termItems[term.id][2]['thumbnail'], 'tainacan-medium') : 275"
+                                        :width="termItems[term.id][2] ? $thumbHelper.getWidth(termItems[term.id][2]['thumbnail'], 'tainacan-medium') : 275"
+                                        :src="termItems[term.id][2] ? $thumbHelper.getSrc(termItems[term.id][2]['thumbnail'], 'tainacan-medium', termItems[term.id][2]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
+                                        :srcset="termItems[term.id][2] ? $thumbHelper.getSrcSet(termItems[term.id][2]['thumbnail'], 'tainacan-medium', termItems[term.id][2]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
+                                        :hash="termItems[term.id][2] ? $thumbHelper.getBlurhashString(termItems[term.id][2]['thumbnail'], 'tainacan-medium') : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
+                                        :alt="termItems[term.id][2] && termItems[term.id][2].thumbnail_alt ? termItems[term.id][2].thumbnail_alt : (termItems[term.id][2] && termItems[term.id][2].name ? termItems[term.id][2].name : $root.__( 'Thumbnail', 'tainacan' ))"
+                                        :transition-duration="500" />
                             </div>
                             <span v-if="!hideName">{{ term.name ? term.name : '' }}</span>
                         </a>
@@ -234,6 +219,9 @@ export default {
     },
     created() {
         this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
+        if (tainacan_plugin && tainacan_plugin.nonce)
+            this.tainacanAxios.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
+            
         this.fetchTerms();
 
         if (!isNaN(this.maxTermsPerScreen)) {

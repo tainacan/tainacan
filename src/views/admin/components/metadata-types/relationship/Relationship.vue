@@ -63,7 +63,8 @@
         </a>
         <b-modal 
                 :width="1200"
-                :active.sync="createNewItemModal">
+                :active.sync="createNewItemModal"
+                custom-class="tainacan-modal">
             <iframe 
                     :id="newItemFrame"
                     width="100%"
@@ -120,14 +121,14 @@
             if (this.itemMetadatum.value && (Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value.length > 0 : true )) {
                 let query = qs.stringify({ postin: ( Array.isArray( this.itemMetadatum.value ) ) ? this.itemMetadatum.value : [ this.itemMetadatum.value ]  });
                 query += this.itemMetadatum.metadatum.metadata_type_options.search ? '&fetch_only_meta=' + this.itemMetadatum.metadatum.metadata_type_options.search : '';
-                axios.get('/collection/' + this.collectionId + '/items?' + query + '&nopaging=1&fetch_only=title,thumbnail&order=asc')
+                axios.get('/collection/' + this.collectionId + '/items?' + query + '&nopaging=1&fetch_only=title,document_mimetype,thumbnail&order=asc')
                     .then( res => {
                         if (res.data.items) {
                             for (let item of res.data.items)
                                 this.selected.push({
                                     label: this.getItemLabel(item),
                                     value: item.id,
-                                    img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : ''
+                                    img: this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)
                                 });
                         }
                     })
@@ -194,7 +195,7 @@
                                     this.options.push({
                                         label: this.getItemLabel(item),
                                         value: item.id,
-                                        img: item.thumbnail && item.thumbnail['tainacan-small'] && item.thumbnail['tainacan-small'][0] ? item.thumbnail['tainacan-small'][0] : ''
+                                        img: this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)
                                     })
                             }
                             if (res.headers['x-wp-total'])

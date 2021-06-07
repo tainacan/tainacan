@@ -66,6 +66,69 @@ class Relationship extends Metadata_Type {
 		];
 	}
 
+	/**
+     * Gets print-ready version of the options list in html
+     *
+     * Checks if at least one option exists, otherwise return an empty string
+     * 
+     * @return string An html content with labels and values for the options or an empty string
+     */
+    public function get_options_as_html() {
+        $options_as_html = '';
+        $options = $this->get_options();
+		
+        if ( count($options) > 0 ) {
+
+			// Remove this option that is not relevant for the user
+			if ( isset($options['related_primitive_type']) )
+				unset($options['related_primitive_type']);
+
+			$form_labels = $this->get_form_labels();
+				
+			foreach($options as $option_label => $option_value) {
+
+				if ( $option_value != '' ) {
+					$options_as_html .= '<div class="field"><div class="label">' . ( isset($form_labels[$option_label]) && isset($form_labels[$option_label]['title']) ? $form_labels[$option_label]['title'] : $option_label ) .'</div>';
+					
+					$readable_option_value = '';
+
+					switch($option_label) {
+						
+						case 'collection_id':
+							$collection = \tainacan_collections()->fetch( (int) $option_value );
+							if ( $collection instanceof \Tainacan\Entities\Collection )
+								$readable_option_value = $collection->get_name();
+							else
+								$readable_option_value = $option_value;
+						break;
+
+						case 'search':
+							$metadata = \tainacan_metadata()->fetch( (int) $option_value );
+							if ( $metadata ) {
+								$readable_option_value = $metadata;
+							} else
+								$readable_option_value = $option_value;
+						break;
+
+						case 'repeated':
+							if ($option_value == 'yes')
+								$readable_option_value = __('Yes', 'tainacan');
+							else if ($option_value == 'no')
+								$readable_option_value = __('No', 'tainacan');
+							else
+								$readable_option_value = $option_value;
+						break;
+
+						default:
+							$readable_option_value = $option_value;
+					}
+					$options_as_html .= '<div class="value">' . $readable_option_value . '</div></div>';
+				}
+            }
+        }
+        return $options_as_html;
+    }
+
 	public function validate_options(\Tainacan\Entities\Metadatum $metadatum) {
 		if ( !in_array($metadatum->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
 			return true;
@@ -94,14 +157,11 @@ class Relationship extends Metadata_Type {
 	 * @param  Item_Metadata_Entity $item_metadata 
 	 * @return string The HTML representation of the value, containing one or multiple items names, linked to the item page
 	 */
-	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
-		
+	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {		
 		$value = $item_metadata->get_value();
 		
 		$return = '';
-		
 		if ( $item_metadata->is_multiple() ) {
-			
 			$count = 1;
 			$total = sizeof($value);
 			$prefix = $item_metadata->get_multivalue_prefix();
@@ -109,66 +169,47 @@ class Relationship extends Metadata_Type {
 			$separator = $item_metadata->get_multivalue_separator();
 			
 			foreach ( $value as $item_id ) {
-				
 				try {
-					
-					//$item = new \Tainacan\Entities\Item($item_id);
 					$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 					$item = $Tainacan_Items->fetch( (int) $item_id);
 					
-					
-					$count ++;
+					$count++;
 					
 					if ( $item instanceof \Tainacan\Entities\Item ) {
-						
 						$return .= $prefix;
-						
 						$return .= $this->get_item_html($item);
-						
 						$return .= $suffix;
-						
+
 						if ( $count <= $total ) {
 							$return .= $separator;
 						}
-						
 					}
-					
-					
+
 				} catch (\Exception $e) {
 					// item not found
 				}
-				
 			}
-			
 		} else {
-			
 			try {
-				
 				$item = new \Tainacan\Entities\Item($value);
-				
 				if ( $item instanceof \Tainacan\Entities\Item ) {
 					$return .= $this->get_item_html($item);
 				}
-				
 			} catch (\Exception $e) {
 				// item not found 
 			}
-			
 		}
-		
+
 		return $return;
-		
 	}
 
 	private function get_item_html($item) {
-		
 		$return = '';
 		$id = $item->get_id();
 		
 		$search_meta_id = $this->get_option('search');
 		
 		if ( $id && $search_meta_id ) {
-			
 			$link = get_permalink( (int) $id );
 			
 			$search_meta_id = $this->get_option('search');
@@ -187,17 +228,19 @@ class Relationship extends Metadata_Type {
 			}
 			
 			if (is_string($link)) {
-				
-				$return = "<a data-linkto='item' data-id='$id' href='$link'>";
-				$return.= $label;
-				$return .= "</a>";
-				
+				if ( is_user_logged_in() ||
+					\is_post_status_viewable( $item->get_status() ) &&
+					\is_post_status_viewable($item->get_collection()->get_status()) ) {
+					$return = "<a data-linkto='item' data-id='$id' href='$link'>";
+					$return.= $label;
+					$return .= "</a>";
+				} else {
+					$return.= $label;
+				}
 			}
-			
 		}
 
 		return $return;
-		
 	}
 
 	/**
@@ -205,7 +248,6 @@ class Relationship extends Metadata_Type {
 	 * @return \Tainacan\Entities\Collection|false The Collection object or false
 	 */
 	public function get_collection() {
-		
 		$collection_id = $this->get_option('collection_id');
 		
 		if ( is_numeric($collection_id) ) {
@@ -216,7 +258,6 @@ class Relationship extends Metadata_Type {
 		}
 		
 		return false;
-		
 	}
 
 	/**

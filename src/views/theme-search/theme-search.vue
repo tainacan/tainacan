@@ -37,7 +37,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" >
 
     // TAINACAN Variables
     @import "../admin/scss/_variables.scss";
@@ -58,27 +58,40 @@ export default {
     @import "../../../node_modules/buefy/src/scss/components/_notices.scss";
     @import "../../../node_modules/buefy/src/scss/components/_numberinput.scss";
 
-    // Tainacan imports
-    @import "../admin/scss/_tables.scss";
-    @import "../admin/scss/_modals.scss";
-    @import "../admin/scss/_buttons.scss"; 
-    @import "../admin/scss/_inputs.scss";
-    @import "../admin/scss/_checkboxes.scss";
-    @import "../admin/scss/_pagination.scss";
-    @import "../admin/scss/_tags.scss";
-    @import "../admin/scss/_notices.scss";
-    @import "../admin/scss/_tabs.scss";
-    @import "../admin/scss/_selects.scss";
-    @import "../admin/scss/_dropdown-and-autocomplete.scss";
-    @import "../admin/scss/_tooltips.scss";
-    @import "../admin/scss/_control.scss";
-    @import "../admin/scss/_tainacan-form.scss";
-    @import "../admin/scss/_filters-menu-modal.scss";
-    @import "./scss/_layout.scss";
+    // Block level custom variables
     @import "../admin/scss/_custom_variables.scss";
 
+    // These have to be outside of the scoped context
+    @import "./scss/_layout.scss";
+    @import "../admin/scss/_tooltips.scss";
+    @import "../admin/scss/_notices.scss";
+    @import "../admin/scss/_modals.scss";
+    
+    // Scoped, to avoid conflicts with theme's css 
+    .tainacan-modal,
     .theme-items-list {
-        background: var(--tainacan-background-color, inherit);
+
+        // Vue Blurhash transtition effect
+        @import '../../../node_modules/vue-blurhash/dist/vue-blurhash.css';
+
+        // Tainacan imports
+        @import "../admin/scss/_tables.scss";
+        @import "../admin/scss/_modals.scss";
+        @import "../admin/scss/_buttons.scss"; 
+        @import "../admin/scss/_inputs.scss";
+        @import "../admin/scss/_checkboxes.scss";
+        @import "../admin/scss/_pagination.scss";
+        @import "../admin/scss/_tags.scss";
+        @import "../admin/scss/_tabs.scss";
+        @import "../admin/scss/_selects.scss";
+        @import "../admin/scss/_dropdown-and-autocomplete.scss";
+        @import "../admin/scss/_control.scss";
+        @import "../admin/scss/_tainacan-form.scss";
+        @import "../admin/scss/_filters-menu-modal.scss";
+
+        &:not(.tainacan-modal) {
+            background: var(--tainacan-background-color, inherit);
+        }
         font-size: var(--tainacan-base-font-size, inherit);
         font-family: var(--tainacan-font-family, inherit);
         position: relative;

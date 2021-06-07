@@ -202,11 +202,16 @@
                             text-decoration: none !important;
                         }   
                     }
-                    img.table-thumb {
+                    img.table-thumb,
+                    .table-thumb>div {
                         max-height: 38px !important;
                         min-height: 38px;
                         max-width: 38px;
                         border-radius: 0px;
+                        padding-bottom: 0px !important;
+                        padding-left: 0px !important;
+                        padding-right: 0px !important;
+                        padding-top: 0px !important;
                     }
                     td.actions-cell {
                         padding: 0px;

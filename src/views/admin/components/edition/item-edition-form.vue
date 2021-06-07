@@ -217,7 +217,8 @@
                                 scroll="keep"
                                 trap-focus
                                 aria-modal
-                                aria-role="dialog">
+                                aria-role="dialog"
+                                custom-class="tainacan-modal">
                             <div class="tainacan-modal-content">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('instruction_write_text') }}</h2>
@@ -258,7 +259,8 @@
                                 role="dialog"
                                 tabindex="-1"
                                 aria-modal
-                                aria-role="dialog">
+                                aria-role="dialog"
+                                custom-class="tainacan-modal">
                             <div class="tainacan-modal-content">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('instruction_insert_url') }}</h2>
@@ -305,17 +307,21 @@
                                         :size="178"
                                         :file="{
                                             media_type: 'image',
-                                            thumbnails: { 'tainacan-medium': [ item.thumbnail['tainacan-medium'] ? item.thumbnail['tainacan-medium'][0] : item.thumbnail.medium[0] ] },
+                                            thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
                                             title: $i18n.get('label_thumbnail'),
-                                            description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + item.thumbnail.full[0] + `'/>` 
+                                            description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_mimetype) + `'/>` 
                                         }"/>
                                 <figure
                                         v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
                                         class="image">
-                                    <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
+                                    <span 
+                                            class="image-placeholder"
+                                            v-if="item.document_type == 'empty' && item.document_mimetype == 'empty'">
+                                        {{ $i18n.get('label_empty_thumbnail') }}
+                                    </span>
                                     <img
                                             :alt="$i18n.get('label_thumbnail')"
-                                            :src="thumbPlaceholderPath">
+                                            :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
                                 </figure>
                                 <div class="thumbnail-buttons-row">
                                     <a
@@ -415,11 +421,11 @@
                                     style="flex-wrap: wrap"
                                     class="column is-narrow">
                                 <div class="section-label">
-                                    <label>{{ $i18n.get('label_visibility') }}</label>
+                                    <label>{{ $i18n.get('label_status') }}</label>
                                     <span class="required-metadatum-asterisk">*</span>
                                     <help-button
-                                            :title="$i18n.get('label_visibility')"
-                                            :message="$i18n.get('info_visibility_helper')"/>
+                                            :title="$i18n.getHelperTitle('items', 'status')"
+                                            :message="$i18n.getHelperMessage('items', 'status')"/>
                                 </div>
                                 <div class="section-status">
                                     <div
@@ -432,7 +438,7 @@
                                             <span class="icon">
                                                 <i class="tainacan-icon tainacan-icon-public"/>
                                             </span>
-                                            {{ $i18n.get('publish_visibility') }}
+                                            {{ $i18n.get('status_public') }}
                                         </b-radio>
                                         <b-radio
                                                 v-model="visibility"
@@ -441,7 +447,7 @@
                                             <span class="icon">
                                                 <i class="tainacan-icon tainacan-icon-private"/>
                                             </span>
-                                            {{ $i18n.get('private_visibility') }}
+                                            {{ $i18n.get('status_private') }}
                                         </b-radio>
                                     </div>
                                 </div>
@@ -835,7 +841,6 @@ export default {
             },
             thumbnail: {},
             formErrorMessage: '',
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             thumbnailMediaFrame: undefined,
             attachmentMediaFrame: undefined,
             fileMediaFrame: undefined,
@@ -988,7 +993,8 @@ export default {
                         next();
                     },
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         } else {
             next()
@@ -1229,6 +1235,7 @@ export default {
             this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
             .then(item => {
                 this.item.document_as_html = item.document_as_html;
+                this.item.document_mimetype = item.document_mimetype;
                 this.isLoading = false;
             })
             .catch((errors) => {
@@ -1260,6 +1267,7 @@ export default {
             this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
                 .then(item => {
                     this.item.document_as_html = item.document_as_html;
+                    this.item.document_mimetype = item.document_mimetype;
                     this.isLoading = false;
 
                     let oldThumbnail = this.item.thumbnail;
@@ -1295,6 +1303,7 @@ export default {
                 document_type: this.form.document_type
             })
             .then(() => {
+                this.item.document_mimetype = 'empty';
                 this.isLoadingAttachments = true;
                 this.fetchAttachments({
                     page: 1,
@@ -1356,7 +1365,8 @@ export default {
                             });
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
 
         },
@@ -1378,6 +1388,7 @@ export default {
                         .then((item) => {
                             this.isLoading = false;
                             this.item.document_as_html = item.document_as_html;
+                            this.item.document_mimetype = item.document_mimetype;
 
                             let oldThumbnail = this.item.thumbnail;
                             if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail )
@@ -1477,7 +1488,8 @@ export default {
                         this.$router.push(this.$routerHelper.getCollectionPath(this.form.collectionId))
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
         loadExistingItem() {

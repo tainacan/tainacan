@@ -122,6 +122,12 @@ class DateMetadatumTypes extends TAINACAN_UnitTestCase {
         
         $item_metadata_multiple->set_value(['2010-12-31', '2010-05-05']);
         $this->assertTrue($item_metadata_multiple->validate());
+
+        $item_metadata_multiple->set_value(['2010-01-01', '2010-12-01', null]);
+        $this->assertTrue($item_metadata_multiple->validate());
+
+        $item_metadata_multiple->set_value(['2010-01-01', '2010-12-01', '']);
+        $this->assertTrue($item_metadata_multiple->validate());
         
         $item_metadata_multiple->set_value('2010-22-01');
         $this->assertFalse($item_metadata_multiple->validate());
@@ -131,12 +137,13 @@ class DateMetadatumTypes extends TAINACAN_UnitTestCase {
         
         $item_metadata_multiple->set_value(['3/3/1202','2010-02-30', '2010-12-31', '2010-22-01', '2010-01-01', '2010-12-01']);
         $this->assertFalse($item_metadata_multiple->validate());
-      
-        $item_metadata_multiple->set_value(['2010-01-01', '2010-12-01', null]);
+
+        $item_metadata_multiple->set_value(['3/3/1202','2010-02-']);
         $this->assertFalse($item_metadata_multiple->validate());
 
-        $item_metadata_multiple->set_value(['2010-01-01', '2010-12-01', '']);
+        $item_metadata_multiple->set_value(['3/3/1202','201002']);
         $this->assertFalse($item_metadata_multiple->validate());
+
     }
     
 }

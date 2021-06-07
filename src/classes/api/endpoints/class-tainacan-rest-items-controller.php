@@ -283,6 +283,7 @@ class REST_Items_Controller extends REST_Controller {
 				if( isset($item_arr['thumbnail']) ) {
 					$item_arr['thumbnail_alt'] = get_post_meta( $item->get__thumbnail_id(), '_wp_attachment_image_alt', true );
 					$item_arr['thumbnail_id'] = $item->get__thumbnail_id();
+					$item_arr['document_mimetype'] = $item->get_document_mimetype(); // In case the thumbnail is requested, we need the document mime type to generate proper placeholders
 				}
 
 				$item_arr['url'] = get_permalink( $item_arr['id'] );
@@ -707,10 +708,9 @@ class REST_Items_Controller extends REST_Controller {
 	 */
 	public function update_item( $request ) {
 		$item_id = $request['item_id'];
-
 		$body = json_decode($request->get_body(), true);
 
-		if(!empty($body)){
+		if (!empty($body)) {
 			$attributes = [];
 
 			foreach ($body as $att => $value){
@@ -883,7 +883,7 @@ class REST_Items_Controller extends REST_Controller {
 			return new \WP_REST_Response( [
 				'error_message' => __( 'Please verify, invalid value(s)', 'tainacan' ),
 				'errors'        => $item_metadata->get_errors(),
-				'item_metadata' => $this->prepare_item_for_response($item_metadata, $request),
+				'item_metadata' => $this->prepare_item_for_response($item_metadata->get_item(), $request),
 			], 400 );
 		}
 	}

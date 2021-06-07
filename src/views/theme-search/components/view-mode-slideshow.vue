@@ -158,7 +158,7 @@
                                     <p>{{ $i18n.get('label_document_empty') }}</p>
                                     <img 
                                             :alt="$i18n.get('label_document_empty')" 
-                                            :src="thumbPlaceholderPath">
+                                            :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
                                 </div>
                             </div>
                         </transition>
@@ -452,7 +452,7 @@ export default {
                             <img 
                                     alt="` + (slideItem['thumbnail_alt'] ? slideItem['thumbnail_alt'] : (self.$i18n.get('label_thumbnail') + ': ' + slideItem.title) ) + `"
                                     class="thumbnail" 
-                                    src="` + (slideItem['thumbnail']['tainacan-medium'] ? slideItem['thumbnail']['tainacan-medium'][0] : (slideItem['thumbnail']['medium']? slideItem['thumbnail']['medium'][0] : self.thumbPlaceholderPath)) + `">  
+                                    src="` + self.$thumbHelper.getSrc(slideItem['thumbnail'], 'tainacan-medium', slideItem.document_mimetype) + `">  
                         </div>`;
                 },
                 addSlidesBefore: 2,
@@ -625,7 +625,7 @@ export default {
                 width: 680,
                 ariaRole: 'alertdialog',
                 ariaModal: true,
-                customClass: 'slides-help-modal',
+                customClass: 'tainacan-modal slides-help-modal',
                 onCancel: () => {
                     setTimeout(() => document.documentElement.classList.add('is-clipped'), 500); 
                 }

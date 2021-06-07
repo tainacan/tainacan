@@ -311,7 +311,7 @@ registerBlockType('tainacan/facets-list', {
                                             return prepareFacet(aChildTermFacet);
                                         })
                                         :
-                                        <p class="no-child-facet-found">{ __( 'This facet children terms do not contain items.', 'tainacan' )}</p>
+                                        <p class="no-child-facet-found">{ __( 'The child terms of this facet do not contain items.', 'tainacan' )}</p>
                                 }
                             </ul>
                         : null )
@@ -919,14 +919,14 @@ registerBlockType('tainacan/facets-list', {
                                 <div style={{ display: 'flex' }}>
                                     <Button
                                         isPrimary
-                                        type="submit"
+                                        type="button"
                                         onClick={ () => openParentTermModal() }>
                                         {__('Change parent term', 'tainacan')}
                                     </Button>
                                     <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
                                     <Button
                                         isPrimary
-                                        type="submit"
+                                        type="button"
                                         onClick={ () => openMetadataModal() }>
                                         {__('Change facets source', 'tainacan')}
                                     </Button>
@@ -934,7 +934,7 @@ registerBlockType('tainacan/facets-list', {
                             : 
                             <Button
                                 isPrimary
-                                type="submit"
+                                type="button"
                                 onClick={ () => openMetadataModal() }>
                                 {__('Select facets', 'tainacan')}
                             </Button>

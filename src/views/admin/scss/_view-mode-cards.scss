@@ -41,11 +41,7 @@
             min-height: 171px;
             max-height: 171px;
 
-            img {
-                width: 130px !important;
-                height: 130px !important;
-            }
-            .skeleton {
+            &.skeleton {
                 width: 130px !important;
                 height: 130px !important;
             }
@@ -105,11 +101,18 @@
             opacity: 0;
             visibility: hidden;
         }
-        img {
-            width: 170px;
-            height: 170px;
+        /deep/ img,
+        /deep/ canvas {
+            width: 170px !important;
+            height: 170px !important;
             border-radius: 0px;
-            visibility: hidden;
+            object-fit: cover;
+            object-position: center;
+
+            @media screen and (max-width: 480px) {
+                width: 130px !important;
+                height: 130px !important;
+            }
         }
         .card-thumbnail {
             width: 170px;
@@ -119,11 +122,9 @@
             background-repeat: no-repeat;
             margin: 0;
         }
-        .skeleton {
+        &.skeleton {
             width: 170px;
             height: 170px;
-            position: absolute;
-            z-index: -1;
             background-color: var(--tainacan-skeleton-color);
         }
         .metadata-title {

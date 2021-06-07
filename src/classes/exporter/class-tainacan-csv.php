@@ -60,6 +60,19 @@ class CSV extends Exporter {
 					$line[] = $rel;
 			} elseif ($meta->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Compound') {
 				$line[] = $this->get_compound_metadata_cell($meta);
+			} elseif ($meta->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Date' ) {
+				$metadatum = $meta->get_metadatum();
+				$date_value = 'ERROR ON FORMATING DATE';
+				if (is_object($metadatum)) {
+					$fto = $metadatum->get_metadata_type_object();
+					if (is_object($fto)) {
+						if ( method_exists($fto, 'get_value_as_html') ) {
+							$fto->output_date_format = 'Y-m-d';
+							$date_value = $fto->get_value_as_html($meta);
+						}
+					}
+				} 
+				$line[] = $date_value;
 			} else {
 				$line[] = $meta->get_value_as_string();
 			}

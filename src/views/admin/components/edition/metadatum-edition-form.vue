@@ -89,7 +89,7 @@
                         <span class="icon has-text-gray3">
                             <i class="tainacan-icon tainacan-icon-public"/>
                         </span>
-                        {{ $i18n.get('publish_visibility') }}
+                        {{ $i18n.get('status_public') }}
                     </b-radio>
                 </b-field>
                 <b-field>
@@ -102,7 +102,7 @@
                         <span class="icon has-text-gray3">
                             <i class="tainacan-icon tainacan-icon-private"/>
                         </span>
-                        {{ $i18n.get('private_visibility') }}
+                        {{ $i18n.get('status_private') }}
                     </b-radio>
                 </b-field>
             </b-field>
@@ -316,8 +316,8 @@
             if (this.closedByForm) {
                 this.editedMetadatum.saved = true;
             } else {
-                this.oldForm.saved = this.editForm.saved;
-                if (JSON.stringify(this.editForm) != JSON.stringify(this.oldForm))
+                this.$set(this.oldForm, 'saved', this.editForm.saved);
+                if (!_.isEqual(this.editForm, this.oldForm))
                     this.editedMetadatum.saved = false;
                 else
                     this.editedMetadatum.saved = true;
@@ -341,7 +341,8 @@
                         metadatumId: metadatum.id,
                         isRepositoryLevel: this.isRepositoryLevel,
                         index: this.index,
-                        options: this.editForm
+                        options: this.editForm,
+                        includeOptionsAsHtml: true
                     })
                         .then(() => {
                             this.editForm = {};
@@ -380,7 +381,8 @@
                         metadatumId: metadatum.id,
                         isRepositoryLevel: this.isRepositoryLevel,
                         index: this.index,
-                        options: formObj
+                        options: formObj,
+                        includeOptionsAsHtml: true
                     })
                         .then(() => {
                             this.editForm = {};

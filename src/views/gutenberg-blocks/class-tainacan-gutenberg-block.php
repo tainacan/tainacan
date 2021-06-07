@@ -8,31 +8,89 @@ function tainacan_blocks_initialize() {
 	global $wp_version;
 
 	if (is_plugin_active('gutenberg/gutenberg.php') ||  $wp_version >= '5') {
-		tainacan_blocks_add_gutenberg_blocks_actions();
+		add_filter('block_categories', 'tainacan_blocks_register_categories', 10, 2);
+		add_action('init', 'tainacan_blocks_add_plugin_settings', 90);
+		add_action('init', 'tainacan_blocks_add_plugin_admin_settings', 90);
+		add_action('init', 'register_tainacan_blocks_add_gutenberg_blocks');
+		add_action('wp_enqueue_scripts', 'unregister_tainacan_blocks');
+		add_action('admin_enqueue_scripts', 'unregister_tainacan_blocks');
 	}
 }
 
-function tainacan_blocks_add_gutenberg_blocks_actions() {
+function register_tainacan_blocks_add_gutenberg_blocks() {
+	tainacan_blocks_get_common_styles();
+	tainacan_blocks_register_category_icon();
+	tainacan_blocks_register_tainacan_terms_list();
+	tainacan_blocks_register_tainacan_search_bar();
+	tainacan_blocks_register_tainacan_items_list();
+	tainacan_blocks_register_tainacan_facets_list();
+	tainacan_blocks_register_tainacan_faceted_search();
+	tainacan_blocks_register_tainacan_collections_list();
+	tainacan_blocks_register_tainacan_dynamic_items_list();
+	tainacan_blocks_register_tainacan_carousel_items_list();
+	tainacan_blocks_register_tainacan_carousel_terms_list();
+	tainacan_blocks_register_tainacan_item_submission_form();
+	tainacan_blocks_register_tainacan_carousel_collections_list();
+}
 
-	add_action('init', 'tainacan_blocks_get_common_styles');
+function unregister_tainacan_blocks() {
+	global $post;
+	if(!$post) return;
 
-	add_action('init', 'tainacan_blocks_register_tainacan_terms_list');
-	add_action('init', 'tainacan_blocks_register_tainacan_items_list');
-	add_action('init', 'tainacan_blocks_register_tainacan_dynamic_items_list');
-	add_action('init', 'tainacan_blocks_register_tainacan_carousel_items_list');
-	add_action('init', 'tainacan_blocks_register_tainacan_carousel_terms_list');
-	add_action('init', 'tainacan_blocks_register_tainacan_search_bar');
-	add_action('init', 'tainacan_blocks_register_tainacan_faceted_search');
-	add_action('init', 'tainacan_blocks_register_tainacan_collections_list');
-	add_action('init', 'tainacan_blocks_register_tainacan_carousel_collections_list');
-	add_action('init', 'tainacan_blocks_register_tainacan_facets_list');
-	add_action('init', 'tainacan_blocks_register_tainacan_item_submission_form');
+	$not_allowed =  apply_filters('posts-names-to-unregister-tainacan-blocks', []);
+	$current_page = $post->post_name;
 
-	add_action('init', 'tainacan_blocks_add_plugin_settings', 90);
-	add_action('init', 'tainacan_blocks_add_plugin_admin_settings', 90);
-	
-	add_filter('block_categories', 'tainacan_blocks_register_categories', 10, 2);
-	add_action('init', 'tainacan_blocks_register_category_icon');
+	if ( in_array($current_page, $not_allowed) ) {
+		wp_deregister_script('items-list');
+		wp_deregister_script('terms-list');
+		wp_deregister_script('facets-list');
+		wp_deregister_script('search-bar');
+		wp_deregister_script('faceted-search');
+		wp_deregister_script('tainacan-search');
+		wp_deregister_script('collections-list');
+		wp_deregister_script('facets-list-theme');
+		wp_deregister_script('dynamic-items-list');
+		wp_deregister_script('carousel-items-list');
+		wp_deregister_script('carousel-terms-list');
+		wp_deregister_script('item-submission-form');
+		wp_deregister_script('google-recaptcha-script');
+		wp_deregister_script('search-bar-theme-script');
+		wp_deregister_script('tainacan-item-submission');
+		wp_deregister_script('dynamic-items-list-theme');
+		wp_deregister_script('carousel-collections-list');
+		wp_deregister_script('carousel-items-list-theme');
+		wp_deregister_script('carousel-terms-list-theme');
+		wp_deregister_script('carousel-collections-list-theme');
+		wp_deregister_script('tainacan-blocks-register-category-icon');
+
+		wp_deregister_style('terms-list');
+		wp_deregister_style('items-list');
+		wp_deregister_style('search-bar');
+		wp_deregister_style('facets-list');
+		wp_deregister_style('faceted-search');
+		wp_deregister_style('collections-list');
+		wp_deregister_style('dynamic-items-list');
+		wp_deregister_style('carousel-items-list');
+		wp_deregister_style('carousel-terms-list');
+		wp_deregister_style('item-submission-form');
+		wp_deregister_style('carousel-collections-list');
+		wp_deregister_style('tainacan-blocks-common-styles');
+		wp_deregister_style('tainacan-blocks-register-category-icon');
+
+		if (function_exists('unregister_block_type')) {
+			unregister_block_type('tainacan/terms-list');
+			unregister_block_type('tainacan/items-list');
+			unregister_block_type('tainacan/search-bar');
+			unregister_block_type('tainacan/facets-list');
+			unregister_block_type('tainacan/faceted-search');
+			unregister_block_type('tainacan/collections-list');
+			unregister_block_type('tainacan/dynamic-items-list');
+			unregister_block_type('tainacan/carousel-items-list');
+			unregister_block_type('tainacan/carousel-terms-list');
+			unregister_block_type('tainacan/item-submission-form');
+			unregister_block_type('tainacan/carousel-collections-list');
+		}
+	}
 }
 
 function tainacan_blocks_register_categories($categories, $post){
@@ -436,7 +494,7 @@ function tainacan_blocks_add_plugin_admin_settings() {
 
 function tainacan_blocks_get_common_styles() {
 	global $TAINACAN_BASE_URL;
-	
+
 	wp_enqueue_style(
 		'tainacan-blocks-common-styles',
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-common-styles.css',

@@ -79,7 +79,7 @@
                     :message="$i18n.getHelperMessage('tainacan-taxonomy', 'visible_options_list')"/>
         </b-field>
         <b-field
-                v-if="taxonomy_id && taxonomies.length && taxonomies.find((taxonomy) => taxonomy.id == taxonomy_id).allow_insert == 'yes'" 
+                v-if="taxonomy_id && taxonomies.length && isTermCreationAllowedOnCurrentTaxonomy" 
                 :addons="false"
                 :label="$i18n.get('label_taxonomy_allow_new_terms')">
                 &nbsp;
@@ -118,12 +118,12 @@
                 <template slot-scope="props">
                     <div class="media">
                         <div
-                                v-if="props.option.thumbnail && props.option.thumbnail.thumbnail && props.option.thumbnail.thumbnail[0]"
+                                v-if="props.option.thumbnail && props.option.thumbnail['tainacan-small'] && props.option.thumbnail['tainacan-small']"
                                 class="media-left">
                             <img 
                                     width="24"
                                     :alt="$i18n.get('label_thumbnail')"
-                                    :src="props.option.thumbnail.thumbnail[0]" >
+                                    :src="$thumbHelper.getSrc(props.option['thumbnail'], 'tainacan-small')" >
                         </div>
                         <div class="media-content">
                             {{ props.option.name }}
@@ -153,6 +153,7 @@
                 isReady: false,
                 taxonomies: [],
                 taxonomy_id: '',
+                taxonomy: '',
                 loading: false,
                 allow_new_terms: 'yes',
                 link_filtered_by_collections: [],
@@ -199,6 +200,10 @@
                     this.setErrorsAttributes( '', '' );
                 }
                 return true;
+            },
+            isTermCreationAllowedOnCurrentTaxonomy() {
+                const currentTaxonomy = this.taxonomies.find((taxonomy) => taxonomy.id == this.taxonomy_id);
+                return currentTaxonomy ? currentTaxonomy.allow_insert == 'yes' : false;
             }
         },
         watch: {
@@ -235,6 +240,7 @@
 
                 this.visible_options_list = ( this.value.visible_options_list ) ? this.value.visible_options_list : false;
                 this.link_filtered_by_collections = ( this.value.link_filtered_by_collections ) ? this.value.link_filtered_by_collections : [];
+                this.taxonomy = this.value.taxonomy ? this.value.taxonomy : '';
             }
 
             this.isReady = true;
@@ -286,7 +292,8 @@
                     input_type: this.input_type,
                     allow_new_terms: this.allow_new_terms,
                     visible_options_list: this.visible_options_list,
-                    link_filtered_by_collections: this.link_filtered_by_collections
+                    link_filtered_by_collections: this.link_filtered_by_collections,
+                    taxonomy: this.taxonomy
                 })
             },
             updateSelectedCollections(selectedCollections) {

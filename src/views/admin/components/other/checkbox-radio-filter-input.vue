@@ -39,13 +39,96 @@
                                 type="search" />
                     </b-field>
 
+                    <!-- Search Results -->
+                    <div
+                            v-if="isSearching"
+                            :style="{ height: isModal ? 'auto' : '0px' }"
+                            class="modal-card-body tainacan-checkbox-list-container">
+                        <a
+                                v-if="isUsingElasticSearch ? previousLastTerms.length && previousLastTerms[0] != checkboxListOffset : checkboxListOffset"
+                                role="button"
+                                class="tainacan-checkbox-list-page-changer"
+                                @click="previousSearchPage">
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-previous"/>
+                            </span>
+                        </a>
+                        <ul 
+                                :class="{
+                                    'tainacan-modal-checkbox-list-body-dynamic-m-l': !checkboxListOffset,
+                                    'tainacan-modal-checkbox-list-body-dynamic-m-r': noMoreSearchPage,
+                                }"
+                                class="tainacan-modal-checkbox-list-body">
+                            <template v-if="searchResults.length">
+                                <li
+                                        class="tainacan-li-checkbox-list"
+                                        v-for="(option, key) in searchResults"
+                                        :key="key">
+                                    <label 
+                                            v-if="isCheckbox"
+                                            class="b-checkbox checkbox">
+                                        <input                                     
+                                                v-model="selected"
+                                                :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
+                                                type="checkbox"> 
+                                        <span class="check" /> 
+                                        <span class="control-label">
+                                            <span 
+                                                    class="checkbox-label-text"
+                                                    v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" /> 
+                                            <span 
+                                                    v-if="option.total_items != undefined"
+                                                    class="has-text-gray">
+                                                &nbsp;{{ "(" + option.total_items + ")" }}
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <b-radio
+                                            v-tooltip="{
+                                                content: (option.name ? option.name : option.label) + (option.total_items != undefined ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
+                                                autoHide: false,
+                                            }"
+                                            v-else
+                                            v-model="selected"
+                                            :native-value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.value)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))">
+                                        <span 
+                                                    class="checkbox-label-text"
+                                                    v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" />
+                                        <span 
+                                                v-if="option.total_items != undefined"
+                                                class="has-text-gray">
+                                            &nbsp;{{ "(" + option.total_items + ")" }}
+                                        </span>
+                                    </b-radio>
+                                </li>
+                            </template>
+                            <template v-if="!isLoadingSearch && !searchResults.length">
+                                <li class="tainacan-li-checkbox-list result-info">
+                                    {{ $i18n.get('info_no_terms_found') }}
+                                </li>
+                            </template>
+                            <b-loading
+                                    :is-full-page="false"
+                                    :active.sync="isLoadingSearch"/>
+                        </ul>
+                        <a
+                                v-if="!noMoreSearchPage"
+                                role="button"
+                                class="tainacan-checkbox-list-page-changer"
+                                @click="nextSearchPage">
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-next"/>
+                            </span>
+                        </a>
+                    </div>
+
                     <!-- Non-hierarchical lists -->
                     <div
                             v-if="!isSearching && !isTaxonomy"
                             :style="{ height: isModal ? 'auto' : '0px' }"
                             class="modal-card-body tainacan-checkbox-list-container">
                         <a
-                                v-if="isUsingElasticSearch ? lastTermOnFisrtPage != checkboxListOffset : checkboxListOffset"
+                                v-if="isUsingElasticSearch ? previousLastTerms.length && previousLastTerms[0] != checkboxListOffset : checkboxListOffset"
                                 role="button"
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="previousPage">
@@ -59,29 +142,36 @@
                                     'tainacan-modal-checkbox-list-body-dynamic-m-r': noMorePage,
                                 }"
                                 class="tainacan-modal-checkbox-list-body">
-                            <li
-                                    class="tainacan-li-checkbox-list"
-                                    v-for="(option, key) in options"
-                                    :key="key">
-                                <label class="b-checkbox checkbox">
-                                    <input 
-                                            v-model="selected"
-                                            :value="option.value"
-                                            type="checkbox"> 
-                                    <span class="check" /> 
-                                    <span class="control-label">
-                                        <span 
-                                                v-tooltip="{
-                                                    content: option.label + (option.total_items != undefined ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
-                                                    autoHide: false,
-                                                }" 
-                                                class="checkbox-label-text">{{ `${ (option.label ? option.label : '') }` }}</span> 
-                                        <span 
-                                            v-if="option.total_items != undefined"
-                                            class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
-                                    </span>
-                                </label>
-                            </li>
+                            <template v-if="options.length">
+                                <li
+                                        class="tainacan-li-checkbox-list"
+                                        v-for="(option, key) in options"
+                                        :key="key">
+                                    <label class="b-checkbox checkbox">
+                                        <input 
+                                                v-model="selected"
+                                                :value="option.value"
+                                                type="checkbox"> 
+                                        <span class="check" /> 
+                                        <span class="control-label">
+                                            <span 
+                                                    v-tooltip="{
+                                                        content: option.label + (option.total_items != undefined ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
+                                                        autoHide: false,
+                                                    }" 
+                                                    class="checkbox-label-text">{{ `${ (option.label ? option.label : '') }` }}</span> 
+                                            <span 
+                                                v-if="option.total_items != undefined"
+                                                class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
+                                        </span>
+                                    </label>
+                                </li>
+                            </template>
+                            <template v-if="!isCheckboxListLoading && !options.length">
+                                <li class="tainacan-li-checkbox-list result-info">
+                                    {{ $i18n.get('info_no_terms_found') }}
+                                </li>
+                            </template>
                             <b-loading
                                     :is-full-page="false"
                                     :active.sync="isCheckboxListLoading"/>
@@ -192,67 +282,14 @@
                             </ul>
                         </div>
                     </transition-group>
+
                     <b-loading
                             :is-full-page="false"
                             :active.sync="isColumnLoading"/>
-
-                    <!-- Search Results -->
-                    <div
-                            v-if="isSearching"
-                            :style="{ height: isModal ? 'auto' : '0px' }"
-                            class="modal-card-body tainacan-search-results-container">
-                        <ul class="tainacan-modal-checkbox-search-results-body">
-                            <li
-                                    class="tainacan-li-search-results"
-                                    v-for="(option, key) in searchResults"
-                                    :key="key">
-                                <label 
-                                        v-if="isCheckbox"
-                                        class="b-checkbox checkbox">
-                                    <input                                     
-                                            v-model="selected"
-                                            :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
-                                            type="checkbox"> 
-                                    <span class="check" /> 
-                                    <span class="control-label">
-                                        <span 
-                                                class="checkbox-label-text"
-                                                v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" /> 
-                                        <span 
-                                                v-if="option.total_items != undefined"
-                                                class="has-text-gray">
-                                            &nbsp;{{ "(" + option.total_items + ")" }}
-                                        </span>
-                                    </span>
-                                </label>
-                                <b-radio
-                                        v-tooltip="{
-                                            content: (option.name ? option.name : option.label) + (option.total_items != undefined ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
-                                            autoHide: false,
-                                        }"
-                                        v-else
-                                        v-model="selected"
-                                        :native-value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.value)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))">
-                                    <span 
-                                                class="checkbox-label-text"
-                                                v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" />
-                                    <span 
-                                            v-if="option.total_items != undefined"
-                                            class="has-text-gray">
-                                        &nbsp;{{ "(" + option.total_items + ")" }}
-                                    </span>
-                                </b-radio>
-                            </li>
-                            <b-loading
-                                    :is-full-page="false"
-                                    :active.sync="isLoadingSearch"/>
-                        </ul>
-                    </div>
                     
                 </b-tab-item>
 
                 <b-tab-item :label="isTaxonomy ? $i18n.get('label_selected_terms') : $i18n.get('label_selected_metadatum_values')">
-
                     <div class="modal-card-body tainacan-tags-container">
                         <b-field
                                 v-if="(selected instanceof Array ? selected.length > 0 : selected) && !isSelectedTermsLoading"
@@ -299,7 +336,11 @@
             <!--<pre>{{ options }}</pre>-->
             <!--<pre>{{ searchResults }}</pre>-->
             <!--<pre>{{ selectedTagsName }}</pre>-->
-
+            <!-- <pre>{{ checkboxListOffset }}</pre>
+            <pre>{{ previousLastTerms }}</pre> -->
+            <!-- <pre>{{ isLoadingSearch }}</pre>
+            <pre>{{ isCheckboxListLoading }}</pre>
+            <pre>{{ isColumnLoading }}</pre> -->
             <footer 
                     class="field is-grouped"
                     :class="{ 'form-submit': isModal }">
@@ -375,17 +416,26 @@
                 checkboxListOffset: 0,
                 isCheckboxListLoading: false,
                 isLoadingSearch: false,
-                noMorePage: 0,
+                noMorePage: false,
+                noMoreSearchPage: false,
                 activeTab: 0,
                 selectedTagsName: {},
                 isSelectedTermsLoading: false,
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
-                previousLastTerms: [],
-                lastTermOnFisrtPage: null
+                previousLastTerms: []
+            }
+        },
+        watch: {
+            optionName(newValue, oldValue) {
+                if (newValue != oldValue) {
+                    this.noMoreSearchPage = false;
+                    this.checkboxListOffset = this.isUsingElasticSearch ? '' : 0;
+                    this.previousLastTerms = [];
+                }
             }
         },
         updated(){
-            if (!this.isSearching)
+            if (!this.isSearching && this.isTaxonomy)
                 this.highlightHierarchyPath();
         },
         created() {
@@ -399,6 +449,7 @@
             this.$parent.$on('update-taxonomy-inputs', ($event) => { 
                 if ($event.taxonomyId == this.taxonomy_id && $event.metadatumId == this.metadatumId) {
                     this.finderColumns = [];
+                    this.optionName = '';
                     this.hierarchicalPath = [];
                     this.isSearching = false;
                     this.searchResults = [];
@@ -408,7 +459,7 @@
         },
         mounted() {
             if (this.isModal && this.$refs.CheckboxRadioFilterInput)
-                this.$refs.CheckboxRadioFilterInput.focus()
+                this.$refs.CheckboxRadioFilterInput.focus();
         },
         beforeDestroy() {
             // Cancels previous Request
@@ -418,7 +469,7 @@
         methods: {
             initializeValues() {
                 if (!this.isModal)
-                    this.maxNumOptionsCheckboxFinderColumns = 12;
+                    this.maxNumOptionsCheckboxFinderColumns = 24;
 
                 if (this.isTaxonomy) {
                     this.getOptionChildren();
@@ -472,18 +523,16 @@
             },
             previousPage() {
 
-                this.noMorePage = 0;
+                this.noMorePage = false;
                 this.isCheckboxListLoading = true;
 
                 if (this.isUsingElasticSearch) {
                     this.previousLastTerms.pop();
 
-                    if (this.previousLastTerms.length > 0) {
-                        this.getOptions(this.previousLastTerms.pop());
-                        this.previousLastTerms.push(this.checkboxListOffset);
-                    } else {
+                    if (this.previousLastTerms.length > 0)
+                        this.getOptions(this.previousLastTerms[this.previousLastTerms.length - 1]);
+                    else
                         this.getOptions(0);
-                    }
                 } else {
                     this.checkboxListOffset -= this.maxNumOptionsCheckboxList;
                     if (this.checkboxListOffset < 0)
@@ -492,9 +541,28 @@
                     this.getOptions(this.checkboxListOffset);
                 }
             },
+            previousSearchPage() {
+                this.noMoreSearchPage = false;
+
+                if (this.isUsingElasticSearch) {
+                    this.previousLastTerms.pop();
+
+                    if (this.previousLastTerms.length > 0)
+                        this.checkboxListOffset = this.previousLastTerms[this.previousLastTerms.length - 1];
+                    else
+                        this.checkboxListOffset = '';
+
+                } else {
+                    this.checkboxListOffset -= this.maxNumSearchResultsShow;
+                    
+                    if (this.checkboxListOffset < 0)
+                        this.checkboxListOffset = 0;
+                }
+                this.autoComplete();
+            },
             nextPage() {
     
-                if (this.isUsingElasticSearch)
+                if (this.isUsingElasticSearch && this.checkboxListOffset)
                     this.previousLastTerms.push(this.checkboxListOffset);
 
                 if (!this.noMorePage && !this.isUsingElasticSearch) {
@@ -506,8 +574,22 @@
                 }
 
                 this.isCheckboxListLoading = true;
-
                 this.getOptions(this.checkboxListOffset);
+            },
+            nextSearchPage() {
+    
+                if (this.isUsingElasticSearch && this.checkboxListOffset)
+                    this.previousLastTerms.push(this.checkboxListOffset);
+
+                if (!this.noMoreSearchPage && !this.isUsingElasticSearch) {
+                    // LIMIT 0, 20 / LIMIT 19, 20 / LIMIT 39, 20 / LIMIT 59, 20
+                    if (this.checkboxListOffset === this.maxNumSearchResultsShow)
+                        this.checkboxListOffset += this.maxNumSearchResultsShow - 1;
+                    else
+                        this.checkboxListOffset += this.maxNumSearchResultsShow;
+                }
+                
+                this.autoComplete();
             },
             getOptions(offset) {
                 let promise = '';
@@ -526,14 +608,14 @@
                         this.isCheckboxListLoading = false;
                         this.isLoadingSearch = false;
 
-                        if (this.isUsingElasticSearch) {
-                                                        
-                            this.checkboxListOffset = res.data.last_term.es_term;
+                        if (!this.isUsingElasticSearch && res.headers && res.headers['x-wp-total'])
+                            this.noMorePage = res.headers['x-wp-total'] <= this.checkboxListOffset + res.data.values.length;
 
-                            if (!this.lastTermOnFisrtPage || this.lastTermOnFisrtPage == this.checkboxListOffset) {
-                                this.lastTermOnFisrtPage = this.checkboxListOffset;
-                                this.previousLastTerms.push(0);
-                            }
+                        if (this.isUsingElasticSearch) {
+                            this.checkboxListOffset = res.data.last_term.es_term;
+                            
+                            this.noMorePage = !res.data.last_term || !res.data.last_term.es_term;
+
                         }
                     })
                     .catch(error => {
@@ -549,33 +631,38 @@
             autoComplete: _.debounce( function () {
                 
                 this.isSearching = !!this.optionName.length;
-
+                
                 if (!this.isSearching)
                     return;
 
-                if (this.isTaxonomy) {
-                    this.isLoadingSearch = true;
+                this.isLoadingSearch = true;
 
-                    let query_items = { 'current_query': this.query };
-                    let query = `?order=asc&number=${this.maxNumSearchResultsShow}&search=${this.optionName}&${qs.stringify(query_items)}`;
+                let query_items = { 'current_query': this.query };
+                let query = `?order=asc&number=${this.maxNumSearchResultsShow}&search=${this.optionName}&${qs.stringify(query_items)}&${this.isUsingElasticSearch ? 'last_term' : 'offset'}=${this.checkboxListOffset}`;
 
-                    let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
+                let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
+                
+                if (this.collectionId == 'default')
+                    route = `/facets/${this.metadatumId}${query}`;
                     
-                    if (this.collectionId == 'default')
-                        route = `/facets/${this.metadatumId}${query}`;
+                axios.get(route)
+                    .then((res) => {
+                        this.searchResults = res.data.values;
+                        this.isLoadingSearch = false;
 
-                    axios.get(route)
-                        .then((res) => {
-                            this.searchResults = res.data.values;
-                            this.isLoadingSearch = false;
-                        }).catch((error) => {
-                        this.$console.log(error);
-                    });
-                } else {
-                    this.isLoadingSearch = true;
+                        if (!this.isUsingElasticSearch && res.headers && res.headers['x-wp-total'])
+                            this.noMoreSearchPage = res.headers['x-wp-total'] <= this.checkboxListOffset + this.searchResults.length;
+                        
+                        if (this.isUsingElasticSearch) {                            
+                            this.checkboxListOffset = res.data.last_term.es_term;
 
-                    this.getOptions(0);
-                }
+                            this.noMoreSearchPage = !res.data.last_term || !res.data.last_term.es_term;
+                        }
+
+                    }).catch((error) => {
+                    this.$console.log(error);
+                });
+                
             }, 500),
             highlightHierarchyPath(){
                 for (let [index, el] of this.hierarchicalPath.entries()) {
@@ -805,7 +892,7 @@
         margin-bottom: 0 !important;
 
         ul {
-            padding: none;
+            padding: 0;
         }
     }
     .hidden-tabs-section /deep/ .tabs {
@@ -844,34 +931,10 @@
         cursor: pointer;
         border: 1px solid var(--tainacan-gray1);
         margin-top: 10px;
-        margin-bottom: -0.2em;
+        margin-bottom: 0.1em;
 
         &:hover {
             background-color: var(--tainacan-blue1);
-        }
-    }
-
-    .tainacan-li-search-results {
-        flex-grow: 0;
-        flex-shrink: 1;
-        width: 100%;
-        padding: 0 0.5em;
-
-        .b-checkbox, .b-radio {
-            max-width: 100%;
-            margin-right: 10px;
-            margin-bottom: 0;
-            overflow: hidden;
-            align-items: baseline;
-        
-            .control-label .checkbox-label-text {
-                white-space: normal;
-                line-height: 1.45em;
-            }
-        }
-
-        &:hover {
-            background-color: var(--tainacan-gray1);
         }
     }
 
@@ -908,6 +971,13 @@
 
         &:hover {
             background-color: var(--tainacan-gray1);
+        }
+        &.result-info {
+            padding: 0.5rem 0.25rem 0.25rem 0.25rem;
+            width: 100%;
+            max-width: 100%;
+            column-span: all;
+            font-size: 0.75em;
         }
     }
 
@@ -1054,7 +1124,7 @@
         background-color: var(--tainacan-gray1);
 
         &:hover {
-            background-color: var(--tainacan-blue1);
+            background-color: var(--tainacan-primary);
         }
     }
 

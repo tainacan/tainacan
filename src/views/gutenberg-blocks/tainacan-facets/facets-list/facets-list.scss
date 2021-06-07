@@ -137,6 +137,9 @@
     }
 
     // Search control bar
+    &.alignfull .facets-search-bar {
+        padding: 1.00em 2em 0.75em 2em;
+    }
     .facets-search-bar {
         width: 100%;
         display: flex;
@@ -258,7 +261,7 @@
     // Grid View Mode ----------------------------------------------------
     ul.facets-list.facets-layout-grid,
     ul.facets-list-edit.facets-layout-grid {
-        padding: 0;
+        padding: 0 2em;
         @include display-grid;
         justify-content: space-evenly;
         list-style-type: none;

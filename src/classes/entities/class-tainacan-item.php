@@ -9,23 +9,23 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Item extends Entity {
 	use \Tainacan\Traits\Entity_Collection_Relation;
-    protected
-        $terms,
-        $diplay_name,
-        $full,
-        $_thumbnail_id,
-        $modification_date,
-        $creation_date,
-        $author_id,
-        $url,
-        $id,
-        $title,
-        $order,
-        $parent,
-        $decription,
-        $document_type,
-        $document,
-        $collection_id;
+	protected
+		$terms,
+		$diplay_name,
+		$full,
+		$_thumbnail_id,
+		$modification_date,
+		$creation_date,
+		$author_id,
+		$url,
+		$id,
+		$title,
+		$order,
+		$parent,
+		$decription,
+		$document_type,
+		$document,
+		$collection_id;
 
 	/**
 	 * {@inheritDoc}
@@ -57,7 +57,7 @@ class Item extends Entity {
 		$array_item['url']               = get_permalink( $this->get_id() );
 		$array_item['creation_date']     = $this->get_date_i18n( explode( ' ', $array_item['creation_date'] )[0] );
 		$array_item['modification_date'] = $this->get_date_i18n( explode( ' ', $array_item['modification_date'] )[0] );
-
+		$array_item['document_mimetype'] = $this->get_document_mimetype();
 		return apply_filters('tainacan-item-to-array', $array_item, $this);
 	}
 
@@ -116,26 +116,66 @@ class Item extends Entity {
 		return apply_filters("tainacan-item-get-author-name", $name, $this);
 	}
 
-    /**
-     * Gets the thumbnail list of files
-     *
-     * Each size is represented as an array in the format returned by
-     * @see https://developer.wordpress.org/reference/functions/wp_get_attachment_image_src/
-     *
-     * @return array
-     */
-    function get_thumbnail() {
+	/**
+	 * Gets the thumbnail list of files
+	 *
+	 * Each size is represented as an array in the format returned by
+	 * @see https://developer.wordpress.org/reference/functions/wp_get_attachment_image_src/
+	 *
+	 * @return array
+	 */
+	function get_thumbnail() {
 
-        $sizes = get_intermediate_image_sizes();
+		$sizes = get_intermediate_image_sizes();
 
-        array_unshift($sizes, 'full');
+		array_unshift($sizes, 'full');
 
-        foreach ( $sizes as $size ) {
-            $thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
-        }
+		if( in_array('tainacan-small', $sizes ) ) {
+			$tmp_src = wp_get_attachment_image_src( $this->get__thumbnail_id(), 'tainacan-small' );
+			$blurhash = $this->get_image_blurhash($tmp_src[0], $tmp_src[1], $tmp_src[2]);
+		}
 
-        return apply_filters("tainacan-item-get-thumbnail", $thumbs, $this);
-    }
+		foreach ( $sizes as $size ) {
+			$thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
+			if (is_array($thumbs[$size]) && count($thumbs[$size]) == 4)
+				$thumbs[$size][] = $blurhash;
+		}
+
+		return apply_filters("tainacan-item-get-thumbnail", $thumbs, $this);
+	}
+
+	public function get_image_blurhash($file_path, $width, $height) {
+		if (
+			!(version_compare(PHP_VERSION, '7.2.0') >= 0) ||
+			!$image = @imagecreatefromstring(file_get_contents($file_path))
+		) {
+			return "V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj";
+		}
+		if($image == false)
+			return '';
+
+		$max_width = 45;
+		if( $width > $max_width ) {
+			$image = imagescale($image, $max_width);
+			$width = imagesx($image);
+			$height = imagesy($image);
+		}
+		
+		$pixels = [];
+		for ($y = 0; $y < $height; ++$y) {
+			$row = [];
+			for ($x = 0; $x < $width; ++$x) {
+				$index = imagecolorat($image, $x, $y);
+				$colors = imagecolorsforindex($image, $index);
+				$row[] = [$colors['red'], $colors['green'], $colors['blue']];
+			}
+			$pixels[] = $row;
+		}
+		$components_x = 4;
+		$components_y = 3;
+		$blurhash = \kornrunner\Blurhash\Blurhash::encode($pixels, $components_x, $components_y);
+		return $blurhash;
+	}
 
 	/**
 	 * @param $id
@@ -148,10 +188,10 @@ class Item extends Entity {
 	 * @return int|string
 	 */
 	function get__thumbnail_id() {
-        $_thumbnail_id = $this->get_mapped_property("_thumbnail_id");
-        if ( isset( $_thumbnail_id ) ) {
-            return $_thumbnail_id;
-        }
+		$_thumbnail_id = $this->get_mapped_property("_thumbnail_id");
+		if ( isset( $_thumbnail_id ) ) {
+			return $_thumbnail_id;
+		}
 
 		return get_post_thumbnail_id( $this->get_id() );
 	}
@@ -239,6 +279,15 @@ class Item extends Entity {
 	}
 
 	/**
+	 * Return the document mimetype
+	 *
+	 * @return string
+	 */
+	function get_document_mimetype() {
+		return $this->get_document_type() == 'attachment' ? get_post_mime_type($this->get_document()) : $this->get_document_type();
+	}
+
+	/**
 	 * Return the item document
 	 *
 	 * @return string
@@ -271,7 +320,7 @@ class Item extends Entity {
 	 * @return string "open"|"closed"
 	 */
 	public function get_comment_status() {
-	    return apply_filters('comments_open', $this->get_mapped_property('comment_status'), $this->get_id());
+		return apply_filters('comments_open', $this->get_mapped_property('comment_status'), $this->get_id());
 	}
 
 	/**
@@ -383,7 +432,7 @@ class Item extends Entity {
 	 * @param $value string "open"|"closed"
 	 */
 	public function set_comment_status( $value ) {
-	    $this->set_mapped_property('comment_status', $value);
+		$this->set_mapped_property('comment_status', $value);
 	}
 
 	/**
@@ -451,26 +500,20 @@ class Item extends Entity {
 
 
 	public function _toHtml() {
-
 		$return = '';
 		$id = $this->get_id();
 
 		if ( $id ) {
-
 			$link = get_permalink( (int) $id );
 
 			if (is_string($link)) {
-
 				$return = "<a data-linkto='item' data-id='$id' href='$link'>";
 				$return.= $this->get_title();
 				$return .= "</a>";
-
 			}
-
 		}
 
 		return $return;
-
 	}
 
 	/**
@@ -676,7 +719,7 @@ class Item extends Entity {
 			}
 			$output .= $_embed;
 		} elseif ( $type == 'text' ) {
-			$output .= $this->get_document();
+			$output .= '<article>' . $this->get_document() . '</article>';
 		} elseif ( $type == 'attachment' ) {
 
 			if ( wp_attachment_is_image($this->get_document()) ) {

@@ -86,10 +86,10 @@
                             v-for="(item, index) of uploadedItems"
                             :key="item.id">
                         <img 
-                                v-if="item.document!= undefined && item.document != '' && item.document_type != 'empty'"
+                                v-if="item.document != undefined && item.document != '' && item.document_type != 'empty'"
                                 class="document-thumb"
                                 :alt="$i18n.get('label_thumbnail') + ': ' + item.title"
-                                :src="item.thumbnail['tainacan-small'] ? item.thumbnail['tainacan-small'][0] : (item.thumbnail.thumbnail ? item.thumbnail.thumbnail[0] : thumbPlaceholderPath)" > 
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)" > 
                         <span 
                             class="document-name"
                             v-html="item.title" />                            
@@ -197,7 +197,6 @@ export default {
             isLoading: false,
             isCreatingSequenceEditGroup: false,
             submitedFileList: [],
-            thumbPlaceholderPath: tainacan_plugin.base_url + '/assets/images/placeholder_square.png',
             uploadedItems: [],
             amountFinished: 0
         }
@@ -331,7 +330,8 @@ export default {
                     collectionId: this.collectionId
                 },
                 width: 'calc(100% - (2 * var(--tainacan-one-column)))',
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
         deleteOneItem(itemId, index) {
@@ -352,7 +352,8 @@ export default {
                         });
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
     }

@@ -260,6 +260,10 @@ class Logs extends Repository {
 				
 				$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
 				
+				if ( method_exists($entity, 'get_repository') && !$entity->get_repository()->use_logs ) {
+					return;
+				}
+
 				if ( $entity instanceof Entities\Collection ) {
 					$collection_id = $entity->get_id();
 					$log->set_title( sprintf( __( 'New file was attached to Collection "%s"', 'tainacan'), $entity->get_name() ) );
@@ -272,14 +276,10 @@ class Logs extends Repository {
 				$object_type = get_class($entity);
 				$object_id = $entity->get_id();
 				
-				$diff = [];
-				
 				$log->set_collection_id($collection_id);
 				$log->set_object_type($object_type);
 				$log->set_object_id($object_id);
 				$log->set_action('new-attachment');
-				
-				$title = __( sprintf('') , 'tainacan');
 				
 				$prepared = [
 					'id'          => $attachment->ID,
@@ -313,7 +313,9 @@ class Logs extends Repository {
 				$entity = Repository::get_entity_by_post( $entity_post );
 			
 				if ( $entity ) {
-					
+					if ( method_exists($entity, 'get_repository') && !$entity->get_repository()->use_logs ) {
+						return;
+					}
 					$collection_id = method_exists($entity, 'get_collection_id') ? $entity->get_collection_id() : 'default';
 					
 					$log = new Entities\Log();
