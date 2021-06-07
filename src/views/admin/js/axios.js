@@ -50,7 +50,8 @@ const tainacanErrorHandler = function(error){
                             hideCancel: true
                         },
                         ariaRole: 'alertdialog',
-                        ariaModal: true
+                        ariaModal: true,
+                        customClass: 'tainacan-modal'
                     });
                 }
             });

@@ -7,10 +7,8 @@ namespace Tainacan\Tests;
  */
 class TAINACAN_REST_Importers_Controller extends TAINACAN_UnitApiTestCase {
 
-	public function test_create(){
-		$params = json_encode([
-			'importer_slug'       => 'csv'
-		]);
+	public function test_create() {
+		$params = json_encode([ 'importer_slug' => 'csv' ]);
 
 		$request  = new \WP_REST_Request('POST', $this->namespace . '/importers/session');
 		$request->set_body($params);
@@ -55,5 +53,3 @@ class TAINACAN_REST_Importers_Controller extends TAINACAN_UnitApiTestCase {
 	}
 
 }
-
-?>

@@ -254,6 +254,8 @@ export default {
     },
     created() {
         this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
+        if (tainacan_plugin && tainacan_plugin.nonce)
+            this.tainacanAxios.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
   
         if (this.showCollectionHeader)
             this.fetchCollectionForHeader();

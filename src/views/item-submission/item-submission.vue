@@ -52,26 +52,34 @@ export default {
     @import "../../../node_modules/buefy/src/scss/components/_notices.scss";
     @import "../../../node_modules/buefy/src/scss/components/_numberinput.scss";
 
-    // Tainacan imports
-    @import "../admin/scss/_tainacan-form.scss";
-    @import "../admin/scss/_modals.scss";
-    @import "../admin/scss/_buttons.scss"; 
-    @import "../admin/scss/_inputs.scss";
-    @import "../admin/scss/_checkboxes.scss";
-    @import "../admin/scss/_radios.scss";
-    @import "../admin/scss/_switches.scss";
-    @import "../admin/scss/_pagination.scss";
-    @import "../admin/scss/_tags.scss";
-    @import "../admin/scss/_notices.scss";
-    @import "../admin/scss/_tabs.scss";
-    @import "../admin/scss/_selects.scss";
-    @import "../admin/scss/_dropdown-and-autocomplete.scss";
-    @import "../admin/scss/_tooltips.scss";
-    @import "../admin/scss/_control.scss";
-    @import "../admin/scss/_upload.scss";
+    // Block level custom variables
     @import "../admin/scss/_custom_variables.scss";
 
-    .tainacan-item-submission-form { 
+    // These have to be outside of the scoped context
+    @import "../admin/scss/_tooltips.scss";
+    @import "../admin/scss/_notices.scss";
+    @import "../admin/scss/_modals.scss";
+    
+    // Scoped, to avoid conflicts with theme's css 
+    .tainacan-modal,
+    .tainacan-item-submission-form {
+
+        // Tainacan imports
+        @import "../admin/scss/_tainacan-form.scss";
+        @import "../admin/scss/_modals.scss";
+        @import "../admin/scss/_buttons.scss"; 
+        @import "../admin/scss/_inputs.scss";
+        @import "../admin/scss/_checkboxes.scss";
+        @import "../admin/scss/_radios.scss";
+        @import "../admin/scss/_switches.scss";
+        @import "../admin/scss/_pagination.scss";
+        @import "../admin/scss/_tags.scss";
+        @import "../admin/scss/_tabs.scss";
+        @import "../admin/scss/_selects.scss";
+        @import "../admin/scss/_dropdown-and-autocomplete.scss";
+        @import "../admin/scss/_control.scss";
+        @import "../admin/scss/_upload.scss";
+
         .tainacan-icon {
             opacity: 0; // Will make it 1 once window.load is done; 
         }

@@ -1342,7 +1342,8 @@ export default {
                     collectionId: this.$route.params.collectionId,
                 },
                 width: 'calc(100% - (2 * var(--tainacan-one-column)))',
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
         sequenceEditSelectedItems() {
@@ -1380,7 +1381,8 @@ export default {
                         }
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
 
             this.clearContextMenu();
@@ -1412,7 +1414,8 @@ export default {
                         });
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
         deleteOneItem(itemId) {
@@ -1435,7 +1438,8 @@ export default {
                         });
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
             this.clearContextMenu();
         },
@@ -1467,7 +1471,8 @@ export default {
                         });
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
         deleteSelectedItems() {
@@ -1508,7 +1513,8 @@ export default {
                         });
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
         openItem() {

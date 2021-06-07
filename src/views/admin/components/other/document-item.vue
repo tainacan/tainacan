@@ -14,7 +14,8 @@
                 scroll="keep"
                 trap-focus
                 aria-modal
-                aria-role="dialog">
+                aria-role="dialog"
+                custom-class="tainacan-modal">
             <!-- <div class="tainacan-modal-content">
                 <div class="tainacan-modal-title">
                     <h2>{{ $i18n.get('label_document') }}</h2>

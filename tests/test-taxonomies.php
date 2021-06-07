@@ -3,16 +3,15 @@
 namespace Tainacan\Tests;
 
 /**
- * Class TestCollections
+ * Class Taxonomies
  *
  * @package Test_Tainacan
  */
 
 /**
- * Sample test case.
+ * Taxonomies test case.
  */
 class Taxonomies extends TAINACAN_UnitTestCase {
-
 
     /**
      * Teste da insercao de uma taxonomia simples
@@ -334,7 +333,6 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 	}
 
 	function test_brackets_2() {
-
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
 		$collection = $this->tainacan_entity_factory->create_entity(
@@ -411,9 +409,6 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 
 		$itemMeta2_check = new \Tainacan\Entities\Item_Metadata_Entity($i2, $metadatum);
 		$this->assertEquals('[Rock]', $itemMeta2_check->get_value()->get_name());
-
-
-
 	}
 
 	function test_metadata_taxonomy_term_count() {
@@ -538,7 +533,6 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 		$itemMeta1_repo->validate();
 		$Tainacan_Item_Metadata->insert($itemMeta1_repo);
 
-
 		$i2 = $this->tainacan_entity_factory->create_entity(
 			'item',
 			array(
@@ -587,8 +581,6 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 
 	function test_term_taxonomy_filtered_by_collections() {
 		$Tainacan_Taxonomies = \Tainacan\Repositories\Taxonomies::get_instance();
-		$Tainacan_Terms = \Tainacan\Repositories\Terms::get_instance();
-		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 
 		$tax = $this->tainacan_entity_factory->create_entity(
 			'taxonomy',
@@ -703,7 +695,6 @@ class Taxonomies extends TAINACAN_UnitTestCase {
 		preg_match_all('~<a(.*?)href=(\'|")([^"]+)(\'|")(.*?)>~', $text, $matches);
 		$response = $matches[3][0];
 		$this->assertEquals($response, $expected_response);
-
 
 		$meta_query = [
 			'metaquery' => [

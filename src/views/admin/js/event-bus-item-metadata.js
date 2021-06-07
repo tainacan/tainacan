@@ -31,7 +31,7 @@ export const eventBusItemMetadata = new Vue({
 
                 this.$emit('isUpdatingValue', true);
 
-                if (values.length > 0 && values[0].value) {
+                if (values.length > 0 && values[0] && values[0].value) {
                     let onlyValues = values.map((aValueObject) => aValueObject.value);
                     values = onlyValues;
                 }

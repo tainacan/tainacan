@@ -30,12 +30,20 @@ export const getActivities = state => {
   return state.activities;
 };
 
+export const getStartDate = state => {
+  return state.startDate;
+};
+
 export const getStackedBarChartOptions = state => {
   return state.stackedBarChartOptions;
 };
 
 export const getHorizontalBarChartOptions = state => {
   return state.horizontalBarChartOptions;
+};
+
+export const getVisibilityHorizontalBarChartOptions = state => {
+  return state.visibilityHorizontalBarChartOptions;
 };
 
 export const getDonutChartOptions = state => {

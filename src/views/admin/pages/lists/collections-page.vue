@@ -478,7 +478,8 @@ export default {
                 parent: this,
                 component: AvailableImportersModal,
                 hasModalCard: true,
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
         searchCollections() {

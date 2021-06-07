@@ -89,7 +89,7 @@ abstract class Repository {
 	 *          'map'        => 'post_name',
 	 *          'title'       => __('Slug', 'tainacan'),
 	 *          'type'       => 'string',
-	 *          'description'=> __('A unique and santized string representation of the collection, used to build the collection URL', 'tainacan'),
+	 *          'description'=> __('A unique and sanitized string representation of the collection, used to build the collection URL', 'tainacan'),
 	 *          'validation' => v::stringType(),
 	 *      ],
 	 */

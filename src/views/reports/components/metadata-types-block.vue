@@ -33,7 +33,7 @@
         </div>
         <div 
             v-else
-            style="min-height=380px"
+            style="min-height: 390px"
             class="skeleton postbox" />
         <slot />
     </div>
@@ -120,7 +120,12 @@ export default {
                                 hideOverlappingLabels: false
                             },
                             tooltip: { enabled: true }
-                        }
+                        },
+                        yaxis: {
+                            title: {
+                                text: this.$i18n.get('label_number_of_metadata')
+                            }
+                        },
                     }
                 }));
             }

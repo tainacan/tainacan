@@ -423,7 +423,8 @@ export default {
                         });
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
             this.clearContextMenu();
         },
@@ -463,7 +464,8 @@ export default {
                         this.allCollectionsOnPageSelected = false;
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
         openCollection() {

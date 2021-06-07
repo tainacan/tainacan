@@ -7,7 +7,7 @@
          url("../fonts/TainacanIcons.woff") format("woff"), 
          url("../fonts/TainacanIcons.ttf") format("truetype"), 
          url("../fonts/TainacanIcons.svg") format("svg");
-font-weight: normal;
+	font-weight: normal;
     font-style: normal;
     text-rendering: optimizeLegibility;
 }

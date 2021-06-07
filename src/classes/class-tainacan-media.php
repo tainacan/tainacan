@@ -103,7 +103,6 @@ class Media {
 		 * @return string the file path
 		 */
 		public function save_remote_file($url) {
-
 				set_time_limit(0);
 
 				$filename = tempnam(sys_get_temp_dir(), basename($url));
@@ -134,7 +133,7 @@ class Media {
 				# Assign a callback function to the CURL Write-Function
 				curl_setopt($ch, CURLOPT_WRITEFUNCTION, $callback);
 
-				# Exceute the download - note we DO NOT put the result into a variable!
+				# Execute the download - note we DO NOT put the result into a variable!
 				curl_exec($ch);
 				if (curl_errno($ch)) {
 					$error_msg = curl_error($ch);
