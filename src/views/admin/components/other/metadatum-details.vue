@@ -12,13 +12,6 @@
         <div class="label">{{ $i18n.getHelperTitle('metadata', 'semantic_uri') }}</div>
         <div class="value">{{ metadatum.semantic_uri }}</div>
     </div>
-    <!-- <div class="field">
-        <div class="label">{{ $i18n.getHelperTitle('metadata', 'status') }}</div>
-        <div class="value">
-            <template v-if="metadatum.status === 'publish'">{{ $i18n.get('publish_visibility') }}</template>
-            <template v-if="metadatum.status === 'private'">{{ $i18n.get('private_visibility') }}</template>
-        </div>
-    </div> -->
     <div class="field">
         <div class="label">{{ $i18n.get('label_display') }}</div>
         <div class="value">

@@ -382,8 +382,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		global $Tainacan_Generic_Process_Handler;
 		$process = $Tainacan_Generic_Process_Handler->get_process_instance_by_session_id($bulk_id);
 		if ($process !== false) {
+			$bulk_edit_value = isset($body['new_value']) ? $body['new_value'] : (isset($body['value']) ? $body['value'] : null);
 			$bulk_edit_data = [
-				"value" 				=> isset($body['new_value']) ? $body['new_value'] : $body['value'],
+				"value" 				=> $bulk_edit_value,
 				"method" 				=> $method,
 				"old_value"			=> isset($body['old_value']) ? $body['old_value'] : null,
 				"metadatum_id" 	=> isset($body['metadatum_id']) ? $body['metadatum_id'] : null,

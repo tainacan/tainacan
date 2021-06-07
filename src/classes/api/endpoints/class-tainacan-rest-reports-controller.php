@@ -35,10 +35,10 @@ class REST_Reports_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'reports_permissions_check'),
 					'args'                => [
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -56,10 +56,10 @@ class REST_Reports_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'reports_permissions_check'),
 					'args'                => [
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -77,10 +77,10 @@ class REST_Reports_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'reports_permissions_check'),
 					'args'                => [
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -98,10 +98,10 @@ class REST_Reports_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'reports_permissions_check'),
 					'args'                => [
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -119,10 +119,10 @@ class REST_Reports_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'reports_permissions_check'),
 					'args'                => [
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -140,10 +140,10 @@ class REST_Reports_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'reports_permissions_check'),
 					'args'                => [
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -161,10 +161,10 @@ class REST_Reports_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'reports_permissions_check'),
 					'args'                => [
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -192,10 +192,10 @@ class REST_Reports_Controller extends REST_Controller {
 							'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
 						],
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -223,10 +223,10 @@ class REST_Reports_Controller extends REST_Controller {
 							'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
 						],
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -248,10 +248,10 @@ class REST_Reports_Controller extends REST_Controller {
 							'type'        => 'integer',
 						],
 						'force' => [
-							'title'       => __( 'Force regenerete', 'tainacan' ),
+							'title'       => __( 'Force regenerate', 'tainacan' ),
 							'type'        => 'string',
 							'default' 	  => 'no',
-							'description' => __( 'Force generates the reports graphic.', 'tainacan' ),
+							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
 							'enum'    	  => array(
 								'no',
 								'yes'
@@ -264,7 +264,7 @@ class REST_Reports_Controller extends REST_Controller {
 	}
 
 	public function reports_permissions_check($request) {
-		return true;
+		return \is_user_logged_in() && current_user_can('read');
 	}
 
 	public function get_collections($request) {
@@ -311,7 +311,9 @@ class REST_Reports_Controller extends REST_Controller {
 					'trash'   => 0,
 					'draft'   => 0,
 					'publish' => 0,
-					'private' => 0
+					'private' => 0,
+					'restrict' => 0,
+					'not_restrict' => 0
 				)
 			)
 		);
@@ -333,13 +335,24 @@ class REST_Reports_Controller extends REST_Controller {
 				$response['totals']['items']['draft']   = intval($total_items->draft);
 				$response['totals']['items']['publish'] = intval($total_items->publish);
 				$response['totals']['items']['private'] = intval($total_items->private);
+
+				if ( \is_post_status_viewable( $collection->get_status() ) === true ) {
+					$response['totals']['items']['not_restrict'] += isset($total_items->publish) ? intval($total_items->publish) : 0;
+				} else {
+					$response['totals']['items']['restrict'] += (
+						//(isset($total_items->trash) ? intval($total_items->trash) : 0) +
+						(isset($total_items->draft) ? intval($total_items->draft) : 0) +
+						(isset($total_items->publish) ? intval($total_items->publish) : 0) +
+						(isset($total_items->private) ? intval($total_items->private) : 0)
+					);
+				}
 			}
 		} else {
 			$key_cache_object = 'summary';
 			$cached_object = $this->get_cache_object($key_cache_object, $request);
 			if($cached_object !== false ) return new \WP_REST_Response($cached_object, 200);
 
-			$collections = $this->collections_repository->fetch([]);
+			$collections = $this->collections_repository->fetch(['status'=> ['publish', 'private', 'trash']]);
 			$response['totals']['collections'] = array(
 				'total' => 0,
 				'trash'   => 0,
@@ -354,12 +367,20 @@ class REST_Reports_Controller extends REST_Controller {
 					$response['totals']['collections']['total']++;
 					$total_items = wp_count_posts( $collection->get_db_identifier(), 'readable' );
 
-					if (isset($total_items->publish) || isset($total_items->private) ||
-						isset($total_items->trash) || isset($total_items->draft)) {
-							$response['totals']['items']['trash']   += $total_items->trash;
-							$response['totals']['items']['draft']   += $total_items->draft;
-							$response['totals']['items']['publish'] += $total_items->publish;
-							$response['totals']['items']['private'] += $total_items->private;
+					$response['totals']['items']['trash']   += isset($total_items->trash)  ? intval($total_items->trash)   : 0;
+					$response['totals']['items']['draft']   += isset($total_items->draft)  ? intval($total_items->draft)   : 0;
+					$response['totals']['items']['publish'] += isset($total_items->publish)? intval($total_items->publish) : 0;
+					$response['totals']['items']['private'] += isset($total_items->private)? intval($total_items->private) : 0;
+					
+					if ( \is_post_status_viewable( $collection->get_status() ) === true ) {
+						$response['totals']['items']['not_restrict'] += isset($total_items->publish) ? intval($total_items->publish) : 0;
+					} else {
+						$response['totals']['items']['restrict'] += (
+							//(isset($total_items->trash) ? intval($total_items->trash) : 0) +
+							(isset($total_items->draft) ? intval($total_items->draft) : 0) +
+							(isset($total_items->publish) ? intval($total_items->publish) : 0) +
+							(isset($total_items->private) ? intval($total_items->private) : 0)
+						);
 					}
 				}
 				wp_reset_postdata();
@@ -376,19 +397,13 @@ class REST_Reports_Controller extends REST_Controller {
 			);
 			$total_taxonomies = wp_count_posts( 'tainacan-taxonomy', 'readable' );
 
-			if (isset($total_taxonomies->publish) ||
-				isset($total_taxonomies->private) ||
-				isset($total_taxonomies->trash) ||
-				isset($total_taxonomies->draft)) {
-
-				$response['totals']['taxonomies']['trash'] = intval($total_taxonomies->trash);
-				$response['totals']['taxonomies']['publish'] = intval($total_taxonomies->publish);
-				$response['totals']['taxonomies']['draft'] = intval($total_taxonomies->draft);
-				$response['totals']['taxonomies']['private'] = intval($total_taxonomies->private);
-				$response['totals']['taxonomies']['total'] = $response['totals']['taxonomies']['trash'] + $response['totals']['taxonomies']['publish'] + $response['totals']['taxonomies']['draft'] + $response['totals']['taxonomies']['private'];
-				$response['totals']['taxonomies']['used'] = $this->query_count_used_taxononomies();
-				$response['totals']['taxonomies']['not_used'] = $response['totals']['taxonomies']['total'] - $response['totals']['taxonomies']['used'];
-			}
+			$response['totals']['taxonomies']['trash']   = isset($total_taxonomies->trash)  ? intval($total_taxonomies->trash)   : 0;
+			$response['totals']['taxonomies']['draft']   = isset($total_taxonomies->draft)  ? intval($total_taxonomies->draft)   : 0;
+			$response['totals']['taxonomies']['publish'] = isset($total_taxonomies->publish)? intval($total_taxonomies->publish) : 0;
+			$response['totals']['taxonomies']['private'] = isset($total_taxonomies->private)? intval($total_taxonomies->private) : 0;
+			$response['totals']['taxonomies']['total'] = $response['totals']['taxonomies']['trash'] + $response['totals']['taxonomies']['publish'] + $response['totals']['taxonomies']['draft'] + $response['totals']['taxonomies']['private'];
+			$response['totals']['taxonomies']['used'] = $this->query_count_used_taxononomies();
+			$response['totals']['taxonomies']['not_used'] = $response['totals']['taxonomies']['total'] - $response['totals']['taxonomies']['used'];
 		}
 		$response['totals']['items']['total'] = ($response['totals']['items']['trash'] + $response['totals']['items']['draft'] + $response['totals']['items']['publish'] + $response['totals']['items']['private']);
 		$this->set_cache_object($key_cache_object, $response);
@@ -550,10 +565,22 @@ class REST_Reports_Controller extends REST_Controller {
 				}
 
 				$response['totals']['metadata'][$metadatum->get_status()]++;
-				$response['totals']['metadata_per_type'][$meta_type]['name'] = $meta_type_name;
+				if ( !isset($response['totals']['metadata_per_type'][$meta_type]) ) {
+					$response['totals']['metadata_per_type'][$meta_type] = array(
+						'name' => $meta_type_name,
+						'count' => 0,
+					);
+				}
 				$response['totals']['metadata_per_type'][$meta_type]['count']++;
 
-				$meta_ids[] = $metadatum->get_id();
+				if ( $metadatum->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' ) {
+					$metadatum_childs = $this->metadatum_repository->fetch(['parent' => $metadatum->get_id()], 'OBJECT');
+					foreach($metadatum_childs as $childs) {
+						$meta_ids[] = $childs->get_id();
+					}
+				} else {
+					$meta_ids[] = $metadatum->get_id();
+				}
 			}
 			$response['distribution'] = $this->query_item_metadata_distribution($meta_ids, $collection->get_db_identifier());
 			//wp_count_posts()
@@ -604,9 +631,11 @@ class REST_Reports_Controller extends REST_Controller {
 		global $wpdb;
 		$string_meta_ids = "'".implode("','", $meta_ids)."'";
 		$sql_statement = $wpdb->prepare(
-			"SELECT p.post_title AS 'name', p.id AS id, IFNULL(((m.total/$total_items) * 100), 0) as fill_percentage
+			"SELECT p.post_title AS 'name', pp.post_title AS 'parent_name', p.id AS id, IFNULL(((m.total/$total_items) * 100), 0) as fill_percentage
 			FROM
-				$wpdb->posts p LEFT JOIN
+				$wpdb->posts p 
+				LEFT JOIN $wpdb->posts pp ON (p.post_parent = pp.id)
+				LEFT JOIN
 				(
 					SELECT meta_key, count(DISTINCT post_id) AS total
 					FROM $wpdb->postmeta 
@@ -636,7 +665,7 @@ class REST_Reports_Controller extends REST_Controller {
 				) m
 				ON (p.id = m.meta_key)
 				WHERE p.id IN($string_meta_ids)
-			"
+			", []
 		);
 		$res = $wpdb->get_results($sql_statement);
 		//return ['t' => $res, 's' => $sql_statement];
@@ -649,7 +678,7 @@ class REST_Reports_Controller extends REST_Controller {
 			"SELECT COUNT(DISTINCT($wpdb->postmeta.meta_value))
 			 FROM $wpdb->postmeta
 			 WHERE meta_key = '_option_taxonomy_id'
-			"
+			", []
 		);
 
 		$res = intval($wpdb->get_var( $sql_statement ));
@@ -717,7 +746,7 @@ class REST_Reports_Controller extends REST_Controller {
 			FROM $wpdb->posts p $collection_from
 			WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN '$start' AND '$end'
 			GROUP BY DATE(p.post_date)
-			ORDER BY DATE(p.post_date)"
+			ORDER BY DATE(p.post_date)", []
 		);
 		return $wpdb->get_results($sql_statement);
 	}
@@ -735,7 +764,7 @@ class REST_Reports_Controller extends REST_Controller {
 			FROM $wpdb->posts p $collection_from
 			WHERE p.post_type='tainacan-log' AND p.post_date BETWEEN '$start' AND '$end'
 			GROUP BY p.post_author, DATE(p.post_date)
-			ORDER BY DATE(p.post_date)"
+			ORDER BY DATE(p.post_date)", []
 		);
 		$data =$wpdb->get_results($sql_statement);
 		$arr = array();
@@ -781,7 +810,7 @@ class REST_Reports_Controller extends REST_Controller {
 			$collection_from
 			WHERE p.post_type='tainacan-log'
 			GROUP BY p.post_author, pm.meta_value 
-			ORDER BY total DESC"
+			ORDER BY total DESC", []
 		);
 		$results = $wpdb->get_results($sql_statement);
 		$response = [];

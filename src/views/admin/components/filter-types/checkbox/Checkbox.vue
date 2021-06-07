@@ -181,7 +181,8 @@
                             this.loadOptions();
                         } 
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             },
         }
@@ -192,7 +193,7 @@
 
     
     .view-all-button {
-        font-size: 0.75em;
+        font-size: 0.75em !important;
         padding: 0.1em 1em;
     }
 

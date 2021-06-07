@@ -5,8 +5,59 @@
     opacity: 0.0; }
   #tainacan-reports-app a:hover {
     cursor: pointer; }
-  #tainacan-reports-app .wp-heading-inline {
-    margin-bottom: 2rem; }
+  #tainacan-reports-app .tainacan-reports-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 24px 10px 0px; }
+    #tainacan-reports-app .tainacan-reports-header .wp-heading-inline {
+      margin: 0rem; }
+    #tainacan-reports-app .tainacan-reports-header select {
+      margin-right: auto;
+      margin-left: 6px; }
+  #tainacan-reports-app .tainacan-reports-subheader {
+    display: flex;
+    align-items: center;
+    margin: 6px 0px 36px 0px;
+    color: var(--tainacan-block-gray4, #555758); }
+    #tainacan-reports-app .tainacan-reports-subheader .tainacan-reports-subheader-box:not(:first-child) {
+      padding-left: 14px;
+      border-left: 1px solid var(--tainacan-block-gray3, #cbcbcb); }
+    #tainacan-reports-app .tainacan-reports-subheader .tainacan-reports-subheader-box__title {
+      font-weight: bold;
+      margin-left: 2px; }
+    #tainacan-reports-app .tainacan-reports-subheader .tainacan-reports-subheader-box__content {
+      display: flex;
+      align-items: center;
+      margin: 0px 14px 0px 0px;
+      flex-wrap: wrap; }
+      #tainacan-reports-app .tainacan-reports-subheader .tainacan-reports-subheader-box__content.tainacan-reports-subheader-box__content--two-columns li {
+        flex-basis: calc(50% - 8px); }
+        @media screen and (max-width: 986px) {
+          #tainacan-reports-app .tainacan-reports-subheader .tainacan-reports-subheader-box__content.tainacan-reports-subheader-box__content--two-columns li {
+            flex-basis: 100%; } }
+      #tainacan-reports-app .tainacan-reports-subheader .tainacan-reports-subheader-box__content.tainacan-reports-subheader-box__content--three-columns li {
+        flex-basis: calc(33.3333% - 8px); }
+        @media screen and (max-width: 1024px) {
+          #tainacan-reports-app .tainacan-reports-subheader .tainacan-reports-subheader-box__content.tainacan-reports-subheader-box__content--three-columns li {
+            flex-basis: calc(50% - 8px); } }
+        @media screen and (max-width: 768px) {
+          #tainacan-reports-app .tainacan-reports-subheader .tainacan-reports-subheader-box__content.tainacan-reports-subheader-box__content--three-columns li {
+            flex-basis: 100%; } }
+    #tainacan-reports-app .tainacan-reports-subheader .tainacan-reports-subheader-box__content li {
+      display: flex;
+      align-items: center;
+      margin: 0px 8px 0px 0px;
+      flex-basis: 100%; }
+    #tainacan-reports-app .tainacan-reports-subheader .icon svg {
+      fill: var(--tainacan-block-gray4, #555758);
+      margin-left: -0.5rem;
+      cursor: default; }
+    #tainacan-reports-app .tainacan-reports-subheader .apexcharts-pan-icon svg {
+      fill: transparent;
+      stroke: var(--tainacan-block-gray4, #555758); }
+    #tainacan-reports-app .tainacan-reports-subheader .apexcharts-reset-icon {
+      margin-left: 0; }
   #tainacan-reports-app .columns {
     max-width: 100%;
     align-items: flex-start;
@@ -57,6 +108,16 @@
       #tainacan-reports-app .postbox .box-header .box-header__item {
         margin-bottom: 10px;
         line-height: 2rem; }
+  #tainacan-reports-app .empty-postbox-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    min-height: 380px;
+    flex-direction: column;
+    opacity: 0.75; }
+    #tainacan-reports-app .empty-postbox-placeholder p {
+      color: var(--tainacan-block-gray4, #555758); }
   #tainacan-reports-app .graph-mode-switch {
     display: inline-block; }
     #tainacan-reports-app .graph-mode-switch button {
@@ -92,5 +153,8 @@
       #tainacan-reports-app .tainacan-custom-tooltip .tainacan-custom-tooltip__body p {
         margin-bottom: 4px;
         font-size: 0.85rem; }
+  #tainacan-reports-app .apexcharts-legend-series {
+    display: flex;
+    align-items: center; }
 
 /*# sourceMappingURL=tainacan-reports.css.map */

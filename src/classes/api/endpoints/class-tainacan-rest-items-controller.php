@@ -883,7 +883,7 @@ class REST_Items_Controller extends REST_Controller {
 			return new \WP_REST_Response( [
 				'error_message' => __( 'Please verify, invalid value(s)', 'tainacan' ),
 				'errors'        => $item_metadata->get_errors(),
-				'item_metadata' => $this->prepare_item_for_response($item_metadata, $request),
+				'item_metadata' => $this->prepare_item_for_response($item_metadata->get_item(), $request),
 			], 400 );
 		}
 	}

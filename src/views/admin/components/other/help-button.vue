@@ -72,6 +72,7 @@ export default {
                 color: var(--tainacan-secondary);
                 margin-bottom: 0;
                 margin-top: 0;
+                white-space: normal;
             }
         }
 

@@ -29,7 +29,7 @@
 </template>
 
 <style lang="scss">
-    .modal.slides-help-modal {
+    .tainacan-modal.slides-help-modal {
         z-index: 9999999999;
 
         .slides-help-modal-content {

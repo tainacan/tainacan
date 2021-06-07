@@ -330,7 +330,8 @@ export default {
                     collectionId: this.collectionId
                 },
                 width: 'calc(100% - (2 * var(--tainacan-one-column)))',
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
         deleteOneItem(itemId, index) {
@@ -351,7 +352,8 @@ export default {
                         });
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
     }

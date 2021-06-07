@@ -1,5 +1,5 @@
 .notices {
-    z-index: 99999999;    
+    z-index: 99999999;
 
     .toast, .snackbar {
         min-width: auto !important;
@@ -12,24 +12,28 @@
         &.is-dark .button:hover {
             background-color: var(--tainacan-gray2) !important;
             color: var(--tainacan-info-color) !important;
+            font-size: 0.875em;
         }
         &.is-warning,
         &.is-warning .button,
         &.is-warning .button:hover {
             background-color: var(--tainacan-yellow1) !important;
             color: var(--tainacan-warning) !important;
+            font-size: 0.875em;
         }
         &.is-danger, 
         &.is-danger .button,
         &.is-danger .button:hover {
             background-color: var(--tainacan-red1) !important;
             color: var(--tainacan-danger) !important;
+            font-size: 0.875em;
         }
         &.is-success,
         &.is-success .button,
         &.is-success .button:hover {
             background-color: var(--tainacan-green1) !important; 
             color: var(--tainacan-success) !important;
+            font-size: 0.875em;
         }
     }
 }

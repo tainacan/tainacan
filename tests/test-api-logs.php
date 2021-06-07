@@ -64,5 +64,3 @@ class TAINACAN_REST_Logs_Controller extends TAINACAN_UnitApiTestCase {
 	}
 
 }
-
-?>

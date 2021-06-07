@@ -32,12 +32,20 @@ export const setActivities = (state, activities) => {
   state.activities = activities;
 };
 
+export const setStartDate = (state, startDate) => {
+  state.startDate = startDate;
+};
+
 export const setStackedBarChartOptions = (state, stackedBarChartOptions) => {
   state.stackedBarChartOptions = stackedBarChartOptions;
 };
 
 export const setHorizontalBarChartOptions = (state, horizontalBarChartOptions) => {
   state.horizontalBarChartOptions = horizontalBarChartOptions;
+};
+
+export const setVisibilityHorizontalBarChartOptions = (state, visibilityHorizontalBarChartOptions) => {
+  state.visibilityHorizontalBarChartOptions = visibilityHorizontalBarChartOptions;
 };
 
 export const setDonutChartOptions = (state, donutChartOptions) => {

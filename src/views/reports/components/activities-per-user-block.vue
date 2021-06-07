@@ -8,6 +8,7 @@
                 class="postbox activities-per-user-box">
             <template v-if="chartData.totals && chartData.totals.by_user">
                 <apexchart
+                        ref="activities-per-user-chart"
                         :height="120 + (chartData.totals.by_user.length * 58)"
                         :series="chartSeries"
                         :options="chartOptions" />
@@ -15,7 +16,6 @@
         </div>
         <div 
                 v-else
-                style="min-height=800px"
                 class="skeleton postbox activities-per-user-box" />
         <slot />
     </div>
@@ -27,6 +27,21 @@ import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {
     mixins: [ reportsChartMixin ],
+    data() {
+        return {
+            validActions: [
+                "update-metadata-value",
+                "update",
+                "create",
+                "trash",
+                "new-attachment",
+                "update-document",
+                "delete",
+                "delete-attachment",
+                "update-thumbnail"
+            ]
+        }
+    },
     computed: {
         ...mapGetters('report', {
             horizontalBarChartOptions: 'getHorizontalBarChartOptions',
@@ -52,20 +67,9 @@ export default {
                 let activityPerUserValues = [];
                 let activityPerUserLabels = [];
                 const userCount = 100 + (this.chartData.totals.by_user.length * 58);
-                const validActions = [
-                    "update-metadata-value",
-                    "update",
-                    "create",
-                    "trash",
-                    "new-attachment",
-                    "update-document",
-                    "delete",
-                    "delete-attachment",
-                    "update-thumbnail"
-                ];
 
                 // Create empty series for each possible action
-                validActions.forEach((action) => {
+                this.validActions.forEach((action) => {
                     activityPerUserValues.push({
                         id: action,
                         name: this.$i18n.get('action_' + action),
@@ -84,7 +88,7 @@ export default {
                         if (activity.id == 'others') {
                             let otherActionsTotal = 0;
                             Object.keys(activityPerUser.by_action).forEach((action) => {
-                                if (validActions.indexOf(action) < 0)
+                                if (this.validActions.indexOf(action) < 0)
                                     otherActionsTotal += (activityPerUser.by_action[action] ? activityPerUser.by_action[action] : 0);
                             });
                             activity.data.push(otherActionsTotal);
@@ -138,8 +142,19 @@ export default {
                     }
                 }
             }
-
-            setTimeout(() => this.isBuildingChart = false, 300);
+            setTimeout(() => { 
+                this.isBuildingChart = false;
+                
+                this.$nextTick(() => {
+                    if (this.$refs && this.$refs['activities-per-user-chart'] && this.$refs['activities-per-user-chart'].chart) {
+                        this.validActions.forEach((action) => {
+                            if (action !== 'update-metadata-value')
+                                this.$refs['activities-per-user-chart'].chart.toggleSeries(this.$i18n.get('action_' + action));
+                        });
+                        this.$refs['activities-per-user-chart'].chart.toggleSeries(this.$i18n.get('action_others'));
+                    }
+                });
+            }, 300);
         }
     }
 }

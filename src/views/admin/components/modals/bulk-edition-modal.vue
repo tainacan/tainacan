@@ -39,7 +39,7 @@
                                     {{ metadatum.name }}
                                 </option>
                                 <optgroup 
-                                        v-if="metadatum.id && metadatum.metadata_type_object.component === 'tainacan-compound'"
+                                        v-if="metadatum.id && metadatum.metadata_type_object.component === 'tainacan-compound' && metadatum.multiple !== 'yes'"
                                         :key="index"
                                         :label="metadatum.name">
                                     <option 
@@ -275,7 +275,7 @@
                 <a 
                         :disabled="dones.every((item) => item === true) === false"
                         @click="addEditionCriterion()"
-                        class="has-text-right is-block add-link">
+                        class="has-text-right is-inline-block add-link">
                     <span class="icon is-small">
                         <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                     </span>
@@ -591,7 +591,7 @@
                             );
                         });
                         
-                        if (otherMetadatumOfSameTypeIndex < 0 && metadatum.metadata_type_object.component != 'tainacan-user') {
+                        if ((otherMetadatumOfSameTypeIndex < 0 && metadatum.metadata_type_object.component != 'tainacan-user') || metadatum.parent > 0) {
                             delete validEditionActions[actionKey];
                         }
                     }

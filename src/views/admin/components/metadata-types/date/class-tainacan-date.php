@@ -34,10 +34,12 @@ class Date extends Metadata_Type {
 
 		if (is_array($value)) {
 			foreach ($value as $date_value) {
-				$d = \DateTime::createFromFormat($format, $date_value);
-				if (!$d || $d->format($format) !== $date_value) {
-					$this->add_error($this->format_error_msg($date_value));
-					return false;
+				if(!empty($date_value)) {
+					$d = \DateTime::createFromFormat($format, $date_value);
+					if (!$d || $d->format($format) !== $date_value) {
+						$this->add_error($this->format_error_msg($date_value));
+						return false;
+					}
 				}
 			}
 			return true;

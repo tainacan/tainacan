@@ -57,7 +57,7 @@
         },
         methods: {
             onInput: _.debounce(function ($event) {
-                // Emty dates don't need to be validated, they remove the metadata
+                // Empty dates don't need to be validated, they remove the metadata
                 if ($event.target.value != '') {
                     let dateISO = '';
                     
@@ -75,7 +75,7 @@
 
                     this.$emit('input', dateISO);
                 } else  {
-                   this.$emit('input', [null]); 
+                   this.$emit('input', ''); 
                 }
             }, 300),
             onBlur() {
