@@ -22,7 +22,7 @@ module.exports = {
         block_carousel_items_list_theme: './src/views/gutenberg-blocks/tainacan-items/carousel-items-list/carousel-items-list-theme.js',
         
         block_search_bar: './src/views/gutenberg-blocks/tainacan-items/search-bar/index.js',
-        block_search_bar_script: './src/views/gutenberg-blocks/tainacan-items/search-bar/search-bar-theme-script.js',
+        block_search_bar_theme: './src/views/gutenberg-blocks/tainacan-items/search-bar/search-bar-theme.js',
         
         block_collections_list: './src/views/gutenberg-blocks/tainacan-collections/collections-list/index.js',
         
