@@ -17,6 +17,9 @@ const TAINACAN_BLOCKS = [
 
 tainacan_blocks_initialize();
 
+/** 
+ * Un/Deregisters scripts and styles that are not necessary accordind to the current page
+ */
 function tainacan_blocks_initialize() {
 	global $wp_version;
 
@@ -30,6 +33,10 @@ function tainacan_blocks_initialize() {
 	}
 }
 
+/** 
+ * Calls the routines responsible for Registering the global style, category and 
+ * both 'generic' and 'special' blocks
+ */
 function register_tainacan_blocks_add_gutenberg_blocks() {
 	tainacan_blocks_get_common_styles();
 	tainacan_blocks_register_category_icon();
@@ -41,20 +48,67 @@ function register_tainacan_blocks_add_gutenberg_blocks() {
 	tainacan_blocks_register_tainacan_faceted_search();
 }
 
+/** 
+ * Un/Deregisters scripts and styçes that are not necessary accordind to the current page
+ */
 function unregister_tainacan_blocks() {
 	global $post;
 
-	foreach(TAINACAN_BLOCKS as $block_slug => $block_options) {
-		if ( !has_block('tainacan/' . $block_slug) || !is_singular() ) {
-			wp_deregister_script($block_slug);
-			wp_deregister_style($block_slug);
+	// If we are outside the block editor, there are assets not necessary, so lets deregister them!
+	if ( !is_admin() ) {
 
+		// First, handle the generic blocks
+		foreach(TAINACAN_BLOCKS as $block_slug => $block_options) {
+			// No need for any of the editor-side scripts outside the block editor
+			wp_deregister_script($block_slug);
+
+			// If there is no instance of this block on this page, no need for styles and theme side scripts as well
+			if ( !has_block('tainacan/' . $block_slug) || !is_singular() ) {
+				wp_deregister_style($block_slug);
+
+				if ( isset($block_options['has_theme_script']) && $block_options['has_theme_script'] )
+					wp_deregister_script($block_slug . '-theme');
+			}
+		}
+
+		// No need for any editor side script of the special blocks
+		wp_deregister_script('faceted-search');
+		wp_deregister_style('item-submission-form');
+
+		// If there is no faceted search block, no need for its styles and theme side scripts
+		if ( !has_block('tainacan/faceted-search') || !is_singular() ) {
+			wp_deregister_style('faceted-search');
+			wp_deregister_script('tainacan-search');
+		}
+
+		// If there is no item submission block, no need for its styles and theme side scripts
+		if ( !has_block('tainacan/item-submission-form') || !is_singular() ) {
+			wp_deregister_style('item-submission-form');
+			wp_deregister_script('tainacan-item-submission');
+			wp_deregister_script('tainacan-google-recaptcha-script');
+		}
+
+		// No need for category assets outside the block editor
+		wp_deregister_script('tainacan-blocks-register-category-icon');
+		wp_deregister_style('tainacan-blocks-register-category-icon');
+	
+	// If, however we are in the editor side, then no need to load theme side scripts!
+	} else {
+
+		// First, handle the generic blocks
+		foreach(TAINACAN_BLOCKS as $block_slug => $block_options) {
 			if ( isset($block_options['has_theme_script']) && $block_options['has_theme_script'] )
 				wp_deregister_script($block_slug . '-theme');
 		}
+
+		// Then the special ones
+		wp_deregister_script('tainacan-search');
+		wp_deregister_script('tainacan-item-submission');
+		wp_deregister_script('tainacan-google-recaptcha-script');
 	}
 
-	if(!$post) return;
+	/* Now, lets check if the blocks had been removed by the filter */
+	if (!$post) return;
 
 	$not_allowed = apply_filters('posts-names-to-unregister-tainacan-blocks', []);
 	$current_page = $post->post_name;
@@ -74,7 +128,7 @@ function unregister_tainacan_blocks() {
 		wp_deregister_script('faceted-search');
 		wp_deregister_script('tainacan-search');
 		wp_deregister_script('item-submission-form');
-		wp_deregister_script('google-recaptcha-script');
+		wp_deregister_script('tainacan-google-recaptcha-script');
 		wp_deregister_script('tainacan-blocks-register-category-icon');
 
 		wp_deregister_style('faceted-search');
@@ -89,6 +143,9 @@ function unregister_tainacan_blocks() {
 	}
 }
 
+/** 
+ * Registers the Taiancan category on the blocks inserter
+ */
 function tainacan_blocks_register_categories($categories, $post){
 
 	return array_merge(
@@ -102,9 +159,14 @@ function tainacan_blocks_register_categories($categories, $post){
 	);
 }
 
-/*
+/** 
  * Registers a 'generic' Tainacan Block, according to the TAINACAN_BLOCKs array
  * 
+ * * @param array $options {
+ *     Optional. Array of arguments.
+ *     @type boolean	 $has_theme_script				If true, informs that a theme-specific script must be registered
+ *     @type array		 $extra_editor_script_deps		Array of strings containing script dependencies of the editor side script
+ *  }
  */
 function tainacan_blocks_register_block($block_slug, $options = []) {
 	global $TAINACAN_BASE_URL;
@@ -150,51 +212,9 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 		register_block_type( 'tainacan/' . $block_slug, $register_params );
 }
 
-function tainacan_blocks_register_tainacan_item_submission_form() {
-	global $TAINACAN_BASE_URL;
-	global $TAINACAN_VERSION;
-
-	wp_register_script(
-		'tainacan-item-submission',
-		$TAINACAN_BASE_URL . '/assets/js/item_submission.js',
-		['underscore'],
-		TAINACAN_VERSION
-	);
-
-	wp_register_script(
-		'item-submission-form',
-		$TAINACAN_BASE_URL . '/assets/js/block_item_submission_form.js',
-		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
-	);
-
-	// Registers Google ReCAPTCHA
-	wp_register_script(
-		'google-recaptcha-script',
-		'https://www.google.com/recaptcha/api.js',
-		[], false, true 
-	);
-	wp_enqueue_script('google-recaptcha-script');
-
-	// Registers extra metadata type forms
-	$theme_helper = \Tainacan\Metadata_Types\Metadata_Type_Helper::get_instance();
-	if (isset($theme_helper))
-		$theme_helper->register_metadata_type_compoment();
-
-	wp_register_style(
-		'item-submission-form',
-		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-item-submission-form.css',
-		array('wp-edit-blocks', 'tainacan-blocks-common-styles')
-	);
-
-	if (function_exists('register_block_type')) {
-		register_block_type( 'tainacan/item-submission-form', array(
-			'editor_script' => 'item-submission-form',
-			'style'         => 'item-submission-form',
-			'script'		=> 'tainacan-item-submission'
-		) );
-	}
-}
-
+/** 
+ * Registers the 'special' Tainacan Block for the Faceted Search (the complete items list)
+ */
 function tainacan_blocks_register_tainacan_faceted_search(){
 	global $TAINACAN_BASE_URL;
 	global $TAINACAN_VERSION;
@@ -229,6 +249,58 @@ function tainacan_blocks_register_tainacan_faceted_search(){
 	}
 }
 
+/** 
+ * Registers the 'special' Tainacan Block for the Items Submission
+ */
+function tainacan_blocks_register_tainacan_item_submission_form() {
+	global $TAINACAN_BASE_URL;
+	global $TAINACAN_VERSION;
+
+	wp_register_script(
+		'tainacan-item-submission',
+		$TAINACAN_BASE_URL . '/assets/js/item_submission.js',
+		['underscore'],
+		$TAINACAN_VERSION
+	);
+
+	wp_register_script(
+		'item-submission-form',
+		$TAINACAN_BASE_URL . '/assets/js/block_item_submission_form.js',
+		array('wp-blocks', 'wp-element', 'wp-components', 'wp-editor')
+	);
+
+	// Registers Google ReCAPTCHA
+	wp_register_script(
+		'tainacan-google-recaptcha-script',
+		'https://www.google.com/recaptcha/api.js',
+		[], false, true 
+	);
+	wp_enqueue_script('tainacan-google-recaptcha-script');
+
+	// Registers extra metadata type forms
+	$theme_helper = \Tainacan\Metadata_Types\Metadata_Type_Helper::get_instance();
+	if (isset($theme_helper))
+		$theme_helper->register_metadata_type_compoment();
+
+	wp_register_style(
+		'item-submission-form',
+		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-item-submission-form.css',
+		array('wp-edit-blocks', 'tainacan-blocks-common-styles')
+	);
+
+	if (function_exists('register_block_type')) {
+		register_block_type( 'tainacan/item-submission-form', array(
+			'editor_script' => 'item-submission-form',
+			'style'         => 'item-submission-form',
+			'script'		=> 'tainacan-item-submission'
+		) );
+	}
+}
+
+/** 
+ * Generates the global 'tainacan_blocks' that contain some info from PHP necessary 
+ * to the blocks scripts in JS
+ */
 function tainacan_blocks_get_plugin_js_settings(){
 	global $TAINACAN_BASE_URL;
 	global $wp_version;
@@ -246,6 +318,9 @@ function tainacan_blocks_get_plugin_js_settings(){
 	return $settings;
 }
 
+/** 
+ * Makes the global 'tainacan_blocks' available to the blocks scripts
+ */
 function tainacan_blocks_add_plugin_settings() {
 	$settings = tainacan_blocks_get_plugin_js_settings();
 
@@ -257,15 +332,22 @@ function tainacan_blocks_add_plugin_settings() {
 	wp_localize_script( 'faceted-search', 'tainacan_blocks', $settings );
 }
 
+/** 
+ * Makes the global 'tainacan_plugin' available to some spacial blocks that need it
+ */
 function tainacan_blocks_add_plugin_admin_settings() {
 
 	// The faceded search block uses a different settings object, the same used on the theme items list
 	wp_localize_script( 'tainacan-search', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params() );
+	wp_localize_script( 'faceted-search', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params() );
 
 	// The item submission search block uses a different settings object, the same used on the item submission component
 	wp_localize_script( 'tainacan-item-submission', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params() );
 }
 
+/** 
+ * Enqueues the global styles necessary for the majority of the blocks
+ */
 function tainacan_blocks_get_common_styles() {
 	global $TAINACAN_BASE_URL;
 
@@ -276,6 +358,9 @@ function tainacan_blocks_get_common_styles() {
 	);
 }
 
+/** 
+ * Registers the script that inserts the Tainacan icon on the blocks category
+ */
 function tainacan_blocks_register_category_icon() {
 	global $TAINACAN_BASE_URL;
 	
