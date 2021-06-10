@@ -72,6 +72,7 @@
             bottom: 0;
             margin-bottom: -26px;
             padding-right: 12px;
+            margin-top: -26px;
             display: flex;
             justify-content: space-between;
             visibility: hidden;
@@ -156,6 +157,10 @@
                 top: 7px;
                 transform: scale(0.0);
                 transition: transform 0.2s ease;
+            }
+            .icon:not(.slideshow-icon) {
+                float: left;
+                margin-top: -1px;
             }
         }
         &:hover,

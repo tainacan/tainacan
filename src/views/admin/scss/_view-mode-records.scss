@@ -43,6 +43,7 @@
             float: right;
             top: calc(-1 * var(--tainacan-container-padding));
             bottom: 0;
+            margin-top: -25px;
             padding-right: 12px;
             //width: 80px;
             margin-bottom: -25px;
@@ -119,6 +120,10 @@
                 top: 7px;
                 transform: scale(0.0);
                 transition: transform 0.2s ease;
+            }
+            .icon:not(.slideshow-icon) {
+                float: left;
+                margin-top: -1px;
             }
         }
         &:hover,

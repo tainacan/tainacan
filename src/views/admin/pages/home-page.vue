@@ -41,7 +41,7 @@
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items"/>
                             </span>
-                            <span class="menu-text">{{ $i18n.get('label_all_published_items') }}</span>
+                            <span class="menu-text">{{ $i18n.get('label_all_items') }}</span>
                         </router-link>
                     </li> -->
                     <li v-if="$userCaps.hasCapability('tnc_rep_edit_metadata')">

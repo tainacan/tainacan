@@ -38,24 +38,29 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 if (postQueries.advancedSearch)
                     advancedSearchResults = postQueries.advancedSearch;
             }
-                
-            let query = qs.stringify(postQueries);
 
-            // Guarantees at least empty fetch_only are passed in case none is found
-            if (postQueries.fetch_only == ''){
-                dispatch('search/add_fetch_only', '', { root: true });
+            // Admin default tab should load publish, private and draft statuses
+            if (!isOnTheme && !postQueries.status) {
+                postQueries.status = 'publish,private,draft';
+                dispatch('search/setStatus', 'publish,private,draft', { root: true });
             }
+            
+            // Guarantees at least status is passed in case none is found
+            if (postQueries.fetch_only == '')
+                dispatch('search/add_fetch_only', 'status', { root: true });
+            else
+                postQueries.fetch_only += ',status';
                     
-            if (postQueries.fetch_only_meta == ''){
+            if (postQueries.fetch_only_meta == '')
                 dispatch('search/add_fetch_only_meta', '', { root: true });
-            }
+
+            let query = qs.stringify(postQueries);
 
             // Differentiates between repository level and collection level queries
             let endpoint = '/collection/'+ collectionId +'/items?';
 
-            if (collectionId == undefined || collectionId == '' || collectionId == null){
+            if (collectionId == undefined || collectionId == '' || collectionId == null)
                 endpoint = '/items?';
-            }
  
             if (!isOnTheme){
                 if (postQueries.view_mode != undefined)
