@@ -261,7 +261,7 @@ class Test_Importer extends Importer {
 									<h5><?php _e('Keyword Search', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('Optionally ype one keyword which it will be used to find images in flickr (e.g. dogs, cat). Default is "kitten".', 'tainacan'); ?></p>
+									<p><?php _e('Optionally type one keyword which it will be used to find images in flickr (e.g. dogs, cat). Default is "kitten".', 'tainacan'); ?></p>
 								</div>
 							</div> 
 					</span>

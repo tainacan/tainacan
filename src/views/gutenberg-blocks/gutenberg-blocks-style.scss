@@ -166,7 +166,7 @@
         }
 
         svg.components-checkbox-control__checked {
-            fill: inherit;
+            fill: black;
         }
     
         .modal-checkbox-list-item,
@@ -192,9 +192,6 @@
         .components-radio-control__option .components-radio-control__input {
             min-width: 20px;
             min-height: 20px;
-        }
-        .components-radio-control__option .components-radio-control__input::before {
-            border-width: 0px;
         }
     }
     .modal-loadmore-section {

@@ -3,15 +3,15 @@
         <ul>               
             <li 
                     @click="onChangeTab('')"
-                    :class="{ 'is-active': status == undefined || status == ''}"
+                    :class="{ 'is-active': status == undefined || status == '' || status == 'publish,private,draft' }"
                     v-tooltip="{
                         content: $i18n.get('info_items_tab_all'),
                         autoHide: true,
                         placement: 'auto',
                     }">
                 <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
-                    {{ $i18n.get('label_all_published_items') }}
-                    <span class="has-text-gray">&nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish })` : (collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish)})` : '') }}</span>
+                    {{ $i18n.get('label_all_items') }}
+                    <span class="has-text-gray">&nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish + repositoryTotalItems.draft })` : (collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish) + Number(collection.total_items.draft)})` : '') }}</span>
                 </a>
             </li>
             <li 
@@ -20,7 +20,7 @@
                     :key="index"
                     @click="onChangeTab(statusOption.slug)"
                     :class="{ 'is-active': status == statusOption.slug}"
-                    :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '', marginLeft: statusOption.slug == 'draft' ? 'auto' : '' }"
+                    :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
                     v-tooltip="{
                         content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('items')]),
                         autoHide: true,

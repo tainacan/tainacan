@@ -87,7 +87,11 @@
                 width: 60px;
                 text-align: center;
             }
-      
+            .status-cell {
+                width: 2rem;
+                padding-left: 1px;
+                padding-right: 1px;
+            }
             .column-small-width {
                 min-width: 80px;
                 max-width: 80px;

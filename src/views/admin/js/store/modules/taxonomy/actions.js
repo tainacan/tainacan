@@ -49,8 +49,10 @@ export const fetch = ({ commit }, { page, taxonomiesPerPage, status, order, orde
     return new Promise((resolve, reject) => {
         let endpoint = `/taxonomies?paged=${page}&perpage=${taxonomiesPerPage}&context=edit`;
 
-        if (status != undefined && status != '')
+        if (status != undefined && status != '' && status != false)
             endpoint = endpoint + '&status=' + status;
+        else
+            endpoint += '&status=publish,private,draft';
         
         if (order != undefined && order != '' && orderby != undefined && orderby != '')
             endpoint = endpoint + '&order=' + order + '&orderby=' + orderby;
