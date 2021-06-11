@@ -76,7 +76,8 @@
     .tainacan-table {
         tr.selected-row { 
             background-color: var(--tainacan-blue1) !important; 
-            .checkbox-cell .checkbox, .actions-cell .actions-container {
+            .checkbox-cell .checkbox, .actions-cell .actions-container,
+            .checkbox-cell .radio, .actions-cell .actions-container {
                 background-color: var(--tainacan-blue2) !important;
             }
         }

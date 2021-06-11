@@ -59,7 +59,8 @@
                 top: auto;
                 display: table-cell;
     
-                label.checkbox {  
+                label.checkbox,
+                label.radio {  
                     border-radius: 0px;
                     background-color: var(--tainacan-white);
                     padding: 0;
@@ -69,7 +70,8 @@
                     justify-content: center;
                     transition: background-color 0.15s ease;
                 }
-                .b-checkbox.checkbox .control-label {
+                .b-checkbox.checkbox .control-label,
+                .b-radio.radio .control-label {
                     display: none;
                 }
                 &.is-selecting {
@@ -252,6 +254,9 @@
                             background-color: var(--tainacan-item-heading-hover-background-color);
                             
                             .checkbox { 
+                                background-color: var(--tainacan-item-heading-hover-background-color) !important; 
+                            }
+                            .radio { 
                                 background-color: var(--tainacan-item-heading-hover-background-color) !important; 
                             }
                         }

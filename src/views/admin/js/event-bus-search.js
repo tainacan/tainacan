@@ -309,7 +309,11 @@ export default {
                     this.$store.dispatch('search/setAdminViewMode', adminViewMode);
                     this.updateURLQueries();  
                 },
-                setSelectedItemsForIframe(selectedItems) {
+                setSelectedItemsForIframe(selectedItems, singleSelection) {
+ 
+                    if (singleSelection)
+                        this.$store.dispatch('search/cleanSelectedItems');
+
                     this.$store.dispatch('search/setSelectedItems', selectedItems);    
  
                     let currentSelectedItems = this.$store.getters['search/getSelectedItems'];

@@ -9,7 +9,7 @@
 
         <!-- PAGE TITLE --------------------- -->
         <tainacan-title
-                v-if="!$route.query.iframemode && !$route.query.readmode && !openAdvancedSearch" 
+                v-if="!isIframeMode && !isReadMode && !openAdvancedSearch" 
                 :bread-crumb-items="[{ path: '', label: this.$i18n.get('items') }]"/>
         <div 
                 v-else-if="openAdvancedSearch"
@@ -101,7 +101,7 @@
             <!-- Item Creation Dropdown, only on Admin -->
             <div 
                     class="search-control-item"
-                    v-if="!$route.query.iframemode &&
+                    v-if="!isIframeMode &&
                             !openAdvancedSearch &&
                             collection && 
                             collection.current_user_can_edit_items">
@@ -413,7 +413,7 @@
 
             <!-- Exposers or alternative links modal button -->
             <div 
-                    v-if="!$route.query.iframemode"
+                    v-if="!isIframeMode"
                     class="search-control-item">
                 <button 
                         class="button is-white"
@@ -494,7 +494,7 @@
 
             <!-- STATUS TABS, only on Admin -------- -->
             <items-status-tabs 
-                    v-if="!openAdvancedSearch && !$route.query.iframemode"
+                    v-if="!openAdvancedSearch && !isIframeMode"
                     :is-repository-level="isRepositoryLevel"/>
 
             <!-- FILTERS TAG LIST-->
@@ -595,7 +595,7 @@
                         </p>
 
                         <router-link
-                                v-if="!isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$route.query.iframemode"
+                                v-if="!isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !isIframeMode"
                                 id="button-create-item"
                                 tag="button"
                                 class="button is-secondary"
@@ -603,7 +603,7 @@
                             {{ $i18n.getFrom('items', 'add_new') }}
                         </router-link> 
                         <button
-                                v-else-if="isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$route.query.iframemode"
+                                v-else-if="isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !isIframeMode"
                                 id="button-create-item"
                                 class="button is-secondary"
                                 @click="onOpenCollectionsModal">
@@ -731,7 +731,13 @@
                     }
                 }
                 return '';
-            }
+            },
+            isReadMode () {
+                return this.$route && this.$route.query && this.$route.query.readmode;
+            },
+            isIframeMode () {
+                return this.$route && this.$route.query && this.$route.query.iframemode;
+            },
         },
         watch: {
             displayedMetadata() {

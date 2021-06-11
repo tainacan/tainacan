@@ -3,38 +3,40 @@
             id="tainacan-admin-app" 
             class="columns is-fullheight"
             :class="{ 
-                'tainacan-admin-iframe-mode': $route.query.iframemode, 
-                'tainacan-admin-read-mode': $route.query.readmode
+                'tainacan-admin-iframe-mode': isIframeMode, 
+                'tainacan-admin-read-mode': isReadMode
             }">
         <template v-if="activeRoute == 'HomePage'">
             <tainacan-header />
             <router-view /> 
         </template>
         <template v-else>
-            <primary-menu 
-                    :active-route="activeRoute"
-                    :is-menu-compressed="isMenuCompressed"/>
-            <button 
-                    class="is-hidden-mobile"
-                    id="menu-compress-button"
-                    @click="isMenuCompressed = !isMenuCompressed">          
-                <span
-                        v-tooltip="{
-                            content: $i18n.get('label_shrink_menu'),
-                            autoHide: true,
-                            placement: 'auto-end',
-                            classes: ['tooltip', 'repository-tooltip']     
-                        }"
-                        class="icon">
-                    <i 
-                            :class="{ 'tainacan-icon-arrowleft' : !isMenuCompressed, 'tainacan-icon-arrowright' : isMenuCompressed }"
-                            class="tainacan-icon tainacan-icon-1-25em"/>
-                </span>
-            </button>
-            <tainacan-header />
-            <tainacan-repository-subheader 
-                    :is-repository-level="isRepositoryLevel"
-                    :is-menu-compressed="isMenuCompressed"/>
+            <template v-if="!isIframeMode">
+                <primary-menu 
+                        :active-route="activeRoute"
+                        :is-menu-compressed="isMenuCompressed"/>
+                <button 
+                        class="is-hidden-mobile"
+                        id="menu-compress-button"
+                        @click="isMenuCompressed = !isMenuCompressed">          
+                    <span
+                            v-tooltip="{
+                                content: $i18n.get('label_shrink_menu'),
+                                autoHide: true,
+                                placement: 'auto-end',
+                                classes: ['tooltip', 'repository-tooltip']     
+                            }"
+                            class="icon">
+                        <i 
+                                :class="{ 'tainacan-icon-arrowleft' : !isMenuCompressed, 'tainacan-icon-arrowright' : isMenuCompressed }"
+                                class="tainacan-icon tainacan-icon-1-25em"/>
+                    </span>
+                </button>
+                <tainacan-header />
+                <tainacan-repository-subheader 
+                        :is-repository-level="isRepositoryLevel"
+                        :is-menu-compressed="isMenuCompressed"/>
+            </template>
             <div 
                     id="repository-container"
                     class="column is-main-content">  
@@ -62,6 +64,14 @@
                 isMenuCompressed: false,
                 isRepositoryLevel : true,
                 activeRoute: '/collections'
+            }
+        },
+        computed: {
+            isReadMode () {
+                return this.$route && this.$route.query && this.$route.query.readmode;
+            },
+            isIframeMode () {
+                return this.$route && this.$route.query && this.$route.query.iframemode;
             }
         },
         watch: {
