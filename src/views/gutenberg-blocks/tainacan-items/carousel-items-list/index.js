@@ -13,6 +13,7 @@ import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import DeprecatedBlocks from './carousel-items-deprecated.js';
+import 'swiper/css/swiper.min.css';
 
 registerBlockType('tainacan/carousel-items-list', {
     title: __('Tainacan Collection\'s Items Carousel', 'tainacan'),
