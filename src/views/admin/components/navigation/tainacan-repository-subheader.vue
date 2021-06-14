@@ -9,7 +9,7 @@
             <span class="has-text-weight-bold">
                 {{ collection && collection.name ? collection.name : '' }}
                 <span 
-                        v-if="collection.status && $statusHelper.hasIcon(collection.status)"
+                        v-if="collection && collection.status && $statusHelper.hasIcon(collection.status)"
                         class="icon has-text-white"
                         v-tooltip="{
                             content: $i18n.get('status_' + collection.status),

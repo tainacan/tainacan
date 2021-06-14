@@ -342,6 +342,10 @@ function tainacan_blocks_add_plugin_settings() {
 
 	foreach(TAINACAN_BLOCKS as $block_slug => $block_options) {
 		wp_localize_script( $block_slug, 'tainacan_blocks', $settings );
+
+		if ( isset($block_options['has_theme_script']) && $block_options['has_theme_script'] ) {
+			wp_localize_script( $block_slug . '-theme', 'tainacan_blocks', $settings );
+		}
 	}
 	
 	// The faceded search block also uses this settings for checking gutenberg version

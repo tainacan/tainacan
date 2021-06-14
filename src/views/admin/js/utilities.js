@@ -3,7 +3,9 @@ export const ThumbnailHelperPlugin = {};
 
 export const ThumbnailHelperFunctions = () => {
     return {
-        imagesFolderPath: tainacan_plugin.base_url + '/assets/images/',
+        imagesFolderPath() {
+            return tainacan_plugin ? (tainacan_plugin.base_url + '/assets/images/') : (tainacan_blocks ? (tainacan_blocks.base_url + '/assets/images/') : '/assets/images/');
+        },
         getSrc(thumbnail, tainacanSize, documentType) {
             const wordpressSize = this.getWordpressFallbackSize(tainacanSize);
             return (thumbnail && thumbnail[tainacanSize]) ? thumbnail[tainacanSize][0] : ((thumbnail && thumbnail[wordpressSize]) ? thumbnail[wordpressSize][0] : this.getEmptyThumbnailPlaceholder(documentType, tainacanSize));
@@ -78,13 +80,13 @@ export const ThumbnailHelperFunctions = () => {
                 case 'tainacan-medium':
                 case 'medium_large':
                 case 'medium':
-                    return this.imagesFolderPath + imageSrc + '_medium.png';
+                    return this.imagesFolderPath() + imageSrc + '_medium.png';
                 case 'tainacan-small':
                 case 'thumbnail':
-                    return this.imagesFolderPath + imageSrc + '_small.png';
+                    return this.imagesFolderPath() + imageSrc + '_small.png';
                 case 'full':
                 default:
-                    return this.imagesFolderPath + imageSrc + '.png';
+                    return this.imagesFolderPath() + imageSrc + '.png';
             }
         },
         getWordpressFallbackSize(tainacanSize) {
