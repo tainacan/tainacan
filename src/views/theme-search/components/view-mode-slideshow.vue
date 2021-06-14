@@ -625,7 +625,7 @@ export default {
                 width: 680,
                 ariaRole: 'alertdialog',
                 ariaModal: true,
-                customClass: 'slides-help-modal',
+                customClass: 'tainacan-modal slides-help-modal',
                 onCancel: () => {
                     setTimeout(() => document.documentElement.classList.add('is-clipped'), 500); 
                 }

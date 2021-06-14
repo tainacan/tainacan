@@ -44,8 +44,18 @@ export const viewModesMixin = {
             }
             return itemUrl;
         },
-        renderMetadata(itemMetadata, metadatum) {
-            let metadata = (itemMetadata && itemMetadata[metadatum.slug] != undefined) ? itemMetadata[metadatum.slug] : false;
+        renderMetadata(item, metadatum) {
+            let metadata = false;
+            if (item && item.metadata && item.metadata[metadatum.slug] != undefined)
+                metadata = item.metadata[metadatum.slug] 
+            else if (metadatum &&
+                     metadatum.metadata_type_object &&
+                     metadatum.metadata_type_object.core && 
+                     metadatum.metadata_type_object.related_mapped_prop &&
+                     item[metadatum.metadata_type_object.related_mapped_prop]
+            ) {
+                return item[metadatum.metadata_type_object.related_mapped_prop];
+            }
 
             if (!metadata)
                 return '';

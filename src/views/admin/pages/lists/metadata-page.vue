@@ -451,7 +451,8 @@ export default {
                         next();
                     },
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });  
         } else {
             next();
@@ -597,7 +598,8 @@ export default {
                             });
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             }); 
         },
         toggleMetadatumEdition(metadatumId) {

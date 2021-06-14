@@ -171,7 +171,6 @@ export default {
 
     .tainacan-cards-container .tainacan-card .metadata-title {
         padding: 0.6em 0.75em;
-        margin-bottom: 0px;
     }
 </style>
 

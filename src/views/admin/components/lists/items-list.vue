@@ -158,7 +158,11 @@
 
                     <!-- Title -->
                     <div
+<<<<<<< HEAD
                             :style="{ 'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode ? '0.5em !important' : '2.75em' }"
+=======
+                            :style="{ 'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0.5em !important' : (isOnAllItemsTabs ? '1.875em' : '2.75em') }"
+>>>>>>> develop
                             class="metadata-title">
                         <p
                                 v-tooltip="{
@@ -173,6 +177,20 @@
                                 }"
                                 @click.left="onClickItem($event, item)"
                                 @click.right="onRightClickItem($event, item)">
+                            <span 
+                                    v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
+                                    class="icon has-text-gray"
+                                    v-tooltip="{
+                                        content: $i18n.get('status_' + item.status),
+                                        autoHide: true,
+                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        placement: 'auto-start'
+                                    }">
+                                <i 
+                                        class="tainacan-icon tainacan-icon-1em"
+                                        :class="$statusHelper.getIcon(item.status)"
+                                        />
+                            </span>
                             {{ item.title != undefined ? item.title : '' }}
                         </p>
                     </div>
@@ -294,12 +312,32 @@
                     <!-- Title -->
                     <div
                             :style="{
+<<<<<<< HEAD
                                 'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode ? '0 !important' : '1em'
+=======
+                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0 !important' : (isOnAllItemsTabs ? '0.5em' : '1em')
+>>>>>>> develop
                             }"
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)"
                             class="metadata-title">
-                        <p>{{ item.title != undefined ? item.title : '' }}</p>
+                        <p>
+                            <span 
+                                    v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
+                                    class="icon has-text-gray"
+                                    v-tooltip="{
+                                        content: $i18n.get('status_' + item.status),
+                                        autoHide: true,
+                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        placement: 'auto-start'
+                                    }">
+                                <i 
+                                        class="tainacan-icon tainacan-icon-1em"
+                                        :class="$statusHelper.getIcon(item.status)"
+                                        />
+                            </span>
+                            {{ item.title != undefined ? item.title : '' }}
+                        </p>
                     </div>
 
                     <!-- Thumbnail -->
@@ -405,8 +443,12 @@
                     <!-- Title -->
                     <div
                             :style="{ 
+<<<<<<< HEAD
                                 'padding-left': !collectionId || isReadMode || !(isIframeMode || collection && collection.current_user_can_bulk_edit) ? '0.5em !important' : '2.75em',
                                 'margin-bottom': item.current_user_can_edit && !isIframeMode ? '-26px' : '0px'
+=======
+                                'padding-left': !collectionId || $route.query.readmode || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) ? '0.5em !important' : (isOnAllItemsTabs ? '2.125em' : '2.75em'),
+>>>>>>> develop
                             }"
                             class="metadata-title">
                         <p
@@ -422,6 +464,20 @@
                                 }"
                                 @click.left="onClickItem($event, item)"
                                 @click.right="onRightClickItem($event, item)">
+                            <span 
+                                    v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
+                                    class="icon has-text-gray"
+                                    v-tooltip="{
+                                        content: $i18n.get('status_' + item.status),
+                                        autoHide: true,
+                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        placement: 'auto-start'
+                                    }">
+                                <i 
+                                        class="tainacan-icon tainacan-icon-1em"
+                                        :class="$statusHelper.getIcon(item.status)"
+                                        />
+                            </span>
                             {{ item.title != undefined ? item.title : '' }}
                         </p>
                     </div>
@@ -594,9 +650,27 @@
                     <div
                             class="metadata-title"
                             :style="{
+<<<<<<< HEAD
                                 'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode ? '1.5em !important' : '2.75em',    
                                 'margin-bottom': item.current_user_can_edit || isIframeMode ? '-27px' : '0px'
+=======
+                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '1.5em !important' : '2.75em'
+>>>>>>> develop
                             }">
+                        <span 
+                                v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
+                                class="icon has-text-gray"
+                                v-tooltip="{
+                                    content: $i18n.get('status_' + item.status),
+                                    autoHide: true,
+                                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    placement: 'auto-start'
+                                }">
+                            <i 
+                                    class="tainacan-icon tainacan-icon-1em"
+                                    :class="$statusHelper.getIcon(item.status)"
+                                    />
+                        </span>
                         <p 
                                 v-tooltip="{
                                     delay: {
@@ -753,6 +827,12 @@
                             &nbsp;
                             <!-- nothing to show on header for checkboxes -->
                         </th>
+
+                        <!-- Status -->
+                        <th v-if="isOnAllItemsTabs">
+                            &nbsp;
+                        </th>
+
                         <!-- Displayed Metadata -->
                         <th
                                 v-for="(column, index) in displayedMetadata"
@@ -805,7 +885,24 @@
                                     :native-value="item.id"
                                     v-model="singleItemSelection"/>
                         </td>
-
+                        <td 
+                                v-if="isOnAllItemsTabs"
+                                class="status-cell">
+                            <span 
+                                    v-if="$statusHelper.hasIcon(item.status)"
+                                    class="icon has-text-gray"
+                                    v-tooltip="{
+                                        content: $i18n.get('status_' + item.status),
+                                        autoHide: true,
+                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        placement: 'auto-start'
+                                    }">
+                                <i 
+                                        class="tainacan-icon tainacan-icon-1em"
+                                        :class="$statusHelper.getIcon(item.status)"
+                                        />
+                            </span>
+                        </td>
                         <!-- Item Displayed Metadata -->
                         <td
                                 :key="columnIndex"
@@ -1019,7 +1116,25 @@
                     </div>
 
                     <!-- Title -->
-                    <div class="metadata-title">
+                    <div 
+                            :style="{
+                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '1.5em !important' : (isOnAllItemsTabs ? '2.0em' : '2.75em'),    
+                            }"
+                            class="metadata-title">
+                        <span 
+                                v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
+                                class="icon has-text-gray"
+                                v-tooltip="{
+                                    content: $i18n.get('status_' + item.status),
+                                    autoHide: true,
+                                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    placement: 'auto-start'
+                                }">
+                            <i 
+                                    class="tainacan-icon tainacan-icon-1em"
+                                    :class="$statusHelper.getIcon(item.status)"
+                                    />
+                        </span>
                         <p 
                                 v-tooltip="{
                                     delay: {
@@ -1210,8 +1325,14 @@ export default {
         isReadMode () {
             return this.$route && this.$route.query && this.$route.query.readmode;
         },
+<<<<<<< HEAD
         isSingleSelectionMode () {
             return this.$route && this.$route.query && this.$route.query.singleselectionmode;
+=======
+        isOnAllItemsTabs() {
+            const currentStatus = this.getStatus();
+            return !currentStatus || (currentStatus.indexOf(',') > 0);
+>>>>>>> develop
         }
     },
     watch: {
@@ -1268,6 +1389,7 @@ export default {
         ...mapGetters('search', [
             'getOrder',
             'getOrderBy',
+            'getStatus',
             'getSelectedItems',
             'getHighlightedItem',
             'getItemsPerPage'
@@ -1298,7 +1420,8 @@ export default {
                     collectionId: this.$route.params.collectionId,
                 },
                 width: 'calc(100% - (2 * var(--tainacan-one-column)))',
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
         sequenceEditSelectedItems() {
@@ -1336,7 +1459,8 @@ export default {
                         }
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
 
             this.clearContextMenu();
@@ -1368,7 +1492,8 @@ export default {
                         });
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
         deleteOneItem(itemId) {
@@ -1391,7 +1516,8 @@ export default {
                         });
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
             this.clearContextMenu();
         },
@@ -1423,7 +1549,8 @@ export default {
                         });
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
         deleteSelectedItems() {
@@ -1464,7 +1591,8 @@ export default {
                         });
                     }
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
         openItem() {

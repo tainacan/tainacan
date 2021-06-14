@@ -9,14 +9,11 @@ namespace Tainacan\Tests;
  */
 
 /**
- * Sample test case.
+ * TestUtilities
  */
 class TestUtilities extends TAINACAN_UnitTestCase {
 
-
     function test_initials() {
-        
-
         $string = 'Roberto Carlos';
 
         $this->assertEquals('RC', tainacan_get_initials($string));
@@ -42,7 +39,6 @@ class TestUtilities extends TAINACAN_UnitTestCase {
         $string = '';
 
         $this->assertEquals('', tainacan_get_initials($string));
-
 	}
 	
 	function test_get_descendants_ids() {

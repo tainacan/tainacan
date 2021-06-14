@@ -68,7 +68,7 @@ $pswp__include-minimal-style: true !default;
     li.swiper-slide {
         height: 100%;
         max-width: calc(100% - var(--swiper-navigation-size, 44px) - var(--swiper-navigation-size, 44px));
-        min-width: 100%;
+        //min-width: 100%;
         padding: 0 var(--swiper-navigation-size, 44px);
         opacity: 1.0;
         transition: opacity 0.2s linear;
@@ -112,32 +112,61 @@ $pswp__include-minimal-style: true !default;
     .swiper-slide-content {
         width: 100%;
         height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
+        display: block;
+        text-align: center;
 
-        .tainacan-embed-container {
+        .tainacan-content-embed {
             width: 100%;
             height: auto;
+
+            &.tainacan-has-aspect-ratio {
+                max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 2) / 1); /* Default to 2:1 aspect ratio. */
+                margin-left: auto;
+                margin-right: auto;
+            }
+            &.tainacan-embed-aspect-21-9 {
+                max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 21) / 9);
+            }
+            &.tainacan-embed-aspect-18-9 {
+                max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 18) / 9);
+            }
+            &.tainacan-embed-aspect-16-9 {
+                max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 16) / 9);
+            }
+            &.tainacan-embed-aspect-4-3 {
+                max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 4) / 3);
+            }
+            &.tainacan-embed-aspect-1-1 {
+                max-width: var(--tainacan-media-main-carousel-height, 60vh);
+            }
+            &.tainacan-embed-aspect-3-4 {
+                max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 3) / 4);
+            }
+            &.tainacan-embed-aspect-9-16 {
+                max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 9) / 16);
+            }
+            &.tainacan-embed-aspect-1-2 {
+                max-width: calc((var(--tainacan-media-main-carousel-height, 60vh) * 1) / 2);
+            }
         }
         iframe {
             max-height: var(--tainacan-media-main-carousel-height, 60vh);
-            width: 100%;
             max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
             border: none;
             display: block;
             background-image: url('../images/preloader.gif');
             background-repeat: no-repeat;
             background-position: center;
         }
-    
         a:first-of-type,
         p:first-of-type {
             z-index: 99;
             background: var(--tainacan-media-background, #ffffff);
             border-radius: 3px;
             word-wrap: break-word;
+            padding: 1rem 2rem;
         }
         audio {
             background: black;
@@ -156,6 +185,10 @@ $pswp__include-minimal-style: true !default;
         img {
             width: auto;
             max-height: var(--tainacan-media-main-carousel-height, 60vh);
+        }
+        .twitter-tweet {
+            margin-left: auto;
+            margin-right: auto;
         }
     }
 }
@@ -304,34 +337,68 @@ $pswp__include-minimal-style: true !default;
 
         .attachment-without-image {
             width: 100%;
-            height: 100%;
+            height: calc(100% - 44px);
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 44px;
+            margin-top: 22px;
 
-            &.tainacan-embed-container:not(.tainacan-embed-without-iframe) {
-                padding: 0px;
-            }
-            .tainacan-embed-container .twitter-tweet {
-                width: 100vw !important;
+            &>iframe:not(.wp-embedded-content) {
+                width: 90vw;
+                height: 90vh;
+                border: none;
+                margin: 44px;
+                display: block;
+                background-image: url('../images/preloader.gif');
+                background-repeat: no-repeat;
+                background-position: center;
             }
         }
-
-        iframe {
-            padding: 44px;
-            min-height: 90vh;
-            max-height: 90vh;
-            height: 100%;
-            width: 100%;
-            max-width: 100%;
-            margin: 0 auto;
+        // PDFs file that come from document instead of attachments
+        .pswp__zoom-wrap>iframe#iframePDF {
+            width: 90vw;
+            height: 90vh;
             border: none;
+            margin: 44px auto;
             display: block;
             background-image: url('../images/preloader.gif');
             background-repeat: no-repeat;
             background-position: center;
         }
 
+        .tainacan-content-embed {
+            width: 100%;
+            height: auto;
+
+            &.tainacan-has-aspect-ratio {
+                max-width: calc((90vh * 2) / 1); /* Default to 2:1 aspect ratio. */
+                margin-left: auto;
+                margin-right: auto;
+            }
+            &.tainacan-embed-aspect-21-9 {
+                max-width: calc((90vh * 21) / 9);
+            }
+            &.tainacan-embed-aspect-18-9 {
+                max-width: calc((90vh * 18) / 9);
+            }
+            &.tainacan-embed-aspect-16-9 {
+                max-width: calc((90vh * 16) / 9);
+            }
+            &.tainacan-embed-aspect-4-3 {
+                max-width: calc((90vh * 4) / 3);
+            }
+            &.tainacan-embed-aspect-1-1 {
+                max-width: 90vh;
+            }
+            &.tainacan-embed-aspect-9-16 {
+                max-width: calc((90vh * 9) / 16);
+            }
+            &.tainacan-embed-aspect-1-2 {
+                max-width: calc((90vh * 1) / 2);
+            }
+        }
         a:first-of-type,
         p:first-of-type ,
         article:first-of-type {

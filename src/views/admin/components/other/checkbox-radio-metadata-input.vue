@@ -1010,7 +1010,7 @@
         background-color: var(--tainacan-gray1);
 
         &:hover {
-            background-color: var(--tainacan-blue1);
+            background-color: var(--tainacan-primary);
         }
     }
 

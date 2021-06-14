@@ -54,7 +54,7 @@
                                         show: 500,
                                         hide: 300,
                                     },
-                                    content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
+                                    content: item.metadata != undefined ? renderMetadata(item, column) : '',
                                     html: true,
                                     autoHide: false,
                                     placement: 'auto-start'
@@ -62,7 +62,7 @@
                                 v-for="(column, metadatumIndex) in displayedMetadata"
                                 :key="metadatumIndex"
                                 v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                v-html="item.metadata != undefined && collectionId ? renderMetadata(item.metadata, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                 
+                                v-html="item.metadata != undefined && collectionId ? renderMetadata(item, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                 
                         <span 
                                 v-if="isSlideshowViewModeEnabled"
                                 v-tooltip="{
@@ -108,10 +108,10 @@
                                     v-for="(column, metadatumIndex) in displayedMetadata"
                                     :key="metadatumIndex"
                                     :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }"
-                                    v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
+                                    v-if="renderMetadata(item, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
                                 <h3 class="metadata-label">{{ column.name }}</h3>
                                 <p      
-                                        v-html="renderMetadata(item.metadata, column)"
+                                        v-html="renderMetadata(item, column)"
                                         class="metadata-value"/>
                             </span>
                         </div>
@@ -164,7 +164,6 @@ export default {
         }
     },
     mounted() {
-
         if (this.$refs.masonryWrapper != undefined && 
             this.$refs.masonryWrapper.children[0] != undefined && 
             this.$refs.masonryWrapper.children[0].children[0] != undefined && 
@@ -210,7 +209,6 @@ export default {
 
     .tainacan-records-container .tainacan-record .metadata-title {
         padding: 0.6em 0.875em;
-        margin-bottom: 0px;
     }
 </style>
 

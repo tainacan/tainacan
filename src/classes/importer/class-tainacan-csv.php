@@ -36,13 +36,15 @@ class CSV extends Importer {
 			}
 
 			$columns = [];
-
-			if( $rawColumns ) {
+			if ($rawColumns) {
 				foreach( $rawColumns as $index => $rawColumn ) {
 					if( strpos($rawColumn,'special_') === 0 ) {
 						if( $rawColumn === 'special_document' ) {
 							$this->set_option('document_index', $index);
-						} else if( $rawColumn === 'special_attachments' || 
+						} else if ($rawColumn === 'special_document|REPLACE') {
+							$this->set_option('document_import_mode', 'replace');
+							$this->set_option('document_index', $index);
+						} else if( $rawColumn === 'special_attachments' ||
 											 $rawColumn === 'special_attachments|APPEND' || 
 											 $rawColumn === 'special_attachments|REPLACE' ) {
 							$this->set_option('attachment_index', $index);
@@ -84,7 +86,7 @@ class CSV extends Importer {
 			if( $rawColumns ) {
 				foreach( $rawColumns as $index => $rawColumn ) {
 					if( strpos($rawColumn,'special_') === 0 ) {
-						if( in_array( $rawColumn, ['special_document', 'special_attachments', 'special_item_status', 'special_item_id', 'special_comment_status', 'special_attachments|APPEND', 'special_attachments|REPLACE'] ) ) {
+						if( in_array( $rawColumn, ['special_document', 'special_attachments', 'special_item_status', 'special_item_id', 'special_comment_status', 'special_attachments|APPEND', 'special_attachments|REPLACE', 'special_document|REPLACE'] ) ) {
 							$columns[] = $rawColumn;
 						}
 					}
@@ -197,8 +199,10 @@ class CSV extends Importer {
 				$returnValue = [];
 				foreach($valueToInsert as $index => $metadatumValue) {
 					$childrenHeaders = str_getcsv($compoundHeaders[$key], $this->get_option('delimiter'), $this->get_option('enclosure'));
-					$childrenValue = str_getcsv($metadatumValue, $this->get_option('delimiter'), $this->get_option('enclosure'));
-					
+					$childrenValue = $this->is_clear_value($metadatumValue) ? 
+						array_fill(0, sizeof($childrenHeaders), $this->get_option('escape_empty_value') ) :
+						str_getcsv($metadatumValue, $this->get_option('delimiter'), $this->get_option('enclosure'));
+
 					if ( sizeof($childrenHeaders) != sizeof($childrenValue) ) {
 						$this->add_error_log('Mismatch count headers childrens and row columns. file value:' . $metadatumValue);
 						return false;
@@ -514,7 +518,14 @@ class CSV extends Importer {
 			}
 		} else if( strpos($column_value,'file:') === 0 ) {
 			$correct_value = trim(substr($column_value, 5));
-			if( isset(parse_url($correct_value)['scheme'] ) ) {
+			//removing the old document attachment
+			if ($this->get_option('document_import_mode') === 'replace' && $item_inserted->get_document_type() == 'attachment' ) {
+				$this->add_log('Item Document will be replaced ... ');
+				wp_delete_attachment($item_inserted->get_document(), true);
+				$this->add_log('Deleted previous Item Documents ... ');
+			}
+
+			if (isset(parse_url($correct_value)['scheme'] )) {
 				$id = $TainacanMedia->insert_attachment_from_url($correct_value, $item_inserted->get_id());
 
 				if(!$id){
@@ -571,15 +582,7 @@ class CSV extends Importer {
 				break;
 			case 'REPLACE':
 				$this->add_log('Attachment REPLACE file ');
-				$args['post_parent'] = $item_inserted->get_id();
-				$args['post_type'] = 'attachment';
-				$args['post_status'] = 'any';
-				$args['post__not_in'] = [$item_inserted->get_document()];
-				$posts_query  = new \WP_Query();
-				$query_result = $posts_query->query( $args );
-				foreach ( $query_result as $post ) {
-					wp_delete_attachment( $post->ID, true );
-				}
+				$this->delete_previous_document_imgs($item_inserted->get_id(), $item_inserted->get_document());
 				break;
 		}
 
@@ -624,10 +627,10 @@ class CSV extends Importer {
 			$line = substr($line, $cut_start);
 		}
 
-		$end = substr($line, ( strlen($line)  -  strlen($this->get_option('enclosure')) ) , strlen($this->get_option('enclosure')));
+		$end = substr($line, ( strlen($line) - strlen($this->get_option('enclosure')) ) , strlen($this->get_option('enclosure')));
 
 		if( $this->get_option('enclosure') === $end ) {
-			$line = substr($line, 0,  ( strlen($line)  -  strlen($this->get_option('enclosure')) ) );
+			$line = substr($line, 0, ( strlen($line) - strlen($this->get_option('enclosure')) ) );
 		}
 
 		$delimiter = $this->get_option('enclosure').$this->get_option('delimiter').$this->get_option('enclosure');
@@ -681,7 +684,7 @@ class CSV extends Importer {
 	 *                              its value or values
 	 * @param integer $collection_index The index in the $this->collections array of the collection the item is being inserted into
 	 *
-	 * @return Tainacan\Entities\Item Item inserted
+	 * @return bool|Tainacan\Entities\Item Item inserted
 	 */
 	public function insert( $processed_item, $collection_index ) {
 		remove_action( 'post_updated', 'wp_save_post_revision' );
@@ -790,7 +793,12 @@ class CSV extends Importer {
 							foreach($children_mapping as $tainacan_children_metadatum_id => $tainacan_children_header) {
 								$metadatumChildren = $Tainacan_Metadata->fetch( $tainacan_children_metadatum_id, 'OBJECT' );
 								$compoundItemMetadata = new Entities\Item_Metadata_Entity( $item, $metadatumChildren);
-								$compoundItemMetadata->set_value($compoundValue[$tainacan_children_header]);
+								$childrenCompoundvalue = $compoundValue[$tainacan_children_header];
+								if ($this->is_clear_value($childrenCompoundvalue)) {
+									$compoundItemMetadata->set_value("");
+								} else {
+									$compoundItemMetadata->set_value($childrenCompoundvalue);
+								}
 								$tmp[] = $compoundItemMetadata;
 							}
 							$singleItemMetadata[] = $tmp;
@@ -877,12 +885,18 @@ class CSV extends Importer {
 		}
 	}
 
+	private function is_assoc(array $arr) {
+		if (array() === $arr) return false;
+		return array_keys($arr) !== range(0, count($arr) - 1);
+	}
+
 	private function deleteAllValuesCompoundItemMetadata($item, $compoundMetadataID) {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$compound_metadata = $Tainacan_Metadata->fetch($compoundMetadataID, 'OBJECT');
 		$compound_item_metadata = new Entities\Item_Metadata_Entity($item, $compound_metadata);
 		$compound_item_metadata_value = $compound_item_metadata->get_value();
+		$compound_item_metadata_value = $this->is_assoc($compound_item_metadata_value) ? [$compound_item_metadata_value] : $compound_item_metadata_value;
 		foreach($compound_item_metadata_value as $item_metadata_value) {
 			foreach ($item_metadata_value as $itemMetadata) {
 				$Tainacan_Item_Metadata->remove_compound_value($item, $compound_metadata, $itemMetadata->get_parent_meta_id());
@@ -916,10 +930,9 @@ class CSV extends Importer {
 	 * @param $metadatum the metadata
 	 * @param $values the categories names
 	 *
-	 * @return array empty with no category or array with IDs
+	 * @return bool|array empty with no category or array with IDs
 	 */
-	private function insert_hierarchy( $metadatum, $values ){
-
+	private function insert_hierarchy( $metadatum, $values ) {
 		if (empty($values)) {
 			return false;
 		}
@@ -982,13 +995,12 @@ class CSV extends Importer {
 	/**
 	 * @param $collection_id
 	 *
-	 * @return array/bool false if has no mapping or associated array with metadata id and header
+	 * @return array|bool false if has no mapping or associated array with metadata id and header
 	 */
 	public function get_mapping( $collection_id ){
 		$mapping = get_post_meta( $collection_id, 'metadata_mapping', true );
-		return ( $mapping ) ? $mapping : false;
+		return $mapping ?: false;
 	}
-
 
 	/**
 	 * @inheritdoc
@@ -1079,6 +1091,21 @@ class CSV extends Importer {
 		$message .= " <b> ${author} </b><br/>";
 
 		return $message;
+	}
+
+	private function delete_previous_document_imgs($item_id, $item_document) {
+		$previous_imgs = [
+			'post_parent'  => $item_id,
+			'post_type'    => 'attachment',
+			'post_status'  => 'any',
+			'post__not_in' => [$item_document]
+		];
+		$posts_query  = new \WP_Query();
+		$attachs = $posts_query->query($previous_imgs);
+		foreach ($attachs as $att) {
+			$this->add_log( "Deleting attachment [". $att->ID . "] " . $att->post_title);
+			wp_delete_attachment($att->ID, true);
+		}
 	}
 
 }

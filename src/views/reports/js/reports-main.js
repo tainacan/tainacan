@@ -15,6 +15,7 @@ import {
 Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
 
 import ReportsPage from '../reports.vue';
+import TainacanReportsSubheader from '../components/tainacan-reports-subheader.vue';
 import NumberBlock from '../components/number-block.vue';
 import ItemsPerTermBlock from '../components/items-per-term-block.vue';
 import ItemsPerTermCollectionBlock from '../components/items-per-term-collection-block.vue';
@@ -41,6 +42,30 @@ Apex.colors = [
     '#454647'  // Tainacan Dark Gray
 ];
 
+/* Sets some locale configs */
+import enLocaleConfig from 'apexcharts/dist/locales/en.json';
+import esLocaleConfig from 'apexcharts/dist/locales/es.json';
+import frLocaleConfig from 'apexcharts/dist/locales/fr.json';
+import ptBrLocaleConfig from 'apexcharts/dist/locales/pt-br.json';
+
+const availableLocales = ['en', 'es', 'fr', 'pt-br'];
+const browserLanguage = navigator.language.toLocaleLowerCase();
+
+if (availableLocales.indexOf(browserLanguage) >= 0) {
+    let localeConfig = {};
+
+    switch(browserLanguage) {
+        case 'es': localeConfig = esLocaleConfig; break;
+        case 'fr': localeConfig = frLocaleConfig; break;
+        case 'pt-br': localeConfig = ptBrLocaleConfig; break;
+        case 'en': default: localeConfig = enLocaleConfig; break;
+    }
+    Apex.chart = {
+        defaultLocale: browserLanguage,
+        locales: [ localeConfig ]
+    }
+}
+
 Vue.use(I18NPlugin);
 Vue.use(UserCapabilitiesPlugin);
 Vue.use(StatusHelperPlugin);
@@ -48,6 +73,7 @@ Vue.use(VTooltip);
 Vue.use(Snackbar);
 Vue.use(Modal);
 
+Vue.component('tainacan-reports-subheader', TainacanReportsSubheader);
 Vue.component('number-block', NumberBlock);
 Vue.component('items-per-term-block', ItemsPerTermBlock);
 Vue.component('items-per-term-collection-block', ItemsPerTermCollectionBlock);

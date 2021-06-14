@@ -89,7 +89,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'finish'                                         => __( 'Finish', 'tainacan' ),
 	'select_to_create'                               => __( 'select to create', 'tainacan' ),
 	'new_bulk_edition_criterion'                     => __( 'New bulk edition criterion', 'tainacan' ),
-	'clear_radio'                                    => __( 'Clear selected radio', 'tainacan' ),
 	'undo'                                           => __( 'Undo', 'tainacan' ),
 	'delete'                                    	 => __( 'Delete', 'tainacan' ),
 	'skip'	                                    	 => __( 'Skip', 'tainacan' ),
@@ -110,8 +109,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	/* translators: The noun for the trash status, not the verb */
 	'status_trash'                                   => __( 'Trash', 'tainacan' ),
 	'status_auto-draft'                              => __( 'Automatic draft', 'tainacan' ),
-	'publish_visibility'                             => __( 'Public (visible to everyone)', 'tainacan' ),
-	'private_visibility'                             => __( 'Private (visible only for editors)', 'tainacan' ),
+	'label_open_access'                              => __( 'Open access', 'tainacan' ),
+	'label_restrict_access'                          => __( 'Restrict access', 'tainacan' ),
 
 	// Page Titles (used mainly on Router)
 	'title_repository_collections_page'              => __( 'Repository Collections', 'tainacan' ),
@@ -286,7 +285,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_collapse_all'                             => __( 'Collapse all', 'tainacan' ),
 	'label_view_term'                                => __( 'View Term', 'tainacan' ),
 	/* translators: 'Published' here refers to the sum of public and private items, not including draft or trashed ones. The are visible to those with permission */
-	'label_all_published_items'                      => __( 'All published items', 'tainacan' ),
+	'label_all_items'                      			 => __( 'All items', 'tainacan' ),
 	'label_all_collections'                          => __( 'All collections', 'tainacan' ),
 	'label_all_taxonomies'                           => __( 'All taxonomies', 'tainacan' ),
 	'label_bulk_actions'                             => __( 'Bulk actions', 'tainacan' ),
@@ -474,6 +473,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_page'								 	 => __( 'Page', 'tainacan' ),
 	'label_current_page'							 => __( 'Current page', 'tainacan' ),
 	'label_shrink_menu'								 => __( 'Shrink menu', 'tainacan' ),
+	'label_expand_menu'								 => __( 'Expand menu', 'tainacan' ),
 	'label_document_uploaded'						 => __( 'Document uploaded', 'tainacan' ),
 	/* translators: Filter of the repository, not a repository of filter! */
 	'label_repository_filter'						 => __( 'Repository filter', 'tainacan' ),
@@ -542,6 +542,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_terms_used'							 	 => __( 'Terms used', 'tainacan' ),
 	'label_number_of_terms'						 	 => __( 'Number of terms', 'tainacan' ),
 	'label_number_of_items'						 	 => __( 'Number of items', 'tainacan' ),
+	'label_number_of_metadata'					 	 => __( 'Number of metadata', 'tainacan' ),
 	'label_usage_of_terms_per_taxonomy'			 	 => __( 'Usage of terms per taxonomy', 'tainacan' ),
 	'label_items_per_term'							 => __( 'Items per term', 'tainacan' ),
 	'label_items_per_term_from_taxonomy'			 => __( 'Items per term from taxonomy:', 'tainacan' ),
@@ -576,6 +577,15 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_get_latest_report'						 => __( 'Get latest report', 'tainacan'),
 	'label_decrease'								 => __( 'Decrease', 'tainacan'),
 	'label_increase'								 => __( 'Increase', 'tainacan'),
+	'label_set_all_create_metadada'					 => __( 'Set every metadata to be created', 'tainacan'),
+	'label_manage_collection'						 => __( 'Manage collection', 'tainacan'),
+	'label_chart_controls'							 => __( 'Chart controls', 'tainacan'),
+	'label_increase_zoom'							 => __( 'Increase zoom', 'tainacan'),
+	'label_decrease_zoom'							 => __( 'Decrease zoom', 'tainacan'),
+	'label_zoom_by_selection'						 => __( 'Zoom by selection', 'tainacan'),
+	'label_pan_selection'							 => __( 'Pan selection', 'tainacan'),
+	'label_reset_zoom'								 => __( 'Reset zoom', 'tainacan'),
+	'label_chart_export_options'					 => __( 'Chart export options', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -641,7 +651,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_click_to_see_%s_child_term'	 	 => __( 'Click to see %s child term', 'tainacan'),
 
 	// Info. Other feedback to user.
-	'info_items_tab_all'                			 => __( 'Every published item, including those visible only to editors.', 'tainacan' ),
+	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
 	'info_items_tab_publish'                         => __( 'Only items that are visible to everyone.', 'tainacan' ),
 	'info_items_tab_private'                         => __( 'Items visible only to editors.', 'tainacan' ),
 	'info_items_tab_draft'                           => __( 'Draft items, not published.', 'tainacan' ),
@@ -653,7 +663,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_collections_tab_draft'                     => __( 'Draft collections, not published.', 'tainacan' ),
 	'info_collections_tab_trash'                     => __( 'Collections that were sent to trash.', 'tainacan' ),
 
-	'info_taxonomies_tab_all'                	     => __( 'Every published taxonomy, including those visible only to editors.', 'tainacan' ),
+	'info_taxonomies_tab_all'                	     => __( 'Every taxonomy, except by those sent to trash.', 'tainacan' ),
 	'info_taxonomies_tab_publish'                    => __( 'Only taxonomies that are visible to everyone.', 'tainacan' ),
 	'info_taxonomies_tab_private'                    => __( 'Taxonomies visible only to editors.', 'tainacan' ),
 	'info_taxonomies_tab_draft'                      => __( 'Draft taxonomies, not published.', 'tainacan' ),
@@ -857,7 +867,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_recaptcha_link_%s'						 =>	__( 'Remember to configure your website reCAPTCHA keys on <a href="%s" target="_blank">the item submission repository page</a>.', 'tainacan'),
 	'info_form_not_loaded'					 		 =>	__( 'There are probably not enought permissions to display it here.', 'tainacan'),
 	'info_validating_slug'					 		 =>	__( 'Validating slug...', 'tainacan'),
-
+	'info_no_taxonomy_metadata_created'		 		 =>	__( 'No taxonomy metadata created yet', 'tainacan'),
 	'label_amount_of_metadata_of_type'	 			 =>	__( 'Amount of metadata of this type', 'tainacan'),
 	'info_child_terms_chart'						 => __( 'Click on the term bar on the chart aside to see its child terms (if any) in this panel', 'tainacan' ),
 	

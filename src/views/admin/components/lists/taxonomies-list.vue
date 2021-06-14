@@ -52,6 +52,10 @@
                             &nbsp;
                             <!-- nothing to show on header -->
                         </th>
+                        <!-- Status icon -->
+                        <th v-if="isOnAllTaxonomiesTab">
+                            &nbsp;
+                        </th>
                         <!-- Name -->
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_name') }}</div>
@@ -85,6 +89,25 @@
                                 class="checkbox-cell">
                             <b-checkbox 
                                     v-model="selected[index]"/> 
+                        </td>
+                        <!-- Status icon -->
+                        <td 
+                                v-if="isOnAllTaxonomiesTab"
+                                class="status-cell">
+                            <span 
+                                    v-if="$statusHelper.hasIcon(taxonomy.status)"
+                                    class="icon has-text-gray"
+                                    v-tooltip="{
+                                        content: $i18n.get('status_' + taxonomy.status),
+                                        autoHide: true,
+                                        classes: ['tooltip', 'repository-tooltip'],
+                                        placement: 'auto-start'
+                                    }">
+                                <i 
+                                        class="tainacan-icon tainacan-icon-1em"
+                                        :class="$statusHelper.getIcon(taxonomy.status)"
+                                        />
+                            </span>
                         </td>
                         <!-- Name -->
                         <td 
@@ -204,7 +227,7 @@
             page: 1,
             taxonomiesPerPage: 12,
             taxonomies: Array,
-            isOnTrash: false
+            status: ''
         },
         data() {
             return {
@@ -212,6 +235,14 @@
                 allOnPageSelected: false,
                 isSelecting: false,
                 adminUrl: tainacan_plugin.admin_url
+            }
+        },
+        computed: {
+            isOnTrash() {
+                return this.status == 'trash';
+            },
+            isOnAllTaxonomiesTab() {
+                return !this.status || (this.status.indexOf(',') > 0);
             }
         },
         watch: {
@@ -276,7 +307,8 @@
                                 });
                         }
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             },
             deleteSelected() {
@@ -315,7 +347,8 @@
                             this.allOnPageSelected = false;
                         }
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             },
             onClickTaxonomy($event, taxonomyId, index) {

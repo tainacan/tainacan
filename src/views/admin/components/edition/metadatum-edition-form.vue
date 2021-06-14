@@ -89,7 +89,7 @@
                         <span class="icon has-text-gray3">
                             <i class="tainacan-icon tainacan-icon-public"/>
                         </span>
-                        {{ $i18n.get('publish_visibility') }}
+                        {{ $i18n.get('status_public') }}
                     </b-radio>
                 </b-field>
                 <b-field>
@@ -102,7 +102,7 @@
                         <span class="icon has-text-gray3">
                             <i class="tainacan-icon tainacan-icon-private"/>
                         </span>
-                        {{ $i18n.get('private_visibility') }}
+                        {{ $i18n.get('status_private') }}
                     </b-radio>
                 </b-field>
             </b-field>

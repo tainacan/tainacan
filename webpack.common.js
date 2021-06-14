@@ -1,5 +1,6 @@
 let path = require('path');
 const webpack = require('webpack');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -21,7 +22,7 @@ module.exports = {
         block_carousel_items_list_theme: './src/views/gutenberg-blocks/tainacan-items/carousel-items-list/carousel-items-list-theme.js',
         
         block_search_bar: './src/views/gutenberg-blocks/tainacan-items/search-bar/index.js',
-        block_search_bar_script: './src/views/gutenberg-blocks/tainacan-items/search-bar/search-bar-theme-script.js',
+        block_search_bar_theme: './src/views/gutenberg-blocks/tainacan-items/search-bar/search-bar-theme.js',
         
         block_collections_list: './src/views/gutenberg-blocks/tainacan-collections/collections-list/index.js',
         
@@ -110,6 +111,9 @@ module.exports = {
         new webpack.ProvidePlugin({
             'Swiper': 'Swiper',
             'PhotoSwipe': 'PhotoSwipe'
-        })
+        }),
+        new MomentLocalesPlugin({
+            localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'es-in', 'pt-br', 'pt', 'es', 'es-us', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv'],
+        }),
     ]
 };

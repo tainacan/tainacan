@@ -441,7 +441,7 @@
                 trap-focus
                 aria-modal
                 aria-role="dialog"
-                custom-class="tainacan-form filters-menu">
+                custom-class="tainacan-modal tainacan-form filters-menu">
             <filters-items-list
                     :is-loading-items="isLoadingItems"
                     autofocus="true"
@@ -895,7 +895,8 @@
                         targetCollection: this.collectionId,
                         hideWhenManualCollection: true
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             },
             openExposersModal(selectedItems) {
@@ -908,7 +909,8 @@
                         totalItems: this.totalItems,
                         selectedItems: selectedItems
                     },
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 })
             },
             onOpenCollectionsModal() {
@@ -916,7 +918,8 @@
                     parent: this,
                     component: CollectionsModal,
                     hasModalCard: true,
-                    trapFocus: true
+                    trapFocus: true,
+                    customClass: 'tainacan-modal'
                 });
             },
             updateSearch() {
@@ -1228,7 +1231,8 @@
                             showNeverShowAgainOption: offerCheckbox && tainacan_plugin.user_caps != undefined && Object.keys(tainacan_plugin.user_caps).length != undefined && Object.keys(tainacan_plugin.user_caps).length > 0,
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
                         },
-                        trapFocus: true
+                        trapFocus: true,
+                        customClass: 'tainacan-modal'
                     });
             },
             hideFiltersOnMobile: _.debounce( function() {

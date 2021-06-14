@@ -185,15 +185,15 @@ registerBlockType('tainacan/carousel-collections-list', {
                             <div class="collection-items-grid">
                                 <img 
                                     src={ collectionItems[0] ? thumbHelper.getSrc(collectionItems[0]['thumbnail'], 'tainacan-medium', collectionItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
-                                    srcset={ collectionItems[0] ? thumbHelper.getSrcSet(collectionItems[0]['thumbnail'], 'tainacan-medium', collectionItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
+                                    srcSet={ collectionItems[0] ? thumbHelper.getSrcSet(collectionItems[0]['thumbnail'], 'tainacan-medium', collectionItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                     alt={ collectionItems[0] && collectionItems[0].thumbnail_alt ? collectionItems[0].thumbnail_alt : (collectionItems[0] && collectionItems[0].name ? collectionItems[0].name : __( 'Thumbnail', 'tainacan' )) } />
                                 <img 
                                         src={ collectionItems[1] ? thumbHelper.getSrc(collectionItems[1]['thumbnail'], 'tainacan-medium', collectionItems[1]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
-                                        srcset={ collectionItems[1] ? thumbHelper.getSrcSet(collectionItems[1]['thumbnail'], 'tainacan-medium', collectionItems[1]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
+                                        srcSet={ collectionItems[1] ? thumbHelper.getSrcSet(collectionItems[1]['thumbnail'], 'tainacan-medium', collectionItems[1]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                         alt={ collectionItems[1] && collectionItems[1].thumbnail_alt ? collectionItems[1].thumbnail_alt : (collectionItems[1] && collectionItems[1].name ? collectionItems[1].name : __( 'Thumbnail', 'tainacan' )) } />
                                 <img 
                                         src={ collectionItems[2] ? thumbHelper.getSrc(collectionItems[2]['thumbnail'], 'tainacan-medium', collectionItems[2]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
-                                        srcset={ collectionItems[2] ? thumbHelper.getSrcSet(collectionItems[2]['thumbnail'], 'tainacan-medium', collectionItems[2]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
+                                        srcSet={ collectionItems[2] ? thumbHelper.getSrcSet(collectionItems[2]['thumbnail'], 'tainacan-medium', collectionItems[2]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                         alt={ collectionItems[2] && collectionItems[2].thumbnail_alt ? collectionItems[2].thumbnail_alt : (collectionItems[2] && collectionItems[2].name ? collectionItems[2].name : __( 'Thumbnail', 'tainacan' )) } />
                             </div>
                             :

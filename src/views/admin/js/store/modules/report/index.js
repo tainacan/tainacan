@@ -12,6 +12,7 @@ const state = {
     metadata: {},
     metadataList: {},
     activities: {},
+    startDate: '',
     stackedBarChartOptions: {
       chart: {
         type: 'bar',
@@ -129,7 +130,6 @@ const state = {
       },
       fill: {
         opacity: 1
-      
       },
       legend: {
         position: 'top',
@@ -183,7 +183,7 @@ const state = {
         }
       }
     },
-    treeMapOptions: {
+    treeMapChartOptions: {
       legend: {
         show: false
       },
@@ -193,8 +193,84 @@ const state = {
       },
       title: {
         text: ''
+      },
+      plotOptions: {
+        treemap: {
+          enableShades: false
+        }
       }
-    }
+    },
+    visibilityHorizontalBarChartOptions: {
+      chart: {
+        type: 'bar',
+        height: 350,
+        stacked: true,
+        stackType: 'normal',
+        toolbar: {
+            show: false
+        },
+        zoom: {
+            type: 'y',
+            enabled: false,
+            autoScaleYaxis: true,
+        }
+      },
+      plotOptions: {
+        bar: {
+          horizontal: true,
+          columnWidth: '100%',
+          barHeight: '80%'
+        },
+      },
+      title: {
+        text: ''
+      },
+      xaxis: {
+        type: 'category',
+        categories: [],
+        tooltip: { enabled: true },
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false,
+        },
+        labels: {
+          show: false
+        }
+      },
+      yaxis: {
+        tooltip: { enabled: true },
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false,
+        },
+        labels: {
+          show: true,
+          style: {
+              fontSize: '17px',
+              fontFamily: 'TainacanIcons, Arial, sans-serif',
+          }
+        }
+      },
+      tooltip: {
+        enabled: true
+      },
+      fill: {
+        opacity: 1
+      },
+      grid: {
+        show: false
+      },
+      legend: {
+        position: 'top',
+        horizontalAlign: 'left',
+        offsetX: 40
+      }
+    },
+    
 };
 
 export default {

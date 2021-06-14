@@ -4,7 +4,26 @@
             class="level secondary-page"
             :class="{'is-menu-compressed': isMenuCompressed, 'is-repository-level' : isRepositoryLevel}">
         <h1 v-if="isRepositoryLevel">{{ repositoryName }}</h1>
-        <h1 v-else>{{ $i18n.get('collection') + '' }} <span class="has-text-weight-bold">{{ collection && collection.name ? collection.name : '' }}</span></h1>
+        <h1 v-else>
+            {{ $i18n.get('collection') + '' }} 
+            <span class="has-text-weight-bold">
+                {{ collection && collection.name ? collection.name : '' }}
+                <span 
+                        v-if="collection.status && $statusHelper.hasIcon(collection.status)"
+                        class="icon has-text-white"
+                        v-tooltip="{
+                            content: $i18n.get('status_' + collection.status),
+                            autoHide: true,
+                            classes: ['tooltip'],
+                            placement: 'auto-start'
+                        }">
+                    <i 
+                            class="tainacan-icon tainacan-icon-1em"
+                            :class="$statusHelper.getIcon(collection.status)"
+                            />
+                </span>
+            </span>
+        </h1>
 
         <ul class="repository-subheader-icons">
             <li
@@ -116,7 +135,8 @@ export default {
                     sourceCollection: this.collection.id,
                     hideWhenManualCollection: true
                 },
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         }
     }

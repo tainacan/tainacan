@@ -192,7 +192,7 @@
                         :page="page"
                         :collections-per-page="collectionsPerPage"
                         :collections="collections"
-                        :is-on-trash="status == 'trash'"/> 
+                        :status="status" /> 
 
                 <!-- Empty state image -->
                 <div v-if="collections.length <= 0 && !isLoading">
@@ -403,6 +403,7 @@ export default {
             'getMetadatumMappers'
         ]),
         onChangeTab(status) {
+            this.page = 1;
             this.status = status;
             this.loadCollections();
         },
@@ -448,7 +449,7 @@ export default {
             this.loadCollections();
         },
         loadCollections() {
-            this.cleanCollections();    
+            this.cleanCollections();
             this.isLoading = true;
             this.fetchCollections({ 
                 page: this.page, 
@@ -477,7 +478,8 @@ export default {
                 parent: this,
                 component: AvailableImportersModal,
                 hasModalCard: true,
-                trapFocus: true
+                trapFocus: true,
+                customClass: 'tainacan-modal'
             });
         },
         searchCollections() {

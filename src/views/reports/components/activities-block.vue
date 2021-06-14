@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {
@@ -101,7 +101,7 @@ export default {
         return {
             chartSeriesByUser: [],
             chartOptionsByUser: [],
-            maxYear: new Date().getFullYear(),
+            maxYear: new Date().getFullYear() - 1,
             minYear: 2017,
             currentStart: '',
             currentEnd: ''
@@ -109,7 +109,7 @@ export default {
     },
     computed: {
         ...mapGetters('report', {
-            areaChartOptions: 'getAreaChartOptions',
+            areaChartOptions: 'getAreaChartOptions'
         })
     },
     watch: {
@@ -122,6 +122,9 @@ export default {
         },
     },
     methods: {
+        ...mapMutations('report', [
+            'setStartDate'
+        ]),
         increaseYear() {
             this.setStartYear(this.currentEnd.getFullYear());
         },
@@ -132,7 +135,7 @@ export default {
         setStartYear(newStartYear) {
             let currentStartDate = new Date(this.currentStart.getTime());
             const newStart = new Date(currentStartDate.setFullYear(newStartYear));
-
+            this.setStartDate(newStart.toISOString());
             this.$emit('time-range-update', newStart.toISOString());
         },
         getDaysArray(start, end) {

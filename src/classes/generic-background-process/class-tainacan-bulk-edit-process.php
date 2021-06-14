@@ -278,7 +278,8 @@ class Bulk_Edit_Process extends Generic_Process {
 
 	private function clear_value(\Tainacan\Entities\Item $item) {
 		$metadatum = $this->metadatum_repository->fetch($this->bulk_edit_data['metadatum_id']);
-		$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum );
+		$parent_meta_id = $this->get_parent_meta_id($item, $metadatum);
+		$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum, null, $parent_meta_id );
 		$item_metadata->set_value("");
 		return $this->save_item_metadata($item_metadata, $item);
 	}
@@ -286,8 +287,9 @@ class Bulk_Edit_Process extends Generic_Process {
 	private function set_value(\Tainacan\Entities\Item $item) {
 		$metadatum = $this->metadatum_repository->fetch($this->bulk_edit_data['metadatum_id']);
 		$value = $this->bulk_edit_data['value'];
+		$parent_meta_id = $this->get_parent_meta_id($item, $metadatum);
 
-		$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum );
+		$item_metadata = new Entities\Item_Metadata_Entity( $item, $metadatum, null, $parent_meta_id );
 
 		if($item_metadata->is_multiple()) {
 			$value = is_array( $value ) ? $value : [$value];
@@ -298,6 +300,22 @@ class Bulk_Edit_Process extends Generic_Process {
 
 		return $this->save_item_metadata($item_metadata, $item);
 
+	}
+
+	private function get_parent_meta_id($item, $metadatum) {
+		$metadatum_parent_id = $metadatum->get_parent();
+		if ($metadatum_parent_id > 0) {
+			$metadatum_parent = $this->metadatum_repository->fetch($metadatum_parent_id);
+			$compoundItem = new Entities\Item_Metadata_Entity($item, $metadatum_parent);
+			$unique = !$compoundItem->is_multiple();
+			$compoundValue = $compoundItem->get_value();
+			if ( $unique && !empty($compoundValue) ) {
+				$key = array_keys($compoundValue)[0]; // get the first metadata ID, if the argument metadata does not exist  
+				$parent_meta_id = $compoundValue[$key]->get_parent_meta_id();
+				return $parent_meta_id;
+			} // elseif ((is_array($compoundValue) && sizeof($compoundValue) > 0))
+		}
+		return null;
 	}
 
 	private function add_value(\Tainacan\Entities\Item $item) {
