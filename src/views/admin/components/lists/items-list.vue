@@ -158,11 +158,7 @@
 
                     <!-- Title -->
                     <div
-<<<<<<< HEAD
-                            :style="{ 'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode ? '0.5em !important' : '2.75em' }"
-=======
-                            :style="{ 'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0.5em !important' : (isOnAllItemsTabs ? '1.875em' : '2.75em') }"
->>>>>>> develop
+                            :style="{ 'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode? '0.5em !important' : (isOnAllItemsTabs ? '1.875em' : '2.75em') }"
                             class="metadata-title">
                         <p
                                 v-tooltip="{
@@ -312,11 +308,7 @@
                     <!-- Title -->
                     <div
                             :style="{
-<<<<<<< HEAD
-                                'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode ? '0 !important' : '1em'
-=======
-                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0 !important' : (isOnAllItemsTabs ? '0.5em' : '1em')
->>>>>>> develop
+                                'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode ? '0 !important' : (isOnAllItemsTabs ? '0.5em' : '1em')
                             }"
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)"
@@ -442,13 +434,8 @@
 
                     <!-- Title -->
                     <div
-                            :style="{ 
-<<<<<<< HEAD
-                                'padding-left': !collectionId || isReadMode || !(isIframeMode || collection && collection.current_user_can_bulk_edit) ? '0.5em !important' : '2.75em',
-                                'margin-bottom': item.current_user_can_edit && !isIframeMode ? '-26px' : '0px'
-=======
-                                'padding-left': !collectionId || $route.query.readmode || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) ? '0.5em !important' : (isOnAllItemsTabs ? '2.125em' : '2.75em'),
->>>>>>> develop
+                            :style="{
+                                'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode ? '0.5em !important' : (isOnAllItemsTabs ? '2.125em' : '2.75em'),
                             }"
                             class="metadata-title">
                         <p
@@ -650,12 +637,7 @@
                     <div
                             class="metadata-title"
                             :style="{
-<<<<<<< HEAD
-                                'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode ? '1.5em !important' : '2.75em',    
-                                'margin-bottom': item.current_user_can_edit || isIframeMode ? '-27px' : '0px'
-=======
-                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '1.5em !important' : '2.75em'
->>>>>>> develop
+                                'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode ? '1.5em !important' : '2.75em'
                             }">
                         <span 
                                 v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
@@ -1325,14 +1307,12 @@ export default {
         isReadMode () {
             return this.$route && this.$route.query && this.$route.query.readmode;
         },
-<<<<<<< HEAD
         isSingleSelectionMode () {
             return this.$route && this.$route.query && this.$route.query.singleselectionmode;
-=======
+        },
         isOnAllItemsTabs() {
             const currentStatus = this.getStatus();
             return !currentStatus || (currentStatus.indexOf(',') > 0);
->>>>>>> develop
         }
     },
     watch: {
