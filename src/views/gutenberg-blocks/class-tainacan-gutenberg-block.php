@@ -12,7 +12,7 @@ const TAINACAN_BLOCKS = [
 	'carousel-items-list' => [ 'has_theme_script' => true ],
 	'carousel-terms-list' => [ 'has_theme_script' => true ],
 	'carousel-collections-list' => [ 'has_theme_script' => true ],
-	'carousel-related-items' => [ 'has_theme_script' => true ],
+	'carousel-related-items' => [],
 	'terms-list' => [ 'extra_editor_script_deps' => array('undescore') ],
 ];
 

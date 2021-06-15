@@ -12,20 +12,21 @@ export default class CarouselRelatedItemsModal extends React.Component {
         // Initialize state
         this.state = {
             collectionsPerPage: 24,
-            collectionId: undefined,  
-            collectionName: '', 
+            collectionId: undefined,
+            itemId: undefined,
+            collectionName: '',
             isLoadingCollections: false, 
             modalCollections: [],
             totalModalCollections: 0, 
             collectionOrderBy: 'date-desc',
             collectionPage: 1,
             temporaryCollectionId: '',
+            temporaryItemId: '',
             searchCollectionName: '',
             collections: [],
             collectionsRequestSource: undefined,
             searchURL: '',
-            itemsPerPage: 12,
-            loadStrategy: 'search'
+            itemsPerPage: 12
         };
         
         // Bind events
@@ -34,20 +35,21 @@ export default class CarouselRelatedItemsModal extends React.Component {
         this.fetchCollections = this.fetchCollections.bind(this);
         this.fetchModalCollections = this.fetchModalCollections.bind(this);
         this.fetchCollection = this.fetchCollection.bind(this);
-        this.applySelectedSearchURL = this.applySelectedSearchURL.bind(this);
-        this.applySelectedItems = this.applySelectedItems.bind(this);
+        this.applyRelatedItem = this.applyRelatedItem.bind(this);
     }
 
     componentWillMount() {
         
         this.setState({ 
-            collectionId: this.props.existingCollectionId
+            collectionId: this.props.existingCollectionId,
+            itemId: this.props.existingItemId
         });
          
         if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
             this.fetchCollection(this.props.existingCollectionId);
             this.setState({ 
-                searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId +  (this.props.loadStrategy == 'search' ? '/items/?iframemode=true&readmode=true&status=publish' : '/items/?iframemode=true&status=publish') });
+                searchURL: tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?singleselectionmode=true&iframemode=true&status=publish'
+            });
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
@@ -114,7 +116,7 @@ export default class CarouselRelatedItemsModal extends React.Component {
     selectCollection(selectedCollectionId) {
         this.setState({
             collectionId: selectedCollectionId,
-            searchURL: tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + (this.props.loadStrategy == 'search' ? '/items/?iframemode=true&readmode=true&status=publish' : '/items/?iframemode=true&status=publish')
+            searchURL: tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?singleselectionmode=true&iframemode=true&status=publish'
         });
 
         this.props.onSelectCollection(selectedCollectionId);
@@ -164,20 +166,13 @@ export default class CarouselRelatedItemsModal extends React.Component {
             });
     }
 
-    applySelectedSearchURL() {    
-        let iframe = document.getElementById("itemsFrame");
-        if (iframe) {
-            this.props.onApplySearchURL(iframe.contentWindow.location.href);
-        }
-    }
-
-    applySelectedItems() {
+    applyRelatedItem() {
         let iframe = document.getElementById("itemsFrame");
         if (iframe) {
             let params = new URLSearchParams(iframe.contentWindow.location.search);
             let selectedItems = params.getAll('selecteditems');
             params.delete('selecteditems')
-            this.props.onApplySelectedItems(selectedItems);
+            this.props.onApplyRelatedItem(selectedItems[0]);
         }
     }
 
@@ -205,10 +200,10 @@ export default class CarouselRelatedItemsModal extends React.Component {
             // Items modal
         <Modal
                 className="wp-block-tainacan-modal dynamic-modal"
-                title={ this.props.loadStrategy == 'selection' ? __('Select items to add on block', 'tainacan') : __('Configure the items search to be used on block', 'tainacan')}
+                title={ __('Select the item that has relations', 'tainacan') }
                 onRequestClose={ () => this.cancelSelection() }
                 shouldCloseOnClickOutside={ false }
-                contentLabel={ this.props.loadStrategy == 'selection' ? __('Select items that will be added on block', 'tainacan') : __('Configure your items search that will load items on block', 'tainacan')}>
+                contentLabel={ __('Select the item that has relations', 'tainacan') }>
                 <iframe
                         id="itemsFrame"
                         src={ this.state.searchURL } />
@@ -218,23 +213,12 @@ export default class CarouselRelatedItemsModal extends React.Component {
                         onClick={ () => { this.resetCollections() }}>
                         {__('Switch collection', 'tainacan')}
                     </Button>
-                    { this.props.loadStrategy == 'selection' ? 
-                        <Button
-                            style={{ marginLeft: 'auto' }} 
-                            isPrimary
-                            onClick={ () => this.applySelectedItems() }>
-                            {__('Add the selected items', 'tainacan')}
-                        </Button>
-                        : null
-                    }
-                    { this.props.loadStrategy == 'search' ? 
-                        <Button 
-                            isPrimary
-                            onClick={ () => this.applySelectedSearchURL() }>
-                            {__('Use this search', 'tainacan')}
-                        </Button>
-                    : null
-                    }
+                    <Button
+                        style={{ marginLeft: 'auto' }} 
+                        isPrimary
+                        onClick={ () => this.applyRelatedItem() }>
+                        {__('Add the selected items', 'tainacan')}
+                    </Button>
                 </div>
         </Modal>
     ) : (
@@ -354,7 +338,7 @@ export default class CarouselRelatedItemsModal extends React.Component {
                         isPrimary
                         disabled={ this.state.temporaryCollectionId == undefined || this.state.temporaryCollectionId == null || this.state.temporaryCollectionId == ''}
                         onClick={ () => { this.selectCollection(this.state.temporaryCollectionId);  } }>
-                        { this.props.loadStrategy == 'selection' ? __('Select items', 'tainacan') : __('Configure search', 'tainacan')}
+                        { __('Select item', 'tainacan') }
                     </Button>
                 </div>
             </div>
