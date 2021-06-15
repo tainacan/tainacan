@@ -815,4 +815,15 @@ class Item extends Entity {
 
 		return $link;
 	}
+
+	/**
+	 * Return related items withs the item
+	 *
+	 * @return array
+	 */
+	public function get_related_items($args = []) {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		$related_items = $Tainacan_Items->fetch_related_items($this, $args);
+		return $related_items;
+	}
 }

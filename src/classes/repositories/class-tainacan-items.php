@@ -116,7 +116,13 @@ class Items extends Repository {
 		        'description' => __( 'Item comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
 		        'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
 		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
-		    ]
+			],
+			'related_items'     => [
+				'map'         => 'meta',
+				'title'       => __( 'Related items', 'tainacan' ),
+				'type'        => 'array',
+				'description' => __( 'The related items whit the item', 'tainacan' ),
+			],
 		] );
 	}
 
@@ -573,5 +579,58 @@ class Items extends Repository {
 		return $caps;
 	}
 
+	public function fetch_related_items($item, $args=[]) {
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		$current_collection = $item->get_collection();
+		$metadatas = $Tainacan_Metadata->fetch([
+			'meta_query' => [
+				[
+					'key'   => 'metadata_type',
+					'value' => 'Tainacan\Metadata_Types\Relationship'
+				],
+				[
+					'key' => '_option_collection_id',
+					'value' => $current_collection->get_id()
+				]
+			]
+		], 'OBJECT');
+		
+		$response = array();
+		
+		foreach($metadatas as $metadata) {
+			$collection = $metadata->get_collection();
+			$prepared_items = array();
+			$items = $this->fetch([
+				'meta_query' => [
+					[
+						'key'   => $metadata->get_id(),
+						'value' => $item->get_id()
+					]
+				]
+			], $collection->get_id(), 'WP_Query');
+
+			if ($items->have_posts()) {
+				while ( $items->have_posts() ) {
+					$items->the_post();
+					$item_related = new \Tainacan\Entities\Item($items->post);
+					$item_arr = $item_related->_toArray();
+					$item_arr['thumbnail'] = $item->get_thumbnail();
+					array_push($prepared_items, $item_arr);
+				}
+				wp_reset_postdata();
+			}
+
+			$response[$metadata->get_id()] = array(
+				'collection_id' => $collection->get_id(),
+				'collection_name' => $collection->get_name(),
+				'metadata_id' => $metadata->get_id(),
+				'metadata_name' => $metadata->get_name(),
+				'total_items' => $items->found_posts,
+				'items' => $prepared_items
+			);
+		}
+
+		return $response;
+	}
 
 }
