@@ -1681,4 +1681,28 @@ class Metadata extends Repository {
 
 	}
 
+	/**
+	 * Test if a metadata is enabled on collection.
+	 *
+	 * @param \Tainacan\Entities\Collection $collection
+	 * @param \Tainacan\Entities\Metadatum $metadata
+	 * 
+	 * @return boolean
+	 */
+	public function metadata_is_enabled($collection, $metadata) {
+		$order = $collection->get_metadata_order();
+		if($order == false) return true;
+		$order = ( is_array( $order ) ) ? $order : unserialize( $order );
+		if( is_array($order) ) {
+			foreach ($order as $metadata_order) {
+				if($metadata_order['id'] == $metadata->get_id()) {
+					if($metadata_order['enabled'] == false)
+						return false;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 }
