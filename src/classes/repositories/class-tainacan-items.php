@@ -598,6 +598,11 @@ class Items extends Repository {
 		$response = array();
 		
 		foreach($metadatas as $metadata) {
+
+			if (!$collection instanceof \Tainacan\Entities\Collection || !$metadata instanceof \Tainacan\Entities\Metadatum) {
+				continue;
+			}
+
 			$collection = $metadata->get_collection();
 			$prepared_items = array();
 			$items = $this->fetch([

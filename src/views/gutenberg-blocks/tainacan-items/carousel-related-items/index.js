@@ -89,14 +89,39 @@ registerBlockType('tainacan/carousel-related-items', {
 
             itemRequestSource = axios.CancelToken.source();
 
-            let endpoint = '/collection/' + collectionId + '/items?'+ itemId;
+            let endpoint = '/items/'+ itemId + '?fetch_only=related_items';
 
             tainacan.get(endpoint, { cancelToken: itemRequestSource.token })
                 .then(response => {
 
-                    let relatedItems = [];
-                    //relatedItems = response.data.item.related_items;
-
+                    //relatedItems = response.data && response.data.related_items ? response.data.related_items : [];
+                    relatedItems = [
+                        {
+                            collection_id: 2235,
+                            collection_name: "Anexos",
+                            metadata_id: 2514,
+                            metadata_name: "Pessoa Nova",
+                            total_items: 1,
+                            items: [ 
+                                { id: 2520 },
+                                { id: 2522 },
+                                { id: 2524 }
+                            ]
+                        },
+                        {
+                            collection_id: 2235,
+                            collection_name: "Outros Anexos",
+                            metadata_id: 2514,
+                            metadata_name: "Pessoa Velha",
+                            total_items: 1,
+                            items: [ 
+                                { id: 2530 },
+                                { id: 2552 },
+                                { id: 2574 }
+                            ]
+                        }
+                    ];
+                    
                     setAttributes({
                         relatedItems: relatedItems,
                         isLoading: false,
@@ -110,6 +135,52 @@ registerBlockType('tainacan/carousel-related-items', {
             setAttributes( { 
                 isModalOpen: isModalOpen
             } );
+        }
+
+        function getRelatedItemsTemplates() {
+            let templates = [];
+            relatedItems.forEach((collection) => {
+                templates.push([
+                    'core/group',
+                    {},
+                    [
+                        [ 
+                            'core/heading',
+                            {
+                                placeholder: __( 'Collection name', 'tainacan' ),
+                                content: collection.collection_name
+                            }
+                        ],
+                        [
+                            'core/paragraph',
+                            {
+                                placeholder: __( 'Relationship metadadum name', 'tainacan' ),
+                                content: collection.metadata_name
+                            }
+                        ],
+                        [
+                            'tainacan/carousel-items-list',
+                            { content: [{ type: 'innerblock' }], relatedItems: ['131051', '131516', '131228', '131517'], loadStrategy: 'selection', collectionId: '130957' }
+                        ],
+                        [
+                            'core/buttons',
+                            {
+                                innerBlocks: [
+                                    {
+                                        name: 'core/button',
+                                        attributes: { text: __( 'View all related items', 'tainacan' ) },
+                                    }
+                                ]
+                            }
+                        ],
+                        [
+                            'core/spacer',
+                            { height: 70 }
+                        ]
+                    ]
+                ]);
+            });
+            return templates;
         }
 
         // Executed only on the first load of page
@@ -228,12 +299,7 @@ registerBlockType('tainacan/carousel-related-items', {
                                             'tainacan/carousel-items-list',
                                             'core/buttons'
                                         ]}
-                                        template={[
-                                            [ 'core/heading', { placeholder: 'Book Title' } ],
-                                            [ 'core/paragraph', { placeholder: 'Summary' } ],
-                                            [ 'tainacan/carousel-items-list', { content: [{ type: 'innerblock' }], relatedItems: ['131051', '131516', '131228', '131517'], loadStrategy: 'selection', collectionId: '130957' } ],
-                                            [ 'core/buttons', {} ]
-                                        ]} />
+                                        template={ getRelatedItemsTemplates() } />
                             </div>
                           ) : null
                         }
