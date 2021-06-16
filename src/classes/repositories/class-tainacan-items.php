@@ -599,10 +599,6 @@ class Items extends Repository {
 		
 		foreach($metadatas as $metadata) {
 
-			if (!$collection instanceof \Tainacan\Entities\Collection || !$metadata instanceof \Tainacan\Entities\Metadatum) {
-				continue;
-			}
-
 			$collection = $metadata->get_collection();
 			if (!$collection instanceof \Tainacan\Entities\Collection || !$metadata instanceof \Tainacan\Entities\Metadatum || !$Tainacan_Metadata->metadata_is_enabled($current_collection, $metadata))
 				continue;

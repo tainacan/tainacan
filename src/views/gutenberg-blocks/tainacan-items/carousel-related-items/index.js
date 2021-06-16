@@ -94,33 +94,7 @@ registerBlockType('tainacan/carousel-related-items', {
             tainacan.get(endpoint, { cancelToken: itemRequestSource.token })
                 .then(response => {
 
-                    //relatedItems = response.data && response.data.related_items ? response.data.related_items : [];
-                    relatedItems = [
-                        {
-                            collection_id: 2235,
-                            collection_name: "Anexos",
-                            metadata_id: 2514,
-                            metadata_name: "Pessoa Nova",
-                            total_items: 1,
-                            items: [ 
-                                { id: 2520 },
-                                { id: 2522 },
-                                { id: 2524 }
-                            ]
-                        },
-                        {
-                            collection_id: 2235,
-                            collection_name: "Outros Anexos",
-                            metadata_id: 2514,
-                            metadata_name: "Pessoa Velha",
-                            total_items: 1,
-                            items: [ 
-                                { id: 2530 },
-                                { id: 2552 },
-                                { id: 2574 }
-                            ]
-                        }
-                    ];
+                    relatedItems = response.data && response.data.related_items ? Object.values(response.data.related_items) : [];
                     
                     setAttributes({
                         relatedItems: relatedItems,
@@ -140,45 +114,47 @@ registerBlockType('tainacan/carousel-related-items', {
         function getRelatedItemsTemplates() {
             let templates = [];
             relatedItems.forEach((collection) => {
-                templates.push([
-                    'core/group',
-                    {},
-                    [
-                        [ 
-                            'core/heading',
-                            {
-                                placeholder: __( 'Collection name', 'tainacan' ),
-                                content: collection.collection_name
-                            }
-                        ],
+                
+                if (collection.total_items) {
+                    templates.push([
+                        'core/group',
+                        {},
                         [
-                            'core/paragraph',
-                            {
-                                placeholder: __( 'Relationship metadadum name', 'tainacan' ),
-                                content: collection.metadata_name
-                            }
-                        ],
-                        [
-                            'tainacan/carousel-items-list',
-                            { content: [{ type: 'innerblock' }], relatedItems: ['131051', '131516', '131228', '131517'], loadStrategy: 'selection', collectionId: '130957' }
-                        ],
-                        [
-                            'core/buttons',
-                            {
-                                innerBlocks: [
-                                    {
-                                        name: 'core/button',
-                                        attributes: { text: __( 'View all related items', 'tainacan' ) },
-                                    }
+                            [ 
+                                'core/heading',
+                                {
+                                    placeholder: __( 'Collection name', 'tainacan' ),
+                                    content: collection.collection_name
+                                }
+                            ],
+                            [
+                                'core/paragraph',
+                                {
+                                    placeholder: __( 'Relationship metadadum name', 'tainacan' ),
+                                    content: collection.metadata_name
+                                }
+                            ],
+                            [
+                                'tainacan/carousel-items-list',
+                                { content: [{ type: 'innerblock' }], selectedItems: collection.items, loadStrategy: 'parent', collectionId: collection.collection_id }
+                            ],
+                            [
+                                'core/buttons',
+                                {},
+                                [
+                                    [
+                                        'core/button',
+                                        { text: __( 'View all related items', 'tainacan' ) }
+                                    ]
                                 ]
-                            }
-                        ],
-                        [
-                            'core/spacer',
-                            { height: 70 }
+                            ],
+                            [
+                                'core/spacer',
+                                { height: 70 }
+                            ]
                         ]
-                    ]
-                ]);
+                    ]);
+                }
             });
             return templates;
         }
