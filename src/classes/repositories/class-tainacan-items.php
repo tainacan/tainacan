@@ -117,12 +117,6 @@ class Items extends Repository {
 		        'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
 		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 			],
-			'related_items'     => [
-				'map'         => 'meta',
-				'title'       => __( 'Related items', 'tainacan' ),
-				'type'        => 'array',
-				'description' => __( 'The related items whit the item', 'tainacan' ),
-			],
 		] );
 	}
 
