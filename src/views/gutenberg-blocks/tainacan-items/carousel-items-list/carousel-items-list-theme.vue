@@ -362,7 +362,7 @@ export default {
         fetchCollectionForHeader() {
             if (this.showCollectionHeader) {
 
-                this.isLoadingCollection = true;             
+                this.isLoadingCollection = true;
 
                 this.tainacanAxios.get('/collections/' + this.collectionId + '?fetch_only=name,thumbnail,header_image')
                     .then(response => {

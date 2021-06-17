@@ -200,10 +200,10 @@ export default class CarouselRelatedItemsModal extends React.Component {
             // Items modal
         <Modal
                 className="wp-block-tainacan-modal dynamic-modal"
-                title={ __('Select the item that has relations', 'tainacan') }
+                title={ __('Select one item that has relations', 'tainacan') }
                 onRequestClose={ () => this.cancelSelection() }
                 shouldCloseOnClickOutside={ false }
-                contentLabel={ __('Select the item that has relations', 'tainacan') }>
+                contentLabel={ __('Select onte item that has relations', 'tainacan') }>
                 <iframe
                         id="itemsFrame"
                         src={ this.state.searchURL } />
@@ -217,7 +217,7 @@ export default class CarouselRelatedItemsModal extends React.Component {
                         style={{ marginLeft: 'auto' }} 
                         isPrimary
                         onClick={ () => this.applyRelatedItem() }>
-                        {__('Add the selected items', 'tainacan')}
+                        {__('Get relations of this item', 'tainacan')}
                     </Button>
                 </div>
         </Modal>
@@ -228,7 +228,7 @@ export default class CarouselRelatedItemsModal extends React.Component {
                 title={__('Select a collection to fetch items from', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
                 shouldCloseOnClickOutside={ false }
-                contentLabel={__('Select items', 'tainacan')}>
+                contentLabel={__('Select item', 'tainacan')}>
                 <div>
                     <div className="modal-search-area">
                         <TextControl 

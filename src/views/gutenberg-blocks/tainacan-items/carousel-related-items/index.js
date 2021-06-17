@@ -1,10 +1,11 @@
 const { registerBlockType } = wp.blocks;
+const { withDispatch, useDispatch, useSelect } = wp.data;
 
 const { __ } = wp.i18n;
 
 const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls, InnerBlocks } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, InnerBlocks, store } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import CarouselRelatedItemsModal from './carousel-related-items-modal.js';
 import tainacan from '../../js/axios.js';
@@ -36,6 +37,11 @@ registerBlockType('tainacan/carousel-related-items', {
         }
     },
     attributes: {
+        content: {
+            type: 'array',
+            source: 'children',
+            selector: 'div'
+        },
         collectionId: {
             type: String,
             default: undefined
@@ -48,11 +54,11 @@ registerBlockType('tainacan/carousel-related-items', {
             type: Boolean,
             default: false
         },
-        searchURL: {
-            type: String,
-            default: undefined
-        },
         relatedItems: {
+            type: Array,
+            default: []
+        },
+        relatedItemsTemplate: {
             type: Array,
             default: []
         },
@@ -60,13 +66,23 @@ registerBlockType('tainacan/carousel-related-items', {
             type: String,
             default: undefined
         },
+        hideTitle: {
+            type: Boolean,
+            value: false
+        },
     },
     supports: {
         align: ['full', 'wide'],
         html: false,
         multiple: true,
     },
-    edit({ attributes, setAttributes, className, isSelected }){
+    edit({ attributes, setAttributes, className, isSelected, clientId }){
+        const innerBlocks = useSelect(
+            ( select ) =>
+                select( store ).getBlocks(clientId),
+            [ clientId ]
+        );
+        
         let {
             content, 
             collectionId,
@@ -74,8 +90,12 @@ registerBlockType('tainacan/carousel-related-items', {
             isModalOpen,
             relatedItems,
             isLoading,
-            itemRequestSource
+            itemRequestSource,
+            hideTitle,
+            relatedItemsTemplate
         } = attributes;
+
+
 
         function setContent(){
             isLoading = true;
@@ -101,6 +121,7 @@ registerBlockType('tainacan/carousel-related-items', {
                         isLoading: false,
                         itemRequestSource: itemRequestSource
                     });
+                    getRelatedItemsTemplates();
                 });
         }
         
@@ -111,12 +132,18 @@ registerBlockType('tainacan/carousel-related-items', {
             } );
         }
 
+        function updateChildBlocks() {
+
+            console.log(innerBlocks);
+            
+        }
+
         function getRelatedItemsTemplates() {
-            let templates = [];
+            relatedItemsTemplate = [];
             relatedItems.forEach((collection) => {
                 
                 if (collection.total_items) {
-                    templates.push([
+                    relatedItemsTemplate.push([
                         'core/group',
                         {},
                         [
@@ -136,7 +163,13 @@ registerBlockType('tainacan/carousel-related-items', {
                             ],
                             [
                                 'tainacan/carousel-items-list',
-                                { content: [{ type: 'innerblock' }], selectedItems: collection.items, loadStrategy: 'parent', collectionId: collection.collection_id }
+                                { 
+                                    content: [{ type: 'innerblock' }],
+                                    selectedItems: collection.items,
+                                    loadStrategy: 'parent',
+                                    collectionId: collection.collection_id,
+                                    hideTitle: hideTitle
+                                }
                             ],
                             [
                                 'core/buttons',
@@ -156,7 +189,7 @@ registerBlockType('tainacan/carousel-related-items', {
                     ]);
                 }
             });
-            return templates;
+            setAttributes({ relatedItemsTemplate: relatedItemsTemplate});
         }
 
         // Executed only on the first load of page
@@ -167,7 +200,7 @@ registerBlockType('tainacan/carousel-related-items', {
                 <div className={className}>
                     <img
                             width="100%"
-                            src={ `${tainacan_blocks.base_url}/assets/images/carousel-items-list.png` } />
+                            src={ `${tainacan_blocks.base_url}/assets/images/related-carousel-items.png` } />
                 </div>
             : (
             <div className={className}>
@@ -176,7 +209,7 @@ registerBlockType('tainacan/carousel-related-items', {
                     <BlockControls>
                         { 
                             TainacanBlocksCompatToolbar({
-                                label: __('Add more items', 'tainacan'),
+                                label: __('Select item with relations', 'tainacan'),
                                 icon: <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 24 24"
@@ -191,7 +224,17 @@ registerBlockType('tainacan/carousel-related-items', {
                 : null }
                 <div>
                    <InspectorControls>
-                        SAY WHAAT
+                        <ToggleControl
+                                label={__('Hide title', 'tainacan')}
+                                help={ !hideTitle ? __('Toggle to hide item\'s title', 'tainacan') : __('Do not hide item\'s title', 'tainacan')}
+                                checked={ hideTitle }
+                                onChange={ ( isChecked ) => {
+                                        hideTitle = isChecked;
+                                        setAttributes({ hideTitle: hideTitle });
+                                        updateChildBlocks();
+                                    } 
+                                }
+                            />
                     </InspectorControls>
                 </div>
 
@@ -213,12 +256,16 @@ registerBlockType('tainacan/carousel-related-items', {
                                     });
                                 }}
                                 onApplyRelatedItem={ (selectedItemId) => {
-                                    if (itemId != selectedItemId)
+                                    if (itemId != selectedItemId) {
                                         relatedItems = [];
+                                        relatedItemsTemplate = [];
+                                    }
                                     
                                     itemId = selectedItemId;
                                     setAttributes({
                                         itemId: itemId,
+                                        relatedItems: relatedItems,
+                                        relatedItemsTemplate: relatedItemsTemplate,
                                         isModalOpen: false
                                     });
                                     setContent();
@@ -254,7 +301,7 @@ registerBlockType('tainacan/carousel-related-items', {
                             isPrimary
                             type="button"
                             onClick={ () => openRelatedItemsModal() }>
-                            {__('Select Items', 'tainacan')}
+                            {__('Select Item', 'tainacan')}
                         </Button>
                     </Placeholder>
                     ) : null
@@ -268,14 +315,14 @@ registerBlockType('tainacan/carousel-related-items', {
                         {  relatedItems.length ? (
 
                             <div className={ 'carousel-related-items-edit-container' }>
-                                <InnerBlocks 
+                                <InnerBlocks
                                         allowedBlocks={[ 
                                             'core/heading',
                                             'core/paragraph',
                                             'tainacan/carousel-items-list',
                                             'core/buttons'
                                         ]}
-                                        template={ getRelatedItemsTemplates() } />
+                                        template={ relatedItemsTemplate } />
                             </div>
                           ) : null
                         }
