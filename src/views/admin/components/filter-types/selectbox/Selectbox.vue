@@ -37,10 +37,6 @@
             }
         },
         watch: {
-            'query'() {
-                if (!this.isUsingElasticSearch)
-                    this.loadOptions();
-            },
             facetsFromItemSearch: {
                 handler() {
                     if (this.isUsingElasticSearch)
@@ -49,9 +45,14 @@
                 immediate: true
             }
         },
-        mounted(){           
+        mounted() {
             if (!this.isUsingElasticSearch)
                 this.loadOptions();
+
+            this.$eventBusSearch.$on('has-to-reload-facets', (shouldReload) => {
+                if ( !this.isUsingElasticSearch && shouldReload )
+                    this.loadOptions();
+            }); 
         },
         methods: {
             loadOptions(){

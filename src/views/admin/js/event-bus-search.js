@@ -160,7 +160,28 @@ export default {
                         } else {
                             this.$store.dispatch('search/set_postquery', this.$route.query);
                         }
+                        
+                        // Checks current metaqueries and taxqueries to alert filters that should reload
+                        // For some reason, this process is not working accessing to.query, so we need to check the path string. 
+                        const oldQueryString = from.fullPath.replace(from.path + '?', '');
+                        const newQueryString = to.fullPath.replace(from.path + '?', '');
+                        
+                        const oldQueryArray = oldQueryString.split('&');
+                        const newQueryArray = newQueryString.split('&');
 
+                        const oldMetaQueryArray = oldQueryArray.filter(queryItem => queryItem.startsWith('metaquery'));
+                        const newMetaQueryArray = newQueryArray.filter(queryItem => queryItem.startsWith('metaquery'));
+                        const oldTaxQueryArray = oldQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
+                        const newTaxQueryArray = newQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
+                        
+                        if (
+                            JSON.stringify(oldMetaQueryArray) != JSON.stringify(newMetaQueryArray) ||
+                            JSON.stringify(oldTaxQueryArray) != JSON.stringify(newTaxQueryArray)
+                        ) {
+                            this.$emit('has-to-reload-facets', true);
+                        }
+
+                        // Finally, loads items
                         if (to.fullPath != from.fullPath) {
                             this.loadItems(to);
                         }
