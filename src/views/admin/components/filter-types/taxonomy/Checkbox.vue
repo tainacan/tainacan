@@ -107,8 +107,8 @@
             },                
             isLoadingItems: {
                 handler() {
-                    if (!this.filtersAsModal)
-                    this.isLoadingOptions = this.isLoadingItems;
+                    if (!this.filtersAsModal && this.isUsingElasticSearch)
+                        this.isLoadingOptions = this.isLoadingItems;
                 },
                 immediate: true
             }
