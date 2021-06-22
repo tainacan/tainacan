@@ -1,17 +1,14 @@
 const { registerBlockType } = wp.blocks;
-const { withDispatch, useDispatch, useSelect } = wp.data;
 
 const { __ } = wp.i18n;
 
-const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { Spinner, Button, Placeholder } = wp.components;
 
-const { InspectorControls, BlockControls, InnerBlocks, store } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, InnerBlocks} = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import CarouselRelatedItemsModal from './carousel-related-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
-import qs from 'qs';
-import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import DeprecatedBlocks from './carousel-related-items-deprecated.js';
 import 'swiper/css/swiper.min.css';
@@ -76,12 +73,7 @@ registerBlockType('tainacan/carousel-related-items', {
         html: false,
         multiple: true,
     },
-    edit({ attributes, setAttributes, className, isSelected, clientId }){
-        const innerBlocks = useSelect(
-            ( select ) =>
-                select( store ).getBlocks(clientId),
-            [ clientId ]
-        );
+    edit({ attributes, setAttributes, className, isSelected, clientId }) {
         
         let {
             content, 
@@ -94,7 +86,6 @@ registerBlockType('tainacan/carousel-related-items', {
             hideTitle,
             relatedItemsTemplate
         } = attributes;
-
 
 
         function setContent(){
@@ -134,7 +125,7 @@ registerBlockType('tainacan/carousel-related-items', {
 
         function updateChildBlocks() {
 
-            console.log(innerBlocks);
+            console.log("Como???");
             
         }
 
@@ -205,7 +196,7 @@ registerBlockType('tainacan/carousel-related-items', {
             : (
             <div className={className}>
 
-                { relatedItems.length ?
+                {/* { relatedItems.length ?
                     <BlockControls>
                         { 
                             TainacanBlocksCompatToolbar({
@@ -221,8 +212,8 @@ registerBlockType('tainacan/carousel-related-items', {
                             })
                         }
                     </BlockControls>
-                : null }
-                <div>
+                : null } */}
+                {/* <div>
                    <InspectorControls>
                         <ToggleControl
                                 label={__('Hide title', 'tainacan')}
@@ -236,7 +227,7 @@ registerBlockType('tainacan/carousel-related-items', {
                                 }
                             />
                     </InspectorControls>
-                </div>
+                </div> */}
 
                 { isSelected ? 
                     ( 
