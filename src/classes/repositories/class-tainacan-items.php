@@ -626,7 +626,6 @@ class Items extends Repository {
 		foreach($metadatas as $metadata) {
 			if($metadata->get_collection_id() == $Tainacan_Metadata->get_default_metadata_attribute()) {
 				$collections = $Tainacan_Collections->fetch([], 'OBJECT');
-				error_log(json_encode($collections));
 				foreach($collections as $collection) {
 					$related_items = $this->get_related_items_by_collection($item, $collection, $metadata, $args);
 					if($related_items == false) continue;
