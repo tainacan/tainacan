@@ -1,5 +1,6 @@
 .wp-block-tainacan-carousel-related-items {
-  margin: 2em auto; }
+  margin: 2em auto;
+  width: 100%; }
   .wp-block-tainacan-carousel-related-items .spinner-container {
     min-height: 56px;
     padding: 1em;

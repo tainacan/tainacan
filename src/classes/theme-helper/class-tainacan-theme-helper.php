@@ -938,49 +938,53 @@ class Theme_Helper {
 			return;
 
 		// Always pass the default class;
-		$output = '<div class="' . $args['class_name'] . ' wp-block-tainacan-carousel-items-list' . '">';
-		var_dump($related_items['134219']['items'][0]);
+		$output = '<div class="' . $args['class_name'] . ' wp-block-tainacan-carousel-related-items' . '">';
+
 		foreach($related_items as $collection_id => $related_group) {
 
-			// Adds a heading with the collection name
-			$collection_heading = '';
-			if ( isset($related_group['collection_name']) ) {
-				$collection_heading = '<' . $args['collection_heading_tag'] . ' class="' . $args['collection_heading_class_name'] . '">' . $related_group['collection_name'] . '</' . $args['collection_heading_tag'] . '>';
-			}
-			
-			// Adds a paragraph with the metadata name
-			$metadata_label = '';
-			if ( isset($related_group['metadata_name']) ) {
-				$metadata_label = '<' . $args['metadata_label_tag'] . ' class="' . $args['metadata_label_class_name'] . '">' . $related_group['metadata_name'] . '</' . $args['metadata_label_tag'] . '>';
-			}
-			
-			// Sets the carousel, from the items carousel template tag.
-			$carousel_div = '';
-			if ( isset($related_group['collection_id']) && isset($related_group['items']) ) {
-				$carousel_div = $this->get_tainacan_items_carousel([
-					'collection_id' => $related_group['collection_id'],
-					'load_strategy' => 'parent',
-					'selected_items' => json_encode($related_group['items'])
-				]);
-			}
+			if ( isset($related_group['items']) && isset($related_group['total_items']) && $related_group['total_items'] ) {
 
-			$output .= '<div class="wp-block-group">
-				<div class="wp-block-group__inner-container">' .
-					$collection_heading .
-					$metadata_label .
-					$carousel_div . 
-					'<div class="wp-block-buttons">
-						<div class="wp-block-button">
-							<a class="wp-block-button__link">
-								' . __('View all related items', 'tainacan') . '
-							</a>
+				// Adds a heading with the collection name
+				$collection_heading = '';
+				if ( isset($related_group['collection_name']) ) {
+					$collection_heading = '<' . $args['collection_heading_tag'] . ' class="' . $args['collection_heading_class_name'] . '">' . $related_group['collection_name'] . '</' . $args['collection_heading_tag'] . '>';
+				}
+				
+				// Adds a paragraph with the metadata name
+				$metadata_label = '';
+				if ( isset($related_group['metadata_name']) ) {
+					$metadata_label = '<' . $args['metadata_label_tag'] . ' class="' . $args['metadata_label_class_name'] . '">' . $related_group['metadata_name'] . '</' . $args['metadata_label_tag'] . '>';
+				}
+				
+				// Sets the carousel, from the items carousel template tag.
+				$carousel_div = '';
+				if ( isset($related_group['collection_id']) ) {
+					$carousel_div = $this->get_tainacan_items_carousel([
+						'collection_id' => $related_group['collection_id'],
+						'load_strategy' => 'parent',
+						'selected_items' => json_encode($related_group['items'])
+					]);
+				}
+
+				$output .= '<div class="wp-block-group">
+					<div class="wp-block-group__inner-container">' .
+						$collection_heading .
+						$metadata_label .
+						$carousel_div . 
+						'<div class="wp-block-buttons">
+							<div class="wp-block-button">
+								<a class="wp-block-button__link">
+									' . __('View all related items', 'tainacan') . '
+								</a>
+							</div>
+						</div>
+						<div style="height:70px" aria-hidden="true" class="wp-block-spacer">
 						</div>
 					</div>
-					<div style="height:70px" aria-hidden="true" class="wp-block-spacer">
-					</div>
-				</div>
-			</div>';
+				</div>';
+			}
 		}
+		
 		$output .= '</div>';
 		
 		return $output;
