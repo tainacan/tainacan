@@ -67,7 +67,7 @@ class Numeric_Interval extends Filter_Type {
         return [
             'step' => [
                 'title' => __( 'Step', 'tainacan' ),
-                'description' => __( 'The amount to be increased or decreased when clicking on filter control buttons. This alo defines whether the input accepts decimal numbers.', 'tainacan' ),
+                'description' => __( 'The amount to be increased or decreased when clicking on the filter control buttons. This also defines whether the input accepts decimal numbers.', 'tainacan' ),
             ],
             'custom' => ['title' => __('Custom interval','tainacan')],
         ];
