@@ -573,8 +573,41 @@ class Items extends Repository {
 		return $caps;
 	}
 
+	private function get_related_items_by_collection($item, $collection, $metadata, $args=[]) {
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		if (!$collection instanceof \Tainacan\Entities\Collection || !$metadata instanceof \Tainacan\Entities\Metadatum || !$Tainacan_Metadata->metadata_is_enabled($collection, $metadata))
+			return false;
+
+		$prepared_items = array();
+		$items = $this->fetch(array_merge([
+			'meta_query' => [
+				[
+					'key'   => $metadata->get_id(),
+					'value' => $item->get_id()
+				]
+			]
+		], $args), $collection->get_id(), 'WP_Query');
+
+		if ($items->have_posts()) {
+			while ( $items->have_posts() ) {
+				$items->the_post();
+				$item_related = new \Tainacan\Entities\Item($items->post);
+				$item_arr = $item_related->_toArray();
+				$item_arr['thumbnail'] = $item_related->get_thumbnail();
+				array_push($prepared_items, $item_arr);
+			}
+			wp_reset_postdata();
+		}
+
+		return array(
+			"found_posts" => $items->found_posts,
+			'items' => $prepared_items
+		);
+	}
+
 	public function fetch_related_items($item, $args=[]) {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		$current_collection = $item->get_collection();
 		$metadatas = $Tainacan_Metadata->fetch([
 			'meta_query' => [
@@ -590,42 +623,34 @@ class Items extends Repository {
 		], 'OBJECT');
 		
 		$response = array();
-		
 		foreach($metadatas as $metadata) {
-
-			$collection = $metadata->get_collection();
-			if (!$collection instanceof \Tainacan\Entities\Collection || !$metadata instanceof \Tainacan\Entities\Metadatum || !$Tainacan_Metadata->metadata_is_enabled($current_collection, $metadata))
-				continue;
-
-			$prepared_items = array();
-			$items = $this->fetch([
-				'meta_query' => [
-					[
-						'key'   => $metadata->get_id(),
-						'value' => $item->get_id()
-					]
-				]
-			], $collection->get_id(), 'WP_Query');
-
-			if ($items->have_posts()) {
-				while ( $items->have_posts() ) {
-					$items->the_post();
-					$item_related = new \Tainacan\Entities\Item($items->post);
-					$item_arr = $item_related->_toArray();
-					$item_arr['thumbnail'] = $item->get_thumbnail();
-					array_push($prepared_items, $item_arr);
+			if($metadata->get_collection_id() == $Tainacan_Metadata->get_default_metadata_attribute()) {
+				$collections = $Tainacan_Collections->fetch([], 'OBJECT');
+				foreach($collections as $collection) {
+					$related_items = $this->get_related_items_by_collection($item, $collection, $metadata, $args);
+					if($related_items == false) continue;
+					$response[$metadata->get_id() . '_' . $collection->get_id()] = array(
+						'collection_id' => $collection->get_id(),
+						'collection_name' => $collection->get_name(),
+						'metadata_id' => $metadata->get_id(),
+						'metadata_name' => $metadata->get_name(),
+						'total_items' => $related_items['found_posts'],
+						'items' => $related_items['items']
+					);
 				}
-				wp_reset_postdata();
+			} else {
+				$collection = $metadata->get_collection();
+				$related_items = $this->get_related_items_by_collection($item, $collection, $metadata, $args);
+				if($related_items == false) continue;
+				$response[$metadata->get_id()] = array(
+					'collection_id' => $collection->get_id(),
+					'collection_name' => $collection->get_name(),
+					'metadata_id' => $metadata->get_id(),
+					'metadata_name' => $metadata->get_name(),
+					'total_items' => $related_items['found_posts'],
+					'items' => $related_items['items']
+				);
 			}
-
-			$response[$metadata->get_id()] = array(
-				'collection_id' => $collection->get_id(),
-				'collection_name' => $collection->get_name(),
-				'metadata_id' => $metadata->get_id(),
-				'metadata_name' => $metadata->get_name(),
-				'total_items' => $items->found_posts,
-				'items' => $prepared_items
-			);
 		}
 
 		return $response;
