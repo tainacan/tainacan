@@ -49,7 +49,8 @@ export const dynamicFilterTypeMixin = {
     watch: {
         isLoadingItems: {
             handler() {
-                this.isLoadingOptions = this.isLoadingItems;
+                if (this.isUsingElasticSearch )
+                    this.isLoadingOptions = this.isLoadingItems;
             },
             immediate: true
         }

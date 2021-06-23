@@ -78,21 +78,22 @@
                 if (!isEqual)
                     this.onSelect();
             },
-            'query'() {
-                if (!this.isUsingElasticSearch)
-                    this.loadOptions();
-            },
             facetsFromItemSearch: {
                 handler() {
                     if (this.isUsingElasticSearch)
                         this.loadOptions();
                 },
                 immediate: true
-            }
+            },
         },
         mounted() {
             if (!this.isUsingElasticSearch && !this.filtersAsModal)
                 this.loadOptions();
+
+            this.$eventBusSearch.$on('has-to-reload-facets', (shouldReload) => {
+                if ( !this.isUsingElasticSearch && shouldReload )
+                    this.loadOptions();
+            }); 
         },
         methods: {
             loadOptions() {
