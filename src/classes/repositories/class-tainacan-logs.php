@@ -740,7 +740,9 @@ class Logs extends Repository {
 	}
 	
 	private function insert_item_metadata( Entities\Item_Metadata_Entity $entity ) {
-		
+		if($this->current_diff == false) {
+			return;
+		}
 		$log = new Entities\Log();
 		
 		$item_id = $entity->get_item()->get_id();

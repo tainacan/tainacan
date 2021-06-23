@@ -143,7 +143,7 @@
 
                     let val = this.valueComponent;
 
-                    if (!Array.isArray(val) && this.itemMetadatum.metadatum.multiple === 'no') {
+                    if ((!Array.isArray(val) || val.length == 0) && this.itemMetadatum.metadatum.multiple === 'no') {
                         axios.patch(`/item/${this.itemMetadatum.item.id}/metadata/${this.itemMetadatum.metadatum.id}`, {
                             values: term.id,
                         }).then(() => {
