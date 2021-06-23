@@ -561,6 +561,33 @@
                                 </div>
                             </b-tab-item>
 
+                            <!-- Related items -->
+                            <b-tab-item v-if="totalRelatedItems">
+                                <template slot="header">
+                                    <span class="icon has-text-gray4">
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes tainacan-icon-rotate-270"/>
+                                    </span>
+                                    <span>
+                                        {{ $i18n.get('label_related_items') }}
+                                        <span class="has-text-gray">
+                                            ({{ totalRelatedItems }})
+                                        </span>
+                                    </span>
+                                </template>
+
+                                <div class="attachments-list-heading">
+                                    <p>
+                                        {{ $i18n.get("info_related_items") }}
+                                    </p>
+                                </div>
+
+                                <related-items-list
+                                        :related-items="item.related_items"
+                                        :is-editable="true"
+                                        :is-loading.sync="isLoading" />
+                                
+                            </b-tab-item>
+
                         </b-tabs>
                     </div>
                 </div>
@@ -800,6 +827,7 @@ import { eventBusItemMetadata } from '../../js/event-bus-item-metadata';
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
 import DocumentItem from '../other/document-item.vue';
+import RelatedItemsList from '../lists/related-items-list.vue';
 import CustomDialog from '../other/custom-dialog.vue';
 import AttachmentsList from '../lists/attachments-list.vue';
 import { formHooks } from '../../js/mixins';
@@ -811,6 +839,7 @@ export default {
         FileItem,
         DocumentItem,
         AttachmentsList,
+        RelatedItemsList,
         ItemMetadatumErrorsTooltip
     },
     mixins: [ formHooks ],
@@ -872,6 +901,9 @@ export default {
         },
         totalAttachments() {
             return this.getTotalAttachments();
+        },
+        totalRelatedItems() {
+            return (this.item && this.item.related_items) ? Object.values(this.item.related_items).reduce((totalItems, aRelatedItemsGroup) => totalItems + parseInt(aRelatedItemsGroup.total_items), 0) : false;
         },
         formErrors() {
            return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
@@ -1501,7 +1533,7 @@ export default {
             this.fetchItem({
                 itemId: this.itemId,
                 contextEdit: true,
-                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html'
+                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html,related_items'
             })
             .then((resp) => {
                 resp.request.then((res) => {

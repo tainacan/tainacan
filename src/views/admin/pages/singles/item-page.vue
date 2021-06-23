@@ -253,7 +253,7 @@
                     <b-tabs v-model="activeTab">
                         <b-tab-item>
                             <template slot="header">
-                                <span class="icon has-text-gray4">
+                                <span class="icon has-text-gray5">
                                     <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
                                 </span>
                                 <span>{{ $i18n.get('metadata') }}</span>
@@ -293,7 +293,7 @@
 
                         <b-tab-item>
                             <template slot="header">
-                                <span class="icon has-text-gray4">
+                                <span class="icon has-text-gray5">
                                     <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
                                 </span>
                                 <span>
@@ -313,9 +313,36 @@
                                     @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading" />    
                         </b-tab-item>
 
+                        <!-- Related items -->
+                        <b-tab-item v-if="totalRelatedItems">
+                            <template slot="header">
+                                <span class="icon has-text-gray5">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes tainacan-icon-rotate-270"/>
+                                </span>
+                                <span>
+                                    {{ $i18n.get('label_related_items') }}
+                                    <span class="has-text-gray">
+                                        ({{ totalRelatedItems }})
+                                    </span>
+                                </span>
+                            </template>
+
+                            <div class="attachments-list-heading">
+                                <p>
+                                    {{ $i18n.get("info_related_items") }}
+                                </p>
+                            </div>
+
+                            <related-items-list
+                                    :related-items="item.related_items"
+                                    :is-editable="false"
+                                    :is-loading.sync="isLoading" />
+                            
+                        </b-tab-item>
+
                         <b-tab-item>
                             <template slot="header">
-                                <span class="icon has-text-gray4">
+                                <span class="icon has-text-gray5">
                                     <i class="tainacan-icon tainacan-icon-18px tainacan-icon-activities"/>
                                 </span>
                                 <span>{{ $i18n.get('activities') }}</span>
@@ -380,6 +407,7 @@
     import ActivitiesPage from '../lists/activities-page.vue';
     import ExposersModal from '../../components/modals/exposers-modal.vue';
     import AttachmentsList from '../../components/lists/attachments-list.vue';
+    import RelatedItemsList from '../../components/lists/related-items-list.vue';
 
     export default {
         name: 'ItemPage',
@@ -387,6 +415,7 @@
             FileItem,
             DocumentItem,
             ActivitiesPage,
+            RelatedItemsList,
             AttachmentsList
         },
         mixins: [formHooks],
@@ -414,6 +443,9 @@
             metadatumList() {
                 return JSON.parse(JSON.stringify(this.getItemMetadata()));
             },
+            totalRelatedItems() {
+                return (this.item && this.item.related_items) ? Object.values(this.item.related_items).reduce((totalItems, aRelatedItemsGroup) => totalItems + parseInt(aRelatedItemsGroup.total_items), 0) : false;
+            },
             totalAttachments() {
                 return this.getTotalAttachments();
             },
@@ -437,7 +469,7 @@
             this.fetchItem({ 
                 itemId: this.itemId,
                 contextEdit: true,    
-                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document_mimetype,document,comment_status,document_as_html'       
+                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document_mimetype,document,comment_status,document_as_html,related_items'       
             })
              .then((resp) => {
                 resp.request.then((item) => {
@@ -714,6 +746,17 @@
             color: var(--tainacan-info-color);
             top: 70px;
             max-width: 90px;
+        }
+    }
+
+    .attachments-list-heading {
+        display: flex;
+        align-items: center;
+        margin-top: 24px;
+        margin-bottom: 24px;
+
+        button {
+            margin-right: 12px;
         }
     }
 
