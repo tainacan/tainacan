@@ -884,14 +884,36 @@ class Theme_Helper {
 		if (!is_array($args))
 			return __('There are missing parameters for Tainacan Items Carousel shortcode', 'tainacan');
 
+		$defaults = array(
+			'max_items_number' => 12,
+			'max_tems_per_screen' => 7,
+			'arrows_position' => 'around',
+			'large_arrows' => false,
+			'auto_play' => false,
+			'auto_play_speed' => 3,
+			'loop_slides' => false,
+			'hide_title' => false,
+			'crop_images_to_square' => true,
+			'show_collection_header' => false,
+			'show_collection_label' => false,
+			'collection_background_color' => '#454647',
+			'collection_text_color' => '#ffffff',
+			'tainacan_api_root' => '',
+			'tainacan_base_url' => '',
+			'class_name' => '',
+		);
+		$args = wp_parse_args($args, $defaults);
+
 		$props = ' ';
 
 		// Always pass the class needed by Vue to mount the component;
-		$args['class'] = isset($args['class_name']) ? ($args['class_name'] . ' wp-block-tainacan-carousel-items-list') : 'wp-block-tainacan-carousel-items-list';
+		$args['class'] = $args['class_name'] . ' wp-block-tainacan-carousel-items-list';
 		unset($args['class_name']);
 		
 		// Builds parameters to the html div rendered by Vue
 		foreach ($args as $key => $value) {
+			if (is_bool($value))
+				$value = $value ? 'true' : 'false';
 			// Changes from PHP '_' notation to HTML '-' notation
 			$props .= (str_replace('_', '-', $key) . "='" . $value . "' ");
 		}
@@ -914,6 +936,7 @@ class Theme_Helper {
 		 * 	   @type string  $collection_heading_tag			Tag to be used as wrapper of the collection name. Defaults to h2
 		 *     @type string  $metadata_label_class_name			Extra class to add to the metadata label wrapper. Defaults to ''
 		 * 	   @type string  $metadata_label_tag				Tag to be used as wrapper of the metadata label. Defaults to p
+		 *     @type array   $carousel_args					Array of arguments to be passed to the get_tainacan_items_carousel function
 		 * @return string  The HTML div to be used for rendering the related items vue component
 	 */
 	public function get_tainacan_related_items_carousel($args = []) {
@@ -923,7 +946,8 @@ class Theme_Helper {
 			'collection_heading_class_name' => '',
 			'collection_heading_tag' => 'h2', 
 			'metadata_label_class_name' => '',
-			'metadata_label_tag' => 'p' 
+			'metadata_label_tag' => 'p',
+			'carousel_args' => []
 		);
 		$args = wp_parse_args($args, $defaults);
 		
@@ -959,11 +983,14 @@ class Theme_Helper {
 				// Sets the carousel, from the items carousel template tag.
 				$carousel_div = '';
 				if ( isset($related_group['collection_id']) ) {
-					$carousel_div = $this->get_tainacan_items_carousel([
+					
+					$carousel_args = wp_parse_args([
 						'collection_id' => $related_group['collection_id'],
 						'load_strategy' => 'parent',
 						'selected_items' => json_encode($related_group['items'])
-					]);
+					], $args['carousel_args']);
+
+					$carousel_div = $this->get_tainacan_items_carousel($carousel_args);
 				}
 
 				$output .= '<div class="wp-block-group">

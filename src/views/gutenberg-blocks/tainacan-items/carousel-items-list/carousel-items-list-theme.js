@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
                     this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
 
-                    console.log(this.collectionId);
+                    console.log(this.$el.attributes['hide-title'].value);
                 },
                 methods: {
                     __(text, domain) {
