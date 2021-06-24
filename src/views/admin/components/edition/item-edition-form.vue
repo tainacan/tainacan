@@ -582,8 +582,9 @@
                                 </div>
 
                                 <related-items-list
+                                        :collection-id="collectionId"
                                         :related-items="item.related_items"
-                                        :is-editable="true"
+                                        :is-editable="!$route.query.iframemode"
                                         :is-loading.sync="isLoading" />
                                 
                             </b-tab-item>
@@ -1250,6 +1251,7 @@ export default {
                         this.metadataCollapses[i] = true;
                     }
                 }
+
                 this.isLoading = false;
             });
         },

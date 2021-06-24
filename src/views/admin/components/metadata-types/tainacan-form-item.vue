@@ -1,6 +1,10 @@
 <template>
     <b-field
-            :class="hideCollapses ? 'has-collapses-hidden' : ''"
+            :class="{
+                'has-collapses-hidden': hideCollapses,
+                'hightlighted-metadatum': isHighlightedMetadatum 
+            }"
+            :ref="isHighlightedMetadatum ? 'hightlighted-metadatum': 'null'"
             :addons="false"
             :message="errorMessage"
             :type="errorMessage ? 'is-danger' : ''">
@@ -125,7 +129,8 @@
         data(){
             return {
                 values: [],
-                errorMessage: ''
+                errorMessage: '',
+                isHighlightedMetadatum: false
             }
         },
         computed: {
@@ -156,6 +161,20 @@
         beforeDestroy() {
             if (this.itemMetadatum && this.itemMetadatum.metadatum)
                 eventBusItemMetadata.$off('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id));
+        },
+        mounted () {
+            if (this.$route.query && this.$route.query.editingmetadata) {
+                this.isHighlightedMetadatum = this.$route.query.editingmetadata == (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id);
+
+                if (this.isHighlightedMetadatum) {
+                    
+                    this.$nextTick(() => {
+                        let highlightedMetadatum = this.$refs['hightlighted-metadatum'];
+                        if (highlightedMetadatum && highlightedMetadatum.$el && highlightedMetadatum.$el.scrollIntoView)
+                            setTimeout(() => highlightedMetadatum.$el.scrollIntoView(), 500);
+                    });
+                }
+            }
         },
         methods: {
             // 'this.values' is always an array for this component, even if it is single valued.
@@ -255,6 +274,14 @@
     .field {
         border-bottom: 1px solid var(--tainacan-input-border-color);
         padding: 10px var(--tainacan-container-padding);
+
+        &.hightlighted-metadatum {
+            background-color: var(--tainacan-white);
+            transition: background-color 0.8s; 
+            animation-name: metadatum-highlight;
+            animation-duration: 3s;
+            animation-iteration-count: 2; 
+        }
 
         &.has-collapses-hidden {
             border-bottom: none;

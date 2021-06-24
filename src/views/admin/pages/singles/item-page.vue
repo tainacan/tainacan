@@ -334,6 +334,7 @@
                             </div>
 
                             <related-items-list
+                                    :collection-id="collectionId"
                                     :related-items="item.related_items"
                                     :is-editable="false"
                                     :is-loading.sync="isLoading" />
