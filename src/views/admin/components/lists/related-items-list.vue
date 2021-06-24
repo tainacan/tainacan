@@ -205,6 +205,7 @@
             
             &:not(:last-child) {
                 border-bottom: 1px dashed var(--tainacan-info-color);
+                margin-bottom: 1rem;
             }
 
             .tainacan-table {
