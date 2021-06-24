@@ -128,6 +128,7 @@ class Theme_Helper {
 	public function enqueue_items_carousel_scripts() {
 		global $post;
 		global $TAINACAN_BASE_URL;
+		global $TAINACAN_VERSION;
 		global $wp_version;
 
 		$settings = [
@@ -145,8 +146,26 @@ class Theme_Helper {
 			$TAINACAN_BASE_URL . '/assets/js/block_carousel_items_list_theme.js',
 			array('wp-components')
 		);
+		wp_enqueue_style(
+			'carousel-items-list',
+			$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . 'carousel-items-list' . '.css',
+			array('tainacan-blocks-common-styles'),
+			$TAINACAN_VERSION
+		);
 		wp_set_script_translations('carousel-items-list-theme', 'tainacan');
 		wp_localize_script('carousel-items-list-theme', 'tainacan_blocks', $settings);
+	}
+
+	public function enqueue_related_items_carousel_scripts() {
+		global $TAINACAN_BASE_URL;
+		global $TAINACAN_VERSION;
+
+		wp_enqueue_style(
+			'carousel-related-items',
+			$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . 'carousel-related-items' . '.css',
+			array('tainacan-blocks-common-styles'),
+			$TAINACAN_VERSION
+		);
 	}
 	
 	public function is_post_an_item(\WP_Post $post) {
@@ -960,6 +979,9 @@ class Theme_Helper {
 		$related_items = $item->get_related_items();	
 		if (!count($related_items))
 			return;
+
+		// Enqueues necessary CSS
+		$this->enqueue_related_items_carousel_scripts();
 
 		// Always pass the default class;
 		$output = '<div class="' . $args['class_name'] . ' wp-block-tainacan-carousel-related-items' . '">';
