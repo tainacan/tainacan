@@ -167,6 +167,7 @@ $pswp__include-minimal-style: true !default;
             border-radius: 3px;
             word-wrap: break-word;
             padding: 1rem 2rem;
+            display: block;
         }
         audio {
             background: black;
@@ -185,7 +186,6 @@ $pswp__include-minimal-style: true !default;
         img {
             width: auto;
             max-height: var(--tainacan-media-main-carousel-height, 60vh);
-            display: block;
         }
         .twitter-tweet {
             margin-left: auto;
