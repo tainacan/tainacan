@@ -57,7 +57,7 @@
         &:hover .actions-area {
             visibility: visible;
             opacity: 1.0;
-            top: -7px;
+            top:  calc(-1 * 0.5em - var(--tainacan-container-padding));
 
             a {
                 opacity: 1;

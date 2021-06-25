@@ -132,7 +132,8 @@ class Item extends Entity {
 
 		if( in_array('tainacan-small', $sizes ) ) {
 			$tmp_src = wp_get_attachment_image_src( $this->get__thumbnail_id(), 'tainacan-small' );
-			$blurhash = $this->get_image_blurhash($tmp_src[0], $tmp_src[1], $tmp_src[2]);
+			$file_name = get_attached_file( $this->get__thumbnail_id() );
+			$blurhash = $this->get_image_blurhash($file_name, $tmp_src[1], $tmp_src[2]);
 		}
 
 		foreach ( $sizes as $size ) {

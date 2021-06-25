@@ -195,7 +195,7 @@
                 if (this.metadatumComponent == 'tainacan-compound')
                     return;
 
-                if (this.itemMetadatum.value !== null) {
+                if (this.itemMetadatum.value !== null && this.itemMetadatum.value !== false) {
                     
                     // This routine avoids calling the API if the value did not changed
                     switch(this.itemMetadatum.value.constructor.name) {

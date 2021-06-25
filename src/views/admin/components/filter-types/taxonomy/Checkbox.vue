@@ -107,13 +107,10 @@
             },                
             isLoadingItems: {
                 handler() {
-                    if (!this.filtersAsModal)
-                    this.isLoadingOptions = this.isLoadingItems;
+                    if (!this.filtersAsModal && this.isUsingElasticSearch)
+                        this.isLoadingOptions = this.isLoadingItems;
                 },
                 immediate: true
-            },
-            'query'() {
-                this.loadOptions();
             }
         },    
         created() {
@@ -129,6 +126,11 @@
         mounted(){
             if (!this.filtersAsModal)
                 this.loadOptions();
+
+            this.$eventBusSearch.$on('has-to-reload-facets', (shouldReload) => {
+                if ( !this.isUsingElasticSearch && shouldReload )
+                    this.loadOptions();
+            }); 
         },
         beforeDestroy() {
             
