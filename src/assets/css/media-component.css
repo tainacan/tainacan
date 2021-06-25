@@ -743,7 +743,8 @@ a.pswp__share--download:hover {
       max-height: var(--tainacan-media-main-carousel-height, 60vh); }
     .tainacan-media-component__swiper-main .swiper-slide-content img {
       width: auto;
-      max-height: var(--tainacan-media-main-carousel-height, 60vh); }
+      max-height: var(--tainacan-media-main-carousel-height, 60vh);
+      display: block; }
     .tainacan-media-component__swiper-main .swiper-slide-content .twitter-tweet {
       margin-left: auto;
       margin-right: auto; }
