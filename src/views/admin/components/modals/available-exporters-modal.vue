@@ -7,9 +7,7 @@
             tabindex="-1"
             aria-modal
             ref="availableExportersModal">
-        <div
-                class="tainacan-modal-content"
-                style="width: auto">
+        <div style="width: auto">
             <header class="tainacan-modal-title">
                 <h2>{{ this.$i18n.get('exporters') }}</h2>
                 <hr>

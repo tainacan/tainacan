@@ -10,7 +10,7 @@
                             v-for="(relatedItemGroup, index) of relatedItemsArray"
                             :key="index"
                             class="related-item-group">
-                        <div class="columns">
+                        <div class="columns is-vcentered is-multiline">
                             <div class="column is-narrow">
                                 <div class="section-status">
                                     <div class="field has-addons">
@@ -35,105 +35,107 @@
                                     </div>
                                 </div>
                             </div>
+                            <div 
+                                    v-if="relatedItemGroup.total_items && relatedItemGroup.total_items > 0"
+                                    style="margin-left: auto;"
+                                    class="column is-narrow">
+                                <div class="section-status">
+                                    <div class="field has-addons">
+                                        <b-button
+                                                class="button is-secondary"
+                                                tag="router-link"
+                                                :to="$routerHelper.getCollectionItemsPath(collectionId, { metaquery: [{ key: relatedItemGroup.metadata_id, value: itemId, compare: 'IN' }] })">
+                                            {{ $i18n.getWithVariables('label_view_all_%s_related_items', [relatedItemGroup.total_items]) }}
+                                        </b-button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <table class="tainacan-table">
-                            <tbody>
-                                <tr
-                                        v-for="(relatedItem, itemIndex) of relatedItemGroup.items"
-                                        :key="itemIndex">
-                                    
-                                    <td
-                                            class="status-cell"
-                                            @click="openItemOnNewTab(relatedItem)">
-                                        <span 
-                                                v-if="$statusHelper.hasIcon(relatedItem.status)"
-                                                class="icon has-text-gray"
-                                                v-tooltip="{
-                                                    content: $i18n.get('status_' + relatedItem.status),
-                                                    autoHide: true,
-                                                    placement: 'auto-start'
-                                                }">
-                                            <i 
-                                                    class="tainacan-icon tainacan-icon-1em"
-                                                    :class="$statusHelper.getIcon(relatedItem.status)"
-                                                    />
-                                        </span>
-                                    </td>
-                                    <!-- Item Displayed Metadata -->
-                                    <td
-                                            @click="openItemOnNewTab(relatedItem)"
-                                            :key="columnIndex"
-                                            v-for="(column, columnIndex) in displayedMetadata"
-                                            class="column-default-width"
-                                            :class="{
-                                                'thumbnail-cell': column.metadatum == 'row_thumbnail',
-                                                'column-main-content' : column.metadata_type_object != undefined ? (column.metadata_type_object.related_mapped_prop == 'title') : false
+                        <ul class="related-item-group__items-list">
+                            <li
+                                    v-for="(relatedItem, itemIndex) of relatedItemGroup.items"
+                                    :key="itemIndex">
+                                
+                                <div
+                                        class="status-cell"
+                                        @click="openItemOnNewTab(relatedItem)">
+                                    <span 
+                                            v-if="$statusHelper.hasIcon(relatedItem.status)"
+                                            class="icon has-text-gray"
+                                            v-tooltip="{
+                                                content: $i18n.get('status_' + relatedItem.status),
+                                                autoHide: true,
+                                                placement: 'auto-start'
                                             }">
-                                        <p
-                                                v-tooltip="{
-                                                    delay: {
-                                                        show: 500,
-                                                        hide: 300,
-                                                    },
-                                                    content: relatedItem.title != undefined && relatedItem.title != '' ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
-                                                    html: true,
-                                                    autoHide: false,
-                                                    placement: 'auto-start'
-                                                }"
-                                                v-if="column.metadata_type_object != undefined && column.metadata_type_object.related_mapped_prop == 'title'"
-                                                v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((relatedItem.title != undefined && relatedItem.title != '') ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)"/>
-                                        
-                                        <span
-                                                v-if="column.metadatum == 'row_thumbnail'"
-                                                class="table-thumb">
-                                            <blur-hash-image
-                                                    :width="$thumbHelper.getWidth(relatedItem['thumbnail'], 'tainacan-small', 40)"
-                                                    :height="$thumbHelper.getHeight(relatedItem['thumbnail'], 'tainacan-small', 40)"
-                                                    :hash="$thumbHelper.getBlurhashString(relatedItem['thumbnail'], 'tainacan-small')"
-                                                    :src="$thumbHelper.getSrc(relatedItem['thumbnail'], 'tainacan-small', relatedItem.document_mimetype)"
-                                                    :alt="relatedItem.thumbnail_alt ? relatedItem.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                                    :transition-duration="500"
-                                            />
-                                        </span>
+                                        <i 
+                                                class="tainacan-icon tainacan-icon-1em"
+                                                :class="$statusHelper.getIcon(relatedItem.status)"
+                                                />
+                                    </span>
+                                </div>
+                                <div @click="openItemOnNewTab(relatedItem)">
+                                    <span class="table-thumb">
+                                        <blur-hash-image
+                                                :width="$thumbHelper.getWidth(relatedItem['thumbnail'], 'tainacan-small', 40)"
+                                                :height="$thumbHelper.getHeight(relatedItem['thumbnail'], 'tainacan-small', 40)"
+                                                :hash="$thumbHelper.getBlurhashString(relatedItem['thumbnail'], 'tainacan-small')"
+                                                :src="$thumbHelper.getSrc(relatedItem['thumbnail'], 'tainacan-small', relatedItem.document_mimetype)"
+                                                :alt="relatedItem.thumbnail_alt ? relatedItem.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                                :transition-duration="500"
+                                        />
+                                    </span>
+                                </div>
+                                <div 
+                                        @click="openItemOnNewTab(relatedItem)"
+                                        style="width: 100%">
+                                    <p
+                                            v-tooltip="{
+                                                delay: {
+                                                    show: 500,
+                                                    hide: 300,
+                                                },
+                                                content: relatedItem.title != undefined && relatedItem.title != '' ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
+                                                html: true,
+                                                autoHide: false,
+                                                placement: 'auto-start'
+                                            }"
+                                            v-html="(relatedItem.title != undefined && relatedItem.title != '') ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`"/>
+                                </div>
+                                <div 
+                                        v-if="isEditable"
+                                        class="actions-cell"
+                                        :label="$i18n.get('label_actions')">
+                                    <div class="actions-container">
+                                        <a
+                                                v-if="!relatedItem.status != 'trash'"
+                                                id="button-edit"
+                                                @click.prevent.stop="editItemModal = true"
+                                                :aria-label="$i18n.getFrom('items','edit_item')">
+                                            <span
+                                                    v-tooltip="{
+                                                        content: $i18n.get('edit'),
+                                                        autoHide: true,
+                                                        placement: 'auto'
+                                                    }"
+                                                    class="icon">
+                                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
 
-                                    </td>
-
-                                    <!-- Actions -->
-                                    <td 
-                                            v-if="isEditable"
-                                            class="actions-cell"
-                                            :label="$i18n.get('label_actions')">
-                                        <div class="actions-container">
-                                            <a
-                                                    v-if="!relatedItem.status != 'trash'"
-                                                    id="button-edit"
-                                                    @click.prevent.stop="editItemModal = true"
-                                                    :aria-label="$i18n.getFrom('items','edit_item')">
-                                                <span
-                                                        v-tooltip="{
-                                                            content: $i18n.get('edit'),
-                                                            autoHide: true,
-                                                            placement: 'auto'
-                                                        }"
-                                                        class="icon">
-                                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
-                                                </span>
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <b-modal 
-                                            :width="1200"
-                                            :active.sync="editItemModal"
-                                            custom-class="tainacan-modal">
-                                        <iframe 
-                                                width="100%"
-                                                style="height: 85vh"
-                                                :src="adminFullURL + $routerHelper.getItemEditPath(collectionId, relatedItem.id) + '?iframemode=true&editingmetadata=' + relatedItemGroup.metadata_id" />
-                                    </b-modal>
-                                </tr>
-                            </tbody>
-                        </table>
+                                <b-modal 
+                                        :width="1200"
+                                        :active.sync="editItemModal"
+                                        custom-class="tainacan-modal">
+                                    <iframe 
+                                            width="100%"
+                                            style="height: 85vh"
+                                            :src="adminFullURL + $routerHelper.getItemEditPath(collectionId, relatedItem.id) + '?iframemode=true&editingmetadata=' + relatedItemGroup.metadata_id" />
+                                </b-modal>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -148,25 +150,13 @@
             relatedItems: Object,
             isLoading: Boolean,
             isEditable: Boolean,
+            itemId: String,
             collectionId: String
         },
         data() {
             return {
                 editItemModal: false,
-                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#',
-                displayedMetadata: [
-                    {
-                        name: this.$i18n.get('label_thumbnail'),
-                        metadatum: 'row_thumbnail',
-                        slug: 'thumbnail',
-                    },
-                    {
-                        name: this.$i18n.get('label_title'),
-                        metadatum: 'row_title',
-                        metadata_type_object: {core: true, related_mapped_prop: 'title'},
-                        slug: 'title',
-                    }
-                ]
+                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#'
             }
         },
         computed: {
@@ -187,12 +177,10 @@
         
 <style lang="scss" scoped>
     .section-status {
-        padding-bottom: 16px;
         margin-left: -0.875rem;
         font-size: 0.875em;
 
         .field {
-            padding: 10px 0 14px 0px !important;
 
             .icon  {
                 font-size: 1.125em !important;
@@ -205,12 +193,58 @@
             
             &:not(:last-child) {
                 border-bottom: 1px dashed var(--tainacan-info-color);
-                margin-bottom: 1rem;
+                margin-bottom: 2rem;
             }
-
-            .tainacan-table {
-                margin-top: -2rem;
+            
+            .related-item-group__items-list {
+                list-style: none;
+                padding: 0px;
                 margin-bottom: 1rem;
+                 -moz-column-count: 2;
+                -webkit-column-count: 2;
+                column-count: 2;
+
+                @media screen and (max-width: 768px) {
+                    -moz-column-count: 1;
+                    -webkit-column-count: 1;
+                    column-count: 1;
+                }
+
+                li {
+                    display: flex;
+                    align-items: center;
+                    padding: 8px 32px 8px 6px;
+                    width: 100%;
+                    position: relative;
+                    overflow-x: hidden;
+                    
+                    &:hover {
+                        cursor: pointer;
+                        background-color: var(--tainacan-item-hover-background-color);
+                        .actions-cell {
+                            opacity: 1;
+                            visibility: 1;
+                            right: 0;
+                        }
+                    }
+                }
+                .actions-cell {
+                    position: absolute;
+                    right: -32px;
+                    padding: 0 6px;
+                    min-height: 28px;
+                    min-width: 28px;
+                    opacity: 0;
+                    visibility: 0;
+                    transition: right 0.3s ease;
+                }
+                .table-thumb {
+                    display: block;
+                    min-height: 28px;
+                    min-width: 28px;
+                    margin-left: 2px;
+                    margin-right: 8px;
+                }
             }
         }
     }

@@ -582,6 +582,7 @@
                                 </div>
 
                                 <related-items-list
+                                        :item-id="itemId"
                                         :collection-id="collectionId"
                                         :related-items="item.related_items"
                                         :is-editable="!$route.query.iframemode"
