@@ -4,12 +4,11 @@ const { __ } = wp.i18n;
 
 const { Spinner, Button, Placeholder } = wp.components;
 
-const { InspectorControls, BlockControls, InnerBlocks} = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InnerBlocks} = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import CarouselRelatedItemsModal from './carousel-related-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
-import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import DeprecatedBlocks from './carousel-related-items-deprecated.js';
 import 'swiper/css/swiper.min.css';
 
@@ -63,17 +62,13 @@ registerBlockType('tainacan/carousel-related-items', {
             type: String,
             default: undefined
         },
-        hideTitle: {
-            type: Boolean,
-            value: false
-        },
     },
     supports: {
         align: ['full', 'wide'],
         html: false,
         multiple: true,
     },
-    edit({ attributes, setAttributes, className, isSelected, clientId }) {
+    edit({ attributes, setAttributes, className, isSelected }) {
         
         let {
             content, 
@@ -83,7 +78,6 @@ registerBlockType('tainacan/carousel-related-items', {
             relatedItems,
             isLoading,
             itemRequestSource,
-            hideTitle,
             relatedItemsTemplate
         } = attributes;
 
@@ -123,12 +117,6 @@ registerBlockType('tainacan/carousel-related-items', {
             } );
         }
 
-        function updateChildBlocks() {
-
-            console.log("Como???");
-            
-        }
-
         function getRelatedItemsTemplates() {
             relatedItemsTemplate = [];
             relatedItems.forEach((collection) => {
@@ -158,8 +146,7 @@ registerBlockType('tainacan/carousel-related-items', {
                                     content: [{ type: 'innerblock' }],
                                     selectedItems: collection.items,
                                     loadStrategy: 'parent',
-                                    collectionId: collection.collection_id,
-                                    hideTitle: hideTitle
+                                    collectionId: collection.collection_id
                                 }
                             ],
                             [
@@ -168,7 +155,10 @@ registerBlockType('tainacan/carousel-related-items', {
                                 [
                                     [
                                         'core/button',
-                                        { text: __( 'View all related items', 'tainacan' ) }
+                                        { 
+                                            text: __( 'View all related items', 'tainacan' ),
+                                            url: collection.collection_slug ? (collection.collection_slug + '?metaquery[0][key]=' + collection.metadata_id + '&metaquery[0][value][0]=' + itemId + '&metaquery[0][compare]=IN') : ''
+                                        }
                                     ]
                                 ]
                             ],
@@ -195,39 +185,6 @@ registerBlockType('tainacan/carousel-related-items', {
                 </div>
             : (
             <div className={className}>
-
-                {/* { relatedItems.length ?
-                    <BlockControls>
-                        { 
-                            TainacanBlocksCompatToolbar({
-                                label: __('Select item with relations', 'tainacan'),
-                                icon: <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            height="24px"
-                                            width="24px">
-                                        <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
-                                    </svg>,
-                                onClick: openRelatedItemsModal
-                            })
-                        }
-                    </BlockControls>
-                : null } */}
-                {/* <div>
-                   <InspectorControls>
-                        <ToggleControl
-                                label={__('Hide title', 'tainacan')}
-                                help={ !hideTitle ? __('Toggle to hide item\'s title', 'tainacan') : __('Do not hide item\'s title', 'tainacan')}
-                                checked={ hideTitle }
-                                onChange={ ( isChecked ) => {
-                                        hideTitle = isChecked;
-                                        setAttributes({ hideTitle: hideTitle });
-                                        updateChildBlocks();
-                                    } 
-                                }
-                            />
-                    </InspectorControls>
-                </div> */}
 
                 { isSelected ? 
                     ( 
