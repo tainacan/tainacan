@@ -110,7 +110,7 @@
                                         <a
                                                 v-if="!relatedItem.status != 'trash'"
                                                 id="button-edit"
-                                                @click.prevent.stop="editItemModal = true"
+                                                @click.prevent.stop="editItemModal = true; editItemId = relatedItem.id; editMetadataId = relatedItemGroup.metadata_id;"
                                                 :aria-label="$i18n.getFrom('items','edit_item')">
                                             <span
                                                     v-tooltip="{
@@ -124,20 +124,19 @@
                                         </a>
                                     </div>
                                 </div>
-
-                                <b-modal 
-                                        :width="1200"
-                                        :active.sync="editItemModal"
-                                        custom-class="tainacan-modal">
-                                    <iframe 
-                                            width="100%"
-                                            style="height: 85vh"
-                                            :src="adminFullURL + $routerHelper.getItemEditPath(collectionId, relatedItem.id) + '?iframemode=true&editingmetadata=' + relatedItemGroup.metadata_id" />
-                                </b-modal>
                             </li>
                         </ul>
                     </div>
                 </div>
+                <b-modal 
+                        :width="1200"
+                        :active.sync="editItemModal"
+                        custom-class="tainacan-modal">
+                    <iframe 
+                            width="100%"
+                            style="height: 85vh"
+                            :src="adminFullURL + $routerHelper.getItemEditPath(collectionId, editItemId) + '?iframemode=true&editingmetadata=' + editMetadataId" />
+                </b-modal>
             </div>
         </div>
     </div>
@@ -155,6 +154,8 @@
         },
         data() {
             return {
+                editMetadataId: false,
+                editItemId: false,
                 editItemModal: false,
                 adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#'
             }
