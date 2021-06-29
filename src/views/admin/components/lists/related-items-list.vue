@@ -3,7 +3,7 @@
         <div class="table-container">
             <b-loading
                     is-full-page="false" 
-                    :active.sync="isLoading" />
+                    :active.sync="displayLoading" />
             <div class="table-wrapper">
                 <div class="related-items-list">
                     <div 
@@ -131,6 +131,7 @@
                 <b-modal 
                         :width="1200"
                         :active.sync="editItemModal"
+                        @close="reloadRelatedItems"
                         custom-class="tainacan-modal">
                     <iframe 
                             width="100%"
@@ -143,6 +144,7 @@
 </template>
 
 <script>
+    import { mapActions } from 'vuex';
     export default {
         name: 'RelatedItemsList',
         props: {
@@ -157,21 +159,59 @@
                 editMetadataId: false,
                 editItemId: false,
                 editItemModal: false,
-                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#'
+                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#',
+                isUpdatingRelatedItems: false
             }
         },
         computed: {
             relatedItemsArray() {
                 return this.relatedItems ? Object.values(this.relatedItems).filter((aRelatedItemGroup) => aRelatedItemGroup.total_items) : [];
+            },
+            displayLoading() {
+                return this.isLoading || this.isUpdatingRelatedItems;
+            }
+        },
+        watch: {
+            editItemModal() {
+                if (this.editItemModal) {
+                    window.addEventListener('message', this.updateReloadItemsAfterModal, false);
+                } else {
+                    this.editItemId = false;
+                    this.editMetadataId = false;
+                    window.removeEventListener('message', this.updateReloadItemsAfterModal);
+                }
             }
         },
         methods: {
+            ...mapActions('item', [
+                'fetchOnlyRelatedItems'
+            ]),
             openItemOnNewTab(relatedItem) {
                 if (relatedItem && relatedItem.id) {
                     let routeData = this.$router.resolve(this.$routerHelper.getItemPath(this.collectionId, relatedItem.id));
                     window.open(routeData.href, '_blank');
                 }
             },
+            reloadRelatedItems() {
+                this.isUpdatingRelatedItems = true;
+                this.fetchOnlyRelatedItems({
+                    itemId: this.itemId,
+                    contextEdit: true
+                })
+                .then(() => this.isUpdatingRelatedItems = false)
+                .catch((error) => {
+                    this.$console.error(error);
+                    this.isUpdatingRelatedItems = false;
+                });
+            },
+            updateReloadItemsAfterModal(event) {
+                const message = event.message ? 'message' : 'data';
+                const data = event[message];
+
+                if (data.type == 'itemCreationMessage') {
+                    this.editItemModal = false;
+                }  
+            }
         }
     }
 </script>

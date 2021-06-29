@@ -21,7 +21,7 @@
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>
             <a
-                    v-if="!$route.query.iframemode"
+                    v-if="!isIframeMode"
                     @click="$router.go(-1)"
                     class="back-link has-text-secondary">
                 {{ $i18n.get('back') }}
@@ -585,7 +585,7 @@
                                         :item-id="itemId"
                                         :collection-id="collectionId"
                                         :related-items="item.related_items"
-                                        :is-editable="!$route.query.iframemode"
+                                        :is-editable="!isIframeMode"
                                         :is-loading.sync="isLoading" />
                                 
                             </b-tab-item>
@@ -649,7 +649,17 @@
             </div>
             <div
                     class="form-submission-footer"
-                    v-if="form.status == 'trash'">
+                    v-if="isEditingMetadataIframeMode">
+                <button
+                        @click="onSubmit()"
+                        type="button"
+                        class="button is-secondary">
+                    {{ $i18n.get('label_back_to_related_item') }}
+                </button>
+            </div>
+            <div
+                    class="form-submission-footer"
+                    v-if="form.status == 'trash' && !isEditingMetadataIframeMode">
                 <button 
                         v-if="item && item.current_user_can_delete"
                         @click="onDeletePermanently()"
@@ -667,7 +677,7 @@
             </div>
             <div
                     class="form-submission-footer"
-                    v-if="form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined">
+                    v-if="(form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined) && !isEditingMetadataIframeMode">
                 <button
                         v-if="isOnSequenceEdit && itemPosition > 1"
                         @click="onPrevInSequence()"
@@ -745,7 +755,7 @@
             </div>
             <div
                     class="form-submission-footer"
-                    v-if="form.status == 'publish' || form.status == 'private'">
+                    v-if="(form.status == 'publish' || form.status == 'private') && !isEditingMetadataIframeMode">
                 <button
                         v-if="isOnSequenceEdit && itemPosition > 1"
                         @click="onPrevInSequence()"
@@ -882,7 +892,7 @@ export default {
             isUpdatingValues: false,
             entityName: 'item',
             activeTab: 0,
-            isLoadingAttachments: false,
+            isLoadingAttachments: false
         }
     },
     computed: {
@@ -909,6 +919,12 @@ export default {
         },
         formErrors() {
            return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
+        },
+        isIframeMode() {
+            return this.$route.query && this.$route.query.iframemode;
+        },
+        isEditingMetadataIframeMode() {
+            return this.$route.query && this.$route.query.editingmetadata;
         }
     },
     watch: {
@@ -1111,7 +1127,7 @@ export default {
                 
                 this.isLoading = false;
 
-                if (!this.$route.query.iframemode) {
+                if (!this.isIframeMode) {
 
                     if (!this.isOnSequenceEdit) {
                         if (this.form.status != 'trash') {
@@ -1130,12 +1146,12 @@ export default {
 
                 } else {
                     parent.postMessage({ 
-                            type: 'itemCreationMessage',
-                            itemId: this.item.id,
-                            itemTitle: this.item.title,
-                            itemThumbnail: this.item.thumbnail
-                        },
-                        tainacan_plugin.admin_url);
+                        type: 'itemCreationMessage',
+                        itemId: this.item.id,
+                        itemTitle: this.item.title,
+                        itemThumbnail: this.item.thumbnail
+                    },
+                    tainacan_plugin.admin_url);
                 }
             })
             .catch((errors) => {
@@ -1158,7 +1174,7 @@ export default {
             });
         },
         onDiscard() {
-            if (!this.$route.query.iframemode)
+            if (!this.isIframeMode)
                 this.$router.go(-1);
             else
                 parent.postMessage({ 
@@ -1616,7 +1632,7 @@ export default {
                 path: this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, this.sequenceId, this.itemPosition - 1),
                 query: { collapses: this.metadataCollapses }
             });
-        }
+        },
     }
 }
 </script>

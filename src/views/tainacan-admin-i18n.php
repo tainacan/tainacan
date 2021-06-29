@@ -586,8 +586,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_pan_selection'							 => __( 'Pan selection', 'tainacan'),
 	'label_reset_zoom'								 => __( 'Reset zoom', 'tainacan'),
 	'label_chart_export_options'					 => __( 'Chart export options', 'tainacan'),
-	'label_related_items'							 => __( 'Items that are related', 'tainacan'),
+	'label_related_items'							 => __( 'Items related to this', 'tainacan'),
 	'label_view_all_%s_related_items'				 => __( 'View all %s related items', 'tainacan'),
+	'label_back_to_related_item'					 => __( 'Back to related item', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
