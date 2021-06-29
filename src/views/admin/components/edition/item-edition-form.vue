@@ -1646,7 +1646,7 @@ export default {
             margin-bottom: 110px;
 
             .field:not(:last-child) {
-                margin-bottom: 0.5em;
+                margin-bottom: 0em;
             }
         }
 
@@ -1721,7 +1721,7 @@ export default {
             }
 
             .field {
-                padding: 10px 0px 14px 60px;
+                padding: 12px 0px 12px 60px;
             }
 
             @media screen and (max-width: 769px) {

@@ -21,17 +21,7 @@
                         }"
                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
             </span>
-            <label 
-                    v-tooltip="{
-                        delay: {
-                            show: 500,
-                            hide: 300,
-                        },
-                        content: itemMetadatum.metadatum.name,
-                        autoHide: false,
-                        placement: 'auto-end'
-                    }" 
-                    class="label">
+            <label class="label">
                 {{ itemMetadatum.metadatum.name }}
             </label>
             <span
@@ -163,7 +153,7 @@
                 eventBusItemMetadata.$off('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id));
         },
         mounted () {
-            if (this.$route.query && this.$route.query.editingmetadata) {
+            if (this.$route && this.$route.query && this.$route.query.editingmetadata) {
                 this.isHighlightedMetadatum = this.$route.query.editingmetadata == (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id);
 
                 if (this.isHighlightedMetadatum) {
@@ -302,25 +292,21 @@
             margin-left: 15px;
             margin-bottom: 0;
             margin-top: 0.15em;
-            max-width: 50%;
         }
         .metadata-type {
             font-size: 0.8125em;
             font-weight: 400;
             color: var(--tainacan-info-color);
             opacity: 0.75;
-            top: -0.1em;
             position: relative;
-        }
-        .help-wrapper {
-            top: -0.2em;
         }
         .collapse-handle {
             cursor: pointer;
-            position: relative;
             margin-left: -42px;
-            bottom: 0.1em;
-            white-space: nowrap;
+            line-height: 1.5em;
+        }
+        .collapse-handle+div {
+            margin-top: 0.5em;
         }
         .add-link {
             font-size: 0.75em;

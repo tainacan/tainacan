@@ -331,7 +331,7 @@
         .field {
             padding-right: 0;
             margin-left: 3px;
-            margin-bottom: 0.875em;
+            margin-bottom: 0em !important;
         }
         .is-last-input.field {
             border-bottom: none;
