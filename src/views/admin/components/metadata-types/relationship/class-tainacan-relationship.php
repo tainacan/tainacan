@@ -62,22 +62,26 @@ class Relationship extends Metadata_Type {
 			'repeated' => [
 				'title' =>__( 'Allow repeated items', 'tainacan' ),
 				'description' => __( 'Allows different items to be related to the same item selected in another collection.', 'tainacan' ),
+			],
+			'display_in_related_items' => [
+				'title' =>__( 'Display in related items', 'tainacan' ),
+				'description' => __( 'Include items on related item list.', 'tainacan' ),
 			]
 		];
 	}
 
 	/**
-     * Gets print-ready version of the options list in html
-     *
-     * Checks if at least one option exists, otherwise return an empty string
-     * 
-     * @return string An html content with labels and values for the options or an empty string
-     */
-    public function get_options_as_html() {
-        $options_as_html = '';
-        $options = $this->get_options();
+	 * Gets print-ready version of the options list in html
+	 *
+	 * Checks if at least one option exists, otherwise return an empty string
+	 * 
+	 * @return string An html content with labels and values for the options or an empty string
+	 */
+	public function get_options_as_html() {
+		$options_as_html = '';
+		$options = $this->get_options();
 		
-        if ( count($options) > 0 ) {
+		if ( count($options) > 0 ) {
 
 			// Remove this option that is not relevant for the user
 			if ( isset($options['related_primitive_type']) )
@@ -119,15 +123,24 @@ class Relationship extends Metadata_Type {
 								$readable_option_value = $option_value;
 						break;
 
+						case 'display_in_related_items':
+							if ($option_value == 'yes')
+								$readable_option_value = __('Yes', 'tainacan');
+							else if ($option_value == 'no')
+								$readable_option_value = __('No', 'tainacan');
+							else
+								$readable_option_value = $option_value;
+						break;
+
 						default:
 							$readable_option_value = $option_value;
 					}
 					$options_as_html .= '<div class="value">' . $readable_option_value . '</div></div>';
 				}
-            }
-        }
-        return $options_as_html;
-    }
+			}
+		}
+		return $options_as_html;
+	}
 
 	public function validate_options(\Tainacan\Entities\Metadatum $metadatum) {
 		if ( !in_array($metadatum->get_status(), apply_filters('tainacan-status-require-validation', ['publish','future','private'])) )
@@ -146,6 +159,12 @@ class Relationship extends Metadata_Type {
 		if  ( !empty($this->get_option('search')) && !is_numeric($this->get_option('search')) ) {
 			return [
 				'search' => __('Search option must be a numeric Metadatum ID','tainacan')
+			];
+		}
+		// empty is ok
+		if ( !empty($this->get_option('display_in_related_items')) && !in_array($this->get_option('display_in_related_items'), ['yes', 'no']) ) {
+			return [
+				'search' => __('Display in related items must be a option yes or no','tainacan')
 			];
 		}
 		
