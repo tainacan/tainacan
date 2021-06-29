@@ -220,7 +220,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_approved'                                 => __( 'Approved', 'tainacan' ),
 	'label_collection_related'                       => __( 'Collection related', 'tainacan' ),
 	'label_metadata_for_search'                      => __( 'Metadata for search', 'tainacan' ),
-	'label_allow_repeated_items'                     => __( 'Allow repeated items', 'tainacan' ),
 	'label_select_taxonomy'                          => __( 'Select taxonomy', 'tainacan' ),
 	'label_select_taxonomy_input_type'               => __( 'Input type', 'tainacan' ),
 	'label_taxonomy_allow_new_terms'                 => __( 'Allow new terms', 'tainacan' ),

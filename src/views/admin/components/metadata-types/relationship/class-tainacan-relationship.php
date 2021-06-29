@@ -59,10 +59,6 @@ class Relationship extends Metadata_Type {
 				'title' => __( 'Related Metadatum', 'tainacan' ),
 				'description' => __( 'Select the metadata to use as search criteria in the target collection and as a label when representing the relationship', 'tainacan' ),
 			],
-			'repeated' => [
-				'title' =>__( 'Allow repeated items', 'tainacan' ),
-				'description' => __( 'Allows different items to be related to the same item selected in another collection.', 'tainacan' ),
-			],
 			'display_in_related_items' => [
 				'title' =>__( 'Display in related items', 'tainacan' ),
 				'description' => __( 'Include items on related item list.', 'tainacan' ),
@@ -111,15 +107,6 @@ class Relationship extends Metadata_Type {
 							if ( $metadata ) {
 								$readable_option_value = $metadata;
 							} else
-								$readable_option_value = $option_value;
-						break;
-
-						case 'repeated':
-							if ($option_value == 'yes')
-								$readable_option_value = __('Yes', 'tainacan');
-							else if ($option_value == 'no')
-								$readable_option_value = __('No', 'tainacan');
-							else
 								$readable_option_value = $option_value;
 						break;
 
