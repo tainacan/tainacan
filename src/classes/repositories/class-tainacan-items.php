@@ -618,6 +618,10 @@ class Items extends Repository {
 				[
 					'key' => '_option_collection_id',
 					'value' => $current_collection->get_id()
+				],
+				[
+					'key' => '_option_display_in_related_items',
+					'value' => 'yes'
 				]
 			]
 		], 'OBJECT');
