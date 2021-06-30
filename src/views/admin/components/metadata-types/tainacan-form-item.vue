@@ -44,12 +44,13 @@
             <div   
                     v-show="hideCollapses || (isCollapsed || errorMessage)"
                     v-if="isTextInputComponent">
-                <component 
+                <component
                         :is="metadatumComponent"
                         v-model="values[0]" 
                         :item-metadatum="itemMetadatum"
                         @input="changeValue"
-                        @blur="performValueChange"/>
+                        @blur="performValueChange"
+                        :metadata-name-filter-string="metadataNameFilterString" />
                 <template v-if="isMultiple && values.length > 1">
                     <transition-group
                             name="filter-item"
@@ -62,7 +63,8 @@
                                     v-model="values[index]" 
                                     :item-metadatum="itemMetadatum"
                                     @input="changeValue"
-                                    @blur="performValueChange"/>
+                                    @blur="performValueChange"
+                                    :metadata-name-filter-string="metadataNameFilterString" />
                             <a 
                                     v-if="index > 0" 
                                     @click="removeValue(index)"
@@ -99,7 +101,8 @@
                         :item-metadatum="itemMetadatum"
                         @input="changeValue"
                         @blur="performValueChange"
-                        :is-last-metadatum="isLastMetadatum" />
+                        :is-last-metadatum="isLastMetadatum"
+                        :metadata-name-filter-string="metadataNameFilterString" />
             </div>
         </transition>
     </b-field>
@@ -114,7 +117,8 @@
             itemMetadatum: Object,
             isCollapsed: true,
             hideCollapses: false,
-            isLastMetadatum: false
+            isLastMetadatum: false,
+            metadataNameFilterString: ''
         },
         data(){
             return {

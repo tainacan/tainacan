@@ -52,6 +52,7 @@
                 </div>
                 <tainacan-form-item
                         v-else
+                        v-show="(metadataNameFilterString == '' || filterByMetadatumName(childItemMetadatum))"
                         :key="groupIndex + '-' + childIndex"
                         :item-metadatum="childItemMetadatum"
                         :is-collapsed="childItemMetadatum.collapse"
@@ -105,7 +106,8 @@
         props: {
             itemMetadatum: Object,
             value: [String, Number, Array],
-            disabled: false
+            disabled: false,
+            metadataNameFilterString: ''
         },
         data() {
             return {
@@ -306,6 +308,9 @@
                 } else {
                     this.childItemMetadataGroups.splice(groupIndex, 1);
                 }
+            },
+            filterByMetadatumName(itemMetadatum) {
+                return itemMetadatum.metadatum.name.toString().toLowerCase().indexOf(this.metadataNameFilterString.toString().toLowerCase()) >= 0;
             }
         }
     }

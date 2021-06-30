@@ -490,20 +490,38 @@
                                     <span>{{ $i18n.get('metadata') }}</span>
                                 </template>
 
-                                <a
-                                        class="collapse-all"
-                                        @click="toggleCollapseAll()">
-                                    {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                                    <span class="icon">
-                                        <i
-                                                :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                                                class="tainacan-icon tainacan-icon-1-25em"/>
-                                    </span>
-                                </a>
+                                <div class="sub-header">
+                                    <a
+                                            class="collapse-all"
+                                            @click="toggleCollapseAll()">
+                                        {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                                        <span class="icon">
+                                            <i
+                                                    :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                                                    class="tainacan-icon tainacan-icon-1-25em"/>
+                                        </span>
+                                    </a>
+
+                                    <b-field 
+                                            v-if="metadatumList && metadatumList.length > 5"
+                                            class="header-item">
+                                        <b-input 
+                                                :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
+                                                v-model="metadataNameFilterString"
+                                                icon="magnify"
+                                                size="is-small"
+                                                icon-right="close-circle"
+                                                icon-right-clickable
+                                                @icon-right-click="metadataNameFilterString = ''" />
+                                    </b-field>
+                                </div>
+
                                 <tainacan-form-item
+                                        v-show="(metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"
                                         v-for="(itemMetadatum, index) of metadatumList"
                                         :key="index"
                                         :item-metadatum="itemMetadatum"
+                                        :metadata-name-filter-string="metadataNameFilterString"
                                         :is-collapsed="metadataCollapses[index]"
                                         :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
                                         @changeCollapse="onChangeCollapse($event, index)"/>
@@ -892,7 +910,8 @@ export default {
             isUpdatingValues: false,
             entityName: 'item',
             activeTab: 0,
-            isLoadingAttachments: false
+            isLoadingAttachments: false,
+            metadataNameFilterString: '',
         }
     },
     computed: {
@@ -1633,6 +1652,22 @@ export default {
                 query: { collapses: this.metadataCollapses }
             });
         },
+        filterByMetadatumName(itemMetadatum) {
+            if (itemMetadatum.metadatum &&
+                itemMetadatum.metadatum.metadata_type_object && 
+                itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' &&
+                itemMetadatum.metadatum.metadata_type_options &&
+                itemMetadatum.metadatum.metadata_type_options.children_objects &&
+                itemMetadatum.metadatum.metadata_type_options.children_objects.length
+            ) {
+                let childNamesArray = itemMetadatum.metadatum.metadata_type_options.children_objects.map((children) => children.name);
+                childNamesArray.push(itemMetadatum.metadatum.name);
+
+                return childNamesArray.some((childName) => childName.toString().toLowerCase().indexOf(this.metadataNameFilterString.toString().toLowerCase()) >= 0);
+            }
+            else 
+                return itemMetadatum.metadatum.name.toString().toLowerCase().indexOf(this.metadataNameFilterString.toString().toLowerCase()) >= 0;
+        }
     }
 }
 </script>
@@ -1741,6 +1776,16 @@ export default {
             font-weight: 500 !important;
             color: var(--tainacan-label-color) !important;
             line-height: 1.2em;
+        }
+    }
+
+    .sub-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        .field {
+            padding: 2px 0px 2px 24px !important;
         }
     }
 
