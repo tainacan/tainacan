@@ -18,7 +18,8 @@
                     v-model="taxonomy_id"
                     @input="emitValues()"
                     @focus="clear"
-                    :loading="loading">
+                    :loading="loading"
+                    expanded>
                 <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
                 <option
                         v-for="option in taxonomies"
@@ -41,7 +42,8 @@
                     name="metadata_type_options[component_type]"
                     placeholder="Select the input type for the taxonomy metadatum"
                     @input="emitValues()"
-                    v-model="input_type">
+                    v-model="input_type"
+                    expanded>
                 <option
                         v-for="(option, index) in single_types"
                         :value="index"
@@ -55,7 +57,8 @@
                     placeholder="Select the input type for the taxonomy metadatum"
                     v-model="input_type"
                     @input="emitValues()"
-                    v-else>
+                    v-else
+                    expanded>
                 <option
                         v-for="(option, index) in multiple_types"
                         :value="index"
