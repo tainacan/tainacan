@@ -30,9 +30,6 @@
                 <div class="media">
                     <div class="media-content">
                         <span class="ellipsed-text">{{ props.option.label }}</span>
-                        <span 
-                                v-if="props.option.total_items != undefined"
-                                class="has-text-gray">{{ "(" + props.option.total_items + ")" }}</span>
                     </div>
                 </div>
             </template>
@@ -123,7 +120,16 @@
                     if (this.getOptionsValuesCancel != undefined)
                         this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                    promise = this.getValuesPlainText( this.itemMetadatum.metadatum.id, this.searchQuery, false, [], this.searchOffset, this.searchNumber );
+                    promise = this.getValuesPlainText({
+                        metadatumId: this.itemMetadatum.metadatum.id,
+                        search: this.searchQuery,
+                        isRepositoryLevel: false, 
+                        valuesToIgnore: [], 
+                        offset: this.searchOffset,
+                        number: this.searchNumber,
+                        isInCheckboxModal: false,
+                        countItems: false
+                    });
                     
                     promise.request
                         .then( res => {
