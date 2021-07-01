@@ -59,7 +59,6 @@ $pswp__include-minimal-style: true !default;
     ul.swiper-wrapper { 
         display: flex;
         align-items: center;
-        margin-bottom: 30px;
 
         &[data-pswp-uid] li.swiper-slide img {
             cursor: zoom-in !important;
@@ -89,6 +88,10 @@ $pswp__include-minimal-style: true !default;
                 visibility: hidden;
             }
             &.hide-caption .swiper-slide-metadata__caption {
+                display: none;
+                visibility: hidden;
+            }
+            &.hide-name.hide-description.hide-caption br {
                 display: none;
                 visibility: hidden;
             }
@@ -200,7 +203,6 @@ $pswp__include-minimal-style: true !default;
     ul.swiper-wrapper { 
         max-width: calc(100% - var(--swiper-navigation-size, 44px) - var(--swiper-navigation-size, 44px));
         margin: 0 var(--swiper-navigation-size, 44px);
-        margin-bottom: 30px;
     }
 
     li.swiper-slide {
@@ -274,6 +276,10 @@ $pswp__include-minimal-style: true !default;
                 display: none;
                 visibility: hidden;
             }
+            &.hide-name.hide-description.hide-caption br {
+                display: none;
+                visibility: hidden;
+            }
         }
         a {
             width: 100%;
@@ -310,6 +316,9 @@ $pswp__include-minimal-style: true !default;
     }
 }
 .tainacan-media-component__swiper-main+.tainacan-media-component__swiper-thumbs {
+    ul.swiper-wrapper {
+        margin-bottom: 1rem;
+    }
     li.swiper-slide {
         cursor: pointer;
     }
