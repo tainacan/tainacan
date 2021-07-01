@@ -59,6 +59,7 @@ $pswp__include-minimal-style: true !default;
     ul.swiper-wrapper { 
         display: flex;
         align-items: center;
+        margin: 0;
 
         &[data-pswp-uid] li.swiper-slide img {
             cursor: zoom-in !important;
