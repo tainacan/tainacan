@@ -42,7 +42,7 @@
                 ({{ itemMetadatum.metadatum.metadata_type_object.name }})
             </span>
             <help-button
-                    v-if="!$parent.hideHelpButtons" 
+                    v-if="!$parent.hideHelpButtons && !$parent.helpInfoBellowLabel && itemMetadatum.metadatum && itemMetadatum.metadatum.description" 
                     :title="itemMetadatum.metadatum.name"
                     :message="itemMetadatum.metadatum.description"/>
         </span>
@@ -50,6 +50,11 @@
             <div   
                     v-show="hideCollapses || (isCollapsed || errorMessage)"
                     v-if="isTextInputComponent">
+                <p
+                        class="metadatum-description-help-info"
+                        v-if="!$parent.hideHelpButtons && $parent.helpInfoBellowLabel && itemMetadatum.metadatum && itemMetadatum.metadatum.description">
+                    {{ itemMetadatum.metadatum.description }}
+                </p>
                 <component 
                         :is="metadatumComponent"
                         v-model="values[0]" 
@@ -99,6 +104,11 @@
             <div 
                     v-show="hideCollapses || isCollapsed"
                     v-if="!isTextInputComponent">
+                <p
+                        class="metadatum-description-help-info"
+                        v-if="!$parent.hideHelpButtons && $parent.helpInfoBellowLabel && itemMetadatum.metadatum && itemMetadatum.metadatum.description">
+                    {{ itemMetadatum.metadatum.description }}
+                </p>
                 <component
                         :is="metadatumComponent"
                         v-model="values"
@@ -276,6 +286,11 @@
             margin-bottom: 0;
             margin-top: 0.15em;
             max-width: 50%;
+        }
+        .metadatum-description-help-info {
+            font-size: 0.75em;
+            color: var(--tainacan-info-color);
+            margin-bottom: 0.5em;
         }
         .metadata-type {
             font-size: 0.8125em;
