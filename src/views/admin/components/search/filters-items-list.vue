@@ -384,9 +384,7 @@
                 this.prepareFilters();
             });
             if (this.isUsingElasticSearch) {
-                this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
-                    this.isLoadingItems = isLoadingItems;
-                });
+                this.$eventBusSearch.$on('isLoadingItems', this.updateIsLoadingItems);
             }
         },
         beforeDestroy() {
@@ -405,7 +403,7 @@
             this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
 
             if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems');
+                this.$eventBusSearch.$off('isLoadingItems', this.updateIsLoadingItems);
      
         },
         methods: {
@@ -482,6 +480,9 @@
                             this.repositoryFiltersSearchCancel = source;
                         });
                 }
+            },
+            updateIsLoadingItems(isLoadingItems) {
+                this.isLoadingItems = isLoadingItems 
             }
         }
     }
