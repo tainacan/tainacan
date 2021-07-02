@@ -1043,3 +1043,25 @@ function tainacan_the_items_carousel($args = []) {
 function tainacan_the_related_items_carousel($args = []) {
 	echo \Tainacan\Theme_Helper::get_instance()->get_tainacan_related_items_carousel($args);
 }
+
+/**
+ * Checks if the current item has or not related items
+ */
+function tainacan_has_related_items($item_id = false) {
+	// Gets the current Item
+	$item = $item_id ? \Tainacan\Theme_Helper::get_instance()->tainacan_get_item($item_id) : \Tainacan\Theme_Helper::get_instance()->tainacan_get_item();
+	if (!$item)
+		return;
+	
+	// Then fetches related ones
+	$related_items = $item->get_related_items();
+	if ( !$related_items || !is_array($related_items) || !count($related_items) )
+		return false;
+
+	// If we have at least one total_items, there are related items
+	foreach($related_items as $related_group) {
+		if ( isset($related_group['total_items']) && (int)$related_group['total_items'] > 0 )
+			return true;
+	}
+	return false;
+}

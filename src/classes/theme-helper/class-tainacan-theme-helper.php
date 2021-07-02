@@ -1014,23 +1014,24 @@ class Theme_Helper {
 
 					$carousel_div = $this->get_tainacan_items_carousel($carousel_args);
 				}
-
-				$output .= '<div class="wp-block-group">
-					<div class="wp-block-group__inner-container">' .
-						$collection_heading .
-						$metadata_label .
-						$carousel_div . 
-						'<div class="wp-block-buttons">
-							<div class="wp-block-button">
-								<a class="wp-block-button__link">
-									' . __('View all related items', 'tainacan') . '
-								</a>
+				if ( $related_group['total_items'] > 1 ) {
+					$output .= '<div class="wp-block-group">
+						<div class="wp-block-group__inner-container">' .
+							$collection_heading .
+							$metadata_label .
+							$carousel_div . 
+							'<div class="wp-block-buttons">
+								<div class="wp-block-button">
+									<a class="wp-block-button__link">
+										' . sprintf( __('View all (%s) related items', 'tainacan'), $related_group['total_items'] ) . '
+									</a>
+								</div>
+							</div>
+							<div style="height:70px" aria-hidden="true" class="wp-block-spacer">
 							</div>
 						</div>
-						<div style="height:70px" aria-hidden="true" class="wp-block-spacer">
-						</div>
-					</div>
-				</div>';
+					</div>';
+				}
 			}
 		}
 		

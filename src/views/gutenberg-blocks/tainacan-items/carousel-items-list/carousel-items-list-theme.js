@@ -90,8 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.collectionTextColor = this.$el.attributes['collection-text-color'] != undefined ? this.$el.attributes['collection-text-color'].value : undefined;
                     this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
                     this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
-
-                    console.log(this.$el.attributes['hide-title'].value);
                 },
                 methods: {
                     __(text, domain) {
