@@ -32,6 +32,7 @@ registerBlockType('tainacan/carousel-related-items', {
             content: 'preview'
         }
     },
+    parent: [], // Hides this block while we manage better update logic for its inner blocks.
     attributes: {
         content: {
             type: 'array',
