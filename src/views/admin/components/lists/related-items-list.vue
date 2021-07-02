@@ -36,7 +36,7 @@
                                 </div>
                             </div>
                             <div 
-                                    v-if="relatedItemGroup.total_items && relatedItemGroup.total_items > 0"
+                                    v-if="relatedItemGroup.total_items && relatedItemGroup.total_items > 1"
                                     style="margin-left: auto;"
                                     class="column is-narrow">
                                 <div class="section-status">
@@ -103,7 +103,7 @@
                                             v-html="(relatedItem.title != undefined && relatedItem.title != '') ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`"/>
                                 </div>
                                 <div 
-                                        v-if="isEditable"
+                                        v-if="isEditable && relatedItem.current_user_can_edit"
                                         class="actions-cell"
                                         :label="$i18n.get('label_actions')">
                                     <div class="actions-container">
