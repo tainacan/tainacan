@@ -636,6 +636,8 @@ class Items extends Repository {
 					$response[$metadata->get_id() . '_' . $collection->get_id()] = array(
 						'collection_id' => $collection->get_id(),
 						'collection_name' => $collection->get_name(),
+						'url' => $collection->get_url(),
+						'slug' => $collection->get_slug(),
 						'metadata_id' => $metadata->get_id(),
 						'metadata_name' => $metadata->get_name(),
 						'total_items' => $related_items['found_posts'],
@@ -649,6 +651,8 @@ class Items extends Repository {
 				$response[$metadata->get_id()] = array(
 					'collection_id' => $collection->get_id(),
 					'collection_name' => $collection->get_name(),
+					'url' => $collection->get_url(),
+					'slug' => $collection->get_slug(),
 					'metadata_id' => $metadata->get_id(),
 					'metadata_name' => $metadata->get_name(),
 					'total_items' => $related_items['found_posts'],
