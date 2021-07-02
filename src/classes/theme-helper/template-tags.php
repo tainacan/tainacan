@@ -1054,7 +1054,7 @@ function tainacan_has_related_items($item_id = false) {
 		return;
 	
 	// Then fetches related ones
-	$related_items = $item->get_related_items();
+	$related_items = $item->get_related_items();// TODO: handle this inside the item so we don't have to load things here.
 	if ( !$related_items || !is_array($related_items) || !count($related_items) )
 		return false;
 

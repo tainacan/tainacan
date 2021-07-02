@@ -165,7 +165,7 @@ registerBlockType('tainacan/carousel-related-items', {
                             ],
                             [
                                 'core/spacer',
-                                { height: 70 }
+                                { height: 30 }
                             ]
                         ]
                     ]);

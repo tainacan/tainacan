@@ -985,9 +985,9 @@ class Theme_Helper {
 
 		// Always pass the default class;
 		$output = '<div class="' . $args['class_name'] . ' wp-block-tainacan-carousel-related-items' . '">';
-
+		
 		foreach($related_items as $collection_id => $related_group) {
-
+			
 			if ( isset($related_group['items']) && isset($related_group['total_items']) && $related_group['total_items'] ) {
 
 				// Adds a heading with the collection name
@@ -1014,24 +1014,27 @@ class Theme_Helper {
 
 					$carousel_div = $this->get_tainacan_items_carousel($carousel_args);
 				}
-				if ( $related_group['total_items'] > 1 ) {
-					$output .= '<div class="wp-block-group">
-						<div class="wp-block-group__inner-container">' .
-							$collection_heading .
-							$metadata_label .
-							$carousel_div . 
-							'<div class="wp-block-buttons">
-								<div class="wp-block-button">
-									<a class="wp-block-button__link">
-										' . sprintf( __('View all (%s) related items', 'tainacan'), $related_group['total_items'] ) . '
-									</a>
-								</div>
-							</div>
-							<div style="height:70px" aria-hidden="true" class="wp-block-spacer">
-							</div>
+				
+				$output .= '<div class="wp-block-group">
+					<div class="wp-block-group__inner-container">' .
+						$collection_heading .
+						$metadata_label .
+						$carousel_div .
+							( 
+							$related_group['total_items'] > 1 ?
+								'<div class="wp-block-buttons">
+									<div class="wp-block-button">
+										<a class="wp-block-button__link" href="/' . $related_group['collection_slug'] . '?metaquery[0][key]=' . $related_group['metadata_id'] . '&metaquery[0][value][0]=' . $item->get_ID() . '&metaquery[0][compare]=IN">
+											' . sprintf( __('View all %s related items', 'tainacan'), $related_group['total_items'] ) . '
+										</a>
+									</div>
+								</div>'
+							: ''
+							)
+						. '<div style="height:30px" aria-hidden="true" class="wp-block-spacer">
 						</div>
-					</div>';
-				}
+					</div>
+				</div>';
 			}
 		}
 		
