@@ -114,9 +114,22 @@
                         this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
                     if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
-                        promise = this.getValuesRelationship( this.searchQuery, this.isRepositoryLevel, [], this.searchOffset, this.searchNumber );
+                        promise = this.getValuesRelationship({
+                            search: this.searchQuery,
+                            isRepositoryLevel: this.isRepositoryLevel,
+                            valuesToIgnore: [],
+                            offset: this.searchOffset,
+                            number: this.searchNumber
+                        });
                     else
-                        promise = this.getValuesPlainText( this.metadatumId, this.searchQuery, this.isRepositoryLevel, [], this.searchOffset, this.searchNumber );
+                        promise = this.getValuesPlainText({
+                            metadatumId: this.metadatumId,
+                            search: this.searchQuery,
+                            isRepositoryLevel: this.isRepositoryLevel,
+                            valuesToIgnore: [],
+                            offset: this.searchOffset,
+                            number: this.searchNumber
+                        });
                     
                     promise.request
                         .then( res => {

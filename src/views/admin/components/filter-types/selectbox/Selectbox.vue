@@ -61,7 +61,11 @@
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
                 let promise = null;
-                promise = this.getValuesPlainText( this.metadatumId, null, this.isRepositoryLevel );
+                promise = this.getValuesPlainText({
+                    metadatumId: this.metadatumId,
+                    search: null,
+                    isRepositoryLevel: this.isRepositoryLevel
+                });
                 promise.request
                     .then((res) => {
                         this.updateSelectedValues();

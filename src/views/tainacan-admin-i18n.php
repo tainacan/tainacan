@@ -872,6 +872,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_no_taxonomy_metadata_created'		 		 =>	__( 'No taxonomy metadata created yet', 'tainacan'),
 	'label_amount_of_metadata_of_type'	 			 =>	__( 'Amount of metadata of this type', 'tainacan'),
 	'info_child_terms_chart'						 => __( 'Click on the term bar on the chart aside to see its child terms (if any) in this panel', 'tainacan' ),
+	'info_metadata_autocomplete_suggestions'		 => __( 'Some values already used on this metadatum:', 'tainacan' ),
 	'info_related_items'							 => __( 'These are items that are related to this item via their own relationship type metadata. You can edit such relation on their pages.', 'tainacan'),
 
 	/* Activity actions */

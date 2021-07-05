@@ -116,6 +116,7 @@ class REST_Facets_Controller extends REST_Controller {
 				$parent_id = (int) $request['parent'];
 			}
 
+			$count_items = isset($request['count_items']) ? $request['count_items'] : true;
 
 			$args = [
 				'collection_id' => $collection_id,
@@ -125,7 +126,7 @@ class REST_Facets_Controller extends REST_Controller {
 				'items_filter' => $query_args,
 				'include' => $include,
 				'parent_id' => $parent_id,
-				'count_items' => defined('TAINACAN_FACETS_DISABLE_COUNT_ITEMS') && true === TAINACAN_FACETS_DISABLE_COUNT_ITEMS ? false : true,
+				'count_items' => defined('TAINACAN_FACETS_DISABLE_COUNT_ITEMS') && true === TAINACAN_FACETS_DISABLE_COUNT_ITEMS ? false : $count_items,
 				'last_term' => $last_term
 			];
 
