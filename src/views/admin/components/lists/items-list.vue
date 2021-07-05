@@ -80,7 +80,7 @@
 
             <!-- Context menu for right click selection -->
             <div
-                    v-if="cursorPosY > 0 && cursorPosX > 0 && !$route.query.readmode"
+                    v-if="cursorPosY > 0 && cursorPosX > 0 && !isReadMode"
                     class="context-menu">
 
                 <!-- Backdrop for escaping context menu -->
@@ -95,12 +95,12 @@
                         trap-focus>
                     <b-dropdown-item
                             @click="openItem()"
-                            v-if="!isOnTrash && !$route.query.iframemode">
+                            v-if="!isOnTrash && !isIframeMode">
                         {{ $i18n.getFrom('items','view_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="openItemOnNewTab()"
-                            v-if="!isOnTrash && !$route.query.iframemode">
+                            v-if="!isOnTrash && !isIframeMode">
                         {{ $i18n.get('label_open_item_new_tab') }}
                     </b-dropdown-item>
                     <b-dropdown-item
@@ -110,22 +110,22 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="goToItemEditPage(contextMenuItem)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !isIframeMode">
                         {{ $i18n.getFrom('items','edit_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="makeCopiesOfOneItem(contextMenuItem.id)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !isIframeMode">
                         {{ $i18n.get('label_make_copies_of_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="deleteOneItem(contextMenuItem.id)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$route.query.iframemode">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !isIframeMode">
                         {{ $i18n.get('label_delete_item') }}
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
-
+            
             <!-- GRID (THUMBNAILS) VIEW MODE -->
             <div
                     role="list"
@@ -142,17 +142,23 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !isReadMode && (isIframeMode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="grid-item-checkbox">
                         <b-checkbox
+                                v-if="!isSingleSelectionMode"
                                 :value="getSelectedItemChecked(item.id)"
                                 @input="setSelectedItemChecked(item.id)"/>
+                        <b-radio
+                                v-else
+                                name="item-single-selection"
+                                :native-value="item.id"
+                                v-model="singleItemSelection"/>
                     </div>
 
                     <!-- Title -->
                     <div
-                            :style="{ 'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0.5em !important' : (isOnAllItemsTabs ? '1.875em' : '2.75em') }"
+                            :style="{ 'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode? '0.5em !important' : (isOnAllItemsTabs ? '1.875em' : '2.75em') }"
                             class="metadata-title">
                         <p
                                 v-tooltip="{
@@ -203,7 +209,7 @@
 
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !$route.query.iframemode"
+                            v-if="item.current_user_can_edit && !isIframeMode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -277,16 +283,23 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !isReadMode && (isIframeMode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="masonry-item-checkbox">
                         <label
                                 tabindex="0"
-                                class="b-checkbox checkbox is-small">
+                                :class="(!isSingleSelectionMode ? 'b-checkbox checkbox' : 'b-radio radio') + ' is-small'">
                             <input
+                                    v-if="!isSingleSelectionMode"
                                     type="checkbox"
                                     :checked="getSelectedItemChecked(item.id)"
                                     @input="setSelectedItemChecked(item.id)">
+                            <input
+                                    v-else
+                                    type="radio"
+                                    name="item-single-selection"
+                                    :value="item.id"
+                                    v-model="singleItemSelection">
                                 <span class="check" />
                                 <span class="control-label" />
                         </label>
@@ -295,7 +308,7 @@
                     <!-- Title -->
                     <div
                             :style="{
-                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '0 !important' : (isOnAllItemsTabs ? '0.5em' : '1em')
+                                'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode ? '0 !important' : (isOnAllItemsTabs ? '0.5em' : '1em')
                             }"
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)"
@@ -336,7 +349,7 @@
 
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !$route.query.iframemode"
+                            v-if="item.current_user_can_edit && !isIframeMode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -405,18 +418,24 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !isReadMode && (isIframeMode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="card-checkbox">
                         <b-checkbox
+                                v-if="!isSingleSelectionMode"
                                 :value="getSelectedItemChecked(item.id)"
                                 @input="setSelectedItemChecked(item.id)"/>
+                        <b-radio
+                                v-else
+                                name="item-single-selection"
+                                :native-value="item.id"
+                                v-model="singleItemSelection"/>
                     </div>
 
                     <!-- Title -->
                     <div
-                            :style="{ 
-                                'padding-left': !collectionId || $route.query.readmode || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) ? '0.5em !important' : (isOnAllItemsTabs ? '2.125em' : '2.75em'),
+                            :style="{
+                                'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode ? '0.5em !important' : (isOnAllItemsTabs ? '2.125em' : '2.75em'),
                             }"
                             class="metadata-title">
                         <p
@@ -451,7 +470,7 @@
                     </div>
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !$route.query.iframemode"
+                            v-if="item.current_user_can_edit && !isIframeMode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -592,16 +611,23 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !isReadMode && (isIframeMode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="record-checkbox">
                         <label
                                 tabindex="0"
-                                class="b-checkbox checkbox is-small">
+                                :class="(!isSingleSelectionMode ? 'b-checkbox checkbox' : 'b-radio radio') + ' is-small'">
                             <input
+                                    v-if="!isSingleSelectionMode"
                                     type="checkbox"
                                     :checked="getSelectedItemChecked(item.id)"
                                     @input="setSelectedItemChecked(item.id)">
+                            <input
+                                    v-else
+                                    type="radio"
+                                    name="item-single-selection"
+                                    :value="item.id"
+                                    v-model="singleItemSelection">
                                 <span class="check" />
                                 <span class="control-label" />
                         </label>
@@ -611,7 +637,7 @@
                     <div
                             class="metadata-title"
                             :style="{
-                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '1.5em !important' : '2.75em'
+                                'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode ? '1.5em !important' : '2.75em'
                             }">
                         <span 
                                 v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
@@ -664,7 +690,7 @@
                     </div>
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !$route.query.iframemode"
+                            v-if="item.current_user_can_edit && !isIframeMode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -779,7 +805,7 @@
                     <tr>
                         <!-- Checking list -->
                         <th
-                                v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)">
+                                v-if="collectionId && !isReadMode && (isIframeMode || collection && collection.current_user_can_bulk_edit)">
                             &nbsp;
                             <!-- nothing to show on header for checkboxes -->
                         </th>
@@ -828,12 +854,18 @@
                         <!-- Checking list -->
                         <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                         <td
-                                v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)"
+                                v-if="collectionId && !isReadMode && (isIframeMode || collection && collection.current_user_can_bulk_edit)"
                                 :class="{ 'is-selecting': isSelectingItems }"
                                 class="checkbox-cell">
                             <b-checkbox
+                                    v-if="!isSingleSelectionMode"
                                     :value="getSelectedItemChecked(item.id)"
                                     @input="setSelectedItemChecked(item.id)"/>
+                            <b-radio
+                                    v-else
+                                    name="item-single-selection"
+                                    :native-value="item.id"
+                                    v-model="singleItemSelection"/>
                         </td>
                         <td 
                                 v-if="isOnAllItemsTabs"
@@ -972,7 +1004,7 @@
 
                         <!-- Actions -->
                         <td 
-                                v-if="(item.current_user_can_edit || item.current_user_can_delete) && !$route.query.iframemode"
+                                v-if="(item.current_user_can_edit || item.current_user_can_delete) && !isIframeMode"
                                 class="actions-cell"
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
@@ -1043,16 +1075,23 @@
                         :class="{ 'selected-list-item': getSelectedItemChecked(item.id) == true }">
 
                     <div
-                            v-if="collectionId && !$route.query.readmode && ($route.query.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !isReadMode && (isIframeMode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="list-checkbox">
                         <label
                                 tabindex="0"
-                                class="b-checkbox checkbox is-small">
+                                :class="(!isSingleSelectionMode ? 'b-checkbox checkbox' : 'b-radio radio') + ' is-small'">
                             <input
+                                    v-if="!isSingleSelectionMode"
                                     type="checkbox"
                                     :checked="getSelectedItemChecked(item.id)"
                                     @input="setSelectedItemChecked(item.id)">
+                            <input
+                                    v-else
+                                    type="radio"
+                                    name="item-single-selection"
+                                    :value="item.id"
+                                    v-model="singleItemSelection">
                                 <span class="check" />
                                 <span class="control-label" />
                         </label>
@@ -1099,7 +1138,7 @@
 
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !$route.query.iframemode"
+                            v-if="item.current_user_can_edit && !isIframeMode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -1227,6 +1266,7 @@ export default {
             cursorPosX: -1,
             cursorPosY: -1,
             contextMenuItem: null,
+            singleItemSelection: false
         }
     },
     computed: {
@@ -1237,7 +1277,7 @@ export default {
             return this.getHighlightedItem();
         },
         selectedItems () {
-            if (this.$route.query.iframemode)
+            if (this.isIframeMode)
                 this.$eventBusSearch.setSelectedItemsForIframe(this.getSelectedItems());
 
             return this.getSelectedItems();
@@ -1259,7 +1299,16 @@ export default {
             return this.getItemsPerPage();
         },
         totalPages(){
-            return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
+            return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));
+        },
+        isIframeMode () {
+            return this.$route && this.$route.query && this.$route.query.iframemode;
+        },
+        isReadMode () {
+            return this.$route && this.$route.query && this.$route.query.readmode;
+        },
+        isSingleSelectionMode () {
+            return this.$route && this.$route.query && this.$route.query.singleselectionmode;
         },
         isOnAllItemsTabs() {
             const currentStatus = this.getStatus();
@@ -1281,6 +1330,11 @@ export default {
         allItemsOnPageSelected(value) {
             if (!value)
                 this.queryAllItemsSelected = {};
+        },
+        singleItemSelection() {
+
+            if (this.isSingleSelectionMode && this.isIframeMode)
+                this.$eventBusSearch.setSelectedItemsForIframe([this.singleItemSelection], true);
         }
     },
     mounted() {
@@ -1321,14 +1375,18 @@ export default {
             'getItemsPerPage'
         ]),
         setSelectedItemChecked(itemId) {
-            if (this.selectedItems.find((item) => item == itemId) != undefined)
-                this.removeSelectedItem(itemId);
-            else {
-                this.addSelectedItem(itemId);
+            if (this.isSingleSelectionMode) {
+                this.singleItemSelection = itemId;
+            } else {
+                if (this.selectedItems.find((item) => item == itemId) != undefined)
+                    this.removeSelectedItem(itemId);
+                else {
+                    this.addSelectedItem(itemId);
+                }
             }
         },
         getSelectedItemChecked(itemId) {
-            return this.selectedItems.find(item => item == itemId) != undefined;
+            return this.isSingleSelectionMode ? this.singleItemSelection == itemId : this.selectedItems.find(item => item == itemId) != undefined;
         },
         openBulkEditionModal(){
             this.$buefy.modal.open({
@@ -1558,9 +1616,9 @@ export default {
                 }
 
             } else {
-                if (this.$route.query.iframemode && !this.$route.query.readmode) {
+                if (this.isIframeMode && !this.isReadMode) {
                     this.setSelectedItemChecked(item.id)
-                } else if (!this.$route.query.iframemode && !this.$route.query.readmode) {
+                } else if (!this.isIframeMode && !this.isReadMode) {
                     if(this.isOnTrash){
                         this.$buefy.toast.open({
                             duration: 3000,
@@ -1575,7 +1633,7 @@ export default {
             }
         },
         onRightClickItem($event, item) {
-            if (!this.$route.query.readmode) {
+            if (!this.isReadMode) {
                 $event.preventDefault();
 
                 this.cursorPosX = $event.clientX;

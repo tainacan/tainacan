@@ -200,6 +200,26 @@ export const updateItemDocument = ({ commit }, { item_id, document, document_typ
     }); 
 };
 
+export const fetchOnlyRelatedItems = ({ commit }, { itemId, contextEdit } ) => {
+
+    let endpoint = '/items/'+ itemId + '?'; 
+
+    if (contextEdit)
+        endpoint += '&context=edit';
+
+    endpoint += '&fetch_only=related_items'
+
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get(endpoint)
+            .then(res => {
+                let relatedItems = res.data && res.data.related_items ? res.data.related_items : [];
+                commit('setOnlyRelatedItemsToItem', {itemId: itemId, relatedItems: relatedItems });
+                resolve( relatedItems );
+            })
+            .catch((thrown) => reject(thrown)); 
+    });
+};
+
 // Attachments =======================================
 export const sendAttachment = ( { commit }, { item_id, file }) => {
     commit('cleanAttachment');

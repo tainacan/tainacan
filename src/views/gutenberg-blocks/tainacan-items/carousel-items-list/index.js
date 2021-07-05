@@ -219,23 +219,35 @@ registerBlockType('tainacan/carousel-items-list', {
             );
         }
 
-        function setContent(){
+        function setContent() {
             isLoading = true;
 
             setAttributes({
                 isLoading: isLoading
             });
 
-            if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
-                itemsRequestSource.cancel('Previous items search canceled.');
-
-            itemsRequestSource = axios.CancelToken.source();
-
             items = [];
 
-            if (loadStrategy == 'selection') {
-                let endpoint = '/collection/' + collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&fetch_only=title,url,thumbnail';
+            if (loadStrategy == 'parent') {
+                
+                for (let item of selectedItems)
+                    items.push(prepareItem(item));
 
+                setAttributes({
+                    content: <div></div>,
+                    items: items,
+                    isLoading: false
+                });
+
+            } else if (loadStrategy == 'selection') {
+
+                if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
+                    itemsRequestSource.cancel('Previous items search canceled.');
+
+                itemsRequestSource = axios.CancelToken.source();
+                
+                let endpoint = '/collection/' + collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&fetch_only=title,url,thumbnail';
+                
                 tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                     .then(response => {
 
@@ -254,6 +266,11 @@ registerBlockType('tainacan/carousel-items-list', {
                 let endpoint = '/collection' + searchURL.split('#')[1].split('/collections')[1];
                 let query = endpoint.split('?')[1];
                 let queryObject = qs.parse(query);
+
+                if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
+                    itemsRequestSource.cancel('Previous items search canceled.');
+
+                itemsRequestSource = axios.CancelToken.source();
 
                 // Set up max items to be shown
                 if (maxItemsNumber != undefined && maxItemsNumber > 0)
@@ -365,32 +382,35 @@ registerBlockType('tainacan/carousel-items-list', {
 
                 { items.length ?
                     <BlockControls>
-                        { loadStrategy != 'search' ?
-                            TainacanBlocksCompatToolbar({
-                                label: __('Add more items', 'tainacan'),
-                                icon: <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            height="24px"
-                                            width="24px">
-                                        <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
-                                    </svg>,
-                                onClick: openCarouseltemsModal,
-                                onClickParams: 'selection'
-                            })
-                            :
-                            TainacanBlocksCompatToolbar({
-                                label: __('Configure a search', 'tainacan'),
-                                icon: <svg
+                        { loadStrategy != 'parent' ? 
+                            (
+                                loadStrategy != 'search' ?
+                                TainacanBlocksCompatToolbar({
+                                    label: __('Add more items', 'tainacan'),
+                                    icon: <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            height="24px"
-                                            width="24px">
-                                        <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
-                                    </svg>,
-                                onClick: openCarouseltemsModal,
-                                onClickParams: 'search'
-                            }) 
+                                                viewBox="0 0 24 24"
+                                                height="24px"
+                                                width="24px">
+                                            <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
+                                        </svg>,
+                                    onClick: openCarouseltemsModal,
+                                    onClickParams: 'selection'
+                                })
+                                :
+                                TainacanBlocksCompatToolbar({
+                                    label: __('Configure a search', 'tainacan'),
+                                    icon: <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                height="24px"
+                                                width="24px">
+                                            <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
+                                        </svg>,
+                                    onClick: openCarouseltemsModal,
+                                    onClickParams: 'search'
+                                })
+                             ) : null
                         }
                     </BlockControls>
                 : null }
@@ -461,18 +481,22 @@ registerBlockType('tainacan/carousel-items-list', {
                                 initialOpen={ true }
                             >
                             <div>
-                                <RangeControl
-                                        label={ __('Maximum items per slide on a wide screen', 'tainacan') }
-                                        help={ maxItemsPerScreen <= 4 ? __('Warning: with such a small number of items per slide, the image size is greater, thus the cropped version of the thumbnail won\'t be used.', 'tainacan') : null }
-                                        value={ maxItemsPerScreen ? maxItemsPerScreen : 7 }
-                                        onChange={ ( aMaxItemsPerScreen ) => {
-                                            maxItemsPerScreen = aMaxItemsPerScreen;
-                                            setAttributes( { maxItemsPerScreen: aMaxItemsPerScreen } );
-                                            setContent(); 
-                                        }}
-                                        min={ 1 }
-                                        max={ 9 }
-                                    />
+                                { 
+                                    loadStrategy != 'parent' ?
+                                        <RangeControl
+                                                label={ __('Maximum items per slide on a wide screen', 'tainacan') }
+                                                help={ maxItemsPerScreen <= 4 ? __('Warning: with such a small number of items per slide, the image size is greater, thus the cropped version of the thumbnail won\'t be used.', 'tainacan') : null }
+                                                value={ maxItemsPerScreen ? maxItemsPerScreen : 7 }
+                                                onChange={ ( aMaxItemsPerScreen ) => {
+                                                    maxItemsPerScreen = aMaxItemsPerScreen;
+                                                    setAttributes( { maxItemsPerScreen: aMaxItemsPerScreen } );
+                                                    setContent(); 
+                                                }}
+                                                min={ 1 }
+                                                max={ 9 }
+                                            />
+                                    : null
+                                }
                                 <ToggleControl
                                         label={__('Crop Images', 'tainacan')}
                                         help={ cropImagesToSquare && maxItemsPerScreen > 4 ? __('Do not use square cropeed version of the item thumbnail.', 'tainacan') : __('Toggle to use square cropped version of the item thumbnail.', 'tainacan') }
@@ -696,19 +720,25 @@ registerBlockType('tainacan/carousel-items-list', {
                             </svg>
                             {__('List items on a Carousel, using search or item selection.', 'tainacan')}
                         </p>
-                        <Button
-                            isPrimary
-                            type="button"
-                            onClick={ () => openCarouseltemsModal('selection') }>
-                            {__('Select Items', 'tainacan')}
-                        </Button> 
-                        <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
-                        <Button
-                            isPrimary
-                            type="button"
-                            onClick={ () => openCarouseltemsModal('search') }>
-                            {__('Configure a search', 'tainacan')}
-                        </Button>    
+                        { 
+                            loadStrategy != 'parent' ?
+                                <div>
+                                    <Button
+                                        isPrimary
+                                        type="button"
+                                        onClick={ () => openCarouseltemsModal('selection') }>
+                                        {__('Select Items', 'tainacan')}
+                                    </Button> 
+                                    <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
+                                    <Button
+                                        isPrimary
+                                        type="button"
+                                        onClick={ () => openCarouseltemsModal('search') }>
+                                        {__('Configure a search', 'tainacan')}
+                                    </Button>
+                                </div>
+                            : null
+                        }
                     </Placeholder>
                     ) : null
                 }

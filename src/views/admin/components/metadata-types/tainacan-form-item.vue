@@ -1,6 +1,10 @@
 <template>
     <b-field
-            :class="hideCollapses ? 'has-collapses-hidden' : ''"
+            :class="{
+                'has-collapses-hidden': hideCollapses,
+                'hightlighted-metadatum': isHighlightedMetadatum 
+            }"
+            :ref="isHighlightedMetadatum ? 'hightlighted-metadatum': 'null'"
             :addons="false"
             :message="errorMessage"
             :type="errorMessage ? 'is-danger' : ''">
@@ -17,17 +21,7 @@
                         }"
                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
             </span>
-            <label 
-                    v-tooltip="{
-                        delay: {
-                            show: 500,
-                            hide: 300,
-                        },
-                        content: itemMetadatum.metadatum.name,
-                        autoHide: false,
-                        placement: 'auto-end'
-                    }" 
-                    class="label">
+            <label class="label">
                 {{ itemMetadatum.metadatum.name }}
             </label>
             <span
@@ -50,12 +44,13 @@
             <div   
                     v-show="hideCollapses || (isCollapsed || errorMessage)"
                     v-if="isTextInputComponent">
-                <component 
+                <component
                         :is="metadatumComponent"
                         v-model="values[0]" 
                         :item-metadatum="itemMetadatum"
                         @input="changeValue"
-                        @blur="performValueChange"/>
+                        @blur="performValueChange"
+                        :metadata-name-filter-string="metadataNameFilterString" />
                 <template v-if="isMultiple && values.length > 1">
                     <transition-group
                             name="filter-item"
@@ -68,7 +63,8 @@
                                     v-model="values[index]" 
                                     :item-metadatum="itemMetadatum"
                                     @input="changeValue"
-                                    @blur="performValueChange"/>
+                                    @blur="performValueChange"
+                                    :metadata-name-filter-string="metadataNameFilterString" />
                             <a 
                                     v-if="index > 0" 
                                     @click="removeValue(index)"
@@ -105,7 +101,8 @@
                         :item-metadatum="itemMetadatum"
                         @input="changeValue"
                         @blur="performValueChange"
-                        :is-last-metadatum="isLastMetadatum" />
+                        :is-last-metadatum="isLastMetadatum"
+                        :metadata-name-filter-string="metadataNameFilterString" />
             </div>
         </transition>
     </b-field>
@@ -120,12 +117,14 @@
             itemMetadatum: Object,
             isCollapsed: true,
             hideCollapses: false,
-            isLastMetadatum: false
+            isLastMetadatum: false,
+            metadataNameFilterString: ''
         },
         data(){
             return {
                 values: [],
-                errorMessage: ''
+                errorMessage: '',
+                isHighlightedMetadatum: false
             }
         },
         computed: {
@@ -156,6 +155,20 @@
         beforeDestroy() {
             if (this.itemMetadatum && this.itemMetadatum.metadatum)
                 eventBusItemMetadata.$off('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id));
+        },
+        mounted () {
+            if (this.$route && this.$route.query && this.$route.query.editingmetadata) {
+                this.isHighlightedMetadatum = this.$route.query.editingmetadata == (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id);
+
+                if (this.isHighlightedMetadatum) {
+                    
+                    this.$nextTick(() => {
+                        let highlightedMetadatum = this.$refs['hightlighted-metadatum'];
+                        if (highlightedMetadatum && highlightedMetadatum.$el && highlightedMetadatum.$el.scrollIntoView)
+                            setTimeout(() => highlightedMetadatum.$el.scrollIntoView(), 500);
+                    });
+                }
+            }
         },
         methods: {
             // 'this.values' is always an array for this component, even if it is single valued.
@@ -256,6 +269,14 @@
         border-bottom: 1px solid var(--tainacan-input-border-color);
         padding: 10px var(--tainacan-container-padding);
 
+        &.hightlighted-metadatum {
+            background-color: var(--tainacan-white);
+            transition: background-color 0.8s; 
+            animation-name: metadatum-highlight;
+            animation-duration: 3s;
+            animation-iteration-count: 2; 
+        }
+
         &.has-collapses-hidden {
             border-bottom: none;
             padding: 10px !important;
@@ -275,25 +296,21 @@
             margin-left: 15px;
             margin-bottom: 0;
             margin-top: 0.15em;
-            max-width: 50%;
         }
         .metadata-type {
             font-size: 0.8125em;
             font-weight: 400;
             color: var(--tainacan-info-color);
             opacity: 0.75;
-            top: -0.1em;
             position: relative;
-        }
-        .help-wrapper {
-            top: -0.2em;
         }
         .collapse-handle {
             cursor: pointer;
-            position: relative;
             margin-left: -42px;
-            bottom: 0.1em;
-            white-space: nowrap;
+            line-height: 1.5em;
+        }
+        .collapse-handle+div {
+            margin-top: 0.5em;
         }
         .add-link {
             font-size: 0.75em;

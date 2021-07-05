@@ -1,8 +1,10 @@
 <template>
     <div>
         <figure 
+                class="document-item">
+                        <!-- <figure 
                 class="document-item"
-                @click.prevent="isPreviewModalActive = true">
+                @click.prevent="isPreviewModalActive = true"> -->
              <div 
                     class="image-wrapper"
                     v-html="documentHtml" />
@@ -15,6 +17,7 @@
                 trap-focus
                 aria-modal
                 aria-role="dialog"
+                :append-to-body="true"
                 custom-class="tainacan-modal">
             <!-- <div class="tainacan-modal-content">
                 <div class="tainacan-modal-title">

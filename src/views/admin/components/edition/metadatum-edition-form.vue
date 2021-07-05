@@ -451,6 +451,10 @@
             .field > .field:not(:last-child) {
                 margin-bottom: 0em;
             }
+            .field:first-child {
+                -webkit-column-span: all;
+                column-span: all;
+            }
             .help-wrapper {
                 font-size: 1.25em;
             }
