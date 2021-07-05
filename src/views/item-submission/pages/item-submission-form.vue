@@ -751,10 +751,10 @@ export default {
             max-width: 100%;
         }
         .field:not(:last-child) {
-            margin-bottom: 0.5em;
+            margin-bottom: 0em;
         }
         .field {
-            padding: 10px 0px 14px 34px;
+            padding: 12px 0px 12px 34px;
 
         }
          .columns {

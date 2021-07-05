@@ -220,7 +220,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_approved'                                 => __( 'Approved', 'tainacan' ),
 	'label_collection_related'                       => __( 'Collection related', 'tainacan' ),
 	'label_metadata_for_search'                      => __( 'Metadata for search', 'tainacan' ),
-	'label_allow_repeated_items'                     => __( 'Allow repeated items', 'tainacan' ),
 	'label_select_taxonomy'                          => __( 'Select taxonomy', 'tainacan' ),
 	'label_select_taxonomy_input_type'               => __( 'Input type', 'tainacan' ),
 	'label_taxonomy_allow_new_terms'                 => __( 'Allow new terms', 'tainacan' ),
@@ -586,6 +585,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_pan_selection'							 => __( 'Pan selection', 'tainacan'),
 	'label_reset_zoom'								 => __( 'Reset zoom', 'tainacan'),
 	'label_chart_export_options'					 => __( 'Chart export options', 'tainacan'),
+	'label_related_items'							 => __( 'Items related to this', 'tainacan'),
+	'label_view_all_%s_related_items'				 => __( 'View all %s related items', 'tainacan'),
+	'label_back_to_related_item'					 => __( 'Back to related item', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -870,7 +872,9 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_no_taxonomy_metadata_created'		 		 =>	__( 'No taxonomy metadata created yet', 'tainacan'),
 	'label_amount_of_metadata_of_type'	 			 =>	__( 'Amount of metadata of this type', 'tainacan'),
 	'info_child_terms_chart'						 => __( 'Click on the term bar on the chart aside to see its child terms (if any) in this panel', 'tainacan' ),
-	
+	'info_metadata_autocomplete_suggestions'		 => __( 'Some values already used on this metadatum:', 'tainacan' ),
+	'info_related_items'							 => __( 'These are items that are related to this item via their own relationship type metadata. You can edit such relation on their pages.', 'tainacan'),
+
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
 	'action_update'					=> __( 'General Updates', 'tainacan'),

@@ -23,104 +23,8 @@
         </div>
         <div class="tainacan-form">
             <div class="columns">
-                <div class="column is-5">
 
-                    <!-- Hook for extra Form options -->
-                    <template
-                            v-if="formHooks != undefined &&
-                        formHooks['view-item'] != undefined &&
-                        formHooks['view-item']['begin-left'] != undefined">
-                        <div
-                                id="view-item-begin-left"
-                                class="form-hook-region"
-                                v-html="formHooks['view-item']['begin-left'].join('')"/>
-                    </template>
-
-                    <!-- Document -------------------------------- -->
-                    <div class="section-label">
-                        <label>{{ item.document !== undefined && item.document !== null && item.document !== ''
-                            ?
-                            $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
-                    </div>
-                    <div class="section-box document-field">
-                        <div
-                                v-if="item.document !== undefined && item.document !== null &&
-                                item.document_type !== undefined && item.document_type !== null &&
-                                item.document !== '' && item.document_type !== 'empty'">
-
-                            <div v-if="item.document_type === 'attachment'">
-                                <!-- <div v-html="item.document_as_html"/> -->
-                                <document-item :document-html="item.document_as_html"/>
-                            </div>
-
-                            <div v-else-if="item.document_type === 'text'">
-                                <div v-html="item.document_as_html"/>
-                            </div>
-
-                            <div v-else-if="item.document_type === 'url'">
-                                <div v-html="item.document_as_html"/>
-                            </div>
-                        </div>
-                        <div v-else>
-                            <p>{{ $i18n.get('info_no_document_to_item') }}</p>
-                        </div>
-                    </div>
-
-                    <!-- Thumbnail -------------------------------- -->
-                    <div class="section-label">
-                        <label>{{ $i18n.get('label_thumbnail') }}</label>
-                    </div>
-                    <div class="section-box section-thumbnail">
-                        <div class="thumbnail-field">
-                            <file-item
-                                    v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
-                                    :show-name="false"
-                                    :modal-on-click="false"
-                                    :size="178"
-                                    :file="{
-                                media_type: 'image',
-                                thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
-                                title: $i18n.get('label_thumbnail'),
-                                description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_mimetype) + `'/>` 
-                            }"/>
-                            <figure
-                                    v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
-                                    class="image">
-                                <span 
-                                        v-if="item.document_type == 'empty'"
-                                        class="image-placeholder">
-                                    {{ $i18n.get('label_empty_thumbnail') }}
-                                </span>
-                                <img
-                                        :alt="$i18n.get('label_thumbnail')"
-                                        :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
-                            </figure>
-                        </div>
-                        <br>
-                        <div 
-                                v-if="item.thumbnail_id"
-                                class="thumbnail-alt-input">
-                            <label class="label">{{ $i18n.get('label_thumbnail_alt') }}</label>
-                            <help-button
-                                    :title="$i18n.get('label_thumbnail_alt')"
-                                    :message="$i18n.get('info_thumbnail_alt')"/>
-                            <p> {{ item.thumbnail_alt }}</p>
-                        </div>
-                    </div>        
-
-                    <!-- Hook for extra Form options -->
-                    <template
-                            v-if="formHooks != undefined &&
-                        formHooks['view-item'] != undefined &&
-                        formHooks['view-item']['end-left'] != undefined">
-                        <div
-                                id="view-item-end-left"
-                                class="form-hook-region"
-                                v-html="formHooks['view-item']['end-left'].join('')"/>
-                    </template>
-
-                </div>
-                <div class="column is-7">
+<div class="column is-7">
 
                     <!-- Hook for extra Form options -->
                     <template
@@ -253,7 +157,7 @@
                     <b-tabs v-model="activeTab">
                         <b-tab-item>
                             <template slot="header">
-                                <span class="icon has-text-gray4">
+                                <span class="icon has-text-gray5">
                                     <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
                                 </span>
                                 <span>{{ $i18n.get('metadata') }}</span>
@@ -291,9 +195,38 @@
                             </template>
                         </b-tab-item>
 
+                        <!-- Related items -->
+                        <b-tab-item v-if="totalRelatedItems">
+                            <template slot="header">
+                                <span class="icon has-text-gray5">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes tainacan-icon-rotate-270"/>
+                                </span>
+                                <span>
+                                    {{ $i18n.get('label_related_items') }}
+                                    <span class="has-text-gray">
+                                        ({{ totalRelatedItems }})
+                                    </span>
+                                </span>
+                            </template>
+
+                            <div class="attachments-list-heading">
+                                <p>
+                                    {{ $i18n.get("info_related_items") }}
+                                </p>
+                            </div>
+
+                            <related-items-list
+                                    :item-id="itemId"
+                                    :collection-id="collectionId"
+                                    :related-items="item.related_items"
+                                    :is-editable="false"
+                                    :is-loading.sync="isLoading" />
+                            
+                        </b-tab-item>
+
                         <b-tab-item>
                             <template slot="header">
-                                <span class="icon has-text-gray4">
+                                <span class="icon has-text-gray5">
                                     <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
                                 </span>
                                 <span>
@@ -315,16 +248,118 @@
 
                         <b-tab-item>
                             <template slot="header">
-                                <span class="icon has-text-gray4">
+                                <span class="icon has-text-gray5">
                                     <i class="tainacan-icon tainacan-icon-18px tainacan-icon-activities"/>
                                 </span>
                                 <span>{{ $i18n.get('activities') }}</span>
                             </template>
                             
-                            <activities-page v-if="activeTab == 2"/>
+                            <activities-page v-if="activeTab == 3"/>
                         </b-tab-item>
                     </b-tabs>
                 </div>
+
+                <div class="column is-5">
+                    <div class="sticky-container">
+
+                        <!-- Hook for extra Form options -->
+                        <template
+                                v-if="formHooks != undefined &&
+                            formHooks['view-item'] != undefined &&
+                            formHooks['view-item']['begin-left'] != undefined">
+                            <div
+                                    id="view-item-begin-left"
+                                    class="form-hook-region"
+                                    v-html="formHooks['view-item']['begin-left'].join('')"/>
+                        </template>
+
+                        <!-- Document -------------------------------- -->
+                        <div class="section-label">
+                            <label>{{ item.document !== undefined && item.document !== null && item.document !== ''
+                                ?
+                                $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
+                        </div>
+                        <div class="section-box document-field">
+                            <div
+                                    v-if="item.document !== undefined && item.document !== null &&
+                                    item.document_type !== undefined && item.document_type !== null &&
+                                    item.document !== '' && item.document_type !== 'empty'">
+
+                                <div v-if="item.document_type === 'attachment'">
+                                    <!-- <div v-html="item.document_as_html"/> -->
+                                    <document-item :document-html="item.document_as_html"/>
+                                </div>
+
+                                <div v-else-if="item.document_type === 'text'">
+                                    <div v-html="item.document_as_html"/>
+                                </div>
+
+                                <div v-else-if="item.document_type === 'url'">
+                                    <div v-html="item.document_as_html"/>
+                                </div>
+                            </div>
+                            <div v-else>
+                                <p>{{ $i18n.get('info_no_document_to_item') }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Thumbnail -------------------------------- -->
+                        <div class="section-label">
+                            <label>{{ $i18n.get('label_thumbnail') }}</label>
+                        </div>
+                        <div class="section-box section-thumbnail">
+                            <div class="thumbnail-field">
+                                <file-item
+                                        v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
+                                        :show-name="false"
+                                        :modal-on-click="false"
+                                        :size="148"
+                                        :file="{
+                                    media_type: 'image',
+                                    thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
+                                    title: $i18n.get('label_thumbnail'),
+                                    description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_mimetype) + `'/>` 
+                                }"/>
+                                <figure
+                                        v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
+                                        class="image">
+                                    <span 
+                                            v-if="item.document_type == 'empty'"
+                                            class="image-placeholder">
+                                        {{ $i18n.get('label_empty_thumbnail') }}
+                                    </span>
+                                    <img
+                                            :alt="$i18n.get('label_thumbnail')"
+                                            :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
+                                </figure>
+                            </div>
+                            <br>
+                            <div 
+                                    v-if="item.thumbnail_id"
+                                    class="thumbnail-alt-input">
+                                <label class="label">{{ $i18n.get('label_thumbnail_alt') }}</label>
+                                <help-button
+                                        :title="$i18n.get('label_thumbnail_alt')"
+                                        :message="$i18n.get('info_thumbnail_alt')"/>
+                                <p> {{ item.thumbnail_alt }}</p>
+                            </div>
+                        </div>        
+
+                        <!-- Hook for extra Form options -->
+                        <template
+                                v-if="formHooks != undefined &&
+                            formHooks['view-item'] != undefined &&
+                            formHooks['view-item']['end-left'] != undefined">
+                            <div
+                                    id="view-item-end-left"
+                                    class="form-hook-region"
+                                    v-html="formHooks['view-item']['end-left'].join('')"/>
+                        </template>
+
+                    </div>
+                </div>
+
+                
             </div>
             <footer class="footer">
                 <div class="form-submission-footer">
@@ -380,6 +415,7 @@
     import ActivitiesPage from '../lists/activities-page.vue';
     import ExposersModal from '../../components/modals/exposers-modal.vue';
     import AttachmentsList from '../../components/lists/attachments-list.vue';
+    import RelatedItemsList from '../../components/lists/related-items-list.vue';
 
     export default {
         name: 'ItemPage',
@@ -387,6 +423,7 @@
             FileItem,
             DocumentItem,
             ActivitiesPage,
+            RelatedItemsList,
             AttachmentsList
         },
         mixins: [formHooks],
@@ -414,6 +451,9 @@
             metadatumList() {
                 return JSON.parse(JSON.stringify(this.getItemMetadata()));
             },
+            totalRelatedItems() {
+                return (this.item && this.item.related_items) ? Object.values(this.item.related_items).reduce((totalItems, aRelatedItemsGroup) => totalItems + parseInt(aRelatedItemsGroup.total_items), 0) : false;
+            },
             totalAttachments() {
                 return this.getTotalAttachments();
             },
@@ -437,7 +477,7 @@
             this.fetchItem({ 
                 itemId: this.itemId,
                 contextEdit: true,    
-                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document_mimetype,document,comment_status,document_as_html'       
+                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document_mimetype,document,comment_status,document_as_html,related_items'       
             })
              .then((resp) => {
                 resp.request.then((item) => {
@@ -558,13 +598,20 @@
             padding-left: var(--tainacan-one-column);
             padding-right: var(--tainacan-one-column);
 
+            .sticky-container {
+                position: relative;
+                position: sticky;
+                top: 0;
+                margin: 3px 0;
+            }
+
             @media screen and (max-width: 769px) {
                 width: 100%;
             }
         }
         .column.is-7 {
-            padding-left: 0;
-            padding-right: var(--tainacan-one-column);
+            padding-left: var(--tainacan-one-column);
+            padding-right: 0;
 
             .columns {
                 flex-wrap: wrap;
@@ -580,7 +627,7 @@
             }
 
             @media screen and (max-width: 769px) {
-                padding-left: var(--tainacan-one-column);
+                padding-right: var(--tainacan-one-column);
                 width: 100%;
             }
         }
@@ -625,8 +672,8 @@
     .section-box {
         background-color: var(--tainacan-white);
         padding: 0 var(--tainacan-one-column) 0 0;
-        margin-top: 18px;
-        margin-bottom: 32px;
+        margin-top: 12px;
+        margin-bottom: 18px;
 
         ul {
             display: flex;
@@ -700,20 +747,31 @@
             font-size: 0.8em;
         }
         img {
-            height: 178px;
-            width: 178px;
+            height: 148px;
+            width: 148px;
         }
         .image-placeholder {
             position: absolute;
-            margin-left: 45px;
-            margin-right: 45px;
+            margin-left: 32px;
+            margin-right: 32px;
             font-size: 0.8em;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: var(--tainacan-info-color);
-            top: 70px;
-            max-width: 90px;
+            top: 60px;
+            max-width: 84px;
+        }
+    }
+
+    .attachments-list-heading {
+        display: flex;
+        align-items: center;
+        margin-top: 12px;
+        margin-bottom: 24px;
+
+        button {
+            margin-right: 12px;
         }
     }
 

@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Gets all divs with content created by our block;
     let blocks = document.getElementsByClassName('wp-block-tainacan-carousel-items-list');
-    
+
     if (blocks) {
         let blockIds = Object.values(blocks).map((block) => block.id);
 

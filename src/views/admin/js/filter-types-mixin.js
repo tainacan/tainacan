@@ -59,7 +59,7 @@ export const dynamicFilterTypeMixin = {
         ...mapGetters('search', [
             'getFacets'
         ]),
-        getValuesPlainText(metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
+        getValuesPlainText({ metadatumId, search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0', countItems = true }) {
 
             if (isInCheckboxModal || search || !this.isUsingElasticSearch) {
                 
@@ -99,6 +99,9 @@ export const dynamicFilterTypeMixin = {
                     url += `search=${search}&` + qs.stringify(query_items);
                 else
                     url += qs.stringify(query_items);
+
+                if (countItems != undefined && countItems === false)
+                    url += '&count_items=0';
  
                 this.isLoadingOptions = true;
                 
@@ -143,7 +146,7 @@ export const dynamicFilterTypeMixin = {
                 });
             }
         },
-        getValuesRelationship(search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0') {
+        getValuesRelationship({ search, isRepositoryLevel, valuesToIgnore, offset, number, isInCheckboxModal, getSelected = '0', countItems = true }) {
             
             if (isInCheckboxModal || search || !this.facetsFromItemSearch || Object.values(this.facetsFromItemSearch).length <= 0) {
 
@@ -177,6 +180,9 @@ export const dynamicFilterTypeMixin = {
 
                 if (search)
                     url += `&search=${search}`;
+
+                if (countItems != undefined && countItems === false)
+                    url += '&count_items=0';
 
                 this.isLoadingOptions = true;
 
