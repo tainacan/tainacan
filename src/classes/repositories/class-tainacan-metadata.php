@@ -87,7 +87,7 @@ class Metadata extends Repository {
 				'map'         => 'post_content',
 				'title'       => __( 'Description', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The metadata description', 'tainacan' ),
+				'description' => __( 'The metadatum description. This may provide information on how to fill this metadatum, which will appear inside a tooltip alongside the input label.', 'tainacan' ),
 				'default'     => '',
 				//'on_error'   => __('The description should be a text value', 'tainacan'),
 				//'validation' => v::stringType()->notEmpty(),

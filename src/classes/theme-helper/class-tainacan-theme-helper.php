@@ -905,7 +905,7 @@ class Theme_Helper {
 
 		$defaults = array(
 			'max_items_number' => 12,
-			'max_tems_per_screen' => 7,
+			'max_items_per_screen' => 7,
 			'arrows_position' => 'around',
 			'large_arrows' => false,
 			'auto_play' => false,
