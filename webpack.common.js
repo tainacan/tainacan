@@ -28,7 +28,9 @@ module.exports = {
         
         block_carousel_collections_list: './src/views/gutenberg-blocks/tainacan-collections/carousel-collections-list/index.js',
         block_carousel_collections_list_theme: './src/views/gutenberg-blocks/tainacan-collections/carousel-collections-list/carousel-collections-list-theme.js',
-        
+       
+        block_carousel_related_items: './src/views/gutenberg-blocks/tainacan-items/carousel-related-items/index.js',
+
         block_facets_list: './src/views/gutenberg-blocks/tainacan-facets/facets-list/index.js',
         block_facets_list_theme: './src/views/gutenberg-blocks/tainacan-facets/facets-list/facets-list-theme.js',
 

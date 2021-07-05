@@ -190,6 +190,24 @@ class REST_Items_Controller extends REST_Controller {
 	}
 
 	/**
+	 * @param \Tainacan\Entities\Item $item|int
+	 *
+	 * @return array
+	 */
+	public function get_context_edit($item) {
+		if(is_numeric($item))
+			$item = new Entities\Item($item);
+
+		return array(
+			'current_user_can_edit' => $item->can_edit(),
+			'current_user_can_delete' => $item->can_delete(),
+			'nonces' => array(
+				'update-post_' . $item->get_id() => wp_create_nonce('update-post_' . $item->get_id())
+			)
+		);
+	}
+
+	/**
 	 * @param mixed $item
 	 * @param \WP_REST_Request $request
 	 *
@@ -256,6 +274,12 @@ class REST_Items_Controller extends REST_Controller {
 					$attributes_to_filter .= ',id,collection_id';
 				}
 
+				if ( $request['context'] === 'edit' ) {
+					add_filter( 'taiancan_add_related_item', function( $related_item ) {
+						return array_merge($related_item, $this->get_context_edit($related_item['id']));
+					}, 10, 2 );
+				}
+
 				$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
 
 				$item_arr = array_merge($extra_metadata_values, $item_arr);
@@ -274,11 +298,7 @@ class REST_Items_Controller extends REST_Controller {
 				}
 
 				if ( $request['context'] === 'edit' ) {
-					$item_arr['current_user_can_edit'] = $item->can_edit();
-					$item_arr['current_user_can_delete'] = $item->can_delete();
-					$item_arr['nonces'] = array(
-						'update-post_' . $item->get_id() => wp_create_nonce('update-post_' . $item->get_id())
-					);
+					$item_arr = array_merge($item_arr, $this->get_context_edit($item));
 				}
 				if( isset($item_arr['thumbnail']) ) {
 					$item_arr['thumbnail_alt'] = get_post_meta( $item->get__thumbnail_id(), '_wp_attachment_image_alt', true );
@@ -569,6 +589,8 @@ class REST_Items_Controller extends REST_Controller {
 	private function get_items_permissions_check_for_taxonomy($taxonomies) {
 
 		foreach ($taxonomies as $tax) {
+			if( !isset($tax['taxonomy']) )
+				return false;
 			$taxonomy = \tainacan_taxonomies()->fetch_by_db_identifier( $tax['taxonomy'] );
 
 			if( $taxonomy instanceof Entities\Taxonomy ) {

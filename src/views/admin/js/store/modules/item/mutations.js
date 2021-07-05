@@ -62,6 +62,12 @@ export const cleanItemMetadata = (state) => {
     state.itemMetadata = [];
 }
 
+export const setOnlyRelatedItemsToItem = (state, { itemId, relatedItems }) => {
+    if (state.item && state.item.id && state.item.id == itemId) {
+        state.item.related_items = relatedItems;
+    }
+}
+
 export const setSingleMetadatum = (state, itemMetadatum) => {
     
     if (itemMetadatum.metadatum.parent <= 0) {

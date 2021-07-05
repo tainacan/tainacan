@@ -50,6 +50,8 @@ class Theme_Helper {
 
 		add_shortcode( 'tainacan-search', array($this, 'search_shortcode'));
 		add_shortcode( 'tainacan-item-submission', array($this, 'item_submission_shortcode'));
+		add_shortcode( 'tainacan-items-carousel', array($this, 'get_tainacan_items_carousel'));
+		add_shortcode( 'tainacan-related-items-carousel', array($this, 'get_tainacan_related_items_carousel'));
 
 		add_action( 'generate_rewrite_rules', array( &$this, 'rewrite_rules' ), 10, 1 );
 		add_filter( 'query_vars', array( &$this, 'rewrite_rules_query_vars' ) );
@@ -121,6 +123,49 @@ class Theme_Helper {
 			wp_register_script('tainacan-search', $TAINACAN_BASE_URL . '/assets/js/theme_search.js' , ['underscore'] , TAINACAN_VERSION);
 			wp_localize_script('tainacan-search', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
 		}
+	}
+
+	public function enqueue_items_carousel_scripts() {
+		global $post;
+		global $TAINACAN_BASE_URL;
+		global $TAINACAN_VERSION;
+		global $wp_version;
+
+		$settings = [
+			'wp_version' => $wp_version,
+			'root'     	 => esc_url_raw( rest_url() ) . 'tainacan/v2',
+			'nonce'   	 => is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
+			'base_url' 	 => $TAINACAN_BASE_URL,
+			'admin_url'  => admin_url(),
+			'site_url'	 => site_url(),
+			'theme_items_list_url' => esc_url_raw( get_site_url() ) . '/' . \Tainacan\Theme_Helper::get_instance()->get_items_list_slug()
+		];
+		
+		wp_enqueue_script(
+			'carousel-items-list-theme',
+			$TAINACAN_BASE_URL . '/assets/js/block_carousel_items_list_theme.js',
+			array('wp-components')
+		);
+		wp_enqueue_style(
+			'carousel-items-list',
+			$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . 'carousel-items-list' . '.css',
+			array('tainacan-blocks-common-styles'),
+			$TAINACAN_VERSION
+		);
+		wp_set_script_translations('carousel-items-list-theme', 'tainacan');
+		wp_localize_script('carousel-items-list-theme', 'tainacan_blocks', $settings);
+	}
+
+	public function enqueue_related_items_carousel_scripts() {
+		global $TAINACAN_BASE_URL;
+		global $TAINACAN_VERSION;
+
+		wp_enqueue_style(
+			'carousel-related-items',
+			$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . 'carousel-related-items' . '.css',
+			array('tainacan-blocks-common-styles'),
+			$TAINACAN_VERSION
+		);
 	}
 	
 	public function is_post_an_item(\WP_Post $post) {
@@ -428,7 +473,6 @@ class Theme_Helper {
 	public function search_shortcode($args) {
 		return $this->get_tainacan_items_list($args, true);
 	}
-
 	public function get_tainacan_items_list($args, $force_enqueue = false) {
 		$props = ' ';
 
@@ -828,5 +872,175 @@ class Theme_Helper {
 		return $adjacent_items;
 	}
 	
+	/**
+	 * Returns the div used by Vue to render the Carousel of Related Items
+	 *
+	 * @param array $args {
+		 *     Optional. Array of arguments.
+		 *     @type string  $collection_id					The Collection ID
+		 *     @type string  $search_URL					A query string to fetch items from, if load strategy is 'search'
+         *     @type array   $selected_items				An array of item IDs to fetch items from, if load strategy is 'selection' and an array of items, if the load strategy is 'parent'
+         *     @type string  $load_strategy					Either 'search' or 'selection', to determine how items will be fetch
+         *     @type integer $max_items_number				Maximum number of items to be fetch
+         *     @type integer $max_tems_per_screen			Maximum columns of items to be displayed on a row of the carousel
+         *     @type string  $arrows_position				How the arrows will be positioned regarding the carousel ('around', 'left', 'right')
+         *     @type bool    $large_arrows					Should large arrows be displayed?
+         *     @type bool    $auto_play						Should the Caroulsel start automatically to slide?
+         *     @type integer $auto_play_speed				The time in s to translate to the next slide automatically 
+         *     @type bool    $loop_slides					Should slides loop when reached the end of the Carousel?
+         *     @type bool    $hide_title					Should the title of the items be displayed?
+         *     @type bool    $crop_images_to_square			Should it use the `tainacan-medium-size` instead of the `tainacan-medium-large-size`?
+         *     @type bool    $show_collection_header		Should it display a small version of the collection header?
+         *     @type bool    $show_collection_label			Should it displar a 'Collection' label before the collection name on the collection header?
+         *     @type string  $collection_background_color	Color of the collection header background
+         *     @type string  $collection_text_color			Color of the collection header text
+         *     @type string  $tainacan_api_root				Path of the Tainacan api root (to make the items request)
+         *     @type string  $tainacan_base_url				Path of the Tainacan base URL (to make the links to the items)
+         *     @type string  $class_name					Extra class to add to the wrapper, besides the default wp-block-tainacan-carousel-items-list
+	 * @return string  The HTML div to be used for rendering the items carousel vue component
+	 */
+	public function get_tainacan_items_carousel($args = []) {
+		if (!is_array($args))
+			return __('There are missing parameters for Tainacan Items Carousel shortcode', 'tainacan');
+
+		$defaults = array(
+			'max_items_number' => 12,
+			'max_items_per_screen' => 7,
+			'arrows_position' => 'around',
+			'large_arrows' => false,
+			'auto_play' => false,
+			'auto_play_speed' => 3,
+			'loop_slides' => false,
+			'hide_title' => false,
+			'crop_images_to_square' => true,
+			'show_collection_header' => false,
+			'show_collection_label' => false,
+			'collection_background_color' => '#454647',
+			'collection_text_color' => '#ffffff',
+			'tainacan_api_root' => '',
+			'tainacan_base_url' => '',
+			'class_name' => '',
+		);
+		$args = wp_parse_args($args, $defaults);
+
+		$props = ' ';
+
+		// Always pass the class needed by Vue to mount the component;
+		$args['class'] = $args['class_name'] . ' wp-block-tainacan-carousel-items-list';
+		unset($args['class_name']);
+		
+		// Builds parameters to the html div rendered by Vue
+		foreach ($args as $key => $value) {
+			if (is_bool($value))
+				$value = $value ? 'true' : 'false';
+			// Changes from PHP '_' notation to HTML '-' notation
+			$props .= (str_replace('_', '-', $key) . "='" . $value . "' ");
+		}
+		
+		$this->enqueue_items_carousel_scripts();
+		
+		return "<div id='tainacan-items-carousel-shortcode' $props ></div>";
+	} 
+
+	/**
+	 * Returns a group of related items carousels
+	 * For each metatada, the collection name, the metadata name and a button linking
+	 * the items list filtered is presented
+	 *
+	 * @param array $args {
+		 *     Optional. Array of arguments.
+		 *     @type string  $item_id							The Item ID
+		 *     @type string  $class_name						Extra class to add to the wrapper, besides the default wp-block-tainacan-carousel-related-items
+		 *     @type string  $collection_heading_class_name		Extra class to add to the collection name wrapper. Defaults to ''
+		 * 	   @type string  $collection_heading_tag			Tag to be used as wrapper of the collection name. Defaults to h2
+		 *     @type string  $metadata_label_class_name			Extra class to add to the metadata label wrapper. Defaults to ''
+		 * 	   @type string  $metadata_label_tag				Tag to be used as wrapper of the metadata label. Defaults to p
+		 *     @type array   $carousel_args					Array of arguments to be passed to the get_tainacan_items_carousel function
+		 * @return string  The HTML div to be used for rendering the related items vue component
+	 */
+	public function get_tainacan_related_items_carousel($args = []) {
+
+		$defaults = array(
+			'class_name' => '',
+			'collection_heading_class_name' => '',
+			'collection_heading_tag' => 'h2', 
+			'metadata_label_class_name' => '',
+			'metadata_label_tag' => 'p',
+			'carousel_args' => []
+		);
+		$args = wp_parse_args($args, $defaults);
+		
+		// Gets the current Item
+		$item = isset($args['item_id']) ? $this->tainacan_get_item($args['item_id']) : $this->tainacan_get_item();
+		if (!$item)
+			return;
+		
+		// Then fetches related ones
+		$related_items = $item->get_related_items();	
+		if (!count($related_items))
+			return;
+
+		// Enqueues necessary CSS
+		$this->enqueue_related_items_carousel_scripts();
+
+		// Always pass the default class;
+		$output = '<div class="' . $args['class_name'] . ' wp-block-tainacan-carousel-related-items' . '">';
+		
+		foreach($related_items as $collection_id => $related_group) {
+			
+			if ( isset($related_group['items']) && isset($related_group['total_items']) && $related_group['total_items'] ) {
+
+				// Adds a heading with the collection name
+				$collection_heading = '';
+				if ( isset($related_group['collection_name']) ) {
+					$collection_heading = '<' . $args['collection_heading_tag'] . ' class="' . $args['collection_heading_class_name'] . '">' . $related_group['collection_name'] . '</' . $args['collection_heading_tag'] . '>';
+				}
+				
+				// Adds a paragraph with the metadata name
+				$metadata_label = '';
+				if ( isset($related_group['metadata_name']) ) {
+					$metadata_label = '<' . $args['metadata_label_tag'] . ' class="' . $args['metadata_label_class_name'] . '">' . $related_group['metadata_name'] . '</' . $args['metadata_label_tag'] . '>';
+				}
+				
+				// Sets the carousel, from the items carousel template tag.
+				$carousel_div = '';
+				if ( isset($related_group['collection_id']) ) {
+					
+					$carousel_args = wp_parse_args([
+						'collection_id' => $related_group['collection_id'],
+						'load_strategy' => 'parent',
+						'selected_items' => json_encode($related_group['items'])
+					], $args['carousel_args']);
+
+					$carousel_div = $this->get_tainacan_items_carousel($carousel_args);
+				}
+				
+				$output .= '<div class="wp-block-group">
+					<div class="wp-block-group__inner-container">' .
+						$collection_heading .
+						$metadata_label .
+						$carousel_div .
+							( 
+							$related_group['total_items'] > 1 ?
+								'<div class="wp-block-buttons">
+									<div class="wp-block-button">
+										<a class="wp-block-button__link" href="/' . $related_group['collection_slug'] . '?metaquery[0][key]=' . $related_group['metadata_id'] . '&metaquery[0][value][0]=' . $item->get_ID() . '&metaquery[0][compare]=IN">
+											' . sprintf( __('View all %s related items', 'tainacan'), $related_group['total_items'] ) . '
+										</a>
+									</div>
+								</div>'
+							: ''
+							)
+						. '<div style="height:30px" aria-hidden="true" class="wp-block-spacer">
+						</div>
+					</div>
+				</div>';
+			}
+		}
+		
+		$output .= '</div>';
+		
+		return $output;
+	}
 }
 
