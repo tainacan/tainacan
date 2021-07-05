@@ -141,10 +141,10 @@ class Bulk_Edit_Process extends Generic_Process {
 			$params['control_metadata'] = $this->get_id();
 			$this->save_options($params);
 		} elseif ($params['control_metadata'] === true) {
-			$this->add_log( __('bulk edit control metadata has already been created', 'tainacan') );
+			$this->add_log( __('Bulk edit control metadata has already been created', 'tainacan') );
 			return false;
 		} elseif( is_numeric($params['control_metadata']) && $params['control_metadata'] != $this->get_id() ) {
-			$this->add_log( sprintf( __( 'waiting creating bulk edit control metadata by process ID: "%d"', 'tainacan' ), $params['control_metadata'] ) );
+			$this->add_log( sprintf( __( 'Waiting while creating bulk edit control metadata by process ID: "%d"', 'tainacan' ), $params['control_metadata'] ) );
 			return true;
 		}
 

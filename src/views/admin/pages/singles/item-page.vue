@@ -672,8 +672,8 @@
     .section-box {
         background-color: var(--tainacan-white);
         padding: 0 var(--tainacan-one-column) 0 0;
-        margin-top: 12px;
-        margin-bottom: 18px;
+        margin-top: 8px;
+        margin-bottom: 16px;
 
         ul {
             display: flex;
