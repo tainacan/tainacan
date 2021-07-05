@@ -84,7 +84,7 @@ registerBlockType('tainacan/item-submission-form', {
             type: Boolean,
             default: false
         },
-        showAllowCommentsSection: {            
+        showAllowCommentsSection: {
             type: Boolean,
             default: false
         },
@@ -171,7 +171,11 @@ registerBlockType('tainacan/item-submission-form', {
         itemLinkButtonLabel: {
             type: String,
             default: __( 'Go to the item page', 'tainacan' )
-        }
+        },
+        helpInfoBellowLabel: {
+            type: Boolean,
+            default: false
+        },
     },
     supports: {
         align: ['full', 'wide'],
@@ -210,7 +214,8 @@ registerBlockType('tainacan/item-submission-form', {
             thumbnailSectionLabel,
             metadataSectionLabel,
             showItemLinkButton,
-            itemLinkButtonLabel
+            itemLinkButtonLabel,
+            helpInfoBellowLabel
         } = attributes;
 
         const fontSizes = [
@@ -496,12 +501,23 @@ registerBlockType('tainacan/item-submission-form', {
                                     }
                                 />
                                 <ToggleControl
-                                    label={__('Hide help buttons', 'tainacan')}
+                                    label={__('Hide help information', 'tainacan')}
                                     help={ hideHelpButtons ? __('Do not show the "?" icon with a help tooltip aside the labels.', 'tainacan') : __('Toggle to show the "?" icon with a help tooltip aside the labels.', 'tainacan')}
                                     checked={ hideHelpButtons }
                                     onChange={ ( isChecked ) => {
                                             hideHelpButtons = isChecked;
                                             setAttributes({ hideHelpButtons: isChecked });
+                                        }  
+                                    }
+                                />
+
+                                <ToggleControl
+                                    label={__('Help info bellow label', 'tainacan')}
+                                    help={ helpInfoBellowLabel ? __('Show the help info bellow the label instead of hidden in the "?" icon on the help tooltip.', 'tainacan') : __('Do not show the help info bellow the label, keep it on the "?" icon toolip.', 'tainacan')}
+                                    checked={ helpInfoBellowLabel }
+                                    onChange={ ( isChecked ) => {
+                                            helpInfoBellowLabel = isChecked;
+                                            setAttributes({ helpInfoBellowLabel: isChecked });
                                         }  
                                     }
                                 />
@@ -696,7 +712,10 @@ registerBlockType('tainacan/item-submission-form', {
                                             (
                                             <div>
                                                 { documentSectionLabel ? 
-                                                    <span style={{ display: 'flex', alignItems: 'baseline', marginBottom: '5px' }}><span class="fake-text section-label"></span>{ !hideHelpButtons ? <span class="fake-text fake-help-button"></span> : null }</span>
+                                                    <span>
+                                                        <span style={{ display: 'flex', alignItems: 'baseline', marginBottom: '5px' }}><span class="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBellowLabel ? <span class="fake-text fake-help-button"></span> : null }</span>
+                                                        { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
+                                                    </span>
                                                 : null }
                                                 { [ hideFileModalButton, hideTextModalButton, hideLinkModalButton ].filter((option) => { return option == false }).length > 1 ?
                                                     <div class="documents-section">
@@ -724,7 +743,10 @@ registerBlockType('tainacan/item-submission-form', {
                                         (
                                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                                 { !thumbnailSectionLabel ? 
-                                                    <span style={{ display: 'flex', alignItems: 'baseline' }}><span class="fake-text section-label"></span>{ !hideHelpButtons ? <span class="fake-text fake-help-button"></span> : null }</span>
+                                                    <span>
+                                                        <span style={{ display: 'flex', alignItems: 'baseline' }}><span class="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBellowLabel ? <span class="fake-text fake-help-button"></span> : null }</span>
+                                                        { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
+                                                    </span>
                                                 : null }
                                                 <div class="fake-switch"><span class="fake-icon"></span><span class="fake-text"></span></div>
                                             </div>
@@ -750,7 +772,8 @@ registerBlockType('tainacan/item-submission-form', {
                                         showAllowCommentsSection ? 
                                         (
                                             <div>
-                                                <span style={{ display: 'flex', alignItems: 'baseline' }}><span class="fake-text section-label"></span>{ !hideHelpButtons ? <span class="fake-text fake-help-button"></span> : null }</span>
+                                                <span style={{ display: 'flex', alignItems: 'baseline' }}><span class="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBellowLabel ? <span class="fake-text fake-help-button"></span> : null }</span>
+                                                { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
                                                 <div class="fake-switch"><span class="fake-icon"></span><span class="fake-text"></span></div>
                                             </div>
                                         ) : null }
@@ -767,7 +790,8 @@ registerBlockType('tainacan/item-submission-form', {
                                                         <div class={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
                                                             { !hideCollapses ? <span class="fake-collapse-arrow"></span> : null }
                                                             <span style={{ lineHeight: '0em' }}>
-                                                                <span class="fake-text"></span>{ !hideMetadataTypes ? <span class="fake-text fake-text-info"></span> : null }{ !hideHelpButtons ? <span class="fake-text fake-help-button"></span> : null }
+                                                                <span class="fake-text"></span>{ !hideMetadataTypes ? <span class="fake-text fake-text-info"></span> : null }{ !hideHelpButtons && !helpInfoBellowLabel ? <span class="fake-text fake-help-button"></span> : null }
+                                                                { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
                                                             </span>
                                                             <span class="fake-input"></span>
                                                         </div>
@@ -843,7 +867,8 @@ registerBlockType('tainacan/item-submission-form', {
             sentFormHeading,
             sentFormMessage,
             showItemLinkButton,
-            itemLinkButtonLabel
+            itemLinkButtonLabel,
+            helpInfoBellowLabel
         } = attributes;
         
         return <div 
@@ -880,7 +905,8 @@ registerBlockType('tainacan/item-submission-form', {
                     attachments-section-label={ attachmentsSectionLabel }
                     metadata-section-label={ metadataSectionLabel }
                     show-item-link-button={ showItemLinkButton ? showItemLinkButton.toString() : 'false' }
-                    item-link-button-label={ itemLinkButtonLabel ? itemLinkButtonLabel : __( 'Go to the item page', 'tainacan' ) } >
+                    item-link-button-label={ itemLinkButtonLabel ? itemLinkButtonLabel : __( 'Go to the item page', 'tainacan' ) }
+                    help-info-bellow-label={ helpInfoBellowLabel ? helpInfoBellowLabel.toString() : 'false' } >
             </div>
         </div>
     },

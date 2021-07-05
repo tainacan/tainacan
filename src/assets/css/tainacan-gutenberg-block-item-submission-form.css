@@ -48,6 +48,11 @@
         width: 5%;
         opacity: 0.75;
         margin-left: 6px; }
+      .wp-block-tainacan-item-submission-form .item-submission-form-placeholder .fake-text.fake-text-help-description {
+        background-color: var(--tainacan-info-color, rgba(200, 200, 200, 0.3));
+        width: 35%;
+        opacity: 0.75;
+        margin-top: 4px; }
       .wp-block-tainacan-item-submission-form .item-submission-form-placeholder .fake-text.fake-help-button {
         background-color: var(--tainacan-secondary, rgba(200, 200, 200, 0.3));
         height: 0.32em;
