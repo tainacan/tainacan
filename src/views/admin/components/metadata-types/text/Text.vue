@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-input
-                v-if="getDisplayAutocomplete"
+                v-if="!getDisplayAutocomplete"
                 :disabled="disabled"
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 :value="value"
@@ -21,10 +21,10 @@
                 clearable
                 check-infinite-scroll
                 @infinite-scroll="searchMore">
-            <template 
-                    v-if="!isLoadingOptions" 
-                    slot="header">
-                {{ $i18n.get('info_metadata_autocomplete_suggestions') }}
+            <template #header>
+                <span v-if="!isLoadingOptions && options && options.length">
+                    {{ $i18n.get('info_metadata_autocomplete_suggestions') }}
+                </span>
             </template>
             <template slot-scope="props">
                 <div class="media">
@@ -64,8 +64,8 @@
         },
         computed: {
             getDisplayAutocomplete() {
-                if (this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.display_autocomplete)
-                    return this.itemMetadatum.metadatum.metadata_type_options.display_autocomplete;
+                if (this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.display_suggestions)
+                    return this.itemMetadatum.metadatum.metadata_type_options.display_suggestions == 'yes';
                 else
                     return false;
             }
