@@ -99,7 +99,10 @@
                     this.searchQuery = query;
                     this.options = [];
                     this.searchOffset = 0;
-                } 
+                }
+                
+                // Updates metadata
+                this.onInput(query);
                 
                 // String cleared
                 if (!query.length) {
