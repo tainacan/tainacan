@@ -867,12 +867,11 @@ abstract class Repository {
 			$tmp_src = wp_get_attachment_image_src( $thumbnail_id, 'tainacan-small' );
 			$file_name = get_attached_file( $thumbnail_id );
 			$blurhash = \Tainacan\Media::get_instance()->get_image_blurhash($file_name, $tmp_src[1], $tmp_src[2]);
-			$metadata = ['blurhash' => $blurhash];
 			$attachment_metadata = \wp_get_attachment_metadata($thumbnail_id);
 			if($attachment_metadata != false && isset($attachment_metadata['image_meta']) && is_array($attachment_metadata['image_meta'])) {
-				$metadata = array_merge($attachment_metadata['image_meta'], $metadata);
+				$attachment_metadata['image_meta'] = array_merge($attachment_metadata['image_meta'], ['blurhash' => $blurhash]);
 			}
-			\wp_update_attachment_metadata($thumbnail_id, $metadata);
+			wp_update_attachment_metadata($thumbnail_id, $attachment_metadata);
 		}
 
 		return $diffs;

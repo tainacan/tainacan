@@ -286,6 +286,9 @@ class Item extends Entity {
 	 * @see \Tainacan\Entities\Entity::get_capabilities()
 	 */
 	public function get_capabilities() {
+		if( is_null($this->get_collection())) {
+			return (object) [];
+		}
 		return $this->get_collection()->get_items_capabilities();
 	}
 
