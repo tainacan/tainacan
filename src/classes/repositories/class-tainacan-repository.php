@@ -709,6 +709,8 @@ abstract class Repository {
 	 * @throws \Exception
 	 */
 	public function can_read( Entities\Entity $entity, $user = null ) {
+		if ( is_null($entity) )
+			return false;
 
 		if ( is_null( $user ) ) {
 			$user = get_current_user_id();
