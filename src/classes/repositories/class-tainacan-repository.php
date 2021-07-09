@@ -864,7 +864,7 @@ abstract class Repository {
 
 		$thumbnail_id = $obj->get__thumbnail_id();
 		if($thumbnail_id) {
-			$tmp_src = wp_get_attachment_image_src( $thumbnail_id, 'tainacan-small' );
+			$tmp_src = wp_get_attachment_image_src( $thumbnail_id, 'tainacan-medium' );
 			$file_name = get_attached_file( $thumbnail_id );
 			$blurhash = \Tainacan\Media::get_instance()->get_image_blurhash($file_name, $tmp_src[1], $tmp_src[2]);
 			$attachment_metadata = \wp_get_attachment_metadata($thumbnail_id);

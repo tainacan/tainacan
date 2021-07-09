@@ -401,7 +401,7 @@ class Media {
 			return $this->get_default_image_blurhash();
 		}
 
-		$max_width = 45;
+		$max_width = 90;
 		if( $width > $max_width ) {
 			$image = imagescale($image, $max_width);
 			$width = imagesx($image);
@@ -418,8 +418,8 @@ class Media {
 			}
 			$pixels[] = $row;
 		}
-		$components_x = 4;
-		$components_y = 3;
+		$components_x = 5;
+		$components_y = 4;
 		$blurhash = \kornrunner\Blurhash\Blurhash::encode($pixels, $components_x, $components_y);
 		return $blurhash;
 	}
