@@ -25,7 +25,12 @@ function tainacan_blocks_initialize() {
 	global $wp_version;
 
 	if (is_plugin_active('gutenberg/gutenberg.php') ||  $wp_version >= '5') {
-		add_filter('block_categories', 'tainacan_blocks_register_categories', 10, 2);
+
+		if ( class_exists('WP_Block_Editor_Context') ) { // Introduced WP 5.8
+			add_filter('block_categories_all', 'tainacan_blocks_register_categories', 10, 2);
+		} else {
+			add_filter('block_categories', 'tainacan_blocks_register_categories', 10, 2);
+		}
 		add_action('init', 'tainacan_blocks_add_plugin_settings', 90);
 		add_action('init', 'tainacan_blocks_add_plugin_admin_settings', 90);
 		add_action('init', 'register_tainacan_blocks_add_gutenberg_blocks');
@@ -146,8 +151,14 @@ function unregister_tainacan_blocks() {
 
 /** 
  * Registers the Taiancan category on the blocks inserter
+ * In case we are in WP > 5.8, we if we are in a post edition page first,
+ * as we don't want our blocks inside the Widgets area so far.
  */
-function tainacan_blocks_register_categories($categories, $post){
+function tainacan_blocks_register_categories($categories, $editor_context){
+
+	if ( class_exists('WP_Block_Editor_Context') && empty( $editor_context->post ) ) { // Introduced WP 5.8
+		return $categories;
+	}
 
 	return array_merge(
 		$categories,
@@ -158,6 +169,7 @@ function tainacan_blocks_register_categories($categories, $post){
 			),
 		)
 	);
+	
 }
 
 /** 
