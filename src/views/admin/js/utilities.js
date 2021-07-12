@@ -4,7 +4,7 @@ export const ThumbnailHelperPlugin = {};
 export const ThumbnailHelperFunctions = () => {
     return {
         imagesFolderPath() {
-            return tainacan_plugin ? (tainacan_plugin.base_url + '/assets/images/') : (tainacan_blocks ? (tainacan_blocks.base_url + '/assets/images/') : '/assets/images/');
+            return typeof tainacan_plugin != 'undefined' ? (tainacan_plugin.base_url + '/assets/images/') : (tainacan_blocks ? (tainacan_blocks.base_url + '/assets/images/') : '/assets/images/');
         },
         getSrc(thumbnail, tainacanSize, documentType) {
             const wordpressSize = this.getWordpressFallbackSize(tainacanSize);
