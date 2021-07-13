@@ -367,7 +367,7 @@ export default {
     .page-container {
 
         &>.tainacan-form {
-            margin-bottom: 110px;
+            margin-bottom: 56px;
         }
 
         .tainacan-page-title {

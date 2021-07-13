@@ -1687,7 +1687,7 @@ export default {
         padding: var(--tainacan-container-padding) 0px;
 
         &>.tainacan-form {
-            margin-bottom: 110px;
+            margin-bottom: 64px;
 
             .field:not(:last-child) {
                 margin-bottom: 0em;
@@ -1773,6 +1773,9 @@ export default {
 
             .field {
                 padding: 12px 0px 12px 60px;
+            }
+            .tab-item>.field:last-child {
+                margin-bottom: 187px;
             }
 
             @media screen and (max-width: 769px) {
