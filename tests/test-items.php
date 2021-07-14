@@ -521,7 +521,7 @@ class Items extends TAINACAN_UnitTestCase {
 		$test_file = '/tmp/tainacan.jpg';
 		copy( $orig_file, $test_file );
 		$blurhash = \Tainacan\Media::get_instance()->get_image_blurhash($test_file, 40,40);
-		$this->assertContains($blurhash, ['V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj', 'LATI:i~qNG~W~qNGxaNGM|xaNGxa']);
+		$this->assertContains($blurhash, ['V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj', 'VATI:i~qNG~WNG~qNGxaNGt6M|xaNGxaRk~WNGxaR*s:']);
 	}
 
 }
