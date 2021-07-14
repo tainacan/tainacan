@@ -20,7 +20,7 @@ const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2
 
 import tainacan from '../../js/axios.js';
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
-import CollectionModal from '../../tainacan-facets/faceted-search/collection-modal.js';
+import CollectionModal from '../../tainacan-blocks/faceted-search/collection-modal.js';
 
 
 import DeprecatedBlocks from './item-submission-deprecated.js';

@@ -289,6 +289,6 @@ export default {
 
 <style lang="scss">
 
-    @import './carousel-terms-list.scss';
+    @import './style.scss';
 
 </style>

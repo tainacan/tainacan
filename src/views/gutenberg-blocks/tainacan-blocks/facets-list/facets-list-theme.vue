@@ -407,6 +407,6 @@ export default {
 
 <style lang="scss">
 
-    @import './facets-list.scss';
+    @import './style.scss';
 
 </style>

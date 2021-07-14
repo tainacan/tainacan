@@ -449,6 +449,6 @@ export default {
 
 <style lang="scss">
 
-    @import './dynamic-items-list.scss';
+    @import './style.scss';
 
 </style>

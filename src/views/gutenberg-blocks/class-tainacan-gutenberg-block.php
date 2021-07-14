@@ -184,6 +184,7 @@ function tainacan_blocks_register_categories($categories, $editor_context){
 function tainacan_blocks_register_block($block_slug, $options = []) {
 	global $TAINACAN_BASE_URL;
 	global $TAINACAN_VERSION;
+	global $wp_version;
 
 	// Creates Register params based on registered scripts and styles
 	$register_params = [];
@@ -225,8 +226,12 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	$register_params['style'] = $block_slug;
 
 	// Registers the new block
-	if (function_exists('register_block_type'))
-		register_block_type( 'tainacan/' . $block_slug, $register_params );
+	if (function_exists('register_block_type')) {
+		if ( version_compare( $wp_version, '5.8-RC', '>=') && ($block_slug == 'carousel-collections-list' || $block_slug == 'collections-list') )
+			register_block_type( __DIR__ . '/tainacan-blocks/' . $block_slug );
+		else
+			register_block_type( 'tainacan/' . $block_slug, $register_params );
+	}
 }
 
 /** 

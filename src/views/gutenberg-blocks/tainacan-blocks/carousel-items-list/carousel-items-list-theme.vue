@@ -377,6 +377,6 @@ export default {
 
 <style lang="scss">
 
-    @import './carousel-items-list.scss';
+    @import './style.scss';
 
 </style>
