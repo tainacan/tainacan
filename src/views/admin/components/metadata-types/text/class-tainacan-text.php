@@ -15,6 +15,7 @@ class Text extends Metadata_Type {
         parent::__construct();
         parent::set_primitive_type('string');
 		parent::set_component('tainacan-text');
+		$this->set_form_component('tainacan-form-text');
 		$this->set_name( __('Text', 'tainacan') );
 		$this->set_description( __('A simple, one line, text input', 'tainacan') );
 		$this->set_preview_template('
@@ -24,6 +25,18 @@ class Text extends Metadata_Type {
 				</div>
 			</div>
 		');
+    }
+
+	/**
+     * @inheritdoc
+     */
+    public function get_form_labels(){
+        return [
+            'display_suggestions' => [
+                'title' => __( 'Display suggestions', 'tainacan' ),
+                'description' => __( 'Show an autocomplete input suggesting values inserted previously on other items for this metadatum.', 'tainacan' ),
+            ]
+        ];
     }
 	
 	/**

@@ -650,7 +650,8 @@ a.pswp__share--download:hover {
   max-width: var(--tainacan-media-main-carousel-width, 100%); }
   .tainacan-media-component__swiper-main ul.swiper-wrapper {
     display: flex;
-    align-items: center; }
+    align-items: center;
+    margin: 0; }
     .tainacan-media-component__swiper-main ul.swiper-wrapper[data-pswp-uid] li.swiper-slide img {
       cursor: zoom-in !important; }
   .tainacan-media-component__swiper-main li.swiper-slide {

@@ -6,18 +6,19 @@ import VueBlurHash from 'vue-blurhash';
 // Vue Dev Tools!
 Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
 
-// This is rendered on the theme side.
-document.addEventListener("DOMContentLoaded", () => {
-
+function renderTainacanItemCarouselBlocks() {
     // Gets all divs with content created by our block;
-    let blocks = document.getElementsByClassName('wp-block-tainacan-carousel-items-list');
+    let blocksElements = document.getElementsByClassName('wp-block-tainacan-carousel-items-list');
+    
+    if (blocksElements) {
+        let blocks = Object.values(blocksElements);
 
-    if (blocks) {
-        let blockIds = Object.values(blocks).map((block) => block.id);
+        // Checks if this carousel isn't already mounted
+        blocks = blocks.filter((block) => block.classList && !block.classList.contains('has-mounted'));
+        const blockIds = blocks.map((block) => block.id);
 
         // Creates a new Vue Instance to manage each block isolatelly
         for (let blockId of blockIds) {
-
             // Configure Vue logic before passing it to constructor:
             let vueOptions = {
                 data: {
@@ -103,4 +104,14 @@ document.addEventListener("DOMContentLoaded", () => {
             new Vue( Object.assign({ el: '#' + blockId }, vueOptions) );
         }
     }
+}
+
+// This is rendered on the theme side.
+document.addEventListener("DOMContentLoaded", () => {
+    renderTainacanItemCarouselBlocks();
+});
+
+// Also if a theme or plugin requested a reset...
+document.addEventListener("TainacanReloadCarouselItemsListBlock", () => {
+    renderTainacanItemCarouselBlocks();
 });

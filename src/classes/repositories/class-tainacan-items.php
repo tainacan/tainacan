@@ -504,8 +504,8 @@ class Items extends Repository {
 	 */
 	public function hook_api_updated_item( Entities\Item $updated_item, $attributes ) {
 		if ( array_key_exists( 'document', $attributes )
-		     && empty( $updated_item->get__thumbnail_id() )
-		     && ! empty( $updated_item->get_document() )
+			&& empty( $updated_item->get__thumbnail_id() )
+			&& ! empty( $updated_item->get_document() )
 		) {
 
 			$thumb_id = $this->get_thumbnail_id_from_document( $updated_item );
@@ -514,7 +514,7 @@ class Items extends Repository {
 			}
 
 		}
-        $this->generate_index_content( $updated_item );
+		$this->generate_index_content( $updated_item );
 	}
 
 	/**

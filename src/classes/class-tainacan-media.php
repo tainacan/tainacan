@@ -386,4 +386,42 @@ class Media {
 
 	}
 
+	public function get_default_image_blurhash() {
+		return apply_filters('tainacan-default-image-blurhash', "V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj");
+	}
+
+	public function get_image_blurhash($file_path, $width, $height) {
+		if (
+			!(version_compare(PHP_VERSION, '7.2.0') >= 0) ||
+			!$image = @imagecreatefromstring(file_get_contents($file_path))
+		) {
+			return $this->get_default_image_blurhash();
+		}
+		if($image == false) {
+			return $this->get_default_image_blurhash();
+		}
+
+		$max_width = 90;
+		if( $width > $max_width ) {
+			$image = imagescale($image, $max_width);
+			$width = imagesx($image);
+			$height = imagesy($image);
+		}
+		
+		$pixels = [];
+		for ($y = 0; $y < $height; ++$y) {
+			$row = [];
+			for ($x = 0; $x < $width; ++$x) {
+				$index = imagecolorat($image, $x, $y);
+				$colors = imagecolorsforindex($image, $index);
+				$row[] = [$colors['red'], $colors['green'], $colors['blue']];
+			}
+			$pixels[] = $row;
+		}
+		$components_x = 5;
+		$components_y = 4;
+		$blurhash = \kornrunner\Blurhash\Blurhash::encode($pixels, $components_x, $components_y);
+		return $blurhash;
+	}
+
 }
