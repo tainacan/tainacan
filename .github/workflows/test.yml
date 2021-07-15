@@ -92,8 +92,8 @@ jobs:
         run: |
           if [[ "${{ matrix.php }}" = "8.0" ]]; then
             wget https://phar.phpunit.de/phpunit-8.3.1.phar -P /tmp
-            chmod +x /tmp/phpunit-6.5.7.phar
-            mv /tmp/phpunit-6.5.7.phar /usr/local/bin/phpunit
+            chmod +x /tmp/phpunit-8.3.1.phar
+            mv /tmp/phpunit-8.3.1.phar /usr/local/bin/phpunit
           elif [[ "${{ matrix.php }}" > "6.0" ]]; then
             wget https://phar.phpunit.de/phpunit-6.5.7.phar -P /tmp
             chmod +x /tmp/phpunit-6.5.7.phar
