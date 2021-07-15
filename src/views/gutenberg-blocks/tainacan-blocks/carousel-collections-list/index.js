@@ -1,5 +1,3 @@
-import 'swiper/css/swiper.min.css';
-
 import  tainacanRegisterBlockType from '../../js/tainacan-blocks-compat-register.js';
 
 import metadata from './block.json';

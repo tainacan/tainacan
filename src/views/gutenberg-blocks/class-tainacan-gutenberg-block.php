@@ -227,7 +227,10 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 
 	// Registers the new block
 	if (function_exists('register_block_type')) {
-		if ( version_compare( $wp_version, '5.8-RC', '>=') && ($block_slug == 'carousel-collections-list' || $block_slug == 'collections-list') )
+		if ( 
+			version_compare( $wp_version, '5.8-RC', '>=') &&
+			($block_slug == 'carousel-collections-list' || $block_slug == 'collections-list' || $block_slug == 'carousel-items-list')
+		)
 			register_block_type( __DIR__ . '/tainacan-blocks/' . $block_slug );
 		else
 			register_block_type( 'tainacan/' . $block_slug, $register_params );
