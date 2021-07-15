@@ -382,7 +382,9 @@
             .term-items-grid {
                 @include display-grid;
                 grid-template-columns: 1fr 1fr 1fr;
-                grid-template-rows: 50% 50%;
+                grid-template-rows: 1fr 1fr;
+                grid-gap: 5px;
+                gap: 5px;
 
                 img:first-of-type {
                     flex-basis: 100%;
@@ -391,7 +393,6 @@
 
                 img {
                     flex-basis: 50%; 
-                    padding: 2px;
                     margin-bottom: 0px; 
                 }
             }

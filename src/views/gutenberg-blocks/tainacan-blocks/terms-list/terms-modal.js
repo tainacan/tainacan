@@ -52,7 +52,7 @@ export default class TermsModal extends React.Component {
             temporarySelectedTerms: JSON.parse(JSON.stringify(this.props.selectedTermsObject))
         });
         
-        if (this.props.existingTaxonomyId != null && this.props.existingTaxonomyId != undefined) {
+        if (this.props.existingTaxonomyId) {
             this.fetchTaxonomy(this.props.existingTaxonomyId);
             this.fetchModalTerms(0, this.props.existingTaxonomyId);
         } else {
@@ -309,7 +309,7 @@ export default class TermsModal extends React.Component {
     }
 
     render() {
-        return this.state.taxonomyId != null && this.state.taxonomyId != undefined ? (
+        return this.state.taxonomyId ? (
             // Terms modal
             <Modal
                     className="wp-block-tainacan-modal"

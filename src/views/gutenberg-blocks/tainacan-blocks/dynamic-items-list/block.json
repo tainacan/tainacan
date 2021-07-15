@@ -1,0 +1,149 @@
+{
+    "name": "tainacan/dynamic-items-list",
+    "title": "Tainacan Collection\"s Items List",
+    "category": "tainacan-blocks",
+    "keywords": [ "items", "search", "collection" ],
+    "description": "Dynamically list items from a Tainacan items search",
+    "example": {
+        "attributes": {
+            "content": "preview"
+        }
+    },
+    "attributes": {
+        "content": {
+            "type": "Array",
+            "source": "children",
+            "selector": "div"
+        },
+        "collectionId": {
+            "type": "String",
+            "default": ""
+        },
+        "items": {
+            "type": "Array",
+            "default": []
+        },
+        "showImage": {
+            "type": "Boolean",
+            "default": true
+        },
+        "showName": {
+            "type": "Boolean",
+            "default": true
+        },
+        "layout": {
+            "type": "String",
+            "default": "grid"
+        },
+        "isModalOpen": {
+            "type": "Boolean",
+            "default": false
+        },
+        "gridMargin": {
+            "type": "Number",
+            "default": 0
+        },
+        "searchURL": {
+            "type": "String",
+            "default": ""
+        },
+        "itemsRequestSource": {
+            "type": "String",
+            "default": ""
+        },
+        "maxItemsNumber": {
+            "type": "Number",
+            "value": 12
+        },
+        "isLoading": {
+            "type": "Boolean",
+            "value": false
+        },
+        "isLoadingCollection": {
+            "type": "Boolean",
+            "value": false
+        },
+        "showSearchBar": {
+            "type": "Boolean",
+            "value": false
+        },
+        "showCollectionHeader": {
+            "type": "Boolean",
+            "value": false
+        },
+        "showCollectionLabel": {
+            "type": "Boolean",
+            "value": false
+        },
+        "collection": {
+            "type": "Object",
+            "value": {}
+        },
+        "searchString": {
+            "type": "String",
+            "default": ""
+        },
+        "order": {
+            "type": "String",
+            "default": "asc"
+        },
+        "blockId": {
+            "type": "String",
+            "default": ""
+        },
+        "collectionBackgroundColor": {
+            "type": "String",
+            "default": "#454647"
+        },
+        "collectionTextColor": {
+            "type": "String",
+            "default": "#ffffff"
+        },
+        "mosaicHeight": {
+            "type": "Number",
+            "value": 280
+        },
+        "mosaicGridColumns": {
+            "type": "Number",
+            "value": 3
+        },
+        "mosaicGridRows": {
+            "type": "Number",
+            "value": 3
+        },
+        "sampleBackgroundImage": {
+            "type": "String",
+            "default": ""
+        },
+        "mosaicItemFocalPoint": {
+            "type": "Object",
+            "default": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        "mosaicDensity": {
+            "type": "Number",
+            "default": 5
+        },
+        "maxColumnsCount": {
+            "type": "Number",
+            "default": 4
+        },
+        "cropImagesToSquare": {
+            "type": "Boolean",
+            "value": true
+        }
+    },
+    "supports": {
+        "align": ["full", "wide"],
+        "html": false,
+        "typography": {
+            "fontSize": true
+        }
+    },
+    "editorScript": "dynamic-items-list",
+	"script": "dynamic-items-list-theme",
+	"editorStyle": "dynamic-items-list",
+	"style": "dynamic-items-list"
+}
