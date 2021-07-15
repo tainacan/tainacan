@@ -29,9 +29,14 @@
                             class="section-label">
                         <label>{{ documentSectionLabel }}</label>
                         <help-button
-                                v-if="!hideHelpButtons"
+                                v-if="!hideHelpButtons && !helpInfoBellowLabel && $i18n.getHelperMessage('items', 'document')"
                                 :title="$i18n.getHelperTitle('items', 'document')"
                                 :message="$i18n.getHelperMessage('items', 'document')"/>
+                        <p
+                                class="metadatum-description-help-info"
+                                v-if="!hideHelpButtons && helpInfoBellowLabel && $i18n.getHelperMessage('items', 'document')">
+                            {{ $i18n.getHelperMessage('items', 'document') }}
+                        </p>
                     </div>
                     <div 
                             class="section-box document-field"
@@ -137,10 +142,14 @@
                             class="section-label">
                         <label>{{ thumbnailSectionLabel }}</label>
                         <help-button
-                                v-if="!hideHelpButtons"
+                                v-if="!hideHelpButtons && !helpInfoBellowLabel && $i18n.getHelperMessage('items', '_thumbnail_id')"
                                 :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
                                 :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
-
+                        <p
+                                class="metadatum-description-help-info"
+                                v-if="!hideHelpButtons && helpInfoBellowLabel && $i18n.getHelperMessage('items', '_thumbnail_id')">
+                            {{ $i18n.getHelperMessage('items', '_thumbnail_id') }}
+                        </p>
                     </div>
                     <div class="section-toggle">
                         <p>{{ showThumbnailInput ? $i18n.get('info_thumbnail_custom') : $i18n.get('info_thumbnail_default_from_document') }}</p>
@@ -276,9 +285,14 @@
                     <div class="section-label">
                         <label>{{ $i18n.get('label_comments') }}</label>
                         <help-button
-                                v-if="!hideHelpButtons"
+                                v-if="!hideHelpButtons && !helpInfoBellowLabel && $i18n.getHelperMessage('items', 'comment_status')"
                                 :title="$i18n.getHelperTitle('items', 'comment_status')"
                                 :message="$i18n.getHelperMessage('items', 'comment_status')"/>
+                        <p
+                                class="metadatum-description-help-info"
+                                v-if="!hideHelpButtons && helpInfoBellowLabel && $i18n.getHelperMessage('items', 'comment_status')">
+                            {{ $i18n.getHelperMessage('items', 'comment_status') }}
+                        </p>
                     </div>
                     <div class="section-toggle">
                         <div class="field has-addons">
@@ -462,7 +476,8 @@ export default {
         attachmentsSectionLabel: String,
         metadataSectionLabel: String,
         showItemLinkButton: Boolean,
-        itemLinkButtonLabel: String
+        itemLinkButtonLabel: String,
+        helpInfoBellowLabel: Boolean
     },
     data(){
         return {
@@ -736,10 +751,10 @@ export default {
             max-width: 100%;
         }
         .field:not(:last-child) {
-            margin-bottom: 0.5em;
+            margin-bottom: 0em;
         }
         .field {
-            padding: 10px 0px 14px 34px;
+            padding: 12px 0px 12px 34px;
 
         }
          .columns {
@@ -812,6 +827,12 @@ export default {
                 }
             }
         }
+    }
+
+    .metadatum-description-help-info {
+        font-size: 0.75em;
+        color: var(--tainacan-info-color);
+        margin-bottom: 0.5em;
     }
 
     .document-field {

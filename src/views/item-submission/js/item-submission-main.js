@@ -119,7 +119,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 attachmentsSectionLabel: '',
                 metadataSectionLabel: '',
                 showItemLinkButton: false,
-                itemLinkButtonLabel: ''
+                itemLinkButtonLabel: '',
+                helpInfoBellowLabel: false
             },
             beforeMount () {
                 // Collection source settings
@@ -145,6 +146,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     this.hideHelpButtons = this.isParameterTrue('hide-help-buttons');
                 if (this.$el.attributes['hide-metadata-types'] != undefined)
                     this.hideMetadataTypes = this.isParameterTrue('hide-metadata-types');
+                if (this.$el.attributes['help-info-bellow-label'] != undefined)
+                    this.helpInfoBellowLabel = this.isParameterTrue('help-info-bellow-label');
 
                 // Form sections labels
                 if (this.$el.attributes['document-section-label'] != undefined)

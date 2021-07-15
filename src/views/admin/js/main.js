@@ -26,6 +26,7 @@ import Taxonomy from '../components/metadata-types/taxonomy/Taxonomy.vue';
 import Compound from '../components/metadata-types/compound/Compound.vue';
 import User from '../components/metadata-types/user/User.vue';
 
+import FormText from '../components/metadata-types/text/FormText.vue';
 import FormRelationship from '../components/metadata-types/relationship/FormRelationship.vue';
 import FormTaxonomy from '../components/metadata-types/taxonomy/FormTaxonomy.vue';
 import FormSelectbox from '../components/metadata-types/selectbox/FormSelectbox.vue';
@@ -119,6 +120,7 @@ Vue.component('tainacan-compound', Compound);
 Vue.component('tainacan-user', User);
 
 /* Metadata Option forms */
+Vue.component('tainacan-form-text', FormText);
 Vue.component('tainacan-form-relationship', FormRelationship);
 Vue.component('tainacan-form-taxonomy', FormTaxonomy);
 Vue.component('tainacan-form-selectbox', FormSelectbox);

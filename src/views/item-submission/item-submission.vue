@@ -20,6 +20,7 @@
             :metadata-section-label="$root.metadataSectionLabel"
             :show-item-link-button="$root.showItemLinkButton"
             :item-link-button-label="$root.itemLinkButtonLabel"
+            :help-info-bellow-label="$root.helpInfoBellowLabel ? $root.helpInfoBellowLabel : false"
              />
 </template>
 

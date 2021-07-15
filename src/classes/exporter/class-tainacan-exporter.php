@@ -618,7 +618,8 @@ abstract class Exporter {
 			'posts_per_page' => $per_page,
 			'paged'   => $page,
 			'order'   => 'DESC',
-			'orderby' => 'ID'
+			'orderby' => 'ID',
+			'post_status' => ["private", "publish", "draft"]
 		];
 
 		$this->add_log("Retrieving $per_page items on page index: $index, in collection " . $collection_definition['id'] );
@@ -642,7 +643,6 @@ abstract class Exporter {
 			} else {
 				$this->add_error_log( __('Error processing item', 'tainacan') );
 			}
-						
 		}
 		wp_reset_postdata();
 		return $data;

@@ -1,5 +1,5 @@
 <template>
-    <div :class="className">
+    <div :class="className + ' has-mounted'">
         <div v-if="showCollectionHeader">
             <div
                     v-if="isLoadingCollection"
@@ -254,8 +254,8 @@ export default {
     },
     created() {
         this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
-        if (tainacan_plugin && tainacan_plugin.nonce)
-            this.tainacanAxios.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
+        if (tainacan_blocks && tainacan_blocks.nonce)
+            this.tainacanAxios.defaults.headers.common['X-WP-Nonce'] = tainacan_blocks.nonce;
   
         if (this.showCollectionHeader)
             this.fetchCollectionForHeader();
@@ -284,7 +284,15 @@ export default {
 
             this.itemsRequestSource = axios.CancelToken.source();
 
-            if (this.loadStrategy == 'selection') {
+            if (this.loadStrategy == 'parent') {
+
+                for (let item of this.selectedItems)
+                    this.items.push(item);
+
+                    this.isLoading = false;
+                    this.totalItems = this.items.length;
+
+            } else if (this.loadStrategy == 'selection') {
                 let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.selectedItems.length }) + '&fetch_only=title,url,thumbnail';
                 
                 this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
@@ -354,7 +362,7 @@ export default {
         fetchCollectionForHeader() {
             if (this.showCollectionHeader) {
 
-                this.isLoadingCollection = true;             
+                this.isLoadingCollection = true;
 
                 this.tainacanAxios.get('/collections/' + this.collectionId + '?fetch_only=name,thumbnail,header_image')
                     .then(response => {

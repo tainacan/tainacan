@@ -525,9 +525,26 @@
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
                 if ( this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' )
-                    promise = this.getValuesRelationship( this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
+                    promise = this.getValuesRelationship({
+                        search: this.optionName, 
+                        isRepositoryLevel: this.isRepositoryLevel,
+                        valuesToIgnore: [],
+                        offset: offset,
+                        number: this.maxNumOptionsCheckboxList,
+                        isInCheckboxModal: true,
+                        countItems: false
+                    });
                 else
-                    promise = this.getValuesPlainText( this.metadatumId, this.optionName, this.isRepositoryLevel, [], offset, this.maxNumOptionsCheckboxList, true);
+                    promise = this.getValuesPlainText({
+                        metadatumId: this.metadatumId, 
+                        search: this.optionName, 
+                        isRepositoryLevel: this.isRepositoryLevel, 
+                        valuesToIgnore: [],
+                        offset: offset, 
+                        number: this.maxNumOptionsCheckboxList,
+                        isInCheckboxModal: true,
+                        countItems: false
+                    });
                 
                 promise.request
                     .then(() => {
@@ -554,7 +571,7 @@
                 if (this.isTaxonomy) {
                     this.isLoadingSearch = true;
 
-                    let query = `?order=asc&number=${this.maxNumSearchResultsShow}&search=${this.optionName}&hideempty=0&offset=${this.checkboxListOffset}`;
+                    let query = `?order=asc&number=${this.maxNumSearchResultsShow}&search=${this.optionName}&hideempty=0&offset=${this.checkboxListOffset}&count_items=0`;
 
                     let route = `/collection/${this.collectionId}/facets/${this.metadatumId}${query}`;
 
@@ -683,7 +700,7 @@
                 if (option)
                     parent = option.value;
 
-                let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0&hideempty=0`;
+                let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=0&hideempty=0&count_items=0`;
 
                 this.isColumnLoading = true;
 
@@ -712,7 +729,7 @@
                     let parent = finderColumn.children[0].parent;
                     let offset = finderColumn.children.length;
 
-                    let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}&hideempty=0`;
+                    let query = `?order=asc&parent=${parent}&number=${this.maxNumOptionsCheckboxFinderColumns}&offset=${offset}&hideempty=0&count_items=0`;
 
                     if (finderColumn.lastTerm)
                         query += '&last_term=' + encodeURIComponent(finderColumn.lastTerm)

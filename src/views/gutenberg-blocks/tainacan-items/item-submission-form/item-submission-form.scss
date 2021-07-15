@@ -61,6 +61,12 @@
                 opacity: 0.75;
                 margin-left: 6px;
             }
+            &.fake-text-help-description {
+                background-color: var(--tainacan-info-color, rgba(200,200,200, 0.3));
+                width: 35%;
+                opacity: 0.75;
+                margin-top: 4px;
+            }
             &.fake-help-button {
                 background-color: var(--tainacan-secondary, rgba(200,200,200, 0.3));
                 height: 0.32em;

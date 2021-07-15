@@ -173,10 +173,13 @@ export default {
                         const newMetaQueryArray = newQueryArray.filter(queryItem => queryItem.startsWith('metaquery'));
                         const oldTaxQueryArray = oldQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
                         const newTaxQueryArray = newQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
+                        const oldStatusArray = oldQueryArray.filter(queryItem => queryItem.startsWith('status'));
+                        const newStatusArray = newQueryArray.filter(queryItem => queryItem.startsWith('status'));
                         
                         if (
                             JSON.stringify(oldMetaQueryArray) != JSON.stringify(newMetaQueryArray) ||
-                            JSON.stringify(oldTaxQueryArray) != JSON.stringify(newTaxQueryArray)
+                            JSON.stringify(oldTaxQueryArray) != JSON.stringify(newTaxQueryArray) ||
+                            JSON.stringify(oldStatusArray) != JSON.stringify(newStatusArray)
                         ) {
                             this.$emit('has-to-reload-facets', true);
                         }
@@ -330,7 +333,11 @@ export default {
                     this.$store.dispatch('search/setAdminViewMode', adminViewMode);
                     this.updateURLQueries();  
                 },
-                setSelectedItemsForIframe(selectedItems) {
+                setSelectedItemsForIframe(selectedItems, singleSelection) {
+ 
+                    if (singleSelection)
+                        this.$store.dispatch('search/cleanSelectedItems');
+
                     this.$store.dispatch('search/setSelectedItems', selectedItems);    
  
                     let currentSelectedItems = this.$store.getters['search/getSelectedItems'];

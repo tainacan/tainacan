@@ -120,6 +120,10 @@
                 transform: scale(0.0);
                 transition: transform 0.2s ease;
             }
+            .icon:not(.slideshow-icon) {
+                float: left;
+                margin-top: -1px;
+            }
         }
         &:hover,
         &:focus {
@@ -153,12 +157,14 @@
                     font-size: 0.75em;
                     font-weight: 700;
                     color: var(--tainacan-info-color);
+                    clear: none;
                 }
 
                 .metadata-value {
                     font-size: 0.75em;
                     margin-bottom: 1em;
                     color: var(--tainacan-info-color);
+                    clear: none;
                 }
 
                 & span:last-of-type>.metadata-value {

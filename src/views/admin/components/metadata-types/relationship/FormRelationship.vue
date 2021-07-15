@@ -17,7 +17,8 @@
                     v-model="collection"
                     @change.native="emitValues()"
                     @focus="clear()"
-                    :loading="loading">
+                    :loading="loading"
+                    expanded>
                 <option
                         v-for="option in collections"
                         :value="option.id"
@@ -40,42 +41,36 @@
                             :title="$i18n.getHelperTitle('tainacan-relationship', 'search')"
                             :message="$i18n.getHelperMessage('tainacan-relationship', 'search')"/>
                 </label>
-                    <b-select
-                            name="metadata_type_relationship[search]"
-                            v-model="modelSearch">
-                        
-                        <option
-                                v-for="(option, index) in metadata"
-                                :key="index"
-                                :value="option.id"
-                                class="field">
-                            {{ option.name }}
-                        </option>
-                        
-                    </b-select>
-                    
+                <b-select
+                        name="metadata_type_relationship[search]"
+                        v-model="modelSearch"
+                        expanded>
+                    <option
+                            v-for="(option, index) in metadata"
+                            :key="index"
+                            :value="option.id"
+                            class="field">
+                        {{ option.name }}
+                    </option>
+                </b-select>
             </b-field>
-
         </transition>
 
-
-        <b-field :addons="false">
-            <label class="label">
-                {{ $i18n.get('label_allow_repeated_items') }}
-                <help-button
-                        :title="$i18n.getHelperTitle('tainacan-relationship', 'repeated')"
-                        :message="$i18n.getHelperMessage('tainacan-relationship', 'repeated')"/>
-            </label>
-            <div class="block">
-                <b-checkbox
-                        v-model="modelRepeated"
-                        @input="emitValues()"
-                        true-value="yes"
-                        false-value="no">
-                    {{ labelRepeated() }}
-                </b-checkbox>
-            </div>
+        <b-field
+                :addons="false"
+                :label="$i18n.getHelperTitle('tainacan-relationship', 'display_in_related_items')">
+                &nbsp;
+            <b-switch
+                    size="is-small" 
+                    v-model="modelDisplayInRelatedItems"
+                    @input="emitValues()"
+                    true-value="yes"
+                    false-value="no" />
+            <help-button
+                    :title="$i18n.getHelperTitle('tainacan-relationship', 'display_in_related_items')"
+                    :message="$i18n.getHelperMessage('tainacan-relationship', 'display_in_related_items')"/>
         </b-field>
+
     </section>
 </template>
 
@@ -86,7 +81,6 @@
         props: {
             search: [ String ],
             collection_id: [ Number ],
-            repeated: [ String ],
             value: [ String, Object, Array ],
             metadatum: [ String, Object ],
             errors: [ String, Object, Array ]
@@ -100,7 +94,7 @@
                 collection: '',
                 hasMetadata: false,
                 loadingMetadata: false,
-                modelRepeated: 'yes',
+                modelDisplayInRelatedItems: 'no',
                 modelSearch:'',
                 collectionType: '',
                 collectionMessage: ''
@@ -114,7 +108,7 @@
                     this.setErrorsAttributes( '', '' );
                 }
                 return true;
-            },
+            }
         },
         watch:{
             collection( value ){
@@ -125,7 +119,7 @@
                     this.metadata = [];
                     this.hasMetadata = false;
                     this.modelSearch = '';
-
+                    this.modelDisplayInRelatedItems = 'no';
                     this.emitValues();
                 }
             },
@@ -143,11 +137,7 @@
                }
            });
 
-           if( this.repeated ){
-               this.modelRepeated = this.repeated;
-           } else if( this.value ) {
-               this.modelRepeated = this.value.repeated;
-           }
+           this.modelDisplayInRelatedItems = this.value && this.value.display_in_related_items ? this.value.display_in_related_items : 'no';
         },
         methods:{
             setErrorsAttributes( type, message ){
@@ -157,14 +147,10 @@
             fetchCollections(){
                 return axios.get('/collections?nopaging=1')
                     .then(res => {
-                        let collections = res.data;
-                        this.loading = false;
+                        const collections = res.data;
 
-                        if( collections ){
-                            this.collections = collections;
-                        } else {
-                            this.collections = [];
-                        }
+                        this.loading = false;
+                        this.collections = collections ? collections : [];
                     })
                     .catch(error => {
                         this.$console.log(error);
@@ -231,9 +217,6 @@
                     }
                 }
             },
-            labelRepeated(){
-                return ( this.modelRepeated === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
-            },
             clear(){
                 this.collectionType = '';
                 this.collectionMessage = '';
@@ -242,7 +225,7 @@
                 this.$emit('input',{
                     collection_id: this.collection,
                     search: this.modelSearch,
-                    repeated:  this.modelRepeated
+                    display_in_related_items: this.modelDisplayInRelatedItems
                 });
             }
         }
@@ -251,6 +234,9 @@
 
 <style scoped>
     .help-wrapper {
-        font-size: 1.25em;
+        font-size: 1em;
+    }
+    .switch.is-small {
+        margin-top: -0.5em;
     }
 </style>

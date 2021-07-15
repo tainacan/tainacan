@@ -1,0 +1,51 @@
+.wp-block-tainacan-carousel-related-items {
+  margin: 0.5em auto;
+  width: 100%; }
+  .wp-block-tainacan-carousel-related-items .spinner-container {
+    min-height: 56px;
+    padding: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--tainacan-block-gray4, #555758); }
+@-webkit-keyframes skeleton-animation {
+  0% {
+    opacity: 1.0; }
+  50% {
+    opacity: 0.2; }
+  100% {
+    opacity: 1.0; } }
+@-moz-keyframes skeleton-animation {
+  0% {
+    opacity: 1.0; }
+  50% {
+    opacity: 0.2; }
+  100% {
+    opacity: 1.0; } }
+@-o-keyframes skeleton-animation {
+  0% {
+    opacity: 1.0; }
+  50% {
+    opacity: 0.2; }
+  100% {
+    opacity: 1.0; } }
+@keyframes skeleton-animation {
+  0% {
+    opacity: 1.0; }
+  50% {
+    opacity: 0.2; }
+  100% {
+    opacity: 1.0; } }
+  .wp-block-tainacan-carousel-related-items .skeleton {
+    border-radius: 2px;
+    background: var(--tainacan-block-gray1, #f2f2f2);
+    -webkit-animation: skeleton-animation 1.8s ease infinite;
+    -moz-animation: skeleton-animation 1.8s ease infinite;
+    -o-animation: skeleton-animation 1.8s ease infinite;
+    animation: skeleton-animation 1.8s ease infinite; }
+  .wp-block-tainacan-carousel-related-items .carousel-related-items-edit-container {
+    position: relative; }
+    .wp-block-tainacan-carousel-related-items .carousel-related-items-edit-container .skeleton {
+      min-height: 150px; }
+
+/*# sourceMappingURL=tainacan-gutenberg-block-carousel-related-items.css.map */

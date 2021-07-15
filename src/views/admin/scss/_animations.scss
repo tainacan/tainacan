@@ -549,3 +549,12 @@
     -o-animation: skeleton-animation 1.8s ease infinite;
     animation: skeleton-animation 1.8s ease infinite;
 }
+
+@keyframes metadatum-highlight {
+    from {
+        background-color: var(--tainacan-primary1); 
+    }
+    to {
+        background-color: var(--tainacan-white); 
+    }
+}

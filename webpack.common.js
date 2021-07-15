@@ -22,13 +22,15 @@ module.exports = {
         block_carousel_items_list_theme: './src/views/gutenberg-blocks/tainacan-items/carousel-items-list/carousel-items-list-theme.js',
         
         block_search_bar: './src/views/gutenberg-blocks/tainacan-items/search-bar/index.js',
-        block_search_bar_script: './src/views/gutenberg-blocks/tainacan-items/search-bar/search-bar-theme-script.js',
+        block_search_bar_theme: './src/views/gutenberg-blocks/tainacan-items/search-bar/search-bar-theme.js',
         
         block_collections_list: './src/views/gutenberg-blocks/tainacan-collections/collections-list/index.js',
         
         block_carousel_collections_list: './src/views/gutenberg-blocks/tainacan-collections/carousel-collections-list/index.js',
         block_carousel_collections_list_theme: './src/views/gutenberg-blocks/tainacan-collections/carousel-collections-list/carousel-collections-list-theme.js',
-        
+       
+        block_carousel_related_items: './src/views/gutenberg-blocks/tainacan-items/carousel-related-items/index.js',
+
         block_facets_list: './src/views/gutenberg-blocks/tainacan-facets/facets-list/index.js',
         block_facets_list_theme: './src/views/gutenberg-blocks/tainacan-facets/facets-list/facets-list-theme.js',
 

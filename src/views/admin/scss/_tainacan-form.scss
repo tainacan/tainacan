@@ -29,11 +29,8 @@
         text-transform: inherit;
         font-size: 0.875em; 
         color: var(--tainacan-label-color);
-        display: inline-block;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        vertical-align: top;
+        display: inline;
+        line-height: 2.0em;
     }
     .section-label>label {
         cursor: default;

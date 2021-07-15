@@ -87,7 +87,7 @@ class Metadata extends Repository {
 				'map'         => 'post_content',
 				'title'       => __( 'Description', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The metadata description', 'tainacan' ),
+				'description' => __( 'The metadatum description. This may provide information on how to fill this metadatum, which will appear inside a tooltip alongside the input label.', 'tainacan' ),
 				'default'     => '',
 				//'on_error'   => __('The description should be a text value', 'tainacan'),
 				//'validation' => v::stringType()->notEmpty(),
@@ -134,7 +134,7 @@ class Metadata extends Repository {
 				'type'        => ['string', 'number'],
 				'description' => __( 'Number of multiples possible metadata', 'tainacan' ),
 				'on_error'    => __( 'This number of multiples metadata is not allowed', 'tainacan' ),
-				'validation'  => v::numeric()->positive(),
+				//'validation'  => v::numeric()->positive(),
 				'default'     => 1
 			],
 			'mask'                  => [
@@ -1679,6 +1679,30 @@ class Metadata extends Repository {
 
 		}
 
+	}
+
+	/**
+	 * Test if a metadata is enabled on collection.
+	 *
+	 * @param \Tainacan\Entities\Collection $collection
+	 * @param \Tainacan\Entities\Metadatum $metadata
+	 * 
+	 * @return boolean
+	 */
+	public function metadata_is_enabled($collection, $metadata) {
+		$order = $collection->get_metadata_order();
+		if($order == false) return true;
+		$order = ( is_array( $order ) ) ? $order : unserialize( $order );
+		if( is_array($order) ) {
+			foreach ($order as $metadata_order) {
+				if( $metadata_order['id'] == $metadata->get_id() || $metadata_order['id'] == $metadata->get_parent() ) {
+					if($metadata_order['enabled'] == false)
+						return false;
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }

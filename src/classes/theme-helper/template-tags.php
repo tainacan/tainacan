@@ -337,7 +337,8 @@ function tainacan_get_the_media_component(
 		add_action('wp_footer', 'tainacan_get_the_media_modal_layer');
 
 		wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/media-component.css', array(), TAINACAN_VERSION);
-		wp_enqueue_script( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/js/media_component.js', ['tainacan-search','wp-i18n'], TAINACAN_VERSION, true );
+		wp_enqueue_script( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/js/media_component.js', ['wp-i18n'], TAINACAN_VERSION, true );
+		wp_localize_script('tainacan-media-component', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
 		?>
 
 		<div class="tainacan-media-component">
@@ -412,7 +413,12 @@ function tainacan_get_the_media_component(
 			
 		<?php if ( isset( $_REQUEST['wp_customize'] ) ) : ?>
 			<script>
-				tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin != undefined && typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : {};
+				try {
+					tainacan_plugin = (typeof tainacan_plugin != undefined) ? tainacan_plugin : {};
+				} catch(err) {
+					tainacan_plugin = {};
+				}
+				tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : {};
 				tainacan_plugin.tainacan_media_components['<?php echo $args['media_id'] ?>'] = <?php echo json_encode($args) ?>;
 			</script>	
 		<?php else :
@@ -996,4 +1002,71 @@ function tainacan_get_the_mime_type_icon($mime_type, $image_size = 'medium') {
 	}
 	
 	return $images_path . $icon_file . $image_size . '.png';
+}
+
+/**
+ * Displays a carousel of items, the same of the gutenberg block
+ *
+ * @param array $args {
+ 	*     Optional. Array of arguments.
+ 	*     @type string  $collection_id					The Collection ID
+ 	*     @type string  $search_URL					A query string to fetch items from, if load strategy is 'search'
+ 	*     @type array   $selected_items				An array of item IDs to fetch items from, if load strategy is 'selection' and an array of items, if the load strategy is 'parent'
+ 	*     @type string  $load_strategy					Either 'search' or 'selection', to determine how items will be fetch
+ 	*     @type integer $max_items_number				Maximum number of items to be fetch
+ 	*     @type integer $max_tems_per_screen			Maximum columns of items to be displayed on a row of the carousel
+ 	*     @type string  $arrows_position				How the arrows will be positioned regarding the carousel ('around', 'left', 'right')
+ 	*     @type bool    $large_arrows					Should large arrows be displayed?
+ 	*     @type bool    $auto_play						Should the Caroulsel start automatically to slide?
+ 	*     @type integer $auto_play_speed				The time in s to translate to the next slide automatically 
+ 	*     @type bool    $loop_slides					Should slides loop when reached the end of the Carousel?
+ 	*     @type bool    $hide_title					Should the title of the items be displayed?
+ 	*     @type bool    $crop_images_to_square			Should it use the `tainacan-medium-size` instead of the `tainacan-medium-large-size`?
+ 	*     @type bool    $show_collection_header		Should it display a small version of the collection header?
+ 	*     @type bool    $show_collection_label			Should it displar a 'Collection' label before the collection name on the collection header?
+ 	*     @type string  $collection_background_color	Color of the collection header background
+ 	*     @type string  $collection_text_color			Color of the collection header text
+ 	*     @type string  $tainacan_api_root				Path of the Tainacan api root (to make the items request)
+ 	*     @type string  $tainacan_base_url				Path of the Tainacan base URL (to make the links to the items)
+ 	*     @type string  $class_name					Extra class to add to the wrapper, besides the default wp-block-tainacan-carousel-items-list
+ * @return void  The HTML div to be used for rendering the items carousel vue component
+*/
+function tainacan_the_items_carousel($args = []) {
+	echo \Tainacan\Theme_Helper::get_instance()->get_tainacan_items_carousel($args);
+}
+
+/**
+ * Displays a group of related items carousels
+ * For each metatada, the collection name, the metadata name and a button linking
+ * the items list filtered is presented
+ *
+ * @param array $args {
+	 *     Optional. Array of arguments.
+	 *     @type string  $item_id					The Item ID
+ * @return void
+ */
+function tainacan_the_related_items_carousel($args = []) {
+	echo \Tainacan\Theme_Helper::get_instance()->get_tainacan_related_items_carousel($args);
+}
+
+/**
+ * Checks if the current item has or not related items
+ */
+function tainacan_has_related_items($item_id = false) {
+	// Gets the current Item
+	$item = $item_id ? \Tainacan\Theme_Helper::get_instance()->tainacan_get_item($item_id) : \Tainacan\Theme_Helper::get_instance()->tainacan_get_item();
+	if (!$item)
+		return;
+	
+	// Then fetches related ones
+	$related_items = $item->get_related_items();// TODO: handle this inside the item so we don't have to load things here.
+	if ( !$related_items || !is_array($related_items) || !count($related_items) )
+		return false;
+
+	// If we have at least one total_items, there are related items
+	foreach($related_items as $related_group) {
+		if ( isset($related_group['total_items']) && (int)$related_group['total_items'] > 0 )
+			return true;
+	}
+	return false;
 }

@@ -611,7 +611,12 @@ class REST_Reports_Controller extends REST_Controller {
 				}
 
 				$response['totals']['metadata'][$metadatum->get_status()]++;
-				$response['totals']['metadata_per_type'][$meta_type]['name'] = $meta_type_name;
+				if ( !isset($response['totals']['metadata_per_type'][$meta_type]) ) {
+					$response['totals']['metadata_per_type'][$meta_type] = array(
+						'name' => $meta_type_name,
+						'count' => 0,
+					);
+				}
 				$response['totals']['metadata_per_type'][$meta_type]['count']++;
 
 				$meta_ids[] = $metadatum->get_id();

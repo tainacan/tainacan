@@ -127,55 +127,28 @@ class Item extends Entity {
 	function get_thumbnail() {
 
 		$sizes = get_intermediate_image_sizes();
+		$blurhash = $this->get_thumbnail_blurhash();
 
 		array_unshift($sizes, 'full');
 
-		if( in_array('tainacan-small', $sizes ) ) {
-			$tmp_src = wp_get_attachment_image_src( $this->get__thumbnail_id(), 'tainacan-small' );
-			$file_name = get_attached_file( $this->get__thumbnail_id() );
-			$blurhash = $this->get_image_blurhash($file_name, $tmp_src[1], $tmp_src[2]);
-		}
-
 		foreach ( $sizes as $size ) {
 			$thumbs[$size] = wp_get_attachment_image_src( $this->get__thumbnail_id(), $size );
-			if (is_array($thumbs[$size]) && count($thumbs[$size]) == 4)
+			if (is_array($thumbs[$size]) && count($thumbs[$size]) == 4) {
 				$thumbs[$size][] = $blurhash;
+			}
 		}
-
 		return apply_filters("tainacan-item-get-thumbnail", $thumbs, $this);
 	}
 
-	public function get_image_blurhash($file_path, $width, $height) {
-		if (
-			!(version_compare(PHP_VERSION, '7.2.0') >= 0) ||
-			!$image = @imagecreatefromstring(file_get_contents($file_path))
-		) {
-			return "V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj";
-		}
-		if($image == false)
-			return '';
-
-		$max_width = 45;
-		if( $width > $max_width ) {
-			$image = imagescale($image, $max_width);
-			$width = imagesx($image);
-			$height = imagesy($image);
-		}
-		
-		$pixels = [];
-		for ($y = 0; $y < $height; ++$y) {
-			$row = [];
-			for ($x = 0; $x < $width; ++$x) {
-				$index = imagecolorat($image, $x, $y);
-				$colors = imagecolorsforindex($image, $index);
-				$row[] = [$colors['red'], $colors['green'], $colors['blue']];
+	function get_thumbnail_blurhash() {
+		$attachment_metadata = wp_get_attachment_metadata($this->get__thumbnail_id());
+		if($attachment_metadata != false && isset($attachment_metadata['image_meta'])) {
+			$image_meta = $attachment_metadata['image_meta'];
+			if($image_meta != false && isset($image_meta['blurhash'])) {
+				return $image_meta['blurhash'];
 			}
-			$pixels[] = $row;
 		}
-		$components_x = 4;
-		$components_y = 3;
-		$blurhash = \kornrunner\Blurhash\Blurhash::encode($pixels, $components_x, $components_y);
-		return $blurhash;
+		return \Tainacan\Media::get_instance()->get_default_image_blurhash();
 	}
 
 	/**
@@ -313,6 +286,9 @@ class Item extends Entity {
 	 * @see \Tainacan\Entities\Entity::get_capabilities()
 	 */
 	public function get_capabilities() {
+		if( is_null($this->get_collection())) {
+			return (object) [];
+		}
 		return $this->get_collection()->get_items_capabilities();
 	}
 
@@ -815,5 +791,16 @@ class Item extends Entity {
 		}
 
 		return $link;
+	}
+
+	/**
+	 * Return related items withs the item
+	 *
+	 * @return array
+	 */
+	public function get_related_items($args = []) {
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		$related_items = $Tainacan_Items->fetch_related_items($this, $args);
+		return $related_items;
 	}
 }
