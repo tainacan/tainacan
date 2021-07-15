@@ -90,7 +90,7 @@ jobs:
       - name: Determine supported PHPUnit version
         id: set_phpunit
         run: |
-          if [[ "${{ matrix.php }}" -ge "8.0" ]]; then
+          if [[ "${{ matrix.php }}" = "8.0" ]]; then
             wget https://phar.phpunit.de/phpunit-8.3.1.phar -P /tmp
             chmod +x /tmp/phpunit-6.5.7.phar
             mv /tmp/phpunit-6.5.7.phar /usr/local/bin/phpunit
