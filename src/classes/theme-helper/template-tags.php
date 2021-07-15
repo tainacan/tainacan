@@ -413,7 +413,12 @@ function tainacan_get_the_media_component(
 			
 		<?php if ( isset( $_REQUEST['wp_customize'] ) ) : ?>
 			<script>
-				tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin != undefined && typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : {};
+				try {
+					tainacan_plugin = (typeof tainacan_plugin != undefined) ? tainacan_plugin : {};
+				} catch(err) {
+					tainacan_plugin = {};
+				}
+				tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : {};
 				tainacan_plugin.tainacan_media_components['<?php echo $args['media_id'] ?>'] = <?php echo json_encode($args) ?>;
 			</script>	
 		<?php else :

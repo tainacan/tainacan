@@ -91,10 +91,10 @@ export default {
 
         &:not(.tainacan-modal) {
             background: var(--tainacan-background-color, inherit);
+            position: relative;
         }
         font-size: var(--tainacan-base-font-size, inherit);
         font-family: var(--tainacan-font-family, inherit);
-        position: relative;
         -webkit-overflow-scrolling: touch;
 
         * {

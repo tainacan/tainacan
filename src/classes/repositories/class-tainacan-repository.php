@@ -709,6 +709,8 @@ abstract class Repository {
 	 * @throws \Exception
 	 */
 	public function can_read( Entities\Entity $entity, $user = null ) {
+		if ( is_null($entity) )
+			return false;
 
 		if ( is_null( $user ) ) {
 			$user = get_current_user_id();
@@ -858,6 +860,18 @@ abstract class Repository {
 					'diff_with_index' => 0,
 				];
 			}
+		}
+
+		$thumbnail_id = $obj->get__thumbnail_id();
+		if($thumbnail_id) {
+			$tmp_src = wp_get_attachment_image_src( $thumbnail_id, 'tainacan-medium' );
+			$file_name = get_attached_file( $thumbnail_id );
+			$blurhash = \Tainacan\Media::get_instance()->get_image_blurhash($file_name, $tmp_src[1], $tmp_src[2]);
+			$attachment_metadata = \wp_get_attachment_metadata($thumbnail_id);
+			if($attachment_metadata != false && isset($attachment_metadata['image_meta']) && is_array($attachment_metadata['image_meta'])) {
+				$attachment_metadata['image_meta'] = array_merge($attachment_metadata['image_meta'], ['blurhash' => $blurhash]);
+			}
+			wp_update_attachment_metadata($thumbnail_id, $attachment_metadata);
 		}
 
 		return $diffs;

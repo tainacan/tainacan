@@ -19,9 +19,23 @@ class Core_Title extends Metadata_Type {
         $this->set_core(true);
         $this->set_related_mapped_prop('title');
         $this->set_component('tainacan-text');
+        $this->set_form_component('tainacan-form-text');
         $this->set_name( __('Core Title', 'tainacan') );
         $this->set_description( __('The "Core Title" is a compulsory metadata automatically created for all collections by default. It is the main metadatum of the item and where the basic research tools will do their searches.', 'tainacan') );
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function get_form_labels(){
+        return [
+            'display_suggestions' => [
+                'title' => __( 'Display suggestions', 'tainacan' ),
+                'description' => __( 'Show an autocomplete input suggesting values inserted previously on other items for this metadatum.', 'tainacan' ),
+            ]
+        ];
+    }
+	
 
     /**
      * generate the metadata for this metadatum type

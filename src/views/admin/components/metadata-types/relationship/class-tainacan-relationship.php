@@ -60,8 +60,8 @@ class Relationship extends Metadata_Type {
 				'description' => __( 'Select the metadata to use as search criteria in the target collection and as a label when representing the relationship', 'tainacan' ),
 			],
 			'display_in_related_items' => [
-				'title' =>__( 'Display in related items', 'tainacan' ),
-				'description' => __( 'Include items on related item list.', 'tainacan' ),
+				'title' => __( 'Display in "Items related to this"', 'tainacan' ),
+				'description' => __( 'Include items linked by this metadata on a list of related items.', 'tainacan' ),
 			]
 		];
 	}

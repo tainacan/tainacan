@@ -63,7 +63,7 @@ class JSON_flat extends Exposer {
 				'id' => $item['id'],
 				'data' => $item_data,
 				'url' => $item['url'],
-				'thumbnail' => isset($item['thumbnail']) ? $item['thumbnail'] : false,
+				'thumbnail' => isset($item['_thumbnail_id']) ? wp_get_attachment_image_src($item['_thumbnail_id'], 'full') : false,
 				'creation_date' => isset($item['creation_date']) ? $item['creation_date'] : '',
 				'modification_date' =>  isset($item['modification_date']) ? $item['modification_date'] : ''
 			];
