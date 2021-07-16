@@ -372,7 +372,9 @@
     display: -ms-grid;
     display: grid;
     align-items: self-start;
-    list-style-type: none; }
+    list-style-type: none;
+    grid-gap: 12px;
+    gap: 12px; }
     .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list.max-columns-count-7,
     .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list.max-columns-count-7 {
       grid-template-columns: repeat(7, auto); }

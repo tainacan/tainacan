@@ -144,9 +144,6 @@
       .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option label,
       .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item label,
       .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-radio-control__option label {
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
         display: inline-block;
         max-width: 85%; }
         @media only screen and (max-width: 768px) {

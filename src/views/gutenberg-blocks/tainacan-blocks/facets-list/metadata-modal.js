@@ -46,7 +46,7 @@ export default class MetadataModal extends React.Component {
             collectionId: this.props.existingCollectionId,
             collectionSlug: this.props.existingCollectionSlug
         });
-        if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
+        if (this.props.existingCollectionId) {
             this.fetchModalMetadata(this.props.existingCollectionId);
             this.setState({ 
                 metadatumId: this.props.existingMetadatumId ? this.props.existingMetadatumId : undefined, 
@@ -240,7 +240,7 @@ export default class MetadataModal extends React.Component {
 
 
     render() {
-        return this.state.collectionId != null && this.state.collectionId != undefined ? (
+        return this.state.collectionId ? (
             // Metadata modal
             <Modal
                 className="wp-block-tainacan-modal"

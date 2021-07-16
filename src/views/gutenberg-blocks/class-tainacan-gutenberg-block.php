@@ -229,7 +229,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	if (function_exists('register_block_type')) {
 		if ( 
 			version_compare( $wp_version, '5.8-RC', '>=') &&
-			($block_slug == 'carousel-collections-list' || $block_slug == 'collections-list' || $block_slug == 'carousel-items-list' || $block_slug == 'carousel-terms-list' || $block_slug == 'dynamic-items-list' || $block_slug == 'items-list' || $block_slug == 'terms-list')
+			($block_slug == 'carousel-collections-list' || $block_slug == 'collections-list' || $block_slug == 'carousel-items-list' || $block_slug == 'carousel-terms-list' || $block_slug == 'dynamic-items-list' || $block_slug == 'search-bar' || $block_slug == 'items-list' || $block_slug == 'facets-list' || $block_slug == 'terms-list')
 		)
 			register_block_type( __DIR__ . '/tainacan-blocks/' . $block_slug );
 		else
