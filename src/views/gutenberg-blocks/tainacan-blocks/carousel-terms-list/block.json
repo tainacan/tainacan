@@ -4,6 +4,7 @@
     "category": "tainacan-blocks",
     "keywords": [ "carousel", "slider", "taxonomy" ],
     "description": "List terms on a Carousel, showing their thumbnails or a preview of items.",
+    "textdomain": "tainacan",
     "example": {
         "attributes": {
             "content": "preview"

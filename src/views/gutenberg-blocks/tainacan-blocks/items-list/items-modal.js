@@ -46,7 +46,7 @@ export default class ItemsModal extends React.Component {
             collectionId: this.props.existingCollectionId,
         });
 
-        if (this.props.existingCollectionId != null && this.props.existingCollectionId != undefined) {
+        if (this.props.existingCollectionId) {
             this.fetchCollection(this.props.existingCollectionId);
             this.setState({ 
                 searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?iframemode=true&status=publish' });
@@ -235,7 +235,7 @@ export default class ItemsModal extends React.Component {
     }
 
     render() {
-        return this.state.collectionId != null && this.state.collectionId != undefined ? (
+        return this.state.collectionId ? (
         // Items modal
         <Modal
             className="wp-block-tainacan-modal dynamic-modal"
