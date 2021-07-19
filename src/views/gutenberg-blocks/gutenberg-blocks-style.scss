@@ -169,11 +169,13 @@
         .components-radio-control__option {
             display: flex;
             justify-content: flex-start;
+            align-items: center;
 
             img {
                 width: 24px;
                 height: 24px;
                 margin-right: 10px;
+                margin-bottom: 8px;
             }
             label {
                 display: inline-block;

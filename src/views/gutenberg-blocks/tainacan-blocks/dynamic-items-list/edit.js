@@ -138,9 +138,9 @@ export default function({ attributes, setAttributes, className, isSelected, clie
             }
 
             // Set up sorting order
-            if (!order)
+            if (order != '' && showSearchBar)
                 queryObject.order = order;
-            else if (!queryObject.order)
+            else if (queryObject.order != '')
                 setAttributes({ order: queryObject.order });
             else {
                 queryObject.order = 'asc';

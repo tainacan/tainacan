@@ -132,14 +132,16 @@
     .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item,
     .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-radio-control__option {
       display: flex;
-      justify-content: flex-start; }
+      justify-content: flex-start;
+      align-items: center; }
       .wp-block-tainacan-modal .modal-checkbox-list .modal-checkbox-list-item img,
       .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option img,
       .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item img,
       .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .components-radio-control__option img {
         width: 24px;
         height: 24px;
-        margin-right: 10px; }
+        margin-right: 10px;
+        margin-bottom: 8px; }
       .wp-block-tainacan-modal .modal-checkbox-list .modal-checkbox-list-item label,
       .wp-block-tainacan-modal .modal-checkbox-list .components-radio-control__option label,
       .wp-block-tainacan-modal .modal-radio-list .components-base-control__field .modal-checkbox-list-item label,

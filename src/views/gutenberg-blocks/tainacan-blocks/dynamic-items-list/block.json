@@ -86,7 +86,7 @@
         },
         "order": {
             "type": "String",
-            "default": "asc"
+            "default": ""
         },
         "blockId": {
             "type": "String",
