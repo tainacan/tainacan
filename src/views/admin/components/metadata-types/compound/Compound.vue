@@ -310,7 +310,7 @@
                 }
             },
             filterByMetadatumName(itemMetadatum) {
-                return itemMetadatum.metadatum.name.toString().toLowerCase().indexOf(this.metadataNameFilterString.toString().toLowerCase()) >= 0;
+                return this.metadataNameFilterString ? (itemMetadatum.metadatum.name.toString().toLowerCase().indexOf(this.metadataNameFilterString.toString().toLowerCase()) >= 0) : true;
             }
         }
     }

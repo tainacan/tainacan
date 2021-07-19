@@ -72,7 +72,7 @@
         },
         created() {
             // These values are set to allow the usage of the getValuesPlainText function from the DynamicFilterTypeMixin
-            this.currentCollectionId = this.$route.params.collectionId;
+            this.currentCollectionId = this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.collection_id ? this.itemMetadatum.metadatum.collection_id : null;
             this.filter = { collection_id: this.currentCollectionId };
         },
         methods: {

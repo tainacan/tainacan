@@ -227,10 +227,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 
 	// Registers the new block
 	if (function_exists('register_block_type')) {
-		if ( 
-			version_compare( $wp_version, '5.8-RC', '>=') &&
-			($block_slug == 'carousel-collections-list' || $block_slug == 'collections-list' || $block_slug == 'carousel-items-list' || $block_slug == 'carousel-terms-list' || $block_slug == 'dynamic-items-list' || $block_slug == 'search-bar' || $block_slug == 'items-list' || $block_slug == 'facets-list' || $block_slug == 'terms-list')
-		)
+		if ( version_compare( $wp_version, '5.8-RC', '>=') )
 			register_block_type( __DIR__ . '/tainacan-blocks/' . $block_slug );
 		else
 			register_block_type( 'tainacan/' . $block_slug, $register_params );
@@ -240,9 +237,10 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 /** 
  * Registers the 'special' Tainacan Block for the Faceted Search (the complete items list)
  */
-function tainacan_blocks_register_tainacan_faceted_search(){
+function tainacan_blocks_register_tainacan_faceted_search() {
 	global $TAINACAN_BASE_URL;
 	global $TAINACAN_VERSION;
+	global $wp_version;
 
 	// Theme side script
 	wp_register_script(
@@ -271,11 +269,15 @@ function tainacan_blocks_register_tainacan_faceted_search(){
 
 	// Registers new block
 	if (function_exists('register_block_type')) {
-		register_block_type( 'tainacan/faceted-search', array(
-			'editor_script' => 'faceted-search',
-			'style'         => 'faceted-search',
-			'script'		=> 'tainacan-search'
-		) );
+
+		if ( version_compare( $wp_version, '5.8-RC', '>=') )
+			register_block_type( __DIR__ . '/tainacan-blocks/faceted-search' );
+		else
+			register_block_type( 'tainacan/faceted-search', array(
+				'editor_script' => 'faceted-search',
+				'style'         => 'faceted-search',
+				'script'		=> 'tainacan-search'
+			) );
 	}
 }
 
@@ -285,6 +287,7 @@ function tainacan_blocks_register_tainacan_faceted_search(){
 function tainacan_blocks_register_tainacan_item_submission_form() {
 	global $TAINACAN_BASE_URL;
 	global $TAINACAN_VERSION;
+	global $wp_version;
 
 	// Theme side script
 	wp_register_script(
@@ -325,11 +328,15 @@ function tainacan_blocks_register_tainacan_item_submission_form() {
 
 	// Registers new block
 	if (function_exists('register_block_type')) {
-		register_block_type( 'tainacan/item-submission-form', array(
-			'editor_script' => 'item-submission-form',
-			'style'         => 'item-submission-form',
-			'script'		=> 'tainacan-item-submission'
-		) );
+
+		if ( version_compare( $wp_version, '5.8-RC', '>=') )
+			register_block_type( __DIR__ . '/tainacan-blocks/item-submission-form' );
+		else
+			register_block_type( 'tainacan/item-submission-form', array(
+				'editor_script' => 'item-submission-form',
+				'style'         => 'item-submission-form',
+				'script'		=> 'tainacan-item-submission'
+			) );
 	}
 }
 

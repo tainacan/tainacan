@@ -22,7 +22,9 @@ function tainacanBlocksLocalizeMetadata(metadata) {
 
 // Register the block type according to WP version
 export default function({ metadata, icon, edit, save, deprecated }) {
-    if (tainacan_blocks.wp_version >= '5.8-RC') {
+    
+    const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
+    if (currentWPVersion >= '5.8-RC') {
 
         // Registers block type using new strategy from WP 5.8
         registerBlockType( metadata, {

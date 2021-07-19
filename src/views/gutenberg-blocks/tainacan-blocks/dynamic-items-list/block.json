@@ -1,6 +1,6 @@
 {
     "name": "tainacan/dynamic-items-list",
-    "title": "Tainacan Collection\"s Items List",
+    "title": "Tainacan Collection's Items List",
     "category": "tainacan-blocks",
     "keywords": [ "items", "search", "collection" ],
     "description": "Dynamically list items from a Tainacan items search",
