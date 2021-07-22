@@ -134,14 +134,8 @@ function unregister_tainacan_blocks() {
 
 /** 
  * Registers the Tainacan category on the blocks inserter
- * In case we are in WP > 5.8, we if we are in a post edition page first,
- * as we don't want our blocks inside the Widgets area so far.
  */
 function tainacan_blocks_register_categories($categories, $editor_context) {
-
-	if ( class_exists('WP_Block_Editor_Context') && empty( $editor_context->post ) ) { // Introduced WP 5.8
-		return $categories;
-	}
 
 	return array_merge(
 		$categories,
