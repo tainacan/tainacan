@@ -1,5 +1,5 @@
 <template>
-    <div :class="className">
+    <div :class="className + ' has-mounted'">
         <div v-if="showCollectionHeader">
             <div
                     v-if="isLoadingCollection"

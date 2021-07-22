@@ -1,5 +1,5 @@
 <template>
-    <div :class="className">
+    <div :class="className + ' has-mounted'">
         <div
                 v-if="showSearchBar"
                 class="facets-search-bar"> 

@@ -15,6 +15,7 @@ export default function ({ attributes, className }) {
         showCollectionThumbnail
     } = attributes;
     return <div 
+                data-module="carousel-collections-list"
                 className={ className }
                 selected-collections={ JSON.stringify(selectedCollections.map((collection) => { return collection.id })) }
                 arrows-position={ arrowsPosition }

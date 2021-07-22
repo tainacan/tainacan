@@ -21,6 +21,7 @@ export default function({ attributes, className }) {
         appendChildTerms
     } = attributes;
     return <div 
+                data-module="facets-list"
                 className={ className }
                 metadatum-id={ metadatumId }
                 metadatum-type={ metadatumType }

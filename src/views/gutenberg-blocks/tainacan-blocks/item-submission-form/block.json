@@ -146,7 +146,5 @@
         "multiple": false
     },
     "editorScript": "item-submission-form",
-	"script": "tainacan-item-submission",
-	"editorStyle": "item-submission-form",
-	"style": "item-submission-form"
+	"editorStyle": "item-submission-form"
 }

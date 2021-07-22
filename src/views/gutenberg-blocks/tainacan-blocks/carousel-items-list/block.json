@@ -122,7 +122,5 @@
         }
     },
     "editorScript": "carousel-items-list",
-	"script": "carousel-items-list-theme",
-	"editorStyle": "carousel-items-list",
-	"style": "carousel-items-list"
+	"editorStyle": "carousel-items-list"
 }

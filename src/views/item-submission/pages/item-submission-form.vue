@@ -512,7 +512,17 @@ export default {
             return this.getItemSubmissionMetadata();
         },
         metadatumList() {
-            return (this.itemSubmissionMetadata && this.itemSubmissionMetadata.length) ? JSON.parse(JSON.stringify(this.getMetadata().map((metadatum) => { return { metadatum: metadatum, item: {}, value: this.itemSubmissionMetadata.find((aMetadatum) => aMetadatum.metadatum_id == metadatum.id).value } } ))) : [];
+            return (this.itemSubmissionMetadata && this.itemSubmissionMetadata.length) ?
+                    JSON.parse(JSON.stringify(
+                        this.getMetadata().map((metadatum) => {
+                            const metadatumValue = this.itemSubmissionMetadata.find((aMetadatum) => aMetadatum.metadatum_id == metadatum.id);
+                            return {
+                                metadatum: metadatum,
+                                item: {},
+                                value: metadatumValue && metadatumValue.value ? metadatumValue.value : ''
+                            }
+                        } )
+                    )) : [];
         },
         formErrors() {
            return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []

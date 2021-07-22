@@ -44,7 +44,8 @@ export default function({ attributes, className }) {
                     '--tainacan-primary': primaryColor,
                     '--tainacan-secondary': secondaryColor
                 }}
-                className={ className }>
+                className={ className }
+                data-module="item-submission-form">
         <div 
                 id="tainacan-item-submission-form"
                 collection-id={ collectionId }

@@ -1,5 +1,5 @@
 <template>
-    <div :class="className">
+    <div :class="className + ' has-mounted'">
         <div v-if="!isLoading">
             <div  
                     :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') "

@@ -190,7 +190,6 @@
         "multiple": false
     },
     "editorScript": "faceted-search",
-	"script": "tainacan-search",
 	"editorStyle": "faceted-search",
 	"style": "faceted-search"
 }

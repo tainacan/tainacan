@@ -22,6 +22,7 @@ export default function ({ attributes, className }) {
     } = attributes;
     
     return <div 
+                data-module="carousel-items-list"
                 className={ className }
                 search-url={ searchURL }
                 selected-items={ JSON.stringify(selectedItems) }

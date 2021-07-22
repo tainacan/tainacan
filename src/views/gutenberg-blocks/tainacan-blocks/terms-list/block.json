@@ -89,6 +89,5 @@
         }
     },
     "editorScript": "terms-list",
-	"editorStyle": "terms-list",
-	"style": "terms-list"
+	"editorStyle": "terms-list"
 }

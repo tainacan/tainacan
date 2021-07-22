@@ -15,7 +15,7 @@ const {
     PanelBody
 } = wp.components;
 
-const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import tainacan from '../../js/axios.js';
 import CollectionModal from '../faceted-search/collection-modal.js';

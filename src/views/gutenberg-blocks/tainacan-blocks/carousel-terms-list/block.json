@@ -106,7 +106,5 @@
         }
     },
     "editorScript": "carousel-terms-list",
-	"script": "carousel-terms-list-theme",
-	"editorStyle": "carousel-terms-list",
-	"style": "carousel-terms-list"
+	"editorStyle": "carousel-terms-list"
 }

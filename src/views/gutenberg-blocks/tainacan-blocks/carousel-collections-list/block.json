@@ -102,7 +102,5 @@
         }
     },
     "editorScript": "carousel-collections-list",
-	"script": "carousel-collections-list-theme",
-	"editorStyle": "carousel-collections-list",
-	"style": "carousel-collections-list"
+	"editorStyle": "carousel-collections-list"
 }

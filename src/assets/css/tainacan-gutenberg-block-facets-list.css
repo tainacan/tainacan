@@ -311,8 +311,10 @@
     .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item {
       position: relative;
       display: block;
-      width: 100%;
-      flex-basis: 220px; }
+      min-width: 100%;
+      flex-basis: 220px;
+      min-width: 100%;
+      max-width: 220px; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item a {
         color: var(--tainacan-block-gray5, #454647);

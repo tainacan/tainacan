@@ -98,7 +98,5 @@
         }
     ],
     "editorScript": "search-bar",
-	"script": "search-bar-theme",
-	"editorStyle": "search-bar",
-	"style": "search-bar"
+	"editorStyle": "search-bar"
 }

@@ -170,6 +170,7 @@
     top: calc(50% - 42px);
     bottom: initial;
     background: none;
+    background-color: transparent !important;
     border: none;
     width: 42px;
     height: 42px;

@@ -15,6 +15,7 @@ export default function({ attributes, className }) {
         taxonomyId
     } = attributes;
     return <div 
+                data-module="carousel-terms-list"
                 className={ className }
                 selected-terms={ JSON.stringify(selectedTerms.map((term) => { return term.id; })) }
                 arrows-position={ arrowsPosition }

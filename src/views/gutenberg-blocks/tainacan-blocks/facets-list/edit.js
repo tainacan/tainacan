@@ -2,7 +2,7 @@ const { __ } = wp.i18n;
 
 const { BaseControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import MetadataModal from './metadata-modal.js';
 import ParentTermModal from './parent-term-modal.js';

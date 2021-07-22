@@ -93,6 +93,5 @@
         }
     },
     "editorScript": "items-list",
-	"editorStyle": "items-list",
-	"style": "items-list"
+	"editorStyle": "items-list"
 }

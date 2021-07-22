@@ -20,7 +20,7 @@ const {
     MenuItemsChoice
 } = wp.components;
 
-const { InspectorControls, BlockControls } = ( tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import CollectionModal from './collection-modal.js';
 import TermModal from './term-modal.js';

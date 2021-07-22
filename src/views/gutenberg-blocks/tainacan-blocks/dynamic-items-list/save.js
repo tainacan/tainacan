@@ -24,10 +24,11 @@ export default function({ attributes, className }) {
         cropImagesToSquare
     } = attributes;
 
-    return <div 
+    return <div
+                data-module="dynamic-items-list"
                 search-url={ searchURL }
                 className={ className }
-                collection-id={ collectionId }  
+                collection-id={ collectionId }
                 show-image={ '' + showImage }
                 show-name={ '' + showName }
                 show-search-bar={ '' + showSearchBar }

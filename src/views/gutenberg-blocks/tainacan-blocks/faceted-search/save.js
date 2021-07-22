@@ -69,8 +69,10 @@ export default function({ attributes, className }) {
                 '--tainacan-primary': primaryColor,
                 '--tainacan-secondary': secondaryColor
             }}
-            className={ className }>
+            className={ className }
+            data-module="faceted-search">
         <main 
+                id="tainacan-items-page"
                 term-id={ updatedListType == 'term' ? termId : null }
                 taxonomy={ updatedListType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
                 collection-id={ updatedListType == 'collection' ? collectionId : null }  
@@ -95,8 +97,7 @@ export default function({ attributes, className }) {
                 start-with-filters-hidden = { startWithFiltersHidden.toString() }
                 filters-as-modal = { filtersAsModal.toString() }
                 show-inline-view-mode-options = { showInlineViewModeOptions.toString() }
-                show-fullscreen-with-view-modes = { showFullscreenWithViewModes.toString() }
-                id="tainacan-items-page">
+                show-fullscreen-with-view-modes = { showFullscreenWithViewModes.toString() } >
         </main>
     </div>
 };

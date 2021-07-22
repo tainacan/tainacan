@@ -141,7 +141,5 @@
         }
     },
     "editorScript": "facets-list",
-	"script": "facets-list-theme",
-	"editorStyle": "facets-list",
-	"style": "facets-list"
+	"editorStyle": "facets-list"
 }

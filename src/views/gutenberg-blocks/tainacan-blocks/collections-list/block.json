@@ -89,6 +89,5 @@
         }
     },
     "editorScript": "collections-list",
-	"editorStyle": "collections-list",
-	"style": "collections-list"
+	"editorStyle": "collections-list"
 }

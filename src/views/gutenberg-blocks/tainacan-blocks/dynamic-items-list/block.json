@@ -144,7 +144,5 @@
         }
     },
     "editorScript": "dynamic-items-list",
-	"script": "dynamic-items-list-theme",
-	"editorStyle": "dynamic-items-list",
-	"style": "dynamic-items-list"
+	"editorStyle": "dynamic-items-list"
 }
