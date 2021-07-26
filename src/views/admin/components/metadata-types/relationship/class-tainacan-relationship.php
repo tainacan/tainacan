@@ -257,9 +257,10 @@ class Relationship extends Metadata_Type {
 				\is_post_status_viewable($item->get_collection()->get_status()) ) {
 				$return = "<a data-linkto='item' data-id='$id' href='$link'> $value </a>";
 			} else {
-				$return = "<div>$value:</div>";
+				$return = $value;
 			}
 		}
+		return $return;
 	}
 
 	private function get_meta_html(\Tainacan\Entities\Item_Metadata_Entity $meta, $value_link = false) {
