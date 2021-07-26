@@ -163,7 +163,7 @@ class Relationship extends Metadata_Type {
 	 * @param  Item_Metadata_Entity $item_metadata 
 	 * @return string The HTML representation of the value, containing one or multiple items names, linked to the item page
 	 */
-	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {		
+	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
 		
 		$return = '';
@@ -205,8 +205,7 @@ class Relationship extends Metadata_Type {
 				// item not found 
 			}
 		}
-
-		return $return;
+		return "<div class='tainacan-compound-group'> {$return} </div>";
 	}
 
 	private function get_item_html($item) {
@@ -214,39 +213,62 @@ class Relationship extends Metadata_Type {
 		$id = $item->get_id();
 		
 		$search_meta_id = $this->get_option('search');
-		
-		if ( $id && $search_meta_id ) {
-			$link = get_permalink( (int) $id );
-			
-			$search_meta_id = $this->get_option('search');
-			
-			$metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch((int) $search_meta_id);
-			
-			$label = '';
-			
-			if ($metadatum instanceof \Tainacan\Entities\Metadatum) {
-				$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
-				$label = $item_meta->get_value_as_string();
-			}
-			
-			if ( empty($label) ) {
-				$label = $item->get_title();
-			}
-			
-			if (is_string($link)) {
-				if ( is_user_logged_in() ||
-					\is_post_status_viewable( $item->get_status() ) &&
-					\is_post_status_viewable($item->get_collection()->get_status()) ) {
-					$return = "<a data-linkto='item' data-id='$id' href='$link'>";
-					$return.= $label;
-					$return .= "</a>";
-				} else {
-					$return.= $label;
+		$display_metas = $this->get_option('display_related_item_metadata ');
+
+		if(!empty($display_metas)) {
+			$args = !empty($display_metas) ? ['post__in' => $display_metas] : [];
+			$item_metadata = $item->get_metadata($args);
+			$metadata_value = [];
+			foreach ( $item_metadata as $meta_id => $meta ) {
+				if ( $meta instanceof \Tainacan\Entities\Item_Metadata_Entity && $meta->get_value_as_html() != '' ) {
+					$as_link = $search_meta_id == $meta_id ? $this->get_item_link($item, $search_meta_id) : false;
+					$html = $this->get_meta_html($meta);
+					$metadata_value[] = $html;
 				}
+				$return = implode("\n", $metadata_value);
+			}
+			$return = "<div class='tainacan-compound-metadatum'> {$return} </div>";
+		} else {
+			if ( $id && $search_meta_id ) {
+				$search_meta_id = $this->get_option('search');
+				$as_link = $this->get_item_link($item, $search_meta_id);
+				$return = "<div>$as_link</div> \n $return";
 			}
 		}
 
 		return $return;
+	}
+
+	private function get_item_link($item, $search_meta_id) {
+		$id = $item->get_id();
+		$link = get_permalink( (int) $id );
+		$metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch((int) $search_meta_id);
+		$value = '';
+		if ($metadatum instanceof \Tainacan\Entities\Metadatum) {
+			$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
+			$value = $item_meta->get_value_as_string();
+		}
+		if ( empty($value) ) {
+			$value = $item->get_title();
+		}
+		if (is_string($link)) {
+			if ( is_user_logged_in() ||
+				\is_post_status_viewable( $item->get_status() ) &&
+				\is_post_status_viewable($item->get_collection()->get_status()) ) {
+				$return = "<a data-linkto='item' data-id='$id' href='$link'> $value </a>";
+			} else {
+				$return = "<div>$value:</div>";
+			}
+		}
+	}
+
+	private function get_meta_html(\Tainacan\Entities\Item_Metadata_Entity $meta, $value_link = false) {
+		$html = '';
+		if ($meta instanceof \Tainacan\Entities\Item_Metadata_Entity && !empty($meta->get_value_as_html())) {
+			$html = '<div class="tainacan-metadatum"><label class="label">' . $meta->get_metadatum()->get_name() . '</label> <p>' . $value_link === false ? $meta->get_value_as_html() : $value_link . "</p></div>";
+		}
+
+		return $html;
 	}
 
 	/**
