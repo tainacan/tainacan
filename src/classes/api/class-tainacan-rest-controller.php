@@ -363,7 +363,8 @@ class REST_Controller extends \WP_REST_Controller {
 				'title',
 				'meta_value',
 				'meta_value_num',
-				'menu_order'
+				'menu_order',
+				'rand'
 			),
 		);
 
