@@ -151,7 +151,7 @@
             <ul
                     v-if="layout !== 'mosaic'"
                     :style="{
-                        marginTop: showSearchBar || showCollectionHeader ? '1.34em' : '0px',
+                        marginTop: (showSearchBar || showCollectionHeader) ? ((showName ? gridMargin + 24 : gridMargin) + 'px') : '0px',
                         gridGap: (showName ? gridMargin + 24 : gridMargin) + 'px',
                         gap: (showName ? gridMargin + 24 : gridMargin) + 'px'
                     }"
@@ -169,7 +169,7 @@
             <ul
                     v-if="layout === 'mosaic'"
                     :style="{
-                        marginTop: showSearchBar || showCollectionHeader ? '-' + (Number(gridMargin)/2) : '0px',    
+                        marginTop: showSearchBar || showCollectionHeader ? ((showName ? gridMargin + 24 : gridMargin) + 'px') : '0px',    
                         padding: '0 ' + (Number(gridMargin)/4) + 'px',
                         minHeight: layout === 'mosaic' ? mosaicHeight + 'px' : ''
                     }"
@@ -191,7 +191,7 @@
                     v-if="items.length > 0 && layout !== 'mosaic'"
                     :style="{
                         gridGap: layout == 'grid' ? ((showName ? gridMargin + 24 : gridMargin) + 'px') : 'inherit',
-                        marginTop: showSearchBar || showCollectionHeader ? '1.35em' : '0px'
+                        marginTop: (showSearchBar || showCollectionHeader) ? ((showName ? gridMargin + 24 : gridMargin) + 'px') : '0px'
                     }"
                     class="items-list"
                     :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
@@ -220,7 +220,7 @@
             <ul 
                     v-if="items.length > 0 && layout === 'mosaic'"
                     :style="{
-                        marginTop: showSearchBar || showCollectionHeader ? '-' + (Number(gridMargin)/2) : '0px',    
+                        marginTop: showSearchBar || showCollectionHeader ? ((showName ? gridMargin + 24 : gridMargin) + 'px') : '0px',    
                         padding: '0 ' + (Number(gridMargin)/4) + 'px',
                         minHeight: layout === 'mosaic' ? mosaicHeight + 'px' : ''
                     }"

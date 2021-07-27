@@ -825,7 +825,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         <ul 
                             style={{
                                 gridGap: layout == 'grid' ? ((showName ? gridMargin + 24 : gridMargin) + 'px') : 'inherit',
-                                marginTop: showSearchBar || showCollectionHeader ? '-' + (Number(gridMargin)/2) : '0px',    
+                                marginTop: (showSearchBar || showCollectionHeader) ? ((showName ? gridMargin + 24 : gridMargin) + 'px') : '0px',    
                                 padding: (Number(gridMargin)/4) + 'px',
                             }}
                             className={'items-list-edit items-layout-' + layout + (!showName ? ' items-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '') }>
@@ -860,7 +860,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         >
                             <ul 
                                 style={{
-                                    marginTop: showSearchBar || showCollectionHeader ? '-' + (Number(gridMargin)/2) : '0px',    
+                                    marginTop: (showSearchBar || showCollectionHeader) ? ((showName ? gridMargin + 24 : gridMargin) + 'px') : '0px',    
                                     padding: (Number(gridMargin)/4) + 'px',
                                     minHeight: mosaicHeight + 'px'
                                 }}
