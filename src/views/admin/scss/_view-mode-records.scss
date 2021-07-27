@@ -158,6 +158,10 @@
                     font-weight: 700;
                     color: var(--tainacan-info-color);
                     clear: none;
+
+                    &::after {
+                        clear: none;
+                    }
                 }
 
                 .metadata-value {
