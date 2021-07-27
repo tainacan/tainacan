@@ -48,8 +48,8 @@ export default function({ attributes, className }) {
     if (updatedListType === '' && collectionId)
         updatedListType = 'collection';
     else if (updatedListType === '' && termId && taxonomyId)
-        updatedListType = 'term' 
-
+        updatedListType = 'term';
+        
     return <div 
             style={{
                 'font-size': baseFontSize + 'px',
@@ -69,15 +69,15 @@ export default function({ attributes, className }) {
                 '--tainacan-primary': primaryColor,
                 '--tainacan-secondary': secondaryColor
             }}
-            className={ className }
-            data-module="faceted-search">
+            className={ className }>
         <main 
                 id="tainacan-items-page"
+                data-module="faceted-search"
                 term-id={ updatedListType == 'term' ? termId : null }
                 taxonomy={ updatedListType == 'term' ? 'tnc_tax_' + taxonomyId : null  }
                 collection-id={ updatedListType == 'collection' ? collectionId : null }  
                 default-view-mode={ defaultViewMode != 'none' ? defaultViewMode : (updatedListType == 'collection' ? collectionDefaultViewMode : (hideItemsThumbnail ? 'table' : 'masonry') ) }
-                is-forced-view-mode={ defaultViewMode == 'none' ? true : false }
+                is-forced-view-mode={ defaultViewMode == 'none' ? 'true' : 'false' }
                 enabled-view-modes={ enabledViewModes.toString() }  
                 hide-filters = { hideFilters.toString() }
                 hide-hide-filters-button= { hideHideFiltersButton.toString() }

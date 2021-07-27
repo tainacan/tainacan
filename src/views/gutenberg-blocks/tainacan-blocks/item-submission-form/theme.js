@@ -32,27 +32,11 @@ export default (element) => {
         // Vue Dev Tools!
         Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
 
+        // Gets the div with the content of the block
+        let blockElement = element ? element : document.getElementById('tainacan-item-submission-form');
+
         // Mount only if the div exists
-        if (element || document.getElementById('tainacan-item-submission-form')) {
-
-
-            // Display Icons only once everything is loaded
-            function listen(evnt, elem, func) {
-                if (elem.addEventListener)  // W3C DOM
-                    elem.addEventListener(evnt,func,false);
-                else if (elem.attachEvent) { // IE DOM
-                    var r = elem.attachEvent("on"+evnt, func);
-                    return r;
-                } else if (document.head) {
-                    var iconHideStyle = document.createElement("style");
-                    iconHideStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }'; 
-                    document.head.appendChild(iconHideStyle);
-                } else {
-                    var iconHideStyle = document.createElement("style");
-                    iconHideStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }'; 
-                    document.getElementsByTagName("head")[0].appendChild(iconHideStyle);
-                }
-            }
+        if ( blockElement && blockElement.classList && !blockElement.classList.contains('has-mounted') ) {
 
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
@@ -185,13 +169,6 @@ export default (element) => {
             });
 
             VueItemSubmission.$mount('#tainacan-item-submission-form');
-
-            listen("load", window, function() {
-                var iconsStyle = document.createElement("style");
-                iconsStyle.setAttribute('type', 'text/css');
-                iconsStyle.innerText = '.tainacan-icon{ opacity: 1 !important; }';
-                document.head.appendChild(iconsStyle);
-            });
 
             // Initialize Ponyfill for Custom CSS properties
             cssVars({

@@ -11,8 +11,8 @@ const performWhenDocumentIsLoaded = callback => {
 // Adds data-module to blocks inserted previous to Tainacan 0.18.4
 const addDataModuleToOldBlocks = () => {
     const tainacanBlocks = [
-        'faceted-search',
-        'item-submission-form',
+        //'faceted-search',
+        //'item-submission-form',
         'items-list',
         'collections-list',
         'terms-list',
@@ -32,10 +32,15 @@ const addDataModuleToOldBlocks = () => {
         });
     });
 
-    // Extra case for the items list, as the theme wrapper does not uses gutenberg classes
+    // Extra case for the items list and item submission, as their
+    // theme wrapper does not uses gutenberg classes, but the div ID
     let existingItemListOnPage = document.getElementById('tainacan-items-page');
     if ( existingItemListOnPage && !existingItemListOnPage.getAttribute('data-module') )
         existingItemListOnPage.setAttribute('data-module', 'faceted-search');
+
+    let existingItemSubmissionFormOnPage = document.getElementById('tainacan-item-submission-form');
+    if ( existingItemSubmissionFormOnPage && !existingItemSubmissionFormOnPage.getAttribute('data-module') )
+        existingItemSubmissionFormOnPage.setAttribute('data-module', 'item-submission-form');
 }
 
 performWhenDocumentIsLoaded(() => {

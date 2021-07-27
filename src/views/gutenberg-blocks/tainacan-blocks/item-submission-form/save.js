@@ -44,10 +44,10 @@ export default function({ attributes, className }) {
                     '--tainacan-primary': primaryColor,
                     '--tainacan-secondary': secondaryColor
                 }}
-                className={ className }
-                data-module="item-submission-form">
+                className={ className }>
         <div 
                 id="tainacan-item-submission-form"
+                data-module="item-submission-form"
                 collection-id={ collectionId }
                 hide-file-modal-button={ hideFileModalButton.toString() }
                 hide-text-modal-button={ hideTextModalButton.toString() }
