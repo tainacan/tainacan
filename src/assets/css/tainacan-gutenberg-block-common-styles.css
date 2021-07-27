@@ -95,6 +95,8 @@
         flex-shrink: 2; }
       .wp-block-tainacan-modal .modal-search-area .components-base-control .components-base-control__field {
         flex-wrap: wrap; }
+        .wp-block-tainacan-modal .modal-search-area .components-base-control .components-base-control__field .components-select-control {
+          width: 100%; }
       .wp-block-tainacan-modal .modal-search-area .components-base-control label.components-base-control__label {
         font-weight: 500;
         color: var(--tainacan-block-gray5, #454647);

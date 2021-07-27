@@ -126,6 +126,10 @@
             }
             .components-base-control__field {
                 flex-wrap: wrap;
+                
+                .components-select-control {
+                    width: 100%;
+                }
             }
             label.components-base-control__label {
                 font-weight: 500;
