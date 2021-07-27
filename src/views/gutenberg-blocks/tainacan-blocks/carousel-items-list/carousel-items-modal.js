@@ -116,8 +116,6 @@ export default class CarouselItemsModal extends React.Component {
             collectionId: selectedCollectionId,
             searchURL: tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + (this.props.loadStrategy == 'search' ? '/items/?iframemode=true&readmode=true&status=publish' : '/items/?iframemode=true&status=publish')
         });
-        console.log(selectedCollectionId)
-        console.log(tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + (this.props.loadStrategy == 'search' ? '/items/?iframemode=true&readmode=true&status=publish' : '/items/?iframemode=true&status=publish'));
         this.props.onSelectCollection(selectedCollectionId);
         this.fetchCollection(selectedCollectionId);
     }
