@@ -16,6 +16,7 @@ export default function({ attributes, setAttributes, className, isSelected }) {
         collectionTextSize,
         alignment,
         placeholderText,
+        searchQuery,
         isModalOpen,
         maxWidth,
         showCollectionHeader,
@@ -24,7 +25,7 @@ export default function({ attributes, setAttributes, className, isSelected }) {
         collectionTextColor,
         collectionHeaderImage,
         collectionName
-    } = attributes;        
+    } = attributes;
 
     function setContent(){
 
@@ -106,7 +107,7 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                         </div>
                     </div>
                 : 
-                    <div class="tainacan-search-container">
+                    <div className="tainacan-search-container">
                         <form
                                 style={{ maxWidth: maxWidth ? maxWidth + '%' : '80%' }}
                                 className={ 
@@ -115,12 +116,13 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                                 }
                                 id="tainacan-search-bar-block"
                                 action={ tainacan_blocks.site_url + '/' + collectionSlug }
+                                data-queryparam={ searchQuery ? searchQuery : 'search' }
                                 method='get'>
                             <input 
                                 style={{ borderColor: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}
                                 id="tainacan-search-bar-block_input"
                                 label={ __('Search', 'tainacan')}
-                                name='s'
+                                name={ searchQuery }
                                 placeholder={ placeholderText }
                             /> 
                             <button 
@@ -129,18 +131,18 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                                 <span class="icon">
                                     <i>
                                         <svg
-                                            style={{ fill: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}    
-                                            width="24" 
-                                            height="24"
-                                            viewBox="-2 -2 20 20">
-                                        <path d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
-                                            c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
-                                            c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
-                                            c-0.1,0-0.6,0.2-0.6,0.1c0,0-4.2-4.2-4.2-4.2c0,0-0.8,0.3-0.8,0.4c-1.3,0.4-2.8,0.5-4.1-0.1c-0.7-0.3-1.3-0.7-1.8-1.2
-                                            C1.2,9.3,0.8,8.7,0.5,8S0,6.6,0,5.8z M1.6,5.8c0,0.4,0.1,0.9,0.2,1.3C2.1,8.2,3,9.2,4.1,9.6c0.5,0.2,1,0.3,1.6,0.3
-                                            c0.6,0,1.1-0.1,1.6-0.3C8.7,9,9.7,7.6,9.8,6c0.1-1.5-0.6-3.1-2-3.9c-0.9-0.5-2-0.6-3-0.4C4.6,1.8,4.4,1.9,4.1,2
-                                            c-0.5,0.2-1,0.5-1.4,0.9C2,3.7,1.6,4.7,1.6,5.8z"/>       
-                                        </svg>
+                                                style={{ fill: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}    
+                                                width="24" 
+                                                height="24"
+                                                viewBox="-2 -2 20 20">
+                                            <path d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
+                                                c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
+                                                c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
+                                                c-0.1,0-0.6,0.2-0.6,0.1c0,0-4.2-4.2-4.2-4.2c0,0-0.8,0.3-0.8,0.4c-1.3,0.4-2.8,0.5-4.1-0.1c-0.7-0.3-1.3-0.7-1.8-1.2
+                                                C1.2,9.3,0.8,8.7,0.5,8S0,6.6,0,5.8z M1.6,5.8c0,0.4,0.1,0.9,0.2,1.3C2.1,8.2,3,9.2,4.1,9.6c0.5,0.2,1,0.3,1.6,0.3
+                                                c0.6,0,1.1-0.1,1.6-0.3C8.7,9,9.7,7.6,9.8,6c0.1-1.5-0.6-3.1-2-3.9c-0.9-0.5-2-0.6-3-0.4C4.6,1.8,4.4,1.9,4.1,2
+                                                c-0.5,0.2-1,0.5-1.4,0.9C2,3.7,1.6,4.7,1.6,5.8z"/>
+                                            </svg>
                                     </i> 
                                 </span>
                             </button>
@@ -160,18 +162,6 @@ export default function({ attributes, setAttributes, className, isSelected }) {
         setAttributes({ alignment: alignment });
         setContent();
     }
-
-    // function getCurrentStyle() {
-    //     if (isSelected) {  
-    //         if (className.split(' ').find((aClass) => aClass == 'is-style-alternate')) {
-    //             return 'alternate'
-    //         } else if (className.split(' ').find((aClass) => aClass == 'is-style-stylish')) {
-    //             return 'stylish'
-    //         }
-    //     } 
-    //     return 'default'
-    // }
-
 
     // Executed only on the first load of page
     if (content && content.length && content[0].type)
@@ -235,6 +225,16 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                                 initialOpen={ true }
                             >
                         <div style={{ marginTop: '24px' }}>
+                            <TextControl
+                                label={ __('Query parameter', 'tainacan') }
+                                value={ searchQuery }
+                                help={ __('Search query parameter to be passed to the URL. Depending on you theme, might be `s` or `search`, to avoid conflicts with WordPress default post search.', 'tainacan') }
+                                onChange={ ( aSearchQuery ) => {
+                                    searchQuery = aSearchQuery
+                                    setAttributes( { searchQuery: aSearchQuery } );
+                                    setContent(); 
+                                }}
+                            />
                             <TextControl
                                 label={ __('Placeholder text', 'tainacan') }
                                 value={ placeholderText }

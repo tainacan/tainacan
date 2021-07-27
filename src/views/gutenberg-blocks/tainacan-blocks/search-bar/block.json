@@ -41,6 +41,10 @@
             "type": "String",
             "default": "Search"
         },
+        "searchQuery": {
+            "type": "String",
+            "default": "search"
+        },
         "showCollectionHeader": {
             "type": "Boolean",
             "value": false
