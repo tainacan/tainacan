@@ -1,5 +1,5 @@
 export default {  
-	
+	// AttachmentControl: requires upload of new files and accepts multiple files
     attachmentControl: wp.customize.MediaControl.extend({
 
 		/**
@@ -189,6 +189,7 @@ export default {
 		}
 
 	}),
+
 	// CroppedImageControl, with presets for header dimensions
 	headerImageControl: wp.customize.CroppedImageControl.extend({
 		
@@ -286,6 +287,7 @@ export default {
 		}
 
 	}),
+
 	// DocumentFileControl: similar to attachment, but used for items where the documents is of type file
 	documentFileControl: wp.customize.MediaControl.extend({
         /**
@@ -294,8 +296,11 @@ export default {
 		initFrame: function() {
 
 			wp.media.view.settings.post = {
-				id: this.params.relatedPostId
+				id: parseInt(this.params.relatedPostId),
+				wp_customize: 'off'
 			}
+			wp.media.model.settings.post.nonce = this.params.nonce;
+			wp.media.model.settings.post.id = parseInt(this.params.relatedPostId);
 
 			this.frame = wp.media({
 				button: {
@@ -305,11 +310,18 @@ export default {
 				states: [
 					new wp.media.controller.Library({
 						title:     this.params.button_labels.frame_title,
-						library:   wp.media.query({ 	
-							uploadedTo: null
+						library: wp.media.query({
+							uploadedTo: wp.media.view.settings.post.id,
+							orderby: 'menuOrder',
+							order: 'ASC',
+	 						posts_per_page: -1,
+			 				query: true
 						}),
+						autoSelect: true,
 						multiple:  false,
 						date:      false,
+						sortable: true,
+						filterable: 'unattached',
 						uploadedTo: this.params.relatedPostId
 					})
 				]
