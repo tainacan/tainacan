@@ -1,0 +1,110 @@
+{
+    "name": "tainacan/carousel-terms-list",
+    "title": "Tainacan Terms Carousel",
+    "category": "tainacan-blocks",
+    "keywords": [ "carousel", "slider", "taxonomy" ],
+    "description": "List terms on a Carousel, showing their thumbnails or a preview of items.",
+    "textdomain": "tainacan",
+    "example": {
+        "attributes": {
+            "content": "preview"
+        }
+    },
+    "attributes": {
+        "content": {
+            "type": "Array",
+            "source": "children",
+            "selector": "div"
+        },
+        "terms": {
+            "type": "Array",
+            "default": []
+        },
+        "isModalOpen": {
+            "type": "Boolean",
+            "default": false
+        },
+        "selectedTerms": {
+            "type": "Array",
+            "default": []
+        },
+        "itemsRequestSource": {
+            "type": "String",
+            "default": ""
+        },
+        "maxTermsNumber": {
+            "type": "Number",
+            "value": 12
+        },
+        "maxTermsPerScreen": {
+            "type": "Number",
+            "value": 6
+        },
+        "isLoading": {
+            "type": "Boolean",
+            "value": false
+        },
+        "isLoadingTerm": {
+            "type": "Boolean",
+            "value": false
+        },
+        "arrowsPosition": {
+            "type": "String",
+            "value": "around"
+        },
+        "largeArrows": {
+            "type": "Boolean",
+            "value": false
+        },
+        "autoPlay": {
+            "type": "Boolean",
+            "value": false
+        },
+        "autoPlaySpeed": {
+            "type": "Number",
+            "value": 3
+        },
+        "loopSlides": {
+            "type": "Boolean",
+            "value": false
+        },
+        "hideName": {
+            "type": "Boolean",
+            "value": true
+        },
+        "showTermThumbnail": {
+            "type": "Boolean",
+            "value": false
+        },
+        "term": {
+            "type": "Object",
+            "value": {}
+        },
+        "blockId": {
+            "type": "String",
+            "default": ""
+        },
+        "termBackgroundColor": {
+            "type": "String",
+            "default": "#454647"
+        },
+        "termTextColor": {
+            "type": "String",
+            "default": "#ffffff"
+        },
+        "taxonomyId": {
+            "type": "String",
+            "default": ""
+        }
+    },
+    "supports": {
+        "align": ["full", "wide"],
+        "html": false,
+        "multiple": true,
+        "typography": {
+            "fontSize": true
+        }
+    },
+    "editorScript": "carousel-terms-list",
+	"editorStyle": "carousel-terms-list"
+}

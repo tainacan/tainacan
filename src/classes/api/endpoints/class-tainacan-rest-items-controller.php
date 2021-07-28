@@ -275,7 +275,7 @@ class REST_Items_Controller extends REST_Controller {
 				}
 
 				if ( $request['context'] === 'edit' ) {
-					add_filter( 'taiancan_add_related_item', function( $related_item ) {
+					add_filter( 'tainacan_add_related_item', function( $related_item ) {
 						return array_merge($related_item, $this->get_context_edit($related_item['id']));
 					}, 10, 2 );
 				}

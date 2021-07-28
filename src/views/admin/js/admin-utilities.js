@@ -150,12 +150,14 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             if (tainacan_plugin.user_prefs == undefined || tainacan_plugin.user_prefs == '') {
                 let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
 
-                wpApi.post('/users/me/', qs.stringify(data))
-                    .then( updatedRes => {
-                        let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
-                        this.tainacanPrefs = prefs;
-                    })
-                    .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
+                if (tainacan_plugin.nonce) {
+                    wpApi.post('/users/me/', qs.stringify(data))
+                        .then( updatedRes => {
+                            let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
+                            this.tainacanPrefs = prefs;
+                        })
+                        .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
+                }
             } else {
                 let prefs = JSON.parse(tainacan_plugin.user_prefs);
                 this.tainacanPrefs = prefs;
@@ -169,23 +171,31 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
 
             let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
 
-            return new Promise(( resolve, reject ) => {
-                wpApi.post('/users/me/', qs.stringify(data))
-                    .then( res => {
-                        let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
-                        this.tainacanPrefs[key] = prefs[key];
-                        if (prefs[key]) {
-                            resolve( prefs[key] );
-                        } else {
-                            this.tainacanPrefs[key] = value;
-                        }
-                    })
-                    .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
-            }); 
+            if (tainacan_plugin.nonce) {
+                return new Promise(( resolve, reject ) => {
+                    wpApi.post('/users/me/', qs.stringify(data))
+                        .then( res => {
+                            let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
+                            this.tainacanPrefs[key] = prefs[key];
+                            if (prefs[key]) {
+                                resolve( prefs[key] );
+                            } else {
+                                this.tainacanPrefs[key] = value;
+                            }
+                        })
+                        .catch( () => console.log("Request to /users/me failed. Maybe you're not logged in.") );
+                });
+            } else {
+                return new Promise(() => {})
+                    .then( () => {
+                        resolve(value);
+                    });
+            }
         },
         clean() {
             let data = {'meta': {'tainacan_prefs': ''} };
-            wpApi.post('/users/me/', qs.stringify(data))
+            if (tainacan_plugin.nonce)
+                wpApi.post('/users/me/', qs.stringify(data));
         }
     }
 

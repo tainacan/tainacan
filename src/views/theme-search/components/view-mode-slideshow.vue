@@ -381,7 +381,7 @@ export default {
 
                     for (let newItem of ((this.goingRight === true || this.goingRight === undefined) ? JSON.parse(JSON.stringify(this.items)) : JSON.parse(JSON.stringify(this.items)).reverse())) {
                         let existingItemIndex = this.slideItems.findIndex(anItem => anItem.id == newItem.id);
-                        if (existingItemIndex < 0) {
+                        if (existingItemIndex < 0 && this.swiper.virtual) {
                             if ( this.goingRight === true || this.goingRight === undefined) {
                                 this.swiper.virtual.appendSlide(newItem);
                                 //this.slideItems.push(newItem);
@@ -423,7 +423,7 @@ export default {
 
         // Builds Swiper component
         const self = this;
-        this.swiper = new Swiper('.swiper-container', {
+        this.swiper = new Swiper('#tainacan-slide-container', {
             mousewheel: true,
             observer: true,
             preventInteractionOnTransition: true,

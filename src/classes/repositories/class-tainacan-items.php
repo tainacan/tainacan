@@ -594,7 +594,7 @@ class Items extends Repository {
 				$item_related = new \Tainacan\Entities\Item($items->post);
 				$item_arr = $item_related->_toArray();
 				$item_arr['thumbnail'] = $item_related->get_thumbnail();
-				array_push($prepared_items, apply_filters( 'taiancan_add_related_item', $item_arr ) );
+				array_push($prepared_items, apply_filters( 'tainacan_add_related_item', $item_arr ) );
 			}
 			wp_reset_postdata();
 		}

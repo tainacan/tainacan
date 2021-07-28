@@ -17,7 +17,7 @@ class TAINACAN_HTML_Injection extends TAINACAN_UnitTestCase
     private $link   = "<a href='www.tainacan.org'>link</a>";
     private $js     = "<script>alert('XSS')</script>";
     private $css    = "my text along with some style <style>a { display: none }</style>";
-    private $iframe = "<iframe src='www.tainacan.org' title='Taiancan'></iframe>";
+    private $iframe = "<iframe src='www.tainacan.org' title='Tainacan'></iframe>";
     private $text_and_link = "";
     private $text_and_iframe = "";
 

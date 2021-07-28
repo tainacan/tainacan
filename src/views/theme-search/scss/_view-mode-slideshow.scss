@@ -290,8 +290,6 @@
     width: 100%;
     position: absolute;
     bottom: 115px;
-    // top: -85px;
-    // margin-bottom: -85px;
     background-color: rgba(0,0,0,0.5);
     padding: 1em var(--tainacan-one-column);
     display: flex;
@@ -300,7 +298,7 @@
     transition: opacity 0.3s, visibility 0.3s, display 0.3s;
 
     h1 {
-        color: var(--tainacan-white);
+        color: var(--tainacan-white) !important;
         font-size: 2em;
         font-weight: normal;
         text-overflow: ellipsis;

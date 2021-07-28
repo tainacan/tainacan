@@ -1,0 +1,126 @@
+{
+    "name": "tainacan/carousel-items-list",
+    "title": "Tainacan Collection's Items Carousel",
+    "category": "tainacan-blocks",
+    "keywords": [ "items", "carousel", "slider" ],
+    "description": "List items on a Carousel, using search or item selection.",
+    "textdomain": "tainacan",
+    "example": {
+        "attributes": {
+            "content": "preview"
+        }
+    },
+    "attributes": {
+        "content": {
+            "type": "array",
+            "source": "children",
+            "selector": "div"
+        },
+        "collectionId": {
+            "type": "String",
+            "default": ""
+        },
+        "items": {
+            "type": "Array",
+            "default": []
+        },
+        "isModalOpen": {
+            "type": "Boolean",
+            "default": false
+        },
+        "searchURL": {
+            "type": "String",
+            "default": ""
+        },
+        "selectedItems": {
+            "type": "Array",
+            "default": []
+        },
+        "itemsRequestSource": {
+            "type": "String",
+            "default": ""
+        },
+        "maxItemsNumber": {
+            "type": "Number",
+            "value": 12
+        },
+        "maxItemsPerScreen": {
+            "type": "Number",
+            "value": 7
+        },
+        "isLoading": {
+            "type": "Boolean",
+            "value": false
+        },
+        "isLoadingCollection": {
+            "type": "Boolean",
+            "value": false
+        },
+        "loadStrategy": {
+            "type": "String",
+            "value": "search"
+        },
+        "arrowsPosition": {
+            "type": "String",
+            "value": "around"
+        },
+        "largeArrows": {
+            "type": "Boolean",
+            "value": false
+        },
+        "autoPlay": {
+            "type": "Boolean",
+            "value": false
+        },
+        "autoPlaySpeed": {
+            "type": "Number",
+            "value": 3
+        },
+        "loopSlides": {
+            "type": "Boolean",
+            "value": false
+        },
+        "hideTitle": {
+            "type": "Boolean",
+            "value": true
+        },
+        "showCollectionHeader": {
+            "type": "Boolean",
+            "value": false
+        },
+        "showCollectionLabel": {
+            "type": "Boolean",
+            "value": false
+        },
+        "cropImagesToSquare": {
+            "type": "Boolean",
+            "value": true
+        },
+        "collection": {
+            "type": "Object",
+            "value": {}
+        },
+        "blockId": {
+            "type": "String",
+            "default": ""
+        },
+        "collectionBackgroundColor": {
+            "type": "String",
+            "default": "#454647"
+        },
+        "collectionTextColor": {
+            "type": "String",
+            "default": "#ffffff"
+        }
+    },
+    "supports": {
+        "align": ["full", "wide"],
+        "html": false,
+        "multiple": true,
+        "typography": {
+            "fontSize": true
+        }
+    },
+    "editorScript": "carousel-items-list",
+	"editorStyle": "carousel-items-list"
+}
