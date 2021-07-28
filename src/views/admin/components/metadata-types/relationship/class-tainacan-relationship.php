@@ -59,6 +59,10 @@ class Relationship extends Metadata_Type {
 				'title' => __( 'Related Metadatum', 'tainacan' ),
 				'description' => __( 'Select the metadata to use as search criteria in the target collection and as a label when representing the relationship', 'tainacan' ),
 			],
+			'display_related_item_metadata' => [
+				'title' => __( 'Displayed related item metadata', 'tainacan' ),
+				'description' => __( 'Select the metadata that will be displayed from the related item.', 'tainacan' ),
+			],
 			'display_in_related_items' => [
 				'title' => __( 'Display in "Items related to this"', 'tainacan' ),
 				'description' => __( 'Include items linked by this metadata on a list of related items.', 'tainacan' ),
@@ -213,16 +217,17 @@ class Relationship extends Metadata_Type {
 		$id = $item->get_id();
 		
 		$search_meta_id = $this->get_option('search');
-		$display_metas = $this->get_option('display_related_item_metadata ');
-
-		if(!empty($display_metas)) {
-			$args = !empty($display_metas) ? ['post__in' => $display_metas] : [];
+		$display_metas = $this->get_option('display_related_item_metadata');
+		
+		if ( !empty($display_metas) && is_array($display_metas) ) {
+			$args = ['post__in' => $display_metas];
 			$item_metadata = $item->get_metadata($args);
 			$metadata_value = [];
+			
 			foreach ( $item_metadata as $meta_id => $meta ) {
 				if ( $meta instanceof \Tainacan\Entities\Item_Metadata_Entity && $meta->get_value_as_html() != '' ) {
-					$as_link = $search_meta_id == $meta_id ? $this->get_item_link($item, $search_meta_id) : false;
-					$html = $this->get_meta_html($meta);
+					$as_link = $search_meta_id == $meta->get_metadatum()->get_id() ? $this->get_item_link($item, $search_meta_id) : false;
+					$html = $this->get_meta_html($meta, $as_link);
 					$metadata_value[] = $html;
 				}
 				$return = implode("\n", $metadata_value);
@@ -266,7 +271,7 @@ class Relationship extends Metadata_Type {
 	private function get_meta_html(\Tainacan\Entities\Item_Metadata_Entity $meta, $value_link = false) {
 		$html = '';
 		if ($meta instanceof \Tainacan\Entities\Item_Metadata_Entity && !empty($meta->get_value_as_html())) {
-			$html = '<div class="tainacan-metadatum"><label class="label">' . $meta->get_metadatum()->get_name() . '</label> <p>' . $value_link === false ? $meta->get_value_as_html() : $value_link . "</p></div>";
+			$html = '<div class="tainacan-metadatum"><label class="label">' . $meta->get_metadatum()->get_name() . '</label> <p>' . ( $value_link === false ? $meta->get_value_as_html() : $value_link ) . "</p></div>";
 		}
 
 		return $html;
