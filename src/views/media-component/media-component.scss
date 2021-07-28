@@ -54,7 +54,7 @@ $pswp__include-minimal-style: true !default;
 
 .tainacan-media-component__swiper-main {
     width: 100%;
-    max-width: var(--tainacan-media-main-carousel-width, 100%);
+    max-width: 100%;
 
     ul.swiper-wrapper { 
         display: flex;
