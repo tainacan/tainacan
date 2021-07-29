@@ -109,11 +109,11 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	wp_set_script_translations($block_slug, 'tainacan');
 	$register_params['editor_script'] = $block_slug;
 
-	// Registers style (works for both editor and theme side)
+	// Registers style
 	wp_register_style(
 		$block_slug,
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . $block_slug . '.css',
-		array('wp-edit-blocks', 'tainacan-blocks-common-styles'),
+		array('tainacan-blocks-common-styles'),
 		$TAINACAN_VERSION
 	);
 	$register_params['style'] = $block_slug;
@@ -137,7 +137,7 @@ function tainacan_blocks_get_common_editor_styles() {
 	wp_enqueue_style(
 		'tainacan-blocks-common-styles',
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-common-styles.css',
-		array('wp-edit-blocks'),
+		array(),
 		$TAINACAN_VERSION
 	);
 	
