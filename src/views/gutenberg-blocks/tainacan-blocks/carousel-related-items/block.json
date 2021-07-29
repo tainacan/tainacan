@@ -48,6 +48,5 @@
         "multiple": true
     },
     "editorScript": "carousel-related-items",
-	"editorStyle": "carousel-related-items",
-	"style": "carousel-related-items"
+	"editorStyle": "carousel-related-items"
 }

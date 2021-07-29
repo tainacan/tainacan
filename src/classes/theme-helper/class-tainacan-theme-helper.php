@@ -114,18 +114,6 @@ class Theme_Helper {
 			'requires_thumbnail' => false
 		]);
 	}
-
-	public function enqueue_related_items_carousel_scripts() {
-		global $TAINACAN_BASE_URL;
-		global $TAINACAN_VERSION;
-
-		wp_enqueue_style(
-			'carousel-related-items',
-			$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . 'carousel-related-items' . '.css',
-			array('tainacan-blocks-common-styles'),
-			$TAINACAN_VERSION
-		);
-	}
 	
 	public function is_post_an_item(\WP_Post $post) {
 		$post_type = $post->post_type;
@@ -911,7 +899,9 @@ class Theme_Helper {
 		 * @return string  The HTML div to be used for rendering the related items vue component
 	 */
 	public function get_tainacan_related_items_carousel($args = []) {
-
+		global $TAINACAN_BASE_URL;
+		global $TAINACAN_VERSION;
+		
 		$defaults = array(
 			'class_name' => '',
 			'collection_heading_class_name' => '',
@@ -933,7 +923,12 @@ class Theme_Helper {
 			return;
 
 		// Enqueues necessary CSS
-		$this->enqueue_related_items_carousel_scripts();
+		wp_enqueue_style(
+			'carousel-related-items',
+			$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-carousel-related-items.css',
+			array('tainacan-blocks-common-styles'),
+			$TAINACAN_VERSION
+		);
 
 		// Always pass the default class;
 		$output = '<div class="' . $args['class_name'] . ' wp-block-tainacan-carousel-related-items' . '">';

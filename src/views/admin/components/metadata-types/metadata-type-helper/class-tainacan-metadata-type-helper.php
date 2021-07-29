@@ -45,11 +45,11 @@ class Metadata_Type_Helper {
 
 		// the priority should see less than on function 
 		// `load_admin_page()` of class `Admin` in file /src/views/class-tainacan-admin.php
-		add_action( 'admin_enqueue_scripts', array( &$this, 'register_metadata_type_compoment' ), 80 ); 
+		add_action( 'admin_enqueue_scripts', array( &$this, 'register_metadata_type_component' ), 80 ); 
 		do_action('tainacan-register-metadata-type', $this);
 	}
 
-	public function register_metadata_type_compoment() {
+	public function register_metadata_type_component() {
 		foreach($this->registered_metadata_type as $handle => $component) {
 			wp_enqueue_script($handle, $component['script_path']);
 		}
