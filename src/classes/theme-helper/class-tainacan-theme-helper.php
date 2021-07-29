@@ -922,16 +922,8 @@ class Theme_Helper {
 		if (!count($related_items))
 			return;
 
-		// Enqueues necessary CSS
-		wp_enqueue_style(
-			'carousel-related-items',
-			$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-carousel-related-items.css',
-			array('tainacan-blocks-common-styles'),
-			$TAINACAN_VERSION
-		);
-
 		// Always pass the default class;
-		$output = '<div class="' . $args['class_name'] . ' wp-block-tainacan-carousel-related-items' . '">';
+		$output = '<div data-module="carousel-related-items" class="' . $args['class_name'] . ' wp-block-tainacan-carousel-related-items' . '">';
 		
 		foreach($related_items as $collection_id => $related_group) {
 			
