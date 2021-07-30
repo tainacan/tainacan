@@ -5,47 +5,28 @@ const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 module.exports = {
     entry: {
         admin: './src/views/admin/js/main.js',
-        media_component: './src/views/media-component/media-component.js',
-        theme_search: './src/views/theme-search/js/theme-main.js',
-        item_submission: './src/views/item-submission/js/item-submission-main.js',
         roles: './src/views/roles/js/roles-main.js',
         reports: './src/views/reports/js/reports-main.js',
+        media_component: './src/views/media-component/media-component.js',
+        tainacan_blocks_category_icon: './src/views/gutenberg-blocks/js/tainacan-blocks-category-icon.js',
+        tainacan_blocks_common_theme_scripts: './src/views/gutenberg-blocks/tainacan-blocks/tainacan-blocks-common-theme-scripts.js',
 
-        block_terms_list: './src/views/gutenberg-blocks/tainacan-terms/terms-list/index.js',
-        
-        block_items_list: './src/views/gutenberg-blocks/tainacan-items/items-list/index.js',
-        
-        block_dynamic_items_list: './src/views/gutenberg-blocks/tainacan-items/dynamic-items-list/index.js',
-        block_dynamic_items_list_theme: './src/views/gutenberg-blocks/tainacan-items/dynamic-items-list/dynamic-items-list-theme.js',
-        
-        block_carousel_items_list: './src/views/gutenberg-blocks/tainacan-items/carousel-items-list/index.js',
-        block_carousel_items_list_theme: './src/views/gutenberg-blocks/tainacan-items/carousel-items-list/carousel-items-list-theme.js',
-        
-        block_search_bar: './src/views/gutenberg-blocks/tainacan-items/search-bar/index.js',
-        block_search_bar_theme: './src/views/gutenberg-blocks/tainacan-items/search-bar/search-bar-theme.js',
-        
-        block_collections_list: './src/views/gutenberg-blocks/tainacan-collections/collections-list/index.js',
-        
-        block_carousel_collections_list: './src/views/gutenberg-blocks/tainacan-collections/carousel-collections-list/index.js',
-        block_carousel_collections_list_theme: './src/views/gutenberg-blocks/tainacan-collections/carousel-collections-list/carousel-collections-list-theme.js',
-       
-        block_carousel_related_items: './src/views/gutenberg-blocks/tainacan-items/carousel-related-items/index.js',
-
-        block_facets_list: './src/views/gutenberg-blocks/tainacan-facets/facets-list/index.js',
-        block_facets_list_theme: './src/views/gutenberg-blocks/tainacan-facets/facets-list/facets-list-theme.js',
-
-        block_item_submission_form: './src/views/gutenberg-blocks/tainacan-items/item-submission-form/index.js',
-
-        block_faceted_search: './src/views/gutenberg-blocks/tainacan-facets/faceted-search/index.js',
-        
-        block_carousel_terms_list: './src/views/gutenberg-blocks/tainacan-terms/carousel-terms-list/index.js',
-        block_carousel_terms_list_theme: './src/views/gutenberg-blocks/tainacan-terms/carousel-terms-list/carousel-terms-list-theme.js',
-
-        tainacan_blocks_category_icon: './src/views/gutenberg-blocks/js/tainacan-blocks-category-icon.js'
+        block_terms_list: './src/views/gutenberg-blocks/tainacan-blocks/terms-list/index.js',
+        block_items_list: './src/views/gutenberg-blocks/tainacan-blocks/items-list/index.js',
+        block_dynamic_items_list: './src/views/gutenberg-blocks/tainacan-blocks/dynamic-items-list/index.js',
+        block_carousel_items_list: './src/views/gutenberg-blocks/tainacan-blocks/carousel-items-list/index.js',
+        block_search_bar: './src/views/gutenberg-blocks/tainacan-blocks/search-bar/index.js',
+        block_collections_list: './src/views/gutenberg-blocks/tainacan-blocks/collections-list/index.js',
+        block_carousel_collections_list: './src/views/gutenberg-blocks/tainacan-blocks/carousel-collections-list/index.js',
+        block_carousel_related_items: './src/views/gutenberg-blocks/tainacan-blocks/carousel-related-items/index.js',
+        block_facets_list: './src/views/gutenberg-blocks/tainacan-blocks/facets-list/index.js',
+        block_item_submission_form: './src/views/gutenberg-blocks/tainacan-blocks/item-submission-form/index.js',
+        block_faceted_search: './src/views/gutenberg-blocks/tainacan-blocks/faceted-search/index.js',
+        block_carousel_terms_list: './src/views/gutenberg-blocks/tainacan-blocks/carousel-terms-list/index.js'
     },
     output: {
         path: path.resolve(__dirname, './src/assets/js/'),
-        publicPath: './src/assets/js/',
+        publicPath: './../../../wp-content/plugins/tainacan/assets/js/',
         filename: '[name].js'
     },
     module: {
@@ -111,7 +92,6 @@ module.exports = {
     },
     plugins: [
         new webpack.ProvidePlugin({
-            'Swiper': 'Swiper',
             'PhotoSwipe': 'PhotoSwipe'
         }),
         new MomentLocalesPlugin({

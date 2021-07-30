@@ -1,6 +1,6 @@
 <template>
     <theme-items-page
-            class="theme-items-list"
+            class="theme-items-list has-mounted"
             :collection-id="$root.collectionId"
             :term-id="$root.termId ? $root.termId : null" 
             :taxonomy="$root.taxonomy ? $root.taxonomy : null"
@@ -121,10 +121,6 @@ export default {
             margin: 0;
         }
         
-        .tainacan-icon {
-            opacity: 0; // Will make it 1 once window.load is done; 
-        }
-
         a, a:not([href]) { 
             color: var(--tainacan-secondary);
         }

@@ -1750,8 +1750,11 @@ export default {
             .sticky-container {
                 position: relative;
                 position: sticky;
-                top: 0;
+                top: -25px;
                 margin: 3px 0;
+                max-height: calc(100vh - 202px);
+                overflow-y: auto;
+                overflow-x: hidden;
             }
 
             @media screen and (max-width: 769px) {

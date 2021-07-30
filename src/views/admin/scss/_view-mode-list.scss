@@ -202,6 +202,11 @@
                     -webkit-column-break-inside: avoid;
                     page-break-inside: avoid;
                     break-inside: avoid;
+                    clear: none;
+
+                    &::after {
+                        clear: none;
+                    }
                 }
 
                 .metadata-value {

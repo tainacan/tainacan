@@ -712,7 +712,6 @@
             }
         },
         created() {
-
             this.isRepositoryLevel = (this.collectionId == undefined || this.collectionId == '' || this.collectionId == null);
 
             if (this.collectionId != undefined)
@@ -763,6 +762,7 @@
             });
         },
         mounted() {
+
             this.prepareMetadata();
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
             
@@ -781,6 +781,7 @@
                 else   
                     this.$eventBusSearch.setInitialViewMode(this.defaultViewMode);
             }
+
             // For view modes such as slides, we force pagination to request only 24 per page
             let existingViewModeIndex = Object.keys(this.registeredViewModes).findIndex(viewMode => viewMode == this.$userPrefs.get(prefsViewMode));
             if (existingViewModeIndex >= 0) {

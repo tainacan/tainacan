@@ -47,14 +47,19 @@
         },
         mounted() {
             if (!this.isUsingElasticSearch)
-                this.loadOptions();
-
-            this.$eventBusSearch.$on('has-to-reload-facets', (shouldReload) => {
-                if ( !this.isUsingElasticSearch && shouldReload )
-                    this.loadOptions();
-            }); 
+                this.loadOptions(); 
+        },
+        created() {
+            this.$eventBusSearch.$on('has-to-reload-facets', this.reloadOptions);
+        },
+        beforeDestroy() {
+            this.$eventBusSearch.$off('has-to-reload-facets', this.reloadOptions); 
         },
         methods: {
+            reloadOptions(shouldReload) {
+                if ( !this.isUsingElasticSearch && shouldReload )
+                    this.loadOptions();
+            },
             loadOptions(){
                 // Cancels previous Request
                 if (this.getOptionsValuesCancel != undefined)

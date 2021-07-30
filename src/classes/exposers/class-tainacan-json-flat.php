@@ -75,6 +75,7 @@ class JSON_flat extends Exposer {
 				'items' => $response_items
 			]
 		);
+		$response->set_headers( ['Content-Type: application/json; charset=' . get_option( 'blog_charset' )] );
 		$response->set_data(addslashes($response_data));
 		return $response;
 	}

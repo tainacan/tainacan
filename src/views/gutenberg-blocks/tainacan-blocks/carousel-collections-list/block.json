@@ -1,0 +1,106 @@
+{
+    "name": "tainacan/carousel-collections-list",
+    "title": "Tainacan Collections Carousel",
+    "category": "tainacan-blocks",
+    "keywords": [ "collections", "carousel", "slider" ],
+    "description": "List collections on a Carousel, displaying either its thumbnail or a preview of its items.",
+    "textdomain": "tainacan",
+    "supports": {
+        "align": ["full", "wide"],
+        "html": false,
+        "multiple": true,
+        "typography": {
+            "fontSize": true
+        }
+    },
+    "example": {
+        "attributes": {
+            "content": "preview"
+        }
+    },
+    "attributes": {
+        "content": {
+            "type": "array",
+            "source": "children",
+            "selector": "div"
+        },
+        "collections": {
+            "type": "Array",
+            "default": []
+        },
+        "isModalOpen": {
+            "type": "Boolean",
+            "default": false
+        },
+        "selectedCollections": {
+            "type": "Array",
+            "default": []
+        },
+        "itemsRequestSource": {
+            "type": "String",
+            "default": false
+        },
+        "maxCollectionsNumber": {
+            "type": "Number",
+            "value": false
+        },
+        "maxCollectionsPerScreen": {
+            "type": "Number",
+            "value": 6
+        },
+        "isLoading": {
+            "type": "Boolean",
+            "value": false
+        },
+        "isLoadingCollection": {
+            "type": "Boolean",
+            "value": false
+        },
+        "arrowsPosition": {
+            "type": "String",
+            "value": "around"
+        },
+        "largeArrows": {
+            "type": "Boolean",
+            "value": false
+        },
+        "autoPlay": {
+            "type": "Boolean",
+            "value": false
+        },
+        "autoPlaySpeed": {
+            "type": "Number",
+            "value": 3
+        },
+        "loopSlides": {
+            "type": "Boolean",
+            "value": false
+        },
+        "hideName": {
+            "type": "Boolean",
+            "value": true
+        },
+        "showCollectionThumbnail": {
+            "type": "Boolean",
+            "value": false
+        },
+        "cropImagesToSquare": {
+            "type": "Boolean",
+            "value": true
+        },
+        "blockId": {
+            "type": "String",
+            "default": ""
+        },
+        "collectionBackgroundColor": {
+            "type": "String",
+            "default": "#454647"
+        },
+        "collectionTextColor": {
+            "type": "String",
+            "default": "#ffffff"
+        }
+    },
+    "editorScript": "carousel-collections-list",
+	"editorStyle": "carousel-collections-list"
+}

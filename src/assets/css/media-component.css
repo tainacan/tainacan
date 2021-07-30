@@ -656,7 +656,7 @@ a.pswp__share--download:hover {
       cursor: zoom-in !important; }
   .tainacan-media-component__swiper-main li.swiper-slide {
     height: 100%;
-    max-width: calc(100% - var(--swiper-navigation-size, 44px) - var(--swiper-navigation-size, 44px));
+    max-width: 100%;
     padding: 0 var(--swiper-navigation-size, 44px);
     opacity: 1.0;
     transition: opacity 0.2s linear; }
