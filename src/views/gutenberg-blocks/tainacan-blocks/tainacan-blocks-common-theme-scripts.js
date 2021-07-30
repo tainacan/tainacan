@@ -11,8 +11,6 @@ const performWhenDocumentIsLoaded = callback => {
 // Adds data-module to blocks inserted previous to Tainacan 0.18.4
 const addDataModuleToOldBlocks = () => {
     const tainacanBlocks = [
-        //'faceted-search',
-        //'item-submission-form',
         'items-list',
         'collections-list',
         'terms-list',
@@ -21,8 +19,10 @@ const addDataModuleToOldBlocks = () => {
         'dynamic-items-list',
         'carousel-items-list',
         'carousel-terms-list',
+        'carousel-related-items',
         'carousel-collections-list'
     ];
+    
     // Looks for Tainacan Blocks based on their classes.
     tainacanBlocks.forEach((tainacanBlockSlug) => {
         let existingBlocksOnPage = document.getElementsByClassName(`wp-block-tainacan-${tainacanBlockSlug}`);
