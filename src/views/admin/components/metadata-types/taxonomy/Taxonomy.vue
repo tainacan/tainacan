@@ -145,7 +145,7 @@
             getTermsId() {
                 let values = [];
                 if (this.value && this.itemMetadatum.metadatum && this.getComponent != 'tainacan-taxonomy-tag-input') {
-                    values = this.value.map(term => term.id) 
+                    values = this.value.map(term => term.id).filter(term => term !== undefined);
                     this.valueComponent = (values.length >= 0 && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple === 'no') ? values[0] : values;
                 } else if (this.value && this.itemMetadatum.metadatum && this.getComponent == 'tainacan-taxonomy-tag-input') {
                     values = this.value.map((term) => { return { label: term.name, value: term.id } });
