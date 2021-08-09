@@ -32,17 +32,24 @@
                     `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
                 "
                 :alt="facet.label ? facet.label : $root.__('Thumbnail', 'tainacan')">
-            <span>{{ facet.label ? facet.label : '' }}</span>
-            <span 
-                    v-if="facet.total_items"
-                    class="facet-item-count"
-                    :style="{ display: !showItemsCount ? 'none' : '' }">
-                &nbsp;({{ facet.total_items }})
-            </span>
+            <div :class=" 'facet-label-and-count' + (itemsCountStyle === 'below' ? ' is-style-facet-label-and-count--below' : '')">
+                <span>{{ facet.label ? facet.label : '' }}</span>
+                <span 
+                        v-if="facet.total_items"
+                        class="facet-item-count"
+                        :style="{ display: !showItemsCount ? 'none' : '' }">
+                    <template v-if="itemsCountStyle === 'below'">
+                        {{ facet.total_items != 1 ? (facet.total_items + ' ' + $root.__('items', 'tainacan' )) : (facet.total_items + ' ' + $root.__('item', 'tainacan' )) }}
+                    </template>
+                    <template v-else>
+                        &nbsp;({{ facet.total_items }})
+                    </template>
+                </span>
+            </div>
             <template v-if="appendChildTerms && facet.total_children > 0">
                 <svg 
                         v-if="childFacetsObject[facetId] && childFacetsObject[facetId].visible"
-                        xmlns="http://www.w3.org/2000/svg" 
+                        xmlns="http://www.w3.org/2000/svg"
                         viewBox="-4 -3 16 16"
                         height="32px"
                         width="32px">
@@ -136,7 +143,8 @@ export default {
         metadatumType: String,
         childFacetsObject: Object,
         isMetadatumTypeTaxonomy: Boolean,
-        isMetadatumTypeRelationship: Boolean
+        isMetadatumTypeRelationship: Boolean,
+        itemsCountStyle: String
     },
     computed:{
         facetId() {

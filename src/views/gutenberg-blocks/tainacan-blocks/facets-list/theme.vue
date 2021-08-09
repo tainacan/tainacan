@@ -89,6 +89,7 @@
                         :append-child-terms="appendChildTerms"
                         :facet="facet"
                         :cloud-rate="cloudRate"
+                        :items-count-style="itemsCountStyle"
                         :tainacan-base-url="tainacanBaseUrl"
                         :layout="layout"
                         :metadatum-type="metadatumType"
@@ -119,6 +120,7 @@
                             :append-child-terms="appendChildTerms"
                             :facet="facet"
                             :cloud-rate="cloudRate"
+                            :items-count-style="itemsCountStyle"
                             :tainacan-base-url="tainacanBaseUrl"
                             :layout="layout"
                             :metadatum-type="metadatumType"
@@ -180,6 +182,7 @@ export default {
         showLoadMore: Boolean,
         appendChildTerms: Boolean,
         linkTermFacetsToTermPage: Boolean,
+        itemsCountStyle: String,
         layout: String,
         cloudRate: Number,
         gridMargin: Number,

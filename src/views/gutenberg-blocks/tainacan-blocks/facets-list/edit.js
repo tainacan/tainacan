@@ -1,6 +1,6 @@
 const { __ } = wp.i18n;
 
-const { BaseControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, PanelBody } = wp.components;
+const { BaseControl, RangeControl, Spinner, SelectControl, Button, ToggleControl, Tooltip, Placeholder, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
@@ -39,7 +39,8 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         appendChildTerms,
         childFacetsObject,
         linkTermFacetsToTermPage,
-        isLoadingChildTerms
+        isLoadingChildTerms,
+        itemsCountStyle
     } = attributes;
 
     // Obtains block's client id to render it on save function
@@ -70,6 +71,11 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         gridMargin = 24;
         setAttributes({ gridMargin: gridMargin });
     }
+    if (itemsCountStyle === undefined) {
+        itemsCountStyle = 'default';
+        setAttributes({ itemsCountStyle: itemsCountStyle });
+    }
+
     // Uptades previous logic of metadatum type
     if (metadatumType == __('Taxonomy', 'tainacan')) {
         metadatumType = 'Tainacan\\Metadata_Types\\Taxonomy';
@@ -120,8 +126,19 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                             alt={ facet.label ? facet.label : __( 'Thumbnail', 'tainacan' ) }/>
                     : null 
                     }
-                    <span>{ facet.label ? facet.label : '' }</span>
-                    { facet.total_items ? <span class="facet-item-count" style={{ display: !showItemsCount ? 'none' : '' }}>&nbsp;({ facet.total_items })</span> : null }
+                    <div className={ 'facet-label-and-count' + (itemsCountStyle === 'below' ? ' is-style-facet-label-and-count--below' : '') }>
+                        <span>{ facet.label ? facet.label : '' }</span>
+                        {
+                            facet.total_items ?
+                            <span class="facet-item-count" style={{ display: !showItemsCount ? 'none' : '' }}>
+                                { itemsCountStyle === 'below' ? 
+                                    ( facet.total_items != 1 ? (facet.total_items + ' ' + __('items', 'tainacan' )) : (facet.total_items + ' ' + __('item', 'tainacan' )) )
+                                    :
+                                    ( ' (' + facet.total_items + ')' )
+                                }
+                            </span>
+                        : null }
+                    </div>
                     { appendChildTerms && facet.total_children > 0 ? 
                         ( childFacetsObject[facetId] && childFacetsObject[facetId].visible ?
                             <svg 
@@ -500,7 +517,21 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                         updateContent();
                                     } 
                                 }
-                            /> 
+                            />
+                        { showItemsCount ? 
+                            <SelectControl
+                                    label={__('Facets label style', 'tainacan')}
+                                    value={ itemsCountStyle }
+                                    options={ [
+                                        { label: __('Items count in between parenthesis', 'tainacan'), value: 'default' },
+                                        { label: __('Items count below label', 'tainacan'), value: 'below' },
+                                    ] }
+                                    onChange={ ( aStyle ) => {
+                                        itemsCountStyle = aStyle;
+                                        setAttributes({ itemsCountStyle: itemsCountStyle });
+                                        updateContent();
+                                    }}/>
+                        : null }
                     </PanelBody>
                     {/* Settings related only to facets from Taxonomy metadata */}
                     { isMetadatumTypeTaxonomy(metadatumType) ?

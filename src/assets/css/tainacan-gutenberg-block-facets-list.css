@@ -318,10 +318,22 @@
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item a {
         color: inherit;
+        text-decoration: none;
         border: none;
         font-weight: bold;
         line-height: normal;
         display: block; }
+      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item .facet-label-and-count,
+      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item .facet-label-and-count {
+        display: flex;
+        align-items: center; }
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item .facet-label-and-count.is-style-facet-label-and-count--below,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item .facet-label-and-count.is-style-facet-label-and-count--below {
+          flex-direction: column;
+          align-items: flex-start; }
+          .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item .facet-label-and-count.is-style-facet-label-and-count--below span.facet-item-count,
+          .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item .facet-label-and-count.is-style-facet-label-and-count--below span.facet-item-count {
+            font-weight: normal; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item:not(.facet-with-name-inside-image) img,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item:not(.facet-with-name-inside-image) img {
         height: auto;
@@ -499,6 +511,7 @@
         color: inherit;
         line-height: normal;
         height: auto;
+        text-decoration: none;
         display: flex;
         align-items: center;
         word-break: break-all;
@@ -515,6 +528,17 @@
         fill: var(--tainacan-block-gray4, #555758);
         margin-left: auto;
         overflow: visible; }
+      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item .facet-label-and-count,
+      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item .facet-label-and-count {
+        display: flex;
+        align-items: center; }
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item .facet-label-and-count.is-style-facet-label-and-count--below,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item .facet-label-and-count.is-style-facet-label-and-count--below {
+          flex-direction: column;
+          align-items: flex-start; }
+          .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item .facet-label-and-count.is-style-facet-label-and-count--below span.facet-item-count,
+          .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item .facet-label-and-count.is-style-facet-label-and-count--below span.facet-item-count {
+            font-weight: normal; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item.facet-without-image,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item.facet-without-image {
         min-height: 0.875em; }
@@ -573,6 +597,7 @@
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item a {
         color: inherit;
+        text-decoration: none;
         display: inline;
         min-height: 54px;
         text-decoration: none; }
@@ -589,6 +614,16 @@
         margin-left: auto;
         overflow: visible;
         margin-bottom: -12px; }
+      .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item .facet-label-and-count,
+      .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item .facet-label-and-count {
+        display: flex;
+        align-items: center; }
+        .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item .facet-label-and-count.is-style-facet-label-and-count--below,
+        .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item .facet-label-and-count.is-style-facet-label-and-count--below {
+          flex-direction: column; }
+          .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item .facet-label-and-count.is-style-facet-label-and-count--below span.facet-item-count,
+          .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item .facet-label-and-count.is-style-facet-label-and-count--below span.facet-item-count {
+            font-weight: normal; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item.facet-without-image img,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item.facet-without-image img {
         display: none; }

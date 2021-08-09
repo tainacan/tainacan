@@ -131,6 +131,10 @@
         "isLoadingChildTerms": {
             "type": "Number",
             "default": null
+        },
+        "itemsCountStyle": {
+            "type": "String",
+            "default": "default"
         }
     },
     "supports": {

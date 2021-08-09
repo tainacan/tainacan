@@ -18,7 +18,8 @@ export default function({ attributes, className }) {
         maxColumnsCount,
         showSearchBar,
         linkTermFacetsToTermPage,
-        appendChildTerms
+        appendChildTerms,
+        itemsCountStyle
     } = attributes;
     return <div 
                 data-module="facets-list"
@@ -36,6 +37,7 @@ export default function({ attributes, className }) {
                 append-child-terms={ (appendChildTerms === true ? 'true' : 'false') }
                 link-term-facets-to-term-page={ linkTermFacetsToTermPage === false ? 'false' : 'true' }
                 layout={ layout }
+                items-count-style={ itemsCountStyle }
                 cloud-rate={ cloudRate }
                 grid-margin={ gridMargin }
                 max-facets-number={ maxFacetsNumber }
