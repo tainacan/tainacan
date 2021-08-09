@@ -317,7 +317,7 @@
       max-width: 220px; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         border: none;
         font-weight: bold;
         line-height: normal;
@@ -330,7 +330,8 @@
         margin-bottom: 0.5em; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item:not(.facet-with-name-inside-image) span.facet-item-count,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item:not(.facet-with-name-inside-image) span.facet-item-count {
-        color: var(--tainacan-block-gray3, #cbcbcb); }
+        color: inherit;
+        opacity: 0.65; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item.facet-with-name-inside-image a span,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item.facet-with-name-inside-image a span {
         display: block;
@@ -356,7 +357,7 @@
         opacity: 1; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item:hover a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item:hover a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         text-decoration: none; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item svg,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item svg {
@@ -495,7 +496,7 @@
       width: 100%; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         line-height: normal;
         height: auto;
         display: flex;
@@ -526,11 +527,12 @@
           display: none; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item span.facet-item-count,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item span.facet-item-count {
-        color: var(--tainacan-block-gray3, #cbcbcb);
+        color: inherit;
+        opacity: 0.65;
         word-break: break-all; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item:hover a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item:hover a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         text-decoration: none; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item.facet-term-with-children,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item.facet-term-with-children {
@@ -570,9 +572,10 @@
       vertical-align: middle; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         display: inline;
-        min-height: 54px; }
+        min-height: 54px;
+        text-decoration: none; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item img,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item img {
         height: auto;
@@ -591,17 +594,18 @@
         display: none; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item span.facet-item-count,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item span.facet-item-count {
-        color: var(--tainacan-block-gray3, #cbcbcb); }
+        color: inherit;
+        opacity: 0.65; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item:hover, .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item:hover a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item:hover,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item:hover a {
-        color: var(--tainacan-block-primary, #298596);
+        color: inherit;
         text-decoration: none;
         cursor: pointer; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item:hover.facet-term-with-children, .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item:hover.facet-term-with-children a,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item:hover.facet-term-with-children,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item:hover.facet-term-with-children a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         text-decoration: none; }
   .wp-block-tainacan-facets-list .show-more-button {
     margin: 12px auto;
@@ -616,6 +620,13 @@
       background-color: var(--tainacan-block-gray3, #cbcbcb); }
     .wp-block-tainacan-facets-list .show-more-button i > svg {
       fill: white; }
+  .wp-block-tainacan-facets-list:not(.has-text-color) li.facet-list-item a {
+    color: var(--tainacan-block-gray5, #454647); }
+    .wp-block-tainacan-facets-list:not(.has-text-color) li.facet-list-item a:hover, .wp-block-tainacan-facets-list:not(.has-text-color) li.facet-list-item a:focus, .wp-block-tainacan-facets-list:not(.has-text-color) li.facet-list-item a:hover .facet-item-count, .wp-block-tainacan-facets-list:not(.has-text-color) li.facet-list-item a:focus .facet-item-count {
+      color: var(--tainacan-block-primary, #298596); }
+    .wp-block-tainacan-facets-list:not(.has-text-color) li.facet-list-item a .facet-item-count {
+      opacity: 1.0;
+      color: var(--tainacan-block-gray3, #cbcbcb); }
 
 .child-reveal-enter-active {
   overflow: hidden;

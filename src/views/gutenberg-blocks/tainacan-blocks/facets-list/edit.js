@@ -91,7 +91,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     href={ !appendChildTerms ? ((linkTermFacetsToTermPage && isMetadatumTypeTaxonomy(metadatumType)) ? facet.term_url : facet.url) : (facet.total_children > 0 ? null : (linkTermFacetsToTermPage ? facet.term_url : facet.url)) }
                     onClick={ () => { (appendChildTerms && facet.total_children > 0) ? displayChildTerms(facetId) : null } } 
                     target="_blank"
-                    style={{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'rem' : ''}}>
+                    style={{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}}>
                     { isMetadatumTypeTaxonomy(metadatumType) ? 
                         <img
                             src={ 
@@ -802,7 +802,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         <ul 
                             style={{ 
                                 gridGap: layout == 'grid' ? (gridMargin + 'px') : 'inherit',
-                                marginTop: showSearchBar ? '1.5rem' : '0px'
+                                marginTop: showSearchBar ? '1.5em' : '0px'
                             }}
                             className={ 'facets-list-edit facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '') }>
                             { facets }
@@ -810,7 +810,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         :
                         <ul 
                             style={{  
-                                marginTop: showSearchBar ? '1.5rem' : '0px'
+                                marginTop: showSearchBar ? '1.5em' : '0px'
                             }}
                             className={ 'facets-list-edit facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '') }>
                             {
