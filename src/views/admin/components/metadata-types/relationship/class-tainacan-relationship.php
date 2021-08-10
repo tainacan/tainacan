@@ -169,6 +169,8 @@ class Relationship extends Metadata_Type {
 	 */
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
+		$search_meta_id = $this->get_option('search');
+		$display_metas = $this->get_option('display_related_item_metadata');
 		
 		$return = '';
 		if ( $item_metadata->is_multiple() ) {
@@ -182,8 +184,8 @@ class Relationship extends Metadata_Type {
 					$item = $Tainacan_Items->fetch( (int) $item_id);
 					if ( $this->can_display_item($item) ) {
 						$return .= empty($return)
-							? ($prefix . $this->get_item_html($item) . $suffix)
-							: ($separator . $prefix . $this->get_item_html($item) . $suffix);
+							? ($prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix)
+							: ($separator . $prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix);
 					}
 				} catch (\Exception $e) {
 					// item not found
@@ -193,13 +195,16 @@ class Relationship extends Metadata_Type {
 			try {
 				$item = new \Tainacan\Entities\Item($value);
 				if ( $this->can_display_item($item) ) {
-					$return .= $this->get_item_html($item);
+					$return .= $this->get_item_html($item, $search_meta_id, $display_metas);
 				}
 			} catch (\Exception $e) {
 				// item not found 
 			}
 		}
-		return "<div class='tainacan-compound-group'> {$return} </div>";
+		if(!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1) {
+			return "<div class='tainacan-relationship-group'> {$return} </div>";
+		}
+		return $return;
 	}
 
 	private function can_display_item($item) {
@@ -214,17 +219,16 @@ class Relationship extends Metadata_Type {
 		);
 	}
 
-	private function get_item_html($item) {
+	private function get_item_html($item, $search_meta_id, $display_metas) {
 		$return = '';
 		$id = $item->get_id();
 		
-		$search_meta_id = $this->get_option('search');
-		$display_metas = $this->get_option('display_related_item_metadata ');
-
-		if(!empty($display_metas) && is_array($display_metas)) {
+		if(!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1) {
 			$has_thumbnail = array_search('thumbnail', $display_metas);
+			$thumbnail_id = false;
 			if($has_thumbnail !== false) {
 				unset($display_metas[$has_thumbnail]);
+				$thumbnail_id = $item->get__thumbnail_id();
 			}
 			$args = ['post__in' => $display_metas];
 			$metadatum = $item->get_metadata($args);
@@ -233,22 +237,23 @@ class Relationship extends Metadata_Type {
 			foreach ( $metadatum as $item_meta_id => $item_meta ) {
 				if ( $item_meta instanceof \Tainacan\Entities\Item_Metadata_Entity && $item_meta->get_value_as_html() != '' ) {
 					$meta_id = $item_meta->get_metadatum()->get_id();
-					$as_link = $search_meta_id == $meta_id ? $this->get_item_link($item, $search_meta_id) : false;
-					$html = $this->get_meta_html($item_meta, $as_link);
+					$as_header = $search_meta_id == $meta_id ? $this->get_item_link($item, $search_meta_id) : false;
+					$html = $this->get_meta_html($item_meta, $as_header, $thumbnail_id);
 					$metadata_value[] = $html;
 				}
 				$return = implode("\n", $metadata_value);
 			}
-			$return = "<div class='tainacan-compound-metadatum'> {$return} </div>";
+			$return = "<div class='tainacan-relationship-metadatum'> {$return} </div>";
 		} else if ( $id && $search_meta_id ) {
 			$as_link = $this->get_item_link($item, $search_meta_id);
-			$return = "<div>$as_link</div> \n $return";
+			$return = "$as_link \n";
 		}
 
 		return $return;
 	}
 
 	private function get_item_link($item, $search_meta_id) {
+		$return = '';
 		$id = $item->get_id();
 		$link = get_permalink( (int) $id );
 		$metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch((int) $search_meta_id);
@@ -266,20 +271,31 @@ class Relationship extends Metadata_Type {
 		return $return;
 	}
 
-	private function get_meta_html(\Tainacan\Entities\Item_Metadata_Entity $meta, $value_link = false) {
+	private function get_meta_html(\Tainacan\Entities\Item_Metadata_Entity $meta, $value_link = false, $thumbnail_id = false) {
 		$html = '';
 		if ($meta instanceof \Tainacan\Entities\Item_Metadata_Entity && !empty($meta->get_value_as_html())) {
 			ob_start();
-			?>
-				<div class="tainacan-metadatum">
-					<label class="label">
-						<?php echo $meta->get_metadatum()->get_name() ?>
-					</label>
-					<p>
-						<?php echo ($value_link === false ? $meta->get_value_as_html() : $value_link) ?> 
-					</p>
-				</div>
-			<?php
+			if ($value_link) {
+				?>
+					<div class="tainacan-relationship-metadatum-header">
+						<?php if($thumbnail_id !== false) echo \wp_get_attachment_image($thumbnail_id, 'tainacan-small'); ?>
+						<h4 class="label">
+							<?php echo $value_link; ?>
+						</h4>
+					</div>
+				<?php
+			} else {
+				?>
+					<div class="tainacan-metadatum">
+						<h5 class="label">
+							<?php echo $meta->get_metadatum()->get_name(); ?>
+						</h5>
+						<p>
+							<?php echo ($value_link === false ? $meta->get_value_as_html() : $value_link); ?> 
+						</p>
+					</div>
+				<?php
+			}
 			$html = ob_get_contents();
 			ob_end_clean();
 		}
