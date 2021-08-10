@@ -249,7 +249,6 @@ export default {
                     color: transparent;
                     margin: 1em auto 1em -0.875em;
                 }
-                
             }
         }
     }
