@@ -168,8 +168,6 @@ class Relationship extends Metadata_Type {
 		
 		$return = '';
 		if ( $item_metadata->is_multiple() ) {
-			$count = 1;
-			$total = sizeof($value);
 			$prefix = $item_metadata->get_multivalue_prefix();
 			$suffix = $item_metadata->get_multivalue_suffix();
 			$separator = $item_metadata->get_multivalue_separator();
@@ -178,19 +176,11 @@ class Relationship extends Metadata_Type {
 				try {
 					$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 					$item = $Tainacan_Items->fetch( (int) $item_id);
-					
-					$count++;
-					
-					if ( $item instanceof \Tainacan\Entities\Item ) {
-						$return .= $prefix;
-						$return .= $this->get_item_html($item);
-						$return .= $suffix;
-
-						if ( $count <= $total ) {
-							$return .= $separator;
-						}
+					if ( $this->can_display_item($item) ) {
+						$return .= empty($return)
+							? ($prefix . $this->get_item_html($item) . $suffix)
+							: ($separator . $prefix . $this->get_item_html($item) . $suffix);
 					}
-
 				} catch (\Exception $e) {
 					// item not found
 				}
@@ -198,7 +188,7 @@ class Relationship extends Metadata_Type {
 		} else {
 			try {
 				$item = new \Tainacan\Entities\Item($value);
-				if ( $item instanceof \Tainacan\Entities\Item ) {
+				if ( $this->can_display_item($item) ) {
 					$return .= $this->get_item_html($item);
 				}
 			} catch (\Exception $e) {
@@ -208,32 +198,48 @@ class Relationship extends Metadata_Type {
 		return "<div class='tainacan-compound-group'> {$return} </div>";
 	}
 
+	private function can_display_item($item) {
+		return (
+			$item instanceof \Tainacan\Entities\Item && (
+				is_user_logged_in() ||
+				(
+					\is_post_status_viewable( $item->get_status() ) &&
+					\is_post_status_viewable( $item->get_collection()->get_status() )
+				)
+			)
+		);
+	}
+
 	private function get_item_html($item) {
 		$return = '';
 		$id = $item->get_id();
 		
 		$search_meta_id = $this->get_option('search');
 		$display_metas = $this->get_option('display_related_item_metadata ');
+		$display_metas = ['thumbnail', 707, 705, 924, 908];
 
 		if(!empty($display_metas)) {
+			$has_thumbnail = array_search('thumbnail', $display_metas);
+			if($has_thumbnail !== false) {
+				unset($display_metas[$has_thumbnail]);
+			}
 			$args = !empty($display_metas) ? ['post__in' => $display_metas] : [];
-			$item_metadata = $item->get_metadata($args);
+			$metadatum = $item->get_metadata($args);
+
 			$metadata_value = [];
-			foreach ( $item_metadata as $meta_id => $meta ) {
-				if ( $meta instanceof \Tainacan\Entities\Item_Metadata_Entity && $meta->get_value_as_html() != '' ) {
+			foreach ( $metadatum as $item_meta_id => $item_meta ) {
+				if ( $item_meta instanceof \Tainacan\Entities\Item_Metadata_Entity && $item_meta->get_value_as_html() != '' ) {
+					$meta_id = $item_meta->get_metadatum()->get_id();
 					$as_link = $search_meta_id == $meta_id ? $this->get_item_link($item, $search_meta_id) : false;
-					$html = $this->get_meta_html($meta);
+					$html = $this->get_meta_html($item_meta, $as_link);
 					$metadata_value[] = $html;
 				}
 				$return = implode("\n", $metadata_value);
 			}
 			$return = "<div class='tainacan-compound-metadatum'> {$return} </div>";
-		} else {
-			if ( $id && $search_meta_id ) {
-				$search_meta_id = $this->get_option('search');
-				$as_link = $this->get_item_link($item, $search_meta_id);
-				$return = "<div>$as_link</div> \n $return";
-			}
+		} else if ( $id && $search_meta_id ) {
+			$as_link = $this->get_item_link($item, $search_meta_id);
+			$return = "<div>$as_link</div> \n $return";
 		}
 
 		return $return;
@@ -252,13 +258,7 @@ class Relationship extends Metadata_Type {
 			$value = $item->get_title();
 		}
 		if (is_string($link)) {
-			if ( is_user_logged_in() ||
-				\is_post_status_viewable( $item->get_status() ) &&
-				\is_post_status_viewable($item->get_collection()->get_status()) ) {
-				$return = "<a data-linkto='item' data-id='$id' href='$link'> $value </a>";
-			} else {
-				$return = $value;
-			}
+			$return = "<a data-linkto='item' data-id='$id' href='$link'> $value </a>";
 		}
 		return $return;
 	}
@@ -266,7 +266,19 @@ class Relationship extends Metadata_Type {
 	private function get_meta_html(\Tainacan\Entities\Item_Metadata_Entity $meta, $value_link = false) {
 		$html = '';
 		if ($meta instanceof \Tainacan\Entities\Item_Metadata_Entity && !empty($meta->get_value_as_html())) {
-			$html = '<div class="tainacan-metadatum"><label class="label">' . $meta->get_metadatum()->get_name() . '</label> <p>' . $value_link === false ? $meta->get_value_as_html() : $value_link . "</p></div>";
+			ob_start();
+			?>
+				<div class="tainacan-metadatum">
+					<label class="label">
+						<?php echo $meta->get_metadatum()->get_name() ?>
+					</label>
+					<p>
+						<?php echo ($value_link === false ? $meta->get_value_as_html() : $value_link) ?> 
+					</p>
+				</div>
+			<?php
+			$html = ob_get_contents();
+			ob_end_clean();
 		}
 
 		return $html;
