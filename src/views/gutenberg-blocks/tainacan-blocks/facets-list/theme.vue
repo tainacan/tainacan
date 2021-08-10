@@ -221,12 +221,22 @@ export default {
     },
     created() {
         this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
+        
         if (tainacan_blocks && tainacan_blocks.nonce)
             this.tainacanAxios.defaults.headers.common['X-WP-Nonce'] = tainacan_blocks.nonce;
+
         this.offset = 0;
         this.fetchFacets();
+
+        document.addEventListener('tainacan-blocks-facets-list-update', this.updateSearchFromURL);
+    },
+    beforeDestroy() {
+        document.removeEventListener('tainacan-blocks-facets-list-update', this.updateSearchFromURL);
     },
     methods: {
+        updateSearchFromURL(event, obj) {
+            console.log(obj);
+        },
         applySearchString: debounce(function(event) { 
 
             let value = event.target.value;
