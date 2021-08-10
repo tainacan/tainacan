@@ -32,6 +32,8 @@
             <div
                 v-if="loadingMetadata"
                 class="loading-spinner"/>
+        </transition>
+        <transition name="filter-item">
             <b-field
                     v-if="hasMetadata"
                     :addons="false">
@@ -53,6 +55,37 @@
                         {{ option.name }}
                     </option>
                 </b-select>
+            </b-field>
+        </transition>
+        <transition name="filter-item">
+            <b-field 
+                    v-if="hasMetadata"
+                    :addons="false">
+                <label class="label">
+                    {{ $i18n.getHelperTitle('tainacan-relationship', 'display_related_item_metadata') }}
+                    <help-button
+                            :title="$i18n.getHelperTitle('tainacan-relationship', 'display_related_item_metadata')"
+                            :message="$i18n.getHelperMessage('tainacan-relationship', 'display_related_item_metadata')"/>
+                </label>
+                <div class="displayed-metadata-options">
+                    <b-checkbox
+                            native-value="thumbnail"
+                            name="metadata_type_relationship[display_related_item_metadata]"
+                            @input="emitValues()"
+                            v-model="displayRelatedItemMetadata">
+                        {{ $i18n.get('label_thumbnail') }}
+                    </b-checkbox>
+                    <b-checkbox
+                            v-for="(metadatumOption, index) in metadata"
+                            :key="index"
+                            :native-value="metadatumOption.id"
+                            name="metadata_type_relationship[display_related_item_metadata]"
+                            @input="emitValues()"
+                            v-model="displayRelatedItemMetadata"
+                            :disabled="metadatumOption.id == modelSearch">
+                        {{ metadatumOption.name }}
+                    </b-checkbox>
+                </div>
             </b-field>
         </transition>
 
@@ -97,7 +130,8 @@
                 modelDisplayInRelatedItems: 'no',
                 modelSearch:'',
                 collectionType: '',
-                collectionMessage: ''
+                collectionMessage: '',
+                displayRelatedItemMetadata: []
             }
         },
         computed: {
@@ -124,28 +158,30 @@
                 }
             },
             modelSearch( value ){
-                this.modelSearch = value;
+                if ( !this.displayRelatedItemMetadata.includes(value) )
+                    this.displayRelatedItemMetadata.push(value);
                 this.emitValues();
             }
         },
         created(){
-           this.fetchCollections().then(() => {
-               if( this.collection_id && this.collection_id !== '' ){
-                   this.collection = this.collection_id;
-               } else if ( this.value ) {
-                   this.collection = this.value.collection_id;
-               }
-           });
+            this.fetchCollections().then(() => {
+                if( this.collection_id && this.collection_id !== '' ){
+                    this.collection = this.collection_id;
+                } else if ( this.value ) {
+                    this.collection = this.value.collection_id;
+                }
+            });
 
-           this.modelDisplayInRelatedItems = this.value && this.value.display_in_related_items ? this.value.display_in_related_items : 'no';
+            this.displayRelatedItemMetadata = this.value && this.value.display_related_item_metadata && Array.isArray(this.value.display_related_item_metadata) ? this.value.display_related_item_metadata : [];
+            this.modelDisplayInRelatedItems = this.value && this.value.display_in_related_items ? this.value.display_in_related_items : 'no';
         },
-        methods:{
+        methods: {
             setErrorsAttributes( type, message ){
                 this.collectionType = type;
                 this.collectionType = message;
             },
-            fetchCollections(){
-                return axios.get('/collections?nopaging=1')
+            async fetchCollections(){
+                return await axios.get('/collections?nopaging=1')
                     .then(res => {
                         const collections = res.data;
 
@@ -173,10 +209,10 @@
                                if (metadatum.metadata_type_object.component !== 'tainacan-relationship' && metadatum.metadata_type_object.component !== 'tainacan-compound') {
                                    this.metadata.push( metadatum );
                                    this.hasMetadata = true;
-                                   this.checkMetadata()
+                                   this.checkMetadata();
                                }
                             }
-
+                    
                             if (this.metadata.length <= 0) {
                                 this.$buefy.toast.open({
                                     duration: 4000,
@@ -225,7 +261,8 @@
                 this.$emit('input',{
                     collection_id: this.collection,
                     search: this.modelSearch,
-                    display_in_related_items: this.modelDisplayInRelatedItems
+                    display_in_related_items: this.modelDisplayInRelatedItems,
+                    display_related_item_metadata: this.displayRelatedItemMetadata
                 });
             }
         }

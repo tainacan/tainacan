@@ -59,6 +59,10 @@ class Relationship extends Metadata_Type {
 				'title' => __( 'Related Metadatum', 'tainacan' ),
 				'description' => __( 'Select the metadata to use as search criteria in the target collection and as a label when representing the relationship', 'tainacan' ),
 			],
+			'display_related_item_metadata' => [
+				'title' => __( 'Displayed related item metadata', 'tainacan' ),
+				'description' => __( 'Select the metadata that will be displayed from the related item.', 'tainacan' ),
+			],
 			'display_in_related_items' => [
 				'title' => __( 'Display in "Items related to this"', 'tainacan' ),
 				'description' => __( 'Include items linked by this metadata on a list of related items.', 'tainacan' ),
@@ -216,14 +220,13 @@ class Relationship extends Metadata_Type {
 		
 		$search_meta_id = $this->get_option('search');
 		$display_metas = $this->get_option('display_related_item_metadata ');
-		$display_metas = ['thumbnail', 707, 705, 924, 908];
 
-		if(!empty($display_metas)) {
+		if(!empty($display_metas) && is_array($display_metas)) {
 			$has_thumbnail = array_search('thumbnail', $display_metas);
 			if($has_thumbnail !== false) {
 				unset($display_metas[$has_thumbnail]);
 			}
-			$args = !empty($display_metas) ? ['post__in' => $display_metas] : [];
+			$args = ['post__in' => $display_metas];
 			$metadatum = $item->get_metadata($args);
 
 			$metadata_value = [];
