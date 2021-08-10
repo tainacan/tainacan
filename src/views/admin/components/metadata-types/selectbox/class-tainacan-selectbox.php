@@ -35,9 +35,13 @@ class Selectbox extends Metadata_Type {
      */
     public function get_form_labels(){
         return [
+            'options_separator' => [
+                'title' => __( 'Options separator', 'tainacan' ),
+                'description' => __( 'Character to separate options in the text input bellow.', 'tainacan' ),
+            ],
             'options' => [
                 'title' => __( 'Options', 'tainacan' ),
-                'description' => __( 'Creates options for what is selected. Hit <enter> to add a new one.', 'tainacan' ),
+                'description' => __( 'Creates options for what is selected. Type the "options separator" character to add a new one.', 'tainacan' ),
             ]
         ];
     }

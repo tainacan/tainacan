@@ -1,0 +1,195 @@
+{
+    "name": "tainacan/faceted-search",
+    "title": "Tainacan Faceted Search",
+    "category": "tainacan-blocks",
+    "keywords": [ "facets", "search", "items" ],
+    "description": "A full items list faceted search from either the repository, a collection or a term.",
+    "textdomain": "tainacan",
+    "example": {
+        "attributes": {
+            "listType": "preview"
+        }
+    },
+    "attributes": {
+        "termId": {
+            "type": "String",
+            "default": null
+        },
+        "taxonomyId": {
+            "type": "String",
+            "default": null
+        },
+        "collectionId": {
+            "type": "String",
+            "default": null
+        },
+        "defaultViewMode": {
+            "type": "String",
+            "default": "masonry"
+        },
+        "enabledViewModes": {
+            "type": "Array",
+            "default": null
+        },
+        "collectionDefaultViewMode": {
+            "type": "String",
+            "default": "masonry"
+        },
+        "collectionEnabledViewModes": {
+            "type": "Array",
+            "default": []
+        },
+        "hideFilters": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideHideFiltersButton": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideSearch": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideAdvancedSearch": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideDisplayedMetadataButton": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideSortingArea": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideSortByButton": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideItemsThumbnail": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideExposersButton": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideItemsPerPageButton": {
+            "type": "Boolean",
+            "default": false
+        },
+        "defaultItemsPerPage": {
+            "type": "Number",
+            "default": 12
+        },
+        "hideGoToPageButton": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hidePaginationArea": {
+            "type": "Boolean",
+            "default": false
+        },
+        "showFiltersButtonInsideSearchControl": {
+            "type": "Boolean",
+            "default": false
+        },
+        "startWithFiltersHidden": {
+            "type": "Boolean",
+            "default": false
+        },
+        "filtersAsModal": {
+            "type": "Boolean",
+            "default": false
+        },
+        "showInlineViewModeOptions": {
+            "type": "Boolean",
+            "default": false
+        },
+        "showFullscreenWithViewModes": {
+            "type": "Boolean",
+            "default": false
+        },
+        "listType": {
+            "type": "String",
+            "default": ""
+        },
+        "isCollectionModalOpen": {
+            "type": "Boolean",
+            "default": false
+        },
+        "isTermModalOpen": {
+            "type": "Boolean",
+            "default": false
+        },
+        "backgroundColor": {
+            "type": "String",
+            "default": "#ffffff"
+        },
+        "baseFontSize": {
+            "type": "Number",
+            "default": 16
+        },
+        "filtersAreaWidth": {
+            "type": "Number",
+            "default": 20
+        },
+        "inputColor": {
+            "type": "String",
+            "default": "#1d1d1d"
+        },
+        "inputBackgroundColor": {
+            "type": "String",
+            "default": "#ffffff"
+        },
+        "inputBorderColor": {
+            "type": "String",
+            "default": "#dbdbdb"
+        },
+        "labelColor": {
+            "type": "String",
+            "default": "#454647"
+        },
+        "infoColor": {
+            "type": "String",
+            "default": "#555758"
+        },
+        "headingColor": {
+            "type": "String",
+            "default": "#000000"
+        },
+        "skeletonColor": {
+            "type": "String",
+            "default": "#eeeeee"
+        },
+        "itemBackgroundColor": {
+            "type": "String",
+            "default": "#ffffff"
+        },
+        "itemHoverBackgroundColor": {
+            "type": "String",
+            "default": "#f2f2f2"
+        },
+        "itemHeadingHoverBackgroundColor": {
+            "type": "String",
+            "default": "#dbdbdb"
+        },
+        "primaryColor": {
+            "type": "String",
+            "default": "#d9eced"
+        },
+        "secondaryColor": {
+            "type": "String",
+            "default": "#298596"
+        }
+    },
+    "supports": {
+        "align": ["full", "wide"],
+        "html": true,
+        "multiple": false
+    },
+    "editorScript": "faceted-search",
+	"editorStyle": "faceted-search",
+	"style": "faceted-search"
+}

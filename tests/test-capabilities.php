@@ -346,6 +346,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 
 
 		$this->subscriber2->add_cap( 'tnc_rep_edit_metadata' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertFalse( $this->public_metadatum->can_edit() );
 		$this->assertTrue( $this->public_repo_metadatum->can_edit() );
@@ -357,6 +358,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->private_repo_metadatum->can_delete() );
 
 		$this->subscriber2->add_cap( 'tnc_rep_delete_metadata' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertFalse( $this->public_metadatum->can_edit() );
 		$this->assertTrue( $this->public_repo_metadatum->can_edit() );
@@ -368,6 +370,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertTrue( $this->private_repo_metadatum->can_delete() );
 
 		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_edit_metadata' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $this->public_metadatum->can_edit() );
 		$this->assertTrue( $this->public_repo_metadatum->can_edit() );
@@ -379,6 +382,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertTrue( $this->private_repo_metadatum->can_delete() );
 
 		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_delete_metadata' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $this->public_metadatum->can_edit() );
 		$this->assertTrue( $this->public_repo_metadatum->can_edit() );
@@ -396,6 +400,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->private_repo_metadatum->can_read() );
 
 		$this->subscriber2->add_cap( 'tnc_rep_read_private_metadata' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $this->public_metadatum->can_read() );
 		$this->assertTrue( $this->public_repo_metadatum->can_read() );
@@ -403,6 +408,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertTrue( $this->private_repo_metadatum->can_read() );
 
 		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_read_private_metadata' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $this->public_metadatum->can_read() );
 		$this->assertTrue( $this->public_repo_metadatum->can_read() );
@@ -428,6 +434,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->private_repo_filter->can_delete() );
 
 		$this->subscriber2->add_cap( 'tnc_rep_edit_filters' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertFalse( $this->public_filter->can_edit() );
 		$this->assertTrue( $this->public_repo_filter->can_edit() );
@@ -439,6 +446,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->private_repo_filter->can_delete() );
 
 		$this->subscriber2->add_cap( 'tnc_rep_delete_filters' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertFalse( $this->public_filter->can_edit() );
 		$this->assertTrue( $this->public_repo_filter->can_edit() );
@@ -450,6 +458,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertTrue( $this->private_repo_filter->can_delete() );
 
 		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_edit_filters' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $this->public_filter->can_edit() );
 		$this->assertTrue( $this->public_repo_filter->can_edit() );
@@ -461,6 +470,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertTrue( $this->private_repo_filter->can_delete() );
 
 		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_delete_filters' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $this->public_filter->can_edit() );
 		$this->assertTrue( $this->public_repo_filter->can_edit() );
@@ -478,6 +488,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->private_repo_filter->can_read() );
 
 		$this->subscriber2->add_cap( 'tnc_rep_read_private_filters' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $this->public_filter->can_read() );
 		$this->assertTrue( $this->public_repo_filter->can_read() );
@@ -485,6 +496,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertTrue( $this->private_repo_filter->can_read() );
 
 		$this->subscriber2->add_cap( 'tnc_col_' . $this->public_collection->get_id() . '_read_private_filters' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $this->public_filter->can_read() );
 		$this->assertTrue( $this->public_repo_filter->can_read() );
@@ -566,6 +578,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( user_can($this->subscriber2->ID, 'tnc_rep_edit_taxonomies') );
 
 		$this->subscriber2->add_cap( 'tnc_rep_edit_taxonomies' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( user_can($this->subscriber2->ID, 'tnc_rep_edit_taxonomies') );
 
@@ -607,6 +620,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->private_taxonomy->can_read() );
 
 		$this->subscriber2->add_cap( 'tnc_rep_edit_others_taxonomies' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $tax_public->can_edit() );
 		$this->assertTrue( $tax_private->can_edit() );
@@ -622,10 +636,12 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->private_taxonomy->can_read() );
 
 		$this->subscriber2->add_cap( 'tnc_rep_read_private_taxonomies' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $this->private_taxonomy->can_read() );
 
 		$this->subscriber2->add_cap( 'tnc_rep_delete_taxonomies' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $tax_public->can_delete() );
 		$this->assertTrue( $tax_private->can_delete() );
@@ -633,6 +649,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->private_taxonomy->can_delete() );
 
 		$this->subscriber2->add_cap( 'tnc_rep_delete_others_taxonomies' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $tax_public->can_delete() );
 		$this->assertTrue( $tax_private->can_delete() );
@@ -705,6 +722,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->term_in_private->can_read() );
 
 		$this->subscriber2->add_cap( 'tnc_rep_edit_taxonomies' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $term_1->can_delete() );
 		$this->assertTrue( $term_2->can_delete() );
@@ -718,6 +736,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 
 
 		$this->subscriber2->add_cap( 'tnc_rep_edit_others_taxonomies' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $term_1->can_delete() );
 		$this->assertTrue( $term_2->can_delete() );
@@ -731,6 +750,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 
 
 		$this->subscriber2->add_cap( 'tnc_rep_read_private_taxonomies' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $term_1->can_read() );
 		$this->assertTrue( $term_2->can_read() );
@@ -747,6 +767,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		wp_set_current_user($this->subscriber2->ID);
 
 		$this->subscriber2->add_cap( 'tnc_rep_edit_collections' );
+		clean_user_cache(get_current_user_id());
 
 		$my_collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -768,6 +789,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $my_collection->can_delete() );
 
 		$this->subscriber2->add_cap( 'tnc_rep_delete_collections' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertFalse( $this->public_collection->can_edit() );
 		$this->assertTrue( $this->public_collection->can_read() );
@@ -780,6 +802,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertTrue( $my_collection->can_delete() );
 
 		$this->subscriber2->add_cap( 'tnc_rep_read_private_collections' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertFalse( $this->public_collection->can_edit() );
 		$this->assertTrue( $this->public_collection->can_read() );
@@ -789,6 +812,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->private_collection->can_delete() );
 
 		$this->subscriber2->add_cap( 'manage_tainacan' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $this->public_collection->can_edit() );
 		$this->assertTrue( $this->public_collection->can_read() );
@@ -808,6 +832,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		wp_set_current_user($this->subscriber2->ID);
 
 		$this->subscriber2->add_cap( 'tnc_rep_edit_collections' );
+		clean_user_cache(get_current_user_id());
 
 		$my_collection = $this->tainacan_entity_factory->create_entity(
 			'collection',
@@ -841,6 +866,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->public_collection->can_edit() );
 
 		$this->subscriber2->add_cap( 'manage_tainacan_collection_' . $this->public_collection->get_id() );
+		clean_user_cache(get_current_user_id());
 		$current_user = $this->subscriber2; // force update current user object with new capabilities
 
 		$this->assertTrue( $this->public_collection->can_edit() );
@@ -857,6 +883,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $this->public_collection->can_edit() );
 
 		$this->subscriber2->add_cap( 'manage_tainacan_collection_all' );
+		clean_user_cache(get_current_user_id());
 		$current_user = $this->subscriber2; // force update current user object with new capabilities
 
 		$this->assertTrue( $this->public_collection->can_edit() );
@@ -887,6 +914,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $private_in_private->can_read() );
 
 		$this->subscriber2->add_cap( $col1prefix . 'read_private_items' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $public->can_read() );
 		$this->assertFalse( $public_in_private->can_read() );
@@ -901,6 +929,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $private_in_private->can_read(), 'user must also have read_private_collections to read items in private collections' );
 
 		$this->subscriber2->add_cap( 'tnc_rep_read_private_collections' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $public->can_read() );
 		$this->assertTrue( $public_in_private->can_read() );
@@ -920,17 +949,20 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $own_item->can_edit() );
 
 		$this->subscriber2->add_cap( $col1prefix . 'edit_items' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $own_item->can_edit() );
 		$this->assertFalse( $own_item->can_publish() );
 
 		$this->subscriber2->add_cap( $col1prefix . 'publish_items' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $own_item->can_publish() );
 
 		$this->assertFalse( $own_item->can_delete() );
 
 		$this->subscriber2->add_cap( $col1prefix . 'delete_items' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $own_item->can_delete() );
 
@@ -942,12 +974,14 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $own_item->can_edit() );
 
 		$this->subscriber2->add_cap( $col1prefix . 'edit_published_items' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $own_item->can_edit() );
 
 		$this->assertFalse( $own_item->can_delete() );
 
 		$this->subscriber2->add_cap( $col1prefix . 'delete_published_items' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $own_item->can_delete() );
 
@@ -975,11 +1009,13 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertFalse( $other_published->can_edit() );
 
 		$this->subscriber2->add_cap( $col1prefix . 'edit_others_items' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $other_draft->can_edit() );
 		$this->assertFalse( $other_published->can_edit() );
 
 		$this->subscriber2->add_cap( $col1prefix . 'edit_published_items' );
+		clean_user_cache(get_current_user_id());
 
 		$this->assertTrue( $other_draft->can_edit() );
 		$this->assertTrue( $other_published->can_edit() );
@@ -1000,6 +1036,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertEquals(5, sizeof($repo));
 
 		$this->subscriber2->add_cap( $col1prefix . 'read_private_items' );
+		clean_user_cache(get_current_user_id());
 		$current_user = $this->subscriber2; // force update current user object with new capabilities
 
 
@@ -1008,6 +1045,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertEquals(10, sizeof($repo));
 
 		$this->subscriber2->add_cap( 'tnc_rep_read_private_collections' );
+		clean_user_cache(get_current_user_id());
 		//$this->subscriber2->add_cap( 'read_private_multiple_post_types' );
 		$current_user = $this->subscriber2; // force update current user object with new capabilities
 
@@ -1018,6 +1056,7 @@ class Capabilities extends TAINACAN_UnitTestCase {
 		$this->assertEquals(15, sizeof($repo));
 
 		$this->subscriber2->add_cap( $col2prefix . 'read_private_items' );
+		clean_user_cache(get_current_user_id());
 		$current_user = $this->subscriber2; // force update current user object with new capabilities
 
 		$repo = tainacan_items()->fetch(['nopaging' => true], [], 'OBJECT');

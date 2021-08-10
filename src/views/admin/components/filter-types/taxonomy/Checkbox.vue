@@ -122,26 +122,28 @@
                     this.taxonomyId = this.filter.metadatum.metadata_type_object.options.taxonomy_id;
                     this.taxonomy = this.filter.metadatum.metadata_type_object.options.taxonomy;
                 }
+            this.$eventBusSearch.$on('has-to-reload-facets', this.reloadOptions); 
         },
         mounted(){
-            if (!this.filtersAsModal)
+            if (!this.isUsingElasticSearch && !this.filtersAsModal)
                 this.loadOptions();
-
-            this.$eventBusSearch.$on('has-to-reload-facets', (shouldReload) => {
-                if ( !this.isUsingElasticSearch && shouldReload )
-                    this.loadOptions();
-            }); 
         },
         beforeDestroy() {
             
             // Cancels previous Request
             if (this.getOptionsValuesCancel != undefined)
                 this.getOptionsValuesCancel.cancel('Facet search Canceled.');
+
+            this.$eventBusSearch.$off('has-to-reload-facets', this.reloadOptions); 
         }, 
         methods: {
             ...mapGetters('search', [
                 'getFacets'
             ]),
+            reloadOptions(shouldReload) {
+                if ( !this.isUsingElasticSearch && shouldReload )
+                    this.loadOptions();
+            },
             loadOptions() {
                 if (!this.isUsingElasticSearch) {
                     let promise = null;

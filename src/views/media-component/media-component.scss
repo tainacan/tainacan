@@ -67,7 +67,7 @@ $pswp__include-minimal-style: true !default;
     }
     li.swiper-slide {
         height: 100%;
-        max-width: calc(100% - var(--swiper-navigation-size, 44px) - var(--swiper-navigation-size, 44px));
+        max-width: 100%;
         //min-width: 100%;
         padding: 0 var(--swiper-navigation-size, 44px);
         opacity: 1.0;

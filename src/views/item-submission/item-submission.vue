@@ -81,10 +81,6 @@ export default {
         @import "../admin/scss/_control.scss";
         @import "../admin/scss/_upload.scss";
 
-        .tainacan-icon {
-            opacity: 0; // Will make it 1 once window.load is done; 
-        }
-
         a, a:not([href]) { 
             color: var(--tainacan-secondary);
         }

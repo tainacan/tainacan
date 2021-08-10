@@ -89,20 +89,25 @@
         mounted() {
             if (!this.isUsingElasticSearch && !this.filtersAsModal)
                 this.loadOptions();
-
-            this.$eventBusSearch.$on('has-to-reload-facets', (shouldReload) => {
-                if ( !this.isUsingElasticSearch && shouldReload )
-                    this.loadOptions();
-            }); 
+        },
+        created() {
+            this.$eventBusSearch.$on('has-to-reload-facets', this.reloadOptions);
+        },
+        beforeDestroy() {
+            this.$eventBusSearch.$off('has-to-reload-facets', this.reloadOptions); 
         },
         methods: {
+            reloadOptions(shouldReload) {
+                if ( !this.isUsingElasticSearch && shouldReload )
+                    this.loadOptions();
+            },
             loadOptions() {
                 let promise = null;
                 
                 // Cancels previous Request
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
-
+                    
                 if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' || this.metadatumType === 'Tainacan\\Metadata_Types\\Control' )
                     promise = this.getValuesRelationship({
                         search: null,

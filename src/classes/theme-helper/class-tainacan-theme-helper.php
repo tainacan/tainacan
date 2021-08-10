@@ -35,8 +35,6 @@ class Theme_Helper {
 		// Redirect to post type archive if no cover page is set
 		add_action('wp', array($this, 'collection_single_redirect'));
 		
-		add_action('wp_print_scripts', array($this, 'enqueue_scripts'), 90);
-		
 		// make archive for terms work with items
 		add_action('pre_get_posts', array($this, 'tax_archive_pre_get_posts'));
 		
@@ -115,57 +113,6 @@ class Theme_Helper {
 			'implements_skeleton' => true,
 			'requires_thumbnail' => false
 		]);
-	}
-	
-	public function enqueue_scripts($force = false) {
-		global $TAINACAN_BASE_URL;
-		if ( $force || is_post_type_archive( \Tainacan\Repositories\Repository::get_collections_db_identifiers() ) || tainacan_get_term() || get_query_var('tainacan_repository_archive') == 1 ) {
-			wp_register_script('tainacan-search', $TAINACAN_BASE_URL . '/assets/js/theme_search.js' , ['underscore'] , TAINACAN_VERSION);
-			wp_localize_script('tainacan-search', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
-		}
-	}
-
-	public function enqueue_items_carousel_scripts() {
-		global $post;
-		global $TAINACAN_BASE_URL;
-		global $TAINACAN_VERSION;
-		global $wp_version;
-
-		$settings = [
-			'wp_version' => $wp_version,
-			'root'     	 => esc_url_raw( rest_url() ) . 'tainacan/v2',
-			'nonce'   	 => is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
-			'base_url' 	 => $TAINACAN_BASE_URL,
-			'admin_url'  => admin_url(),
-			'site_url'	 => site_url(),
-			'theme_items_list_url' => esc_url_raw( get_site_url() ) . '/' . \Tainacan\Theme_Helper::get_instance()->get_items_list_slug()
-		];
-		
-		wp_enqueue_script(
-			'carousel-items-list-theme',
-			$TAINACAN_BASE_URL . '/assets/js/block_carousel_items_list_theme.js',
-			array('wp-components')
-		);
-		wp_enqueue_style(
-			'carousel-items-list',
-			$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . 'carousel-items-list' . '.css',
-			array('tainacan-blocks-common-styles'),
-			$TAINACAN_VERSION
-		);
-		wp_set_script_translations('carousel-items-list-theme', 'tainacan');
-		wp_localize_script('carousel-items-list-theme', 'tainacan_blocks', $settings);
-	}
-
-	public function enqueue_related_items_carousel_scripts() {
-		global $TAINACAN_BASE_URL;
-		global $TAINACAN_VERSION;
-
-		wp_enqueue_style(
-			'carousel-related-items',
-			$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . 'carousel-related-items' . '.css',
-			array('tainacan-blocks-common-styles'),
-			$TAINACAN_VERSION
-		);
 	}
 	
 	public function is_post_an_item(\WP_Post $post) {
@@ -428,11 +375,8 @@ class Theme_Helper {
 		}
 
 		wp_enqueue_media();
-		wp_enqueue_script('jcrop');
-		wp_enqueue_script('tainacan-item-submission', $TAINACAN_BASE_URL . '/assets/js/item_submission.js' , ['underscore', 'jcrop', 'media-editor', 'media-views', 'customize-controls'] , TAINACAN_VERSION);
-		wp_localize_script('tainacan-item-submission', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
 
-		return "<div id='tainacan-item-submission-form' $props ></div>";
+		return "<div data-module='item-submission-form' id='tainacan-item-submission-form' $props ></div>";
 	}
 
 	/**
@@ -522,9 +466,7 @@ class Theme_Helper {
 			}
 		}
 
-		$this->enqueue_scripts($force_enqueue);
-
-		return "<div id='tainacan-items-page' $props ></div>";
+		return "<div data-module='faceted-search' id='tainacan-items-page' $props ></div>";
 	}
 	
 	function get_items_list_slug() {
@@ -937,9 +879,7 @@ class Theme_Helper {
 			$props .= (str_replace('_', '-', $key) . "='" . $value . "' ");
 		}
 		
-		$this->enqueue_items_carousel_scripts();
-		
-		return "<div id='tainacan-items-carousel-shortcode' $props ></div>";
+		return "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode' $props ></div>";
 	} 
 
 	/**
@@ -959,7 +899,9 @@ class Theme_Helper {
 		 * @return string  The HTML div to be used for rendering the related items vue component
 	 */
 	public function get_tainacan_related_items_carousel($args = []) {
-
+		global $TAINACAN_BASE_URL;
+		global $TAINACAN_VERSION;
+		
 		$defaults = array(
 			'class_name' => '',
 			'collection_heading_class_name' => '',
@@ -980,11 +922,8 @@ class Theme_Helper {
 		if (!count($related_items))
 			return;
 
-		// Enqueues necessary CSS
-		$this->enqueue_related_items_carousel_scripts();
-
 		// Always pass the default class;
-		$output = '<div class="' . $args['class_name'] . ' wp-block-tainacan-carousel-related-items' . '">';
+		$output = '<div data-module="carousel-related-items" class="' . $args['class_name'] . ' wp-block-tainacan-carousel-related-items' . '">';
 		
 		foreach($related_items as $collection_id => $related_group) {
 			
