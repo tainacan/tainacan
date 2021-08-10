@@ -202,7 +202,7 @@ class Relationship extends Metadata_Type {
 			}
 		}
 		if(!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1) {
-			return "<div class='tainacan-relationship-group'> {$return} </div>";
+			return "<div class='tainacan-relationship-group'>{$return}</div>";
 		}
 		return $return;
 	}
@@ -243,7 +243,7 @@ class Relationship extends Metadata_Type {
 				}
 				$return = implode("\n", $metadata_value);
 			}
-			$return = "<div class='tainacan-relationship-metadatum'> {$return} </div>";
+			$return = "<div class='tainacan-relationship-metadatum'>{$return}</div>";
 		} else if ( $id && $search_meta_id ) {
 			$as_link = $this->get_item_link($item, $search_meta_id);
 			$return = "$as_link \n";
@@ -266,7 +266,7 @@ class Relationship extends Metadata_Type {
 			$value = $item->get_title();
 		}
 		if (is_string($link)) {
-			$return = "<a data-linkto='item' data-id='$id' href='$link'> $value </a>";
+			$return = "<a data-linkto='item' data-id='$id' href='$link'>$value</a>";
 		}
 		return $return;
 	}
