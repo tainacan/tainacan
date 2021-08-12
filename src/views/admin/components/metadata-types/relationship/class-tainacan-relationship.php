@@ -239,14 +239,18 @@ class Relationship extends Metadata_Type {
 					$meta_id = $item_meta->get_metadatum()->get_id();
 					$as_header = $search_meta_id == $meta_id ? $this->get_item_link($item, $search_meta_id) : false;
 					$html = $this->get_meta_html($item_meta, $as_header, $thumbnail_id);
-					$metadata_value[] = $html;
+					if($as_header === false) {
+						$metadata_value[] = $html;
+					} else {
+						array_unshift($metadata_value, $html);
+					}
 				}
 				$return = implode("\n", $metadata_value);
 			}
 			$return = "<div class='tainacan-relationship-metadatum'>{$return}</div>";
 		} else if ( $id && $search_meta_id ) {
 			$as_link = $this->get_item_link($item, $search_meta_id);
-			$return = "$as_link \n";
+			$return = "$as_link";
 		}
 
 		return $return;
