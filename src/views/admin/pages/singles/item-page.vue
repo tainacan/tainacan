@@ -665,6 +665,10 @@
                     margin-right: 18px;
                 }
             }
+            p:empty {
+                display: none;
+                visibility: hidden;
+            }
         } 
         
     }

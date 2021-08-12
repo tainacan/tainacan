@@ -185,6 +185,38 @@ export default {
             }
         }
 
+        .tainacan-table {
+            .tainacan-relationship-group {
+                .tainacan-relationship-metadatum {
+                    display: inline-block;
+                    .tainacan-relationship-metadatum-header {
+                        img {
+                            display: none;
+                        }
+                        .label {
+                            font-weight: normal;
+                            font-size: 1em;
+                            margin-top: 0;
+                            margin-left: 0;
+                            margin-bottom: 0;
+                            margin-right: 0;
+                        }
+                    }
+                    .tainacan-metadatum {
+                        display: none;
+                    }
+                }
+                &>.multivalue-separator {
+                    display: inline-block;
+                    max-height: 100%;
+                    width: 1px;
+                    background: var(--tainacan-gray2);
+                    content: none;
+                    color: transparent;
+                    margin: 0 6px;
+                }
+            }
+        }
         .column-large-width {
             .tainacan-compound-group {
                 display: inline-block;
@@ -225,7 +257,6 @@ export default {
             }
         }
         .metadata-value {
-                
             .tainacan-compound-group {
                 margin-left: 2px;
                 padding-left: 0.875em;
@@ -248,6 +279,46 @@ export default {
                     content: none;
                     color: transparent;
                     margin: 1em auto 1em -0.875em;
+                }
+            }
+            .tainacan-relationship-group {
+                .tainacan-relationship-metadatum {
+                    .tainacan-relationship-metadatum-header {
+                        display: flex;
+                        align-items: center;
+                        img {
+                            margin-right: 12px;
+                            max-width: 22px;
+                            max-height: 22px;
+                        }
+                        .label {
+                            font-weight: normal;
+                            font-size: 1em;
+                            margin-top: 0;
+                            margin-left: 0;
+                            margin-bottom: 0;
+                            margin-right: 0;
+                        }
+                    }
+                    .tainacan-metadatum {
+                        margin-left: 40px;
+                        .label {
+                            color: var(--tainacan-gray4);
+                            font-size: 1em;
+                            line-height: 1em;
+                            margin-top: 8px;
+                            margin-bottom: 2px;
+                        }
+                    }
+                }
+                &>.multivalue-separator {
+                    display: block;
+                    max-height: 1px;
+                    width: calc(100% - 40px);
+                    background: var(--tainacan-gray2);
+                    content: none;
+                    color: transparent;
+                    margin: 0.5em 0 0.5em 40px;
                 }
             }
         }
