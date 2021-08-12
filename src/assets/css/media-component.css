@@ -663,7 +663,9 @@ a.pswp__share--download:hover {
     .tainacan-media-component__swiper-main li.swiper-slide:not(.swiper-slide-active) {
       opacity: 0.75; }
     .tainacan-media-component__swiper-main li.swiper-slide .swiper-slide-metadata {
-      text-align: center; }
+      text-align: center;
+      font-size: 0.875em;
+      margin-bottom: 1em; }
       .tainacan-media-component__swiper-main li.swiper-slide .swiper-slide-metadata.hide-name .swiper-slide-metadata__name {
         display: none;
         visibility: hidden; }

@@ -229,7 +229,7 @@
         .tainacan-compound-metadatum .label {
             text-align: left;
             margin-bottom: 0.25em;
-            font-size: 1em;
+            font-size: 1em !important;
             color: var(--tainacan-info-color);
         }
         .tainacan-compound-metadatum p {
@@ -262,7 +262,7 @@
                 }
                 .label {
                     font-weight: normal;
-                    font-size: 1em;
+                    font-size: 1em !important;
                     margin-top: 0;
                     margin-left: 0;
                     margin-bottom: 0;
@@ -274,7 +274,7 @@
                 margin-left: 40px;
                 .label {
                     color: var(--tainacan-gray4);
-                    font-size: 1em;
+                    font-size: 1em !important;
                     line-height: 1em;
                     margin-top: 8px;
                     margin-bottom: 2px;

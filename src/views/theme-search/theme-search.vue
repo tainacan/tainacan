@@ -195,11 +195,12 @@ export default {
                         }
                         .label {
                             font-weight: normal;
-                            font-size: 1em;
+                            font-size: 1em !important;
                             margin-top: 0;
                             margin-left: 0;
                             margin-bottom: 0;
                             margin-right: 0;
+                            padding: 0;
                         }
                     }
                     .tainacan-metadatum {
@@ -231,7 +232,8 @@ export default {
                     display: inline-block;
                 }
                 .label {
-                    font-size: 1em;
+                    font-size: 1em !important;
+                    padding: 0;
                     color: var(--tainacan-info-color);
                     &:not(:first-child)::before {
                         content: ', ';
@@ -264,7 +266,7 @@ export default {
 
                 .tainacan-compound-metadatum .label {
                     margin-bottom: 0.25em;
-                    font-size: 1em;
+                    font-size: 1em !important;
                     color: var(--tainacan-info-color);
                 }
                 .tainacan-compound-metadatum p {
@@ -293,7 +295,7 @@ export default {
                         }
                         .label {
                             font-weight: normal;
-                            font-size: 1em;
+                            font-size: 1em !important;
                             margin-top: 0;
                             margin-left: 0;
                             margin-bottom: 0;
@@ -304,7 +306,7 @@ export default {
                         margin-left: 40px;
                         .label {
                             color: var(--tainacan-gray4);
-                            font-size: 1em;
+                            font-size: 1em !important;
                             line-height: 1em;
                             margin-top: 8px;
                             margin-bottom: 2px;

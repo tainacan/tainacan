@@ -524,7 +524,7 @@ export default {
 
                 h4 {
                     color: var(--tainacan-heading-color);
-                    font-size: 1em;
+                    font-size: 1em !important;
                     font-weight: 500;
                     padding: 0em 0.5em;
                     margin: 0;
