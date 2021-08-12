@@ -1,5 +1,8 @@
 import * as conditioner from 'conditioner-core/conditioner-core.esm';
 
+// Updates Webpack public path based on plugin folder URL, using variable obtained from server side.
+__webpack_public_path__ = tainacan_plugin.plugin_dir_url + 'assets/js/';
+
 // Checks if document is loaded
 const performWhenDocumentIsLoaded = callback => {
     if (/comp|inter|loaded/.test(document.readyState))
