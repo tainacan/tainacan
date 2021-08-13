@@ -285,6 +285,7 @@ class Admin {
 			'user_caps'              	=> $user_caps,
 			'user_prefs'             	=> $prefs,
 			'base_url'               	=> $TAINACAN_BASE_URL,
+			'plugin_dir_url'			=> plugin_dir_url( __DIR__ ),
 			'admin_url'              	=> admin_url(),
 			'theme_items_list_url' 		=> esc_url_raw( get_site_url() ) . '/' . \Tainacan\Theme_Helper::get_instance()->get_items_list_slug(),
 			'theme_collection_list_url' => get_post_type_archive_link( 'tainacan-collection' ),
