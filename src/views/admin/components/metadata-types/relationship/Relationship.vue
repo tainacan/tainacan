@@ -51,6 +51,11 @@
                 </a>
             </template>
         </b-taginput>
+        <div 
+                class="tainacan-relationship-results-container"
+                v-if="itemMetadatum">
+            <div v-html="itemMetadatum.value_as_html" />
+        </div>
         <a
                 v-if="currentUserCanEditItems && itemMetadatum.item && itemMetadatum.item.id"
                 :disabled="!$route || $route.query.iframemode"
@@ -311,5 +316,16 @@
     }
     .add-link {
         font-size: 0.75em;
+    }
+    .tainacan-relationship-results-container {
+        background-color: var(--tainacan-white);
+        border: 1px solid var(--tainacan-gray1);
+        border-top: 0px;
+        margin-top: -1px;
+        display: flex;
+        overflow: auto;
+        padding: 12px;
+        max-height: 40vh;
+        transition: heigth 0.5s ease, min-height 0.5s ease;
     }
 </style>
