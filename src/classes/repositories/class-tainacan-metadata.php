@@ -1165,9 +1165,9 @@ class Metadata extends Repository {
 					$base_query = $wpdb->prepare("FROM $wpdb->term_relationships tr
 						INNER JOIN $wpdb->term_taxonomy tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
 						INNER JOIN $wpdb->terms t ON tt.term_id = t.term_id
+						INNER JOIN ($items_query) as posts ON tr.object_id = posts.ID
 						WHERE
 						tt.parent = %d AND
-						tr.object_id IN ($items_query) AND
 						tt.taxonomy = %s
 						$search_q
 						ORDER BY t.name ASC
@@ -1235,9 +1235,6 @@ class Metadata extends Repository {
 
 			}
 
-
-
-
 			// add selected to the result
 			if ( !empty($args['include']) ) {
 				if ( is_array($args['include']) && !empty($args['include']) ) {
@@ -1260,7 +1257,6 @@ class Metadata extends Repository {
 
 				}
 			}
-
 
 			$number = ctype_digit($args['number']) && $args['number'] >=1 ? $args['number'] : $total;
 			if( $number < 1){
@@ -1309,18 +1305,19 @@ class Metadata extends Repository {
 
 			}
 
-
-
 		} else {
 
-			$items_query_clause = '';
 			if ($items_query) {
-				$items_query_clause = "AND post_id IN($items_query)";
+				$items_query_clause = "($items_query) as qItems";
+				$base_query = $wpdb->prepare( "(SELECT DISTINCT post_id, meta_value FROM $wpdb->postmeta WHERE meta_key = %s $search_q ORDER BY meta_value) as qBase", $metadatum_id );
+				$total_query = "SELECT COUNT(DISTINCT qBase.meta_value) FROM $base_query INNER JOIN $items_query_clause ON qBase.post_id = qItems.ID";
+				$query = "SELECT DISTINCT qBase.meta_value FROM $base_query INNER JOIN $items_query_clause ON qBase.post_id = qItems.ID $pagination";
+				//$query = "SELECT DISTINCT meta_value $base_query $pagination";
+			} else {
+				$base_query = $wpdb->prepare( "FROM $wpdb->postmeta WHERE meta_key = %s $search_q ORDER BY meta_value", $metadatum_id );
+				$total_query = "SELECT COUNT(DISTINCT meta_value) $base_query";
+				$query = "SELECT DISTINCT meta_value $base_query $pagination";
 			}
-			$base_query = $wpdb->prepare( "FROM $wpdb->postmeta WHERE meta_key = %s $search_q $items_query_clause ORDER BY meta_value", $metadatum_id );
-
-			$total_query = "SELECT COUNT(DISTINCT meta_value) $base_query";
-			$query = "SELECT DISTINCT meta_value $base_query $pagination";
 
 			$results = $wpdb->get_col($query);
 			$total = $wpdb->get_var($total_query);
