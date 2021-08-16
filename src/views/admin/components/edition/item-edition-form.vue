@@ -1174,7 +1174,7 @@ export default {
 
                 } else {
                     parent.postMessage({ 
-                        type: 'itemCreationMessage',
+                        type: 'itemEditionMessage',
                         itemId: this.item.id,
                         itemTitle: this.item.title,
                         itemThumbnail: this.item.thumbnail
@@ -1206,7 +1206,7 @@ export default {
                 this.$router.go(-1);
             else
                 parent.postMessage({ 
-                        type: 'itemCreationMessage',
+                        type: 'itemEditionMessage',
                         itemId: null,
                         itemTitle: null,
                         itemThumbnail: null

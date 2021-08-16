@@ -247,7 +247,7 @@ class Relationship extends Metadata_Type {
 				}
 				$return = implode("\n", $metadata_value);
 			}
-			$return = "<div class='tainacan-relationship-metadatum'>{$return}</div>";
+			$return = "<div class='tainacan-relationship-metadatum' data-item-id='$id'>{$return}</div>";
 		} else if ( $id && $search_meta_id ) {
 			$as_link = $this->get_item_link($item, $search_meta_id);
 			$return = "$as_link";
