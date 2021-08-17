@@ -124,7 +124,7 @@ class Relationship extends Metadata_Type {
 						break;
 
 						default:
-							$readable_option_value = $option_value;
+							$readable_option_value = is_string($option_value) ? $option_value : json_encode($option_value);
 					}
 					$options_as_html .= '<div class="value">' . $readable_option_value . '</div></div>';
 				}
