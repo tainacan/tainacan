@@ -1175,9 +1175,7 @@ export default {
                 } else {
                     parent.postMessage({ 
                         type: 'itemEditionMessage',
-                        itemId: this.item.id,
-                        itemTitle: this.item.title,
-                        itemThumbnail: this.item.thumbnail
+                        item: this.item
                     },
                     tainacan_plugin.admin_url);
                 }
@@ -1207,9 +1205,7 @@ export default {
             else
                 parent.postMessage({ 
                         type: 'itemEditionMessage',
-                        itemId: null,
-                        itemTitle: null,
-                        itemThumbnail: null
+                        item: null
                     },
                     tainacan_plugin.admin_url);
 
