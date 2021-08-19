@@ -541,6 +541,7 @@
         .tainacan-relationship-metadatum-header {
             .label {
                 font-size: 1.125em;
+                font-weight: normal;
             }
             img {
                 max-width: 28px;
