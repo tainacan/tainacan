@@ -182,7 +182,11 @@
             },
             addTermToBeCreated(term) {
                 this.isTermCreationPanelOpen = false;
-                this.valueComponent = term.parent ? (term.parent + '>' + term.name) : term.name; 
+
+                if (this.itemMetadatum.metadatum.multiple === 'no')
+                    this.valueComponent = term.parent ? (term.parent + '>' + term.name) : term.name;
+                else
+                    this.valueComponent.push(term.parent ? (term.parent + '>' + term.name) : term.name); 
             },
             openTermCreationModal(newTerm) {
                 this.newTermName = newTerm.name;

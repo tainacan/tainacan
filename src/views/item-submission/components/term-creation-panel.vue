@@ -174,7 +174,7 @@
                 this.$emit('onEditionCanceled', this.editForm);
             },
             clearErrors(attributes) {
-                if(attributes instanceof Object){
+                if (attributes instanceof Object){
                     for(let attribute in attributes){
                         this.formErrors[attribute] = undefined;
                     }
@@ -202,7 +202,6 @@
                 if (this.parentTermSearchOffset > 0 && this.parentTerms.length >= this.totalTerms)
                     return
 
-
                 this.isFetchingParentTerms = true;
                 
                 this.fetchPossibleParentTerms({
@@ -228,11 +227,10 @@
             }, 250),
             onToggleSwitch() {
 
-                if (this.editForm.parent == 0) {
+                if (this.editForm.parent == 0)
                     this.hasChangedParent = this.hasParent;
-                } else {
+                else
                     this.hasChangedParent = !this.hasParent;
-                }
                 
                 this.showCheckboxesWarning = true; 
                 this.clearErrors('parent');
@@ -253,7 +251,7 @@
     padding-top: 6px;
 
     h4 {
-        font-size: 0.875em;
+        font-size: 0.875em !important;
     }
     &>div {
         padding: 0 16px 16px;
