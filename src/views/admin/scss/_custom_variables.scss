@@ -149,6 +149,11 @@
         background-color: transparent !important;
         color: var(--tainacan-black) !important;
     }
+    .button.is-loading, .button.is-loading:hover, .button.is-loading:focus,
+    .button.is-loading.is-success, .button.is-loading.is-success:hover, .button.is-loading.is-success:focus,
+    .button.is-loading.is-secondary, .button.is-loading.is-secondary:hover, .button.is-loading.is-secondary:focus {
+        color: transparent !important;
+    }
 
     a,
     a:hover,

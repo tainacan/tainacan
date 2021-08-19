@@ -261,7 +261,7 @@
             </div>
             <div class="control">
                 <b-button
-                        :loading="isLoading"
+                        :loading="isUpdating"
                         class="button is-success"
                         native-type="submit">
                     {{ $i18n.get('save') }}
