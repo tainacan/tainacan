@@ -67,7 +67,7 @@
                             :title="$i18n.getHelperTitle('tainacan-relationship', 'display_related_item_metadata')"
                             :message="$i18n.getHelperMessage('tainacan-relationship', 'display_related_item_metadata')"/>
                 </label>
-                <div class="displayed-metadata-options">
+                <div :class="'displayed-metadata-options' + (metadata.length > 5 ? ' has-more-than-5-metadata' : '')">
                     <b-checkbox
                             native-value="thumbnail"
                             name="metadata_type_relationship[display_related_item_metadata]"
@@ -205,7 +205,7 @@
                             this.metadata = [];
 
                             for (let metadatum of metadata) {
-                                
+                                console.log(me)
                                if (metadatum.metadata_type_object.component !== 'tainacan-relationship' && metadatum.metadata_type_object.component !== 'tainacan-compound') {
                                    this.metadata.push( metadatum );
                                    this.hasMetadata = true;
@@ -275,5 +275,12 @@
     }
     .switch.is-small {
         margin-top: -0.5em;
+    }
+    .displayed-metadata-options.has-more-than-5-metadata {
+        max-height: 125px;
+        overflow-y: auto;
+        border: 1px solid var(--tainacan-gray2);
+        overflow-x: hidden;
+        padding: 6px 12px;
     }
 </style>
