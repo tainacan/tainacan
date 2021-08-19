@@ -47,7 +47,8 @@ export default (element) => {
                         tainacanApiRoot: '',
                         tainacanBaseUrl: '',
                         tainacanSiteUrl: '',
-                        className: ''
+                        className: '',
+                        blockId
                     },
                     render(h){ 
                         return h(FacetsListTheme, {
@@ -73,7 +74,8 @@ export default (element) => {
                                 tainacanApiRoot: this.tainacanApiRoot,
                                 tainacanBaseUrl: this.tainacanBaseUrl,
                                 tainacanSiteUrl: this.tainacanSiteUrl,
-                                className: this.className    
+                                className: this.className,
+                                blockId: this.blockId
                             }
                         });
                     },
@@ -100,6 +102,7 @@ export default (element) => {
                         this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
                         this.tainacanSiteUrl = this.$el.attributes['tainacan-site-url'] != undefined ? this.$el.attributes['tainacan-site-url'].value : undefined;
                         this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
+                        this.blockId = this.$el.attributes.id != undefined ? this.$el.attributes.id.value : undefined;
                     },
                     methods: {
                         __(text, domain) {

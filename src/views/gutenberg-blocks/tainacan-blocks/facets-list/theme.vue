@@ -1,5 +1,7 @@
 <template>
-    <div :class="className + ' has-mounted'">
+    <div
+            :id="blockId"
+            :class="className + ' has-mounted'">
         <div
                 v-if="showSearchBar"
                 class="facets-search-bar"> 
@@ -191,7 +193,8 @@ export default {
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
         tainacanSiteUrl: String,
-        className: String
+        className: String,
+        blockId: String
     },
     data() {
         return {
@@ -228,26 +231,31 @@ export default {
         this.offset = 0;
         this.fetchFacets();
 
-        document.addEventListener('tainacan-blocks-facets-list-update', this.updateSearchFromURL);
+        this.applySearchString = debounce(this.applySearchString, 750);
+    },
+    mounted() {
+        this.$el.addEventListener('tainacan-blocks-facets-list-update', this.receiveSearchString);
     },
     beforeDestroy() {
-        document.removeEventListener('tainacan-blocks-facets-list-update', this.updateSearchFromURL);
+        this.$el.removeEventListener('tainacan-blocks-facets-list-update', this.receiveSearchString);
     },
     methods: {
-        updateSearchFromURL(event, obj) {
-            console.log(obj);
+        receiveSearchString(event) {
+            if (event.detail) {
+                this.applySearchString({ target: { value: event.detail.searchString }});
+            }
         },
-        applySearchString: debounce(function(event) { 
-
+        applySearchString(event) { 
+            
             let value = event.target.value;
-
+            
             if (this.searchString != value) {
                 this.searchString = value;
                 this.offset = 0;
                 this.lastTerm = '';
                 this.fetchFacets();
             }
-        }, 500),
+        },
         loadMore() {
             this.offset += Number(this.maxFacetsNumber);
             this.fetchFacets();
@@ -307,7 +315,7 @@ export default {
             
             this.tainacanAxios.get(endpoint, { cancelToken: this.facetsRequestSource.token })
                 .then(response => {
-
+                    
                     if (this.isMetadatumTypeTaxonomy) {
                         for (let facet of response.data.values) {
                             this.facets.push(Object.assign({ 
