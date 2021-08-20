@@ -381,7 +381,6 @@
 
                     // An item is being edited from the modal
                     if (this.editingItemId) {
-
                         if (data.item && data.item.id) {
                             const existingItemIndex = this.selected.findIndex(anItemValue => anItemValue.value == data.item.id); 
                             
@@ -389,7 +388,7 @@
                                 this.selected.splice(existingItemIndex, 1, {
                                     label: this.getItemLabel(data.item),
                                     value: data.item.id,
-                                    valueAsHtml: this.getItemMetadataValuesAsHtml(data.item),
+                                    valuesAsHtml: this.getItemMetadataValuesAsHtml(data.item),
                                     img: data.item.thumbnail ? data.item.thumbnail : ''
                                 });
                             }
@@ -406,7 +405,7 @@
                             this.selected.push({
                                 label: this.getItemLabel(data.item),
                                 value: data.item.id,
-                                valueAsHtml: this.getItemMetadataValuesAsHtml(data.item),
+                                valuesAsHtml: this.getItemMetadataValuesAsHtml(data.item),
                                 img: data.item.thumbnail ? data.item.thumbnail : ''
                             });
 
@@ -546,7 +545,7 @@
             img {
                 max-width: 28px;
                 max-height: 28px;
-                margin-right: 6px;
+                margin-right: 10px;
             }
         }
         .relationship-value-button--edit,

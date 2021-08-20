@@ -205,7 +205,6 @@
                             this.metadata = [];
 
                             for (let metadatum of metadata) {
-                                console.log(me)
                                if (metadatum.metadata_type_object.component !== 'tainacan-relationship' && metadatum.metadata_type_object.component !== 'tainacan-compound') {
                                    this.metadata.push( metadatum );
                                    this.hasMetadata = true;
