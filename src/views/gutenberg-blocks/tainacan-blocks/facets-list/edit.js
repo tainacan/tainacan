@@ -1,8 +1,8 @@
 const { __ } = wp.i18n;
 
-const { BaseControl, RangeControl, Spinner, SelectControl, Button, ToggleControl, Tooltip, Placeholder, PanelBody } = wp.components;
+const { BaseControl, RangeControl, Spinner, SelectControl, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import MetadataModal from './metadata-modal.js';
 import ParentTermModal from './parent-term-modal.js';
@@ -17,7 +17,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         facetsObject,
         content, 
         collectionId,
-        collectionSlug,    
+        collectionSlug,
         showImage,
         nameInsideImage,
         showItemsCount,
@@ -42,6 +42,9 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         isLoadingChildTerms,
         itemsCountStyle
     } = attributes;
+
+    // Gets blocks props from hook
+    const blockProps = useBlockProps();
 
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
@@ -442,7 +445,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     src={ `${tainacan_blocks.base_url}/assets/images/facets-list.png` } />
         </div>
     : (
-        <div className={className}>
+        <div { ...blockProps }>
 
             <div>
                 <BlockControls>
@@ -859,26 +862,24 @@ export default function({ attributes, setAttributes, className, isSelected, clie
             }
 
             { showLoadMore && facets.length > 0 && !isLoading ?
-                <Tooltip text={__('If necessary, the show more button will be available on post or page.', 'tainacan')}>
-                    <button
-                            class="show-more-button"
-                            disabled
-                            label={__('Show more', 'tainacan')}>
-                        <span class="icon">
-                            <i>
-                                <svg
-                                        width="24"
-                                        height="24"
-                                        viewBox="4 5 24 24">
-                                    <path d="M 7.41,8.295 6,9.705 l 6,6 6,-6 -1.41,-1.41 -4.59,4.58 z"/>
-                                    <path
-                                            d="M0 0h24v24H0z"
-                                            fill="none"/>                        
-                                </svg>
-                            </i>
-                        </span>
-                    </button>
-                </Tooltip> 
+                <button
+                        class="show-more-button"
+                        disabled
+                        label={__('Show more', 'tainacan')}>
+                    <span class="icon">
+                        <i>
+                            <svg
+                                    width="24"
+                                    height="24"
+                                    viewBox="4 5 24 24">
+                                <path d="M 7.41,8.295 6,9.705 l 6,6 6,-6 -1.41,-1.41 -4.59,4.58 z"/>
+                                <path
+                                        d="M0 0h24v24H0z"
+                                        fill="none"/>                        
+                            </svg>
+                        </i>
+                    </span>
+                </button>
             : null
             }
         </div>

@@ -1,6 +1,7 @@
 {
     "name": "tainacan/facets-list",
     "title": "Tainacan Facets List",
+    "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "facets", "search", "terms" ],
     "description": "List facets from a Tainacan Collection or Repository",

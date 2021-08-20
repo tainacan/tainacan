@@ -1,6 +1,6 @@
 <template>
     <div
-            :id="blockId"
+            :style="style"
             :class="className + ' has-mounted'">
         <div
                 v-if="showSearchBar"
@@ -194,7 +194,7 @@ export default {
         tainacanBaseUrl: String,
         tainacanSiteUrl: String,
         className: String,
-        blockId: String
+        style: String
     },
     data() {
         return {

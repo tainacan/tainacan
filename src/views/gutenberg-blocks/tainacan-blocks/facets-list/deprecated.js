@@ -1,5 +1,5 @@
 export default [
-    /* Deprecated on Tainacan 0.18.5 due to itemsCountStyle */
+    /* Deprecated on Tainacan 0.18.6 due to itemsCountStyle */
     {
         "attributes": {
             "content": {

@@ -1,3 +1,5 @@
+const { useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+
 export default function({ attributes, className }) {
     const {
         content, 
@@ -21,7 +23,11 @@ export default function({ attributes, className }) {
         appendChildTerms,
         itemsCountStyle
     } = attributes;
+
+    // Gets attributes such as style, that are automatically added by the editor hook
+    const blockProps = useBlockProps.save();
     return <div 
+                {...blockProps}
                 data-module="facets-list"
                 className={ className }
                 metadatum-id={ metadatumId }
