@@ -34,6 +34,7 @@
         font-size: 0.875em; }
       .wp-block-tainacan-search-bar .tainacan-search-container #tainacan-search-bar-block button {
         height: auto !important;
+        min-height: 1.75em;
         display: flex;
         align-items: center;
         border: none;
@@ -41,11 +42,13 @@
         border-radius: 0 !important;
         background: white;
         padding: 4px 1em;
-        font-size: 1em; }
+        font-size: 1em;
+        line-height: 1.75em; }
         .wp-block-tainacan-search-bar .tainacan-search-container #tainacan-search-bar-block button .icon {
           height: 1.75em; }
           .wp-block-tainacan-search-bar .tainacan-search-container #tainacan-search-bar-block button .icon svg {
             transform: scale(1);
+            height: 100%;
             fill: var(--tainacan-block-primary, #298596); }
       @media only screen and (max-width: 768px) {
         .wp-block-tainacan-search-bar .tainacan-search-container #tainacan-search-bar-block {
