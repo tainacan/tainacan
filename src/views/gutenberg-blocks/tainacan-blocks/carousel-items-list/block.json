@@ -1,6 +1,7 @@
 {
     "name": "tainacan/carousel-items-list",
     "title": "Tainacan Collection's Items Carousel",
+    "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "items", "carousel", "slider" ],
     "description": "List items on a Carousel, using search or item selection.",

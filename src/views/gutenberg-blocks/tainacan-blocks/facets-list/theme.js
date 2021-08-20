@@ -103,7 +103,6 @@ export default (element) => {
                         this.tainacanSiteUrl = this.$el.attributes['tainacan-site-url'] != undefined ? this.$el.attributes['tainacan-site-url'].value : undefined;
                         this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
                         this.style = this.$el.attributes.style != undefined ? this.$el.attributes.style.value : undefined;
-                        
                     },
                     methods: {
                         __(text, domain) {

@@ -1,5 +1,7 @@
 <template>
-    <div :class="className + ' has-mounted'">
+    <div 
+            :style="style"
+            :class="className + ' has-mounted'">
         <div v-if="showCollectionHeader">
             <div
                     v-if="isLoadingCollection"
@@ -209,7 +211,8 @@ export default {
         collectionTextColor: String,
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
-        className: String
+        className: String,
+        style: String
     },
     data() {
         return {

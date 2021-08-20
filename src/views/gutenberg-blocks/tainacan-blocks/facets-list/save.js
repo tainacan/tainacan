@@ -27,7 +27,7 @@ export default function({ attributes, className }) {
     // Gets attributes such as style, that are automatically added by the editor hook
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps.save();
     return <div 
-                {...blockProps}
+                { ...blockProps }
                 data-module="facets-list"
                 metadatum-id={ metadatumId }
                 metadatum-type={ metadatumType }

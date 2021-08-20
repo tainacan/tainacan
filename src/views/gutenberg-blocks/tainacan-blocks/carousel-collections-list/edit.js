@@ -1,6 +1,6 @@
 const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 const { __ } = wp.i18n;
 
@@ -31,6 +31,9 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         showCollectionThumbnail
     } = attributes;
 
+    // Gets blocks props from hook
+    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
+    console.log(blockProps)
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
 
@@ -189,7 +192,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                         src={ `${tainacan_blocks.base_url}/assets/images/carousel-collections-list.png` } />
             </div>
         : (
-        <div className={className}>
+        <div { ...blockProps }>
 
             { collections.length ?
                 <BlockControls>

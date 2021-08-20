@@ -1,6 +1,7 @@
 {
     "name": "tainacan/carousel-collections-list",
     "title": "Tainacan Collections Carousel",
+    "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "collections", "carousel", "slider" ],
     "description": "List collections on a Carousel, displaying either its thumbnail or a preview of its items.",
