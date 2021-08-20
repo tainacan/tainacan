@@ -29,7 +29,6 @@ export default function({ attributes, className }) {
     return <div 
                 {...blockProps}
                 data-module="facets-list"
-                className={ className }
                 metadatum-id={ metadatumId }
                 metadatum-type={ metadatumType }
                 collection-id={ collectionId }  
