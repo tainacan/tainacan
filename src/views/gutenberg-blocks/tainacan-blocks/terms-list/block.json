@@ -1,6 +1,7 @@
 {
     "name": "tainacan/terms-list",
     "title": "Tainacan Terms List",
+    "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "terms", "taxonomy" ],
     "description": "Expose terms from your Tainacan taxonomies",

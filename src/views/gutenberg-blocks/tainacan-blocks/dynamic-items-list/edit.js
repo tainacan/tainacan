@@ -2,7 +2,7 @@ const { __ } = wp.i18n;
 
 const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Placeholder, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import DynamicItemsModal from './dynamic-items-modal.js';
 import tainacan from '../../js/axios.js';
@@ -43,6 +43,9 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         maxColumnsCount,
         cropImagesToSquare
     } = attributes;
+
+    // Gets blocks props from hook
+    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
 
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
@@ -344,13 +347,13 @@ export default function({ attributes, setAttributes, className, isSelected, clie
     ];
 
     return content == 'preview' ? 
-            <div className={className}>
-                <img
-                        width="100%"
-                        src={ `${tainacan_blocks.base_url}/assets/images/dynamic-items-list.png` } />
-            </div>
-        : (
         <div className={className}>
+            <img
+                    width="100%"
+                    src={ `${tainacan_blocks.base_url}/assets/images/dynamic-items-list.png` } />
+        </div>
+        : (
+        <div { ...blockProps }>
 
             <div>
                 <BlockControls>

@@ -49,7 +49,8 @@ export default (element) => {
                         collectionTextColor: '#ffffff',
                         tainacanApiRoot: '',
                         tainacanBaseUrl: '',
-                        className: ''
+                        className: '',
+                        style: ''
                     },
                     render(h){ 
                         return h(DynamicItemsListTheme, {
@@ -77,7 +78,8 @@ export default (element) => {
                                 collectionTextColor: this.collectionTextColor,
                                 tainacanApiRoot: this.tainacanApiRoot,
                                 tainacanBaseUrl: this.tainacanBaseUrl,
-                                className: this.className    
+                                className: this.className,
+                                style: this.style    
                             }
                         });
                     },
@@ -106,6 +108,7 @@ export default (element) => {
                         this.collectionTextColor = this.$el.attributes['collection-text-color'] != undefined ? this.$el.attributes['collection-text-color'].value : undefined;
                         this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
                         this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
+                        this.style = this.$el.attributes.style != undefined ? this.$el.attributes.style.value : undefined;
                     },
                     methods: {
                         __(text, domain) {
