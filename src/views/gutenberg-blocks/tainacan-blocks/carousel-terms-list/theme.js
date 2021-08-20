@@ -39,7 +39,8 @@ export default (element) => {
                         tainacanApiRoot: '',
                         tainacanBaseUrl: '',
                         className: '',
-                        taxonomyId: ''
+                        taxonomyId: '',
+                        style: ''
                     },
                     render(h){ 
                         return h(CarouselTermsListTheme, {
@@ -58,7 +59,8 @@ export default (element) => {
                                 tainacanApiRoot: this.tainacanApiRoot,
                                 tainacanBaseUrl: this.tainacanBaseUrl,
                                 className: this.className,
-                                taxonomyId: this.taxonomyId
+                                taxonomyId: this.taxonomyId,
+                                style: this.style
                             }
                         });
                     },
@@ -77,6 +79,7 @@ export default (element) => {
                         this.showTermThumbnail = this.$el.attributes['show-term-thumbnail'] != undefined ? this.$el.attributes['show-term-thumbnail'].value == 'true' : false;
                         this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
                         this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
+                        this.style = this.$el.attributes.style != undefined ? this.$el.attributes.style.value : undefined;
                     },
                     methods: {
                         __(text, domain) {
