@@ -130,12 +130,11 @@ class Metadata extends Repository {
 			],
 			'cardinality'           => [
 				'map'         => 'meta',
-				'title'       => __( 'Cardinality', 'tainacan' ),
+				'title'       => __( 'Maximum number of values', 'tainacan' ),
 				'type'        => ['string', 'number'],
-				'description' => __( 'Number of multiples possible metadata', 'tainacan' ),
-				'on_error'    => __( 'This number of multiples metadata is not allowed', 'tainacan' ),
+				'description' => __( 'Limit the amount of possible metadata values', 'tainacan' ),
+				'on_error'    => __( 'This number of multiple metadata is not allowed', 'tainacan' ),
 				//'validation'  => v::numeric()->positive(),
-				'default'     => 1
 			],
 			'mask'                  => [
 				'map'         => 'meta',
