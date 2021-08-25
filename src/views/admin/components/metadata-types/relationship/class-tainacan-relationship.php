@@ -123,6 +123,22 @@ class Relationship extends Metadata_Type {
 								$readable_option_value = $option_value;
 						break;
 
+						case 'display_related_item_metadata':
+							if (  is_array($option_value) ) {
+								$metadata_list = [];
+								foreach($option_value as $metadata_id) {
+									if ($metadata_id == 'thumbnail') {
+										$metadata_list[] = __('Thumbnail', 'tainacan');
+									} else {
+										$metadata = \tainacan_metadata()->fetch( (int) $metadata_id );
+										if ( $metadata ) $metadata_list[] = $metadata;
+									}
+									
+								}
+								$readable_option_value = implode(", ", $metadata_list);
+							}
+						break;
+
 						default:
 							$readable_option_value = is_string($option_value) ? $option_value : json_encode($option_value);
 					}
