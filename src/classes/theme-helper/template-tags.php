@@ -996,9 +996,11 @@ function tainacan_get_the_mime_type_icon($mime_type, $image_size = 'medium') {
 			$icon_file = 'placeholder_pdf';
 			break;
 		case 'attachment':
+			$icon_file = 'placeholder_attachment';
+			break;
 		case 'empty':
 		default:
-			$icon_file = 'placeholder_attachment';
+			$icon_file = 'placeholder_square';
 	}
 	
 	return $images_path . $icon_file . $image_size . '.png';

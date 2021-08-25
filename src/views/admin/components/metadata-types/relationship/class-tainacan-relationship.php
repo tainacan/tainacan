@@ -238,7 +238,7 @@ class Relationship extends Metadata_Type {
 				if ( $item_meta instanceof \Tainacan\Entities\Item_Metadata_Entity && $item_meta->get_value_as_html() != '' ) {
 					$meta_id = $item_meta->get_metadatum()->get_id();
 					$as_header = $search_meta_id == $meta_id ? $this->get_item_link($item, $search_meta_id) : false;
-					$html = $this->get_meta_html($item_meta, $as_header, $thumbnail_id);
+					$html = $this->get_meta_html($item_meta, $item, $as_header, $thumbnail_id);
 					if($as_header === false) {
 						$metadata_value[] = $html;
 					} else {
@@ -275,14 +275,23 @@ class Relationship extends Metadata_Type {
 		return $return;
 	}
 
-	private function get_meta_html(\Tainacan\Entities\Item_Metadata_Entity $meta, $value_link = false, $thumbnail_id = false) {
+	private function get_item_thumbnail($thumbnail_id, $item) {
+		if($thumbnail_id !== false && !empty($thumbnail_id)){
+			return \wp_get_attachment_image($thumbnail_id, 'tainacan-small');
+		}
+		$media_type = $item->get_document_mimetype();
+		$placeholder_image = '<img src="' . \tainacan_get_the_mime_type_icon($media_type, 'tainacan-small') . '" />';
+		return $placeholder_image;
+	}
+
+	private function get_meta_html(\Tainacan\Entities\Item_Metadata_Entity $meta, \Tainacan\Entities\Item $item, $value_link = false, $thumbnail_id = false) {
 		$html = '';
 		if ($meta instanceof \Tainacan\Entities\Item_Metadata_Entity && !empty($meta->get_value_as_html())) {
 			ob_start();
 			if ($value_link) {
 				?>
 					<div class="tainacan-relationship-metadatum-header">
-						<?php if($thumbnail_id !== false) echo \wp_get_attachment_image($thumbnail_id, 'tainacan-small'); ?>
+						<?php echo $this->get_item_thumbnail($thumbnail_id, $item); ?>
 						<h4 class="label">
 							<?php echo $value_link; ?>
 						</h4>
