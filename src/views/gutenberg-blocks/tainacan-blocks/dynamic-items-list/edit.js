@@ -101,7 +101,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         src={ thumbHelper.getSrc(item['thumbnail'], ( (layout == 'list' || cropImagesToSquare) ? 'tainacan-medium' : 'tainacan-medium-full'), item['document_mimetype']) }
                         srcSet={ thumbHelper.getSrcSet(item['thumbnail'], ( (layout == 'list' || cropImagesToSquare) ? 'tainacan-medium' : 'tainacan-medium-full'), item['document_mimetype']) }
                         alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : __( 'Thumbnail', 'tainacan' )) }/>
-                    <span>{ item.id ? item.id : '' }</span>
+                    <span>{ item.title ? item.title : '' }</span>
                 </a>
             </li>
         );

@@ -290,6 +290,8 @@ export default {
         layout: String,
         gridMargin: Number,
         searchURL: String,
+        selectedItems: Array,
+        loadStrategy: String,
         maxItemsNumber: Number,
         mosaicDensity: Number,
         mosaicHeight: Number,
@@ -360,70 +362,98 @@ export default {
 
             this.itemsRequestSource = axios.CancelToken.source();
 
-            let endpoint = '/collection' + this.searchURL.split('#')[1].split('/collections')[1];
-            let query = endpoint.split('?')[1];
-            let queryObject = qs.parse(query);
+            if (this.loadStrategy == 'parent') {
 
-            // Set up max items to be shown
-            if (this.maxItemsNumber != undefined && Number(this.maxItemsNumber) > 0)
-                queryObject.perpage = this.maxItemsNumber;
-            else if (queryObject.perpage != undefined && queryObject.perpage > 0)
-                this.localMaxItemsNumber = queryObject.perpage;
-            else {
-                queryObject.perpage = 12;
-                this.localMaxItemsNumber = 12;
-            }
-
-            // Set up sorting order
-            if (this.localOrder != undefined)
-                queryObject.order = this.localOrder;
-            else if (queryObject.order != undefined)
-                this.localOrder = queryObject.order;
-            else {
-                queryObject.order = 'asc';
-                this.localOrder = 'asc';
-            }
-
-            // Set up sorting order
-            if (this.searchString != undefined)
-                queryObject.search = this.searchString;
-            else if (queryObject.search != undefined)
-                this.searchString = queryObject.search;
-            else {
-                delete queryObject.search;
-                this.searchString = undefined;
-            }
-
-            // Set up paging
-            if (this.paged != undefined)
-                queryObject.paged = this.paged;
-            else if (queryObject.paged != undefined)
-                this.paged = queryObject.paged;
-            else
-                this.paged = 1;
-
-            // emove unecessary queries
-            delete queryObject.readmode;
-            delete queryObject.iframemode;
-            delete queryObject.admin_view_mode;
-            delete queryObject.fetch_only_meta;
-            
-            endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
-            
-            this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
-                .then(response => {
-
-                    for (let item of response.data.items)
-                        this.items.push(item);
+                for (let item of this.selectedItems)
+                    this.items.push(item);
 
                     this.isLoading = false;
-                    this.totalItems = response.headers['x-wp-total'];
+                    this.totalItems = this.items.length;
 
-                }).catch((error) => { 
-                    this.isLoading = false;
-                    if (error.response && error.response.status && error.response.status == 401)
-                        this.errorMessage = 'Not allowed to see these items.'
-                });
+            } else if (this.loadStrategy == 'selection') {
+                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.selectedItems.length }) + '&fetch_only=title,url,thumbnail';
+                
+                this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
+                    .then(response => {
+
+                        for (let item of response.data.items)
+                            this.items.push(item);
+
+                        this.isLoading = false;
+                        this.totalItems = response.headers['x-wp-total'];
+
+                    }).catch((error) => { 
+                        this.isLoading = false;
+                        if (error.response && error.response.status && error.response.status == 401)
+                            this.errorMessage = 'Not allowed to see these items.'
+                    });
+            } else {
+
+                let endpoint = '/collection' + this.searchURL.split('#')[1].split('/collections')[1];
+                let query = endpoint.split('?')[1];
+                let queryObject = qs.parse(query);
+
+                // Set up max items to be shown
+                if (this.maxItemsNumber != undefined && Number(this.maxItemsNumber) > 0)
+                    queryObject.perpage = this.maxItemsNumber;
+                else if (queryObject.perpage != undefined && queryObject.perpage > 0)
+                    this.localMaxItemsNumber = queryObject.perpage;
+                else {
+                    queryObject.perpage = 12;
+                    this.localMaxItemsNumber = 12;
+                }
+
+                // Set up sorting order
+                if (this.localOrder != undefined)
+                    queryObject.order = this.localOrder;
+                else if (queryObject.order != undefined)
+                    this.localOrder = queryObject.order;
+                else {
+                    queryObject.order = 'asc';
+                    this.localOrder = 'asc';
+                }
+
+                // Set up sorting order
+                if (this.searchString != undefined)
+                    queryObject.search = this.searchString;
+                else if (queryObject.search != undefined)
+                    this.searchString = queryObject.search;
+                else {
+                    delete queryObject.search;
+                    this.searchString = undefined;
+                }
+
+                // Set up paging
+                if (this.paged != undefined)
+                    queryObject.paged = this.paged;
+                else if (queryObject.paged != undefined)
+                    this.paged = queryObject.paged;
+                else
+                    this.paged = 1;
+
+                // emove unecessary queries
+                delete queryObject.readmode;
+                delete queryObject.iframemode;
+                delete queryObject.admin_view_mode;
+                delete queryObject.fetch_only_meta;
+                
+                endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
+                
+                this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
+                    .then(response => {
+
+                        for (let item of response.data.items)
+                            this.items.push(item);
+
+                        this.isLoading = false;
+                        this.totalItems = response.headers['x-wp-total'];
+
+                    }).catch((error) => { 
+                        this.isLoading = false;
+                        if (error.response && error.response.status && error.response.status == 401)
+                            this.errorMessage = 'Not allowed to see these items.'
+                    });
+            }
         },
         fetchCollectionForHeader() {
             if (this.showCollectionHeader) {

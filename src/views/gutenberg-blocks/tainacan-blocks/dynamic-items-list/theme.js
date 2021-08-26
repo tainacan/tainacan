@@ -32,6 +32,8 @@ export default (element) => {
                         layout: 'grid',
                         gridMargin: 0,
                         searchURL: '',
+                        selectedItems: [],
+                        loadStrategy: 'search',
                         maxItemsNumber: 12,
                         mosaicHeight: 40,
                         mosaicDensity: 5,
@@ -69,6 +71,8 @@ export default (element) => {
                                 maxColumnsCount: this.maxColumnsCount,
                                 cropImagesToSquare: this.cropImagesToSquare,
                                 searchURL: this.searchURL,
+                                selectedItems: this.selectedItems,
+                                loadStrategy: this.loadStrategy,
                                 maxItemsNumber: this.maxItemsNumber,
                                 order: this.order,
                                 showSearchBar: this.showSearchBar,
@@ -86,6 +90,8 @@ export default (element) => {
                     beforeMount () {
                         this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
                         this.searchURL = this.$el.attributes['search-url'] != undefined ? this.$el.attributes['search-url'].value : undefined;
+                        this.selectedItems = this.$el.attributes['selected-items'] != undefined ? JSON.parse(this.$el.attributes['selected-items'].value) : undefined;
+                        this.loadStrategy = this.$el.attributes['load-strategy'] != undefined ? this.$el.attributes['load-strategy'].value : undefined;
                         this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
                         this.showImage = this.$el.attributes['show-image'] != undefined ? this.$el.attributes['show-image'].value == 'true' : true;
                         this.showName = this.$el.attributes['show-name'] != undefined ? this.$el.attributes['show-name'].value == 'true' : true;
