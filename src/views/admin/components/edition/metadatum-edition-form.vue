@@ -194,7 +194,7 @@
                 </b-field>
 
                 <b-field
-                        v-if="editForm.multiple == 'yes' && !originalMetadatum.metadata_type_object.core && editForm.parent == 0"
+                        v-if="!originalMetadatum.metadata_type_object.core && editForm.parent == 0"
                         :type="formErrors['cardinality'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['cardinality'] != undefined ? formErrors['cardinality'] : ''"
                         :addons="false">
@@ -205,6 +205,7 @@
                                 :message="$i18n.getHelperMessage('metadata', 'cardinality')"/>
                     </label>
                     <b-input
+                            :disabled="editForm.multiple != 'yes'"
                             name="cardinality"
                             type="number"
                             step="1" />

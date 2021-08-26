@@ -66,7 +66,8 @@
                                 <label 
                                         v-if="isCheckbox"
                                         class="b-checkbox checkbox">
-                                    <input                                     
+                                    <input
+                                            :disabled="(selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
                                             v-model="selected"
                                             :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
                                             type="checkbox"> 
@@ -144,6 +145,7 @@
                                 :key="key">
                             <label class="b-checkbox checkbox">
                                 <input 
+                                        :disabled="(selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
                                         v-model="selected"
                                         :value="option.value"
                                         type="checkbox"> 
@@ -198,6 +200,7 @@
                                         v-if="isCheckbox"
                                         class="b-checkbox checkbox">
                                     <input 
+                                            :disabled="(selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
                                             v-model="selected"
                                             :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
                                             type="checkbox"> 
@@ -340,7 +343,8 @@
                 type: Boolean,
                 default: true,
             },
-            amountSelected: 0
+            amountSelected: 0,
+            maxMultipleValues: undefined
         },
         data() {
             return {

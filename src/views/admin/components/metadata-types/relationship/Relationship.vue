@@ -10,7 +10,7 @@
                 @input="onInput"
                 @blur="onBlur"
                 :data="options"
-                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? null : 1)"
+                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : 1)"
                 autocomplete
                 :remove-on-keys="[]"
                 :dropdown-position="isLastMetadatum ? 'top' :'auto'"
@@ -52,7 +52,7 @@
             </template>
         </b-taginput>
         <a
-                v-if="currentUserCanEditItems && itemMetadatum.item && itemMetadatum.item.id"
+                v-if="currentUserCanEditItems && itemMetadatum.item && itemMetadatum.item.id && (maxMultipleValues === undefined || maxMultipleValues > selected.length)"
                 :disabled="!$route || $route.query.iframemode"
                 @click="createNewItemModal = !createNewItemModal"
                 class="add-link">
@@ -105,7 +105,10 @@
         computed: {
             collection() {
                 return this.getCollection();
-            }
+            },
+            maxMultipleValues() {
+                return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.cardinality && !isNaN(this.itemMetadatum.metadatum.cardinality)) ? this.itemMetadatum.metadatum.cardinality : undefined;
+            },
         },
         watch: {
             createNewItemModal() {

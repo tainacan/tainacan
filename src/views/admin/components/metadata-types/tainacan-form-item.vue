@@ -83,7 +83,7 @@
                         </template>
                     </transition-group>
                 </template>
-                <template v-if="isMultiple">
+                <template v-if="isMultiple && (maxMultipleValues === undefined || maxMultipleValues - 1 > values.length)">
                     <a 
                             @click="addValue"
                             class="is-inline-block add-link">
@@ -143,6 +143,9 @@
             },
             isMultiple() {
                 return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple == 'yes') ? this.itemMetadatum.metadatum.multiple == 'yes' : false;
+            },
+            maxMultipleValues() {
+                return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.cardinality && !isNaN(this.itemMetadatum.metadatum.cardinality)) ? this.itemMetadatum.metadatum.cardinality : undefined;
             },
             isTextInputComponent() {
                 const array = ['tainacan-relationship','tainacan-taxonomy', 'tainacan-compound', 'tainacan-user'];
