@@ -327,10 +327,10 @@
             ...mapActions('metadata', [
                 'updateMetadatum'
             ]),
-            saveEdition(metadatum) {                
-                if ((metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {                    
+            saveEdition(metadatum) {
+                if ((metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
                     let repository = this.editForm.repository_level;
-                    if (repository && repository === 'yes') {                        
+                    if (repository && repository === 'yes') {
                         this.isRepositoryLevel = true;
                     }
 
