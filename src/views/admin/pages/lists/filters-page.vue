@@ -921,7 +921,8 @@ export default {
         .active-filters-area {
             font-size: 0.875em;
             margin-left: -0.8em;
-            padding-right: 3em;
+            padding-right: 1em;
+            padding-top: 1em;
             min-height: 330px;
 
             @media screen and (max-width: 769px) {
@@ -1086,6 +1087,8 @@ export default {
 
             &>.field {
                 font-size: 0.875em;
+                padding-right: 1em;
+                padding-left: 1em;
             }
 
             .available-metadatum-item {

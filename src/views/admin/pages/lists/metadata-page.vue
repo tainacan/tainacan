@@ -879,7 +879,7 @@ export default {
         .active-metadata-area {
             font-size: 0.875em;
             margin-left: -0.8em;
-            padding-right: 3em;
+            padding-right: 1em;
             min-height: 330px;
 
             @media screen and (max-width: 769px) {
