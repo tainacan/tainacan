@@ -1,4 +1,186 @@
 export default [
+    /* Deprecated on Tainacan 0.18.6 due to itemsCountStyle */
+    {
+        "attributes": {
+            "content": {
+                "type": "Array",
+                "source": "children",
+                "selector": "div"
+            },
+            "collectionId": {
+                "type": "String",
+                "default": ""
+            },
+            "collectionSlug": {
+                "type": "String",
+                "default": ""
+            },
+            "facets": {
+                "type": "Array",
+                "default": []
+            },
+            "facetsObject": {
+                "type": "Array",
+                "default": []
+            },
+            "showImage": {
+                "type": "Boolean",
+                "default": true
+            },
+            "nameInsideImage": {
+                "type": "Boolean",
+                "default": false
+            },
+            "showItemsCount": {
+                "type": "Boolean",
+                "default": true
+            },
+            "showLoadMore": {
+                "type": "Boolean",
+                "default": false
+            },
+            "showSearchBar": {
+                "type": "Boolean",
+                "value": false
+            },
+            "layout": {
+                "type": "String",
+                "default": "grid"
+            },
+            "cloudRate": {
+                "type": "Number",
+                "default": 1
+            },
+            "isModalOpen": {
+                "type": "Boolean",
+                "default": false
+            },
+            "gridMargin": {
+                "type": "Number",
+                "default": 24
+            },
+            "metadatumId": {
+                "type": "String",
+                "default": ""
+            },
+            "metadatumType": {
+                "type": "String",
+                "default": ""
+            },
+            "facetsRequestSource": {
+                "type": "String",
+                "default": ""
+            },
+            "maxFacetsNumber": {
+                "type": "Number",
+                "value": 12
+            },
+            "isLoading": {
+                "type": "Boolean",
+                "value": false
+            },
+            "isLoadingCollection": {
+                "type": "Boolean",
+                "value": false
+            },
+            "collection": {
+                "type": "Object",
+                "value": {}
+            },
+            "searchString": {
+                "type": "String",
+                "default": ""
+            },
+            "blockId": {
+                "type": "String",
+                "default": ""
+            },
+            "parentTerm": {
+                "type": "Number",
+                "default": null
+            },
+            "isParentTermModalOpen": {
+                "type": "Boolean",
+                "default": false
+            },
+            "maxColumnsCount": {
+                "type": "Number",
+                "default": 5
+            },
+            "appendChildTerms": {
+                "type": "Boolean",
+                "default": false
+            },
+            "childFacetsObject": {
+                "type": "Object",
+                "default": {}
+            },
+            "linkTermFacetsToTermPage": {
+                "type": "Boolean",
+                "default": true
+            },
+            "isLoadingChildTerms": {
+                "type": "Number",
+                "default": null
+            }
+        },
+        "supports": {
+            "align": ["full", "wide"],
+            "html": false,
+            "typography": {
+                "fontSize": true
+            }
+        },
+        save({ attributes, className }){
+            const {
+                content, 
+                blockId,
+                collectionId,  
+                collectionSlug,
+                parentTerm,  
+                showImage,
+                nameInsideImage,
+                showItemsCount,
+                showLoadMore,
+                layout,
+                cloudRate,
+                gridMargin,
+                metadatumId,
+                metadatumType,
+                maxFacetsNumber,
+                maxColumnsCount,
+                showSearchBar,
+                linkTermFacetsToTermPage,
+                appendChildTerms
+            } = attributes;
+            return <div 
+                        data-module="facets-list"
+                        className={ className }
+                        metadatum-id={ metadatumId }
+                        metadatum-type={ metadatumType }
+                        collection-id={ collectionId }  
+                        collection-slug={ collectionSlug }
+                        parent-term-id={ parentTerm ? parentTerm.id : undefined }  
+                        show-image={ '' + showImage }
+                        name-inside-image={ nameInsideImage === true ? 'true' : 'false' }
+                        show-items-count={ '' + showItemsCount }
+                        show-search-bar={ '' + showSearchBar }
+                        show-load-more={ '' + showLoadMore }
+                        append-child-terms={ (appendChildTerms === true ? 'true' : 'false') }
+                        link-term-facets-to-term-page={ linkTermFacetsToTermPage === false ? 'false' : 'true' }
+                        layout={ layout }
+                        cloud-rate={ cloudRate }
+                        grid-margin={ gridMargin }
+                        max-facets-number={ maxFacetsNumber }
+                        max-columns-count={ maxColumnsCount }
+                        tainacan-api-root={ tainacan_blocks.root }
+                        tainacan-base-url={ tainacan_blocks.base_url }
+                        tainacan-site-url={ tainacan_blocks.site_url }
+                        id={ 'wp-block-tainacan-facets-list_' + blockId }>
+                            { content }
+                    </div>
+        }
+    },
     /* Deprecated on Tainacan 0.18.4 due to new block.json strategy */
     {
         attributes: {

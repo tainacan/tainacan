@@ -32,6 +32,8 @@ export default (element) => {
                         layout: 'grid',
                         gridMargin: 0,
                         searchURL: '',
+                        selectedItems: [],
+                        loadStrategy: 'search',
                         maxItemsNumber: 12,
                         mosaicHeight: 40,
                         mosaicDensity: 5,
@@ -49,7 +51,8 @@ export default (element) => {
                         collectionTextColor: '#ffffff',
                         tainacanApiRoot: '',
                         tainacanBaseUrl: '',
-                        className: ''
+                        className: '',
+                        style: ''
                     },
                     render(h){ 
                         return h(DynamicItemsListTheme, {
@@ -68,6 +71,8 @@ export default (element) => {
                                 maxColumnsCount: this.maxColumnsCount,
                                 cropImagesToSquare: this.cropImagesToSquare,
                                 searchURL: this.searchURL,
+                                selectedItems: this.selectedItems,
+                                loadStrategy: this.loadStrategy,
                                 maxItemsNumber: this.maxItemsNumber,
                                 order: this.order,
                                 showSearchBar: this.showSearchBar,
@@ -77,13 +82,16 @@ export default (element) => {
                                 collectionTextColor: this.collectionTextColor,
                                 tainacanApiRoot: this.tainacanApiRoot,
                                 tainacanBaseUrl: this.tainacanBaseUrl,
-                                className: this.className    
+                                className: this.className,
+                                style: this.style    
                             }
                         });
                     },
                     beforeMount () {
                         this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
                         this.searchURL = this.$el.attributes['search-url'] != undefined ? this.$el.attributes['search-url'].value : undefined;
+                        this.selectedItems = this.$el.attributes['selected-items'] != undefined ? JSON.parse(this.$el.attributes['selected-items'].value) : undefined;
+                        this.loadStrategy = this.$el.attributes['load-strategy'] != undefined ? this.$el.attributes['load-strategy'].value : undefined;
                         this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
                         this.showImage = this.$el.attributes['show-image'] != undefined ? this.$el.attributes['show-image'].value == 'true' : true;
                         this.showName = this.$el.attributes['show-name'] != undefined ? this.$el.attributes['show-name'].value == 'true' : true;
@@ -106,6 +114,7 @@ export default (element) => {
                         this.collectionTextColor = this.$el.attributes['collection-text-color'] != undefined ? this.$el.attributes['collection-text-color'].value : undefined;
                         this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
                         this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
+                        this.style = this.$el.attributes.style != undefined ? this.$el.attributes.style.value : undefined;
                     },
                     methods: {
                         __(text, domain) {

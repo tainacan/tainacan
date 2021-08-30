@@ -2,16 +2,15 @@ const { __ } = wp.i18n;
 
 const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
-import CarouselItemsModal from './carousel-items-modal.js';
+import CarouselItemsModal from './dynamic-and-carousel-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import 'swiper/css/swiper.min.css';
-
 
 export default function({ attributes, setAttributes, className, isSelected, clientId }){
     let {
@@ -40,6 +39,9 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         collectionBackgroundColor,
         collectionTextColor
     } = attributes;
+
+    // Gets blocks props from hook
+    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
 
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
@@ -247,7 +249,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         src={ `${tainacan_blocks.base_url}/assets/images/carousel-items-list.png` } />
             </div>
         : (
-        <div className={className}>
+        <div { ...blockProps }>
 
             { items.length ?
                 <BlockControls>

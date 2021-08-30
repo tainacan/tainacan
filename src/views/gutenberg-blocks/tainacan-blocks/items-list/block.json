@@ -1,6 +1,7 @@
 {
     "name": "tainacan/items-list",
     "title": "Tainacan Items List",
+    "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "items", "collection" ],
     "description": "Expose items from your Tainacan collections",
@@ -90,6 +91,12 @@
         "html": false,
         "typography": {
             "fontSize": true
+        },
+        "color": {
+            "text": true,
+            "background": false,
+            "gradients": false,
+            "link": true
         }
     },
     "editorScript": "items-list",

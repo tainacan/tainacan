@@ -119,7 +119,7 @@
       margin: 0 50px; }
       .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container a > span,
       .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container a:hover > span {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         font-weight: bold;
         text-decoration: none;
         padding: 8px 12px;
@@ -129,7 +129,9 @@
       .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container a > img {
         width: 100%;
         height: auto; }
+      .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container a,
       .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container a:hover {
+        color: inherit;
         text-decoration: none; }
       .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper-container .swiper-slide.collection-list-item-grid a {
         width: 100%;
@@ -163,7 +165,7 @@
     width: 100%;
     font-size: 0.875em;
     font-style: italic;
-    color: var(--tainacan-block-gray4, #555758);
+    color: inherit;
     text-align: center;
     margin: 0 auto;
     padding: 8px 2px 2px 2px; }
@@ -235,7 +237,7 @@
     .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item {
       position: relative;
       display: block;
-      margin: 16px 32px 16px 0px;
+      margin: 8px 32px 8px 0px;
       width: calc(16.666% - 32px);
       min-width: calc(16.666% - 32px);
       scroll-snap-align: start;
@@ -245,7 +247,7 @@
         width: calc(25% - 16px);
         min-width: calc(25% - 16px); }
       .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         font-weight: bold;
         line-height: normal; }
       .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item img {
@@ -255,7 +257,7 @@
         display: block;
         width: 100%; }
       .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item:hover a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         text-decoration: none; }
       .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item button {
         position: absolute !important;
@@ -443,5 +445,11 @@
       .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item.max-collections-per-screen-6, .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item.max-collections-per-screen-5, .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item.max-collections-per-screen-4, .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item.max-collections-per-screen-3, .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item.max-collections-per-screen-2, .wp-block-tainacan-carousel-collections-list ul.collections-list-edit li.collection-list-item.max-collections-per-screen-1 {
         width: calc(100% - 32px);
         min-width: calc(100% - 32px); } }
+
+.block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-carousel-collections-list .swiper-container a > span,
+.block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-carousel-collections-list .swiper-container a:hover > span,
+.block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-carousel-collections-list li.collection-list-item a > span,
+.block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-carousel-collections-list li.collection-list-item a:hover > span {
+  color: var(--tainacan-block-gray5, #454647); }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-carousel-collections-list.css.map */
