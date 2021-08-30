@@ -1,9 +1,6 @@
 <template>
     <b-field
-            :class="{
-                'has-collapses-hidden': hideCollapses,
-                'hightlighted-metadatum': isHighlightedMetadatum 
-            }"
+            :class="metadatumFormClasses"
             :ref="isHighlightedMetadatum ? 'hightlighted-metadatum': 'null'"
             :addons="false"
             :message="errorMessage"
@@ -147,6 +144,13 @@
             isTextInputComponent() {
                 const array = ['tainacan-relationship','tainacan-taxonomy', 'tainacan-compound', 'tainacan-user'];
                 return !(array.indexOf(this.metadatumComponent) >= 0 );
+            },
+            metadatumFormClasses() {
+                return '' + 
+                    (this.hideCollapses ? ' has-collapses-hidden' : '') + 
+                    (this.isHighlightedMetadatum ? ' hightlighted-metadatum' : '') + 
+                    (this.metadatumComponent ? ' tainacan-metadatum-component--' + this.metadatumComponent : '') +
+                    (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.id ? ' tainacan-metadatum-id--' + this.itemMetadatum.metadatum.id : '');  
             }
         },
         created() {

@@ -1174,10 +1174,8 @@ export default {
 
                 } else {
                     parent.postMessage({ 
-                        type: 'itemCreationMessage',
-                        itemId: this.item.id,
-                        itemTitle: this.item.title,
-                        itemThumbnail: this.item.thumbnail
+                        type: 'itemEditionMessage',
+                        item: this.item
                     },
                     tainacan_plugin.admin_url);
                 }
@@ -1206,10 +1204,8 @@ export default {
                 this.$router.go(-1);
             else
                 parent.postMessage({ 
-                        type: 'itemCreationMessage',
-                        itemId: null,
-                        itemTitle: null,
-                        itemThumbnail: null
+                        type: 'itemEditionMessage',
+                        item: null
                     },
                     tainacan_plugin.admin_url);
 

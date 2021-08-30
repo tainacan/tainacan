@@ -174,7 +174,7 @@
 
 <style scoped>
     .add-new-term {
-        margin: 6px 0;
+        margin: 3px 0;
         font-size: 0.75em;
     }
 </style>

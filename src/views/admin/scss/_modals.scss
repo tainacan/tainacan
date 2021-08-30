@@ -29,7 +29,7 @@
     align-items: flex-end;
 
     h1, h2 {
-        font-size: 1.25em;
+        font-size: 1.25em !important;
         font-weight: normal;
         font-weight: 500;
         color: var(--tainacan-heading-color);
@@ -39,12 +39,12 @@
         margin-bottom: 0px;
         margin: 0 auto 0 0;
     }
-    a.back-link{
+    a.back-link {
         font-weight: 500;
         float: right;
         margin-top: 5px;
     }
-    hr{
+    hr {
         margin: 3px 0 4px 0;
         height: 1px;
         background-color: var(--tainacan-secondary);

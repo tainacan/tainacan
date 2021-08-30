@@ -229,7 +229,7 @@
         .tainacan-compound-metadatum .label {
             text-align: left;
             margin-bottom: 0.25em;
-            font-size: 1em;
+            font-size: 1em !important;
             color: var(--tainacan-info-color);
         }
         .tainacan-compound-metadatum p {
@@ -246,6 +246,49 @@
             color: transparent;
             margin: 1em auto 1em -0.875em;
         }
-        
+    }
+    .tainacan-relationship-group {
+        text-align: left;
+        .tainacan-relationship-metadatum {
+            text-align: left;
+            .tainacan-relationship-metadatum-header {
+                text-align: left;
+                display: flex;
+                align-items: center;
+                img {
+                    margin-right: 12px;
+                    max-width: 28px;
+                    max-height: 28px;
+                }
+                .label {
+                    font-weight: normal;
+                    font-size: 1em !important;
+                    margin-top: 0;
+                    margin-left: 0;
+                    margin-bottom: 0;
+                    margin-right: 0;
+                }
+            }
+             .tainacan-metadatum {
+                text-align: left;
+                margin-left: 40px;
+                .label {
+                    color: var(--tainacan-gray4);
+                    font-size: 1em !important;
+                    line-height: 1em;
+                    margin-top: 8px;
+                    margin-bottom: 2px;
+                }
+            }
+        }
+        &>.multivalue-separator {
+            display: block;
+            max-height: 1px;
+            width: calc(100% - 40px);
+            background: var(--tainacan-gray2);
+            content: none;
+            color: transparent;
+            margin: 0.5em 0 0.5em 40px;
+        }
     }
 }

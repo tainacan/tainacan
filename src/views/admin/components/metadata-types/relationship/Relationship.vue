@@ -1,60 +1,118 @@
 <template>
     <div :class="{ 'is-flex is-flex-wrap-wrap': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
-        <b-taginput
-                expanded
-                :disabled="disabled"
-                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+        <b-tabs
                 size="is-small"
-                icon="magnify"
-                :value="selected"
-                @input="onInput"
-                @blur="onBlur"
-                :data="options"
-                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? null : 1)"
-                autocomplete
-                :remove-on-keys="[]"
-                :dropdown-position="isLastMetadatum ? 'top' :'auto'"
-                attached
-                :placeholder="$i18n.get('instruction_type_existing_item')"
-                :loading="isLoading"
-                :aria-close-label="$i18n.get('remove_value')"
-                :class="{'has-selected': selected != undefined && selected != []}"
-                field="label"
-                @typing="search"
-                check-infinite-scroll
-                @infinite-scroll="searchMore"
-                :has-counter="false">
-            <template slot-scope="props">
-                <div class="media">
+                animated
+                v-model="activeTab">
+            <b-tab-item :label="$i18n.get('label_insert_items')">
+                <b-taginput
+                        expanded
+                        :disabled="disabled"
+                        :id="relationshipInputId"
+                        size="is-small"
+                        icon="magnify"
+                        :value="selected"
+                        @input="onInput"
+                        @blur="onBlur"
+                        @add="onAdd"
+                        @remove="onRemove"
+                        :data="options"
+                        :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? null : 1)"
+                        autocomplete
+                        :remove-on-keys="[]"
+                        :dropdown-position="isLastMetadatum ? 'top' :'auto'"
+                        attached
+                        :placeholder="$i18n.get('instruction_type_existing_item')"
+                        :loading="isLoading"
+                        :aria-close-label="$i18n.get('remove_value')"
+                        :class="{'has-selected': selected != undefined && selected != []}"
+                        field="label"
+                        @typing="search"
+                        check-infinite-scroll
+                        @infinite-scroll="searchMore"
+                        :has-counter="false">
+                    <template slot-scope="props">
+                        <div 
+                                v-if="!isDisplayingRelatedItemMetadata"
+                                class="media">
+                            <div 
+                                    v-if="props.option.img"
+                                    class="media-left">
+                                <img 
+                                        width="28"
+                                        :src="props.option.img">
+                            </div>
+                            <div class="media-content">
+                                {{ props.option.label }}
+                            </div>
+                        </div>
+                        <div 
+                                v-else
+                                class="tainacan-relationship-group">
+                            <div v-html="props.option.valuesAsHtml" />
+                        </div>
+                    </template>
+                    <template 
+                            v-if="!isLoading"
+                            slot="empty">
+                        {{ $i18n.get('info_no_item_found') }}
+                    </template>
+                    <template
+                            v-if="currentUserCanEditItems && !($route && $route.query.iframemode)" 
+                            slot="footer">
+                        <a @click="editItemModalOpen = true">
+                            {{ $i18n.get('label_crate_new_item') + ' "' + searchQuery + '"' }}
+                        </a>
+                    </template>
+                </b-taginput>
+            </b-tab-item>
+            <b-tab-item
+                    v-if="itemMetadatum"
+                    style="min-height: 56px;"
+                    :label="( itemMetadatum.value.length == 1 || itemMetadatum.metadatum.multiple != 'yes' ) ? $i18n.get('label_selected_item') : ( $i18n.get('label_selected_items') + ' (' + itemMetadatum.value.length + ')' )">
+                <div class="tainacan-relationship-results-container">
                     <div 
-                            v-if="props.option.img"
-                            class="media-left">
-                        <img 
-                                width="28"
-                                :src="props.option.img">
+                            v-if="itemMetadatum.value && itemMetadatum.value.length"
+                            class="tainacan-relationship-group">
+                        <div 
+                                v-for="(itemValue, index) of selected"
+                                :key="index"
+                                style="position: relative;">
+                            <div v-html="itemValue.valuesAsHtml" />
+                            <a 
+                                    v-if="currentUserCanEditItems && $route && !$route.query.iframemode"
+                                    @click="editSelected(itemValue.value)"
+                                    class="relationship-value-button--edit">
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-edit" />
+                                </span>
+                            </a>
+                            <a 
+                                    @click="removeFromSelected(itemValue.value)"
+                                    class="relationship-value-button--remove">
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-close" />
+                                </span>
+                            </a>
+                            <span
+                                    v-if="index < selected.length - 1"
+                                    class="multivalue-separator"> | </span>
+                        </div>
                     </div>
-                    <div class="media-content">
-                        {{ props.option.label }}
+                    <div v-else>
+                        <p
+                                class="has-text-gray"
+                                style="font-size: 0.875em;">
+                            {{ $i18n.get('info_no_item_found') }}
+                        </p>
                     </div>
                 </div>
-            </template>
-            <template 
-                    v-if="!isLoading"
-                    slot="empty">
-                {{ $i18n.get('info_no_item_found') }}
-            </template>
-            <template
-                    v-if="currentUserCanEditItems && !($route && $route.query.iframemode)" 
-                    slot="footer">
-                 <a @click="createNewItemModal = true">
-                    {{ $i18n.get('label_crate_new_item') + ' "' + searchQuery + '"' }}
-                </a>
-            </template>
-        </b-taginput>
+            </b-tab-item>
+        </b-tabs>
         <a
                 v-if="currentUserCanEditItems && itemMetadatum.item && itemMetadatum.item.id"
                 :disabled="!$route || $route.query.iframemode"
-                @click="createNewItemModal = !createNewItemModal"
+                @click="editItemModalOpen = !editItemModalOpen"
                 class="add-link">
             <span class="icon is-small">
                 <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
@@ -63,15 +121,14 @@
         </a>
         <b-modal 
                 :width="1200"
-                :active.sync="createNewItemModal"
-                custom-class="tainacan-modal">
+                :active.sync="editItemModalOpen"
+                :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')">
             <iframe 
-                    :id="newItemFrame"
+                    :id="relationshipInputId + '_item-edition-modal'"
                     width="100%"
                     style="height: 85vh"
-                    :src="adminFullURL + $routerHelper.getNewItemPath(collectionId) + '?iframemode=true&newmetadatumid=' + itemMetadatum.metadatum.metadata_type_options.search + '&newitemtitle=' + searchQuery" />
+                    :src="itemModalSrc" />
         </b-modal>
-        
     </div>
 </template>
 
@@ -80,7 +137,7 @@
     import { mapGetters } from 'vuex';
     import qs from 'qs';
 
-    export default {       
+    export default {
         props: {
             itemMetadatum: Object,
             maxtags: undefined,
@@ -95,41 +152,71 @@
                 isLoading: false,
                 collectionId: '',
                 searchQuery: '',
+                editingItemId: '',
                 totalItems: 0,
                 page: 1,
-                createNewItemModal: false,
+                activeTab: 0,
+                editItemModalOpen: false,
                 adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#',
-                currentUserCanEditItems: false
+                currentUserCanEditItems: false,
+                selectedValuesAsHtml: []
             }
         },
         computed: {
             collection() {
                 return this.getCollection();
+            },
+            itemModalSrc() {
+                if (this.editingItemId)
+                    return this.adminFullURL + this.$routerHelper.getItemEditPath(this.collectionId, this.editingItemId) + '?iframemode=true';
+                else
+                    return this.adminFullURL + this.$routerHelper.getNewItemPath(this.collectionId) + '?iframemode=true&newmetadatumid=' + this.itemMetadatum.metadatum.metadata_type_options.search + '&newitemtitle=' + this.searchQuery;
+            },
+            relationshipInputId() {
+                if (this.itemMetadatum && this.itemMetadatum.metadatum)
+                    return 'tainacan-item-metadatum_id-' + this.itemMetadatum.metadatum.id + (this.itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + this.itemMetadatum.parent_meta_id) : '');
+                else
+                    return '';
+            },
+            isDisplayingRelatedItemMetadata() {
+                return this.itemMetadatum &&
+                       this.itemMetadatum.metadatum &&
+                       this.itemMetadatum.metadatum.metadata_type_options &&
+                       this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata &&
+                       this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.length &&
+                       this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.length > 1;
             }
         },
         watch: {
-            createNewItemModal() {
-                if (this.createNewItemModal)
-                    window.addEventListener('message', this.createNewItemFromModal, false);
+            editItemModalOpen() {
+                if (this.editItemModalOpen)
+                    window.addEventListener('message', this.updateItemFromModal, false);
                 else
-                    window.removeEventListener('message', this.createNewItemFromModal);
+                    window.removeEventListener('message', this.updateItemFromModal);
             }
         },
         created() {
             this.collectionId = ( this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.collection_id ) ? this.itemMetadatum.metadatum.metadata_type_options.collection_id : '';
-            
+
             if (this.itemMetadatum.value && (Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value.length > 0 : true )) {
-                let query = qs.stringify({ postin: ( Array.isArray( this.itemMetadatum.value ) ) ? this.itemMetadatum.value : [ this.itemMetadatum.value ]  });
-                query += this.itemMetadatum.metadatum.metadata_type_options.search ? '&fetch_only_meta=' + this.itemMetadatum.metadatum.metadata_type_options.search : '';
-                axios.get('/collection/' + this.collectionId + '/items?' + query + '&nopaging=1&fetch_only=title,document_mimetype,thumbnail&order=asc')
+                let query = [];
+                
+                query['postin'] = Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value : [ this.itemMetadatum.value ];
+                query['nopaging'] = 1;
+                query['order'] = 'asc';
+                query['fetch_only'] = 'title,document_mimetype,thumbnail';
+                query['fetch_only_meta'] = this.isDisplayingRelatedItemMetadata ? (this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.filter(metadatumId => metadatumId !== 'thumbnail') + '') : (this.itemMetadatum.metadatum.metadata_type_options.search ? this.itemMetadatum.metadatum.metadata_type_options.search : '');
+                axios.get('/collection/' + this.collectionId + '/items?' + qs.stringify(query) )
                     .then( res => {
                         if (res.data.items) {
-                            for (let item of res.data.items)
+                            for (let item of res.data.items) {
                                 this.selected.push({
                                     label: this.getItemLabel(item),
                                     value: item.id,
+                                    valuesAsHtml: this.getItemMetadataValuesAsHtml(item),
                                     img: this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)
                                 });
+                            }
                         }
                     })
                     .catch(error => {
@@ -191,12 +278,14 @@
                         .then( res => {
 
                             if (res.data.items) {
-                                for (let item of res.data.items)
+                                for (let item of res.data.items) {
                                     this.options.push({
                                         label: this.getItemLabel(item),
                                         value: item.id,
+                                        valuesAsHtml: this.getItemMetadataValuesAsHtml(item),
                                         img: this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)
-                                    })
+                                    });
+                                }
                             }
                             if (res.headers['x-wp-total'])
                                 this.totalItems = res.headers['x-wp-total'];
@@ -272,8 +361,8 @@
                 } else {
                     query['search'] = search;
                 }
-                query['fetch_only'] = 'title,thumbnail';
-                query['fetch_only_meta'] = this.itemMetadatum.metadatum.metadata_type_options.search;
+                query['fetch_only'] = 'title,thumbnail,document_mimetype';
+                query['fetch_only_meta'] = this.isDisplayingRelatedItemMetadata ? (this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.filter(metadatumId => metadatumId !== 'thumbnail') + '') : (this.itemMetadatum.metadatum.metadata_type_options.search ? this.itemMetadatum.metadatum.metadata_type_options.search : '');
                 query['perpage'] = 12;
                 query['paged'] = this.page;
                 query['order'] = 'asc';
@@ -283,33 +372,200 @@
 
                 return qs.stringify(query);
             },
-            createNewItemFromModal(event) {
+            updateItemFromModal(event) {
                 const message = event.message ? 'message' : 'data';
                 const data = event[message];
 
-                if (data.type == 'itemCreationMessage') {
-                    this.createNewItemModal = false;
+                if (data.type == 'itemEditionMessage') {
+                    this.editItemModalOpen = false;
 
-                    if (data.itemId) {
-                        this.searchQuery = '';
-                        this.selected.push({
-                            label: data.itemTitle,
-                            value: data.itemId,
-                            img: data.itemThumbnail ? data.itemThumbnail : ''
-                        });
-                        this.onInput(this.selected);
+                    // An item is being edited from the modal
+                    if (this.editingItemId) {
+                        if (data.item && data.item.id) {
+                            const existingItemIndex = this.selected.findIndex(anItemValue => anItemValue.value == data.item.id); 
+                            
+                            if (existingItemIndex >= 0) {
+                                this.selected.splice(existingItemIndex, 1, {
+                                    label: this.getItemLabel(data.item),
+                                    value: data.item.id,
+                                    valuesAsHtml: this.getItemMetadataValuesAsHtml(data.item),
+                                    img: data.item.thumbnail ? data.item.thumbnail : ''
+                                });
+                            }
+                            this.onInput(this.selected);
+                        }
+                        this.editingItemId = '';
+
+                    // An item is being created from the modal
+                    } else {
+                        
+                        if (data.item && data.item.id) {
+                            this.searchQuery = '';
+
+                            this.selected.push({
+                                label: this.getItemLabel(data.item),
+                                value: data.item.id,
+                                valuesAsHtml: this.getItemMetadataValuesAsHtml(data.item),
+                                img: data.item.thumbnail ? data.item.thumbnail : ''
+                            });
+
+                            this.onInput(this.selected);
+                        }
                     }
-                }  
+                }
+            },
+            getItemMetadataValuesAsHtml(item) {
+                
+                let valuesAsHtml = '';
+                valuesAsHtml += `<div class="tainacan-relationship-metadatum" data-item-id="${ item.id }">
+                    <div class="tainacan-relationship-metadatum-header">`;
+                    if (this.isDisplayingRelatedItemMetadata && this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.indexOf('thumbnail') >= 0)
+                        valuesAsHtml += `<img src="${ this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype) }" class="attachment-tainacan-small size-tainacan-small" alt="${ item.thumbnail_alt }" loading="lazy" width="40" height="40">`;
+                
+                    valuesAsHtml += `<h4 class="label">
+                        ${ this.getItemLabel(item) }
+                    </h4>`;
+                valuesAsHtml += `</div>`;
+                
+                Object.values(item.metadata).forEach(metadatumValue => {
+                    if (
+                        metadatumValue.id != this.itemMetadatum.metadatum.metadata_type_options.search &&
+                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.indexOf(metadatumValue.id) >= 0 &&
+                        metadatumValue.value_as_html
+                    ) {
+                        valuesAsHtml += `<div class="tainacan-metadatum">
+                            <h5 class="label">
+                                ${ metadatumValue.name }
+                            </h5>
+                            <p>
+                                ${ metadatumValue.value_as_html }
+                            </p>
+                        </div>`;
+                    }
+                });
+                valuesAsHtml += `</div>`;
+
+                return valuesAsHtml;
+            },
+            editSelected(itemId) {
+                this.editingItemId = itemId;
+                this.editItemModalOpen = true;
+            },
+            removeFromSelected(itemId) {
+                const indexOfRemovedItem = this.selected.findIndex(itemValue => itemValue.value == itemId);
+
+                if (indexOfRemovedItem >= 0) {
+                    this.selected.splice(indexOfRemovedItem, 1);
+                    this.onInput(this.selected);
+                }
             }
         }
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
     div.is-flex {
         justify-content: flex-start;
     }
     .add-link {
         font-size: 0.75em;
+    }
+    .b-tabs {
+        margin-bottom: 0;
+        width: 100%;
+    }
+    /deep/ .b-tabs .tab-content {
+        padding: 0.5em 0px !important;
+    }
+    /deep/ .tabs {
+        margin-bottom: 0 !important;
+
+        ul {
+            padding: 0;
+        }
+    }
+    /deep/ .tainacan-relationship-results-container {
+        border: 1px solid var(--tainacan-gray1);
+        background-color: var(--tainacan-white);
+        margin-top: calc(-1 * (0.5em + 1px));
+        margin-bottom: calc(-1 * (0.5em + 1px));
+        display: flex;
+        overflow: auto;
+        padding: 12px;
+        max-height: 40vh;
+        transition: height 0.5s ease, min-height 0.5s ease;
+
+        .tainacan-relationship-group {
+            padding-bottom: 12px;
+            .tainacan-relationship-metadatum {
+                .tainacan-metadatum .label {
+                    font-size: 0.75em;
+                }
+                a {
+                    pointer-events: auto;
+                }
+                .tainacan-relationship-metadatum-header {
+                    padding-right: 64px;
+                    .label{
+                        font-size: 0.875em;
+                    }
+                }
+            }
+            &>div>.multivalue-separator {
+                display: block;
+                max-height: 1px;
+                width: calc(100% - 40px);
+                background: var(--tainacan-gray2);
+                content: none;
+                color: transparent;
+                margin: 0.5em 0 0.5em 40px;
+            }
+        }
+    }
+    /deep/ .tainacan-relationship-group {
+        width: 100%;
+        .tainacan-relationship-metadatum {
+            .label {
+                font-size: 1em;
+            }
+            a {
+                pointer-events: none;
+            }
+            p {
+                font-size: 0.875em;
+                margin-bottom: 0;
+                margin-top: 0;
+            }
+        }
+        .tainacan-relationship-metadatum-header {
+            .label {
+                font-size: 1.125em;
+                font-weight: normal;
+            }
+            img {
+                max-width: 28px;
+                max-height: 28px;
+                margin-right: 10px;
+            }
+        }
+        .relationship-value-button--edit,
+        .relationship-value-button--remove {
+            position: absolute;
+            top: 0px;
+        }
+    }
+    /deep/ .relationship-value-button--edit,
+    /deep/ .relationship-value-button--remove {
+        right: 4px;
+        background-color: var(--tainacan-white);
+        border-radius: 100%;
+        padding: 2px;
+
+        &:hover {
+            background-color: var(--tainacan-gray0);
+        }
+    }
+    /deep/ .relationship-value-button--edit {
+        right: 34px;
     }
 </style>

@@ -208,7 +208,7 @@
                 const message = event.message ? 'message' : 'data';
                 const data = event[message];
 
-                if (data.type == 'itemCreationMessage') {
+                if (data.type == 'itemEditionMessage') {
                     this.editItemModal = false;
                 }  
             }

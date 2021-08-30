@@ -261,7 +261,7 @@
             </div>
             <div class="control">
                 <b-button
-                        :loading="isLoading"
+                        :loading="isUpdating"
                         class="button is-success"
                         native-type="submit">
                     {{ $i18n.get('save') }}
@@ -327,10 +327,10 @@
             ...mapActions('metadata', [
                 'updateMetadatum'
             ]),
-            saveEdition(metadatum) {                
-                if ((metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {                    
+            saveEdition(metadatum) {
+                if ((metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
                     let repository = this.editForm.repository_level;
-                    if (repository && repository === 'yes') {                        
+                    if (repository && repository === 'yes') {
                         this.isRepositoryLevel = true;
                     }
 

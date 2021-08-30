@@ -25,6 +25,7 @@ import TainacanFormItem from '../../../admin/components/metadata-types/tainacan-
 import HelpButton from '../../../admin/components/other/help-button.vue';
 import store from '../../../admin/js/store/store';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin, CommentsStatusHelperPlugin } from '../../../admin/js/admin-utilities';
+import { ThumbnailHelperPlugin } from '../../../admin/js/utilities';
 
 export default (element) => {
     function renderItemSubmissionForm() {
@@ -56,6 +57,7 @@ export default (element) => {
             Vue.use(ConsolePlugin, {visual: false});
             Vue.use(VueTheMask);
             Vue.use(CommentsStatusHelperPlugin);
+            Vue.use(ThumbnailHelperPlugin);
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
             if (typeof window.tainacan_extra_components != "undefined") {
