@@ -3,9 +3,9 @@ import axios from 'axios';
 
 const { __ } = wp.i18n;
 
-const { TextControl, Button, Modal, RadioControl, Spinner } = wp.components;
+const { TextControl, Button, Modal, RadioControl, SelectControl, Spinner } = wp.components;
 
-export default class DynamicItemsModal extends React.Component {
+export default class CarouselItemsModal extends React.Component {
     constructor(props) {
         super(props);
 
@@ -17,12 +17,15 @@ export default class DynamicItemsModal extends React.Component {
             isLoadingCollections: false, 
             modalCollections: [],
             totalModalCollections: 0, 
+            collectionOrderBy: 'date-desc',
             collectionPage: 1,
             temporaryCollectionId: '',
             searchCollectionName: '',
             collections: [],
             collectionsRequestSource: undefined,
             searchURL: '',
+            itemsPerPage: 12,
+            loadStrategy: 'search'
         };
         
         // Bind events
@@ -32,6 +35,7 @@ export default class DynamicItemsModal extends React.Component {
         this.fetchModalCollections = this.fetchModalCollections.bind(this);
         this.fetchCollection = this.fetchCollection.bind(this);
         this.applySelectedSearchURL = this.applySelectedSearchURL.bind(this);
+        this.applySelectedItems = this.applySelectedItems.bind(this);
     }
 
     componentWillMount() {
@@ -42,7 +46,9 @@ export default class DynamicItemsModal extends React.Component {
          
         if (this.props.existingCollectionId) {
             this.fetchCollection(this.props.existingCollectionId);
-            this.setState({ searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?readmode=true&iframemode=true&status=publish' });
+            this.setState({ 
+                searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId +  (this.props.loadStrategy == 'search' ? '/items/?iframemode=true&readmode=true&status=publish' : '/items/?iframemode=true&status=publish')
+            });
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
@@ -56,7 +62,16 @@ export default class DynamicItemsModal extends React.Component {
         if (this.state.collectionPage <= 1)
             someModalCollections = [];
 
-        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionPage;
+        let endpoint = '/collections/?perpage=' + this.state.collectionsPerPage + '&paged=' + this.state.collectionPage;
+        
+        if (this.state.collectionOrderBy == 'date')
+            endpoint += '&orderby=date&order=asc';
+        else if (this.state.collectionOrderBy == 'date-desc')
+            endpoint += '&orderby=date&order=desc';
+        else if (this.state.collectionOrderBy == 'title')
+            endpoint += '&orderby=title&order=asc';
+        else if (this.state.collectionOrderBy == 'title-desc')
+            endpoint += '&orderby=title&order=desc';
 
         this.setState({ 
             isLoadingCollections: true,
@@ -100,9 +115,8 @@ export default class DynamicItemsModal extends React.Component {
     selectCollection(selectedCollectionId) {
         this.setState({
             collectionId: selectedCollectionId,
-            searchURL: tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?readmode=true&iframemode=true&status=publish'
+            searchURL: tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + (this.props.loadStrategy == 'search' ? '/items/?iframemode=true&readmode=true&status=publish' : '/items/?iframemode=true&status=publish')
         });
-
         this.props.onSelectCollection(selectedCollectionId);
         this.fetchCollection(selectedCollectionId);
     }
@@ -121,9 +135,18 @@ export default class DynamicItemsModal extends React.Component {
             items: []
         });
 
-        let endpoint = '/collections/?orderby=title&order=asc&perpage=' + this.state.collectionsPerPage;
+        let endpoint = '/collections/?perpage=' + this.state.collectionsPerPage;
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
+        
+        if (this.state.collectionOrderBy == 'date')
+            endpoint += '&orderby=date&order=asc';
+        else if (this.state.collectionOrderBy == 'date-desc')
+            endpoint += '&orderby=date&order=desc';
+        else if (this.state.collectionOrderBy == 'title')
+            endpoint += '&orderby=title&order=asc';
+        else if (this.state.collectionOrderBy == 'title-desc')
+            endpoint += '&orderby=title&order=desc';
 
         tainacan.get(endpoint, { cancelToken: aCollectionRequestSource.token })
             .then(response => {
@@ -142,7 +165,20 @@ export default class DynamicItemsModal extends React.Component {
     }
 
     applySelectedSearchURL() {    
-        this.props.onApplySearchURL(document.getElementById("itemsFrame").contentWindow.location.href);
+        let iframe = document.getElementById("itemsFrame");
+        if (iframe) {
+            this.props.onApplySearchURL(iframe.contentWindow.location.href);
+        }
+    }
+
+    applySelectedItems() {
+        let iframe = document.getElementById("itemsFrame");
+        if (iframe) {
+            let params = new URLSearchParams(iframe.contentWindow.location.search);
+            let selectedItems = params.getAll('selecteditems');
+            params.delete('selecteditems')
+            this.props.onApplySelectedItems(selectedItems);
+        }
     }
 
     resetCollections() {
@@ -169,10 +205,10 @@ export default class DynamicItemsModal extends React.Component {
             // Items modal
         <Modal
                 className="wp-block-tainacan-modal dynamic-modal"
-                title={__('Configure the items search to be used on block', 'tainacan')}
+                title={ this.props.loadStrategy == 'selection' ? __('Select items to add on block', 'tainacan') : __('Configure the items search to be used on block', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
                 shouldCloseOnClickOutside={ false }
-                contentLabel={__('Configure your items search to be shown on block', 'tainacan')}>
+                contentLabel={ this.props.loadStrategy == 'selection' ? __('Select items that will be added on block', 'tainacan') : __('Configure your items search that will load items on block', 'tainacan')}>
                 <iframe
                         id="itemsFrame"
                         src={ this.state.searchURL } />
@@ -182,11 +218,23 @@ export default class DynamicItemsModal extends React.Component {
                         onClick={ () => { this.resetCollections() }}>
                         {__('Switch collection', 'tainacan')}
                     </Button>
-                    <Button 
-                        isPrimary
-                        onClick={ () => this.applySelectedSearchURL() }>
-                        {__('Use this search', 'tainacan')}
-                    </Button>
+                    { this.props.loadStrategy == 'selection' ? 
+                        <Button
+                            style={{ marginLeft: 'auto' }} 
+                            isPrimary
+                            onClick={ () => this.applySelectedItems() }>
+                            {__('Add the selected items', 'tainacan')}
+                        </Button>
+                        : null
+                    }
+                    { this.props.loadStrategy == 'search' ? 
+                        <Button 
+                            isPrimary
+                            onClick={ () => this.applySelectedSearchURL() }>
+                            {__('Use this search', 'tainacan')}
+                        </Button>
+                    : null
+                    }
                 </div>
         </Modal>
     ) : (
@@ -201,12 +249,35 @@ export default class DynamicItemsModal extends React.Component {
                     <div className="modal-search-area">
                         <TextControl 
                                 label={__('Search for a collection', 'tainacan')}
+                                placeholder={ __('Search by collection\'s name', 'tainacan') }
                                 value={ this.state.searchCollectionName }
                                 onChange={(value) => {
                                     this.setState({ 
                                         searchCollectionName: value
                                     });
                                     _.debounce(this.fetchCollections(value), 300);
+                                }}/>
+                        <SelectControl
+                                label={__('Order by', 'tainacan')}
+                                value={ this.state.collectionOrderBy }
+                                options={ [
+                                    { label: __('Latest', 'tainacan'), value: 'date-desc' },
+                                    { label: __('Oldest', 'tainacan'), value: 'date' },
+                                    { label: __('Name (A-Z)', 'tainacan'), value: 'title' },
+                                    { label: __('Name (Z-A)', 'tainacan'), value: 'title-desc' }
+                                ] }
+                                onChange={ ( aCollectionOrderBy ) => { 
+                                    this.state.collectionOrderBy = aCollectionOrderBy;
+                                    this.state.collectionPage = 1;
+                                    this.setState({ 
+                                        collectionOrderBy: this.state.collectionOrderBy,
+                                        collectionPage: this.state.collectionPage 
+                                    });
+                                    if (this.state.searchCollectionName && this.state.searchCollectionName != '') {
+                                        this.fetchCollections(this.state.searchCollectionName);
+                                    } else {
+                                        this.fetchModalCollections();
+                                    }
                                 }}/>
                     </div>
                     {(
@@ -283,7 +354,7 @@ export default class DynamicItemsModal extends React.Component {
                         isPrimary
                         disabled={ this.state.temporaryCollectionId == undefined || this.state.temporaryCollectionId == null || this.state.temporaryCollectionId == ''}
                         onClick={ () => { this.selectCollection(this.state.temporaryCollectionId);  } }>
-                        {__('Configure search', 'tainacan')}
+                        { this.props.loadStrategy == 'selection' ? __('Select items', 'tainacan') : __('Configure search', 'tainacan')}
                     </Button>
                 </div>
             </div>

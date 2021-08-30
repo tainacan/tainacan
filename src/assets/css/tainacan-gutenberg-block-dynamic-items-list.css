@@ -191,7 +191,8 @@
         box-shadow: none; }
   .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item {
     display: flex;
-    align-items: flex-start; }
+    align-items: flex-start;
+    position: relative; }
     .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item button {
       position: absolute !important;
       background-color: rgba(255, 255, 255, 0.75);

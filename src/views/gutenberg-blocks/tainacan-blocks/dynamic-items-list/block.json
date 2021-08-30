@@ -85,6 +85,14 @@
             "type": "String",
             "default": ""
         },
+        "selectedItems": {
+            "type": "Array",
+            "default": []
+        },
+        "loadStrategy": {
+            "type": "String",
+            "value": "search"
+        },
         "order": {
             "type": "String",
             "default": ""

@@ -78,9 +78,6 @@
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : $root.__( 'Thumbnail', 'tainacan' ))"
                                     :transition-duration="500" />
                             <span v-if="!hideTitle">{{ item.title ? item.title : '' }}</span>
-                            <div 
-                                    v-if="maxItemsPerScreen <= 4"
-                                    class="swiper-lazy-preloader swiper-lazy-preloader-white"/>
                         </a>
                     </swiper-slide>
                 </swiper>
@@ -227,7 +224,6 @@ export default {
             paged: undefined,
             totalItems: 0,
             swiperOptions: {
-                lazy: this.maxItemsPerScreen <= 4,
                 watchOverflow: true,
                 mousewheel: true,
                 observer: true,

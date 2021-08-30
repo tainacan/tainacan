@@ -237,6 +237,7 @@
     ul.items-list-edit li.item-list-item {
         display: flex;
         align-items: flex-start;
+        position: relative;
 
         button {
             position: absolute !important;

@@ -4,7 +4,7 @@ const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder
 
 const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
-import CarouselItemsModal from './carousel-items-modal.js';
+import CarouselItemsModal from './dynamic-and-carousel-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
