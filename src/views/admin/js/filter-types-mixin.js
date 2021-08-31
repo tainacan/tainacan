@@ -76,7 +76,6 @@ export const dynamicFilterTypeMixin = {
                 let query_items = { 'current_query': currentQuery };
 
                 let url = '';
-                
                 if (isRepositoryLevel)
                     url = `/facets/${metadatumId}?getSelected=${getSelected}&`;
                 else {

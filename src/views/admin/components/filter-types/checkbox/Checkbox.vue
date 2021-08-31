@@ -47,7 +47,8 @@
                     :collection-id="collectionId"
                     :metadatum_type="metadatumType"
                     :is-repository-level="isRepositoryLevel"
-                    :query="query" />
+                    :query="query"
+                    :current-collection-id="currentCollectionId" />
         </template>
     </div>
 </template>
