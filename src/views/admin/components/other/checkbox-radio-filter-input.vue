@@ -60,9 +60,7 @@
                                         class="tainacan-li-checkbox-list"
                                         v-for="(option, key) in searchResults"
                                         :key="key">
-                                    <label 
-                                            v-if="isCheckbox"
-                                            class="b-checkbox checkbox">
+                                    <label class="b-checkbox checkbox">
                                         <input                                     
                                                 v-model="selected"
                                                 :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
@@ -79,23 +77,6 @@
                                             </span>
                                         </span>
                                     </label>
-                                    <b-radio
-                                            v-tooltip="{
-                                                content: (option.name ? option.name : option.label) + (option.total_items != undefined ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
-                                                autoHide: false,
-                                            }"
-                                            v-else
-                                            v-model="selected"
-                                            :native-value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.value)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))">
-                                        <span 
-                                                    class="checkbox-label-text"
-                                                    v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" />
-                                        <span 
-                                                v-if="option.total_items != undefined"
-                                                class="has-text-gray">
-                                            &nbsp;{{ "(" + option.total_items + ")" }}
-                                        </span>
-                                    </b-radio>
                                 </li>
                             </template>
                             <template v-if="!isLoadingSearch && !searchResults.length">
@@ -202,9 +183,7 @@
                                         :id="`${key}.${index}-tainacan-li-checkbox-model`"
                                         :ref="`${key}.${index}-tainacan-li-checkbox-model`"
                                         :key="index">
-                                    <label 
-                                            v-if="isCheckbox"
-                                            class="b-checkbox checkbox">
+                                    <label class="b-checkbox checkbox">
                                         <input 
                                                 v-model="selected"
                                                 :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
@@ -224,21 +203,6 @@
                                             </span>
                                         </span>
                                     </label>
-                                    <b-radio
-                                            v-tooltip="{
-                                                content: option.label,
-                                                autoHide: false,
-                                            }" 
-                                            v-else
-                                            v-model="selected"
-                                            :native-value="(isNaN(Number(option.value)) ? option.value : Number(option.value))">
-                                        {{ `${option.label}` }}
-                                        <span 
-                                                v-if="option.total_items != undefined"
-                                                class="has-text-gray">
-                                            &nbsp;{{ "(" + option.total_items + ")" }}
-                                        </span>
-                                    </b-radio>
                                     <a
                                             v-if="option.total_children > 0"
                                             @click="getOptionChildren(option, key, index)">
@@ -373,10 +337,6 @@
             metadatum_type: String,
             query: Object,
             isRepositoryLevel: Boolean,
-            isCheckbox: {
-                type: Boolean,
-                default: true,
-            },
             isModal: {
                 type: Boolean,
                 default: true,
@@ -930,7 +890,7 @@
         align-items: center;
         padding: 0;
 
-        .b-checkbox, .b-radio {
+        .b-checkbox {
             max-width: 100%;
             min-height: 1.5em;
             margin-left: 0.7em;
@@ -951,7 +911,7 @@
         padding-left: 0.5em;
         margin: 0;
 
-        .b-checkbox, .b-radio {
+        .b-checkbox {
             margin-right: 0px;
             margin-bottom: 0;
         }
