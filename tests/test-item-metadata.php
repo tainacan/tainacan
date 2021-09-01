@@ -787,5 +787,28 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 		$item_metadata_numeric_mult->set_value([10,22,4,4]);
 		$fail = $item_metadata_numeric_mult->validate();
 		$this->assertFalse($fail);
+
+		$metadatum_numeric_multiple = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'          => 'Numeric important meta',
+				'description'   => 'and its description',
+				'collection_id' => $this->collection->get_id(),
+				'metadata_type' => 'Tainacan\Metadata_Types\Numeric',
+				'status'        => 'publish',
+				'multiple'      => 'yes',
+				'cardinality'   => 0
+			),
+			true
+		);
+
+		$item_metadata_numeric_mult = new Item_Metadata_Entity($this->item, $metadatum_numeric_multiple);
+		$item_metadata_numeric_mult->set_value([10,22,4]);
+		$ok = $item_metadata_numeric_mult->validate();
+		$this->assertTrue($ok);
+
+		$item_metadata_numeric_mult->set_value([10,22,4,4]);
+		$fail = $item_metadata_numeric_mult->validate();
+		$this->assertTrue($fail);
 	}
 }
