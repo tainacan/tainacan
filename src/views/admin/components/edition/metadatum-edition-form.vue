@@ -208,7 +208,8 @@
                             :disabled="editForm.multiple != 'yes'"
                             name="cardinality"
                             type="number"
-                            step="1" />
+                            step="1" 
+                            v-model="editForm.cardinality"/>
                 </b-field>
 
                 <b-field v-if="!isRepositoryLevel && isInsideImporterFlow">

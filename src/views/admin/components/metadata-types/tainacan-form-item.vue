@@ -83,7 +83,7 @@
                         </template>
                     </transition-group>
                 </template>
-                <template v-if="isMultiple && (maxMultipleValues === undefined || maxMultipleValues - 1 > values.length)">
+                <template v-if="isMultiple && (maxMultipleValues === undefined || maxMultipleValues === 0 || (maxMultipleValues !== 1 && maxMultipleValues > values.length))">
                     <a 
                             @click="addValue"
                             class="is-inline-block add-link">
