@@ -90,7 +90,7 @@
     }
 
     h3 {
-        font-size: 100%;
+        font-size: 100% !important;
         margin-top: 0px;
     }
 
@@ -117,7 +117,7 @@
 
         .label {
             cursor: pointer;
-            font-size: 0.875em;
+            font-size: 0.875em !important;
             font-weight: 500;
             margin-bottom: 0.75em !important;
             display: inline-flex;

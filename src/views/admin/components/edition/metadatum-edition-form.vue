@@ -278,6 +278,7 @@
                 </span>
                 <strong>{{ $i18n.get('label_advanced_metadata_options') }}</strong>
                 <hr>
+
             </div>
             
             <transition name="filter-item">
@@ -371,6 +372,7 @@
                 'updateMetadatum'
             ]),
             saveEdition(metadatum) {
+
                 if ( (metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
                     let repository = this.editForm.repository_level;
                     if (repository && repository === 'yes')

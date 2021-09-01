@@ -24,7 +24,7 @@
         <div class="tainacan-form">
             <div class="columns">
 
-<div class="column is-7">
+                <div class="column is-7">
 
                     <!-- Hook for extra Form options -->
                     <template
@@ -173,11 +173,18 @@
                                     <div
                                             :class="{ 
                                                 'metadata-type-textarea': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-textarea',
-                                                'metadata-type-compound': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound'
+                                                'metadata-type-compound': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound',
+                                                'metadata-type-relationship': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship'
                                             }"
                                             class="content">
                                         <component 
-                                                :is="itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ? 'div' : 'p'" 
+                                                :is="
+                                                    itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ||
+                                                    (itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship' &&
+                                                     itemMetadatum.metadatum.metadata_type_object.options &&
+                                                     itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata &&
+                                                     itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata.length > 1
+                                                    ) ? 'div' : 'p'" 
                                                 v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`"/>
                                     </div>
                                 </div>
@@ -348,8 +355,8 @@
                         <!-- Hook for extra Form options -->
                         <template
                                 v-if="formHooks != undefined &&
-                            formHooks['view-item'] != undefined &&
-                            formHooks['view-item']['end-left'] != undefined">
+                                    formHooks['view-item'] != undefined &&
+                                    formHooks['view-item']['end-left'] != undefined">
                             <div
                                     id="view-item-end-left"
                                     class="form-hook-region"
@@ -657,6 +664,10 @@
                 span {
                     margin-right: 18px;
                 }
+            }
+            p:empty {
+                display: none;
+                visibility: hidden;
             }
         } 
         

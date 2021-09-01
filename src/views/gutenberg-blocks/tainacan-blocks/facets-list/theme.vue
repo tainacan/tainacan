@@ -1,5 +1,7 @@
 <template>
-    <div :class="className + ' has-mounted'">
+    <div
+            :style="style"
+            :class="className + ' has-mounted'">
         <div
                 v-if="showSearchBar"
                 class="facets-search-bar"> 
@@ -89,6 +91,7 @@
                         :append-child-terms="appendChildTerms"
                         :facet="facet"
                         :cloud-rate="cloudRate"
+                        :items-count-style="itemsCountStyle"
                         :tainacan-base-url="tainacanBaseUrl"
                         :layout="layout"
                         :metadatum-type="metadatumType"
@@ -119,6 +122,7 @@
                             :append-child-terms="appendChildTerms"
                             :facet="facet"
                             :cloud-rate="cloudRate"
+                            :items-count-style="itemsCountStyle"
                             :tainacan-base-url="tainacanBaseUrl"
                             :layout="layout"
                             :metadatum-type="metadatumType"
@@ -180,6 +184,7 @@ export default {
         showLoadMore: Boolean,
         appendChildTerms: Boolean,
         linkTermFacetsToTermPage: Boolean,
+        itemsCountStyle: String,
         layout: String,
         cloudRate: Number,
         gridMargin: Number,
@@ -188,7 +193,8 @@ export default {
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
         tainacanSiteUrl: String,
-        className: String
+        className: String,
+        style: String
     },
     data() {
         return {
@@ -218,23 +224,38 @@ export default {
     },
     created() {
         this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
+        
         if (tainacan_blocks && tainacan_blocks.nonce)
             this.tainacanAxios.defaults.headers.common['X-WP-Nonce'] = tainacan_blocks.nonce;
+
         this.offset = 0;
         this.fetchFacets();
+
+        this.applySearchString = debounce(this.applySearchString, 750);
+    },
+    mounted() {
+        this.$el.addEventListener('tainacan-blocks-facets-list-update', this.receiveSearchString);
+    },
+    beforeDestroy() {
+        this.$el.removeEventListener('tainacan-blocks-facets-list-update', this.receiveSearchString);
     },
     methods: {
-        applySearchString: debounce(function(event) { 
-
+        receiveSearchString(event) {
+            if (event.detail) {
+                this.applySearchString({ target: { value: event.detail.searchString }});
+            }
+        },
+        applySearchString(event) { 
+            
             let value = event.target.value;
-
+            
             if (this.searchString != value) {
                 this.searchString = value;
                 this.offset = 0;
                 this.lastTerm = '';
                 this.fetchFacets();
             }
-        }, 500),
+        },
         loadMore() {
             this.offset += Number(this.maxFacetsNumber);
             this.fetchFacets();
@@ -294,7 +315,7 @@ export default {
             
             this.tainacanAxios.get(endpoint, { cancelToken: this.facetsRequestSource.token })
                 .then(response => {
-
+                    
                     if (this.isMetadatumTypeTaxonomy) {
                         for (let facet of response.data.values) {
                             this.facets.push(Object.assign({ 

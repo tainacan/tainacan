@@ -5,9 +5,7 @@
                 animated
                 @input="fetchSelectedLabels()"
                 v-model="activeTab">
-            <b-tab-item 
-                    style="margin: 0 -0.75rem;"
-                    :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
+            <b-tab-item :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
                 
                 <!-- Search input -->
                 <b-field class="is-clearfix tainacan-checkbox-search-section">
@@ -810,9 +808,9 @@
         display: none;
         visibility: hidden;
     }
-    .tab-content {
+    /deep/ .tab-content {
         transition: height 0.2s ease;
-        padding: 0.5em 20px !important;
+        padding: 0.5em 0px !important;
     }
 
     // In theme, the bootstrap removes the style of <a> without href

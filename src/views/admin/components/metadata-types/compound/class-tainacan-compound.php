@@ -231,7 +231,20 @@ class Compound extends Metadata_Type {
 	private function get_meta_html(Item_Metadata_Entity $meta) {
 		$html = '';
 		if ($meta instanceof Item_Metadata_Entity && !empty($meta->get_value_as_html())) {
-			$html = '<div class="tainacan-metadatum"><label class="label">' . $meta->get_metadatum()->get_name() . '</label> <p>' . $meta->get_value_as_html() . "</p></div>";
+			ob_start();
+			?>
+				<div class="tainacan-metadatum">
+					<h4 class="label">
+						<?php echo $meta->get_metadatum()->get_name(); ?>
+					</h4>
+					<p>
+						<?php echo $meta->get_value_as_html(); ?>
+					</p>
+				</div>
+			<?php
+			$html = ob_get_contents();
+			ob_end_clean();
+
 		}
 
 		return $html;

@@ -2,7 +2,7 @@ const { __ } = wp.i18n;
 
 const { RangeControl, IconButton, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import CollectionsModal from './collections-modal.js';
@@ -19,6 +19,9 @@ export default function({ attributes, setAttributes, className, isSelected }) {
         gridMargin
     } = attributes;
     
+    // Gets blocks props from hook
+    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
+
     function prepareCollection(collection) {
         return (
             <li 
@@ -131,7 +134,7 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                     src={ `${tainacan_blocks.base_url}/assets/images/collections-list.png` } />
         </div>
     : (
-        <div className={className}>
+        <div { ...blockProps }>
 
             <div>
                 <BlockControls>

@@ -237,6 +237,7 @@
     ul.items-list-edit li.item-list-item {
         display: flex;
         align-items: flex-start;
+        position: relative;
 
         button {
             position: absolute !important;
@@ -387,7 +388,7 @@
             align-items: center;
 
             a { 
-                color: var(--tainacan-block-gray5, $gray5); 
+                color: inherit; 
                 border: none;
                 font-weight: bold;
                 line-height: normal;
@@ -420,8 +421,9 @@
                 display: none;
             }
 
+            a,
             &:hover a { 
-                color: var(--tainacan-block-gray5, $gray5); 
+                color: inherit; 
                 text-decoration: none;
             }
         }
@@ -502,7 +504,7 @@
             padding: 12px 12px 24px 12px;
 
             a { 
-                color: var(--tainacan-block-gray5, $gray5); 
+                color: inherit; 
                 height: auto;
                 display: flex;
                 align-items: center;
@@ -531,8 +533,9 @@
                 display: none;
             }
 
+            a,
             &:hover a { 
-                color: var(--tainacan-block-gray5, $gray5); 
+                color: inherit; 
                 text-decoration: none;
             }
         }   
@@ -576,7 +579,7 @@
                     width: 100%;
                     height: 100%;
                     display: block;
-                    color: var(--tainacan-block-gray5, $gray5); 
+                    color: inherit; 
                     font-weight: bold;
                     line-height: normal;
                 }
@@ -601,8 +604,9 @@
                     display: none;
                 }
 
+                a,
                 &:hover a { 
-                    color: var(--tainacan-block-gray5, $gray5); 
+                    color: inherit; 
                     text-decoration: none;
                 }                
             }
@@ -1044,6 +1048,14 @@
             .mosaic-container { 
                 min-width: 240px;
             }
+        }
+    }
+}
+.block-editor-block-list__block:not(.has-text-color)>.wp-block-tainacan-dynamic-items-list {
+    li.item-list-item {
+        a>span,
+        a:hover>span {
+            color: var(--tainacan-block-gray5, $gray5);
         }
     }
 }

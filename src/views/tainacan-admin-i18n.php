@@ -225,6 +225,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_taxonomy_allow_new_terms'                 => __( 'Allow new terms', 'tainacan' ),
 	'label_selectbox_init'                           => __( 'Select', 'tainacan' ),
 	'label_insert_options'                           => __( 'Insert options', 'tainacan'),
+	'label_insert_items'                             => __( 'Insert items', 'tainacan'),
 	'label_available_terms'                          => __( 'Available terms', 'tainacan' ),
 	'label_some_available_terms'                     => __( 'Some available terms', 'tainacan' ),
 	'label_attachments'                              => __( 'Attachments', 'tainacan' ),
@@ -410,6 +411,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_all_terms'                                => __( 'All terms', 'tainacan' ),
 	'label_selected_terms'                           => __( 'Selected terms', 'tainacan' ),
 	'label_selected_term'                            => __( 'Selected term', 'tainacan' ),
+	'label_selected_items'                           => __( 'Selected items', 'tainacan' ),
+	'label_selected_item'                            => __( 'Selected item', 'tainacan' ),
 	'label_all_metadatum_values'                     => __( 'All metadatum values', 'tainacan' ),
 	'label_selected_metadatum_values'                => __( 'Selected metadatum values', 'tainacan' ),
 	/* translators: 'n.' here comes from 'number' */
