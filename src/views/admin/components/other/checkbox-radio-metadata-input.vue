@@ -198,7 +198,8 @@
                                     :key="index">
                                 <label 
                                         v-if="isCheckbox"
-                                        class="b-checkbox checkbox">
+                                        class="b-checkbox checkbox"
+                                        :class="{ 'is-disabled': (selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length }">
                                     <input 
                                             :disabled="(selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
                                             v-model="selected"
@@ -854,6 +855,11 @@
             margin-bottom: 0;
             height: 24px;
             overflow: hidden;
+
+            &.is-disabled {
+                cursor: not-allowed;
+                opacity: 0.5;
+            }
         }
 
         &:hover {
@@ -872,6 +878,10 @@
         .b-checkbox, .b-radio {
             margin-right: 0px;
             margin-bottom: 0;
+            &.is-disabled {
+                cursor: not-allowed;
+                opacity: 0.5;
+            }
         }
 
         &:hover:not(.result-info) {
