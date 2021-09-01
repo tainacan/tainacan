@@ -744,7 +744,7 @@
                         .then(res => {
                             this.appendMore(res.data.values, key, res.data.last_term.es_term);
 
-                            this.hasToDisplaySearchBar = !this.isSearching && (this.isUsingElasticSearch || this.hasToDisplaySearchBar || res.headers['x-wp-totalpages'] > 1 || res.data.values.some((aValue) => aValue.total_children != undefined && aValue.total_children != 0));
+                            this.hasToDisplaySearchBar = !this.isSearching && (this.hasToDisplaySearchBar || res.headers['x-wp-totalpages'] > 1 || res.data.values.some((aValue) => aValue.total_children != undefined && aValue.total_children != 0));
 
                             this.totalRemaining = Object.assign({}, this.totalRemaining, {
                                 [`${key}`]: {
