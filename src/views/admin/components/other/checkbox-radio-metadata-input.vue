@@ -4,13 +4,14 @@
                 size="is-small"
                 animated
                 @input="fetchSelectedLabels()"
-                v-model="activeTab">
+                v-model="activeTab"
+                :class="{ 'hidden-tabs-section': (shouldBeginWithListExpanded && !hasToDisplaySearchBar) }">
             <b-tab-item :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
                 
                 <!-- Search input -->
                 <b-field 
-                            v-if="hasToDisplaySearchBar"
-                            class="is-clearfix tainacan-checkbox-search-section">
+                        v-if="!shouldBeginWithListExpanded || hasToDisplaySearchBar"
+                        class="is-clearfix tainacan-checkbox-search-section">
                     <p 
                             v-if="!shouldBeginWithListExpanded"
                             class="control">
@@ -246,6 +247,20 @@
                         </ul>
                     </div>
                 </transition-group>
+                <section 
+                        v-if="( (isTaxonomy && (finderColumns instanceof Array ? finderColumns.length <= 0 : !finderColumns) ) || (!isTaxonomy && options instanceof Array ? options.length <= 0 : !options) ) && expandResultsSection && !isSearching && !isLoadingSearch && !isColumnLoading"
+                        class="section">
+                    <div class="content has-text-grey has-text-centered">
+                        <p>
+                            <span class="icon is-medium">
+                                <i  
+                                        class="tainacan-icon tainacan-icon-30px"
+                                        :class="{ 'tainacan-icon-terms': isTaxonomy, 'tainacan-icon-metadata': !isTaxonomy }"/>
+                            </span>
+                        </p>
+                        <p>{{ isTaxonomy ? $i18n.get('info_no_terms_found') : $i18n.get('label_nothing_selected') }}</p>
+                    </div>
+                </section>
 
                 <b-loading
                         :is-full-page="false"
@@ -333,8 +348,7 @@
                 type: Boolean,
                 default: true,
             },
-            amountSelected: 0,
-            hasToDisplaySearchBar: false
+            amountSelected: 0
         },
         data() {
             return {
@@ -359,12 +373,13 @@
                 activeTab: 0,
                 selectedTagsName: {},
                 isSelectedTermsLoading: false,
-                expandResultsSection: false
+                expandResultsSection: false,
+                hasToDisplaySearchBar: false // Different from the checkbox filter component, we cannot hide search bar as it affects the first loading
             }
         },
         computed: {
             shouldBeginWithListExpanded() {
-                return  this.isTaxonomy && this.metadatum && this.metadatum.metadata_type_options && this.metadatum.metadata_type_options.visible_options_list;
+                return this.isTaxonomy && this.metadatum && this.metadatum.metadata_type_options && this.metadatum.metadata_type_options.visible_options_list;
             }
         },
         watch: {
@@ -779,6 +794,11 @@
     .hidden-tabs-section /deep/ .tabs {
         display: none;
         visibility: hidden;
+    }
+    .hidden-tabs-section /deep/ .tab-content {
+        .tainacan-finder-columns-container {
+            border: none;
+        }
     }
     /deep/ .tab-content {
         transition: height 0.2s ease;
