@@ -508,6 +508,9 @@
         .tainacan-form .field:not(:last-child) {
             margin-bottom: 1em;
         }
+        .tainacan-form /deep/ .control-label {
+            white-space: normal;
+        }
         .metadata-form-section {
             margin: 0.5em 0;
             position: relative;
