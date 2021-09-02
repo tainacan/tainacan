@@ -17,7 +17,7 @@
 .tainacan-modal .modal-close {
     z-index: 99999;
     @media only screen and (max-width: 768px) {
-        &:before, &:after { background-color: #298596; }
+        &:before, &:after { background-color: var(--tainacan-white, white); }
     }
 }
 
@@ -86,7 +86,7 @@
     }
 
     .form-submit {
-        padding: 40px 0em 0.4em 0em !important;
+        padding: 40px 0em 0em 0em !important;
     }
 
     @media only screen and (max-width: 768px) {
@@ -221,6 +221,19 @@
         }
         .media-frame-menu-toggle {
             display: none !important;
+        }
+    }
+
+    @media screen and (max-width: 769px) {
+        left: 1.5em;
+        right: 1.5em;
+        top: 1.5em;
+        bottom: 1.5em;
+
+        .media-frame-title h1 {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
         }
     }
 }

@@ -68,34 +68,6 @@
                             @focus="clearErrors('description')"/>
                 </b-field>
 
-                <!-- Display on listing -->
-                <b-field
-                        v-if="editForm.parent == 0"
-                        :type="formErrors['display'] != undefined ? 'is-danger' : ''"
-                        :message="formErrors['display'] != undefined ? formErrors['display'] : ''" 
-                        :addons="false">
-                    <label class="label is-inline-block">
-                        {{ $i18n.get('label_display') }}
-                        <help-button
-                                :title="$i18n.getHelperTitle('metadata', 'display')"
-                                :message="$i18n.getHelperMessage('metadata', 'display')"/>
-                    </label>
-                    <b-select 
-                            expanded
-                            v-model="editForm.display"
-                            @input="clearErrors('display')">
-                        <option value="yes">
-                            {{ $i18n.get('label_display_default') }}
-                        </option>
-                        <option value="no">
-                            {{ $i18n.get('label_not_display') }}
-                        </option>
-                        <option value="never">
-                            {{ $i18n.get('label_display_never') }}
-                        </option>
-                    </b-select>
-                </b-field>
-
                 <b-field
                         v-if="editForm.parent == 0"
                         :addons="false"
@@ -131,6 +103,34 @@
                             {{ $i18n.get('status_private') }}
                         </b-radio>
                     </div>
+                </b-field>
+
+                <!-- Display on listing -->
+                <b-field
+                        v-if="editForm.parent == 0"
+                        :type="formErrors['display'] != undefined ? 'is-danger' : ''"
+                        :message="formErrors['display'] != undefined ? formErrors['display'] : ''" 
+                        :addons="false">
+                    <label class="label is-inline-block">
+                        {{ $i18n.get('label_display') }}
+                        <help-button
+                                :title="$i18n.getHelperTitle('metadata', 'display')"
+                                :message="$i18n.getHelperMessage('metadata', 'display')"/>
+                    </label>
+                    <b-select 
+                            expanded
+                            v-model="editForm.display"
+                            @input="clearErrors('display')">
+                        <option value="yes">
+                            {{ $i18n.get('label_display_default') }}
+                        </option>
+                        <option value="no">
+                            {{ $i18n.get('label_not_display') }}
+                        </option>
+                        <option value="never">
+                            {{ $i18n.get('label_display_never') }}
+                        </option>
+                    </b-select>
                 </b-field>
 
                 <b-field 
@@ -512,7 +512,7 @@
             white-space: normal;
         }
         .metadata-form-section {
-            margin: 0.5em 0;
+            margin: 0.75em 0 0.5em 0;
             position: relative;
             cursor: pointer;
 
@@ -540,6 +540,14 @@
         }
         .metadata-form-section+.options-columns {
             padding-left: 1.75em;
+        }
+
+        @media screen and (max-width: 768px) {
+            .options-columns {
+                -moz-column-count: 1;
+                -webkit-column-count: 1;
+                column-count: 1;
+            }
         }
     }
     .form-submit {

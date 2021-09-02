@@ -599,46 +599,56 @@
             margin-bottom: 70px;
             margin-left: var(--tainacan-one-column);
             margin-right: var(--tainacan-one-column);
-        }
 
-        .column.is-5 {
-            padding-left: var(--tainacan-one-column);
-            padding-right: var(--tainacan-one-column);
+            .column.is-5 {
+                padding-left: var(--tainacan-one-column);
+                padding-right: var(--tainacan-one-column);
 
-            .sticky-container {
-                position: relative;
-                position: sticky;
-                top: -25px;
-                margin: 3px 0;
-                max-height: calc(100vh - 202px);
-                overflow-y: auto;
-                overflow-x: hidden;
-            }
+                .sticky-container {
+                    position: relative;
+                    position: sticky;
+                    top: -25px;
+                    margin: 3px 0;
+                    max-height: calc(100vh - 202px);
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                }
 
-            @media screen and (max-width: 769px) {
-                width: 100%;
-            }
-        }
-        .column.is-7 {
-            padding-left: var(--tainacan-one-column);
-            padding-right: 0;
-
-            .columns {
-                flex-wrap: wrap;
-                justify-content: space-between;
-
-                .column {
-                    padding: 1em 12px 0 12px;
+                @media screen and (max-width: 769px) {
+                    width: 100%;
                 }
             }
-            .field { 
-                padding: 10px 0 14px 0px;
-                margin-left: -3px;
+            .column.is-7 {
+                padding-left: var(--tainacan-one-column);
+                padding-right: 0;
+
+                .columns {
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+
+                    .column {
+                        padding: 1em 12px 0 12px;
+                    }
+                }
+                .field { 
+                    padding: 10px 0 14px 0px;
+                    margin-left: -3px;
+                }
+
+                @media screen and (max-width: 769px) {
+                    padding-right: var(--tainacan-one-column);
+                    width: 100%;
+                }
             }
 
             @media screen and (max-width: 769px) {
-                padding-right: var(--tainacan-one-column);
-                width: 100%;
+                margin-left: 0;
+                margin-right: 0;
+
+                 &>.column {
+                    padding-left: 0;
+                    padding-right: 0;
+                }
             }
         }
     

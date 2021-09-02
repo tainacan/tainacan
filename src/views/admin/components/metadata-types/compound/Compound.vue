@@ -359,5 +359,21 @@
             font-size: 0.875em;
             font-style: italic;
         }
+
+        @media screen and (max-width: 769px) {
+            margin-left: 0px;
+            padding-left: 22px;
+
+            .field {
+                padding-left: 12px;
+                
+                /deep/ .label {
+                    margin-left: 0;
+                }
+                /deep/ .collapse-handle {
+                    margin-left: -28px;
+                }
+            }
+        }
     }
 </style>
