@@ -55,7 +55,8 @@
                     :taxonomy="taxonomy"
                     :collection-id="collectionId"
                     :is-taxonomy="true"
-                    :query="query" />
+                    :query="query"
+                    :current-collection-id="currentCollectionId" />
         </template>
     </div>
 </template>
