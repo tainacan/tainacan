@@ -208,12 +208,13 @@
                             autofocus="true"
                             tabindex="-1"
                             role="dialog"
-                            aria-modal>
+                            aria-modal
+                            v-if="selectedMetadatumType == undefined && !isEditingMetadatum">
                         <b-loading 
                                 :is-full-page="isFullPage" 
                                 :active.sync="isLoadingMetadatumTypes"/>
                         <div 
-                                v-if="selectedMetadatumType == undefined && !isEditingMetadatum"
+                                
                                 class="tainacan-modal-content">
                             <div class="tainacan-modal-title">
                                 <h2>{{ $i18n.get('instruction_select_metadatum_type') }}</h2>
@@ -226,7 +227,7 @@
                                             v-for="(metadatumType, index) of metadatumTypes"
                                             :key="index"
                                             @click="onSelectMetadatumType(metadatumType)">
-                                        <h4>{{ metadatumType.name }}</h4>           
+                                        <h4>{{ metadatumType.name }}</h4>
                                     </div>
                                 </div>
                                 <div class="field is-grouped form-submit">
@@ -241,29 +242,17 @@
                                 </div>
                             </section>
                         </div>
-                        <div 
-                                v-if="isEditingMetadatum"
-                                class="tainacan-modal-content">
-                            <div class="tainacan-modal-title">
-                                <h2>{{ $i18n.get('instruction_configure_new_metadatum') }}</h2>
-                                <a 
-                                        class="back-link" 
-                                        @click="isEditingMetadatum = false">
-                                    {{ $i18n.get('back') }}
-                                </a>
-                                <hr>
-                            </div>
-                            <metadatum-edition-form
-                                    :collection-id="collectionId"
-                                    :is-repository-level="false"
-                                    @onEditionFinished="onMetadatumEditionFinished()"
-                                    @onEditionCanceled="onMetadatumEditionCanceled()"
-                                    :index="0"
-                                    :original-metadatum="metadatum"
-                                    :edited-metadatum="editedMetadatum"
-                                    :is-on-modal="true"/>
-                        </div>
                     </div>
+                    
+                    <metadatum-edition-form
+                            v-if="selectedMetadatumType && isEditingMetadatum"
+                            :collection-id="collectionId"
+                            :is-repository-level="false"
+                            @onEditionFinished="onMetadatumEditionFinished()"
+                            @onEditionCanceled="onMetadatumEditionCanceled()"
+                            :index="0"
+                            :original-metadatum="metadatum"
+                            :is-inside-importer-flow="true" />
                 </b-modal>
             </div>
             <div 
@@ -411,7 +400,6 @@ export default {
             selectedMetadatumType: undefined,
             isEditingMetadatum: false,
             metadatum: {},
-            editedMetadatum: {},
             backgroundProcess: undefined,
             metadataSearchCancel: undefined,
             showTitlePromptModal: false,
@@ -717,17 +705,15 @@ export default {
 
             this.sendMetadatum({
                 collectionId: this.collectionId, 
-                name: newMetadatum.name, metadatumType: 
-                newMetadatum.className, 
+                name: newMetadatum.name,
+                metadatumType: newMetadatum.className, 
                 status: 'auto-draft', 
                 isRepositoryLevel: false, 
                 newIndex: 0
             })
             .then((metadatum) => {
+                this.selectedMetadatumType = newMetadatum.className;
                 this.metadatum = metadatum;
-                this.editedMetadatum = JSON.parse(JSON.stringify(metadatum));
-                this.editedMetadatum.saved = false;
-                this.editedMetadatum.status = 'publish';
                 this.isEditingMetadatum = true;
             })
             .catch((error) => {
@@ -747,7 +733,6 @@ export default {
         onMetadatumEditionFinished() {
             // Reset variables for metadatum creation
             delete this.metadatum;
-            delete this.editedMetadatum;
             this.isEditingMetadatum = false;
             this.isNewMetadatumModalActive = false;
             this.selectedMetadatumType = undefined;
@@ -783,8 +768,6 @@ export default {
             // Reset variables for metadatum creation
             if (this.metadatum)
                 delete this.metadatum;
-            if (this.editedMetadatum)
-                delete this.editedMetadatum;
             this.isEditingMetadatum = false;
             this.isNewMetadatumModalActive = false;
             this.selectedMetadatumType = undefined;

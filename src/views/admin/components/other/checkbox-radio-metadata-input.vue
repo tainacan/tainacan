@@ -62,7 +62,8 @@
                                 <label 
                                         v-if="isCheckbox"
                                         class="b-checkbox checkbox">
-                                    <input                                     
+                                    <input
+                                            :disabled="(selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
                                             v-model="selected"
                                             :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
                                             type="checkbox"> 
@@ -135,6 +136,7 @@
                                 :key="key">
                             <label class="b-checkbox checkbox">
                                 <input 
+                                        :disabled="(selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
                                         v-model="selected"
                                         :value="option.value"
                                         type="checkbox"> 
@@ -190,8 +192,10 @@
                                     :key="index">
                                 <label 
                                         v-if="isCheckbox"
-                                        class="b-checkbox checkbox">
+                                        class="b-checkbox checkbox"
+                                        :class="{ 'is-disabled': (selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length }">
                                     <input 
+                                            :disabled="(selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
                                             v-model="selected"
                                             :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
                                             type="checkbox"> 
@@ -348,7 +352,8 @@
                 type: Boolean,
                 default: true,
             },
-            amountSelected: 0
+            amountSelected: 0,
+            maxMultipleValues: undefined
         },
         data() {
             return {
@@ -843,8 +848,14 @@
             max-width: 100%;
             min-height: 1.5em;
             margin-left: 0.7em;
-            margin-right: 2em !important;
             margin-bottom: 0px !important;
+            height: 24px;
+            overflow: hidden;
+
+            &.is-disabled {
+                cursor: not-allowed;
+                opacity: 0.5;
+            }
         }
 
         &:hover {
@@ -863,6 +874,10 @@
         .b-checkbox, .b-radio {
             margin-right: 0px;
             margin-bottom: 0;
+            &.is-disabled {
+                cursor: not-allowed;
+                opacity: 0.5;
+            }
         }
 
         &:hover:not(.result-info) {

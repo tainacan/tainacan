@@ -7,7 +7,6 @@
                 size="is-small"
                 icon="magnify"
                 :allow-new="false"
-                :maxtags="maxtags"
                 @add="emitAdd"
                 @remove="emitRemove"
                 v-model="selected"
