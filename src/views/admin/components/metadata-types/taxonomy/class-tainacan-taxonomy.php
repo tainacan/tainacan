@@ -122,10 +122,10 @@ class Taxonomy extends Metadata_Type {
 				unset($options['visible_options_list']);
 
 			$form_labels = $this->get_form_labels();
-				
+			
 			foreach($options as $option_label => $option_value) {
 
-				if ( $option_value != '' ) {
+				if ( $option_value != '' && $option_label != 'taxonomy' ) {
 					$options_as_html .= '<div class="field"><div class="label">' . ( isset($form_labels[$option_label]) && isset($form_labels[$option_label]['title']) ? $form_labels[$option_label]['title'] : $option_label ) .'</div>';
 					
 					$readable_option_value = '';

@@ -24,7 +24,16 @@
             v-if="insertOptions != ''"
             class="field">
         <div class="label">{{ $i18n.get('label_insert_options') }}</div>
-        <div class="value">{{ insertOptions }}</div>
+        <div class="value">
+            {{ insertOptions }}
+            <span 
+                    v-if="metadatum.multiple === 'yes' &&
+                        metadatum.cardinality != undefined &&
+                        metadatum.cardinality != 0 &&
+                        metadatum.cardinality != ''">
+                &nbsp;({{ $i18n.getWithVariables('label_maximum_of_%s_values', [ metadatum.cardinality ]) }})
+            </span>
+        </div>
     </div>
     <div
             v-if="metadatum.options_as_html"
@@ -93,6 +102,9 @@ export default {
         }
         .value {
             font-size: 0.9em;
+        }
+        &:only-child {
+            column-span: all;
         }
     }
 }

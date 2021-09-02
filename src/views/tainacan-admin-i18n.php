@@ -593,6 +593,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_back_to_related_item'					 => __( 'Back to related item', 'tainacan'),
 	'label_options_of_the_%s_metadata_type'			 => __( 'Options of the %s metadata type', 'tainacan'),
 	'label_advanced_metadata_options'			 	 => __( 'Advanced metadata options', 'tainacan'),
+	'label_maximum_of_%s_values'			 	 	 => __( 'maximum of %s values', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
