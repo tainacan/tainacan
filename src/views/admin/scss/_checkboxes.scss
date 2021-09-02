@@ -11,9 +11,17 @@
         flex-shrink: 0;
         border-radius: 2px;
         display: inline-block;
-        border: 1px solid var(--tainacan-gray4);
         transition: background 150ms ease-out;
+        border-style: solid;
+        border-width: 1px;
         box-shadow: none !important;
+    }
+    input[type="checkbox"]:not([disabled=disabled]) + .check {
+        border-color: var(--tainacan-gray4);
+    }
+    input[type="checkbox"][disabled=disabled] + .check {
+        border-color: var(--tainacan-gray2);
+        cursor: not-allowed;
     }
 
     &:focus input[type="checkbox"] + .check, 

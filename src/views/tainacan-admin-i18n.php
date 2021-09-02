@@ -591,6 +591,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_related_items'							 => __( 'Items related to this', 'tainacan'),
 	'label_view_all_%s_related_items'				 => __( 'View all %s related items', 'tainacan'),
 	'label_back_to_related_item'					 => __( 'Back to related item', 'tainacan'),
+	'label_options_of_the_%s_metadata_type'			 => __( 'Options of the %s metadata type', 'tainacan'),
+	'label_advanced_metadata_options'			 	 => __( 'Advanced metadata options', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -626,6 +628,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_drop_file_or_click_to_upload'       => __( 'Drop your source file or click here to upload.', 'tainacan' ),
 	'instruction_select_metadatum_type'              => __( 'Select a metadatum type', 'tainacan' ),
 	'instruction_configure_new_metadatum'            => __( 'Configure new metadatum', 'tainacan' ),
+	'instruction_configure_the_metadatum'                => __( 'Configure the metadatum', 'tainacan' ),
 	'instruction_insert_mapper_metadatum_info'       => __( 'Insert the new mapper\'s metadatum info', 'tainacan' ),
 	'instruction_select_max_options_to_show'         => __( 'Select max options to show', 'tainacan' ),
 	'instruction_select_collection_fetch_items'      => __( 'Select a collection to fetch items', 'tainacan' ),

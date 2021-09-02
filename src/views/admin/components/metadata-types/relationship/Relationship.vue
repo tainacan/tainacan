@@ -17,7 +17,7 @@
                         @add="onAdd"
                         @remove="onRemove"
                         :data="options"
-                        :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? null : 1)"
+                        :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : 1)"
                         autocomplete
                         :remove-on-keys="[]"
                         :dropdown-position="isLastMetadatum ? 'top' :'auto'"
@@ -110,7 +110,7 @@
             </b-tab-item>
         </b-tabs>
         <a
-                v-if="currentUserCanEditItems && itemMetadatum.item && itemMetadatum.item.id"
+                v-if="currentUserCanEditItems && itemMetadatum.item && itemMetadatum.item.id && (maxMultipleValues === undefined || maxMultipleValues > selected.length)"
                 :disabled="!$route || $route.query.iframemode"
                 @click="editItemModalOpen = !editItemModalOpen"
                 class="add-link">
@@ -165,6 +165,9 @@
         computed: {
             collection() {
                 return this.getCollection();
+            },
+            maxMultipleValues() {
+                return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.cardinality && !isNaN(this.itemMetadatum.metadatum.cardinality)) ? this.itemMetadatum.metadatum.cardinality : undefined;
             },
             itemModalSrc() {
                 if (this.editingItemId)
