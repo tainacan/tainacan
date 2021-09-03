@@ -713,17 +713,28 @@ class Item extends Entity {
 		if ( $type == 'url' ) {
 			global $wp_embed;
 			$_embed = $wp_embed->autoembed($this->get_document());
+			$url = $this->get_document();
 
-			if ( $_embed == $this->get_document() ) {
+			if ( $_embed == $url ) {
 
 				if ( $document_options && isset($document_options['forced_iframe']) && $document_options['forced_iframe'] === true ) {
-					$tainacan_embed = \Tainacan\Embed::get_instance();
-					$iframe_width = isset($document_options['forced_iframe_width']) ? $document_options['forced_iframe_width'] : '600';
-					$iframe_height = isset($document_options['forced_iframe_height']) ? $document_options['forced_iframe_height'] : '450';
 
-					$_embed = $tainacan_embed->add_responsive_wrapper( sprintf('<iframe src="%s" style="border: 0" width="%s" height="%s"></iframe>', $this->get_document(), $iframe_width, $iframe_height) );
+					$headers = get_headers($url, 1);
+
+					// URL points to an image file
+					if (strpos($headers['Content-Type'], 'image/') !== false) {
+						$_embed = sprintf('<a href="%s" target="blank"><img src="%s" /></a>', $url, $url);
+
+					// URL points to a content that is not an image
+					} else {
+						$tainacan_embed = \Tainacan\Embed::get_instance();
+						$iframe_width = isset($document_options['forced_iframe_width']) ? $document_options['forced_iframe_width'] : '600';
+						$iframe_height = isset($document_options['forced_iframe_height']) ? $document_options['forced_iframe_height'] : '450';
+
+						$_embed = $tainacan_embed->add_responsive_wrapper( sprintf('<iframe src="%s" style="border: 0" width="%s" height="%s"></iframe>', $url, $iframe_width, $iframe_height) );
+					}
 				} else {
-					$_embed = sprintf('<a href="%s" target="blank">%s</a>', $this->get_document(), $this->get_document());
+					$_embed = sprintf('<a href="%s" target="blank">%s</a>', $url, $url);
 				}
 			}
 			$output .= $_embed;
