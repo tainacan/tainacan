@@ -121,8 +121,8 @@ function tainacan_the_item_document_download_link($item_id = 0) {
 		return;
 
 	$link = $item->get_document_download_url();
-
-	if (!$link || $item->get_document_type() == 'text')
+	
+	if (!$link || $item->get_document_type() == 'text' || $item->get_document_type() == 'url')
 		return;
 
 	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. $link . '" href="' . $link . '">' . __('Download', 'tainacan') . '</a>';

@@ -18,6 +18,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
      * @param  {Object}  options                          several options to be tweaked
      * @param  {Object}  options.swiper_thumbs_options    object with SwiperJS options for the thumbnails list (https://swiperjs.com/swiper-api)
      * @param  {Object}  options.swiper_main_options      object with SwiperJS options for the main list
+     * @param  {Boolean} options.disable_lightbox         do not open photoswipes lightbox when clicking the main gallery
      * @param  {Boolean} options.show_share_button        show share button on lightbox
      * 
      * @return {Object}                                   TainacanMediaGallery instance
@@ -30,10 +31,12 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         this.options = options;
         this.initializeSwiper();
         
-        if (this.main_gallery_selector)
-            this.initPhotoSwipeFromDOM(this.main_gallery_selector + " .swiper-wrapper");
-        else if (this.thumbs_gallery_selector)
-            this.initPhotoSwipeFromDOM(this.thumbs_gallery_selector + " .swiper-wrapper");
+        if (!this.options.disable_lightbox) {
+            if (this.main_gallery_selector)
+                this.initPhotoSwipeFromDOM(this.main_gallery_selector + " .swiper-wrapper");
+            else if (this.thumbs_gallery_selector)
+                this.initPhotoSwipeFromDOM(this.thumbs_gallery_selector + " .swiper-wrapper");
+        }
     }
   
     /* Initializes Swiper JS instances of carousels */
@@ -64,7 +67,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         }
     
         if (this.main_gallery_selector) {
-    
+            
             let mainSwiperOptions = {
                 slidesPerView: 1,
                 slidesPerGroup: 1,
@@ -91,6 +94,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             }
             mainSwiperOptions = {...mainSwiperOptions, ...this.options.swiper_main_options };
             this.mainSwiper = new Swiper(this.main_gallery_selector, mainSwiperOptions);
+            
         }
 
         if (this.thumbsMain && this.mainSwiper) {
