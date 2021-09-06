@@ -242,7 +242,7 @@ class REST_Items_Controller extends REST_Controller {
 
 				$img_size = 'large';
 
-				if($request['doc_img_size']){
+				if ( $request['doc_img_size'] ) {
 					$img_size = $request['doc_img_size'];
 				}
 

@@ -104,6 +104,33 @@ class Items extends Repository {
 				'on_error'    => __( 'Invalid document', 'tainacan' ),
 				'default'     => ''
 			],
+			'document_options'=> [
+				'map'         => 'meta',
+				'title'       => __( 'Document options', 'tainacan' ),
+				'type'        => 'object',
+				'description' => __( 'Object of options related to the document display.', 'tainacan' ),
+				'on_error'    => __( 'Invalid document options', 'tainacan' ),
+				'properties'  => array(
+					'forced_iframe' => array(
+						'description' => __( 'Render content in iframe', 'tainacan' ),
+						'type'        => 'boolean',
+						'context'     => array( 'view', 'edit', 'embed' ),
+						'default'     => false
+					),
+					'forced_iframe_height'      => array(
+						'description' => __( 'Iframe height (px)', 'tainacan' ),
+						'type'        => 'number',
+						'context'     => array( 'view', 'edit', 'embed' ),
+						'default'     => 450
+					),
+					'forced_iframe_width' => array(
+						'description' => __( 'Iframe width (px)' , 'tainacan'),
+						'type'        => 'number',
+						'context'     => array( 'view', 'edit', 'embed' ),
+						'default'     => 600
+					),
+				)
+			],
 			'_thumbnail_id'     => [
 				'map'         => 'meta',
 				'title'       => __( 'Thumbnail', 'tainacan' ),

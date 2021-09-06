@@ -623,7 +623,7 @@
                         <b-modal
                                 :can-cancel="false"
                                 :active.sync="isURLModalActive"
-                                :width="640"
+                                :width="860"
                                 scroll="keep"
                                 trap-focus
                                 role="dialog"
@@ -636,7 +636,46 @@
                                     <h2>{{ $i18n.get('instruction_insert_url') }}</h2>
                                     <hr>
                                 </div>
-                                <b-input v-model="urlLink"/>
+                                <b-input 
+                                        type="url"
+                                        v-model="urlLink" />
+                                <br>
+                                <b-field
+                                        :addons="false"
+                                        :label="$i18n.get('label_document_option_forced_iframe')">
+                                        &nbsp;
+                                    <b-switch
+                                            size="is-small" 
+                                            v-model="urlForcedIframe" />
+                                    <help-button
+                                            :title="$i18n.get('label_document_option_forced_iframe')"
+                                            :message="$i18n.get('info_document_option_forced_iframe')" />
+                                </b-field>
+                                <b-field 
+                                        v-if="urlForcedIframe"
+                                        grouped>
+                                    <b-field :label="$i18n.get('label_document_option_iframe_width')">
+                                        <b-numberinput
+                                                :aria-minus-label="$i18n.get('label_decrease')"
+                                                :aria-plus-label="$i18n.get('label_increase')"
+                                                min="1" 
+                                                v-model="urlIframeWidth"
+                                                step="1" />
+                                    </b-field>
+                                    <b-field :label="$i18n.get('label_document_option_iframe_height')">
+                                        <b-numberinput
+                                                :aria-minus-label="$i18n.get('label_decrease')"
+                                                :aria-plus-label="$i18n.get('label_increase')"
+                                                min="1" 
+                                                v-model="urlIframeHeight"
+                                                step="1" />
+                                    </b-field>
+                                </b-field>
+                                <p 
+                                        v-if="urlForcedIframe"
+                                        class="help">
+                                    {{ $i18n.get('info_iframe_dimensions') }}
+                                </p>
 
                                 <div class="field is-grouped form-submit">
                                     <div class="control">
@@ -961,7 +1000,10 @@ export default {
             activeTab: 0,
             isLoadingAttachments: false,
             metadataNameFilterString: '',
-            isThumbnailAltTextModalActive: false
+            isThumbnailAltTextModalActive: false,
+            urlForcedIframe: false,
+            urlIframeWidth: 600,
+            urlIframeHeight: 450
         }
     },
     computed: {
@@ -1380,7 +1422,17 @@ export default {
             this.isURLModalActive = false;
             this.form.document_type = 'url';
             this.form.document = this.urlLink;
-            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
+            this.form.document_options = {
+                forced_iframe: this.urlForcedIframe,
+                forced_iframe_width: this.urlIframeWidth,
+                forced_iframe_height: this.urlIframeHeight
+            }
+            this.updateItemDocument({
+                    item_id: this.itemId,
+                    document: this.form.document,
+                    document_type: this.form.document_type,
+                    document_options: this.form.document_options
+                })
                 .then(item => {
                     this.item.document_as_html = item.document_as_html;
                     this.item.document_mimetype = item.document_mimetype;
@@ -1407,6 +1459,9 @@ export default {
         cancelURLSelection() {
             this.isURLModalActive = false;
             this.urlLink = '';
+            this.urlForcedIframe = this.form.document_options && this.form.document_options['forced_iframe'] !== undefined ? this.form.document_options['forced_iframe'] : false;
+            this.urlIframeWidth = this.form.document_options && this.form.document_options['forced_iframe_width'] !== undefined ? this.form.document_options['forced_iframe_width'] : 600;
+            this.urlIframeHeight = this.form.document_options && this.form.document_options['forced_iframe_height'] !== undefined ? this.form.document_options['forced_iframe_height'] : 450;
         },
         removeDocument() {
             this.textContent = '';
@@ -1617,7 +1672,7 @@ export default {
             this.fetchItem({
                 itemId: this.itemId,
                 contextEdit: true,
-                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html,related_items'
+                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html,document_options,related_items'
             })
             .then((resp) => {
                 resp.request.then((res) => {
@@ -1653,6 +1708,7 @@ export default {
                     this.form.status = this.item.status;
                     this.form.document = this.item.document;
                     this.form.document_type = this.item.document_type;
+                    this.form.document_options = this.item.document_options;
                     this.form.comment_status = this.item.comment_status;
                     this.form.thumbnail_id = this.item.thumbnail_id;
                     this.form.thumbnail_alt = this.item.thumbnail_alt;
@@ -1661,6 +1717,13 @@ export default {
                         this.urlLink = this.form.document;
                     if (this.form.document_type != undefined && this.form.document_type == 'text')
                         this.textContent = this.form.document;
+
+                    if (this.form.document_options !== undefined && this.form.document_options['forced_iframe'] !== undefined)
+                        this.urlForcedIframe = this.form.document_options['forced_iframe'];
+                    if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_width'] !== undefined)
+                        this.urlIframeWidth = this.form.document_options['forced_iframe_width'];
+                    if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_height'] !== undefined)
+                        this.urlIframeHeight = this.form.document_options['forced_iframe_height'];
 
                     if (this.item.status == 'publish' || this.item.status == 'private')
                         this.visibility = this.item.status;
