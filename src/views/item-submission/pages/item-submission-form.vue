@@ -89,6 +89,47 @@
                                         :placeholder="$i18n.get('instruction_insert_url')"
                                         type="url"
                                         v-model="form.document" />
+                                <b-field
+                                        :addons="false"
+                                        :label="$i18n.get('label_document_option_forced_iframe')">
+                                        &nbsp;
+                                    <b-switch
+                                            size="is-small" 
+                                            v-model="form.document_options.forced_iframe" />
+                                    <help-button
+                                            :title="$i18n.get('label_document_option_forced_iframe')"
+                                            :message="$i18n.get('info_document_option_forced_iframe')" />
+                                </b-field>
+                                <b-field 
+                                        v-if="form.document_options && form.document_options.forced_iframe"
+                                        grouped>
+                                    <b-field 
+                                            style="padding: 0"
+                                            :label="$i18n.get('label_document_option_iframe_width')">
+                                        <b-numberinput
+                                                :aria-minus-label="$i18n.get('label_decrease')"
+                                                :aria-plus-label="$i18n.get('label_increase')"
+                                                min="1" 
+                                                v-model="form.document_options.forced_iframe_width"
+                                                step="1" />
+                                    </b-field>
+                                    <b-field 
+                                            style="padding: 0; margin-left: 12px;"
+                                            :label="$i18n.get('label_document_option_iframe_height')">
+                                        <b-numberinput
+                                                :aria-minus-label="$i18n.get('label_decrease')"
+                                                :aria-plus-label="$i18n.get('label_increase')"
+                                                min="1" 
+                                                v-model="form.document_options.forced_iframe_height"
+                                                step="1" />
+                                    </b-field>
+                                </b-field>
+                                <p 
+                                        class="metadatum-description-help-info"
+                                        v-if="form.document_options.forced_iframe"
+                                        style="padding: 0px 0px 0px 34px">
+                                    {{ $i18n.get('info_iframe_dimensions') }}
+                                </p>
                                 <br v-if="hasMoreThanOneDocumentTypeOption">
                             </div>
                             <button
@@ -493,7 +534,12 @@ export default {
                 document_type: '',
                 comment_status: '',
                 attachments: [],
-                thumbnail: ''
+                thumbnail: '',
+                document_options: {
+                    forced_iframe: false,
+                    forced_iframe_width: 600,
+                    forced_iframe_height: 450
+                }
             },
             formErrorMessage: '',
             hasSentForm: false,
