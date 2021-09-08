@@ -912,6 +912,7 @@ class REST_Items_Controller extends REST_Controller {
 	}
 
 	public function submission_process_terms ($value, $taxonomy) {
+		if (is_numeric($value)) return $value;
 		$split_value = explode(">>", $value);
 		if(count($split_value) == 1) {
 			return $split_value[0];
@@ -1013,7 +1014,7 @@ class REST_Items_Controller extends REST_Controller {
 							$value = array_map( function($v) use ($taxonomy) {
 								return $this->submission_process_terms($v, $taxonomy);
 							}, $value);
-						} else if (is_numeric($value) != true) {
+						} else {
 							$value = $this->submission_process_terms($value, $taxonomy);
 						}
 						if ($item_metadata->is_multiple()) {
