@@ -184,9 +184,9 @@
                 this.isTermCreationPanelOpen = false;
 
                 if (this.itemMetadatum.metadatum.multiple === 'no')
-                    this.valueComponent = term.parent ? (term.parent + '>' + term.name) : term.name;
+                    this.valueComponent = term.parent ? (term.parent + '>>' + term.name) : term.name;
                 else
-                    this.valueComponent.push(term.parent ? (term.parent + '>' + term.name) : term.name); 
+                    this.valueComponent.push(term.parent ? (term.parent + '>>' + term.name) : term.name); 
             },
             openTermCreationModal(newTerm) {
                 this.newTermName = newTerm.name;

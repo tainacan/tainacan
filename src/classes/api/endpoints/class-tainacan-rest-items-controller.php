@@ -38,6 +38,7 @@ class REST_Items_Controller extends REST_Controller {
 		$this->item_metadata = Repositories\Item_Metadata::get_instance();
 		$this->collections_repository = Repositories\Collections::get_instance();
 		$this->metadatum_repository = Repositories\Metadata::get_instance();
+		$this->terms_repository = \Tainacan\Repositories\Terms::get_instance();
 	}
 
 	/**
@@ -910,6 +911,23 @@ class REST_Items_Controller extends REST_Controller {
 		}
 	}
 
+	public function submission_process_terms ($value, $taxonomy) {
+		$split_value = explode(">>", $value);
+		if(count($split_value) == 1) {
+			return $split_value[0];
+		} else if (count($split_value) == 2 ) {
+			$new_term  = new Entities\Term();
+			$new_term->set_taxonomy( $taxonomy->get_db_identifier() );
+			$new_term->set('name', $split_value[1]);
+			$new_term->set('parent', $split_value[0]);
+			if ( $new_term->validate() ) {
+				$new_term = $this->terms_repository->insert( $new_term );
+			}
+			return $new_term;
+		}
+		return count($split_value) > 1 ? $value : filter_var($value, FILTER_SANITIZE_STRING);
+	}
+
 	public function submission_item ($request) {
 		$collection_id = $request['collection_id'];
 		$item          = json_decode($request->get_body(), true);
@@ -936,7 +954,7 @@ class REST_Items_Controller extends REST_Controller {
 
 			if ( $item->validate() ) {
 				$item = $this->items_repository->insert( $item );
-				$item_id = $item->get_id();
+
 				foreach ( $metadata as $m ) {
 					if ( !isset($m['value']) || $m['value'] == null ) continue;
 					$value = $m['value'];
@@ -987,6 +1005,25 @@ class REST_Items_Controller extends REST_Controller {
 								}	
 								$parent_meta_id = $item_metadata_child->get_parent_meta_id();
 							}
+						}
+					} else if ($metadatum->get_metadata_type_object()->get_primitive_type() == 'term') {
+						$taxonomy_id  = $metadatum->get_metadata_type_object()->get_option( 'taxonomy_id' );
+						$taxonomy = new Entities\Taxonomy( $taxonomy_id );
+						if (is_array($value) == true) {
+							$value = array_map( function($v) use ($taxonomy) {
+								return $this->submission_process_terms($v, $taxonomy);
+							}, $value);
+						} else if (is_numeric($value) != true) {
+							$value = $this->submission_process_terms($value, $taxonomy);
+						}
+						if ($item_metadata->is_multiple()) {
+							$item_metadata->set_value( is_array($value) ? $value : [$value] );
+						} else {
+							$item_metadata->set_value( is_array($value) ? implode(' ', $value) : $value);
+						}
+						$item_metadata = $this->submission_item_metadada($item_metadata, $request);
+						if ($item_metadata instanceof \WP_REST_Response) {
+							return $item_metadata;
 						}
 					} else {
 						if (is_array($value) == true) {
