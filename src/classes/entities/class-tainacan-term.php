@@ -8,14 +8,14 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Represents the Entity Term
 */
 class Term extends Entity {
-    protected
-        $term_id,
-        $name,
-        $parent,
-        $description,
-        $user,
+	protected
+		$term_id,
+		$name,
+		$parent,
+		$description,
+		$user,
 		$header_image_id,
-        $taxonomy;
+		$taxonomy;
 
 
 	static $post_type = false;
@@ -34,22 +34,22 @@ class Term extends Entity {
 	 */
 	function __construct($which = 0, $taxonomy = false ) {
 
-        if ($taxonomy)
-            $this->set_taxonomy( $taxonomy );
+		if ($taxonomy)
+			$this->set_taxonomy( $taxonomy );
 
-        if ( is_numeric( $which ) && $which > 0) {
-            $post = get_term_by('id', $which, $taxonomy);
-            
-            if ( $post instanceof \WP_Term) {
-                $this->WP_Term = get_term_by('id', $which, $taxonomy);
-            }
+		if ( is_numeric( $which ) && $which > 0) {
+			$post = get_term_by('id', $which, $taxonomy);
+			
+			if ( $post instanceof \WP_Term) {
+				$this->WP_Term = get_term_by('id', $which, $taxonomy);
+			}
 
-        } elseif ( $which instanceof \WP_Term ) {
-            $this->WP_Term = $which;
-        } else {
-            $this->WP_Term = new \StdClass();
-        }
-    }
+		} elseif ( $which instanceof \WP_Term ) {
+			$this->WP_Term = $which;
+		} else {
+			$this->WP_Term = new \StdClass();
+		}
+	}
 
 	public function __toString() {
 		return (string) apply_filters("tainacan-term-to-string", $this->get_name(), $this);
@@ -70,7 +70,7 @@ class Term extends Entity {
 		return apply_filters('tainacan-term-to-array', $term_array, $this);
 	}
 
-    // Getters
+	// Getters
 
 	/**
 	 * Return the unique identifier
@@ -78,11 +78,11 @@ class Term extends Entity {
 	 * @return integer
 	 */
 	function get_id() {
-        return $this->get_term_id();
-    }
+		return $this->get_term_id();
+	}
 	function get_term_id() {
-        return $this->get_mapped_property('term_id');
-    }
+		return $this->get_mapped_property('term_id');
+	}
 
 	/**
 	 * Return the name
@@ -90,8 +90,8 @@ class Term extends Entity {
 	 * @return string
 	 */
 	function get_name() {
-        return $this->get_mapped_property('name');
-    }
+		return $this->get_mapped_property('name');
+	}
 
 	/**
 	 * Return the parent ID
@@ -99,8 +99,8 @@ class Term extends Entity {
 	 * @return integer
 	 */
 	function get_parent() {
-        return $this->get_mapped_property('parent');
-    }
+		return $this->get_mapped_property('parent');
+	}
 
 	/**
 	 * Return the description
@@ -108,8 +108,8 @@ class Term extends Entity {
 	 * @return string
 	 */
 	function get_description() {
-        return $this->get_mapped_property('description');
-    }
+		return $this->get_mapped_property('description');
+	}
 
 	/**
 	 * Return the user ID
@@ -117,8 +117,8 @@ class Term extends Entity {
 	 * @return integer
 	 */
 	function get_user() {
-        return $this->get_mapped_property('user');
-    }
+		return $this->get_mapped_property('user');
+	}
 
 	/**
 	 * Return the taxonomy
@@ -126,8 +126,8 @@ class Term extends Entity {
 	 * @return integer
 	 */
 	function get_taxonomy() {
-        return $this->get_mapped_property('taxonomy');
-    }
+		return $this->get_mapped_property('taxonomy');
+	}
 	
 	/**
 	 * Get Header Image ID attribute
@@ -155,7 +155,7 @@ class Term extends Entity {
 		return $url;
 	}
 
-    // Setters
+	// Setters
 
 	/**
 	 * Define the name
@@ -163,8 +163,8 @@ class Term extends Entity {
 	 * @param [string] $value
 	 */
 	function set_name($value) {
-        $this->set_mapped_property('name', $value);
-    }
+		$this->set_mapped_property('name', $value);
+	}
 
 	/**
 	 * Define the parent ID
@@ -172,8 +172,8 @@ class Term extends Entity {
 	 * @param [integer] $value
 	 */
 	function set_parent($value) {
-        $this->set_mapped_property('parent', $value);
-    }
+		$this->set_mapped_property('parent', $value);
+	}
 
 	/**
 	 * Define the description
@@ -181,8 +181,8 @@ class Term extends Entity {
 	 * @param [string] $value
 	 */
 	function set_description($value) {
-        $this->set_mapped_property('description', $value);
-    }
+		$this->set_mapped_property('description', $value);
+	}
 
 	/**
 	 * Define the user associated
@@ -190,8 +190,8 @@ class Term extends Entity {
 	 * @param [integer] $value
 	 */
 	function set_user($value) {
-        $this->set_mapped_property('user', $value);
-    }
+		$this->set_mapped_property('user', $value);
+	}
 
 	/**
 	 * Define the taxonomy associated
@@ -199,8 +199,8 @@ class Term extends Entity {
 	 * @param [integer] $value
 	 */
 	function set_taxonomy($value) {
-        $this->set_mapped_property('taxonomy', $value);
-    }
+		$this->set_mapped_property('taxonomy', $value);
+	}
 	
 	/**
 	 * Set Header Image ID
