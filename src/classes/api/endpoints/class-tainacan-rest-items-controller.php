@@ -5,7 +5,6 @@ namespace Tainacan\API\EndPoints;
 use \Tainacan\API\REST_Controller;
 use Tainacan\Repositories;
 use Tainacan\Entities;
-use Tainacan\Tests\Collections;
 
 /**
  * Represents the Items REST Controller
@@ -898,11 +897,13 @@ class REST_Items_Controller extends REST_Controller {
 				return $this->item_metadata->suggest( $item_metadata );
 			}
 			else {
+				$this->submission_rollback_new_terms();
 				return new \WP_REST_Response( [
 					'error_message' => __( 'The metadatum does not accept suggestions', 'tainacan' ),
 				], 400 );
 			}
 		} else {
+			$this->submission_rollback_new_terms();
 			return new \WP_REST_Response( [
 				'error_message' => __( 'Please verify, invalid value(s)', 'tainacan' ),
 				'errors'        => $item_metadata->get_errors(),
@@ -911,11 +912,22 @@ class REST_Items_Controller extends REST_Controller {
 		}
 	}
 
-	public function submission_process_terms ($value, $taxonomy) {
+	private $new_terms_ids = [];
+	private function submission_process_terms ($value, $taxonomy) {
 		if (is_numeric($value)) return $value;
 		$split_value = explode(">>", $value);
-		if(count($split_value) == 1) {
-			return $split_value[0];
+		if(count($split_value) == 1 ) {
+			$exist = $this->terms_repository->term_exists($split_value[0], $taxonomy, null, true);
+			if ($exist)
+				return $split_value[0];
+			$new_term  = new Entities\Term();
+			$new_term->set_taxonomy( $taxonomy->get_db_identifier() );
+			$new_term->set('name', $split_value[0]);
+			if ( $new_term->validate() ) {
+				$new_term = $this->terms_repository->insert( $new_term );
+				$this->new_terms_ids[] = ['term_id' => $new_term->get_term_id(), 'taxonomy' => $new_term->get_taxonomy()];
+			}
+			return $new_term;
 		} else if (count($split_value) == 2 ) {
 			$new_term  = new Entities\Term();
 			$new_term->set_taxonomy( $taxonomy->get_db_identifier() );
@@ -923,10 +935,18 @@ class REST_Items_Controller extends REST_Controller {
 			$new_term->set('parent', $split_value[0]);
 			if ( $new_term->validate() ) {
 				$new_term = $this->terms_repository->insert( $new_term );
+				$this->new_terms_ids[] = ['term_id' => $new_term->get_term_id(), 'taxonomy' => $new_term->get_taxonomy()];
 			}
 			return $new_term;
 		}
 		return count($split_value) > 1 ? $value : filter_var($value, FILTER_SANITIZE_STRING);
+	}
+
+	private function submission_rollback_new_terms () {
+		foreach($this->new_terms_ids as $term) {
+			$remove_term = new Entities\Term($term['term_id'], $term['taxonomy']);
+			$this->terms_repository->delete( $remove_term, true );
+		}
 	}
 
 	public function submission_item ($request) {
@@ -1049,14 +1069,19 @@ class REST_Items_Controller extends REST_Controller {
 					$fake_id = md5(uniqid(mt_rand(), true));
 					$id = $item->get_id();
 					if (set_transient('tnc_transient_submission_' . $fake_id, $id, 300) == true) {
+						set_transient('tnc_transient_submission_' . $fake_id . '_new_terms_ids', $this->new_terms_ids, 300);
 						$response_item = $this->prepare_item_for_response($item, $request);
 						$response_item['id'] = $fake_id;
 						return new \WP_REST_Response($response_item, 201 );
-					} else return new \WP_REST_Response([
-						'error_message' => __('unable create submission ID.', 'tainacan'),
-					], 400);
+					} else {
+						$this->submission_rollback_new_terms();
+						return new \WP_REST_Response([
+							'error_message' => __('unable create submission ID.', 'tainacan'),
+						], 400);
+					}
 					
 				} else {
+					$this->submission_rollback_new_terms();
 					return new \WP_REST_Response([
 						'error_message' => __('One or more values are invalid.', 'tainacan'),
 						'errors'        => $item->get_errors(),
@@ -1064,6 +1089,7 @@ class REST_Items_Controller extends REST_Controller {
 					], 400);
 				}
 			} else {
+				$this->submission_rollback_new_terms();
 				return new \WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
 					'errors'        => $item->get_errors(),
@@ -1071,6 +1097,7 @@ class REST_Items_Controller extends REST_Controller {
 				], 400);
 			}
 		} catch (\Exception $exception){
+			$this->submission_rollback_new_terms();
 			return new \WP_REST_Response($exception->getMessage(), 400);
 		}
 	}
@@ -1085,6 +1112,7 @@ class REST_Items_Controller extends REST_Controller {
 				'error_message' => __('submission ID not exist.', 'tainacan'),
 			], 400);
 		}
+		$this->new_terms_ids = get_transient('tnc_transient_submission_' . $submission_id . '_new_terms_ids');
 
 		$item = $this->items_repository->fetch($item_id);
 		$collection = $this->collections_repository->fetch($collection_id);
@@ -1158,6 +1186,7 @@ class REST_Items_Controller extends REST_Controller {
 			delete_transient('tnc_transient_submission_' . $submission_id);
 			return new \WP_REST_Response($this->prepare_item_for_response($item, $request), 201 );
 		} else {
+			$this->submission_rollback_new_terms();
 			return new \WP_REST_Response([
 				'error_message' => __('One or more values are invalid.', 'tainacan'),
 				'errors'        => array_merge($item->get_errors(), $entities_erros),
