@@ -227,7 +227,7 @@
 
 <script>
     import { formHooks } from "../../js/mixins";
-    import {mapActions, mapGetters} from 'vuex';
+    import { mapActions, mapGetters } from 'vuex';
     import wpMediaFrames from '../../js/wp-media-frames';
 
     export default {

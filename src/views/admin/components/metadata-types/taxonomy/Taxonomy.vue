@@ -7,7 +7,7 @@
                 :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : 1)"
                 v-model="valueComponent"
                 :allow-select-to-create="allowSelectToCreate"
-                :allow-new="allowNew"
+                :allow-new="allowNewFromOptions"
                 :taxonomy-id="taxonomyId"
                 :item-metadatum="itemMetadatum"
                 @showAddNewTerm="openTermCreationModal"
@@ -17,7 +17,7 @@
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 :is-modal="false"
                 :parent="0"
-                :allow-new="allowNew"
+                :allow-new="allowNewFromOptions"
                 @showAddNewTerm="openTermCreationModal"
                 :taxonomy_id="taxonomyId"
                 :selected="!valueComponent ? [] : valueComponent"
@@ -33,7 +33,7 @@
             />
             
         <div 
-                v-if="displayCreateNewTerm"
+                v-if="displayCreateNewTerm && !isTermCreationPanelOpen"
                 class="add-new-term">
             <a
                     @click="openTermCreationModal"
@@ -46,6 +46,7 @@
             </a>
         </div>
 
+        <!-- Term creation modal, used on admin for a complete term creation -->
         <b-modal 
                 v-model="isTermCreationModalOpen"
                 trap-focus
@@ -61,6 +62,17 @@
                     @onEditionCanceled="() => $console.log('Edition canceled')"
                     @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
         </b-modal>
+
+        <!-- Term creation panel, used on item submission block for a simpler term creation -->
+        <transition name="filter-item">
+            <term-creation-panel
+                    v-if="isTermCreationPanelOpen" 
+                    :taxonomy-id="taxonomyId"
+                    :edit-form="{ id: 'new', name: newTermName ? newTermName : '' }"
+                    @onEditionFinished="($event) => addTermToBeCreated($event)"
+                    @onEditionCanceled="() => isTermCreationPanelOpen = false"
+                    @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
+        </transition>
     </div>
 </template>
 
@@ -80,9 +92,8 @@
             disabled: false,
             forcedComponentType: '',
             maxtags: '',
+            allowNew: false,
             allowSelectToCreate: false,
-            isTermCreationModalOpen: false,
-            newTermName: ''
         },
         data(){
             return {
@@ -90,8 +101,11 @@
                 taxonomyId: '',
                 taxonomy: '',
                 terms:[],
-                allowNew: false,
-                isAddingNewTermVaue: false
+                isAddingNewTermVaue: false,
+                isTermCreationModalOpen: false,
+                isTermCreationPanelOpen: false,
+                newTermName: '',
+                allowNewFromOptions: false
             }
         },
         computed: {
@@ -107,7 +121,10 @@
                     return '';
             },
             displayCreateNewTerm() {
-                return this.allowNew && (this.maxMultipleValues === undefined || this.maxMultipleValues > this.value.length);
+                return this.allowNewFromOptions;
+            },
+            isOnItemSubmissionForm() {
+                return !this.itemMetadatum.item || !this.itemMetadatum.item.id;
             },
             maxMultipleValues() {
                 return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.cardinality && !isNaN(this.itemMetadatum.metadatum.cardinality)) ? this.itemMetadatum.metadatum.cardinality : undefined;
@@ -124,9 +141,8 @@
             this.taxonomyId = metadata_type_options.taxonomy_id;
             this.taxonomy = metadata_type_options.taxonomy;
             
-            if (this.itemMetadatum.item && this.itemMetadatum.item.id && metadata_type_options && metadata_type_options.allow_new_terms && this.itemMetadatum.item) 
-                this.allowNew = metadata_type_options.allow_new_terms == 'yes';
-
+            this.allowNewFromOptions = this.allowNew === false ? false : metadata_type_options.allow_new_terms == 'yes';
+            
             this.getTermsId();
         },
         methods: {
@@ -168,9 +184,21 @@
                     }
                 }
             },
+            addTermToBeCreated(term) {
+                this.isTermCreationPanelOpen = false;
+
+                if (this.itemMetadatum.metadatum.multiple === 'no')
+                    this.valueComponent = term.parent ? (term.parent + '>>' + term.name) : term.name;
+                else
+                    this.valueComponent.push(term.parent ? (term.parent + '>>' + term.name) : term.name); 
+            },
             openTermCreationModal(newTerm) {
                 this.newTermName = newTerm.name;
-                this.isTermCreationModalOpen = true;
+                
+                if (this.isOnItemSubmissionForm)
+                    this.isTermCreationPanelOpen = true;
+                else
+                    this.isTermCreationModalOpen = true;
             }
         }
     }

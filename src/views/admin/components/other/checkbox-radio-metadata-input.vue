@@ -291,7 +291,7 @@
                                     closable
                                     class="is-small"
                                     @close="selected instanceof Array ? selected.splice(index, 1) : selected = ''">
-                                    <span v-html="(isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
+                                 <span v-html="(isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
                             </b-tag>
                         </div>
                     </b-field>
@@ -441,23 +441,33 @@
             },
             fetchSelectedLabels() {
 
-                let selected = this.selected instanceof Array ? this.selected : [this.selected];
+                let allSelected = this.selected instanceof Array ? this.selected : [this.selected];
 
-                if (this.taxonomy_id && selected.length) {
+                // If a new item was added from item submission block, the value will be a string, and the term does not exists yet.
+                let selected = allSelected.filter((aValue) => !isNaN(aValue));
+                let selectedFromItemSubmission = allSelected.filter((aValue) => isNaN(aValue));
 
-                    this.isSelectedTermsLoading = true;
+                if (this.taxonomy_id) {
 
-                    axios.get(`/taxonomy/${this.taxonomy_id}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
-                        .then((res) => {
-                            for (const term of res.data)
-                                this.saveSelectedTagName(term.id, term.name, term.url);
+                    if (selected.length) {
+                        this.isSelectedTermsLoading = true;
+                        axios.get(`/taxonomy/${this.taxonomy_id}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
+                            .then((res) => {
+                                for (const term of res.data)
+                                    this.saveSelectedTagName(term.id, term.name, term.url);
 
-                            this.isSelectedTermsLoading = false;
-                        })
-                        .catch((error) => {
-                            this.$console.log(error);
-                            this.isSelectedTermsLoading = false;
-                        });
+                                this.isSelectedTermsLoading = false;
+                            })
+                            .catch((error) => {
+                                this.$console.log(error);
+                                this.isSelectedTermsLoading = false;
+                            });
+                    }
+
+                    if (selectedFromItemSubmission) {
+                        for (const term of selectedFromItemSubmission)
+                            this.saveSelectedTagName(term, term.split('>')[term.split('>').length - 1], '');
+                    }
                     
                 } else if (this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' && selected.length) {
                     this.isSelectedTermsLoading = true;
