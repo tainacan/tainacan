@@ -1,5 +1,7 @@
 <template>
-    <div :class="className + ' has-mounted'">
+    <div 
+            :style="style"
+            :class="className + ' has-mounted'">
         <div v-if="!isLoading">
             <div  
                     :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '')"
@@ -175,7 +177,8 @@ export default {
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
         className: String,
-        taxonomyId: String
+        taxonomyId: String,
+        style: String
     },
     data() {
         return {

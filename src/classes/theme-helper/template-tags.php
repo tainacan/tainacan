@@ -121,8 +121,8 @@ function tainacan_the_item_document_download_link($item_id = 0) {
 		return;
 
 	$link = $item->get_document_download_url();
-
-	if (!$link || $item->get_document_type() == 'text')
+	
+	if (!$link || $item->get_document_type() == 'text' || $item->get_document_type() == 'url')
 		return;
 
 	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. $link . '" href="' . $link . '">' . __('Download', 'tainacan') . '</a>';
@@ -996,9 +996,11 @@ function tainacan_get_the_mime_type_icon($mime_type, $image_size = 'medium') {
 			$icon_file = 'placeholder_pdf';
 			break;
 		case 'attachment':
+			$icon_file = 'placeholder_attachment';
+			break;
 		case 'empty':
 		default:
-			$icon_file = 'placeholder_attachment';
+			$icon_file = 'placeholder_square';
 	}
 	
 	return $images_path . $icon_file . $image_size . '.png';

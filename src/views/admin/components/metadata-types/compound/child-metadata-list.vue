@@ -66,9 +66,7 @@
                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
                     </span>
                      
-                    <span 
-                            class="metadatum-name"
-                            :class="{'is-danger': formWithErrors == metadatum.id }">
+                    <span class="metadatum-name">
                             {{ metadatum.name }}
                     </span>
                     <span   
@@ -86,11 +84,6 @@
                                     metadatum.metadata_type_object.related_mapped_prop == 'description'">
                                 {{ $i18n.get('label_core_description') }}
                         </em>
-                        <span 
-                            class="not-saved" 
-                            v-if="(editForms[metadatum.id] != undefined && editForms[metadatum.id].saved != true) || metadatum.status == 'auto-draft'">
-                        {{ $i18n.get('info_not_saved') }}
-                        </span>
                         <span 
                                 v-if="metadatum.status == 'private'"
                                 class="icon"
@@ -182,20 +175,22 @@
                             v-if="isCollapseOpen(metadatum.id) && openedMetadatumId !== metadatum.id"
                             :metadatum="metadatum" />
                 </transition>
-                <transition name="form-collapse">
-                    <div v-if="openedMetadatumId == metadatum.id">
-                        <metadatum-edition-form
-                                :collection-id="collectionId"
-                                :is-repository-level="isRepositoryLevel"
-                                @onEditionFinished="onEditionFinished()"
-                                @onEditionCanceled="onEditionCanceled()"
-                                @onErrorFound="formWithErrors = metadatum.id"
-                                :index="index"
-                                :original-metadatum="metadatum"
-                                :edited-metadatum="editForms[metadatum.id]"
-                                :is-parent-multiple="isParentMultiple"/>
-                    </div>
-                </transition>
+                <b-modal 
+                        @close="onEditionCanceled()"
+                        :active="openedMetadatumId == metadatum.id"
+                        trap-focus
+                        aria-modal
+                        aria-role="dialog"
+                        custom-class="tainacan-modal">
+                    <metadatum-edition-form
+                            :collection-id="collectionId"
+                            :original-metadatum="metadatum"
+                            :is-parent-multiple="isParentMultiple"
+                            :is-repository-level="isRepositoryLevel"
+                            @onEditionFinished="onEditionFinished()"
+                            @onEditionCanceled="onEditionCanceled()"
+                            :index="index" />
+                </b-modal>
             </div>
         </draggable>
     </div>
@@ -236,9 +231,7 @@
                 isLoadingMetadata: false,
                 isUpdatingMetadataOrder: false,
                 openedMetadatumId: '',
-                formWithErrors: '',
                 hightlightedMetadatum: '',
-                editForms: {},
                 metadataSearchCancel: undefined,
                 childrenMetadata: [],
                 collapses: {}
@@ -268,33 +261,6 @@
             collapseAll(isCollapsed) {
                 this.childrenMetadata.forEach((metadatum) => this.$set(this.collapses, metadatum.id, isCollapsed));
             }
-        },
-        beforeRouteLeave ( to, from, next ) {
-            
-            let hasUnsavedForms = false;
-            for (let editForm in this.editForms) {
-                if (!this.editForms[editForm].saved) 
-                    hasUnsavedForms = true;
-            }
-            if ((this.openedMetadatumId != '' && this.openedMetadatumId != undefined) || hasUnsavedForms ) {
-                this.$buefy.modal.open({
-                    parent: this,
-                    component: CustomDialog,
-                    props: {
-                        icon: 'alert',
-                        title: this.$i18n.get('label_warning'),
-                        message: this.$i18n.get('info_warning_metadata_not_saved'),
-                        onConfirm: () => {
-                            this.onEditionCanceled();
-                            next();
-                        },
-                    },
-                    trapFocus: true,
-                    customClass: 'tainacan-modal'
-                });  
-            } else {
-                next();
-            }  
         },
         mounted() {
             if (this.isRepositoryLevel)
@@ -400,34 +366,12 @@
             },
             editMetadatum(metadatum) {
                 this.openedMetadatumId = metadatum.id;
-
-                // Scroll to opened metadata form
-                this.$nextTick(() => { 
-                    if (this.$refs['metadatum-handler-' + metadatum.id] && this.$refs['metadatum-handler-' + metadatum.id][0])
-                        this.$refs['metadatum-handler-' + metadatum.id][0].scrollIntoView({ behavior: 'smooth', block: 'start' });
-                });
-
-                // First time opening
-                if (this.editForms[this.openedMetadatumId] == undefined) {
-                    this.editForms[this.openedMetadatumId] = JSON.parse(JSON.stringify(metadatum));
-                    this.editForms[this.openedMetadatumId].saved = true;
-
-                    // Metadatum inserted now
-                    if (this.editForms[this.openedMetadatumId].status == 'auto-draft') {
-                        this.editForms[this.openedMetadatumId].status = 'publish';
-                        this.editForms[this.openedMetadatumId].saved = false;
-                    }
-                }      
             },
             onEditionFinished() {
-                this.formWithErrors = '';
-                delete this.editForms[this.openedMetadatumId];
                 this.openedMetadatumId = '';
                 this.$router.push({ query: {}});
             },
             onEditionCanceled() {
-                this.formWithErrors = '';
-                delete this.editForms[this.openedMetadatumId];
                 this.openedMetadatumId = '';
                 this.$router.push({ query: {}});
             },

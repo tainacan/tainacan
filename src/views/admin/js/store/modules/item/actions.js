@@ -182,12 +182,16 @@ export const duplicateItem = ({ commit }, { collectionId, itemId, copies }) => {
     }); 
 };
 
-export const updateItemDocument = ({ commit }, { item_id, document, document_type }) => {
+export const updateItemDocument = ({ commit }, { item_id, document, document_type, document_options }) => {
+    let params = {
+        document: document,
+        document_type: document_type,
+    }
+    if (document_options)
+        params['document_options'] = document_options;
+        
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch('/items/' + item_id, {
-            document: document,
-            document_type: document_type
-        }).then( res => {
+        axios.tainacan.patch('/items/' + item_id, params).then( res => {
             let item = res.data;
 
             commit('setItem', item);

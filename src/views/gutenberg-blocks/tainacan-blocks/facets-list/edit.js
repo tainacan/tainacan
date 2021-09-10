@@ -1,8 +1,8 @@
 const { __ } = wp.i18n;
 
-const { BaseControl, RangeControl, Spinner, Button, ToggleControl, Tooltip, Placeholder, PanelBody } = wp.components;
+const { BaseControl, RangeControl, Spinner, SelectControl, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import MetadataModal from './metadata-modal.js';
 import ParentTermModal from './parent-term-modal.js';
@@ -17,7 +17,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         facetsObject,
         content, 
         collectionId,
-        collectionSlug,    
+        collectionSlug,
         showImage,
         nameInsideImage,
         showItemsCount,
@@ -39,8 +39,12 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         appendChildTerms,
         childFacetsObject,
         linkTermFacetsToTermPage,
-        isLoadingChildTerms
+        isLoadingChildTerms,
+        itemsCountStyle
     } = attributes;
+
+    // Gets blocks props from hook
+    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
 
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
@@ -70,6 +74,11 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         gridMargin = 24;
         setAttributes({ gridMargin: gridMargin });
     }
+    if (itemsCountStyle === undefined) {
+        itemsCountStyle = 'default';
+        setAttributes({ itemsCountStyle: itemsCountStyle });
+    }
+
     // Uptades previous logic of metadatum type
     if (metadatumType == __('Taxonomy', 'tainacan')) {
         metadatumType = 'Tainacan\\Metadata_Types\\Taxonomy';
@@ -91,7 +100,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     href={ !appendChildTerms ? ((linkTermFacetsToTermPage && isMetadatumTypeTaxonomy(metadatumType)) ? facet.term_url : facet.url) : (facet.total_children > 0 ? null : (linkTermFacetsToTermPage ? facet.term_url : facet.url)) }
                     onClick={ () => { (appendChildTerms && facet.total_children > 0) ? displayChildTerms(facetId) : null } } 
                     target="_blank"
-                    style={{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'rem' : ''}}>
+                    style={{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}}>
                     { isMetadatumTypeTaxonomy(metadatumType) ? 
                         <img
                             src={ 
@@ -120,8 +129,19 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                             alt={ facet.label ? facet.label : __( 'Thumbnail', 'tainacan' ) }/>
                     : null 
                     }
-                    <span>{ facet.label ? facet.label : '' }</span>
-                    { facet.total_items ? <span class="facet-item-count" style={{ display: !showItemsCount ? 'none' : '' }}>&nbsp;({ facet.total_items })</span> : null }
+                    <div className={ 'facet-label-and-count' + (itemsCountStyle === 'below' ? ' is-style-facet-label-and-count--below' : '') }>
+                        <span>{ facet.label ? facet.label : '' }</span>
+                        {
+                            facet.total_items ?
+                            <span class="facet-item-count" style={{ display: !showItemsCount ? 'none' : '' }}>
+                                { itemsCountStyle === 'below' ? 
+                                    ( facet.total_items != 1 ? (facet.total_items + ' ' + __('items', 'tainacan' )) : (facet.total_items + ' ' + __('item', 'tainacan' )) )
+                                    :
+                                    ( ' (' + facet.total_items + ')' )
+                                }
+                            </span>
+                        : null }
+                    </div>
                     { appendChildTerms && facet.total_children > 0 ? 
                         ( childFacetsObject[facetId] && childFacetsObject[facetId].visible ?
                             <svg 
@@ -425,7 +445,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     src={ `${tainacan_blocks.base_url}/assets/images/facets-list.png` } />
         </div>
     : (
-        <div className={className}>
+        <div { ...blockProps }>
 
             <div>
                 <BlockControls>
@@ -500,7 +520,21 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                         updateContent();
                                     } 
                                 }
-                            /> 
+                            />
+                        { showItemsCount ? 
+                            <SelectControl
+                                    label={__('Facets label style', 'tainacan')}
+                                    value={ itemsCountStyle }
+                                    options={ [
+                                        { label: __('Items count in between parenthesis', 'tainacan'), value: 'default' },
+                                        { label: __('Items count below label', 'tainacan'), value: 'below' },
+                                    ] }
+                                    onChange={ ( aStyle ) => {
+                                        itemsCountStyle = aStyle;
+                                        setAttributes({ itemsCountStyle: itemsCountStyle });
+                                        updateContent();
+                                    }}/>
+                        : null }
                     </PanelBody>
                     {/* Settings related only to facets from Taxonomy metadata */}
                     { isMetadatumTypeTaxonomy(metadatumType) ?
@@ -802,7 +836,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         <ul 
                             style={{ 
                                 gridGap: layout == 'grid' ? (gridMargin + 'px') : 'inherit',
-                                marginTop: showSearchBar ? '1.5rem' : '0px'
+                                marginTop: showSearchBar ? '1.5em' : '0px'
                             }}
                             className={ 'facets-list-edit facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '') }>
                             { facets }
@@ -810,7 +844,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         :
                         <ul 
                             style={{  
-                                marginTop: showSearchBar ? '1.5rem' : '0px'
+                                marginTop: showSearchBar ? '1.5em' : '0px'
                             }}
                             className={ 'facets-list-edit facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '') }>
                             {
@@ -828,26 +862,24 @@ export default function({ attributes, setAttributes, className, isSelected, clie
             }
 
             { showLoadMore && facets.length > 0 && !isLoading ?
-                <Tooltip text={__('If necessary, the show more button will be available on post or page.', 'tainacan')}>
-                    <button
-                            class="show-more-button"
-                            disabled
-                            label={__('Show more', 'tainacan')}>
-                        <span class="icon">
-                            <i>
-                                <svg
-                                        width="24"
-                                        height="24"
-                                        viewBox="4 5 24 24">
-                                    <path d="M 7.41,8.295 6,9.705 l 6,6 6,-6 -1.41,-1.41 -4.59,4.58 z"/>
-                                    <path
-                                            d="M0 0h24v24H0z"
-                                            fill="none"/>                        
-                                </svg>
-                            </i>
-                        </span>
-                    </button>
-                </Tooltip> 
+                <button
+                        class="show-more-button"
+                        disabled
+                        label={__('Show more', 'tainacan')}>
+                    <span class="icon">
+                        <i>
+                            <svg
+                                    width="24"
+                                    height="24"
+                                    viewBox="4 5 24 24">
+                                <path d="M 7.41,8.295 6,9.705 l 6,6 6,-6 -1.41,-1.41 -4.59,4.58 z"/>
+                                <path
+                                        d="M0 0h24v24H0z"
+                                        fill="none"/>                        
+                            </svg>
+                        </i>
+                    </span>
+                </button>
             : null
             }
         </div>

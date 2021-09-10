@@ -46,6 +46,7 @@
             }
             button {
                 height: auto !important;
+                min-height: 1.75em;
                 display: flex;
                 align-items: center;
                 border: none;
@@ -54,11 +55,13 @@
                 background: white;
                 padding: 4px 1em;
                 font-size: 1em;
+                line-height: 1.75em;
 
                 .icon {
                     height: 1.75em;                    
                     svg {
                         transform: scale(1);
+                        height: 100%;
                         fill: var(--tainacan-block-primary, $primary); 
                     }
                 }

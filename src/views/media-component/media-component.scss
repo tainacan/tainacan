@@ -61,7 +61,7 @@ $pswp__include-minimal-style: true !default;
         align-items: center;
         margin: 0;
 
-        &[data-pswp-uid] li.swiper-slide img {
+        &[data-pswp-uid]:not([data-pswp-uid='']) li.swiper-slide img {
             cursor: zoom-in !important;
         }
     }
@@ -79,7 +79,9 @@ $pswp__include-minimal-style: true !default;
 
         .swiper-slide-metadata {
             text-align: center;
-
+            font-size: 0.875em;
+            margin-bottom: 1em;
+            
             &.hide-name .swiper-slide-metadata__name {
                 display: none;
                 visibility: hidden;
@@ -204,6 +206,10 @@ $pswp__include-minimal-style: true !default;
     ul.swiper-wrapper { 
         max-width: calc(100% - var(--swiper-navigation-size, 44px) - var(--swiper-navigation-size, 44px));
         margin: 0 var(--swiper-navigation-size, 44px);
+
+        &[data-pswp-uid]:not([data-pswp-uid='']) li.swiper-slide {
+            cursor: zoom-in;
+        }
     }
 
     li.swiper-slide {
@@ -212,7 +218,6 @@ $pswp__include-minimal-style: true !default;
         word-break: break-all;
         font-size: 0.875em;
         max-width: calc(var(--tainacan-media-thumbs-carousel-item-size, 136px) + 17px);
-        cursor: zoom-in;
         
         @media only screen and (max-width: 380px) {
             margin: 10px 0;

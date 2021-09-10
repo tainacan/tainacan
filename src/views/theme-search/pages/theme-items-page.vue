@@ -1251,7 +1251,7 @@
        margin-bottom: 40px;
 
         h1, h2 {
-            font-size: 1.25em;
+            font-size: 1.25em !important;
             font-weight: 500;
             color: var(--tainacan-heading-color);
             display: inline-block;

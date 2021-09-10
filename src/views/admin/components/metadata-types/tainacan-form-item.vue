@@ -1,9 +1,6 @@
 <template>
     <b-field
-            :class="{
-                'has-collapses-hidden': hideCollapses,
-                'hightlighted-metadatum': isHighlightedMetadatum 
-            }"
+            :class="metadatumFormClasses"
             :ref="isHighlightedMetadatum ? 'hightlighted-metadatum': 'null'"
             :addons="false"
             :message="errorMessage"
@@ -83,7 +80,7 @@
                         </template>
                     </transition-group>
                 </template>
-                <template v-if="isMultiple">
+                <template v-if="isMultiple && (maxMultipleValues === undefined || maxMultipleValues === 0 || (maxMultipleValues !== 1 && maxMultipleValues > values.length))">
                     <a 
                             @click="addValue"
                             class="is-inline-block add-link">
@@ -144,9 +141,19 @@
             isMultiple() {
                 return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple == 'yes') ? this.itemMetadatum.metadatum.multiple == 'yes' : false;
             },
+            maxMultipleValues() {
+                return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.cardinality && !isNaN(this.itemMetadatum.metadatum.cardinality)) ? this.itemMetadatum.metadatum.cardinality : undefined;
+            },
             isTextInputComponent() {
                 const array = ['tainacan-relationship','tainacan-taxonomy', 'tainacan-compound', 'tainacan-user'];
                 return !(array.indexOf(this.metadatumComponent) >= 0 );
+            },
+            metadatumFormClasses() {
+                return '' + 
+                    (this.hideCollapses ? ' has-collapses-hidden' : '') + 
+                    (this.isHighlightedMetadatum ? ' hightlighted-metadatum' : '') + 
+                    (this.metadatumComponent ? ' tainacan-metadatum-component--' + this.metadatumComponent : '') +
+                    (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.id ? ' tainacan-metadatum-id--' + this.itemMetadatum.metadatum.id : '');  
             }
         },
         created() {

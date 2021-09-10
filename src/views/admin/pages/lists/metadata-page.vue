@@ -1,5 +1,7 @@
 <template>
-    <div :class="{ 'repository-level-page page-container': isRepositoryLevel }">
+    <div
+            :class="{ 'repository-level-page page-container': isRepositoryLevel }"
+            style="padding-bottom: 0;">
         <tainacan-title 
                 :bread-crumb-items="[{ path: '', label: this.$i18n.get('metadata') }]"/>
         
@@ -152,9 +154,7 @@
                                                     class="icon grip-icon">
                                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/>
                                             </span>
-                                            <span 
-                                                    class="metadatum-name"
-                                                    :class="{'is-danger': formWithErrors == metadatum.id }">
+                                            <span class="metadatum-name">
                                                     {{ metadatum.name }}
                                             </span>
                                             <span   
@@ -163,11 +163,6 @@
                                                     :class="{ 'has-text-weight-bold': metadatum.metadata_type_object.core }">  
                                                 ({{ metadatum.metadata_type_object.name }}) 
                                                 <em v-if="metadatum.inherited">{{ $i18n.get('label_inherited') }}</em>
-                                                <span 
-                                                    class="not-saved" 
-                                                    v-if="(editForms[metadatum.id] != undefined && editForms[metadatum.id].saved != true) || metadatum.status == 'auto-draft'">
-                                                {{ $i18n.get('info_not_saved') }}
-                                                </span>
                                                 <span 
                                                         v-if="metadatum.status === 'private'"
                                                         class="icon"
@@ -226,7 +221,7 @@
                                                                 metadatum.collection_id != collectionId
                                                                 ? 'hidden' : 'visible'
                                                             }" 
-                                                        @click.prevent="toggleMetadatumEdition(metadatum.id)">
+                                                        @click.prevent="toggleMetadatumEdition(metadatum)">
                                                     <span 
                                                             v-tooltip="{
                                                                 content: $i18n.get('edit'),
@@ -260,33 +255,36 @@
                                                     v-if="isCollapseOpen(metadatum.id) && openedMetadatumId !== metadatum.id"
                                                     :metadatum="metadatum" />
                                         </transition>
-                                        <transition name="form-collapse">
-                                            <div v-if="openedMetadatumId == metadatum.id">
-                                                <metadatum-edition-form
-                                                        :collection-id="collectionId"
-                                                        :is-repository-level="isRepositoryLevel"
-                                                        @onEditionFinished="onEditionFinished()"
-                                                        @onEditionCanceled="onEditionCanceled()"
-                                                        @onErrorFound="formWithErrors = metadatum.id"
-                                                        :index="index"
-                                                        :original-metadatum="metadatum"
-                                                        :edited-metadatum="editForms[metadatum.id]"/>
-                                            </div>
-                                        </transition>
                                     </div>
+                                    
                                     <child-metadata-list
                                             v-if="metadatum.metadata_type_object && metadatum.metadata_type_object.component == 'tainacan-compound'"
                                             :parent.sync="metadatum"
                                             :metadata-name-filter-string="metadataNameFilterString"
                                             :metadata-type-filter-options="metadataTypeFilterOptions"
                                             :has-some-metadata-type-filter-applied="hasSomeMetadataTypeFilterApplied"
-                                            :is-parent-multiple="metadatum.multiple == 'yes' || (editForms[metadatum.id] && editForms[metadatum.id].multiple == 'yes')"
+                                            :is-parent-multiple="metadatum.multiple == 'yes'"
                                             :is-repository-level="isRepositoryLevel"
                                             :collapse-all="collapseAll" />
+                                    
+                                    <b-modal 
+                                            @close="onEditionCanceled()"
+                                            :active="openedMetadatumId == metadatum.id"
+                                            trap-focus
+                                            aria-modal
+                                            aria-role="dialog"
+                                            custom-class="tainacan-modal">
+                                        <metadatum-edition-form
+                                                :collection-id="collectionId"
+                                                :original-metadatum="metadatum"
+                                                :is-repository-level="isRepositoryLevel"
+                                                @onEditionFinished="onEditionFinished()"
+                                                @onEditionCanceled="onEditionCanceled()"
+                                                :index="index" />
+                                    </b-modal>
                                 </div>
-                            </draggable> 
+                            </draggable>
                         </div>
-                        
                         <div 
                                 v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata')) || !isRepositoryLevel"
                                 class="column available-metadata-area" >
@@ -382,9 +380,7 @@ export default {
             isLoadingMetadata: false,
             isUpdatingMetadataOrder: false,
             openedMetadatumId: '',
-            formWithErrors: '',
             hightlightedMetadatum: '',
-            editForms: {},
             collapses: {},
             columnsTopY: 0,
             collapseAll: false,
@@ -430,33 +426,6 @@ export default {
         collapseAll(isCollapsed) {
             this.activeMetadatumList.forEach((metadatum) => this.$set(this.collapses, metadatum.id, isCollapsed));
         }
-    },
-    beforeRouteLeave ( to, from, next ) {
-        
-        let hasUnsavedForms = false;
-        for (let editForm in this.editForms) {
-            if (!this.editForms[editForm].saved) 
-                hasUnsavedForms = true;
-        }
-        if ((this.openedMetadatumId != '' && this.openedMetadatumId != undefined) || hasUnsavedForms ) {
-            this.$buefy.modal.open({
-                parent: this,
-                component: CustomDialog,
-                props: {
-                    icon: 'alert',
-                    title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_metadata_not_saved'),
-                    onConfirm: () => {
-                        this.onEditionCanceled();
-                        next();
-                    },
-                },
-                trapFocus: true,
-                customClass: 'tainacan-modal'
-            });  
-        } else {
-            next();
-        }  
     },
     created() {
         this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
@@ -570,7 +539,7 @@ export default {
                 if (!this.isRepositoryLevel)
                     this.updateMetadataOrder();
 
-                this.toggleMetadatumEdition(metadatum.id)
+                this.toggleMetadatumEdition(metadatum)
                 this.hightlightedMetadatum = '';
             })
             .catch((error) => {
@@ -602,48 +571,17 @@ export default {
                 customClass: 'tainacan-modal'
             }); 
         },
-        toggleMetadatumEdition(metadatumId) {
-            // Closing collapse
-            if (this.openedMetadatumId == metadatumId) {
-                this.openedMetadatumId = '';
-                this.$router.push({ query: {}});
-
-            // Opening collapse
-            } else {
-                this.$router.push({ query: { edit: metadatumId}})
-            }
+        toggleMetadatumEdition(metadatum) {
+            this.$router.push({ query: { edit: metadatum.id } });
         },
         editMetadatum(metadatum) {
-
             this.openedMetadatumId = metadatum.id;
-            
-            // Scroll to opened metadata form
-            this.$nextTick(() => { 
-                if (this.$refs['metadatum-handler-' + metadatum.id] && this.$refs['metadatum-handler-' + metadatum.id][0])
-                    this.$refs['metadatum-handler-' + metadatum.id][0].scrollIntoView({ behavior: 'smooth', block: 'start' });
-            });
-            
-            // First time opening
-            if (this.editForms[this.openedMetadatumId] == undefined) {
-                this.editForms[this.openedMetadatumId] = JSON.parse(JSON.stringify(metadatum));
-                this.editForms[this.openedMetadatumId].saved = true;
-
-                // Metadatum inserted now
-                if (this.editForms[this.openedMetadatumId].status == 'auto-draft') {
-                    this.editForms[this.openedMetadatumId].status = 'publish';
-                    this.editForms[this.openedMetadatumId].saved = false;
-                }
-            }      
         },
         onEditionFinished() {
-            this.formWithErrors = '';
-            delete this.editForms[this.openedMetadatumId];
             this.openedMetadatumId = '';
             this.$router.push({ query: {}});
         },
         onEditionCanceled() {
-            this.formWithErrors = '';
-            delete this.editForms[this.openedMetadatumId];
             this.openedMetadatumId = '';
             this.$router.push({ query: {}});
         },
@@ -879,7 +817,7 @@ export default {
         .active-metadata-area {
             font-size: 0.875em;
             margin-left: -0.8em;
-            padding-right: 3em;
+            padding-right: 1em;
             min-height: 330px;
 
             @media screen and (max-width: 769px) {

@@ -59,6 +59,10 @@ class Relationship extends Metadata_Type {
 				'title' => __( 'Related Metadatum', 'tainacan' ),
 				'description' => __( 'Select the metadata to use as search criteria in the target collection and as a label when representing the relationship', 'tainacan' ),
 			],
+			'display_related_item_metadata' => [
+				'title' => __( 'Displayed related item metadata', 'tainacan' ),
+				'description' => __( 'Select the metadata that will be displayed from the related item.', 'tainacan' ),
+			],
 			'display_in_related_items' => [
 				'title' => __( 'Display in "Items related to this"', 'tainacan' ),
 				'description' => __( 'Include items linked by this metadata on a list of related items.', 'tainacan' ),
@@ -119,8 +123,24 @@ class Relationship extends Metadata_Type {
 								$readable_option_value = $option_value;
 						break;
 
+						case 'display_related_item_metadata':
+							if (  is_array($option_value) ) {
+								$metadata_list = [];
+								foreach($option_value as $metadata_id) {
+									if ($metadata_id == 'thumbnail') {
+										$metadata_list[] = __('Thumbnail', 'tainacan');
+									} else {
+										$metadata = \tainacan_metadata()->fetch( (int) $metadata_id );
+										if ( $metadata ) $metadata_list[] = $metadata;
+									}
+									
+								}
+								$readable_option_value = implode(", ", $metadata_list);
+							}
+						break;
+
 						default:
-							$readable_option_value = $option_value;
+							$readable_option_value = is_string($option_value) ? $option_value : json_encode($option_value);
 					}
 					$options_as_html .= '<div class="value">' . $readable_option_value . '</div></div>';
 				}
@@ -163,13 +183,13 @@ class Relationship extends Metadata_Type {
 	 * @param  Item_Metadata_Entity $item_metadata 
 	 * @return string The HTML representation of the value, containing one or multiple items names, linked to the item page
 	 */
-	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {		
+	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
+		$search_meta_id = $this->get_option('search');
+		$display_metas = $this->get_option('display_related_item_metadata');
 		
 		$return = '';
 		if ( $item_metadata->is_multiple() ) {
-			$count = 1;
-			$total = sizeof($value);
 			$prefix = $item_metadata->get_multivalue_prefix();
 			$suffix = $item_metadata->get_multivalue_suffix();
 			$separator = $item_metadata->get_multivalue_separator();
@@ -178,19 +198,11 @@ class Relationship extends Metadata_Type {
 				try {
 					$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 					$item = $Tainacan_Items->fetch( (int) $item_id);
-					
-					$count++;
-					
-					if ( $item instanceof \Tainacan\Entities\Item ) {
-						$return .= $prefix;
-						$return .= $this->get_item_html($item);
-						$return .= $suffix;
-
-						if ( $count <= $total ) {
-							$return .= $separator;
-						}
+					if ( $this->can_display_item($item) ) {
+						$return .= empty($return)
+							? ($prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix)
+							: ($separator . $prefix . $this->get_item_html($item, $search_meta_id, $display_metas) . $suffix);
 					}
-
 				} catch (\Exception $e) {
 					// item not found
 				}
@@ -198,55 +210,126 @@ class Relationship extends Metadata_Type {
 		} else {
 			try {
 				$item = new \Tainacan\Entities\Item($value);
-				if ( $item instanceof \Tainacan\Entities\Item ) {
-					$return .= $this->get_item_html($item);
+				if ( $this->can_display_item($item) ) {
+					$return .= $this->get_item_html($item, $search_meta_id, $display_metas);
 				}
 			} catch (\Exception $e) {
 				// item not found 
 			}
 		}
+		if(!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1) {
+			return "<div class='tainacan-relationship-group'>{$return}</div>";
+		}
+		return $return;
+	}
+
+	private function can_display_item($item) {
+		return (
+			$item instanceof \Tainacan\Entities\Item && (
+				is_user_logged_in() ||
+				(
+					\is_post_status_viewable( $item->get_status() ) &&
+					\is_post_status_viewable( $item->get_collection()->get_status() )
+				)
+			)
+		);
+	}
+
+	private function get_item_html($item, $search_meta_id, $display_metas) {
+		$return = '';
+		$id = $item->get_id();
+		
+		if(!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1) {
+			$has_thumbnail = array_search('thumbnail', $display_metas);
+			$thumbnail_id = false;
+			if($has_thumbnail !== false) {
+				unset($display_metas[$has_thumbnail]);
+				$thumbnail_id = $item->get__thumbnail_id();
+			}
+			$args = ['post__in' => $display_metas];
+			$metadatum = $item->get_metadata($args);
+
+			$metadata_value = [];
+			foreach ( $metadatum as $item_meta_id => $item_meta ) {
+				if ( $item_meta instanceof \Tainacan\Entities\Item_Metadata_Entity && $item_meta->get_value_as_html() != '' ) {
+					$meta_id = $item_meta->get_metadatum()->get_id();
+					$as_header = $search_meta_id == $meta_id ? $this->get_item_link($item, $search_meta_id) : false;
+					$html = $this->get_meta_html($item_meta, $item, $as_header, $thumbnail_id);
+					if($as_header === false) {
+						$metadata_value[] = $html;
+					} else {
+						array_unshift($metadata_value, $html);
+					}
+				}
+				$return = implode("\n", $metadata_value);
+			}
+			$return = "<div class='tainacan-relationship-metadatum' data-item-id='$id'>{$return}</div>";
+		} else if ( $id && $search_meta_id ) {
+			$as_link = $this->get_item_link($item, $search_meta_id);
+			$return = "$as_link";
+		}
 
 		return $return;
 	}
 
-	private function get_item_html($item) {
+	private function get_item_link($item, $search_meta_id) {
 		$return = '';
 		$id = $item->get_id();
-		
-		$search_meta_id = $this->get_option('search');
-		
-		if ( $id && $search_meta_id ) {
-			$link = get_permalink( (int) $id );
-			
-			$search_meta_id = $this->get_option('search');
-			
-			$metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch((int) $search_meta_id);
-			
-			$label = '';
-			
-			if ($metadatum instanceof \Tainacan\Entities\Metadatum) {
-				$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
-				$label = $item_meta->get_value_as_string();
+		$link = get_permalink( (int) $id );
+		$metadatum = \Tainacan\Repositories\Metadata::get_instance()->fetch((int) $search_meta_id);
+		$value = '';
+		if ($metadatum instanceof \Tainacan\Entities\Metadatum) {
+			$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($item, $metadatum);
+			$value = $item_meta->get_value_as_string();
+		}
+		if ( empty($value) ) {
+			$value = $item->get_title();
+		}
+		if (is_string($link)) {
+			$return = "<a data-linkto='item' data-id='$id' href='$link'>$value</a>";
+		}
+		return $return;
+	}
+
+	private function get_item_thumbnail($thumbnail_id, $item) {
+		if($thumbnail_id !== false && !empty($thumbnail_id)){
+			return \wp_get_attachment_image($thumbnail_id, 'tainacan-small');
+		}
+		$media_type = $item->get_document_mimetype();
+		$placeholder_image = '<img src="' . \tainacan_get_the_mime_type_icon($media_type, 'tainacan-small') . '" />';
+		return $placeholder_image;
+	}
+
+	private function get_meta_html(\Tainacan\Entities\Item_Metadata_Entity $meta, \Tainacan\Entities\Item $item, $value_link = false, $thumbnail_id = false) {
+		$html = '';
+		if ($meta instanceof \Tainacan\Entities\Item_Metadata_Entity && !empty($meta->get_value_as_html())) {
+			ob_start();
+			if ($value_link) {
+				?>
+					<div class="tainacan-relationship-metadatum-header">
+						<?php echo $this->get_item_thumbnail($thumbnail_id, $item); ?>
+						<h4 class="label">
+							<?php echo $value_link; ?>
+						</h4>
+					</div>
+				<?php
+			} else {
+				?>
+					<div class="tainacan-metadatum">
+						<h5 class="label">
+							<?php echo $meta->get_metadatum()->get_name(); ?>
+						</h5>
+						<p>
+							<?php echo ($value_link === false ? $meta->get_value_as_html() : $value_link); ?> 
+						</p>
+					</div>
+				<?php
 			}
-			
-			if ( empty($label) ) {
-				$label = $item->get_title();
-			}
-			
-			if (is_string($link)) {
-				if ( is_user_logged_in() ||
-					\is_post_status_viewable( $item->get_status() ) &&
-					\is_post_status_viewable($item->get_collection()->get_status()) ) {
-					$return = "<a data-linkto='item' data-id='$id' href='$link'>";
-					$return.= $label;
-					$return .= "</a>";
-				} else {
-					$return.= $label;
-				}
-			}
+			$html = ob_get_contents();
+			ob_end_clean();
 		}
 
-		return $return;
+		return $html;
 	}
 
 	/**

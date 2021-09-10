@@ -190,8 +190,25 @@
                 <div 
                         v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || !isRepositoryLevel)"
                         class="column available-metadata-area">
+                    <div class="tainacan-form sub-header">
+                        <h3>{{ $i18n.get('label_available_metadata') }}</h3>
+
+                        <template v-if="availableMetadata && availableMetadata.length > 5 && !isLoadingMetadatumTypes">
+                                
+                            <b-field class="header-item">
+                                <b-input 
+                                        :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
+                                        v-model="metadatumNameFilterString"
+                                        icon="magnify"
+                                        size="is-small"
+                                        icon-right="close-circle"
+                                        icon-right-clickable
+                                        @icon-right-click="metadatumNameFilterString = ''" />
+                            </b-field>
+                        </template>
+                    </div>
                     <div class="field" >
-                        <h3 class="label"> {{ $i18n.get('label_available_metadata') }}</h3>
+
                         <draggable
                                 @change="handleChangeOnMetadata"
                                 v-if="availableMetadata.length > 0 && !isLoadingMetadatumTypes"
@@ -209,6 +226,7 @@
                                             'disabled-metadatum': isSelectingFilterType
                                         }"
                                         v-if="metadatum.enabled"
+                                        v-show="metadatumNameFilterString == '' || metadatum.name.toString().toLowerCase().indexOf(metadatumNameFilterString.toString().toLowerCase()) >= 0"
                                         :key="index"
                                         @click.prevent="addMetadatumViaButton(metadatum, index)">
                                     <span 
@@ -409,7 +427,8 @@ export default {
             columnsTopY: 0,
             filtersSearchCancel: undefined,
             metadataSearchCancel: undefined,
-            filterNameFilterString: ''
+            filterNameFilterString: '',
+            metadatumNameFilterString: ''
         }
     },
     computed: {
@@ -902,7 +921,8 @@ export default {
         .active-filters-area {
             font-size: 0.875em;
             margin-left: -0.8em;
-            padding-right: 3em;
+            padding-right: 1em;
+            padding-top: 1em;
             min-height: 330px;
 
             @media screen and (max-width: 769px) {
@@ -1043,11 +1063,10 @@ export default {
         }
 
         .available-metadata-area {
-            padding: 10px 0px 10px 10px;
+            padding: 0px 0px 10px 10px;
             margin: 0;
-            max-width: 500px;
-            min-width: 20.8333333%;
-            font-size: 0.875em;
+            max-width: 600px;
+            min-width: 41.66666667%;
 
             @media screen and (max-width: 769px) {
                 max-width: 100%;
@@ -1064,6 +1083,12 @@ export default {
             h3 {
                 margin: 0.875em 0em 1em 0em;
                 font-weight: 500;
+            }
+
+            &>.field {
+                font-size: 0.875em;
+                padding-right: 1em;
+                padding-left: 1em;
             }
 
             .available-metadatum-item {

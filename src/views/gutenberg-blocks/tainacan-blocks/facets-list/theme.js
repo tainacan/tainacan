@@ -39,6 +39,7 @@ export default (element) => {
                         linkTermFacetsToTermPage: true,
                         appendChildTerms: false,
                         layout: 'grid',
+                        itemsCountStyle: 'default',
                         cloudRate: 1,
                         gridMargin: 24,
                         maxFacetsNumber: 12,
@@ -46,7 +47,8 @@ export default (element) => {
                         tainacanApiRoot: '',
                         tainacanBaseUrl: '',
                         tainacanSiteUrl: '',
-                        className: ''
+                        className: '',
+                        style: ''
                     },
                     render(h){ 
                         return h(FacetsListTheme, {
@@ -62,6 +64,7 @@ export default (element) => {
                                 showSearchBar: this.showSearchBar,
                                 showLoadMore: this.showLoadMore,
                                 layout: this.layout,
+                                itemsCountStyle: this.itemsCountStyle,
                                 cloudRate: this.cloudRate,
                                 gridMargin: this.gridMargin,
                                 linkTermFacetsToTermPage: this.linkTermFacetsToTermPage,
@@ -71,7 +74,8 @@ export default (element) => {
                                 tainacanApiRoot: this.tainacanApiRoot,
                                 tainacanBaseUrl: this.tainacanBaseUrl,
                                 tainacanSiteUrl: this.tainacanSiteUrl,
-                                className: this.className    
+                                className: this.className,
+                                style: this.style
                             }
                         });
                     },
@@ -88,6 +92,7 @@ export default (element) => {
                         this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;
                         this.showLoadMore = this.$el.attributes['show-load-more'] != undefined ? this.$el.attributes['show-load-more'].value == 'true' : false;
                         this.layout = this.$el.attributes['layout'] != undefined ? this.$el.attributes['layout'].value : undefined;
+                        this.itemsCountStyle = this.$el.attributes['items-count-style'] != undefined ? this.$el.attributes['items-count-style'].value : undefined;
                         this.cloudRate = this.$el.attributes['cloud-rate'] != undefined ? Number(this.$el.attributes['cloud-rate'].value) : undefined;
                         this.gridMargin = this.$el.attributes['grid-margin'] != undefined ? Number(this.$el.attributes['grid-margin'].value) : undefined;
                         this.linkTermFacetsToTermPage = this.$el.attributes['link-term-facets-to-term-page'] != undefined ? this.$el.attributes['link-term-facets-to-term-page'].value == 'true' : true;
@@ -97,6 +102,7 @@ export default (element) => {
                         this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
                         this.tainacanSiteUrl = this.$el.attributes['tainacan-site-url'] != undefined ? this.$el.attributes['tainacan-site-url'].value : undefined;
                         this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
+                        this.style = this.$el.attributes.style != undefined ? this.$el.attributes.style.value : undefined;
                     },
                     methods: {
                         __(text, domain) {

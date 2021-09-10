@@ -1,3 +1,5 @@
+const { useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+
 export default function ({ attributes, className }) {
     const {
         content, 
@@ -20,10 +22,12 @@ export default function ({ attributes, className }) {
         collectionBackgroundColor,
         collectionTextColor
     } = attributes;
-    
+
+    // Gets attributes such as style, that are automatically added by the editor hook
+    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps.save();
     return <div 
+                { ...blockProps }
                 data-module="carousel-items-list"
-                className={ className }
                 search-url={ searchURL }
                 selected-items={ JSON.stringify(selectedItems) }
                 arrows-position={ arrowsPosition }

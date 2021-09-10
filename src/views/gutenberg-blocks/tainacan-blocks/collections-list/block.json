@@ -1,6 +1,7 @@
 {
     "name": "tainacan/collections-list",
     "title": "Tainacan Collections List",
+    "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "Tainacan", "collections", "repository", "tainacan" ],
     "description": "Expose collections from your Tainacan repository",
@@ -86,6 +87,12 @@
         "html": false,
         "typography": {
             "fontSize": true
+        },
+        "color": {
+            "text": true,
+            "background": false,
+            "gradients": false,
+            "link": true
         }
     },
     "editorScript": "collections-list",

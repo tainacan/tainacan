@@ -85,15 +85,15 @@
             class="empty-label">
         {{ $i18n.get('info_no_value_compound_metadata') }}
     </p>
-    <a 
-            v-if="isMultiple"
+    <a
+            v-if="isMultiple && (maxMultipleValues === undefined || maxMultipleValues === 0 || (maxMultipleValues !== 1 && maxMultipleValues > childItemMetadataGroups.length))"
             :disabled="itemMetadatum.item.id && (childItemMetadataGroups.length > 0 && !someValueOnLastInput)"
             @click="addGroup"
             class="is-inline-block add-link">
         <span class="icon is-small">
             <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
         </span>
-        &nbsp;{{ $i18n.get('label_add_value') }}  
+        &nbsp;{{ $i18n.get('label_add_value') }}
     </a>
 
 </div>
@@ -124,7 +124,10 @@
             },
             someValueOnLastInput() {
                 return this.childItemMetadataGroups && this.childItemMetadataGroups[this.childItemMetadataGroups.length - 1] && this.childItemMetadataGroups[this.childItemMetadataGroups.length - 1].findIndex((childItemMetadatum) => childItemMetadatum.value) >= 0;
-            }
+            },
+            maxMultipleValues() {
+                return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.cardinality && !isNaN(this.itemMetadatum.metadatum.cardinality)) ? this.itemMetadatum.metadatum.cardinality : undefined;
+            },
         },
         watch: {
             /*  This will create the input object structure for 
@@ -355,6 +358,22 @@
             color: var(--tainacan-gray4);
             font-size: 0.875em;
             font-style: italic;
+        }
+
+        @media screen and (max-width: 769px) {
+            margin-left: 0px;
+            padding-left: 22px;
+
+            .field {
+                padding-left: 12px;
+                
+                /deep/ .label {
+                    margin-left: 0;
+                }
+                /deep/ .collapse-handle {
+                    margin-left: -28px;
+                }
+            }
         }
     }
 </style>

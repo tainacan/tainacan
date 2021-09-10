@@ -2,9 +2,9 @@ const { __ } = wp.i18n;
 
 const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Placeholder, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
-import DynamicItemsModal from './dynamic-items-modal.js';
+import DynamicItemsModal from '../carousel-items-list/dynamic-and-carousel-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
@@ -16,7 +16,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         items, 
         content, 
         collection,
-        collectionId,  
+        collectionId,
         showImage,
         showName,
         layout,
@@ -27,7 +27,9 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         maxItemsNumber,
         order,
         searchString,
+        selectedItems,
         isLoading,
+        loadStrategy,
         showSearchBar,
         showCollectionHeader,
         showCollectionLabel,
@@ -44,8 +46,12 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         cropImagesToSquare
     } = attributes;
 
+    // Gets blocks props from hook
+    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
+
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
+    const thumbHelper = ThumbnailHelperFunctions();
     
     // Sets some defaults that were not working
     if (maxColumnsCount === undefined) {
@@ -56,8 +62,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         cropImagesToSquare = true;    
         setAttributes({ cropImagesToSquare: cropImagesToSquare });
     }
-            
-    const thumbHelper = ThumbnailHelperFunctions();
+    if (loadStrategy === undefined) {
+        loadStrategy = 'search';
+        setAttributes({ loadStrategy: loadStrategy });
+    }
     
     function prepareItem(item) {
         return (
@@ -68,15 +76,26 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     backgroundImage: layout == 'mosaic' ? `url(${ thumbHelper.getSrc(item['thumbnail'], 'medium_large', item['document_mimetype']) })` : 'none',
                     backgroundPosition: layout == 'mosaic' ? `${ (mosaicItemFocalPoint && mosaicItemFocalPoint.x ? mosaicItemFocalPoint.x : 0.5) * 100 }% ${ (mosaicItemFocalPoint && mosaicItemFocalPoint.y ? mosaicItemFocalPoint.y : 0.5) * 100 }%` : 'none'
                 }}
-            >      
+            >
+                { loadStrategy == 'selection' ?
+                    ( tainacan_blocks.wp_version < '5.4' ?
+                        <IconButton
+                            onClick={ () => removeItemOfId(item.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                        :
+                        <Button
+                            onClick={ () => removeItemOfId(item.id) }
+                            icon="no-alt"
+                            label={__('Remove', 'tainacan')}/>
+                    )
+                    :null
+                }
                 <a 
                     id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
                     href={ item.url } 
                     onClick={ (event) => event.preventDefault() }
                     target="_blank"
-                    style={ {
-                        
-                    } }
                     className={ (!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '') }>
                     <img
                         src={ thumbHelper.getSrc(item['thumbnail'], ( (layout == 'list' || cropImagesToSquare) ? 'tainacan-medium' : 'tainacan-medium-full'), item['document_mimetype']) }
@@ -107,69 +126,69 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         )
     }
 
-    function setContent(){
+    function setContent() {
+        isLoading = true;
 
-        if (searchURL) {
+        setAttributes({
+            isLoading: isLoading
+        });
 
-            items = [];
-            isLoading = true;
+        items = [];
+        
+        if (loadStrategy == 'parent') {
+
+            if (layout !== 'mosaic') {
             
+                for (let item of selectedItems)
+                    items.push(prepareItem(item));
+
+                setAttributes({
+                    content: <div></div>,
+                    items: items,
+                    isLoading: false
+                });
+
+            } else {
+                // Initializes some variables
+                mosaicDensity = mosaicDensity ? mosaicDensity : 5;
+                mosaicGridRows = mosaicGridRows ? mosaicGridRows : 3;
+                mosaicGridColumns = mosaicGridColumns ? mosaicGridColumns : 3;
+                mosaicHeight = mosaicHeight ? mosaicHeight : 280;
+                mosaicItemFocalPoint = mosaicItemFocalPoint ? mosaicItemFocalPoint : { x: 0.5, y: 0.5 };
+                sampleBackgroundImage = response.data.items && response.data.items[0] && response.data.items[0] ? getItemThumbnail(response.data.items[0], 'tainacan-medium') : ''; 
+
+                const mosaicGroups = mosaicPartition(response.data.items);
+                for (let mosaicGroup of mosaicGroups)
+                    items.push(prepareMosaicItem(mosaicGroup, mosaicGroups.length));
+
+                setAttributes({
+                    content: <div></div>,
+                    items: items,
+                    isLoading: false,
+                    itemsRequestSource: itemsRequestSource,
+                    mosaicDensity: mosaicDensity,
+                    mosaicHeight: mosaicHeight,
+                    mosaicGridRows: mosaicGridRows,
+                    mosaicGridColumns: mosaicGridColumns,
+                    mosaicItemFocalPoint: mosaicItemFocalPoint,
+                    sampleBackgroundImage: sampleBackgroundImage
+                });
+            }
+
+        } else if (loadStrategy == 'selection') {
+
             if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
                 itemsRequestSource.cancel('Previous items search canceled.');
 
             itemsRequestSource = axios.CancelToken.source();
             
-            setAttributes({
-                isLoading: isLoading
-            });
-
-            let endpoint = '/collection' + searchURL.split('#')[1].split('/collections')[1];
-            let query = endpoint.split('?')[1];
-            let queryObject = qs.parse(query);
-
-            // Set up max items to be shown
-            if (maxItemsNumber != undefined && maxItemsNumber > 0)
-                queryObject.perpage = maxItemsNumber;
-            else if (queryObject.perpage != undefined && queryObject.perpage > 0)
-                setAttributes({ maxItemsNumber: queryObject.perpage });
-            else {
-                queryObject.perpage = 12;
-                setAttributes({ maxItemsNumber: 12 });
-            }
-
-            // Set up sorting order
-            if (order != '' && showSearchBar)
-                queryObject.order = order;
-            else if (queryObject.order != '')
-                setAttributes({ order: queryObject.order });
-            else {
-                queryObject.order = 'asc';
-                setAttributes({ order: 'asc' });
-            }
-
-            // Set up sorting order
-            if (searchString != undefined)
-                queryObject.search = searchString;
-            else if (queryObject.search != undefined)
-                setAttributes({ searchString: queryObject.search });
-            else {
-                delete queryObject.search;
-                setAttributes({ searchString: undefined });
-            }
-
-            // Remove unecessary queries
-            delete queryObject.readmode;
-            delete queryObject.iframemode;
-            delete queryObject.admin_view_mode;
-            delete queryObject.fetch_only_meta;
-            
-            endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
+            let endpoint = '/collection/' + collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&fetch_only=title,url,thumbnail';
             
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
-                    
+
                     if (layout !== 'mosaic') {
-                        
+
                         for (let item of response.data.items)
                             items.push(prepareItem(item));
 
@@ -206,7 +225,102 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                             sampleBackgroundImage: sampleBackgroundImage
                         });
                     }
+                        
                 });
+        } else {
+
+            if (searchURL) {
+
+                if (itemsRequestSource != undefined && typeof itemsRequestSource == 'function')
+                    itemsRequestSource.cancel('Previous items search canceled.');
+
+                itemsRequestSource = axios.CancelToken.source();
+                
+                let endpoint = '/collection' + searchURL.split('#')[1].split('/collections')[1];
+                let query = endpoint.split('?')[1];
+                let queryObject = qs.parse(query);
+
+                // Set up max items to be shown
+                if (maxItemsNumber != undefined && maxItemsNumber > 0)
+                    queryObject.perpage = maxItemsNumber;
+                else if (queryObject.perpage != undefined && queryObject.perpage > 0)
+                    setAttributes({ maxItemsNumber: queryObject.perpage });
+                else {
+                    queryObject.perpage = 12;
+                    setAttributes({ maxItemsNumber: 12 });
+                }
+
+                // Set up sorting order
+                if (order != '' && showSearchBar)
+                    queryObject.order = order;
+                else if (queryObject.order != '')
+                    setAttributes({ order: queryObject.order });
+                else {
+                    queryObject.order = 'asc';
+                    setAttributes({ order: 'asc' });
+                }
+
+                // Set up sorting order
+                if (searchString != undefined)
+                    queryObject.search = searchString;
+                else if (queryObject.search != undefined)
+                    setAttributes({ searchString: queryObject.search });
+                else {
+                    delete queryObject.search;
+                    setAttributes({ searchString: undefined });
+                }
+
+                // Remove unecessary queries
+                delete queryObject.readmode;
+                delete queryObject.iframemode;
+                delete queryObject.admin_view_mode;
+                delete queryObject.fetch_only_meta;
+                
+                endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
+                
+                tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
+                    .then(response => {
+                        
+                        if (layout !== 'mosaic') {
+                            
+                            for (let item of response.data.items)
+                                items.push(prepareItem(item));
+
+                            setAttributes({
+                                content: <div></div>,
+                                items: items,
+                                isLoading: false,
+                                itemsRequestSource: itemsRequestSource
+                            });
+
+                        } else {
+                            // Initializes some variables
+                            mosaicDensity = mosaicDensity ? mosaicDensity : 5;
+                            mosaicGridRows = mosaicGridRows ? mosaicGridRows : 3;
+                            mosaicGridColumns = mosaicGridColumns ? mosaicGridColumns : 3;
+                            mosaicHeight = mosaicHeight ? mosaicHeight : 280;
+                            mosaicItemFocalPoint = mosaicItemFocalPoint ? mosaicItemFocalPoint : { x: 0.5, y: 0.5 };
+                            sampleBackgroundImage = response.data.items && response.data.items[0] && response.data.items[0] ? getItemThumbnail(response.data.items[0], 'tainacan-medium') : ''; 
+
+                            const mosaicGroups = mosaicPartition(response.data.items);
+                            for (let mosaicGroup of mosaicGroups)
+                                items.push(prepareMosaicItem(mosaicGroup, mosaicGroups.length));
+
+                            setAttributes({
+                                content: <div></div>,
+                                items: items,
+                                isLoading: false,
+                                itemsRequestSource: itemsRequestSource,
+                                mosaicDensity: mosaicDensity,
+                                mosaicHeight: mosaicHeight,
+                                mosaicGridRows: mosaicGridRows,
+                                mosaicGridColumns: mosaicGridColumns,
+                                mosaicItemFocalPoint: mosaicItemFocalPoint,
+                                sampleBackgroundImage: sampleBackgroundImage
+                            });
+                        }
+                    });
+            }
         }
     }
 
@@ -258,11 +372,44 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         )
     }
 
-    function openDynamicItemsModal() {
+    function openDynamicItemsModal(aLoadStrategy) {
+        loadStrategy = aLoadStrategy;
         isModalOpen = true;
         setAttributes( { 
-            isModalOpen: isModalOpen
+            isModalOpen: isModalOpen,
+            loadStrategy: loadStrategy
         } );
+    }
+
+    function removeItemOfId(itemId) {
+        
+        let existingItemIndex = -1;
+
+        let existingSelectedItemIndex = selectedItems.findIndex((existingSelectedItem) => existingSelectedItem == itemId);
+        if (existingSelectedItemIndex >= 0)
+            selectedItems.splice(existingSelectedItemIndex, 1);
+
+        if (layout == 'mosaic') {
+            existingItemIndex = items.findIndex((existingItem) => existingItem.key == itemId);
+
+            setAttributes({ 
+                selectedItems: selectedItems,
+                content: <div></div> 
+            });
+            // In the case of the mosaic layout, we need to re-render as the items array is organized in groups.
+            setContent();
+        } else {
+            existingItemIndex = items.findIndex((existingItem) => existingItem.key == itemId);
+
+            if (existingItemIndex >= 0)
+                items.splice(existingItemIndex, 1);
+            
+            setAttributes({ 
+                selectedItems: selectedItems,
+                items: items,
+                content: <div></div> 
+            });
+        }
     }
 
     function updateLayout(newLayout) {
@@ -344,32 +491,49 @@ export default function({ attributes, setAttributes, className, isSelected, clie
     ];
 
     return content == 'preview' ? 
-            <div className={className}>
-                <img
-                        width="100%"
-                        src={ `${tainacan_blocks.base_url}/assets/images/dynamic-items-list.png` } />
-            </div>
-        : (
         <div className={className}>
+            <img
+                    width="100%"
+                    src={ `${tainacan_blocks.base_url}/assets/images/dynamic-items-list.png` } />
+        </div>
+        : (
+        <div { ...blockProps }>
 
-            <div>
+            { items.length ?
                 <BlockControls>
                     { TainacanBlocksCompatToolbar({ controls: layoutControls }) }
-                    { items.length ? 
-                        TainacanBlocksCompatToolbar({
-                            label: __('Configure search', 'tainacan'),
-                            icon: <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 -2 24 24"
-                                        height="24px"
-                                        width="24px">
-                                    <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
-                                </svg>,
-                            onClick: openDynamicItemsModal
-                        })
-                    : null }
+                    { loadStrategy != 'parent' ? 
+                        (
+                            loadStrategy == 'selection' ?
+                            TainacanBlocksCompatToolbar({
+                                label: __('Add more items', 'tainacan'),
+                                icon: <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 -2 24 24"
+                                            height="24px"
+                                            width="24px">
+                                        <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
+                                    </svg>,
+                                onClick: openDynamicItemsModal,
+                                onClickParams: 'selection'
+                            })
+                            :
+                            TainacanBlocksCompatToolbar({
+                                label: __('Configure a search', 'tainacan'),
+                                icon: <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 -2 24 24"
+                                            height="24px"
+                                            width="24px">
+                                        <path d="M14,2V4H7v7.24A5.33,5.33,0,0,0,5.5,11a4.07,4.07,0,0,0-.5,0V4A2,2,0,0,1,7,2Zm7,10v8a2,2,0,0,1-2,2H12l1-1-2.41-2.41A5.56,5.56,0,0,0,11,16.53a5.48,5.48,0,0,0-2-4.24V8a2,2,0,0,1,2-2h4Zm-2.52,0L14,7.5V12ZM11,21l-1,1L8.86,20.89,8,20H8l-.57-.57A3.42,3.42,0,0,1,5.5,20a3.5,3.5,0,0,1-.5-7,2.74,2.74,0,0,1,.5,0,3.41,3.41,0,0,1,1.5.34,3.5,3.5,0,0,1,2,3.16,3.42,3.42,0,0,1-.58,1.92L9,19H9l.85.85Zm-4-4.5A1.5,1.5,0,0,0,5.5,15a1.39,1.39,0,0,0-.5.09A1.5,1.5,0,0,0,5.5,18a1.48,1.48,0,0,0,1.42-1A1.5,1.5,0,0,0,7,16.53Z"/>
+                                    </svg>,
+                                onClick: openDynamicItemsModal,
+                                onClickParams: 'search'
+                            })
+                        ) : null
+                    }
                 </BlockControls>
-            </div>
+            : null }
 
             <div>
                 <InspectorControls>
@@ -432,39 +596,43 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                             : null
                             }
                     </PanelBody> 
-                    <PanelBody
-                            title={__('Search bar', 'tainacan')}
-                            initialOpen={ true }
-                        >
-                        <ToggleControl
-                            label={__('Display bar', 'tainacan')}
-                            help={ showSearchBar ? __('Toggle to show search bar on block', 'tainacan') : __('Do not show search bar', 'tainacan')}
-                            checked={ showSearchBar }
-                            onChange={ ( isChecked ) => {
-                                    showSearchBar = isChecked;
-                                    setAttributes({ showSearchBar: showSearchBar });
-                                } 
-                            }
-                        />
-                    </PanelBody>
+                    { loadStrategy == 'search' ? 
+                        <PanelBody
+                                title={__('Search bar', 'tainacan')}
+                                initialOpen={ true }
+                            >
+                            <ToggleControl
+                                label={__('Display bar', 'tainacan')}
+                                help={ showSearchBar ? __('Toggle to show search bar on block', 'tainacan') : __('Do not show search bar', 'tainacan')}
+                                checked={ showSearchBar }
+                                onChange={ ( isChecked ) => {
+                                        showSearchBar = isChecked;
+                                        setAttributes({ showSearchBar: showSearchBar });
+                                    } 
+                                }
+                            />
+                        </PanelBody>
+                    : null }
                     <PanelBody
                             title={__('Items', 'tainacan')}
                             initialOpen={ true }
                         >
-                        <div>
-                            <RangeControl
-                                label={__('Maximum number of items', 'tainacan')}
-                                value={ maxItemsNumber ? maxItemsNumber : 12 }
-                                onChange={ ( aMaxItemsNumber ) => {
-                                    maxItemsNumber = aMaxItemsNumber;
-                                    setAttributes( { maxItemsNumber: aMaxItemsNumber } ) 
-                                    setContent();
-                                }}
-                                min={ 1 }
-                                max={ 96 }
-                            />
+                        { loadStrategy == 'search' ?
+                            <div>
+                                <RangeControl
+                                    label={__('Maximum number of items', 'tainacan')}
+                                    value={ maxItemsNumber ? maxItemsNumber : 12 }
+                                    onChange={ ( aMaxItemsNumber ) => {
+                                        maxItemsNumber = aMaxItemsNumber;
+                                        setAttributes( { maxItemsNumber: aMaxItemsNumber } ) 
+                                        setContent();
+                                    }}
+                                    min={ 1 }
+                                    max={ 96 }
+                                />
+                            <hr></hr>
                         </div>
-                        <hr></hr>
+                         : null }
                         <div>
                             { layout == 'list' ? 
                                 <div style={{ marginTop: '16px'}}>
@@ -591,6 +759,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     { label: '4 x 3', value: '4x3' },
                                     { label: '4 x 5', value: '4x5' },
                                     { label: '5 x 4', value: '5x4' },
+                                    { label: '6 x 5', value: '6x5' },
                                 ] }
                                 onChange={ ( aGrid ) => { 
                                     mosaicGridRows = aGrid.split('x')[0];
@@ -625,17 +794,37 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                 <div>
                     { isModalOpen ? 
                         <DynamicItemsModal
+                            loadStrategy={ loadStrategy }
                             existingCollectionId={ collectionId } 
                             existingSearchURL={ searchURL } 
                             onSelectCollection={ (selectedCollectionId) => {
+                                if (collectionId != selectedCollectionId) {
+                                    items = [];
+                                    selectedItems = [];
+                                }
                                 collectionId = selectedCollectionId;
-                                setAttributes({ collectionId: collectionId });
+                                setAttributes({ 
+                                    collectionId: collectionId,
+                                    items: items,
+                                    selectedItems: selectedItems
+                                });
                                 fetchCollectionForHeader();
                             }}
                             onApplySearchURL={ (aSearchURL) =>{
-                                searchURL = aSearchURL
+                                searchURL = aSearchURL;
+                                loadStrategy = 'search';
                                 setAttributes({
                                     searchURL: searchURL,
+                                    isModalOpen: false
+                                });
+                                setContent();
+                            }}
+                            onApplySelectedItems={ (aSelectionOfItems) => {
+                                selectedItems = selectedItems.concat(aSelectionOfItems); 
+                                loadStrategy = 'selection';
+                                setAttributes({
+                                    selectedItems: selectedItems,
+                                    loadStrategy: loadStrategy,
                                     isModalOpen: false
                                 });
                                 setContent();
@@ -806,12 +995,25 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     </svg>
                         {__('Dynamically list items from a Tainacan items search', 'tainacan')}
                     </p>
-                    <Button
-                        isPrimary
-                        type="button"
-                        onClick={ () => openDynamicItemsModal() }>
-                        {__('Configure search', 'tainacan')}
-                    </Button>   
+                    { 
+                        loadStrategy != 'parent' ?
+                            <div>
+                                <Button
+                                    isPrimary
+                                    type="button"
+                                    onClick={ () => openDynamicItemsModal('selection') }>
+                                    {__('Select Items', 'tainacan')}
+                                </Button> 
+                                <p style={{ margin: '0 12px' }}>{__('or', 'tainacan')}</p>
+                                <Button
+                                    isPrimary
+                                    type="button"
+                                    onClick={ () => openDynamicItemsModal('search') }>
+                                    {__('Configure a search', 'tainacan')}
+                                </Button>
+                            </div>
+                        : null
+                    }
                 </Placeholder>
                 ) : null
             }

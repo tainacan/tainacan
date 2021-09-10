@@ -4,7 +4,7 @@
                 v-if="getComponent == 'tainacan-taxonomy-tag-input'"
                 :disabled="disabled"
                 :is="getComponent"
-                :maxtags="maxtags"
+                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : 1)"
                 v-model="valueComponent"
                 :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNewFromOptions"
@@ -25,6 +25,7 @@
                 :taxonomy="taxonomy"
                 :collection-id="itemMetadatum.metadatum.collection_id"
                 :is-taxonomy="true"
+                :max-multiple-values="maxMultipleValues"
                 :metadatum="itemMetadatum.metadatum"
                 :amount-selected="Array.isArray(valueComponent) ? valueComponent.length : (valueComponent ? '1' : '0')"
                 :is-checkbox="getComponent == 'tainacan-taxonomy-checkbox'"
@@ -124,6 +125,9 @@
             },
             isOnItemSubmissionForm() {
                 return !this.itemMetadatum.item || !this.itemMetadatum.item.id;
+            },
+            maxMultipleValues() {
+                return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.cardinality && !isNaN(this.itemMetadatum.metadatum.cardinality)) ? this.itemMetadatum.metadatum.cardinality : undefined;
             }
         },
         watch: {
@@ -202,7 +206,7 @@
 
 <style scoped>
     .add-new-term {
-        margin: 6px 0;
+        margin: 3px 0;
         font-size: 0.75em;
     }
 </style>

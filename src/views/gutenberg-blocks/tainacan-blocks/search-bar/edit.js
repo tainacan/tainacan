@@ -2,7 +2,7 @@ const { __ } = wp.i18n;
 
 const { RangeControl, TextControl, SelectControl, Button, ToggleControl, Placeholder, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import SearchBarModal from './search-bar-modal.js';
@@ -26,6 +26,9 @@ export default function({ attributes, setAttributes, className, isSelected }) {
         collectionHeaderImage,
         collectionName
     } = attributes;
+
+    // Gets blocks props from hook
+    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
 
     function setContent(){
 
@@ -195,7 +198,7 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                     src={ `${tainacan_blocks.base_url}/assets/images/search-bar.png` } />
         </div>
     : (
-        <div className={className}>
+        <div { ...blockProps }>
 
             <div>
                 <BlockControls>
@@ -203,7 +206,7 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                     { collectionId ?
                         TainacanBlocksCompatToolbar({
                             label:__('Configure search source', 'tainacan'),
-                            icon: <svg width="24" height="24" viewBox="-2 -4 20 20">
+                            icon: <svg width="24" height="24" viewBox="-2 -2 20 20">
                                     <path d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
                                         c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
                                         c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
@@ -475,7 +478,7 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                                                         style={{ fill: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}    
                                                         width="24" 
                                                         height="24"
-                                                        viewBox="-2 -4 20 20">
+                                                        viewBox="-2 -2 20 20">
                                                     <path d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
                                                         c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
                                                         c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
@@ -520,7 +523,7 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                                             style={{ fill: showCollectionHeader && collectionBackgroundColor ? collectionBackgroundColor : '' }}    
                                             width="24" 
                                             height="24"
-                                            viewBox="-2 -4 20 20">
+                                            viewBox="-2 -2 20 20">
                                         <path d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
                                             c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
                                             c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2

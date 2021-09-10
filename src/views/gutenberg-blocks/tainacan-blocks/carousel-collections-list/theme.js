@@ -39,7 +39,8 @@ export default (element) => {
                         showCollectionThumbnail: false,
                         tainacanApiRoot: '',
                         tainacanBaseUrl: '',
-                        className: ''
+                        className: '',
+                        style: ''
                     },
                     render(h){ 
                         return h(CarouselCollectionsListTheme, {
@@ -59,6 +60,7 @@ export default (element) => {
                                 tainacanApiRoot: this.tainacanApiRoot,
                                 tainacanBaseUrl: this.tainacanBaseUrl,
                                 className: this.className,
+                                style: this.style
                             }
                         });
                     },
@@ -77,6 +79,7 @@ export default (element) => {
                         this.showCollectionThumbnail = this.$el.attributes['show-collection-thumbnail'] != undefined ? this.$el.attributes['show-collection-thumbnail'].value == 'true' : false;
                         this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
                         this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
+                        this.style = this.$el.attributes.style != undefined ? this.$el.attributes.style.value : undefined;
                     },
                     methods: {
                         __(text, domain) {

@@ -26,7 +26,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, './src/assets/js/'),
-        publicPath: './../../../wp-content/plugins/tainacan/assets/js/',
+        publicPath: './wp-content/plugins/tainacan/assets/js/',
         filename: '[name].js'
     },
     module: {
@@ -96,6 +96,6 @@ module.exports = {
         }),
         new MomentLocalesPlugin({
             localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'es-in', 'pt-br', 'pt', 'es', 'es-us', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv'],
-        }),
+        })
     ]
 };

@@ -44,7 +44,7 @@
       width: 185px; }
       .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item a,
       .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         border: none;
         font-weight: bold;
         line-height: normal; }
@@ -58,9 +58,10 @@
       .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item a.collection-without-name span,
       .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item a.collection-without-name span {
         display: none; }
-      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item:hover a,
+      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item a, .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item:hover a,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item a,
       .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item:hover a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         text-decoration: none; }
   .wp-block-tainacan-collections-list ul.collections-list-edit li.collection-list-item {
     display: flex;
@@ -121,7 +122,7 @@
       width: calc(20% - 24px); }
       .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item a,
       .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         height: auto;
         display: flex;
         align-items: center;
@@ -137,9 +138,10 @@
       .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item a.collection-without-image img,
       .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item a.collection-without-image img {
         display: none; }
-      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item:hover a,
+      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item a, .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item:hover a,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item a,
       .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item:hover a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         text-decoration: none; }
       @media only screen and (max-width: 1600px) {
         .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item,
@@ -161,5 +163,9 @@
         .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item {
           min-width: calc(100% - 24px);
           width: calc(100% - 24px); } }
+
+.block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-collections-list li.collection-list-item a > span,
+.block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-collections-list li.collection-list-item a:hover > span {
+  color: inherit; }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-collections-list.css.map */

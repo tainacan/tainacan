@@ -175,6 +175,15 @@ class Embed {
 			}
 			
 			if ( $height && $width ) {
+
+				// Removes 'px' from the end if it was passed
+				$height = preg_split('/px$/', $height)[0];
+				$width = preg_split('/px$/', $width)[0];
+
+				// If even then we are still not using a numeric value, it is probably the case of a 100%
+				$height = is_numeric($height) ? $height : 567;
+				$width = is_numeric($width) ? $width : 1024;
+
 				$aspect_ratio = number_format(( $width / $height ), 2, '.', "");
 	
 				// Given the actual aspect ratio, find the widest ratio to support it.
