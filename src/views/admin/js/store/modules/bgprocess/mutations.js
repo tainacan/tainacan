@@ -18,6 +18,13 @@ export const setProcess = ( state, bgProcess ) => {
     state.bg_process = bgProcess;
 }
 
+export const deleteProcess = ( state, bgProcess ) => {
+    let index = state.bg_processes.findIndex(newProcess => newProcess.ID == bgProcess.id);
+    if ( index >= 0){
+        state.bg_processes.splice(index, 1);
+    }
+}
+
 export const setProcessLog = ( state, log ) => {
     state.log = log;
 }
@@ -25,4 +32,3 @@ export const setProcessLog = ( state, log ) => {
 export const setProcessErrorLog = ( state, errorLog ) => {
     state.error_log = errorLog;
 }
-

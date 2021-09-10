@@ -99,7 +99,7 @@ export const cleanProcesses = ({ commit }) => {
 
 export const deleteProcess = ({ commit }, id) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.delete('/bg-process/' + id).then( res => {
+        axios.tainacan.delete('/bg-processes/' + id).then( res => {
             commit('deleteProcess', { id: id });
             resolve( res );
         }).catch((error) => { 
