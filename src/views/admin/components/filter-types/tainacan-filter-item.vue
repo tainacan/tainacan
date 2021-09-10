@@ -76,7 +76,8 @@
                     label: $event.label,
                     value: $event.value,
                     taxonomy: $event.taxonomy,
-                    metadatumId: this.filter.metadatum_id
+                    metadatumId: this.filter.metadatum_id,
+                    metadatumName: this.filter.metadatum && this.filter.metadatum.metadatum_name ? this.filter.metadatum.metadatum_name : ''
                 });
             },
             onFilterUpdateParentCollapse(open) {

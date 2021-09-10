@@ -184,7 +184,8 @@
                                 this.$emit( 'sendValuesToTags', { 
                                     label: this.selected.map((option) => option.label), 
                                     value: this.selected.map((option) => option.value),
-                                    taxonomy: this.taxonomy
+                                    taxonomy: this.taxonomy,
+                                    metadatumName: this.metadatumName
                                 });
                             });
                     }

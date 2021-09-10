@@ -192,7 +192,8 @@
                                     }
                                     this.$emit( 'sendValuesToTags', { 
                                         label: this.selected.map((option) => option.label), 
-                                        value: this.selected.map((option) => option.value)
+                                        value: this.selected.map((option) => option.value),
+                                        metadatumName: this.metadatumName
                                     });
                                 }
                             })
@@ -219,7 +220,8 @@
                                     }
                                     this.$emit( 'sendValuesToTags', { 
                                         label: this.selected.map((option) => option.label), 
-                                        value: this.selected.map((option) => option.value)
+                                        value: this.selected.map((option) => option.value),
+                                        metadatumName: this.metadatumName
                                     });
                                 }
                             })
@@ -233,7 +235,8 @@
                         
                         this.$emit( 'sendValuesToTags', { 
                             label: this.selected.map((option) => option.label), 
-                            value: this.selected.map((option) => option.value)
+                            value: this.selected.map((option) => option.value),
+                            metadatumName: this.metadatumName
                         });
                     }
                 } else {

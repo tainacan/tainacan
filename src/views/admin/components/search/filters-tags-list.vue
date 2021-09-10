@@ -1,12 +1,21 @@
 <template>
     <transition name="filter-item">
         <div v-if="filterTags != undefined && filterTags.length > 0">
-            <p style="margin-bottom: 0;">
-                <strong>{{ totalItems }}</strong>
-                {{ ' ' + ( totalItems == 1 ? $i18n.get('info_item_found') : $i18n.get('info_items_found') ) + ', ' }}
-                <strong>{{ filterTags.length }}</strong>
-                {{ ' ' + ( filterTags.length == 1 ? $i18n.get('info_applied_filter') : $i18n.get('info_applied_filters') ) + ': ' }}
-                &nbsp;&nbsp;
+            <p class="filter-tags-info">
+                <span style="margin-right: 1em">
+                    <strong>{{ totalItems }}</strong>
+                    {{ ' ' + ( totalItems == 1 ? $i18n.get('info_item_found') : $i18n.get('info_items_found') ) }}
+                </span>
+                <span>
+                    <strong>{{ filterTags.length }}</strong>
+                    {{ ' ' + ( filterTags.length == 1 ? $i18n.get('info_applied_filter') : $i18n.get('info_applied_filters') ) }}
+                    &nbsp;
+                    <a 
+                            @click="clearAllFilters()"
+                            id="button-clear-all">
+                        {{ $i18n.get('label_clear_filters') }}
+                    </a>
+                </span>
             </p>
             <swiper 
                         role="list"
@@ -14,13 +23,21 @@
                         :options="swiperOptions">
                 <swiper-slide 
                         v-for="(filterTag, index) of filterTags"
-                        :key="index">
-                    <b-tag
-                            attached
-                            closable
-                            @close="removeMetaQuery(filterTag)">
-                        {{ filterTag.singleLabel != undefined ? filterTag.singleLabel : filterTag.label }}
-                    </b-tag>
+                        :key="index"
+                        class="filter-tag">
+                    <span class="">
+                        <div class="filter-tag-metadatum-name">
+                            {{ filterTag.metadatumName }}
+                        </div>
+                        <div class="filter-tag-metadatum-value">
+                            {{ filterTag.singleLabel != undefined ? filterTag.singleLabel : filterTag.label }}
+                        </div>
+                    </span>
+                    <a
+                            role="button"
+                            tabindex="0"
+                            class="tag is-delete"
+                            @click="removeMetaQuery(filterTag)" />
                 </swiper-slide>
                 <button 
                         class="swiper-button-prev" 
@@ -51,12 +68,6 @@
                     </svg>
                 </button>
             </swiper>
-            <button 
-                    @click="clearAllFilters()"
-                    id="button-clear-all"
-                    class="button is-outlined">
-                {{ $i18n.get('label_clear_filters') }}
-            </button>
         </div>
     </transition>
 </template>
@@ -97,7 +108,15 @@
                 for (let tag of tags) {
                     if (Array.isArray(tag.label)) {
                         for (let i = 0; i < tag.label.length; i++) 
-                            flattenTags.push({filterId: tag.filterId, label: tag.label, singleLabel: tag.label[i], value: tag.value[i], taxonomy: tag.taxonomy, metadatumId: tag.metadatumId}); 
+                            flattenTags.push({
+                                filterId: tag.filterId,
+                                label: tag.label,
+                                singleLabel: tag.label[i],
+                                value: tag.value[i],
+                                taxonomy: tag.taxonomy,
+                                metadatumName: tag.metadatumName,
+                                metadatumId: tag.metadatumId
+                            }); 
                     } else {
                         flattenTags.push(tag);
                     }
@@ -113,7 +132,7 @@
                 'getFilterTags',
                 'getTotalItems'
             ]),
-            removeMetaQuery({ filterId, value, singleLabel, label, taxonomy, metadatumId }) {
+            removeMetaQuery({ filterId, value, singleLabel, label, taxonomy, metadatumId, metadatumName }) {
                 this.$eventBusSearch.resetPageOnStore();
                 this.$eventBusSearch.removeMetaFromFilterTag({ 
                     filterId: filterId,
@@ -121,7 +140,8 @@
                     label: label,
                     value: value, 
                     taxonomy: taxonomy,
-                    metadatumId: metadatumId 
+                    metadatumId: metadatumId,
+                    metadatumName
                 });
             },
             clearAllFilters() {
@@ -144,17 +164,52 @@
         justify-content: flex-start;
         align-items: baseline;
 
-        @media only screen and (max-width: 768px) { 
-            padding-top: 1em;
-            flex-wrap: wrap;
+        .filter-tags-info {
+            margin: 0 1.25em 4px 0;
+            white-space: nowrap;
+            display: flex;
+            flex-direction: column;
         }
-        &>p {
-            margin: 0
+
+        .filter-tag {
+            border-radius: 3px;
+            padding: 4px 8px;
+            position: relative;
+            background-color: var(--tainacan-input-background-color);
+            border: solid 1px var(--tainacan-input-border-color);
+            margin-bottom: 0 !important;
+            margin-right: 4px !important;
+            max-width: calc(100% - 21px);
+            animation-name: appear;
+            animation-duration: 0.3s;
+
+            .filter-tag-metadatum-name {
+                font-size: 0.9375em;
+                white-space: nowrap;
+                padding-right: 20px;
+            }
+            .filter-tag-metadatum-value {
+                font-size: 1.0625em;
+                font-weight: 500;
+                white-space: nowrap;
+            }
+
+            .tag.is-delete {
+                position: absolute;
+                right: 2px;
+                top: 2px;
+                border-radius: 50px;
+
+                &:not(:hover) {
+                    background-color: transparent;
+                }
+            }
         }
 
         .swiper-container {
+            width: 100%;
             position: relative;
-            margin: 1em 0 0.5em 0;
+            margin: 0;
             --swiper-navigation-size: 2em;
             --swiper-navigation-color: var(--tainacan-secondary);
 
@@ -163,7 +218,7 @@
             }
             .swiper-button-next,
             .swiper-button-prev {
-                padding: 24px 32px;
+                padding: 34px 26px;
                 border: none;
                 background-color: transparent;
                 position: absolute;
@@ -182,7 +237,7 @@
             .swiper-button-prev,
             .swiper-container-rtl .swiper-button-next {
                 left: 0;
-                background-image: linear-gradient(90deg, var(--tainacan-background-color) 50%, rgba(255,255,255,0) 0%);
+                background-image: linear-gradient(90deg, var(--tainacan-background-color) 0%, rgba(255,255,255,0) 60%);
             }
             .swiper-button-next.swiper-button-disabled,
             .swiper-button-prev.swiper-button-disabled {
@@ -200,6 +255,30 @@
         #button-clear-all {
             margin-left: auto;
             font-size: 1em !important;
+            white-space: nowrap;
+        }
+
+        @media only screen and (max-width: 768px) { 
+            padding-top: 1em;
+            flex-wrap: wrap;
+
+            .filter-tags-info {
+                margin: 0 0 4px 0;
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            .swiper-container {
+                margin-top: 1em;
+
+                .swiper-button-next,
+                .swiper-container-rtl .swiper-button-prev {
+                    padding-right: 8px;
+                }
+                .swiper-button-prev,
+                .swiper-container-rtl .swiper-button-next {
+                    padding-left: 8px;
+                }
+            }
         }
     }
 

@@ -1542,8 +1542,8 @@
     }
 
     .filter-tags-list {
-        padding-top: 1.5em;
-        padding-bottom: 1.5em;
+        padding-top: 0.5em;
+        padding-bottom: 1.0em;
     }
 
     .metadata-alert {

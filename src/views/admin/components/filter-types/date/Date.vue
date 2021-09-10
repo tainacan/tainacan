@@ -177,7 +177,8 @@
                         
                         this.$emit('sendValuesToTags', { 
                             label: this.comparator + ' ' + this.parseDateToNavigatorLanguage(textValue), 
-                            value: textValue
+                            value: textValue,
+                            metadatumName: this.metadatumName
                         });
                     }
 
@@ -222,7 +223,8 @@
                 });
                 this.$emit('sendValuesToTags', { 
                     label: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat), 
-                    value: valueQuery
+                    value: valueQuery,
+                    metadatumName: this.metadatumName
                 });
             },
             onChangeComparator(newComparator) {

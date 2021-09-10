@@ -182,7 +182,7 @@
                     }
                 }
 
-                this.$emit( 'sendValuesToTags', { label: onlyLabels.length ? onlyLabels : this.selected, value: this.selected });
+                this.$emit( 'sendValuesToTags', { label: onlyLabels.length ? onlyLabels : this.selected, value: this.selected, metadatumName: this.metadatumName });
             },
             openCheckboxModal() {
                 this.$buefy.modal.open({
