@@ -92,7 +92,7 @@
                 });
 
                 if (values[0] != undefined && values[1] != undefined)
-                    this.$emit('sendValuesToTags', { label: values[0] + ' - ' + values[1], value: values });
+                    this.$emit('sendValuesToTags', { label: values[0] + ' - ' + values[1], value: values, metadatumName: this.metadatumName });
             },
             updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
@@ -107,7 +107,7 @@
                     }
 
                     if (metaquery.value[0] != undefined && metaquery.value[1] != undefined)
-                        this.$emit('sendValuesToTags', { label: this.valueInit + ' - ' + this.valueEnd, value: metaquery.value });
+                        this.$emit('sendValuesToTags', { label: this.valueInit + ' - ' + this.valueEnd, value: metaquery.value, metadatumName: this.metadatumName });
 
                 } else {
                     this.valueInit = null;
