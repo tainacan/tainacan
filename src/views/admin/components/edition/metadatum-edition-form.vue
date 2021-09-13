@@ -194,7 +194,17 @@
                 </b-field>
 
                 <b-field
-                        v-if="!originalMetadatum.metadata_type_object.core && editForm.parent == 0"
+                        v-if="!originalMetadatum.metadata_type_object.core && editForm.parent == 0 && editForm.multiple == 'yes'" 
+                        :addons="false"
+                        :label="$i18n.get('label_limit_max_values')">
+                        &nbsp;
+                    <b-switch
+                            size="is-small" 
+                            v-model="showCardinalityOptions" />
+                </b-field>
+
+                <b-field
+                        v-if="showCardinalityOptions && !originalMetadatum.metadata_type_object.core && editForm.parent == 0"
                         :type="formErrors['cardinality'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['cardinality'] != undefined ? formErrors['cardinality'] : ''"
                         :addons="false">
@@ -204,11 +214,11 @@
                                 :title="$i18n.getHelperTitle('metadata', 'cardinality')"
                                 :message="$i18n.getHelperMessage('metadata', 'cardinality')"/>
                     </label>
-                    <b-input
+                    <b-numberinput
                             :disabled="editForm.multiple != 'yes'"
                             name="cardinality"
-                            type="number"
-                            step="1" 
+                            step="1"
+                            min="2"
                             v-model="editForm.cardinality"/>
                 </b-field>
 
@@ -348,7 +358,14 @@
                 entityName: 'metadatum',
                 isUpdating: false,
                 hideMetadataTypeOptions: false,
-                showAdvancedOptions: false
+                showAdvancedOptions: false,
+                showCardinalityOptions: false
+            }
+        },
+        watch: {
+            showCardinalityOptions() {
+                if (!this.showCardinalityOptions)
+                    this.editForm.cardinality = undefined;
             }
         },
         created() {
@@ -356,6 +373,9 @@
      
             if (this.editForm.status == 'auto-draft')
                 this.editForm.status = 'publish';
+
+            if (this.editForm.cardinality && this.editForm.cardinality > 1)
+                this.showCardinalityOptions = true;
 
             this.formErrors = this.editForm.formErrors != undefined ? this.editForm.formErrors : {};
             this.formErrorMessage = this.editForm.formErrors != undefined ? this.editForm.formErrorMessage : '';

@@ -598,6 +598,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_amount_of_metadata_of_type'	 			 =>	__( 'Amount of metadata of this type', 'tainacan'),
 	'label_document_option_iframe_height'			 =>	__( 'Iframe height (px)', 'tainacan'),
 	'label_document_option_iframe_width'			 =>	__( 'Iframe width (px)', 'tainacan'),
+	'label_limit_max_values'						 => __( 'Limit the amount of multiple values', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

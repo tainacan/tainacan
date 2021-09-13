@@ -126,7 +126,13 @@
                 return this.childItemMetadataGroups && this.childItemMetadataGroups[this.childItemMetadataGroups.length - 1] && this.childItemMetadataGroups[this.childItemMetadataGroups.length - 1].findIndex((childItemMetadatum) => childItemMetadatum.value) >= 0;
             },
             maxMultipleValues() {
-                return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.cardinality && !isNaN(this.itemMetadatum.metadatum.cardinality)) ? this.itemMetadatum.metadatum.cardinality : undefined;
+                return (
+                    this.itemMetadatum &&
+                    this.itemMetadatum.metadatum &&
+                    this.itemMetadatum.metadatum.cardinality &&
+                    !isNaN(this.itemMetadatum.metadatum.cardinality) &&
+                    this.itemMetadatum.metadatum.cardinality > 0
+                ) ? this.itemMetadatum.metadatum.cardinality : undefined;
             },
         },
         watch: {

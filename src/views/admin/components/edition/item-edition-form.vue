@@ -142,6 +142,11 @@
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
                                     </span>
                                     <span>{{ $i18n.get('metadata') }}</span>
+                                    <span 
+                                            v-if="metadatumList && metadatumList.length"
+                                            class="has-text-gray">
+                                        &nbsp;({{ metadatumList.length }})
+                                    </span>
                                 </template>
 
                                 <div class="sub-header">

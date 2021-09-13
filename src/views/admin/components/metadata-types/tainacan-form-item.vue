@@ -142,7 +142,13 @@
                 return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple == 'yes') ? this.itemMetadatum.metadatum.multiple == 'yes' : false;
             },
             maxMultipleValues() {
-                return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.cardinality && !isNaN(this.itemMetadatum.metadatum.cardinality)) ? this.itemMetadatum.metadatum.cardinality : undefined;
+                return (
+                    this.itemMetadatum &&
+                    this.itemMetadatum.metadatum &&
+                    this.itemMetadatum.metadatum.cardinality &&
+                    !isNaN(this.itemMetadatum.metadatum.cardinality) &&
+                    this.itemMetadatum.metadatum.cardinality > 0
+                ) ? this.itemMetadatum.metadatum.cardinality : undefined;
             },
             isTextInputComponent() {
                 const array = ['tainacan-relationship','tainacan-taxonomy', 'tainacan-compound', 'tainacan-user'];

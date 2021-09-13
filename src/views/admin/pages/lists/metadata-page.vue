@@ -14,7 +14,7 @@
             <b-tabs 
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata') || (!isRepositoryLevel && collection && collection.current_user_can_edit_metadata))"
                     v-model="activeTab">    
-                <b-tab-item :label="$i18n.get('metadata')">
+                <b-tab-item :label="$i18n.get('metadata') + ( activeMetadatumList && activeMetadatumList.length ? (' (' + activeMetadatumList.length + ')') : '' )">
                     <div
                             :style="{ height: activeMetadatumList && activeMetadatumList.length <= 0 && !isLoadingMetadata ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
                             class="columns"

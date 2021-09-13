@@ -127,7 +127,13 @@
                 return !this.itemMetadatum.item || !this.itemMetadatum.item.id;
             },
             maxMultipleValues() {
-                return (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.cardinality && !isNaN(this.itemMetadatum.metadatum.cardinality)) ? this.itemMetadatum.metadatum.cardinality : undefined;
+                return (
+                    this.itemMetadatum &&
+                    this.itemMetadatum.metadatum && 
+                    this.itemMetadatum.metadatum.cardinality &&
+                    !isNaN(this.itemMetadatum.metadatum.cardinality) &&
+                    this.itemMetadatum.metadatum.cardinality > 0
+                ) ? this.itemMetadatum.metadatum.cardinality : undefined;
             }
         },
         watch: {
