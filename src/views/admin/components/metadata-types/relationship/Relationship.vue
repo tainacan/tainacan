@@ -172,7 +172,7 @@
                     this.itemMetadatum.metadatum &&
                     this.itemMetadatum.metadatum.cardinality &&
                     !isNaN(this.itemMetadatum.metadatum.cardinality) &&
-                    this.itemMetadatum.metadatum.cardinality > 0
+                    this.itemMetadatum.metadatum.cardinality > 1
                 ) ? this.itemMetadatum.metadatum.cardinality : undefined;
             },
             itemModalSrc() {

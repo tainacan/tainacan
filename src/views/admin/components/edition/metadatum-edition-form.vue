@@ -216,7 +216,7 @@
                                 :message="$i18n.getHelperMessage('metadata', 'cardinality')"/>
                     </label>
                     <b-numberinput
-                            :disabled="!showCardinalityOptions && editForm.multiple != 'yes'"
+                            :disabled="!showCardinalityOptions || editForm.multiple != 'yes'"
                             name="cardinality"
                             step="1"
                             min="2"
