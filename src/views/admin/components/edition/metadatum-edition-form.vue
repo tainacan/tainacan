@@ -194,17 +194,18 @@
                 </b-field>
 
                 <b-field
-                        v-if="!originalMetadatum.metadata_type_object.core && editForm.parent == 0 && editForm.multiple == 'yes'" 
+                        v-if="!originalMetadatum.metadata_type_object.core && editForm.parent == 0" 
                         :addons="false"
                         :label="$i18n.get('label_limit_max_values')">
                         &nbsp;
                     <b-switch
-                            size="is-small" 
+                            size="is-small"
+                            :disabled="editForm.multiple != 'yes'"
                             v-model="showCardinalityOptions" />
                 </b-field>
 
                 <b-field
-                        v-if="showCardinalityOptions && !originalMetadatum.metadata_type_object.core && editForm.parent == 0"
+                        v-if="!originalMetadatum.metadata_type_object.core && editForm.parent == 0"
                         :type="formErrors['cardinality'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['cardinality'] != undefined ? formErrors['cardinality'] : ''"
                         :addons="false">
@@ -215,7 +216,7 @@
                                 :message="$i18n.getHelperMessage('metadata', 'cardinality')"/>
                     </label>
                     <b-numberinput
-                            :disabled="editForm.multiple != 'yes'"
+                            :disabled="!showCardinalityOptions && editForm.multiple != 'yes'"
                             name="cardinality"
                             step="1"
                             min="2"
@@ -365,7 +366,9 @@
         watch: {
             showCardinalityOptions() {
                 if (!this.showCardinalityOptions)
-                    this.editForm.cardinality = undefined;
+                    this.editForm.cardinality = 2;
+                else
+                    this.editForm.cardinality = 1;
             }
         },
         created() {
