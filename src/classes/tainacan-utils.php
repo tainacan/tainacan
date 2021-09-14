@@ -38,3 +38,15 @@ if(!function_exists("is_post_status_viewable")) {
 		return $post_status->publicly_queryable || ( $post_status->_builtin && $post_status->public );
 	}
 }
+
+
+function tainacan_set_log_slug( $override, $slug, $post_ID, $post_status, $post_type, $post_parent ) {
+    if ( 'tainacan-log' === $post_type ) {
+        if ( $post_ID ) {
+            return uniqid( $post_type . '-' . $post_ID );
+        }
+        return uniqid( $post_type . '-' );
+    }
+    return $override;
+}
+add_filter( 'pre_wp_unique_post_slug', 'tainacan_set_log_slug', 10, 6 );
