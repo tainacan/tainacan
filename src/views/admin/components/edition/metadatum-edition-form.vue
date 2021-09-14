@@ -365,10 +365,7 @@
         },
         watch: {
             showCardinalityOptions() {
-                if (!this.showCardinalityOptions)
-                    this.editForm.cardinality = 2;
-                else
-                    this.editForm.cardinality = 1;
+                this.editForm.cardinality = !this.showCardinalityOptions ? 1 : 2;
             }
         },
         created() {

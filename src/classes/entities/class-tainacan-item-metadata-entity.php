@@ -487,7 +487,7 @@ class Item_Metadata_Entity extends Entity {
 		if ($this->is_multiple()) {
 			if (is_array($value)) {
 				$cardinality = $metadatum->get_cardinality();
-				if ( !empty($cardinality) && $cardinality > 0 && count($value) > $cardinality ) {
+				if ( !empty($cardinality) && $cardinality > 1 && count($value) > $cardinality ) {
 					$this->add_error( 'invalid', sprintf( __('Metadatum %s is set to accept a maximum of %s values.', 'tainacan'), $metadatum->get_name(), $cardinality ) );
 					return false;
 				}
