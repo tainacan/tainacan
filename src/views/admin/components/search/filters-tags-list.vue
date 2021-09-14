@@ -173,7 +173,7 @@
 
         .filter-tag {
             border-radius: 3px;
-            padding: 4px 8px;
+            padding: 3px 8px 2px 8px;
             position: relative;
             background-color: var(--tainacan-input-background-color);
             border: solid 1px var(--tainacan-input-border-color);
