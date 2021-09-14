@@ -59,10 +59,23 @@ class JSON_flat extends Exposer {
 					); 
 				}
 			);
+			$item_document = array(
+				'type' => $item['document_type'],
+				'value' => ''
+			);
+			if($item_document['type'] == 'url') {
+				$item_document['value'] = $item['document'];
+			} elseif ( $item_document['type'] == 'text' ) {
+				$item_document['value'] = $item['document_as_html'];
+			} elseif ( $item_document['type'] == 'attachment' ) {
+				$item_document['value'] = wp_get_attachment_url($item['document']);
+			}
+			
 			return [
 				'id' => $item['id'],
 				'data' => $item_data,
 				'url' => $item['url'],
+				'document' => $item_document,
 				'thumbnail' => isset($item['_thumbnail_id']) ? wp_get_attachment_image_src($item['_thumbnail_id'], 'full') : false,
 				'creation_date' => isset($item['creation_date']) ? $item['creation_date'] : '',
 				'modification_date' =>  isset($item['modification_date']) ? $item['modification_date'] : ''
