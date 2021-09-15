@@ -173,7 +173,7 @@
 
     .preview-warning {
         width: 100%;
-        font-size: 0.875em;
+        font-size: 0.875rem;
         font-style: italic;
         color: inherit;
         opacity: 0.5;
@@ -192,7 +192,7 @@
         width: 42px;
         height: 42px;
         padding: 0;
-        margin: 0 -4px;
+        margin: 0;
 
         svg {
             fill: var(--tainacan-block-primary, $primary);
@@ -202,6 +202,10 @@
             content: none !important;
         }
     }
+    &.alignfull .swiper-button-prev,
+    &.alignfull .swiper-button-next {
+        margin: 0 6px;
+    }
 
     // Carousel placeholder on editor side  ----------------------------------------------------
     .items-list-edit-container,
@@ -210,6 +214,7 @@
         
         & .skeleton {
             min-height: 150px;
+            max-height: 260px;
         }
 
         &.has-arrows-none .swiper-button-prev,
@@ -253,7 +258,8 @@
         align-items: flex-start;
         overflow-x: scroll;
         list-style: none;
-        margin: 0 36px;
+        margin: 0 50px;
+        padding: 0;
         scroll-snap-type: x mandatory;
         scroll-padding-left: 10px;
 
@@ -531,6 +537,9 @@
             }
         }
     }
+}
+.block-editor-block-list__block>.wp-block-tainacan-carousel-items-list {
+    max-width: calc(100% - 72px);
 }
 .block-editor-block-list__block:not(.has-text-color)>.wp-block-tainacan-carousel-items-list {
     .swiper-container,

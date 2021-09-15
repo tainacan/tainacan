@@ -16,7 +16,7 @@
     color: var(--tainacan-block-gray4, #555758); }
   .wp-block-tainacan-item-submission-form .preview-warning {
     width: 100%;
-    font-size: 0.875em;
+    font-size: 0.875rem;
     font-style: italic;
     color: var(--tainacan-block-gray4, #555758);
     text-align: center;

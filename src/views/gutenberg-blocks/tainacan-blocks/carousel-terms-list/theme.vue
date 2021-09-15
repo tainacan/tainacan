@@ -194,7 +194,9 @@ export default {
             totalTerms: 0,
             swiperOptions: {
                 watchOverflow: true,
-                mousewheel: true,
+                mousewheel: {
+                    forceToAxis: true
+                },
                 observer: true,
                 preventInteractionOnTransition: true,
                 allowClick: true,
