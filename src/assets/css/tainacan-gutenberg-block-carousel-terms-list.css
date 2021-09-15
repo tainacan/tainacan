@@ -160,7 +160,8 @@
           flex-basis: 50%;
           width: 100%;
           height: auto;
-          margin-bottom: 0px; }
+          margin-bottom: 0px;
+          padding-bottom: 100% !important; }
   .wp-block-tainacan-carousel-terms-list .preview-warning {
     width: 100%;
     font-size: 0.875em;
