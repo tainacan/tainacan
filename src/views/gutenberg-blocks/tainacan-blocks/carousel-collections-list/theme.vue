@@ -218,9 +218,10 @@ export default {
             paged: undefined,
             totalCollections: 0,
             swiperOptions: {
-                lazy: this.maxCollectionsPerScreen <= 4,
                 watchOverflow: true,
-                mousewheel: true,
+                mousewheel: {
+                    forceToAxis: true
+                },
                 observer: true,
                 preventInteractionOnTransition: true,
                 allowClick: true,
