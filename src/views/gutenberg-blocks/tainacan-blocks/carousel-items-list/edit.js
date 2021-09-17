@@ -61,7 +61,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         return (
             <li 
                 key={ item.id }
-                className={ 'item-list-item ' + (maxItemsPerScreen ? 'max-itens-per-screen-' + maxItemsPerScreen : '') }>   
+                className={ 'item-list-item ' + (maxItemsPerScreen ? ' max-itens-per-screen-' + maxItemsPerScreen : '') + (cropImagesToSquare ? ' is-forced-square' : '') }>   
                 { loadStrategy == 'selection' ?
                     ( tainacan_blocks.wp_version < '5.4' ?
                         <IconButton
@@ -80,10 +80,12 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
                     href={ item.url } 
                     target="_blank">
-                    <img
-                        src={ thumbHelper.getSrc(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype']) }
-                        srcSet={ thumbHelper.getSrcSet(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype']) }
-                        alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : __( 'Thumbnail', 'tainacan' )) }/>
+                    <div class="items-list-item--image-wrap">
+                        <img
+                            src={ thumbHelper.getSrc(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype']) }
+                            srcSet={ thumbHelper.getSrcSet(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype']) }
+                            alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : __( 'Thumbnail', 'tainacan' )) }/>
+                    </div>
                     { !hideTitle ? <span>{ item.title ? item.title : '' }</span> : null }
                 </a>
             </li>
@@ -370,8 +372,8 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                             }
                             <ToggleControl
                                     label={__('Crop Images', 'tainacan')}
-                                    help={ cropImagesToSquare && maxItemsPerScreen > 4 ? __('Do not use square cropeed version of the item thumbnail.', 'tainacan') : __('Toggle to use square cropped version of the item thumbnail.', 'tainacan') }
-                                    checked={ cropImagesToSquare && maxItemsPerScreen > 4 }
+                                    help={ cropImagesToSquare ? __('Do not use square cropeed version of the item thumbnail.', 'tainacan') : __('Toggle to use square cropped version of the item thumbnail.', 'tainacan') }
+                                    checked={ cropImagesToSquare }
                                     onChange={ ( isChecked ) => {
                                             cropImagesToSquare = isChecked;
                                             setAttributes({ cropImagesToSquare: cropImagesToSquare });

@@ -64,7 +64,8 @@
                             ref="myItemSwiperSlide"
                             :key="index"
                             v-for="(item, index) of items"
-                            class="item-list-item">      
+                            class="item-list-item"
+                            :class="{ 'is-forced-square': cropImagesToSquare }">
                         <a 
                                 :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                                 :href="item.url"

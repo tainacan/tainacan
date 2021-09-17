@@ -168,6 +168,14 @@
                 color: inherit;
                 text-decoration: none;
             }
+            .is-forced-square>a>div {
+                padding-bottom: 100% !important;
+
+                img {
+                    object-fit: cover;
+                    object-position: center;
+                }
+            }
         }
     }
 
@@ -283,6 +291,29 @@
                 display: block;
                 padding: 0px;
                 margin-bottom: 0.5em;
+            }
+
+            &.is-forced-square {
+                .items-list-item--image-wrap {
+                    padding-top: 100%;
+                    display: block;
+                    content: '';
+                    width: 100%;
+                    position: relative;
+                }
+                img {
+                    display: block;
+                    padding: 0px;
+                    margin-bottom: 0.5em;
+                    object-fit: cover;
+                    position: absolute;
+                    height: 100%;
+                    width: 100%;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                }
             }
 
             &:hover a { 
