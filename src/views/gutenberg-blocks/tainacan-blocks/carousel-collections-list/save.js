@@ -7,6 +7,7 @@ export default function ({ attributes, className }) {
         selectedCollections,
         arrowsPosition,
         largeArrows,
+        arrowsStyle,
         cropImagesToSquare,
         maxCollectionsPerScreen,
         maxCollectionsNumber,
@@ -29,6 +30,7 @@ export default function ({ attributes, className }) {
                 loop-slides={ '' + loopSlides }
                 hide-name={ '' + hideName }
                 large-arrows={ '' + largeArrows }
+                arrows-style={ arrowsStyle }
                 crop-images-to-square={ '' + cropImagesToSquare }
                 max-collections-number={ maxCollectionsNumber }
                 max-collections-per-screen={ maxCollectionsPerScreen }

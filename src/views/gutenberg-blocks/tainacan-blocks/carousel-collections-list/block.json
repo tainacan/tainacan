@@ -71,6 +71,10 @@
             "type": "Boolean",
             "value": false
         },
+        "arrowsStyle": {
+            "type": "String",
+            "value": "type-1"
+        },
         "autoPlay": {
             "type": "Boolean",
             "value": false

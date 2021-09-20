@@ -19,7 +19,7 @@ export default (element) => {
             // Checks if this carousel isn't already mounted
             blocks = blocks.filter((block) => block.classList && !block.classList.contains('has-mounted'));
             const blockIds = Object.values(blocks).map((block) => block.id);
-
+       
             // Creates a new Vue Instance to manage each block isolatelly
             for (let blockId of blockIds) {
 
@@ -32,6 +32,7 @@ export default (element) => {
                         autoPlay: false,
                         autoPlaySpeed: 3,
                         largeArrows: false,
+                        arrowsStyle: 'type-1',
                         maxCollectionsPerScreen: 6,
                         cropImagesToSquare: true,
                         loopSlides: false,
@@ -42,7 +43,7 @@ export default (element) => {
                         className: '',
                         style: ''
                     },
-                    render(h){ 
+                    render(h) { 
                         return h(CarouselCollectionsListTheme, {
                             props: {
                                 blockId: blockId,
@@ -53,6 +54,7 @@ export default (element) => {
                                 autoPlaySpeed: this.autoPlaySpeed,
                                 loopSlides: this.loopSlides,
                                 largeArrows: this.largeArrows,
+                                arrowsStyle: this.arrowsStyle,
                                 cropImagesToSquare: this.cropImagesToSquare,
                                 maxCollectionsPerScreen: this.maxCollectionsPerScreen,
                                 hideName: this.hideName,
@@ -72,6 +74,7 @@ export default (element) => {
                         this.arrowsPosition = this.$el.attributes['arrows-position'] != undefined ? this.$el.attributes['arrows-position'].value : undefined;
                         this.autoPlay = this.$el.attributes['auto-play'] != undefined ? this.$el.attributes['auto-play'].value == 'true' : false;
                         this.largeArrows = this.$el.attributes['large-arrows'] != undefined ? this.$el.attributes['large-arrows'].value == 'true' : false;
+                        this.arrowsStyle = this.$el.attributes['arrows-style'] != undefined ? this.$el.attributes['arrows-style'].value : undefined;
                         this.autoPlaySpeed = this.$el.attributes['auto-play-speed'] != undefined ? this.$el.attributes['auto-play-speed'].value : 3;
                         this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;
                         this.cropImagesToSquare = this.$el.attributes['crop-images-to-square'] != undefined ? this.$el.attributes['crop-images-to-square'].value == 'true' : false;
