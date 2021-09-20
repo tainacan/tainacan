@@ -32,6 +32,7 @@ export default (element) => {
                         autoPlay: false,
                         autoPlaySpeed: 3,
                         largeArrows: false,
+                        arrowsStyle: 'type-1',
                         maxTermsPerScreen: 6,
                         loopSlides: false,
                         hideName: true,
@@ -53,6 +54,7 @@ export default (element) => {
                                 autoPlaySpeed: this.autoPlaySpeed,
                                 loopSlides: this.loopSlides,
                                 largeArrows: this.largeArrows,
+                                arrowsStyle: this.arrowsStyle,
                                 maxTermsPerScreen: this.maxTermsPerScreen,
                                 hideName: this.hideName,
                                 showTermThumbnail: this.showTermThumbnail,
@@ -73,6 +75,7 @@ export default (element) => {
                         this.autoPlay = this.$el.attributes['auto-play'] != undefined ? this.$el.attributes['auto-play'].value == 'true' : false;
                         this.autoPlaySpeed = this.$el.attributes['auto-play-speed'] != undefined ? this.$el.attributes['auto-play-speed'].value : 3;
                         this.largeArrows = this.$el.attributes['large-arrows'] != undefined ? this.$el.attributes['large-arrows'].value == 'true' : false;
+                        this.arrowsStyle = this.$el.attributes['arrows-style'] != undefined ? this.$el.attributes['arrows-style'].value : undefined;
                         this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;
                         this.hideName = this.$el.attributes['hide-name'] != undefined ? this.$el.attributes['hide-name'].value == 'true' : false;
                         this.taxonomyId = this.$el.attributes['taxonomy-id'] != undefined ? this.$el.attributes['taxonomy-id'].value : undefined;

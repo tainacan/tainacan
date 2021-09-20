@@ -7,6 +7,7 @@ export default function({ attributes, className }) {
         selectedTerms,
         arrowsPosition,
         largeArrows,
+        arrowsStyle,
         maxTermsPerScreen,
         maxTermsNumber,
         autoPlay,
@@ -29,6 +30,7 @@ export default function({ attributes, className }) {
                 loop-slides={ '' + loopSlides }
                 hide-name={ '' + hideName }
                 large-arrows={ '' + largeArrows }
+                arrows-style={ arrowsStyle }
                 max-terms-number={ maxTermsNumber }
                 max-terms-per-screen={ maxTermsPerScreen }
                 taxonomy-id={ taxonomyId }

@@ -69,7 +69,12 @@
                             :width="largeArrows ? 60 : 42"
                             :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
-                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        <path
+                                v-if="arrowsStyle === 'type-2'"
+                                d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z"/>
+                        <path 
+                                v-else
+                                d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                         <path
                                 d="M0 0h24v24H0z"
                                 fill="none"/>                         
@@ -84,7 +89,12 @@
                             :width="largeArrows ? 60 : 42"
                             :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
-                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        <path
+                                v-if="arrowsStyle === 'type-2'"
+                                d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z"/>
+                        <path 
+                                v-else
+                                d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                         <path
                                 d="M0 0h24v24H0z"
                                 fill="none"/>                        
@@ -124,7 +134,12 @@
                             :width="largeArrows ? 60 : 42"
                             :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
-                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        <path
+                                v-if="arrowsStyle === 'type-2'"
+                                d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z"/>
+                        <path 
+                                v-else
+                                d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                         <path
                                 d="M0 0h24v24H0z"
                                 fill="none"/>                         
@@ -139,7 +154,12 @@
                             :width="largeArrows ? 60 : 42"
                             :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
-                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        <path
+                                v-if="arrowsStyle === 'type-2'"
+                                d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z"/>
+                        <path
+                                v-else
+                                d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                         <path
                                 d="M0 0h24v24H0z"
                                 fill="none"/>                        
@@ -173,6 +193,7 @@ export default {
         maxTermsPerScreen: Number,
         hideName: Boolean,
         largeArrows: Boolean,
+        arrowsStyle: String,
         showTermThumbnail: Boolean,
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
