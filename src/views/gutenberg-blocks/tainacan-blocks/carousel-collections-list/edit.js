@@ -34,7 +34,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
 
     // Gets blocks props from hook
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
-    console.log(blockProps)
+    
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
 

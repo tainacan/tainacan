@@ -188,7 +188,7 @@
     .wp-block-tainacan-carousel-collections-list .swiper-button-prev::after, .wp-block-tainacan-carousel-collections-list .swiper-button-prev::before, .wp-block-tainacan-carousel-collections-list .swiper-button-next::after, .wp-block-tainacan-carousel-collections-list .swiper-button-next::before {
       content: none !important; }
   .wp-block-tainacan-carousel-collections-list.alignfull .swiper-button-prev, .wp-block-tainacan-carousel-collections-list.alignfull .swiper-button-next {
-    margin: 0 6px; }
+    margin: 0 6px !important; }
   .wp-block-tainacan-carousel-collections-list .collections-list-edit-container,
   .wp-block-tainacan-carousel-collections-list .tainacan-carousel {
     position: relative; }

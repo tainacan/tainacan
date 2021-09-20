@@ -9,6 +9,7 @@ export default function ({ attributes, className }) {
         selectedItems,
         arrowsPosition,
         largeArrows,
+        arrowsStyle,
         loadStrategy,
         maxItemsNumber,
         maxItemsPerScreen,
@@ -38,6 +39,7 @@ export default function ({ attributes, className }) {
                 loop-slides={ '' + loopSlides }
                 hide-title={ '' + hideTitle }
                 large-arrows={ '' + largeArrows }
+                arrows-style={ arrowsStyle }
                 crop-images-to-square={ '' + cropImagesToSquare }
                 show-collection-header={ '' + showCollectionHeader }
                 show-collection-label={ '' + showCollectionLabel }

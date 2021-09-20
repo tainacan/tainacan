@@ -34,6 +34,7 @@ export default (element) => {
                         maxItemsPerScreen: 7,
                         arrowsPosition: 'around',
                         largeArrows: false,
+                        arrowsStyle: 'type-1',
                         autoPlay: false,
                         autoPlaySpeed: 3,
                         loopSlides: false,
@@ -60,6 +61,7 @@ export default (element) => {
                                 maxItemsPerScreen: this.maxItemsPerScreen,
                                 arrowsPosition: this.arrowsPosition,
                                 largeArrows: this.largeArrows,
+                                arrowsStyle: this.arrowsStyle,
                                 autoPlay: this.autoPlay,
                                 autoPlaySpeed: this.autoPlaySpeed,
                                 loopSlides: this.loopSlides,
@@ -86,6 +88,7 @@ export default (element) => {
                         this.maxItemsPerScreen = this.$el.attributes['max-items-per-screen'] != undefined ? this.$el.attributes['max-items-per-screen'].value : 7;
                         this.arrowsPosition = this.$el.attributes['arrows-position'] != undefined ? this.$el.attributes['arrows-position'].value : undefined;
                         this.largeArrows = this.$el.attributes['large-arrows'] != undefined ? this.$el.attributes['large-arrows'].value == 'true' : false;
+                        this.arrowsStyle = this.$el.attributes['arrows-style'] != undefined ? this.$el.attributes['arrows-style'].value : undefined;
                         this.autoPlay = this.$el.attributes['auto-play'] != undefined ? this.$el.attributes['auto-play'].value == 'true' : false;
                         this.autoPlaySpeed = this.$el.attributes['auto-play-speed'] != undefined ? this.$el.attributes['auto-play-speed'].value : 3;
                         this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;
