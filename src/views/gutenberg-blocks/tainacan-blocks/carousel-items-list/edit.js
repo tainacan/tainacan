@@ -23,6 +23,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         maxItemsNumber,
         maxItemsPerScreen,
         spaceBetweenItems,
+        spaceAroundCarousel,
         selectedItems,
         isLoading,
         loadStrategy,
@@ -472,6 +473,16 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     } 
                                 }
                             />
+                            <RangeControl
+                                    label={ __('Space around the carousel', 'tainacan') }
+                                    value={ !isNaN(spaceAroundCarousel) ? spaceAroundCarousel : 50 }
+                                    onChange={ ( aSpaceAroundCarousel ) => {
+                                        spaceAroundCarousel = aSpaceAroundCarousel;
+                                        setAttributes( { spaceAroundCarousel: aSpaceAroundCarousel } );
+                                    }}
+                                    min={ 0 }
+                                    max={ 200 }
+                                />
                         </div>
                     </PanelBody>
 
@@ -652,7 +663,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
 
                         <div
                                 className={'items-list-edit-container ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }
-                                style={{ '--spaceBetweenItems': !isNaN(spaceBetweenItems) ? (spaceBetweenItems + 'px') : '32px' }}>
+                                style={{
+                                    '--spaceBetweenItems': !isNaN(spaceBetweenItems) ? (spaceBetweenItems + 'px') : '32px',
+                                    '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px'
+                                }}>
                             <button 
                                     class="swiper-button-prev" 
                                     slot="button-prev"

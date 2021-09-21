@@ -14,6 +14,7 @@ export default function ({ attributes, className }) {
         maxItemsNumber,
         maxItemsPerScreen,
         spaceBetweenItems,
+        spaceAroundCarousel,
         autoPlay,
         autoPlaySpeed,
         loopSlides,
@@ -49,6 +50,7 @@ export default function ({ attributes, className }) {
                 max-items-number={ maxItemsNumber }
                 max-items-per-screen={ maxItemsPerScreen }
                 space-between-items={ spaceBetweenItems }
+                space-around-carousel={ spaceAroundCarousel }
                 tainacan-api-root={ tainacan_blocks.root }
                 tainacan-base-url={ tainacan_blocks.base_url }
                 id={ 'wp-block-tainacan-carousel-items-list_' + blockId }>

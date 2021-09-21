@@ -53,6 +53,10 @@
             "type": "Number",
             "value": 32
         },
+        "spaceAroundCarousel": {
+            "type": "Number",
+            "value": 50
+        },
         "isLoading": {
             "type": "Boolean",
             "value": false

@@ -5,6 +5,7 @@
         <div v-if="!isLoading">
             <div  
                     :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '')"
+                    :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
                     v-if="terms.length > 0">
                 <swiper 
                         role="list"
@@ -109,7 +110,9 @@
             <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
         <div v-else>
-            <div :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') ">
+            <div
+                    :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
+                    :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') ">
                 <swiper 
                         role="list"
                         ref="myTermSwiper"
@@ -192,6 +195,7 @@ export default {
         loopSlides: Boolean,
         maxTermsPerScreen: Number,
         spaceBetweenTerms: Number,
+        spaceAroundCarousel: Number,
         hideName: Boolean,
         largeArrows: Boolean,
         arrowsStyle: String,
@@ -296,7 +300,7 @@ export default {
                                 this.termItems[result.termId] = result.termItems;
                             }
                             
-                            //this.isLoading = false;
+                            this.isLoading = false;
                         }) 
                     }
                     

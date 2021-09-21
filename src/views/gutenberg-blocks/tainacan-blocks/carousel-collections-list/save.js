@@ -12,6 +12,7 @@ export default function ({ attributes, className }) {
         maxCollectionsPerScreen,
         maxCollectionsNumber,
         spaceBetweenCollections,
+        spaceAroundCarousel,
         autoPlay,
         autoPlaySpeed,
         loopSlides,
@@ -36,6 +37,7 @@ export default function ({ attributes, className }) {
                 max-collections-number={ maxCollectionsNumber }
                 max-collections-per-screen={ maxCollectionsPerScreen }
                 space-between-collections={ spaceBetweenCollections }
+                space-around-carousel={ spaceAroundCarousel }
                 tainacan-api-root={ tainacan_blocks.root }
                 tainacan-base-url={ tainacan_blocks.base_url }
                 show-collection-thumbnail={ '' + showCollectionThumbnail }

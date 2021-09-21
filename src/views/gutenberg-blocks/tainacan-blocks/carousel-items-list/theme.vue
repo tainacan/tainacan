@@ -51,6 +51,7 @@
         <div v-if="!isLoading">
             <div  
                     :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') "
+                    :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
                     v-if="items.length > 0">
                 <swiper 
                         role="list"
@@ -131,7 +132,9 @@
             <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
         <div v-else>
-            <div :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') ">
+            <div 
+                    :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
+                    :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') ">
                 <swiper 
                         role="list"
                         :options="{ ...JSON.parse(JSON.stringify(swiperOptions)), autoplay: false, loop: false }"
@@ -217,6 +220,7 @@ export default {
         maxItemsNumber: Number,
         maxItemsPerScreen: Number,
         spaceBetweenItems: Number,
+        spaceAroundCarousel: Number,
         arrowsPosition: String,
         largeArrows: Boolean,
         arrowsStyle: String,

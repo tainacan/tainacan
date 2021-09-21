@@ -135,7 +135,7 @@
         left: -20px;
 
         .swiper-container {
-            margin: 0 50px;
+            margin: 0 var(--spaceAroundCarousel, 50px);
 
             a>span,
             a:hover>span {
@@ -212,7 +212,8 @@
         background: none;
         background-color: transparent !important;
         border: none;
-        width: 42px;
+        min-width: 42px;
+        width: calc(var(--spaceAroundCarousel) - 8px);
         height: 42px;
         padding: 0;
         margin: 0;
@@ -260,7 +261,8 @@
         &.has-large-arrows .swiper-button-prev, 
         &.has-large-arrows .swiper-button-next {
             top: calc(50% - 60px);
-            width: 60px;
+            min-width: 60px;
+            width: calc(var(--spaceAroundCarousel) + 10px);
             height: 60px;
             margin: 0 -24px;
         }
@@ -282,7 +284,7 @@
         align-items: flex-start;
         overflow-x: scroll;
         list-style: none;
-        margin: 0 50px;
+        margin: 0 var(--spaceAroundCarousel, 50px);
         padding: 0;
         scroll-snap-type: x mandatory;
         scroll-padding-left: 10px;

@@ -5,6 +5,7 @@
         <div v-if="!isLoading">
             <div  
                     :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') "
+                    :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
                     v-if="collections.length > 0">
                 <swiper 
                         role="list"
@@ -134,7 +135,9 @@
             <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
         <div v-else>
-            <div :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') ">
+            <div 
+                    :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') "
+                    :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }">
                 <swiper 
                         role="list"
                         ref="myCollectionSwiper"
@@ -217,6 +220,7 @@ export default {
         loopSlides: Boolean,
         maxCollectionsPerScreen: Number,
         spaceBetweenCollections: Number,
+        spaceAroundCarousel: Number,
         hideName: Boolean,
         largeArrows: Boolean,
         arrowsStyle: String,

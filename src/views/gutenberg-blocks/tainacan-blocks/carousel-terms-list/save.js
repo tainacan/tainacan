@@ -11,6 +11,7 @@ export default function({ attributes, className }) {
         maxTermsPerScreen,
         maxTermsNumber,
         spaceBetweenTerms,
+        spaceAroundCarousel,
         autoPlay,
         autoPlaySpeed,
         loopSlides,
@@ -35,6 +36,7 @@ export default function({ attributes, className }) {
                 max-terms-number={ maxTermsNumber }
                 max-terms-per-screen={ maxTermsPerScreen }
                 space-between-terms={ spaceBetweenTerms }
+                space-around-carousel={ spaceAroundCarousel }
                 taxonomy-id={ taxonomyId }
                 tainacan-api-root={ tainacan_blocks.root }
                 tainacan-base-url={ tainacan_blocks.base_url }

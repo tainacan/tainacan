@@ -24,6 +24,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         cropImagesToSquare,
         maxCollectionsPerScreen,
         spaceBetweenCollections,
+        spaceAroundCarousel,
         isLoading,
         arrowsPosition,
         autoPlay,
@@ -366,6 +367,16 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     } 
                                 }
                             />
+                            <RangeControl
+                                    label={ __('Space around the carousel', 'tainacan') }
+                                    value={ !isNaN(spaceAroundCarousel) ? spaceAroundCarousel : 50 }
+                                    onChange={ ( aSpaceAroundCarousel ) => {
+                                        spaceAroundCarousel = aSpaceAroundCarousel;
+                                        setAttributes( { spaceAroundCarousel: aSpaceAroundCarousel } );
+                                    }}
+                                    min={ 0 }
+                                    max={ 200 }
+                                />
                     </PanelBody>
                 </InspectorControls>
             </div>
@@ -433,7 +444,10 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                     {  collections.length ? ( 
                         <div
                                 className={'collections-list-edit-container ' + (arrowsPosition ? 'has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }
-                                style={{ '--spaceBetweenCollections': !isNaN(spaceBetweenCollections) ? (spaceBetweenCollections + 'px') : '32px' }}>
+                                style={{
+                                    '--spaceBetweenCollections': !isNaN(spaceBetweenCollections) ? (spaceBetweenCollections + 'px') : '32px',
+                                    '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px'
+                                }}>
                             <button 
                                     class="swiper-button-prev" 
                                     slot="button-prev"

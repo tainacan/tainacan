@@ -33,6 +33,7 @@ export default (element) => {
                         maxItemsNumber: 12,
                         maxItemsPerScreen: 7,
                         spaceBetweenItems: 32,
+                        spaceAroundCarousel: 50,
                         arrowsPosition: 'around',
                         largeArrows: false,
                         arrowsStyle: 'type-1',
@@ -61,6 +62,7 @@ export default (element) => {
                                 maxItemsNumber: this.maxItemsNumber,
                                 maxItemsPerScreen: this.maxItemsPerScreen,
                                 spaceBetweenItems: this.spaceBetweenItems,
+                                spaceAroundCarousel: this.spaceAroundCarousel,
                                 arrowsPosition: this.arrowsPosition,
                                 largeArrows: this.largeArrows,
                                 arrowsStyle: this.arrowsStyle,
@@ -89,6 +91,7 @@ export default (element) => {
                         this.maxItemsNumber = this.$el.attributes['max-items-number'] != undefined ? this.$el.attributes['max-items-number'].value : undefined;
                         this.maxItemsPerScreen = this.$el.attributes['max-items-per-screen'] != undefined ? this.$el.attributes['max-items-per-screen'].value : 7;
                         this.spaceBetweenItems = this.$el.attributes['space-between-items'] != undefined ? this.$el.attributes['space-between-items'].value : 32;
+                        this.spaceAroundCarousel = this.$el.attributes['space-around-carousel'] != undefined ? this.$el.attributes['space-around-carousel'].value : 50;
                         this.arrowsPosition = this.$el.attributes['arrows-position'] != undefined ? this.$el.attributes['arrows-position'].value : undefined;
                         this.largeArrows = this.$el.attributes['large-arrows'] != undefined ? this.$el.attributes['large-arrows'].value == 'true' : false;
                         this.arrowsStyle = this.$el.attributes['arrows-style'] != undefined ? this.$el.attributes['arrows-style'].value : undefined;

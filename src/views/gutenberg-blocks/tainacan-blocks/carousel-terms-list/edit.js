@@ -24,6 +24,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         arrowsStyle,
         maxTermsPerScreen,
         spaceBetweenTerms,
+        spaceAroundCarousel,
         arrowsPosition,
         autoPlay,
         autoPlaySpeed,
@@ -339,7 +340,17 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                         setAttributes({ largeArrows: largeArrows });
                                     } 
                                 }
-                            />                           
+                            />
+                            <RangeControl
+                                    label={ __('Space around the carousel', 'tainacan') }
+                                    value={ !isNaN(spaceAroundCarousel) ? spaceAroundCarousel : 50 }
+                                    onChange={ ( aSpaceAroundCarousel ) => {
+                                        spaceAroundCarousel = aSpaceAroundCarousel;
+                                        setAttributes( { spaceAroundCarousel: aSpaceAroundCarousel } );
+                                    }}
+                                    min={ 0 }
+                                    max={ 200 }
+                                />
                     </PanelBody>
                 </InspectorControls>
             </div>
@@ -414,7 +425,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     {  terms.length ? ( 
                         <div
                                 className={'terms-list-edit-container ' + (arrowsPosition ? 'has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }
-                                style={{ '--spaceBetweenTerms': !isNaN(spaceBetweenTerms) ? (spaceBetweenTerms + 'px') : '32px' }}>
+                                style={{
+                                    '--spaceBetweenTerms': !isNaN(spaceBetweenTerms) ? (spaceBetweenTerms + 'px') : '32px',
+                                    '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px'
+                                }}>
                             <button 
                                     class="swiper-button-prev" 
                                     slot="button-prev"
