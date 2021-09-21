@@ -55,6 +55,10 @@
             "type": "Number",
             "value": 6
         },
+        "spaceBetweenCollections": {
+            "type": "Number",
+            "value": 32
+        },
         "isLoading": {
             "type": "Boolean",
             "value": false

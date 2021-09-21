@@ -108,17 +108,17 @@
             </div>
             <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
-        <div v-else-if="isLoading && !autoPlay && !loopSlides">
+        <div v-else>
             <div :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') ">
                 <swiper 
                         role="list"
                         ref="myTermSwiper"
-                        :options="swiperOptions">
+                        :options="{ ...JSON.parse(JSON.stringify(swiperOptions)), autoplay: false, loop: false }">
                     <swiper-slide 
                             role="listitem"
                             :key="index"
                             v-for="(term, index) of 18"
-                            class="term-list-item skeleton">      
+                            class="term-list-item skeleton">
                         <a>
                             <img>
                             <span v-if="!hideName" />
@@ -142,7 +142,7 @@
                                 d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                         <path
                                 d="M0 0h24v24H0z"
-                                fill="none"/>                         
+                                fill="none"/>
                     </svg>
                 </button>
                 <button 
@@ -162,7 +162,7 @@
                                 d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                         <path
                                 d="M0 0h24v24H0z"
-                                fill="none"/>                        
+                                fill="none"/>
                     </svg>
                 </button>
             </div>
@@ -191,6 +191,7 @@ export default {
         autoPlaySpeed: Number,
         loopSlides: Boolean,
         maxTermsPerScreen: Number,
+        spaceBetweenTerms: Number,
         hideName: Boolean,
         largeArrows: Boolean,
         arrowsStyle: String,
@@ -214,7 +215,7 @@ export default {
             paged: undefined,
             totalTerms: 0,
             swiperOptions: {
-                watchOverflow: true,
+                watchOverflow: false,
                 mousewheel: {
                     forceToAxis: true
                 },
@@ -224,18 +225,18 @@ export default {
                 allowTouchMove: true, 
                 slidesPerView: 1,
                 slidesPerGroup: 1,
-                spaceBetween: this.showTermThumbnail ? 32 : 16,
+                spaceBetween: this.spaceBetweenTerms,
                 slideToClickedSlide: true,
                 navigation: {
                     nextEl: '#' + this.blockId + '-next',
                     prevEl: '#' + this.blockId + '-prev',
                 },
                 breakpoints: {
-                    498:  { slidesPerView: this.showTermThumbnail ? 1 : 1 },
-                    768:  { slidesPerView: this.showTermThumbnail ? 2 : 1 },
-                    1024: { slidesPerView: this.showTermThumbnail ? 3 : 2 },
-                    1366: { slidesPerView: this.showTermThumbnail ? 4 : 3 },
-                    1600: { slidesPerView: this.showTermThumbnail ? 5 : 4 },
+                    498:  { slidesPerView: this.showTermThumbnail ? 1 : 1, spaceBetween: this.spaceBetweenTerms },
+                    768:  { slidesPerView: this.showTermThumbnail ? 2 : 1, spaceBetween: this.spaceBetweenTerms },
+                    1024: { slidesPerView: this.showTermThumbnail ? 3 : 2, spaceBetween: this.spaceBetweenTerms },
+                    1366: { slidesPerView: this.showTermThumbnail ? 4 : 3, spaceBetween: this.spaceBetweenTerms },
+                    1600: { slidesPerView: this.showTermThumbnail ? 5 : 4, spaceBetween: this.spaceBetweenTerms },
                 },
                 autoplay: this.autoPlay ? { delay: this.autoPlaySpeed*1000 } : false,
                 loop: this.loopSlides
@@ -252,11 +253,11 @@ export default {
 
         if (!isNaN(this.maxTermsPerScreen)) {
             this.swiperOptions.breakpoints = {
-                498:  { slidesPerView: this.maxTermsPerScreen - 4 > 0 ? this.maxTermsPerScreen - 4 : 1 }, 
-                768:  { slidesPerView: this.maxTermsPerScreen - 3 > 0 ? this.maxTermsPerScreen - 3 : 1 },
-                1024: { slidesPerView: this.maxTermsPerScreen - 2 > 0 ? this.maxTermsPerScreen - 2 : 1 },
-                1366: { slidesPerView: this.maxTermsPerScreen - 1 > 0 ? this.maxTermsPerScreen - 1 : 1 },
-                1600: { slidesPerView: this.maxTermsPerScreen > 0 ? this.maxTermsPerScreen : 1 },
+                498:  { slidesPerView: this.maxTermsPerScreen - 4 > 0 ? this.maxTermsPerScreen - 4 : 1, spaceBetween: this.spaceBetweenTerms }, 
+                768:  { slidesPerView: this.maxTermsPerScreen - 3 > 0 ? this.maxTermsPerScreen - 3 : 1, spaceBetween: this.spaceBetweenTerms },
+                1024: { slidesPerView: this.maxTermsPerScreen - 2 > 0 ? this.maxTermsPerScreen - 2 : 1, spaceBetween: this.spaceBetweenTerms },
+                1366: { slidesPerView: this.maxTermsPerScreen - 1 > 0 ? this.maxTermsPerScreen - 1 : 1, spaceBetween: this.spaceBetweenTerms },
+                1600: { slidesPerView: this.maxTermsPerScreen > 0 ? this.maxTermsPerScreen : 1, spaceBetween: this.spaceBetweenTerms },
             }
             this.swiperOptions.slidesPerView = 1;
         }
@@ -288,14 +289,14 @@ export default {
                                 this.tainacanAxios.get('/items/?perpage=3&fetch_only=name,url,thumbnail&taxquery[0][taxonomy]=tnc_tax_' + this.taxonomyId + '&taxquery[0][terms][0]=' + term.id + '&taxquery[0][compare]=IN')
                                     .then(response => { return({ termId: term.id, termItems: response.data.items }) })
                             );    
-                            this.terms.push(term);                  
+                            this.terms.push(term);
                         }
                         axios.all(promises).then((results) => {
                             for (let result of results) {
                                 this.termItems[result.termId] = result.termItems;
                             }
                             
-                            this.isLoading = false;
+                            //this.isLoading = false;
                         }) 
                     }
                     

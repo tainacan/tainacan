@@ -23,6 +23,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         largeArrows,
         arrowsStyle,
         maxTermsPerScreen,
+        spaceBetweenTerms,
         arrowsPosition,
         autoPlay,
         autoPlaySpeed,
@@ -250,6 +251,16 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     min={ 1 }
                                     max={ 9 }
                                 />
+                            <RangeControl
+                                    label={ __('Space between each term', 'tainacan') }
+                                    value={ !isNaN(spaceBetweenTerms) ? spaceBetweenTerms : 32 }
+                                    onChange={ ( aSpaceBetweenTerms ) => {
+                                        spaceBetweenTerms = aSpaceBetweenTerms;
+                                        setAttributes( { spaceBetweenTerms: aSpaceBetweenTerms } );
+                                    }}
+                                    min={ 0 }
+                                    max={ 98 }
+                                />
                             <ToggleControl
                                     label={__('Hide name', 'tainacan')}
                                     help={ !hideName ? __('Toggle to hide term\'s name', 'tainacan') : __('Do not hide term\'s name', 'tainacan')}
@@ -402,7 +413,8 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     }
                     {  terms.length ? ( 
                         <div
-                                className={'terms-list-edit-container ' + (arrowsPosition ? 'has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }>
+                                className={'terms-list-edit-container ' + (arrowsPosition ? 'has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }
+                                style={{ '--spaceBetweenTerms': !isNaN(spaceBetweenTerms) ? (spaceBetweenTerms + 'px') : '32px' }}>
                             <button 
                                     class="swiper-button-prev" 
                                     slot="button-prev"

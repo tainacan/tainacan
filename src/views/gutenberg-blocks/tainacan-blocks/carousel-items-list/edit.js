@@ -22,6 +22,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         itemsRequestSource,
         maxItemsNumber,
         maxItemsPerScreen,
+        spaceBetweenItems,
         selectedItems,
         isLoading,
         loadStrategy,
@@ -382,6 +383,16 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                         } 
                                     }
                                 />
+                            <RangeControl
+                                    label={ __('Space between each item', 'tainacan') }
+                                    value={ !isNaN(spaceBetweenItems) ? spaceBetweenItems : 32 }
+                                    onChange={ ( aSpaceBetweenItems ) => {
+                                        spaceBetweenItems = aSpaceBetweenItems;
+                                        setAttributes( { spaceBetweenItems: aSpaceBetweenItems } );
+                                    }}
+                                    min={ 0 }
+                                    max={ 98 }
+                                />
                             <ToggleControl
                                     label={__('Hide title', 'tainacan')}
                                     help={ !hideTitle ? __('Toggle to hide item\'s title', 'tainacan') : __('Do not hide item\'s title', 'tainacan')}
@@ -461,7 +472,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     } 
                                 }
                             />
-                        </div>                           
+                        </div>
                     </PanelBody>
 
                     { loadStrategy == 'search' ?
@@ -481,7 +492,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     min={ 1 }
                                     max={ 96 }
                                 />
-                            </div>                           
+                            </div>
                         </PanelBody>
                         :null
                     }
@@ -640,7 +651,8 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     {  items.length ? (
 
                         <div
-                                className={'items-list-edit-container ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }>
+                                className={'items-list-edit-container ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }
+                                style={{ '--spaceBetweenItems': !isNaN(spaceBetweenItems) ? (spaceBetweenItems + 'px') : '32px' }}>
                             <button 
                                     class="swiper-button-prev" 
                                     slot="button-prev"

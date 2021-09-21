@@ -130,11 +130,11 @@
             </div>
             <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
-        <div v-else-if="isLoading && !autoPlay && !loopSlides">
+        <div v-else>
             <div :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') ">
                 <swiper 
                         role="list"
-                        :options="swiperOptions"
+                        :options="{ ...JSON.parse(JSON.stringify(swiperOptions)), autoplay: false, loop: false }"
                         ref="myItemSwiperSkeleton"
                         :style="{
                             marginTop: showCollectionHeader ? '1.35em' : '0px'
@@ -216,6 +216,7 @@ export default {
         loadStrategy: String,
         maxItemsNumber: Number,
         maxItemsPerScreen: Number,
+        spaceBetweenItems: Number,
         arrowsPosition: String,
         largeArrows: Boolean,
         arrowsStyle: String,
@@ -256,18 +257,18 @@ export default {
                 allowTouchMove: true, 
                 slidesPerView: 1,
                 slidesPerGroup: 1,
-                spaceBetween: 32,
+                spaceBetween: this.spaceBetweenItems,
                 slideToClickedSlide: true,
                 navigation: {
                     nextEl: '#' + this.blockId + '-next',
                     prevEl: '#' + this.blockId + '-prev',
                 }, 
                 breakpoints: {
-                    498:  { slidesPerView: 2 }, 
-                    768:  { slidesPerView: 3 },
-                    1024: { slidesPerView: 4 },
-                    1366: { slidesPerView: 5 },
-                    1600: { slidesPerView: 6 }
+                    498:  { slidesPerView: 2, spaceBetween: this.spaceBetweenItems }, 
+                    768:  { slidesPerView: 3, spaceBetween: this.spaceBetweenItems },
+                    1024: { slidesPerView: 4, spaceBetween: this.spaceBetweenItems },
+                    1366: { slidesPerView: 5, spaceBetween: this.spaceBetweenItems },
+                    1600: { slidesPerView: 6, spaceBetween: this.spaceBetweenItems }
                 },
                 autoplay: this.autoPlay ? { delay: this.autoPlaySpeed*1000 } : false,
                 loop: this.loopSlides ? this.loopSlides : false
@@ -287,11 +288,11 @@ export default {
 
         if (!isNaN(this.maxItemsPerScreen) && this.maxItemsPerScreen != 6) {
             this.swiperOptions.breakpoints = {
-                498:  { slidesPerView: this.maxItemsPerScreen - 4 > 0 ? this.maxItemsPerScreen - 4 : 1 }, 
-                768:  { slidesPerView: this.maxItemsPerScreen - 3 > 0 ? this.maxItemsPerScreen - 3 : 1 },
-                1024: { slidesPerView: this.maxItemsPerScreen - 2 > 0 ? this.maxItemsPerScreen - 2 : 1 },
-                1366: { slidesPerView: this.maxItemsPerScreen - 1 > 0 ? this.maxItemsPerScreen - 1 : 1 },
-                1600: { slidesPerView: this.maxItemsPerScreen > 0 ? this.maxItemsPerScreen : 1 },
+                498:  { slidesPerView: this.maxItemsPerScreen - 4 > 0 ? this.maxItemsPerScreen - 4 : 1, spaceBetween: this.spaceBetweenItems }, 
+                768:  { slidesPerView: this.maxItemsPerScreen - 3 > 0 ? this.maxItemsPerScreen - 3 : 1, spaceBetween: this.spaceBetweenItems },
+                1024: { slidesPerView: this.maxItemsPerScreen - 2 > 0 ? this.maxItemsPerScreen - 2 : 1, spaceBetween: this.spaceBetweenItems },
+                1366: { slidesPerView: this.maxItemsPerScreen - 1 > 0 ? this.maxItemsPerScreen - 1 : 1, spaceBetween: this.spaceBetweenItems },
+                1600: { slidesPerView: this.maxItemsPerScreen > 0 ? this.maxItemsPerScreen : 1, spaceBetween: this.spaceBetweenItems },
             }
             this.swiperOptions.slidesPerView = 1;
         }

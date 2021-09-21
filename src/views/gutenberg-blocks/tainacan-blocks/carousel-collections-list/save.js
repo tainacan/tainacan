@@ -11,6 +11,7 @@ export default function ({ attributes, className }) {
         cropImagesToSquare,
         maxCollectionsPerScreen,
         maxCollectionsNumber,
+        spaceBetweenCollections,
         autoPlay,
         autoPlaySpeed,
         loopSlides,
@@ -34,6 +35,7 @@ export default function ({ attributes, className }) {
                 crop-images-to-square={ '' + cropImagesToSquare }
                 max-collections-number={ maxCollectionsNumber }
                 max-collections-per-screen={ maxCollectionsPerScreen }
+                space-between-collections={ spaceBetweenCollections }
                 tainacan-api-root={ tainacan_blocks.root }
                 tainacan-base-url={ tainacan_blocks.base_url }
                 show-collection-thumbnail={ '' + showCollectionThumbnail }

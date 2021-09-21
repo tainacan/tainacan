@@ -23,6 +23,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         arrowsStyle,
         cropImagesToSquare,
         maxCollectionsPerScreen,
+        spaceBetweenCollections,
         isLoading,
         arrowsPosition,
         autoPlay,
@@ -277,6 +278,16 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                         }
                                     />
                             : null }
+                            <RangeControl
+                                    label={ __('Space between each collection', 'tainacan') }
+                                    value={ !isNaN(spaceBetweenCollections) ? spaceBetweenCollections : 32 }
+                                    onChange={ ( aSpaceBetweenCollections ) => {
+                                        spaceBetweenCollections = aSpaceBetweenCollections;
+                                        setAttributes( { spaceBetweenCollections: aSpaceBetweenCollections } );
+                                    }}
+                                    min={ 0 }
+                                    max={ 98 }
+                                />
                             <ToggleControl
                                     label={__('Hide name', 'tainacan')}
                                     help={ !hideName ? __('Toggle to hide collection\'s name', 'tainacan') : __('Do not hide collection\'s name', 'tainacan')}
@@ -421,7 +432,8 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                     }
                     {  collections.length ? ( 
                         <div
-                                className={'collections-list-edit-container ' + (arrowsPosition ? 'has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }>
+                                className={'collections-list-edit-container ' + (arrowsPosition ? 'has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }
+                                style={{ '--spaceBetweenCollections': !isNaN(spaceBetweenCollections) ? (spaceBetweenCollections + 'px') : '32px' }}>
                             <button 
                                     class="swiper-button-prev" 
                                     slot="button-prev"

@@ -49,6 +49,10 @@
             "type": "Number",
             "value": 7
         },
+        "spaceBetweenItems": {
+            "type": "Number",
+            "value": 32
+        },
         "isLoading": {
             "type": "Boolean",
             "value": false
