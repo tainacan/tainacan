@@ -759,7 +759,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     { label: '4 x 3', value: '4x3' },
                                     { label: '4 x 5', value: '4x5' },
                                     { label: '5 x 4', value: '5x4' },
-                                    { label: '6 x 5', value: '6x5' },
+                                    { label: '6 x 2', value: '6x2' }
                                 ] }
                                 onChange={ ( aGrid ) => { 
                                     mosaicGridRows = aGrid.split('x')[0];

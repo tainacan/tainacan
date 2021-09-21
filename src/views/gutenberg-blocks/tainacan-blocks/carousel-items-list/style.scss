@@ -204,6 +204,7 @@
         margin: 0;
 
         svg {
+            border-radius: 100%;
             fill: var(--tainacan-block-primary, $primary);
         }
         &::after,
@@ -286,6 +287,16 @@
                 color: inherit;
                 font-weight: bold;
                 line-height: normal;
+
+                &>span {
+                    color: inherit;
+                    font-weight: bold;
+                    text-decoration: none;
+                    padding: 8px 12px;
+                    display: block;
+                    line-height: 1.2em;
+                    word-break: break-word;
+                }
             }
 
             img {

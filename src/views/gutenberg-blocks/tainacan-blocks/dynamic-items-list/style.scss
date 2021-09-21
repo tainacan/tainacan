@@ -958,6 +958,7 @@
                     grid-column: span 2;
                 }
             }
+
             // 5 x 4 MOSAIC GRID ------------------------ 
             &.mosaic-container--1-5x4 {
                 li.item-list-item {
@@ -1034,6 +1035,91 @@
                 &:nth-of-type(4),
                 &:nth-of-type(6) {
                     grid-row: span 2;
+                    grid-column: span 1;
+                }
+            }
+
+            // 6 x 2 MOSAIC GRID ------------------------ 
+            &.mosaic-container--1-6x2 {
+                li.item-list-item {
+                    grid-row: span 6;
+                    grid-column: span 2;
+                }
+            }
+            &.mosaic-container--2-6x2 li.item-list-item {
+
+                &:nth-of-type(1) {
+                    grid-row: span 4;
+                    grid-column: span 2;
+                }
+                &:nth-of-type(2) {
+                    grid-row: span 2;
+                    grid-column: span 2;
+                }
+            }
+            &.mosaic-container--3-6x2 li.item-list-item {
+
+                &:nth-of-type(1) {
+                    grid-row: span 2;
+                    grid-column: span 2;
+                }
+                &:nth-of-type(2) {
+                    grid-row: span 3;
+                    grid-column: span 2;
+                }
+                &:nth-of-type(3) {
+                    grid-row: span 1;
+                    grid-column: span 2;
+                }
+            }
+            &.mosaic-container--4-6x2 li.item-list-item {
+
+                &:nth-of-type(1),
+                &:nth-of-type(3) {
+                    grid-row: span 3;
+                    grid-column: span 1;
+                }
+                &:nth-of-type(2),
+                &:nth-of-type(4) {
+                    grid-row: span 2;
+                    grid-column: span 1;
+                }
+            }
+            &.mosaic-container--5-6x2 li.item-list-item {
+
+                &:nth-of-type(1) {
+                    grid-row: span 5;
+                    grid-column: span 1;
+                }
+                &:nth-of-type(3),
+                &:nth-of-type(2) {
+                    grid-row: span 4;
+                    grid-column: span 1;
+                }
+                &:nth-of-type(4) {
+                    grid-row: span 6;
+                    grid-column: span 1;
+                }
+                &:nth-of-type(5) {
+                    grid-row: span 3;
+                    grid-column: span 1;
+                }
+            }
+            &.mosaic-container--6-6x2 li.item-list-item {
+            
+                &:nth-of-type(1),
+                &:nth-of-type(2),
+                &:nth-of-type(4),
+                &:nth-of-type(6) {
+                    grid-row: span 2;
+                    grid-column: span 1;
+                }
+                &:nth-of-type(3) {
+                    grid-row: span 1;
+                    grid-column: span 1;
+                }
+                &:nth-of-type(5) {
+                    grid-row: span 3;
                     grid-column: span 1;
                 }
             }

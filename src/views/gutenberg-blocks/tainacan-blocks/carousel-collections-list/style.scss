@@ -219,6 +219,7 @@
         margin: 0;
 
         svg {
+            border-radius: 100%;
             fill: var(--tainacan-block-primary, $primary);
         }
         &::after,

@@ -185,6 +185,7 @@
     padding: 0;
     margin: 0; }
     .wp-block-tainacan-carousel-terms-list .swiper-button-prev svg, .wp-block-tainacan-carousel-terms-list .swiper-button-next svg {
+      border-radius: 100%;
       fill: var(--tainacan-block-primary, #298596); }
     .wp-block-tainacan-carousel-terms-list .swiper-button-prev::after, .wp-block-tainacan-carousel-terms-list .swiper-button-prev::before, .wp-block-tainacan-carousel-terms-list .swiper-button-next::after, .wp-block-tainacan-carousel-terms-list .swiper-button-next::before {
       content: none !important; }
