@@ -9,7 +9,6 @@
                     :style="{ height: '165px' }"/>
             <a
                     v-else
-                    target="_blank"
                     :href="collection.url ? collection.url : ''"
                     class="dynamic-items-collection-header">
                 <div
@@ -204,7 +203,6 @@
                     <a 
                             :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                             :href="item.url"
-                            target="_blank"
                             :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
                         <blur-hash-image
                                 v-if="showImage"
@@ -215,7 +213,7 @@
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : $root.__( 'Thumbnail', 'tainacan' ))"
                                 :transition-duration="500" />
-                        <span>{{ item.title ? item.title : '' }}</span>
+                        <span v-if="item.title">{{ item.title }}</span>
                     </a>
                 </li>
             </ul>
@@ -252,7 +250,6 @@
                         <a 
                                 :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                                 :href="item.url"
-                                target="_blank"
                                 :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
                             <blur-hash-image
                                     :height="$thumbHelper.getHeight(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
@@ -262,7 +259,7 @@
                                     :hash="$thumbHelper.getBlurhashString(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : $root.__( 'Thumbnail', 'tainacan' ))"
                                     :transition-duration="500" />
-                            <span>{{ item.title ? item.title : '' }}</span>
+                            <span v-if="item.title">{{ item.title }}</span>
                         </a>
                     </li>
                 </div>

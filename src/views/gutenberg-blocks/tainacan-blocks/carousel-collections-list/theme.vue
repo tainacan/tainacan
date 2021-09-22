@@ -19,8 +19,7 @@
                         <a 
                                 v-if="showCollectionThumbnail"
                                 :id="isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id"
-                                :href="collection.url"
-                                target="_blank">
+                                :href="collection.url">
                             <img
                                 :src=" 
                                     collection.thumbnail && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
@@ -54,8 +53,7 @@
                         <a 
                                 v-else
                                 :id="isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id"
-                                :href="collection.url"
-                                target="_blank">
+                                :href="collection.url">
                             <div class="collection-items-grid">
                                 <blur-hash-image
                                         :height="collectionItems[collection.id][0] ? $thumbHelper.getHeight(collectionItems[collection.id][0]['thumbnail'], 'tainacan-medium') : 275"

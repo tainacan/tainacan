@@ -70,8 +70,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                 }
                 <a 
                     id={ isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id }
-                    href={ collection.url } 
-                    target="_blank">
+                    href={ collection.url }>
                     { !showCollectionThumbnail ? 
                         <div class="collection-items-grid">
                             <img 

@@ -66,8 +66,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                 }
                 <a 
                     id={ isNaN(term.id) ? term.id : 'term-id-' + term.id }
-                    href={ term.url } 
-                    target="_blank">
+                    href={ term.url }>
                     { !showTermThumbnail ? 
                         <div class="term-items-grid">
                             <img 

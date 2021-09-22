@@ -9,7 +9,6 @@
                     :style="{ height: '165px' }"/>
             <a
                     v-else
-                    target="_blank"
                     :href="collection.url ? collection.url : ''"
                     class="carousel-items-collection-header">
                 <div
@@ -69,8 +68,7 @@
                             :class="{ 'is-forced-square': cropImagesToSquare }">
                         <a 
                                 :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
-                                :href="item.url"
-                                target="_blank">
+                                :href="item.url">
                             <blur-hash-image
                                     :height="$thumbHelper.getHeight(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'))"
                                     :width="$thumbHelper.getWidth(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'))"

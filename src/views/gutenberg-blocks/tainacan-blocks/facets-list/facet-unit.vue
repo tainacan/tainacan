@@ -6,7 +6,6 @@
                 :id="isNaN(facetId) ? facetId : 'facet-id-' + facetId"
                 :href="(appendChildTerms && facet.total_children > 0) ? null : ((linkTermFacetsToTermPage && isMetadatumTypeTaxonomy) ? facet.term_url : facet.url)"
                 @click="() => { (appendChildTerms && facet.total_children > 0) ? displayChildTerms(facetId) : null }"
-                target="_blank"
                 :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}">
             <img
                 v-if="isMetadatumTypeTaxonomy"

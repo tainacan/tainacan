@@ -99,7 +99,6 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     id={ isNaN(facetId) ? facetId : 'facet-id-' + facetId }
                     href={ !appendChildTerms ? ((linkTermFacetsToTermPage && isMetadatumTypeTaxonomy(metadatumType)) ? facet.term_url : facet.url) : (facet.total_children > 0 ? null : (linkTermFacetsToTermPage ? facet.term_url : facet.url)) }
                     onClick={ () => { (appendChildTerms && facet.total_children > 0) ? displayChildTerms(facetId) : null } } 
-                    target="_blank"
                     style={{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}}>
                     { isMetadatumTypeTaxonomy(metadatumType) ? 
                         <img

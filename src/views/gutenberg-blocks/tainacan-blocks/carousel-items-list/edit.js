@@ -81,8 +81,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                 }   
                 <a 
                     id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
-                    href={ item.url } 
-                    target="_blank">
+                    href={ item.url }>
                     <div class="items-list-item--image-wrap">
                         <img
                             src={ thumbHelper.getSrc(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype']) }
@@ -569,7 +568,6 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         :
                         <a
                                 href={ collection.url ? collection.url : '' }
-                                target="_blank"
                                 class="carousel-items-collection-header">
                             <div
                                     style={{

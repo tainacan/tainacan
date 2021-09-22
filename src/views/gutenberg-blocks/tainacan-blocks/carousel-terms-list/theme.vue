@@ -19,8 +19,7 @@
                         <a 
                                 v-if="showTermThumbnail"
                                 :id="isNaN(term.id) ? term.id : 'term-id-' + term.id"
-                                :href="term.url"
-                                target="_blank">
+                                :href="term.url">
                             <img
                                 :src="term.header_image ? term.header_image : `${tainacanBaseUrl}/assets/images/placeholder_square.png`"
                                 :alt="term.name ? term.name : $root.__('Thumbnail', 'tainacan')" >
@@ -29,8 +28,7 @@
                         <a 
                                 v-else
                                 :id="isNaN(term.id) ? term.id : 'term-id-' + term.id"
-                                :href="term.url"
-                                target="_blank">
+                                :href="term.url">
                             <div class="term-items-grid">
                                 <blur-hash-image
                                         :height="termItems[term.id][2] ? $thumbHelper.getHeight(termItems[term.id][0]['thumbnail'], 'tainacan-medium') : 275"
