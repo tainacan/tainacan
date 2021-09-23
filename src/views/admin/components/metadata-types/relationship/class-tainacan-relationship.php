@@ -217,7 +217,7 @@ class Relationship extends Metadata_Type {
 				// item not found 
 			}
 		}
-		if(!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1) {
+		if(!empty($display_metas) && is_array($display_metas) && count($display_metas) > 1 && $return !== '') {
 			return "<div class='tainacan-relationship-group'>{$return}</div>";
 		}
 		return $return;
