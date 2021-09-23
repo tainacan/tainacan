@@ -10,7 +10,7 @@
         <div>
             <template v-if="existingRoles && Object.values(existingRoles).length && capability.roles">
                 <b-field :addons="false">
-                    <label class="label is-inline-block">
+                    <label class="label is-inline">
                         {{ $i18n.get('label_associated_roles') }}
                     </label>
                     <p>{{ $i18n.get('info_associated_roles') }}</p>
@@ -37,7 +37,7 @@
         <div>
             <template v-if="existingRoles && Object.values(existingRoles).length && capability.roles">
                 <b-field :addons="false">
-                    <label class="label is-inline-block">
+                    <label class="label is-inline">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle"/>
                         {{ $i18n.get('label_inherited_roles') }}
                         <help-button

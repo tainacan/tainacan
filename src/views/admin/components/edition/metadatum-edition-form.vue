@@ -24,7 +24,7 @@
                         :addons="false"
                         :type="formErrors['name'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
-                    <label class="label is-inline-block">
+                    <label class="label is-inline">
                         {{ $i18n.get('label_name') }}
                         <span
                                 class="required-metadatum-asterisk"
@@ -54,7 +54,7 @@
                         :addons="false"
                         :type="formErrors['description'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
-                    <label class="label is-inline-block">
+                    <label class="label is-inline">
                         {{ $i18n.get('label_description') }}
                         <help-button
                                 :title="$i18n.getHelperTitle('metadata', 'description')"
@@ -73,7 +73,7 @@
                         :addons="false"
                         :type="formErrors['status'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
-                    <label class="label is-inline-block">
+                    <label class="label is-inline">
                         {{ $i18n.get('label_status') }}
                         <help-button
                                 :title="$i18n.getHelperTitle('metadata', 'status')"
@@ -111,7 +111,7 @@
                         :type="formErrors['display'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['display'] != undefined ? formErrors['display'] : ''" 
                         :addons="false">
-                    <label class="label is-inline-block">
+                    <label class="label is-inline">
                         {{ $i18n.get('label_display') }}
                         <help-button
                                 :title="$i18n.getHelperTitle('metadata', 'display')"
@@ -135,7 +135,7 @@
 
                 <b-field 
                         :addons="false">
-                    <label class="label is-inline-block">{{ $i18n.get('label_insert_options') }}</label>
+                    <label class="label is-inline">{{ $i18n.get('label_insert_options') }}</label>
                     
                     <b-field
                             v-if="editForm.metadata_type_object.component != 'tainacan-compound' && (editForm.parent == 0 || (editForm.parent != 0 && !isParentMultiple))"
@@ -209,7 +209,7 @@
                         :type="formErrors['cardinality'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['cardinality'] != undefined ? formErrors['cardinality'] : ''"
                         :addons="false">
-                    <label class="label is-inline-block">
+                    <label class="label is-inline">
                         {{ $i18n.getHelperTitle('metadata', 'cardinality') }}
                         <help-button
                                 :title="$i18n.getHelperTitle('metadata', 'cardinality')"
@@ -240,7 +240,7 @@
             </div>
 
             <div 
-                    v-if="(editForm.metadata_type_object && editForm.metadata_type_object.form_component) || editForm.edit_form != ''"
+                    v-if="(editForm.metadata_type_object && editForm.metadata_type_object.form_component && editForm.metadata_type_object.component != 'tainacan-compound') || editForm.edit_form != ''"
                     class="metadata-form-section"
                     @click="hideMetadataTypeOptions = !hideMetadataTypeOptions;">
                 <span class="icon">
@@ -297,7 +297,7 @@
                         v-if="showAdvancedOptions"
                         class="options-columns">
                     <b-field :addons="false">
-                        <label class="label is-inline-block">
+                        <label class="label is-inline">
                             {{ $i18n.get('label_semantic_uri') }}
                             <help-button
                                     :title="$i18n.getHelperTitle('metadata', 'semantic_uri')"
