@@ -10,7 +10,7 @@
                 @input="onInput"
                 @blur="onBlur"
                 :data="options"
-                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? 100 : 1)"
+                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : 1)"
                 autocomplete
                 attached
                 :placeholder="$i18n.get('instruction_type_search_users')"
@@ -70,6 +70,17 @@ export default {
             usersSearchQuery: '',
             usersSearchPage: 1,
             totalUsers: 0
+        }
+    },
+    computed: {
+        maxMultipleValues() {
+            return (
+                this.itemMetadatum &&
+                this.itemMetadatum.metadatum &&
+                this.itemMetadatum.metadatum.cardinality &&
+                !isNaN(this.itemMetadatum.metadatum.cardinality) &&
+                this.itemMetadatum.metadatum.cardinality > 1
+            ) ? this.itemMetadatum.metadatum.cardinality : undefined;
         }
     },
     created() {

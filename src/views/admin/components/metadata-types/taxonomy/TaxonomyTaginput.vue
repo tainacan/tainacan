@@ -1,51 +1,50 @@
 <template>
-    <div class="block">
-        <b-taginput
-                expanded
-                :disabled="disabled"
-                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
-                size="is-small"
-                icon="magnify"
-                :allow-new="false"
-                @add="emitAdd"
-                @remove="emitRemove"
-                v-model="selected"
-                :data="labels"
-                field="label"
-                :remove-on-keys="[]"
-                :dropdown-position="isLastMetadatum ? 'top' :'auto'"
-                attached
-                ellipsis
-                :aria-close-label="$i18n.get('remove_value')"
-                :placeholder="$i18n.get('instruction_type_existing_term')"
-                :loading="isFetching"
-                :class="{ 'has-selected': selected != undefined && selected != [] }"
-                autocomplete
-                @typing="loadTerms"
-                check-infinite-scroll
-                @infinite-scroll="loadMoreTerms"
-                :has-counter="false">
-            <template slot-scope="props">
-                <div class="media">
-                    <div class="media-content">
-                        {{ props.option.label }}
-                    </div>
+    <b-taginput
+            expanded
+            :disabled="disabled"
+            :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+            size="is-small"
+            icon="magnify"
+            :allow-new="false"
+            @add="emitAdd"
+            @remove="emitRemove"
+            v-model="selected"
+            :data="labels"
+            :maxtags="maxtags"
+            field="label"
+            :remove-on-keys="[]"
+            :dropdown-position="isLastMetadatum ? 'top' :'auto'"
+            attached
+            ellipsis
+            :aria-close-label="$i18n.get('remove_value')"
+            :placeholder="$i18n.get('instruction_type_existing_term')"
+            :loading="isFetching"
+            :class="{ 'has-selected': selected != undefined && selected != [] }"
+            autocomplete
+            @typing="loadTerms"
+            check-infinite-scroll
+            @infinite-scroll="loadMoreTerms"
+            :has-counter="false">
+        <template slot-scope="props">
+            <div class="media">
+                <div class="media-content">
+                    {{ props.option.label }}
                 </div>
-            </template>
-            <template 
-                    v-if="!isFetching"
-                    slot="empty">
-                {{ $i18n.get('info_no_terms_found') }}
-            </template>
-            <template 
-                    v-if="allowNew"
-                    slot="footer">
-                 <a @click="$emit('showAddNewTerm', { name: searchName })">
-                    {{ $i18n.get('label_new_term') + ' "' + searchName + '"' }}
-                </a>
-            </template>
-        </b-taginput>
-    </div>
+            </div>
+        </template>
+        <template 
+                v-if="!isFetching"
+                slot="empty">
+            {{ $i18n.get('info_no_terms_found') }}
+        </template>
+        <template 
+                v-if="allowNew"
+                slot="footer">
+                <a @click="$emit('showAddNewTerm', { name: searchName })">
+                {{ $i18n.get('label_new_term') + ' "' + searchName + '"' }}
+            </a>
+        </template>
+    </b-taginput>
 </template>
 
 <script>
