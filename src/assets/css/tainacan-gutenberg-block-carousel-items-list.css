@@ -170,6 +170,10 @@
       fill: var(--tainacan-block-primary, #298596); }
     .wp-block-tainacan-carousel-items-list .swiper-button-prev::after, .wp-block-tainacan-carousel-items-list .swiper-button-prev::before, .wp-block-tainacan-carousel-items-list .swiper-button-next::after, .wp-block-tainacan-carousel-items-list .swiper-button-next::before {
       content: none !important; }
+  .wp-block-tainacan-carousel-items-list .swiper-button-next.swiper-button-disabled,
+  .wp-block-tainacan-carousel-items-list .swiper-button-prev.swiper-button-disabled {
+    opacity: 0;
+    visibility: hidden; }
   .wp-block-tainacan-carousel-items-list.alignfull .swiper-button-prev, .wp-block-tainacan-carousel-items-list.alignfull .swiper-button-next {
     margin: 0 6px !important; }
   .wp-block-tainacan-carousel-items-list .items-list-edit-container,

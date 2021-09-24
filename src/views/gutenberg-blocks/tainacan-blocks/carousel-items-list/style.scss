@@ -212,6 +212,11 @@
             content: none !important;
         }
     }
+    .swiper-button-next.swiper-button-disabled,
+    .swiper-button-prev.swiper-button-disabled {
+        opacity: 0;
+        visibility: hidden;
+    }
     &.alignfull .swiper-button-prev,
     &.alignfull .swiper-button-next {
         margin: 0 6px !important;
