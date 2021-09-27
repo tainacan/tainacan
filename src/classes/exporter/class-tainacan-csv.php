@@ -97,6 +97,8 @@ class CSV extends Exporter {
 		$line[] = $this->get_author_name_last_modification($item->get_id());
 
 		$line[] = $item->get_modification_date();
+
+		$line[] = get_permalink( $item->get_id() );
 		
 		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
 
@@ -229,6 +231,7 @@ class CSV extends Exporter {
 		$line[] = 'creation_date';
 		$line[] = 'user_last_modified';
 		$line[] = 'modification_date';
+		$line[] = 'public_url';
 		
 		$line_string = $this->str_putcsv($line, $this->get_option('delimiter'), $this->get_option('enclosure'));
 		
