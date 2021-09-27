@@ -4,13 +4,14 @@
                 size="is-small"
                 animated
                 @input="fetchSelectedLabels()"
-                v-model="activeTab">
-            <b-tab-item 
-                    style="margin: 0 -0.75rem;"
-                    :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
+                v-model="activeTab"
+                :class="{ 'hidden-tabs-section': (shouldBeginWithListExpanded && !hasToDisplaySearchBar) }">
+            <b-tab-item :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
                 
                 <!-- Search input -->
-                <b-field class="is-clearfix tainacan-checkbox-search-section">
+                <b-field 
+                        v-if="!shouldBeginWithListExpanded || hasToDisplaySearchBar"
+                        class="is-clearfix tainacan-checkbox-search-section">
                     <p 
                             v-if="!shouldBeginWithListExpanded"
                             class="control">
@@ -52,12 +53,7 @@
                             <i class="tainacan-icon tainacan-icon-previous"/>
                         </span>
                     </a>
-                    <ul 
-                            :class="{
-                                'tainacan-modal-checkbox-list-body-dynamic-m-l': !checkboxListOffset,
-                                'tainacan-modal-checkbox-list-body-dynamic-m-r': noMoreSearchPage,
-                            }"
-                            class="tainacan-modal-checkbox-list-body">
+                    <ul class="tainacan-modal-checkbox-list-body">
                         <template v-if="searchResults.length">
                             <li
                                     class="tainacan-li-checkbox-list"
@@ -66,7 +62,8 @@
                                 <label 
                                         v-if="isCheckbox"
                                         class="b-checkbox checkbox">
-                                    <input                                     
+                                    <input
+                                            :disabled="(Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
                                             v-model="selected"
                                             :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
                                             type="checkbox"> 
@@ -78,10 +75,6 @@
                                     </span>
                                 </label>
                                 <b-radio
-                                        v-tooltip="{
-                                            content: option.name ? option.name : option.label,
-                                            autoHide: false,
-                                        }"
                                         v-else
                                         v-model="selected"
                                         :native-value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.value)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))">
@@ -132,29 +125,20 @@
                             <i class="tainacan-icon tainacan-icon-previous"/>
                         </span>
                     </a>
-                    <ul
-                            :class="{
-                                'tainacan-modal-checkbox-list-body-dynamic-m-l': !checkboxListOffset,
-                                'tainacan-modal-checkbox-list-body-dynamic-m-r': noMorePage,
-                            }"
-                            class="tainacan-modal-checkbox-list-body">
+                    <ul class="tainacan-modal-checkbox-list-body">
                         <li
                                 class="tainacan-li-checkbox-list"
                                 v-for="(option, key) in options"
                                 :key="key">
                             <label class="b-checkbox checkbox">
                                 <input 
+                                        :disabled="(Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
                                         v-model="selected"
                                         :value="option.value"
                                         type="checkbox"> 
                                 <span class="check" /> 
                                 <span class="control-label">
-                                    <span 
-                                            v-tooltip="{
-                                                content: option.label,
-                                                autoHide: false,
-                                            }" 
-                                            class="checkbox-label-text">{{ `${ (option.label ? option.label : '') }` }}</span> 
+                                    <span class="checkbox-label-text">{{ `${ (option.label ? option.label : '') }` }}</span> 
                                 </span>
                             </label>
                         </li>
@@ -182,8 +166,11 @@
                     <div 
                             v-for="(finderColumn, key) in finderColumns"
                             class="tainacan-finder-column"
+                            :class="!hasToDisplaySearchBar ? 'has-only-one-column' : ''"
                             :key="finderColumn.label + '-' + key">
-                        <p class="column-label">
+                        <p 
+                                v-if="hasToDisplaySearchBar"
+                                class="column-label">
                             {{ finderColumn.label ? finderColumn.label : $i18n.get('label_root_terms') }}
                         </p>
                         <ul v-if="finderColumn.children.length">
@@ -196,26 +183,19 @@
                                     :key="index">
                                 <label 
                                         v-if="isCheckbox"
-                                        class="b-checkbox checkbox">
+                                        class="b-checkbox checkbox"
+                                        :class="{ 'is-disabled': (Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length }">
                                     <input 
+                                            :disabled="(Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
                                             v-model="selected"
                                             :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
                                             type="checkbox"> 
                                     <span class="check" /> 
                                     <span class="control-label">
-                                        <span 
-                                                v-tooltip="{
-                                                    content: option.label,
-                                                    autoHide: false,
-                                                }" 
-                                                class="checkbox-label-text">{{ `${option.label}` }}</span>
+                                        <span class="checkbox-label-text">{{ `${option.label}` }}</span>
                                     </span>
                                 </label>
                                 <b-radio
-                                        v-tooltip="{
-                                            content: option.label,
-                                            autoHide: false,
-                                        }" 
                                         v-else
                                         v-model="selected"
                                         :native-value="(isNaN(Number(option.value)) ? option.value : Number(option.value))">
@@ -253,6 +233,20 @@
                         </ul>
                     </div>
                 </transition-group>
+                <section 
+                        v-if="( (isTaxonomy && (finderColumns instanceof Array ? finderColumns.length <= 0 : !finderColumns) ) || (!isTaxonomy && options instanceof Array ? options.length <= 0 : !options) ) && expandResultsSection && !isSearching && !isLoadingSearch && !isColumnLoading"
+                        class="section">
+                    <div class="content has-text-grey has-text-centered">
+                        <p>
+                            <span class="icon is-medium">
+                                <i  
+                                        class="tainacan-icon tainacan-icon-30px"
+                                        :class="{ 'tainacan-icon-terms': isTaxonomy, 'tainacan-icon-metadata': !isTaxonomy }"/>
+                            </span>
+                        </p>
+                        <p>{{ isTaxonomy ? $i18n.get('info_no_terms_found') : $i18n.get('label_nothing_selected') }}</p>
+                    </div>
+                </section>
 
                 <b-loading
                         :is-full-page="false"
@@ -279,7 +273,7 @@
                                     closable
                                     class="is-small"
                                     @close="selected instanceof Array ? selected.splice(index, 1) : selected = ''">
-                                    <span v-html="(isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
+                                 <span v-html="(isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
                             </b-tag>
                         </div>
                     </b-field>
@@ -340,7 +334,8 @@
                 type: Boolean,
                 default: true,
             },
-            amountSelected: 0
+            amountSelected: 0,
+            maxMultipleValues: undefined
         },
         data() {
             return {
@@ -365,12 +360,13 @@
                 activeTab: 0,
                 selectedTagsName: {},
                 isSelectedTermsLoading: false,
-                expandResultsSection: false
+                expandResultsSection: false,
+                hasToDisplaySearchBar: false // Different from the checkbox filter component, we cannot hide search bar as it affects the first loading
             }
         },
         computed: {
             shouldBeginWithListExpanded() {
-                return  this.isTaxonomy && this.metadatum && this.metadatum.metadata_type_options && this.metadatum.metadata_type_options.visible_options_list;
+                return this.isTaxonomy && this.metadatum && this.metadatum.metadata_type_options && this.metadatum.metadata_type_options.visible_options_list;
             }
         },
         watch: {
@@ -427,30 +423,40 @@
             },
             fetchSelectedLabels() {
 
-                let selected = this.selected instanceof Array ? this.selected : [this.selected];
+                let allSelected = this.selected instanceof Array ? this.selected : [this.selected];
 
-                if (this.taxonomy_id && selected.length) {
+                // If a new item was added from item submission block, the value will be a string, and the term does not exists yet.
+                let selected = allSelected.filter((aValue) => !isNaN(aValue));
+                let selectedFromItemSubmission = allSelected.filter((aValue) => isNaN(aValue));
 
-                    this.isSelectedTermsLoading = true;
+                if (this.taxonomy_id) {
 
-                    axios.get(`/taxonomy/${this.taxonomy_id}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
-                        .then((res) => {
-                            for (const term of res.data)
-                                this.saveSelectedTagName(term.id, term.name, term.url);
+                    if (selected.length) {
+                        this.isSelectedTermsLoading = true;
+                        axios.get(`/taxonomy/${this.taxonomy_id}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
+                            .then((res) => {
+                                for (const term of res.data)
+                                    this.saveSelectedTagName(term.id, term.name, term.url);
 
-                            this.isSelectedTermsLoading = false;
-                        })
-                        .catch((error) => {
-                            this.$console.log(error);
-                            this.isSelectedTermsLoading = false;
-                        });
+                                this.isSelectedTermsLoading = false;
+                            })
+                            .catch((error) => {
+                                this.$console.log(error);
+                                this.isSelectedTermsLoading = false;
+                            });
+                    }
+
+                    if (selectedFromItemSubmission) {
+                        for (const term of selectedFromItemSubmission)
+                            this.saveSelectedTagName(term, term.split('>')[term.split('>').length - 1], '');
+                    }
                     
                 } else if (this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' && selected.length) {
                     this.isSelectedTermsLoading = true;
 
                     axios.get(`/items/?${qs.stringify({ fetch_only: 'title', postin: selected})}`)
                         .then((res) => {
-                            for (const item of res.data)
+                            for (const item of res.data.items)
                                 this.saveSelectedTagName(item.id, item.title, item.url);
 
                             this.isSelectedTermsLoading = false;
@@ -547,9 +553,11 @@
                     });
                 
                 promise.request
-                    .then(() => {
+                    .then((res) => {
                         this.isCheckboxListLoading = false;
                         this.isLoadingSearch = false;
+
+                        this.hasToDisplaySearchBar = !this.isSearching && (this.hasToDisplaySearchBar || res.headers['x-wp-totalpages'] > 1);
                     })
                     .catch(error => {
                         if (isCancel(error))
@@ -711,6 +719,9 @@
                 
                 axios.get(route)
                     .then(res => {
+                        
+                        this.hasToDisplaySearchBar = !this.isSearching && (this.hasToDisplaySearchBar || res.headers['x-wp-totalpages'] > 1 || res.data.values.some((aValue) => aValue.total_children != undefined && aValue.total_children != 0));
+
                         this.removeLevelsAfter(key);
                         this.createColumn(res, key, option ? option.label : null);
 
@@ -745,6 +756,8 @@
                         .then(res => {
                             this.appendMore(res.data.values, key, res.data.last_term.es_term);
 
+                            this.hasToDisplaySearchBar = !this.isSearching && (this.hasToDisplaySearchBar || res.headers['x-wp-totalpages'] > 1 || res.data.values.some((aValue) => aValue.total_children != undefined && aValue.total_children != 0));
+
                             this.totalRemaining = Object.assign({}, this.totalRemaining, {
                                 [`${key}`]: {
                                     remaining: res.headers['x-wp-total'],
@@ -768,32 +781,6 @@
 
 <style lang="scss" scoped>
 
-    @media screen and (max-width: 768px) {
-        .tainacan-modal-content {
-            flex-direction: column;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-        }
-
-        .tainacan-modal-checkbox-list-body {
-            flex-wrap: nowrap !important;
-        }
-
-        .tainacan-modal-checkbox-search-results-body {
-            column-count: 1;
-        }
-
-        .tainacan-li-checkbox-list {
-            max-width: calc(100% - 20px) !important;
-        }
-    }
-
-    .tainacan-modal-content {
-        width: auto;
-        min-height: 550px;
-    }
-
     /deep/ .tabs {
         margin-bottom: 0 !important;
 
@@ -805,9 +792,14 @@
         display: none;
         visibility: hidden;
     }
-    .tab-content {
+    .hidden-tabs-section /deep/ .tab-content {
+        .tainacan-finder-columns-container {
+            border: none;
+        }
+    }
+    /deep/ .tab-content {
         transition: height 0.2s ease;
-        padding: 0.5em 20px !important;
+        padding: 0.5em 0px !important;
     }
 
     // In theme, the bootstrap removes the style of <a> without href
@@ -844,12 +836,26 @@
         align-items: center;
         padding: 0;
 
-        .b-checkbox, .b-radio {
+        /deep/ .b-checkbox, /deep/ .b-radio {
             max-width: 100%;
+            min-height: 1.5em;
             margin-left: 0.7em;
-            margin-bottom: 0;
-            height: 24px;
-            overflow: hidden;
+            margin-bottom: 0px !important;
+            height: auto;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            -webkit-break-inside: avoid;
+            break-inside: avoid;
+
+            .control-label {
+                white-space: normal;
+                overflow: visible;
+            }
+
+            &.is-disabled {
+                cursor: not-allowed;
+                opacity: 0.5;
+            }
         }
 
         &:hover {
@@ -861,13 +867,22 @@
     .tainacan-li-checkbox-list {
         flex-grow: 0;
         flex-shrink: 1;
-        max-width: calc(50% - 20px);
-        width: 100%;
+        max-width: calc(100% - 0.5em);
         padding-left: 0.5em;
+        margin: 0;
 
         .b-checkbox, .b-radio {
             margin-right: 0px;
             margin-bottom: 0;
+
+            .control-label {
+                white-space: normal;
+                overflow: visible;
+            }
+            &.is-disabled {
+                cursor: not-allowed;
+                opacity: 0.5;
+            }
         }
 
         &:hover:not(.result-info) {
@@ -879,6 +894,8 @@
             max-width: 100%;
             column-span: all;
             font-size: 0.75em;
+            color: var(--tainacan-info-color);
+            text-align: center;
         }
     }
 
@@ -907,6 +924,22 @@
         margin: 0;
         padding: 0em;
         transition: width 0.2s ease;
+
+        &.has-only-one-column {
+            max-width: 100%;
+
+            ul {
+                -moz-column-count: 2;
+                -moz-column-gap: 0;
+                -moz-column-rule: none;
+                -webkit-column-count: 2;
+                -webkit-column-gap: 0;
+                -webkit-column-rule: none;
+                column-count: 2;
+                column-gap: 2em;
+                column-rule: none;
+            }
+        }
 
         ul {
             max-height: calc(253px - 20px - 0.7em);
@@ -1015,13 +1048,21 @@
         min-height: 232px;
         display: flex;
         align-items: center;
+        position: relative;
         padding: 0 20px !important;
-        padding-right: 0 !important;
-        padding-left: 0 !important;
+
+        &>ul+.tainacan-checkbox-list-page-changer {
+            right: 0;
+            left: auto;
+        }
     }
 
     .tainacan-checkbox-list-page-changer {
-        height: 253px;
+        height: calc(100% - 1px);
+        top: 1px;
+        position: absolute;
+        left: 0;
+        right: auto;
         align-items: center;
         display: flex;
         background-color: var(--tainacan-gray1);
@@ -1032,24 +1073,21 @@
     }
 
     .tainacan-modal-checkbox-list-body {
+        -moz-column-count: 2;
+        -moz-column-gap: 0;
+        -moz-column-rule: none;
+        -webkit-column-count: 2;
+        -webkit-column-gap: 0;
+        -webkit-column-rule: none;
+        column-count: 2;
+        column-gap: 2em;
+        column-rule: none;
         list-style: none;
         width: 100%;
-        align-self: baseline;
-        margin: 0 10px;
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
+        margin: 0;
         padding: 0 !important;
         max-height: 253px;
         overflow: auto;
-    }
-
-    .tainacan-modal-checkbox-list-body-dynamic-m-l {
-        margin-left: 2px !important;
-    }
-
-    .tainacan-modal-checkbox-list-body-dynamic-m-r {
-        margin-right: 2px !important;
     }
 
     .tainacan-tags-container {
@@ -1073,7 +1111,15 @@
 
     .tainacan-modal-checkbox-search-results-body {
         list-style: none;
+        -moz-column-count: 2;
+        -moz-column-gap: 0;
+        -moz-column-rule: none;
+        -webkit-column-count: 2;
+        -webkit-column-gap: 0;
+        -webkit-column-rule: none;
         column-count: 2;
+        column-gap: 2em;
+        column-rule: none;
     }
 
     .tainacan-li-no-children {
@@ -1091,13 +1137,14 @@
     .b-checkbox .control-label {
         display: flex;
         flex-wrap: nowrap;
+        align-items: center;
         width: 100%;
+        overflow: visible !important;
+        white-space: normal !important;
 
         .checkbox-label-text {
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            line-height: 1.45em;
+            line-height: 1.25em;
+            padding-right: 3px;
         }
     }
 
@@ -1108,6 +1155,20 @@
         text-align: center;
     }
 
+    @media screen and (max-width: 768px) {
+
+        .tainacan-modal-checkbox-list-body,
+        .tainacan-finder-column.has-only-one-column,
+        .tainacan-modal-checkbox-search-results-body {
+            -moz-column-count: auto;
+            -webkit-column-count: auto;
+            column-count: auto;
+        }
+
+        .tainacan-li-checkbox-list {
+            max-width: calc(100% - 20px) !important;
+        }
+    }
 
 </style>
 

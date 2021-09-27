@@ -1,8 +1,11 @@
 <template>
-    <div :class="className + ' has-mounted'">
+    <div 
+            :style="style"
+            :class="className + ' has-mounted'">
         <div v-if="!isLoading">
             <div  
                     :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '')"
+                    :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
                     v-if="terms.length > 0">
                 <swiper 
                         role="list"
@@ -16,8 +19,7 @@
                         <a 
                                 v-if="showTermThumbnail"
                                 :id="isNaN(term.id) ? term.id : 'term-id-' + term.id"
-                                :href="term.url"
-                                target="_blank">
+                                :href="term.url">
                             <img
                                 :src="term.header_image ? term.header_image : `${tainacanBaseUrl}/assets/images/placeholder_square.png`"
                                 :alt="term.name ? term.name : $root.__('Thumbnail', 'tainacan')" >
@@ -26,8 +28,7 @@
                         <a 
                                 v-else
                                 :id="isNaN(term.id) ? term.id : 'term-id-' + term.id"
-                                :href="term.url"
-                                target="_blank">
+                                :href="term.url">
                             <div class="term-items-grid">
                                 <blur-hash-image
                                         :height="termItems[term.id][2] ? $thumbHelper.getHeight(termItems[term.id][0]['thumbnail'], 'tainacan-medium') : 275"
@@ -67,7 +68,12 @@
                             :width="largeArrows ? 60 : 42"
                             :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
-                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        <path
+                                v-if="arrowsStyle === 'type-2'"
+                                d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z"/>
+                        <path 
+                                v-else
+                                d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                         <path
                                 d="M0 0h24v24H0z"
                                 fill="none"/>                         
@@ -82,7 +88,12 @@
                             :width="largeArrows ? 60 : 42"
                             :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
-                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        <path
+                                v-if="arrowsStyle === 'type-2'"
+                                d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z"/>
+                        <path 
+                                v-else
+                                d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                         <path
                                 d="M0 0h24v24H0z"
                                 fill="none"/>                        
@@ -96,17 +107,19 @@
             </div>
             <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
-        <div v-else-if="isLoading && !autoPlay && !loopSlides">
-            <div :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') ">
+        <div v-else>
+            <div
+                    :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
+                    :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') ">
                 <swiper 
                         role="list"
                         ref="myTermSwiper"
-                        :options="swiperOptions">
+                        :options="{ ...JSON.parse(JSON.stringify(swiperOptions)), autoplay: false, loop: false }">
                     <swiper-slide 
                             role="listitem"
                             :key="index"
                             v-for="(term, index) of 18"
-                            class="term-list-item skeleton">      
+                            class="term-list-item skeleton">
                         <a>
                             <img>
                             <span v-if="!hideName" />
@@ -122,10 +135,15 @@
                             :width="largeArrows ? 60 : 42"
                             :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
-                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        <path
+                                v-if="arrowsStyle === 'type-2'"
+                                d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z"/>
+                        <path 
+                                v-else
+                                d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                         <path
                                 d="M0 0h24v24H0z"
-                                fill="none"/>                         
+                                fill="none"/>
                     </svg>
                 </button>
                 <button 
@@ -137,10 +155,15 @@
                             :width="largeArrows ? 60 : 42"
                             :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
-                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        <path
+                                v-if="arrowsStyle === 'type-2'"
+                                d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z"/>
+                        <path
+                                v-else
+                                d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                         <path
                                 d="M0 0h24v24H0z"
-                                fill="none"/>                        
+                                fill="none"/>
                     </svg>
                 </button>
             </div>
@@ -169,13 +192,17 @@ export default {
         autoPlaySpeed: Number,
         loopSlides: Boolean,
         maxTermsPerScreen: Number,
+        spaceBetweenTerms: Number,
+        spaceAroundCarousel: Number,
         hideName: Boolean,
         largeArrows: Boolean,
+        arrowsStyle: String,
         showTermThumbnail: Boolean,
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
         className: String,
-        taxonomyId: String
+        taxonomyId: String,
+        style: String
     },
     data() {
         return {
@@ -190,26 +217,28 @@ export default {
             paged: undefined,
             totalTerms: 0,
             swiperOptions: {
-                watchOverflow: true,
-                mousewheel: true,
+                watchOverflow: false,
+                mousewheel: {
+                    forceToAxis: true
+                },
                 observer: true,
                 preventInteractionOnTransition: true,
                 allowClick: true,
                 allowTouchMove: true, 
                 slidesPerView: 1,
                 slidesPerGroup: 1,
-                spaceBetween: this.showTermThumbnail ? 32 : 16,
+                spaceBetween: this.spaceBetweenTerms,
                 slideToClickedSlide: true,
                 navigation: {
                     nextEl: '#' + this.blockId + '-next',
                     prevEl: '#' + this.blockId + '-prev',
                 },
                 breakpoints: {
-                    498:  { slidesPerView: this.showTermThumbnail ? 1 : 1 },
-                    768:  { slidesPerView: this.showTermThumbnail ? 2 : 1 },
-                    1024: { slidesPerView: this.showTermThumbnail ? 3 : 2 },
-                    1366: { slidesPerView: this.showTermThumbnail ? 4 : 3 },
-                    1600: { slidesPerView: this.showTermThumbnail ? 5 : 4 },
+                    498:  { slidesPerView: this.showTermThumbnail ? 1 : 1, spaceBetween: this.spaceBetweenTerms },
+                    768:  { slidesPerView: this.showTermThumbnail ? 2 : 1, spaceBetween: this.spaceBetweenTerms },
+                    1024: { slidesPerView: this.showTermThumbnail ? 3 : 2, spaceBetween: this.spaceBetweenTerms },
+                    1366: { slidesPerView: this.showTermThumbnail ? 4 : 3, spaceBetween: this.spaceBetweenTerms },
+                    1600: { slidesPerView: this.showTermThumbnail ? 5 : 4, spaceBetween: this.spaceBetweenTerms },
                 },
                 autoplay: this.autoPlay ? { delay: this.autoPlaySpeed*1000 } : false,
                 loop: this.loopSlides
@@ -226,11 +255,11 @@ export default {
 
         if (!isNaN(this.maxTermsPerScreen)) {
             this.swiperOptions.breakpoints = {
-                498:  { slidesPerView: this.maxTermsPerScreen - 4 > 0 ? this.maxTermsPerScreen - 4 : 1 }, 
-                768:  { slidesPerView: this.maxTermsPerScreen - 3 > 0 ? this.maxTermsPerScreen - 3 : 1 },
-                1024: { slidesPerView: this.maxTermsPerScreen - 2 > 0 ? this.maxTermsPerScreen - 2 : 1 },
-                1366: { slidesPerView: this.maxTermsPerScreen - 1 > 0 ? this.maxTermsPerScreen - 1 : 1 },
-                1600: { slidesPerView: this.maxTermsPerScreen > 0 ? this.maxTermsPerScreen : 1 },
+                498:  { slidesPerView: this.maxTermsPerScreen - 4 > 0 ? this.maxTermsPerScreen - 4 : 1, spaceBetween: this.spaceBetweenTerms }, 
+                768:  { slidesPerView: this.maxTermsPerScreen - 3 > 0 ? this.maxTermsPerScreen - 3 : 1, spaceBetween: this.spaceBetweenTerms },
+                1024: { slidesPerView: this.maxTermsPerScreen - 2 > 0 ? this.maxTermsPerScreen - 2 : 1, spaceBetween: this.spaceBetweenTerms },
+                1366: { slidesPerView: this.maxTermsPerScreen - 1 > 0 ? this.maxTermsPerScreen - 1 : 1, spaceBetween: this.spaceBetweenTerms },
+                1600: { slidesPerView: this.maxTermsPerScreen > 0 ? this.maxTermsPerScreen : 1, spaceBetween: this.spaceBetweenTerms },
             }
             this.swiperOptions.slidesPerView = 1;
         }
@@ -262,7 +291,7 @@ export default {
                                 this.tainacanAxios.get('/items/?perpage=3&fetch_only=name,url,thumbnail&taxquery[0][taxonomy]=tnc_tax_' + this.taxonomyId + '&taxquery[0][terms][0]=' + term.id + '&taxquery[0][compare]=IN')
                                     .then(response => { return({ termId: term.id, termItems: response.data.items }) })
                             );    
-                            this.terms.push(term);                  
+                            this.terms.push(term);
                         }
                         axios.all(promises).then((results) => {
                             for (let result of results) {

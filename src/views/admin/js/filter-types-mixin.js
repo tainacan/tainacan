@@ -8,6 +8,7 @@ export const filterTypeMixin = {
             collectionId: '',
             metadatumId: '',
             metadatumType: '',
+            metadatumName: '',
             filterTypeOptions: [],
             shouldAddOptions: false
         }
@@ -23,6 +24,7 @@ export const filterTypeMixin = {
     created() {
         this.collectionId = this.filter.collection_id ? this.filter.collection_id : this.collectionId;
         this.metadatumId = this.filter.metadatum.metadatum_id ? this.filter.metadatum.metadatum_id : this.metadatumId;
+        this.metadatumName = this.filter.metadatum && this.filter.metadatum.metadatum_name ? this.filter.metadatum.metadatum_name : this.metadatumName;
         this.filterTypeOptions = this.filter.filter_type_options ? this.filter.filter_type_options : this.filterTypeOptions;
         this.metadatumType = this.filter.metadatum.metadata_type_object && this.filter.metadatum.metadata_type_object.className ? this.filter.metadatum.metadata_type_object.className : this.metadatumType;
     },
@@ -76,7 +78,6 @@ export const dynamicFilterTypeMixin = {
                 let query_items = { 'current_query': currentQuery };
 
                 let url = '';
-                
                 if (isRepositoryLevel)
                     url = `/facets/${metadatumId}?getSelected=${getSelected}&`;
                 else {

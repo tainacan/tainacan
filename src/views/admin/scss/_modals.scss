@@ -17,7 +17,7 @@
 .tainacan-modal .modal-close {
     z-index: 99999;
     @media only screen and (max-width: 768px) {
-        &:before, &:after { background-color: #298596; }
+        &:before, &:after { background-color: var(--tainacan-white, white); }
     }
 }
 
@@ -29,7 +29,7 @@
     align-items: flex-end;
 
     h1, h2 {
-        font-size: 1.25em;
+        font-size: 1.25em !important;
         font-weight: normal;
         font-weight: 500;
         color: var(--tainacan-heading-color);
@@ -39,12 +39,12 @@
         margin-bottom: 0px;
         margin: 0 auto 0 0;
     }
-    a.back-link{
+    a.back-link {
         font-weight: 500;
         float: right;
         margin-top: 5px;
     }
-    hr{
+    hr {
         margin: 3px 0 4px 0;
         height: 1px;
         background-color: var(--tainacan-secondary);
@@ -86,7 +86,7 @@
     }
 
     .form-submit {
-        padding: 40px 0em 0.4em 0em !important;
+        padding: 40px 0em 0em 0em !important;
     }
 
     @media only screen and (max-width: 768px) {
@@ -221,6 +221,19 @@
         }
         .media-frame-menu-toggle {
             display: none !important;
+        }
+    }
+
+    @media screen and (max-width: 769px) {
+        left: 1.5em;
+        right: 1.5em;
+        top: 1.5em;
+        bottom: 1.5em;
+
+        .media-frame-title h1 {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
         }
     }
 }

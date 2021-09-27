@@ -32,8 +32,11 @@ export default (element) => {
                         loadStrategy: 'search',
                         maxItemsNumber: 12,
                         maxItemsPerScreen: 7,
+                        spaceBetweenItems: 32,
+                        spaceAroundCarousel: 50,
                         arrowsPosition: 'around',
                         largeArrows: false,
+                        arrowsStyle: 'type-1',
                         autoPlay: false,
                         autoPlaySpeed: 3,
                         loopSlides: false,
@@ -45,7 +48,8 @@ export default (element) => {
                         collectionTextColor: '#ffffff',
                         tainacanApiRoot: '',
                         tainacanBaseUrl: '',
-                        className: ''
+                        className: '',
+                        style: ''
                     },
                     render(h){ 
                         return h(CarouselItemsListTheme, {
@@ -57,8 +61,11 @@ export default (element) => {
                                 loadStrategy: this.loadStrategy,
                                 maxItemsNumber: this.maxItemsNumber,
                                 maxItemsPerScreen: this.maxItemsPerScreen,
+                                spaceBetweenItems: this.spaceBetweenItems,
+                                spaceAroundCarousel: this.spaceAroundCarousel,
                                 arrowsPosition: this.arrowsPosition,
                                 largeArrows: this.largeArrows,
+                                arrowsStyle: this.arrowsStyle,
                                 autoPlay: this.autoPlay,
                                 autoPlaySpeed: this.autoPlaySpeed,
                                 loopSlides: this.loopSlides,
@@ -70,7 +77,8 @@ export default (element) => {
                                 collectionTextColor: this.collectionTextColor,
                                 tainacanApiRoot: this.tainacanApiRoot,
                                 tainacanBaseUrl: this.tainacanBaseUrl,
-                                className: this.className
+                                className: this.className,
+                                style: this.style
                             }
                         });
                     },
@@ -82,8 +90,11 @@ export default (element) => {
                         this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
                         this.maxItemsNumber = this.$el.attributes['max-items-number'] != undefined ? this.$el.attributes['max-items-number'].value : undefined;
                         this.maxItemsPerScreen = this.$el.attributes['max-items-per-screen'] != undefined ? this.$el.attributes['max-items-per-screen'].value : 7;
+                        this.spaceBetweenItems = this.$el.attributes['space-between-items'] != undefined ? this.$el.attributes['space-between-items'].value : 32;
+                        this.spaceAroundCarousel = this.$el.attributes['space-around-carousel'] != undefined ? this.$el.attributes['space-around-carousel'].value : 50;
                         this.arrowsPosition = this.$el.attributes['arrows-position'] != undefined ? this.$el.attributes['arrows-position'].value : undefined;
                         this.largeArrows = this.$el.attributes['large-arrows'] != undefined ? this.$el.attributes['large-arrows'].value == 'true' : false;
+                        this.arrowsStyle = this.$el.attributes['arrows-style'] != undefined ? this.$el.attributes['arrows-style'].value : undefined;
                         this.autoPlay = this.$el.attributes['auto-play'] != undefined ? this.$el.attributes['auto-play'].value == 'true' : false;
                         this.autoPlaySpeed = this.$el.attributes['auto-play-speed'] != undefined ? this.$el.attributes['auto-play-speed'].value : 3;
                         this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;
@@ -95,6 +106,7 @@ export default (element) => {
                         this.collectionTextColor = this.$el.attributes['collection-text-color'] != undefined ? this.$el.attributes['collection-text-color'].value : undefined;
                         this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
                         this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
+                        this.style = this.$el.attributes.style != undefined ? this.$el.attributes.style.value : undefined;
                     },
                     methods: {
                         __(text, domain) {

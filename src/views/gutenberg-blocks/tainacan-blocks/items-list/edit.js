@@ -2,7 +2,7 @@ const { __ } = wp.i18n;
 
 const { RangeControl, IconButton, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import ItemsModal from './items-modal.js';
@@ -19,6 +19,9 @@ export default function({ attributes, setAttributes, className, isSelected }) {
         isModalOpen,
         gridMargin
     } = attributes;
+
+    // Gets blocks props from hook
+    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
 
     function prepareItem(item) {
         return (
@@ -40,8 +43,7 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                 }
                 <a 
                     id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
-                    href={ item.url } 
-                    target="_blank"
+                    href={ item.url }
                     className={ (!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '') }>
                     <img
                         src={ item.thumbnail && item.thumbnail[0] && item.thumbnail[0].src ? item.thumbnail[0].src : `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`}
@@ -125,13 +127,13 @@ export default function({ attributes, setAttributes, className, isSelected }) {
     ];
 
     return content == 'preview' ? 
-            <div className={className}>
-                <img
-                        width="100%"
-                        src={ `${tainacan_blocks.base_url}/assets/images/items-list.png` } />
-            </div>
-        :  (
         <div className={className}>
+            <img
+                    width="100%"
+                    src={ `${tainacan_blocks.base_url}/assets/images/items-list.png` } />
+        </div>
+        :  (
+        <div { ...blockProps }>
 
             <div>
                 <BlockControls>

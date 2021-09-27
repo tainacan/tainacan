@@ -2,7 +2,7 @@ const { __ } = wp.i18n;
 
 const { IconButton, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
 import TermsModal from './terms-modal.js';
@@ -18,6 +18,9 @@ export default function({ attributes, setAttributes, className, isSelected }){
         isModalOpen,
         taxonomyId,
     } = attributes;
+
+    // Gets blocks props from hook
+    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
 
     function prepareTerm(term) {
         return (
@@ -38,8 +41,7 @@ export default function({ attributes, setAttributes, className, isSelected }){
                 }         
                 <a 
                     id={ isNaN(term.id) ? term.id : 'term-id-' + term.id }
-                    href={ term.url } 
-                    target="_blank"
+                    href={ term.url }
                     className={ (!showName ? 'term-without-name' : '') + ' ' + (!showImage ? 'term-without-image' : '') }>
                     <img
                         src={ term.header_image && term.header_image[0] && term.header_image[0].src ? term.header_image[0].src : `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`}
@@ -126,7 +128,7 @@ export default function({ attributes, setAttributes, className, isSelected }){
                     src={ `${tainacan_blocks.base_url}/assets/images/terms-list.png` } />
         </div>
     : (
-        <div className={className}>
+        <div { ...blockProps }>
 
             <div>
                 <BlockControls>

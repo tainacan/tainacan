@@ -181,7 +181,7 @@
                                 this.label = item.title;
                                 this.selected = item.title;
          
-                                this.$emit( 'sendValuesToTags', { label: this.label, value: this.selected });
+                                this.$emit( 'sendValuesToTags', { label: this.label, value: this.selected, metadatumName: this.metadatumName });
                             })
                             .catch(error => {
                                 this.$console.log(error);
@@ -189,7 +189,7 @@
                     } else {
                         this.label = metadata.value;
                         this.selected = metadata.value;
-                        this.$emit( 'sendValuesToTags', { label: this.label, value: this.selected });
+                        this.$emit( 'sendValuesToTags', { label: this.label, value: this.selected, metadatumName: this.metadatumName });
                     }
                 } else {
                     this.label = '';

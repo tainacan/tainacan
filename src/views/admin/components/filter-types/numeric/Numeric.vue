@@ -123,7 +123,7 @@
                         this.comparator = metadata.compare;
 
                     if (this.value != undefined)
-                        this.$emit('sendValuesToTags', { label: this.comparator + ' ' + this.value, value: this.value });
+                        this.$emit('sendValuesToTags', { label: this.comparator + ' ' + this.value, value: this.value, metadatumName: this.metadatumName });
 
                 } else {
                     this.value = null;
@@ -145,7 +145,7 @@
                     type: 'NUMERIC'
                 });
 
-                this.$emit('sendValuesToTags', { label: this.comparator + ' ' + this.value, value: this.value });
+                this.$emit('sendValuesToTags', { label: this.comparator + ' ' + this.value, value: this.value, metadatumName: this.metadatumName });
                 
             },
             onChangeComparator(newComparator) {

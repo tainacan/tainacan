@@ -1,6 +1,7 @@
 {
     "name": "tainacan/search-bar",
     "title": "Tainacan Search Bar",
+    "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "items", "search", "bar" ],
     "description": "Set up a custom search bar to redirect to an item's list",

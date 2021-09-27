@@ -1,6 +1,7 @@
 {
     "name": "tainacan/dynamic-items-list",
     "title": "Tainacan Collection's Items List",
+    "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "items", "search", "collection" ],
     "description": "Dynamically list items from a Tainacan items search",
@@ -84,6 +85,14 @@
             "type": "String",
             "default": ""
         },
+        "selectedItems": {
+            "type": "Array",
+            "default": []
+        },
+        "loadStrategy": {
+            "type": "String",
+            "value": "search"
+        },
         "order": {
             "type": "String",
             "default": ""
@@ -141,6 +150,12 @@
         "html": false,
         "typography": {
             "fontSize": true
+        },
+        "color": {
+            "text": true,
+            "background": false,
+            "gradients": false,
+            "link": true
         }
     },
     "editorScript": "dynamic-items-list",

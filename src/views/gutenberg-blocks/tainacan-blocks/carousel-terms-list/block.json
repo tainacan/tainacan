@@ -1,6 +1,7 @@
 {
     "name": "tainacan/carousel-terms-list",
     "title": "Tainacan Terms Carousel",
+    "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "carousel", "slider", "taxonomy" ],
     "description": "List terms on a Carousel, showing their thumbnails or a preview of items.",
@@ -40,6 +41,14 @@
             "type": "Number",
             "value": 6
         },
+        "spaceBetweenTerms": {
+            "type": "Number",
+            "value": 32
+        },
+        "spaceAroundCarousel": {
+            "type": "Number",
+            "value": 50
+        },
         "isLoading": {
             "type": "Boolean",
             "value": false
@@ -55,6 +64,10 @@
         "largeArrows": {
             "type": "Boolean",
             "value": false
+        },
+        "arrowsStyle": {
+            "type": "String",
+            "value": "type-1"
         },
         "autoPlay": {
             "type": "Boolean",
@@ -103,6 +116,12 @@
         "multiple": true,
         "typography": {
             "fontSize": true
+        },
+        "color": {
+            "text": true,
+            "background": false,
+            "gradients": false,
+            "link": true
         }
     },
     "editorScript": "carousel-terms-list",

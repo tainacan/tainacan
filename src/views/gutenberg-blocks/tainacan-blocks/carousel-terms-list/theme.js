@@ -32,14 +32,18 @@ export default (element) => {
                         autoPlay: false,
                         autoPlaySpeed: 3,
                         largeArrows: false,
+                        arrowsStyle: 'type-1',
                         maxTermsPerScreen: 6,
+                        spaceBetweenTerms: 32,
+                        spaceAroundCarousel: 50,
                         loopSlides: false,
                         hideName: true,
                         showTermThumbnail: false,
                         tainacanApiRoot: '',
                         tainacanBaseUrl: '',
                         className: '',
-                        taxonomyId: ''
+                        taxonomyId: '',
+                        style: ''
                     },
                     render(h){ 
                         return h(CarouselTermsListTheme, {
@@ -52,13 +56,17 @@ export default (element) => {
                                 autoPlaySpeed: this.autoPlaySpeed,
                                 loopSlides: this.loopSlides,
                                 largeArrows: this.largeArrows,
+                                arrowsStyle: this.arrowsStyle,
                                 maxTermsPerScreen: this.maxTermsPerScreen,
+                                spaceBetweenTerms: this.spaceBetweenTerms,
+                                spaceAroundCarousel: this.spaceAroundCarousel,
                                 hideName: this.hideName,
                                 showTermThumbnail: this.showTermThumbnail,
                                 tainacanApiRoot: this.tainacanApiRoot,
                                 tainacanBaseUrl: this.tainacanBaseUrl,
                                 className: this.className,
-                                taxonomyId: this.taxonomyId
+                                taxonomyId: this.taxonomyId,
+                                style: this.style
                             }
                         });
                     },
@@ -70,13 +78,17 @@ export default (element) => {
                         this.arrowsPosition = this.$el.attributes['arrows-position'] != undefined ? this.$el.attributes['arrows-position'].value : undefined;
                         this.autoPlay = this.$el.attributes['auto-play'] != undefined ? this.$el.attributes['auto-play'].value == 'true' : false;
                         this.autoPlaySpeed = this.$el.attributes['auto-play-speed'] != undefined ? this.$el.attributes['auto-play-speed'].value : 3;
+                        this.spaceBetweenTerms = this.$el.attributes['space-between-terms'] != undefined ? this.$el.attributes['space-between-terms'].value : 32;
+                        this.spaceAroundCarousel = this.$el.attributes['space-around-carousel'] != undefined ? this.$el.attributes['space-around-carousel'].value : 50;
                         this.largeArrows = this.$el.attributes['large-arrows'] != undefined ? this.$el.attributes['large-arrows'].value == 'true' : false;
+                        this.arrowsStyle = this.$el.attributes['arrows-style'] != undefined ? this.$el.attributes['arrows-style'].value : undefined;
                         this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;
                         this.hideName = this.$el.attributes['hide-name'] != undefined ? this.$el.attributes['hide-name'].value == 'true' : false;
                         this.taxonomyId = this.$el.attributes['taxonomy-id'] != undefined ? this.$el.attributes['taxonomy-id'].value : undefined;
                         this.showTermThumbnail = this.$el.attributes['show-term-thumbnail'] != undefined ? this.$el.attributes['show-term-thumbnail'].value == 'true' : false;
                         this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
                         this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
+                        this.style = this.$el.attributes.style != undefined ? this.$el.attributes.style.value : undefined;
                     },
                     methods: {
                         __(text, domain) {

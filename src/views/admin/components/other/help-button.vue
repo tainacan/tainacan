@@ -67,7 +67,7 @@ export default {
             padding: 0.8em 0.8em 0em 0.8em;
 
             h5 {
-                font-size: 0.875em;
+                font-size: 0.875em !important;
                 font-weight: bold;
                 color: var(--tainacan-secondary);
                 margin-bottom: 0;

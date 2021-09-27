@@ -1,6 +1,7 @@
 {
     "name": "tainacan/carousel-items-list",
     "title": "Tainacan Collection's Items Carousel",
+    "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "items", "carousel", "slider" ],
     "description": "List items on a Carousel, using search or item selection.",
@@ -48,6 +49,14 @@
             "type": "Number",
             "value": 7
         },
+        "spaceBetweenItems": {
+            "type": "Number",
+            "value": 32
+        },
+        "spaceAroundCarousel": {
+            "type": "Number",
+            "value": 50
+        },
         "isLoading": {
             "type": "Boolean",
             "value": false
@@ -67,6 +76,10 @@
         "largeArrows": {
             "type": "Boolean",
             "value": false
+        },
+        "arrowsStyle": {
+            "type": "String",
+            "value": "type-1"
         },
         "autoPlay": {
             "type": "Boolean",
@@ -119,6 +132,12 @@
         "multiple": true,
         "typography": {
             "fontSize": true
+        },
+        "color": {
+            "text": true,
+            "background": false,
+            "gradients": false,
+            "link": true
         }
     },
     "editorScript": "carousel-items-list",

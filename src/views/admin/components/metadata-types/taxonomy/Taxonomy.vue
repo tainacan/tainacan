@@ -4,10 +4,10 @@
                 v-if="getComponent == 'tainacan-taxonomy-tag-input'"
                 :disabled="disabled"
                 :is="getComponent"
-                :maxtags="maxtags"
+                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : 1)"
                 v-model="valueComponent"
                 :allow-select-to-create="allowSelectToCreate"
-                :allow-new="allowNew"
+                :allow-new="allowNewFromOptions"
                 :taxonomy-id="taxonomyId"
                 :item-metadatum="itemMetadatum"
                 @showAddNewTerm="openTermCreationModal"
@@ -17,7 +17,7 @@
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 :is-modal="false"
                 :parent="0"
-                :allow-new="allowNew"
+                :allow-new="allowNewFromOptions"
                 @showAddNewTerm="openTermCreationModal"
                 :taxonomy_id="taxonomyId"
                 :selected="!valueComponent ? [] : valueComponent"
@@ -25,14 +25,14 @@
                 :taxonomy="taxonomy"
                 :collection-id="itemMetadatum.metadatum.collection_id"
                 :is-taxonomy="true"
+                :max-multiple-values="maxMultipleValues"
                 :metadatum="itemMetadatum.metadatum"
                 :amount-selected="Array.isArray(valueComponent) ? valueComponent.length : (valueComponent ? '1' : '0')"
                 :is-checkbox="getComponent == 'tainacan-taxonomy-checkbox'"
                 @input="(selected) => valueComponent = selected"
             />
-            
         <div 
-                v-if="displayCreateNewTerm"
+                v-if="displayCreateNewTerm && !isTermCreationPanelOpen && (maxMultipleValues !== undefined ? (maxMultipleValues > valueComponent.length) : true)"
                 class="add-new-term">
             <a
                     @click="openTermCreationModal"
@@ -45,6 +45,7 @@
             </a>
         </div>
 
+        <!-- Term creation modal, used on admin for a complete term creation -->
         <b-modal 
                 v-model="isTermCreationModalOpen"
                 trap-focus
@@ -60,6 +61,17 @@
                     @onEditionCanceled="() => $console.log('Edition canceled')"
                     @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
         </b-modal>
+
+        <!-- Term creation panel, used on item submission block for a simpler term creation -->
+        <transition name="filter-item">
+            <term-creation-panel
+                    v-if="isTermCreationPanelOpen" 
+                    :taxonomy-id="taxonomyId"
+                    :edit-form="{ id: 'new', name: newTermName ? newTermName : '' }"
+                    @onEditionFinished="($event) => addTermToBeCreated($event)"
+                    @onEditionCanceled="() => isTermCreationPanelOpen = false"
+                    @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
+        </transition>
     </div>
 </template>
 
@@ -79,9 +91,8 @@
             disabled: false,
             forcedComponentType: '',
             maxtags: '',
+            allowNew: false,
             allowSelectToCreate: false,
-            isTermCreationModalOpen: false,
-            newTermName: ''
         },
         data(){
             return {
@@ -89,8 +100,11 @@
                 taxonomyId: '',
                 taxonomy: '',
                 terms:[],
-                allowNew: false,
-                isAddingNewTermVaue: false
+                isAddingNewTermVaue: false,
+                isTermCreationModalOpen: false,
+                isTermCreationPanelOpen: false,
+                newTermName: '',
+                allowNewFromOptions: false
             }
         },
         computed: {
@@ -106,7 +120,19 @@
                     return '';
             },
             displayCreateNewTerm() {
-                return this.allowNew;
+                return this.allowNewFromOptions;
+            },
+            isOnItemSubmissionForm() {
+                return !this.itemMetadatum.item || !this.itemMetadatum.item.id;
+            },
+            maxMultipleValues() {
+                return (
+                    this.itemMetadatum &&
+                    this.itemMetadatum.metadatum && 
+                    this.itemMetadatum.metadatum.cardinality &&
+                    !isNaN(this.itemMetadatum.metadatum.cardinality) &&
+                    this.itemMetadatum.metadatum.cardinality > 1
+                ) ? this.itemMetadatum.metadatum.cardinality : undefined;
             }
         },
         watch: {
@@ -120,16 +146,15 @@
             this.taxonomyId = metadata_type_options.taxonomy_id;
             this.taxonomy = metadata_type_options.taxonomy;
             
-            if (this.itemMetadatum.item && this.itemMetadatum.item.id && metadata_type_options && metadata_type_options.allow_new_terms && this.itemMetadatum.item) 
-                this.allowNew = metadata_type_options.allow_new_terms == 'yes';
-
+            this.allowNewFromOptions = this.allowNew === false ? false : metadata_type_options.allow_new_terms == 'yes';
+            
             this.getTermsId();
         },
         methods: {
             getTermsId() {
                 let values = [];
                 if (this.value && this.itemMetadatum.metadatum && this.getComponent != 'tainacan-taxonomy-tag-input') {
-                    values = this.value.map(term => term.id) 
+                    values = this.value.map(term => term.id).filter(term => term !== undefined);
                     this.valueComponent = (values.length >= 0 && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple === 'no') ? values[0] : values;
                 } else if (this.value && this.itemMetadatum.metadatum && this.getComponent == 'tainacan-taxonomy-tag-input') {
                     values = this.value.map((term) => { return { label: term.name, value: term.id } });
@@ -164,9 +189,21 @@
                     }
                 }
             },
+            addTermToBeCreated(term) {
+                this.isTermCreationPanelOpen = false;
+
+                if (this.itemMetadatum.metadatum.multiple === 'no')
+                    this.valueComponent = term.parent ? (term.parent + '>>' + term.name) : term.name;
+                else
+                    this.valueComponent.push(term.parent ? (term.parent + '>>' + term.name) : term.name); 
+            },
             openTermCreationModal(newTerm) {
                 this.newTermName = newTerm.name;
-                this.isTermCreationModalOpen = true;
+                
+                if (this.isOnItemSubmissionForm)
+                    this.isTermCreationPanelOpen = true;
+                else
+                    this.isTermCreationModalOpen = true;
             }
         }
     }
@@ -174,7 +211,7 @@
 
 <style scoped>
     .add-new-term {
-        margin: 6px 0;
+        margin: 3px 0;
         font-size: 0.75em;
     }
 </style>

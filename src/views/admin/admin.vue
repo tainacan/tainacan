@@ -51,6 +51,7 @@
     import TainacanHeader from './components/navigation/tainacan-header.vue';
     import TainacanRepositorySubheader from './components/navigation/tainacan-repository-subheader.vue';
     import CustomDialog from './components/other/custom-dialog.vue';
+    import 'swiper/css/swiper.min.css';
 
     export default { 
         name: "AdminPage",
@@ -187,6 +188,9 @@
         .icon {
             margin-top: -2px;
         }
+    }
+    .filter-tags-list {
+        padding-top: 0;
     }
 
     @media screen and (min-width: 769px) {

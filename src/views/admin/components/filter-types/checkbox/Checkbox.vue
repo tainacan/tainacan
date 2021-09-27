@@ -47,7 +47,8 @@
                     :collection-id="collectionId"
                     :metadatum_type="metadatumType"
                     :is-repository-level="isRepositoryLevel"
-                    :query="query" />
+                    :query="query"
+                    :current-collection-id="currentCollectionId" />
         </template>
     </div>
 </template>
@@ -181,7 +182,7 @@
                     }
                 }
 
-                this.$emit( 'sendValuesToTags', { label: onlyLabels.length ? onlyLabels : this.selected, value: this.selected });
+                this.$emit( 'sendValuesToTags', { label: onlyLabels.length ? onlyLabels : this.selected, value: this.selected, metadatumName: this.metadatumName });
             },
             openCheckboxModal() {
                 this.$buefy.modal.open({

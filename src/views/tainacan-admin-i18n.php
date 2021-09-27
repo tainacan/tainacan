@@ -225,6 +225,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_taxonomy_allow_new_terms'                 => __( 'Allow new terms', 'tainacan' ),
 	'label_selectbox_init'                           => __( 'Select', 'tainacan' ),
 	'label_insert_options'                           => __( 'Insert options', 'tainacan'),
+	'label_insert_items'                             => __( 'Insert items', 'tainacan'),
 	'label_available_terms'                          => __( 'Available terms', 'tainacan' ),
 	'label_some_available_terms'                     => __( 'Some available terms', 'tainacan' ),
 	'label_attachments'                              => __( 'Attachments', 'tainacan' ),
@@ -410,6 +411,8 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_all_terms'                                => __( 'All terms', 'tainacan' ),
 	'label_selected_terms'                           => __( 'Selected terms', 'tainacan' ),
 	'label_selected_term'                            => __( 'Selected term', 'tainacan' ),
+	'label_selected_items'                           => __( 'Selected items', 'tainacan' ),
+	'label_selected_item'                            => __( 'Selected item', 'tainacan' ),
 	'label_all_metadatum_values'                     => __( 'All metadatum values', 'tainacan' ),
 	'label_selected_metadatum_values'                => __( 'Selected metadatum values', 'tainacan' ),
 	/* translators: 'n.' here comes from 'number' */
@@ -588,6 +591,14 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'label_related_items'							 => __( 'Items related to this', 'tainacan'),
 	'label_view_all_%s_related_items'				 => __( 'View all %s related items', 'tainacan'),
 	'label_back_to_related_item'					 => __( 'Back to related item', 'tainacan'),
+	'label_options_of_the_%s_metadata_type'			 => __( 'Options of the %s metadata type', 'tainacan'),
+	'label_advanced_metadata_options'			 	 => __( 'Advanced metadata options', 'tainacan'),
+	'label_maximum_of_%s_values'			 	 	 => __( 'maximum of %s values', 'tainacan'),
+	'label_document_option_forced_iframe'			 => __( 'Render content in iframe', 'tainacan'),
+	'label_amount_of_metadata_of_type'	 			 =>	__( 'Amount of metadata of this type', 'tainacan'),
+	'label_document_option_iframe_height'			 =>	__( 'Iframe height (px)', 'tainacan'),
+	'label_document_option_iframe_width'			 =>	__( 'Iframe width (px)', 'tainacan'),
+	'label_limit_max_values'						 => __( 'Limit the amount of multiple values', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -623,6 +634,7 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'instruction_drop_file_or_click_to_upload'       => __( 'Drop your source file or click here to upload.', 'tainacan' ),
 	'instruction_select_metadatum_type'              => __( 'Select a metadatum type', 'tainacan' ),
 	'instruction_configure_new_metadatum'            => __( 'Configure new metadatum', 'tainacan' ),
+	'instruction_configure_the_metadatum'                => __( 'Configure the metadatum', 'tainacan' ),
 	'instruction_insert_mapper_metadatum_info'       => __( 'Insert the new mapper\'s metadatum info', 'tainacan' ),
 	'instruction_select_max_options_to_show'         => __( 'Select max options to show', 'tainacan' ),
 	'instruction_select_collection_fetch_items'      => __( 'Select a collection to fetch items', 'tainacan' ),
@@ -870,10 +882,15 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'info_form_not_loaded'					 		 =>	__( 'There are probably not enought permissions to display it here.', 'tainacan'),
 	'info_validating_slug'					 		 =>	__( 'Validating slug...', 'tainacan'),
 	'info_no_taxonomy_metadata_created'		 		 =>	__( 'No taxonomy metadata created yet', 'tainacan'),
-	'label_amount_of_metadata_of_type'	 			 =>	__( 'Amount of metadata of this type', 'tainacan'),
 	'info_child_terms_chart'						 => __( 'Click on the term bar on the chart aside to see its child terms (if any) in this panel', 'tainacan' ),
 	'info_metadata_autocomplete_suggestions'		 => __( 'Some values already used on this metadatum:', 'tainacan' ),
 	'info_related_items'							 => __( 'These are items that are related to this item via their own relationship type metadata. You can edit such relation on their pages.', 'tainacan'),
+	'info_document_option_forced_iframe'			 => __( 'Attempt to use an iframe to embed url content on the item page. You may use this option if the autoembed do not work.', 'tainacan'),
+	'info_applied_filters'							 => __( 'filters applied', 'tainacan'),
+	'info_items_found'							 	 => __( 'items found', 'tainacan'),
+	'info_applied_filter'							 => __( 'filter applied', 'tainacan'),
+	'info_item_found'							 	 => __( 'item found', 'tainacan'),
+	'info_iframe_dimensions'						 => __( 'The dimension values will be passed to the iframe, but it\'s rendering may change according to the theme display settings. It is still important to keep an aproximate aspect ratio to the inner content.', 'tainacan'),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
@@ -888,10 +905,6 @@ return apply_filters( 'tainacan-admin-i18n', [
 	'action_delete-attachment'		=> __( 'Deletion of Attachments', 'tainacan'),
 	'action_update-thumbnail'		=> __( 'Thumbnail Updates', 'tainacan'),
 	'action_others'					=> __( 'Other Actions', 'tainacan'),
-	'info_applied_filters'							 => __( 'filters applied', 'tainacan'),
-	'info_items_found'							 	 => __( 'items found', 'tainacan'),
-	'info_applied_filter'							 => __( 'filter applied', 'tainacan'),
-	'info_item_found'							 	 => __( 'item found', 'tainacan'),
 
 	// Datepicker months
 	'datepicker_month_january'			=> __( 'January', 'tainacan' ),

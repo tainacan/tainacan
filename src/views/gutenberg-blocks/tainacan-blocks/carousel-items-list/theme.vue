@@ -1,5 +1,7 @@
 <template>
-    <div :class="className + ' has-mounted'">
+    <div 
+            :style="style"
+            :class="className + ' has-mounted'">
         <div v-if="showCollectionHeader">
             <div
                     v-if="isLoadingCollection"
@@ -7,7 +9,6 @@
                     :style="{ height: '165px' }"/>
             <a
                     v-else
-                    target="_blank"
                     :href="collection.url ? collection.url : ''"
                     class="carousel-items-collection-header">
                 <div
@@ -49,6 +50,7 @@
         <div v-if="!isLoading">
             <div  
                     :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') "
+                    :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
                     v-if="items.length > 0">
                 <swiper 
                         role="list"
@@ -62,11 +64,11 @@
                             ref="myItemSwiperSlide"
                             :key="index"
                             v-for="(item, index) of items"
-                            class="item-list-item">      
+                            class="item-list-item"
+                            :class="{ 'is-forced-square': cropImagesToSquare }">
                         <a 
                                 :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
-                                :href="item.url"
-                                target="_blank">
+                                :href="item.url">
                             <blur-hash-image
                                     :height="$thumbHelper.getHeight(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'))"
                                     :width="$thumbHelper.getWidth(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'))"
@@ -76,9 +78,6 @@
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : $root.__( 'Thumbnail', 'tainacan' ))"
                                     :transition-duration="500" />
                             <span v-if="!hideTitle">{{ item.title ? item.title : '' }}</span>
-                            <div 
-                                    v-if="maxItemsPerScreen <= 4"
-                                    class="swiper-lazy-preloader swiper-lazy-preloader-white"/>
                         </a>
                     </swiper-slide>
                 </swiper>
@@ -91,10 +90,15 @@
                             :width="largeArrows ? 60 : 42"
                             :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
-                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        <path
+                                v-if="arrowsStyle === 'type-2'"
+                                d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z"/>
+                        <path 
+                                v-else
+                                d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                         <path
                                 d="M0 0h24v24H0z"
-                                fill="none"/>                         
+                                fill="none"/>
                     </svg>
                 </button>
                 <button 
@@ -106,10 +110,15 @@
                             :width="largeArrows ? 60 : 42"
                             :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
-                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        <path
+                                v-if="arrowsStyle === 'type-2'"
+                                d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z"/>
+                        <path 
+                                v-else
+                                d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                         <path
                                 d="M0 0h24v24H0z"
-                                fill="none"/>                        
+                                fill="none"/>
                     </svg>
                 </button>
             </div>
@@ -120,11 +129,13 @@
             </div>
             <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
         </div>
-        <div v-else-if="isLoading && !autoPlay && !loopSlides">
-            <div :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') ">
+        <div v-else>
+            <div 
+                    :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
+                    :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') ">
                 <swiper 
                         role="list"
-                        :options="swiperOptions"
+                        :options="{ ...JSON.parse(JSON.stringify(swiperOptions)), autoplay: false, loop: false }"
                         ref="myItemSwiperSkeleton"
                         :style="{
                             marginTop: showCollectionHeader ? '1.35em' : '0px'
@@ -150,10 +161,15 @@
                             :width="largeArrows ? 60 : 42"
                             :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
-                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        <path
+                                v-if="arrowsStyle === 'type-2'"
+                                d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z"/>
+                        <path 
+                                v-else
+                                d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                         <path
                                 d="M0 0h24v24H0z"
-                                fill="none"/>                         
+                                fill="none"/>
                     </svg>
                 </button>
                 <button 
@@ -165,10 +181,15 @@
                             :width="largeArrows ? 60 : 42"
                             :height="largeArrows ? 60 : 42"
                             viewBox="0 0 24 24">
-                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        <path
+                                v-if="arrowsStyle === 'type-2'"
+                                d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z"/>
+                        <path 
+                                v-else
+                                d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
                         <path
                                 d="M0 0h24v24H0z"
-                                fill="none"/>                        
+                                fill="none"/>
                     </svg>
                 </button>
             </div>
@@ -196,8 +217,11 @@ export default {
         loadStrategy: String,
         maxItemsNumber: Number,
         maxItemsPerScreen: Number,
+        spaceBetweenItems: Number,
+        spaceAroundCarousel: Number,
         arrowsPosition: String,
         largeArrows: Boolean,
+        arrowsStyle: String,
         autoPlay: false,
         autoPlaySpeed: Number,
         loopSlides: Boolean,
@@ -209,7 +233,8 @@ export default {
         collectionTextColor: String,
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
-        className: String
+        className: String,
+        style: String
     },
     data() {
         return {
@@ -224,27 +249,28 @@ export default {
             paged: undefined,
             totalItems: 0,
             swiperOptions: {
-                lazy: this.maxItemsPerScreen <= 4,
                 watchOverflow: true,
-                mousewheel: true,
+                mousewheel: {
+                    forceToAxis: true
+                },
                 observer: true,
                 preventInteractionOnTransition: true,
                 allowClick: true,
                 allowTouchMove: true, 
                 slidesPerView: 1,
                 slidesPerGroup: 1,
-                spaceBetween: 32,
+                spaceBetween: this.spaceBetweenItems,
                 slideToClickedSlide: true,
                 navigation: {
                     nextEl: '#' + this.blockId + '-next',
                     prevEl: '#' + this.blockId + '-prev',
                 }, 
                 breakpoints: {
-                    498:  { slidesPerView: 2 }, 
-                    768:  { slidesPerView: 3 },
-                    1024: { slidesPerView: 4 },
-                    1366: { slidesPerView: 5 },
-                    1600: { slidesPerView: 6 }
+                    498:  { slidesPerView: 2, spaceBetween: this.spaceBetweenItems }, 
+                    768:  { slidesPerView: 3, spaceBetween: this.spaceBetweenItems },
+                    1024: { slidesPerView: 4, spaceBetween: this.spaceBetweenItems },
+                    1366: { slidesPerView: 5, spaceBetween: this.spaceBetweenItems },
+                    1600: { slidesPerView: 6, spaceBetween: this.spaceBetweenItems }
                 },
                 autoplay: this.autoPlay ? { delay: this.autoPlaySpeed*1000 } : false,
                 loop: this.loopSlides ? this.loopSlides : false
@@ -264,11 +290,11 @@ export default {
 
         if (!isNaN(this.maxItemsPerScreen) && this.maxItemsPerScreen != 6) {
             this.swiperOptions.breakpoints = {
-                498:  { slidesPerView: this.maxItemsPerScreen - 4 > 0 ? this.maxItemsPerScreen - 4 : 1 }, 
-                768:  { slidesPerView: this.maxItemsPerScreen - 3 > 0 ? this.maxItemsPerScreen - 3 : 1 },
-                1024: { slidesPerView: this.maxItemsPerScreen - 2 > 0 ? this.maxItemsPerScreen - 2 : 1 },
-                1366: { slidesPerView: this.maxItemsPerScreen - 1 > 0 ? this.maxItemsPerScreen - 1 : 1 },
-                1600: { slidesPerView: this.maxItemsPerScreen > 0 ? this.maxItemsPerScreen : 1 },
+                498:  { slidesPerView: this.maxItemsPerScreen - 4 > 0 ? this.maxItemsPerScreen - 4 : 1, spaceBetween: this.spaceBetweenItems }, 
+                768:  { slidesPerView: this.maxItemsPerScreen - 3 > 0 ? this.maxItemsPerScreen - 3 : 1, spaceBetween: this.spaceBetweenItems },
+                1024: { slidesPerView: this.maxItemsPerScreen - 2 > 0 ? this.maxItemsPerScreen - 2 : 1, spaceBetween: this.spaceBetweenItems },
+                1366: { slidesPerView: this.maxItemsPerScreen - 1 > 0 ? this.maxItemsPerScreen - 1 : 1, spaceBetween: this.spaceBetweenItems },
+                1600: { slidesPerView: this.maxItemsPerScreen > 0 ? this.maxItemsPerScreen : 1, spaceBetween: this.spaceBetweenItems },
             }
             this.swiperOptions.slidesPerView = 1;
         }

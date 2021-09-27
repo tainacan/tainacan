@@ -191,7 +191,8 @@
         box-shadow: none; }
   .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item {
     display: flex;
-    align-items: flex-start; }
+    align-items: flex-start;
+    position: relative; }
     .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item button {
       position: absolute !important;
       background-color: rgba(255, 255, 255, 0.75);
@@ -330,7 +331,7 @@
       align-items: center; }
       .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item a,
       .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         border: none;
         font-weight: bold;
         line-height: normal;
@@ -358,9 +359,10 @@
       .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item a.item-without-title > span,
       .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item a.item-without-title > span {
         display: none; }
-      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item:hover a,
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item a, .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid li.item-list-item:hover a,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item a,
       .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid li.item-list-item:hover a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         text-decoration: none; }
   @media only screen and (max-width: 498px) {
     .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid,
@@ -498,7 +500,7 @@
       padding: 12px 12px 24px 12px; }
       .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-list li.item-list-item a,
       .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list li.item-list-item a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         height: auto;
         display: flex;
         align-items: center;
@@ -522,9 +524,10 @@
       .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-list li.item-list-item a.item-without-image img,
       .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list li.item-list-item a.item-without-image img {
         display: none; }
-      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-list li.item-list-item:hover a,
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-list li.item-list-item a, .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-list li.item-list-item:hover a,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list li.item-list-item a,
       .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list li.item-list-item:hover a {
-        color: var(--tainacan-block-gray5, #454647);
+        color: inherit;
         text-decoration: none; }
   .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic,
   .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic {
@@ -564,7 +567,7 @@
           width: 100%;
           height: 100%;
           display: block;
-          color: var(--tainacan-block-gray5, #454647);
+          color: inherit;
           font-weight: bold;
           line-height: normal; }
         .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container li.item-list-item img,
@@ -586,9 +589,10 @@
         .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container li.item-list-item a.item-without-title > span,
         .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container li.item-list-item a.item-without-title > span {
           display: none; }
-        .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container li.item-list-item:hover a,
+        .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container li.item-list-item a, .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container li.item-list-item:hover a,
+        .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container li.item-list-item a,
         .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container li.item-list-item:hover a {
-          color: var(--tainacan-block-gray5, #454647);
+          color: inherit;
           text-decoration: none; }
       .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--1-2x3 li.item-list-item,
       .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--1-2x3 li.item-list-item {
@@ -904,6 +908,72 @@
       .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-5x4 li.item-list-item:nth-of-type(6) {
         grid-row: span 2;
         grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--1-6x2 li.item-list-item,
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--1-6x2 li.item-list-item {
+        grid-row: span 6;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--2-6x2 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--2-6x2 li.item-list-item:nth-of-type(1) {
+        grid-row: span 4;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--2-6x2 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--2-6x2 li.item-list-item:nth-of-type(2) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-6x2 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-6x2 li.item-list-item:nth-of-type(1) {
+        grid-row: span 2;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-6x2 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-6x2 li.item-list-item:nth-of-type(2) {
+        grid-row: span 3;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--3-6x2 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--3-6x2 li.item-list-item:nth-of-type(3) {
+        grid-row: span 1;
+        grid-column: span 2; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-6x2 li.item-list-item:nth-of-type(1), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-6x2 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-6x2 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-6x2 li.item-list-item:nth-of-type(3) {
+        grid-row: span 3;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-6x2 li.item-list-item:nth-of-type(2), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--4-6x2 li.item-list-item:nth-of-type(4),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-6x2 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--4-6x2 li.item-list-item:nth-of-type(4) {
+        grid-row: span 2;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-6x2 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-6x2 li.item-list-item:nth-of-type(1) {
+        grid-row: span 5;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-6x2 li.item-list-item:nth-of-type(3), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-6x2 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-6x2 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-6x2 li.item-list-item:nth-of-type(2) {
+        grid-row: span 4;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-6x2 li.item-list-item:nth-of-type(4),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-6x2 li.item-list-item:nth-of-type(4) {
+        grid-row: span 6;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--5-6x2 li.item-list-item:nth-of-type(5),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--5-6x2 li.item-list-item:nth-of-type(5) {
+        grid-row: span 3;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-6x2 li.item-list-item:nth-of-type(1), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-6x2 li.item-list-item:nth-of-type(2), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-6x2 li.item-list-item:nth-of-type(4), .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-6x2 li.item-list-item:nth-of-type(6),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-6x2 li.item-list-item:nth-of-type(1),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-6x2 li.item-list-item:nth-of-type(2),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-6x2 li.item-list-item:nth-of-type(4),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-6x2 li.item-list-item:nth-of-type(6) {
+        grid-row: span 2;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-6x2 li.item-list-item:nth-of-type(3),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-6x2 li.item-list-item:nth-of-type(3) {
+        grid-row: span 1;
+        grid-column: span 1; }
+      .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container.mosaic-container--6-6x2 li.item-list-item:nth-of-type(5),
+      .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container.mosaic-container--6-6x2 li.item-list-item:nth-of-type(5) {
+        grid-row: span 3;
+        grid-column: span 1; }
   @media only screen and (max-width: 1024px) {
     .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic,
     .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic {
@@ -911,5 +981,9 @@
       .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-mosaic .mosaic-container,
       .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-mosaic .mosaic-container {
         min-width: 240px; } }
+
+.block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-dynamic-items-list li.item-list-item a > span,
+.block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-dynamic-items-list li.item-list-item a:hover > span {
+  color: var(--tainacan-block-gray5, #454647); }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-dynamic-items-list.css.map */

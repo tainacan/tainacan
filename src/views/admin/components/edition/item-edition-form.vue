@@ -142,6 +142,11 @@
                                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
                                     </span>
                                     <span>{{ $i18n.get('metadata') }}</span>
+                                    <span 
+                                            v-if="metadatumList && metadatumList.length"
+                                            class="has-text-gray">
+                                        &nbsp;({{ metadatumList.length }})
+                                    </span>
                                 </template>
 
                                 <div class="sub-header">
@@ -494,35 +499,37 @@
                                         </a>
                                         <a
                                                 v-if="item.thumbnail && item.thumbnail.thumbnail != undefined && item.thumbnail.thumbnail != false"
+                                                id="button-alt-text-thumbnail"
+                                                class="button is-rounded is-secondary"
+                                                :aria-label="$i18n.get('label_button_delete_thumb')"
+                                                @click="isThumbnailAltTextModalActive = true">
+                                            <span
+                                                    v-tooltip="{
+                                                        content: $i18n.get('label_thumbnail_alt'),
+                                                        autoHide: true,
+                                                        placement: 'bottom'
+                                                    }"
+                                                    class="icon">
+                                                <i class="tainacan-icon tainacan-icon-text"/>
+                                            </span>
+                                        </a>
+                                        <a
+                                                v-if="item.thumbnail && item.thumbnail.thumbnail != undefined && item.thumbnail.thumbnail != false"
                                                 id="button-delete-thumbnail"
                                                 class="button is-rounded is-secondary"
                                                 :aria-label="$i18n.get('label_button_delete_thumb')"
                                                 @click="deleteThumbnail()">
-                                        <span
-                                                v-tooltip="{
-                                                    content: $i18n.get('delete'),
-                                                    autoHide: true,
-                                                    placement: 'bottom'
-                                                }"
-                                                class="icon">
-                                            <i class="tainacan-icon tainacan-icon-delete"/>
-                                        </span>
+                                            <span
+                                                    v-tooltip="{
+                                                        content: $i18n.get('delete'),
+                                                        autoHide: true,
+                                                        placement: 'bottom'
+                                                    }"
+                                                    class="icon">
+                                                <i class="tainacan-icon tainacan-icon-delete"/>
+                                            </span>
                                         </a>
                                     </div>
-                                </div>
-                                <div 
-                                        v-if="form.thumbnail_id"
-                                        class="thumbnail-alt-input">
-                                    <label class="label">{{ $i18n.get('label_thumbnail_alt') }}</label>
-                                    <help-button
-                                            :title="$i18n.get('label_thumbnail_alt')"
-                                            :message="$i18n.get('info_thumbnail_alt')"/>
-                                    <b-input
-                                            type="textarea" 
-                                            lazy
-                                            :placeholder="$i18n.get('instruction_thumbnail_alt')"
-                                            :value="form.thumbnail_alt ? form.thumbnail_alt : ''"
-                                            @input="onUpdateThumbnailAlt" />
                                 </div>
                             </div>
 
@@ -538,6 +545,44 @@
                             </template>
 
                         </div>
+
+                        <!-- Thumbnail Alternative Text Modal ----------------- -->
+                        <b-modal
+                                :can-cancel="false"
+                                :active.sync="isThumbnailAltTextModalActive"
+                                :width="640"
+                                scroll="keep"
+                                trap-focus
+                                aria-modal
+                                aria-role="dialog"
+                                custom-class="tainacan-modal">
+                            <div class="tainacan-modal-content">
+                                <div class="tainacan-modal-title">
+                                    <h2>{{ $i18n.get('label_thumbnail_alt') }}</h2>
+                                    <hr>
+                                </div>
+                                <b-input
+                                        type="textarea"
+                                        lazy
+                                        :placeholder="$i18n.get('instruction_thumbnail_alt')"
+                                        :value="form.thumbnail_alt ? form.thumbnail_alt : ''"
+                                        @input="onUpdateThumbnailAlt" />
+                                <p>{{ $i18n.get('info_thumbnail_alt') }}</p>
+
+                                <div class="field is-grouped form-submit">
+                                    <div 
+                                            style="margin-left: auto;"
+                                            class="control">
+                                        <button
+                                                id="button-submit-text-content-writing"
+                                                type="submit"
+                                                @click.prevent="isThumbnailAltTextModalActive = false"
+                                                class="button is-success">
+                                            {{ $i18n.get('finish') }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </b-modal>
 
                         <!-- Text Insert Modal ----------------- -->
                         <b-modal
@@ -583,7 +628,7 @@
                         <b-modal
                                 :can-cancel="false"
                                 :active.sync="isURLModalActive"
-                                :width="640"
+                                :width="860"
                                 scroll="keep"
                                 trap-focus
                                 role="dialog"
@@ -596,7 +641,46 @@
                                     <h2>{{ $i18n.get('instruction_insert_url') }}</h2>
                                     <hr>
                                 </div>
-                                <b-input v-model="urlLink"/>
+                                <b-input 
+                                        type="url"
+                                        v-model="urlLink" />
+                                <br>
+                                <b-field
+                                        :addons="false"
+                                        :label="$i18n.get('label_document_option_forced_iframe')">
+                                        &nbsp;
+                                    <b-switch
+                                            size="is-small" 
+                                            v-model="urlForcedIframe" />
+                                    <help-button
+                                            :title="$i18n.get('label_document_option_forced_iframe')"
+                                            :message="$i18n.get('info_document_option_forced_iframe')" />
+                                </b-field>
+                                <b-field 
+                                        v-if="urlForcedIframe"
+                                        grouped>
+                                    <b-field :label="$i18n.get('label_document_option_iframe_width')">
+                                        <b-numberinput
+                                                :aria-minus-label="$i18n.get('label_decrease')"
+                                                :aria-plus-label="$i18n.get('label_increase')"
+                                                min="1" 
+                                                v-model="urlIframeWidth"
+                                                step="1" />
+                                    </b-field>
+                                    <b-field :label="$i18n.get('label_document_option_iframe_height')">
+                                        <b-numberinput
+                                                :aria-minus-label="$i18n.get('label_decrease')"
+                                                :aria-plus-label="$i18n.get('label_increase')"
+                                                min="1" 
+                                                v-model="urlIframeHeight"
+                                                step="1" />
+                                    </b-field>
+                                </b-field>
+                                <p 
+                                        v-if="urlForcedIframe"
+                                        class="help">
+                                    {{ $i18n.get('info_iframe_dimensions') }}
+                                </p>
 
                                 <div class="field is-grouped form-submit">
                                     <div class="control">
@@ -921,6 +1005,10 @@ export default {
             activeTab: 0,
             isLoadingAttachments: false,
             metadataNameFilterString: '',
+            isThumbnailAltTextModalActive: false,
+            urlForcedIframe: false,
+            urlIframeWidth: 600,
+            urlIframeHeight: 450
         }
     },
     computed: {
@@ -1174,10 +1262,8 @@ export default {
 
                 } else {
                     parent.postMessage({ 
-                        type: 'itemCreationMessage',
-                        itemId: this.item.id,
-                        itemTitle: this.item.title,
-                        itemThumbnail: this.item.thumbnail
+                        type: 'itemEditionMessage',
+                        item: this.item
                     },
                     tainacan_plugin.admin_url);
                 }
@@ -1206,10 +1292,8 @@ export default {
                 this.$router.go(-1);
             else
                 parent.postMessage({ 
-                        type: 'itemCreationMessage',
-                        itemId: null,
-                        itemTitle: null,
-                        itemThumbnail: null
+                        type: 'itemEditionMessage',
+                        item: null
                     },
                     tainacan_plugin.admin_url);
 
@@ -1343,7 +1427,17 @@ export default {
             this.isURLModalActive = false;
             this.form.document_type = 'url';
             this.form.document = this.urlLink;
-            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
+            this.form.document_options = {
+                forced_iframe: this.urlForcedIframe,
+                forced_iframe_width: this.urlIframeWidth,
+                forced_iframe_height: this.urlIframeHeight
+            }
+            this.updateItemDocument({
+                    item_id: this.itemId,
+                    document: this.form.document,
+                    document_type: this.form.document_type,
+                    document_options: this.form.document_options
+                })
                 .then(item => {
                     this.item.document_as_html = item.document_as_html;
                     this.item.document_mimetype = item.document_mimetype;
@@ -1370,6 +1464,9 @@ export default {
         cancelURLSelection() {
             this.isURLModalActive = false;
             this.urlLink = '';
+            this.urlForcedIframe = this.form.document_options && this.form.document_options['forced_iframe'] !== undefined ? this.form.document_options['forced_iframe'] : false;
+            this.urlIframeWidth = this.form.document_options && this.form.document_options['forced_iframe_width'] !== undefined ? this.form.document_options['forced_iframe_width'] : 600;
+            this.urlIframeHeight = this.form.document_options && this.form.document_options['forced_iframe_height'] !== undefined ? this.form.document_options['forced_iframe_height'] : 450;
         },
         removeDocument() {
             this.textContent = '';
@@ -1580,7 +1677,7 @@ export default {
             this.fetchItem({
                 itemId: this.itemId,
                 contextEdit: true,
-                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html,related_items'
+                fetchOnly: 'title,thumbnail,status,modification_date,document_type,document,comment_status,document_as_html,document_options,related_items'
             })
             .then((resp) => {
                 resp.request.then((res) => {
@@ -1616,6 +1713,7 @@ export default {
                     this.form.status = this.item.status;
                     this.form.document = this.item.document;
                     this.form.document_type = this.item.document_type;
+                    this.form.document_options = this.item.document_options;
                     this.form.comment_status = this.item.comment_status;
                     this.form.thumbnail_id = this.item.thumbnail_id;
                     this.form.thumbnail_alt = this.item.thumbnail_alt;
@@ -1624,6 +1722,13 @@ export default {
                         this.urlLink = this.form.document;
                     if (this.form.document_type != undefined && this.form.document_type == 'text')
                         this.textContent = this.form.document;
+
+                    if (this.form.document_options !== undefined && this.form.document_options['forced_iframe'] !== undefined)
+                        this.urlForcedIframe = this.form.document_options['forced_iframe'];
+                    if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_width'] !== undefined)
+                        this.urlIframeWidth = this.form.document_options['forced_iframe_width'];
+                    if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_height'] !== undefined)
+                        this.urlIframeHeight = this.form.document_options['forced_iframe_height'];
 
                     if (this.item.status == 'publish' || this.item.status == 'private')
                         this.visibility = this.item.status;
@@ -1736,56 +1841,94 @@ export default {
                 background-color: var(--tainacan-secondary);
                 width: 100%;
             }
+
+            @media screen and (max-width: 769px) {
+                padding: 0 0.5em;
+            }
         }
 
         .tainacan-form > .columns {
             margin-left: var(--tainacan-one-column);
             margin-right: var(--tainacan-one-column);
-        }
 
-        .column.is-5 {
-            padding-left: var(--tainacan-one-column);
-            padding-right: var(--tainacan-one-column);
+            .column.is-5 {
+                padding-left: var(--tainacan-one-column);
+                padding-right: var(--tainacan-one-column);
 
-            .sticky-container {
-                position: relative;
-                position: sticky;
-                top: -25px;
-                margin: 3px 0;
-                max-height: calc(100vh - 202px);
-                overflow-y: auto;
-                overflow-x: hidden;
+                .sticky-container {
+                    position: relative;
+                    position: sticky;
+                    top: -25px;
+                    margin: 3px 0;
+                    max-height: calc(100vh - 202px);
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                }
             }
+            .column.is-7 {
+                padding-left: var(--tainacan-one-column);
+                padding-right: 0;
 
-            @media screen and (max-width: 769px) {
-                max-width: 100%;
-            }
-        }
-        .column.is-7 {
-            padding-left: var(--tainacan-one-column);
-            padding-right: 0;
+                .columns {
+                    flex-wrap: wrap;
+                    justify-content: space-between;
 
-            .columns {
-                flex-wrap: wrap;
-                justify-content: space-between;
+                    .column {
+                        padding: 1em 12px 0 12px;
+                    }
+                }
 
-                .column {
-                    padding: 1em 12px 0 12px;
+                .field {
+                    padding: 12px 0px 12px 60px;
+                }
+                .tab-item>.field:last-child {
+                    margin-bottom: 187px;
+                }
+
+                @media screen and (max-width: 769px) {
+                    padding-right: var(--tainacan-one-column);
+                    max-width: 100%;
                 }
             }
 
-            .field {
-                padding: 12px 0px 12px 60px;
-            }
-            .tab-item>.field:last-child {
-                margin-bottom: 187px;
-            }
-
             @media screen and (max-width: 769px) {
-                padding-right: var(--tainacan-one-column);
-                max-width: 100%;
+                margin-left: 0;
+                margin-right: 0;
+                display: flex;
+                flex-direction: column-reverse;
+
+                &>.column.is-7 {
+                    padding-left: 0;
+                    padding-right: 0;
+                    max-width: 100%;
+                    widows: 100%;
+
+                    .field {
+                        padding-left: 16px;
+                        
+                        /deep/ .label {
+                            margin-left: 0;
+                        }
+                        /deep/ .collapse-handle {
+                            margin-left: -24px;
+                        }
+                    }
+                    .tab-item>.field:last-child {
+                        margin-bottom: 24px;
+                    }
+                    &>.columns {
+                        display: flex;
+                    }
+                }
+                &>.column.is-5 {
+                    max-width: 100%;
+                    widows: 100%;
+                    padding-left: 0.5em;
+                    padding-right: 0.5em;
+                }
             }
         }
+
         .b-tabs {
             overflow: hidden !important;
         }
@@ -1819,10 +1962,9 @@ export default {
     }
 
     .section-box {
-        background-color: var(--tainacan-background-color);
         padding: 0 var(--tainacan-one-column) 0 0;
         margin-top: 12px;
-        margin-bottom: 18px;
+        margin-bottom: 16px;
 
         ul {
             display: flex;
@@ -1881,8 +2023,8 @@ export default {
     #button-edit-thumbnail,
     #button-edit-document,
     #button-delete-thumbnail,
+    #button-alt-text-thumbnail,
     #button-delete-document {
-
         border-radius: 100px !important;
         max-height: 2.125em !important;
         max-width: 2.125em !important;
@@ -1890,7 +2032,7 @@ export default {
         min-width: 2.125em !important;
         padding: 0 !important;
         z-index: 99;
-        margin-left: 12px !important;
+        margin-left: 6px !important;
 
         .icon {
             display: inherit;
@@ -1926,7 +2068,7 @@ export default {
 
         .thumbnail-buttons-row {
             position: relative;
-            left: 61px;
+            left: 33px;
             bottom: 1.25em;
         }
 
@@ -2031,6 +2173,27 @@ export default {
             &:active {
                 background-color: transparent !important;
                 color: var(--tainacan-secondary) !important;
+            }
+        }
+
+        @media screen and (max-width: 769px) {
+            padding: 16px 0.5em;
+            flex-wrap: wrap;
+            height: auto;
+
+            .update-info-section {
+                margin-left: auto;
+                margin-bottom: 0.5em;
+            }
+            .form-submission-footer {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+
+                .button {
+                    margin-left: 2px;
+                    margin-right: 2px;
+                }
             }
         }
     }

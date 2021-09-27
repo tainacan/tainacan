@@ -1,6 +1,7 @@
 {
     "name": "tainacan/facets-list",
     "title": "Tainacan Facets List",
+    "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "facets", "search", "terms" ],
     "description": "List facets from a Tainacan Collection or Repository",
@@ -131,6 +132,10 @@
         "isLoadingChildTerms": {
             "type": "Number",
             "default": null
+        },
+        "itemsCountStyle": {
+            "type": "String",
+            "default": "default"
         }
     },
     "supports": {
@@ -138,6 +143,12 @@
         "html": false,
         "typography": {
             "fontSize": true
+        },
+        "color": {
+            "text": true,
+            "background": false,
+            "gradients": false,
+            "link": true
         }
     },
     "editorScript": "facets-list",

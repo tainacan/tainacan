@@ -36,7 +36,7 @@
             width: 185px;
 
             a { 
-                color: var(--tainacan-block-gray5, $gray5); 
+                color: inherit; 
                 border: none;
                 font-weight: bold;
                 line-height: normal;
@@ -54,8 +54,9 @@
                 display: none;
             }
 
+            a,
             &:hover a { 
-                color: var(--tainacan-block-gray5, $gray5); 
+                color: inherit; 
                 text-decoration: none;
             }
         }
@@ -129,7 +130,7 @@
             width: calc(20% - 24px);
 
             a { 
-                color: var(--tainacan-block-gray5, $gray5); 
+                color: inherit; 
                 height: auto;
                 display: flex;
                 align-items: center;
@@ -149,8 +150,9 @@
                 display: none;
             }
 
+            a,
             &:hover a { 
-                color: var(--tainacan-block-gray5, $gray5); 
+                color: inherit; 
                 text-decoration: none;
             }
 
@@ -175,5 +177,12 @@
             }
         }
     }
-
+}
+.block-editor-block-list__block:not(.has-text-color)>.wp-block-tainacan-terms-list {
+    li.term-list-item {
+        a>span,
+        a:hover>span {
+            color: inherit;
+        }
+    }
 }

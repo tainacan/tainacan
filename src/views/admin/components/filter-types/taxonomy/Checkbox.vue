@@ -55,7 +55,8 @@
                     :taxonomy="taxonomy"
                     :collection-id="collectionId"
                     :is-taxonomy="true"
-                    :query="query" />
+                    :query="query"
+                    :current-collection-id="currentCollectionId" />
         </template>
     </div>
 </template>
@@ -284,7 +285,7 @@
                         //     });
                     }
                 }
-                this.$emit('sendValuesToTags', { label: onlyLabels, taxonomy: this.taxonomy, value: this.selected });
+                this.$emit('sendValuesToTags', { label: onlyLabels, taxonomy: this.taxonomy, value: this.selected, metadatumName: this.metadatumName });
             },
             onSelect() {
                 
