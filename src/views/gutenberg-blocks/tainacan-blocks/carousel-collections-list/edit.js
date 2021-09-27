@@ -20,8 +20,11 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         itemsRequestSource,
         selectedCollections,
         largeArrows,
+        arrowsStyle,
         cropImagesToSquare,
         maxCollectionsPerScreen,
+        spaceBetweenCollections,
+        spaceAroundCarousel,
         isLoading,
         arrowsPosition,
         autoPlay,
@@ -33,7 +36,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
 
     // Gets blocks props from hook
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
-    console.log(blockProps)
+    
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
 
@@ -67,8 +70,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                 }
                 <a 
                     id={ isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id }
-                    href={ collection.url } 
-                    target="_blank">
+                    href={ collection.url }>
                     { !showCollectionThumbnail ? 
                         <div class="collection-items-grid">
                             <img 
@@ -276,6 +278,16 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                         }
                                     />
                             : null }
+                            <RangeControl
+                                    label={ __('Space between each collection', 'tainacan') }
+                                    value={ !isNaN(spaceBetweenCollections) ? spaceBetweenCollections : 32 }
+                                    onChange={ ( aSpaceBetweenCollections ) => {
+                                        spaceBetweenCollections = aSpaceBetweenCollections;
+                                        setAttributes( { spaceBetweenCollections: aSpaceBetweenCollections } );
+                                    }}
+                                    min={ 0 }
+                                    max={ 98 }
+                                />
                             <ToggleControl
                                     label={__('Hide name', 'tainacan')}
                                     help={ !hideName ? __('Toggle to hide collection\'s name', 'tainacan') : __('Do not hide collection\'s name', 'tainacan')}
@@ -331,8 +343,18 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                 ] }
                                 onChange={ ( aPosition ) => { 
                                     arrowsPosition = aPosition;
-
                                     setAttributes({ arrowsPosition: arrowsPosition }); 
+                                }}/>
+                            <SelectControl
+                                label={__('Arrows icon style', 'tainacan')}
+                                value={ arrowsStyle }
+                                options={ [
+                                    { label: __('Default', 'tainacan'), value: 'type-1' },
+                                    { label: __('Alternative', 'tainacan'), value: 'type-2' }
+                                ] }
+                                onChange={ ( aStyle ) => { 
+                                    arrowsStyle = aStyle;
+                                    setAttributes({ arrowsStyle: arrowsStyle }); 
                                 }}/>
                             <ToggleControl
                                 label={__('Large arrows', 'tainacan')}
@@ -343,7 +365,17 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                         setAttributes({ largeArrows: largeArrows });
                                     } 
                                 }
-                            />                       
+                            />
+                            <RangeControl
+                                    label={ __('Space around the carousel', 'tainacan') }
+                                    value={ !isNaN(spaceAroundCarousel) ? spaceAroundCarousel : 50 }
+                                    onChange={ ( aSpaceAroundCarousel ) => {
+                                        spaceAroundCarousel = aSpaceAroundCarousel;
+                                        setAttributes( { spaceAroundCarousel: aSpaceAroundCarousel } );
+                                    }}
+                                    min={ 0 }
+                                    max={ 200 }
+                                />
                     </PanelBody>
                 </InspectorControls>
             </div>
@@ -410,7 +442,11 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                     }
                     {  collections.length ? ( 
                         <div
-                                className={'collections-list-edit-container ' + (arrowsPosition ? 'has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }>
+                                className={'collections-list-edit-container ' + (arrowsPosition ? 'has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }
+                                style={{
+                                    '--spaceBetweenCollections': !isNaN(spaceBetweenCollections) ? (spaceBetweenCollections + 'px') : '32px',
+                                    '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px'
+                                }}>
                             <button 
                                     class="swiper-button-prev" 
                                     slot="button-prev"
@@ -419,10 +455,15 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                         width={ largeArrows ? 60 : 42 }
                                         height={ largeArrows ? 60 : 42 }
                                         viewBox="0 0 24 24">
-                                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                    {
+                                        arrowsStyle === 'type-2' ?
+                                            <path d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z"/>
+                                            :
+                                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                    }
                                     <path
                                             d="M0 0h24v24H0z"
-                                            fill="none"/>                         
+                                            fill="none"/>
                                 </svg>
                             </button>
                             <ul className={'collections-list-edit'}>
@@ -436,10 +477,15 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                         width={ largeArrows ? 60 : 42 }
                                         height={ largeArrows ? 60 : 42 }
                                         viewBox="0 0 24 24">
-                                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                    {
+                                        arrowsStyle === 'type-2' ?
+                                            <path d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z"/>
+                                            :
+                                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                    }
                                     <path
                                             d="M0 0h24v24H0z"
-                                            fill="none"/>                        
+                                            fill="none"/>
                                 </svg>
                             </button>
                         </div>

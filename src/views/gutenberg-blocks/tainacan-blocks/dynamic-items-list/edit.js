@@ -95,13 +95,14 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
                     href={ item.url } 
                     onClick={ (event) => event.preventDefault() }
-                    target="_blank"
                     className={ (!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '') }>
                     <img
                         src={ thumbHelper.getSrc(item['thumbnail'], ( (layout == 'list' || cropImagesToSquare) ? 'tainacan-medium' : 'tainacan-medium-full'), item['document_mimetype']) }
                         srcSet={ thumbHelper.getSrcSet(item['thumbnail'], ( (layout == 'list' || cropImagesToSquare) ? 'tainacan-medium' : 'tainacan-medium-full'), item['document_mimetype']) }
                         alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : __( 'Thumbnail', 'tainacan' )) }/>
-                    <span>{ item.title ? item.title : '' }</span>
+                    { item.title ?
+                        <span>{ item.title }</span>
+                    : null }
                 </a>
             </li>
         );
@@ -759,7 +760,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     { label: '4 x 3', value: '4x3' },
                                     { label: '4 x 5', value: '4x5' },
                                     { label: '5 x 4', value: '5x4' },
-                                    { label: '6 x 5', value: '6x5' },
+                                    { label: '6 x 2', value: '6x2' }
                                 ] }
                                 onChange={ ( aGrid ) => { 
                                     mosaicGridRows = aGrid.split('x')[0];
@@ -848,7 +849,6 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         :
                         <a
                                 href={ collection.url ? collection.url : '' }
-                                target="_blank"
                                 class="dynamic-items-collection-header">
                             <div
                                     style={{

@@ -31,9 +31,8 @@
                 :is-checkbox="getComponent == 'tainacan-taxonomy-checkbox'"
                 @input="(selected) => valueComponent = selected"
             />
-            
         <div 
-                v-if="displayCreateNewTerm && !isTermCreationPanelOpen"
+                v-if="displayCreateNewTerm && !isTermCreationPanelOpen && (maxMultipleValues !== undefined ? (maxMultipleValues > valueComponent.length) : true)"
                 class="add-new-term">
             <a
                     @click="openTermCreationModal"

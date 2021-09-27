@@ -7,9 +7,12 @@ export default function ({ attributes, className }) {
         selectedCollections,
         arrowsPosition,
         largeArrows,
+        arrowsStyle,
         cropImagesToSquare,
         maxCollectionsPerScreen,
         maxCollectionsNumber,
+        spaceBetweenCollections,
+        spaceAroundCarousel,
         autoPlay,
         autoPlaySpeed,
         loopSlides,
@@ -29,9 +32,12 @@ export default function ({ attributes, className }) {
                 loop-slides={ '' + loopSlides }
                 hide-name={ '' + hideName }
                 large-arrows={ '' + largeArrows }
+                arrows-style={ arrowsStyle }
                 crop-images-to-square={ '' + cropImagesToSquare }
                 max-collections-number={ maxCollectionsNumber }
                 max-collections-per-screen={ maxCollectionsPerScreen }
+                space-between-collections={ spaceBetweenCollections }
+                space-around-carousel={ spaceAroundCarousel }
                 tainacan-api-root={ tainacan_blocks.root }
                 tainacan-base-url={ tainacan_blocks.base_url }
                 show-collection-thumbnail={ '' + showCollectionThumbnail }

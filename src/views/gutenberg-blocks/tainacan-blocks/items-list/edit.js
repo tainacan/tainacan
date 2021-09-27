@@ -43,8 +43,7 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                 }
                 <a 
                     id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
-                    href={ item.url } 
-                    target="_blank"
+                    href={ item.url }
                     className={ (!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '') }>
                     <img
                         src={ item.thumbnail && item.thumbnail[0] && item.thumbnail[0].src ? item.thumbnail[0].src : `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`}

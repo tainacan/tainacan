@@ -39,8 +39,8 @@
                 class="filter-tags-list"
                 v-if="filtersAsModal && hasFiltered" />
 
-        <br>
-        <div            
+        <br v-if="filtersAsModal && hasFiltered">
+        <div
                 v-if="!isLoadingFilters &&
                     ((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
                 class="filters-components-list">
@@ -93,7 +93,7 @@
                             v-if="taxonomyFilter.length <= 0">
                         {{ $i18n.get('info_there_is_no_filter') }}    
                     </p> -->
-                    <hr v-if="taxonomyFilter.length > 0">
+                    <hr v-if="taxonomyFilter.length > 1">
                 </div>
                 <div 
                         v-if="key != 'repository-filters'"
@@ -141,7 +141,7 @@
                             v-if="taxonomyFilter.length <= 0">
                         {{ $i18n.get('info_there_is_no_filter') }}    
                     </p> -->
-                    <hr v-if="taxonomyFilter.length > 0">
+                    <hr v-if="taxonomyFilter.length > 1">
                 </div>
             </template>
 
@@ -193,7 +193,7 @@
                             v-if="taxonomyFilter.length <= 0">
                         {{ $i18n.get('info_there_is_no_filter') }}    
                     </p> -->
-                    <hr v-if="repositoryCollectionFilters.length > 0">
+                    <hr v-if="repositoryCollectionFilters.length > 1">
                 </div>
                 <div 
                         v-if="key != 'repository-filters'"
@@ -241,7 +241,7 @@
                             v-if="taxonomyFilter.length <= 0">
                         {{ $i18n.get('info_there_is_no_filter') }}    
                     </p> -->
-                    <hr v-if="repositoryCollectionFilters.length > 0">
+                    <hr v-if="repositoryCollectionFilters.length > 1">
                 </div>
             </template>
 

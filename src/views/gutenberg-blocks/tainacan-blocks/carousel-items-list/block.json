@@ -49,6 +49,14 @@
             "type": "Number",
             "value": 7
         },
+        "spaceBetweenItems": {
+            "type": "Number",
+            "value": 32
+        },
+        "spaceAroundCarousel": {
+            "type": "Number",
+            "value": 50
+        },
         "isLoading": {
             "type": "Boolean",
             "value": false
@@ -68,6 +76,10 @@
         "largeArrows": {
             "type": "Boolean",
             "value": false
+        },
+        "arrowsStyle": {
+            "type": "String",
+            "value": "type-1"
         },
         "autoPlay": {
             "type": "Boolean",

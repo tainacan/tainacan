@@ -7,8 +7,11 @@ export default function({ attributes, className }) {
         selectedTerms,
         arrowsPosition,
         largeArrows,
+        arrowsStyle,
         maxTermsPerScreen,
         maxTermsNumber,
+        spaceBetweenTerms,
+        spaceAroundCarousel,
         autoPlay,
         autoPlaySpeed,
         loopSlides,
@@ -29,8 +32,11 @@ export default function({ attributes, className }) {
                 loop-slides={ '' + loopSlides }
                 hide-name={ '' + hideName }
                 large-arrows={ '' + largeArrows }
+                arrows-style={ arrowsStyle }
                 max-terms-number={ maxTermsNumber }
                 max-terms-per-screen={ maxTermsPerScreen }
+                space-between-terms={ spaceBetweenTerms }
+                space-around-carousel={ spaceAroundCarousel }
                 taxonomy-id={ taxonomyId }
                 tainacan-api-root={ tainacan_blocks.root }
                 tainacan-base-url={ tainacan_blocks.base_url }
