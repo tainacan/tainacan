@@ -221,6 +221,21 @@
                                                 show: 500,
                                                 hide: 300,
                                             },
+                                            content: $i18n.get('label_delete_process'),
+                                            autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                            placement: 'auto-start'
+                                        }"
+                                    v-if=" bgProcess.status === 'waiting' "
+                                    class="icon has-text-gray"
+                                    @click.prevent.stop="deleteOneProcess(index)">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                            </span>
+                            <span
+                                    v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
                                             content: $i18n.get('label_process_failed'),
                                             autoHide: false, classes: ['tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
@@ -386,38 +401,17 @@
                 for (let i = 0; i < this.selected.length; i++) 
                     this.selected.splice(i, 1, !this.allOnPageSelected);
             },
-            deleteOneProcess(processId) {
+            deleteOneProcess(index) {
                 this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
                     props: {
                         icon: 'alert',
                         title: this.$i18n.get('label_warning'),
-                        message: this.$i18n.get('info_warning_Process_delete'),
+                        message: this.$i18n.get('info_warning_process_delete'),
                         onConfirm: () => {
-                            this.deleteProcess({ processId: processId })
-                                .then(() => {
-                                    // this.$buefy.toast.open({
-                                    //     duration: 3000,
-                                    //     message: this.$i18n.get('info_taxonomy_deleted'),
-                                    //     position: 'is-bottom',
-                                    //     type: 'is-secondary',
-                                    //     queue: true
-                                    // });
-                                    for (let i = 0; i < this.selected.length; i++) {
-                                        if (this.selected[i].id === this.taxonomyId)
-                                            this.selected.splice(i, 1);
-                                    }
-                                })
-                                .catch(() => {
-                                    // this.$buefy.toast.open({
-                                    //     duration: 3000,
-                                    //     message: this.$i18n.get('info_error_deleting_taxonomy'),
-                                    //     position: 'is-bottom',
-                                    //     type: 'is-danger',
-                                    //     queue: true
-                                    // });
-                                });
+                            const processId = this.processes[index].ID;
+                            this.deleteProcess(processId);
                         }
                     },
                     trapFocus: true,
