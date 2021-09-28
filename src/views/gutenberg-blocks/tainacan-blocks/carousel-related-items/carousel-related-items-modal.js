@@ -203,7 +203,7 @@ export default class CarouselRelatedItemsModal extends React.Component {
                 title={ __('Select one item that has relations', 'tainacan') }
                 onRequestClose={ () => this.cancelSelection() }
                 shouldCloseOnClickOutside={ false }
-                contentLabel={ __('Select onte item that has relations', 'tainacan') }>
+                contentLabel={ __('Select one item that has relations', 'tainacan') }>
                 <iframe
                         id="itemsFrame"
                         src={ this.state.searchURL } />

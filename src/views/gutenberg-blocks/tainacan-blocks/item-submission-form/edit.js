@@ -351,8 +351,8 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                             />
 
                             <ToggleControl
-                                label={__('Help info bellow label', 'tainacan')}
-                                help={ helpInfoBellowLabel ? __('Show the help info bellow the label instead of hidden in the "?" icon on the help tooltip.', 'tainacan') : __('Do not show the help info bellow the label, keep it on the "?" icon toolip.', 'tainacan')}
+                                label={__('Help info below label', 'tainacan')}
+                                help={ helpInfoBellowLabel ? __('Show the help info below the label instead of hidden in the "?" icon on the help tooltip.', 'tainacan') : __('Do not show the help info below the label, keep it on the "?" icon toolip.', 'tainacan')}
                                 checked={ helpInfoBellowLabel }
                                 onChange={ ( isChecked ) => {
                                         helpInfoBellowLabel = isChecked;
