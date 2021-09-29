@@ -972,6 +972,10 @@ class REST_Items_Controller extends REST_Controller {
 		try {
 			$item['status'] = 'auto-draft';
 			$item = $this->prepare_item_for_database( [ $item, $collection_id ] );
+			$data = apply_filters('tainacan-submission-item-data', $item, $metadata);
+			if ( \is_null($data) === false ) {
+				$item = $data;
+			}
 
 			if ( $item->validate() ) {
 				$item = $this->items_repository->insert( $item );
