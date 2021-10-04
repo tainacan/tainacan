@@ -14,7 +14,7 @@ sass -E 'UTF-8' --cache-location .tmp/sass-cache-2 src/views/roles/tainacan-role
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-3 src/views/reports/tainacan-reports.scss:src/assets/css/tainacan-reports.css
 
-sass -E 'UTF-8' --cache-location .tmp/sass-cache-4 src/views/media-component/media-component.scss:src/assets/css/media-component.css
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-4 src/views/gutenberg-blocks/tainacan-blocks/item-gallery/style.scss:src/assets/css/tainacan-gutenberg-block-item-gallery.css
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-5 src/views/gutenberg-blocks/tainacan-blocks/collections-list/style.scss:src/assets/css/tainacan-gutenberg-block-collections-list.css
 

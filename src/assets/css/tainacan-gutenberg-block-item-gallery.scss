@@ -1,0 +1,56 @@
+/*
+Error: File to import not found or unreadable: ../../../node_modules/photoswipe/src/css/main.scss.
+        on line 11 of src/views/gutenberg-blocks/tainacan-blocks/item-gallery/style.scss
+
+6: $pswp__root-z-index: 9999999 !default;
+7: $pswp__assets-path: '../images/' !default; // path to skin assets folder (preloader, PNG and SVG sprite)
+8: $pswp__error-text-color: #CCC !default; // "Image not loaded" text color
+9: $pswp__include-minimal-style: true !default;
+10: 
+11: @import '../../../node_modules/photoswipe/src/css/main.scss';
+12: @import '../../../node_modules/photoswipe/src/css/default-skin/default-skin.scss';
+13: 
+14: .tainacan-media-component {
+15:     --swiper-theme-color: var(--tainacan-secondary, #298596);
+16:     --swiper-navigation-size: 44px;
+
+Backtrace:
+src/views/gutenberg-blocks/tainacan-blocks/item-gallery/style.scss:11
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/import_node.rb:67:in `rescue in import'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/import_node.rb:45:in `import'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/import_node.rb:28:in `imported_file'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/import_node.rb:37:in `css_import?'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:310:in `visit_import'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/visitors/base.rb:36:in `visit'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/stack.rb:79:in `block in with_base'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/stack.rb:135:in `with_frame'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/stack.rb:79:in `with_base'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:158:in `visit'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/visitors/base.rb:52:in `block in visit_children'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/visitors/base.rb:52:in `map'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/visitors/base.rb:52:in `visit_children'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:167:in `block in visit_children'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:179:in `with_environment'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:166:in `visit_children'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/visitors/base.rb:36:in `block in visit'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:186:in `visit_root'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/visitors/base.rb:36:in `visit'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:157:in `visit'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/visitors/perform.rb:10:in `visit'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/root_node.rb:36:in `css_tree'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/tree/root_node.rb:29:in `render_with_sourcemap'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/engine.rb:389:in `_render_with_sourcemap'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/engine.rb:307:in `render_with_sourcemap'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/exec/sass_scss.rb:387:in `run'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/exec/sass_scss.rb:63:in `process_result'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/exec/base.rb:50:in `parse'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/lib/sass/exec/base.rb:18:in `parse!'
+/var/lib/gems/2.3.0/gems/sass-3.7.4/bin/sass:13:in `<top (required)>'
+/usr/local/bin/sass:22:in `load'
+/usr/local/bin/sass:22:in `<main>'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Error: File to import not found or unreadable: ../../../node_modules/photoswipe/src/css/main.scss.\A         on line 11 of src/views/gutenberg-blocks/tainacan-blocks/item-gallery/style.scss\A \A 6: $pswp__root-z-index: 9999999 !default;\A 7: $pswp__assets-path: '../images/' !default; // path to skin assets folder (preloader, PNG and SVG sprite)\A 8: $pswp__error-text-color: #CCC !default; // \"Image not loaded\" text color\A 9: $pswp__include-minimal-style: true !default;\A 10: \A 11: @import '../../../node_modules/photoswipe/src/css/main.scss';\A 12: @import '../../../node_modules/photoswipe/src/css/default-skin/default-skin.scss';\A 13: \A 14: .tainacan-media-component {\A 15:     --swiper-theme-color: var(--tainacan-secondary, #298596);\A 16:     --swiper-navigation-size: 44px;"; }

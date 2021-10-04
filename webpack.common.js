@@ -4,10 +4,7 @@ const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 module.exports = {
     entry: {
-        admin: './src/views/admin/js/main.js',
-        roles: './src/views/roles/js/roles-main.js',
-        reports: './src/views/reports/js/reports-main.js',
-        media_component: './src/views/media-component/media-component.js',
+        tainacan_admin_common_scripts: './src/views/tainacan-admin-common-scripts.js',
         tainacan_blocks_category_icon: './src/views/gutenberg-blocks/js/tainacan-blocks-category-icon.js',
         tainacan_blocks_common_theme_scripts: './src/views/gutenberg-blocks/tainacan-blocks/tainacan-blocks-common-theme-scripts.js',
 

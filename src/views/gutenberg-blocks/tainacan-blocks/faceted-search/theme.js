@@ -55,7 +55,7 @@ export default (element) => {
         // Gets the div with the content of the block
         let blockElement = element ? element : document.getElementById('tainacan-items-page');
 
-        // Mount only if the div exists
+        // Mount only if the div exists and it is not already mounted
         if ( blockElement && blockElement.classList && !blockElement.classList.contains('has-mounted') ) {
 
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */

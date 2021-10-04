@@ -1,7 +1,7 @@
 <template>
     <div 
             id="tainacan-admin-app" 
-            class="columns is-fullheight"
+            class="has-mounted columns is-fullheight"
             :class="{ 
                 'tainacan-admin-iframe-mode': isIframeMode, 
                 'tainacan-admin-read-mode': isReadMode

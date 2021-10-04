@@ -73,9 +73,6 @@ body.tainacan-admin-page #wp-auth-check-wrap {
 }
 
 // Tainacan Loading
-.tainacan-icon {
-    opacity: 0; // Will make it 1 once window.load is done; 
-}
 .loading-overlay {
     z-index: 9999999999;
     min-height: auto !important;

@@ -369,7 +369,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
 }
 
 /* Loads and instantiates media components passed to the global variable */
-document.addEventListener('DOMContentLoaded', function() {
+export default (element) => {
     if (tainacan_plugin?.classes?.TainacanMediaGallery && tainacan_plugin?.tainacan_media_components) {
         (Object.values(tainacan_plugin.tainacan_media_components) || []).forEach((component) => {
             new tainacan_plugin.classes.TainacanMediaGallery(
@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function() {
             );
         });
     }
-});
+};
 
 
 /*

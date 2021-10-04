@@ -471,9 +471,6 @@
 .block-editor-block-list__block > .wp-block-tainacan-carousel-terms-list {
   max-width: calc(100% - 72px); }
 
-.block-editor-block-list__block > .wp-block-tainacan-carousel-terms-list {
-  max-width: calc(100% - 72px); }
-
 .block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-carousel-terms-list .swiper-container a > span,
 .block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-carousel-terms-list .swiper-container a:hover > span,
 .block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-carousel-terms-list li.term-list-item a > span,
