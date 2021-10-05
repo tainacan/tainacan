@@ -612,7 +612,7 @@ a.pswp__share--download:hover {
 .tainacan-media-component {
   --swiper-theme-color: var(--tainacan-secondary, #298596);
   --swiper-navigation-size: 44px;
-  --tainacan-media-background: var(--tainacan-background-color, #ffffff);
+  --tainacan-media-background: var(--tainacan-background-color, transparent);
   --tainacan-media-main-carousel-height: 60vh;
   --tainacan-media-main-carousel-width: 100%;
   --tainacan-media-thumbs-carousel-width: 100%;
@@ -620,7 +620,7 @@ a.pswp__share--download:hover {
   width: 100%;
   height: auto;
   display: block;
-  background-color: var(--tainacan-media-background, #ffffff); }
+  background-color: var(--tainacan-media-background, transparent); }
 
 /* Style valid for both cases of carousel, main and thumbs */
 .tainacan-media-component__swiper-main .swiper-button-prev::after,
@@ -780,7 +780,7 @@ a.pswp__share--download:hover {
       object-position: center;
       border-bottom-width: 6px;
       border-bottom-style: solid;
-      background-color: var(--tainacan-media-background, #ffffff);
+      background-color: var(--tainacan-media-background, transparent);
       border-bottom-color: rgba(255, 255, 255, 0);
       opacity: 0.85;
       transition: opacity 0.3s ease, border-bottom-color 0.3s ease; }

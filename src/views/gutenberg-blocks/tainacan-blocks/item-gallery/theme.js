@@ -6,7 +6,6 @@ import PhotoSwipe from 'photoswipe/dist/photoswipe.min.js';
 import PhotoSwipeUI_Default from 'photoswipe/dist/photoswipe-ui-default.min.js';
 import Swiper from 'swiper';
 import 'swiper/css/swiper.min.css';
-import '../../../../assets/css/tainacan-gutenberg-block-item-gallery.css';
 
 const { __ } = wp.i18n;
 

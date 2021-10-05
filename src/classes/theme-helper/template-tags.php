@@ -335,7 +335,8 @@ function tainacan_get_the_media_component(
 	if ( $args['has_media_main'] || $args['has_media_thumbs'] ) :
 		// Modal lightbox layer for rendering photoswipe
 		add_action('wp_footer', 'tainacan_get_the_media_modal_layer');
-
+	
+		wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-item-gallery.css', array(), TAINACAN_VERSION);
 		?>
 
 		<script>
