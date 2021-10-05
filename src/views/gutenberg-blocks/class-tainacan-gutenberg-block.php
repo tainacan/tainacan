@@ -31,16 +31,16 @@ function tainacan_blocks_initialize() {
 
 		// Via Gutenberg filters, we create the Tainacan category
 		if ( class_exists('WP_Block_Editor_Context') ) { // Introduced WP 5.8
-			add_filter('block_categories_all', 'tainacan_blocks_register_categories', 10, 2);
+			add_filter( 'block_categories_all', 'tainacan_blocks_register_categories', 10, 2 );
 		} else {
-			add_filter('block_categories', 'tainacan_blocks_register_categories', 10, 2);
+			add_filter( 'block_categories', 'tainacan_blocks_register_categories', 10, 2 );
 		}
 
 		// On the theme side, all we need is the common scripts, 
 		// that handle dynamically the imports using conditioner.js
 		if ( !is_admin() ) {
-			add_action('init', 'tainacan_blocks_add_common_theme_scripts', 90);
-		
+			add_action( 'init', 'tainacan_blocks_add_common_theme_scripts', 90 );
+			add_action( 'init', 'tainacan_blocks_get_common_theme_styles', 90 );
 			// On the admin side, we need the blocks registered and their assets (editor-side)
 		}
 		add_action('admin_init', 'tainacan_blocks_register_and_enqueue_all_blocks');
@@ -135,6 +135,22 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 }
 
 /** 
+ * Enqueues the global theme styles necessary for the majority of the blocks
+ */
+function tainacan_blocks_get_common_theme_styles() {
+	global $TAINACAN_BASE_URL;
+	global $TAINACAN_VERSION;
+
+	wp_enqueue_style(
+		'tainacan-blocks-common-theme-styles',
+		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-common-theme-styles.css',
+		array(),
+		$TAINACAN_VERSION
+	);
+}
+
+
+/** 
  * Enqueues the global editor styles necessary for the majority of the blocks
  */
 function tainacan_blocks_get_common_editor_styles() {
@@ -142,12 +158,11 @@ function tainacan_blocks_get_common_editor_styles() {
 	global $TAINACAN_VERSION;
 
 	wp_enqueue_style(
-		'tainacan-blocks-common-styles',
-		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-common-styles.css',
+		'tainacan-blocks-common-editor-styles',
+		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-common-editor-styles.css',
 		array(),
 		$TAINACAN_VERSION
 	);
-	
 }
 
 /** 

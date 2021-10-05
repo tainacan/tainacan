@@ -42,7 +42,9 @@ sass -E 'UTF-8' --cache-location .tmp/sass-cache-16 src/views/gutenberg-blocks/t
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-17 src/views/gutenberg-blocks/tainacan-blocks/carousel-related-items/style.scss:src/assets/css/tainacan-gutenberg-block-carousel-related-items.css
 
-sass -E 'UTF-8' --cache-location .tmp/sass-cache-18 src/views/gutenberg-blocks/gutenberg-blocks-style.scss:src/assets/css/tainacan-gutenberg-block-common-styles.css
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-18 src/views/gutenberg-blocks/gutenberg-blocks-editor-style.scss:src/assets/css/tainacan-gutenberg-block-common-editor-styles.css
+
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-19 src/views/gutenberg-blocks/gutenberg-blocks-theme-style.scss:src/assets/css/tainacan-gutenberg-block-common-theme-styles.css
 
 echo "Compilação do Sass Concluído!"
 exit 0

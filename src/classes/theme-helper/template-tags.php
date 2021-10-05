@@ -336,15 +336,6 @@ function tainacan_get_the_media_component(
 		// Modal lightbox layer for rendering photoswipe
 		add_action('wp_footer', 'tainacan_get_the_media_modal_layer');
 
-		wp_enqueue_script(
-			'tainacan-blocks-common-theme-scripts',
-			$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_common_theme_scripts.js',
-			array('wp-i18n'),
-			TAINACAN_VERSION
-		);
-		//wp_localize_script('tainacan-blocks-common-theme-scripts', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
-		
-		wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-item-gallery.css', array(), TAINACAN_VERSION);
 		?>
 
 		<script>

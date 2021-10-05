@@ -1,0 +1,27 @@
+[data-module="faceted-search"]:not(.has-mounted),
+[data-module="facets-list"]:not(.has-mounted),
+[data-module="dynamic-items-list"]:not(.has-mounted),
+[data-module="carousel-items-list"]:not(.has-mounted),
+[data-module="carousel-terms-list"]:not(.has-mounted),
+[data-module="carousel-collections-list"]:not(.has-mounted),
+[data-module="item-submission-form"]:not(.has-mounted) {
+  background-color: inherit;
+  opacity: 0.75;
+  border-radius: 2px; }
+
+[data-module="item-submission-form"]:not(.has-mounted),
+[data-module="faceted-search"]:not(.has-mounted) {
+  min-height: 75vh; }
+
+[data-module="facets-list"]:not(.has-mounted),
+[data-module="dynamic-items-list"]:not(.has-mounted),
+[data-module="carousel-items-list"]:not(.has-mounted),
+[data-module="carousel-terms-list"]:not(.has-mounted),
+[data-module="carousel-collections-list"]:not(.has-mounted) {
+  min-height: 160px; }
+
+[data-module="facets-list"]:not(.has-mounted),
+[data-module="dynamic-items-list"]:not(.has-mounted) {
+  min-height: 360px; }
+
+/*# sourceMappingURL=tainacan-gutenberg-block-common-theme-styles.css.map */
