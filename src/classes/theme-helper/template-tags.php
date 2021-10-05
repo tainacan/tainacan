@@ -336,12 +336,28 @@ function tainacan_get_the_media_component(
 		// Modal lightbox layer for rendering photoswipe
 		add_action('wp_footer', 'tainacan_get_the_media_modal_layer');
 
+		wp_enqueue_script(
+			'tainacan-blocks-common-theme-scripts',
+			$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_common_theme_scripts.js',
+			array('wp-i18n'),
+			TAINACAN_VERSION
+		);
+		//wp_localize_script('tainacan-blocks-common-theme-scripts', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
+		
 		wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-item-gallery.css', array(), TAINACAN_VERSION);
-		//wp_enqueue_script( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/js/media_component.js', ['wp-i18n'], TAINACAN_VERSION, true );
-		//wp_localize_script('tainacan-media-component', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
 		?>
 
-		<div class="tainacan-media-component" data-module='item-gallery'>
+		<script>
+			try {
+				tainacan_plugin = (typeof tainacan_plugin != undefined) ? tainacan_plugin : {};
+			} catch(err) {
+				tainacan_plugin = {};
+			}
+			tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : {};
+			tainacan_plugin.tainacan_media_components['<?php echo $args['media_id'] ?>'] = <?php echo json_encode($args) ?>;
+		</script>	
+
+		<div id="<?php echo $media_id ?>" class="tainacan-media-component" data-module='item-gallery'>
 
 			<?php if ( $args['has_media_main'] ) : ?>
 				
@@ -410,23 +426,7 @@ function tainacan_get_the_media_component(
 			<?php endif; ?>
 
 		</div>
-			
-		<?php if ( isset( $_REQUEST['wp_customize'] ) ) : ?>
-			<script>
-				try {
-					tainacan_plugin = (typeof tainacan_plugin != undefined) ? tainacan_plugin : {};
-				} catch(err) {
-					tainacan_plugin = {};
-				}
-				tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : {};
-				tainacan_plugin.tainacan_media_components['<?php echo $args['media_id'] ?>'] = <?php echo json_encode($args) ?>;
-			</script>	
-		<?php else :
-			wp_add_inline_script( 'tainacan-media-component', '
-				tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin != undefined && typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : {};
-				tainacan_plugin.tainacan_media_components["' . $args['media_id'] . '"] = '. json_encode($args) . ';
-			', 'before' );
-		endif; ?>
+
 	<?php endif; ?> <!-- End of if ($args['has_media_main'] || $args['has_media_thumbs'] ) -->
 	
 <?php

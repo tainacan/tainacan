@@ -6,6 +6,7 @@ import PhotoSwipe from 'photoswipe/dist/photoswipe.min.js';
 import PhotoSwipeUI_Default from 'photoswipe/dist/photoswipe-ui-default.min.js';
 import Swiper from 'swiper';
 import 'swiper/css/swiper.min.css';
+import '../../../../assets/css/tainacan-gutenberg-block-item-gallery.css';
 
 const { __ } = wp.i18n;
 
@@ -370,14 +371,13 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
 
 /* Loads and instantiates media components passed to the global variable */
 export default (element) => {
-    if (tainacan_plugin?.classes?.TainacanMediaGallery && tainacan_plugin?.tainacan_media_components) {
-        (Object.values(tainacan_plugin.tainacan_media_components) || []).forEach((component) => {
-            new tainacan_plugin.classes.TainacanMediaGallery(
-                component.has_media_thumbs ? '#' + component.media_thumbs_id : null,
-                component.has_media_main ? '#' + component.media_main_id : null,
-                component
-            );
-        });
+    if (element && element.id && tainacan_plugin?.classes?.TainacanMediaGallery && tainacan_plugin?.tainacan_media_components && tainacan_plugin.tainacan_media_components[element.id]) {
+        const component = tainacan_plugin.tainacan_media_components[element.id];
+        new tainacan_plugin.classes.TainacanMediaGallery(
+            component.has_media_thumbs ? '#' + component.media_thumbs_id : null,
+            component.has_media_main ? '#' + component.media_main_id : null,
+            component
+        );
     }
 };
 

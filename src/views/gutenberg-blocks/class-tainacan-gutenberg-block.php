@@ -42,9 +42,8 @@ function tainacan_blocks_initialize() {
 			add_action('init', 'tainacan_blocks_add_common_theme_scripts', 90);
 		
 			// On the admin side, we need the blocks registered and their assets (editor-side)
-		} else {
-			add_action('admin_init', 'tainacan_blocks_register_and_enqueue_all_blocks');
 		}
+		add_action('admin_init', 'tainacan_blocks_register_and_enqueue_all_blocks');
 	}
 }
 
