@@ -120,7 +120,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	wp_register_style(
 		$block_slug,
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . $block_slug . '.css',
-		array('tainacan-blocks-common-styles'),
+		array('tainacan-blocks-common-editor-styles'),
 		$TAINACAN_VERSION
 	);
 	$register_params['style'] = $block_slug;
@@ -128,7 +128,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	// Registers the new block
 	if (function_exists('register_block_type')) {
 		if ( version_compare( $wp_version, '5.8-RC', '>=') )
-			register_block_type( __DIR__ . '/tainacan-blocks/' . $block_slug );
+			register_block_type( __DIR__ . '/blocks/' . $block_slug );
 		else
 			register_block_type( 'tainacan/' . $block_slug, $register_params );
 	}
@@ -148,7 +148,6 @@ function tainacan_blocks_get_common_theme_styles() {
 		$TAINACAN_VERSION
 	);
 }
-
 
 /** 
  * Enqueues the global editor styles necessary for the majority of the blocks
@@ -194,8 +193,8 @@ function tainacan_blocks_add_common_theme_scripts() {
 	global $TAINACAN_VERSION;
 
 	wp_enqueue_script(
-		'tainacan-blocks-common-theme-scripts',
-		$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_common_theme_scripts.js',
+		'tainacan-blocks-common-scripts',
+		$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_common_scripts.js',
 		array('wp-i18n'),
 		$TAINACAN_VERSION
 	);
@@ -203,8 +202,8 @@ function tainacan_blocks_add_common_theme_scripts() {
 	$block_settings = tainacan_blocks_get_plugin_js_settings();
 	$plugin_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();
 
-	wp_localize_script( 'tainacan-blocks-common-theme-scripts', 'tainacan_blocks', $block_settings);
-	wp_localize_script( 'tainacan-blocks-common-theme-scripts', 'tainacan_plugin', $plugin_settings);
+	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_blocks', $block_settings);
+	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_plugin', $plugin_settings);
 
 	// Necessary while we don't have a better way to do this only
 	// when item submission block is present

@@ -128,15 +128,15 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 
 		wp_enqueue_script(
-			'tainacan-admin-common-scripts',
-			$TAINACAN_BASE_URL . '/assets/js/tainacan_admin_common_scripts.js',
+			'tainacan-pages-common-scripts',
+			$TAINACAN_BASE_URL . '/assets/js/tainacan_pages_common_scripts.js',
 			['underscore', 'wp-i18n'],
 			TAINACAN_VERSION
 		);
-		wp_set_script_translations('tainacan-admin-common-scripts', 'tainacan');
+		wp_set_script_translations('tainacan-pages-common-scripts', 'tainacan');
 
 		$settings = $this->get_admin_js_localization_params();
-		wp_localize_script( 'tainacan-admin-common-scripts', 'tainacan_plugin', $settings );
+		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_plugin', $settings );
 		wp_enqueue_script('underscore');
 		wp_enqueue_script('wp-i18n');
 
@@ -159,15 +159,15 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 
 		wp_enqueue_script(
-			'tainacan-admin-common-scripts',
-			$TAINACAN_BASE_URL . '/assets/js/tainacan_admin_common_scripts.js',
+			'tainacan-pages-common-scripts',
+			$TAINACAN_BASE_URL . '/assets/js/tainacan_pages_common_scripts.js',
 			['underscore', 'wp-i18n'],
 			TAINACAN_VERSION
 		);
-		wp_set_script_translations('tainacan-admin-common-scripts', 'tainacan');
+		wp_set_script_translations('tainacan-pages-common-scripts', 'tainacan');
 
 		$settings = $this->get_admin_js_localization_params();
-		wp_localize_script( 'tainacan-admin-common-scripts', 'tainacan_plugin', $settings );
+		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_plugin', $settings );
 		wp_enqueue_script('underscore');
 		wp_enqueue_script('wp-i18n');
 
@@ -232,14 +232,14 @@ class Admin {
 		}
 
 		wp_enqueue_script(
-			'tainacan-admin-common-scripts',
-			$TAINACAN_BASE_URL . '/assets/js/tainacan_admin_common_scripts.js',
+			'tainacan-pages-common-scripts',
+			$TAINACAN_BASE_URL . '/assets/js/tainacan_pages_common_scripts.js',
 			$deps,
 			TAINACAN_VERSION
 		);
 		$settings = $this->get_admin_js_localization_params();
 
-		wp_localize_script( 'tainacan-admin-common-scripts', 'tainacan_plugin', $settings );
+		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_plugin', $settings );
 		wp_enqueue_media(
 			 //[ 'post' => 131528 ]
 		);
@@ -260,7 +260,7 @@ class Admin {
 		$Tainacan_Items       = \Tainacan\Repositories\Items::get_instance();
 		$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
 
-		$tainacan_admin_i18n = require( 'tainacan-admin-i18n.php' );
+		$tainacan_admin_i18n = require( 'tainacan-i18n.php' );
 
 		$entities_labels = [
 			'collections' => $Tainacan_Collections->get_cpt_labels(),
