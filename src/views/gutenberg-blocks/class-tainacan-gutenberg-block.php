@@ -29,18 +29,20 @@ function tainacan_blocks_initialize() {
 
 	if (is_plugin_active('gutenberg/gutenberg.php') || $wp_version >= '5') {
 
-		// Via Gutenberg filers, we create the Tainacan category
+		// Via Gutenberg filters, we create the Tainacan category
 		if ( class_exists('WP_Block_Editor_Context') ) { // Introduced WP 5.8
-			add_filter('block_categories_all', 'tainacan_blocks_register_categories', 10, 2);
+			add_filter( 'block_categories_all', 'tainacan_blocks_register_categories', 10, 2 );
 		} else {
-			add_filter('block_categories', 'tainacan_blocks_register_categories', 10, 2);
+			add_filter( 'block_categories', 'tainacan_blocks_register_categories', 10, 2 );
 		}
 
 		// On the theme side, all we need is the common scripts, 
 		// that handle dynamically the imports using conditioner.js
-		add_action('init', 'tainacan_blocks_add_common_theme_scripts', 90);
-
-		// On the admin side, we need the blocks registered and their assets (editor-side)
+		if ( !is_admin() ) {
+			add_action( 'init', 'tainacan_blocks_add_common_theme_scripts', 90 );
+			add_action( 'init', 'tainacan_blocks_get_common_theme_styles', 90 );
+			// On the admin side, we need the blocks registered and their assets (editor-side)
+		}
 		add_action('admin_init', 'tainacan_blocks_register_and_enqueue_all_blocks');
 	}
 }
@@ -106,14 +108,19 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 		$editor_script_deps,
 		$TAINACAN_VERSION
 	);
-	wp_set_script_translations($block_slug, 'tainacan');
 	$register_params['editor_script'] = $block_slug;
+
+	// Passes global variables to the blocks editor side
+	$block_settings = tainacan_blocks_get_plugin_js_settings();
+	$plugin_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();
+	wp_localize_script( $block_slug, 'tainacan_blocks', $block_settings);
+	wp_localize_script( $block_slug, 'tainacan_plugin', $plugin_settings);
 
 	// Registers style
 	wp_register_style(
 		$block_slug,
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . $block_slug . '.css',
-		array('tainacan-blocks-common-styles'),
+		array('tainacan-blocks-common-editor-styles'),
 		$TAINACAN_VERSION
 	);
 	$register_params['style'] = $block_slug;
@@ -121,10 +128,25 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	// Registers the new block
 	if (function_exists('register_block_type')) {
 		if ( version_compare( $wp_version, '5.8-RC', '>=') )
-			register_block_type( __DIR__ . '/tainacan-blocks/' . $block_slug );
+			register_block_type( __DIR__ . '/blocks/' . $block_slug );
 		else
 			register_block_type( 'tainacan/' . $block_slug, $register_params );
 	}
+}
+
+/** 
+ * Enqueues the global theme styles necessary for the majority of the blocks
+ */
+function tainacan_blocks_get_common_theme_styles() {
+	global $TAINACAN_BASE_URL;
+	global $TAINACAN_VERSION;
+
+	wp_enqueue_style(
+		'tainacan-blocks-common-theme-styles',
+		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-common-theme-styles.css',
+		array(),
+		$TAINACAN_VERSION
+	);
 }
 
 /** 
@@ -135,12 +157,11 @@ function tainacan_blocks_get_common_editor_styles() {
 	global $TAINACAN_VERSION;
 
 	wp_enqueue_style(
-		'tainacan-blocks-common-styles',
-		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-common-styles.css',
+		'tainacan-blocks-common-editor-styles',
+		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-common-editor-styles.css',
 		array(),
 		$TAINACAN_VERSION
 	);
-	
 }
 
 /** 
@@ -172,8 +193,8 @@ function tainacan_blocks_add_common_theme_scripts() {
 	global $TAINACAN_VERSION;
 
 	wp_enqueue_script(
-		'tainacan-blocks-common-theme-scripts',
-		$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_common_theme_scripts.js',
+		'tainacan-blocks-common-scripts',
+		$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_common_scripts.js',
 		array('wp-i18n'),
 		$TAINACAN_VERSION
 	);
@@ -181,8 +202,8 @@ function tainacan_blocks_add_common_theme_scripts() {
 	$block_settings = tainacan_blocks_get_plugin_js_settings();
 	$plugin_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();
 
-	wp_localize_script( 'tainacan-blocks-common-theme-scripts', 'tainacan_blocks', $block_settings);
-	wp_localize_script( 'tainacan-blocks-common-theme-scripts', 'tainacan_plugin', $plugin_settings);
+	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_blocks', $block_settings);
+	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_plugin', $plugin_settings);
 
 	// Necessary while we don't have a better way to do this only
 	// when item submission block is present

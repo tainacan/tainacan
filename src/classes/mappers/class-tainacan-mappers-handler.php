@@ -23,8 +23,11 @@ class Mappers_Handler {
 	    self::$instance = $this;
 		
 		add_action('init', array(&$this, 'init'));
-
+		
+		// @deprecated, we shall use tainacan-i18n now.
 		add_filter( 'tainacan-admin-i18n', [$this, 'mappers_i18n']);
+
+		add_filter( 'tainacan-i18n', [$this, 'mappers_i18n']);
 		
 		add_action('tainacan-api-collection-created', [$this, 'create_mapped_collection'], 10, 2);
 		
