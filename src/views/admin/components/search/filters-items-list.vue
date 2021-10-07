@@ -499,6 +499,7 @@
         display: inline-flex;
         align-items: center;
         margin-left: -0.5em !important;
+        margin-bottom: 12px !important;
     }
     .collapse-all__text {
         font-size: 0.75em !important;

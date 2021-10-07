@@ -961,15 +961,24 @@
             max-width: 100%;
 
             ul {
-                -moz-column-count: 2;
+                -moz-column-count: 3;
                 -moz-column-gap: 0;
                 -moz-column-rule: none;
-                -webkit-column-count: 2;
+                -webkit-column-count: 3;
                 -webkit-column-gap: 0;
                 -webkit-column-rule: none;
-                column-count: 2;
+                column-count: 3;
                 column-gap: 2em;
                 column-rule: none;
+                overflow-y: hidden;
+                overflow-x: auto;
+            }
+            @media screen and (max-width: 1366px) {
+                ul {
+                    -moz-column-count: 2;
+                    -webkit-column-count: 2;
+                    column-count: 2;
+                }
             }
         }
 
@@ -1200,9 +1209,9 @@
         .tainacan-modal-checkbox-list-body,
         .tainacan-finder-column.has-only-one-column,
         .tainacan-modal-checkbox-search-results-body {
-            -moz-column-count: auto;
-            -webkit-column-count: auto;
-            column-count: auto;
+            -moz-column-count: auto !important;
+            -webkit-column-count: auto !important;
+            column-count: auto !important;
         }
 
         .tainacan-li-checkbox-list {

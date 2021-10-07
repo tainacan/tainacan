@@ -938,6 +938,8 @@
                 column-count: 2;
                 column-gap: 2em;
                 column-rule: none;
+                overflow-y: hidden;
+                overflow-x: auto;
             }
         }
 
