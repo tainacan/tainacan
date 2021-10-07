@@ -109,7 +109,9 @@ export default (element) => {
                     metadataSectionLabel: '',
                     showItemLinkButton: false,
                     itemLinkButtonLabel: '',
-                    helpInfoBellowLabel: false
+                    helpInfoBellowLabel: false,
+                    showItemLinkButton: false,
+                    termsAgreementMessage: ''
                 },
                 beforeMount () {
                     // Collection source settings
@@ -157,6 +159,12 @@ export default (element) => {
                         this.itemLinkButtonLabel = this.$el.attributes['item-link-button-label'].value;
                     if (this.$el.attributes['show-item-link-button'] != undefined)
                         this.showItemLinkButton = this.isParameterTrue('show-item-link-button');
+                    
+                    /* Terms agreements confirmation checkbox */
+                    if (this.$el.attributes['show-terms-agreement-checkbox'] != undefined)
+                        this.showTermsAgreementCheckbox = this.isParameterTrue('show-terms-agreement-checkbox');
+                    if (this.$el.attributes['terms-agreement-message'] != undefined)
+                        this.termsAgreementMessage = this.$el.attributes['terms-agreement-message'].value;
     
                     // List of metadata
                     if (this.$el.attributes['enabled-metadata'] != undefined && this.$el.attributes['enabled-metadata'].value)

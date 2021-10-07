@@ -1,3 +1,5 @@
+const { RichText, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+
 export default function({ attributes, className }) {
     const {
         collectionId,
@@ -28,9 +30,15 @@ export default function({ attributes, className }) {
         sentFormMessage,
         showItemLinkButton,
         itemLinkButtonLabel,
-        helpInfoBellowLabel
+        helpInfoBellowLabel,
+        showTermsAgreementCheckbox,
+        termsAgreementMessage
     } = attributes;
     
+    const blockProps = useBlockProps.save();
+    let termsAgreementMessageHTML = <RichText.Content { ...blockProps } tagName="p" value={ termsAgreementMessage } />;
+    termsAgreementMessageHTML = (termsAgreementMessageHTML && termsAgreementMessageHTML.props && termsAgreementMessageHTML.props.value) ? termsAgreementMessageHTML.props.value : '';
+
     return <div 
                 style={{
                     'font-size': baseFontSize + 'px',
@@ -66,6 +74,8 @@ export default function({ attributes, className }) {
                 attachments-section-label={ attachmentsSectionLabel }
                 metadata-section-label={ metadataSectionLabel }
                 show-item-link-button={ showItemLinkButton ? showItemLinkButton.toString() : 'false' }
+                show-terms-agreement-checkbox={ showTermsAgreementCheckbox ? showTermsAgreementCheckbox.toString() : 'false' }
+                terms-agreement-message={ termsAgreementMessageHTML }
                 item-link-button-label={ itemLinkButtonLabel ? itemLinkButtonLabel : __( 'Go to the item page', 'tainacan' ) }
                 help-info-bellow-label={ helpInfoBellowLabel ? helpInfoBellowLabel.toString() : 'false' } >
         </div>

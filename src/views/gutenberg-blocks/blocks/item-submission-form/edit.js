@@ -15,7 +15,7 @@ const {
     PanelBody
 } = wp.components;
 
-const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, RichText, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import tainacan from '../../js/axios.js';
 import CollectionModal from '../faceted-search/collection-modal.js';
@@ -54,8 +54,12 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         metadataSectionLabel,
         showItemLinkButton,
         itemLinkButtonLabel,
-        helpInfoBellowLabel
+        helpInfoBellowLabel,
+        showTermsAgreementCheckbox,
+        termsAgreementMessage
     } = attributes;
+
+    const blockProps = useBlockProps();
 
     const fontSizes = [
         {
@@ -372,6 +376,20 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                             />
                         </PanelBody>
                         <PanelBody
+                                    title={__('Confirmation of agreement to terms', 'tainacan')}
+                                    initialOpen={ false }>
+                                <ToggleControl
+                                    label={__('Show terms agreement confimation checkbox', 'tainacan')}
+                                    help={ __('With this option enabled, user will be prevented to submit the form until a confirmation checkbox is pressed. You can edit the content of the agreement message on the block itself.', 'tainacan') }
+                                    checked={ showTermsAgreementCheckbox }
+                                    onChange={ ( isChecked ) => {
+                                            showTermsAgreementCheckbox = isChecked;
+                                            setAttributes({ showTermsAgreementCheckbox: isChecked });
+                                        }  
+                                    }
+                                />
+                        </PanelBody>
+                        <PanelBody
                                     title={__('Colors and Sizes', 'tainacan')}
                                     initialOpen={ false }
                                 >
@@ -646,6 +664,20 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                         }
                                     </div>
                                 </div>
+                                
+                                { showTermsAgreementCheckbox ? 
+                                    <div class="fake-checkbox-confirmation">
+                                        <span class="fake-checkbox"></span>
+                                        <RichText
+                                                { ...blockProps }
+                                                tagName="p"
+                                                value={ termsAgreementMessage }
+                                                onChange={ ( inputContent ) => setAttributes( { termsAgreementMessage: inputContent } ) }
+                                                placeholder={ __( 'Type here a message requiring the user to agree with certain conditions.' ) }
+                                            />
+                                    </div>
+                                    : null
+                                }
                                 
                                 <div class="form-footer">
                                     <span class="fake-button outline"><span class="fake-text"></span></span>

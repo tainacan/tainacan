@@ -21,6 +21,8 @@
             :show-item-link-button="$root.showItemLinkButton"
             :item-link-button-label="$root.itemLinkButtonLabel"
             :help-info-bellow-label="$root.helpInfoBellowLabel ? $root.helpInfoBellowLabel : false"
+            :show-terms-agreement-checkbox="$root.showTermsAgreementCheckbox ? $root.showTermsAgreementCheckbox : false"
+            :terms-agreement-message="$root.termsAgreementMessage"
              />
 </template>
 

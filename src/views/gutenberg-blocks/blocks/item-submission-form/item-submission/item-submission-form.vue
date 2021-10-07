@@ -400,6 +400,18 @@
                     <br>
                 </template>
 
+                <div 
+                        v-if="showTermsAgreementCheckbox"
+                        class="terms-agreement-confirmation-section">
+                    <b-field>
+                        <b-checkbox 
+                                v-model="userHasAgreedToTerms"
+                                size="is-medium">
+                            <span v-html="termsAgreementMessage" />
+                        </b-checkbox>
+                    </b-field>
+                </div>
+
                 <footer class="form-submission-footer">
 
                     <button
@@ -421,6 +433,7 @@
                     </div>
 
                     <button
+                            :disabled="showTermsAgreementCheckbox && !userHasAgreedToTerms"
                             @click="onSubmit()"
                             type="button"
                             class="button is-secondary">{{ $i18n.get('label_submit') }}</button>
@@ -518,7 +531,9 @@ export default {
         metadataSectionLabel: String,
         showItemLinkButton: Boolean,
         itemLinkButtonLabel: String,
-        helpInfoBellowLabel: Boolean
+        helpInfoBellowLabel: Boolean,
+        showTermsAgreementCheckbox: Boolean,
+        termsAgreementMessage: String
     },
     data(){
         return {
@@ -547,7 +562,8 @@ export default {
             couldLoadCollection: true,
             useCaptcha: 'no',
             captchaSiteKey: tainacan_plugin['item_submission_captcha_site_key'],
-            linkToCreatedItem: ''
+            linkToCreatedItem: '',
+            userHasAgreedToTerms: false
         }
     },
     computed: {
@@ -905,6 +921,20 @@ export default {
     .files-list {
         display: flex;
         flex-wrap: wrap;
+    }
+
+    .terms-agreement-confirmation-section {
+        width: 100%;
+        margin-top: 1.25em;
+
+        .field {
+            padding: 0.75em 0.75em 0.5em 0.75em;
+            border: 1px dashed var(--tainacan-input-border-color);
+
+            label {
+                margin: 0;
+            }
+        }
     }
 
     .form-submission-footer {
