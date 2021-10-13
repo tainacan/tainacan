@@ -22,7 +22,7 @@ const addDataModuleToOldBlocks = () => {
         'dynamic-items-list',
         'carousel-items-list',
         'carousel-terms-list',
-        'carousel-related-items',
+        'related-items-list',
         'carousel-collections-list'
     ];
     

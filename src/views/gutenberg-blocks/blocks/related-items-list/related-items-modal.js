@@ -5,7 +5,7 @@ const { __ } = wp.i18n;
 
 const { TextControl, Button, Modal, RadioControl, SelectControl, Spinner } = wp.components;
 
-export default class CarouselRelatedItemsModal extends React.Component {
+export default class RelatedItemsModal extends React.Component {
     constructor(props) {
         super(props);
 

@@ -2,9 +2,9 @@ const { __ } = wp.i18n;
 
 const { Spinner, Button, Placeholder } = wp.components;
 
-const { InnerBlocks} = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InnerBlocks } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
-import CarouselRelatedItemsModal from './carousel-related-items-modal.js';
+import RelatedItemsModal from './related-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 
@@ -18,9 +18,9 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
         relatedItems,
         isLoading,
         itemRequestSource,
-        relatedItemsTemplate
+        relatedItemsTemplate,
+        itemsListlayout
     } = attributes;
-
 
     function setContent(){
         isLoading = true;
@@ -59,6 +59,28 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
 
     function getRelatedItemsTemplates() {
         relatedItemsTemplate = [];
+
+        innerItemsList = itemsListlayout !== 'carousel' ?
+        [
+            'tainacan/dynamic-items-list',
+            { 
+                content: [{ type: 'innerblock' }],
+                selectedItems: collection.items,
+                loadStrategy: 'parent',
+                collectionId: collection.collection_id,
+                layout: itemsListlayout
+            }
+        ] :
+        [
+            'tainacan/carousel-items-list',
+            { 
+                content: [{ type: 'innerblock' }],
+                selectedItems: collection.items,
+                loadStrategy: 'parent',
+                collectionId: collection.collection_id
+            }
+        ],
+
         relatedItems.forEach((collection) => {
             
             if (collection.total_items) {
@@ -76,19 +98,11 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                         [
                             'core/paragraph',
                             {
-                                placeholder: __( 'Relationship metadadum name', 'tainacan' ),
+                                placeholder: __( 'Relationship metadatum name', 'tainacan' ),
                                 content: collection.metadata_name
                             }
                         ],
-                        [
-                            'tainacan/carousel-items-list',
-                            { 
-                                content: [{ type: 'innerblock' }],
-                                selectedItems: collection.items,
-                                loadStrategy: 'parent',
-                                collectionId: collection.collection_id
-                            }
-                        ],
+                        innerItemsList,
                         [
                             'core/buttons',
                             {},
@@ -130,7 +144,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 ( 
                 <div>
                     { isModalOpen ?   
-                        <CarouselRelatedItemsModal
+                        <RelatedItemsModal
                             existingCollectionId={ collectionId }
                             existingItemId={ itemId }
                             onSelectCollection={ (selectedCollectionId) => {
@@ -183,7 +197,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                                 width="24px">
                             <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
                         </svg>
-                        {__('Select an item to create a set of carousels with items related to it via relationship metadata.', 'tainacan')}
+                        {__('Select an item to create a set of lists with items related to it via relationship metadata.', 'tainacan')}
                     </p>
                     <Button
                         isPrimary
@@ -202,12 +216,13 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 <div>
                     {  relatedItems.length ? (
 
-                        <div className={ 'carousel-related-items-edit-container' }>
+                        <div className={ 'related-items-edit-container' }>
                             <InnerBlocks
                                     allowedBlocks={[ 
                                         'core/heading',
                                         'core/paragraph',
                                         'tainacan/carousel-items-list',
+                                        'tainacan/dynamic-items-list',
                                         'core/buttons'
                                     ]}
                                     template={ relatedItemsTemplate } />

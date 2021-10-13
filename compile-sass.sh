@@ -40,7 +40,7 @@ sass -E 'UTF-8' --cache-location .tmp/sass-cache-15 src/views/gutenberg-blocks/b
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-16 src/views/gutenberg-blocks/blocks/item-submission-form/style.scss:src/assets/css/tainacan-gutenberg-block-item-submission-form.css
 
-sass -E 'UTF-8' --cache-location .tmp/sass-cache-17 src/views/gutenberg-blocks/blocks/carousel-related-items/style.scss:src/assets/css/tainacan-gutenberg-block-carousel-related-items.css
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-17 src/views/gutenberg-blocks/blocks/related-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-related-items-list.css
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-18 src/views/gutenberg-blocks/scss/gutenberg-blocks-editor-style.scss:src/assets/css/tainacan-gutenberg-block-common-editor-styles.css
 

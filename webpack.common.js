@@ -15,7 +15,7 @@ module.exports = {
         block_search_bar: './src/views/gutenberg-blocks/blocks/search-bar/index.js',
         block_collections_list: './src/views/gutenberg-blocks/blocks/collections-list/index.js',
         block_carousel_collections_list: './src/views/gutenberg-blocks/blocks/carousel-collections-list/index.js',
-        block_carousel_related_items: './src/views/gutenberg-blocks/blocks/carousel-related-items/index.js',
+        block_related_items_list: './src/views/gutenberg-blocks/blocks/related-items-list/index.js',
         block_facets_list: './src/views/gutenberg-blocks/blocks/facets-list/index.js',
         block_item_submission_form: './src/views/gutenberg-blocks/blocks/item-submission-form/index.js',
         block_faceted_search: './src/views/gutenberg-blocks/blocks/faceted-search/index.js',

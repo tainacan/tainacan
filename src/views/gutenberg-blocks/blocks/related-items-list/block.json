@@ -1,9 +1,9 @@
 {
-    "name": "tainacan/carousel-related-items",
-    "title": "Tainacan Related Items Carousel",
+    "name": "tainacan/related-items-list",
+    "title": "Tainacan Related Items List",
     "category": "tainacan-blocks",
     "keywords": [ "items", "carousel", "slider", "relationship" ],
-    "description": "A set of carousels to list items related to a certain item via relationship metadata.",
+    "description": "A set of lists to display items related to a certain item via relationship metadata.",
     "textdomain": "tainacan",
     "example": {
         "attributes": {
@@ -40,6 +40,10 @@
         "itemRequestSource": {
             "type": "String",
             "default": ""
+        },
+        "itemsListlayout": {
+            "type": "String",
+            "default": "carousel"
         }
     },
     "supports": {
@@ -47,6 +51,6 @@
         "html": false,
         "multiple": true
     },
-    "editorScript": "carousel-related-items",
-	"editorStyle": "carousel-related-items"
+    "editorScript": "related-items-list",
+	"editorStyle": "related-items-list"
 }
