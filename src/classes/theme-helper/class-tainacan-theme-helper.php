@@ -974,7 +974,7 @@ class Theme_Helper {
 		 *     @type string  $metadata_label_class_name			Extra class to add to the metadata label wrapper. Defaults to ''
 		 * 	   @type string  $metadata_label_tag				Tag to be used as wrapper of the metadata label. Defaults to p
 		 *     @type array   $carousel_args						Array of arguments to be passed to the get_tainacan_items_carousel function if $items_list_layout == carousel
-		 *     @type array   $dynamic_list_args					Array of arguments to be passed to the get_tainacan_dynamic_items function if $items_list_layout != carousel
+		 *     @type array   $dynamic_items_args				Array of arguments to be passed to the get_tainacan_dynamic_items function if $items_list_layout != carousel
 		 * @return string  The HTML div to be used for rendering the related items vue component
 	 */
 	public function get_tainacan_related_items_list($args = []) {
@@ -988,7 +988,7 @@ class Theme_Helper {
 			'metadata_label_class_name' => '',
 			'metadata_label_tag' => 'p',
 			'carousel_args' => [],
-			'dynamic_list_args' => []
+			'dynamic_items_args' => []
 		);
 		$args = wp_parse_args($args, $defaults);
 		
