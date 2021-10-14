@@ -284,6 +284,7 @@ class Collections extends Repository {
 			'rewrite'             => ['slug' => sanitize_title(_x('collections', 'Slug: the string that will be used to build the URL', 'tainacan'))],
 			'capabilities'        => (array) $this->get_capabilities(),
 			'map_meta_cap'        => true,
+			'show_in_rest'        => true,
 			'supports'            => [
 				'title',
 				'editor',
