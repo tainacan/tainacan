@@ -1030,9 +1030,22 @@ function tainacan_the_items_carousel($args = []) {
 }
 
 /**
- * Displays a group of related items carousels
+ * Displays a group of related items lists
  * For each metatada, the collection name, the metadata name and a button linking
  * the items list filtered is presented
+ *
+ * @param array $args {
+	 *     Optional. Array of arguments.
+	 *     @type string  $item_id					The Item ID
+ * @return void
+ */
+function tainacan_the_related_items($args = []) {
+	echo \Tainacan\Theme_Helper::get_instance()->get_tainacan_related_items_list($args);
+}
+
+/**
+ * Displays a group of related items carousels
+ * This is a preset version of tainacan_the_related_items, to keep compatibility with previous versions
  *
  * @param array $args {
 	 *     Optional. Array of arguments.
@@ -1042,6 +1055,7 @@ function tainacan_the_items_carousel($args = []) {
 function tainacan_the_related_items_carousel($args = []) {
 	echo \Tainacan\Theme_Helper::get_instance()->get_tainacan_related_items_carousel($args);
 }
+
 
 /**
  * Checks if the current item has or not related items

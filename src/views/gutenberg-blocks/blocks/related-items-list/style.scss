@@ -1,6 +1,6 @@
 @import '../../scss/gutenberg-blocks-variables.scss';
 
-.wp-block-tainacan-carousel-related-items {
+.wp-block-tainacan-related-items {
     margin: 0.5em auto;
     width: 100%;
 
@@ -46,7 +46,7 @@
     }
 
     // Placeholder on editor side  ----------------------------------------------------
-    .carousel-related-items-edit-container {
+    .related-items-edit-container {
         position: relative;
         
         & .skeleton {
