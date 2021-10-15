@@ -552,7 +552,7 @@
                 font-weight: normal;
             }
             img {
-                max-width: 28px;
+                max-width: 28px !important;
                 max-height: 28px;
                 margin-right: 10px;
             }

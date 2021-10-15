@@ -681,6 +681,19 @@
                                         class="help">
                                     {{ $i18n.get('info_iframe_dimensions') }}
                                 </p>
+                                <br>
+                                <b-field
+                                        v-if="urlForcedIframe"
+                                        :addons="false"
+                                        :label="$i18n.get('label_document_option_is_image')">
+                                        &nbsp;
+                                    <b-switch
+                                            size="is-small" 
+                                            v-model="urlIsImage" />
+                                    <help-button
+                                            :title="$i18n.get('label_document_option_is_image')"
+                                            :message="$i18n.get('info_document_option_is_image')" />
+                                </b-field>
 
                                 <div class="field is-grouped form-submit">
                                     <div class="control">
@@ -1008,7 +1021,8 @@ export default {
             isThumbnailAltTextModalActive: false,
             urlForcedIframe: false,
             urlIframeWidth: 600,
-            urlIframeHeight: 450
+            urlIframeHeight: 450,
+            urlIsImage: false
         }
     },
     computed: {
@@ -1430,7 +1444,8 @@ export default {
             this.form.document_options = {
                 forced_iframe: this.urlForcedIframe,
                 forced_iframe_width: this.urlIframeWidth,
-                forced_iframe_height: this.urlIframeHeight
+                forced_iframe_height: this.urlIframeHeight,
+                is_image: this.urlIsImage
             }
             this.updateItemDocument({
                     item_id: this.itemId,
@@ -1465,6 +1480,7 @@ export default {
             this.isURLModalActive = false;
             this.urlLink = '';
             this.urlForcedIframe = this.form.document_options && this.form.document_options['forced_iframe'] !== undefined ? this.form.document_options['forced_iframe'] : false;
+            this.urlIsImage = this.form.document_options && this.form.document_options['is_image'] !== undefined ? this.form.document_options['is_image'] : false;
             this.urlIframeWidth = this.form.document_options && this.form.document_options['forced_iframe_width'] !== undefined ? this.form.document_options['forced_iframe_width'] : 600;
             this.urlIframeHeight = this.form.document_options && this.form.document_options['forced_iframe_height'] !== undefined ? this.form.document_options['forced_iframe_height'] : 450;
         },
@@ -1725,6 +1741,8 @@ export default {
 
                     if (this.form.document_options !== undefined && this.form.document_options['forced_iframe'] !== undefined)
                         this.urlForcedIframe = this.form.document_options['forced_iframe'];
+                    if (this.form.document_options !== undefined && this.form.document_options['is_image'] !== undefined)
+                        this.urlIsImage = this.form.document_options['is_image'];
                     if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_width'] !== undefined)
                         this.urlIframeWidth = this.form.document_options['forced_iframe_width'];
                     if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_height'] !== undefined)

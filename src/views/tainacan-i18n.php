@@ -598,6 +598,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_amount_of_metadata_of_type'	 			 =>	__( 'Amount of metadata of this type', 'tainacan'),
 	'label_document_option_iframe_height'			 =>	__( 'Iframe height (px)', 'tainacan'),
 	'label_document_option_iframe_width'			 =>	__( 'Iframe width (px)', 'tainacan'),
+	'label_document_option_is_image'				 => __( 'Is link to external image', 'tainacan' ),
 	'label_limit_max_values'						 => __( 'Limit the amount of multiple values', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
@@ -887,6 +888,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_metadata_autocomplete_suggestions'		 => __( 'Some values already used on this metadatum:', 'tainacan' ),
 	'info_related_items'							 => __( 'These are items that are related to this item via their own relationship type metadata. You can edit such relation on their pages.', 'tainacan'),
 	'info_document_option_forced_iframe'			 => __( 'Attempt to use an iframe to embed url content on the item page. You may use this option if the autoembed do not work.', 'tainacan'),
+	'info_document_option_is_image'					 => __( 'If you are linking directly to an external image, use this option so it can be properly embeded.', 'tainacan' ),
 	'info_applied_filters'							 => __( 'filters applied', 'tainacan'),
 	'info_items_found'							 	 => __( 'items found', 'tainacan'),
 	'info_applied_filter'							 => __( 'filter applied', 'tainacan'),
