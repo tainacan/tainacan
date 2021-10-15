@@ -719,10 +719,8 @@ class Item extends Entity {
 
 				if ( $document_options && isset($document_options['forced_iframe']) && $document_options['forced_iframe'] === true ) {
 
-					$headers = get_headers($url, 1);
-
 					// URL points to an image file
-					if (strpos($headers['Content-Type'], 'image/') !== false) {
+					if (isset($document_options['is_image']) && $document_options['is_image'] === true) {
 						$_embed = sprintf('<a href="%s" target="blank"><img src="%s" /></a>', $url, $url);
 
 					// URL points to a content that is not an image

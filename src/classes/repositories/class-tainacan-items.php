@@ -117,6 +117,13 @@ class Items extends Repository {
 						'context'     => array( 'view', 'edit', 'embed' ),
 						'default'     => false
 					),
+					'is_image' => array(
+						'title' => __( 'Is link to external image', 'tainacan' ),
+						'description' => __( 'Is link to external image', 'tainacan' ),
+						'type'        => 'boolean',
+						'context'     => array( 'view', 'edit', 'embed' ),
+						'default'     => false
+					),
 					'forced_iframe_height'      => array(
 						'description' => __( 'Iframe height (px)', 'tainacan' ),
 						'type'        => 'number',
