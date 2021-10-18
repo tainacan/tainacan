@@ -4,9 +4,10 @@
                 :can-cancel="false"
                 :active.sync="isLoadingMetadatumMappers"/>
         <b-field>
-            <p style="line-height: 2.5em;">{{ $i18n.get('info_metadata_mapper_helper') }}</p>
+            <p style="line-height: 2em;">{{ $i18n.get('info_metadata_mapper_helper') }}</p>
             <b-select
                     id="mappers-options-dropdown"
+                    size="is-small"
                     :placeholder="$i18n.get('instruction_select_a_mapper')"
                     :value="mapper"
                     @input="onSelectMetadataMapper($event)">

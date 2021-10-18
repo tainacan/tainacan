@@ -32,7 +32,8 @@
         &[disabled=disabled] {
             background: var(--tainacan-gray1) !important;
         }
-        &:hover {
+        &:hover,
+        &:focus {
             color: var(--tainacan-input-color) !important;
         }
         

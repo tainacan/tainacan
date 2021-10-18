@@ -346,8 +346,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_from_source_collection'                   => __( 'From source file', 'tainacan' ),
 	/* translators: Header of the column where the existing collection metadata are in the Mapping Metadata Importer screen */
 	'label_to_target_collection'                     => __( 'To target collection', 'tainacan' ),
-	'label_from_source_mapper'                       => __( 'From the collection metadata', 'tainacan' ),
-	'label_to_target_mapper'                         => __( 'To the mapped value', 'tainacan' ),
+	'label_from_source_mapper'                       => __( 'This collection metadata', 'tainacan' ),
+	'label_to_target_mapper'                         => __( 'Will be mapped as this metadata', 'tainacan' ),
 	'label_add_value'                                => __( 'Add value', 'tainacan' ),
 	'label_remove_value'                             => __( 'Remove value', 'tainacan' ),
 	'label_create_new_page'                          => __( 'Create new page', 'tainacan' ),
