@@ -725,6 +725,7 @@ export default {
         .b-tabs .tab-content {
             overflow: visible;
             min-height: 300px;
+            padding-bottom: 0;
         }
 
         .column {

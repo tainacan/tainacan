@@ -47,37 +47,40 @@
                     v-if="importerSourceInfo != undefined && 
                             importerSourceInfo != null &&
                             !isLoading">
-                <a
-                        v-if="importerSourceInfo.source_metadata && importerSourceInfo.source_metadata.length > 0"
-                        style="margin-left: 2rem; font-size: 0.875em;"
-                        class="is-inline is-pulled-right add-link has-text-secondary"
-                        @click="createAllMetadata()">
-                    <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-approvedcircle"/>
-                    </span>
-                    {{ $i18n.get('label_set_all_create_metadada') }}
-                </a>
-                <a
-                        v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata &&importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
-                        style="font-size: 0.875em;"
-                        class="is-inline is-pulled-right add-link has-text-secondary"
-                        @click="createNewMetadatum()">
-                    <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-add"/>
-                    </span>
-                    {{ $i18n.get('label_add_more_metadata') }}
-                </a>
+                <div class="mapping-control">
+                    <a
+                            v-if="importerSourceInfo.source_metadata && importerSourceInfo.source_metadata.length > 0"
+                            style="margin-left: 2rem; font-size: 0.875em;"
+                            class="is-inline is-pulled-right add-link has-text-secondary"
+                            @click="createAllMetadata()">
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-approvedcircle"/>
+                        </span>
+                        {{ $i18n.get('label_set_all_create_metadada') }}
+                    </a>
+                    <a
+                            v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata &&importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
+                            style="font-size: 0.875em;"
+                            class="is-inline is-pulled-right add-link has-text-secondary"
+                            @click="createNewMetadatum()">
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-add"/>
+                        </span>
+                        {{ $i18n.get('label_add_more_metadata') }}
+                    </a>
+                </div>
                 <div 
                         class="mapping-header"
                         v-if="importerSourceInfo.source_metadata.length > 0 || (importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0)">
                     <p>{{ $i18n.get('label_from_source_collection') }}</p>
                     <hr>
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-pointer" />
+                        <i class="tainacan-icon tainacan-icon-pointer tainacan-icon-1-25em" />
                     </span>
                     <hr>
                     <p>{{ $i18n.get('label_to_target_collection') }}</p>
                 </div>
+
                 <div
                         class="source-metadatum"
                         v-for="(sourceMetadatum, index) of importerSourceInfo.source_metadata"
@@ -195,8 +198,11 @@
                     <p style="font-style: italic">{{ specialField }}</p>
                     <p>{{ $i18n.get('info_special_fields_mapped_default') }}</p>
                 </div>
+                
                 <p v-if="importerSourceInfo.source_metadata.length <= 0">{{ $i18n.get('info_no_metadata_source_file') }}<br></p>
+                
                 <p v-if="(!importerSourceInfo.source_special_fields || importerSourceInfo.source_special_fields.length <= 0)">{{ $i18n.get('info_no_special_fields_available') }}<br></p>
+                
                 <b-modal 
                         @close="onMetadatumEditionCanceled()"
                         :active.sync="isNewMetadatumModalActive"
@@ -837,6 +843,10 @@ export default {
         }
     }
 
+    .page-container {
+        padding-bottom: 0;
+    }
+
     .field {
         position: relative;
     }
@@ -850,6 +860,13 @@ export default {
 
     .form-submit {
         margin-top: 24px;
+        position: sticky !important;
+        bottom: 0;
+        background: var(--tainacan-background-color, white);
+        z-index: 9;
+        padding: 12px;
+        border-top: 1px solid  var(--tainacan-gray3);
+        box-shadow: 0 -5px 12px -14px var(--tainacan-gray5);
     }
 
     .section-label {
@@ -860,22 +877,40 @@ export default {
     }
 
     .source-metadatum {
-        padding: 2px 0 2px 8px;
+        padding: 2px 0;
         min-height: 35px;
-        border-bottom: 1px solid var(--tainacan-gray2);
-        width: 100%;
-        margin-bottom: 6px;
+        width: calc(100% - 32px);
+        margin: 3px 16px 6px 16px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        flex-wrap: wrap;
+        position: relative;
         
+        &::before {
+            display: block;
+            content: '';
+            position: absolute;
+            height: 1px;
+            width: 100%;
+            background-color: var(--tainacan-gray2);
+            z-index: -1;
+        }
         &>p {
             font-weight: normal;
             transition: font-weight 0.1s ease;
+            padding-right: 6px;
+            overflow: hidden;
+            word-wrap: break-word;
+            background-color: var(--tainacan-background-color, white);
         }
-
+        .control {
+            max-width: 60%;
+        }
         &:hover {
+            --tainacan-input-border-color: var(--tainacan-gray4);
+            &::before {
+                background-color: var(--tainacan-gray4);
+            }
             &>p {
                 font-weight: bold;
             }
@@ -907,11 +942,23 @@ export default {
     .is-inline .control{
         display: inline;
     }
-    .drop-inner{
+    .drop-inner {
         padding: 1em 3em;
     }
 
+    .mapping-control {
+        background-color: var(--tainacan-background-color, white);
+        position: sticky;
+        top: -34px;
+        z-index: 9;
+        height: 2.5rem;
+        padding-top: 12px;
+    }
     .mapping-header {
+        background-color: var(--tainacan-background-color, white);
+        position: sticky;
+        top: 0;
+        z-index: 9;
         width: 100%;
         display: flex;
         justify-content: space-between;
@@ -919,7 +966,9 @@ export default {
         color: var(--tainacan-info-color);
         font-size: 0.875em;
         font-weight: bold;
-        margin: 18px 0 6px 0;
+        margin: 0 0 12px 0;
+        border-bottom: 1px solid var(--tainacan-gray3);
+        box-shadow: 0 5px 12px -14px var(--tainacan-gray5);
 
         p {
             white-space: nowrap;
@@ -929,6 +978,7 @@ export default {
             margin-left: 12px;
             margin-right: 12px;
             height: 1px;
+            background: linear-gradient(90deg, #f2f2f2 ,#dbdbdb, #f2f2f2);
         }
 
         @media screen and (max-width: 768px) {

@@ -346,6 +346,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_from_source_collection'                   => __( 'From source file', 'tainacan' ),
 	/* translators: Header of the column where the existing collection metadata are in the Mapping Metadata Importer screen */
 	'label_to_target_collection'                     => __( 'To target collection', 'tainacan' ),
+	'label_from_source_mapper'                       => __( 'From the collection metadata', 'tainacan' ),
+	'label_to_target_mapper'                         => __( 'To the mapped value', 'tainacan' ),
 	'label_add_value'                                => __( 'Add value', 'tainacan' ),
 	'label_remove_value'                             => __( 'Remove value', 'tainacan' ),
 	'label_create_new_page'                          => __( 'Create new page', 'tainacan' ),
@@ -894,6 +896,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_applied_filter'							 => __( 'filter applied', 'tainacan'),
 	'info_item_found'							 	 => __( 'item found', 'tainacan'),
 	'info_iframe_dimensions'						 => __( 'The dimension values will be passed to the iframe, but it\'s rendering may change according to the theme display settings. It is still important to keep an aproximate aspect ratio to the inner content.', 'tainacan'),
+	'info_metadata_mapper_helper'					 => __(	'Select the corresponding metadata so they can be exposed according to the mapper', 'tainacan'),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
