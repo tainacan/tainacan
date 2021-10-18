@@ -59,6 +59,8 @@ class Term extends Entity {
 		$term_array = parent::_toArray();
 
 		$term_id = $term_array['term_id'];
+		$taxonomy_slug = $this->get_taxonomy();
+		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 
 		unset($term_array['term_id']);
 		unset($term_array['status']);
@@ -66,6 +68,7 @@ class Term extends Entity {
 		$term_array['id']           = $term_id;
 		$term_array['header_image'] = $this->get_header_image();
 		$term_array['url']          = get_term_link( $this->get_id() );
+		$term_array['hierarchy_path'] = get_term_parents_list($term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false]);
 
 		return apply_filters('tainacan-term-to-array', $term_array, $this);
 	}
