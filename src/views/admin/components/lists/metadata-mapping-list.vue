@@ -156,7 +156,7 @@
                 </div>
                 <b-field>
                     <b-input
-                            v-model="new_metadata_label"
+                            v-model="newMetadataLabel"
                             required
                             :placeholder="$i18n.get('label_name')"/>
                 </b-field>
@@ -165,7 +165,7 @@
                             placeholder="URI"
                             type="url"
                             required
-                            v-model="new_metadata_uri"/>
+                            v-model="newMetadataUri"/>
                 </b-field>
                 <div class="field is-grouped form-submit">
                     <div class="control">
@@ -221,6 +221,8 @@ export default {
             isMapperMetadataCreating: false,
             mappedMetadata: [],
             newMapperMetadataList: [],
+            newMetadataLabel: '',
+            newMetadataUri: ''
         }
     },
     computed: {
@@ -228,7 +230,7 @@ export default {
             return this.getMetadatumMappers();
         },
         isNewMetadataMapperMetadataDisabled() {
-            return !this.new_metadata_label || !this.new_metadata_uri;
+            return !this.newMetadataLabel || !this.newMetadataUri;
         },
         activeMetadatumList() { 
             return this.getMetadata();
@@ -355,16 +357,16 @@ export default {
         },
         onCancelNewMetadataMapperMetadata() {
             this.isMapperMetadataCreating = false;
-            this.new_metadata_label = '';
-            this.new_metadata_uri = '';
+            this.newMetadataLabel = '';
+            this.newMetadataUri = '';
             this.new_metadata_slug = '';
         },
         onSaveNewMetadataMapperMetadata() {
             this.isMapperMetadataLoading = true;
             var newMapperMetadata = {
-                    label: this.new_metadata_label,
-                    uri: this.new_metadata_uri,
-                    slug: this.stringToSlug(this.new_metadata_label),
+                    label: this.newMetadataLabel,
+                    uri: this.newMetadataUri,
+                    slug: this.stringToSlug(this.newMetadataLabel),
                     isCustom: true
             };
             var selected = '';
@@ -384,8 +386,8 @@ export default {
             this.newMapperMetadataList.push(newMapperMetadata);
             newMapperMetadata.selected = selected;
             this.mapperMetadata.push(newMapperMetadata);
-            this.new_metadata_label = '';
-            this.new_metadata_uri = '';
+            this.newMetadataLabel = '';
+            this.newMetadataUri = '';
             this.new_metadata_slug = '';
             this.isMapperMetadataCreating = false;
             this.isMapperMetadataLoading = false;
@@ -410,8 +412,8 @@ export default {
             return str;
         },
         editMetadatumCustomMapper(customMapperMeta) {
-            this.new_metadata_label = customMapperMeta.label;
-            this.new_metadata_uri = customMapperMeta.uri;
+            this.newMetadataLabel = customMapperMeta.label;
+            this.newMetadataUri = customMapperMeta.uri;
             this.new_metadata_slug = customMapperMeta.slug;
             this.isMapperMetadataCreating = true;
         },
