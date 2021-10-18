@@ -61,8 +61,13 @@ $pswp__include-minimal-style: true !default;
         align-items: center;
         margin: 0;
 
-        &[data-pswp-uid]:not([data-pswp-uid='']) li.swiper-slide img {
+        &[data-pswp-uid]:not([data-pswp-uid='']) li.swiper-slide .swiper-slide-content {
             cursor: zoom-in !important;
+            iframe,
+            video,
+            audio {
+                pointer-events: none;
+            }
         }
     }
     li.swiper-slide {
@@ -341,7 +346,7 @@ $pswp__include-minimal-style: true !default;
     }
     .pswp__button--arrow--left::before,
     .pswp__button--arrow--right::before {
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: transparent;
     }
     
     .pswp__container {
