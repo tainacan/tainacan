@@ -130,6 +130,18 @@
                                         style="padding: 0px 0px 0px 34px">
                                     {{ $i18n.get('info_iframe_dimensions') }}
                                 </p>
+                                <b-field
+                                        v-if="form.document_options && form.document_options.forced_iframe"
+                                        :addons="false"
+                                        :label="$i18n.get('label_document_option_is_image')">
+                                        &nbsp;
+                                    <b-switch
+                                            size="is-small" 
+                                            v-model="form.document_options.is_image" />
+                                    <help-button
+                                            :title="$i18n.get('label_document_option_is_image')"
+                                            :message="$i18n.get('info_document_option_is_image')" />
+                                </b-field>
                                 <br v-if="hasMoreThanOneDocumentTypeOption">
                             </div>
                             <button
@@ -553,7 +565,8 @@ export default {
                 document_options: {
                     forced_iframe: false,
                     forced_iframe_width: 600,
-                    forced_iframe_height: 450
+                    forced_iframe_height: 450,
+                    is_image: false
                 }
             },
             formErrorMessage: '',
