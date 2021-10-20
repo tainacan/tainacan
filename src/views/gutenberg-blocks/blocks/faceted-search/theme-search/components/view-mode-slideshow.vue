@@ -402,13 +402,10 @@ export default {
             immediate: true
         },
         isPlaying() {
-            if (this.isPlaying) {
-                this.intervalId = setInterval(() => {
-                    this.nextSlide();
-                }, this.slideTimeout);
-            } else {
+            if (this.isPlaying)
+                this.intervalId = setInterval(() => this.nextSlide(), this.slideTimeout);
+            else
                 clearInterval(this.intervalId);
-            }
         }
     },
     mounted() {
@@ -419,7 +416,7 @@ export default {
         window.addEventListener('keyup', this.handleKeyboardKeys);
 
         // Passes props to data value of initial position, as we will modify it
-        this.itemPosition = this.initialItemPosition;
+        this.itemPosition = (this.initialItemPosition != null && this.initialItemPosition != undefined) ? this.initialItemPosition : 0;
 
         // Builds Swiper component
         const self = this;
@@ -430,20 +427,29 @@ export default {
             slidesPerView: 24,
             spaceBetween: 12,
             centeredSlides: true,
-            centerInsufficientSlides: true,
+            centerInsufficientSlides: false,
             slideToClickedSlide: true,
             breakpoints: {
                 320: { slidesPerView: 4 },
                 480: { slidesPerView: 5 },
-                640: { slidesPerView: 6 },
+                520: { slidesPerView: 6 },
+                680: { slidesPerView: 7 },
                 768: { slidesPerView: 8 },
+                960: { slidesPerView: 9 },
                 1024: { slidesPerView: 10 },
-                1366: { slidesPerView: 12 },
+                1080: { slidesPerView: 11 },
+                1280: { slidesPerView: 12 },
+                1366: { slidesPerView: 13 },
                 1406: { slidesPerView: 14 },
+                1500: { slidesPerView: 15 },
                 1600: { slidesPerView: 16 },
+                1812: { slidesPerView: 17 },
                 1920: { slidesPerView: 18 },
+                2048: { slidesPerView: 19 },
                 2160: { slidesPerView: 20 },
-                2400: { slidesPerView: 22 }
+                2280: { slidesPerView: 21 },
+                2400: { slidesPerView: 22 },
+                2500: { slidesPerView: 23 }
             },
             virtual: {
                 slides: self.slideItems,
@@ -480,9 +486,8 @@ export default {
         window.removeEventListener('keyup', this.handleKeyboardKeys);
 
         clearInterval(this.intervalId);
-        if (this.swiper) {
+        if (this.swiper)
             this.swiper.destroy();
-        }
     },
     methods: {
         ...mapActions('item', [
@@ -518,7 +523,7 @@ export default {
             if (this.swiper)
                 this.swiper.slideTo(index);
         },
-        nextSlide() { 
+        nextSlide() {
             if (this.swiper)
                 this.swiper.slideNext();
         },
