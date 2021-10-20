@@ -8,9 +8,8 @@
             }">
         <span 
                 class="term-name" 
-                :class="{'is-danger': formWithErrors == term.id }">
-            {{ term.name }}
-        </span>
+                :class="{'is-danger': formWithErrors == term.id }"
+                v-html="term.hierarchy_path ? (`<span class='term-name-hierarchy-path'>${term.hierarchy_path}</span>${term.name}`) : term.name" />
         <span   
                 v-if="term.id != undefined"
                 class="label-details">
@@ -179,11 +178,15 @@ export default {
             margin-left: 0.4em;
             margin-right: 0.4em;
             display: inline-block;
-            max-width: 73%; 
+            max-width: 73%;
+            color: var(--tainacan-gray5);
 
             &.is-danger {
                 color: var(--tainacan-danger) !important;
             }
+        }
+        /deep/ .term-name-hierarchy-path {
+            color: var(--tainacan-gray-4);
         }
         .label-details {
             font-weight: normal;
