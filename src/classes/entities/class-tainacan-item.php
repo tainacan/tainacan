@@ -539,6 +539,10 @@ class Item extends Entity {
 	 *
 	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
 	 *                                                  Default: true
+	 * 
+	 *     @type string      $empty_value_message       Message string to display if $hide_empty is false and there is not metadata value.
+	 *                                                  Default: ''
+	 * 
 	 *     @type bool        $display_slug_as_class     Show metadata slug as a class in the div before the metadata block
 	 *                                                  Default: false
 	 *     @type string      $before                    String to be added before each metadata block
@@ -573,6 +577,7 @@ class Item extends Entity {
 			'exclude_description' => false,
 			'exclude_core' => false,
 			'hide_empty' => true,
+			'empty_value_message' => '',
 			'display_slug_as_class' => false,
 			'before' => '<div class="metadata-type-$type $id">',
 			'after' => '</div>',
@@ -582,11 +587,10 @@ class Item extends Entity {
 			'after_value' => '</p>',
 		);
 		$args = wp_parse_args($args, $defaults);
-
+		
 		if (!is_null($args['metadata'])) {
 
 			$metadatum_object = null;
-
 			if ( $metadatum instanceof \Tainacan\Entities\Metadatum ) {
 				$metadatum_object = $metadatum;
 			} elseif ( is_int($metadatum) ) {
@@ -610,7 +614,6 @@ class Item extends Entity {
 				}
 
 				$mto = $metadatum_object->get_metadata_type_object();
-
 				$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($this, $metadatum_object);
 				if ($item_meta->has_value() || !$args['hide_empty']) {
 					$before = str_replace('$type', $mto->get_slug(), $args['before']);
@@ -622,7 +625,7 @@ class Item extends Entity {
 					}
 					$return .= $before;
 					$return .= $args['before_title'] . $metadatum_object->get_name() . $args['after_title'];
-					$return .= $args['before_value'] . $item_meta->get_value_as_html() . $args['after_value'];
+					$return .= $args['before_value'] . ( $item_meta->has_value() ? $item_meta->get_value_as_html() : $args['empty_value_message'] ) . $args['after_value'];
 					$return .= $args['after'];
 				}
 
@@ -631,8 +634,6 @@ class Item extends Entity {
 			return $return;
 
 		}
-
-
 
 		$query_args = [];
 		$post__in = [];
@@ -693,7 +694,7 @@ class Item extends Entity {
 				}
 				$return .= $before;
 				$return .= $args['before_title'] . $item_meta->get_metadatum()->get_name() . $args['after_title'];
-				$return .= $args['before_value'] . $item_meta->get_value_as_html() . $args['after_value'];
+				$return .= $args['before_value'] . ( $item_meta->has_value() ? $item_meta->get_value_as_html() : $args['empty_value_message'] ) . $args['after_value'];
 				$return .= $args['after'];
 
 			}

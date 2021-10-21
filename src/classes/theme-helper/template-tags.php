@@ -24,6 +24,7 @@ use \Tainacan\Repositories;
 	 *     @type bool		 $exclude_core				Exclude Core Metadata (title and description) from result. Default false
 	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
 	 *                                                  Default: true
+	 *     @type string      $empty_value_message       Message string to display if $hide_empty is false and there is not metadata value. Default ''
 	 *     @type string      $before                    String to be added before each metadata block
 	 *                                                  Default '<div class="metadata-type-$type">' where $type is the metadata type slug
 	 *     @type string      $after		                String to be added after each metadata block
