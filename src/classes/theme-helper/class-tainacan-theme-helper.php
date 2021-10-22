@@ -862,7 +862,7 @@ class Theme_Helper {
 			'collection_text_color' => '#ffffff',
 			'tainacan_api_root' => '',
 			'tainacan_base_url' => '',
-			'class_name' => '',
+			'class_name' => ''
 		);
 		$args = wp_parse_args($args, $defaults);
 
@@ -880,7 +880,7 @@ class Theme_Helper {
 			$props .= (str_replace('_', '-', $key) . "='" . $value . "' ");
 		}
 		
-		return "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode' $props ></div>";
+		return "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode_" . uniqid() . "' $props ></div>";
 	} 
 
 	/**
@@ -956,7 +956,7 @@ class Theme_Helper {
 			$props .= (str_replace('_', '-', $key) . "='" . $value . "' ");
 		}
 		
-		return "<div data-module='dynamic-items-list' id='tainacan-dynamic-items-list-shortcode' $props ></div>";
+		return "<div data-module='dynamic-items-list' id='tainacan-dynamic-items-list-shortcode_" . uniqid(). "' $props ></div>";
 	} 
 
 	/**
