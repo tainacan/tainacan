@@ -236,7 +236,7 @@
         &>div video,
         &>div.tainacan-embed-container {
             width: 100%;
-            max-width: 100vh;
+            max-width: 100vw;
             text-align: center;
             color: var(--tainacan-white);
             max-height: calc(100vh - 115px);
