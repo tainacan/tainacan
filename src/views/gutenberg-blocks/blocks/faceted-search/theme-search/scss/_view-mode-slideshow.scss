@@ -30,6 +30,7 @@
 .metadata-menu.tainacan-form {
     background-color: var(--tainacan-black);
     position: absolute;
+    top: 0 !important;
     z-index: 10;
     width: 20.83% !important;
     min-width: 180px;
@@ -52,7 +53,6 @@
         }
     }
     @media screen and (min-width: 769px) {
-        top: 0px !important;
         right: 0;
     }
 
@@ -331,8 +331,8 @@
         }
         .circular-counter {
             position: absolute;
-            right: calc(var(--tainacan-one-column) - 2px);
-            top: -8px;
+            right: calc(var(--tainacan-one-column) - 5px);
+            top: -7px;
         }
     }
 }
