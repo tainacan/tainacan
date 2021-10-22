@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="isCreatingNewItem ? 'item-creation-container' : 'item-edition-container'"><!-- Do NOT remove this classes, they may be used by third party plugins -->
         <b-loading
                 :is-full-page="false"
                 :active.sync="isLoading"
