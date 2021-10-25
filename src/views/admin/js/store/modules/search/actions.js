@@ -91,7 +91,11 @@ export const setOrderBy = ({ state, commit }, orderBy ) => {
     commit('removePostQueryAttribute', 'orderby');
     
     // Primitive Types: string, date, item, term, compound, float
-    if (orderBy.slug == 'creation_date') {
+    if (orderBy.slug == 'modification_date') {
+        commit('setPostQueryAttribute', {  attr: 'orderby', value: 'modified' } );
+        commit('removePostQueryAttribute', 'metakey');
+        commit('removePostQueryAttribute', 'metatype');
+    } else if (orderBy.slug == 'creation_date') {
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'date' } );
         commit('removePostQueryAttribute', 'metakey');
         commit('removePostQueryAttribute', 'metatype');

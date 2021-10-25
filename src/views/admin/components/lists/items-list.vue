@@ -785,10 +785,10 @@
                             <span
                                     v-for="(column, metadatumIndex) in displayedMetadata"
                                     :key="metadatumIndex"
-                                    v-if="(column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
+                                    v-if="(column.metadatum == 'row_mdification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
                                 <h3 class="metadata-label">{{ column.name }}</h3>
                                 <p
-                                        v-html="column.metadatum == 'row_creation' ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
+                                        v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
                                         class="metadata-value"/>
                             </span>
                         </div>
@@ -954,6 +954,7 @@
                                           column.metadatum !== 'row_thumbnail' &&
                                           column.metadatum !== 'row_actions' &&
                                           column.metadatum !== 'row_creation' &&
+                                          column.metadatum !== 'row_modification' &&
                                           column.metadatum !== 'row_author' &&
                                           column.metadatum !== 'row_title' &&
                                           column.metadatum !== 'row_description'"
@@ -984,6 +985,20 @@
                                     }"
                                     v-if="column.metadatum == 'row_author'">
                                     {{ item[column.slug] }}
+                            </p>
+                            <p
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: parseDateToNavigatorLanguage(item[column.slug]),
+                                        html: true,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-if="column.metadatum == 'row_modification'">
+                                    {{ parseDateToNavigatorLanguage(item[column.slug]) }}
                             </p>
                             <p
                                     v-tooltip="{
@@ -1225,10 +1240,10 @@
                             <span
                                     v-for="(column, metadatumIndex) in displayedMetadata"
                                     :key="metadatumIndex"
-                                    v-if="(column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
+                                    v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
                                 <h3 class="metadata-label">{{ column.name }}</h3>
                                 <p
-                                        v-html="column.metadatum == 'row_creation' ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
+                                        v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
                                         class="metadata-value"/>
                             </span>
                         </div>

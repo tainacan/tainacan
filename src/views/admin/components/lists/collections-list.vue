@@ -109,6 +109,10 @@
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_description') }}</div>
                         </th>
+                        <!-- Modification Date -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_modification_date') }}</div>
+                        </th>
                         <!-- Creation Date -->
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_creation_date') }}</div>
@@ -213,6 +217,26 @@
                                         placement: 'auto-start'
                                     }" 
                                     v-html="(collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`"/>
+                        </td>
+                        <!-- Modification Date -->
+                        <td
+                                @click.left="onClickCollection($event, collection.id, index)"
+                                @click.right="onRightClickCollection($event, collection.id, index)"
+                                class="table-modification column-default-width" 
+                                :label="$i18n.get('label_modification_date')" 
+                                :aria-label="$i18n.get('label_modification_date') + ': ' + collection.modification_date">
+                            <p
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: collection.modification_date,
+                                        autoHide: false,
+                                        classes: ['tooltip', 'repository-tooltip'],
+                                        placement: 'auto-start'
+                                    }" 
+                                    v-html="collection.modification_date" />
                         </td>
                         <!-- Creation Date -->
                         <td
