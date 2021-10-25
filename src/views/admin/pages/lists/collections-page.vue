@@ -9,7 +9,7 @@
             <div 
                     v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
                     class="header-item">
-                <b-dropdown 
+                <b-dropdown
                         aria-role="list"
                         id="collection-creation-options-dropdown"
                         trap-focus>
@@ -55,6 +55,54 @@
                     </b-dropdown-item>
                 </b-dropdown>
             </div>
+
+            <!-- Collection Taxonomies, if available -->
+            <template v-if="Object.values(collectionTaxonomies) && Object.values(collectionTaxonomies).length >= 0">
+                <b-field 
+                        v-for="(collectionTaxonomy, taxonomyValue) in collectionTaxonomies"
+                        :key="taxonomyValue"
+                        class="header-item">
+                    <b-dropdown
+                            :ref="'collectionTaxonomyFilterDropdown-' + taxonomyValue"
+                            :mobile-modal="true"
+                            :disabled="(totalCollections && totalCollections.length && totalCollections.length <= 0) || isLoading"
+                            class="show metadata-options-dropdown"
+                            aria-role="list"
+                            trap-focus>
+                        <button
+                                :aria-label="collectionTaxonomy['taxonomyName']"
+                                class="button is-white"
+                                slot="trigger">
+                            <span>{{ collectionTaxonomy['taxonomyName'] }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                        </button>
+                        <div class="metadata-options-container">
+                            <b-dropdown-item
+                                    v-for="(collectionTaxonomyTerm, index) in collectionTaxonomy['terms']"
+                                    :key="index"
+                                    class="control"
+                                    custom
+                                    aria-role="listitem">
+                                <b-checkbox
+                                        v-model="collectionTaxonomyTerm.enabled"
+                                        :native-value="collectionTaxonomyTerm.enabled">
+                                    {{ collectionTaxonomyTerm.name }}
+                                </b-checkbox>
+                            </b-dropdown-item>   
+                        </div>
+                        <div class="dropdown-item-apply">
+                            <button 
+                                    aria-controls="items-list-results"
+                                    @click="onChangeCollectionTaxonomyTerms(taxonomyValue)"
+                                    class="button is-success">
+                                {{ $i18n.get('label_apply_changes') }}
+                            </button>
+                        </div>  
+                    </b-dropdown>
+                </b-field>
+            </template>
 
             <!-- Sorting options ----  -->
             <b-field class="header-item">
@@ -349,6 +397,45 @@ export default {
         },
         repositoryTotalCollections(){
             return this.getRepositoryTotalCollections();
+        },
+        collectionTaxonomies() {
+            return {
+                taxonomy1: {
+                    taxonomyName: 'Taxonomy 1',
+                    terms: [
+                        {
+                            name: 'Teste 1',
+                            value: 'teste1',
+                            enabled: false
+                        },
+                        {
+                            name: 'Teste 2',
+                            value: 'teste2',
+                            enabled: false
+                        },
+                        {
+                            name: 'Teste 3',
+                            value: 'teste3',
+                            enabled: false
+                        }
+                    ]
+                },
+                taxonomy2: {
+                    taxonomyName: 'Taxonomy 2',
+                    terms: [
+                        {
+                            name: 'Teste 1',
+                            value: 'teste1',
+                            enabled: false
+                        },
+                        {
+                            name: 'Teste 2',
+                            value: 'teste2',
+                            enabled: false
+                        }
+                    ]
+                }
+            }
         }
     },
     created() {
@@ -448,6 +535,16 @@ export default {
             this.page = page;
             this.loadCollections();
         },
+        onChangeCollectionTaxonomyTerms(taxonomyValue) {
+
+            console.log(this.collectionTaxonomies[taxonomyValue])
+
+            this.loadCollections();
+
+            // Closes dropdown
+            if (this.$refs['collectionTaxonomyFilterDropdown-' + taxonomyValue] && this.$refs['collectionTaxonomyFilterDropdown-' + taxonomyValue][0])
+                this.$refs['collectionTaxonomyFilterDropdown-' + taxonomyValue][0].toggle();
+        },
         loadCollections() {
             this.cleanCollections();
             this.isLoading = true;
@@ -458,7 +555,8 @@ export default {
                 contextEdit: true, 
                 order: this.order,
                 orderby: this.orderBy,
-                search: this.searchQuery
+                search: this.searchQuery,
+                collectionTaxonomies: this.collectionTaxonomies,
             })
             .then((res) => {
                 this.isLoading = false;
@@ -514,7 +612,7 @@ export default {
                 margin-right: auto;
             }
             &:not(:last-child) {
-                padding-right: 0.5em;
+                padding-right: 0.875em;
             }
 
             .label {
@@ -529,7 +627,6 @@ export default {
                 .button {
                     display: flex;
                     align-items: center;
-                    border-radius: 0 !important;
                     height: 1.95em !important;
                 }
             }
@@ -556,6 +653,34 @@ export default {
                 height: 27px;
                 font-size: 1.125em !important;
                 height: 1.75em
+            }
+
+            .dropdown-menu {
+                display: block;
+
+                div.dropdown-content {
+                    padding: 0;
+
+                    .metadata-options-container {
+                        max-height: 288px;
+                        overflow: auto;
+                    }
+                    .dropdown-item {
+                        padding: 0.25em 1.0em 0.25em 0.75em; 
+                    }
+                    .dropdown-item span{
+                        vertical-align: middle;
+                    }      
+                    .dropdown-item-apply {
+                        width: 100%;
+                        border-top: 1px solid var(--tainacan-skeleton-color);
+                        padding: 8px 12px;
+                        text-align: right;
+                    }
+                    .dropdown-item-apply .button {
+                        width: 100%;
+                    }
+                }
             }
         }
 

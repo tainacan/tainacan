@@ -140,7 +140,7 @@ export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
     });
 };
  
-export const fetchCollections = ({commit} , { page, collectionsPerPage, status, contextEdit, order, orderby, search }) => {
+export const fetchCollections = ({commit} , { page, collectionsPerPage, status, contextEdit, order, orderby, search, collectionTaxonomies }) => {
     
     return new Promise((resolve, reject) => {
         let endpoint = '/collections?paged='+page+'&perpage='+collectionsPerPage;
@@ -156,6 +156,30 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
         
         if (search != undefined && search != '')
             endpoint = endpoint + '&search=' + search;
+            
+        if (collectionTaxonomies != undefined && collectionTaxonomies != '' && Object.keys(collectionTaxonomies).length) {
+            let taxQuery = { 'tax_query': [] };
+            
+            Object.keys(collectionTaxonomies).forEach((taxonomyValue) => {
+                
+                const enabledTerms = (
+                        collectionTaxonomies[taxonomyValue] &&
+                        collectionTaxonomies[taxonomyValue]['terms'] &&
+                        collectionTaxonomies[taxonomyValue]['terms'].length
+                    ) ? collectionTaxonomies[taxonomyValue]['terms'].filter(term => term.enabled == true) : [];
+                
+                if (enabledTerms.length ) {
+                    taxQuery['tax_query'].push({
+                        taxonomy: taxonomyValue,
+                        operator: 'IN',
+                        terms: enabledTerms.map(term => term.value)
+                    });
+                }
+            });
+
+            if (taxQuery['tax_query'].length)
+                endpoint = endpoint + '&' + qs.stringify(taxQuery);
+        }
 
         axios.tainacan.get(endpoint)
             .then(res => {
