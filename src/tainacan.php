@@ -44,3 +44,82 @@ add_action('init', ['Tainacan\Migrations', 'run_migrations']);
 add_filter( 'wp_untrash_post_status', function( $new_status, $post_id, $previous_status ) {
 	return $previous_status;
 }, 10, 3 );
+
+/*
+ *
+ * Adds Edit links to Tainacan item and collection pages
+ */
+function tainacan_add_admin_bar_items ( WP_Admin_Bar $admin_bar ) {
+
+	// No need to add this shortcuts on the admin
+	if ( !is_admin() ) {
+
+		// We should only do this in singular pages, as the items list also return the first item on loop
+		if ( is_singular() ) {
+
+			$item = tainacan_get_item();
+
+			// There should exist a Tainacan item and the user should have permission for this
+			if ( isset($item) && $item->can_edit() ) {
+				
+				$url = $item->get_edit_url();
+			
+				// The item edition link must be valid!
+				if ( $url ) {
+			
+					$admin_bar->add_menu( array(
+						'id'    => 'tainacan-item-edition-link',
+						'parent' => null,
+						'group'  => null,
+						'title' => _( 'Edit item', 'tainacan' ),
+						'href'  => $url,
+						'meta' => [
+							'title' => __( 'Edit this item on Tainacan Admin', 'tainacan' )
+						]
+					) );
+			
+				}
+			}
+		}
+
+		// In the collection and items list, we can also display links
+		else if ( is_archive() ) {
+
+			$collection = tainacan_get_collection();
+
+			// There should exist a Tainacan collection and the user should have permission for edit it
+			if ( $collection && $collection->can_edit() ) {
+
+				$url = admin_url( '?page=tainacan_admin#/collections/' . $collection->get_ID() . '/settings' );
+
+				$admin_bar->add_menu( array(
+					'id'    => 'tainacan-collection-edition-link',
+					'parent' => null,
+					'group'  => null,
+					'title' => _( 'Edit collection', 'tainacan' ),
+					'href'  => $url,
+					'meta' => [
+						'title' => __( 'Edit this collection on Tainacan Admin', 'tainacan' )
+					]
+				) );
+
+			// If no single collection is found, we may be in a collections list
+			} else if ( is_post_type_archive('tainacan-collection') ) {
+
+				$url = admin_url( '?page=tainacan_admin#/collections/' );
+
+				$admin_bar->add_menu( array(
+					'id'    => 'tainacan-collections-edition-link',
+					'parent' => null,
+					'group'  => null,
+					'title' => _( 'Edit collections', 'tainacan' ),
+					'href'  => $url,
+					'meta' => [
+						'title' => __( 'Edit the collections on Tainacan Admin', 'tainacan' )
+					]
+				) );
+			}
+		}
+	}
+}
+add_action( 'admin_bar_menu', 'tainacan_add_admin_bar_items', 500 );
