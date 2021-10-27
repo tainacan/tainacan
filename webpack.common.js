@@ -40,7 +40,10 @@ module.exports = {
             {
                 test: /\.vue$/,
                 exclude: /node_modules/,
-                loader: 'vue-loader'
+                loader: 'vue-loader',
+                options: {
+                    prettify: false
+                }
             },
             {
                 test: /\.js$/,
@@ -92,7 +95,7 @@ module.exports = {
             'PhotoSwipe': 'PhotoSwipe'
         }),
         new MomentLocalesPlugin({
-            localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'es-in', 'pt-br', 'pt', 'es', 'es-us', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv'],
+            localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'es-in', 'pt-br', 'pt', 'es', 'es-us', 'es-mx', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv'],
         })
     ]
 };
