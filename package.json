@@ -16,7 +16,6 @@
     "conditioner-core": "^2.3.3",
     "countup.js": "^2.0.8",
     "css-vars-ponyfill": "^2.4.7",
-    "mdi": "^2.2.43",
     "moment": "^2.25.3",
     "node-sass": "^4.14.1",
     "photoswipe": "^4.1.3",
