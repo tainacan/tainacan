@@ -60,7 +60,7 @@ function tainacan_add_admin_bar_items ( WP_Admin_Bar $admin_bar ) {
 			$item = tainacan_get_item();
 
 			// There should exist a Tainacan item and the user should have permission for this
-			if ( $item && $item->can_edit() ) {
+			if ( isset($item) && $item->can_edit() ) {
 				
 				$url = $item->get_edit_url();
 			
@@ -90,7 +90,7 @@ function tainacan_add_admin_bar_items ( WP_Admin_Bar $admin_bar ) {
 			// There should exist a Tainacan collection and the user should have permission for edit it
 			if ( $collection && $collection->can_edit() ) {
 
-				$url = admin_url( 'admin.php?page=tainacan_admin#/collections/' . $collection->get_ID() . '/settings' );
+				$url = admin_url( '?page=tainacan_admin#/collections/' . $collection->get_ID() . '/settings' );
 
 				$admin_bar->add_menu( array(
 					'id'    => 'tainacan-collection-edition-link',
@@ -106,7 +106,7 @@ function tainacan_add_admin_bar_items ( WP_Admin_Bar $admin_bar ) {
 			// If no single collection is found, we may be in a collections list
 			} else if ( is_post_type_archive('tainacan-collection') ) {
 
-				$url = admin_url( 'admin.php?page=tainacan_admin#/collections/' );
+				$url = admin_url( '?page=tainacan_admin#/collections/' );
 
 				$admin_bar->add_menu( array(
 					'id'    => 'tainacan-collections-edition-link',
