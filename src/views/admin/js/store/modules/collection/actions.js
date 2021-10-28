@@ -158,7 +158,7 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
             endpoint = endpoint + '&search=' + search;
             
         if (collectionTaxonomies != undefined && collectionTaxonomies != '' && Object.keys(collectionTaxonomies).length) {
-            let taxQuery = { 'tax_query': [] };
+            let taxQuery = { 'taxquery': [] };
             
             Object.keys(collectionTaxonomies).forEach((taxonomyValue) => {
                 
@@ -169,15 +169,15 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
                     ) ? collectionTaxonomies[taxonomyValue]['terms'].filter(term => term.enabled == true) : [];
                 
                 if (enabledTerms.length ) {
-                    taxQuery['tax_query'].push({
+                    taxQuery['taxquery'].push({
                         taxonomy: taxonomyValue,
                         operator: 'IN',
-                        terms: enabledTerms.map(term => term.value)
+                        terms: enabledTerms.map(term => term.id)
                     });
                 }
             });
 
-            if (taxQuery['tax_query'].length)
+            if (taxQuery['taxquery'].length)
                 endpoint = endpoint + '&' + qs.stringify(taxQuery);
         }
 
@@ -243,6 +243,45 @@ export const fetchCollectionBasics = ({ commit }, {collectionId, isContextEdit }
         .catch(error => {
             reject(error);
         })
+    });
+};
+
+export const fetchCollectionTaxonomies = ({ commit }) => {
+    return new Promise((resolve, reject) => { 
+        axios.wp.get('/taxonomies/?type=tainacan-collection')
+            .then(res => {
+                let taxonomies = res.data;
+                commit('setCollectionTaxonomies', taxonomies);
+
+                if (Object.keys(taxonomies).length) {
+
+                    let termsRequests = [];
+                    Object.keys(taxonomies).forEach(taxonomySlug => {
+                        if ( taxonomies[taxonomySlug]['rest_base'] ) {
+                            termsRequests.push(
+                                axios.wp.get(taxonomies[taxonomySlug]['rest_base'])
+                                    .then(resp => {
+                                       return { taxonomy: taxonomySlug, terms: resp.data };
+                                    })
+                                    .catch(error => {
+                                        reject(error);
+                                    })
+                            );
+                        }
+                    });
+                    axios.all(termsRequests)
+                        .then(result => {
+                            result.forEach(taxonomyTerms => commit('setCollectionTaxonomiesTerms', taxonomyTerms) );
+                            resolve(result.data);
+                        })
+                        .catch(error => {
+                            reject(error);
+                        })
+                }
+            })
+            .catch(error => {
+                reject(error);
+            });
     });
 };
 

@@ -57,7 +57,7 @@
             </div>
 
             <!-- Collection Taxonomies, if available -->
-            <template v-if="Object.values(collectionTaxonomies) && Object.values(collectionTaxonomies).length >= 0">
+            <template v-if="!isLoadingCollectionTaxonomies && Object.values(collectionTaxonomies) && Object.values(collectionTaxonomies).length >= 0">
                 <b-field 
                         v-for="(collectionTaxonomy, taxonomyValue) in collectionTaxonomies"
                         :key="taxonomyValue"
@@ -70,10 +70,10 @@
                             aria-role="list"
                             trap-focus>
                         <button
-                                :aria-label="collectionTaxonomy['taxonomyName']"
+                                :aria-label="collectionTaxonomy['name']"
                                 class="button is-white"
                                 slot="trigger">
-                            <span>{{ collectionTaxonomy['taxonomyName'] }}</span>
+                            <span>{{ collectionTaxonomy['name'] }}</span>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
@@ -376,6 +376,7 @@ export default {
             page: 1,
             collectionsPerPage: 12,
             isLoadingMetadatumMappers: true,
+            isLoadingCollectionTaxonomies: false,
             status: '',
             order: 'desc',
             ordeBy: 'date',
@@ -399,47 +400,22 @@ export default {
             return this.getRepositoryTotalCollections();
         },
         collectionTaxonomies() {
-            return {
-                taxonomy1: {
-                    taxonomyName: 'Taxonomy 1',
-                    terms: [
-                        {
-                            name: 'Teste 1',
-                            value: 'teste1',
-                            enabled: false
-                        },
-                        {
-                            name: 'Teste 2',
-                            value: 'teste2',
-                            enabled: false
-                        },
-                        {
-                            name: 'Teste 3',
-                            value: 'teste3',
-                            enabled: false
-                        }
-                    ]
-                },
-                taxonomy2: {
-                    taxonomyName: 'Taxonomy 2',
-                    terms: [
-                        {
-                            name: 'Teste 1',
-                            value: 'teste1',
-                            enabled: false
-                        },
-                        {
-                            name: 'Teste 2',
-                            value: 'teste2',
-                            enabled: false
-                        }
-                    ]
-                }
+            let collectionTaxonomies = this.getCollectionTaxonomies();
+
+            // Adds the 'enable' property to our local version of terms
+            if ( Object.values(collectionTaxonomies).length ) {
+                Object.values(collectionTaxonomies).forEach(collectionTaxonomy => {
+                    collectionTaxonomy.terms.forEach(aTerm => aTerm.enabled = false);
+                });
+                return collectionTaxonomies;
             }
+
+            return {};
         }
     },
     created() {
         this.collectionsPerPage = this.$userPrefs.get('collections_per_page');
+
         this.isLoadingMetadatumTypes = true;
         this.fetchMetadatumMappers()
             .then(() => {
@@ -447,6 +423,15 @@ export default {
             })
             .catch(() => {
                 this.isLoadingMetadatumMappers = false;
+            });
+        
+        this.isLoadingCollectionTaxonomies = true;
+        this.fetchCollectionTaxonomies()
+            .then(() => {
+                this.isLoadingCollectionTaxonomies = false;
+            })
+            .catch(() => {
+                this.isLoadingCollectionTaxonomies= false;
             });
     }, 
     mounted(){
@@ -477,14 +462,16 @@ export default {
     methods: {
          ...mapActions('collection', [
             'fetchCollections',
-            'cleanCollections'
+            'cleanCollections',
+            'fetchCollectionTaxonomies'
         ]),
         ...mapActions('metadata', [
             'fetchMetadatumMappers'
         ]),
         ...mapGetters('collection', [
             'getCollections',
-            'getRepositoryTotalCollections'
+            'getRepositoryTotalCollections',
+            'getCollectionTaxonomies'
         ]),
         ...mapGetters('metadata', [
             'getMetadatumMappers'
@@ -536,8 +523,6 @@ export default {
             this.loadCollections();
         },
         onChangeCollectionTaxonomyTerms(taxonomyValue) {
-
-            console.log(this.collectionTaxonomies[taxonomyValue])
 
             this.loadCollections();
 
