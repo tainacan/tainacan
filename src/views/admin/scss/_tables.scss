@@ -202,7 +202,47 @@
                             text-overflow: ellipsis;
                             overflow: hidden;
                             white-space: nowrap;
-                            max-height: 1.125em;
+                            max-height: 2.5em;
+
+                            .tainacan-relationship-group {
+                                display: inline-flex;
+                                align-items: center;
+
+                                & > .multivalue-separator {
+                                    display: inline-block;
+                                    max-height: unset;
+                                    margin: 0 1.25em;
+                                    height: 2em;
+                                    width: 1px;
+                                }
+                                .tainacan-relationship-metadatum {
+                                    display: inline-flex;
+                                    align-items: center;
+
+                                    .tainacan-relationship-metadatum-header {
+                                        display: inline-flex;
+
+                                        .label {
+                                            font-size: 1.125em;
+                                        }
+                                    }
+                                    .tainacan-metadatum {
+                                        display: inline-flex;
+                                        align-items: baseline;
+                                        margin-left: 0.75em;
+
+                                        .label {
+                                            margin-top: 0;
+                                            margin-bottom: 0;
+                                            margin-right: 0.5em;
+                                            font-size: 0.95em;
+                                        }
+                                        p {
+                                            font-size: 1.0em;
+                                        }
+                                    }
+                                }
+                            }
                         }
                         a {
                             text-decoration: none !important;

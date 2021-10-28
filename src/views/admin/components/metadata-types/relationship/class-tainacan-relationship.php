@@ -254,7 +254,7 @@ class Relationship extends Metadata_Type {
 				if ( $item_meta instanceof \Tainacan\Entities\Item_Metadata_Entity && $item_meta->get_value_as_html() != '' ) {
 					$meta_id = $item_meta->get_metadatum()->get_id();
 					$as_header = $search_meta_id == $meta_id ? $this->get_item_link($item, $search_meta_id) : false;
-					$html = $this->get_meta_html($item_meta, $item, $as_header, $thumbnail_id);
+					$html = $this->get_meta_html($item_meta, $item, $as_header, $thumbnail_id, $has_thumbnail);
 					if($as_header === false) {
 						$metadata_value[] = $html;
 					} else {
@@ -300,14 +300,14 @@ class Relationship extends Metadata_Type {
 		return $placeholder_image;
 	}
 
-	private function get_meta_html(\Tainacan\Entities\Item_Metadata_Entity $meta, \Tainacan\Entities\Item $item, $value_link = false, $thumbnail_id = false) {
+	private function get_meta_html(\Tainacan\Entities\Item_Metadata_Entity $meta, \Tainacan\Entities\Item $item, $value_link = false, $thumbnail_id = false, $should_display_thumbnail = true) {
 		$html = '';
 		if ($meta instanceof \Tainacan\Entities\Item_Metadata_Entity && !empty($meta->get_value_as_html())) {
 			ob_start();
 			if ($value_link) {
 				?>
 					<div class="tainacan-relationship-metadatum-header">
-						<?php echo $this->get_item_thumbnail($thumbnail_id, $item); ?>
+						<?php echo ($should_display_thumbnail ? $this->get_item_thumbnail($thumbnail_id, $item) : ''); ?>
 						<h4 class="label">
 							<?php echo $value_link; ?>
 						</h4>
