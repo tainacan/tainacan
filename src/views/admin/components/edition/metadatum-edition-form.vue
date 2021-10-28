@@ -532,7 +532,7 @@
             white-space: normal;
         }
         .metadata-form-section {
-            margin: 0.75em 0 0.5em 0;
+            margin: 1.5em 0 0.5em -1.5em;
             position: relative;
             cursor: pointer;
 
@@ -557,9 +557,6 @@
                 background-color: var(--tainacan-gray2);
                 margin-left: 42px;
             }
-        }
-        .metadata-form-section+.options-columns {
-            padding-left: 1.75em;
         }
 
         @media screen and (max-width: 768px) {
