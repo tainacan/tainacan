@@ -193,12 +193,13 @@
     }
 
     .form-hook-region {
-        margin-top: 0.5em;
+        margin-top: 0.75em;
         background-color: var(--tainacan-gray1);
         padding: 1em 1.5em 2em 1.5em;
-        margin-bottom: 0.5em;
+        margin-bottom: 0.75em;
+        break-inside: avoid;
 
-        h4 {
+        h3, h4, h5 {
             font-weight: 600;
             color: var(--tainacan-secondary);
             margin-bottom: 4px;

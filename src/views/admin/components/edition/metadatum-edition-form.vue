@@ -18,7 +18,9 @@
             </a> -->
             <hr>
         </div>
-        <div class="tainacan-form">
+        <div 
+                class="tainacan-form" 
+                :class="'tainacan-metadatum-edition-form--type-' + editForm.metadata_type_object.component">
             <div class="options-columns">
                 <b-field
                         :addons="false"
