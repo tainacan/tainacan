@@ -723,7 +723,17 @@
             this.$eventBusSearch.updateStoreFromURL();
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
+
                 this.isLoadingItems = isLoadingItems;
+                
+                document.dispatchEvent(new CustomEvent('tainacan-items-list-is-loading-items', {
+                    detail: { 
+                        isLoading: this.isLoadingItems,
+                        collectionId: this.collectionId,
+                        termId: this.termId,
+                        taxonomy: this.taxonomy
+                    }
+                }));
             });
 
             this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
