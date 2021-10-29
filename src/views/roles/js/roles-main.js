@@ -22,7 +22,9 @@ export default (element) => {
         if ( pageElement && pageElement.classList && !pageElement.classList.contains('has-mounted') ) {
 
             Vue.use(I18NPlugin);
-            Vue.use(VTooltip);
+            Vue.use(VTooltip, {
+                defaultClass: 'tainacan-tooltip tooltip'
+            });
             Vue.use(Snackbar);
             Vue.use(Modal);
             

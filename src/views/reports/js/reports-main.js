@@ -78,7 +78,9 @@ export default (element) => {
             Vue.use(I18NPlugin);
             Vue.use(UserCapabilitiesPlugin);
             Vue.use(StatusHelperPlugin);
-            Vue.use(VTooltip);
+            Vue.use(VTooltip, {
+                defaultClass: 'tainacan-tooltip tooltip'
+            });
             Vue.use(Snackbar);
             Vue.use(Modal);
 

@@ -179,7 +179,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -320,7 +320,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -457,7 +457,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -645,7 +645,7 @@
                                 v-tooltip="{
                                     content: $i18n.get('status_' + item.status),
                                     autoHide: true,
-                                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }">
                             <i 
@@ -876,7 +876,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -944,7 +944,7 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        classes: [ column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '' ],
+                                        classes: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '' ],
                                         content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                         html: true,
                                         autoHide: false,
@@ -1124,7 +1124,7 @@
                                 v-tooltip="{
                                     content: $i18n.get('status_' + item.status),
                                     autoHide: true,
-                                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }">
                             <i 

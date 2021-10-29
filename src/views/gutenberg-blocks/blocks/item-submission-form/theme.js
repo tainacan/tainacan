@@ -50,7 +50,9 @@ export default (element) => {
             Vue.use(Buefy, {
                 defaultTooltipAnimated: true
             });
-            Vue.use(VTooltip);
+            Vue.use(VTooltip, {
+                defaultClass: 'tainacan-tooltip tooltip'
+            });
             Vue.use(I18NPlugin);
             Vue.use(UserPrefsPlugin);
             Vue.use(StatusHelperPlugin);

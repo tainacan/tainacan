@@ -94,7 +94,7 @@
                         content: !isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
                         autoHide: false,
                         placement: 'auto-start',
-                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
                     }">
                 <span class="icon">
                     <i 
@@ -163,7 +163,7 @@
                             content: totalItems <= 0 ? $i18n.get('info_cant_select_metadata_without_items') : '',
                             autoHide: false,
                             placement: 'auto-start',
-                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                            classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
                         }" 
                         ref="displayedMetadataDropdown"
                         :mobile-modal="true"
@@ -350,7 +350,7 @@
                                         content: registeredViewModes[viewModeOption].label,
                                         autoHide: false,
                                         placement: 'auto-start',
-                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
                                     }"
                                     class="gray-icon"
                                     v-html="registeredViewModes[viewModeOption].icon"/>

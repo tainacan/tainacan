@@ -97,7 +97,9 @@ export default (element) => {
             Vue.use(Buefy, {
                 defaultTooltipAnimated: true
             });
-            Vue.use(VTooltip);
+            Vue.use(VTooltip, {
+                defaultClass: 'tainacan-tooltip tooltip'
+            });
             Vue.use(VueMasonry);
             Vue.use(VueBlurHash);
             Vue.use(I18NPlugin);
