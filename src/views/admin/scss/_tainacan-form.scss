@@ -193,18 +193,20 @@
     }
 
     .form-hook-region {
+        margin-top: 0.5em;
         background-color: var(--tainacan-gray1);
-        padding: 1em 1.875em 2em 1.875em;
+        padding: 1em 1.5em 2em 1.5em;
+        margin-bottom: 0.5em;
 
         h4 {
             font-weight: 600;
-            color: var(--tainacan-turquoise5);
-            margin-bottom: 6px;
+            color: var(--tainacan-secondary);
+            margin-bottom: 4px;
         }
         hr {
-            margin-top: 8px;
+            margin-top: 4px;
             height: 1px;
-            background-color: var(--tainacan-turquoise5);
+            background-color: var(--tainacan-secondary);
         }
     }
 }
