@@ -347,6 +347,10 @@ class Items extends Repository {
 			$args['orderby'] = $new_order;
 		}
 
+		if ( defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') || true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY ) {
+			$args = $this->parse_relationship_metaquery($args);
+		}
+
 		$args = apply_filters( 'tainacan_fetch_args', $args, 'items' );
 
 		$should_filter = is_user_logged_in() && ! isset($args['post_status']) && sizeof($cpt) > 1;
@@ -696,6 +700,42 @@ class Items extends Repository {
 		}
 
 		return $response;
+	}
+
+	private function parse_relationship_metaquery ($args) {
+		if( isset($args['meta_query']) ) {
+			$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+			foreach($args['meta_query'] as $idx => $meta) {
+				$meta_id = $meta['key'];
+				$metadata = $Tainacan_Metadata->fetch($meta_id);
+				if($metadata->get_metadata_type() === 'Tainacan\\Metadata_Types\\Relationship') 
+				{
+					$options  = $metadata->get_metadata_type_options();
+					if( isset($options) && isset($options['search']) ) {
+						$this->relationsip_metaquery = array(
+							'meta_id' => $meta_id,
+							'search_meta_id' => $options['search'],
+							'search_meta_value' => $args['meta_query'][$idx]['value']
+						);
+						$args['meta_query'][$idx]['compare'] = '!=';
+						$args['meta_query'][$idx]['value'] = '';
+						add_filter( 'posts_where' , array($this, 'posts_where_relationship_metaquery'), 10, 1 );
+						return $args;
+					}
+				}
+			}
+		}
+		return $args;
+	}
+
+	function posts_where_relationship_metaquery( $where ) {
+		$meta_id = $this->relationsip_metaquery['meta_id'];
+		$search_meta_id = $this->relationsip_metaquery['search_meta_id'];
+		$search_meta_value = $this->relationsip_metaquery['search_meta_value'];
+		$SQL_related_item = " SELECT DISTINCT post_id FROM wp_postmeta WHERE meta_key=$search_meta_id AND meta_value LIKE '%$search_meta_value%'";
+		$where .= " AND (wp_postmeta.meta_key = '$meta_id' AND wp_postmeta.meta_value IN ( $SQL_related_item ) ) ";
+		remove_filter( 'posts_where', array($this, 'posts_where_relationship_metaquery') );
+		return $where;
 	}
 
 }
