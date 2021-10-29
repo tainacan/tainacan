@@ -13,7 +13,7 @@ const state = {
         post_type: [],
         metaquery: [],
         taxquery: [],
-        fetch_only: 'thumbnail,creation_date,author_name',
+        fetch_only: 'thumbnail,modification_date,creation_date,author_name',
         fetch_only_meta: '',
         view_mode: 'table',
         admin_view_mode: 'table'

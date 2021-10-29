@@ -195,7 +195,7 @@ export default {
         loadCollections() {
             this.cleanCollections();    
             this.isLoadingCollections = true;
-            this.fetchCollections({ page: 1, collectionsPerPage: 9, status: undefined, contextEdit: true })
+            this.fetchCollections({ page: 1, collectionsPerPage: 9, order: 'desc', orderby: 'modified', status: undefined, contextEdit: true })
                 .then((res) => {
                     this.collectionsTotal = res.total;
                     this.isLoadingCollections = false;

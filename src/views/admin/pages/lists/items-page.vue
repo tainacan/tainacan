@@ -673,7 +673,7 @@
         },
         computed: {
             isSortingByCustomMetadata() {
-                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date');
+                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date' && this.orderBy != 'modified');
             },
             items() {
                 return this.getItems();
@@ -723,10 +723,11 @@
 
                         if (
                             ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug == 'creation_date' && (!metadatum.metadata_type_object || !metadatum.metadata_type_object.core)) && this.orderBy == 'date') ||
+                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug == 'modification_date' && (!metadatum.metadata_type_object || !metadatum.metadata_type_object.core)) && this.orderBy == 'modified') ||
                             ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date' && (metadatum.metadata_type_object != undefined && metadatum.metadata_type_object.core)) && this.orderBy == metadatum.metadata_type_object.related_mapped_prop) ||
                             ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date' && (!metadatum.metadata_type_object || !metadatum.metadata_type_object.core)) && this.orderBy == metadatum.slug) ||
                             ((this.orderBy == 'meta_value' || this.orderBy == 'meta_value_num') && this.getMetaKey() == metadatum.id)
-                           )     
+                           )
                             return metadatum.name;
                     }
                 }
@@ -951,6 +952,7 @@
                     }
                 }
                 let thumbnailMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'thumbnail');
+                let modificationDateMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'modification_date');
                 let creationDateMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'creation_date');
                 let authorNameMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'author_name');
                 
@@ -959,6 +961,7 @@
                 // Updates Search
                 let fetchOnlyArray = [
                     ((thumbnailMetadatum != undefined && thumbnailMetadatum.display) ? 'thumbnail' : null),
+                    ((modificationDateMetadatum != undefined && modificationDateMetadatum.display) ? 'modification_date' : null),
                     ((creationDateMetadatum != undefined && creationDateMetadatum.display) ? 'creation_date' : null),
                     ((authorNameMetadatum != undefined && authorNameMetadatum.display) ? 'author_name': null),
                     (this.isRepositoryLevel ? 'title' : null),
@@ -1088,10 +1091,19 @@
                                         }
                                     }
                                     
+                                    let modificationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != 'null') : true;
                                     let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != 'null') : true;
                                     let authorNameMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[2] != 'null') : true;
                                     
                                     // Creation date and author name should appear only on admin.
+                                    metadata.push({
+                                        name: this.$i18n.get('label_modification_date'),
+                                        metadatum: 'row_modification',
+                                        metadata_type: undefined,
+                                        slug: 'modification_date',
+                                        id: undefined,
+                                        display: modificationDateMetadatumDisplay
+                                    });
                                     metadata.push({
                                         name: this.$i18n.get('label_creation_date'),
                                         metadatum: 'row_creation',
@@ -1111,6 +1123,7 @@
                                     
                                     let fetchOnlyArray = [
                                         (thumbnailMetadatumDisplay ? 'thumbnail' : null),
+                                        (modificationDateMetadatumDisplay ? 'modification_date' : null),
                                         (creationDateMetadatumDisplay ? 'creation_date' : null),
                                         (authorNameMetadatumDisplay ? 'author_name' : null),
                                         (this.isRepositoryLevel ? 'title' : null),
@@ -1130,6 +1143,14 @@
                                             display: true
                                         });
                                     }
+                                    this.sortingMetadata.push({
+                                        name: this.$i18n.get('label_modification_date'),
+                                        metadatum: 'row_modification',
+                                        metadata_type: undefined,
+                                        slug: 'modification_date',
+                                        id: undefined,
+                                        display: modificationDateMetadatumDisplay
+                                    });
                                     this.sortingMetadata.push({
                                         name: this.$i18n.get('label_creation_date'),
                                         metadatum: 'row_creation',
@@ -1152,7 +1173,7 @@
                                 // Loads only basic attributes necessary to view modes that do not allow custom meta
                                 } else {
                                     
-                                    const basicAttributes = this.collection.hide_items_thumbnail_on_lists == 'yes' ? 'creation_date,author_name,title,description' : 'thumbnail,creation_date,author_name,title,description';
+                                    const basicAttributes = this.collection.hide_items_thumbnail_on_lists == 'yes' ? 'modification_date,creation_date,author_name,title,description' : 'thumbnail,modification_date,creation_date,author_name,title,description';
                                     this.$eventBusSearch.addFetchOnly(basicAttributes, true, '');
 
                                     if (this.isRepositoryLevel) {
@@ -1177,6 +1198,15 @@
                                                 this.sortingMetadata.push(metadatum);
                                         }
                                     }
+
+                                    this.sortingMetadata.push({
+                                        name: this.$i18n.get('label_modification_date'),
+                                        metadatum: 'row_modification',
+                                        metadata_type: undefined,
+                                        slug: 'modification_date',
+                                        id: undefined,
+                                        display: true
+                                    })
 
                                     this.sortingMetadata.push({
                                         name: this.$i18n.get('label_creation_date'),

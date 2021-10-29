@@ -84,7 +84,9 @@ export default {
                             let orderBy = this.$userPrefs.get(orderByKey);
 
                             if (orderBy) {
-                                if (orderBy.slug == 'creation_date') {
+                                if (orderBy.slug == 'modification_date') {
+                                    this.$route.query.orderby = 'modified';
+                                } else if (orderBy.slug == 'creation_date') {
                                     this.$route.query.orderby = 'date';
                                 } else if (orderBy.slug == 'author_name') {
                                     this.$route.query.orderby = 'author_name';

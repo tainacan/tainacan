@@ -384,6 +384,7 @@ export default {
             sortingOptions: [
                 { label: this.$i18n.get('label_title'), value: 'title' },
                 { label: this.$i18n.get('label_creation_date'), value: 'date' },
+                { label: this.$i18n.get('label_modification_date'), value: 'modified' }
             ]
         }
     },
