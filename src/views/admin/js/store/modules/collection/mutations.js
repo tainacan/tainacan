@@ -33,6 +33,14 @@ export const setCollections = (state, collections) => {
     state.collections = collections;
 }
 
+export const setCollectionTaxonomies = (state, collectionTaxonomies) => {
+    state.collectionTaxonomies = collectionTaxonomies;
+}
+
+export const setCollectionTaxonomiesTerms = (state, { taxonomy, terms }) => {
+    Vue.set(state.collectionTaxonomies[taxonomy], 'terms', terms);
+}
+
 export const cleanCollections = (state) => {
     state.collections = [];
 }

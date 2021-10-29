@@ -11,6 +11,7 @@ const state = {
     attachments: [],
     files: [],
     repositoryTotalCollections: '',
+    collectionTaxonomies: {}
 };
 
 export default {
