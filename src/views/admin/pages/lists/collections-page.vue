@@ -106,7 +106,7 @@
 
             <!-- Sorting options ----  -->
             <b-field class="header-item">
-                <label class="label">{{ $i18n.get('label_sort') }}</label>
+                <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
                 <b-dropdown
                         :mobile-modal="true"
                         :disabled="collections.length <= 0 || isLoading"
@@ -603,7 +603,7 @@ export default {
             .label {
                 font-size: 0.875em;
                 font-weight: normal;
-                margin-top: 3px;
+                margin-top: 5px;
                 margin-bottom: 2px;
                 cursor: default;
             }
