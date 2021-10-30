@@ -131,7 +131,8 @@
                 modelSearch:'',
                 collectionType: '',
                 collectionMessage: '',
-                displayRelatedItemMetadata: []
+                displayRelatedItemMetadata: [],
+                isMetaqueryRelationshipEnabled: tainacan_plugin && tainacan_plugin.tainacan_enable_relationship_metaquery == true ? tainacan_plugin.tainacan_enable_relationship_metaquery : false
             }
         },
         computed: {
@@ -205,7 +206,7 @@
                             this.metadata = [];
 
                             for (let metadatum of metadata) {
-                               if (metadatum.metadata_type_object.component !== 'tainacan-relationship' && metadatum.metadata_type_object.component !== 'tainacan-compound') {
+                               if ( (metadatum.metadata_type_object.component !== 'tainacan-relationship' || this.isMetaqueryRelationshipEnabled) && metadatum.metadata_type_object.component !== 'tainacan-compound' ) {
                                    this.metadata.push( metadatum );
                                    this.hasMetadata = true;
                                    this.checkMetadata();
