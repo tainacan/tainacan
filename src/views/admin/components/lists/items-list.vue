@@ -13,7 +13,7 @@
                         {{ $i18n.get('label_select_all_items_page') }}
                     </b-checkbox>
                 </span>
-
+                
                 <span
                         style="margin-left: 10px"
                         v-if="totalPages > 1 && allItemsOnPageSelected && items.length > 1">
@@ -23,6 +23,33 @@
                     </b-checkbox>
                 </span>
             </div>
+            <span
+                    class="selected-items-info"
+                    v-if="selectedItems.length && items.length > 1 && !isAllItemsSelected">
+                {{ (selectedItems.length - amountOfSelectedItemsInOtherPages != 1) ? ((selectedItems.length - amountOfSelectedItemsInOtherPages) + ' ' + $i18n.get('label_selected_items')) : ('1 ' + $i18n.get('label_selected_item')) }}
+                <span v-if="amountOfSelectedItemsInOtherPages">
+                    &nbsp;({{ $i18n.getWithVariables('label_+_%s_other_listings', [ amountOfSelectedItemsInOtherPages ]) }})
+                </span>
+                <button
+                        class="link-style"
+                        @click="cleanSelectedItems()">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-close" />
+                    </span>
+                </button>
+            </span>
+            <span
+                    class="selected-items-info"
+                    v-if="isAllItemsSelected">
+                {{ $i18n.get('label_all_items_selected') }}
+                <button
+                        class="link-style"
+                        @click="cleanSelectedItems()">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-close" />
+                    </span>
+                </button>
+            </span>
             <div class="field">
                 <b-dropdown
                         :mobile-modal="true"
@@ -1297,6 +1324,12 @@ export default {
 
             return this.getSelectedItems();
         },
+        amountOfSelectedItemsInOtherPages() {
+            if (this.selectedItems.length) 
+                return this.selectedItems.length - this.items.filter( anItem => this.selectedItems.includes(anItem.id) ).length;
+
+            return 0;
+        },
         firstSelectedIndex() {
             return (this.selectedItems && this.selectedItems.length) ? this.items.findIndex((anItem) => this.selectedItems[0] == anItem.id) : null;
         },
@@ -1353,8 +1386,6 @@ export default {
         }
     },
     mounted() {
-        this.cleanSelectedItems();
-
         if (this.highlightsItem)
             setTimeout(() => this.$eventBusSearch.highlightsItem(null), 3000);
     },
@@ -1700,14 +1731,29 @@ export default {
         background: var(--tainacan-white);
         height: 40px;
         display: flex;
+        align-items: center;
 
         .select-all {
             color: var(--tainacan-info-color);
             font-size: 0.875em;
             margin-right: auto;
+            margin-bottom: 0;
 
             &:hover {
                 color: var(--tainacan-info-color);
+            }
+        }
+    }
+
+    .selected-items-info {
+        margin: 0 10px 0 auto;
+        font-size: 00.875em;
+        color: var(--tainacan-info-color);
+
+        .link-style {
+            border-radius: 36px;
+            &:hover {
+                background-color: var(--tainacan-gray1) !important;
             }
         }
     }

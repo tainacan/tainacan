@@ -354,6 +354,9 @@ export default {
                         window.history.pushState({path: newurl}, '', newurl);
                     }      
                 },
+                cleanSelectedItems() {
+                    this.$store.dispatch('search/cleanSelectedItems');
+                },
                 highlightsItem(itemId) {
                     this.$store.dispatch('search/highlightsItem', itemId);
                     this.updateURLQueries();

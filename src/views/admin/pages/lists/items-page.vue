@@ -839,6 +839,8 @@
             
             this.showItemsHiddingDueSortingDialog();
 
+            this.$eventBusSearch.cleanSelectedItems();
+
             // Watches window resize to adjust filter's top position and compression on mobile 
             this.hideFiltersOnMobile();
             window.addEventListener('resize', this.hideFiltersOnMobile);

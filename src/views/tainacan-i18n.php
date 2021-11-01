@@ -416,6 +416,9 @@ return apply_filters( 'tainacan-i18n', [
 	'label_selected_term'                            => __( 'Selected term', 'tainacan' ),
 	'label_selected_items'                           => __( 'Selected items', 'tainacan' ),
 	'label_selected_item'                            => __( 'Selected item', 'tainacan' ),
+	'label_all_items_selected'                       => __( 'All items selected', 'tainacan' ),
+	/* translators: Before this there is a number of items that are present in another listing */
+	'label_+_%s_other_listings'                      => __( '+ %s in other listings', 'tainacan' ),
 	'label_all_metadatum_values'                     => __( 'All metadatum values', 'tainacan' ),
 	'label_selected_metadatum_values'                => __( 'Selected metadatum values', 'tainacan' ),
 	/* translators: 'n.' here comes from 'number' */
