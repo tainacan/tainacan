@@ -97,7 +97,8 @@
             "background": false,
             "gradients": false,
             "link": true
-        }
+        },
+        "inserter": false
     },
     "editorScript": "items-list",
 	"editorStyle": "items-list"

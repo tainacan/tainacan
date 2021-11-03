@@ -326,6 +326,7 @@ export default {
         }
     },
     created() {
+        
         this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
         if (tainacan_blocks && tainacan_blocks.nonce)
             this.tainacanAxios.defaults.headers.common['X-WP-Nonce'] = tainacan_blocks.nonce;
@@ -368,8 +369,11 @@ export default {
                     this.totalItems = this.items.length;
 
             } else if (this.loadStrategy == 'selection') {
-                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.selectedItems.length }) + '&fetch_only=title,url,thumbnail';
+    
+                this.maxItemsNumber = this.selectedItems.length;
                 
+                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.maxItemsNumber }) + '&fetch_only=title,url,thumbnail';
+
                 this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
                     .then(response => {
 

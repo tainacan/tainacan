@@ -4,7 +4,9 @@ export default function({ attributes, className }) {
     const {
         content, 
         blockId,
-        collectionId,  
+        collectionId,
+        loadStrategy,
+        selectedItems,
         showImage,
         showName,
         layout,
@@ -25,13 +27,14 @@ export default function({ attributes, className }) {
         maxColumnsCount,
         cropImagesToSquare
     } = attributes;
-
+    
     // Gets attributes such as style, that are automatically added by the editor hook
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps.save();
     return <div
                 { ...blockProps }
                 data-module="dynamic-items-list"
                 search-url={ searchURL }
+                selected-items={ JSON.stringify(selectedItems) }
                 collection-id={ collectionId }
                 show-image={ '' + showImage }
                 show-name={ '' + showName }
@@ -40,6 +43,7 @@ export default function({ attributes, className }) {
                 show-collection-label={ '' + showCollectionLabel }
                 crop-images-to-square={ '' + cropImagesToSquare }
                 layout={ layout }
+                load-strategy={ loadStrategy }
                 mosaic-height={ mosaicHeight }
                 mosaic-density={ mosaicDensity }
                 mosaic-grid-rows={ mosaicGridRows } 

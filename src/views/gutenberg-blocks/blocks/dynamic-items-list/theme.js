@@ -131,7 +131,7 @@ export default (element) => {
     }
 
     // This is rendered on the theme side.
-    renderTainacanDynamicItemsBlocks()
+    renderTainacanDynamicItemsBlocks();
 
     // Also if a theme or plugin requested a reset...
     document.addEventListener("TainacanReloadDynamicItemsBlock", () => {

@@ -13,7 +13,10 @@ export default {
                 showImage,
                 showName,
                 layout,
-                gridMargin
+                gridMargin,
+                align,
+                textColor,
+                fontSize
             } ) => {
                 return createBlock(
                     'tainacan/dynamic-items-list',
@@ -51,7 +54,10 @@ export default {
                         sampleBackgroundImage: '',
                         mosaicDensity: 6,
                         maxColumnsCount: 4,
-                        cropImagesToSquare: true
+                        cropImagesToSquare: true,
+                        align: align,
+                        textColor: textColor,
+                        fontSize: fontSize
                     }
                 );
             },
@@ -62,10 +68,12 @@ export default {
             transform: ( {
                 selectedItemsObject, 
                 selectedItemsHTML, 
-                content, 
                 collectionId,
                 showName,
-                gridMargin
+                gridMargin,
+                align,
+                textColor,
+                fontSize
             } ) => {
                 return createBlock(
                     'tainacan/carousel-items-list',
@@ -97,7 +105,10 @@ export default {
                         isLoadingCollection: false,
                         collectionBackgroundColor: '#454647',
                         collectionTextColor: '#ffffff',
-                        cropImagesToSquare: true
+                        cropImagesToSquare: true,
+                        align: align,
+                        textColor: textColor,
+                        fontSize: fontSize
                     }
                 );
             },
