@@ -32,7 +32,7 @@ export default {
                         maxItemsNumber: 12,
                         order: '',
                         searchString: '',
-                        selectedItems: selectedItemsObject,
+                        selectedItems: selectedItemsObject.map((anItemObject) => anItemObject.id.split('item-id-')[1]),
                         isLoading: false,
                         loadStrategy: 'selection',
                         showSearchBar: false,
@@ -56,5 +56,51 @@ export default {
                 );
             },
         },
+        {
+            type: 'block',
+            blocks: [ 'tainacan/carousel-items-list' ],
+            transform: ( {
+                selectedItemsObject, 
+                selectedItemsHTML, 
+                content, 
+                collectionId,
+                showName,
+                gridMargin
+            } ) => {
+                return createBlock(
+                    'tainacan/carousel-items-list',
+                    {
+                        items: selectedItemsHTML,
+                        content: <div></div>, 
+                        collection: {},
+                        collectionId: collectionId,
+                        hideTitle: !showName,
+                        isModalOpen: false,
+                        gridMargin: gridMargin,
+                        searchURL: '',
+                        itemsRequestSource: '',
+                        maxItemsNumber: 12,
+                        maxItemsPerScreen: 4,
+                        selectedItems: selectedItemsObject.map((anItemObject) => anItemObject.id.split('item-id-')[1]),
+                        isLoading: false,
+                        loadStrategy: 'selection',
+                        arrowsPosition : 'around',
+                        spaceBetweenItems: 32,
+                        spaceAroundCarousel: 50,
+                        largeArrows: false,
+                        arrowsStyle : 'type-1',
+                        autoPlay: false,
+                        autoPlaySpeed: 3,
+                        loopSlides: false,
+                        showCollectionHeader: false,
+                        showCollectionLabel: true,
+                        isLoadingCollection: false,
+                        collectionBackgroundColor: '#454647',
+                        collectionTextColor: '#ffffff',
+                        cropImagesToSquare: true
+                    }
+                );
+            },
+        }
     ]
 };
