@@ -38,6 +38,7 @@ class REST_Items_Controller extends REST_Controller {
 		$this->collections_repository = Repositories\Collections::get_instance();
 		$this->metadatum_repository = Repositories\Metadata::get_instance();
 		$this->terms_repository = \Tainacan\Repositories\Terms::get_instance();
+		$this->filters_repository = \Tainacan\Repositories\Filters::get_instance();
 	}
 
 	/**
@@ -408,6 +409,48 @@ class REST_Items_Controller extends REST_Controller {
 		return $rest_response;
 	}
 
+
+	/**
+	 * @param array $args — array of query arguments.
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
+	private function prepare_filters_arguments ( $args ) {
+		$filters_arguments = array();
+		$meta_query = $args['meta_query'];
+		foreach($meta_query as $meta) {
+			$meta_id = $meta['key'];
+			$meta_values = $meta['value'];
+
+			$filter = $this->filters_repository->fetch([
+				'meta_query' => array(
+					[
+						'key'     => 'metadatum_id',
+						'value'   => $meta_id,
+						'compare' => '='
+					]
+				)
+				], 'OBJECT'
+			);
+
+			if ( !empty($filter) ) {
+				$f = $filter[0]->_toArray();
+				$m = $f['metadatum'];
+			} else {
+				$f = false;
+				$m = $this->metadatum_repository->fetch($meta_id, 'OBJECT')->_toArray();
+ 			}
+
+			$filters_arguments[] = array(
+				'filter' => $f,
+				'metadatum' => $m,
+				'values' => $meta_values
+			);
+		}
+		return $filters_arguments;
+	}
+
 	/**
 	 * @param \WP_REST_Request $request
 	 *
@@ -421,6 +464,7 @@ class REST_Items_Controller extends REST_Controller {
 		// Free php session early so simultaneous requests dont get queued
 		session_write_close();
 		$args = $this->prepare_filters($request);
+		$filters_args = $this->prepare_filters_arguments($args);
 
 		/**
 		 * allow plugins to hijack the process.
@@ -454,6 +498,7 @@ class REST_Items_Controller extends REST_Controller {
 
 		// Filter right after the ->fetch() method. Elastic Search integration relies on this on its 'last_aggregations' hook
 		$response['filters'] = apply_filters('tainacan-api-items-filters-response', [], $request);
+		$response['filters_arguments'] = apply_filters('tainacan-api-items-filters-arguments-response', $filters_args, $args);
 
 		$query_end = microtime(true);
 
