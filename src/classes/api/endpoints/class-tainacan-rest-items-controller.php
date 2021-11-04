@@ -418,10 +418,13 @@ class REST_Items_Controller extends REST_Controller {
 	 */
 	private function prepare_filters_arguments ( $args ) {
 		$filters_arguments = array();
-		$meta_query = $args['meta_query'];
+		$meta_query = isset($args['meta_query']) ? $args['meta_query'] : [];
+		$tax_query = isset($args['tax_query']) ? $args['tax_query'] : [];
+
 		foreach($meta_query as $meta) {
 			$meta_id = $meta['key'];
-			$meta_values = $meta['value'];
+			$meta_value = $meta['value'];
+			$meta_label = $meta['value'];
 
 			$filter = $this->filters_repository->fetch([
 				'meta_query' => array(
@@ -438,14 +441,17 @@ class REST_Items_Controller extends REST_Controller {
 				$f = $filter[0]->_toArray();
 				$m = $f['metadatum'];
 			} else {
+				$metadatum = $this->metadatum_repository->fetch($meta_id, 'OBJECT');
 				$f = false;
-				$m = $this->metadatum_repository->fetch($meta_id, 'OBJECT')->_toArray();
+				$m = empty($metadatum) ? false : $metadatum->_toArray();
  			}
 
 			$filters_arguments[] = array(
 				'filter' => $f,
 				'metadatum' => $m,
-				'values' => $meta_values
+				'value' => $meta_value,
+				'label' => $meta_label,
+				'compare' => isset($meta['compare']) ? $meta['compare'] : '='
 			);
 		}
 		return $filters_arguments;
