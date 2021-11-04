@@ -441,7 +441,8 @@
                 trap-focus
                 aria-modal
                 aria-role="dialog"
-                custom-class="tainacan-modal tainacan-form filters-menu">
+                custom-class="tainacan-modal tainacan-form filters-menu"
+                :close-button-aria-label="$i18n.get('close')">
             <filters-items-list
                     :is-loading-items="isLoadingItems"
                     autofocus="true"
@@ -899,7 +900,8 @@
                         hideWhenManualCollection: true
                     },
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
                 });
             },
             openExposersModal(selectedItems) {
@@ -913,7 +915,8 @@
                         selectedItems: selectedItems
                     },
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
                 })
             },
             onOpenCollectionsModal() {
@@ -922,7 +925,8 @@
                     component: CollectionsModal,
                     hasModalCard: true,
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
                 });
             },
             updateSearch() {
@@ -1264,7 +1268,8 @@
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
                         },
                         trapFocus: true,
-                        customClass: 'tainacan-modal'
+                        customClass: 'tainacan-modal',
+                        closeButtonAriaLabel: this.$i18n.get('close')
                     });
             },
             hideFiltersOnMobile: _.debounce( function() {

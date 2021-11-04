@@ -104,7 +104,8 @@ export default {
                         onConfirm: () => { this.removeTerm(); },
                     },
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
                 });  
             } else {
                 this.removeTerm();
@@ -126,7 +127,8 @@ export default {
                     }                
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });  
         },
         eventOnEditTerm() {

@@ -51,7 +51,8 @@ const tainacanErrorHandler = function(error){
                         },
                         ariaRole: 'alertdialog',
                         ariaModal: true,
-                        customClass: 'tainacan-modal'
+                        customClass: 'tainacan-modal',
+                        closeButtonAriaLabel: i18nGet('close')
                     });
                 }
             });

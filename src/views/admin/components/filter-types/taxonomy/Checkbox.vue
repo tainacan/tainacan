@@ -320,7 +320,8 @@
                     },
                     width: 'calc(100% - (4 * var(--tainacan-one-column)))',
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
                 });
             },
             prepareOptionsForTaxonomy(items) {
