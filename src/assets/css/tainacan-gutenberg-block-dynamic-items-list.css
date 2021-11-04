@@ -231,6 +231,7 @@
     grid-gap: 24px;
     gap: 24px;
     justify-content: space-evenly;
+    align-items: flex-start;
     list-style-type: none; }
     .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid:not(.max-columns-count-1):not(.max-columns-count-2):not(.max-columns-count-3):not(.max-columns-count-4):not(.max-columns-count-5):not(.max-columns-count-6):not(.max-columns-count-7),
     .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid:not(.max-columns-count-1):not(.max-columns-count-2):not(.max-columns-count-3):not(.max-columns-count-4):not(.max-columns-count-5):not(.max-columns-count-6):not(.max-columns-count-7) {

@@ -44,6 +44,7 @@
         grid-template-columns: repeat(auto-fill, 220px);
         grid-gap: 0px;
         justify-content: space-evenly;
+        align-items: flex-start;
         list-style-type: none;
 
         li.item-list-item {
