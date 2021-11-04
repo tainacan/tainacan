@@ -247,42 +247,6 @@
                         // as the facetsFromItemSearch will not be ready yet
                         if (!this.isUsingElasticSearch)
                             this.$console.log("Looking for terms that are not in the options list... ");
-
-                        // let route = '';
-                        
-                        // if (this.collectionId == 'default')
-                        //     route = '/facets/' + this.metadatumId +`?term_id=${selected}&fetch_only=name,id`;
-                        // else
-                        //     route = '/collection/'+ this.collectionId +'/facets/' + this.metadatumId +`?term_id=${selected}&fetch_only=name,id`;
-                        
-                        // axios.get(route)
-                        //     .then( res => {
-                        //         if(!res || !res.data || !res.data.values){
-                        //             return false;
-                        //         }
-
-                        //         let existingLabelIndex = onlyLabels.findIndex(aLabel => aLabel == res.data.values[0].label)
-
-                        //         if (existingLabelIndex < 0) {
-                        //             onlyLabels.push(res.data.values[0].label);
-                        //             this.options.push({
-                        //                 isChild: true,
-                        //                 label: res.data.values[0].label,
-                        //                 value: res.data.values[0].value
-                        //             });
-                        //         } else {  
-                        //             this.$set(onlyLabels, onlyLabels.push(res.data.values[0].label), existingLabelIndex);
-                        //             this.$set(this.options, {
-                        //                     isChild: true,
-                        //                     label: res.data.values[0].label,
-                        //                     value: res.data.values[0].value
-                        //                 }
-                        //             , existingLabelIndex); 
-                        //         }
-                        //     })
-                        //     .catch(error => {
-                        //         this.$console.log(error);
-                        //     });
                     }
                 }
                 this.$emit('sendValuesToTags', { label: onlyLabels, taxonomy: this.taxonomy, value: this.selected, metadatumName: this.metadatumName });

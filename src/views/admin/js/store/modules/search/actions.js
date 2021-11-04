@@ -157,6 +157,11 @@ export const addFilterTag = ( { commit }, filterTag  ) => {
         commit('addFilterTag', filterTag);
 };
 
+// Set filter tags
+export const setFilterTags = ({ commit }, filterTags ) => {
+    commit('setFilterTags', filterTags );
+};
+
 // Remove filter tag
 export const removeFilterTag = ( { commit }, filterTag  ) => {
     commit('removeFilterTag', filterTag);

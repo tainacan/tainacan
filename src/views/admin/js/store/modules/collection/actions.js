@@ -71,7 +71,8 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 if (postQueries.admin_view_mode != undefined)
                     postQueries.admin_view_mode = null;
             } 
-            axios.tainacan.get(endpoint+query, {
+
+            axios.tainacan.get(endpoint + query, {
                 cancelToken: source.token
             })
                 .then(res => {
@@ -105,6 +106,12 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                         dispatch('search/setFacets', res.data.filters, { root: true } );
                     else
                         dispatch('search/setFacets', {}, { root: true } );
+
+                    
+                    if (res.data.filters_arguments && res.data.filters_arguments.length > 0)
+                        dispatch('search/setFilterTags', res.data.filters_arguments, { root: true } );
+                    else
+                        dispatch('search/cleanFilterTags', [], { root: true } );
 
                 })
                 .catch((thrown) => {

@@ -21,10 +21,6 @@ export default {
                         this.addMetaquery(data);
                 });
 
-                this.$on('sendValuesToTags', data => {
-                   this.$store.dispatch('search/addFilterTag', data);
-                });
-
                 this.$root.$on('closeAdvancedSearch', () => {
                     this.$store.dispatch('search/setPage', 1);
                     

@@ -169,6 +169,22 @@ export const addFilterTag = ( state, filterTag ) => {
         state.filter_tags.push(filterTag);
 };
 
+export const setFilterTags = ( state, filterArguments ) => {
+    console.log(filterArguments)
+    let filterTags = filterArguments.map((aFilterArgument) => {
+        return {
+            filterId: aFilterArgument ? aFilterArgument.id : null,
+            label: 'label',
+            value: aFilterArgument.value,
+            taxonomy: '',
+            metadatumId: aFilterArgument.metadatum && aFilterArgument.metadatum.metadatum_id ? aFilterArgument.metadatum.metadatum_id : '',
+            metadatumName: aFilterArgument.metadatum && aFilterArgument.metadatum.metadatum_name ? aFilterArgument.metadatum.metadatum_name : ''
+        }
+    });
+    console.log(filterTags)
+    state.filter_tags = filterTags;
+};
+
 export const removeFilterTag = ( state, filterTag ) => {
     state.filter_tags = ( ! state.filter_tags ) ? [] : state.filter_tags;
     let index = state.filter_tags.findIndex( tag => tag.filterId == filterTag.filterId);
