@@ -261,7 +261,7 @@
                                 <span>{{ $i18n.get('activities') }}</span>
                             </template>
                             
-                            <activities-page v-if="activeTab == 3"/>
+                            <activities-page v-if="activeTab == (totalRelatedItems ? 3 : 2)"/>
                         </b-tab-item>
                     </b-tabs>
                 </div>
