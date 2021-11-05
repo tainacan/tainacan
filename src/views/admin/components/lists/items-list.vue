@@ -26,10 +26,7 @@
             <span
                     class="selected-items-info"
                     v-if="selectedItems.length && items.length > 1 && !isAllItemsSelected">
-                {{ (selectedItems.length - amountOfSelectedItemsInOtherPages != 1) ? ((selectedItems.length - amountOfSelectedItemsInOtherPages) + ' ' + $i18n.get('label_selected_items')) : ('1 ' + $i18n.get('label_selected_item')) }}
-                <span v-if="amountOfSelectedItemsInOtherPages">
-                    &nbsp;({{ $i18n.getWithVariables('label_+_%s_other_listings', [ amountOfSelectedItemsInOtherPages ]) }})
-                </span>
+                {{ selectedItems.length != 1 ? (selectedItems.length + ' ' + $i18n.get('label_selected_items')) : ('1 ' + $i18n.get('label_selected_item')) }}<span v-if="selectedItems.length != amountOfSelectedItemsOnThisPage && amountOfSelectedItemsOnThisPage > 0">,&nbsp;({{ $i18n.getWithVariables('label_%s_on_this_page', [ amountOfSelectedItemsOnThisPage ]) }})</span>
                 <button
                         class="link-style"
                         @click="cleanSelectedItems()">
@@ -50,7 +47,9 @@
                     </span>
                 </button>
             </span>
-            <div class="field">
+            <div 
+                    style="margin-left: auto;"
+                    class="field">
                 <b-dropdown
                         :mobile-modal="true"
                         position="is-bottom-left"
@@ -68,6 +67,12 @@
                         </span>
                     </button>
 
+                    <b-dropdown-item
+                            v-if="!isAllItemsSelected && selectedItems.length"
+                            @click="filterBySelectedItems()"
+                            aria-role="listitem">
+                        {{ $i18n.get('label_view_only_selected_items') }}
+                    </b-dropdown-item>
                     <b-dropdown-item
                             v-if="$route.params.collectionId && !isOnTrash"
                             @click="openBulkEditionModal()"
@@ -1324,9 +1329,9 @@ export default {
 
             return this.getSelectedItems();
         },
-        amountOfSelectedItemsInOtherPages() {
+        amountOfSelectedItemsOnThisPage() {
             if (this.selectedItems.length) 
-                return this.selectedItems.length - this.items.filter( anItem => this.selectedItems.includes(anItem.id) ).length;
+                return this.items.filter( anItem => this.selectedItems.includes(anItem.id) ).length;
 
             return 0;
         },
@@ -1621,6 +1626,9 @@ export default {
                 customClass: 'tainacan-modal'
             });
         },
+        filterBySelectedItems() {
+            this.$eventBusSearch.filterBySelectedItems(this.selectedItems);
+        },
         openItem() {
             if (this.contextMenuItem != null) {
                 this.$router.push(this.$routerHelper.getItemPath(this.contextMenuItem.collection_id, this.contextMenuItem.id));
@@ -1732,6 +1740,7 @@ export default {
         height: 40px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
 
         .select-all {
             color: var(--tainacan-info-color);
@@ -1746,7 +1755,7 @@ export default {
     }
 
     .selected-items-info {
-        margin: 0 10px 0 auto;
+        margin: 0 auto 0 auto;
         font-size: 00.875em;
         color: var(--tainacan-info-color);
 

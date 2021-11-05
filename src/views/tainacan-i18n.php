@@ -296,6 +296,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_send_to_trash'                            => __( 'Send to trash', 'tainacan' ),
 	'label_keep_on_trash'                            => __( 'Keep on trash', 'tainacan' ),
 	'label_delete_selected_taxonomies'               => __( 'Delete selected taxonomies', 'tainacan' ),
+	'label_view_only_selected_items'                 => __( 'View only selected items', 'tainacan' ),
 	'label_bulk_edit_selected_items'                 => __( 'Bulk edit selected items', 'tainacan' ),
 	'label_sequence_edit_selected_items'             => __( 'Edit selected items in sequence', 'tainacan' ),
 	'label_edit_selected_taxonomies'                 => __( 'Edit selected taxonomies', 'tainacan' ),
@@ -417,8 +418,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_selected_items'                           => __( 'Selected items', 'tainacan' ),
 	'label_selected_item'                            => __( 'Selected item', 'tainacan' ),
 	'label_all_items_selected'                       => __( 'All items selected', 'tainacan' ),
-	/* translators: Before this there is a number of items that are present in another listing */
-	'label_+_%s_other_listings'                      => __( '+ %s in other listings', 'tainacan' ),
+	/* translators: Here there is a number of items that are selected in this listing */
+	'label_%s_on_this_page'                          => __( '%s on this page', 'tainacan' ),
 	'label_all_metadatum_values'                     => __( 'All metadatum values', 'tainacan' ),
 	'label_selected_metadatum_values'                => __( 'Selected metadatum values', 'tainacan' ),
 	/* translators: 'n.' here comes from 'number' */
