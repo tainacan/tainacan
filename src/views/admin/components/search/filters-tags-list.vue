@@ -24,7 +24,8 @@
                 <swiper-slide 
                         v-for="(filterTag, index) of filterTags"
                         :key="index"
-                        class="filter-tag">
+                        class="filter-tag"
+                        :class="{ 'is-readonly': !filterTag.filterId }">
                     <span class="">
                         <div class="filter-tag-metadatum-name">
                             {{ filterTag.metadatumName }}
@@ -34,6 +35,7 @@
                         </div>
                     </span>
                     <a
+                            v-if="filterTag.filterId"
                             role="button"
                             tabindex="0"
                             class="tag is-delete"
@@ -203,6 +205,9 @@
                 &:not(:hover) {
                     background-color: transparent;
                 }
+            }
+            &.is-readonly {
+                background-color: var(--tainacan-input-border-color);
             }
         }
 

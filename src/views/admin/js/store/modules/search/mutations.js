@@ -172,9 +172,19 @@ export const addFilterTag = ( state, filterTag ) => {
 export const setFilterTags = ( state, filterArguments ) => {
     console.log(filterArguments)
     let filterTags = filterArguments.map((aFilterArgument) => {
+        const label = aFilterArgument.compare &&
+                    (
+                      aFilterArgument.metadatum &&
+                      aFilterArgument.metadatum.metadata_type_object &&
+                      aFilterArgument.metadatum.metadata_type_object.options &&
+                      (
+                        aFilterArgument.metadatum.metadata_type_object.primitive_type == 'date' ||
+                        aFilterArgument.metadatum.metadata_type_object.primitive_type == 'float'
+                      )
+                    ) ? ( aFilterArgument.compare + ' ' + aFilterArgument.label) : aFilterArgument.label
         return {
-            filterId: aFilterArgument ? aFilterArgument.id : null,
-            label: 'label',
+            filterId: aFilterArgument.filter ? aFilterArgument.filter.id : null,
+            label: label,
             value: aFilterArgument.value,
             taxonomy: '',
             metadatumId: aFilterArgument.metadatum && aFilterArgument.metadatum.metadatum_id ? aFilterArgument.metadatum.metadatum_id : '',
