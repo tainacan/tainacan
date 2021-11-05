@@ -39,6 +39,7 @@ class REST_Items_Controller extends REST_Controller {
 		$this->metadatum_repository = Repositories\Metadata::get_instance();
 		$this->terms_repository = \Tainacan\Repositories\Terms::get_instance();
 		$this->filters_repository = \Tainacan\Repositories\Filters::get_instance();
+		$this->taxonomies_repository = \Tainacan\Repositories\Taxonomies::get_instance();
 	}
 
 	/**
@@ -416,15 +417,49 @@ class REST_Items_Controller extends REST_Controller {
 	 * @return array
 	 * @throws \Exception
 	 */
-	private function prepare_filters_arguments ( $args ) {
+	private function prepare_filters_arguments ( $args, $collection_id = false ) {
 		$filters_arguments = array();
 		$meta_query = isset($args['meta_query']) ? $args['meta_query'] : [];
 		$tax_query = isset($args['tax_query']) ? $args['tax_query'] : [];
 
+		foreach($tax_query as $tax) {
+
+			$taxonomy = $tax['taxonomy'];
+			$taxonomy_id = $this->taxonomies_repository->get_id_by_db_identifier($taxonomy);
+			$terms_id = is_array($tax['terms']) ? $tax['terms']: [$tax['terms']];
+			$terms_name = array_map(function($term_id) { return get_term($term_id)->name; }, $terms_id);
+
+			$metas = $this->metadatum_repository->fetch(array(
+				'meta_query' => [
+					[
+						'key'     => 'collection_id',
+						'value'   => empty($collection_id) ? 'default' : $collection_id,
+						'compare' => '='
+					],
+					[
+						'key'     => '_option_taxonomy_id',
+						'value'   => $taxonomy_id,
+						'compate' => '='
+					]
+				]
+			), 'OBJECT' );
+
+			if( !empty($metas) ) {
+				$meta_query[] = array(
+					'key' => $metas[0]->get_id(),
+					'value' => $terms_id,
+					'label' => $terms_name,
+				);
+			}
+		}
+
 		foreach($meta_query as $meta) {
+			if( !isset($meta['key']) || !isset($meta['value']) )
+				continue;
+
 			$meta_id = $meta['key'];
 			$meta_value = $meta['value'];
-			$meta_label = $meta['value'];
+			$meta_label = isset($meta['label']) ? $meta['label'] : $meta['value'];
 
 			$filter = $this->filters_repository->fetch([
 				'meta_query' => array(
@@ -470,7 +505,6 @@ class REST_Items_Controller extends REST_Controller {
 		// Free php session early so simultaneous requests dont get queued
 		session_write_close();
 		$args = $this->prepare_filters($request);
-		$filters_args = $this->prepare_filters_arguments($args);
 
 		/**
 		 * allow plugins to hijack the process.
@@ -486,6 +520,7 @@ class REST_Items_Controller extends REST_Controller {
 		if($request['collection_id']) {
 			$collection_id = $request['collection_id'];
 		}
+		$filters_args = $this->prepare_filters_arguments($args, $collection_id);
 
 		$max_items_per_page = $TAINACAN_API_MAX_ITEMS_PER_PAGE;
 		if ( $max_items_per_page > -1 ) {
