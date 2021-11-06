@@ -186,7 +186,7 @@ export default {
                         if (to.fullPath != from.fullPath) {
                             this.loadItems(to);
                         }
-                    }                      
+                    }
                 }
             },
             methods: {
@@ -352,6 +352,10 @@ export default {
                 },
                 cleanSelectedItems() {
                     this.$store.dispatch('search/cleanSelectedItems');
+                },
+                filterBySelectedItems(selectedItems) {
+                    this.$router.replace({ query: {} });
+                    this.$router.replace({ query: { postin: selectedItems } });
                 },
                 highlightsItem(itemId) {
                     this.$store.dispatch('search/highlightsItem', itemId);
