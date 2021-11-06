@@ -427,7 +427,10 @@ class REST_Items_Controller extends REST_Controller {
 			$taxonomy = $tax['taxonomy'];
 			$taxonomy_id = $this->taxonomies_repository->get_id_by_db_identifier($taxonomy);
 			$terms_id = is_array($tax['terms']) ? $tax['terms']: [$tax['terms']];
-			$terms_name = array_map(function($term_id) { return get_term($term_id)->name; }, $terms_id);
+			$terms_name = array_map(function($term_id) { 
+				$t = is_numeric($term_id) ? get_term($term_id) : get_term_by('slug', $term_id);
+				return $t != false ? $t->name : '--';
+			}, $terms_id);
 
 			$metas = $this->metadatum_repository->fetch(array(
 				'meta_query' => [
@@ -472,23 +475,70 @@ class REST_Items_Controller extends REST_Controller {
 				], 'OBJECT'
 			);
 
+			$f = false;
+			$m = false;
 			if ( !empty($filter) ) {
 				$f = $filter[0]->_toArray();
 				$m = $f['metadatum'];
 			} else {
 				$metadatum = $this->metadatum_repository->fetch($meta_id, 'OBJECT');
-				$f = false;
-				$m = empty($metadatum) ? false : $metadatum->_toArray();
- 			}
+				if(!empty($metadatum)) {
+					$m = $metadatum->_toArray();
+					$meta_object = $metadatum->get_metadata_type_object();
+					if (is_object($meta_object)) {
+						$m['metadata_type_object'] = $meta_object->_toArray();
+					}
+				}
+			}
+
+			if ($m !== false) {
+				switch ($m['metadata_type_object']['primitive_type']) {
+					case 'item':
+						$meta_label = array_map(function($item_id) {
+							$_post = get_post($item_id);
+							if ( ! $_post instanceof \WP_Post) {
+								return;
+							}
+							return $_post->post_title;
+						}, $meta_label);
+						break;
+					case 'control':
+						$control_metadatum = $m['metadata_type_object']['options']['control_metadatum'];
+						$metadata_type_object = new \Tainacan\Metadata_Types\Control();
+						$meta_label = array_map(function($control_value) use ($metadata_type_object, $control_metadatum) {
+							return $metadata_type_object->get_control_metadatum_value($control_value, $control_metadatum, 'string' );
+						}, $meta_label);
+						break;
+					case 'user':
+						$meta_label = array_map(function($user_id) {
+							$name = get_the_author_meta( 'display_name', $user_id );
+							return apply_filters("tainacan-item-get-author-name", $name);
+						}, $meta_label);
+						break;
+				}
+			}
 
 			$filters_arguments[] = array(
 				'filter' => $f,
 				'metadatum' => $m,
+				'arg_type' => 'meta',
 				'value' => $meta_value,
 				'label' => $meta_label,
 				'compare' => isset($meta['compare']) ? $meta['compare'] : '='
 			);
 		}
+
+		if(isset($args['post__in'])) {
+			$filters_arguments[] = array(
+				'filter' => false,
+				'metadatum' => false,
+				'arg_type' => 'postin',
+				'value' => $args['post__in'],
+				'label' => count($args['post__in']),
+				'compare' => 'IN'
+			);
+		}
+
 		return $filters_arguments;
 	}
 
