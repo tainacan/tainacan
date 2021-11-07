@@ -117,7 +117,7 @@ export default {
                             }
                         },
                         title: {
-                            text: this.$i18n.get('label_activitiy_per_user')
+                            text: this.$i18n.get('label_activity_per_user')
                         },
                         labels: activityPerUserLabels,
                         yaxis: {
