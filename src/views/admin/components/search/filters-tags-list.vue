@@ -25,7 +25,7 @@
                         v-for="(filterTag, index) of filterTags"
                         :key="index"
                         class="filter-tag"
-                        :class="{ 'is-readonly': !filterTag.filterId }">
+                        :class="{ 'is-readonly': !filterTag.filterId && filterTag.argType != 'postin' }">
                     <span class="">
                         <div class="filter-tag-metadatum-name">
                             {{ filterTag.metadatumName }}
@@ -35,7 +35,7 @@
                         </div>
                     </span>
                     <a
-                            v-if="filterTag.filterId"
+                            v-if="filterTag.filterId || filterTag.argType == 'postin'"
                             role="button"
                             tabindex="0"
                             class="tag is-delete"
@@ -212,7 +212,7 @@
                 }
             }
             &.is-readonly {
-                background-color: var(--tainacan-input-border-color);
+                border-style: dashed;
             }
         }
 
