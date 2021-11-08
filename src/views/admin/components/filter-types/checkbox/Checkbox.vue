@@ -35,7 +35,7 @@
             <p 
                     v-if="isLoadingOptions == false && options.length != undefined && options.length <= 0"
                     class="no-options-placeholder">
-                {{ $i18n.get('info_no_options_avialable_filtering') }}
+                {{ $i18n.get('info_no_options_available_filtering') }}
             </p>
         </template>
         <template v-else>
