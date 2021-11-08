@@ -108,19 +108,23 @@
                 
                 let flattenTags = [];
                 for (let tag of tags) {
+                    let aFilterTag = {
+                        filterId: tag.filterId,
+                        label: tag.argType != 'postin' ? tag.label : ( tag.label + ' ' + (tag.label == 1 ? this.$i18n.get('item') : this.$i18n.get('items') )),
+                        taxonomy: tag.taxonomy,
+                        metadatumName: tag.argType != 'postin' ? tag.metadatumName : this.$i18n.get('label_items_selection'),
+                        metadatumId: tag.metadatumId,
+                        argType: tag.argType
+                    }
                     if (Array.isArray(tag.label)) {
-                        for (let i = 0; i < tag.label.length; i++) 
-                            flattenTags.push({
-                                filterId: tag.filterId,
-                                label: tag.label,
-                                singleLabel: tag.label[i],
-                                value: tag.value[i],
-                                taxonomy: tag.taxonomy,
-                                metadatumName: tag.metadatumName,
-                                metadatumId: tag.metadatumId
-                            }); 
+                        for (let i = 0; i < tag.label.length; i++) {
+                            aFilterTag['singleLabel'] = tag.label[i];
+                            aFilterTag['value'] = tag.value[i];
+                            flattenTags.push(aFilterTag);
+                        }
                     } else {
-                        flattenTags.push(tag);
+                        aFilterTag['value'] = tag.value;
+                        flattenTags.push(aFilterTag);
                     }
                 }
                 return flattenTags;
@@ -134,7 +138,7 @@
                 'getFilterTags',
                 'getTotalItems'
             ]),
-            removeMetaQuery({ filterId, value, singleLabel, label, taxonomy, metadatumId, metadatumName }) {
+            removeMetaQuery({ filterId, value, singleLabel, label, taxonomy, metadatumId, metadatumName, argType }) {
                 this.$eventBusSearch.resetPageOnStore();
                 this.$eventBusSearch.removeMetaFromFilterTag({ 
                     filterId: filterId,
@@ -143,7 +147,8 @@
                     value: value, 
                     taxonomy: taxonomy,
                     metadatumId: metadatumId,
-                    metadatumName
+                    metadatumName:metadatumName,
+                    argType: argType
                 });
             },
             clearAllFilters() {

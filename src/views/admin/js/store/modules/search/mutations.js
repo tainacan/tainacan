@@ -169,29 +169,41 @@ export const addFilterTag = ( state, filterTag ) => {
         state.filter_tags.push(filterTag);
 };
 
+function getFilterTagLabel(aFilterArgument) {
+    
+    if (aFilterArgument.compare &&
+        (
+            aFilterArgument.metadatum &&
+            aFilterArgument.metadatum.metadata_type_object &&
+            aFilterArgument.metadatum.metadata_type_object.options &&
+            (
+                aFilterArgument.metadatum.metadata_type_object.primitive_type == 'date' ||
+                aFilterArgument.metadatum.metadata_type_object.primitive_type == 'float'
+            )
+        )
+    )
+        return (aFilterArgument.compare == 'BETWEEN' && Array.isArray(aFilterArgument.label) && aFilterArgument.label.length == 2) ? (aFilterArgument.label[0] + ' - ' + aFilterArgument.label[1]) : (aFilterArgument.compare + ' ' + aFilterArgument.label);
+    else
+        return aFilterArgument.label;
+}
+
 export const setFilterTags = ( state, filterArguments ) => {
-    console.log(filterArguments)
     let filterTags = filterArguments.map((aFilterArgument) => {
-        const label = aFilterArgument.compare &&
-                    (
-                      aFilterArgument.metadatum &&
-                      aFilterArgument.metadatum.metadata_type_object &&
-                      aFilterArgument.metadatum.metadata_type_object.options &&
-                      (
-                        aFilterArgument.metadatum.metadata_type_object.primitive_type == 'date' ||
-                        aFilterArgument.metadatum.metadata_type_object.primitive_type == 'float'
-                      )
-                    ) ? ( aFilterArgument.compare + ' ' + aFilterArgument.label) : aFilterArgument.label
+        const label = getFilterTagLabel(aFilterArgument);
         return {
             filterId: aFilterArgument.filter ? aFilterArgument.filter.id : null,
             label: label,
-            value: aFilterArgument.value,
-            taxonomy: '',
+            value:  aFilterArgument.value,
+            taxonomy: (aFilterArgument.metadatum &&
+                        aFilterArgument.metadatum.metadata_type_object &&
+                        aFilterArgument.metadatum.metadata_type_object.options &&
+                        aFilterArgument.metadatum.metadata_type_object.options.taxonomy
+                    ) ? aFilterArgument.metadatum.metadata_type_object.options.taxonomy : '',
+            argType: aFilterArgument.arg_type ? aFilterArgument.arg_type : '',
             metadatumId: aFilterArgument.metadatum && aFilterArgument.metadatum.metadatum_id ? aFilterArgument.metadatum.metadatum_id : '',
             metadatumName: aFilterArgument.metadatum && aFilterArgument.metadatum.metadatum_name ? aFilterArgument.metadatum.metadatum_name : ''
         }
     });
-    console.log(filterTags)
     state.filter_tags = filterTags;
 };
 
@@ -201,7 +213,6 @@ export const removeFilterTag = ( state, filterTag ) => {
 
     if (index >= 0)
         state.filter_tags.splice(index, 1);
-
 };
 
 export const cleanFilterTags = ( state ) => {

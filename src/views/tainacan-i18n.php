@@ -607,6 +607,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_document_option_iframe_width'			 =>	__( 'Iframe width (px)', 'tainacan'),
 	'label_document_option_is_image'				 => __( 'Is link to external image', 'tainacan' ),
 	'label_limit_max_values'						 => __( 'Limit the amount of multiple values', 'tainacan'),
+	'label_items_selection'							 => __( 'Items selection', 'tainacan'),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
