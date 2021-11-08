@@ -55,6 +55,10 @@ export const remove_taxquery = ( { commit }, filter  ) => {
     commit('removeTaxQuery', filter  );
 };
 
+export const remove_postin = ( { commit }  ) => {
+    commit('removePostIn');
+};
+
 // Pagination queries
 export const setTotalItems = ({ commit }, total ) => {
     commit('setTotalItems', total);

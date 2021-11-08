@@ -105,9 +105,9 @@
         computed: {
             filterTags() {
                 let tags = this.getFilterTags();
-                
                 let flattenTags = [];
-                for (let tag of tags) {
+
+                tags.forEach( tag => {
                     let aFilterTag = {
                         filterId: tag.filterId,
                         label: tag.argType != 'postin' ? tag.label : ( tag.label + ' ' + (tag.label == 1 ? this.$i18n.get('item') : this.$i18n.get('items') )),
@@ -126,7 +126,8 @@
                         aFilterTag['value'] = tag.value;
                         flattenTags.push(aFilterTag);
                     }
-                }
+                });
+                
                 return flattenTags;
             },
             totalItems() {

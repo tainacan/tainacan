@@ -210,22 +210,26 @@ export default {
 
                     if (filterTag.singleLabel != undefined || filterTag.label != undefined) {
                         
-                        if (filterTag.taxonomy) {
-                            this.$store.dispatch('search/remove_taxquery', {
-                                filterId: filterTag.filterId,
-                                label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
-                                isMultiValue: filterTag.singleLabel ? false : true,
-                                taxonomy: filterTag.taxonomy,
-                                value: filterTag.value
-                            });
+                        if (filterTag.argType !== 'postin') {
+                            if (filterTag.taxonomy) {
+                                this.$store.dispatch('search/remove_taxquery', {
+                                    filterId: filterTag.filterId,
+                                    label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
+                                    isMultiValue: filterTag.singleLabel ? false : true,
+                                    taxonomy: filterTag.taxonomy,
+                                    value: filterTag.value
+                                });
+                            } else {
+                                this.$store.dispatch('search/remove_metaquery', {
+                                    filterId: filterTag.filterId,
+                                    label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
+                                    isMultiValue: filterTag.singleLabel ? false : true,
+                                    metadatum_id: filterTag.metadatumId,
+                                    value: filterTag.value
+                                });
+                            }
                         } else {
-                            this.$store.dispatch('search/remove_metaquery', {
-                                filterId: filterTag.filterId,
-                                label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
-                                isMultiValue: filterTag.singleLabel ? false : true,
-                                metadatum_id: filterTag.metadatumId,
-                                value: filterTag.value
-                            });
+                            this.$store.dispatch('search/remove_postin');
                         }
                         this.$store.dispatch('search/removeFilterTag', filterTag);
                     }
@@ -336,7 +340,7 @@ export default {
                     if (singleSelection)
                         this.$store.dispatch('search/cleanSelectedItems');
 
-                    this.$store.dispatch('search/setSelectedItems', selectedItems);    
+                    this.$store.dispatch('search/setSelectedItems', selectedItems);
  
                     let currentSelectedItems = this.$store.getters['search/getSelectedItems'];
 

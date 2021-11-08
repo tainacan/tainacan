@@ -120,6 +120,10 @@ export const removeTaxQuery = ( state, filter ) => {
     }
 };
 
+export const removePostIn = ( state ) => {
+    delete state.postquery.postin;
+};
+
 export const setTotalItems = ( state, total ) => {
     state.totalItems = total;
 };
@@ -160,7 +164,7 @@ export const setOrderByName = ( state, orderByName ) => {
 };
 
 export const addFilterTag = ( state, filterTag ) => {
-    state.filter_tags = ( ! state.filter_tags) ? [] : state.filter_tags;    
+    state.filter_tags = ( ! state.filter_tags) ? [] : state.filter_tags;
     let index = state.filter_tags.findIndex( tag => tag.filterId == filterTag.filterId);
 
     if (index >= 0)

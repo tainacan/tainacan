@@ -27,11 +27,18 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             let hasFiltered = false;
             let advancedSearchResults = false;
             
-            if ( (postQueries.metaquery != undefined &&
-                (Object.keys(postQueries.metaquery).length > 0 ||
-                postQueries.metaquery.length > 0)) || (postQueries.taxquery != undefined &&
-                    (Object.keys(postQueries.taxquery).length > 0 ||
-                    postQueries.taxquery.length > 0)) ) {
+            // We mark as filtered if there is a metaquery, taxquery or a postin
+            if ( 
+                (postQueries.metaquery != undefined &&
+                    (Object.keys(postQueries.metaquery).length > 0 || postQueries.metaquery.length > 0)
+                ) ||
+                (postQueries.taxquery != undefined &&
+                    (Object.keys(postQueries.taxquery).length > 0 ||postQueries.taxquery.length > 0)
+                ) ||
+                (postQueries.postin != undefined &&
+                    postQueries.postin.length
+                )
+            ) {
                 
                 hasFiltered = true;
                         
