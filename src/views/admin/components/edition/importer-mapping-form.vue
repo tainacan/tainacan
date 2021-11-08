@@ -56,7 +56,7 @@
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-approvedcircle"/>
                         </span>
-                        {{ $i18n.get('label_set_all_create_metadada') }}
+                        {{ $i18n.get('label_set_all_create_metadata') }}
                     </a>
                     <a
                             v-if="collectionId != null && collectionId != undefined && importerSourceInfo.source_metadata &&importerSourceInfo.source_metadata.length > 0 && collection && collection.current_user_can_edit_metadata"
