@@ -889,8 +889,11 @@
         justify-content: space-between;
         align-items: center;
         padding: 0;
+        -webkit-break-inside: avoid;
+        break-inside: avoid;
 
         .b-checkbox {
+            break-inside: avoid;
             max-width: 100%;
             min-height: 1.5em;
             margin-left: 0.7em;
@@ -910,8 +913,12 @@
         max-width: calc(100% - 0.5em);
         padding-left: 0.5em;
         margin: 0;
+        -webkit-break-inside: avoid;
+        break-inside: avoid;
 
         .b-checkbox {
+            -webkit-break-inside: avoid;
+            break-inside: avoid;
             margin-right: 0px;
             margin-bottom: 0;
         }
