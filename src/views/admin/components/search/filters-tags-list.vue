@@ -108,23 +108,29 @@
                 let flattenTags = [];
 
                 tags.forEach( tag => {
-                    let aFilterTag = {
-                        filterId: tag.filterId,
-                        label: tag.argType != 'postin' ? tag.label : ( tag.label + ' ' + (tag.label == 1 ? this.$i18n.get('item') : this.$i18n.get('items') )),
-                        taxonomy: tag.taxonomy,
-                        metadatumName: tag.argType != 'postin' ? tag.metadatumName : this.$i18n.get('label_items_selection'),
-                        metadatumId: tag.metadatumId,
-                        argType: tag.argType
-                    }
                     if (Array.isArray(tag.label)) {
                         for (let i = 0; i < tag.label.length; i++) {
-                            aFilterTag['singleLabel'] = tag.label[i];
-                            aFilterTag['value'] = tag.value[i];
-                            flattenTags.push(aFilterTag);
+                            flattenTags.push({
+                                singleLabel: tag.label[i],
+                                value: tag.value[i],
+                                filterId: tag.filterId,
+                                label: tag.argType != 'postin' ? tag.label : ( tag.label + ' ' + (tag.label == 1 ? this.$i18n.get('item') : this.$i18n.get('items') )),
+                                taxonomy: tag.taxonomy,
+                                metadatumName: tag.argType != 'postin' ? tag.metadatumName : this.$i18n.get('label_items_selection'),
+                                metadatumId: tag.metadatumId,
+                                argType: tag.argType
+                            });
                         }
                     } else {
-                        aFilterTag['value'] = tag.value;
-                        flattenTags.push(aFilterTag);
+                        flattenTags.push({
+                            value: tag.value,
+                            filterId: tag.filterId,
+                            label: tag.argType != 'postin' ? tag.label : ( tag.label + ' ' + (tag.label == 1 ? this.$i18n.get('item') : this.$i18n.get('items') )),
+                            taxonomy: tag.taxonomy,
+                            metadatumName: tag.argType != 'postin' ? tag.metadatumName : this.$i18n.get('label_items_selection'),
+                            metadatumId: tag.metadatumId,
+                            argType: tag.argType
+                        });
                     }
                 });
                 

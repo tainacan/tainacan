@@ -163,26 +163,8 @@
                     return false;
 
                 let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
-
-                if ( index >= 0){
-                    let query = this.query.metaquery.slice();
-                    this.selected = query[ index ].value;
-                } else {
-                    this.selected = [];
-                }
                 
-                let onlyLabels = [];
-                if (!isNaN(this.selected[0])){
-                    for (let aSelected of this.selected) {
-                        let valueIndex = this.options.findIndex(option => option.value == aSelected);
-
-                        if (valueIndex >= 0) {
-                            onlyLabels.push(this.options[valueIndex].label);
-                        }
-                    }
-                }
-
-                this.$emit( 'sendValuesToTags', { label: onlyLabels.length ? onlyLabels : this.selected, value: this.selected, metadatumName: this.metadatumName });
+                this.selected = index >= 0 ? this.query.metaquery.slice()[ index ].value : [];
             },
             openCheckboxModal() {
                 this.$buefy.modal.open({

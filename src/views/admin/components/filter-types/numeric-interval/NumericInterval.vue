@@ -90,25 +90,19 @@
                     collection_id: this.collectionId,
                     value: values
                 });
-
-                if (values[0] != undefined && values[1] != undefined)
-                    this.$emit('sendValuesToTags', { label: values[0] + ' - ' + values[1], value: values, metadatumName: this.metadatumName });
             },
             updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
                 let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
-                if ( index >= 0 ){
+                if ( index >= 0 ) {
+
                     let metaquery = this.query.metaquery[ index ];
                     if ( metaquery.value && metaquery.value.length > 1 ) {
                         this.valueInit = new Number(metaquery.value[0]);
                         this.valueEnd = new Number(metaquery.value[1]);
                     }
-
-                    if (metaquery.value[0] != undefined && metaquery.value[1] != undefined)
-                        this.$emit('sendValuesToTags', { label: this.valueInit + ' - ' + this.valueEnd, value: metaquery.value, metadatumName: this.metadatumName });
-
                 } else {
                     this.valueInit = null;
                     this.valueEnd = null;

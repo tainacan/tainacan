@@ -217,42 +217,15 @@
                     }
                 }
             },
-            updateSelectedValues(){
-                
+            updateSelectedValues() {
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
                     
                 let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy );
-                if ( index >= 0){
-                    let metadata = this.query.taxquery[ index ];
-                    this.selected = metadata.terms;
-                } else {
-                    this.selected = [];
-                }
 
-                let onlyLabels = [];
-
-                for (let selected of this.selected) {
-                    let valueIndex = this.options.findIndex(option => option.value == selected );
-
-                    if (valueIndex >= 0) {
-                        let existingLabelIndex = onlyLabels.findIndex(aLabel => aLabel == this.options[valueIndex].label)
-                        if (existingLabelIndex < 0)
-                            onlyLabels.push(this.options[valueIndex].label);
-                        else  
-                            this.$set(onlyLabels, onlyLabels.push(this.options[valueIndex].label), existingLabelIndex); 
-                    } else {
-                        
-                        // Not finding all options will happen on elastic search, 
-                        // as the facetsFromItemSearch will not be ready yet
-                        if (!this.isUsingElasticSearch)
-                            this.$console.log("Looking for terms that are not in the options list... ");
-                    }
-                }
-                this.$emit('sendValuesToTags', { label: onlyLabels, taxonomy: this.taxonomy, value: this.selected, metadatumName: this.metadatumName });
+                this.selected = index >= 0 ? this.query.taxquery[ index ].terms : [];
             },
             onSelect() {
-                
                 this.$emit('input', {
                     filter: 'checkbox',
                     taxonomy: this.taxonomy,
