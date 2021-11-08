@@ -708,8 +708,10 @@ class Items extends Repository {
 			foreach($args['meta_query'] as $idx => $meta) {
 				$meta_id = $meta['key'];
 				$metadata = $Tainacan_Metadata->fetch($meta_id);
-				if($metadata->get_metadata_type() === 'Tainacan\\Metadata_Types\\Relationship') 
-				{
+				if(
+					$metadata->get_metadata_type() === 'Tainacan\\Metadata_Types\\Relationship'
+					&& (isset($meta['compare']) && !in_array($meta['compare'], ['IN', 'NOT IN', '=']))
+				) {
 					$options  = $metadata->get_metadata_type_options();
 					if( isset($options) && isset($options['search']) ) {
 						$this->relationsip_metaquery = array(
