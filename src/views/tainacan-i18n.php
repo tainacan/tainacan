@@ -386,7 +386,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_delete_process'                           => __( 'Delete process', 'tainacan' ),
 	'label_process_failed'                           => __( 'Process failed', 'tainacan' ),
 	'label_max_options_to_show'                      => __( 'Max options to show', 'tainacan' ),
-	'label_unamed_process'                           => __( 'Unamed process', 'tainacan' ),
+	'label_unamed_process'                           => __( 'Unnamed process', 'tainacan' ),
 	'loading_processes'				 				 => __( 'Loading processes', 'tainacan' ),
 	'label_semantic_uri'                             => __( 'Semantic Uri', 'tainacan' ),
 	'label_view_collection_on_website'               => __( 'View collection on website', 'tainacan' ),
