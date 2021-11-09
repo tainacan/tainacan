@@ -590,7 +590,9 @@ class Item extends Entity {
 		
 		if (!is_null($args['metadata'])) {
 
+			$metadatum = $args['metadata'];
 			$metadatum_object = null;
+
 			if ( $metadatum instanceof \Tainacan\Entities\Metadatum ) {
 				$metadatum_object = $metadatum;
 			} elseif ( is_int($metadatum) ) {
@@ -601,7 +603,7 @@ class Item extends Entity {
 					$metadatum_object = $metadatum[0];
 				}
 			}
-
+			
 			if ( $metadatum_object instanceof \Tainacan\Entities\Metadatum ) {
 
 				if ( is_array($args['metadata__not_in'])
