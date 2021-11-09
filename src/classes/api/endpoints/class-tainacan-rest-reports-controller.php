@@ -503,7 +503,7 @@ class REST_Reports_Controller extends REST_Controller {
 		$metadatum_type = $metadatum->get_metadata_type();
 		if($metadatum_type != 'Tainacan\Metadata_Types\Taxonomy') {
 			return new \WP_REST_Response([
-				'error_message' => __('Only taxonomy metadata type has allowed.', 'tainacan'),
+				'error_message' => __('Only taxonomy metadata type is allowed.', 'tainacan'),
 				'metadatum_type'          => $metadatum_type
 			], 400);
 		}
