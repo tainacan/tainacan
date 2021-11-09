@@ -57,7 +57,7 @@ class REST_Importers_Controller extends REST_Controller {
                     ],
                     'collection' => [
                         'type'        => ['array','object'],
-                        'description' => __( 'The array describing the destination collectino as expected by the importer', 'tainacan' ),
+                        'description' => __( 'The array describing the destination collection as expected by the importer', 'tainacan' ),
                     ],
                     'options' => [
                         'type'        => ['array', 'object'],
