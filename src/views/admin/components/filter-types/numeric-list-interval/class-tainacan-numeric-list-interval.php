@@ -47,7 +47,7 @@ class Numeric_List_Interval extends Filter_Type {
         return [
             'intervals' => [
                 'title' => __('Predefined intervals','tainacan'),
-                'description' => __('A list of predefined intervals that the filter will offer on a select box.','tainacan')
+                'description' => __('A list of predefined intervals that the filter will offer on a selection box.','tainacan')
             ],
             'showIntervalOnTag' => [
                 'title' => __('Interval on tags', 'tainacan'),
