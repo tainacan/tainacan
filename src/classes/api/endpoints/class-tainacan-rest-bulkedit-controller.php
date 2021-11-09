@@ -210,7 +210,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'args'                => [
 						'value' => [
 							'type'        => 'string',
-							'description' => __( 'The new comments status (open or close)', 'tainacan' ),
+							'description' => __( 'The new comments status (open or closed)', 'tainacan' ),
 						],
 					],
 				),
