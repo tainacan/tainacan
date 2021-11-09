@@ -120,7 +120,7 @@ class REST_Exporters_Controller extends REST_Controller {
 
 		if(empty($body)) {
 			return new \WP_REST_Response([
-				'error_message' => __('Body can not be empty.', 'tainacan'),
+				'error_message' => __('Body cannot be empty.', 'tainacan'),
 			], 400);
 		}
 		$slug = $body['exporter_slug'];
