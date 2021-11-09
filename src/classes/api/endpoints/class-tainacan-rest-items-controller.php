@@ -1080,7 +1080,7 @@ class REST_Items_Controller extends REST_Controller {
 					} else {
 						$this->submission_rollback_new_terms();
 						return new \WP_REST_Response([
-							'error_message' => __('unable create submission ID.', 'tainacan'),
+							'error_message' => __('unable to create submission ID.', 'tainacan'),
 						], 400);
 					}
 					
@@ -1113,7 +1113,7 @@ class REST_Items_Controller extends REST_Controller {
 		$item_id = get_transient('tnc_transient_submission_' . $submission_id);
 		if($item_id === false) {
 			return new \WP_REST_Response([
-				'error_message' => __('submission ID not exist.', 'tainacan'),
+				'error_message' => __('submission ID does not exist.', 'tainacan'),
 			], 400);
 		}
 		$this->new_terms_ids = get_transient('tnc_transient_submission_' . $submission_id . '_new_terms_ids');
