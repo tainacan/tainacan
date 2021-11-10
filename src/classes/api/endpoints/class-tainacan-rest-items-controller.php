@@ -457,6 +457,7 @@ class REST_Items_Controller extends REST_Controller {
 		}
 
 		foreach($meta_query as $meta) {
+			$filter_type_component = false;
 			if( !isset($meta['key']) || !isset($meta['value']) )
 				continue;
 
