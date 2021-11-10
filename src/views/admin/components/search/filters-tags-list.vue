@@ -160,9 +160,7 @@
             },
             clearAllFilters() {
                 this.$eventBusSearch.resetPageOnStore();
-                for (let tag of this.filterTags) {
-                    this.removeMetaQuery(tag);
-                }
+                this.$eventBusSearch.clearAllFilters();
             }
         }
     }

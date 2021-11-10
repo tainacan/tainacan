@@ -53,7 +53,7 @@
         data() {
             return {
                 results:'',
-                selected:[], // Simple array of IDs, not objects and not bound to the taginput
+                selected:[], // Simple array of IDs, no more objects and not bound to the taginput
                 options: [],
                 relatedCollectionId: '',
                 searchQuery: '',
@@ -74,7 +74,6 @@
         },
         watch: {
             'query'() {
-                console.log('opaaaa')
                 this.updateSelectedValues();
             }
         },
@@ -162,7 +161,7 @@
                 // Cleared either way, we might be coming from a situation where all the filters were removed.
                 this.selected = [];
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
+                const index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
                 if (index >= 0) {
                     const metadata = this.query.metaquery[ index ];
                     for (let item of metadata.value)
