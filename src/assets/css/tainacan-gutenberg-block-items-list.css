@@ -34,6 +34,7 @@
     grid-template-columns: repeat(auto-fill, 220px);
     grid-gap: 0px;
     justify-content: space-evenly;
+    align-items: flex-start;
     list-style-type: none; }
     .wp-block-tainacan-items-list ul.items-list.items-layout-grid li.item-list-item,
     .wp-block-tainacan-items-list ul.items-list-edit.items-layout-grid li.item-list-item {

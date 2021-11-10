@@ -448,7 +448,8 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
             this.clearContextMenu();
         },
@@ -489,7 +490,8 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
         },
         openCollection() {

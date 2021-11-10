@@ -631,6 +631,7 @@ export default {
                 ariaRole: 'alertdialog',
                 ariaModal: true,
                 customClass: 'tainacan-modal slides-help-modal',
+                closeButtonAriaLabel: this.$i18n.get('close'),
                 onCancel: () => {
                     setTimeout(() => document.documentElement.classList.add('is-clipped'), 500); 
                 }

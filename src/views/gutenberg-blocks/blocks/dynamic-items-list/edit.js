@@ -490,7 +490,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
             isActive: layout === 'mosaic',
         }
     ];
-
+    
     return content == 'preview' ? 
         <div className={className}>
             <img

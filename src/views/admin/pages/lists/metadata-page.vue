@@ -273,7 +273,8 @@
                                             trap-focus
                                             aria-modal
                                             aria-role="dialog"
-                                            custom-class="tainacan-modal">
+                                            custom-class="tainacan-modal"
+                                            :close-button-aria-label="$i18n.get('close')">
                                         <metadatum-edition-form
                                                 :collection-id="collectionId"
                                                 :original-metadatum="metadatum"
@@ -568,7 +569,8 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             }); 
         },
         toggleMetadatumEdition(metadatum) {

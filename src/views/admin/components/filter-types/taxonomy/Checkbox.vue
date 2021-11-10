@@ -42,7 +42,7 @@
             <p 
                     v-if="!isLoadingOptions && options.length != undefined && options.length <= 0"
                     class="no-options-placeholder">
-                {{ $i18n.get('info_no_options_avialable_filtering') }}
+                {{ $i18n.get('info_no_options_available_filtering') }}
             </p>
         </template>
         <template v-else>
@@ -257,7 +257,8 @@
                     },
                     width: 'calc(100% - (4 * var(--tainacan-one-column)))',
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
                 });
             },
             prepareOptionsForTaxonomy(items) {

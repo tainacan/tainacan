@@ -317,7 +317,8 @@
                     trap-focus
                     aria-modal
                     aria-role="dialog"
-                    custom-class="tainacan-modal">
+                    custom-class="tainacan-modal"
+                    :close-button-aria-label="$i18n.get('close')">
                 <div 
                         autofocus
                         role="dialog"
@@ -476,7 +477,8 @@ export default {
                     },
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });  
         } else {
             next()

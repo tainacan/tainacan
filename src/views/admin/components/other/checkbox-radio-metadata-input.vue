@@ -835,6 +835,8 @@
         justify-content: space-between;
         align-items: center;
         padding: 0;
+        -webkit-break-inside: avoid;
+        break-inside: avoid;
 
         /deep/ .b-checkbox, /deep/ .b-radio {
             max-width: 100%;
@@ -870,10 +872,14 @@
         max-width: calc(100% - 0.5em);
         padding-left: 0.5em;
         margin: 0;
+        -webkit-break-inside: avoid;
+        break-inside: avoid;
 
         .b-checkbox, .b-radio {
             margin-right: 0px;
             margin-bottom: 0;
+            -webkit-break-inside: avoid;
+            break-inside: avoid;
 
             .control-label {
                 white-space: normal;

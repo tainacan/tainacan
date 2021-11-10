@@ -478,7 +478,7 @@ export default {
                             }
                         },
                         noData: {
-                            text: '0 ' + this.$i18n.get('label_items_with_this_metadum_value')
+                            text: '0 ' + this.$i18n.get('label_items_with_this_metadatum_value')
                         }
                     }
                 }
@@ -564,7 +564,7 @@ export default {
                             enabled: orderedTerms.length <= 40
                         },
                         noData: {
-                            text: '0 ' + this.$i18n.get('label_items_with_this_metadum_value')
+                            text: '0 ' + this.$i18n.get('label_items_with_this_metadatum_value')
                         }
                     }
                 }
@@ -654,7 +654,7 @@ export default {
                             }
                         },
                         noData: {
-                            text: '0 ' + this.$i18n.get('label_items_with_this_metadum_value')
+                            text: '0 ' + this.$i18n.get('label_items_with_this_metadatum_value')
                         }
                     }
                 }
@@ -741,7 +741,7 @@ export default {
                             enabled: orderedTerms.length <= 40
                         },
                         noData: {
-                            text: this.$i18n.get('label_items_with_this_metadum_value')
+                            text: this.$i18n.get('label_items_with_this_metadatum_value')
                         }
                     }
                 }

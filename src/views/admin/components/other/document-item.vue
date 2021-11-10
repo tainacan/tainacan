@@ -18,7 +18,8 @@
                 aria-modal
                 aria-role="dialog"
                 :append-to-body="true"
-                custom-class="tainacan-modal">
+                custom-class="tainacan-modal"
+                :close-button-aria-label="$i18n.get('close')">
             <!-- <div class="tainacan-modal-content">
                 <div class="tainacan-modal-title">
                     <h2>{{ $i18n.get('label_document') }}</h2>

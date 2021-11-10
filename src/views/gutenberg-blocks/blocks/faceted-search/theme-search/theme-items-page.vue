@@ -411,7 +411,8 @@
                 :trap-focus="filtersAsModal"
                 full-screen
                 :custom-class="'tainacan-modal tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"
-                :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']">
+                :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']"
+                :close-button-aria-label="$i18n.get('close')">
             <filters-items-list
                     :is-loading-items="isLoadingItems"
                     :autofocus="filtersAsModal"
@@ -891,7 +892,8 @@
                         totalItems: this.totalItems
                     },
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
                 });
             },
             updateSearch() {
@@ -1184,7 +1186,8 @@
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
                         },
                         trapFocus: true,
-                        customClass: 'tainacan-modal'
+                        customClass: 'tainacan-modal',
+                        closeButtonAriaLabel: this.$i18n.get('close')
                     });
             },
             hideFiltersOnMobile: _.debounce( function() {

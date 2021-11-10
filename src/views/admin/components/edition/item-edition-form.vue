@@ -555,7 +555,8 @@
                                 trap-focus
                                 aria-modal
                                 aria-role="dialog"
-                                custom-class="tainacan-modal">
+                                custom-class="tainacan-modal"
+                                :close-button-aria-label="$i18n.get('close')">
                             <div class="tainacan-modal-content">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('label_thumbnail_alt') }}</h2>
@@ -593,7 +594,8 @@
                                 trap-focus
                                 aria-modal
                                 aria-role="dialog"
-                                custom-class="tainacan-modal">
+                                custom-class="tainacan-modal"
+                                :close-button-aria-label="$i18n.get('close')">
                             <div class="tainacan-modal-content">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('instruction_write_text') }}</h2>
@@ -635,7 +637,8 @@
                                 tabindex="-1"
                                 aria-modal
                                 aria-role="dialog"
-                                custom-class="tainacan-modal">
+                                custom-class="tainacan-modal"
+                                :close-button-aria-label="$i18n.get('close')">
                             <div class="tainacan-modal-content">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('instruction_insert_url') }}</h2>
@@ -1174,7 +1177,8 @@ export default {
                     },
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
         } else {
             next()
@@ -1558,7 +1562,8 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
 
         },
@@ -1681,7 +1686,8 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
         },
         loadExistingItem() {

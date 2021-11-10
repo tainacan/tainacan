@@ -52,7 +52,8 @@
                 aria-role="dialog"
                 aria-modal
                 :can-cancel="['outside', 'escape']"
-                custom-class="tainacan-modal">
+                custom-class="tainacan-modal"
+                :close-button-aria-label="$i18n.get('close')">
             <term-edition-form 
                     :taxonomy-id="taxonomyId"
                     :edit-form="{ id: 'new', name: newTermName ? newTermName : '' }"
