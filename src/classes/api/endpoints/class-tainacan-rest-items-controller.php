@@ -479,6 +479,7 @@ class REST_Items_Controller extends REST_Controller {
 			$m = false;
 			if ( !empty($filter) ) {
 				$f = $filter[0]->_toArray();
+				$filter_type_component = $filter[0]->get_filter_type_object()->get_component();
 				$m = $f['metadatum'];
 			} else {
 				$metadatum = $this->metadatum_repository->fetch($meta_id, 'OBJECT');
@@ -518,14 +519,18 @@ class REST_Items_Controller extends REST_Controller {
 				}
 			}
 
-			$filters_arguments[] = array(
+			$filter_name = is_string($filter_type_component) 
+				? "tainacan-api-items-${filter_type_component}-filter-arguments"
+				: 'tainacan-api-items-filter-arguments';
+
+			$filters_arguments[] = apply_filters($filter_name, array(
 				'filter' => $f,
 				'metadatum' => $m,
 				'arg_type' => 'meta',
 				'value' => $meta_value,
 				'label' => $meta_label,
 				'compare' => isset($meta['compare']) ? $meta['compare'] : '='
-			);
+			));
 		}
 
 		if(isset($args['post__in'])) {
