@@ -219,7 +219,7 @@
                                     class="button is-white is-pulled-right">
                                 <span 
                                         v-tooltip="{
-                                            content: $i18n.get('remove_bulk_edition'),
+                                            content: $i18n.get('remove_bulk_edit'),
                                             autoHide: true,
                                             placement: 'auto-end'
                                         }"
@@ -239,7 +239,7 @@
                                         size="is-small"
                                         position="is-left"
                                         animated
-                                        :label="$i18n.get('info_bulk_edition_process_added')">
+                                        :label="$i18n.get('info_bulk_edit_process_added')">
                                     <span class="icon">
                                         <i class="has-text-success tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
                                     </span>
@@ -279,7 +279,7 @@
                     <span class="icon is-small">
                         <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                     </span>
-                    &nbsp;{{ $i18n.get('new_bulk_edition_criterion') }}
+                    &nbsp;{{ $i18n.get('new_bulk_edit_criterion') }}
                 </a>
             </div>
 

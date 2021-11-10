@@ -885,7 +885,7 @@ class REST_Items_Controller extends REST_Controller {
 
 	}
 
-	private function submission_item_metadada ( \Tainacan\Entities\Item_Metadata_Entity &$item_metadata, $request) {
+	private function submission_item_metadata ( \Tainacan\Entities\Item_Metadata_Entity &$item_metadata, $request) {
 		$collection_id = $item_metadata->get_item()->get_collection_id();
 		$item = $item_metadata->get_item();
 		$collection = $this->collections_repository->fetch($collection_id);
@@ -1002,7 +1002,7 @@ class REST_Items_Controller extends REST_Controller {
 									$metadatum_child = $this->metadatum_repository->fetch( $child['metadatum_id'] );
 									$item_metadata_child = new Entities\Item_Metadata_Entity($item, $metadatum_child, null, $parent_meta_id);
 									$item_metadata_child->set_value($child_value);
-									$item_metadata_child = $this->submission_item_metadada($item_metadata_child, $request);
+									$item_metadata_child = $this->submission_item_metadata($item_metadata_child, $request);
 									if ($item_metadata_child instanceof \WP_REST_Response) {
 										return $item_metadata_child;
 									}
@@ -1024,7 +1024,7 @@ class REST_Items_Controller extends REST_Controller {
 								$metadatum_child = $this->metadatum_repository->fetch( $child['metadatum_id'] );
 								$item_metadata_child = new Entities\Item_Metadata_Entity($item, $metadatum_child, null, $parent_meta_id);
 								$item_metadata_child->set_value($child_value);
-								$item_metadata_child = $this->submission_item_metadada($item_metadata_child, $request);
+								$item_metadata_child = $this->submission_item_metadata($item_metadata_child, $request);
 								if ($item_metadata_child instanceof \WP_REST_Response) {
 									return $item_metadata_child;
 								}	
@@ -1046,7 +1046,7 @@ class REST_Items_Controller extends REST_Controller {
 						} else {
 							$item_metadata->set_value( is_array($value) ? implode(' ', $value) : $value);
 						}
-						$item_metadata = $this->submission_item_metadada($item_metadata, $request);
+						$item_metadata = $this->submission_item_metadata($item_metadata, $request);
 						if ($item_metadata instanceof \WP_REST_Response) {
 							return $item_metadata;
 						}
@@ -1061,7 +1061,7 @@ class REST_Items_Controller extends REST_Controller {
 						} else {
 							$item_metadata->set_value( is_array($value) ? implode(' ', $value) : $value);
 						}
-						$item_metadata = $this->submission_item_metadada($item_metadata, $request);
+						$item_metadata = $this->submission_item_metadata($item_metadata, $request);
 						if ($item_metadata instanceof \WP_REST_Response) {
 							return $item_metadata;
 						}

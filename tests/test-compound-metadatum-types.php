@@ -26,7 +26,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-		
+
 		$metadatum = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -82,24 +82,24 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		$item_metadata1->validate();
 
 		$item_metadata1 = $Tainacan_Item_Metadata->insert($item_metadata1);
-		
+
 		$item_metadata = new Item_Metadata_Entity($i, $metadatum_child2, null, $item_metadata1->get_parent_meta_id());
 		$item_metadata->set_value('Blue');
-		
+
 		$item_metadata->validate();
 
 		$item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
-		
+
 		$compoundItem = new Item_Metadata_Entity($i, $metadatum);
-		
+
 		$compoundValue = $compoundItem->get_value();
-		
+
 		$this->assertTrue( is_array($compoundValue), 'value of a compound should return array' );
 		$this->assertEquals( 2, sizeof($compoundValue), 'value should have 2 item metadata' );
-		
+
 		$this->assertTrue( isset($compoundValue[$metadatum_child1->get_id()]), 'First element of value must be set' );
 		$this->assertTrue( isset($compoundValue[$metadatum_child2->get_id()]), 'Second element of value must be set' );
-		
+
 		$this->assertTrue( $compoundValue[$metadatum_child1->get_id()] instanceof Item_Metadata_Entity , 'First element of value should be an item metadata entity' );
 		$this->assertTrue( $compoundValue[$metadatum_child2->get_id()] instanceof Item_Metadata_Entity , 'Second element of value should be an item metadata entity' );
 
@@ -117,7 +117,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
- 
+
 		$metadatum = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -143,7 +143,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-		
+
 		$metadatum_child2 = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -184,13 +184,13 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		$item_metadata3->set_value('Green');
 		$item_metadata3->validate();
 		$item_metadata3 = $Tainacan_Item_Metadata->insert($item_metadata3);
-		
-		
+
+
 		$item_metadata = new Item_Metadata_Entity($i, $metadatum_child2, null, $item_metadata3->get_parent_meta_id());
 		$item_metadata->set_value('Yellow');
 		$item_metadata->validate();
 		$item_metadata = $Tainacan_Item_Metadata->insert($item_metadata);
-		
+
 		$compoundItem = new Item_Metadata_Entity($i, $metadatum);
 		$compoundValue = $compoundItem->get_value();
 
@@ -199,10 +199,10 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 
 		$this->assertTrue( is_array($compoundValue[0]), 'value of a compound should return array' );
 		$this->assertTrue( is_array($compoundValue[1]), 'value of a compound should return array' );
-		
+
 		$this->assertTrue( isset($compoundValue[0][$metadatum_child1->get_id()]), 'First element of value must be set' );
 		$this->assertTrue( isset($compoundValue[1][$metadatum_child2->get_id()]), 'Second element of value must be set' );
-		
+
 		$this->assertTrue( $compoundValue[0][$metadatum_child1->get_id()] instanceof Item_Metadata_Entity , 'First element of value should be an item metadata entity' );
 		$this->assertTrue( $compoundValue[1][$metadatum_child2->get_id()] instanceof Item_Metadata_Entity , 'Second element of value should be an item metadata entity' );
 
@@ -215,7 +215,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		$item_metadata_removed = $Tainacan_Item_Metadata->remove_compound_value($i, $metadatum, $item_metadata3->get_parent_meta_id());
 		$compoundItem = new Item_Metadata_Entity($i, $metadatum);
 		$compoundValue = $compoundItem->get_value();
-		
+
 		$this->assertTrue( is_array($compoundValue), 'value of a compound should return array' );
 		$this->assertEquals( 1, sizeof($compoundValue), 'value should have 1 values' );
 
@@ -231,7 +231,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-		
+
 		$metadatum = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -244,7 +244,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-		
+
 		$newMetadatum = new \Tainacan\Entities\Metadatum();
 		$newMetadatum->set_name('test_multiple');
 		$newMetadatum->set_metadata_type('Tainacan\Metadata_Types\Taxonomy');
@@ -265,7 +265,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-		
+
 		$metadatum = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -278,17 +278,17 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-		
+
 		$newMetadatum = new \Tainacan\Entities\Metadatum();
 		$newMetadatum->set_name('test_multiple');
 		$newMetadatum->set_metadata_type('Tainacan\Metadata_Types\Taxonomy');
 		$newMetadatum->set_parent($metadatum->get_id());
-		
+
 		$this->assertTrue($newMetadatum->validate(), 'You can add a taxonomy metadatum inside a not multiple compound metadatum');
 		$newMetadatum = $Tainacan_Metadata->insert($newMetadatum);
-		
+
 		$metadatum->set_multiple('yes');
-		
+
 		$this->assertFalse($metadatum->validate(), 'You cant turn a compound metadatum into multiple when there is a taxonomy metadatum inside it');
 	}
 
@@ -300,7 +300,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-		
+
 		$metadatum = $this->tainacan_entity_factory->create_entity(
 			'metadatum',
 			array(
@@ -313,21 +313,21 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 			),
 			true
 		);
-		
+
 		$newMetadatum = new \Tainacan\Entities\Metadatum();
 		$newMetadatum->set_name('test_multiple');
 		$newMetadatum->set_multiple('yes');
 		$newMetadatum->set_metadata_type('Tainacan\Metadata_Types\Text');
 		$newMetadatum->set_parent($metadatum->get_id());
-		
+
 		$this->assertFalse($newMetadatum->validate(), 'You cant add a multiple metadatum inside a compound metadatum');
-		
+
 		$newMetadatum->set_multiple('no');
-		
+
 		$this->assertTrue($newMetadatum->validate());
 	}
 
-	function test_validations_metadada_order() {
+	function test_validations_metadata_order() {
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
 		$collection = $this->tainacan_entity_factory->create_entity(
@@ -412,14 +412,14 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		$collection->set_metadata_order($order);
 		$collection->validate();
 		\tainacan_collections()->insert($collection);
-		
+
 		$metadata_order = $Tainacan_Collections->fetch( $collection->get_id(), 'OBJECT' )->get_metadata_order();
 		$this->assertEquals($metadata_order[0]['id'], $order[0]['id']);
 		//$this->assertEquals($metadata_order[1]['id'], $order[1]['id']);
 		//$this->assertEquals($metadata_order[2]['id'], $order[2]['id']);
 		$this->assertEquals($metadata_order[1]['id'], $order[1]['id']);
 		$this->assertEquals($metadata_order[2]['id'], $order[2]['id']);
-	
+
 		$order = [
 			['id' => $metadatum1->get_id(), 'enabled' => true],
 			['id' => $metadatum2->get_id(), 'enabled' => true],
@@ -431,7 +431,7 @@ class CompoundMetadatumTypes extends TAINACAN_UnitTestCase {
 		$collection->set_metadata_order($order);
 		$collection->validate();
 		\tainacan_collections()->insert($collection);
-		
+
 		$metadata_order = $Tainacan_Collections->fetch( $collection->get_id(), 'OBJECT' )->get_metadata_order();
 		$this->assertEquals($metadata_order[0]['id'], $order[0]['id']);
 		$this->assertEquals($metadata_order[1]['id'], $order[1]['id']);

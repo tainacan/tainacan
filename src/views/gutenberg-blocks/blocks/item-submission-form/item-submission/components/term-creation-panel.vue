@@ -8,7 +8,7 @@
             class="tainacan-form term-creation-panel"
             @submit.prevent="saveEdition(editForm)">
 
-        <h4>{{ editForm & editForm.id && editForm.id != 'new' ? $i18n.get("title_term_edition") : $i18n.get("title_term_creation") }}</h4>
+        <h4>{{ editForm & editForm.id && editForm.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}</h4>
     
         <div>
             <b-loading
