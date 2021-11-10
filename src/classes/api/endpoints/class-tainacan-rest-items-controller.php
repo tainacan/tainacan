@@ -462,8 +462,8 @@ class REST_Items_Controller extends REST_Controller {
 				continue;
 
 			$meta_id = $meta['key'];
-			$meta_value = $meta['value'];
-			$meta_label = isset($meta['label']) ? $meta['label'] : $meta['value'];
+			$meta_value = is_array($meta['value']) ? $meta['value'] : [$meta['value']];
+			$meta_label = isset($meta['label']) ? $meta['label'] : $meta_value;
 
 			$filter = $this->filters_repository->fetch([
 				'meta_query' => array(
