@@ -164,8 +164,8 @@ class CoreMetadatumTypes extends TAINACAN_UnitTestCase {
         $core_title->set_multiple('yes');
         $core_description->set_multiple('yes');
 
-        $this->assertFalse($core_title->validate(), 'Core metadata should not validate because it can not allow it to have multiple');
-        $this->assertFalse($core_description->validate(), 'Core metadata should not validate because it can not allow it to have multiple');
+        $this->assertFalse($core_title->validate(), 'Core metadata should not validate because it cannot allow it to have multiple');
+        $this->assertFalse($core_description->validate(), 'Core metadata should not validate because it cannot allow it to have multiple');
 
     }
 

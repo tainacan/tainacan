@@ -265,7 +265,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 			];
 		} else {
 			return new \WP_REST_Response([
-				'error_message' => __('You mus specify items_ids OR use_query', 'tainacan'),
+				'error_message' => __('You must specify items_ids OR use_query', 'tainacan'),
 			], 400);
 		}
 
@@ -352,7 +352,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		if ( !in_array($method, ['trash_items', 'untrash_items', 'delete_items']) ) {
 			if (empty($body)) {
 				return new \WP_REST_Response([
-					'error_message' => __('Body can not be empty.', 'tainacan'),
+					'error_message' => __('Body cannot be empty.', 'tainacan'),
 				], 400);
 			}
 

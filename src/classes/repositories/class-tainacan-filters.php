@@ -378,7 +378,7 @@ class Filters extends Repository {
 		$original_meta_q = isset( $args['meta_query'] ) ? $args['meta_query'] : [];
 		
 		/**
-		 * Since we introduced roles & capabalities management, we can not rely 
+		 * Since we introduced roles & capabalities management, we cannot rely 
 		 * on WordPress behavior when handling default post status values.
 		 * WordPress checks if the current user can read_priva_posts, but this is 
 		 * not enough for us. We have to handle this ourselves to mimic WordPress behavior 
@@ -476,7 +476,7 @@ class Filters extends Repository {
 		$original_meta_q = isset( $args['meta_query'] ) ? $args['meta_query'] : [];
 		
 		/**
-		 * Since we introduced roles & capabalities management, we can not rely 
+		 * Since we introduced roles & capabalities management, we cannot rely 
 		 * on WordPress behavior when handling default post status values.
 		 * WordPress checks if the current user can read_priva_posts, but this is 
 		 * not enough for us. We have to handle this ourselves to mimic WordPress behavior 

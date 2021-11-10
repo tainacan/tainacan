@@ -407,7 +407,7 @@ class Theme_Helper {
 		 *     @type int	$default_items_per_page						Default number of items per page loaded
 		 *     @type bool 	$show_filters_button_inside_search_control	Display the "hide filters" button inside of the search control instead of floating
 		 *     @type bool 	$start_with_filters_hidden					Loads the filters list hidden from start
-		 *     @type bool 	$filters_as_modal							Display the filters as a modal instead of a collapsable region on desktop
+		 *     @type bool 	$filters_as_modal							Display the filters as a modal instead of a collapsible region on desktop
 		 *     @type bool 	$show_inline_view_mode_options				Display view modes as inline icon buttons instead of the dropdown
 		 *     @type bool 	$show_fullscreen_with_view_modes			Lists fullscreen viewmodes alongside with other view modes istead of separatelly
 		 *     @type string $default_view_mode							The default view mode

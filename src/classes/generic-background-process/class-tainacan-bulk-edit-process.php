@@ -435,7 +435,7 @@ class Bulk_Edit_Process extends Generic_Process {
 		}
 
 		if ($new_value == $old_value) {
-			$this->add_error_log( __( 'Old value and new value can not be the same', 'tainacan' ) );
+			$this->add_error_log( __( 'Old value and new value cannot be the same', 'tainacan' ) );
 			return false;
 		}
 

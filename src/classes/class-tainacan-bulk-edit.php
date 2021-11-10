@@ -362,7 +362,7 @@ class __Bulk_Edit  {
 		}
 
 		if ($new_value == $old_value) {
-			return new \WP_Error( 'invalid_action', __( 'Old value and new value can not be the same', 'tainacan' ) );
+			return new \WP_Error( 'invalid_action', __( 'Old value and new value cannot be the same', 'tainacan' ) );
 		}
 
 		$dummyItem = new Entities\Item();
@@ -611,7 +611,7 @@ class __Bulk_Edit  {
 		global $wpdb;
 
 		if ($value == $newvalue) {
-			return new \WP_Error( 'error', __( 'New value and old value can not be the same', 'tainacan' ) );
+			return new \WP_Error( 'error', __( 'New value and old value cannot be the same', 'tainacan' ) );
 		}
 
 		$taxRepo = Repositories\Taxonomies::get_instance();

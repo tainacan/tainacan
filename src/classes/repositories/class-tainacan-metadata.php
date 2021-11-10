@@ -114,7 +114,7 @@ class Metadata extends Repository {
 				'title'       => __( 'Unique value', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'Metadata value should be unique accross all items in this collection', 'tainacan' ),
-				'on_error'    => __( 'You can not have two items with the same value for this metadatum', 'tainacan' ),
+				'on_error'    => __( 'You cannot have two items with the same value for this metadatum', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 				'default'     => 'no'
 			],
@@ -412,7 +412,7 @@ class Metadata extends Repository {
 		$original_meta_q = isset( $args['meta_query'] ) ? $args['meta_query'] : [];
 
 		/**
-		 * Since we introduced roles & capabalities management, we can not rely
+		 * Since we introduced roles & capabalities management, we cannot rely
 		 * on WordPress behavior when handling default post status values.
 		 * WordPress checks if the current user can read_priva_posts, but this is
 		 * not enough for us. We have to handle this ourselves to mimic WordPress behavior
@@ -518,7 +518,7 @@ class Metadata extends Repository {
 		$original_meta_q = isset( $args['meta_query'] ) ? $args['meta_query'] : [];
 
 		/**
-		 * Since we introduced roles & capabalities management, we can not rely
+		 * Since we introduced roles & capabalities management, we cannot rely
 		 * on WordPress behavior when handling default post status values.
 		 * WordPress checks if the current user can read_priva_posts, but this is
 		 * not enough for us. We have to handle this ourselves to mimic WordPress behavior

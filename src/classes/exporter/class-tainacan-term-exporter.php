@@ -115,7 +115,7 @@ class Term_Exporter extends Exporter {
 							<h5><?php _e('Source Taxonomy', 'tainacan'); ?></h5>
 						</div>
 						<div class="help-tooltip-body">
-							<p><?php _e('Inform the taxonomy you want to export the terms from.', 'tainacan'); ?></p>
+							<p><?php _e('Specify the taxonomy you want to export the terms from.', 'tainacan'); ?></p>
 						</div>
 					</div>
 				</span>
@@ -148,7 +148,7 @@ class Term_Exporter extends Exporter {
     }
 
     /**
-     * 
+     *
      */
     public function exporting_terms(){
 

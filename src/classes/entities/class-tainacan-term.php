@@ -237,7 +237,7 @@ class Term extends Entity {
 		
 		if (false !== $term_exists) {
 			if ($this->get_id() != $term_exists->term_id) {
-				$this->add_error( 'name', __('You can not have two terms with the same name at the same level', 'tainacan') );
+				$this->add_error( 'name', __('You cannot have two terms with the same name at the same level', 'tainacan') );
 				return false;
 			}
 		}

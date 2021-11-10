@@ -104,7 +104,7 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 		} else {
 
 			return new \WP_REST_Response([
-				'error_message' => __('You mus specify items_ids OR use_query', 'tainacan'),
+				'error_message' => __('You must specify items_ids OR use_query', 'tainacan'),
 			], 400);
 
 		}

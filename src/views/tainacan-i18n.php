@@ -280,9 +280,9 @@ return apply_filters( 'tainacan-i18n', [
 	'label_url'                                      => __( 'URL', 'tainacan' ),
 	'label_select_file'                              => __( 'Select file', 'tainacan' ),
 	'label_selected_file'                            => __( 'Selected file', 'tainacan' ),
-	/* translators: Label for collapsable, accordeon-like elements */
+	/* translators: Label for collapsible, accordeon-like elements */
 	'label_expand_all'                               => __( 'Expand all', 'tainacan' ),
-	/* translators: Label for collapsable, accordeon-like elements */
+	/* translators: Label for collapsible, accordeon-like elements */
 	'label_collapse_all'                             => __( 'Collapse all', 'tainacan' ),
 	'label_view_term'                                => __( 'View Term', 'tainacan' ),
 	/* translators: 'Published' here refers to the sum of public and private items, not including draft or trashed ones. The are visible to those with permission */
@@ -386,7 +386,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_delete_process'                           => __( 'Delete process', 'tainacan' ),
 	'label_process_failed'                           => __( 'Process failed', 'tainacan' ),
 	'label_max_options_to_show'                      => __( 'Max options to show', 'tainacan' ),
-	'label_unamed_process'                           => __( 'Unnamed process', 'tainacan' ),
+	'label_unnamed_process'                           => __( 'Unnamed process', 'tainacan' ),
 	'loading_processes'				 				 => __( 'Loading processes', 'tainacan' ),
 	'label_semantic_uri'                             => __( 'Semantic Uri', 'tainacan' ),
 	'label_view_collection_on_website'               => __( 'View collection on website', 'tainacan' ),
@@ -757,7 +757,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_no_capabilities_found'					 => __( 'No capabilities found.', 'tainacan' ),
 	'info_no_role_associated_capability'             => __( 'No role associated to this capability', 'tainacan' ),
 	'info_associated_roles'							 => __( 'These are the roles that have this capability set. You may add or remove the capability to customize the role.', 'tainacan' ),
-	'info_inherited_roles'							 => __( 'These are the roles that have greater capabilities, which inherit this one. You can not edit this as it will not have precedence over the greater capability.', 'tainacan' ),
+	'info_inherited_roles'							 => __( 'These are the roles that have greater capabilities, which inherit this one. You cannot edit this as it will not have precedence over the greater capability.', 'tainacan' ),
 	'info_showing_terms'                        	 => __( 'Showing terms ', 'tainacan' ),
 	'info_warning_remove_from_trash_first'           => __( 'Remove this item from trash first' ),
 	/* translators: This is displayed before sentences like "Showing items 2 to 8 of 12 */
