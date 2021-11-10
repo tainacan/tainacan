@@ -65,7 +65,7 @@ class Numeric_List_Interval_Helper {
 	}
 
 	function format_filter_arguments( $filter_arguments ) {
-		if(
+		if (
 			!isset($filter_arguments['filter']) ||
 			!isset($filter_arguments['filter']['filter_type_options']) ||
 			!isset($filter_arguments['filter']['filter_type_options']['intervals'])
@@ -80,6 +80,10 @@ class Numeric_List_Interval_Helper {
 				$interval['to'] == $filter_arguments['value'][1]
 			) {
 				$filter_arguments['label'] = $interval['label'];
+
+				if ( isset($filter_arguments['filter']['filter_type_options']['showIntervalOnTag']) && $filter_arguments['filter']['filter_type_options']['showIntervalOnTag'] )
+					$filter_arguments['label'] .= ' (' . $filter_arguments['value'][0] . '-' . $filter_arguments['value'][1] . ')';
+
 				break;
 			}
 		}

@@ -30,9 +30,9 @@
                         <div class="filter-tag-metadatum-name">
                             {{ filterTag.metadatumName }}
                         </div>
-                        <div class="filter-tag-metadatum-value">
-                            {{ filterTag.singleLabel != undefined ? filterTag.singleLabel : filterTag.label }}
-                        </div>
+                        <div
+                                class="filter-tag-metadatum-value"
+                                v-html="filterTag.singleLabel != undefined ? filterTag.singleLabel : filterTag.label"/>
                     </span>
                     <a
                             v-if="filterTag.filterId || filterTag.argType == 'postin'"

@@ -173,30 +173,12 @@ export const addFilterTag = ( state, filterTag ) => {
         state.filter_tags.push(filterTag);
 };
 
-function getFilterTagLabel(aFilterArgument) {
-    
-    if (aFilterArgument.compare &&
-        (
-            aFilterArgument.metadatum &&
-            aFilterArgument.metadatum.metadata_type_object &&
-            aFilterArgument.metadatum.metadata_type_object.options &&
-            (
-                aFilterArgument.metadatum.metadata_type_object.primitive_type == 'date' ||
-                aFilterArgument.metadatum.metadata_type_object.primitive_type == 'float'
-            )
-        )
-    )
-        return (aFilterArgument.compare == 'BETWEEN' && Array.isArray(aFilterArgument.label) && aFilterArgument.label.length == 2) ? (aFilterArgument.label[0] + ' - ' + aFilterArgument.label[1]) : (aFilterArgument.compare + ' ' + aFilterArgument.label);
-    else
-        return aFilterArgument.label;
-}
-
 export const setFilterTags = ( state, filterArguments ) => {
     let filterTags = filterArguments.map((aFilterArgument) => {
-        const label = getFilterTagLabel(aFilterArgument);
+        
         return {
             filterId: aFilterArgument.filter ? aFilterArgument.filter.id : null,
-            label: label,
+            label: aFilterArgument.label,
             value:  aFilterArgument.value,
             taxonomy: (aFilterArgument.metadatum &&
                         aFilterArgument.metadatum.metadata_type_object &&
