@@ -116,7 +116,7 @@
                                 filterId: tag.filterId,
                                 label: tag.argType != 'postin' ? tag.label : ( tag.label + ' ' + (tag.label == 1 ? this.$i18n.get('item') : this.$i18n.get('items') )),
                                 taxonomy: tag.taxonomy,
-                                metadatumName: tag.argType != 'postin' ? tag.metadatumName : this.$i18n.get('label_items_selection'),
+                                metadatumName: this.getMetadatumName(tag),
                                 metadatumId: tag.metadatumId,
                                 argType: tag.argType
                             });
@@ -127,7 +127,7 @@
                             filterId: tag.filterId,
                             label: tag.argType != 'postin' ? tag.label : ( tag.label + ' ' + (tag.label == 1 ? this.$i18n.get('item') : this.$i18n.get('items') )),
                             taxonomy: tag.taxonomy,
-                            metadatumName: tag.argType != 'postin' ? tag.metadatumName : this.$i18n.get('label_items_selection'),
+                            metadatumName: this.getMetadatumName(tag),
                             metadatumId: tag.metadatumId,
                             argType: tag.argType
                         });
@@ -161,6 +161,14 @@
             clearAllFilters() {
                 this.$eventBusSearch.resetPageOnStore();
                 this.$eventBusSearch.clearAllFilters();
+            },
+            getMetadatumName(tag) {
+                if (tag.argType == 'postin')
+                    return this.$i18n.get('label_items_selection');
+                else if (tag.argType == 'collection')
+                    return this.$i18n.get('collection');
+                else
+                 return tag.metadatumName;
             }
         }
     }

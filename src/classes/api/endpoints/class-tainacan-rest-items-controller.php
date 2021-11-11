@@ -457,72 +457,85 @@ class REST_Items_Controller extends REST_Controller {
 		}
 
 		foreach($meta_query as $meta) {
-			$filter_type_component = false;
-			if( !isset($meta['key']) || !isset($meta['value']) )
+
+			if ( !isset($meta['key']) || !isset($meta['value']) )
 				continue;
 
 			$meta_id = $meta['key'];
 			$meta_value = is_array($meta['value']) ? $meta['value'] : [$meta['value']];
 			$meta_label = isset($meta['label']) ? $meta['label'] : $meta_value;
-
-			$filter = $this->filters_repository->fetch([
-				'meta_query' => array(
-					[
-						'key'     => 'metadatum_id',
-						'value'   => $meta_id,
-						'compare' => '='
-					]
-				)
-				], 'OBJECT'
-			);
-
+			$filter_type_component = false;
+			$arg_type = 'meta';
 			$f = false;
 			$m = false;
-			if ( !empty($filter) ) {
-				$f = $filter[0]->_toArray();
-				$filter_type_component = $filter[0]->get_filter_type_object()->get_component();
-				$m = $f['metadatum'];
+
+			if ($meta_id === 'collection_id') {
+
+				$arg_type = 'collection';
+				$meta_label = array_map(function($collection_id) {
+					$collection = $this->collections_repository->fetch($collection_id);
+					return $collection->get_name();
+				}, $meta_value);
+
 			} else {
-				$metadatum = $this->metadatum_repository->fetch($meta_id, 'OBJECT');
-				if(!empty($metadatum)) {
-					$m = $metadatum->_toArray();
-					$meta_object = $metadatum->get_metadata_type_object();
-					if (is_object($meta_object)) {
-						$m['metadata_type_object'] = $meta_object->_toArray();
+
+				$filter = $this->filters_repository->fetch([
+					'meta_query' => array(
+						[
+							'key'     => 'metadatum_id',
+							'value'   => $meta_id,
+							'compare' => '='
+						]
+					)
+					], 'OBJECT'
+				);
+	
+				if ( !empty($filter) ) {
+					$f = $filter[0]->_toArray();
+					$filter_type_component = $filter[0]->get_filter_type_object()->get_component();
+					$m = $f['metadatum'];
+				} else {
+					$metadatum = $this->metadatum_repository->fetch($meta_id, 'OBJECT');
+					if(!empty($metadatum)) {
+						$m = $metadatum->_toArray();
+						$meta_object = $metadatum->get_metadata_type_object();
+						if (is_object($meta_object)) {
+							$m['metadata_type_object'] = $meta_object->_toArray();
+						}
 					}
 				}
-			}
-
-			if ($m !== false) {
-				switch ($m['metadata_type_object']['primitive_type']) {
-					case 'date':
-						$meta_label = array_map(function($date) {
-							$date_format = get_option( 'date_format' ) != false ? get_option( 'date_format' ) : 'Y-m-d';
-							return empty($date) == false ? mysql2date($date_format, $date) : "";
-						}, $meta_label);
-						break;
-					case 'item':
-						$meta_label = array_map(function($item_id) {
-							$_post = get_post($item_id);
-							if ( ! $_post instanceof \WP_Post) {
-								return;
-							}
-							return $_post->post_title;
-						}, $meta_label);
-						break;
-					case 'control':
-						$control_metadatum = $m['metadata_type_object']['options']['control_metadatum'];
-						$metadata_type_object = new \Tainacan\Metadata_Types\Control();
-						$meta_label = array_map(function($control_value) use ($metadata_type_object, $control_metadatum) {
-							return $metadata_type_object->get_control_metadatum_value($control_value, $control_metadatum, 'string' );
-						}, $meta_label);
-						break;
-					case 'user':
-						$meta_label = array_map(function($user_id) {
-							$name = get_the_author_meta( 'display_name', $user_id );
-							return apply_filters("tainacan-item-get-author-name", $name);
-						}, $meta_label);
-						break;
+	
+				if ($m !== false) {
+					switch ($m['metadata_type_object']['primitive_type']) {
+						case 'date':
+							$meta_label = array_map(function($date) {
+								$date_format = get_option( 'date_format' ) != false ? get_option( 'date_format' ) : 'Y-m-d';
+								return empty($date) == false ? mysql2date($date_format, $date) : "";
+							}, $meta_label);
+							break;
+						case 'item':
+							$meta_label = array_map(function($item_id) {
+								$_post = get_post($item_id);
+								if ( ! $_post instanceof \WP_Post) {
+									return;
+								}
+								return $_post->post_title;
+							}, $meta_label);
+							break;
+						case 'control':
+							$control_metadatum = $m['metadata_type_object']['options']['control_metadatum'];
+							$metadata_type_object = new \Tainacan\Metadata_Types\Control();
+							$meta_label = array_map(function($control_value) use ($metadata_type_object, $control_metadatum) {
+								return $metadata_type_object->get_control_metadatum_value($control_value, $control_metadatum, 'string' );
+							}, $meta_label);
+							break;
+						case 'user':
+							$meta_label = array_map(function($user_id) {
+								$name = get_the_author_meta( 'display_name', $user_id );
+								return apply_filters("tainacan-item-get-author-name", $name);
+							}, $meta_label);
+							break;
+					}
 				}
 			}
 
@@ -533,14 +546,14 @@ class REST_Items_Controller extends REST_Controller {
 			$filters_arguments[] = apply_filters($filter_name, array(
 				'filter' => $f,
 				'metadatum' => $m,
-				'arg_type' => 'meta',
+				'arg_type' => $arg_type,
 				'value' => $meta_value,
 				'label' => $meta_label,
 				'compare' => isset($meta['compare']) ? $meta['compare'] : '='
 			));
 		}
 
-		if(isset($args['post__in'])) {
+		if (isset($args['post__in'])) {
 			$filters_arguments[] = array(
 				'filter' => false,
 				'metadatum' => false,
