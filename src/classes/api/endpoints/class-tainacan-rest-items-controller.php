@@ -495,6 +495,12 @@ class REST_Items_Controller extends REST_Controller {
 
 			if ($m !== false) {
 				switch ($m['metadata_type_object']['primitive_type']) {
+					case 'date':
+						$meta_label = array_map(function($date) {
+							$date_format = get_option( 'date_format' ) != false ? get_option( 'date_format' ) : 'Y-m-d';
+							return empty($date) == false ? mysql2date($date_format, $date) : "";
+						}, $meta_label);
+						break;
 					case 'item':
 						$meta_label = array_map(function($item_id) {
 							$_post = get_post($item_id);
