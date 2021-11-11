@@ -30,7 +30,7 @@ export default function({ attributes, className }) {
         sentFormMessage,
         showItemLinkButton,
         itemLinkButtonLabel,
-        helpInfoBellowLabel,
+        helpInfoBelowLabel,
         showTermsAgreementCheckbox,
         termsAgreementMessage
     } = attributes;
@@ -77,7 +77,7 @@ export default function({ attributes, className }) {
                 show-terms-agreement-checkbox={ showTermsAgreementCheckbox ? showTermsAgreementCheckbox.toString() : 'false' }
                 terms-agreement-message={ termsAgreementMessageHTML }
                 item-link-button-label={ itemLinkButtonLabel ? itemLinkButtonLabel : __( 'Go to the item page', 'tainacan' ) }
-                help-info-bellow-label={ helpInfoBellowLabel ? helpInfoBellowLabel.toString() : 'false' } >
+                help-info-bellow-label={ helpInfoBelowLabel ? helpInfoBelowLabel.toString() : 'false' } >
         </div>
     </div>
 };

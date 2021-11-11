@@ -33,7 +33,7 @@
                 ({{ itemMetadatum.metadatum.metadata_type_object.name }})
             </span>
             <help-button
-                    v-if="!$parent.hideHelpButtons && !$parent.helpInfoBellowLabel && itemMetadatum.metadatum && itemMetadatum.metadatum.description" 
+                    v-if="!$parent.hideHelpButtons && !$parent.helpInfoBelowLabel && itemMetadatum.metadatum && itemMetadatum.metadatum.description" 
                     :title="itemMetadatum.metadatum.name"
                     :message="itemMetadatum.metadatum.description"/>
         </span>
@@ -43,7 +43,7 @@
                     v-if="isTextInputComponent">
                 <p
                         class="metadatum-description-help-info"
-                        v-if="!$parent.hideHelpButtons && $parent.helpInfoBellowLabel && itemMetadatum.metadatum && itemMetadatum.metadatum.description">
+                        v-if="!$parent.hideHelpButtons && $parent.helpInfoBelowLabel && itemMetadatum.metadatum && itemMetadatum.metadatum.description">
                     {{ itemMetadatum.metadatum.description }}
                 </p>
                 <component 
@@ -99,7 +99,7 @@
                     v-if="!isTextInputComponent">
                 <p
                         class="metadatum-description-help-info"
-                        v-if="!$parent.hideHelpButtons && $parent.helpInfoBellowLabel && itemMetadatum.metadatum && itemMetadatum.metadatum.description">
+                        v-if="!$parent.hideHelpButtons && $parent.helpInfoBelowLabel && itemMetadatum.metadatum && itemMetadatum.metadatum.description">
                     {{ itemMetadatum.metadatum.description }}
                 </p>
                 <component

@@ -128,7 +128,7 @@ export default [
                 "type": "String",
                 "default": "Go to the item page"
             },
-            "helpInfoBellowLabel": {
+            "helpInfoBelowLabel": {
                 "type": "Boolean",
                 "default": false
             }
@@ -168,10 +168,10 @@ export default [
                 sentFormMessage,
                 showItemLinkButton,
                 itemLinkButtonLabel,
-                helpInfoBellowLabel
+                helpInfoBelowLabel
             } = attributes;
-            
-            return <div 
+
+            return <div
                         style={{
                             'font-size': baseFontSize + 'px',
                             '--tainacan-base-font-size': baseFontSize + 'px',
@@ -185,7 +185,7 @@ export default [
                             '--tainacan-secondary': secondaryColor
                         }}
                         className={ className }>
-                <div 
+                <div
                         id="tainacan-item-submission-form"
                         data-module="item-submission-form"
                         collection-id={ collectionId }
@@ -207,7 +207,7 @@ export default [
                         metadata-section-label={ metadataSectionLabel }
                         show-item-link-button={ showItemLinkButton ? showItemLinkButton.toString() : 'false' }
                         item-link-button-label={ itemLinkButtonLabel ? itemLinkButtonLabel : __( 'Go to the item page', 'tainacan' ) }
-                        help-info-bellow-label={ helpInfoBellowLabel ? helpInfoBellowLabel.toString() : 'false' } >
+                        help-info-bellow-label={ helpInfoBelowLabel ? helpInfoBelowLabel.toString() : 'false' } >
                 </div>
             </div>
         }
@@ -339,7 +339,7 @@ export default [
                 type: String,
                 default: __( 'Go to the item page', 'tainacan' )
             },
-            helpInfoBellowLabel: {
+            helpInfoBelowLabel: {
                 type: Boolean,
                 default: false
             },
@@ -379,10 +379,10 @@ export default [
                 sentFormMessage,
                 showItemLinkButton,
                 itemLinkButtonLabel,
-                helpInfoBellowLabel
+                helpInfoBelowLabel
             } = attributes;
-            
-            return <div 
+
+            return <div
                         style={{
                             'font-size': baseFontSize + 'px',
                             '--tainacan-base-font-size': baseFontSize + 'px',
@@ -396,7 +396,7 @@ export default [
                             '--tainacan-secondary': secondaryColor
                         }}
                         className={ className }>
-                <div 
+                <div
                         id="tainacan-item-submission-form"
                         collection-id={ collectionId }
                         hide-file-modal-button={ hideFileModalButton.toString() }
@@ -417,12 +417,12 @@ export default [
                         metadata-section-label={ metadataSectionLabel }
                         show-item-link-button={ showItemLinkButton ? showItemLinkButton.toString() : 'false' }
                         item-link-button-label={ itemLinkButtonLabel ? itemLinkButtonLabel : __( 'Go to the item page', 'tainacan' ) }
-                        help-info-bellow-label={ helpInfoBellowLabel ? helpInfoBellowLabel.toString() : 'false' } >
+                        help-info-bellow-label={ helpInfoBelowLabel ? helpInfoBelowLabel.toString() : 'false' } >
                 </div>
             </div>
         }
     },
-    /* Depecrated on Tainacan 0.18.3, due to the introduction of helpInfoBellowLabel */
+    /* Depecrated on Tainacan 0.18.3, due to the introduction of helpInfoBelowLabel */
     {
         attributes: {
             collectionId: {
@@ -586,8 +586,8 @@ export default [
                 showItemLinkButton,
                 itemLinkButtonLabel
             } = attributes;
-            
-            return <div 
+
+            return <div
                         style={{
                             'font-size': baseFontSize + 'px',
                             '--tainacan-base-font-size': baseFontSize + 'px',
@@ -601,7 +601,7 @@ export default [
                             '--tainacan-secondary': secondaryColor
                         }}
                         className={ className }>
-                <div 
+                <div
                         id="tainacan-item-submission-form"
                         collection-id={ collectionId }
                         hide-file-modal-button={ hideFileModalButton.toString() }
@@ -780,8 +780,8 @@ export default [
                 sentFormHeading,
                 sentFormMessage,
             } = attributes;
-            
-            return <div 
+
+            return <div
                         style={{
                             'font-size': baseFontSize + 'px',
                             '--tainacan-base-font-size': baseFontSize + 'px',
@@ -795,7 +795,7 @@ export default [
                             '--tainacan-secondary': secondaryColor
                         }}
                         className={ className }>
-                <div 
+                <div
                         id="tainacan-item-submission-form"
                         collection-id={ collectionId }
                         hide-file-modal-button={ hideFileModalButton.toString() }

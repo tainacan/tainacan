@@ -241,7 +241,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			return false;
 		}
 
-		$this->add_log( sprintf( __('Bulk edit has process the item ID: "%d"', 'tainacan'), $item->get_id() ) );
+		$this->add_log( sprintf( __('Bulk edit has processed the item ID: "%d"', 'tainacan'), $item->get_id() ) );
 		$add_steps = $this->$method($item);
 		if ( is_int($add_steps) ) {
 			$count = $count + $add_steps;

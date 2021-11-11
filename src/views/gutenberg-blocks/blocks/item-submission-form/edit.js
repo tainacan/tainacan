@@ -54,7 +54,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         metadataSectionLabel,
         showItemLinkButton,
         itemLinkButtonLabel,
-        helpInfoBellowLabel,
+        helpInfoBelowLabel,
         showTermsAgreementCheckbox,
         termsAgreementMessage
     } = attributes;
@@ -356,11 +356,11 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
 
                             <ToggleControl
                                 label={__('Help info below label', 'tainacan')}
-                                help={ helpInfoBellowLabel ? __('Show the help info below the label instead of hidden in the "?" icon on the help tooltip.', 'tainacan') : __('Do not show the help info below the label, keep it on the "?" icon toolip.', 'tainacan')}
-                                checked={ helpInfoBellowLabel }
+                                help={ helpInfoBelowLabel ? __('Show the help info below the label instead of hidden in the "?" icon on the help tooltip.', 'tainacan') : __('Do not show the help info below the label, keep it on the "?" icon toolip.', 'tainacan')}
+                                checked={ helpInfoBelowLabel }
                                 onChange={ ( isChecked ) => {
-                                        helpInfoBellowLabel = isChecked;
-                                        setAttributes({ helpInfoBellowLabel: isChecked });
+                                        helpInfoBelowLabel = isChecked;
+                                        setAttributes({ helpInfoBelowLabel: isChecked });
                                     }
                                 }
                             />
@@ -570,8 +570,8 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                         <div>
                                             { documentSectionLabel ?
                                                 <span>
-                                                    <span style={{ display: 'flex', alignItems: 'baseline', marginBottom: '5px' }}><span class="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBellowLabel ? <span class="fake-text fake-help-button"></span> : null }</span>
-                                                    { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
+                                                    <span style={{ display: 'flex', alignItems: 'baseline', marginBottom: '5px' }}><span class="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBelowLabel ? <span class="fake-text fake-help-button"></span> : null }</span>
+                                                    { (!hideHelpButtons && helpInfoBelowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
                                                 </span>
                                             : null }
                                             { [ hideFileModalButton, hideTextModalButton, hideLinkModalButton ].filter((option) => { return option == false }).length > 1 ?
@@ -601,8 +601,8 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             { !thumbnailSectionLabel ?
                                                 <span>
-                                                    <span style={{ display: 'flex', alignItems: 'baseline' }}><span class="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBellowLabel ? <span class="fake-text fake-help-button"></span> : null }</span>
-                                                    { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
+                                                    <span style={{ display: 'flex', alignItems: 'baseline' }}><span class="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBelowLabel ? <span class="fake-text fake-help-button"></span> : null }</span>
+                                                    { (!hideHelpButtons && helpInfoBelowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
                                                 </span>
                                             : null }
                                             <div class="fake-switch"><span class="fake-icon"></span><span class="fake-text"></span></div>
@@ -629,8 +629,8 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     showAllowCommentsSection ?
                                     (
                                         <div>
-                                            <span style={{ display: 'flex', alignItems: 'baseline' }}><span class="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBellowLabel ? <span class="fake-text fake-help-button"></span> : null }</span>
-                                            { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
+                                            <span style={{ display: 'flex', alignItems: 'baseline' }}><span class="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBelowLabel ? <span class="fake-text fake-help-button"></span> : null }</span>
+                                            { (!hideHelpButtons && helpInfoBelowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
                                             <div class="fake-switch"><span class="fake-icon"></span><span class="fake-text"></span></div>
                                         </div>
                                     ) : null }
@@ -647,8 +647,8 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                                     <div class={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
                                                         { !hideCollapses ? <span class="fake-collapse-arrow"></span> : null }
                                                         <span style={{ lineHeight: '0em' }}>
-                                                            <span class="fake-text"></span>{ !hideMetadataTypes ? <span class="fake-text fake-text-info"></span> : null }{ !hideHelpButtons && !helpInfoBellowLabel ? <span class="fake-text fake-help-button"></span> : null }
-                                                            { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
+                                                            <span class="fake-text"></span>{ !hideMetadataTypes ? <span class="fake-text fake-text-info"></span> : null }{ !hideHelpButtons && !helpInfoBelowLabel ? <span class="fake-text fake-help-button"></span> : null }
+                                                            { (!hideHelpButtons && helpInfoBelowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
                                                         </span>
                                                         <span class="fake-input"></span>
                                                     </div>

@@ -29,12 +29,12 @@
                             class="section-label">
                         <label>{{ documentSectionLabel }}</label>
                         <help-button
-                                v-if="!hideHelpButtons && !helpInfoBellowLabel && $i18n.getHelperMessage('items', 'document')"
+                                v-if="!hideHelpButtons && !helpInfoBelowLabel && $i18n.getHelperMessage('items', 'document')"
                                 :title="$i18n.getHelperTitle('items', 'document')"
                                 :message="$i18n.getHelperMessage('items', 'document')"/>
                         <p
                                 class="metadatum-description-help-info"
-                                v-if="!hideHelpButtons && helpInfoBellowLabel && $i18n.getHelperMessage('items', 'document')">
+                                v-if="!hideHelpButtons && helpInfoBelowLabel && $i18n.getHelperMessage('items', 'document')">
                             {{ $i18n.getHelperMessage('items', 'document') }}
                         </p>
                     </div>
@@ -195,12 +195,12 @@
                             class="section-label">
                         <label>{{ thumbnailSectionLabel }}</label>
                         <help-button
-                                v-if="!hideHelpButtons && !helpInfoBellowLabel && $i18n.getHelperMessage('items', '_thumbnail_id')"
+                                v-if="!hideHelpButtons && !helpInfoBelowLabel && $i18n.getHelperMessage('items', '_thumbnail_id')"
                                 :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
                                 :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
                         <p
                                 class="metadatum-description-help-info"
-                                v-if="!hideHelpButtons && helpInfoBellowLabel && $i18n.getHelperMessage('items', '_thumbnail_id')">
+                                v-if="!hideHelpButtons && helpInfoBelowLabel && $i18n.getHelperMessage('items', '_thumbnail_id')">
                             {{ $i18n.getHelperMessage('items', '_thumbnail_id') }}
                         </p>
                     </div>
@@ -338,12 +338,12 @@
                     <div class="section-label">
                         <label>{{ $i18n.get('label_comments') }}</label>
                         <help-button
-                                v-if="!hideHelpButtons && !helpInfoBellowLabel && $i18n.getHelperMessage('items', 'comment_status')"
+                                v-if="!hideHelpButtons && !helpInfoBelowLabel && $i18n.getHelperMessage('items', 'comment_status')"
                                 :title="$i18n.getHelperTitle('items', 'comment_status')"
                                 :message="$i18n.getHelperMessage('items', 'comment_status')"/>
                         <p
                                 class="metadatum-description-help-info"
-                                v-if="!hideHelpButtons && helpInfoBellowLabel && $i18n.getHelperMessage('items', 'comment_status')">
+                                v-if="!hideHelpButtons && helpInfoBelowLabel && $i18n.getHelperMessage('items', 'comment_status')">
                             {{ $i18n.getHelperMessage('items', 'comment_status') }}
                         </p>
                     </div>
@@ -543,7 +543,7 @@ export default {
         metadataSectionLabel: String,
         showItemLinkButton: Boolean,
         itemLinkButtonLabel: String,
-        helpInfoBellowLabel: Boolean,
+        helpInfoBelowLabel: Boolean,
         showTermsAgreementCheckbox: Boolean,
         termsAgreementMessage: String
     },
