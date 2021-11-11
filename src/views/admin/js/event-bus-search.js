@@ -420,7 +420,7 @@ export default {
                 },
                 clearAllFilters() {
                     this.$store.dispatch('search/cleanFilterTags');
-                    this.$store.dispatch('search/cleanMetaQueries');
+                    this.$store.dispatch('search/cleanMetaQueries', { keepCollections: true });
                     this.$store.dispatch('search/cleanTaxQueries');
                     this.updateURLQueries();
                 }

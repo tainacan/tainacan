@@ -176,8 +176,8 @@ export const cleanFilterTags = ( { commit } ) => {
     commit('cleanFilterTags');
 };
 
-export const cleanMetaQueries = ( { commit } ) => {
-    commit('cleanMetaQueries');
+export const cleanMetaQueries = ( { commit }, { keepCollections } ) => {
+    commit('cleanMetaQueries', { keepCollections });
 };
 
 export const cleanTaxQueries = ({ commit }) => {

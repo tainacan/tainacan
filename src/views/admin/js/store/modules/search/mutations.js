@@ -205,8 +205,11 @@ export const cleanFilterTags = ( state ) => {
     state.filter_tags = [];
 };
 
-export const cleanMetaQueries = (state) => {
-    state.postquery.metaquery = [];
+export const cleanMetaQueries = (state, { keepCollections }) => {
+    if (keepCollections === true)
+        state.postquery.metaquery = state.postquery.metaquery.filter(aMetaQuery => aMetaQuery.key === 'collection_id');
+    else
+        state.postquery.metaquery = [];
 };
 
 export const cleanTaxQueries = (state) => {
