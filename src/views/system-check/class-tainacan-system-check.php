@@ -3,7 +3,7 @@
 namespace Tainacan;
 
 class System_Check {
-	
+
 	private $min_php_version = '5.6';
 
 	private $mysql_min_version_check;
@@ -21,15 +21,15 @@ class System_Check {
 	public function init() {
 		$this->prepare_sql_data();
 	}
-	
+
 	public function admin_page() {
 		include('admin-page.php');
 	}
-	
+
 	public function test_php_version() {
 		$testphpmin = version_compare( $this->min_php_version, PHP_VERSION, '<=' );
 		$testphprec = version_compare( 7, PHP_VERSION, '<=' );
-		
+
 		if ($testphprec) {
 			$class = 'good';
 			$text = PHP_VERSION;
@@ -40,9 +40,9 @@ class System_Check {
 			$class = 'error';
 			$text = PHP_VERSION . ' - ' . __('This PHP Version is not supported. Please upgrade to PHP 5.6 or higher!', 'tainacan');
 		}
-		
+
 		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), esc_html( $text ) );
-		
+
 	}
 
 	private function prepare_sql_data() {
@@ -69,11 +69,11 @@ class System_Check {
 		$this->mysql_min_version_check = version_compare( $this->health_check_mysql_min_version, $this->mysql_server_version, '<=' );
 		$this->mysql_rec_version_check = version_compare( $this->health_check_mysql_rec_version, $this->mysql_server_version, '<=' );
 	}
-	
+
 	public function check_permalink_settings() {
-		
+
 		$settings = get_option( 'permalink_structure' );
-		
+
 		if ( empty($settings) ) {
 			$class = 'error';
 			$text =  sprintf(
@@ -82,22 +82,22 @@ class System_Check {
 				'</a>'
 			);
 		} else {
-			
+
 			$class = 'good';
 			$text = 'Ok';
-			
+
 		}
-		
+
 		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), $text );
-		
+
 	}
-	
+
 	public function check_php_timeout() {
 		$time = ini_get('max_execution_time');
 		$min = 30;
 		$rec = 240;
-		
-		
+
+
 		if ( $time < $min ) {
 			$class = 'error';
 			$text =  sprintf(
@@ -117,16 +117,16 @@ class System_Check {
 				$time
 			);
 		}
-		
+
 		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), $text );
-		
+
 	}
-	
+
 	public function check_upload_permission() {
-		
-		$upload_dir = wp_upload_dir(); 
+
+		$upload_dir = wp_upload_dir();
 		$writable = is_writable($upload_dir['basedir']);
-		
+
 		if ( ! $writable ) {
 			$class = 'error';
 			$text =  sprintf(
@@ -138,17 +138,17 @@ class System_Check {
 				__('Your upload folder is writable!', 'tainacan')
 			);
 		}
-		
+
 		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), $text );
-		
+
 	}
-	
+
 	public function check_max_upload_size() {
 		$upload_max_size = ini_get('upload_max_filesize');
 		echo $upload_max_size;
 	}
 
-	
+
 
 	/**
 	 * Tests for WordPress version and outputs it.
@@ -164,13 +164,13 @@ class System_Check {
 		$class = '';
 
 		if ( version_compare($core_current_version, '4.8') < 0 ) {
-			
+
 			$class = 'error';
 			$text =  sprintf(
 				__('Tainacan requires WordPress 4.8 or newer! Your version is %s. Please upgrade.'),
 				$core_current_version
 			);
-			
+
 		} elseif ( ! is_array( $core_updates ) ) {
 			$class = 'warning';
 			$text  = sprintf(
@@ -216,7 +216,7 @@ class System_Check {
 		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), esc_html( $text ) );
 	}
 
-	
+
 	public function child_test_php_extension_availability( $extension = null, $function = null ) {
 		// If no extension or function is passed, claim to fail testing, as we have nothing to test against.
 		if ( null === $extension && null === $function ) {
@@ -389,7 +389,7 @@ class System_Check {
 			$status   = 'warning';
 			$notice[] = sprintf(
 				// translators: %1$s: The database engine in use (MySQL or MariaDB). %2$s: Database server recommended version number.
-				esc_html__( 'We strongly recommend running %1$s version %2$s or higher. Future features may depend on this versions.', 'tainacan' ),
+				esc_html__( 'We strongly recommend running %1$s version %2$s or higher. Future features may depend on these versions.', 'tainacan' ),
 				( $this->mariadb ? 'MariaDB' : 'MySQL' ),
 				$this->health_check_mysql_rec_version
 			);
@@ -506,30 +506,30 @@ class System_Check {
 			}
 		}
 	}
-	
+
 	public function check_protected_upload_folders() {
-		
+
 		$privateFiles = \Tainacan\Private_Files::get_instance();
-		
+
 		$upload_dir = wp_get_upload_dir();
 		$base_url = $upload_dir['baseurl'];
 
 		$url = $base_url . '/' . $privateFiles->get_items_uploads_folder() . '/' . $privateFiles->get_private_folder_prefix() . '0000/0000/test.jpg';
-		
+
 		$response = wp_remote_get( $url );
-		
+
 		$code = wp_remote_retrieve_response_code( $response );
-		
+
 		if ( $code != 403 ) {
-			$text = __('Your private folders are not protected. Please check our documentation on how to protect them.', 'tainacan'); 
+			$text = __('Your private folders are not protected. Please check our documentation on how to protect them.', 'tainacan');
 			$class = 'warning';
 		} else {
-			$text = __('Your private folders are protected!', 'tainacan'); 
+			$text = __('Your private folders are protected!', 'tainacan');
 			$class = 'good';
 		}
-		
+
 		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), esc_html( $text ) );
-		
+
 	}
 
 	public function get_tainacan_version() {
@@ -550,7 +550,7 @@ class System_Check {
 		if ( !is_wp_error( $call_api ) ) {
 			if ( ! empty( $call_api->version ) ) {
 					$version_latest = $call_api->version;
-					if ( version_compare($current_version, $version_latest) < 0 ) 
+					if ( version_compare($current_version, $version_latest) < 0 )
 						$class = 'warning';
 					else
 						$class = 'good';
