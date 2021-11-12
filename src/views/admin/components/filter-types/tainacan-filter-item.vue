@@ -42,7 +42,6 @@
                         :is-loading-items.sync="isLoadingItems"
                         :current-collection-id="$eventBusSearch.collectionId"
                         @input="onInput"
-                        @sendValuesToTags="onSendValuesToTags"
                         @updateParentCollapse="onFilterUpdateParentCollapse" 
                         :filters-as-modal="filtersAsModal"/>
             </div>
@@ -69,16 +68,6 @@
         methods: {
             onInput(inputEvent) {
                 this.$eventBusSearch.$emit('input', inputEvent);
-            },
-            onSendValuesToTags($event) {
-                this.$eventBusSearch.$emit('sendValuesToTags', { 
-                    filterId: this.filter.id,
-                    label: $event.label,
-                    value: $event.value,
-                    taxonomy: $event.taxonomy,
-                    metadatumId: this.filter.metadatum_id,
-                    metadatumName: this.filter.metadatum && this.filter.metadatum.metadatum_name ? this.filter.metadatum.metadatum_name : ''
-                });
             },
             onFilterUpdateParentCollapse(open) {
                 const componentsThatShouldCollapseIfEmpty = ['tainacan-filter-taxonomy-checkbox', 'tainacan-filter-selectbox', 'tainacan-filter-checkbox'];

@@ -24,6 +24,13 @@ $pswp__include-minimal-style: true !default;
     height: auto;
     display: block;
     background-color: var(--tainacan-media-background, transparent);
+    box-sizing: border-box;
+
+    .swiper-slide,
+    .swiper-slide::after,
+    .swiper-slide::before {
+        box-sizing: border-box;
+    }
 }
 
 /* Style valid for both cases of carousel, main and thumbs */
@@ -67,6 +74,9 @@ $pswp__include-minimal-style: true !default;
             video,
             audio {
                 pointer-events: none;
+            }
+            a {
+                cursor: zoom-in !important;
             }
         }
     }

@@ -113,7 +113,7 @@
 
                 let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
                 
-                if ( index >= 0){
+                if ( index >= 0) {
                     let metadata = this.query.metaquery[ index ];
                     
                     if ( metadata.value && metadata.value.length > 0)
@@ -121,9 +121,6 @@
 
                     if ( metadata.compare)
                         this.comparator = metadata.compare;
-
-                    if (this.value != undefined)
-                        this.$emit('sendValuesToTags', { label: this.comparator + ' ' + this.value, value: this.value, metadatumName: this.metadatumName });
 
                 } else {
                     this.value = null;
@@ -144,8 +141,6 @@
                     value: this.value,
                     type: 'NUMERIC'
                 });
-
-                this.$emit('sendValuesToTags', { label: this.comparator + ' ' + this.value, value: this.value, metadatumName: this.metadatumName });
                 
             },
             onChangeComparator(newComparator) {

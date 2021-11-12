@@ -217,78 +217,15 @@
                     }
                 }
             },
-            updateSelectedValues(){
-                
+            updateSelectedValues() {
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
                     
                 let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy );
-                if ( index >= 0){
-                    let metadata = this.query.taxquery[ index ];
-                    this.selected = metadata.terms;
-                } else {
-                    this.selected = [];
-                }
 
-                let onlyLabels = [];
-
-                for (let selected of this.selected) {
-                    let valueIndex = this.options.findIndex(option => option.value == selected );
-
-                    if (valueIndex >= 0) {
-                        let existingLabelIndex = onlyLabels.findIndex(aLabel => aLabel == this.options[valueIndex].label)
-                        if (existingLabelIndex < 0)
-                            onlyLabels.push(this.options[valueIndex].label);
-                        else  
-                            this.$set(onlyLabels, onlyLabels.push(this.options[valueIndex].label), existingLabelIndex); 
-                    } else {
-                        
-                        // Not finding all options will happen on elastic search, 
-                        // as the facetsFromItemSearch will not be ready yet
-                        if (!this.isUsingElasticSearch)
-                            this.$console.log("Looking for terms that are not in the options list... ");
-
-                        // let route = '';
-                        
-                        // if (this.collectionId == 'default')
-                        //     route = '/facets/' + this.metadatumId +`?term_id=${selected}&fetch_only=name,id`;
-                        // else
-                        //     route = '/collection/'+ this.collectionId +'/facets/' + this.metadatumId +`?term_id=${selected}&fetch_only=name,id`;
-                        
-                        // axios.get(route)
-                        //     .then( res => {
-                        //         if(!res || !res.data || !res.data.values){
-                        //             return false;
-                        //         }
-
-                        //         let existingLabelIndex = onlyLabels.findIndex(aLabel => aLabel == res.data.values[0].label)
-
-                        //         if (existingLabelIndex < 0) {
-                        //             onlyLabels.push(res.data.values[0].label);
-                        //             this.options.push({
-                        //                 isChild: true,
-                        //                 label: res.data.values[0].label,
-                        //                 value: res.data.values[0].value
-                        //             });
-                        //         } else {  
-                        //             this.$set(onlyLabels, onlyLabels.push(res.data.values[0].label), existingLabelIndex);
-                        //             this.$set(this.options, {
-                        //                     isChild: true,
-                        //                     label: res.data.values[0].label,
-                        //                     value: res.data.values[0].value
-                        //                 }
-                        //             , existingLabelIndex); 
-                        //         }
-                        //     })
-                        //     .catch(error => {
-                        //         this.$console.log(error);
-                        //     });
-                    }
-                }
-                this.$emit('sendValuesToTags', { label: onlyLabels, taxonomy: this.taxonomy, value: this.selected, metadatumName: this.metadatumName });
+                this.selected = index >= 0 ? this.query.taxquery[ index ].terms : [];
             },
             onSelect() {
-                
                 this.$emit('input', {
                     filter: 'checkbox',
                     taxonomy: this.taxonomy,

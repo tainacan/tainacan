@@ -55,6 +55,10 @@ export const remove_taxquery = ( { commit }, filter  ) => {
     commit('removeTaxQuery', filter  );
 };
 
+export const remove_postin = ( { commit }  ) => {
+    commit('removePostIn');
+};
+
 // Pagination queries
 export const setTotalItems = ({ commit }, total ) => {
     commit('setTotalItems', total);
@@ -157,6 +161,11 @@ export const addFilterTag = ( { commit }, filterTag  ) => {
         commit('addFilterTag', filterTag);
 };
 
+// Set filter tags
+export const setFilterTags = ({ commit }, filterTags ) => {
+    commit('setFilterTags', filterTags );
+};
+
 // Remove filter tag
 export const removeFilterTag = ( { commit }, filterTag  ) => {
     commit('removeFilterTag', filterTag);
@@ -167,8 +176,8 @@ export const cleanFilterTags = ( { commit } ) => {
     commit('cleanFilterTags');
 };
 
-export const cleanMetaQueries = ( { commit } ) => {
-    commit('cleanMetaQueries');
+export const cleanMetaQueries = ( { commit }, { keepCollections } ) => {
+    commit('cleanMetaQueries', { keepCollections });
 };
 
 export const cleanTaxQueries = ({ commit }) => {

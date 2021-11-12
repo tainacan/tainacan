@@ -3,7 +3,6 @@
         <b-taginput
                 size="is-small"
                 icon="magnify"
-                v-model="selected"
                 :data="options"
                 autocomplete
                 :loading="isLoadingOptions"
@@ -49,7 +48,7 @@
             return {
                 isLoadingOptions: false,
                 results:'',
-                selected:[],
+                selected:[], // Simple array of IDs, no more objects and not bound to the taginput
                 options: [],
                 taxonomy: '',
                 taxonomyId: '',
@@ -125,11 +124,8 @@
 
                 endpoint += '?order=asc&' + qs.stringify(query_items);
                 
-                let valuesToIgnore = [];
+                const valuesToIgnore = JSON.parse(JSON.stringify(this.selected));
 
-                for (let val of this.selected)
-                    valuesToIgnore.push( val.value );
-                
                 return axios.get(endpoint).then( res => {
                     for (let term of res.data.values) {   
 
@@ -168,56 +164,30 @@
             searchMore: _.debounce(function () {
                 this.search(this.searchQuery)
             }, 250),
-            updateSelectedValues(){
+            updateSelectedValues() {
+                
                 if ( !this.query || !this.query.taxquery || !Array.isArray( this.query.taxquery ) )
                     return false;
+                    
+                // Cleared either way, we might be coming from a situation where all the filters were removed.
+                this.selected = [];
 
-                let index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy);
-
+                const index = this.query.taxquery.findIndex(newMetadatum => newMetadatum.taxonomy == this.taxonomy);
                 if (index >= 0) {
-                    let metadata = this.query.taxquery[ index ];
-                    this.selected = [];
-
-                    if (metadata.terms && metadata.terms.length) {
-                        this.getTerms(metadata)
-                            .then(() => {
-                                this.$emit( 'sendValuesToTags', { 
-                                    label: this.selected.map((option) => option.label), 
-                                    value: this.selected.map((option) => option.value),
-                                    taxonomy: this.taxonomy,
-                                    metadatumName: this.metadatumName
-                                });
-                            });
-                    }
-                } else {
-                    this.selected = [];
+                    const metadata = this.query.taxquery[ index ];
+                    for (let termId of metadata.terms)
+                        this.selected.push(termId);
                 }
             },
-            onSelect() {
+            onSelect(selection) {
                 this.$emit('input', {
                     filter: 'taginput',
                     compare: 'IN',
                     taxonomy: this.taxonomy,
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,
-                    terms: this.selected.map((option) => option.value)
+                    terms: _.union(this.selected, selection.map(anOption => anOption.value))
                 });
-            },
-            getTerms(metadata) {
-
-                let params = { 
-                    'include': metadata.terms, 
-                    'order': 'asc',
-                    'fetchonly': 0
-                };
-
-                return axios.get('/taxonomy/' + this.taxonomyId + '/terms/?' + qs.stringify(params) )
-                    .then( res => {
-                        this.selected = res.data.map(term => { return { label: term.name, value: term.id } });
-                    })
-                    .catch(error => {
-                        this.$console.log(error);
-                    })
             }
         }
     }

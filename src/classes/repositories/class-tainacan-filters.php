@@ -153,41 +153,42 @@ class Filters extends Repository {
      * @param Entities\Metadatum $metadatum
      * @return int
      *
-    public function insert($metadatum) {
-        // First iterate through the native post properties
-        $map = $this->get_map();
-        foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
-                $metadatum->WP_Post->{$mapped['map']} = $metadatum->get_mapped_property($prop);
-            }
-        }
-
-        // save post and get its ID
-        $metadatum->WP_Post->post_type = Entities\Filter::get_post_type();
-        $metadatum->WP_Post->post_status = 'publish';
-        $id = wp_insert_post($metadatum->WP_Post);
-        $metadatum->WP_Post = get_post($id);
-
-        // Now run through properties stored as postmeta
-        foreach ($map as $prop => $mapped) {
-            if ($mapped['map'] == 'meta') {
-                update_post_meta($id, $prop, $metadatum->get_mapped_property($prop));
-            } elseif ($mapped['map'] == 'meta_multi') {
-                $values = $metadatum->get_mapped_property($prop);
-
-                delete_post_meta($id, $prop);
-
-                if (is_array($values)){
-                    foreach ($values as $value){
-                        add_post_meta($id, $prop, $value);
-                    }
-                }
-            }
-        }
-
-        // return a brand new object
-        return new Entities\Filter($metadatum->WP_Post);
-    }*/
+     * public function insert($metadatum) {
+     *     // First iterate through the native post properties
+     *     $map = $this->get_map();
+     *     foreach ($map as $prop => $mapped) {
+     *         if ($mapped['map'] != 'meta' && $mapped['map'] != 'meta_multi') {
+     *             $metadatum->WP_Post->{$mapped['map']} = $metadatum->get_mapped_property($prop);
+     *         }
+     *     }
+     *
+     *     // save post and get its ID
+     *     $metadatum->WP_Post->post_type = Entities\Filter::get_post_type();
+     *     $metadatum->WP_Post->post_status = 'publish';
+     *     $id = wp_insert_post($metadatum->WP_Post);
+     *     $metadatum->WP_Post = get_post($id);
+     *
+     *     // Now run through properties stored as postmeta
+     *     foreach ($map as $prop => $mapped) {
+     *         if ($mapped['map'] == 'meta') {
+     *             update_post_meta($id, $prop, $metadatum->get_mapped_property($prop));
+     *         } elseif ($mapped['map'] == 'meta_multi') {
+     *             $values = $metadatum->get_mapped_property($prop);
+     *
+     *             delete_post_meta($id, $prop);
+     *
+     *             if (is_array($values)){
+     *                 foreach ($values as $value){
+     *                     add_post_meta($id, $prop, $value);
+     *                 }
+     *             }
+     *         }
+     *     }
+     *
+     *     // return a brand new object
+     *     return new Entities\Filter($metadatum->WP_Post);
+     *}
+     */
 
 	public function update( $object, $new_values = null ) {
 		return $this->insert( $object );

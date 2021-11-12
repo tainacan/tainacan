@@ -149,12 +149,6 @@
                 } else {
                     this.label = '';
                     this.selected = '';
-                    this.$emit('input', {
-                        filter: 'autocomplete',
-                        metadatum_id: this.metadatumId,
-                        collection_id: this.collectionId,
-                        value: this.selected
-                    });
                 }
             }, 500),
             searchMore: _.debounce(function () {
@@ -176,12 +170,9 @@
 
                         axios.get(endpoint)
                             .then( res => {
-
                                 let item = res.data;
                                 this.label = item.title;
                                 this.selected = item.title;
-         
-                                this.$emit( 'sendValuesToTags', { label: this.label, value: this.selected, metadatumName: this.metadatumName });
                             })
                             .catch(error => {
                                 this.$console.log(error);
@@ -189,7 +180,6 @@
                     } else {
                         this.label = metadata.value;
                         this.selected = metadata.value;
-                        this.$emit( 'sendValuesToTags', { label: this.label, value: this.selected, metadatumName: this.metadatumName });
                     }
                 } else {
                     this.label = '';
