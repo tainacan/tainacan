@@ -864,9 +864,7 @@ export default {
                     position: relative;
                 }
                 .metadatum-name {
-                    text-overflow: ellipsis;
-                    overflow-x: hidden;
-                    white-space: nowrap;
+                    white-space: normal;
                     font-weight: bold;
                     margin-left: 0.4em;
                     margin-right: 0.4em;
@@ -899,6 +897,12 @@ export default {
                         position: relative;
                         i, i:before { font-size: 1.25em; }
                     }
+                }
+
+                &.is-compact-item .metadatum-name {
+                    text-overflow: ellipsis;
+                    overflow-x: hidden;
+                    white-space: nowrap;
                 }
         
                 &.not-sortable-item,
